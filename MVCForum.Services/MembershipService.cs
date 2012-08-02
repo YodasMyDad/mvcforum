@@ -24,8 +24,6 @@ namespace MVCForum.Services
         private readonly IPrivateMessageService _privateMessageService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ITopicNotificationService _topicNotificationService;
-        private readonly ITopicService _topicService;
-        private readonly IPostService _postService;
         private readonly IVoteService _voteService;
         private readonly IBadgeService _badgeService;
         private readonly ICategoryNotificationService _categoryNotificationService;
@@ -42,7 +40,6 @@ namespace MVCForum.Services
         /// <param name="localizationService"> </param>
         /// <param name="activityService"> </param>
         /// <param name="privateMessageService"> </param>
-        /// <param name="topicService"> </param>
         /// <param name="membershipUserPointsService"> </param>
         /// <param name="topicNotificationService"> </param>
         /// <param name="voteService"> </param>
@@ -51,9 +48,9 @@ namespace MVCForum.Services
         /// <param name="api"> </param>
         public MembershipService(IMembershipRepository membershipRepository, ISettingsRepository settingsRepository,
             IEmailService emailService, ILocalizationService localizationService, IActivityService activityService, 
-            IPrivateMessageService privateMessageService, ITopicService topicService, IMembershipUserPointsService membershipUserPointsService, 
+            IPrivateMessageService privateMessageService, IMembershipUserPointsService membershipUserPointsService, 
             ITopicNotificationService topicNotificationService, IVoteService voteService, IBadgeService badgeService,
-            ICategoryNotificationService categoryNotificationService, IMVCForumAPI api, IPostService postService)
+            ICategoryNotificationService categoryNotificationService, IMVCForumAPI api)
         {
             _membershipRepository = membershipRepository;
             _settingsRepository = settingsRepository;
@@ -61,13 +58,11 @@ namespace MVCForum.Services
             _localizationService = localizationService;
             _activityService = activityService;
             _privateMessageService = privateMessageService;
-            _topicService = topicService;
             _membershipUserPointsService = membershipUserPointsService;
             _topicNotificationService = topicNotificationService;
             _voteService = voteService;
             _badgeService = badgeService;
             _categoryNotificationService = categoryNotificationService;
-            _postService = postService;
             _api = api;
         }
 

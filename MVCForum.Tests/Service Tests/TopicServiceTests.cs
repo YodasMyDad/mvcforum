@@ -15,11 +15,13 @@ namespace MVCForum.Tests.Service_Tests
     public class TopicServiceTests
     {
         private IMVCForumAPI _api;
+        private ITopicNotificationService _topicNotificationService;
  
         [SetUp]
         public void Init()
         {
             _api = Substitute.For<IMVCForumAPI>();
+            _topicNotificationService = Substitute.For<ITopicNotificationService>();
         }
 
         [Test]
@@ -29,7 +31,7 @@ namespace MVCForum.Tests.Service_Tests
             var postRepository = Substitute.For<IPostRepository>();
             var membershipUserPointsService = Substitute.For<IMembershipUserPointsService>();
             var settingsService = Substitute.For<ISettingsService>();
-            var topicService = new TopicService(membershipUserPointsService, settingsService, topicRepository, postRepository, _api);
+            var topicService = new TopicService(membershipUserPointsService, settingsService, topicRepository, postRepository, _api, _topicNotificationService);
             const string newSlug = "topic-name-here";
             const string postContent = "Who would you be if you had a choice? Tony stark or Bruce Banner?";
             var multipleSlugs = new List<Topic>
@@ -57,7 +59,7 @@ namespace MVCForum.Tests.Service_Tests
             var membershipUserPointsService = Substitute.For<IMembershipUserPointsService>();
             var settingsService = Substitute.For<ISettingsService>();
 
-            var topicService = new TopicService(membershipUserPointsService, settingsService, topicRepository, postRepository, _api);
+            var topicService = new TopicService(membershipUserPointsService, settingsService, topicRepository, postRepository, _api, _topicNotificationService);
 
             var topic = new Topic 
                 { 
@@ -82,7 +84,7 @@ namespace MVCForum.Tests.Service_Tests
             var membershipUserPointsService = Substitute.For<IMembershipUserPointsService>();
             var settingsService = Substitute.For<ISettingsService>();
             settingsService.GetSettings().Returns(new Settings { PointsAddedForSolution = 20 });
-            var topicService = new TopicService(membershipUserPointsService, settingsService, topicRepository, postRepository, _api);
+            var topicService = new TopicService(membershipUserPointsService, settingsService, topicRepository, postRepository, _api, _topicNotificationService);
             var marker = new MembershipUser
                              {
                                  UserName = "SpongeBob", Id = Guid.NewGuid()
@@ -116,7 +118,7 @@ namespace MVCForum.Tests.Service_Tests
             var membershipUserPointsService = Substitute.For<IMembershipUserPointsService>();
             var settingsService = Substitute.For<ISettingsService>();
 
-            var topicService = new TopicService(membershipUserPointsService, settingsService, topicRepository, postRepository, _api);
+            var topicService = new TopicService(membershipUserPointsService, settingsService, topicRepository, postRepository, _api, _topicNotificationService);
             var marker = new MembershipUser
             {
                 UserName = "SpongeBob",
