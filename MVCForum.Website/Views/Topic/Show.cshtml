@@ -1,0 +1,81 @@
+﻿@using MVCForum.Domain.Constants
+@using MVCForum.Website.Application
+@using MVCForum.Website.ViewModels
+@model ShowTopicViewModel
+
+@{    
+    // SEO Stuff
+    ViewBag.Title = Html.Raw(AppHelpers.CreatePageTitle(Model.Topic, Html.LanguageString("Topic.TitleFallBack")));
+    var totalCount = Convert.ToInt32(Model.TotalCount);
+    ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
+
+    // Email subscription
+    var subScribe = string.Empty;
+    var unSubscribe = string.Empty;
+    const string displayNone = "style='display:none;'";
+    if (Model.IsSubscribed)
+    {
+        subScribe = displayNone;
+    }
+    else
+    {
+        unSubscribe = displayNone;
+    }
+    
+    // Set a ViewBag for the category
+    TempData[AppConstants.DefaultCategoryViewBagName] = Model.Topic.Category.Id;
+}
+
+
+@section side
+{
+    @Html.Action("ListCategorySideMenu", "Category")
+    @Html.Action("PopularTags", "Tag")
+}
+
+
+
+<div class="row">
+    
+    <div class="span6">
+        <h1 class="topicheader">@Html.Raw(Model.Topic.Name)</h1>
+    </div>
+    <div class="span3">
+        @if (Model.User != null && Html.Settings().EnableEmailSubscriptions)
+        {
+            <a @Html.Raw(subScribe) title="Subscribe Via Email" href="#" class="emailsubscription" rel="@Model.Topic.Id">
+                <span class="emailsubscriptionimage" rel="topic">@Html.LanguageString("Topic.Subscribe")</span>
+            </a>
+            <a @Html.Raw(unSubscribe) title="Unsubscribe From Emails" href="#" class="emailunsubscription" rel="@Model.Topic.Id">
+                <span class="emailunsubscriptionimage" rel="topic">@Html.LanguageString("Topic.UnSubscribe")</span>
+            </a>
+        }
+    </div>
+
+</div>
+
+
+@foreach (var post in Model.Posts)
+{
+    var viewModel = new ViewPostViewModel { Permissions = Model.Permissions, Post = post, User = Model.User, ParentTopic = Model.Topic };
+    Html.RenderPartial("_Post", viewModel);
+}
+
+@if (!Model.Topic.IsLocked)
+{
+    <span id="newpostmarker"></span>
+
+    if (!Model.Permissions[AppConstants.PermissionDenyAccess].IsTicked && !Model.Permissions[AppConstants.PermissionReadOnly].IsTicked)
+    {
+        @Html.Partial("_CreateNewPost", new CreateAjaxPostViewModel { Topic = Model.Topic.Id })
+    }
+}
+else
+{
+    <p class="topiclockedmessage">@Html.LanguageString("Topic.IsLocked")</p>
+}
+
+@if (Model.Posts.TotalPages > 1)
+{
+    @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().PostsPerPage, totalCount, null)
+}

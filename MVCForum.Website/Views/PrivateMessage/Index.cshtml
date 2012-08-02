@@ -1,0 +1,54 @@
+﻿@model MVCForum.Website.ViewModels.ListPrivateMessageViewModel
+
+@{
+    ViewBag.Title = Html.LanguageString("PM.ReceivedPrivateMessages");
+}
+
+<h2>@ViewBag.Title</h2>
+
+@if(Model.Messages.Any())
+{
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>@Html.LanguageString("PM.From")</th>
+            <th>@Html.LanguageString("PM.Subject")</th>
+            <th>@Html.LanguageString("PM.Date")</th>
+            <th>@Html.LanguageString("PM.Read")</th>
+            <th>@Html.LanguageString("PM.Delete")</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var message in Model.Messages)
+        {        
+            <tr>
+                <td>
+                    <strong><a href="@Html.Raw(message.UserFrom.NiceUrl)">@Html.Raw(message.UserFrom.UserName)</a></strong>
+                </td>
+                <td>
+                    @Html.ActionLink(message.Subject, "View", new { id = message.Id})
+                </td>
+                <td>@message.DateSent.ToShortDateString()</td>
+                <td>@Html.DisplayFor(modelItem => message.IsRead)</td>
+                <td>
+                    <a class="privatemessagedelete" rel="@message.Id">
+                      <i class="icon-remove"></i>  
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@Html.Pager(Convert.ToInt32(Model.PageIndex), MVCForum.Domain.Constants.AppConstants.PrivateMessageListSize, Convert.ToInt32(Model.TotalCount), new {})    
+}
+else
+{
+    <p>@Html.LanguageString("PM.NoMessages")</p>
+}
+
+
+<div class="btn-group">    
+        @Html.ActionLink(Html.LanguageString("PM.SentPrivateMessages"), "SentMessages", new { }, new { @class = "btn btn-success" })
+        @Html.ActionLink(Html.LanguageString("PM.Create"), "Create", "PrivateMessage", new { }, new { @class = "btn btn-success" })
+</div>

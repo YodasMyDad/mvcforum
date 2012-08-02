@@ -1,0 +1,13 @@
+﻿@model MVCForum.Website.ViewModels.MainStatsViewModel
+
+    <hr/>
+    <div class="footerstats">
+        <p>@Html.Raw(string.Format(Html.LanguageString("Stats.FooterMainStatText"), Model.MemberCount, Model.PostCount, Model.TopicCount))</p>
+        <ul class="latestmembersjoined">
+            <li class="latestmemberheading">@Html.LanguageString("Stats.LatestMembers")</li>
+            @foreach(var user in Model.LatestMembers)
+            {
+                <li><a href="@user.Value">@user.Key</a></li>
+            }
+        </ul>
+    </div>

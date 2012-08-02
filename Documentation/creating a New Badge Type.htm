@@ -1,0 +1,63 @@
+﻿<h2>Step 1: Create a New Badge Interface</h2>
+<p>In this example we will create a new badge type that is awarded when a post is down-voted. "DownVote" will be our new badge type, and you can imagine instances such as "Sceptical" awarded to users who do a lot of down-voting.</p>
+<p>Each badge type is defined by a specific interface that you create. The interface classes live in the "MVCForum.Domain" assembly, in the "Interfaces/Badges" folder.</p>
+<p>Your new interface MUST inherit from the <span style="color: #2b91af;">IBadge</span> interface:</p>
+<pre class="code"><span style="color: blue;">public interface</span> <span style="color: #2b91af;">IVoteDownBadge</span> : <span style="color: #2b91af;">IBadge</span> {
+
+}
+</pre>
+<p>Your interface is complete.</p>
+<h2>Step 2: Define the Badge Type and Qualified Name in Code</h2>
+<p>So that MVCForum can manage the badges at run time you need to declare some values in the "Badge" domain class. This class is contained in "Badge.cs" within the "MVCForum.Domain" assembly in the folder "DomainModel".</p>
+<p>Add an enumeration value for your new badge type:</p>
+<p> </p>
+<pre class="code"><span style="color: blue;">public enum</span> <span style="color: #2b91af;">BadgeType</span> {
+    VoteUp,
+    MarkAsSolution,
+    Time,
+    VoteDown
+}
+</pre>
+<pre class="code"> 
+</pre>
+<p>Map the interface's fully qualified name to the new badge type: </p>
+<pre class="code"><span style="color: blue;">public static readonly</span> <span style="color: #2b91af;">Dictionary</span>&lt;<span style="color: #2b91af;">BadgeType</span>, <span style="color: blue;">string</span>&gt; BadgeClassNames = <span style="color: blue;">new</span> <span style="color: #2b91af;">Dictionary</span>&lt;<span style="color: #2b91af;">BadgeType</span>, <span style="color: blue;">string</span>&gt;
+                                                    {
+                                                        {<span style="color: #2b91af;">BadgeType</span>.VoteUp, <span style="color: #a31515;">"MVCForum.Domain.Interfaces.Badges.IVoteUpBadge"</span>},
+                                                        {<span style="color: #2b91af;">BadgeType</span>.MarkAsSolution, <span style="color: #a31515;">"MVCForum.Domain.Interfaces.Badges.IMarkAsSolutionBadge"</span>},
+                                                        {<span style="color: #2b91af;">BadgeType</span>.Time, <span style="color: #a31515;">"MVCForum.Domain.Interfaces.Badges.ITimeBadge"</span>},
+                                                        {<span style="color: #2b91af;">BadgeType</span>.VoteDown, <span style="color: #a31515;">"MVCForum.Domain.Interfaces.Badges.IVoteDownBadge"</span>}
+                                                    };
+</pre>
+<p> </p>
+<p>(You only need to do steps 1 and 2 to define a new badge type. The remaining steps are concerned with using the new type.)</p>
+<h2>Step 3: Modify a View and a Controller to Process Your New Badges</h2>
+<p>The class "BadgeController" handles badge update requests. Make a new action in this controller to trigger processing for your new badge type, for example:</p>
+<pre class="code">[<span style="color: #2b91af;">HttpPost</span>]
+<span style="color: blue;">public void</span> VoteDownPost(<span style="color: #2b91af;">VoteDownBadgeViewModel</span> voteDownBadgeViewModel)
+{
+    <span style="color: blue;">using</span> (<span style="color: blue;">var</span> unitOfwork = UnitOfWorkManager.NewUnitOfWork())
+    {
+        <span style="color: blue;">try</span> {                    
+            <span style="color: blue;">var</span> post = _postService.Get(voteDownBadgeViewModel.PostId);
+            <span style="color: blue;">var</span> currentUser = MembershipService.GetUser(User.Identity.Name);
+
+            <span style="color: blue;">var</span> badgeAwarded = _badgeService.ProcessBadge(<span style="color: #2b91af;">BadgeType</span>.VoteDown, currentUser) |
+                           _badgeService.ProcessBadge(<span style="color: #2b91af;">BadgeType</span>.VoteDown, post.User);
+            
+            <span style="color: blue;">if</span> (badgeAwarded)
+            {
+                unitOfwork.Commit();
+            }
+        }
+        <span style="color: blue;">catch</span> (<span style="color: #2b91af;">Exception</span> ex)
+        {
+            unitOfwork.Rollback();
+            LoggingService.Error(ex);
+        }
+    }
+}
+</pre>
+<p>In this action, a view model containing the post id of the down-voted post is passed. The action then retrieves the logged on user, plus the owner of the post. It then calls for badge processing using the down-vote badge type. It does this twice: once for the user making the vote down (current user) and then for the user owning the post.</p>
+<p>This example code implies the existence of two instances of the down-vote badge: one awarded to the user making the down-vote and one awarded to the user receiving the down-vote. These badges are different, but they are the same type of badge.</p>
+<p>Typically the controller actions that call for badge processing are themselves called via Ajax when an activity takes place in the forum, in this case a user down-voting a post.</p>

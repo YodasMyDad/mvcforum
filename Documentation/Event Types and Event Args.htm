@@ -1,0 +1,89 @@
+﻿<h2>Common Values</h2>
+<p>All event type arguments contain the following members:</p>
+<h3>API</h3>
+<p>This is the MVCForum API. See the documentation on the API. You can use this API within your event handler logic to access MVCForum functionality.</p>
+<h3>Cancel</h3>
+<p>This boolean property allows you to cancel the event in your handler code. If you set this property to "true" then the event will signal the caller to discontinue processing. See the individual "before" event details described below. Note that this value is ignored in the "after" event processing.</p>
+<h2>BeforeBadgeAwarded / AfterBadgeAwarded</h2>
+<h3>Called</h3>
+<p>These events are called before and after a badge is awarded to a user.</p>
+<h3>Parameter "sender"</h3>
+<p>Type: object</p>
+<p>Usage: the object that has raised the event</p>
+<h3>Parameter "args"</h3>
+<p>Type: BadgeEventArgs</p>
+<p>Usage: Contains the following:</p>
+<ul>
+<li>User:  The user that will be awarded the badge.</li>
+<li>BadgeType: The badge type to be awarded.</li>
+</ul>
+<p>If you set the Cancel property to "true" in the BeforeBadgeAwarded handler then the badge will NOT be awarded to the user.</p>
+<h2>BeforeVoteMade / AfterVoteMade</h2>
+<h3>Called</h3>
+<p>These events are called before and after a vote is applied to a post.</p>
+<h3>Parameter "sender"</h3>
+<p>Type: object</p>
+<p>Usage: the object that has raised the event</p>
+<h3>Parameter "args"</h3>
+<p>Type: VoteEventArgs</p>
+<p>Usage: Contains the following:</p>
+<ul>
+<li>Vote: The vote to be applied.</li>
+</ul>
+<p>Usage: Contains the vote that will be awarded. If you set the Cancel property to "true" in the BeforeVoteMade handler then the vote will NOT be applied.</p>
+<h2>BeforeMarkedAsSolution / AfterMarkedAsSolution</h2>
+<h3>Called</h3>
+<p>These events are called before and after a topic is marked as "solved".</p>
+<h3>Parameter "sender"</h3>
+<p>Type: object</p>
+<p>Usage: the object that has raised the event</p>
+<h3>Parameter "args"</h3>
+<p>Type: MarkedAsSolutionEventArgs</p>
+<p>Usage: Contains the following:</p>
+<ul>
+<li>Topic: The topic to be solved.</li>
+<li>Post: The post that is the proposed solution.</li>
+<li>Marker: The user that has marked the post as the solution.</li>
+<li>SolutionWriter: The user that wrote the post being marked as the solution.</li>
+</ul>
+<p>If you set the Cancel property to "true" in the BeforeMarkedAsSolution handler then the vote will NOT be applied.</p>
+<h2>BeforePostMade / AfterPostMade</h2>
+<h3>Called</h3>
+<p>These events are called before and after a post is created.</p>
+<h3>Parameter "sender"</h3>
+<p>Type: object</p>
+<p>Usage: the object that has raised the event</p>
+<h3>Parameter "args"</h3>
+<p>Type: PostMadeEventArgs</p>
+<p>Usage: Contains the following:</p>
+<ul>
+<li>Post: The new post</li>
+</ul>
+<p>If you set the Cancel property to "true" in the BeforePostMade handler then the post will NOT be created.</p>
+<h2>BeforeRegisterUser / AfterRegisterUser</h2>
+<h3>Called</h3>
+<p>These events are called before and after a new user is registered (created).</p>
+<h3>Parameter "sender"</h3>
+<p>Type: object</p>
+<p>Usage: the object that has raised the event</p>
+<h3>Parameter "args"</h3>
+<p>Type: RegisterUserEventArgs</p>
+<p>Usage: Contains the following:</p>
+<ul>
+<li>User: The new user</li>
+<li>CreateStatus: A property that you can set to one of the MembershipCreateStatus values.</li>
+</ul>
+<p>If you set the Cancel property to "true" in the BeforeRegisterUser handler then the user will NOT be created.</p>
+<h2>BeforeUpdateProfile / AfterUpdateProfile</h2>
+<h3>Called</h3>
+<p>These events are called before and after a user profile is updated.</p>
+<h3>Parameter "sender"</h3>
+<p>Type: object</p>
+<p>Usage: the object that has raised the event</p>
+<h3>Parameter "args"</h3>
+<p>Type: UpdateProfileEventArgs</p>
+<p>Usage: Contains the following:</p>
+<ul>
+<li>User: The user represented by the profile</li>
+</ul>
+<p>If you set the Cancel property to "true" in the BeforeUpdateProfile handler then the profile will NOT be updated.</p>

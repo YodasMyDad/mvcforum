@@ -1,0 +1,1 @@
+﻿The installer will be here after we get past v1, it will check the assembly version against the version in the web.config at app startup.

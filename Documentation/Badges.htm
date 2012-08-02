@@ -1,0 +1,6 @@
+﻿<p>Badges are awarded to forum users when certain milestones are achieved. For example, there is a simple badge awarded on the first anniversary of a user's registration. MVCForum ships with several badge examples.</p>
+<p>The badge system is highly configurable allowing you to create your own badges.</p>
+<p>To understand how the badge system works, you need to understand the difference between badge <em>types</em> and badge <em>instances</em>.</p>
+<p>MVCForum understands a set of badge types. Badge types relate to specific events that might occur when users are active in the forum.  For example, one badge type is triggered when a user up-votes a post. When the up-vote occurs MVCForum examines all the badges of type "up-vote" to see if any apply to the specified user. MVCForum ships with two instances of the up-vote badge type: a badge awarded to post authors the first time one of their posts receives an up-vote, and another badge awarded to users after they give their first up-vote.</p>
+<p>This means you can have many badges of the same type. It is easy to imagine many instances of the up-vote badge type: an instance awarded when you make 100 up-votes, an instance awarded when you receive 30 up-votes in a month, and so on.</p>
+<p>MVCForum allows you to create new instances of existing badge types, and also to define your own badge types.</p>

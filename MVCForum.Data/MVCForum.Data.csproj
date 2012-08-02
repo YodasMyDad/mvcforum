@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MVCForum.Data</RootNamespace>
+    <AssemblyName>MVCForum.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.5.0.0-rc\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WebActivator">
+      <HintPath>..\packages\WebActivator.1.4.4\lib\net40\WebActivator.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Context\MVCForumContext.cs" />
+    <Compile Include="Mapping\BadgeMapping.cs" />
+    <Compile Include="Mapping\BadgeTypeTimeLastCheckedMapping.cs" />
+    <Compile Include="Mapping\CategoryMapping.cs" />
+    <Compile Include="Mapping\CategoryNotificationMapping.cs" />
+    <Compile Include="Mapping\CategoryPermissionForRoleMapping.cs" />
+    <Compile Include="Mapping\TopicNotificationMapping.cs" />
+    <Compile Include="Mapping\TopicTagMapping.cs" />
+    <Compile Include="Mapping\VoteMapping.cs" />
+    <Compile Include="Mapping\PrivateMessageMapping.cs" />
+    <Compile Include="Mapping\PostMapping.cs" />
+    <Compile Include="Mapping\PermissionMapping.cs" />
+    <Compile Include="Mapping\MembershipUserPointsMapping.cs" />
+    <Compile Include="Mapping\MembershipUserMapping.cs" />
+    <Compile Include="Mapping\LocaleStringResourceMapping.cs" />
+    <Compile Include="Mapping\LocaleResourceKeyMapping.cs" />
+    <Compile Include="Mapping\LanguageMapping.cs" />
+    <Compile Include="Mapping\TopicMapping.cs" />
+    <Compile Include="Mapping\SettingsMapping.cs" />
+    <Compile Include="Mapping\MembershipRoleMapping.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\BadgeRepository.cs" />
+    <Compile Include="Repositories\CategoryNotificationRepository.cs" />
+    <Compile Include="Repositories\CategoryPermissionForRoleRepository.cs" />
+    <Compile Include="Repositories\CategoryRepository.cs" />
+    <Compile Include="Repositories\ActivityRepository.cs" />
+    <Compile Include="Repositories\MembershipUserPointsRepository.cs" />
+    <Compile Include="Repositories\PrivateMessageRepository.cs" />
+    <Compile Include="Repositories\TopicNotificationRepository.cs" />
+    <Compile Include="Repositories\TopicTagRepository.cs" />
+    <Compile Include="Repositories\LocalizationRepository.cs" />
+    <Compile Include="Repositories\MembershipRepository.cs" />
+    <Compile Include="Repositories\PermissionRepository.cs" />
+    <Compile Include="Repositories\PostRepository.cs" />
+    <Compile Include="Repositories\RoleRepository.cs" />
+    <Compile Include="Repositories\SettingsRepository.cs" />
+    <Compile Include="Repositories\TopicRepository.cs" />
+    <Compile Include="Repositories\VoteRepository.cs" />
+    <Compile Include="UnitOfWork\UnitOfWork.cs" />
+    <Compile Include="UnitOfWork\UnitOfWorkManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EFProvider Wrappers\EFCachingProvider.Web\EFCachingProvider.Web.csproj">
+      <Project>{5E373803-C182-47CF-AA62-254BD4CECE32}</Project>
+      <Name>EFCachingProvider.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EFProvider Wrappers\EFCachingProvider\EFCachingProvider.csproj">
+      <Project>{E9B10F80-134F-4DC1-BA6F-7728EF2CAE58}</Project>
+      <Name>EFCachingProvider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EFProvider Wrappers\EFProviderWrapperToolkit\EFProviderWrapperToolkit.csproj">
+      <Project>{BAF62DE6-51D0-49AB-9E4E-9240E85E9C35}</Project>
+      <Name>EFProviderWrapperToolkit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Core\MVCForum.Domain.csproj">
+      <Project>{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}</Project>
+      <Name>MVCForum.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

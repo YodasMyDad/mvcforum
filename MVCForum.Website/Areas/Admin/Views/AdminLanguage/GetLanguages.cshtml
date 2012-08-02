@@ -1,0 +1,50 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.ListLanguagesViewModel
+
+@{
+    ViewBag.Title = "Show Language"; 
+}
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>
+                Edit
+            </th>
+            <th>
+                Name
+            </th>
+            <th>
+                Delete
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var language in Model.Languages)
+        {
+            <tr>
+                <td>
+                    <a href="@Url.Action("ManageLanguageResourceValues", new { languageId = language.Id })" class="btn btn-small">
+                        <i class="icon-pencil"></i></a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => language.Name)
+                </td>             
+                <td>
+                    @if (!language.IsDefault)
+                    {
+                        <a href="@Url.Action("DeleteLanguageConfirmation", new { id = language.Id })">
+                            <img src="/Content/admin/Images/icons/cross.png" 
+                                 alt="Delete" title="Delete @language.Name" />
+                        </a>
+                    }
+                    else
+                    {
+                        @Html.Raw("(default)")
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@Html.Partial("_LanguageOptions")

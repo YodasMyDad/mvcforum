@@ -1,0 +1,221 @@
+﻿<p>The Topic property of MVCForumAPI exposes functionality associated with forum topics.</p>
+
+<h2>Members</h2>
+
+<h3>Create</h3>
+
+<h4>Functionality</h4>
+
+<p>Create a new topic.</p>
+
+<h4>Parameters</h4>
+
+<h4>&quot;topic&quot;</h4>
+
+<p>Type: Topic</p>
+
+<p>Usage: The topic to create.</p>
+
+<h4>Returns</h4>
+
+<p>void.</p>
+
+<h4>Example</h4>
+
+<pre class="code"><span style="color: blue">public void</span> CreateTopic(<span style="color: #2b91af">MembershipUser</span> user)
+{
+    <span style="color: blue">var</span> category = _api.Category.GetBySlug(<span style="color: #a31515">&quot;development&quot;</span>);
+    <span style="color: blue">var</span> newTopic = <span style="color: blue">new</span> <span style="color: #2b91af">Topic</span> {User = user, Category = category, CreateDate = <span style="color: #2b91af">DateTime</span>.Now};
+    _api.Topic.Create(newTopic);
+}</pre>
+
+<h3>Delete</h3>
+
+<h4>Functionality</h4>
+
+<p>Delete a topic.</p>
+
+<h4>Parameters</h4>
+
+<h4>&quot;topic&quot;</h4>
+
+<p>Type: Topic</p>
+
+<p>Usage: The topic to delete.</p>
+
+<h4>Returns</h4>
+
+<p>void.</p>
+
+<h4>Example</h4>
+
+<pre class="code"><span style="color: blue">public void</span> DeleteTopic(<span style="color: #2b91af">Topic</span> topic)
+{
+    _api.Topic.Delete(topic);
+}</pre>
+
+<h3>Get</h3>
+
+<h4>Functionality</h4>
+
+<p>Retrieves a topic by Id.</p>
+
+<h4>Parameters</h4>
+
+<h4>&quot;id&quot;</h4>
+
+<p>Type: Guid</p>
+
+<p>Usage: The identifier of the topic to fetch.</p>
+
+<h4>Returns</h4>
+
+<p>A topic.</p>
+
+<h4>Example</h4>
+
+<pre class="code"><span style="color: blue">public </span><span style="color: #2b91af">Topic </span>GetTopicById(<span style="color: #2b91af">Guid </span>id)
+{
+    <span style="color: blue">return </span>_api.Topic.Get(id);
+}</pre>
+
+
+<h3>GetAllTopicsPaged</h3>
+
+<h4>Functionality</h4>
+
+<p>Retrieves topics in a paged set.</p>
+
+<h4>Parameters</h4>
+
+<h4>&quot;pageIndex&quot;</h4>
+
+<p>Type: int</p>
+
+<p>Usage: The starting page within the entire results set .</p>
+
+<h4>&quot;pageSize&quot;</h4>
+
+<p>Type: int</p>
+
+<p>Usage: The size of a page in the results set, in terms of number of records.</p>
+
+<h4>&quot;amountToTake&quot;</h4>
+
+<p>Type: int</p>
+
+<p>Usage: the number of records to read.</p>
+
+<h4>Returns</h4>
+
+<p>A paged list of topics.</p>
+
+<h4>Example</h4>
+
+<pre class="code"><span style="color: blue">public</span> <span style="color: #2b91af">PagedList</span>&lt;<span style="color: #2b91af">Topic</span>&gt; GetPagedTopics()
+{
+    <span style="color: green">// Start at page 2, 20 per page, get 100 topics</span> </pre>
+
+<pre class="code">    <span style="color: blue">return</span> _api.Topic.GetAllTopicsPaged(2, 20, 100);
+}</pre>
+
+<h3>GetTopicsByCatId</h3>
+
+<h4>Functionality</h4>
+
+<p>Retrieves all the topics within a category.</p>
+
+<h4>Parameters</h4>
+
+<h4>&quot;categoryId&quot;</h4>
+
+<p>Type: Guid</p>
+
+<p>Usage: the Id of the category.</p>
+
+<h4>Returns</h4>
+
+<p>A list of topics.</p>
+
+<h4>Example</h4>
+
+<pre class="code"><span style="color: blue">public</span> <span style="color: #2b91af">IList</span>&lt;<span style="color: #2b91af">Topic</span>&gt; GetTopicsByCategory(<span style="color: #2b91af">Guid</span> categoryId)
+{
+    <span style="color: blue">return</span> _api.Topic.GetTopicsByCatId(categoryId);
+}</pre>
+
+<h3>GetSolvedTopicsByMember</h3>
+
+<h4>Functionality</h4>
+
+<p>Retrieves all the solved topics owned by the specified member. For example, the user named Susan has written four topics, and two of them contain posts that Susan has marked as the solution to the topic. When this method is invoked with Susan as the parameter, then the two solved topics will be returned.</p>
+
+<h4>Parameters</h4>
+
+<h4>&quot;memberId&quot;</h4>
+
+<p>Type: Guid</p>
+
+<p>Usage: the Id of the member.</p>
+
+<h4>Returns</h4>
+
+<p>A list of topics.</p>
+
+<h4>Example</h4>
+
+<pre class="code"><span style="color: blue">public</span> <span style="color: #2b91af">IList</span>&lt;<span style="color: #2b91af">Topic</span>&gt; GetSolvedTopics(<span style="color: #2b91af">MembershipUser</span> user)
+{
+    <span style="color: blue">return</span> _api.Topic.GetSolvedTopicsByMember(user.Id);
+}</pre>
+
+<h3>GetTopicsByMember</h3>
+
+<h4>Functionality</h4>
+
+<p>Retrieves all the solved topics owned by the specified member.</p>
+
+<h4>Parameters</h4>
+
+<h4>&quot;memberId&quot;</h4>
+
+<p>Type: Guid</p>
+
+<p>Usage: the Id of the member.</p>
+
+<h4>Returns</h4>
+
+<p>A list of topics.</p>
+
+<h4>Example</h4>
+
+<pre class="code"><span style="color: blue">public</span> <span style="color: #2b91af">IList</span>&lt;<span style="color: #2b91af">Topic</span>&gt; GetTopics(<span style="color: #2b91af">MembershipUser</span> user)
+{
+    <span style="color: blue">return</span> _api.Topic.GetTopicsByMember(user.Id);
+}</pre>
+
+<h3>GetTopicBySlug</h3>
+
+<h4>Functionality</h4>
+
+<p>Gets a topic by the slug part of the topic url.</p>
+
+<h4>Parameters</h4>
+
+<h4>&quot;slug&quot;</h4>
+
+<p>Type: string</p>
+
+<p>Usage: the slug part of the topic url.</p>
+
+<h4>Returns</h4>
+
+<p>A topic.</p>
+
+<h4>Example</h4>
+
+<pre class="code"><span style="color: blue">public </span><span style="color: #2b91af">Topic </span>GetTopic()
+{
+     <span style="color: blue">var </span>slug = <span style="color: #a31515">&quot;yet-another-admin-discussion&quot;</span>;
+     <span style="color: blue">return </span>_api.Topic.GetTopicBySlug(slug);
+}</pre>

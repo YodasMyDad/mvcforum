@@ -1,0 +1,32 @@
+﻿<p>You can write your own code to handle events. You can handle many MVCForum events in one class.</p>
+<h2>Step 1: Create a Class</h2>
+<p>Create a new class:</p>
+<pre class="code"><span style="color: blue;">public class</span> <span style="color: #2b91af;">MyEventHandlers</span>
+{
+}
+</pre>
+<p>You can create this in any assembly. You will need to reference the MVCForum dll named "MVCForum.Domain.dll".</p>
+<h2>Step 2: Inherit from the Event Handler Interface</h2>
+<p>MVCForum will detect your event handlers by reflection. It looks for classes that implement the interface named <span style="color: #2b91af;">IEventHandler.</span></p>
+<p>Therefore your event handler class must inherit from this interface:</p>
+<pre class="code"><span style="color: blue;">public class</span> <span style="color: #2b91af;">MyEventHandlers</span> : <span style="color: #2b91af;">IEventHandler</span> {
+}
+</pre>
+<h2>Step 3: Implement RegisterHandlers Method</h2>
+<p>Your class must register the events it wants to handle. The <span style="color: #2b91af;">IEventHandler</span> interface requires you to implement the method <span style="color: #2b91af;">RegisterHandlers</span> . This method will be called when the system is expecting your class to register handlers. The method is passed the event manager instance that contains the events. Use the event manager to access the events and register your handlers. For example:</p>
+<pre class="code"><span style="color: blue;">public void</span> RegisterHandlers(<span style="color: #2b91af;">EventManager</span> theEventManager)
+{
+    theEventManager.BeforeBadgeAwarded += BeforeBadgeAwardedHandler;
+}
+</pre>
+<p>In the example, the code has registered a handler for the BeforeBadgeAwarded event. The handler will be fired before MVCForum awards a badge. The code might look like this:</p>
+<pre class="code"><span style="color: blue;">private void</span> BeforeBadgeAwardedHandler(<span style="color: blue;">object</span> sender, <span style="color: #2b91af;">BadgeEventArgs</span> eventArgs)
+{
+    <span style="color: green;">// Do something</span> }
+</pre>
+<p>Each event type is passed two parameters: the sending object that raised the event, and a parameter representing the event arguments. The exact nature of this parameter is event specific, see the <a href="/{localLink:1404}" title="Event Types and Event Args">page on event types</a> for a detailed description.</p>
+<p>The "before" event argument contains a boolean property named "Cancel", regardless of the event type. If you set this property to true then the event will tell the caller NOT to continue processing. For example, if you intercept the "BeforeBadgeAwarded" event and set "Cancel" to true, then the badge system will NOT award the badge.</p>
+<h3>Note on Unit of Work</h3>
+<p>When handling events you must assume that a unit of work has already been established, and that "Commit" or "Rollback" will be called for you.</p>
+<h2>Step 4: Build and Copy the Assembly</h2>
+<p>Compile the assembly that contains your new event handlers. Drop the DLL into the MVCForum web apps bin folder. MVCForum will detect and call your assembly to register handlers at application start up.</p>

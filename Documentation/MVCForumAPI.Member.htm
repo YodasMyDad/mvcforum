@@ -1,0 +1,86 @@
+﻿<p>The Member property of MVCForumAPI exposes functionality associated with forum members.</p>
+
+<h2>Members</h2>
+
+<h3>Create</h3>
+
+<h4>Functionality</h4>
+
+<p>Create a new member.</p>
+
+<h4>Parameters</h4>
+
+<h4>&quot;member&quot;</h4>
+
+<p>Type: MembershipUser</p>
+
+<p>Usage: The member to create.</p>
+
+<h4>Returns</h4>
+
+<p>The new member. An id is generated as part of the creation process.</p>
+
+<h4>Example</h4>
+
+<pre class="code"><span style="color: blue">public </span><span style="color: #2b91af">MembershipUser </span>Create(<span style="color: blue">string </span>name)
+{
+    <span style="color: blue">var </span>newUser = <span style="color: blue">new </span><span style="color: #2b91af">MembershipUser
+                      </span>{
+                          UserName = name
+                      };
+
+    <span style="color: green">// Id is created by API
+    </span><span style="color: blue">return </span>_api.Member.Create(newUser);
+}</pre>
+
+
+<h3>Delete</h3>
+
+<h4>Functionality</h4>
+
+<p>Delete a member.</p>
+
+<h4>Parameters</h4>
+
+<h4>&quot;member&quot;</h4>
+
+<p>Type: Member</p>
+
+<p>Usage: The member to delete.</p>
+
+<h4>Returns</h4>
+
+<p>void.</p>
+
+<h4>Example</h4>
+
+<pre class="code"><span style="color: blue">public void </span>DeleteMember(<span style="color: #2b91af">MembershipUser </span>user)
+{
+    _api.Member.Delete(user);
+}</pre>
+
+
+<h3>GetMembersBadges</h3>
+
+<h4>Functionality</h4>
+
+<p>Delete a member.</p>
+
+<h4>Parameters</h4>
+
+<h4>&quot;member&quot;</h4>
+
+<p>Type: Member</p>
+
+<p>Usage: The member to delete.</p>
+
+<h4>Returns</h4>
+
+<p>void.</p>
+
+<h4>Example</h4>
+
+<pre class="code"><span style="color: blue">public void </span>DeleteMember(<span style="color: #2b91af">MembershipUser </span>user)
+{
+    _api.Member.Delete(user);
+}</pre>

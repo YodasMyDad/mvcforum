@@ -1,0 +1,71 @@
+﻿@using MVCForum.Domain.Constants
+@model MVCForum.Website.Areas.Admin.ViewModels.ListTagsViewModel
+
+@{
+    ViewBag.Title = "Tags";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+@using (Html.BeginForm("Manage", "AdminTag", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    <div class="search large-search input-append">
+        @Html.TextBoxFor(x => @Model.Search)
+        <button class="btn">Search</button>
+        @Html.HiddenFor(x => x.PageIndex)
+    </div>
+}
+
+
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Edit</th>
+            <th>Tag</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var tag in Model.Tags)
+        {
+
+            <tr>
+                <td class="tagcell">
+                    <span class="edittag">
+                        <a href="#" class="btn btn-small">
+                            <i class="icon-pencil"></i>
+                        </a>
+                    </span>
+                    <span class="savetag" style="display:none;">
+                        <a href="#" class="btn btn-small">
+                            <i class="icon-ok"></i>
+                        </a>
+                    </span>
+                </td>
+                <td class="tagvalue">
+                    <strong>
+                        
+                        <span class="tagvaluedisplay">
+                            @tag.Tag
+                        </span>
+                        <span class="tagvalueedit" style="display:none;">
+                            <input data-tagid="@tag.Id" data-oldvalue="@tag.Tag" type="text" id="@tag.Id" value="@tag.Tag" class="taginput"/>
+                        </span>
+
+                    </strong>
+                </td>
+                <td>
+
+                    <a href="@Url.Action("Delete", new { tag = tag.Tag })" class="btn btn-small">
+                        <i class="icon-remove"></i>
+                    </a> 
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+    @Html.Pager(Convert.ToInt32(Model.PageIndex), AppConstants.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })

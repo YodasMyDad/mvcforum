@@ -1,0 +1,15 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.LatestNewsViewModel
+
+@if (Model.RssFeed.Any())
+{
+<ul>
+@foreach (var rssItem in Model.RssFeed)
+{
+    <li><a href="@rssItem.Link" target="_blank">@rssItem.Title</a></li>
+}
+</ul>    
+}
+else
+{
+    <p>No data to display</p>    
+}

@@ -1,0 +1,48 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.LanguagesHomeViewModel
+           
+@{
+    ViewBag.Title = "Languages";
+}
+
+@section AdminHeader
+{
+    @(
+    Bundle.JavaScript()
+        .Add("~/Scripts/jquery.validate.min.js")
+        .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
+        
+        .MvcRender("/scripts/cache/validate-combined_#.js")
+    ) 
+}
+
+<div class="adminsection clearfix">
+    <h2>Export a Language</h2>
+    @using (Html.BeginForm("ExportLanguage", "ImportExport"))
+    {
+        <p>@Html.DropDownList("languageCulture", new SelectList(@Model.LanguageViewModel.ExportLanguages, "Name", "EnglishName"), string.Empty)</p>
+        <div class="submit-holder">
+        <button type="submit" class = "btn btn-success" >Export</button>
+        </div>
+    }
+</div>
+
+<div class="adminsection clearfix">
+    
+    <h2>Import a Language</h2>
+
+    @using (Html.BeginForm("ImportLanguage", "ImportExport", FormMethod.Post, new { enctype = "multipart/form-data", id = "ImportForm", name = "ImportForm", target = "UploadTarget" }))
+    {
+        <p>@Html.DropDownList("languageCulture", new SelectList(@Model.LanguageViewModel.ImportLanguages, "Name", "EnglishName"), string.Empty)</p>
+        <div class="submit-holder">
+            <input type="file" id="file" name="file" />
+            <input type="submit"  class="btn btn-large btn-success" value="Import"/>
+        </div>  
+    }
+
+    @*Results of any import are displayed here:*@
+    <div id="ImportResults"></div>
+
+    @*This frame is displayed off the page and gets the results of the import (ie the success or fail messages) *@
+    <iframe id="UploadTarget" name="UploadTarget" onload="Import_Complete();" style="position: absolute; left: -999em; top: -999em;"></iframe>
+
+</div>

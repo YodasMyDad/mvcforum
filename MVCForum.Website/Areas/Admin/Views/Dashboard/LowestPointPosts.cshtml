@@ -1,0 +1,15 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.LowestPointPostsViewModels
+
+@if(Model.Posts.Any())
+{
+ <ul>
+ @foreach (var post in Model.Posts)
+ {
+    <li><a href="@post.Topic.NiceUrl">By: @post.User.UserName (@post.VoteCount)</a></li>
+ }
+ </ul>
+}
+else
+{
+    <p>No data</p>
+}

@@ -1,0 +1,130 @@
+﻿<p>The Post property of MVCForumAPI exposes functionality associated with forum posts.</p>
+
+<h2>Members</h2>
+
+<h3>Create</h3>
+
+<h4>Functionality</h4>
+
+<p>Adds a new post to the system.</p>
+
+<h4>Parameters</h4>
+
+<h4>&quot;post&quot;</h4>
+
+<p>Type: Post</p>
+
+<p>Usage: the post to be added</p>
+
+<h4>Returns</h4>
+
+<h4>Example</h4>
+
+<pre class="code"><span style="color: blue">var</span> newPost = <span style="color: blue">new</span> <span style="color: #2b91af">Post</span> </pre>
+
+<pre class="code">{
+    PostContent = postContent,
+    User = user,
+    Topic = topic
+};
+
+_api.Post.Create(newPost);</pre>
+
+<h3>Delete</h3>
+
+<h4>Functionality</h4>
+
+<p>Deletes a post from the system.</p>
+
+<h4>Parameters</h4>
+
+<h4>&quot;post&quot;</h4>
+
+<p>Type: Post</p>
+
+<p>Usage: the post to be deleted.</p>
+
+<h4>Returns</h4>
+
+<h4>Example</h4>
+
+<pre class="code"><span style="color: blue">public void </span>DeletePost(<span style="color: #2b91af">Post </span>post)
+{
+     _api.Post.Delete(post);
+}</pre>
+
+
+<h3>GetPostsByMember</h3>
+
+<h4>Functionality</h4>
+
+<p>Retrieves all the posts made by the specified member.</p>
+
+<h4>Parameters</h4>
+
+<h4>&quot;memberId&quot;</h4>
+
+<p>Type: Guid</p>
+
+<p>Usage: the identifier of the member.</p>
+
+<h4>Returns</h4>
+
+<p>A list of posts.</p>
+
+<h4>Example</h4>
+
+<pre class="code"><span style="color: blue">public </span><span style="color: #2b91af">IList</span>&lt;<span style="color: #2b91af">Post</span>&gt; GetPosts(<span style="color: #2b91af">MembershipUser </span>user)
+{
+    <span style="color: blue">return </span>_api.Post.GetPostsByMember(user.Id);
+}</pre>
+
+
+<h3>GetPostsByTopicId</h3>
+
+<h4>Functionality</h4>
+
+<p>Retrieves all the posts within a topic.</p>
+
+<h4>Parameters</h4>
+
+<h4>&quot;topicId&quot;</h4>
+
+<p>Type: Guid</p>
+
+<p>Usage: the Id of the topic.</p>
+
+<h4>Returns</h4>
+
+<p>A list of topics.</p>
+
+<h4>Example</h4>
+
+<pre class="code"><span style="color: blue">public </span><span style="color: #2b91af">IList</span>&lt;<span style="color: #2b91af">Post</span>&gt; GetPostsForTopic(<span style="color: #2b91af">Topic </span>topic)
+{
+    <span style="color: blue">return </span>_api.Post.GetPostsByTopicId(topic.Id);
+}</pre>
+
+
+<h3>GetSolutionsByMember</h3>
+
+<h4>Functionality</h4>
+
+<p>Retrieves all the posts made by a member of the forum that have been marked as a solution.</p>
+
+<h4>Parameters</h4>
+
+<h4>&quot;memberId&quot;</h4>
+
+<p>Type: Guid</p>
+
+<p>Usage: the Id of the member to search for solutions</p>
+
+<h4>Returns</h4>
+
+<h4>Example</h4>
+
+<pre class="code"><span style="color: blue">public</span> <span style="color: #2b91af">IList</span>&lt;<span style="color: #2b91af">Post</span>&gt; GetSolutionsByMember(<span style="color: #2b91af">Guid</span> memberId)
+{
+    <span style="color: blue">return</span> _api.Post.GetSolutionsByMember(memberId);
+}</pre>

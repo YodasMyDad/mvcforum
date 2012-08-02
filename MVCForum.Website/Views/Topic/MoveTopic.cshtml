@@ -1,0 +1,30 @@
+﻿@model MVCForum.Website.ViewModels.MoveTopicViewModel
+
+@section side
+{
+    @Html.Action("ListCategorySideMenu", "Category")
+    @Html.Action("PopularTags", "Tag")
+}
+
+@using (Html.BeginForm("MoveTopic", "Topic", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.ValidationSummary(true)
+    @Html.AntiForgeryToken()
+    <fieldset>
+        <legend>Move: @Model.Name</legend>
+        
+        <div class="editor-label">
+            @Html.LabelFor(model => model.CategoryId)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.CategoryId, new SelectList(Model.Categories, "id", "Name"))
+            @Html.ValidationMessageFor(model => model.CategoryId)
+        </div>
+        
+        @Html.HiddenFor(x => x.Id)
+
+        <div class="submit-holder">
+            <input type="submit" class="btn btn-large btn-success" value="Move Topic" />
+        </div>
+    </fieldset>
+}

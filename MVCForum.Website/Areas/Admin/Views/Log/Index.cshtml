@@ -1,0 +1,28 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.ListLogViewModel
+
+@{
+    ViewBag.Title = "Log";
+}
+
+<h2>Log</h2>
+<p>This is a limited view of the log, if you need to see even more logs then you you'll need to open the logfile.txt in the App_Data folder</p>
+@foreach(var log in Model.LogFiles)
+{
+    <div class="logentry row">
+        <div class="logentrydate span2">
+            @log.Date
+        </div>
+        
+        <div class="logentrydate span2">
+            @log.Module
+        </div>
+        
+        <div class="logentrydate span2">
+            @log.Method
+        </div>
+
+        <div class="logentrymessage span2">
+            @log.ErrorMessage
+        </div>
+    </div>
+}

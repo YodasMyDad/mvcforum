@@ -1,0 +1,68 @@
+﻿@using MVCForum.Utilities
+@model MVCForum.Website.Areas.Admin.ViewModels.IndexViewModel
+@{
+    ViewBag.Title = "MVC Forum Admin";
+   
+}
+@section AdminHeader
+{
+    <script src="@Url.Content("~/Scripts/dashboard.js")" type="text/javascript"></script>
+}
+<h1>Admin overview page</h1>
+
+<div class="row dashboardrow">
+    <div class="span5">
+        <div class="admindashboard">
+            <h4>Latest Users</h4>
+            <div class="dashboardlatestusers">
+                <img src="@Url.Content("~/Content/Images/arrow-spinner-blue.gif")" alt="loading" />
+            </div>
+        </div>
+    </div>
+    <div class="span5">
+        <div class="admindashboard">
+            <h4>Lowest Point Users</h4>
+            <div class="dashboardlowestpointusers">
+                <img src="@Url.Content("~/Content/Images/arrow-spinner-blue.gif")" alt="loading" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row dashboardrow">
+    <div class="span5">
+        <div class="admindashboard">
+            <h4>Lowest Point Posts</h4>
+            <div class="dashboardlowestpointposts">
+                <img src="@Url.Content("~/Content/Images/arrow-spinner-blue.gif")" alt="loading" />
+            </div>
+        </div>
+    </div>
+    <div class="span5">
+        <div class="admindashboard">
+            <h4>Highest Viewed Topics</h4>
+            <div class="dashboardhighestviewedtopics">
+                <img src="@Url.Content("~/Content/Images/arrow-spinner-blue.gif")" alt="loading" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row dashboardrow">
+    @*<div class="span5">
+        <div class="admindashboard">
+            <h4>Latest Badges Awarded</h4>
+            <div class="dashboardlatestbadgesawarded">
+                <img src="@Url.Content("~/Content/Images/arrow-spinner-blue.gif")" alt="loading" />
+            </div>
+        </div>
+    </div>*@
+    <div class="span5">
+        <div class="admindashboard">
+            <h4>MVC Forum Latest News</h4>
+            <div class="mvcforumlatestnews">
+                <img src="@Url.Content("~/Content/Images/arrow-spinner-blue.gif")" alt="loading" />
+            </div>
+        </div>
+    </div>
+</div>

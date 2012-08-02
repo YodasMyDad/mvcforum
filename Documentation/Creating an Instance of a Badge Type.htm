@@ -1,0 +1,47 @@
+﻿<h2>Step 1: Create a Class</h2>
+<p> </p>
+<p>Badge instances equate to classes, so create a new class:</p>
+<pre class="code"><span style="color: blue;">public class</span> <span style="color: #2b91af;">MyBadgeInstance</span> {
+}
+</pre>
+<p>You can create this in any assembly. You will need to reference the MVCForum dll named "MVCForum.Domain.dll".</p>
+<h2>Step 2: Inherit from the Badge Type Interface</h2>
+<p>Each badge type in the system is defined by an interface. For example, the up-vote badge type is defined by the interface <span style="color: #2b91af;">IVoteUpBadge</span>,  which is part of the "MVCForum.Domain.Interfaces.Badges" namespace.</p>
+<p>To make a new instance of a badge type you make a class that inherits from the required badge type interface. For example:</p>
+<pre class="code"><span style="color: blue;">public class</span> <span style="color: #2b91af;">MyBadgeInstance</span> : <span style="color: #2b91af;">IVoteUpBadge</span> {
+}
+</pre>
+<h2>Step 3: Implement the Rule Method</h2>
+<p>Badges are awarded according to rules. When you create a badge instance, you must supply the rule. Each badge interface will require you to implement the method `Rule`, typically as follows:</p>
+<pre class="code"><span style="color: blue;">public class</span> <span style="color: #2b91af;">MyBadgeInstance</span> : <span style="color: #2b91af;">IVoteUpBadge</span> {
+    <span style="color: blue;">public bool</span> Rule(<span style="color: #2b91af;">MembershipUser</span> user, <span style="color: #2b91af;">IMVCForumAPI</span> api)
+    {
+        <span style="color: blue;">return false</span>;
+    }
+}
+</pre>
+<p>The rule method should use the "api" parameter to determine whether the user passed as a parameter should be awarded the badge, and return true if the badge should be awarded. For example, the rule might calculate whether the user has sufficient points to acquire the badge.</p>
+<p>You can assume that the user has been updated for the related activity BEFORE the rule is called. For example, if the badge is for a certain threshold of votes then you can assume that the triggering vote has already been applied to the user. You can also assume that MVCForum has determined whether or not the user has the badge before the rule is called. In other words by default badges are not awarded twice to the same user.</p>
+<h2>Step 4: Decorate the Class with Attributes</h2>
+<p>MVCForum analyses the badge classes using reflection, and it expects some attributes to be present on each class, as follows:</p>
+<p>Id: specifies a Guid value that uniquely identifies your badge instance <br /> Name: a meaningful name for your badge <br /> DisplayName: a name used in the web pages for your badge <br /> Description: some friendly text describing your badge <br /> Image: the name of an image file that will be displayed as the badge </p>
+<p>For example:</p>
+<pre class="code"><span style="color: blue;">namespace</span> BadgeTest
+{
+
+        [<span style="color: #2b91af;">Id</span>(<span style="color: #a31515;">"c9913ee2-b8e0-4543-8930-c723497ee65c"</span>)]
+        [<span style="color: #2b91af;">Name</span>(<span style="color: #a31515;">"UserVoteUp"</span>)]
+        [<span style="color: #2b91af;">DisplayName</span>(<span style="color: #a31515;">"You've Given Your First Vote Up"</span>)]
+        [<span style="color: #2b91af;">Description</span>(<span style="color: #a31515;">"This badge is awarded to users after they make their first vote up."</span>)]
+        [<span style="color: #2b91af;">Image</span>(<span style="color: #a31515;">"UserVoteUpBadge.png"</span>)]
+        <span style="color: blue;">public class</span> <span style="color: #2b91af;">MyBadgeInstance</span> : <span style="color: #2b91af;">IVoteUpBadge</span> {
+            <span style="color: blue;">public bool</span> Rule(<span style="color: #2b91af;">MembershipUser</span> user, <span style="color: #2b91af;">IMVCForumAPI</span> api)
+            {
+                <span style="color: blue;">return false</span>;
+            }
+        }
+
+}  
+</pre>
+<h2>Step 5: Build and Copy the Assembly</h2>
+<p>Compile the assembly that contains your new badge class. Drop the DLL into the MVCForum web apps bin folder. MVCForum will detect and load the new badge at application start up.</p>

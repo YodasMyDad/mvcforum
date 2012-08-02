@@ -1,0 +1,1 @@
+﻿$(function(){$.get("/Snippets/GetThisWeeksTopEarners",function(n){$(".thisweekleaderboard").html(n)}),$.get("/Snippets/GetThisYearsTopEarners",function(n){$(".alltimeleaderboard").html(n)})});
