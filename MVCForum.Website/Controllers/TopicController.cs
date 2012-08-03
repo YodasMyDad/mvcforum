@@ -207,9 +207,9 @@ namespace MVCForum.Website.Controllers
 
                     // User has permission lets update the topic view count
                     // but only if this topic doesn't belong to the user looking at it
-                    var addView = !(LoggedOnUser != null && LoggedOnUser.Id == topic.User.Id && BotUtils.UserIsBot());
+                    var addView = !(LoggedOnUser != null && LoggedOnUser.Id == topic.User.Id);
 
-                    if (addView)
+                    if (!BotUtils.UserIsBot() && addView)
                     {
                         // Cool, user doesn't own this topic
                         topic.Views = (topic.Views + 1);
