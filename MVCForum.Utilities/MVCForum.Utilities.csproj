@@ -52,6 +52,7 @@
     <Compile Include="BotUtils.cs" />
     <Compile Include="ConfigUtils.cs" />
     <Compile Include="DateUtils.cs" />
+    <Compile Include="GuidComb.cs" />
     <Compile Include="LanguageUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CsvReader.cs" />
