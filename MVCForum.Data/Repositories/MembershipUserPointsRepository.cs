@@ -6,6 +6,7 @@ using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Utilities;
 
 namespace MVCForum.Data.Repositories
 {
@@ -27,7 +28,7 @@ namespace MVCForum.Data.Repositories
 
         public MembershipUserPoints Add(MembershipUserPoints points)
         {
-            points.Id = Guid.NewGuid();
+            points.Id = GuidComb.GenerateComb();
             _context.MembershipUserPoints.Add(points);
             return points;
         }

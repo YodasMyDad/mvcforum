@@ -6,6 +6,7 @@ using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Utilities;
 
 namespace MVCForum.Data.Repositories
 {
@@ -45,7 +46,7 @@ namespace MVCForum.Data.Repositories
 
         public MembershipRole Add(MembershipRole item)
         {
-            item.Id = Guid.NewGuid();
+            item.Id = GuidComb.GenerateComb();
             return _context.MembershipRole.Add(item);
         }
 

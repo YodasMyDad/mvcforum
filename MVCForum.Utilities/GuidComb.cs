@@ -19,13 +19,13 @@ namespace MVCForum.Utilities
             // the remaining bytes. See http://msdn.microsoft.com/en-us/library/ms254976.aspx
             var destinationArray = Guid.NewGuid().ToByteArray();
 
-            // Get clock ticks since 1900 and convert to 4-byte array
+            // Get clock ticks since 1900 and convert to byte array (we will use last 4 bytes later)
             var time = new DateTime(1900, 1, 1);
             var now = DateTime.Now;
             var ticksSince1900 = new TimeSpan(now.Ticks - time.Ticks);
             var bytesFromClockTicks = BitConverter.GetBytes(ticksSince1900.Days);
 
-            // Get milliseconds from time of day and convert to 2-byte array
+            // Get milliseconds from time of day and convert to byte array (we will use last 2 bytes later)
             var timeOfDay = now.TimeOfDay;
             var bytesFromMilliseconds = BitConverter.GetBytes((long)(timeOfDay.TotalMilliseconds / 3.333333)); // Note that SQL Server is accurate to 3.33 millisecond so we divide by 3.333333,
             // makes us compatible with NEWSEQUENTIALID. Not sure that this is useful...

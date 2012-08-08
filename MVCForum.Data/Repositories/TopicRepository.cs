@@ -6,6 +6,7 @@ using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Utilities;
 
 namespace MVCForum.Data.Repositories
 {
@@ -37,7 +38,7 @@ namespace MVCForum.Data.Repositories
 
         public Topic Add(Topic topic)
         {
-            topic.Id = Guid.NewGuid();
+            topic.Id = GuidComb.GenerateComb();
             _context.Topic.Add(topic);
             return topic;
         }

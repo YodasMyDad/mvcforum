@@ -116,6 +116,10 @@
       <Project>{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}</Project>
       <Name>MVCForum.Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Utilities\MVCForum.Utilities.csproj">
+      <Project>{D0CE5E27-041D-4F1E-8C8C-5F4888C72155}</Project>
+      <Name>MVCForum.Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -6,6 +6,7 @@ using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Utilities;
 
 namespace MVCForum.Data.Repositories
 {
@@ -46,7 +47,7 @@ namespace MVCForum.Data.Repositories
 
         public CategoryNotification Add(CategoryNotification category)
         {
-            category.Id = Guid.NewGuid();
+            category.Id = GuidComb.GenerateComb();
             return _context.CategoryNotification.Add(category);
         }
 

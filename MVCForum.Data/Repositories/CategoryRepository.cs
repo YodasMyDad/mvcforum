@@ -6,7 +6,7 @@ using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
-
+using MVCForum.Utilities;
 
 
 namespace MVCForum.Data.Repositories
@@ -65,7 +65,7 @@ namespace MVCForum.Data.Repositories
 
         public Category Add(Category category)
         {
-            category.Id = Guid.NewGuid();
+            category.Id = GuidComb.GenerateComb();
             _context.Category.Add(category);
             return category;
         }

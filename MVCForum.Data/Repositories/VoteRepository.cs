@@ -5,6 +5,7 @@ using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Utilities;
 
 namespace MVCForum.Data.Repositories
 {
@@ -23,7 +24,7 @@ namespace MVCForum.Data.Repositories
 
         public Vote Add(Vote item)
         {
-            item.Id = Guid.NewGuid();
+            item.Id = GuidComb.GenerateComb();
             _context.Vote.Add(item);
             return item;
         }

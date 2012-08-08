@@ -6,6 +6,7 @@ using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Utilities;
 
 
 namespace MVCForum.Data.Repositories
@@ -52,7 +53,7 @@ namespace MVCForum.Data.Repositories
 
         public TopicNotification Add(TopicNotification topicNotification)
         {
-            topicNotification.Id = Guid.NewGuid();
+            topicNotification.Id = GuidComb.GenerateComb();
             return _context.TopicNotification.Add(topicNotification);
         }
 

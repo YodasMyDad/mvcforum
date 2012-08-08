@@ -6,6 +6,7 @@ using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Utilities;
 
 
 namespace MVCForum.Data.Repositories
@@ -28,7 +29,7 @@ namespace MVCForum.Data.Repositories
 
         public Permission Add(Permission permission)
         {
-            permission.Id = Guid.NewGuid();
+            permission.Id = GuidComb.GenerateComb();
             return _context.Permission.Add(permission);
         }
 

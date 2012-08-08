@@ -6,6 +6,7 @@ using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Utilities;
 
 namespace MVCForum.Data.Repositories
 {
@@ -128,7 +129,7 @@ namespace MVCForum.Data.Repositories
         /// <param name="newUser"></param>
         public MembershipUser Add(MembershipUser newUser)
         {
-            newUser.Id = Guid.NewGuid();
+            newUser.Id = GuidComb.GenerateComb();
             return _context.MembershipUser.Add(newUser);
         }
 
