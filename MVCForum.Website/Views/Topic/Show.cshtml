@@ -5,7 +5,7 @@
 
 @{    
     // SEO Stuff
-    ViewBag.Title = Html.Raw(AppHelpers.CreatePageTitle(Model.Topic, Html.LanguageString("Topic.TitleFallBack")));
+    ViewBag.Title = AppHelpers.CreatePageTitle(Model.Topic, Html.LanguageString("Topic.TitleFallBack"));
     var totalCount = Convert.ToInt32(Model.TotalCount);
     ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
 

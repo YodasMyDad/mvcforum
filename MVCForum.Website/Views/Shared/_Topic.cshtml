@@ -23,7 +23,7 @@
                 </div>
 
                 <div class="span7 topicrowdetails">
-                    <h3><a href="@topic.NiceUrl">
+                    <h3><a href="@Html.Raw(topic.NiceUrl)">
                             @if (topic.IsSticky)
                             {
                                 <i class="icon-exclamation-sign"></i>
