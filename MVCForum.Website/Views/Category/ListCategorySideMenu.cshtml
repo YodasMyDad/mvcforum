@@ -12,14 +12,14 @@
         if (!permissions[AppConstants.PermissionDenyAccess].IsTicked)
         {
         
-            <li><a href="@category.NiceUrl">@category.Name</a>
+            <li><a href="@category.NiceUrl">@Html.Raw(@category.Name)</a>
                 @if (Model.AllSubCategories[category].Any())
                 {
                     <ul class="subcatsidemenu">
                         @foreach (var subCat in Model.AllSubCategories[category])
                         {
                         
-                            <li><a href="@subCat.NiceUrl">@subCat.Name</a></li>
+                            <li><a href="@subCat.NiceUrl">@Html.Raw(@subCat.Name)</a></li>
                         }
                     </ul>
                 }

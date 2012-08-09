@@ -29,7 +29,7 @@
 <div class="row">
    
     <div class="span6">
-        <h2>@Model.Category.Name</h2>
+        <h2>@Html.Raw(@Model.Category.Name)</h2>
     </div>
     <div class="span3">
         @if(Html.Settings().EnableRSSFeeds)
@@ -49,7 +49,7 @@
 
 </div>
 
-<p>@Model.Category.Description</p>
+<p>@Html.Raw(@Model.Category.Description)</p>
 
 @if (Model.Topics.TotalCount > 0)
 {
