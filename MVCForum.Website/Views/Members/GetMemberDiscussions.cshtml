@@ -7,5 +7,5 @@
     var permissions = Model.AllPermissionSets[topic.Category];
 
     var viewModel = new ViewTopicViewModel { Permissions = permissions, Topic = topic, User = Model.CurrentUser, ShowCategoryName = false };
-    Html.RenderPartial("_TopicSlim", viewModel);
+    Html.RenderPartial("_TopicSlim", viewModel);    
 }

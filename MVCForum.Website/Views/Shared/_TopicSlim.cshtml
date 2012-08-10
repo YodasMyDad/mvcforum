@@ -8,7 +8,7 @@
     {        
         <div class="topicrowslim topicslimsticky-@topic.IsSticky topicslimlocked-@topic.IsLocked">
             
-            <a href="@topic.NiceUrl">@topic.Name</a>
+            <a href="@Html.Raw(topic.NiceUrl)">@Html.Raw(topic.Name)</a>
 
         </div>        
     }

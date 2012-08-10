@@ -47,7 +47,7 @@
     </div>
     <div class="postbody span7">
         <div class="postbodytop">
-            <a class="postmember-@postId" href="@Model.Post.User.NiceUrl">@Model.Post.User.UserName</a> 
+            <a class="postmember-@postId" href="@Html.Raw(Model.Post.User.NiceUrl)">@Html.Raw(Model.Post.User.UserName)</a> 
             @Html.LanguageString("Post.PostedThis") 
             @DateUtils.GetPrettyDate(Model.Post.DateCreated.ToString())
         </div>
@@ -77,7 +77,7 @@
         <div class="postmemberdetailsinner">
             <a id="comment-@postId"></a>
             <div class="postmemberavatar">
-                <a href="@Model.Post.User.NiceUrl">
+                <a href="@Html.Raw(Model.Post.User.NiceUrl)">
                     <img src="@StringUtils.GetGravatarImage(Model.Post.User.Email, AppConstants.GravatarPostSize)" alt="@Model.Post.User.UserName">
                 </a>
             </div>
