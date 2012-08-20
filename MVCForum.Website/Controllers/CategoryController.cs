@@ -43,6 +43,7 @@ namespace MVCForum.Website.Controllers
         }
 
         [ChildActionOnly]
+        [OutputCache(Duration = AppConstants.DefaultCacheLengthInSeconds)]
         public PartialViewResult ListCategorySideMenu()
         {
             var catViewModel = new CategoryListViewModel { 
@@ -102,6 +103,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+        [OutputCache(Duration = AppConstants.DefaultCacheLengthInSeconds)]
         public ActionResult CategoryRss(string slug)
         {
             using (UnitOfWorkManager.NewUnitOfWork())

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Website.ViewModels
 {
@@ -15,5 +17,10 @@ namespace MVCForum.Website.ViewModels
     public class TimeBadgeViewModel
     {
         public Guid Id { get; set; }
+    }
+
+    public class AllBadgesViewModel
+    {
+        public IList<Badge> AllBadges { get; set; }
     }
 }

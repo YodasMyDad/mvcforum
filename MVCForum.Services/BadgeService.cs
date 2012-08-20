@@ -509,6 +509,11 @@ namespace MVCForum.Services
             return _badgeRepository.SearchPagedGroupedBadges(StringUtils.SafePlainText(search), pageIndex, pageSize);
         }
 
+        public IList<Badge> GetallBadges()
+        {
+            return _badgeRepository.GetAll().ToList();
+        }
+
         public void DeleteTimeLastChecked(BadgeTypeTimeLastChecked badgeTypeTimeLastChecked)
         {
             _badgeRepository.DeleteTimeLastChecked(badgeTypeTimeLastChecked);

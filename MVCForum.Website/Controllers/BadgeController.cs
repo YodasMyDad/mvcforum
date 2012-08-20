@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Web.Mvc;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
+using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
 
 namespace MVCForum.Website.Controllers
@@ -104,5 +106,21 @@ namespace MVCForum.Website.Controllers
                 }
             }
         }
+
+        public ActionResult AllBadges()
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var allBadges = _badgeService.GetallBadges();
+
+                var badgesListModel = new AllBadgesViewModel
+                {
+                   AllBadges = allBadges
+                };
+
+                return View(badgesListModel);
+            }
+        }
+
     }
 }

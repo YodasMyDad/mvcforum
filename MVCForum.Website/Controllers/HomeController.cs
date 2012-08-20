@@ -87,6 +87,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+        [OutputCache(Duration = AppConstants.DefaultCacheLengthInSeconds)]
         public ActionResult LatestRss()
         {
             using (UnitOfWorkManager.NewUnitOfWork())

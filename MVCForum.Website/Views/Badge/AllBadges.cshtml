@@ -1,0 +1,23 @@
+﻿@model MVCForum.Website.ViewModels.AllBadgesViewModel
+
+@{
+    ViewBag.Title = Html.LanguageString("Badges.PageTitle");
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="badgeholder">
+        @foreach (var badge in Model.AllBadges)
+        {
+            <div class="publicbadgeline row">
+                <div class="publicbadge span1">
+                    <img src="@AppHelpers.ReturnBadgeUrl(badge.Image)" alt="@badge.Name" />
+                </div>
+                <div class="publicbadgedetails span8">
+                    <p class="publicbadgename">@Html.Raw(badge.DisplayName)</p>
+                    <p class="publicbadgenamedesc">@badge.Description</p>
+                </div>
+            </div>
+            <hr/>
+        }
+</div>

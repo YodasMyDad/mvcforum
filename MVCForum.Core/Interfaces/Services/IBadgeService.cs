@@ -1,4 +1,5 @@
-﻿using MVCForum.Domain.DomainModel;
+﻿using System.Collections.Generic;
+using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
@@ -20,6 +21,7 @@ namespace MVCForum.Domain.Interfaces.Services
 
         PagedList<Badge> GetPagedGroupedBadges(int pageIndex, int pageSize);
         PagedList<Badge> SearchPagedGroupedTags(string search, int pageIndex, int pageSize);
+        IList<Badge> GetallBadges();
 
         void Delete(Badge badge);
         void DeleteTimeLastChecked(BadgeTypeTimeLastChecked badgeTypeTimeLastChecked);

@@ -1,7 +1,7 @@
 ﻿@using MVCForum.Domain.Constants
 @model MVCForum.Website.Areas.Admin.ViewModels.ListBadgesViewModel
 @{
-    ViewBag.Title = "Badges";
+    ViewBag.Title = "Badges";    
 }
 <h2>@ViewBag.Title</h2>
 @using (Html.BeginForm("Manage", "AdminBadge", FormMethod.Post, new { @class = "form-horizontal" }))

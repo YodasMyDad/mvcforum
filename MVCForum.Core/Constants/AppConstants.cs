@@ -10,6 +10,7 @@
         public const string LocalizationCacheName = "Localization";
         public const string MemberCacheName = "#member#-{0}";
         
+        // Themes
         public const string ThemeRootFolderName = "Themes";
 
         // Url names
@@ -59,11 +60,9 @@
         public const string ThemeRootFolder = "~/Themes/";
 	
         /// <summary>
-        /// This is meant to be a small number, and just helps if you get a high volume 
-        /// of hits in a very short period of time
+        /// A short cache time to help with speeding up the site
         /// </summary>
-        public const int MicroCacheLengthInSeconds = 2;
-        public const int DefaultCacheLengthInSeconds = 3600;
+        public const int DefaultCacheLengthInSeconds = 600;
 
     }
 }

@@ -53,8 +53,11 @@
                         @if (Html.Settings().EnablePoints)
                         {
                             <li><a href="@Url.Action("Leaderboard", "Home")">@Html.LanguageString("Layout.Nav.Leaderboard")</a></li>
-                        }                        
+                        }              
+                        
                         <li><a href="@Url.Action("Activity", "Home")">@Html.LanguageString("Layout.Nav.Activity")</a></li>
+                        <li><a href="@Url.Action("AllBadges", "Badge")">@Html.LanguageString("Layout.Nav.Badges")</a></li>
+
                         @if (!User.Identity.IsAuthenticated)
                         {
                             <li><a href="@Url.Action("Register", "Members")">@Html.LanguageString("Layout.Nav.Register")</a></li>                                

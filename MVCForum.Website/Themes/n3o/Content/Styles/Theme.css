@@ -232,6 +232,14 @@ div.tagsinput div { display:block; float: left; }
 .memberbadgelist { padding: 0;margin: 0;}
 .memberbadgelist li { padding:4px  0;margin: 0;list-style: none;border-bottom: 1px #eee dotted;}
 
+/*--- Badge List Public ---*/
+.badgeholder {}
+.publicbadgeline {}
+.publicbadge {}
+.publicbadgedetails {}
+.publicbadgename { margin: 0 0 0 0; font-weight: bold;}
+.publicbadgenamedesc { margin: 0 0 0 0;}
+
 /*--- Jquery UI ----*/
 /* Layout helpers
 ----------------------------------*/

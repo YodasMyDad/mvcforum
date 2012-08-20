@@ -871,6 +871,7 @@
     <None Include="Themes\Metro\Content\Fonts\mvcforumsb.eot" />
     <None Include="Themes\Metro\Content\Fonts\mvcforumsb.ttf" />
     <None Include="Themes\Metro\Content\Fonts\mvcforumsb.woff" />
+    <Content Include="Views\Badge\AllBadges.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
