@@ -54,8 +54,6 @@ namespace MVCForum.Services
             }
 
             localeStringResource.ResourceValue = newValue;
-
-            _localizationRepository.Update(localeStringResource);
         }
 
         /// <summary>
@@ -229,9 +227,6 @@ namespace MVCForum.Services
             }
 
             localeStringResourceKey.Name = StringUtils.SafePlainText(newName);
-
-            _localizationRepository.Update(localeStringResourceKey);
-
 
         }
 

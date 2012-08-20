@@ -122,6 +122,19 @@ namespace MVCForum.Website.Controllers
                                 _topicTagService.Add(StringUtils.SafePlainText(topicViewModel.Tags.ToLower()), topic);
                             }
 
+                            // Subscribe the user to the topic as they have checked the checkbox
+                            if(topicViewModel.SubscribeToTopic)
+                            {
+                                // Create the notification
+                                var topicNotification = new TopicNotification
+                                {
+                                    Topic = topic,
+                                    User = LoggedOnUser
+                                };
+                                //save
+                                _topicNotificationService.Add(topicNotification);
+                            }
+
                             try
                             {
                                 unitOfWork.Commit();
@@ -229,71 +242,6 @@ namespace MVCForum.Website.Controllers
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
-
-        //[Authorize]
-        //public ActionResult MoveTopic(Guid id)
-        //{
-
-        //    using (UnitOfWorkManager.NewUnitOfWork())
-        //    {
-        //        // Get the topic
-        //        var topic = _topicService.Get(id);
-
-        //        // Get the permissions to make sure this user is allowed to move the topic
-        //        var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
-
-        //        if (permissions[AppConstants.PermissionMoveTopics].IsTicked)
-        //        {
-        //            // We need all the categories to check permissions on
-        //            var categories = _categoryService.GetAllowedCategories(UsersRole).ToList();
-
-        //            // Has permission
-        //            return View(new MoveTopicViewModel { Categories = categories, CategoryId = topic.Category.Id, Id = topic.Id, Name = topic.Name });
-        //        }
-        //    }
-        //    return ErrorToHomePage("You don't have permission");
-        //}
-
-        //[Authorize]
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult MoveTopic(MoveTopicViewModel moveTopicViewModel)
-        //{
-        //    using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-        //    {
-        //        // Get the topic
-        //        var topic = _topicService.Get(moveTopicViewModel.Id);
-
-        //        // Get the permissions to make sure this user is allowed to move the topic
-        //        var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
-
-        //        if (permissions[AppConstants.PermissionMoveTopics].IsTicked)
-        //        {
-        //            var newCategory = _categoryService.Get(moveTopicViewModel.CategoryId);
-        //            topic.Category = newCategory;
-        //            _topicService.SaveOrUpdate(topic);
-
-        //            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-        //            {
-        //                Message = "Topic Moved",
-        //                MessageType = GenericMessages.success
-        //            };
-
-        //            try
-        //            {
-        //                unitOfWork.Commit();
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                unitOfWork.Rollback();
-        //                LoggingService.Error(ex);
-        //                throw new Exception("Error moving topic");
-        //            }
-        //            return Redirect(newCategory.NiceUrl);
-        //        }
-        //    }
-        //    return ErrorToHomePage("You don't have permission");
-        //}
 
 
         public ActionResult TopicsByTag(string tag, int? p)

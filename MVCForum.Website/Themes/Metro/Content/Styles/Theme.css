@@ -19,6 +19,9 @@ input[type=text],input[type=password],textarea,select {-moz-border-radius:0; -we
 /* ---- Paragraph Styles ---- */
 p {margin:0 0 14px 0; line-height:22px;font-size:15px;font-family:'MVCforumLight', Calibri, Arial, Helvetica, sans-serif;}
 
+/*--- Padded Row ---*/
+.paddedrow { padding-top: 10px;padding-bottom: 10px;}
+
 .no-end-margin {margin-left: 0 !Important;margin-right: 0 !Important;}
 .no-margin {margin: 0 !Important;}
 

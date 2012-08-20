@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Website.Application;
 
 namespace MVCForum.Website.ViewModels
 {
@@ -47,6 +48,9 @@ namespace MVCForum.Website.ViewModels
         public string Tags { get; set; }
 
         public IEnumerable<Category> Categories { get; set; }
+
+        [ForumMvcResourceDisplayName("Topic.Label.SubscribeToTopic")]
+        public bool SubscribeToTopic { get; set; }
     }
 
     public class ShowTopicViewModel

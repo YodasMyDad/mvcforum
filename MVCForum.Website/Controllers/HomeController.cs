@@ -24,13 +24,11 @@ namespace MVCForum.Website.Controllers
             _activityService = activityService;
         }
 
+        //[OutputCache(Duration = 10, VaryByParam = "p")]
         public ActionResult Index(int? p)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                // Example
-                //_loggingService.Warn("Testing this so see if it dies or not");
-
                 // Set the page index
                 var pageIndex = p ?? 1;
 

@@ -18,6 +18,8 @@ h5 {}
 /* ---- Paragraph Styles ---- */
 p {}
 
+/*--- Padded Row ---*/
+.paddedrow { padding-top: 10px;padding-bottom: 10px;}
 
 .sidelayoutsection { position: relative;}
 
