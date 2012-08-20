@@ -68,7 +68,7 @@ namespace MVCForum.Data.Repositories
 
             // Get the topics using an efficient
             var results = _context.Topic                            
-                            .OrderByDescending(x => x.CreateDate)
+                            .OrderByDescending(x => x.LastPost.DateCreated)
                             .Skip((pageIndex - 1) * pageSize)
                             .Take(pageSize)
                             .ToList();
