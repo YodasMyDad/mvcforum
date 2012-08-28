@@ -122,6 +122,11 @@ namespace MVCForum.Utilities
         /// <returns></returns>
         public static bool IsValidEmail(string strIn)
         {
+            if (strIn.IsNullEmpty())
+            {
+                return false;
+            }
+
             // Return true if strIn is in valid e-mail format.
             return Regex.IsMatch(strIn,
                    @"^(?("")("".+?""@)|(([0-9a-zA-Z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-zA-Z])@))" +

@@ -87,7 +87,7 @@ namespace MVCForum.Domain.Events
             var di = new DirectoryInfo(path);
             foreach (var file in di.GetFiles("*.dll"))
             {
-                if (file.Name == "EcmaScript.NET.dll")
+                if (file.Name.ToLower().StartsWith("ecmascript"))
                 {
                     continue;
                 }
