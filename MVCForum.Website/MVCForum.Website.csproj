@@ -166,6 +166,7 @@
     <Compile Include="Areas\Admin\ViewModels\SettingsViewModels.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\LogFile.txt" />
     <Content Include="Content\admin\Admin.css" />
     <Content Include="Content\admin\bootstrap.css" />
     <Content Include="Content\admin\Images\ajax-loader.gif" />
@@ -590,7 +591,6 @@
     <Content Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Themes\n3o\Views\Shared\" />
     <Folder Include="Views\Extensions\" />
   </ItemGroup>
