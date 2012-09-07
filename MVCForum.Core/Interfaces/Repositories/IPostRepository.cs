@@ -14,6 +14,7 @@ namespace MVCForum.Domain.Interfaces.Repositories
         IList<Post> GetPostsByTopic(Guid topicId);
         IList<Post> GetPostsByMember(Guid memberId);
         IList<Post> GetAllSolutionPosts();
+        PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm); 
 
         int PostCount();
 

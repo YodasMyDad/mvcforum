@@ -158,6 +158,31 @@ namespace MVCForum.Data.Repositories
             return new PagedList<Topic>(results, pageIndex, pageSize, total);
         }
 
+        public PagedList<Topic> SearchTopics(int pageIndex, int pageSize, int amountToTake, string searchTerm)
+        {
+            // Get the Posts and then get the topics from the post
+            // This is an interim solution, as its flawed due to multiple posts in one topic so the paging might
+            // be incorrect if all posts are from one topic.
+            var results = _context.Post
+                            .Where(x => x.PostContent.Contains(searchTerm) | x.Topic.Name.Contains(searchTerm))
+                            .OrderByDescending(x => x.DateCreated)
+                            .Skip((pageIndex - 1) * pageSize)
+                            .Take(pageSize)
+                            .Select(x => x.Topic)
+                            .ToList();
+
+            // We might only want to display the top 100
+            // but there might not be 100 topics
+            var total = results.Count;
+            if (total > amountToTake)
+            {
+                total = amountToTake;
+            }
+
+            // Return a paged list
+            return new PagedList<Topic>(results, pageIndex, pageSize, total);
+        }
+
         public IList<Topic> GetRssTopicsByCategory(int amountToTake, Guid categoryId)
         {
             return _context.Topic                               

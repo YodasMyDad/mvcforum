@@ -10,6 +10,7 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<Post> GetLowestVotedPost(int amountToTake);
         IList<Post> GetHighestVotedPost(int amountToTake);
         IList<Post> GetByMember(Guid memberId, int amountToTake);
+        PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm);
         Post Add(Post post);
         Post Get(Guid postId);
         void SaveOrUpdate(Post post);

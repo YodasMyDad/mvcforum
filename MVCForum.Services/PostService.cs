@@ -7,6 +7,7 @@ using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
 using System.Linq;
+using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
@@ -77,6 +78,13 @@ namespace MVCForum.Services
         public IList<Post> GetByMember(Guid memberId, int amountToTake)
         {
             return _postRepository.GetByMember(memberId, amountToTake);
+        }
+
+        public PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm)
+        {
+            var search = StringUtils.SafePlainText(searchTerm);
+
+            return _postRepository.SearchPosts(pageIndex, pageSize, amountToTake, search);
         }
 
         /// <summary>

@@ -240,6 +240,13 @@ div.tagsinput div { display:block; float: left; }
 .publicbadgename { margin: 0 0 0 0; font-weight: bold;}
 .publicbadgenamedesc { margin: 0 0 0 0;}
 
+/*---- Side Search Box ----*/
+.sidesearchbox {}
+.sidesearchbox ul { padding: 0;margin: 0;}
+.sidesearchbox ul li { display: inline;float: left;padding: 0;margin: 0;}
+.sidesearchbox ul li input[type=text]{ width: 100%;}
+.sidesearchbox form { padding: 0;margin: 0;}
+
 /*--- Jquery UI ----*/
 /* Layout helpers
 ----------------------------------*/

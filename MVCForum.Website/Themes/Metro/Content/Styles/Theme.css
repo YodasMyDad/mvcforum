@@ -41,7 +41,8 @@ border-color: #86b54b #86b54b #387038; border-color: rgba(0, 0, 0, 0.1) rgba(0, 
 .sidelayoutsection { position: relative;}
 
 .navbar { display: block;width: 100%;clear: both;background-color: #4891dc;}
-.navbar-inner {background: none; border: none;-moz-border-radius:0; -webkit-border-radius:0; -khtml-border-radius:0; border-radius:0;box-shadow: none;padding: 0; margin-left: auto;margin-right: auto;width: 940px;}
+.navbar-inner {background: none; border: none;-moz-border-radius:0; -webkit-border-radius:0; -khtml-border-radius:0; 
+               border-radius:0;box-shadow: none;padding: 0; margin-left: auto;margin-right: auto;width: 940px;background-color:#4891dc;filter: none;}
 .navbar .nav > li > a {color: #fff;text-shadow:none;}
 .navbar .nav > li > a:hover {background-color: #3c7ec3; color: #fff;text-decoration: none;}
 
@@ -279,6 +280,13 @@ ul.tagCloud li span.tagCount {float: left; padding: 0 2px; width: auto;display: 
 .publicbadgedetails {}
 .publicbadgename { margin: 0 0 0 0; font-weight: bold;}
 .publicbadgenamedesc { margin: 0 0 0 0;}
+
+/*---- Side Search Box ----*/
+.sidesearchbox {}
+.sidesearchbox ul { padding: 0;margin: 0;}
+.sidesearchbox ul li { display: inline;float: left;padding: 0;margin: 0;}
+.sidesearchbox ul li input[type=text]{ width: 100%;}
+.sidesearchbox form { padding: 0;margin: 0;}
 
 /*--- Jquery UI ----*/
 /* Layout helpers

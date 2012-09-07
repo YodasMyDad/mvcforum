@@ -157,6 +157,20 @@ namespace MVCForum.Services
         }
 
         /// <summary>
+        /// Returns a paged amount of searched topics by a string search value
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="amountToTake"></param>
+        /// <param name="searchTerm"></param>
+        /// <returns></returns>
+        public PagedList<Topic> SearchTopics(int pageIndex, int pageSize, int amountToTake, string searchTerm)
+        {
+            var search = StringUtils.SafePlainText(searchTerm);
+            return _topicRepository.SearchTopics(pageIndex, pageSize, amountToTake, search);
+        }
+
+        /// <summary>
         /// Return a topic by url slug
         /// </summary>
         /// <param name="slug"></param>

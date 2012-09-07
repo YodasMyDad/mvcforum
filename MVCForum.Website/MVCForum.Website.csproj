@@ -148,6 +148,7 @@
     <Compile Include="Controllers\ClosedController.cs" />
     <Compile Include="Controllers\EmailController.cs" />
     <Compile Include="Controllers\PrivateMessageController.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\SnippetsController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
@@ -177,6 +178,7 @@
     <Compile Include="ViewModels\PointViewModels.cs" />
     <Compile Include="ViewModels\PostViewModels.cs" />
     <Compile Include="ViewModels\PrivateMessageViewModels.cs" />
+    <Compile Include="ViewModels\SearchViewModels.cs" />
     <Compile Include="ViewModels\StatsViewModels.cs" />
     <Compile Include="ViewModels\TagViewModels.cs" />
     <Compile Include="ViewModels\TopicViewModels.cs" />
@@ -890,6 +892,8 @@
     <None Include="Themes\Metro\Content\Fonts\mvcforumsb.ttf" />
     <None Include="Themes\Metro\Content\Fonts\mvcforumsb.woff" />
     <Content Include="Views\Badge\AllBadges.cshtml" />
+    <Content Include="Views\Search\Index.cshtml" />
+    <Content Include="Views\Search\SideSearch.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
