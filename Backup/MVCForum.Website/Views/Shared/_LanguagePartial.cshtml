@@ -1,0 +1,43 @@
+﻿@model MVCForum.Website.ViewModels.LanguageListAllViewModel
+
+<script type="text/javascript">
+
+    $(function () {
+
+        $('.languageLink').click(function (e) {
+            e.preventDefault();
+            var langVal = $(this).attr('rel');
+
+            $.ajax({
+                url: '/Language/ChangeLanguage',
+                type: 'POST',
+                data: { lang: langVal },
+                success: function (data) {
+                    ShowUserMessage("Success");
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+
+        });
+
+    });
+
+    function ShowUserMessage(message) {
+        if (message != null) {
+            var jsMessage = $('#jsquickmessage');
+            var toInject = "<div class=\"alert alert-block alert-info fade in\"><a href=\"#\" data-dismiss=\"alert\" class=\"close\">&times;<\/a>" + message + "<\/div>";
+            jsMessage.html(toInject);
+            jsMessage.show();
+        }
+    }
+    
+</script>
+
+@foreach (var language in Model.Alllanguages)
+{
+    @*<li><a class="languageLink" href="#" rel="@language.Id">@Html.Raw(language.Name)</a> </li>*@
+    <li><a href=@Url.Action("ChangeLanguage", "Language",  new { @lang = @language.Id })>@language.Name</a></li>
+    
+}

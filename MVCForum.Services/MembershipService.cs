@@ -294,7 +294,7 @@ namespace MVCForum.Services
                     newUser.IsLockedOut = false;
 
                     // url generator
-                    newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, x => _membershipRepository.GetUserBySlugLike(newUser.UserName));                    
+                    newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, x => _membershipRepository.GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)));                    
 
                     try
                     {
@@ -746,7 +746,7 @@ namespace MVCForum.Services
 
                     userToImport = CreateEmptyUser();
                     userToImport.UserName = userName;
-                    userToImport.Slug = ServiceHelpers.GenerateSlug(userToImport.UserName, x => _membershipRepository.GetUserBySlugLike(userToImport.UserName));
+                    userToImport.Slug = ServiceHelpers.GenerateSlug(userToImport.UserName, x => _membershipRepository.GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)));
                     userToImport.Email = email;
                     userToImport.IsApproved = true;
                     userToImport.PasswordSalt = CreateSalt(SaltSize);

@@ -1,0 +1,88 @@
+﻿@using MVCForum.Domain.Constants
+@using MVCForum.Website.Application
+@model MVCForum.Website.Areas.Admin.ViewModels.LanguageListResourcesViewModel
+@{
+    ViewBag.Title = "List Values";
+}
+
+<h2>
+    Resources for @Model.LanguageName
+</h2>
+@using (Html.BeginForm("ManageLanguageResourceValues", "AdminLanguage", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    <div class="search large-search input-append">
+        @Html.TextBoxFor(x => @Model.Search)
+        <button class="btn">
+            Search Values</button>
+        @Html.HiddenFor(x => x.PageIndex)
+        @Html.HiddenFor(x => x.LanguageId)
+    </div>
+}
+@using (Html.BeginForm("ManageLanguageResourceKeys", "AdminLanguage", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    <div class="search large-search input-append">
+        @Html.TextBoxFor(x => @Model.Search)
+        <button class="btn">
+            Search Keys</button>
+        @Html.HiddenFor(x => x.PageIndex)
+        @Html.HiddenFor(x => x.LanguageId)
+    </div>
+}
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>
+                Edit
+            </th>
+            <th>
+                Edit in all languages
+            </th>
+            <th>
+                Resource Name
+            </th>
+            <th>
+                Resource value
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var resource in Model.LocaleResources)
+        {           
+            <tr>
+                <td class="languageresourcecell">
+                    <span class="editresource">
+                        <a href="#" class="btn btn-small">
+                            <i class="icon-pencil"></i>
+                        </a>
+                    </span>
+                    <span class="saveresource" style="display: none;">
+                        <a href="#" class="btn btn-small">
+                            <i class="icon-ok"></i>
+                        </a>
+                    </span>
+                </td>
+                <td>
+                    <a href="@Url.Action("EditAll", new { resourceKeyId = resource.ResourceKeyId })" class="btn btn-small">
+                        <i class="icon-pencil"></i>
+                    </a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => resource.LocaleResourceKey)
+                </td>
+                <td class="resourcevalue">
+                    <strong>
+                        <span class="resourcevaluedisplay">
+                            @Html.DisplayFor(modelItem => resource.ResourceValue)
+                        </span>
+                        <span class="resourcevalueedit" style="display: none;">
+                            <input data-languageid="@Model.LanguageId" data-resourcekey="@resource.LocaleResourceKey" data-oldvalue="@resource.ResourceValue"
+                                                type="text" id="@resource.ResourceKeyId" value="@resource.ResourceValue" class="resourcevalueinput"/>
+                        </span>
+                    </strong>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@Html.Pager(Convert.ToInt32(Model.PageIndex), AppConstants.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { languageId = Model.LanguageId, search = Model.Search })
+@Html.Partial("_LanguageOptions")

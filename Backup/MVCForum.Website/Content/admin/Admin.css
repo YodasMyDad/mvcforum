@@ -1,0 +1,113 @@
+﻿/* --- Set main body styles --- */
+body {font-family:Calibri, Arial, Helvetica, sans-serif;}
+
+/* ---- Lees Clearer ---- */
+.clearer {clear:both; line-height:1px; height:1px; font-size:1px;}
+
+/* ---- Generic Link Styles ---- */
+a, a:visited {}
+a:hover, a:focus {}
+
+/* ---- Generic Heading Styles ---- */
+h1 { font-weight: normal; margin: 5px 0 15px 0; padding: 0 0 10px 0;border-bottom: 1px #eee solid;}
+h2 { font-weight: normal;}
+h3 {}
+h4 {}
+h5 {}
+
+/* ---- Paragraph Styles ---- */
+p {}
+
+/*--- Forms --------*/
+
+/*labels*/
+.editor-label { }
+.editor-label label {}
+
+/*textboxes*/
+.editor-field {padding: 2px 0 8px 0;}
+.editor-field input[type=text], .editor-field input[type="password"] {font-size: 1.5em; width: 95%; line-height: 28px; height: 28px;}
+
+/*textareas*/
+textarea { min-height:100px; height:auto !important; height:100px;width: 95%;}
+
+/*dropdowns*/
+select {  }
+
+/*checkboxes/radiobuttons*/
+.editor-checkboxes {padding: 0 0 6px;}
+.editor-checkboxes span { padding: 0 15px 0 0;}
+
+/*submit buttons*/
+.submit-holder { padding: 10px 0;}
+
+/*--- List users ---*/
+.listrolecbholder { padding: 5px;}
+.listrolecbholder span { padding: 0 8px 0 0;}
+
+/*--- Logon --------*/
+#logindisplay { padding: 0 0 10px 0;}
+
+/*--- Header ---*/
+.navbar .brand { padding: 4px 0 0 0; margin: 0 15px 0 0;}
+
+/*--- Validation Errors ---*/
+.input-validation-error {border-color: #B94A48; color: #B94A48;}
+.field-validation-error span {color: #B94A48;}
+
+/*---- Settings Tab ---*/
+.nav-tabs li { padding: 0 !Important;}
+.tabs-right .tab-content { width: auto;}
+.n3ocheckboxfield { overflow: hidden; padding: 4px 0 10px 0;}
+.n3ocheckboxfield label {display: block; padding: 0 0 0 10px;float: left;}
+.n3ocheckboxfield input { float: left;}
+
+/*--- Validation ----*/
+.validation-summary-errors { color:#B94A48;}
+.field-validation-error { display: block;}
+
+/*--- Main Admin Body ---*/
+.mainadminbody {}
+.mainadminbody li { padding: 4px 0;}
+
+/*--- Category List ---*/
+.mainadmincategorylist { margin: 0;padding: 15px 0;}
+.mainadmincategorylist li { font-size: 1.4em;list-style: none;margin: 0 0 10px 0;padding: 10px 0;border-bottom: 1px dotted #eee;}
+.mainadmincategorylist {}
+.mainadmincategorylist ul.subcategorylist {font-size: 11px; padding:0 0 0 5px; margin:0 0 10px 10px; border-left: 2px #eeeeee solid;}
+.mainadmincategorylist li.subcategoryitem {padding: 3px 0;border: 0;}
+
+/*--- Blank Pop Up Holder ---*/
+.blankcontainer { width: 720px; min-height:400px; height:auto !important; height:400px;}
+
+/*--- Fancybox overide ---*/
+.fancybox-skin { background-color: #fff !Important;}
+
+/*--- Permissions Styles ---*/
+.editpermissionsspinner { margin: 0 0 0 15px;}
+.fluidheader { padding: 0 0 15px 0;}
+
+/*--- Little fix to the bootstrap append button ---*/
+.input-append .add-on, .input-append .btn {margin-left: -4px;}
+
+/*--- Language Tables ---*/
+.resourcevalue { width: 200px;}
+.resourcevalueinput { width: 190px;}
+
+/*--- Side bar nav ---*/
+.sidebar-nav { padding: 5px;}
+.sidebar-nav ul { padding: 0;}
+.sidebar-nav ul li {}
+
+.admindashboard { border: 1px #efefef solid;-moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px;padding: 4px;}
+.dashboardrow { padding: 0 0 18px 0;}
+
+/*--- Log ---*/
+.logentry { padding: 5px 0;border-bottom: 1px dotted #efefef;}
+.logentry .logentrydate {}
+.logentry .logentrythreadid {}
+.logentry .logentryerrorlevel {}
+.logentry .logentrymessage {}
+
+/*--- Admin section holders ---*/
+.adminsection { border: 1px #efefef solid;-moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px;padding: 10px;clear: both;margin: 0 0 20px 0;}

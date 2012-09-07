@@ -1,0 +1,114 @@
+﻿@using MVCForum.Domain.Constants
+@using MVCForum.Utilities
+@model MVCForum.Website.ViewModels.ViewPostViewModel
+@{
+    var postId = Model.Post.Id;
+    var loggedOnUserId = Model.User != null ? Model.User.Id : Guid.Empty;
+    var allowedToVote = (Model.User != null && loggedOnUserId != Model.Post.User.Id &&
+                         Model.User.TotalPoints > Html.Settings().PointsAllowedToVoteAmount &&
+                         !Model.Post.Votes.Select(x => x.User.Id == Model.User.Id).Any());
+}
+<div class="post row solution-True post-@postId">
+    <div class="postmemberdetails span1">
+        <div class="karmaholder">
+            
+            @if(Html.Settings().EnablePoints)
+            {
+                if (allowedToVote)
+                {
+                    <div class="postkarmathumbs-@postId">
+                        <a class="thumbuplink" rel="@postId">@Html.LanguageString("Post.VoteUp")</a>
+                    </div>
+                }
+                
+                var solvedClass = Model.Post.IsSolution ? "postissolution" : "";
+                
+                <div class="karmascore karmascore-@postId @solvedClass">@Model.Post.VoteCount</div>
+                if (allowedToVote)
+                {
+                    <div class="postkarmathumbs-@postId">
+                        <a class="thumbdownlink" rel="@postId">@Html.LanguageString("Post.VoteDown")</a>
+                    </div>
+                }
+            }
+            
+            @if (!Model.Post.IsTopicStarter && Html.Settings().EnableMarkAsSolution && Model.ParentTopic.User.Id == loggedOnUserId)
+            {
+                var showTick = !(Model.ParentTopic.Solved && !Model.Post.IsSolution);                
+
+                if (showTick)
+                {
+                    var isSolved = Model.ParentTopic.Solved ? "issolution-solved" : "issolution";
+                    var isSolvedTitle = Model.ParentTopic.Solved ? "This topic is already marked as solved" : "Mark as solution";
+                    <a class="solutionholder solution-@postId @isSolved" rel="@postId" title="@isSolvedTitle">@Html.LanguageString("Post.IsSolution")</a>
+                }
+            }
+        </div>
+    </div>
+    <div class="postbody span7">
+        <div class="postbodytop">
+            <a class="postmember-@postId" href="@Html.Raw(Model.Post.User.NiceUrl)">@Html.Raw(Model.Post.User.UserName)</a> 
+            @Html.LanguageString("Post.PostedThis") 
+            @DateUtils.GetPrettyDate(Model.Post.DateCreated.ToString())
+        </div>
+        <div id="postcontent-@postId" class="postcontent">
+            <p>@Html.Raw(AppHelpers.ConvertPostContent(Model.Post.PostContent))</p>
+            @if (Html.Settings().DisplayEditedBy && Model.Post.DateEdited > Model.Post.DateCreated)
+            {
+                <p class="postlastedited">
+                    @Html.LanguageString("Post.LastEdited")  @DateUtils.GetPrettyDate(Model.Post.DateEdited.ToString())</p>
+            }
+            @if (Html.Settings().EnableSignatures && !string.IsNullOrEmpty(Model.Post.User.Signature))
+            {
+                <div class="userpostsignature">@Html.Raw(AppHelpers.ConvertPostContent(Model.Post.User.Signature))</div>
+            }
+        </div>
+        @if (Model.Post.IsTopicStarter && Model.ParentTopic.Tags.Any())
+        {
+            <div class="tagsinput">
+                @foreach (var tag in Model.ParentTopic.Tags)
+                {
+                    <span class="tag"><span><a href="/@AppConstants.TagsUrlIdentifier/@tag.Tag">@tag.Tag</a></span></span>   
+                }
+            </div>
+        }
+    </div>
+    <div class="postkarmaouter span1">
+        <div class="postmemberdetailsinner">
+            <a id="comment-@postId"></a>
+            <div class="postmemberavatar">
+                <a href="@Html.Raw(Model.Post.User.NiceUrl)">
+                    <img src="@StringUtils.GetGravatarImage(Model.Post.User.Email, AppConstants.GravatarPostSize)" alt="@Model.Post.User.UserName">
+                </a>
+            </div>
+            <div class="postmemberposts">
+                <span>@Model.Post.User.Posts.Count</span> @Html.LanguageString("Post.Posts")
+            </div>
+            @if (Html.Settings().EnablePoints)
+            {
+                <div class="postmemberkarma">
+                    <span>@Model.Post.User.TotalPoints</span> @Html.LanguageString("Post.Points")
+                </div>
+            }
+        </div>
+        <div class="postadminui">
+            @if (Model.User != null)
+            {
+                <div class="userpostadmin">
+                    @if (Model.Post.User.Id != loggedOnUserId && loggedOnUserId != Guid.Empty && Html.Settings().EnableSpamReporting)
+                    {
+                        <a href="@Url.Action("Report", "Post", new { id = Model.Post.Id })">@Html.LanguageString("Post.Report")</a>
+                    }
+                    @if (Model.Post.User.Id == loggedOnUserId || Model.Permissions[AppConstants.PermissionEditPosts].IsTicked)
+                    {
+                        <a href="@Url.Action("EditPost", "Post", new { id = Model.Post.Id })">@Html.LanguageString("Post.Edit")</a>
+                    }
+                    @if (Model.Post.User.Id == loggedOnUserId || Model.Permissions[AppConstants.PermissionDeletePosts].IsTicked)
+                    {
+                        <a href="@Url.Action("DeletePost", "Post", new { id = Model.Post.Id })">@Html.LanguageString("Post.Delete")</a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

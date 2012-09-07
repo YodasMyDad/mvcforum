@@ -1,0 +1,11 @@
+﻿@model MVCForum.Website.ViewModels.HighEarnersPointViewModel
+
+<ul>
+    @foreach (var dict in Model.HighEarners)
+    {    
+        <li>
+            <span class="earnername"><a href="@Html.Raw(dict.Key.NiceUrl)">@Html.Raw(dict.Key.UserName)</a></span>
+            <span class="earneramount">@dict.Value</span>
+        </li>
+    }
+</ul>

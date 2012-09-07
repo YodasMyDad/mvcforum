@@ -1,0 +1,43 @@
+﻿@using MVCForum.Domain.Constants
+@model MVCForum.Website.Areas.Admin.ViewModels.ListBadgesViewModel
+@{
+    ViewBag.Title = "Badges";    
+}
+<h2>@ViewBag.Title</h2>
+@using (Html.BeginForm("Manage", "AdminBadge", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    <div class="search large-search input-append">
+        @Html.TextBoxFor(x => @Model.Search)
+        <button class="btn">
+            Search</button>
+        @Html.HiddenFor(x => x.PageIndex)
+    </div>
+}
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>
+                <strong>Badge Name </strong>
+            </th>
+            <th>
+                <strong>Badge Description </strong>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var badge in Model.Badges)
+        {
+
+            <tr>
+                <td class="badgevalue">
+                    <img src="@AppHelpers.ReturnBadgeUrl(badge.Image)" alt="Badge" title="@badge.Name" width="10px"/>
+                    @Html.Raw(badge.DisplayName)
+                </td>
+                <td class="badgevalue">
+                    @badge.Description
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@Html.Pager(Convert.ToInt32(Model.PageIndex), AppConstants.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })

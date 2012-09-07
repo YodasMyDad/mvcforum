@@ -1,0 +1,27 @@
+﻿@using MVCForum.Utilities
+@model MVCForum.Website.Areas.Admin.ViewModels.CreateLanguageViewModel
+           
+@{
+    ViewBag.Title = "Create Language";
+}
+
+@using (Html.BeginForm("CreateLanguage", "AdminLanguage", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.ValidationSummary(true)
+    @Html.AntiForgeryToken()
+    <fieldset>
+        <legend>Select a New Language</legend>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Name)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(model => model.Name, new SelectList(LanguageUtils.AllCultures, "Name", "EnglishName"), string.Empty)
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+        <div class="submit-holder">
+            <input type="submit" class="btn btn-large btn-success" value="Create" />
+        </div>
+    </fieldset>
+}
+
+

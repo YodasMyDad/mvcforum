@@ -1,0 +1,112 @@
+﻿@using MVCForum.Domain.Constants
+@{
+    var theme = Html.Settings().Theme;
+    var themePath = string.Concat(AppConstants.ThemeRootFolder, theme);
+}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>@ViewBag.Title</title>
+        @RenderSection("Meta", false)
+        @ViewBag.Canonical
+        <style type="text/css">
+            @@font-face { font-family: 'MVCforumLight'; src: url('@Url.Content(themePath + "/content/fonts/mvcforumli.eot")'); src: url('@Url.Content(themePath + "/content/fonts/mvcforumli.eot")?#iefix') format('embedded-opentype'), url('@Url.Content(themePath + "/content/fonts/mvcforumli.woff")') format('woff'), url('@Url.Content(themePath + "/content/fonts/mvcforumli.ttf")') format('truetype'),url('@Url.Content(themePath + "/content/fonts/mvcforumli.svg")#MVCforumLight') format('svg'); font-weight: normal; font-style: normal; }
+            @@font-face { font-family: 'MVCforumSemiBold'; src: url('@Url.Content(themePath + "/content/fonts/mvcforumsb.eot")'); src: url('@Url.Content(themePath + "/content/fonts/mvcforumsb.eot")?#iefix') format('embedded-opentype'), url('@Url.Content(themePath + "/content/fonts/mvcforumsb.woff")') format('woff'), url('@Url.Content(themePath + "/content/fonts/mvcforumsb.ttf")') format('truetype'),url('@Url.Content(themePath + "/content/fonts/mvcforumsb.svg")#MVCforumSemiBold') format('svg'); font-weight: normal; font-style: normal; }
+        </style>
+        @(
+            Bundle.Css()
+                .Add(themePath + "/Content/Styles/bootstrap.css")
+                .Add(themePath + "/Content/Styles/theme.css")
+                .MvcRender("~/content/cache/combined_" + theme + "_#.css")
+           )
+        <!--[if lt IE 9]>
+            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <link rel="shortcut icon" href="@Url.Content(themePath + "/content/images/favicon.ico")">
+        <link rel="apple-touch-icon-precomposed" href="@Url.Content(themePath + "/content/images/apple-touch-icon-57-precomposed.png")">
+        @(Bundle.JavaScript()
+                    .Add("~/Scripts/jquery.1.7.2.min.js")
+                    .Add("~/Scripts/jquery.unobtrusive-ajax.js")
+                    .Add("~/Scripts/bootstrap-tooltip.js")
+                    .Add("~/Scripts/bootstrap-popover.js")
+                    .Add("~/Scripts/bootstrap-button.js")
+                    .Add("~/Scripts/bootstrap-alert.js")
+                    .Add("~/Scripts/bootstrap-transition.js")
+                    .Add("~/Scripts/general.js")
+                    .Add(themePath + "/Content/Scripts/general.js")
+                    .MvcRender("~/scripts/cache/combined_" + theme + "_#.js")
+           )
+        @RenderSection("Header", false)
+    </head>
+        
+    
+
+    <body>
+    <div class="navbar">
+        <div class="navbar-inner clearfix">
+
+                <a class="brand" href="@Url.Action("Index", "Home")"></a>
+                <div class="nav-collapse">
+                    <ul class="nav">
+                        <li><a href="@Url.Action("Index", "Home")">@Html.LanguageString("Layout.Nav.Home")</a></li>
+                        @if(Html.Settings().EnablePoints)
+                        {
+                            <li><a href="@Url.Action("Leaderboard", "Home")">@Html.LanguageString("Layout.Nav.Leaderboard")</a></li>
+                        }                        
+                        
+                        <li><a href="@Url.Action("Activity", "Home")">@Html.LanguageString("Layout.Nav.Activity")</a></li>
+                        <li><a href="@Url.Action("AllBadges", "Badge")">@Html.LanguageString("Layout.Nav.Badges")</a></li>
+
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <li><a href="@Url.Action("Register", "Members")">@Html.LanguageString("Layout.Nav.Register")</a></li>                                
+                            <li><a href="@Url.Action("LogOn", "Members")">@Html.LanguageString("Layout.Nav.Logon")</a></li>
+                        }
+                        @if (User.IsInRole(AppConstants.AdminRoleName))
+                        {
+                            <li><a href="@Url.Action("Index", "Admin", new { area = "Admin" }, null)">@Html.LanguageString("Layout.Nav.Admin")</a></li>
+                        }
+                            @*
+                            TODO: Need to create dropdown list to swap language
+                            Lists out languages
+                            @Html.Action("Index","Language")
+                            *@
+                    </ul>
+                </div>
+     
+        </div>
+    </div>
+    <div class="container">
+        @Html.Partial("_GenericMessage")
+        <section id="main">
+            <div class="row mainbody">
+                <div class="span9">
+                    @RenderBody()
+                </div>
+                <div class="span3 sidelayoutsection">
+                    <div class="main-side-box">
+                        @if (User.Identity.IsAuthenticated)
+                        {                        
+                            <p>
+                                <a href="@Url.Action("Create", "Topic")" class="btn btn-large btn-success new-discussion-button">@Html.LanguageString("Layout.CreateButton")</a></p>
+                            @Html.Action("SideAdminPanel", "Members")
+                        }
+                        @RenderSection("side", false)
+                    </div>
+                </div>
+            </div>
+        </section>
+        @RenderSection("Footer", false)
+        <hr>
+        <footer>
+            <!-- ########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ###########################
+                    If you would like to remove the powered by notice, then please vist http://www.mvcforum.com/license -->
+            <p>
+                &copy; @DateTime.Now.Year - @Html.LanguageString("Layout.PoweredBy") <a href="http://www.mvcforum.com">MVC
+                    Forum</a></p>
+            <!--########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ########################### -->
+        </footer>
+    </div>
+</body>
+</html>

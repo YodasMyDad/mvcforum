@@ -53,7 +53,7 @@ namespace MVCForum.Services
             topic.CreateDate = DateTime.Now;
 
             // url slug generator
-            topic.Slug = ServiceHelpers.GenerateSlug(topic.Name, x => _topicRepository.GetTopicBySlugLike(topic.Name));
+            topic.Slug = ServiceHelpers.GenerateSlug(topic.Name, x => _topicRepository.GetTopicBySlugLike(ServiceHelpers.CreateUrl(topic.Name)));
             
             return _topicRepository.Add(topic);
         }
@@ -195,18 +195,24 @@ namespace MVCForum.Services
             topic.Tags.Clear();
 
             // Delete all posts
-            var postsToDelete = new List<Post>();
-            postsToDelete.AddRange(topic.Posts);           
-            foreach (var post in postsToDelete)
+            if (topic.Posts != null)
             {
-                _postRepository.Delete(post);
+                var postsToDelete = new List<Post>();
+                postsToDelete.AddRange(topic.Posts);
+                foreach (var post in postsToDelete)
+                {
+                    _postRepository.Delete(post);
+                } 
             }
 
-            var notificationsToDelete = new List<TopicNotification>();
-            notificationsToDelete.AddRange(topic.TopicNotifications);
-            foreach (var topicNotification in notificationsToDelete)
+            if (topic.TopicNotifications != null)
             {
-                _topicNotificationService.Delete(topicNotification);
+                var notificationsToDelete = new List<TopicNotification>();
+                notificationsToDelete.AddRange(topic.TopicNotifications);
+                foreach (var topicNotification in notificationsToDelete)
+                {
+                    _topicNotificationService.Delete(topicNotification);
+                } 
             }
 
             _topicRepository.Delete(topic);

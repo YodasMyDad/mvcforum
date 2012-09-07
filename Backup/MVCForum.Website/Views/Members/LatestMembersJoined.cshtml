@@ -1,0 +1,11 @@
+﻿@model MVCForum.Website.ViewModels.ListLatestMembersViewModel
+
+@if(Model.Users.Any())
+{
+    <ul class="latestmembersjoined">
+    @foreach (var user in Model.Users)
+    {
+        <li><a href="@Html.Raw(user.Value)">@Html.Raw(user.Key)</a></li>
+    }
+    </ul>
+}

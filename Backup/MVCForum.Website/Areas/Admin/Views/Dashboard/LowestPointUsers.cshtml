@@ -1,0 +1,15 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.LowestPointUsersViewModels
+
+@if(Model.Users.Any())
+{
+ <ul>
+ @foreach (var user in Model.Users)
+ {
+     <li><a href="@user.Key.NiceUrl">@user.Key.UserName (<strong>@user.Value</strong>)</a></li>
+ }
+ </ul>
+}
+else
+{
+    <p>No data</p>
+}

@@ -1,0 +1,50 @@
+﻿@using MVCForum.Domain.Constants
+@model MVCForum.Website.Areas.Admin.ViewModels.RoleListViewModel
+
+@{
+    ViewBag.Title = "All Roles";
+}
+
+<h2>Roles</h2>
+<p>You must remove all users from a role before you can delete it</p>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Edit</th>
+            <th>Role</th>
+            <th>Users In Role</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var role in Model.MembershipRoles)
+        {        
+            var usersCount = role.Users.Count;
+            var hideRole = (role.RoleName == AppConstants.AdminRoleName | role.RoleName == AppConstants.GuestRoleName);
+
+            if (!hideRole)
+            {
+                <tr>
+                    <td>
+                        <a href="@Url.Action("EditRole", new { role.Id })" class="btn btn-small">
+                            <i class="icon-pencil"></i>
+                        </a>
+                    </td>
+                    <td>@role.RoleName</td>
+                    <td>@usersCount</td>
+                    <td>
+                        <a href="@Url.Action("DeleteRole", new { role.Id })" class="btn btn-small">
+                            <i class="icon-remove"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+<div class="btn-group">
+    @Html.ActionLink("Back", "Index", "Admin", new { Area = "Admin" }, new { @class = "btn btn-success" })
+    @Html.ActionLink("Create a new Role", "AddRole", new { }, new { @class = "btn btn-success" })
+</div>

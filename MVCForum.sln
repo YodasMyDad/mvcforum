@@ -1,18 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Website", "MVCForum.Website\MVCForum.Website.csproj", "{C149AEDE-0F7A-46A5-B9D4-95ED7B775DE2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Data", "MVCForum.Data\MVCForum.Data.csproj", "{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Domain", "MVCForum.Core\MVCForum.Domain.csproj", "{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Services", "MVCForum.Services\MVCForum.Services.csproj", "{14A002FB-9CCC-452A-A780-B322908CD45A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.IOC", "MVCForum.IOC\MVCForum.IOC.csproj", "{B3A94898-2420-4FC0-8774-147FDE3B13B2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Tests", "MVCForum.Tests\MVCForum.Tests.csproj", "{91D11D96-A3D9-4BEE-8792-95C25F6D038D}"
-EndProject
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Externals", "Externals", "{7859E236-ED49-482B-B325-C5EEFE650C14}"
 	ProjectSection(SolutionItems) = preProject
 		Externals\AntiXSSLibrary.dll = Externals\AntiXSSLibrary.dll
@@ -24,19 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Externals", "Externals", "{
 		Externals\NHibernate.Caches.SysCache.dll = Externals\NHibernate.Caches.SysCache.dll
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badges", "Badges\Badges.csproj", "{72CB63CC-41B2-495A-86F7-F233A8A6C0B0}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{AA1C25B1-47B4-4AB2-822E-23C040D0A784}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Badges", "Badges", "{30C79D19-A83A-4B54-A0D7-1768F44EE489}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Utilities", "MVCForum.Utilities\MVCForum.Utilities.csproj", "{D0CE5E27-041D-4F1E-8C8C-5F4888C72155}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Events", "Events\Events.csproj", "{EC397BF2-316F-4E86-84AA-EA9E84CE37B2}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Events", "Events", "{E9B80120-C1CF-40D7-B6C6-4D72FC540934}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.API", "MVCForum.API\MVCForum.API.csproj", "{061F9C74-01C1-49B6-995E-0D552BD6B1D1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{4425AF88-0237-48A1-AEA0-F3C4AE397C36}"
 	ProjectSection(SolutionItems) = preProject
@@ -57,6 +37,26 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EFProvider Wrappers", "EFPr
 		EFProvider Wrappers\ReadMe.txt = EFProvider Wrappers\ReadMe.txt
 		EFProvider Wrappers\SigningKey.snk = EFProvider Wrappers\SigningKey.snk
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Website", "MVCForum.Website\MVCForum.Website.csproj", "{C149AEDE-0F7A-46A5-B9D4-95ED7B775DE2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Data", "MVCForum.Data\MVCForum.Data.csproj", "{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Domain", "MVCForum.Core\MVCForum.Domain.csproj", "{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Services", "MVCForum.Services\MVCForum.Services.csproj", "{14A002FB-9CCC-452A-A780-B322908CD45A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.IOC", "MVCForum.IOC\MVCForum.IOC.csproj", "{B3A94898-2420-4FC0-8774-147FDE3B13B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Tests", "MVCForum.Tests\MVCForum.Tests.csproj", "{91D11D96-A3D9-4BEE-8792-95C25F6D038D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badges", "Badges\Badges.csproj", "{72CB63CC-41B2-495A-86F7-F233A8A6C0B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Utilities", "MVCForum.Utilities\MVCForum.Utilities.csproj", "{D0CE5E27-041D-4F1E-8C8C-5F4888C72155}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Events", "Events\Events.csproj", "{EC397BF2-316F-4E86-84AA-EA9E84CE37B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.API", "MVCForum.API\MVCForum.API.csproj", "{061F9C74-01C1-49B6-995E-0D552BD6B1D1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCachingProvider", "EFProvider Wrappers\EFCachingProvider\EFCachingProvider.csproj", "{E9B10F80-134F-4DC1-BA6F-7728EF2CAE58}"
 EndProject

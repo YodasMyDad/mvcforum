@@ -1,0 +1,91 @@
+﻿@using MVCForum.Website.Application
+<!DOCTYPE html>
+<html lang="en">
+    <head>        
+        <meta charset="utf-8">
+        <title>@ViewBag.Title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="n3o Digital">
+
+        @(
+            Bundle.Css()
+                .Add("~/Content/admin/bootstrap.css")
+                .Add("~/Content/admin/Admin.css")
+                .Add("~/Scripts/fancybox/jquery.fancybox.css")
+                
+                .MvcRender("~/content/cache/combinedadmin_#.css")
+        )
+
+        <style type="text/css">
+            body {
+                padding-top: 60px;
+                padding-bottom: 40px;
+            }
+        </style>
+        <!--<link href="/css/bootstrap-responsive.css" rel="stylesheet">-->
+
+        <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+
+        <link rel="shortcut icon" href="@Url.Content("~/ico/admin/favicon.ico")">
+        <link rel="apple-touch-icon-precomposed" href="@Url.Content("~/ico/admin/apple-touch-icon-57-precomposed.png")">
+
+        @(Bundle.JavaScript()
+        .Add("~/Scripts/jquery.1.7.2.min.js")
+        .Add("~/Scripts/jquery.unobtrusive-ajax.js")
+        .Add("~/Scripts/jquery-ui.1.8.min.js")
+        .Add("~/Scripts/admin/bootstrap-tooltip.js")
+        .Add("~/Scripts/admin/bootstrap-popover.js")
+        .Add("~/Scripts/admin/bootstrap-button.js")
+        .Add("~/Scripts/admin/bootstrap-alert.js")
+        .Add("~/Scripts/admin/bootstrap-transition.js")
+        .Add("~/Scripts/admin/bootstrap-tab.js")
+        .Add("~/Scripts/fancybox/jquery.fancybox.js")
+        .Add("~/Scripts/admin/admin.js")
+        
+        .MvcRender("~/scripts/cache/combinedadmin_#.js")
+        )
+
+        @RenderSection("AdminHeader", false)
+    </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+            <a class="brand" href="@Url.Action("Index", "Admin", new { area = "Admin" }, null)">
+                <img src="@Url.Content("~/Content/admin/Images/admin-n3o-logo.png")" alt="Admin Logo" />
+            </a>
+          <div class="nav-collapse">
+              <ul class="nav">
+                  <li><a href="/">Main Site</a></li> 
+                  <li>@Html.AdminActionLink("Admin Home", "Index", "Admin")</li>                           
+              </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+        
+        @Html.Partial("_GenericMessage")        
+
+        <div class="mainadminbody fullwidthadminbody">                
+            @RenderBody()
+        </div>
+
+      <hr>
+
+      <footer>
+          <p>&copy; <a href="http://www.webdesigncompany.co.uk">n3o Digital</a> @DateTime.Now.Year</p>
+          @RenderSection("AdminFooter", false)
+      </footer>
+
+    </div> 
+
+  </body>
+</html>

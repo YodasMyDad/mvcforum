@@ -1,0 +1,1 @@
+﻿All cached JS is stored in here, you can delete them when testing - They will just be recreated by Squishit on next run

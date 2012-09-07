@@ -1,0 +1,23 @@
+﻿@model MVCForum.Website.ViewModels.CreateAjaxPostViewModel
+
+<div id="createpostholder">    
+    @using(Ajax.BeginForm("CreatePost", "Post", null, new AjaxOptions
+                                                                        {
+                                                                            HttpMethod = "POST",
+                                                                            LoadingElementId = "createpostwait",
+                                                                            OnSuccess = "AjaxPostSuccess()",
+                                                                            OnFailure = "AjaxPostError('Error creating post')",
+                                                                            UpdateTargetId = "newpostmarker",
+                                                                            OnBegin = "AjaxPostBegin()"
+                                                                        }, new { @id = "postcodeform" }))
+    {
+        <div class="editorholder">
+            @Html.EditorFor(x => x.PostContent, new { @class = "createpost required" })
+            @Html.ValidationMessageFor(x => x.PostContent)
+        </div>
+        <input type="submit" id="createpostbutton" class="btn btn-success btn-large" value="Create"/> 
+        <span style="display: none;" id="createpostwait" class="ajaxspinner" title="@Html.LanguageString("Post.PleaseWait")">@Html.LanguageString("Post.PleaseWait")</span>
+        @Html.HiddenFor(x => x.Topic)
+    }    
+
+</div>

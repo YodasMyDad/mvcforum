@@ -1,0 +1,39 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.RoleViewModel
+
+@{
+    ViewBag.Title = "Edit Role: " + Model.RoleName;    
+}
+
+@section AdminHeader
+{
+        @(
+        Bundle.JavaScript()
+            .Add("~/Scripts/jquery.validate.min.js")
+            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
+            
+            .MvcRender("/scripts/cache/validate-combined_#.js")
+    )  
+}
+
+
+@using (Html.BeginForm("EditRole", "Account", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Edit Role</legend>
+
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.RoleName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.RoleName)
+            @Html.ValidationMessageFor(model => model.RoleName)
+        </div>
+
+            <div class="submit-holder">
+                <input type="submit" class="btn btn-large btn-success" value="Update" />
+            </div>
+    </fieldset>
+}

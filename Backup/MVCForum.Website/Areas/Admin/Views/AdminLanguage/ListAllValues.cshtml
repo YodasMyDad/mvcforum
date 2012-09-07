@@ -1,0 +1,55 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.AllResourceValuesViewModel
+           
+@{
+    ViewBag.Title = "List All Values";
+}
+
+@section AdminHeader
+{
+        @(
+        Bundle.JavaScript()
+            .Add("~/Scripts/jquery.validate.min.js")
+            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
+            
+            .MvcRender("/scripts/cache/validate-combined_#.js")
+    )  
+}
+
+<h2>
+    All resource values for @Model.ResourceKey.Name
+</h2>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>
+                Edit
+            </th>
+            <th>
+                Language
+            </th>
+            <th>
+                Value
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var resource in Model.ResourceValues.Keys)
+        {
+            var resourceValue = Model.ResourceValues[resource];
+            <tr>
+                <td>
+                    <a href="@Url.Action("Edit", new { resourceId = resource.Id })" class="btn btn-small">
+                        <i class="icon-pencil"></i></a>
+                </td>
+                <td>
+                    <strong>@Html.DisplayFor(modelItem => resource.Name)</strong>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => resourceValue.ResourceValue)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@Html.Partial("_LanguageOptions")

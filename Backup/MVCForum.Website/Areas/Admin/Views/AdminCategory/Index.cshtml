@@ -1,0 +1,30 @@
+﻿@{
+    ViewBag.Title = "Manage Categories";
+}
+
+@section AdminHeader
+{
+    <script type="text/javascript">
+        // Can also use beforeClose ?
+        $('.catfancybox').fancybox({
+            type: 'iframe',
+            padding: 15,
+            afterClose: function () {
+                parent.location.reload(true);
+            }
+        });
+    </script>
+}
+
+<div class="row">
+    
+    <div class="span6">
+        <h1>Manage Categories</h1>
+        @Html.Action("GetMainCategories")
+    </div>
+    <div class="span4">
+        @Html.Action("CreateCategory")
+    </div>
+
+</div>
+

@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+    <h2>Import / Export</h2>
+    <p>This section provides several bulk features to help administrate and build your forum</p>
+
+    <div class="adminsection">
+        
+        <h3>Languages</h3>
+        <p>Export languages edit and re-import, or import a new languages</p>
+        <a href="@Url.Action("Languages", "ImportExport", new { area = "Admin" }, null)" class="btn btn-large">Go to Languages</a>
+
+    </div>
+
+
+    <div class="adminsection">
+        
+        <h3>Members</h3>
+        <p>Export all members, or import members from another forum</p>
+        <a href="@Url.Action("Members", "ImportExport", new { area = "Admin" }, null)" class="btn btn-large">Go to Members</a>
+
+    </div>
+
+

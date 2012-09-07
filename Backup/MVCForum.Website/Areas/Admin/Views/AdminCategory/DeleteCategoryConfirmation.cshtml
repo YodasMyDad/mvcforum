@@ -1,0 +1,48 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.DeleteCategoryViewModel
+
+@{
+    ViewBag.Title = "Delete Category";
+
+    if (Model.SubCategories.Any())
+    {
+        <h2>Unable To Delete</h2>
+        <p>This category has sub categories, please re-assign them to new parent categories first</p>
+        
+        <h4>Sub Categories</h4>
+        <ul>
+            @foreach (var subCat in Model.SubCategories)
+            {
+                <li><strong>@subCat.Name</strong></li>
+            }
+        </ul>
+        
+        <a href="@Url.Action("Index")" class="btn btn-large btn-success">Back</a>
+    }
+    else if (Model.Category.Topics.Any())
+    {
+        <h2>Unable To Delete</h2>
+        <p>This category has discussions associated with it, please either delete or move the topics to a different category</p>
+        
+        <h4>Topics</h4>
+        <ul>
+            @foreach (var topic in Model.Category.Topics)
+            {
+                <li><a href="@topic.NiceUrl">@topic.Name</a></li>
+            }
+        </ul>
+        
+        <a href="@Url.Action("Index")" class="btn btn-large btn-success">Back</a>
+    }
+    else
+    {
+        using (Html.BeginForm("DeleteCategory", "AdminCategory", FormMethod.Post, new { @class = "form-horizontal" }))
+        {
+            <h2>Delete Category?</h2>        
+            <p>Are you sure you want to delete this Category</p>
+            @Html.HiddenFor(x => x.Id)
+            <div class="submit-holder">
+                <input type="submit" class="btn btn-large btn-success" value="Yes" /> 
+            </div>
+        }
+    }
+}     

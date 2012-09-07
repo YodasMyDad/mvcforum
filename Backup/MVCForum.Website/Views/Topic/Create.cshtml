@@ -1,0 +1,89 @@
+﻿@using MVCForum.Domain.Constants
+@model MVCForum.Website.ViewModels.CreateTopicViewModel
+
+@{
+    ViewBag.Title = Html.LanguageString("Topic.CreateDiscussion");
+    Model.Category = TempData[AppConstants.DefaultCategoryViewBagName] != null ? 
+                    Guid.Parse(TempData[AppConstants.DefaultCategoryViewBagName].ToString()) : Model.Categories.FirstOrDefault().Id;
+}
+
+@section Header
+{
+    @(
+        Bundle.JavaScript()
+            .Add("~/Scripts/jquery.validate.min.js")
+            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")            
+            .Add("~/Scripts/jquery.tagsinput.min.js")
+            .Add("~/Scripts/tags.js")
+            
+            .MvcRender("/scripts/cache/topic-combined_#.js")
+    )
+}
+
+@section side
+{
+    @Html.Action("ListCategorySideMenu", "Category")
+    @Html.Action("PopularTags", "Tag")
+}
+
+@using (Html.BeginForm("Create", "Topic", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.ValidationSummary(true)
+    @Html.AntiForgeryToken()
+    <fieldset>
+        <legend>@ViewBag.Title</legend>
+        
+        <div class="row paddedrow">
+            <div class="span5">
+                
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.Name)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.Name)
+                    @Html.ValidationMessageFor(model => model.Name)
+                </div>
+
+            </div>
+            <div class="span4">
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.Category)
+                </div>
+                <div class="editor-field">
+                    @Html.DropDownListFor(model => model.Category, new SelectList(Model.Categories, "id", "Name"))
+                    @Html.ValidationMessageFor(model => model.Category)
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span9">
+                <div class="editor-field editorholder">
+                    @Html.EditorFor(model => model.Content)
+                    @Html.ValidationMessageFor(model => model.Content)
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="span9">
+                <div class="editor-field">
+                    @Html.TextAreaFor(model => model.Tags, new { @class = "tagstextarea tags", title = Html.LanguageString("Topic.TagThisTopic") })
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="span9">
+                <div class="editor-field n3ocheckboxfield">
+                    @Html.CheckBoxFor(x => x.SubscribeToTopic)
+                    @Html.LabelFor(model => model.SubscribeToTopic)
+                </div>
+            </div>
+        </div>
+
+        <div class="submit-holder">
+            <input type="submit" class="btn btn-large btn-success" value="@Html.LanguageString("Topic.CreateDiscussion")" />
+        </div>
+    </fieldset>
+}
+

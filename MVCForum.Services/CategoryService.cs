@@ -90,10 +90,10 @@ namespace MVCForum.Services
         {
             // Set the create date
             category.DateCreated = DateTime.Now;
-
             // url slug generator
-            category.Slug = ServiceHelpers.GenerateSlug(category.Name, x => _categoryRepository.GetBySlugLike(category.Name));            
+            category.Slug = ServiceHelpers.GenerateSlug(category.Name, x => _categoryRepository.GetBySlugLike(ServiceHelpers.CreateUrl(category.Name)));            
 
+            // Add the category
             _categoryRepository.Add(category);
         }
 
@@ -103,7 +103,7 @@ namespace MVCForum.Services
         /// <param name="category"></param>
         public void UpdateSlugFromName(Category category)
         {
-            category.Slug = ServiceHelpers.GenerateSlug(category.Name, x => _categoryRepository.GetBySlugLike(category.Name)); 
+            category.Slug = ServiceHelpers.GenerateSlug(category.Name, x => _categoryRepository.GetBySlugLike(category.Slug)); 
         }
 
         /// <summary>

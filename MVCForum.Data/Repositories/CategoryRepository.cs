@@ -78,8 +78,8 @@ namespace MVCForum.Data.Repositories
         public IList<Category> GetBySlugLike(string slug)
         {
             return _context.Category
-                .Where(x => x.Slug.ToUpper().Contains(slug.ToUpper()))
-                .ToList();
+                    .Where(x => x.Slug.Contains(slug))
+                    .ToList();
         }
 
         public void Delete(Category category)
