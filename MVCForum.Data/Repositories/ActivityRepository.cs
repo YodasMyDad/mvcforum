@@ -51,6 +51,7 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public PagedList<Activity> GetPagedGroupedActivities(int pageIndex, int pageSize)
         {
+            var totalCount = _context.Activity.Count();
             var results = _context.Activity
                   .OrderByDescending(x => x.Timestamp)
                   .Skip((pageIndex - 1) * pageSize)
@@ -58,11 +59,12 @@ namespace MVCForum.Data.Repositories
                   .ToList();
 
             // Return a paged list
-            return new PagedList<Activity>(results, pageIndex, pageSize, results.Count);
+            return new PagedList<Activity>(results, pageIndex, pageSize, totalCount);
         }
 
         public PagedList<Activity> SearchPagedGroupedActivities(string search, int pageIndex, int pageSize)
         {
+            var totalCount = _context.Activity.Count(x => x.Type.ToUpper().Contains(search.ToUpper()));
             // Get the topics using an efficient
             var results = _context.Activity
                   .Where(x => x.Type.ToUpper().Contains(search.ToUpper()))
@@ -73,7 +75,7 @@ namespace MVCForum.Data.Repositories
 
 
             // Return a paged list
-            return new PagedList<Activity>(results, pageIndex, pageSize, results.Count);
+            return new PagedList<Activity>(results, pageIndex, pageSize, totalCount);
         }
 
         public Activity Get(Guid id)

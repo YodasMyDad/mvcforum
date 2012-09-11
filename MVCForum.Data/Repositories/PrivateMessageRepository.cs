@@ -26,6 +26,8 @@ namespace MVCForum.Data.Repositories
 
         public IPagedList<PrivateMessage> GetPagedSentMessagesByUser(int pageIndex, int pageSize, MembershipUser user)
         {
+            var totalCount = _context.PrivateMessage.Count(x => x.UserFrom.Id == user.Id);
+
             // Get the topics using an efficient
             var results = _context.PrivateMessage
                                 .Where(x => x.UserFrom.Id == user.Id)
@@ -35,11 +37,13 @@ namespace MVCForum.Data.Repositories
                                 .ToList();
 
             // Return a paged list
-            return new PagedList<PrivateMessage>(results, pageIndex, pageSize, results.Count);
+            return new PagedList<PrivateMessage>(results, pageIndex, pageSize, totalCount);
         }
 
         public IPagedList<PrivateMessage> GetPagedReceivedMessagesByUser(int pageIndex, int pageSize, MembershipUser user)
         {
+            var totalCount = _context.PrivateMessage.Count(x => x.UserTo.Id == user.Id);
+
             // Get the topics using an efficient
             var results = _context.PrivateMessage
                                 .Where(x => x.UserTo.Id == user.Id)
@@ -50,7 +54,7 @@ namespace MVCForum.Data.Repositories
 
 
             // Return a paged list
-            return new PagedList<PrivateMessage>(results, pageIndex, pageSize, results.Count);
+            return new PagedList<PrivateMessage>(results, pageIndex, pageSize, totalCount);
         }
 
         public PrivateMessage GetLastSentPrivateMessage(Guid Id)

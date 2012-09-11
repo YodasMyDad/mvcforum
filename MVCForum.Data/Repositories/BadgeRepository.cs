@@ -79,6 +79,7 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public PagedList<Badge> GetPagedGroupedBadges(int pageIndex, int pageSize)
         {
+            var totalCount = _context.Badge.Count();
             // Get the topics using an efficient
             var results = _context.Badge
                                 .OrderByDescending(x => x.Name)
@@ -88,11 +89,12 @@ namespace MVCForum.Data.Repositories
 
 
             // Return a paged list
-            return new PagedList<Badge>(results, pageIndex, pageSize, results.Count);
+            return new PagedList<Badge>(results, pageIndex, pageSize, totalCount);
         }
 
         public PagedList<Badge> SearchPagedGroupedBadges(string search, int pageIndex, int pageSize)
         {
+            var totalCount = _context.Badge.Count(x => x.Name.ToUpper().Contains(search.ToUpper()));
             // Get the topics using an efficient
             var results = _context.Badge
                                 .Where(x => x.Name.ToUpper().Contains(search.ToUpper()))
@@ -103,7 +105,7 @@ namespace MVCForum.Data.Repositories
 
 
             // Return a paged list
-            return new PagedList<Badge>(results, pageIndex, pageSize, results.Count);
+            return new PagedList<Badge>(results, pageIndex, pageSize, totalCount);
         }
 
         public Badge Get(Guid id)

@@ -2,7 +2,6 @@
 using System.Data;
 using System.Linq;
 using MVCForum.Data.Context;
-using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
@@ -18,7 +17,6 @@ namespace MVCForum.Data.Repositories
         /// Constructor
         /// </summary>
         /// <param name="context"> </param>
-        /// <param name="cacheHelper"> </param>
         public SettingsRepository(IMVCForumContext context)
         {
             _context = context as MVCForumContext;

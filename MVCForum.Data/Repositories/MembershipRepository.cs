@@ -102,17 +102,19 @@ namespace MVCForum.Data.Repositories
 
         public PagedList<MembershipUser> GetAll(int pageIndex, int pageSize)
         {
+            var totalCount = _context.MembershipUser.Count();
             var results = _context.MembershipUser
                                 .OrderBy(x => x.UserName)
                                 .Skip((pageIndex - 1) * pageSize)
                                 .Take(pageSize)
                                 .ToList();
 
-            return new PagedList<MembershipUser>(results, pageIndex, pageSize, results.Count);
+            return new PagedList<MembershipUser>(results, pageIndex, pageSize, totalCount);
         }
 
         public PagedList<MembershipUser> SearchMembers(string search, int pageIndex, int pageSize)
         {
+            var totalCount = _context.MembershipUser.Count(x => x.UserName.ToUpper().Contains(search.ToUpper()));
             var results = _context.MembershipUser
                 .Where(x => x.UserName.ToUpper().Contains(search.ToUpper()))
                 .OrderBy(x => x.UserName)
@@ -120,7 +122,7 @@ namespace MVCForum.Data.Repositories
                 .Take(pageSize)
                 .ToList();
 
-            return new PagedList<MembershipUser>(results, pageIndex, pageSize, results.Count);
+            return new PagedList<MembershipUser>(results, pageIndex, pageSize, totalCount);
         }
 
         /// <summary>

@@ -44,6 +44,11 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public PagedList<LocaleStringResource> GetAllValues(Guid languageId, int pageIndex, int pageSize)
         {
+            var totalCount = _context.LocaleStringResource
+                .Join(_context.LocaleResourceKey, strRes => strRes.LocaleResourceKey.Id, resKey => resKey.Id,
+                      (strRes, resKey) => new {LocaleStringResource = strRes, LocaleResourceKey = resKey})
+                .Count(joinResult => joinResult.LocaleStringResource.Language.Id == languageId);
+
             var results = _context.LocaleStringResource
                 .Join(_context.LocaleResourceKey, // The sequence to join to the first sequence.
                       strRes => strRes.LocaleResourceKey.Id, // A function to extract the join key from each element of the first sequence.
@@ -56,7 +61,7 @@ namespace MVCForum.Data.Repositories
                 .Take(pageSize)
                 .Select(item => item.LocaleStringResource).ToList();
 
-            return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, results.Count);
+            return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, totalCount);
         }
 
         /// <summary>
@@ -77,6 +82,8 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public PagedList<LocaleResourceKey> GetAllResourceKeys(int pageIndex, int pageSize)
         {
+            var totalCount = _context.LocaleResourceKey.Count();
+
             var results = _context.LocaleResourceKey               
                 .OrderBy(x => x.Name)
                 .Skip((pageIndex - 1) * pageSize)
@@ -84,7 +91,7 @@ namespace MVCForum.Data.Repositories
                 .Select(item => item)
                 .ToList();
 
-            return new PagedList<LocaleResourceKey>(results, pageIndex, pageSize, results.Count);                   
+            return new PagedList<LocaleResourceKey>(results, pageIndex, pageSize, totalCount);                   
         }
 
         /// <summary>
@@ -130,6 +137,11 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public PagedList<LocaleStringResource> SearchResourceValuesForKey(Guid languageId, string search, int pageIndex, int pageSize)
         {
+            var totalCount = _context.LocaleStringResource
+                .Join(_context.LocaleResourceKey, strRes => strRes.LocaleResourceKey.Id,resKey => resKey.Id,(strRes, resKey) => 
+                    new {LocaleStringResource = strRes, LocaleResourceKey = resKey}).Count(joinResult => joinResult.LocaleStringResource.Language.Id == languageId &&
+                                                                                                                                                                                                                     joinResult.LocaleResourceKey.Name.ToUpper().Contains(search.ToUpper()));
+
             var results = _context.LocaleStringResource
                 .Join(_context.LocaleResourceKey, // The sequence to join to the first sequence.
                         strRes => strRes.LocaleResourceKey.Id, // A function to extract the join key from each element of the first sequence.
@@ -143,7 +155,7 @@ namespace MVCForum.Data.Repositories
                 .Take(pageSize)
                 .Select(item => item.LocaleStringResource).ToList();
 
-            return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, results.Count);           
+            return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, totalCount);           
         }
 
         /// <summary>
@@ -156,6 +168,7 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public PagedList<LocaleStringResource> SearchResourceValues(Guid languageId, string search, int pageIndex, int pageSize)
         {
+            var totalCount = _context.LocaleStringResource.Count();
             var results = _context.LocaleStringResource
                 .Where(x => x.Language.Id == languageId)
                 .Where(x => x.ResourceValue.ToUpper().Contains(search.ToUpper()))
@@ -164,7 +177,7 @@ namespace MVCForum.Data.Repositories
                 .Take(pageSize)
                 .Select(item => item).ToList();
 
-            return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, results.Count);  
+            return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, totalCount);  
         }
 
         /// <summary>
@@ -178,6 +191,14 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public PagedList<LocaleStringResource> SearchResourceKeys(Guid languageId, string search, int pageIndex, int pageSize)
         {
+            var totalCount = _context.LocaleStringResource
+                .Join(_context.LocaleResourceKey,
+                      strRes => strRes.LocaleResourceKey.Id,
+                      resKey => resKey.Id,
+                      (strRes, resKey) => new {LocaleStringResource = strRes, LocaleResourceKey = resKey})
+                      .Count(joinResult => joinResult.LocaleStringResource.Language.Id == languageId 
+                          && joinResult.LocaleResourceKey.Name.ToUpper().Contains(search.ToUpper()));
+
             var results = _context.LocaleStringResource
                 .Join(_context.LocaleResourceKey, // The sequence to join to the first sequence.
                         strRes => strRes.LocaleResourceKey.Id, // A function to extract the join key from each element of the first sequence.
@@ -191,7 +212,7 @@ namespace MVCForum.Data.Repositories
                 .Take(pageSize)
                 .Select(item => item.LocaleStringResource).ToList();
 
-            return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, results.Count);
+            return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, totalCount);
         }
 
         /// <summary>
@@ -203,6 +224,7 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public PagedList<LocaleResourceKey> SearchResourceKeys(string search, int pageIndex, int pageSize)
         {
+            var totalCount = _context.LocaleResourceKey.Count();
             var results = _context.LocaleResourceKey
                             .Where(resKey => resKey.Name.ToUpper().Contains(search.ToUpper()))
                             .OrderBy(resKey => resKey.Name)
@@ -210,7 +232,7 @@ namespace MVCForum.Data.Repositories
                             .Take(pageSize)
                             .ToList();
 
-            return new PagedList<LocaleResourceKey>(results, pageIndex, pageSize, results.Count);
+            return new PagedList<LocaleResourceKey>(results, pageIndex, pageSize, totalCount);
         }
 
         /// <summary>

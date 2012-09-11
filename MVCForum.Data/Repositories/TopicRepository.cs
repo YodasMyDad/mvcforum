@@ -66,20 +66,20 @@ namespace MVCForum.Data.Repositories
         public PagedList<Topic> GetRecentTopics(int pageIndex, int pageSize, int amountToTake)
         {
 
+            // We might only want to display the top 100
+            // but there might not be 100 topics
+            var total = _context.Topic.Count();
+            if (amountToTake < total)
+            {
+                total = amountToTake;
+            }
+
             // Get the topics using an efficient
             var results = _context.Topic                            
                             .OrderByDescending(x => x.LastPost.DateCreated)
                             .Skip((pageIndex - 1) * pageSize)
                             .Take(pageSize)
                             .ToList();
-
-            // We might only want to display the top 100
-            // but there might not be 100 topics
-            var total = results.Count;
-            if (total > amountToTake)
-            {
-                total = amountToTake;
-            }
 
             // Return a paged list
             return new PagedList<Topic>(results, pageIndex, pageSize, total);
@@ -115,6 +115,14 @@ namespace MVCForum.Data.Repositories
         public PagedList<Topic> GetPagedTopicsByCategory(int pageIndex, int pageSize, int amountToTake, Guid categoryId)
         {
 
+            // We might only want to display the top 100
+            // but there might not be 100 topics
+            var total = _context.Topic.Count(x => x.Category.Id == categoryId);
+            if (amountToTake < total)
+            {
+                total = amountToTake;
+            }
+
             // Get the topics using an efficient
             var results = _context.Topic
                                 .Where(x => x.Category.Id == categoryId)
@@ -124,20 +132,20 @@ namespace MVCForum.Data.Repositories
                                 .Take(pageSize)
                                 .ToList();
 
-            // We might only want to display the top 100
-            // but there might not be 100 topics
-            var total = results.Count;
-            if (total > amountToTake)
-            {
-                total = amountToTake;
-            }
-
             // Return a paged list
             return new PagedList<Topic>(results, pageIndex, pageSize, total);
         }
 
         public PagedList<Topic> GetPagedTopicsAll(int pageIndex, int pageSize, int amountToTake)
         {
+            // We might only want to display the top 100
+            // but there might not be 100 topics
+            var total = _context.Topic.Count();
+            if (amountToTake < total)
+            {
+                total = amountToTake;
+            }
+
             // Get the topics using an efficient
             var results = _context.Topic
                                 .OrderByDescending(x => x.IsSticky)
@@ -146,13 +154,6 @@ namespace MVCForum.Data.Repositories
                                 .Skip((pageIndex - 1) * pageSize)
                                 .ToList();
 
-            // We might only want to display the top 100
-            // but there might not be 100 topics
-            var total = results.Count;
-            if (total > amountToTake)
-            {
-                total = amountToTake;
-            }
 
             // Return a paged list
             return new PagedList<Topic>(results, pageIndex, pageSize, total);
@@ -160,6 +161,14 @@ namespace MVCForum.Data.Repositories
 
         public PagedList<Topic> SearchTopics(int pageIndex, int pageSize, int amountToTake, string searchTerm)
         {
+            // We might only want to display the top 100
+            // but there might not be 100 topics
+            var total = _context.Post.Count(x => x.PostContent.Contains(searchTerm) | x.Topic.Name.Contains(searchTerm));
+            if (amountToTake < total)
+            {
+                total = amountToTake;
+            }
+
             // Get the Posts and then get the topics from the post
             // This is an interim solution, as its flawed due to multiple posts in one topic so the paging might
             // be incorrect if all posts are from one topic.
@@ -171,13 +180,6 @@ namespace MVCForum.Data.Repositories
                             .Select(x => x.Topic)
                             .ToList();
 
-            // We might only want to display the top 100
-            // but there might not be 100 topics
-            var total = results.Count;
-            if (total > amountToTake)
-            {
-                total = amountToTake;
-            }
 
             // Return a paged list
             return new PagedList<Topic>(results, pageIndex, pageSize, total);
@@ -194,6 +196,14 @@ namespace MVCForum.Data.Repositories
 
         public PagedList<Topic> GetPagedTopicsByTag(int pageIndex, int pageSize, int amountToTake, string tag)
         {
+            // We might only want to display the top 100
+            // but there might not be 100 topics
+            var total = _context.Topic.Count(e => e.Tags.Select(t => t.Tag).Contains(tag));
+            if (amountToTake < total)
+            {
+                total = amountToTake;
+            }
+
             // Get the topics using an efficient
             var results = _context.Topic
                                 .OrderByDescending(x => x.IsSticky)
@@ -203,13 +213,6 @@ namespace MVCForum.Data.Repositories
                                 .Skip((pageIndex - 1) * pageSize)
                                 .ToList();
 
-            // We might only want to display the top 100
-            // but there might not be 100 topics
-            var total = results.Count;
-            if (total > amountToTake)
-            {
-                total = amountToTake;
-            }
 
             // Return a paged list
             return new PagedList<Topic>(results, pageIndex, pageSize, total);

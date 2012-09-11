@@ -46,6 +46,7 @@ namespace MVCForum.Data.Repositories
 
         public PagedList<TopicTag> GetPagedGroupedTags(int pageIndex, int pageSize)
         {
+            var totalCount = _context.TopicTag.Count();
 
             // Get the topics using an efficient
             var results = _context.TopicTag
@@ -56,11 +57,12 @@ namespace MVCForum.Data.Repositories
 
 
             // Return a paged list
-            return new PagedList<TopicTag>(results, pageIndex, pageSize, results.Count);
+            return new PagedList<TopicTag>(results, pageIndex, pageSize, totalCount);
         }
 
         public PagedList<TopicTag> SearchPagedGroupedTags(string search, int pageIndex, int pageSize)
         {
+            var totalCount = _context.TopicTag.Count(x => x.Tag.Contains(search));
 
             // Get the topics using an efficient
             var results = _context.TopicTag
@@ -72,13 +74,13 @@ namespace MVCForum.Data.Repositories
 
 
             // Return a paged list
-            return new PagedList<TopicTag>(results, pageIndex, pageSize, results.Count);
+            return new PagedList<TopicTag>(results, pageIndex, pageSize, totalCount);
         }
 
         public IEnumerable<TopicTag> GetByTopic(Topic topic)
         {
             return _context.TopicTag
-                .Where(x => x.Topics == topic)
+                .Where(x => x.Topics.Contains(topic))
                 .ToList();
         }
 

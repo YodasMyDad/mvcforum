@@ -91,6 +91,14 @@ namespace MVCForum.Data.Repositories
 
         public PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm)
         {
+            // We might only want to display the top 100
+            // but there might not be 100 topics
+            var total = _context.Post.Count(x => x.PostContent.Contains(searchTerm) | x.Topic.Name.Contains(searchTerm));
+            if (amountToTake < total)
+            {
+                total = amountToTake;
+            }
+
             // Get the Posts
             var results = _context.Post
                             .Where(x => x.PostContent.Contains(searchTerm) | x.Topic.Name.Contains(searchTerm))
@@ -99,13 +107,6 @@ namespace MVCForum.Data.Repositories
                             .Take(pageSize)
                             .ToList();
 
-            // We might only want to display the top 100
-            // but there might not be 100 topics
-            var total = results.Count;
-            if (total > amountToTake)
-            {
-                total = amountToTake;
-            }
 
             // Return a paged list
             return new PagedList<Post>(results, pageIndex, pageSize, total);
