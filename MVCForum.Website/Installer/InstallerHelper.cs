@@ -9,14 +9,28 @@ namespace MVCForum.Website.Installer
 {
     public static class InstallerHelper
     {
-        public static bool CreateDatabaseTable()
+        public static InstallerResult InstallMainForumTables()
         {
+            // Setup the installer result
+            var insResult = new InstallerResult {Result = true};
+            string appVersion;
+
             try
             {
                 // Get the app version to change to
-                var appVersion = HttpContext.Current.Application["Version"].ToString();
+                appVersion = HttpContext.Current.Application["Version"].ToString();
+            }
+            catch
+            {
+                // Error return the error
+                insResult.Result = false;
+                insResult.ResultMessage = "Unable to obtain MVC Forum version";
+                return insResult;
+            }
 
-
+            try
+            {
+                // Now create the database tables
                 var dbScriptPath = string.Format("~/Installer/Db/{0}/database.sql", appVersion);
                 var connString = ConfigurationManager.ConnectionStrings["MVCForumContext"].ConnectionString;
 
@@ -37,19 +51,30 @@ namespace MVCForum.Website.Installer
                     }
                 }
                 conn.Close();
-
-                // Now update the web.config version
-                // This should be enough to restart app
-                Utilities.ConfigUtils.UpdateAppSetting("MVCForumVersion", appVersion);
-
-                return true;
             }
             catch (System.Exception)
             {
-                return false;
+                insResult.Result = false;
+                insResult.ResultMessage = "Error creating the database tables, check your web.config connection string is correct and the database user has the correct permissions";
+                return insResult;
             }
 
-
+            if(!Utilities.ConfigUtils.UpdateAppSetting("MVCForumVersion", appVersion))
+            {
+                insResult.Result = false;
+                insResult.ResultMessage = string.Format("Error updating the {0} version number in the web.config, try updating it manually to {1} and restarting the site", "MVCForumContext", appVersion);
+                return insResult;
+            }
+      
+            insResult.Result = true;
+            insResult.ResultMessage = "Congratulations, MVC Forum has installed successfully";
+            return insResult;
         }
+    }
+
+    public class InstallerResult
+    {
+        public string ResultMessage { get; set; }
+        public bool Result { get; set; }
     }
 }

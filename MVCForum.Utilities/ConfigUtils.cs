@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Configuration;
+using System.Xml;
 
 namespace MVCForum.Utilities
 {
@@ -66,30 +67,34 @@ namespace MVCForum.Utilities
         }
 
         /// <summary>
-        /// Updates a specific app setting in the config
+        /// Updates an app setting in the config based on name
         /// </summary>
         /// <param name="name"></param>
         /// <param name="value"></param>
-        /// <returns></returns>
-        /// I noticed that nothing seemed to be written to the configuration file while debugging within Visual Studio, 
-        /// but once I published the application it worked as expected.
-        /// it’s because when you make that call vs is editing the vshost.exe.config file in the debug directory not the app.config in your project.
         public static bool UpdateAppSetting(string name, string value)
         {
             try
             {
-                var config = WebConfigurationManager.OpenWebConfiguration(HttpContext.Current.Request.ApplicationPath);
-                config.AppSettings.Settings.Remove(name);
-                config.AppSettings.Settings.Add(name, value);
-                config.Save();
+                var webConfigPath = HttpContext.Current.Server.MapPath("~/web.config");
+                var xpathToSetting = string.Format("//add[@key='{0}']", name);
+                var xDoc = new XmlDocument();
+                xDoc.Load(HttpContext.Current.Server.MapPath("~/web.config"));
+                var settingNodes = xDoc.GetElementsByTagName("appSettings");
+                var appSettingNode = settingNodes[0].SelectSingleNode(xpathToSetting);
+                if (appSettingNode != null && appSettingNode.Attributes != null)
+                {
+                    var idAttribute = appSettingNode.Attributes["value"];
+                    if(idAttribute != null)
+                    {
+                        idAttribute.Value = value;
+                        xDoc.Save(webConfigPath);
+                        return true;
+                    }
+                }
+                return false;
 
-                //var oConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                //oConfig.AppSettings.Settings[name].Value = value;
-                //oConfig.Save(ConfigurationSaveMode.Modified);
-                //ConfigurationManager.RefreshSection("appSettings");
-                return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return false;
             }
