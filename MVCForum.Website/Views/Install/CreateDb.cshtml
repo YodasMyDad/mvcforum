@@ -1,0 +1,11 @@
+﻿@{
+    Layout = "~/Views/Shared/_Install.cshtml";
+    ViewBag.Title = "MVCForum Installer";   
+}
+
+<div class="well well-large">
+    <p>We are going to check you have a database already created and you have added the correct credentials into the connection string in the web.config</p>
+    <p>If the connection string is correct the MVCForum tables will be created.</p>
+    <p><a href="@Url.Action("CreateDbTables", "Install")" class="btn btn-large">Next</a></p>
+</div>
+

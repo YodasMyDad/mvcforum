@@ -1,0 +1,62 @@
+﻿@{
+    Layout = null;  
+}
+<!DOCTYPE html>
+<html lang="en">
+    <head>       
+        <meta charset="utf-8">
+        <title>@Html.Raw(ViewBag.Title)</title>
+
+        @(Bundle.Css()
+              .Add("/installer/Content/Styles/bootstrap.css")
+              .Add("/installer/Content/Styles/install.css")
+              .MvcRender("~/content/cache/combined_installer_#.css"))
+           
+        <style type="text/css">
+            body { padding-top: 50px; padding-bottom: 40px; }
+        </style>
+        <!--[if lt IE 9]>
+            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+
+        @(Bundle.JavaScript()
+              .Add("~/Scripts/jquery.1.7.2.min.js")
+              .Add("~/Scripts/jquery.unobtrusive-ajax.js")
+              .Add("~/Scripts/bootstrap-tooltip.js")
+              .Add("~/Scripts/bootstrap-popover.js")
+              .Add("~/Scripts/bootstrap-button.js")
+              .Add("~/Scripts/bootstrap-alert.js")
+              .Add("~/Scripts/bootstrap-transition.js")
+              .Add("~/Scripts/general.js")
+              .MvcRender("~/scripts/cache/combined_installer_#.js")
+              )
+
+        @RenderSection("Header", false)
+
+    </head>
+<body>
+
+    <div class="container">
+        @Html.Partial("_GenericMessage")
+
+        <section id="main">
+            <div class="row">
+                <div class="offset2 span8">
+                    <a class="brand" href="http://www.mvcforum.com" target="_blank">MVC Forum</a>
+                    @RenderBody()
+                </div>
+            </div>
+        </section>
+
+        @RenderSection("Footer", false)
+
+        <hr>
+
+        <footer>
+            <p>&copy; @DateTime.Now.Year - <a href="http://www.mvcforum.com">MVC Forum</a></p>
+        </footer>
+
+    </div>
+
+</body>
+</html>

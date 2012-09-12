@@ -91,41 +91,59 @@ namespace MVCForum.Website
 
         protected void Application_Start()
         {
-            LoggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
-            LoggingService.Error("START APP");
-
-            EFCachingProviderConfiguration.DefaultCache = new AspNetCache();
-            EFCachingProviderConfiguration.DefaultCachingPolicy = CachingPolicy.CacheAll;
-
+            // Register routes
             AreaRegistration.RegisterAllAreas();
-
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
 
-            //AutoMappingRegistrar.Configure();
-
-            ViewEngines.Engines.Clear();
-            ViewEngines.Engines.Add(new ForumViewEngine(SettingsService));
-
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-            {
-                try
-                {
-                    BadgeService.SyncBadges();
-                    unitOfWork.Commit();
-                }
-                catch (Exception ex)
-                {
-                    LoggingService.Error(string.Format("Error processing badge classes: {0}", ex.Message));
-                }                
-            }
-            
-            EventManager.Instance.Initialize(LoggingService);
-
-            //TODO Match up the version with the web.config
-            //TODO So we can create a nice upgrader
+            //Installer for new versions and first startup
+            // Get the current version
             var version = Assembly.GetExecutingAssembly().GetName().Version;
+
+            // Store the value for use in the app
             Application["Version"] = string.Format("{0}.{1}", version.Major, version.Minor);
+
+            // Now check the version in the web.config
+            var currentVersion = ConfigUtils.GetAppSetting("MVCForumVersion");
+
+            // If the versions are different kick the installer into play
+            if (currentVersion != Application["Version"].ToString())
+            {
+                HttpContext.Current.Response.Redirect("/install/");
+            }
+            else
+            {
+
+                // If the same carry on as normal
+                LoggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
+                LoggingService.Error("START APP");
+
+                // Set the view engine
+                ViewEngines.Engines.Clear();
+                ViewEngines.Engines.Add(new ForumViewEngine(SettingsService));
+
+                // Set up the EF Caching provider
+                EFCachingProviderConfiguration.DefaultCache = new AspNetCache();
+                EFCachingProviderConfiguration.DefaultCachingPolicy = CachingPolicy.CacheAll;
+
+                // Do the badge processing
+                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                {
+                    try
+                    {
+                        BadgeService.SyncBadges();
+                        unitOfWork.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        LoggingService.Error(string.Format("Error processing badge classes: {0}", ex.Message));
+                    }
+                }
+
+                // Initialise the events
+                EventManager.Instance.Initialize(LoggingService);                
+            }
+
         }
 
         protected void Application_BeginRequest(object sender, EventArgs e)

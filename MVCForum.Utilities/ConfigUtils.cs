@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using System.Web;
+using System.Web.Configuration;
 
 namespace MVCForum.Utilities
 {
@@ -76,10 +78,15 @@ namespace MVCForum.Utilities
         {
             try
             {
-                var oConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                oConfig.AppSettings.Settings[name].Value = value;
-                oConfig.Save(ConfigurationSaveMode.Modified);
-                ConfigurationManager.RefreshSection("appSettings");
+                var config = WebConfigurationManager.OpenWebConfiguration(HttpContext.Current.Request.ApplicationPath);
+                config.AppSettings.Settings.Remove(name);
+                config.AppSettings.Settings.Add(name, value);
+                config.Save();
+
+                //var oConfig = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                //oConfig.AppSettings.Settings[name].Value = value;
+                //oConfig.Save(ConfigurationSaveMode.Modified);
+                //ConfigurationManager.RefreshSection("appSettings");
                 return true;
             }
             catch (Exception)

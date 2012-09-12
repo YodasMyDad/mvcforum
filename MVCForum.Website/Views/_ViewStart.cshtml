@@ -1,43 +1,53 @@
-﻿@using MVCForum.Domain.Constants
+﻿@using System.Reflection
+@using MVCForum.Domain.Constants
 @using MVCForum.Domain.DomainModel.Activity
 @using MVCForum.Domain.Interfaces.Services
 
 @{
     // Credit where credit is due, this is lifted from Funnel Web MVC
     // http://www.funnelweblog.com/
-    
-    var layoutName = "_Layout";
-    Layout = "~/Views/Shared/" + layoutName + ".cshtml";
-    
-    ////TODO: Add mobile view
-    //if (Context.IsMobileDevice())
-    //{
-    //    layoutName = "_Mobile";
-    //    Layout = "~/Views/Shared/" + layoutName + ".cshtml";
-    //}
 
-    var currentTheme = DependencyResolver.Current.GetService<ISettingsService>().GetSettings().Theme;
+    if (ViewContext.TempData[AppConstants.InstallerName] != null)
+    {
+        Layout = null;
+    }
+    else
+    {
+        var layoutName = "_Layout";
+        Layout = "~/Views/Shared/" + layoutName + ".cshtml";
 
-    var locationFormats = new List<string>
+        ////TODO: Add mobile view
+        //if (Context.IsMobileDevice())
+        //{
+        //    layoutName = "_Mobile";
+        //    Layout = "~/Views/Shared/" + layoutName + ".cshtml";
+        //}
+
+        var currentTheme = DependencyResolver.Current.GetService<ISettingsService>().GetSettings().Theme;
+
+        var locationFormats = new List<string>
                                   {
                                       "~/Themes/" + currentTheme + "/Views/{0}.cshtml",
                                       "~/Themes/" + currentTheme + "/Views/Shared/{0}.cshtml",
                                       "~/Views/Extensions/{0}.cshtml",
                                   };
-    foreach(var format in locationFormats)
-    {
-        var virtualPath = String.Format(
-            System.Globalization.CultureInfo.InvariantCulture,
-            format,
-            layoutName);
-        System.Diagnostics.Trace.WriteLine(virtualPath);
-        if(!System.Web.Hosting.HostingEnvironment.VirtualPathProvider.FileExists(virtualPath))
+        foreach (var format in locationFormats)
         {
-            continue;
-        }
+            var virtualPath = String.Format(
+                System.Globalization.CultureInfo.InvariantCulture,
+                format,
+                layoutName);
+            System.Diagnostics.Trace.WriteLine(virtualPath);
+            if (!System.Web.Hosting.HostingEnvironment.VirtualPathProvider.FileExists(virtualPath))
+            {
+                continue;
+            }
 
-        this.Layout = virtualPath;
-        break;
+            this.Layout = virtualPath;
+            break;
+        }
     }
+    
+
 }
 <!-- Powered by MVCForum.com -->

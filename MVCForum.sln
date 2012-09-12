@@ -7,6 +7,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Externals", "Externals", "{
 		Externals\AntiXSSLibrary.xml = Externals\AntiXSSLibrary.xml
 		Externals\HtmlSanitizationLibrary.dll = Externals\HtmlSanitizationLibrary.dll
 		Externals\HtmlSanitizationLibrary.xml = Externals\HtmlSanitizationLibrary.xml
+		Externals\Microsoft.SqlServer.ConnectionInfo.dll = Externals\Microsoft.SqlServer.ConnectionInfo.dll
+		Externals\Microsoft.SqlServer.Management.Sdk.Sfc.dll = Externals\Microsoft.SqlServer.Management.Sdk.Sfc.dll
+		Externals\Microsoft.SqlServer.Smo.dll = Externals\Microsoft.SqlServer.Smo.dll
+		Externals\Microsoft.SqlServer.SmoExtended.dll = Externals\Microsoft.SqlServer.SmoExtended.dll
+		Externals\Microsoft.SqlServer.SqlEnum.dll = Externals\Microsoft.SqlServer.SqlEnum.dll
 		Externals\Microsoft.Web.Services3.dll = Externals\Microsoft.Web.Services3.dll
 		Externals\NHibernate.Caches.snk = Externals\NHibernate.Caches.snk
 		Externals\NHibernate.Caches.SysCache.dll = Externals\NHibernate.Caches.SysCache.dll
@@ -63,6 +68,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFCachingProvider.Web", "EFProvider Wrappers\EFCachingProvider.Web\EFCachingProvider.Web.csproj", "{5E373803-C182-47CF-AA62-254BD4CECE32}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFProviderWrapperToolkit", "EFProvider Wrappers\EFProviderWrapperToolkit\EFProviderWrapperToolkit.csproj", "{BAF62DE6-51D0-49AB-9E4E-9240E85E9C35}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.ConsoleApp", "MVCForum.Console\MVCForum.ConsoleApp.csproj", "{6947B6B5-9EDF-406B-A8C1-A97CF0244BBF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -198,6 +205,16 @@ Global
 		{BAF62DE6-51D0-49AB-9E4E-9240E85E9C35}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{BAF62DE6-51D0-49AB-9E4E-9240E85E9C35}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{BAF62DE6-51D0-49AB-9E4E-9240E85E9C35}.Release|x86.ActiveCfg = Release|Any CPU
+		{6947B6B5-9EDF-406B-A8C1-A97CF0244BBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6947B6B5-9EDF-406B-A8C1-A97CF0244BBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6947B6B5-9EDF-406B-A8C1-A97CF0244BBF}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6947B6B5-9EDF-406B-A8C1-A97CF0244BBF}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6947B6B5-9EDF-406B-A8C1-A97CF0244BBF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6947B6B5-9EDF-406B-A8C1-A97CF0244BBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6947B6B5-9EDF-406B-A8C1-A97CF0244BBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6947B6B5-9EDF-406B-A8C1-A97CF0244BBF}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6947B6B5-9EDF-406B-A8C1-A97CF0244BBF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6947B6B5-9EDF-406B-A8C1-A97CF0244BBF}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
