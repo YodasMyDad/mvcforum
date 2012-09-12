@@ -37,7 +37,9 @@ namespace MVCForum.Website.ViewModels
         [StringLength(150)]
         public string Name { get; set; }
 
-        [UIHint("bbeditor"), AllowHtml]
+        //[UIHint("bbeditor"), AllowHtml]
+        [UIHint("markdowneditor")]
+        //[UIHint("tinymceeditor")]
         public string Content { get; set; }
 
         public bool IsSticky { get; set; }

@@ -34,6 +34,9 @@
     <Reference Include="AntiXSSLibrary">
       <HintPath>..\Externals\AntiXSSLibrary.dll</HintPath>
     </Reference>
+    <Reference Include="MarkdownSharp">
+      <HintPath>..\packages\MarkdownSharp.1.13.0.0\lib\35\MarkdownSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Web.Services3, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Externals\Microsoft.Web.Services3.dll</HintPath>
@@ -59,6 +62,9 @@
     <Compile Include="ReflectionUtilities.cs" />
     <Compile Include="RssReader.cs" />
     <Compile Include="StringUtils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

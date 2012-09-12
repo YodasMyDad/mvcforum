@@ -390,6 +390,17 @@ namespace MVCForum.Utilities
         }
 
         /// <summary>
+        /// Converts markdown into HTML
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string ConvertMarkDown(string str)
+        {
+            var md = new MarkdownSharp.Markdown();
+            return md.Transform(str);
+        }
+
+        /// <summary>
         /// A method to convert basic BBCode to HTML
         /// </summary>
         /// <param name="str">A string formatted in BBCode</param>

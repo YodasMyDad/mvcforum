@@ -273,7 +273,13 @@ function AjaxPostSuccess() {
 
     // And more finally clear the post box
     $('.createpost').val('');
-    $(".bbeditorholder textarea").data("sceditor").val('');
+    if ($(".bbeditorholder textarea").length > 0) {
+        $(".bbeditorholder textarea").data("sceditor").val('');
+    }
+    if ($('.wmd-input').length > 0) {
+        $(".wmd-input").val('');
+        $(".wmd-preview").html('');
+    }
 
     // Re-enable the button
     $('#createpostbutton').attr("disabled", false);

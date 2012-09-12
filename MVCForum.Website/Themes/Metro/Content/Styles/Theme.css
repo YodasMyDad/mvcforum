@@ -17,8 +17,9 @@ h6 {font-size:16px; margin-bottom:8px; color:#bfbfbf; font-weight:normal; font-f
 input[type=text],input[type=password],textarea,select {-moz-border-radius:0; -webkit-border-radius:0; -khtml-border-radius:0; border-radius:0;}
 
 /* ---- Paragraph Styles ---- */
-p {margin:0 0 14px 0; line-height:22px;font-size:15px;font-family:'MVCforumLight', Calibri, Arial, Helvetica, sans-serif;}
-
+p {margin:0 0 14px 0; line-height:20px;font-size:14px;font-family:'MVCforumLight', Calibri, Arial, Helvetica, sans-serif;}
+p a, p a:visited { text-decoration: underline;}
+p a:hover { text-decoration: none;}
 /*--- Padded Row ---*/
 .paddedrow { padding-top: 10px;padding-bottom: 10px;}
 

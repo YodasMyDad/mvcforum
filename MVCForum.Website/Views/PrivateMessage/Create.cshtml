@@ -64,6 +64,6 @@
 {
     <p class="previousmessageholder">
         <span class="originalmessage">@Html.LanguageString("PM.OriginalMessage")</span>
-        @Html.Raw(StringUtils.ConvertBbCodeToHtml(Model.PreviousMessage))
+        @Html.Raw(AppHelpers.ConvertPostContent(Model.PreviousMessage))
     </p>
 }

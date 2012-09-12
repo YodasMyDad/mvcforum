@@ -25,7 +25,8 @@ namespace MVCForum.Website.ViewModels
         [Required]
         public string Subject { get; set; }
 
-        [UIHint("bbeditor"), AllowHtml]
+        //[UIHint("bbeditor"), AllowHtml]
+        [UIHint("markdowneditor")]
         public string Message { get; set; }
 
         public string PreviousMessage { get; set; }

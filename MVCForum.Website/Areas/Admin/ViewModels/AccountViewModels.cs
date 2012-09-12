@@ -70,7 +70,8 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [Display(Name = "Signature")]
         [StringLength(1000)]
-        [UIHint("bbeditor"), AllowHtml]
+        //[UIHint("bbeditor"), AllowHtml]
+        [UIHint("markdowneditor")]
         public string Signature { get; set; }
 
         [Display(Name = "Age")]

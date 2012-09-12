@@ -9,7 +9,8 @@ namespace MVCForum.Website.ViewModels
 {
     public class CreateAjaxPostViewModel
     {
-        [UIHint("bbeditor"), AllowHtml]
+        //[UIHint("bbeditor"), AllowHtml]
+        [UIHint("markdowneditor")]
         public string PostContent { get; set; }
 
         public Guid Topic { get; set; }
@@ -44,7 +45,8 @@ namespace MVCForum.Website.ViewModels
 
         public IEnumerable<Category> Categories { get; set; }
                 
-        [UIHint("bbeditor"), AllowHtml]
+        //[UIHint("bbeditor"), AllowHtml]
+        [UIHint("markdowneditor")]
         public string Content { get; set; }
 
         [HiddenInput]

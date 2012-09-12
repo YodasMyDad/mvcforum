@@ -123,8 +123,11 @@ namespace MVCForum.Website.Application
         
         public static string ConvertPostContent(string post)
         {
-            // Here we run several post converters
-            return StringUtils.ConvertBbCodeToHtml(post);
+            // If using the BBCode Editor uncomment this line
+            //return StringUtils.ConvertBbCodeToHtml(post);
+
+            // If using the PageDown/MarkDown Editor uncomment this line
+            return StringUtils.ConvertMarkDown(post);
         }
 
         public static string ReturnBadgeUrl(string badgeFile)
