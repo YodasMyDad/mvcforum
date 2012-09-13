@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
 using System.Web;
-using System.Web.Configuration;
 using System.Xml;
 
 namespace MVCForum.Utilities
@@ -78,7 +74,7 @@ namespace MVCForum.Utilities
                 var webConfigPath = HttpContext.Current.Server.MapPath("~/web.config");
                 var xpathToSetting = string.Format("//add[@key='{0}']", name);
                 var xDoc = new XmlDocument();
-                xDoc.Load(HttpContext.Current.Server.MapPath("~/web.config"));
+                xDoc.Load(webConfigPath);
                 var settingNodes = xDoc.GetElementsByTagName("appSettings");
                 var appSettingNode = settingNodes[0].SelectSingleNode(xpathToSetting);
                 if (appSettingNode != null && appSettingNode.Attributes != null)

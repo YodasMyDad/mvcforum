@@ -34,22 +34,25 @@ namespace MVCForum.Website.Controllers
             // and redirect to home page
             if (installerResponse.Result)
             {
+                InstallerHelper.TouchWebConfig();
+                return RedirectToAction("Complete");
+            }
+            else
+            {
+                // If we get here there was an error, so update the UI to tell them
+                TempData[AppConstants.InstallerName] = AppConstants.InstallerName;
                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = installerResponse.ResultMessage,
-                    MessageType = GenericMessages.success
+                    MessageType = GenericMessages.error
                 };
-                Response.Redirect("/");
+                return RedirectToAction("Index");   
             }
+        }
 
-            // If we get here there was an error, so update the UI to tell them
-            TempData[AppConstants.InstallerName] = AppConstants.InstallerName;
-            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-            {
-                Message = installerResponse.ResultMessage,
-                MessageType = GenericMessages.error
-            };
-            return RedirectToAction("Index");
+        public ActionResult Complete()
+        {
+            return View();
         }
 
     }

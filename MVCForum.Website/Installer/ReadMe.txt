@@ -5,11 +5,3 @@
 3.) Run the .SQl db creator 
 4.) (If first time) Allow them to update the admin password?
 5.) Tell them to delete install folder now its complete, and then give a button to redirect to home page or admin.
-
-// Example sql code to use
-string sqlConnectionString = "Data Source=(local);Initial Catalog=AdventureWorks;Integrated Security=True";
-FileInfo file = new FileInfo("C:\\myscript.sql");
-string script = file.OpenText().ReadToEnd();
-SqlConnection conn = new SqlConnection(sqlConnectionString);
-Server server = new Server(new ServerConnection(conn));
-server.ConnectionContext.ExecuteNonQuery(script);

@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Xml;
 
 namespace MVCForum.Website.Installer
 {
@@ -59,7 +60,7 @@ namespace MVCForum.Website.Installer
                 return insResult;
             }
 
-            if(!Utilities.ConfigUtils.UpdateAppSetting("MVCForumVersion", appVersion))
+            if(Utilities.ConfigUtils.UpdateAppSetting("MVCForumVersion", appVersion) == false)
             {
                 insResult.Result = false;
                 insResult.ResultMessage = string.Format("Error updating the {0} version number in the web.config, try updating it manually to {1} and restarting the site", "MVCForumContext", appVersion);
@@ -69,6 +70,14 @@ namespace MVCForum.Website.Installer
             insResult.Result = true;
             insResult.ResultMessage = "Congratulations, MVC Forum has installed successfully";
             return insResult;
+        }
+
+        public static void TouchWebConfig()
+        {
+            var webConfigPath = HttpContext.Current.Server.MapPath("~/web.config");
+            var xDoc = new XmlDocument();
+            xDoc.Load(webConfigPath);
+            xDoc.Save(webConfigPath);
         }
     }
 

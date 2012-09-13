@@ -21,6 +21,7 @@ namespace MVCForum.Website
 
     public class MvcApplication : HttpApplication
     {
+
         public IUnitOfWorkManager UnitOfWorkManager
         {
             get { return DependencyResolver.Current.GetService<IUnitOfWorkManager>(); }
@@ -101,19 +102,14 @@ namespace MVCForum.Website
             var version = Assembly.GetExecutingAssembly().GetName().Version;
 
             // Store the value for use in the app
-            Application["Version"] = string.Format("{0}.{1}", version.Major, version.Minor);
+            Application["Version"] = string.Format("{0}.{1}", version.Major, version.Minor);            
 
             // Now check the version in the web.config
             var currentVersion = ConfigUtils.GetAppSetting("MVCForumVersion");
 
             // If the versions are different kick the installer into play
-            if (currentVersion != Application["Version"].ToString())
+            if (currentVersion == Application["Version"].ToString())
             {
-                HttpContext.Current.Response.Redirect("/install/");
-            }
-            else
-            {
-
                 // If the same carry on as normal
                 LoggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
                 LoggingService.Error("START APP");
@@ -141,14 +137,24 @@ namespace MVCForum.Website
                 }
 
                 // Initialise the events
-                EventManager.Instance.Initialize(LoggingService);                
-            }
+                EventManager.Instance.Initialize(LoggingService);
 
+                Application["GoToInstaller"] = "False";
+            }
+            else
+            {
+                Application["GoToInstaller"] = "True";
+            }
         }
 
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
-            //Request.Have_fun
+            if (Application["GoToInstaller"].ToString() == "True")
+            {
+                // Beford I redirect set it to false or we'll end up in a loop
+                Application["GoToInstaller"] = "False";
+                Response.Redirect("/install/");
+            }
         }   
 
         protected void Application_EndRequest(object sender, EventArgs e)
