@@ -470,6 +470,7 @@
     <Content Include="Content\Images\mail-add.png" />
     <Content Include="Content\Images\mail-delete.png" />
     <Content Include="Content\Images\rss-icon.png" />
+    <Content Include="Installer\Content\arrow-spinner-blue.gif" />
     <Content Include="Installer\Content\Images\glyphicons\glyphicons_009_magic.png" />
     <Content Include="Installer\Content\Images\glyphicons\glyphicons_042_group.png" />
     <Content Include="Installer\Content\Images\glyphicons\glyphicons_079_podium.png" />
