@@ -19,6 +19,10 @@ $knownExceptions = @(
     target database was created by an initializer, an initial migration will be created (unless
     automatic migrations are enabled via the EnableAutomaticMigrations parameter).
 
+.PARAMETER ContextTypeName
+    Specifies the context to use. If omitted, migrations will attempt to locate a
+    single context type in the target project.
+
 .PARAMETER EnableAutomaticMigrations
     Specifies whether automatic migrations will be enabled in the scaffolded migrations configuration.
     If ommitted, automatic migrations will be disabled.
@@ -51,6 +55,7 @@ function Enable-Migrations
 {
     [CmdletBinding(DefaultParameterSetName = 'ConnectionStringName')] 
     param (
+        [string] $ContextTypeName,
         [alias('Auto')]
         [switch] $EnableAutomaticMigrations,
         [string] $ProjectName,
@@ -70,7 +75,7 @@ function Enable-Migrations
 
     try
     {
-        Invoke-RunnerCommand $runner System.Data.Entity.Migrations.EnableMigrationsCommand @( $EnableAutomaticMigrations.IsPresent, $Force.IsPresent)
+        Invoke-RunnerCommand $runner System.Data.Entity.Migrations.EnableMigrationsCommand @( $EnableAutomaticMigrations.IsPresent, $Force.IsPresent ) @{ 'ContextTypeName' = $ContextTypeName }
         $error = Get-RunnerError $runner
         
         if ($error)
@@ -412,9 +417,17 @@ function Remove-Runner($runner)
     [AppDomain]::Unload($runner.Domain)
 }
 
-function Invoke-RunnerCommand($runner, $command, $parameters)
+function Invoke-RunnerCommand($runner, $command, $parameters, $anonymousArguments)
 {
     $domain = $runner.Domain
+
+	if ($anonymousArguments)
+	{
+		$anonymousArguments.GetEnumerator() | %{
+			$domain.SetData($_.Name, $_.Value)
+		}
+	}
+
     $domain.CreateInstanceFrom(
         (Join-Path $runner.ToolsPath EntityFramework.PowerShell.dll),
         $command,
@@ -484,8 +497,15 @@ function Get-MigrationsStartUpProject($name, $fallbackName)
                     $startupProjectPath = Join-Path $solutionPath $startupProjectPath -Resolve
                 }
 
-                $startupProject = (Get-SolutionProjects) | ?{
-                    $fullName = $_.FullName
+                $startupProject = Get-SolutionProjects | ?{
+                    try
+                    {
+                        $fullName = $_.FullName
+                    }
+                    catch [NotImplementedException]
+                    {
+                        return false;
+                    }
 
                     if ($fullName -and $fullName.EndsWith('\'))
                     {
@@ -615,8 +635,8 @@ Export-ModuleMember @( 'Enable-Migrations', 'Add-Migration', 'Update-Database', 
 # SIG # Begin signature block
 # MIIaRgYJKoZIhvcNAQcCoIIaNzCCGjMCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUkSPdUJ08J4TuGdvXbsdoabg6
-# 82igghUtMIIEoDCCA4igAwIBAgIKYRnMkwABAAAAZjANBgkqhkiG9w0BAQUFADB5
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUc46O5H/xCa1Zd+kKsDgAx0de
+# pNmgghUtMIIEoDCCA4igAwIBAgIKYRnMkwABAAAAZjANBgkqhkiG9w0BAQUFADB5
 # MQswCQYDVQQGEwJVUzETMBEGA1UECBMKV2FzaGluZ3RvbjEQMA4GA1UEBxMHUmVk
 # bW9uZDEeMBwGA1UEChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMSMwIQYDVQQDExpN
 # aWNyb3NvZnQgQ29kZSBTaWduaW5nIFBDQTAeFw0xMTEwMTAyMDMyMjVaFw0xMzAx
@@ -641,32 +661,32 @@ Export-ModuleMember @( 'Enable-Migrations', 'Add-Migration', 'Update-Database', 
 # m7iPXIgONpRsMwe4qa1RoNDC3I4iEr3D34LXVqH33fClIFcQEJ3urIZ0bHGbwfDy
 # wnBep9ttTTdYmU15QNA0XVolrmfrG05GBrCMKR+jEI+lM58j1fi1Rn3g7mOYkEs+
 # BagvsBizWaSvQVOOCAUQLSrJOgZMHC6pMVFWZKyazKyXmCmKl5CH6p22MIIEujCC
-# A6KgAwIBAgIKYQUTNgAAAAAAGjANBgkqhkiG9w0BAQUFADB3MQswCQYDVQQGEwJV
+# A6KgAwIBAgIKYQUZlgAAAAAAGzANBgkqhkiG9w0BAQUFADB3MQswCQYDVQQGEwJV
 # UzETMBEGA1UECBMKV2FzaGluZ3RvbjEQMA4GA1UEBxMHUmVkbW9uZDEeMBwGA1UE
 # ChMVTWljcm9zb2Z0IENvcnBvcmF0aW9uMSEwHwYDVQQDExhNaWNyb3NvZnQgVGlt
-# ZS1TdGFtcCBQQ0EwHhcNMTEwNzI1MjA0MjE3WhcNMTIxMDI1MjA0MjE3WjCBszEL
+# ZS1TdGFtcCBQQ0EwHhcNMTEwNzI1MjA0MjE5WhcNMTIxMDI1MjA0MjE5WjCBszEL
 # MAkGA1UEBhMCVVMxEzARBgNVBAgTCldhc2hpbmd0b24xEDAOBgNVBAcTB1JlZG1v
 # bmQxHjAcBgNVBAoTFU1pY3Jvc29mdCBDb3Jwb3JhdGlvbjENMAsGA1UECxMETU9Q
-# UjEnMCUGA1UECxMebkNpcGhlciBEU0UgRVNOOjE1OUMtQTNGNy0yNTcwMSUwIwYD
+# UjEnMCUGA1UECxMebkNpcGhlciBEU0UgRVNOOjlFNzgtODY0Qi0wMzlEMSUwIwYD
 # VQQDExxNaWNyb3NvZnQgVGltZS1TdGFtcCBTZXJ2aWNlMIIBIjANBgkqhkiG9w0B
-# AQEFAAOCAQ8AMIIBCgKCAQEAnDSYGckJKWOZAhZ1qIhXfaG7qUES/GSRpdYFeL93
-# 3OzmrrhQTsDjGr3tt/34IIpxOapyknKfignlE++RQe1hJWtRre6oQ7VhQiyd8h2x
-# 0vy39Xujc3YTsyuj25RhgFWhD23d2OwW/4V/lp6IfwAujnokumidj8bK9JB5euGb
-# 7wZdfvguw2oVnDwUL+fVlMgiG1HLqVWGIbda80ESOZ/wValOqiUrY/uRcjwPfMCW
-# ctzBo8EIyt7FybXACl+lnAuqcgpdCkB9LpjQq7KIj4aA6H3RvlVr4FgsyDY/+eYR
-# w/BDBYV4AxflLKcpfNPilRcAbNvcrTwZOgLgfWLUzvYdPQIDAQABo4IBCTCCAQUw
-# HQYDVR0OBBYEFPaDiyCHEe6Dy9vehaLSaIY3YXSQMB8GA1UdIwQYMBaAFCM0+NlS
+# AQEFAAOCAQ8AMIIBCgKCAQEA08s7U6KfRKN6q01WcVOKd6o3k34BPv2rAqNTqf/R
+# sSLFAJDndW7uGOiBDhPF2GEAvh+gdjsEDQTFBKCo/ENTBqEEBLkLkpgCYjjv1DMS
+# 9ys9e++tRVeFlSCf12M0nGJGjr6u4NmeOfapVf3P53fmNRPvXOi/SJNPGkMHWDiK
+# f4UUbOrJ0Et6gm7L0xVgCBSJlKhbPzrJPyB9bS9YGn3Kiji8w8I5aNgtWBoj7SoQ
+# CFogjIKl7dGXRZKFzMM3g98NmHzF07bgmVPYeAj15SMhB2KGWmppGf1w+VM0gfcl
+# MRmGh4vAVZr9qkw1Ff1b6ZXJq1OYKV8speElD2TF8rAndQIDAQABo4IBCTCCAQUw
+# HQYDVR0OBBYEFHkj56ENvlUsaBgpYoJn1vPhNjhaMB8GA1UdIwQYMBaAFCM0+NlS
 # RnAK7UD7dvuzK7DDNbMPMFQGA1UdHwRNMEswSaBHoEWGQ2h0dHA6Ly9jcmwubWlj
 # cm9zb2Z0LmNvbS9wa2kvY3JsL3Byb2R1Y3RzL01pY3Jvc29mdFRpbWVTdGFtcFBD
 # QS5jcmwwWAYIKwYBBQUHAQEETDBKMEgGCCsGAQUFBzAChjxodHRwOi8vd3d3Lm1p
 # Y3Jvc29mdC5jb20vcGtpL2NlcnRzL01pY3Jvc29mdFRpbWVTdGFtcFBDQS5jcnQw
-# EwYDVR0lBAwwCgYIKwYBBQUHAwgwDQYJKoZIhvcNAQEFBQADggEBAGL0BQ1P5xtr
-# gudSDN95jKhVgTOX06TKyf6vSNt72m96KE/H0LeJ2NGmmcyRVgA7OOi3Mi/u+c9r
-# 2Zje1gL1QlhSa47aQNwWoLPUvyYVy0hCzNP9tPrkRIlmD0IOXvcEnyNIW7SJQcTa
-# bPg29D/CHhXfmEwAxLLs3l8BAUOcuELWIsiTmp7JpRhn/EeEHpFdm/J297GOch2A
-# djw2EUbKfjpI86/jSfYXM427AGOCnFejVqfDbpCjPpW3/GTRXRjCCwFQY6f889GA
-# noTjMjTdV5VAo21+2usuWgi0EAZeMskJ6TKCcRan+savZpiJ+dmetV8QI6N3gPJN
-# 1igAclCFvOUwggW8MIIDpKADAgECAgphMyYaAAAAAAAxMA0GCSqGSIb3DQEBBQUA
+# EwYDVR0lBAwwCgYIKwYBBQUHAwgwDQYJKoZIhvcNAQEFBQADggEBAEfCdoFbMd1v
+# 0zyZ8npsfpcTUCwFFxsQuEShtYz0Vs+9sCG0ZG1hHNju6Ov1ku5DohhEw/r67622
+# XH+XbUu1Q/snYXgIVHyx+a+YCrR0xKroLVDEff59TqGZ1icot67Y37GPgyKOzvN5
+# /GEUbb/rzISw36O7WwW36lT1Yh1sJ6ZjS/rjofq734WWZWlTsLZxmGQmZr3F8Vxi
+# vJH0PZxLQgANzzgFFCZa3CoFS39qmTjY3XOZos6MUCSepOv1P4p4zFSZXSVmpEEG
+# KK9JxLRSlOzeAoNk/k3U/0ui/CmA2+4/qzztM4jKvyJg0Fw7BLAKtJhtPKc6T5rR
+# ARYRYopBdqAwggW8MIIDpKADAgECAgphMyYaAAAAAAAxMA0GCSqGSIb3DQEBBQUA
 # MF8xEzARBgoJkiaJk/IsZAEZFgNjb20xGTAXBgoJkiaJk/IsZAEZFgltaWNyb3Nv
 # ZnQxLTArBgNVBAMTJE1pY3Jvc29mdCBSb290IENlcnRpZmljYXRlIEF1dGhvcml0
 # eTAeFw0xMDA4MzEyMjE5MzJaFw0yMDA4MzEyMjI5MzJaMHkxCzAJBgNVBAYTAlVT
@@ -734,24 +754,24 @@ Export-ModuleMember @( 'Enable-Migrations', 'Add-Migration', 'Update-Database', 
 # b3JhdGlvbjEjMCEGA1UEAxMaTWljcm9zb2Z0IENvZGUgU2lnbmluZyBQQ0ECCmEZ
 # zJMAAQAAAGYwCQYFKw4DAhoFAKCBsDAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIB
 # BDAcBgorBgEEAYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAjBgkqhkiG9w0BCQQxFgQU
-# c8y73laKW7p8TfL8mfm+eX8tsgUwUAYKKwYBBAGCNwIBDDFCMECgIoAgAEUAbgB0
+# SDInMyiqV3LEzPhzf6mjYJvp5qAwUAYKKwYBBAGCNwIBDDFCMECgIoAgAEUAbgB0
 # AGkAdAB5ACAARgByAGEAbQBlAHcAbwByAGuhGoAYaHR0cDovL21zZG4uY29tL2Rh
-# dGEvZWYgMA0GCSqGSIb3DQEBAQUABIIBAJSxYvYazTn9MtxI9jHDUnHf3B3qvdq0
-# jDfZNJB3Etl9Dr4Z8LUb1tygBEDZKhccuN4HX3dXXeoi73CpLARS/sgxHwk1xwYP
-# Wg792j1Je20zY03/lzlUvF2rd9/IZqEg/3m5qNZHdSpzRBSqzzzu9DC9MNYzOo4n
-# byo5//iLvAQRPKYzLHZ/0rmpiKJ4NTixVwIpSKDEaHBcjxGS4ehKzxROO3Kr2+BP
-# 1EdtM/CP4GKQn26fYOoxnuDfHGnce8NCqjb/2eBkl/BmAkrwqwcr3zRIZulNkruw
-# BF+gVroK8Ir3SG2TOmchIXYsUViEIPU01BbX3jseOpZvr2bTF5RtR4ehggIdMIIC
+# dGEvZWYgMA0GCSqGSIb3DQEBAQUABIIBAMTy2exDNM/cRmGrhj6rawr6XoQp77kh
+# +WOMUmSG5U4qSlP8g3fVFH030Xsxz5d8TunxEzRUyDhYHh3mQ56x4RCVJU/fdl8Q
+# dhXwn4VfV84G3+mIHVRCo8+8hm/o1l1K0sHhLCaPSoZht1bcKH09gK1VxoNhBt78
+# BFUHLTWw0sRwrEJRW1xZPwOoh2rv1cnYi7GPKFHiYrCV3NSHRkSJZmA42UYA1iZv
+# 3fF9QCQNlTDY4jiC2vsa/eWt0qhups1gQXdqg8y/Zvc5cEYxF+ByataJ6fI4w5HP
+# 5WNzsVl1O+6VFlj1qjMzOyVlsHWCOIfFfc8iLoWWy+A4W00yEeHIMT2hggIdMIIC
 # GQYJKoZIhvcNAQkGMYICCjCCAgYCAQEwgYUwdzELMAkGA1UEBhMCVVMxEzARBgNV
 # BAgTCldhc2hpbmd0b24xEDAOBgNVBAcTB1JlZG1vbmQxHjAcBgNVBAoTFU1pY3Jv
 # c29mdCBDb3Jwb3JhdGlvbjEhMB8GA1UEAxMYTWljcm9zb2Z0IFRpbWUtU3RhbXAg
-# UENBAgphBRM2AAAAAAAaMAcGBSsOAwIaoF0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-# DQEHATAcBgkqhkiG9w0BCQUxDxcNMTIwNTAyMjIzMTA5WjAjBgkqhkiG9w0BCQQx
-# FgQUOAcvJ5IkV/SWIeV8JFjmgGEarr0wDQYJKoZIhvcNAQEFBQAEggEAWY6EX7Wb
-# IRwAHZn99vIxsE2bL67fFm/CC7gbqwgrHWYeELU9LO8kAGb47C6SAuTMBsBMl43W
-# 8c6RBA8B2IYHnE2xzRCpzfahuciJ0n9sh2mps3R0lbhIg95UaQJxhIuwEMu+d81m
-# 62+ZF47O2EGjsRb989qvOdp9Leoy/XDfwd0PwvAbG1164EFHO/2/J0XCywMvemM2
-# XDPAPO8P33qABFneeuMFTKrAxM2x5Jx2UA/VdwNXx0lhAZkLBi2PyYIIWHTWgJ6l
-# XS0TwGpeGjUc4uEazqPwwEjAWFu2g061jqcoSI7zWajB5gT6tDCKPTe8XSfR3Jp5
-# Z4+Vc+70qW2LtQ==
+# UENBAgphBRmWAAAAAAAbMAcGBSsOAwIaoF0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+# DQEHATAcBgkqhkiG9w0BCQUxDxcNMTIwNjI4MjA0MzM5WjAjBgkqhkiG9w0BCQQx
+# FgQU2luimdNA+66F/z6ooEia0K5OZC8wDQYJKoZIhvcNAQEFBQAEggEAPUTPALhi
+# x8qJIn6WmeZTiazQRH4/TVQHCJPDxhlaMgDUDsPwwmjrAfL/UnMz+TVi5ltSM0Hb
+# jGLfhTbaw/YcLUqztgxNq/vm0cFqU3n+rIGUBXFUwDoS6Ol6UTSoXkJVHyiOxHuU
+# Fdh33QDv9EVBbr1CQJLTs02d31Uwjg8vUt9+LDSYQWFlZH0+xsy1wStReGX4DSRz
+# QneatHmqk+Vej4/3iFKBlCJO1SPlXQLaFAUFsZr6yl6oTrpfatG6sA16/e8jjW4u
+# Kz0GzJYJ4DMVdSVGpsvVWMADsbEsjlr6yesOrN4ZDEBdv7Y3P518wK/iJ1/WdgRc
+# SA474q5bExc5pA==
 # SIG # End signature block
