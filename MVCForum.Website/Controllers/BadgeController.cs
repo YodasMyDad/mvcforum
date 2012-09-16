@@ -43,7 +43,7 @@ namespace MVCForum.Website.Controllers
             using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
             {
                 try
-                {                    
+                {
                     var post = _postService.Get(voteUpBadgeViewModel.PostId);
                     var currentUser = MembershipService.GetUser(User.Identity.Name);
 
@@ -72,10 +72,12 @@ namespace MVCForum.Website.Controllers
                 {
                     var post = _postService.Get(markAsSolutionBadgeViewModel.PostId);
 
-                    _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.User);
-                    _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.Topic.User);
+                    var badgeAwarded =_badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.User) | _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.Topic.User);
 
-                    unitOfwork.Commit();
+                    if (badgeAwarded)
+                    {
+                        unitOfwork.Commit();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -93,9 +95,13 @@ namespace MVCForum.Website.Controllers
                 try
                 {
                     var user = MembershipService.GetUser(timeBadgeViewModel.Id);
-                    _badgeService.ProcessBadge(BadgeType.Time, user);
-                    unitOfwork.Commit();
-                    //_eventService.FireAfterBadgeAwarded(user, BadgeType.Time);
+                    var badgeAwarded = _badgeService.ProcessBadge(BadgeType.Time, user);
+
+                    if (badgeAwarded)
+                    {
+                        unitOfwork.Commit();
+                    }
+                    
                 }
                 catch (Exception ex)
                 {
