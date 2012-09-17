@@ -466,15 +466,16 @@ namespace MVCForum.Services
                                 continue;
                             }
 
-                            // Instantiate the badge and execute the rule                
+                            // Instantiate the badge and execute the rule
                             var badge = GetInstance<IBadge>(badgeMapping);
 
                             // Award badge?
                             if (badge != null && badge.Rule(user, _mvcForumAPI))
                             {
                                 // Re-fetch the badge otherwise system will try and create new badges!
-                                var dbBadge = _badgeRepository.Get(badgeMapping.DbBadge.Id);
-                                user.Badges.Add(dbBadge);
+                                //var dbBadge = _badgeRepository.Get(badgeMapping.DbBadge.Id);
+                                user.Badges.Add(_badgeRepository.Get(badgeMapping.DbBadge.Id));
+
                                 badgeAwarded = true;
                                 _activityService.BadgeAwarded(badgeMapping.DbBadge, user, DateTime.Now);
 

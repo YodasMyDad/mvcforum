@@ -44,13 +44,21 @@ namespace MVCForum.Website.Controllers
             {
                 try
                 {
-                    var post = _postService.Get(voteUpBadgeViewModel.PostId);
                     var currentUser = MembershipService.GetUser(User.Identity.Name);
+                    var badgeAwardedCurrentUser = _badgeService.ProcessBadge(BadgeType.VoteUp, currentUser);
+                    if (badgeAwardedCurrentUser)
+                    {
+                        unitOfwork.SaveChanges();
+                    }
 
-                    var badgeAwarded = _badgeService.ProcessBadge(BadgeType.VoteUp, currentUser) |
-                                   _badgeService.ProcessBadge(BadgeType.VoteUp, post.User);
-                    
-                    if (badgeAwarded)
+                    var post = _postService.Get(voteUpBadgeViewModel.PostId);
+                    var badgeAwardedPostUser = _badgeService.ProcessBadge(BadgeType.VoteUp, post.User);
+                    if (badgeAwardedPostUser)
+                    {
+                        unitOfwork.SaveChanges();
+                    }
+
+                    if (badgeAwardedCurrentUser || badgeAwardedPostUser)
                     {
                         unitOfwork.Commit();
                     }
@@ -71,7 +79,6 @@ namespace MVCForum.Website.Controllers
                 try
                 {
                     var post = _postService.Get(markAsSolutionBadgeViewModel.PostId);
-
                     var badgeAwarded =_badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.User) | _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.Topic.User);
 
                     if (badgeAwarded)
