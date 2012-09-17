@@ -460,6 +460,7 @@
     <Content Include="Content\admin\Images\icons\yin-yang.png" />
     <Content Include="Content\admin\Images\icons\zone.png" />
     <Content Include="Content\badges\MemberForAYearBadge.png" />
+    <Content Include="Content\badges\MentionsUmbracoBadge.png" />
     <Content Include="Content\badges\PosterMarkAsSolutionBadge.png" />
     <Content Include="Content\badges\PosterVoteUpBadge.png" />
     <Content Include="Content\badges\UserMarkAsSolutionBadge.png" />

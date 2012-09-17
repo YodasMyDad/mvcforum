@@ -9,6 +9,7 @@ namespace MVCForum.Domain.DomainModel
         VoteUp,
         MarkAsSolution,
         Time,
+        Post
     }
 
     public class Badge : Entity
@@ -26,6 +27,7 @@ namespace MVCForum.Domain.DomainModel
                                                                 {BadgeType.VoteUp, "MVCForum.Domain.Interfaces.Badges.IVoteUpBadge"},
                                                                 {BadgeType.MarkAsSolution, "MVCForum.Domain.Interfaces.Badges.IMarkAsSolutionBadge"},
                                                                 {BadgeType.Time, "MVCForum.Domain.Interfaces.Badges.ITimeBadge"},
+                                                                {BadgeType.Post, "MVCForum.Domain.Interfaces.Badges.IPostBadge"}
                                                             };
 
         public Guid Id { get; set; }

@@ -7,7 +7,7 @@
     // SEO Stuff
     ViewBag.Title = AppHelpers.CreatePageTitle(Model.Topic, Html.LanguageString("Topic.TitleFallBack"));
     var totalCount = Convert.ToInt32(Model.TotalCount);
-    ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
+    ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));    
 
     // Email subscription
     var subScribe = string.Empty;
@@ -26,6 +26,9 @@
     TempData[AppConstants.DefaultCategoryViewBagName] = Model.Topic.Category.Id;
 }
 
+@section Header
+{
+}
 
 @section side
 {

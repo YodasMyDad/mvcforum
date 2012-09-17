@@ -14,6 +14,11 @@ namespace MVCForum.Website.ViewModels
         public Guid PostId { get; set; }
     }
 
+    public class PostBadgeViewModel
+    {
+        public Guid PostId { get; set; }
+    }
+
     public class TimeBadgeViewModel
     {
         public Guid Id { get; set; }

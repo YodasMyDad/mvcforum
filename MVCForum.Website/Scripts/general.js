@@ -177,6 +177,12 @@ $(function () {
         e.preventDefault();
         e.stopImmediatePropagation();
     });
+    
+    // Some manual ajax badge checks
+    if ($.QueryString["postbadges"] == "true") {
+        // Do a post badge check
+        UserPost();
+    }
 
 });
 
@@ -202,7 +208,7 @@ function BadgeMarkAsSolution(postId) {
         data: strung,
         contentType: 'application/json; charset=utf-8',
         success: function (data) {
-
+            // No need to do anything
         },
         error: function (xhr, ajaxOptions, thrownError) {
             ShowUserMessage("Error: " + xhr.status + " " + thrownError);
@@ -226,13 +232,29 @@ function BadgeVoteUp(postId) {
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
-                
+                // No need to do anything
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 ShowUserMessage("Error: " + xhr.status + " " + thrownError);
             }
         });
-    }
+}
+
+function UserPost() {
+
+    $.ajax({
+        url: '/Badge/Post',
+        type: 'POST',
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        success: function (data) {
+            // No need to do anything
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+        }
+    });
+}
 
 function MarkAsSolution(solutionHolder) {
     $(solutionHolder).removeClass("issolution");
@@ -283,6 +305,9 @@ function AjaxPostSuccess() {
 
     // Re-enable the button
     $('#createpostbutton').attr("disabled", false);
+    
+    // Finally do an async badge check
+    UserPost();
 }
 
 function AjaxPostBegin() {
@@ -293,3 +318,16 @@ function AjaxPostError(message) {
     ShowUserMessage(message);
     $('#createpostbutton').attr("disabled", false);
 }
+
+(function ($) {
+    $.QueryString = (function(a) {
+        if (a == "") return { };
+        var b = { };
+        for (var i = 0; i < a.length; ++i) {
+            var p = a[i].split('=');
+            if (p.length != 2) continue;
+            b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+        }
+        return b;
+    })(window.location.search.substr(1).split('&'));
+})(jQuery);

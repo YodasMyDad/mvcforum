@@ -72,6 +72,32 @@ namespace MVCForum.Website.Controllers
         }
 
         [HttpPost]
+        public void Post()
+        {
+            if(Request.IsAjaxRequest())
+            {
+                using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
+                {
+                    try
+                    {
+                        var currentUser = MembershipService.GetUser(User.Identity.Name);
+                        var badgeAwardedCurrentUser = _badgeService.ProcessBadge(BadgeType.Post, currentUser);
+
+                        if (badgeAwardedCurrentUser)
+                        {
+                            unitOfwork.Commit();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfwork.Rollback();
+                        LoggingService.Error(ex);
+                    }
+                }   
+            }
+        }
+
+        [HttpPost]
         public void MarkAsSolution(MarkAsSolutionBadgeViewModel markAsSolutionBadgeViewModel)
         {
             using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
