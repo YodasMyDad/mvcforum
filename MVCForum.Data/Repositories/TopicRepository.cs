@@ -38,7 +38,6 @@ namespace MVCForum.Data.Repositories
 
         public Topic Add(Topic topic)
         {
-            topic.Id = GuidComb.GenerateComb();
             _context.Topic.Add(topic);
             return topic;
         }

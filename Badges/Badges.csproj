@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PostContent\PostMentionsUmbraco.cs" />
     <Compile Include="Solution\AuthorMarkAsSolutionBadge.cs">
       <SubType>Code</SubType>
     </Compile>

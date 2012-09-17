@@ -2,7 +2,7 @@
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class LogEntry : Entity
+    public class LogEntry
     {
         public DateTime Date { get; set; }
         public string Module { get; set;}

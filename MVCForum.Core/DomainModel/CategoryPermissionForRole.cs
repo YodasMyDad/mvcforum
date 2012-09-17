@@ -1,9 +1,14 @@
 ﻿using System;
+using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
     public class CategoryPermissionForRole : Entity
     {
+        public CategoryPermissionForRole()
+        {
+            Id = GuidComb.GenerateComb();
+        }
         public Guid Id { get; set; }
         public virtual Permission Permission { get; set; }
         public virtual MembershipRole MembershipRole { get; set; }

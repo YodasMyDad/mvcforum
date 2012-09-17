@@ -88,7 +88,6 @@ namespace MVCForum.Services
             {
                 var resourceValue = new LocaleStringResource
                 {
-                    Id = GuidComb.GenerateComb(),
                     Language = language,
                     LocaleResourceKey = newLocaleResourceKey,
                     ResourceValue = string.Empty
@@ -121,7 +120,6 @@ namespace MVCForum.Services
             {
                 var localeStringResource = new LocaleStringResource
                 {
-                    Id = GuidComb.GenerateComb(),
                     Language = language,
                     LocaleResourceKey = localeResourceKey,
                     ResourceValue = string.Empty
@@ -581,7 +579,6 @@ namespace MVCForum.Services
                     {
                         resourceKey = new LocaleResourceKey
                                           {
-                                              Id = GuidComb.GenerateComb(),
                                               Name = key,
                                               DateAdded = DateTime.Now,
                                           };

@@ -85,7 +85,7 @@ namespace MVCForum.Services
             var imageAtt = GetAttribute<ImageAttribute>(classType);
             var displayNameAtt = GetAttribute<DisplayNameAttribute>(classType);
             
-            return new Badge
+            var badge = new Badge
             {
                 Id = idAtt.Id,
                 Name = nameAtt.Name,
@@ -95,6 +95,7 @@ namespace MVCForum.Services
                 Users = new List<MembershipUser>(),
                 Type = badgeType.ToString().TrimEnd(),
             };
+            return badge;
         }
 
         /// <summary>

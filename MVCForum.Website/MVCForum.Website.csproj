@@ -898,6 +898,10 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Badges\Badges.csproj">
+      <Project>{72cb63cc-41b2-495a-86f7-f233a8a6c0b0}</Project>
+      <Name>Badges</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EFProvider Wrappers\EFCachingProvider.Web\EFCachingProvider.Web.csproj">
       <Project>{5E373803-C182-47CF-AA62-254BD4CECE32}</Project>
       <Name>EFCachingProvider.Web</Name>

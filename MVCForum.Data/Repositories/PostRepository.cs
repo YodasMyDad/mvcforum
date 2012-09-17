@@ -114,7 +114,6 @@ namespace MVCForum.Data.Repositories
 
         public Post Add(Post post)
         {
-            post.Id = GuidComb.GenerateComb();
             return _context.Post.Add(post);
         }
 

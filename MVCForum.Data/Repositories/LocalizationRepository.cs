@@ -110,7 +110,6 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public Language Add(Language language)
         {
-            language.Id = GuidComb.GenerateComb();
             _context.Language.Add(language);
             return language;
         }
@@ -313,7 +312,6 @@ namespace MVCForum.Data.Repositories
         /// <param name="newLocaleResourceKey"></param>
         public LocaleResourceKey Add(LocaleResourceKey newLocaleResourceKey)
         {
-            newLocaleResourceKey.Id = GuidComb.GenerateComb();
             _context.LocaleResourceKey.Add(newLocaleResourceKey);
             return newLocaleResourceKey;
         }
@@ -324,7 +322,6 @@ namespace MVCForum.Data.Repositories
         /// <param name="newLocaleStringResource"></param>
         public LocaleStringResource Add(LocaleStringResource newLocaleStringResource)
         {
-            newLocaleStringResource.Id = GuidComb.GenerateComb();
             _context.LocaleStringResource.Add(newLocaleStringResource);
             return newLocaleStringResource;
         }

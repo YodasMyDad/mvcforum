@@ -25,7 +25,6 @@ namespace MVCForum.Data.Repositories
 
         public CategoryPermissionForRole Add(CategoryPermissionForRole categoryPermissionForRole)
         {
-            categoryPermissionForRole.Id = GuidComb.GenerateComb();
             return _context.CategoryPermissionForRole.Add(categoryPermissionForRole);
         }
 

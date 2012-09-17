@@ -131,7 +131,6 @@ namespace MVCForum.Data.Repositories
         /// <param name="newUser"></param>
         public MembershipUser Add(MembershipUser newUser)
         {
-            newUser.Id = GuidComb.GenerateComb();
             return _context.MembershipUser.Add(newUser);
         }
 

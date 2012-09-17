@@ -1,4 +1,5 @@
 ﻿using System;
+using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel.Activity
 {
@@ -11,9 +12,13 @@ namespace MVCForum.Domain.DomainModel.Activity
 
     public class Activity : Entity
     {
-        public virtual Guid Id { get; set; }
-        public virtual string Type { get; set; }
-        public virtual string Data { get; set; }
-        public virtual DateTime Timestamp { get; set; }
+        public Activity()
+        {
+            Id = GuidComb.GenerateComb();
+        }
+        public Guid Id { get; set; }
+        public string Type { get; set; }
+        public string Data { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 }

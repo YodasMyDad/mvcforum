@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
@@ -27,6 +28,10 @@ namespace MVCForum.Domain.DomainModel
     /// </summary>
     public class MembershipUser : Entity
     {
+        public MembershipUser()
+        {
+            Id = GuidComb.GenerateComb();
+        }
         public Guid Id { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }

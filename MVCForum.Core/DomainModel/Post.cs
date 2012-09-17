@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
     public class Post : Entity
     {
+        public Post()
+        {
+            Id = GuidComb.GenerateComb();
+        }
         public Guid Id { get; set; }
         public string PostContent { get; set; }
         public DateTime DateCreated { get; set; }

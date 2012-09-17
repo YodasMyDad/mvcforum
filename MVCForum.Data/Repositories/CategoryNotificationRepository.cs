@@ -47,7 +47,6 @@ namespace MVCForum.Data.Repositories
 
         public CategoryNotification Add(CategoryNotification category)
         {
-            category.Id = GuidComb.GenerateComb();
             return _context.CategoryNotification.Add(category);
         }
 

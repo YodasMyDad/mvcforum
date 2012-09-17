@@ -46,7 +46,6 @@ namespace MVCForum.Data.Repositories
 
         public MembershipRole Add(MembershipRole item)
         {
-            item.Id = GuidComb.GenerateComb();
             return _context.MembershipRole.Add(item);
         }
 

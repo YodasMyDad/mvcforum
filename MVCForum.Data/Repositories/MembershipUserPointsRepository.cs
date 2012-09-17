@@ -28,7 +28,6 @@ namespace MVCForum.Data.Repositories
 
         public MembershipUserPoints Add(MembershipUserPoints points)
         {
-            points.Id = GuidComb.GenerateComb();
             _context.MembershipUserPoints.Add(points);
             return points;
         }

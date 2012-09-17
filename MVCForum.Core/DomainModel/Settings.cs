@@ -1,9 +1,14 @@
 ﻿using System;
+using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
     public class Settings : Entity
     {
+        public Settings()
+        {
+            Id = GuidComb.GenerateComb();
+        }
         public Guid Id { get; set; }
         public string ForumName { get; set; }
         public string ForumUrl { get; set; }

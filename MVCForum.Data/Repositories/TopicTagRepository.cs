@@ -86,7 +86,6 @@ namespace MVCForum.Data.Repositories
 
         public TopicTag Add(TopicTag topicTag)
         {
-            topicTag.Id = GuidComb.GenerateComb();
             _context.TopicTag.Add(topicTag);
             return topicTag;
         }

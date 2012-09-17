@@ -24,7 +24,6 @@ namespace MVCForum.Data.Repositories
 
         public Vote Add(Vote item)
         {
-            item.Id = GuidComb.GenerateComb();
             _context.Vote.Add(item);
             return item;
         }

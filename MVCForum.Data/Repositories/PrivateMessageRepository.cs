@@ -92,7 +92,6 @@ namespace MVCForum.Data.Repositories
 
         public PrivateMessage Add(PrivateMessage item)
         {
-            item.Id = GuidComb.GenerateComb();
             return _context.PrivateMessage.Add(item);
         }
 

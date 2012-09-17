@@ -65,7 +65,6 @@ namespace MVCForum.Data.Repositories
 
         public Category Add(Category category)
         {
-            category.Id = GuidComb.GenerateComb();
             _context.Category.Add(category);
             return category;
         }

@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
     public class Category : Entity
     {
+        public Category()
+        {
+            Id = GuidComb.GenerateComb();
+        }
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }

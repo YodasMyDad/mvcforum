@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
     public class MembershipRole : Entity
     {
+        public MembershipRole()
+        {
+            Id = GuidComb.GenerateComb();
+        }
+
         public Guid Id { get; set; }
         public string RoleName { get; set; }
         public virtual IList<MembershipUser> Users { get; set; }

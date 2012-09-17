@@ -29,7 +29,6 @@ namespace MVCForum.Data.Repositories
 
         public Permission Add(Permission permission)
         {
-            permission.Id = GuidComb.GenerateComb();
             return _context.Permission.Add(permission);
         }
 

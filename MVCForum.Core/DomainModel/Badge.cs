@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
@@ -12,6 +13,11 @@ namespace MVCForum.Domain.DomainModel
 
     public class Badge : Entity
     {
+        public Badge()
+        {
+            Id = GuidComb.GenerateComb();
+        }
+
         /// <summary>
         /// Specifies the target badge interface names matched to the corresponding badge type
         /// </summary>

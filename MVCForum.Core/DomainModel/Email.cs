@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class Email : Entity
+    public class Email
     {
         public string EmailTo { get; set; }
         public string EmailFrom { get; set; }

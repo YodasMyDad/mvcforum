@@ -39,7 +39,6 @@ namespace MVCForum.Data.Repositories
         /// <param name="newActivity"></param>
         public Activity Add(Activity newActivity)
         {
-            newActivity.Id = GuidComb.GenerateComb();
             return _context.Activity.Add(newActivity);
         }
 

@@ -53,7 +53,6 @@ namespace MVCForum.Data.Repositories
 
         public TopicNotification Add(TopicNotification topicNotification)
         {
-            topicNotification.Id = GuidComb.GenerateComb();
             return _context.TopicNotification.Add(topicNotification);
         }
 
