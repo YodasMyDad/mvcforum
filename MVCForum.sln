@@ -27,6 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{44
 	ProjectSection(SolutionItems) = preProject
 		Db\mvcforum-beta-db.sql = Db\mvcforum-beta-db.sql
 		ReadMe.txt = ReadMe.txt
+		VersionDbChanges.txt = VersionDbChanges.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{9C8E5C1C-3A0A-4B45-BEB5-3D890C8FE117}"

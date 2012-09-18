@@ -1,0 +1,35 @@
+==============================
+============ v1.0 ============
+==============================
+
+N/A
+
+==============================
+============ v1.1 ============
+==============================
+
+Added primary key to Activity Table 'Id' field
+
+Added primary key to BadgeTypeTimeLastChecked Table 'Id' field
+
+Added new table 'Poll'
+---- Id (Guid) PK
+---- Question (nvarchar(max))
+---- IsClosed (bit)
+---- MembershipUser_Id (Guid)
+---- DateCreated (DateTime)
+++++ FK_Poll_MembershipUser
+
+Added new table 'PollAnswer'
+---- Id (Guid) PK
+---- Answer (nvarchar(600))
+---- Poll_Id (Guid)
+++++ FK_PollAnswer_Poll
+
+Added new table 'PollVote'
+---- Id (Guid) PK
+---- MembershipUser_Id (Guid)
+---- PollAnswer_Id (Guid)
+++++ FK_PollVote_MembershipUser
+++++ FK_PollVote_PollAnswer
+

@@ -61,6 +61,9 @@
     <Compile Include="Mapping\CategoryMapping.cs" />
     <Compile Include="Mapping\CategoryNotificationMapping.cs" />
     <Compile Include="Mapping\CategoryPermissionForRoleMapping.cs" />
+    <Compile Include="Mapping\PollAnswerMapping.cs" />
+    <Compile Include="Mapping\PollMapping.cs" />
+    <Compile Include="Mapping\PollVoteMapping.cs" />
     <Compile Include="Mapping\TopicNotificationMapping.cs" />
     <Compile Include="Mapping\TopicTagMapping.cs" />
     <Compile Include="Mapping\VoteMapping.cs" />

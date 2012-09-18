@@ -26,6 +26,14 @@ namespace MVCForum.Data.Mapping
                .Map(x => x.MapKey("MembershipUser_Id"))
                 .WillCascadeOnDelete();
 
+            HasMany(x => x.Polls).WithRequired(x => x.User)
+               .Map(x => x.MapKey("MembershipUser_Id"))
+                .WillCascadeOnDelete();
+
+            HasMany(x => x.PollVotes).WithRequired(x => x.User)
+               .Map(x => x.MapKey("MembershipUser_Id"))
+                .WillCascadeOnDelete();
+
             HasMany(x => x.CategoryNotifications).WithRequired(x => x.User)
                .Map(x => x.MapKey("MembershipUser_Id"))
                 .WillCascadeOnDelete();

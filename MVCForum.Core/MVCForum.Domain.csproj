@@ -58,6 +58,7 @@
     <Compile Include="DomainModel\CategoryNotification.cs" />
     <Compile Include="DomainModel\BadgeTypeTimeLastChecked.cs" />
     <Compile Include="DomainModel\Activity\Activity.cs" />
+    <Compile Include="DomainModel\Poll.cs" />
     <Compile Include="DomainModel\PrivateMessage.cs" />
     <Compile Include="DomainModel\Report.cs" />
     <Compile Include="DomainModel\TopicNotification.cs" />
@@ -148,6 +149,8 @@
     <Compile Include="Interfaces\UnitOfWork\IUnitOfWork.cs" />
     <Compile Include="Interfaces\UnitOfWork\IUnitOfWorkManager.cs" />
     <Compile Include="LocalizedString.cs" />
+    <Compile Include="DomainModel\PollAnswer.cs" />
+    <Compile Include="DomainModel\PollVote.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UrlTypes.cs" />
   </ItemGroup>

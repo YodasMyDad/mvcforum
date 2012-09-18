@@ -70,6 +70,9 @@ namespace MVCForum.Domain.DomainModel
         public virtual IList<PrivateMessage> PrivateMessagesReceived { get; set; }
         public virtual IList<PrivateMessage> PrivateMessagesSent { get; set; }
 
+        public virtual IList<Poll> Polls { get; set; }
+        public virtual IList<PollVote> PollVotes { get; set; } 
+
         public int TotalPoints 
         { 
             get {
