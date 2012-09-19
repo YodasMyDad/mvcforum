@@ -65,6 +65,7 @@
         public const int DefaultCacheLengthInSeconds = 600;
 
         public const string InstallerName = "YesImAnInstallerSpankMe";
+        public const string InMobileView = "InMobileView";
 
     }
 }

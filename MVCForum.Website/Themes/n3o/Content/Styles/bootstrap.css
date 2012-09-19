@@ -78,14 +78,31 @@ a:hover { color: #005580; text-decoration: underline; }
 .offset3 { margin-left: 260px; }
 .offset2 { margin-left: 180px; }
 .offset1 { margin-left: 100px; }
-.row-fluid { width: 100%;  *zoom: 1;
-}
+
+.mobileview .row { width: 100%;  *zoom: 1;}
+.mobileview .row:before, .mobileview .row:after { display: table; content: ""; }
+.mobileview .row:after { clear: both; }
+.mobileview .row > [class*="span"] {float: left;margin-left: 2.127659574%;}
+.mobileview .row > [class*="span"]:first-child { margin-left: 0; }
+.mobileview .row > .span12 { width: 99.99999998999999%; }
+.mobileview .row > .span11 { width: 91.489361693%; }
+.mobileview .row > .span10 { width: 82.97872339599999%; }
+.mobileview .row > .span9 { width: 74.468085099%; }
+.mobileview .row > .span8 { width: 65.95744680199999%; }
+.mobileview .row > .span7 { width: 57.446808505%; }
+.mobileview .row > .span6 { width: 48.93617020799999%; }
+.mobileview .row > .span5 { width: 40.425531911%; }
+.mobileview .row > .span4 { width: 31.914893614%; }
+.mobileview .row > .span3 { width: 23.404255317%; }
+.mobileview .row > .span2 { width: 14.89361702%; }
+.mobileview .row > .span1 { width: 6.382978723%; }
+
+.row-fluid { width: 100%;  *zoom: 1;}
 .row-fluid:before, .row-fluid:after { display: table; content: ""; }
 .row-fluid:after { clear: both; }
 .row-fluid > [class*="span"] {
  float: left;
- margin-left: 2.127659574%;
-}
+ margin-left: 2.127659574%;}
 .row-fluid > [class*="span"]:first-child { margin-left: 0; }
 .row-fluid > .span12 { width: 99.99999998999999%; }
 .row-fluid > .span11 { width: 91.489361693%; }

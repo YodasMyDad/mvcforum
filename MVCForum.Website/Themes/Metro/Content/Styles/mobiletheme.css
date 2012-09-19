@@ -1,0 +1,67 @@
+﻿h1,h2,h3,h4,h5,h6{font-family:Calibri, Arial, Helvetica, sans-serif;}
+
+/*--- Overide styles for mobile view ---*/
+.mobileview {}
+
+/*--- Topic Rows ---*/
+.mobileview .topicrow {}
+.mobileview .topicrow .row {}
+.mobileview .topicrow .row .topicstats {} 
+.mobileview .topicrow .row .topicstats .topicstatsblock {}
+.mobileview .topicrow .row .topicstats .topicstatsblock .topicvotes {}
+.mobileview .topicrow .row .topicstats .topicstatsblock .topiccomments {}
+.mobileview .topicrow .row .topicstats .topicstatsblock .topiccomments span {}
+.mobileview .topicrow .row .topicstats .topicviews {} 
+.mobileview .topicrow .row .topicrowdetails {}
+.mobileview .topicrow .row .topicrecent {}
+.mobileview .topicrow .row .topicrecent .topicrecenttitle {}
+.mobileview .topicrow .row .topicrecent .topicrecentavatar {}
+.mobileview .topicrow .row .topicrecent .topicrecentavatar img {}
+.mobileview .topicrow .row .topicrecent .topicrecentdate {}
+
+/*--- Post Rows ---*/
+.mobileview .post {}
+.mobileview .post .postmemberdetails{}
+.mobileview .post .postmemberdetails .karmaholder{}
+.mobileview .post .postmemberdetails .karmaholder .karmascore{}
+.mobileview .post .postbody {}
+.mobileview .post .postbody .postbodytop {}
+.mobileview .post .postbody .postbodytop a, .mobileview .post .postbody .postbodytop a:visited {}
+.mobileview .post .postbody .postbodytop a:hover {}
+.mobileview .post .postbody .postcontent {}
+.mobileview .post .postbody .postcontent p {} 
+.mobileview .post .postkarmaouter {}
+.mobileview .post .postkarmaouter .postadminui {}
+.mobileview .post .postkarmaouter .postmemberdetailsinner {}
+.mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberavatar {}
+.mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberavatar img {}
+.mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberposts {}
+.mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberposts span {}
+.mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberkarma {}
+.mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberkarma span {}
+
+/*--- Main Nav ---*/
+.mobileview .mobilenavbar {}
+.mobileview .mobilenavbar .mobilenavbar-inner{}
+.mobileview .mobilenavbar .mobilenavbar-inner ul.nav {}
+.mobileview .mobilenavbar .mobilenavbar-inner ul.nav li {}
+.mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a, .mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a:visited {}
+.mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a:hover {}
+
+/*--- Footer ---*/
+.mobileview .footerstats {}
+.mobileview .footerstats ul.latestmembersjoined {}
+.mobileview .footerstats ul.latestmembersjoined li.latestmemberheading {}
+.mobileview .footerstats ul.latestmembersjoined li {}
+.mobileview .footerstats ul.latestmembersjoined li a, .mobileview .footerstats ul.latestmembersjoined li a:visited {}
+.mobileview .footerstats ul.latestmembersjoined li a:hover {}
+
+/*--- Bottom Side Nav ---*/
+.mobileview .bottomsidenav {}
+.mobileview .bottomsidenav .sidelayoutsection {}
+.mobileview .bottomsidenav .sidelayoutsection .main-side-box {}
+.mobileview .bottomsidenav .sidelayoutsection .main-side-box .side-box {}
+.mobileview .bottomsidenav .sidelayoutsection .main-side-box .categories-box {}
+.mobileview .bottomsidenav .sidelayoutsection .main-side-box .popular-tags-box {}
+.mobileview .bottomsidenav .sidelayoutsection .main-side-box .sidesearchbox {}
+.mobileview .bottomsidenav .sidelayoutsection .main-side-box .highearners-box {}

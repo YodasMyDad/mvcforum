@@ -4,7 +4,7 @@
 @using MVCForum.Domain.Interfaces.Services
 
 @{
-    // Credit where credit is due, this is lifted from Funnel Web MVC
+    // Credit where credit is due, this is mainly lifted from Funnel Web MVC
     // http://www.funnelweblog.com/
 
     if (ViewContext.TempData[AppConstants.InstallerName] != null)
@@ -16,12 +16,15 @@
         var layoutName = "_Layout";
         Layout = "~/Views/Shared/" + layoutName + ".cshtml";
 
-        ////TODO: Add mobile view
-        //if (Context.IsMobileDevice())
-        //{
-        //    layoutName = "_Mobile";
-        //    Layout = "~/Views/Shared/" + layoutName + ".cshtml";
-        //}
+        // If this is a mobile device use the mobile layout
+        // Swap the lines below for testing
+        //var isMobileUser = true;
+        var isMobileUser = Context.IsMobileDevice();
+        if (isMobileUser)
+        {
+            layoutName = "_Mobile";
+            Layout = "~/Views/Shared/" + layoutName + ".cshtml";
+        }
 
         var currentTheme = DependencyResolver.Current.GetService<ISettingsService>().GetSettings().Theme;
 

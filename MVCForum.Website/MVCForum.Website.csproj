@@ -477,6 +477,8 @@
     <Content Include="Content\Images\mail-add.png" />
     <Content Include="Content\Images\mail-delete.png" />
     <Content Include="Content\Images\rss-icon.png" />
+    <Content Include="Content\Styles\Mobile\bootstrap.css" />
+    <Content Include="Content\Styles\Mobile\theme.css" />
     <Content Include="Installer\Content\arrow-spinner-blue.gif" />
     <Content Include="Installer\Content\Images\glyphicons\glyphicons_009_magic.png" />
     <Content Include="Installer\Content\Images\glyphicons\glyphicons_042_group.png" />
@@ -793,8 +795,10 @@
     <Content Include="Themes\Metro\Content\Images\rss-icon.png" />
     <Content Include="Themes\Metro\Content\Images\solve-tick.png" />
     <Content Include="Themes\Metro\Content\Images\up-arrow.png" />
+    <Content Include="Themes\Metro\Content\Scripts\mobilegeneral.js" />
     <Content Include="Themes\Metro\Content\Scripts\general.js" />
     <Content Include="Themes\Metro\Content\Styles\bootstrap.css" />
+    <Content Include="Themes\Metro\Content\Styles\mobiletheme.css" />
     <Content Include="Themes\Metro\Content\Styles\Theme.css" />
     <Content Include="Themes\n3o\Content\Images\admin-n3o-logo.png" />
     <Content Include="Themes\n3o\Content\Images\apple-touch-icon-57-precomposed.png" />
@@ -898,6 +902,7 @@
     <Content Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\Images\Mobile\" />
     <Folder Include="Themes\n3o\Views\Shared\" />
     <Folder Include="Views\Extensions\" />
   </ItemGroup>
@@ -1192,6 +1197,7 @@
     <Content Include="Views\Shared\_Install.cshtml" />
     <Content Include="Views\Install\CreateDb.cshtml" />
     <Content Include="Views\Install\Complete.cshtml" />
+    <Content Include="Views\Shared\_Mobile.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
