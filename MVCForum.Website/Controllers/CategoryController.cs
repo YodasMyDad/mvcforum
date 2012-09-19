@@ -83,7 +83,7 @@ namespace MVCForum.Website.Controllers
 
                     var topics = _topicService.GetPagedTopicsByCategory(pageIndex,
                                                                         SettingsService.GetSettings().TopicsPerPage,
-                                                                        AppConstants.ActiveTopicsListSize, category.Id);
+                                                                        int.MaxValue, category.Id);
 
                     var isSubscribed = LoggedOnUser != null && (_categoryNotificationService.GetByUserAndCategory(LoggedOnUser, category).Any());
 

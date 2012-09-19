@@ -16,6 +16,7 @@ namespace MVCForum.Website.Controllers
     public class TopicController : BaseController
     {
         private readonly ITopicService _topicService;
+        private readonly IPostService _postService;
         private readonly ITopicTagService _topicTagService;
         private readonly ICategoryService _categoryService;
         private readonly ICategoryNotificationService _categoryNotificationService;
@@ -23,12 +24,13 @@ namespace MVCForum.Website.Controllers
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly IEmailService _emailService;
 
-        public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService,
+        public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
             ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
+            _postService = postService;
             _categoryService = categoryService;
             _topicTagService = topicTagService;
             _membershipUserPointsService = membershipUserPointsService;
@@ -188,11 +190,19 @@ namespace MVCForum.Website.Controllers
 
                 if (topic != null)
                 {
-                    // Get all the posts in this topic and put into a full paged list
-                    var posts = new PagedFullList<Post>(topic.Posts.OrderBy(x => x.DateCreated),
-                                            pageIndex,
-                                            SettingsService.GetSettings().PostsPerPage,
-                                            topic.Posts.Count());
+                    // Note: Don't use topic.Posts as its not a very efficient SQL statement
+                    // Use the post service to get them as it includes other used entities in one
+                    // statement rather than loads of sql selects
+                    // --- Get all the posts in this topic and put into a full paged list
+                    //var posts = new PagedFullList<Post>(topic.Posts.OrderBy(x => x.DateCreated),
+                    //                        pageIndex,
+                    //                        SettingsService.GetSettings().PostsPerPage,
+                    //                        topic.Posts.Count());
+
+                    var posts = _postService.GetPagedPostsByTopic(pageIndex,
+                                                                  SettingsService.GetSettings().PostsPerPage,
+                                                                  int.MaxValue, 
+                                                                  topic.Id);
 
                     // Get the permissions for the category that this topic is in
                     var permissions = RoleService.GetPermissions(topic.Category, UsersRole);

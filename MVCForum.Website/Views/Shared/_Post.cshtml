@@ -13,7 +13,7 @@
         <div class="karmaholder">
             
             @if(Html.Settings().EnablePoints)
-            {
+            {                
                 if (allowedToVote)
                 {
                     <div class="postkarmathumbs-@postId">
@@ -34,7 +34,7 @@
             
             @if (!Model.Post.IsTopicStarter && Html.Settings().EnableMarkAsSolution && Model.ParentTopic.User.Id == loggedOnUserId)
             {
-                var showTick = !(Model.ParentTopic.Solved && !Model.Post.IsSolution);                
+                var showTick = !(Model.ParentTopic.Solved && !Model.Post.IsSolution);
 
                 if (showTick)
                 {

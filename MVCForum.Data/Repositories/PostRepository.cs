@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using MVCForum.Data.Context;
+using System.Data.Entity;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
@@ -27,6 +28,7 @@ namespace MVCForum.Data.Repositories
         public IList<Post> GetLowestVotedPost(int amountToTake)
         {
             return _context.Post
+                .Include(x => x.Votes)
                 .Where(x => x.VoteCount < 0)
                 .OrderByDescending(x => x.VoteCount)
                 .Take(amountToTake)
@@ -71,6 +73,31 @@ namespace MVCForum.Data.Repositories
                 .Where(x => x.Topic.Id == topicId)
                 .OrderByDescending(x => x.DateCreated)
                 .ToList();
+        }
+
+        public PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId)
+        {
+            // We might only want to display the top 100
+            // but there might not be 100 topics
+            var total = _context.Post.Count(x => x.Topic.Id == topicId);
+            if (amountToTake < total)
+            {
+                total = amountToTake;
+            }
+
+            // Get the topics using an efficient
+            var results = _context.Post
+                                .Include(x => x.User)
+                                .Include(x => x.User.Posts)
+                                .Include(x => x.Topic)
+                                .Where(x => x.Topic.Id == topicId)
+                                .OrderByDescending(x => x.DateCreated)
+                                .Skip((pageIndex - 1) * pageSize)
+                                .Take(pageSize)
+                                .ToList();
+
+            // Return a paged list
+            return new PagedList<Post>(results, pageIndex, pageSize, total);
         }
 
         public IList<Post> GetPostsByMember(Guid memberId)

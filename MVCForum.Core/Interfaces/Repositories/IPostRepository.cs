@@ -12,6 +12,7 @@ namespace MVCForum.Domain.Interfaces.Repositories
         IList<Post> GetByMember(Guid memberId, int amountToTake);
         IList<Post> GetSolutionsByMember(Guid memberId);
         IList<Post> GetPostsByTopic(Guid topicId);
+        PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId);
         IList<Post> GetPostsByMember(Guid memberId);
         IList<Post> GetAllSolutionPosts();
         PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm); 

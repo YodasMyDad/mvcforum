@@ -80,11 +80,32 @@ namespace MVCForum.Services
             return _postRepository.GetByMember(memberId, amountToTake);
         }
 
+        /// <summary>
+        /// Returns a paged list of posts by a search term
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="amountToTake"></param>
+        /// <param name="searchTerm"></param>
+        /// <returns></returns>
         public PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm)
         {
             var search = StringUtils.SafePlainText(searchTerm);
 
             return _postRepository.SearchPosts(pageIndex, pageSize, amountToTake, search);
+        }
+
+        /// <summary>
+        /// Returns a paged list of posts by a topic id
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="amountToTake"></param>
+        /// <param name="topicId"></param>
+        /// <returns></returns>
+        public PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId)
+        {
+            return _postRepository.GetPagedPostsByTopic(pageIndex, pageSize, amountToTake, topicId);
         }
 
         /// <summary>
@@ -97,6 +118,10 @@ namespace MVCForum.Services
             return _api.Post.GetSolutionsWrittenByMember(memberId);
         }
 
+        /// <summary>
+        /// Returns a count of all posts
+        /// </summary>
+        /// <returns></returns>
         public int PostCount()
         {
             return _postRepository.PostCount();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Data.Entity;
 using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
@@ -23,17 +24,26 @@ namespace MVCForum.Data.Repositories
             _context = context as MVCForumContext;
         }
 
+        /// <summary>
+        /// Get all topics
+        /// </summary>
+        /// <returns></returns>
         public IList<Topic> GetAll()
         {
             return _context.Topic.ToList();
         }
 
+        /// <summary>
+        /// Get the highest viewed topics
+        /// </summary>
+        /// <param name="amountToTake"></param>
+        /// <returns></returns>
         public IList<Topic> GetHighestViewedTopics(int amountToTake)
         {
             return _context.Topic
-                .OrderByDescending(x => x.Views)
-                .Take(amountToTake)
-                .ToList();
+                            .OrderByDescending(x => x.Views)
+                            .Take(amountToTake)
+                            .ToList();
         }
 
         public Topic Add(Topic topic)
@@ -44,7 +54,11 @@ namespace MVCForum.Data.Repositories
 
         public Topic Get(Guid id)
         {
-            return _context.Topic.FirstOrDefault(x => x.Id == id);
+            return _context.Topic
+                            .Include(x => x.Posts)
+                            .Include(x => x.LastPost)
+                            .Include(x => x.LastPost.User)
+                            .FirstOrDefault(x => x.Id == id);
         }
 
         public void Delete(Topic item)
@@ -59,7 +73,7 @@ namespace MVCForum.Data.Repositories
             {
                 throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
             }
-            _context.Entry(item).State = EntityState.Modified;  
+            _context.Entry(item).State = EntityState.Modified;
         }
 
         public PagedList<Topic> GetRecentTopics(int pageIndex, int pageSize, int amountToTake)
@@ -74,11 +88,14 @@ namespace MVCForum.Data.Repositories
             }
 
             // Get the topics using an efficient
-            var results = _context.Topic                            
-                            .OrderByDescending(x => x.LastPost.DateCreated)
-                            .Skip((pageIndex - 1) * pageSize)
-                            .Take(pageSize)
-                            .ToList();
+            var results = _context.Topic
+                                .Include(x => x.Posts)
+                                .Include(x => x.LastPost)
+                                .Include(x => x.LastPost.User)
+                                .OrderByDescending(x => x.LastPost.DateCreated)
+                                .Skip((pageIndex - 1) * pageSize)
+                                .Take(pageSize)
+                                .ToList();
 
             // Return a paged list
             return new PagedList<Topic>(results, pageIndex, pageSize, total);
@@ -88,9 +105,12 @@ namespace MVCForum.Data.Repositories
         {
             // Get the topics using an efficient
             var results = _context.Topic
-                .OrderByDescending(s => s.CreateDate)
-                .Take(amountToTake)
-                .ToList();
+                                .Include(x => x.Posts)
+                                .Include(x => x.LastPost)
+                                .Include(x => x.LastPost.User)
+                                .OrderByDescending(s => s.CreateDate)
+                                .Take(amountToTake)
+                                .ToList();
             return results;
         }
 
@@ -98,16 +118,19 @@ namespace MVCForum.Data.Repositories
         {
             // Get the topics using an efficient
             var results = _context.Topic
-                .Where(x => x.User.Id == memberId)
-                .ToList();
+                                .Where(x => x.User.Id == memberId)
+                                .ToList();
             return results;
         }
 
         public IList<Topic> GetAllTopicsByCategory(Guid categoryId)
         {
             var results = _context.Topic
-                .Where(x => x.Category.Id == categoryId)
-                .ToList();
+                                .Include(x => x.Posts)
+                                .Include(x => x.LastPost)
+                                .Include(x => x.LastPost.User)
+                                .Where(x => x.Category.Id == categoryId)
+                                .ToList();
             return results;
         }
 
@@ -124,9 +147,12 @@ namespace MVCForum.Data.Repositories
 
             // Get the topics using an efficient
             var results = _context.Topic
+                                .Include(x => x.Posts)
+                                .Include(x => x.LastPost)
+                                .Include(x => x.LastPost.User)
                                 .Where(x => x.Category.Id == categoryId)
                                 .OrderByDescending(x => x.IsSticky)
-                                .ThenByDescending(x => x.CreateDate)
+                                .ThenByDescending(x => x.LastPost.DateCreated)
                                 .Skip((pageIndex - 1) * pageSize)
                                 .Take(pageSize)
                                 .ToList();
@@ -147,8 +173,11 @@ namespace MVCForum.Data.Repositories
 
             // Get the topics using an efficient
             var results = _context.Topic
+                                .Include(x => x.Posts)
+                                .Include(x => x.LastPost)
+                                .Include(x => x.LastPost.User)
                                 .OrderByDescending(x => x.IsSticky)
-                                .ThenByDescending(x => x.CreateDate)
+                                .ThenByDescending(x => x.LastPost.DateCreated)
                                 .Take(pageSize)
                                 .Skip((pageIndex - 1) * pageSize)
                                 .ToList();
@@ -172,6 +201,7 @@ namespace MVCForum.Data.Repositories
             // This is an interim solution, as its flawed due to multiple posts in one topic so the paging might
             // be incorrect if all posts are from one topic.
             var results = _context.Post
+                            .Include(x => x.Topic)
                             .Where(x => x.PostContent.Contains(searchTerm) | x.Topic.Name.Contains(searchTerm))
                             .OrderByDescending(x => x.DateCreated)
                             .Skip((pageIndex - 1) * pageSize)
@@ -186,9 +216,11 @@ namespace MVCForum.Data.Repositories
 
         public IList<Topic> GetRssTopicsByCategory(int amountToTake, Guid categoryId)
         {
-            return _context.Topic                               
-                            .Where(x => x.Category.Id == categoryId)                                
-                            .OrderByDescending(x => x.CreateDate)
+            return _context.Topic
+                            .Include(x => x.Posts)
+                            .Include(x => x.LastPost)
+                            .Where(x => x.Category.Id == categoryId)
+                            .OrderByDescending(x => x.LastPost.DateCreated)
                             .Take(amountToTake)
                             .ToList();
         }
@@ -205,8 +237,11 @@ namespace MVCForum.Data.Repositories
 
             // Get the topics using an efficient
             var results = _context.Topic
+                                .Include(x => x.Posts)
+                                .Include(x => x.LastPost)
+                                .Include(x => x.LastPost.User)
                                 .OrderByDescending(x => x.IsSticky)
-                                .ThenByDescending(x => x.CreateDate)
+                                .ThenByDescending(x => x.LastPost.DateCreated)
                                 .Where(e => e.Tags.Select(t => t.Tag).Contains(tag))
                                 .Take(pageSize)
                                 .Skip((pageIndex - 1) * pageSize)
@@ -219,14 +254,15 @@ namespace MVCForum.Data.Repositories
 
         public Topic GetTopicBySlug(string slug)
         {
-            return _context.Topic.SingleOrDefault(x => x.Slug == slug);
+            return _context.Topic
+                .SingleOrDefault(x => x.Slug == slug);
         }
 
         public IList<Topic> GetTopicBySlugLike(string slug)
         {
             return _context.Topic
-                .Where(x => x.Slug.Contains(slug))
-                .ToList();
+                            .Where(x => x.Slug.Contains(slug))
+                            .ToList();
         }
 
         public int TopicCount()
@@ -242,9 +278,12 @@ namespace MVCForum.Data.Repositories
         public IList<Topic> GetSolvedTopicsByMember(Guid memberId)
         {
             return _context.Topic
-                .Where(x => x.User.Id == memberId)
-                .Where(x => x.Posts.Select(p => p.IsSolution).Contains(true))
-                .ToList();
+                            .Include(x => x.Posts)
+                            .Include(x => x.LastPost)
+                            .Include(x => x.LastPost.User)
+                            .Where(x => x.User.Id == memberId)
+                            .Where(x => x.Posts.Select(p => p.IsSolution).Contains(true))
+                            .ToList();
         }
     }
 }

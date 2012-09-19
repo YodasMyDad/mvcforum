@@ -8,7 +8,7 @@
 }
     @if (!Model.Permissions[AppConstants.PermissionDenyAccess].IsTicked)
     {
-        <div class="topicrow topicsticky-@topic.IsSticky topiclocked-@topic.IsLocked">
+        <div class="topicrow topicsticky-@topic.IsSticky topiclocked-@topic.IsLocked">            
             <div class="row">
                 
                 <div class="span1 topicstats">
@@ -45,7 +45,7 @@
                             <text> @Html.LanguageString("Topic.InCategory") <a href="@topic.Category.NiceUrl">@topic.Category.Name</a></text>
                         } 
                     </div>
-                    </div>
+                </div>
                 
                 <div class="span1 topicrecent">
                     <p class="topicrecenttitle">@Html.LanguageString("Topic.LatestBy")</p>

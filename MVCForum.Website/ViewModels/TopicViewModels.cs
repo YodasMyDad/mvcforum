@@ -58,7 +58,7 @@ namespace MVCForum.Website.ViewModels
     public class ShowTopicViewModel
     {
         public Topic Topic { get; set; }
-        public PagedFullList<Post> Posts { get; set; }
+        public PagedList<Post> Posts { get; set; }
         public PermissionSet Permissions { get; set; }
         public int? PageIndex { get; set; }
         public int? TotalCount { get; set; }
