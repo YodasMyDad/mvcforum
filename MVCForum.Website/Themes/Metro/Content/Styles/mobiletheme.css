@@ -8,6 +8,9 @@
 .mobileview { padding: 0 5px;}
 .mobileview p { font-size: 13px; margin: 0 0 12px;}
 
+/*--- New Discussion Button ---*/
+.mobileview .new-discussion-button { font-size: 16px;}
+
 /*--- Bootstrap overides ---*/
 .mobileview .container-fluid  { padding: 0;}
 .mobileview .row { margin-left: 0;margin-right: 0;}
@@ -144,7 +147,7 @@ h6 {font-size:13px; margin-bottom:8px;}
 .mobileview .categoryheader .categoryrss {display: none;}
 
 /*--- Reply Post ---*/
-.mobileview #createpostholder input[type=submit]#createpostbutton { padding-left: 0;padding-right: 0;text-align: center;width: 100%;}
+.mobileview #createpostholder input[type=submit]#createpostbutton { padding-left: 0;padding-right: 0;text-align: center;width: 100%;font-size: 16px;}
 
 /*--- Create Topic ---*/
 .mobileview .createtopicholder, .mobileview .editpostholder {}
@@ -154,7 +157,7 @@ h6 {font-size:13px; margin-bottom:8px;}
 .mobileview .createtopicholder .topiccontent, .mobileview .editpostholder .topiccontent {width: 100%;margin: 0;padding: 0;clear: both;}
 .mobileview .createtopicholder .topictagholder, .mobileview .editpostholder .topictagholder {width: 100%;margin: 0;padding: 0;clear: both;}
 .mobileview .createtopicholder .topicreplynotify, .mobileview .editpostholder .topicreplynotify {width: 100%;margin: 0;padding: 0;clear: both;}
-.mobileview .createtopicholder .submit-holder input[type=submit], .mobileview .editpostholder .submit-holder input[type=submit] { padding-left: 0;padding-right: 0;width: 100%;}
+.mobileview .createtopicholder .submit-holder input[type=submit], .mobileview .editpostholder .submit-holder input[type=submit] { padding-left: 0;padding-right: 0;width: 100%;font-size: 16px;}
 .mobileview .editpostholder .topicadmincheckboxes {}
 
 /*--- Pagination ---*/

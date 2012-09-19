@@ -1,5 +1,7 @@
 ﻿/* --- Set main body styles --- */
-body {font-family:'MVCforumLight', Calibri, Arial, Helvetica, sans-serif;color: #7D7D7D;}
+html {-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;}
+input[type=submit] {-webkit-appearance: none;}
+body {font-family:'MVCforumLight', Calibri, Arial, Helvetica, sans-serif;color: #7D7D7D; }
 
 /* ---- Generic Link Styles ---- */
 a, a:visited {color:#7d7d7d;}

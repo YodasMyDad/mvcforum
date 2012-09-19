@@ -88,10 +88,9 @@ namespace MVCForum.Data.Repositories
             // Get the topics using an efficient
             var results = _context.Post
                                 .Include(x => x.User)
-                                .Include(x => x.User.Posts)
                                 .Include(x => x.Topic)
                                 .Where(x => x.Topic.Id == topicId)
-                                .OrderByDescending(x => x.DateCreated)
+                                .OrderBy(x => x.DateCreated)
                                 .Skip((pageIndex - 1) * pageSize)
                                 .Take(pageSize)
                                 .ToList();
