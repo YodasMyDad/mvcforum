@@ -16,12 +16,12 @@
     @Html.Action("CurrentWeekHighPointUsers", "Point")
 }
 
-<div class="row">
+<div class="row latesttopicsheader">
     
-    <div class="span6">
+    <div class="span6 latesttopicheading">
       <h2>@Html.LanguageString("Home.LatestDiscussions")</h2>  
     </div>
-    <div class="span3">
+    <div class="span3 latesttopicrss">
         @if (Html.Settings().EnableRSSFeeds)
         {
             <a href="@Url.Action("LatestRss", "Home")" class="rsssubscribe" title="@Html.LanguageString("Home.Rss")">@Html.LanguageString("Home.Rss")</a>   

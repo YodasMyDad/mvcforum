@@ -18,6 +18,6 @@ namespace MVCForum.Website.Application
                    || c.UserAgentContains("Android")
                    || c.UserAgentContains("iPhone")
                    || c.UserAgentContains("Windows Phone");
-        }
+        }        
     }
 }

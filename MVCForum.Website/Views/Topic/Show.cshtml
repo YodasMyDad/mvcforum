@@ -40,12 +40,12 @@
 
 
 
-<div class="row">
+<div class="row topicheading">
     
-    <div class="span6">
+    <div class="span6 topicheaderholder">
         <h1 class="topicheader">@Html.Raw(Model.Topic.Name)</h1>
     </div>
-    <div class="span3">
+    <div class="span3 topicsubscription">
         @if (Model.User != null && Html.Settings().EnableEmailSubscriptions)
         {
             <a @Html.Raw(subScribe) title="Subscribe Via Email" href="#" class="emailsubscription" rel="@Model.Topic.Id">

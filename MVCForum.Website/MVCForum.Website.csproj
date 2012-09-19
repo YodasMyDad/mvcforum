@@ -477,8 +477,6 @@
     <Content Include="Content\Images\mail-add.png" />
     <Content Include="Content\Images\mail-delete.png" />
     <Content Include="Content\Images\rss-icon.png" />
-    <Content Include="Content\Styles\Mobile\bootstrap.css" />
-    <Content Include="Content\Styles\Mobile\theme.css" />
     <Content Include="Installer\Content\arrow-spinner-blue.gif" />
     <Content Include="Installer\Content\Images\glyphicons\glyphicons_009_magic.png" />
     <Content Include="Installer\Content\Images\glyphicons\glyphicons_042_group.png" />
@@ -884,6 +882,7 @@
     <Content Include="Scripts\admin\Admin.js" />
     <Content Include="Scripts\admin\FadeOutMessage.js" />
     <Content Include="Themes\n3o\Content\Styles\bootstrap.css" />
+    <Content Include="Themes\n3o\Content\Styles\mobiletheme.css" />
     <Content Include="Themes\n3o\Content\Styles\Theme.css" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -902,7 +901,7 @@
     <Content Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Content\Images\Mobile\" />
+    <Folder Include="Content\Styles\" />
     <Folder Include="Themes\n3o\Views\Shared\" />
     <Folder Include="Views\Extensions\" />
   </ItemGroup>

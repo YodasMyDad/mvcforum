@@ -17,14 +17,15 @@
 }
 
 <div class="row">    
-    <div class="span4">
+    <div class="span4 thisweeksstars">
         <h2>@Html.LanguageString("Leaderboard.ThisWeeksStars")</h2>
         
         <div class="leaderboardholders thisweekleaderboard">
             <span class="ajaxspinner" title="@Html.LanguageString("Ajax.PleaseWait")">@Html.LanguageString("Ajax.PleaseWait")</span>
         </div>
+
     </div>
-    <div class="offset1 span4">
+    <div class="offset1 span4 thisyearsstars">
         <h2>@Html.LanguageString("Leaderboard.ThisYearsStars")</h2>        
         <div class="leaderboardholders alltimeleaderboard">
             <span class="ajaxspinner" title="@Html.LanguageString("Ajax.PleaseWait")">@Html.LanguageString("Ajax.PleaseWait")</span>

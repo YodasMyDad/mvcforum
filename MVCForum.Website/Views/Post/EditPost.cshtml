@@ -2,7 +2,7 @@
 @model MVCForum.Website.ViewModels.EditPostViewModel
 
 @{
-    ViewBag.Title = Html.LanguageString("Post.Edit");
+    ViewBag.Title = Html.LanguageString("Post.Edit");    
 }
 
 @section Header
@@ -24,18 +24,19 @@
     @Html.Action("PopularTags", "Tag")
 }
 
-@using (Html.BeginForm())
+<div class="editpostholder">
+    
+    @using (Html.BeginForm())
 {    
     @Html.ValidationSummary(true)
     @Html.AntiForgeryToken()
 
-        <fieldset>
-        <legend>@ViewBag.Title</legend>
-        @if (Model.IsTopicStarter)
+        <h2>@ViewBag.Title</h2>     
+        
+        if (Model.IsTopicStarter)
         {
-            <div class="row">
-                
-                <div class="span5">
+            <div class="row paddedrow">
+                <div class="span5 topicname">
                 
                     <div class="editor-label">
                         @Html.LabelFor(model => model.Name)
@@ -47,7 +48,7 @@
 
                 </div>
 
-                <div class="span4">
+                <div class="span4 topiccategory">
                     <div class="editor-label">
                         @Html.LabelFor(model => model.Category)
                     </div>
@@ -60,7 +61,7 @@
         }
         
             <div class="row">
-                <div class="span9">
+                <div class="span9 topiccontent">
 
                     <div class="editor-label">
                         @Html.LabelFor(model => model.Content)
@@ -73,10 +74,10 @@
                 </div>
             </div>
 
-        @if (Model.IsTopicStarter)
+        if (Model.IsTopicStarter)
         {
             <div class="row">
-                <div class="span9">
+                <div class="span9 topicadmincheckboxes">
                     @if(Model.Permissions[AppConstants.PermissionCreateStickyTopics].IsTicked)
                     {
                         <div class="editor-field n3ocheckboxfield">
@@ -96,7 +97,7 @@
             </div>
             
             <div class="row">
-                <div class="span9">
+                <div class="span9 topictagholder">
                     <div class="editor-field">
                         @Html.TextBoxFor(model => model.Tags, new { @class = "tagstextarea tags", title = "Tag this topic" })
                     </div>
@@ -107,9 +108,8 @@
         <div class="submit-holder">
             <input type="submit" class="btn btn-large btn-success" value="@Html.LanguageString("Buttons.Edit")" />
         </div>
-    </fieldset>
-    
-    
-    
+
     @Html.HiddenFor(x => x.Id)
 }
+
+</div>

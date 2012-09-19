@@ -1,8 +1,10 @@
-﻿<link href="/scripts/markdown/markdown.css" rel="stylesheet" />
-<script src="/scripts/markdown/Markdown.Converter.js"></script>
-<script src="/scripts/markdown/Markdown.Sanitizer.js"></script>
-<script src="/scripts/markdown/Markdown.Editor.js"></script>
-<script type="text/javascript">
+﻿@if (!Context.IsMobileDevice())
+{
+    <link href="/scripts/markdown/markdown.css" rel="stylesheet" />
+    <script src="/scripts/markdown/Markdown.Converter.js"></script>
+    <script src="/scripts/markdown/Markdown.Sanitizer.js"></script>
+    <script src="/scripts/markdown/Markdown.Editor.js"></script>
+    <script type="text/javascript">
     $(function () {
         //Bit of a hack but won't work without
         var wdinput = $('.wmd-input');
@@ -13,8 +15,8 @@
         var editor = new Markdown.Editor(converter);
         editor.run();
     });
-</script>
-
+    </script>
+}
 
 <div class="markdownholder">
     
