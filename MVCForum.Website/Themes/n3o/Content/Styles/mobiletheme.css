@@ -1,12 +1,13 @@
 ﻿/*--- Overide styles for mobile view ---*/
 
 /*
-    --- This theme base colour: #333  
+    --- This theme base colour: #4891DC  
 */
 
 /*--- Main Holder ---*/
+body { font-size: 17px;}
 .mobileview { padding: 0 5px;}
-.mobileview p { font-size: 17px; margin: 0 0 14px;}
+.mobileview p { font-size: 17px; margin: 0 0 16px;}
 
 /*--- New Discussion Button ---*/
 .mobileview .new-discussion-button { font-size: 28px;}
@@ -91,8 +92,8 @@ h6 {font-size:20px; margin-bottom:8px;}
 .mobileview .mobilenavbar { padding: 5px 0 0 0;}
 .mobileview .mobilenavbar .mobilenavbar-inner{}
 .mobileview .mobilenavbar .mobilenavbar-inner ul.nav {}
-.mobileview .mobilenavbar .mobilenavbar-inner ul.nav li { margin: 0 0 3px 0;text-align: center;font-size: 26px;}
-.mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a, .mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a:visited { background-color: #4891DC;color: #fff;padding: 10px;}
+.mobileview .mobilenavbar .mobilenavbar-inner ul.nav li { margin: 0 0 4px 0;text-align: center;font-size: 28px;}
+.mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a, .mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a:visited { background-color: #4891DC;color: #fff;padding: 11px 0;}
 .mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a:hover { background-color: #BFBFBF;}
 
 /*--- Footer ---*/
@@ -108,7 +109,10 @@ h6 {font-size:20px; margin-bottom:8px;}
 .mobileview .bottomsidenav .sidelayoutsection {}
 .mobileview .bottomsidenav .sidelayoutsection .main-side-box {}
 .mobileview .bottomsidenav .sidelayoutsection .main-side-box .side-box {}
-.mobileview .bottomsidenav .sidelayoutsection .main-side-box .side-box ul li { font-size: 18px;}
+.mobileview .bottomsidenav .sidelayoutsection .main-side-box .sidesearchbox ul li { display: block;padding: 0 0 10px 0;clear: both;float: none;}
+.mobileview .bottomsidenav .sidelayoutsection .main-side-box .sidesearchbox ul li input[type="text"] { width: 98%;font-size: 28px;line-height: normal;}
+.mobileview .bottomsidenav .sidelayoutsection .main-side-box .sidesearchbox ul li input[type="submit"] {padding: 10px 0;text-align: center;width: 100%;font-size: 26px;line-height: normal;}
+.mobileview .bottomsidenav .sidelayoutsection .main-side-box .side-box ul li { font-size: 22px;}
 .mobileview .bottomsidenav .sidelayoutsection .main-side-box .categories-box {}
 .mobileview .bottomsidenav .sidelayoutsection .main-side-box .popular-tags-box {}
 .mobileview .bottomsidenav .sidelayoutsection .main-side-box .sidesearchbox {}
