@@ -1,12 +1,15 @@
 ﻿/*--- Overide styles for mobile view ---*/
 
 /*
-    --- This theme base colour: #666  
+    --- This theme base colour: #333  
 */
 
 /*--- Main Holder ---*/
 .mobileview { padding: 0 5px;}
-.mobileview p { font-size: 13px; margin: 0 0 12px;}
+.mobileview p { font-size: 17px; margin: 0 0 14px;}
+
+/*--- New Discussion Button ---*/
+.mobileview .new-discussion-button { font-size: 28px;}
 
 /*--- Bootstrap overides ---*/
 .mobileview .container-fluid  { padding: 0;}
@@ -14,12 +17,12 @@
 
 /*--- Main heading ---*/
 h1,h2,h3,h4,h5,h6{font-family:Calibri, Arial, Helvetica, sans-serif;}
-h1 {font-size:24px; margin-bottom:13px;}
-h2 {font-size:21px; margin-bottom:13px;}
-h3 {font-size:19px; margin-bottom:8px;}
-h4 {font-size:17px; margin-bottom:8px;}
-h5 {font-size:15px; margin-bottom:8px;}
-h6 {font-size:13px; margin-bottom:8px;}
+h1 {font-size:40px; margin-bottom:13px;}
+h2 {font-size:35px; margin-bottom:13px;}
+h3 {font-size:31px; margin-bottom:8px;}
+h4 {font-size:27px; margin-bottom:8px;}
+h5 {font-size:24px; margin-bottom:8px;}
+h6 {font-size:20px; margin-bottom:8px;}
 
 /*--- Side Boxes ---*/
 .side-box h5 {font-family:Calibri, Arial, Helvetica, sans-serif;}
@@ -27,7 +30,7 @@ h6 {font-size:13px; margin-bottom:8px;}
 /*--- Home / Latest Topics ---*/
 .mobileview .latesttopicsheader {}
 .mobileview .latesttopicsheader .latesttopicheading { margin: 0;padding: 0;width: 100%;}
-.mobileview .latesttopicsheader .latesttopicheading h2 {font-size: 20px;}
+.mobileview .latesttopicsheader .latesttopicheading h2 {font-size: 35px;}
 .mobileview .latesttopicsheader .latesttopicrss { display: none;}
 
 /*--- Topic Rows ---*/
@@ -43,21 +46,21 @@ h6 {font-size:13px; margin-bottom:8px;}
 .mobileview .topicrow .row {}
 .mobileview .topicrow .row .topicstats {width: 14.89361702%;} 
 .mobileview .topicrow .row .topicstats .topicstatsblock { width: 100%;}
-.mobileview .topicrow .row .topicstats .topicstatsblock .topicvotes { font-size: 18px;}
-.mobileview .topicrow .row .topicstats .topicstatsblock .topicvotes span { font-size:9px;}
-.mobileview .topicrow .row .topicstats .topicstatsblock .topiccomments {font-size: 18px;}
-.mobileview .topicrow .row .topicstats .topicstatsblock .topiccomments span { font-size:9px;}
+.mobileview .topicrow .row .topicstats .topicstatsblock .topicvotes { font-size: 22px;}
+.mobileview .topicrow .row .topicstats .topicstatsblock .topicvotes span {}
+.mobileview .topicrow .row .topicstats .topicstatsblock .topiccomments {font-size: 22px;}
+.mobileview .topicrow .row .topicstats .topicstatsblock .topiccomments span {}
 .mobileview .topicrow .row .topicstats .topicviews { width: 100%;} 
 .mobileview .topicrow .row .topicrowdetails {width: 65.95744680199999%;}
 .mobileview .topicrow .row .topicrowdetails h3 {}
-.mobileview .topicrow .row .topicrowdetails h3 a, .mobileview .topicrow .row .topicrowdetails h3 a:visited {font-size: 19px;}
+.mobileview .topicrow .row .topicrowdetails h3 a, .mobileview .topicrow .row .topicrowdetails h3 a:visited {font-size: 31px;}
 .mobileview .topicrow .row .topicrowdetails .topicpreview {}
 .mobileview .topicrow .row .topicrowdetails .topicpreview p {}
-.mobileview .topicrow .row .topicrowdetails .topicrowstatscategory { font-size: 11px;}
+.mobileview .topicrow .row .topicrowdetails .topicrowstatscategory { font-size: 13px;}
 .mobileview .topicrow .row .topicrecent {width: 14.89361702%;}
 .mobileview .topicrow .row .topicrecent .topicrecenttitle { display: none;}
 .mobileview .topicrow .row .topicrecent .topicrecentavatar { text-align: right;}
-.mobileview .topicrow .row .topicrecent .topicrecentavatar img { width: 25px;}
+.mobileview .topicrow .row .topicrecent .topicrecentavatar img { width: 37px;}
 .mobileview .topicrow .row .topicrecent .topicrecentdate { display: none;}
 
 /*--- Post Rows ---*/
@@ -65,7 +68,7 @@ h6 {font-size:13px; margin-bottom:8px;}
 .mobileview .post .postmemberdetails{width: 14.89361702%;}
 .mobileview .post .postmemberdetails .karmaholder{}
 .mobileview .post .postmemberdetails .karmaholder .solutionholder { display: none;}
-.mobileview .post .postmemberdetails .karmaholder .karmascore{ font-size: 20px;}
+.mobileview .post .postmemberdetails .karmaholder .karmascore{ font-size: 23px;}
 .mobileview .post .postbody {width: 65.95744680199999%;}
 .mobileview .post .postbody .postbodytop {}
 .mobileview .post .postbody .postbodytop a, .mobileview .post .postbody .postbodytop a:visited {}
@@ -77,19 +80,19 @@ h6 {font-size:13px; margin-bottom:8px;}
 .mobileview .post .postkarmaouter .postadminui {}
 .mobileview .post .postkarmaouter .postmemberdetailsinner {}
 .mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberavatar {}
-.mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberavatar img { width: 25px;}
+.mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberavatar img { width: 37px;}
 .mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberposts {}
-.mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberposts span { font-size: 10px;}
+.mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberposts span {}
 .mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberkarma {}
-.mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberkarma span { font-size: 10px;}
+.mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberkarma span {}
 
 
 /*--- Main Nav ---*/
-.mobileview .mobilenavbar {}
+.mobileview .mobilenavbar { padding: 5px 0 0 0;}
 .mobileview .mobilenavbar .mobilenavbar-inner{}
 .mobileview .mobilenavbar .mobilenavbar-inner ul.nav {}
-.mobileview .mobilenavbar .mobilenavbar-inner ul.nav li { margin: 0 0 2px 0;text-align: center;font-size: 14px;}
-.mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a, .mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a:visited { background-color: #4891DC;color: #fff;padding: 3px;}
+.mobileview .mobilenavbar .mobilenavbar-inner ul.nav li { margin: 0 0 3px 0;text-align: center;font-size: 26px;}
+.mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a, .mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a:visited { background-color: #4891DC;color: #fff;padding: 10px;}
 .mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a:hover { background-color: #BFBFBF;}
 
 /*--- Footer ---*/
@@ -105,22 +108,23 @@ h6 {font-size:13px; margin-bottom:8px;}
 .mobileview .bottomsidenav .sidelayoutsection {}
 .mobileview .bottomsidenav .sidelayoutsection .main-side-box {}
 .mobileview .bottomsidenav .sidelayoutsection .main-side-box .side-box {}
+.mobileview .bottomsidenav .sidelayoutsection .main-side-box .side-box ul li { font-size: 18px;}
 .mobileview .bottomsidenav .sidelayoutsection .main-side-box .categories-box {}
 .mobileview .bottomsidenav .sidelayoutsection .main-side-box .popular-tags-box {}
 .mobileview .bottomsidenav .sidelayoutsection .main-side-box .sidesearchbox {}
 .mobileview .bottomsidenav .sidelayoutsection .main-side-box .highearners-box {}
 
 /*--- Leaderboard ---*/
-.mobileview .row .thisweeksstars { float: none;padding: 0 0 15px 0;margin: 0;width: 100%;clear: both;}
-.mobileview .row .thisyearsstars { float: none;padding: 0 0 15px 0;margin: 0;width: 100%;clear: both;}
+.mobileview .row .thisweeksstars { float: none;padding: 0 0 30px 0;margin: 0;width: 100%;clear: both;}
+.mobileview .row .thisyearsstars { float: none;padding: 0 0 30px 0;margin: 0;width: 100%;clear: both;}
 
 /*--- Member Profile ---*/
-.mobileview .memberprofilepublic .row p { font-size: 13px; margin: 0 0 11px;}
+.mobileview .memberprofilepublic .row p {}
 .mobileview .memberprofilepublic .row .memberavatardetails { width: 100%;margin: 0;padding: 0;clear: both;}
 .mobileview .memberprofilepublic .row .membermaindetails {width: 100%;margin: 0;padding: 0;clear: both;}
 .mobileview .memberprofilepublic .row .membermaindetails .memberbio {width: 100%;margin: 0;padding: 0;clear: both;}
 .mobileview .memberprofilepublic .row .membermaindetails .memberlatesttopics {width: 100%;margin: 0;padding: 0;clear: both;}
-.mobileview .memberprofilepublic .row .badgeactivity {width: 100%;margin: 20px 0;padding: 0;clear: both;}
+.mobileview .memberprofilepublic .row .badgeactivity {width: 100%;margin: 28px 0;padding: 0;clear: both;}
 
 /*--- Activity Page ---*/
 .mobileview .activityholder {}
@@ -144,7 +148,7 @@ h6 {font-size:13px; margin-bottom:8px;}
 .mobileview .categoryheader .categoryrss {display: none;}
 
 /*--- Reply Post ---*/
-.mobileview #createpostholder input[type=submit]#createpostbutton { padding-left: 0;padding-right: 0;text-align: center;width: 100%;}
+.mobileview #createpostholder input[type=submit]#createpostbutton { padding-left: 0;padding-right: 0;text-align: center;width: 100%;font-size: 28px;}
 
 /*--- Create Topic ---*/
 .mobileview .createtopicholder, .mobileview .editpostholder {}
@@ -154,11 +158,11 @@ h6 {font-size:13px; margin-bottom:8px;}
 .mobileview .createtopicholder .topiccontent, .mobileview .editpostholder .topiccontent {width: 100%;margin: 0;padding: 0;clear: both;}
 .mobileview .createtopicholder .topictagholder, .mobileview .editpostholder .topictagholder {width: 100%;margin: 0;padding: 0;clear: both;}
 .mobileview .createtopicholder .topicreplynotify, .mobileview .editpostholder .topicreplynotify {width: 100%;margin: 0;padding: 0;clear: both;}
-.mobileview .createtopicholder .submit-holder input[type=submit], .mobileview .editpostholder .submit-holder input[type=submit] { padding-left: 0;padding-right: 0;width: 100%;}
+.mobileview .createtopicholder .submit-holder input[type=submit], .mobileview .editpostholder .submit-holder input[type=submit] { padding-left: 0;padding-right: 0;width: 100%;font-size:28px;}
 .mobileview .editpostholder .topicadmincheckboxes {}
 
 /*--- Pagination ---*/
 .mobileview .pagination {}
 .mobileview .pagination li {}
-.mobileview .pagination li a, .mobileview .pagination li a:hover {line-height: 22px;padding: 0 8px;}
+.mobileview .pagination li a, .mobileview .pagination li a:hover { font-size: 19px;}
 .mobileview .pagination li a:visited {}
