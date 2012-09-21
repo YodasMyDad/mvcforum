@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Data.Entity;
 using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
@@ -32,9 +33,12 @@ namespace MVCForum.Data.Repositories
         {
             amountToTake = amountToTake ?? int.MaxValue;
             var tags = _context.TopicTag
+                .Include(x => x.Topics.Count)
+                .OrderByDescending(x => x.Topics.Count())
+                .Take((int)amountToTake)
                 .Select(s => new { TopicCount = s.Topics.Count(), TopicName = s.Tag })
                 .Where(x => x.TopicCount > 0)
-                .OrderBy(s => s.TopicCount).Take((int)amountToTake).ToList();
+                .OrderByDescending(s => s.TopicCount).ToList();
 
             return tags.ToDictionary(tag => tag.TopicName, tag => tag.TopicCount);
         }

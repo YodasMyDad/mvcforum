@@ -26,7 +26,7 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var popularTags = _topicTagService.GetPopularTags(100);
+                var popularTags = _topicTagService.GetPopularTags(20);
                 var viewModel = new PopularTagViewModel { PopularTags = popularTags };
                 return PartialView(viewModel);
             }

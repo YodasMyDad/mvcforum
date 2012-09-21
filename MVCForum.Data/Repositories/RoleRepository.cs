@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
+using System.Data.Entity;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Utilities;
