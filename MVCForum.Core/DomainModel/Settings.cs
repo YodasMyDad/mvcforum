@@ -44,6 +44,10 @@ namespace MVCForum.Domain.DomainModel
         public string SMTPPassword { get; set; }
         public string Theme { get; set; }
 
+        public bool? EnableAkisment { get; set; }
+        public string AkismentKey { get; set; }
+        public string CurrentDatabaseVersion { get; set; }
+
         public virtual MembershipRole NewMemberStartingRole { get; set; }
         public virtual Language DefaultLanguage { get; set; }
     }

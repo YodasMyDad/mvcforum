@@ -25,7 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Events", "Events", "{E9B801
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{4425AF88-0237-48A1-AEA0-F3C4AE397C36}"
 	ProjectSection(SolutionItems) = preProject
-		Db\mvcforum-beta-db.sql = Db\mvcforum-beta-db.sql
+		Db\mvcforum-v1.0.sql = Db\mvcforum-v1.0.sql
 		ReadMe.txt = ReadMe.txt
 		VersionDbChanges.txt = VersionDbChanges.txt
 	EndProjectSection

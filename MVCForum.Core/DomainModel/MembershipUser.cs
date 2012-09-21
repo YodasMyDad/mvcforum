@@ -56,6 +56,15 @@ namespace MVCForum.Domain.DomainModel
         public string Twitter { get; set; }
         public string Facebook { get; set; }
 
+        public string Avatar { get; set; }
+        public string FacebookLoginId { get; set; }
+        public string OpenIdLoginId { get; set; }
+        public string TwitterLoginId { get; set; }
+        public string GoogleLoginId { get; set; }
+        public string YahooLoginId { get; set; }
+        public bool? IsExternalAccount { get; set; }
+        public bool? TwitterShowFeed { get; set; }
+
         public virtual IList<MembershipRole> Roles { get; set; }
         public virtual IList<Post> Posts { get; set; }
         public virtual IList<Topic> Topics { get; set; }

@@ -9,8 +9,11 @@ N/A
 ==============================
 
 Added primary key to Activity Table 'Id' field
+ |ALTER TABLE dbo.Person ADD CONSTRAINT PK_Person
+ |PRIMARY KEY CLUSTERED (PersonID);
 
 Added primary key to BadgeTypeTimeLastChecked Table 'Id' field
+ |Example above
 
 Added new table 'Poll'
 ---- Id (Guid) PK
@@ -33,3 +36,21 @@ Added new table 'PollVote'
 ++++ FK_PollVote_MembershipUser
 ++++ FK_PollVote_PollAnswer
 
+Added to Settings
+---- EnableAkisment (bit) allow nulls
+---- AkismentKey (nvarchar(100)) allow nulls
+---- CurrentDatabaseVersion (nvarchar(10)) allow nulls
+
+Added to Post
+---- FlaggedAsSpam (bit) allow nulls
+
+Added to MembershipUser
+---- Avatar (nvarchar(250)) allow nulls
+---- FacebookLoginId (nvarchar(150)) allow nulls
+---- OpenIdLoginId (nvarchar(150)) allow nulls
+---- TwitterLoginId (nvarchar(150)) allow nulls
+---- GoogleLoginId (nvarchar(150)) allow nulls
+---- YahooLoginId (nvarchar(150)) allow nulls
+---- IsExternalAccount (bit) allow nulls
+---- TwitterShowFeed (bit) allow nulls
+++ Make sure 'Facebook' column allows nulls
