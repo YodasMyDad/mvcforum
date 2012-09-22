@@ -15,15 +15,17 @@ namespace MVCForum.Website.Controllers
     {
         private readonly IPostService _postService;
         private readonly ITopicService _topicsService;
+        private readonly ILuceneService _luceneService;
 
         public SearchController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, 
             IMembershipService membershipService, ILocalizationService localizationService, 
             IRoleService roleService, ISettingsService settingsService, 
-            IPostService postService, ITopicService topicService)
+            IPostService postService, ITopicService topicService, ILuceneService luceneService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _postService = postService;
             _topicsService = topicService;
+            _luceneService = luceneService;
         }
 
         public ActionResult Index(int? p, string term)
@@ -61,6 +63,12 @@ namespace MVCForum.Website.Controllers
 
                 return View(viewModel);
             }
+        }
+
+        public ActionResult Testing(string term)
+        {
+            var results = _luceneService.Search(term);
+            return View(results);
         }
 
         [ChildActionOnly]

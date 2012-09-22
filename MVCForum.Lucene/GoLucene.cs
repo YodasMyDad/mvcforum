@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Web;
 using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
@@ -23,7 +24,7 @@ namespace MVCForum.Lucene
         private const string LuceneDirectoryName = "lucene_index";
 
         // properties
-        public static string _luceneDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), LuceneDirectoryName);
+        public static string _luceneDir = HttpContext.Current.Server.MapPath(string.Concat("~/App_Data", "/", LuceneDirectoryName));
         private static FSDirectory _directoryTemp;
         private static FSDirectory _directory
         {

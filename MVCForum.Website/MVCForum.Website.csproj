@@ -1196,6 +1196,7 @@
     <Content Include="Views\Install\CreateDb.cshtml" />
     <Content Include="Views\Install\Complete.cshtml" />
     <Content Include="Views\Shared\_Mobile.cshtml" />
+    <Content Include="Views\Search\Testing.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
