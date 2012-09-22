@@ -51,6 +51,7 @@
     <Compile Include="ActivityService.cs" />
     <Compile Include="EmailService.cs" />
     <Compile Include="LoggingService.cs" />
+    <Compile Include="LuceneService.cs" />
     <Compile Include="MembershipUserPointsService.cs" />
     <Compile Include="PrivateMessageService.cs" />
     <Compile Include="ReportService.cs" />
@@ -75,6 +76,10 @@
     <ProjectReference Include="..\MVCForum.Core\MVCForum.Domain.csproj">
       <Project>{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}</Project>
       <Name>MVCForum.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Lucene\MVCForum.Lucene.csproj">
+      <Project>{09b73e3f-171f-4df3-8802-60be071cffbd}</Project>
+      <Name>MVCForum.Lucene</Name>
     </ProjectReference>
     <ProjectReference Include="..\MVCForum.Utilities\MVCForum.Utilities.csproj">
       <Project>{D0CE5E27-041D-4F1E-8C8C-5F4888C72155}</Project>

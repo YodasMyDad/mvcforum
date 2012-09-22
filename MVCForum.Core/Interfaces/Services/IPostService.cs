@@ -6,7 +6,7 @@ namespace MVCForum.Domain.Interfaces.Services
 {
     public interface IPostService
     {
-        IList<Post> GetAll();
+        IEnumerable<Post> GetAll();
         IList<Post> GetLowestVotedPost(int amountToTake);
         IList<Post> GetHighestVotedPost(int amountToTake);
         IList<Post> GetByMember(Guid memberId, int amountToTake);

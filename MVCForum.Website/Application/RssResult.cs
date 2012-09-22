@@ -51,6 +51,14 @@ namespace MVCForum.Website.Application
                     _writer.WriteElementString("description", x.Description);
                     _writer.WriteElementString("pubDate", x.PublishedDate.ToString("o"));
                     _writer.WriteElementString("link", context.HttpContext.Request.Url.GetLeftPart(UriPartial.Authority) + x.Link);
+                    if(!string.IsNullOrEmpty(x.RssImage))
+                    {
+                        _writer.WriteStartElement("image");
+                        _writer.WriteElementString("url", string.Concat(context.HttpContext.Request.Url.GetLeftPart(UriPartial.Authority), x.RssImage));
+                        _writer.WriteElementString("title", x.Title);
+                        _writer.WriteElementString("link", context.HttpContext.Request.Url.GetLeftPart(UriPartial.Authority) + x.Link);
+                        _writer.WriteEndElement();
+                    }
                     _writer.WriteEndElement();
                 });
 

@@ -72,6 +72,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFProviderWrapperToolkit", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.ConsoleApp", "MVCForum.Console\MVCForum.ConsoleApp.csproj", "{6947B6B5-9EDF-406B-A8C1-A97CF0244BBF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Lucene", "MVCForum.Lucene\MVCForum.Lucene.csproj", "{09B73E3F-171F-4DF3-8802-60BE071CFFBD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -216,6 +218,16 @@ Global
 		{6947B6B5-9EDF-406B-A8C1-A97CF0244BBF}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{6947B6B5-9EDF-406B-A8C1-A97CF0244BBF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{6947B6B5-9EDF-406B-A8C1-A97CF0244BBF}.Release|x86.ActiveCfg = Release|Any CPU
+		{09B73E3F-171F-4DF3-8802-60BE071CFFBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09B73E3F-171F-4DF3-8802-60BE071CFFBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09B73E3F-171F-4DF3-8802-60BE071CFFBD}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{09B73E3F-171F-4DF3-8802-60BE071CFFBD}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{09B73E3F-171F-4DF3-8802-60BE071CFFBD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{09B73E3F-171F-4DF3-8802-60BE071CFFBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09B73E3F-171F-4DF3-8802-60BE071CFFBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09B73E3F-171F-4DF3-8802-60BE071CFFBD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{09B73E3F-171F-4DF3-8802-60BE071CFFBD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{09B73E3F-171F-4DF3-8802-60BE071CFFBD}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -14,7 +14,21 @@
     @Html.Action("PopularTags", "Tag")
 }
 
-<h2>@ViewBag.Title</h2>
+
+
+<div class="row activityheader">    
+    <div class="span6 activityheading">
+      <h2>@ViewBag.Title</h2>  
+    </div>
+    <div class="span3 activityrss">
+        @if (Html.Settings().EnableRSSFeeds)
+        {
+            <a href="@Url.Action("ActivityRss", "Home")" class="rsssubscribe" title="@Html.LanguageString("Home.Rss")">@Html.LanguageString("Home.Rss")</a>   
+        }  
+    </div>
+
+</div>
+
 
 <div class="activityholder row">
 

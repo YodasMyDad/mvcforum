@@ -272,7 +272,6 @@ namespace MVCForum.Utilities
 
             if (keepLineBreaks)
             {
-
                 html = Microsoft.Security.Application.Encoder.HtmlEncode(SwapLineBreaks(html));
                 return SwapLineBreaksBack(html);
             }

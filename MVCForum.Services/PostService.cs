@@ -44,7 +44,7 @@ namespace MVCForum.Services
         /// Return all posts
         /// </summary>
         /// <returns></returns>
-        public IList<Post> GetAll()
+        public IEnumerable<Post> GetAll()
         {
             return _postRepository.GetAll();
         }

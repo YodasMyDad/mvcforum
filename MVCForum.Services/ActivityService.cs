@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Activity;
 using MVCForum.Domain.Interfaces.Repositories;
@@ -141,6 +142,18 @@ namespace MVCForum.Services
         /// <returns></returns>
         private PagedList<ActivityBase> ConvertToSpecificActivities(PagedList<Activity> activities, int pageIndex, int pageSize)
         {
+            var listedResults = ConvertToSpecificActivities(activities);
+
+            return new PagedList<ActivityBase>(listedResults, pageIndex, pageSize, activities.Count);
+        }
+
+        /// <summary>
+        /// Converts a paged list of generic activities into a list of more specific activity instances
+        /// </summary>
+        /// <param name="activities"></param>
+        /// <returns></returns>
+        private IEnumerable<ActivityBase> ConvertToSpecificActivities(IEnumerable<Activity> activities)
+        {
             var listedResults = new List<ActivityBase>();
             foreach (var activity in activities)
             {
@@ -174,8 +187,7 @@ namespace MVCForum.Services
                     }
                 }
             }
-
-            return new PagedList<ActivityBase>(listedResults, pageIndex, pageSize, activities.Count);
+            return listedResults;
         }
 
         /// <summary>
@@ -201,6 +213,13 @@ namespace MVCForum.Services
             var activities = _activityRepository.SearchPagedGroupedActivities(StringUtils.SafePlainText(search), pageIndex, pageSize);
             var specificActivities = ConvertToSpecificActivities(activities, pageIndex, pageSize);
 
+            return specificActivities;
+        }
+
+        public IEnumerable<ActivityBase> GetAll(int howMany)
+        {
+            var activities = _activityRepository.GetAll().Take(howMany);
+            var specificActivities = ConvertToSpecificActivities(activities);
             return specificActivities;
         }
 

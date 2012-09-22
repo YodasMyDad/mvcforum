@@ -131,6 +131,9 @@ h6 {font-size:20px; margin-bottom:8px;}
 .mobileview .memberprofilepublic .row .badgeactivity {width: 100%;margin: 28px 0;padding: 0;clear: both;}
 
 /*--- Activity Page ---*/
+.mobileview .activityheader .activityheading { margin: 0;padding: 0;width: 100%;}
+.mobileview .activityheader .activityheading h2 {font-size: 35px;}
+.mobileview .activityheader .activityrss { display: none;}
 .mobileview .activityholder {}
 .mobileview .activityholder .activityentry {}
 .mobileview .activityholder .activityentry .activitybadge {width: 100%;margin: 0;padding: 0;clear: both;text-align: center;}

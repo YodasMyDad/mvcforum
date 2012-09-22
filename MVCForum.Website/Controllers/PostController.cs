@@ -23,11 +23,12 @@ namespace MVCForum.Website.Controllers
         private readonly IPostService _postService;
         private readonly IEmailService _emailService;
         private readonly IReportService _reportService;
+        private readonly ILuceneService _luceneService;
 
         public PostController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
             ILocalizationService localizationService, IRoleService roleService, ITopicService topicService, IPostService postService, 
             ISettingsService settingsService, ICategoryService categoryService, ITopicTagService topicTagService, 
-            ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService)
+            ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, ILuceneService luceneService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
@@ -37,6 +38,7 @@ namespace MVCForum.Website.Controllers
             _topicNotificationService = topicNotificationService;
             _emailService = emailService;
             _reportService = reportService;
+            _luceneService = luceneService;
         }
 
 
@@ -64,6 +66,13 @@ namespace MVCForum.Website.Controllers
                 try
                 {
                     unitOfWork.Commit();
+
+                    // Successful, add this post to the Lucene index
+                    if (_luceneService.CheckIndexExists())
+                    {
+                        _luceneService.AddUpdate(_luceneService.MapToModel(newPost, topic.Name));
+                    }
+
                 }
                 catch (Exception ex)
                 {

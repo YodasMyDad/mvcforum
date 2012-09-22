@@ -79,6 +79,8 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IEmailService, EmailService>();
             container.BindInRequestScope<IReportService, ReportService>();
             container.BindInRequestScope<IActivityService, ActivityService>();
+            container.BindInRequestScope<ILuceneService, LuceneService>();
+
             container.BindInRequestScope<IRoleRepository, RoleRepository>();
             container.BindInRequestScope<ICategoryRepository, CategoryRepository>();
             container.BindInRequestScope<IMembershipRepository, MembershipRepository>();

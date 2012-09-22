@@ -31,7 +31,7 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public IEnumerable<Activity> GetAll()
         {
-            return _context.Activity.ToList();
+            return _context.Activity;
         }
 
         /// <summary>

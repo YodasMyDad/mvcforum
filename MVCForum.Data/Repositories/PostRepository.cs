@@ -21,9 +21,14 @@ namespace MVCForum.Data.Repositories
             _context = context as MVCForumContext;
         }
 
-        public IList<Post> GetAll()
+        public IEnumerable<Post> GetAll()
         {
-            return _context.Post.ToList();
+            return _context.Post;
+        }
+
+        public IEnumerable<Post> GetAllWithTopics()
+        {
+            return _context.Post.Include(x => x.Topic);
         }
 
         public IList<Post> GetLowestVotedPost(int amountToTake)

@@ -3,10 +3,13 @@ using System.Linq;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.Activity;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
+using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.ViewModels;
+using RssItem = MVCForum.Domain.DomainModel.RssItem;
 
 namespace MVCForum.Website.Controllers
 {
@@ -130,6 +133,64 @@ namespace MVCForum.Website.Controllers
                 }
 
                 return new RssResult(rssTopics, LocalizationService.GetResourceString("Rss.LatestActivity.Title"), LocalizationService.GetResourceString("Rss.LatestActivity.Description")); 
+            }
+        }
+
+        [OutputCache(Duration = AppConstants.DefaultCacheLengthInSeconds)]
+        public ActionResult ActivityRss()
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                // get an rss lit ready
+                var rssActivities = new List<RssItem>();
+
+                var activities = _activityService.GetAll(20).OrderByDescending(x => x.ActivityMapped.Timestamp);
+
+                var activityLink = Url.Action("Activity");
+
+                // Now loop through the topics and remove any that user does not have permission for
+                foreach (var activity in activities)
+                {
+                    if (activity is BadgeActivity)
+                    {        
+                        var badgeActivity = activity as BadgeActivity;
+                        rssActivities.Add(new RssItem
+                            {
+                                Description = badgeActivity.Badge.Description,
+                                Title = string.Concat(badgeActivity.User.UserName, " ", LocalizationService.GetResourceString("Activity.UserAwardedBadge"), " ", badgeActivity.Badge.DisplayName, " ", LocalizationService.GetResourceString("Activity.Badge")),
+                                PublishedDate = badgeActivity.ActivityMapped.Timestamp,
+                                RssImage = AppHelpers.ReturnBadgeUrl(badgeActivity.Badge.Image),
+                                Link = activityLink
+                            });
+                    }
+                    else if (activity is MemberJoinedActivity)
+                    {
+                        var memberJoinedActivity = activity as MemberJoinedActivity;
+                        rssActivities.Add(new RssItem
+                        {
+                            Description = string.Empty,
+                            Title = LocalizationService.GetResourceString("Activity.UserJoined"),
+                            PublishedDate = memberJoinedActivity.ActivityMapped.Timestamp,
+                            RssImage = StringUtils.GetGravatarImage(memberJoinedActivity.User.Email, AppConstants.GravatarPostSize),
+                            Link = activityLink
+                        });
+                    }
+                    else if (activity is ProfileUpdatedActivity)
+                    {
+                        var profileUpdatedActivity = activity as ProfileUpdatedActivity;
+                        rssActivities.Add(new RssItem
+                        {
+                            Description = string.Empty,
+                            Title = LocalizationService.GetResourceString("Activity.ProfileUpdated"),
+                            PublishedDate = profileUpdatedActivity.ActivityMapped.Timestamp,
+                            RssImage = StringUtils.GetGravatarImage(profileUpdatedActivity.User.Email, AppConstants.GravatarPostSize),
+                            Link = activityLink
+                        });
+                    }
+
+                }
+
+                return new RssResult(rssActivities, LocalizationService.GetResourceString("Rss.LatestActivity.Title"), LocalizationService.GetResourceString("Rss.LatestActivity.Description"));
             }
         }
     }

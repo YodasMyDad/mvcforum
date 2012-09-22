@@ -59,18 +59,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\YUICompressor.NET.2.0.0.0\lib\NET20\EcmaScript.NET.dll</HintPath>
     </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
     <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\YUICompressor.NET.2.0.0.0\lib\NET20\Iesi.Collections.dll</HintPath>
     </Reference>
     <Reference Include="LowercaseRoutesMVC">
       <HintPath>..\packages\LowercaseRoutesMVC.1.0.3\lib\LowercaseRoutesMVC.dll</HintPath>
-    </Reference>
-    <Reference Include="Lucene.Net">
-      <HintPath>..\packages\Lucene.Net.3.0.3-RC2\lib\net40\Lucene.Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -195,6 +189,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\LogFile.txt" />
+    <Content Include="App_Data\lucene_index\ReadMe.txt" />
     <Content Include="Content\admin\Admin.css" />
     <Content Include="Content\admin\bootstrap.css" />
     <Content Include="Content\admin\Images\ajax-loader.gif" />
@@ -932,6 +927,10 @@
     <ProjectReference Include="..\MVCForum.IOC\MVCForum.IOC.csproj">
       <Project>{B3A94898-2420-4FC0-8774-147FDE3B13B2}</Project>
       <Name>MVCForum.IOC</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Lucene\MVCForum.Lucene.csproj">
+      <Project>{09b73e3f-171f-4df3-8802-60be071cffbd}</Project>
+      <Name>MVCForum.Lucene</Name>
     </ProjectReference>
     <ProjectReference Include="..\MVCForum.Utilities\MVCForum.Utilities.csproj">
       <Project>{D0CE5E27-041D-4F1E-8C8C-5F4888C72155}</Project>

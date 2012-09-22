@@ -42,6 +42,11 @@ namespace MVCForum.Website
             get { return DependencyResolver.Current.GetService<ILoggingService>(); }
         }
 
+        public ILuceneService LuceneService
+        {
+            get { return DependencyResolver.Current.GetService<ILuceneService>(); }
+        }
+
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
@@ -139,10 +144,12 @@ namespace MVCForum.Website
                 // Initialise the events
                 EventManager.Instance.Initialize(LoggingService);
 
+                // Don't go to installer
                 Application["GoToInstaller"] = "False";
             }
             else
             {
+                // Go to the installer
                 Application["GoToInstaller"] = "True";
             }
         }
@@ -153,7 +160,7 @@ namespace MVCForum.Website
             {
                 // Beford I redirect set it to false or we'll end up in a loop
                 Application["GoToInstaller"] = "False";
-                Response.Redirect("/install/");
+                Response.Redirect("~/install/");
             }
         }   
 
