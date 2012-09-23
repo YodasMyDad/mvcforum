@@ -93,6 +93,16 @@ namespace MVCForum.Services
         }
 
         /// <summary>
+        /// Returns a count of any new messages the user has
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public int NewPrivateMessageCount(Guid userId)
+        {
+            return _privateMessageRepository.NewPrivateMessageCount(userId);
+        }
+
+        /// <summary>
         /// Gets all private messages received by a user
         /// </summary>
         /// <param name="Id"></param>

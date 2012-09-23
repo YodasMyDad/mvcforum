@@ -12,7 +12,7 @@ namespace MVCForum.Domain.Interfaces.Repositories
         IList<PrivateMessage> GetAllSentByUser(Guid Id);
         IList<PrivateMessage> GetAllReceivedByUser(Guid Id);
         IList<PrivateMessage> GetAllByUserToAnotherUser(Guid senderId, Guid receiverId);
-
+        int NewPrivateMessageCount(Guid userId);
         PrivateMessage Add(PrivateMessage item);
         PrivateMessage Get(Guid id);
         void Delete(PrivateMessage item);

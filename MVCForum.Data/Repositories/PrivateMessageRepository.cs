@@ -91,6 +91,11 @@ namespace MVCForum.Data.Repositories
                                 .ToList();
         }
 
+        public int NewPrivateMessageCount(Guid userId)
+        {
+            return _context.PrivateMessage.Count(x => x.UserTo.Id == userId && !x.IsRead);
+        }
+
         public PrivateMessage Add(PrivateMessage item)
         {
             return _context.PrivateMessage.Add(item);

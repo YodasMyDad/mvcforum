@@ -21,14 +21,16 @@ namespace MVCForum.Website.Controllers
         private readonly IPostService _postService;
         private readonly IReportService _reportService;
         private readonly IEmailService _emailService;
+        private readonly IPrivateMessageService _privateMessageService;
 
         public MembersController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService,
-            IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService)
+            IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _postService = postService;
             _reportService = reportService;
             _emailService = emailService;
+            _privateMessageService = privateMessageService;
         }
 
         public ActionResult GetByName(string slug)
@@ -370,7 +372,8 @@ namespace MVCForum.Website.Controllers
         [Authorize]
         public PartialViewResult SideAdminPanel()
         {
-            return PartialView(new ViewAdminSidePanelViewModel { CurrentUser = LoggedOnUser });
+            var count = _privateMessageService.NewPrivateMessageCount(LoggedOnUser.Id);
+            return PartialView(new ViewAdminSidePanelViewModel { CurrentUser = LoggedOnUser, NewPrivateMessageCount = count});
         }
 
         public PartialViewResult AdminMemberProfileTools()

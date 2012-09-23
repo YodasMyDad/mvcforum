@@ -8,6 +8,7 @@
 <h2>@Model.Message.Subject</h2>
 <p class="privatemessagefrom"><strong>@Html.LanguageString("PM.From")</strong> <a href="@Model.Message.UserFrom.NiceUrl">@Model.Message.UserFrom.UserName</a></p>
 <p class="privatemessagesent"><strong>@Html.LanguageString("PM.Sent")</strong> @Model.Message.DateSent.ToShortDateString()</p>
+
 <p class="privatemessagecontent">
     @Html.Raw(AppHelpers.ConvertPostContent(Model.Message.Message))
 </p>
