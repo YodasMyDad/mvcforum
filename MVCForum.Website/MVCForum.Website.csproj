@@ -127,6 +127,7 @@
     <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminLanguageController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminBadgeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\AdminLuceneController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\ViewModels\AdminBadgeViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\DashboardViewModels.cs" />
@@ -1179,6 +1180,7 @@
     <Content Include="Views\Members\ForgotPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\Admin\Views\AdminLucene\Index.cshtml" />
     <None Include="Properties\PublishProfiles\Profile1.pubxml" />
     <None Include="Themes\Metro\Content\Fonts\mvcforumli.eot" />
     <None Include="Themes\Metro\Content\Fonts\mvcforumli.ttf" />

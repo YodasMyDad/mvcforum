@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Web.Mvc;
 using System.Linq;
@@ -70,7 +71,7 @@ namespace MVCForum.Website.Controllers
                     // Successful, add this post to the Lucene index
                     if (_luceneService.CheckIndexExists())
                     {
-                        _luceneService.AddUpdate(_luceneService.MapToModel(newPost, topic.Name));
+                        _luceneService.AddUpdate(_luceneService.MapToModel(newPost));
                     }
 
                 }
@@ -198,6 +199,13 @@ namespace MVCForum.Website.Controllers
                     try
                     {
                         unitOfWork.Commit();
+
+                        // Successful, add this post to the Lucene index
+                        if (_luceneService.CheckIndexExists())
+                        {
+                            _luceneService.AddUpdate(_luceneService.MapToModel(post));
+                        }
+
                         return Redirect(topic.NiceUrl);
                     }
                     catch (Exception ex)
@@ -238,14 +246,32 @@ namespace MVCForum.Website.Controllers
 
                     unitOfWork.SaveChanges();
 
+                    var postIdList = new List<Guid>();
                     if (deleteTopic)
                     {
+                        postIdList = topic.Posts.Select(x => x.Id).ToList();
                         _topicService.Delete(topic);
                     }
 
                     try
                     {
                         unitOfWork.Commit();
+
+                        // Successful, delete post or posts if its a topic deleted
+                        if (_luceneService.CheckIndexExists())
+                        {
+                            if (deleteTopic)
+                            {
+                                foreach (var guid in postIdList)
+                                {
+                                    _luceneService.Delete(guid);
+                                }
+                            }
+                            else
+                            {
+                                _luceneService.Delete(post.Id);
+                            }
+                        }
                     }
                     catch (Exception ex)
                     {

@@ -23,10 +23,11 @@ namespace MVCForum.Website.Controllers
         private readonly ITopicNotificationService _topicNotificationService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly IEmailService _emailService;
+        private readonly ILuceneService _luceneService;
 
         public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
-            ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService)
+            ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, ILuceneService luceneService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
@@ -37,6 +38,7 @@ namespace MVCForum.Website.Controllers
             _categoryNotificationService = categoryNotificationService;
             _emailService = emailService;
             _topicNotificationService = topicNotificationService;
+            _luceneService = luceneService;
         }
 
         [Authorize]
@@ -141,6 +143,12 @@ namespace MVCForum.Website.Controllers
                             {
                                 unitOfWork.Commit();
                                 successfullyCreated = true;
+
+                                // Successful, add this post to the Lucene index
+                                if (_luceneService.CheckIndexExists())
+                                {
+                                    _luceneService.AddUpdate(_luceneService.MapToModel(topic));
+                                }
                             }
                             catch (Exception ex)
                             {

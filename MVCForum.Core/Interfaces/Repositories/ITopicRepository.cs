@@ -16,6 +16,7 @@ namespace MVCForum.Domain.Interfaces.Repositories
         PagedList<Topic> GetPagedTopicsByCategory(int pageIndex, int pageSize, int amountToTake, Guid categoryId);
         PagedList<Topic> GetPagedTopicsAll(int pageIndex, int pageSize, int amountToTake);
         PagedList<Topic> SearchTopics(int pageIndex, int pageSize, int amountToTake, string searchTerm);
+        PagedList<Topic> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> topicIds);
         IList<Topic> GetRssTopicsByCategory(int amountToTake, Guid categoryId);
         PagedList<Topic> GetPagedTopicsByTag(int pageIndex, int pageSize, int amountToTake, string tag);
         Topic GetTopicBySlug(string slug);

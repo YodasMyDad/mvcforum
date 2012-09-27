@@ -9,15 +9,6 @@ namespace MVCForum.Data.Mapping
         {
             HasKey(x => x.Id);
             Ignore(x => x.Milestone);
-
-            HasMany(t => t.Users)
-            .WithMany(t => t.Badges)
-            .Map(m =>
-                {
-                    m.ToTable("MembershipUser_Badge");
-                    m.MapLeftKey("Badge_Id");
-                    m.MapRightKey("MembershipUser_Id");
-                });
         }
     }
 }

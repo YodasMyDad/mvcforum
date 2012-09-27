@@ -18,8 +18,15 @@ namespace MVCForum.Lucene
     {
         // Constants - These are the name of the fields in the lucene model
         private const string LucId = "Id";
-        private const string LucTopicName = "TopicName";
         private const string LucPostContent = "PostContent";
+        private const string LucDateCreated = "DateCreated";
+        private const string LucTopicName = "TopicName";
+        private const string LucTopicId = "TopicId";
+        //private const string LucTopicTags = "TopicTags";
+        private const string LucTopicUrl = "TopicUrl";
+        private const string LucUsername = "Username";
+        private const string LucUserId = "UserId";
+
 
         private const string LuceneDirectoryName = "lucene_index";
 
@@ -141,10 +148,14 @@ namespace MVCForum.Lucene
             {
                 Id = Guid.Parse(doc.Get(LucId)),
                 TopicName = doc.Get(LucTopicName),
-                PostContent = doc.Get(LucPostContent)
+                PostContent = doc.Get(LucPostContent),
+                DateCreated = DateTools.StringToDate(doc.Get(LucDateCreated)),
+                TopicId = Guid.Parse(doc.Get(LucTopicId)),
+                UserId = Guid.Parse(doc.Get(LucUserId)),
+                Username = doc.Get(LucUsername),
+                TopicUrl = doc.Get(LucTopicUrl)
             };
         }
-
 
         // add/update/clear search index data 
         public static void AddUpdateLuceneIndex(LuceneSearchModel sampleData)
@@ -212,19 +223,35 @@ namespace MVCForum.Lucene
                 writer.Dispose();
             }
         }
-        private static void _addToLuceneIndex(LuceneSearchModel sampleData, IndexWriter writer)
+        private static void _addToLuceneIndex(LuceneSearchModel searchModel, IndexWriter writer)
         {
             // remove older index entry
-            var searchQuery = new TermQuery(new Term(LucId, sampleData.Id.ToString()));
+            var searchQuery = new TermQuery(new Term(LucId, searchModel.Id.ToString()));
             writer.DeleteDocuments(searchQuery);
 
             // add new index entry
             var doc = new Document();
 
             // add lucene fields mapped to db fields
-            doc.Add(new Field(LucId, sampleData.Id.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-            doc.Add(new Field(LucTopicName, sampleData.TopicName, Field.Store.YES, Field.Index.ANALYZED));
-            doc.Add(new Field(LucPostContent, sampleData.PostContent, Field.Store.YES, Field.Index.ANALYZED));
+            // Posts
+            doc.Add(new Field(LucId, searchModel.Id.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+            doc.Add(new Field(LucPostContent, searchModel.PostContent, Field.Store.YES, Field.Index.ANALYZED));
+
+            //Topics
+            if (!string.IsNullOrEmpty(searchModel.TopicName))
+            {
+                doc.Add(new Field(LucTopicName, searchModel.TopicName, Field.Store.YES, Field.Index.ANALYZED));
+            }
+            doc.Add(new Field(LucTopicUrl, searchModel.TopicUrl, Field.Store.YES, Field.Index.NOT_ANALYZED));            
+
+            // Chnage the date so we can query in date order
+            var dateValue = DateTools.DateToString(searchModel.DateCreated, DateTools.Resolution.MILLISECOND);
+            doc.Add(new Field(LucDateCreated, dateValue, Field.Store.YES, Field.Index.NOT_ANALYZED));
+            doc.Add(new Field(LucTopicId, searchModel.TopicId.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+
+            //User
+            doc.Add(new Field(LucUsername, searchModel.Username, Field.Store.YES, Field.Index.ANALYZED));
+            doc.Add(new Field(LucUserId, searchModel.UserId.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
 
             // add entry to index
             writer.AddDocument(doc);
@@ -232,3 +259,33 @@ namespace MVCForum.Lucene
 
     }
 }
+
+// Example date order by
+//var dateValue = DateTools.DateToString(DateTime.Now, DateTools.Resolution.MILLISECOND);
+//var filter = FieldCacheRangeFilter.NewStringRange("date", 
+//                 lowerVal: dateValue, includeLower: true, 
+//                 upperVal: null, includeUpper: false);
+//var topDocs = searcher.Search(query, filter, 10000);
+
+
+// Fuzzy search
+// http://scatteredcode.wordpress.com/2011/05/26/performing-a-fuzzy-search-with-multiple-terms-through-multiple-lucene-net-document-fields/
+//public SearchResults Search(string searchString)
+//{
+//            // Setup the fields to search through
+//            string[] searchfields = new string[] { "FirstName", "LastName" };
+
+//            // Build our booleanquery that will be a combination of all the queries for each individual search term
+//            var finalQuery = new BooleanQuery();
+//            var parser = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_29, searchfields, CreateAnalyzer());
+
+//            // Split the search string into separate search terms by word
+//            string[] terms = searchString.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+//            foreach (string term in terms)
+//                finalQuery.Add(parser.Parse(term.Replace("~", "") + "~"), BooleanClause.Occur.MUST);
+
+//            // Perform the search
+//            var directory = FSDirectory.Open(new DirectoryInfo(LuceneIndexBaseDirectory));
+//            var searcher = new IndexSearcher(directory, true);
+//            var hits = searcher.Search(finalQuery, MAX_RESULTS);
+//}

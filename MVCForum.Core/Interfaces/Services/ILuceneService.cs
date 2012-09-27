@@ -13,8 +13,8 @@ namespace MVCForum.Domain.Interfaces.Services
         void DeleteEntireIndex();
         void Delete(Guid id);
         void OptimiseIndex();
-        LuceneSearchModel MapToModel(Post post, string topicname);
-        LuceneSearchModel MapToModel(Topic topic, string content);
+        LuceneSearchModel MapToModel(Post post);
+        LuceneSearchModel MapToModel(Topic topic);
         IEnumerable<LuceneSearchModel> Search(string searchTerm, string fieldName);
         IEnumerable<LuceneSearchModel> Search(string searchTerm);
         IEnumerable<LuceneSearchModel> GetAll();

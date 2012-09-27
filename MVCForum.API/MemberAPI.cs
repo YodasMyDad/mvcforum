@@ -30,7 +30,7 @@ namespace MVCForum.API
             return _membershipRepository.Get(memberId).Points;
         }
 
-        public MembershipUser  Create(MembershipUser member)
+        public MembershipUser Create(MembershipUser member)
         {
            return _membershipRepository.Add(member);
         }

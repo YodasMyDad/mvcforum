@@ -1,0 +1,26 @@
+﻿@{
+    ViewBag.Title = "Lucene Admin";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>This page contains tools to administrate your lucene index</p>
+
+    <div class="adminsection">
+        <h3>Update Entire Index</h3>
+        <p>Get all posts from the repository and update to entire index. Depending on the size of your site it could take a few minutes</p>
+        <a href="@Url.Action("Update", "AdminLucene", new { area = "Admin" }, null)" class="btn btn-large">Update</a>
+    </div>
+
+    <div class="adminsection">
+        <h3>Optimise Index</h3>
+        <p>Use the built in Lucene.NET Optimize method to optimise the index</p>
+        <a href="@Url.Action("Optimise", "AdminLucene", new { area = "Admin" }, null)" class="btn btn-large">Optimise</a>
+    </div>
+
+    <div class="adminsection">
+
+        <h3>Delete Index</h3>
+        <p>Clear/Delete your entire index</p>
+        <a href="@Url.Action("Delete", "AdminLucene", new { area = "Admin" }, null)" class="btn btn-large">Delete</a>
+    </div>

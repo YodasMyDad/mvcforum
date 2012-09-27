@@ -28,8 +28,8 @@ namespace MVCForum.Services
         /// </summary>
         public void UpdateIndex()
         {
-            var allPosts = _postRepository.GetAllWithTopics();
-            var mappedPosts = allPosts.Select(post => MapToModel(post, post.Topic.Name));
+            var allPosts = _postRepository.GetAllWithTopics().ToList();
+            var mappedPosts = allPosts.Select(MapToModel);
             GoLucene.AddUpdateLuceneIndex(mappedPosts);
         }
 
@@ -80,31 +80,43 @@ namespace MVCForum.Services
         /// Map a post to the Lucene Model
         /// </summary>
         /// <param name="post"></param>
-        /// <param name="topicName"> </param>
         /// <returns></returns>
-        public LuceneSearchModel MapToModel(Post post, string topicName)
+        public LuceneSearchModel MapToModel(Post post)
         {
-            return new LuceneSearchModel
+            var model = new LuceneSearchModel
                 {
                     Id = post.Id,
                     PostContent = post.PostContent,
-                    TopicName = topicName
+                    DateCreated = post.DateCreated,
+                    TopicId = post.Topic.Id,
+                    TopicUrl = post.Topic.NiceUrl,
+                    Username = post.User.UserName,
+                    UserId = post.User.Id
                 };
+            if(post.IsTopicStarter)
+            {
+                model.TopicName = post.Topic.Name;
+            }
+            return model;
         }
 
         /// <summary>
         /// Map a topic to the Lucene Model
         /// </summary>
         /// <param name="topic"></param>
-        /// <param name="content"></param>
         /// <returns></returns>
-        public LuceneSearchModel MapToModel(Topic topic, string content)
+        public LuceneSearchModel MapToModel(Topic topic)
         {
             return new LuceneSearchModel
             {
-                Id = topic.Id,
-                PostContent = content,
-                TopicName = topic.Name
+                Id = topic.LastPost.Id,
+                PostContent = topic.LastPost.PostContent,
+                TopicName = topic.Name,
+                DateCreated = topic.LastPost.DateCreated,
+                TopicId = topic.Id,
+                Username = topic.LastPost.User.UserName,
+                UserId = topic.LastPost.User.Id,
+                TopicUrl = topic.NiceUrl
             };
         }
 

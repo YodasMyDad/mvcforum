@@ -7,6 +7,7 @@ using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
+using MVCForum.Website.Application;
 using MVCForum.Website.ViewModels;
 
 namespace MVCForum.Website.Controllers
@@ -35,12 +36,19 @@ namespace MVCForum.Website.Controllers
                 // Set the page index
                 var pageIndex = p ?? 1;
 
-                // Get all the topics based on the search value
-                var topics = _topicsService.SearchTopics(pageIndex,
+                // Get lucene to search
+                var foundTopicIds = _luceneService.Search(term).Select(x => x.TopicId).ToList();
+
+                //// Get all the topics based on the search value
+                //var topics = _topicsService.SearchTopics(pageIndex,
+                //                                     SettingsService.GetSettings().TopicsPerPage,
+                //                                     AppConstants.ActiveTopicsListSize,
+                //                                     term);
+
+                var topics = _topicsService.GetTopicsByCsv(pageIndex,
                                                      SettingsService.GetSettings().TopicsPerPage,
                                                      AppConstants.ActiveTopicsListSize,
-                                                     term);
-
+                                                     foundTopicIds);
 
                 // Get all the categories for this topic collection
                 var categories = topics.Select(x => x.Category).Distinct();
@@ -65,11 +73,11 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        public ActionResult Testing(string term)
-        {
-            var results = _luceneService.Search(term);
-            return View(results);
-        }
+        //public ActionResult Testing(string term)
+        //{
+        //    var results = _luceneService.Search(term).Select(x => x.TopicId);
+        //    return View(results);
+        //}
 
         [ChildActionOnly]
         public PartialViewResult SideSearch()
@@ -77,5 +85,20 @@ namespace MVCForum.Website.Controllers
             return PartialView();
         }
 
+    }
+
+    public static class testing
+    {
+        public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            var seenKeys = new HashSet<TKey>();
+            foreach (TSource element in source)
+            {
+                if (seenKeys.Add(keySelector(element)))
+                {
+                    yield return element;
+                }
+            }
+        }
     }
 }

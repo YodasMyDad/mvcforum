@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
@@ -184,6 +186,16 @@ namespace MVCForum.Utilities
                 arr[i] = str[len - 1 - i];
             }
             return new string(arr);
+        }
+
+        /// <summary>
+        /// Converts a csv list of string guids into a real list of guids
+        /// </summary>
+        /// <param name="csv"></param>
+        /// <returns></returns>
+        public static List<Guid> CsvIdConverter(string csv)
+        {
+            return csv.TrimStart(',').TrimEnd(',').Split(',').Select(Guid.Parse).ToList();
         }
 
         /// <summary>

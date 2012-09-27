@@ -9,13 +9,14 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<Topic> GetAll();
         IList<Topic> GetHighestViewedTopics(int amountToTake);
         Topic Add(Topic topic);
-        PagedList<Topic> GetRecentTopics(int pageIndex, int pageSize, int amountToTake);
+        PagedList<Topic> GetRecentTopics(int pageIndex, int pageSize, int amountToTake);        
         IList<Topic> GetRecentRssTopics(int amountToTake);
         IList<Topic> GetTopicsByUser(Guid memberId);
         PagedList<Topic> GetPagedTopicsByCategory(int pageIndex, int pageSize, int amountToTake, Guid categoryId);
         IList<Topic> GetRssTopicsByCategory(int amountToTake, Guid categoryId);
         PagedList<Topic> GetPagedTopicsByTag(int pageIndex, int pageSize, int amountToTake, string tag);
         PagedList<Topic> SearchTopics(int pageIndex, int pageSize, int amountToTake, string searchTerm);
+        PagedList<Topic> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> topicIds);
         IList<Topic> GetSolvedTopicsByMember(Guid memberId);
         Topic GetTopicBySlug(string slug);
         Topic Get(Guid topicId);
