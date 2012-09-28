@@ -24,10 +24,13 @@ namespace MVCForum.Website.Controllers
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly IEmailService _emailService;
         private readonly ILuceneService _luceneService;
+        private readonly IPollService _pollService;
+        private readonly IPollAnswerService _pollAnswerService;
 
         public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
-            ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, ILuceneService luceneService)
+            ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, ILuceneService luceneService, IPollService pollService,
+            IPollAnswerService pollAnswerService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
@@ -39,6 +42,8 @@ namespace MVCForum.Website.Controllers
             _emailService = emailService;
             _topicNotificationService = topicNotificationService;
             _luceneService = luceneService;
+            _pollService = pollService;
+            _pollAnswerService = pollAnswerService;
         }
 
         [Authorize]
@@ -106,6 +111,40 @@ namespace MVCForum.Website.Controllers
 
                         if (!string.IsNullOrEmpty(topicViewModel.Content))
                         {
+                            // See if this is a poll and add it to the topic
+                            if (topicViewModel.PollAnswers.Count > 0)
+                            {
+                                // Create a new Poll
+                                var newPoll = new Poll
+                                {
+                                    User = LoggedOnUser
+                                };
+
+                                // Create the poll
+                                _pollService.Add(newPoll);
+
+                                // Save the poll in the context so we can add answers
+                                unitOfWork.SaveChanges();
+
+                                // Now sort the answers
+                                var newPollAnswers = new List<PollAnswer>();
+                                foreach (var pollAnswer in topicViewModel.PollAnswers)
+                                {
+                                    // Attach newly created poll to each answer
+                                    pollAnswer.Poll = newPoll;
+                                    _pollAnswerService.Add(pollAnswer);
+                                    newPollAnswers.Add(pollAnswer);
+                                }
+                                // Attach answers to poll
+                                newPoll.PollAnswers = newPollAnswers;
+
+                                // Save the new answers in the context
+                                unitOfWork.SaveChanges();
+
+                                // Add the poll to the topic
+                                topic.Poll = newPoll;
+                            }
+
                             // Update the users points score for posting
                             _membershipUserPointsService.Add(new MembershipUserPoints
                             {

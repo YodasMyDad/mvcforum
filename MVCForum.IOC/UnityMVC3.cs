@@ -80,6 +80,10 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IReportService, ReportService>();
             container.BindInRequestScope<IActivityService, ActivityService>();
             container.BindInRequestScope<ILuceneService, LuceneService>();
+            container.BindInRequestScope<IPollService, PollService>();
+            container.BindInRequestScope<IPollVoteService, PollVoteService>();
+            container.BindInRequestScope<IPollAnswerService, PollAnswerService>();
+
 
             container.BindInRequestScope<IRoleRepository, RoleRepository>();
             container.BindInRequestScope<ICategoryRepository, CategoryRepository>();
@@ -98,6 +102,9 @@ namespace MVCForum.IOC
             container.BindInRequestScope<ITopicNotificationRepository, TopicNotificationRepository>();
             container.BindInRequestScope<IPrivateMessageRepository, PrivateMessageRepository>();
             container.BindInRequestScope<IActivityRepository, ActivityRepository>();
+            container.BindInRequestScope<IPollRepository, PollRepository>();
+            container.BindInRequestScope<IPollVoteRepository, PollVoteRepository>();
+            container.BindInRequestScope<IPollAnswerRepository, PollAnswerRepository>();
 
             container.BindInRequestScope<IMVCForumAPI, MVCForumAPI>();
             container.BindInRequestScope<IPostAPI, PostAPI>();

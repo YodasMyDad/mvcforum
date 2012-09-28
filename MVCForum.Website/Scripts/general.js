@@ -2,6 +2,8 @@
 
 $(function () {
 
+    $('input, textarea').placeholder();
+
     //---------------- On Click------------------------
 
     $(".thumbuplink").click(function (e) {
@@ -184,8 +186,70 @@ $(function () {
         UserPost();
     }
 
+    // Poll Answer counter
+    var counter = 0;
+
+    // Create Polls
+    $(".createpollbutton").click(function (e) {
+        e.preventDefault();
+        //Firstly Show the Poll Section
+        $('.pollanswerholder').show();
+        // Now add in the first row
+        AddNewPollAnswer(counter);
+        counter++;
+        // Hide this button now
+        $(this).hide();
+        // Show the remove poll button
+        $(".removepollbutton").show();
+    });
+    
+    // Remove the polls
+    $(".removepollbutton").click(function (e) {
+        e.preventDefault();
+        //Firstly Show the Poll Section
+        $('.pollanswerholder').hide();
+        $('.pollanswerlist').html("");
+        // Hide this button now
+        $(this).hide();
+        // Show the add poll button
+        $(".createpollbutton").show();
+    });
+    
+    // Add a new answer
+    $(".addanswer").click(function (e) {
+        e.preventDefault();
+        AddNewPollAnswer(counter);
+        counter++;
+        ShowHideRemovePollAnswerButton(counter);
+    });
+
+    // Remove a poll answer
+    $(".removeanswer").click(function (e) {
+        e.preventDefault();
+        if (counter > 1) {
+            counter--;
+            $("#answer" + counter).remove();
+            ShowHideRemovePollAnswerButton(counter);
+        }
+    });
+
 });
 
+function AddNewPollAnswer(counter) {
+    var placeHolder = $('#pollanswerplaceholder').val();
+    var liHolder = $(document.createElement('li')).attr("id", 'answer' + counter);
+    liHolder.html('<input type="text" name="PollAnswers[' + counter + '].Answer" id="PollAnswers_' + counter + '_Answer" value="" placeholder="' + placeHolder + '" />');
+    liHolder.appendTo(".pollanswerlist");
+}
+
+function ShowHideRemovePollAnswerButton(counter) {
+    var removeButton = $('.removeanswer');
+    if(counter > 1) {
+        removeButton.show();
+    } else {
+        removeButton.hide();
+    }
+}
 
 //---------------- Functions------------------------
 function RemovePrivateMessageTableRow(linkClicked) {

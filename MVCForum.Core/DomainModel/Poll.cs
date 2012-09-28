@@ -13,7 +13,6 @@ namespace MVCForum.Domain.DomainModel
             Id = GuidComb.GenerateComb();
         }
         public Guid Id { get; set; }
-        public string Question { get; set; }
         public bool IsClosed { get; set; }
         public DateTime DateCreated { get; set; }
 

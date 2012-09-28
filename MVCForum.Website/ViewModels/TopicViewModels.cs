@@ -35,6 +35,7 @@ namespace MVCForum.Website.ViewModels
     {
         [Required]
         [StringLength(150)]
+        [ForumMvcResourceDisplayName("Topic.Label.TopicTitle")]
         public string Name { get; set; }
 
         //[UIHint("bbeditor"), AllowHtml]
@@ -51,6 +52,8 @@ namespace MVCForum.Website.ViewModels
 
         public IEnumerable<Category> Categories { get; set; }
 
+        public List<PollAnswer> PollAnswers { get; set; }
+            
         [ForumMvcResourceDisplayName("Topic.Label.SubscribeToTopic")]
         public bool SubscribeToTopic { get; set; }
     }

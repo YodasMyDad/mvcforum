@@ -84,7 +84,10 @@
     <Compile Include="Repositories\CategoryPermissionForRoleRepository.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />
     <Compile Include="Repositories\ActivityRepository.cs" />
+    <Compile Include="Repositories\PollAnswerRepository.cs" />
+    <Compile Include="Repositories\PollVoteRepository.cs" />
     <Compile Include="Repositories\MembershipUserPointsRepository.cs" />
+    <Compile Include="Repositories\PollRepository.cs" />
     <Compile Include="Repositories\PrivateMessageRepository.cs" />
     <Compile Include="Repositories\TopicNotificationRepository.cs" />
     <Compile Include="Repositories\TopicTagRepository.cs" />

@@ -15,9 +15,11 @@ Added primary key to Activity Table 'Id' field
 Added primary key to BadgeTypeTimeLastChecked Table 'Id' field
  |Example above
 
+Updated table 'Topic'
+---- Poll_Id (Guid) allow nulls
+
 Added new table 'Poll'
 ---- Id (Guid) PK
----- Question (nvarchar(max))
 ---- IsClosed (bit)
 ---- MembershipUser_Id (Guid)
 ---- DateCreated (DateTime)

@@ -26,6 +26,9 @@ namespace MVCForum.Data.Context
         public DbSet<MembershipUser> MembershipUser { get; set; }
         public DbSet<MembershipUserPoints> MembershipUserPoints { get; set; }
         public DbSet<Permission> Permission { get; set; }
+        public DbSet<Poll> Poll { get; set; }
+        public DbSet<PollAnswer> PollAnswer { get; set; }
+        public DbSet<PollVote> PollVote { get; set; }
         public DbSet<Post> Post { get; set; }
         public DbSet<PrivateMessage> PrivateMessage { get; set; }
         public DbSet<Settings> Setting { get; set; }
@@ -78,6 +81,9 @@ namespace MVCForum.Data.Context
             modelBuilder.Configurations.Add(new MembershipUserMapping());
             modelBuilder.Configurations.Add(new MembershipUserPointsMapping());
             modelBuilder.Configurations.Add(new PermissionMapping());
+            modelBuilder.Configurations.Add(new PollAnswerMapping());
+            modelBuilder.Configurations.Add(new PollMapping());
+            modelBuilder.Configurations.Add(new PollVoteMapping());
             modelBuilder.Configurations.Add(new PostMapping());         
             modelBuilder.Configurations.Add(new PrivateMessageMapping());         
             modelBuilder.Configurations.Add(new SettingsMapping());         

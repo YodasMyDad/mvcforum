@@ -119,7 +119,7 @@ namespace MVCForum.Website.Controllers
 
                 if (post.User.Id == LoggedOnUser.Id || permissions[AppConstants.PermissionEditPosts].IsTicked)
                 {
-                    var viewModel = new EditPostViewModel { Content = post.PostContent, Id = post.Id, Permissions = permissions };
+                    var viewModel = new EditPostViewModel { Content = Server.HtmlDecode(post.PostContent), Id = post.Id, Permissions = permissions };
 
                     // Now check if this is a topic starter, if so add the rest of the field
                     if (post.IsTopicStarter)

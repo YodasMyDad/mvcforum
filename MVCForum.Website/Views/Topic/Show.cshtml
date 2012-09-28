@@ -59,6 +59,22 @@
 
 </div>
 
+@if(Model.Topic.Poll != null)
+{
+    // There is a poll
+    <div class="row showpollholder">
+        <div class="span9">
+            <ul>
+                @foreach(var pollAnswer in Model.Topic.Poll.PollAnswers)
+                {
+                    
+                    <li>@pollAnswer.Answer (@pollAnswer.PollVotes.Count)</li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+
 
 @foreach (var post in Model.Posts)
 {

@@ -25,6 +25,8 @@ namespace MVCForum.Domain.DomainModel
         public virtual IList<TopicTag> Tags { get; set; }
         public virtual MembershipUser User { get; set; }
         public virtual IList<TopicNotification> TopicNotifications { get; set; }
+        public virtual Poll Poll { get; set; }
+
 
         public string NiceUrl
         {

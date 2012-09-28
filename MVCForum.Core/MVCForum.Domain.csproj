@@ -106,7 +106,10 @@
     <Compile Include="Interfaces\IModelAttribute.cs" />
     <Compile Include="Interfaces\IMVCForumContext.cs" />
     <Compile Include="Interfaces\IPagedList.cs" />
+    <Compile Include="Interfaces\Repositories\IPollAnswerRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IPollVoteRepository.cs" />
     <Compile Include="Interfaces\Repositories\IActivityRepository.cs" />
+    <Compile Include="Interfaces\Repositories\IPollRepository.cs" />
     <Compile Include="Interfaces\Repositories\IPrivateMessageRepository.cs" />
     <Compile Include="Interfaces\Repositories\ICategoryNotificationRepository.cs" />
     <Compile Include="Interfaces\Repositories\IMembershipUserPointsRepository.cs" />
@@ -123,6 +126,9 @@
     <Compile Include="Interfaces\Repositories\ISettingsRepository.cs" />
     <Compile Include="Interfaces\Repositories\ITopicRepository.cs" />
     <Compile Include="Interfaces\Repositories\IVoteRepository.cs" />
+    <Compile Include="Interfaces\Services\IPollAnswerService.cs" />
+    <Compile Include="Interfaces\Services\IPollVoteService.cs" />
+    <Compile Include="Interfaces\Services\IPollService.cs" />
     <Compile Include="Interfaces\Services\IActivityService.cs" />
     <Compile Include="Interfaces\Services\ILuceneService.cs" />
     <Compile Include="Interfaces\Services\IPrivateMessageService.cs" />

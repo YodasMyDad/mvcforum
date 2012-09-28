@@ -49,10 +49,13 @@
     <Compile Include="BadgeService.cs" />
     <Compile Include="CategoryNotificationService.cs" />
     <Compile Include="ActivityService.cs" />
+    <Compile Include="PollAnswerService.cs" />
+    <Compile Include="PollVoteService.cs" />
     <Compile Include="EmailService.cs" />
     <Compile Include="LoggingService.cs" />
     <Compile Include="LuceneService.cs" />
     <Compile Include="MembershipUserPointsService.cs" />
+    <Compile Include="PollService.cs" />
     <Compile Include="PrivateMessageService.cs" />
     <Compile Include="ReportService.cs" />
     <Compile Include="TopicNotificationService.cs" />

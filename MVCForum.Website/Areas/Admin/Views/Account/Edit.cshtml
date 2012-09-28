@@ -132,19 +132,21 @@
             @Html.TextAreaFor(x => x.Comment)
             @Html.ValidationMessageFor(x => x.Comment)
         </div>
+
         @*<div class="editor-label">
-        @Html.Label("Roles")
-    </div>    
-    <div class="editor-checkboxes">
-        @foreach (var role in @Model.AllRoles)
-        {
-            var showChecked = @Model.Roles.Contains(role.RoleName) ? "checked='checked'" : "";
-            if (role.RoleName != AppConstants.GuestRoleName)
+            @Html.Label("Roles")
+        </div>    
+        <div class="editor-checkboxes">
+            @foreach (var role in @Model.AllRoles)
             {
-                <span class="editrolecb"><input type="checkbox" name="Roles" value=@role.RoleName @showChecked /> @Html.Raw(role.RoleName)</span>
+                var showChecked = @Model.Roles.Contains(role.RoleName) ? "checked='checked'" : "";
+                if (role.RoleName != AppConstants.GuestRoleName)
+                {
+                    <span class="editrolecb"><input type="checkbox" name="Roles" value=@role.RoleName @showChecked /> @Html.Raw(role.RoleName)</span>
+                }
             }
-        }
-    </div>*@
+        </div>*@
+
         <div class="submit-holder">
             <input type="submit" class="btn btn-large btn-success" value="Save" />
         </div>
