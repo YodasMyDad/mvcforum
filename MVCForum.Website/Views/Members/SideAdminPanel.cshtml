@@ -9,7 +9,7 @@
         @if(Html.Settings().EnablePrivateMessages)
         {
             var count = Model.NewPrivateMessageCount <= 0 ? null : string.Format("({0})", Model.NewPrivateMessageCount);
-            <li>@Html.ActionLink(Html.LanguageString("PM.PrivateMessages"), "Index", "PrivateMessage") @count</li>
+            <li><a href="@Url.Action("Index", "PrivateMessage")">@Html.LanguageString("PM.PrivateMessages") @count</a></li>
         }
 
         <li>@Html.ActionLink(Html.LanguageString("Members.SearchMembers"), "Search", "Members")</li>

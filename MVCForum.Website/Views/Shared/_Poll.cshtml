@@ -1,0 +1,42 @@
+﻿@using MVCForum.Domain.Constants
+@using MVCForum.Utilities
+@model MVCForum.Website.ViewModels.ShowPollViewModel
+@{
+    var poll = Model.Poll;
+    var displayVote = !Model.UserHasAlreadyVoted;
+    
+    <div class="row showpollholder">
+        @foreach (var pollAnswer in poll.PollAnswers.OrderBy(x => x.Answer))
+        {
+            var answerVotes = pollAnswer.PollVotes.Count;
+            Math.Round();
+            var widthPercentage = answerVotes > 0 ? (((answerVotes/Model.TotalVotesInPoll)*100) - 10) : 1;
+                
+            <div class="pollanswerrow span9">
+                <div class="pollanswerrowholder clearfix">
+                    @pollAnswer.Answer
+                </div>
+
+                <div class="pollbarrowholder clearfix">
+                    @if (displayVote)
+                    {
+                        <div class="pollradiobuttonholder">
+                            <input type="radio" class="pollanswerselect" name="pollanswers" data-answerid="@pollAnswer.Id" />
+                        </div>
+                    }
+                    <div class="pollbar" style="width: @(widthPercentage)%;"></div>
+                    @answerVotes
+                </div>
+            </div>
+        }
+
+        @if (displayVote)
+        {
+            <div class="pollvotebuttonholder span9" style="display: none;">
+                <a href="#" class="pollvotebutton btn">@Html.LanguageString("Poll.Button.Vote")</a>
+                <input type="hidden" class="selectedpollanswer" value="" />
+                @Html.HiddenFor(x => x.Poll.Id)
+            </div>
+        }
+    </div>
+}

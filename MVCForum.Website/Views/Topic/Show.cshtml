@@ -2,12 +2,11 @@
 @using MVCForum.Website.Application
 @using MVCForum.Website.ViewModels
 @model ShowTopicViewModel
-
 @{    
     // SEO Stuff
     ViewBag.Title = AppHelpers.CreatePageTitle(Model.Topic, Html.LanguageString("Topic.TitleFallBack"));
     var totalCount = Convert.ToInt32(Model.TotalCount);
-    ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));    
+    ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
 
     // Email subscription
     var subScribe = string.Empty;
@@ -21,7 +20,7 @@
     {
         unSubscribe = displayNone;
     }
-    
+
     // Set a ViewBag for the category
     TempData[AppConstants.DefaultCategoryViewBagName] = Model.Topic.Category.Id;
 }
@@ -41,11 +40,11 @@
 
 
 <div class="row topicheading">
-    
-    <div class="span6 topicheaderholder">
+
+    <div class="span7 topicheaderholder">
         <h1 class="topicheader">@Html.Raw(Model.Topic.Name)</h1>
     </div>
-    <div class="span3 topicsubscription">
+    <div class="span2 topicsubscription">
         @if (Model.User != null && Html.Settings().EnableEmailSubscriptions)
         {
             <a @Html.Raw(subScribe) title="Subscribe Via Email" href="#" class="emailsubscription" rel="@Model.Topic.Id">
@@ -59,21 +58,17 @@
 
 </div>
 
-@if(Model.Topic.Poll != null)
-{
-    // There is a poll
-    <div class="row showpollholder">
-        <div class="span9">
-            <ul>
-                @foreach(var pollAnswer in Model.Topic.Poll.PollAnswers)
-                {
-                    
-                    <li>@pollAnswer.Answer (@pollAnswer.PollVotes.Count)</li>
-                }
-            </ul>
-        </div>
-    </div>
-}
+<div class="pollcontainer">
+
+    @if (Model.User != null && Model.Topic.Poll != null)
+    {
+        // Show the poll if there is one
+        var viewModel = new ShowPollViewModel { Poll = Model.Topic.Poll, TotalVotesInPoll = Model.TotalVotesInPoll, UserHasAlreadyVoted = Model.UserHasAlreadyVotedInPoll };
+        Html.RenderPartial("_Poll", viewModel);
+    }
+</div>
+
+
 
 
 @foreach (var post in Model.Posts)
@@ -88,7 +83,7 @@
 
     if (!Model.Permissions[AppConstants.PermissionDenyAccess].IsTicked && !Model.Permissions[AppConstants.PermissionReadOnly].IsTicked)
     {
-        @Html.Partial("_CreateNewPost", new CreateAjaxPostViewModel { Topic = Model.Topic.Id })
+    @Html.Partial("_CreateNewPost", new CreateAjaxPostViewModel { Topic = Model.Topic.Id })
     }
 }
 else

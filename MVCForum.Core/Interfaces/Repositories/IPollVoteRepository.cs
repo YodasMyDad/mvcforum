@@ -10,6 +10,7 @@ namespace MVCForum.Domain.Interfaces.Repositories
     {
         List<PollVote> GetAllPollVotes();
         PollVote Add(PollVote pollVote);
+        bool HasUserVotedAlready(Guid answerId, Guid userId);
         PollVote Get(Guid id);
         void Delete(PollVote pollVote);
     }

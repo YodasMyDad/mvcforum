@@ -27,6 +27,11 @@ namespace MVCForum.Services
             return _pollVoteRepository.Add(pollVote);
         }
 
+        public bool HasUserVotedAlready(Guid answerId, Guid userId)
+        {
+            return _pollVoteRepository.HasUserVotedAlready(answerId, userId);
+        }
+
         public PollVote Get(Guid id)
         {
             return _pollVoteRepository.Get(id);

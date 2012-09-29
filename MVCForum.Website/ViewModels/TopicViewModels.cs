@@ -67,6 +67,21 @@ namespace MVCForum.Website.ViewModels
         public int? TotalCount { get; set; }
         public MembershipUser User { get; set; }
         public bool IsSubscribed { get; set; }
+        public bool UserHasAlreadyVotedInPoll { get; set; }
+        public int TotalVotesInPoll { get; set; }
+    }
+
+    public class ShowPollViewModel
+    {
+        public Poll Poll { get; set; }
+        public bool UserHasAlreadyVoted { get; set; }
+        public int TotalVotesInPoll { get; set; }
+    }
+
+    public class UpdatePollViewModel
+    {
+        public Guid PollId { get; set; }
+        public Guid AnswerId { get; set; }
     }
 
     public class ViewTopicViewModel

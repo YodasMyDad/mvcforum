@@ -30,6 +30,12 @@ namespace MVCForum.Data.Repositories
             return _context.PollVote.Add(pollVote);
         }
 
+        public bool HasUserVotedAlready(Guid answerId, Guid userId)
+        {
+            var vote = _context.PollVote.FirstOrDefault(x => x.PollAnswer.Id == answerId && x.User.Id == userId);
+            return (vote != null);
+        }
+
         public PollVote Get(Guid id)
         {
             return _context.PollVote.FirstOrDefault(x => x.Id == id);

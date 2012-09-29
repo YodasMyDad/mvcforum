@@ -189,6 +189,19 @@ $(function () {
     // Poll Answer counter
     var counter = 0;
 
+    // Remove the polls
+    $(".removepollbutton").click(function (e) {
+        e.preventDefault();
+        //Firstly Show the Poll Section
+        $('.pollanswerholder').hide();
+        $('.pollanswerlist').html("");
+        // Hide this button now
+        $(this).hide();
+        // Show the add poll button
+        $(".createpollbutton").show();
+        counter = 0;
+    });
+
     // Create Polls
     $(".createpollbutton").click(function (e) {
         e.preventDefault();
@@ -201,19 +214,7 @@ $(function () {
         $(this).hide();
         // Show the remove poll button
         $(".removepollbutton").show();
-    });
-    
-    // Remove the polls
-    $(".removepollbutton").click(function (e) {
-        e.preventDefault();
-        //Firstly Show the Poll Section
-        $('.pollanswerholder').hide();
-        $('.pollanswerlist').html("");
-        // Hide this button now
-        $(this).hide();
-        // Show the add poll button
-        $(".createpollbutton").show();
-    });
+    });    
     
     // Add a new answer
     $(".addanswer").click(function (e) {
@@ -232,6 +233,46 @@ $(function () {
             ShowHideRemovePollAnswerButton(counter);
         }
     });
+    
+    // Poll vote radio button click
+    $(".pollanswerselect").click(function () {
+        //Firstly Show the submit poll button
+        $('.pollvotebuttonholder').show();
+        // set the value of the hidden input to the answer value
+        var answerId = $(this).data("answerid");
+        $('.selectedpollanswer').val(answerId);
+    });
+    
+    $(".pollvotebutton").click(function (e) {
+        e.preventDefault();
+        
+        var pollId = $('#Poll_Id').val();
+        var answerId = $('.selectedpollanswer').val();
+
+        var UpdatePollViewModel = new Object();
+        UpdatePollViewModel.PollId = pollId;
+        UpdatePollViewModel.AnswerId = answerId;
+
+        // Ajax call to post the view model to the controller
+        var strung = JSON.stringify(UpdatePollViewModel);
+
+        $.ajax({
+            url: '/Poll/UpdatePoll',
+            type: 'POST',
+            dataType: 'html',
+            data: strung,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                $(".pollcontainer").html(data);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+            }
+        });
+        
+    });
+    
+    
 
 });
 
