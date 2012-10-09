@@ -33,10 +33,8 @@ namespace MVCForum.Tests.Service_Tests
 
             var activityRepository = Substitute.For<IActivityRepository>();
             IActivityService activityService = new ActivityService(activityRepository, _badgeRepository, _membershipRepository, _loggingService);
-
             var user = new MembershipUser { Id = new Guid(guidStrUser), UserName = "SpongeBob" };
-
-            var badge = new Badge {Id = new Guid(guidStrBadge)};            
+            var badge = new Badge { Id = new Guid(guidStrBadge) };
 
             activityService.BadgeAwarded(badge, user, DateTime.Now);
 
@@ -78,7 +76,7 @@ namespace MVCForum.Tests.Service_Tests
             const string guidStr = "515b7240-3be1-43d4-8846-c0b589cd1cd2";
             var activityRepository = Substitute.For<IActivityRepository>();
             IActivityService activityService = new ActivityService(activityRepository, _badgeRepository, _membershipRepository, _loggingService);
-            var user = new MembershipUser { Id = new Guid(guidStr), UserName = "SpongeBob"};
+            var user = new MembershipUser { Id = new Guid(guidStr), UserName = "SpongeBob" };
 
             activityService.MemberJoined(user);
 
@@ -88,7 +86,7 @@ namespace MVCForum.Tests.Service_Tests
         [Test]
         public void MemberJoinedActivityGet()
         {
-            const string guidStr = "515b7240-3be1-43d4-8846-c0b589cd1cd2";            
+            const string guidStr = "515b7240-3be1-43d4-8846-c0b589cd1cd2";
 
             var timestamp = DateTime.Now;
             var activityRepository = Substitute.For<IActivityRepository>();
@@ -150,6 +148,6 @@ namespace MVCForum.Tests.Service_Tests
             var memberJoinedActivities = activityService.GetPagedGroupedActivities(1, 20);
 
             Assert.IsTrue(memberJoinedActivities[0] is ProfileUpdatedActivity);
-        }  
+        }
     }
 }
