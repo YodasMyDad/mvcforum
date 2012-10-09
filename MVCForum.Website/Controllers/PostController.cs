@@ -9,6 +9,7 @@ using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Utilities;
+using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
 
@@ -60,27 +61,40 @@ namespace MVCForum.Website.Controllers
                 }
 
                 topic = _topicService.Get(post.Topic);
+                
                 var postContent = StringUtils.GetSafeHtml(post.PostContent, true);
+
+                var akismetHelper = new AkismetHelper(SettingsService);
 
                 newPost = _postService.AddNewPost(postContent, topic, LoggedOnUser, out permissions);
 
-                try
+                if(!akismetHelper.IsSpam(newPost))
                 {
-                    unitOfWork.Commit();
-
-                    // Successful, add this post to the Lucene index
-                    if (_luceneService.CheckIndexExists())
+                    try
                     {
-                        _luceneService.AddUpdate(_luceneService.MapToModel(newPost));
-                    }
+                        unitOfWork.Commit();
 
+                        // Successful, add this post to the Lucene index
+                        if (_luceneService.CheckIndexExists())
+                        {
+                            _luceneService.AddUpdate(_luceneService.MapToModel(newPost));
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                        throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
+                    } 
                 }
-                catch (Exception ex)
+                else
                 {
                     unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                    throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
-                } 
+                    throw new Exception(LocalizationService.GetResourceString("Errors.PossibleSpam"));
+                }
+
+
             }
 
             // All good send the notifications and send the post back

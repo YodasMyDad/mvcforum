@@ -105,6 +105,8 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.SMTPUsername = settingsViewModel.SMTPUsername;
             existingSettings.SMTPPassword = settingsViewModel.SMTPPassword;
             existingSettings.Theme = settingsViewModel.Theme;
+            existingSettings.AkismentKey = settingsViewModel.AkismentKey;
+            existingSettings.EnableAkisment = settingsViewModel.EnableAkisment;
 
             return existingSettings;
         }
@@ -143,6 +145,8 @@ namespace MVCForum.Website.ViewModels.Mapping
                 SMTP = currentSettings.SMTP,
                 SMTPUsername = currentSettings.SMTPUsername,
                 SMTPPassword = currentSettings.SMTPPassword,
+                AkismentKey = currentSettings.AkismentKey,
+                EnableAkisment = currentSettings.EnableAkisment != null && (bool)currentSettings.EnableAkisment,
                 Theme = currentSettings.Theme,
                 Themes = AppHelpers.GetThemeFolders()
             };

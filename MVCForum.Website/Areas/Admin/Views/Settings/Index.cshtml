@@ -31,6 +31,7 @@
             <li><a data-toggle="tab" href="#theme">Theme</a></li>
             <li><a data-toggle="tab" href="#role">Starting Role</a></li>
             <li><a data-toggle="tab" href="#language">Default Language</a></li>
+            <li><a data-toggle="tab" href="#spam">Spam</a></li>
         </ul>
  
         <div class="tab-content">
@@ -292,6 +293,24 @@
                 <div class="editor-field">
                     @Html.DropDownListFor(model => model.DefaultLanguage, new SelectList(Model.Languages, "Id", "Name"), string.Empty)
                     @Html.ValidationMessageFor(model => model.DefaultLanguage)
+                </div>
+            </div>
+            
+            <div class="tab-pane" id="spam">
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.EnableAkisment)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.EnableAkisment)
+                    @Html.ValidationMessageFor(model => model.EnableAkisment)
+                </div>
+                
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.AkismentKey)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.AkismentKey)
+                    @Html.ValidationMessageFor(model => model.AkismentKey)
                 </div>
             </div>
 

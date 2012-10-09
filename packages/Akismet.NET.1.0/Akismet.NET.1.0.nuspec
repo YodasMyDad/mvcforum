@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Akismet.NET</id>
+    <version>1.0</version>
+    <title>Akismet.NET</title>
+    <authors>Cretze</authors>
+    <owners>Cretze</owners>
+    <projectUrl>http://www.cretze.ro/Applications/Details/AkismetNET1.0</projectUrl>
+    <iconUrl>http://www.cretze.ro/Content/cretze.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>.NET Library for Akismet integration. Akismet filters out your comment and track-back spam for you, so you can focus on more important things. A full tutorial on how you can use the library you can find here: http://blog.cretze.ro/?p=78.</description>
+    <summary>A .NET Library for Akismet integration.</summary>
+    <tags>Akismet protect web spam Cretze</tags>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.Web" targetFramework="" />
+    </frameworkAssemblies>
+  </metadata>
+</package>

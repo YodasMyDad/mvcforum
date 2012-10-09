@@ -9,6 +9,7 @@ using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Utilities;
+using MVCForum.Website.Application;
 using MVCForum.Website.ViewModels;
 
 namespace MVCForum.Website.Controllers
@@ -107,12 +108,12 @@ namespace MVCForum.Website.Controllers
                             User = LoggedOnUser
                         };
 
-                        topicViewModel.Content = StringUtils.GetSafeHtml(topicViewModel.Content, true);
-
+                        topicViewModel.Content = StringUtils.GetSafeHtml(topicViewModel.Content, true);                        
+                        
                         if (!string.IsNullOrEmpty(topicViewModel.Content))
                         {
                             // See if this is a poll and add it to the topic
-                            if (topicViewModel.PollAnswers.Count > 0)
+                            if (topicViewModel.PollAnswers != null && topicViewModel.PollAnswers.Count > 0)
                             {
                                 // Create a new Poll
                                 var newPoll = new Poll
@@ -159,46 +160,57 @@ namespace MVCForum.Website.Controllers
 
                             _topicService.AddLastPost(topic, topicViewModel.Content);
 
-                            // Add the tags if any too
-                            if (!string.IsNullOrEmpty(topicViewModel.Tags))
+                            // Now check its not spam
+                            var akismetHelper = new AkismetHelper(SettingsService);
+                            if(!akismetHelper.IsSpam(topic))
                             {
-                                _topicTagService.Add(StringUtils.SafePlainText(topicViewModel.Tags.ToLower()), topic);
-                            }
-
-                            // Subscribe the user to the topic as they have checked the checkbox
-                            if(topicViewModel.SubscribeToTopic)
-                            {
-                                // Create the notification
-                                var topicNotification = new TopicNotification
+                                // Add the tags if any too
+                                if (!string.IsNullOrEmpty(topicViewModel.Tags))
                                 {
-                                    Topic = topic,
-                                    User = LoggedOnUser
-                                };
-                                //save
-                                _topicNotificationService.Add(topicNotification);
-                            }
+                                    _topicTagService.Add(StringUtils.SafePlainText(topicViewModel.Tags.ToLower()), topic);
+                                }
 
-                            try
-                            {
-                                unitOfWork.Commit();
-                                successfullyCreated = true;
-
-                                // Successful, add this post to the Lucene index
-                                if (_luceneService.CheckIndexExists())
+                                // Subscribe the user to the topic as they have checked the checkbox
+                                if (topicViewModel.SubscribeToTopic)
                                 {
-                                    _luceneService.AddUpdate(_luceneService.MapToModel(topic));
+                                    // Create the notification
+                                    var topicNotification = new TopicNotification
+                                    {
+                                        Topic = topic,
+                                        User = LoggedOnUser
+                                    };
+                                    //save
+                                    _topicNotificationService.Add(topicNotification);
+                                }
+
+                                try
+                                {
+                                    unitOfWork.Commit();
+                                    successfullyCreated = true;
+
+                                    // Successful, add this post to the Lucene index
+                                    if (_luceneService.CheckIndexExists())
+                                    {
+                                        _luceneService.AddUpdate(_luceneService.MapToModel(topic));
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    unitOfWork.Rollback();
+                                    LoggingService.Error(ex);
+                                    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
                                 }
                             }
-                            catch (Exception ex)
+                            else
                             {
                                 unitOfWork.Rollback();
-                                LoggingService.Error(ex);
-                                ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+                                ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.PossibleSpam"));
                             }
+
                         }
                         else
                         {
-                            ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.NoAccess"));
+                            ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
                         }
                     }
                 }

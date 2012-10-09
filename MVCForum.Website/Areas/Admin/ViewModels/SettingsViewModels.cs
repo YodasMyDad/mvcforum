@@ -127,5 +127,11 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public Guid? DefaultLanguage { get; set; }
 
         public List<Language> Languages { get; set; }
+
+        [DisplayName("Enable Akismet Spam Control")]
+        public bool EnableAkisment { get; set; }
+
+        [DisplayName("Enter Your Akismet Key Here")]
+        public string AkismentKey { get; set; }
     }
 }

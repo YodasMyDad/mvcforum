@@ -33,6 +33,5 @@ namespace MVCForum.Website.Controllers
                 return PartialView(viewModel);
             }
         }
-
     }
 }
