@@ -87,12 +87,12 @@ namespace MVCForum.Tests.Service_Tests
 
             // Set the size
             _loggingService = new LoggingService();
-            _loggingService.Initialise(122); // Allows two lines
+            _loggingService.Initialise(114); // Allows two lines
             _loggingService.Recycle();
             
             Thread.Sleep(1000);// Ensure unique archive file name!
 
-            // Each line looks like this: "30/07/2012 05:13:01 | MVCForum.Tests.DLL | RecycleTest | 1234"
+            // Each line looks like this: "01/10/2012 13:49:01 | mscorlib.dll | InvokeMethod | 9ABC"
             _loggingService.Error("1234");
             _loggingService.Error("5678");
 
