@@ -9,8 +9,7 @@
         @foreach (var pollAnswer in poll.PollAnswers.OrderBy(x => x.Answer))
         {
             var answerVotes = pollAnswer.PollVotes.Count;
-            Math.Round();
-            var widthPercentage = answerVotes > 0 ? (((answerVotes/Model.TotalVotesInPoll)*100) - 10) : 1;
+            var widthPercentage = answerVotes > 0 ? ((((float)answerVotes/(float)Model.TotalVotesInPoll)*100) - 10) : 1;
                 
             <div class="pollanswerrow span9">
                 <div class="pollanswerrowholder clearfix">

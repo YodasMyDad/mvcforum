@@ -39,7 +39,7 @@ namespace MVCForum.Website.ViewModels
         public string Name { get; set; }
 
         //[UIHint("bbeditor"), AllowHtml]
-        [UIHint("markdowneditor")]
+        [UIHint("markdowneditor"), AllowHtml]
         //[UIHint("tinymceeditor")]
         public string Content { get; set; }
 

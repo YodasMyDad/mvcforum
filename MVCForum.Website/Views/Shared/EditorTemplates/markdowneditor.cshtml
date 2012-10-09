@@ -10,8 +10,8 @@
         var wdinput = $('.wmd-input');
         wdinput.attr('id', "wmd-input");
         
-        //var converter = new Markdown.Converter();
-        var converter = Markdown.getSanitizingConverter();
+        var converter = new Markdown.Converter();
+        //var converter = Markdown.getSanitizingConverter();
         var editor = new Markdown.Editor(converter);
         editor.run();
     });
