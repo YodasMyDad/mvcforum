@@ -1207,6 +1207,7 @@
     <Content Include="Views\Search\Testing.cshtml" />
     <Content Include="Views\Shared\_Poll.cshtml" />
     <Content Include="Views\Shared\_NoScript.cshtml" />
+    <Content Include="Views\Vote\GetVoters.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

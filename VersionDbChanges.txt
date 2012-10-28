@@ -42,6 +42,7 @@ Added to Settings
 ---- EnableAkisment (bit) allow nulls
 ---- AkismentKey (nvarchar(100)) allow nulls
 ---- CurrentDatabaseVersion (nvarchar(10)) allow nulls
+---- SMTPPort (nvarchar(10)) allow nulls
 
 Added to Post
 ---- FlaggedAsSpam (bit) allow nulls

@@ -111,7 +111,7 @@ select {  }
 .topicheader { margin: 0 0 25px 0;}
 
 /*-- Posts ---*/
-.post { overflow:hidden; padding:7px 0;margin-bottom: 14px;}
+.post {padding:7px 0;margin-bottom: 14px;}
 /*.post:nth-child(odd) {background-color:#f9f9f9;}*/
 .postmemberdetails {}
 .postmemberdetailsinner {-moz-border-radius:10px; -webkit-border-radius:10px; -khtml-border-radius:10px; border-radius:10px; text-align:center; padding:6px 0 5px; color:#999999; font-size:0.8em;}
@@ -248,6 +248,14 @@ div.tagsinput div { display:block; float: left; }
 .sidesearchbox ul li { display: inline;float: left;padding: 0;margin: 0;}
 .sidesearchbox ul li input[type=text]{ width: 100%;}
 .sidesearchbox form { padding: 0;margin: 0;}
+
+/*--- Show Voters ---*/
+.showvoters { cursor: pointer;position: relative;}
+.showvotersbox { position: absolute;top:0;background-color: #fff;border: 1px solid #ccc;display: none;font-size: 12px;z-index: 999;padding: 6px;width: 125px;text-align: left;line-height: 15px;border-left: none;color: #7D7D7D;}
+.showvotersbox .smallspinner {background: transparent url('../Images/arrow-spinner-blue.gif') no-repeat;width: 16px;height: 16px;display: block;}
+.showvotersbox ul { padding: 0;margin: 0;}
+.showvotersbox ul li { padding:2px 0;list-style: none;}
+
 
 /*--- Jquery UI ----*/
 /* Layout helpers

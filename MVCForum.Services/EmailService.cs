@@ -70,6 +70,7 @@ namespace MVCForum.Services
                     var smtp = _settingsService.GetSettings().SMTP;
                     var smtpUsername = _settingsService.GetSettings().SMTPUsername;
                     var smtpPassword = _settingsService.GetSettings().SMTPPassword;
+                    var smtpPort = _settingsService.GetSettings().SMTPPort;
 
                     if (string.IsNullOrEmpty(smtp)) return;
 
@@ -77,6 +78,11 @@ namespace MVCForum.Services
                     if (!string.IsNullOrEmpty(smtpUsername) && !string.IsNullOrEmpty(smtpPassword))
                     {
                         mySmtpClient.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
+                    }
+
+                    if(smtpPort != null)
+                    {
+                        mySmtpClient.Port = (int)smtpPort;
                     }
 
                     if (email.Count == 1)

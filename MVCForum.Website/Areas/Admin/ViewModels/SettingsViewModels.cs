@@ -112,6 +112,9 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("SMTP Server Password")]
         public string SMTPPassword { get; set; }
 
+        [DisplayName("SMTP Port - If different from 25")]
+        public int? SMTPPort { get; set; }
+
         [DisplayName("Current Theme")]
         [Required]
         public string Theme { get; set; }

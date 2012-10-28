@@ -263,6 +263,14 @@
                     @Html.EditorFor(model => model.SMTPPassword)
                     @Html.ValidationMessageFor(model => model.SMTPPassword)
                 </div>
+                
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.SMTPPort)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.SMTPPort)
+                    @Html.ValidationMessageFor(model => model.SMTPPort)
+                </div>
 
             </div>
             

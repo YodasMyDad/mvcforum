@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
@@ -107,6 +104,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.Theme = settingsViewModel.Theme;
             existingSettings.AkismentKey = settingsViewModel.AkismentKey;
             existingSettings.EnableAkisment = settingsViewModel.EnableAkisment;
+            existingSettings.SMTPPort = settingsViewModel.SMTPPort;
 
             return existingSettings;
         }
@@ -148,6 +146,7 @@ namespace MVCForum.Website.ViewModels.Mapping
                 AkismentKey = currentSettings.AkismentKey,
                 EnableAkisment = currentSettings.EnableAkisment != null && (bool)currentSettings.EnableAkisment,
                 Theme = currentSettings.Theme,
+                SMTPPort = currentSettings.SMTPPort,
                 Themes = AppHelpers.GetThemeFolders()
             };
 

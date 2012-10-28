@@ -4,6 +4,9 @@ $(function () {
 
     $('input, textarea').placeholder();
 
+    // Show the voters box
+    AddShowVoters();
+
     //---------------- On Click------------------------
 
     $(".thumbuplink").click(function (e) {
@@ -275,6 +278,50 @@ $(function () {
     
 
 });
+
+function AddShowVoters() {
+    if ($(".showvoters").length > 0) {
+        // Container/Parent
+        var showVoters = $(".showvoters");
+
+        showVoters.click(function (e) {
+            e.preventDefault();
+            // This the child box
+            var voterBox = $(this).find('.showvotersbox');
+
+            // firstly set the left position
+            voterBox.css("left", voterBox.parent().width() + 2);
+
+            // Now show it
+            voterBox.toggle();
+            
+            if (voterBox.is(":visible")) {
+                // Is being shown so do the Ajax call
+                
+                var GetVotersViewModel = new Object();
+                GetVotersViewModel.Post = voterBox.attr("id");
+
+                // Ajax call to post the view model to the controller
+                var strung = JSON.stringify(GetVotersViewModel);
+
+                $.ajax({
+                    url: '/Vote/GetVoters',
+                    type: 'POST',
+                    dataType: 'html',
+                    data: strung,
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        voterBox.html(data);
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                    }
+                });
+
+            }
+        });       
+    }
+}
 
 function AddNewPollAnswer(counter) {
     var placeHolder = $('#pollanswerplaceholder').val();

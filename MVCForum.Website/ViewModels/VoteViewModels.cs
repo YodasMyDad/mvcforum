@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Website.ViewModels
 {
@@ -15,6 +17,16 @@ namespace MVCForum.Website.ViewModels
     public class MarkAsSolutionViewModel
     {
         public Guid Post { get; set; }
+    }
+
+    public class GetVotersViewModel
+    {
+        public Guid Post { get; set; }
+    }
+
+    public class ShowVotersViewModel
+    {
+        public List<Vote> Votes { get; set; }
     }
 
 }
