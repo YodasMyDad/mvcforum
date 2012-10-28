@@ -9,6 +9,7 @@ N/A
 ==============================
 
 Added primary key to Activity Table 'Id' field
+ |Example of adding primary key to a field
  |ALTER TABLE dbo.Person ADD CONSTRAINT PK_Person
  |PRIMARY KEY CLUSTERED (PersonID);
 
@@ -57,3 +58,11 @@ Added to MembershipUser
 ---- IsExternalAccount (bit) allow nulls
 ---- TwitterShowFeed (bit) allow nulls
 ++ Make sure 'Facebook' column allows nulls
+
+Language Strings To Add
+Topic.Label.TopicTitle = Title
+Poll.Button.Create = Add A Poll To This Topic
+Poll.Button.Remove = Remove Poll From Topic
+Poll.Placeholder.TypeAnswerHere = Type A Poll Answer Here
+Topic.OptionsHeading = Topic Options
+Poll.Button.Vote = Submit Vote

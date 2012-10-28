@@ -431,6 +431,7 @@ function ShowUserMessage(message) {
         var toInject = "<div class=\"alert alert-block alert-info fade in\"><a href=\"#\" data-dismiss=\"alert\" class=\"close\">&times;<\/a>" + message + "<\/div>";
         jsMessage.html(toInject);
         jsMessage.show();
+        $('div.alert').delay(1800).fadeOut();
     }
 }
 

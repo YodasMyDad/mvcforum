@@ -643,18 +643,16 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 {
                     var resourceKeyToSave = new LocaleResourceKey
                                                 {
-                                                    Id = newResourceKeyViewModel.Id,
                                                     Name = StringUtils.GetSafeHtml(newResourceKeyViewModel.Name),
                                                     Notes = StringUtils.GetSafeHtml(newResourceKeyViewModel.Notes),
-                                                    DateAdded = newResourceKeyViewModel.DateAdded,
+                                                    DateAdded = newResourceKeyViewModel.DateAdded
                                                 };
                        
-                    var newResourceKey = LocalizationService.Add(resourceKeyToSave);
-
-                    ShowSuccess("Resource key created successfully");
+                    LocalizationService.Add(resourceKeyToSave);
                     unitOfWork.Commit();
-
-                    return RedirectToAction("ManageResourceKeys", new { resourceKeyId = newResourceKey.Id });
+                    ShowSuccess("Resource key created successfully");                   
+                    var currentLanguage = SettingsService.GetSettings().DefaultLanguage.Id;
+                    return RedirectToAction("ManageLanguageResourceValues", new { languageId = currentLanguage });
                 }
                 catch (Exception ex)
                 {

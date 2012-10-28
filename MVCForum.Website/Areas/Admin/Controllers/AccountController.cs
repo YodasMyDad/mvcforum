@@ -18,6 +18,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         private readonly IRoleService _roleService;
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
+        private readonly IMembershipUserPointsService _membershipUserPointsService;
 
         /// <summary>
         /// Constructor
@@ -30,17 +31,19 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         /// <param name="loggingService"> </param>
         /// <param name="postService"> </param>
         /// <param name="topicService"> </param>
+        /// <param name="membershipUserPointsService"> </param>
         public AccountController(ILoggingService loggingService,
             IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService,
             ILocalizationService localizationService,
             IRoleService roleService,
-            ISettingsService settingsService, IPostService postService, ITopicService topicService)
+            ISettingsService settingsService, IPostService postService, ITopicService topicService, IMembershipUserPointsService membershipUserPointsService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
             _roleService = roleService;
             _postService = postService;
             _topicService = topicService;
+            _membershipUserPointsService = membershipUserPointsService;
         }
 
         #region Users
@@ -396,6 +399,14 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 foreach (var topic in topicList)
                 {
                     _topicService.Delete(topic);
+                }
+
+                user.Points.Clear();
+
+                // Also clear their points
+                foreach (var point in user.Points)
+                {
+                    _membershipUserPointsService.Delete(point);
                 }
 
                 try
