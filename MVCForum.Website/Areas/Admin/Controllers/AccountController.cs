@@ -383,30 +383,43 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
                 // Delete all posts
                 var posts = user.Posts;
-                var postList = new List<Post>();
-                postList.AddRange(posts);
-                foreach (var post in postList)
+                if(posts.Any())
                 {
-                    _postService.Delete(post);
+                    var postList = new List<Post>();
+                    postList.AddRange(posts);
+                    foreach (var post in postList)
+                    {
+                        _postService.Delete(post);
+                    }
+                    unitOfWork.SaveChanges();
                 }
 
-                unitOfWork.SaveChanges();
 
                 // Delete all topics
                 var topics = user.Topics;
-                var topicList = new List<Topic>();
-                topicList.AddRange(topics);
-                foreach (var topic in topicList)
+                if (topics.Any())
                 {
-                    _topicService.Delete(topic);
+                    var topicList = new List<Topic>();
+                    topicList.AddRange(topics);
+                    foreach (var topic in topicList)
+                    {
+                        _topicService.Delete(topic);
+                    }
+                    unitOfWork.SaveChanges();
                 }
 
-                user.Points.Clear();
-
                 // Also clear their points
-                foreach (var point in user.Points)
+                var userPoints = user.Points;
+                if(userPoints.Any())
                 {
-                    _membershipUserPointsService.Delete(point);
+                    var pointsList = new List<MembershipUserPoints>();
+                    pointsList.AddRange(userPoints);
+                    foreach (var point in pointsList)
+                    {
+                        point.User = null;
+                        _membershipUserPointsService.Delete(point);
+                    }
+                    user.Points.Clear();
                 }
 
                 try
