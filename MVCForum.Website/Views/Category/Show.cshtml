@@ -3,7 +3,7 @@
 @model ViewCategoryViewModel
            
 @{
-    ViewBag.Title = Model.Category.Name;
+    ViewBag.Title = Html.Raw(Model.Category.Name);
     var totalCount = Convert.ToInt32(Model.TotalCount);
     ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
 

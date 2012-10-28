@@ -6,8 +6,8 @@
         <ul class="mainadmincategorylist">
         @foreach (var cat in Model.Categories)
         {
-            <li class="mainadmincategory"><a href="@Url.Action("EditCategory", new {id = cat.Id})" class="catfancybox">@cat.Name</a> 
-            <a href="@Url.Action("DeleteCategoryConfirmation", new {id = cat.Id})"><img src="/Content/admin/Images/icons/cross.png" alt="Delete" title="Delete @cat.Name" /></a></li>
+            <li class="mainadmincategory"><a href="@Url.Action("EditCategory", new {id = cat.Id})" class="catfancybox">@Html.Raw(cat.Name)</a> 
+            <a href="@Url.Action("DeleteCategoryConfirmation", new {id = cat.Id})"><img src="/Content/admin/Images/icons/cross.png" alt="Delete" title="Delete @Html.Raw(cat.Name)" /></a></li>
             @Html.Action("ListAllCategories", new { id = cat.Id })
         }
         </ul>

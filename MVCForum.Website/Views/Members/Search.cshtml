@@ -48,4 +48,7 @@
     </tbody>
 </table>
 
-@Html.Pager(Convert.ToInt32(Model.PageIndex), AppConstants.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
+@if (Convert.ToInt32(Model.TotalCount) > AppConstants.AdminListPageSize)
+{
+    @Html.Pager(Convert.ToInt32(Model.PageIndex), AppConstants.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
+}

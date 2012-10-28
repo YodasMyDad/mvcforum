@@ -61,6 +61,8 @@ namespace MVCForum.Website.ViewModels
     {
         public Guid PostId { get; set; }
         public string PostCreatorUsername { get; set; }
+        
+        [Required]
         public string Reason { get; set; }
     }
 }
