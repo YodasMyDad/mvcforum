@@ -45,6 +45,8 @@ namespace MVCForum.Website.ViewModels
         public string[] Roles { get; set; }
 
         public IList<MembershipRole> AllRoles { get; set; }
+
+        public string SpamAnswer { get; set; }
     }
 
     public class MemberFrontEndEditViewModel

@@ -320,6 +320,22 @@
                     @Html.EditorFor(model => model.AkismentKey)
                     @Html.ValidationMessageFor(model => model.AkismentKey)
                 </div>
+                
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.SpamQuestion)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.SpamQuestion)
+                    @Html.ValidationMessageFor(model => model.SpamQuestion)
+                </div>
+                
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.SpamAnswer)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.SpamAnswer)
+                    @Html.ValidationMessageFor(model => model.SpamAnswer)
+                </div>
             </div>
 
         </div> 

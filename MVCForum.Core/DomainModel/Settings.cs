@@ -45,6 +45,8 @@ namespace MVCForum.Domain.DomainModel
         public int? SMTPPort { get; set; }
         public string Theme { get; set; }
 
+        public string SpamQuestion { get; set; }
+        public string SpamAnswer { get; set; }
         public bool? EnableAkisment { get; set; }
         public string AkismentKey { get; set; }
         public string CurrentDatabaseVersion { get; set; }

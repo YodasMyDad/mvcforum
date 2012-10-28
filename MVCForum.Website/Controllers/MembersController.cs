@@ -72,14 +72,27 @@ namespace MVCForum.Website.Controllers
         public ActionResult Register(MemberAddViewModel userModel)
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-            {                
+            {
+                
+                // First see if there is a spam question and if so, the answer matches
+                if(!string.IsNullOrEmpty(SettingsService.GetSettings().SpamQuestion))
+                {
+                    // There is a spam question, if answer is wrong return with error
+                    if(userModel.SpamAnswer.Trim() != SettingsService.GetSettings().SpamAnswer)
+                    {
+                        // POTENTIAL SPAMMER!
+                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Error.WrongAnswerRegistration"));
+                        return View();
+                    }
+                }
+
                 var userToSave = new MembershipUser
                 {
                     UserName = StringUtils.GetSafeHtml(userModel.UserName),
                     Email = StringUtils.GetSafeHtml(userModel.Email),
                     Password = StringUtils.GetSafeHtml(userModel.Password),
                     IsApproved = userModel.IsApproved,
-                    Comment = StringUtils.GetSafeHtml(userModel.Comment),                    
+                    Comment = StringUtils.GetSafeHtml(userModel.Comment),
                 };
 
                 var homeRedirect = false;
@@ -116,16 +129,16 @@ namespace MVCForum.Website.Controllers
                         {
                             Message = LocalizationService.GetResourceString("Members.NowRegisteredNeedApproval"),
                             MessageType = GenericMessages.success
-                        };   
+                        };
                     }
 
 
                     try
                     {
                         unitOfWork.Commit();
-                        if(homeRedirect)
+                        if (homeRedirect)
                         {
-                            return RedirectToAction("Index", "Home", new { area = string.Empty });   
+                            return RedirectToAction("Index", "Home", new { area = string.Empty });
                         }
                     }
                     catch (Exception ex)
@@ -135,6 +148,7 @@ namespace MVCForum.Website.Controllers
                         ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }
                 }
+                
                 return View();
             }
         }

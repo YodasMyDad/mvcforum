@@ -18,12 +18,12 @@ body { font-size: 17px;}
 
 /*--- Main heading ---*/
 h1,h2,h3,h4,h5,h6{font-family:Calibri, Arial, Helvetica, sans-serif;}
-h1 {font-size:40px; margin-bottom:13px;}
-h2 {font-size:35px; margin-bottom:13px;}
-h3 {font-size:31px; margin-bottom:8px;}
-h4 {font-size:27px; margin-bottom:8px;}
-h5 {font-size:24px; margin-bottom:8px;}
-h6 {font-size:20px; margin-bottom:8px;}
+h1 {font-size:35px; margin-bottom:13px;}
+h2 {font-size:30px; margin-bottom:13px;}
+h3 {font-size:25px; margin-bottom:8px;}
+h4 {font-size:22px; margin-bottom:8px;}
+h5 {font-size:20px; margin-bottom:8px;}
+h6 {font-size:18px; margin-bottom:8px;}
 
 /*--- Side Boxes ---*/
 .side-box h5 {font-family:Calibri, Arial, Helvetica, sans-serif;}
@@ -92,7 +92,7 @@ h6 {font-size:20px; margin-bottom:8px;}
 .mobileview .mobilenavbar { padding: 5px 0 0 0;}
 .mobileview .mobilenavbar .mobilenavbar-inner{}
 .mobileview .mobilenavbar .mobilenavbar-inner ul.nav {}
-.mobileview .mobilenavbar .mobilenavbar-inner ul.nav li { margin: 0 0 4px 0;text-align: center;font-size: 28px;}
+.mobileview .mobilenavbar .mobilenavbar-inner ul.nav li { margin: 0 0 4px 0;text-align: center;font-size: 24px;}
 .mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a, .mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a:visited { background-color: #4891DC;color: #fff;padding: 11px 0;}
 .mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a:hover { background-color: #BFBFBF;}
 

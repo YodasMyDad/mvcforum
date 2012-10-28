@@ -105,6 +105,8 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.AkismentKey = settingsViewModel.AkismentKey;
             existingSettings.EnableAkisment = settingsViewModel.EnableAkisment;
             existingSettings.SMTPPort = settingsViewModel.SMTPPort;
+            existingSettings.SpamQuestion = settingsViewModel.SpamQuestion;
+            existingSettings.SpamAnswer = settingsViewModel.SpamAnswer;
 
             return existingSettings;
         }
@@ -147,6 +149,8 @@ namespace MVCForum.Website.ViewModels.Mapping
                 EnableAkisment = currentSettings.EnableAkisment != null && (bool)currentSettings.EnableAkisment,
                 Theme = currentSettings.Theme,
                 SMTPPort = currentSettings.SMTPPort,
+                SpamQuestion = currentSettings.SpamQuestion,
+                SpamAnswer = currentSettings.SpamAnswer,
                 Themes = AppHelpers.GetThemeFolders()
             };
 

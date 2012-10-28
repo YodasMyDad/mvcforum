@@ -44,6 +44,8 @@ Added to Settings
 ---- AkismentKey (nvarchar(100)) allow nulls
 ---- CurrentDatabaseVersion (nvarchar(10)) allow nulls
 ---- SMTPPort (nvarchar(10)) allow nulls
+---- SpamQuestion (nvarchar(500)) allow nulls
+---- SpamAnswer (nvarchar(500)) allow nulls
 
 Added to Post
 ---- FlaggedAsSpam (bit) allow nulls
@@ -66,3 +68,4 @@ Poll.Button.Remove = Remove Poll From Topic
 Poll.Placeholder.TypeAnswerHere = Type A Poll Answer Here
 Topic.OptionsHeading = Topic Options
 Poll.Button.Vote = Submit Vote
+Error.WrongAnswerRegistration = There was an error with your answer, please try again

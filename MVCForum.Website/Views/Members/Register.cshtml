@@ -6,10 +6,9 @@
 @section Header
 {
     @(
-        Bundle.JavaScript()
+ Bundle.JavaScript()
             .Add("~/Scripts/jquery.validate.min.js")
             .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
-            
             .MvcRender("/scripts/cache/validate-combined_#.js")
     )
 }
@@ -21,38 +20,49 @@
     
     using (Html.BeginForm("Register", "Members", FormMethod.Post, new { @class = "form-horizontal" }))
     {
-        @Html.ValidationSummary(false)
+    @Html.ValidationSummary(false)
 
-        <div class="editor-label">
-            @Html.LabelFor(x => @Model.UserName)
-        </div>
-        <div class="editor-field">
-            @Html.TextBoxFor(x => @Model.UserName)
-        </div>
-        <div class="editor-label">
-            @Html.LabelFor(x => @Model.Password)
-        </div>     
-        <div class="editor-field">
-            @Html.PasswordFor(x => @Model.Password)
-            @Html.ValidationMessageFor(x => x.Password)
-        </div>
-        <div class="editor-label">
-            @Html.LabelFor(x => @Model.ConfirmPassword)
-        </div>     
-        <div class="editor-field">
-            @Html.PasswordFor(x => @Model.ConfirmPassword)
-            @Html.ValidationMessageFor(x => x.ConfirmPassword)
-        </div>
-        <div class="editor-label">
-            @Html.LabelFor(x => @Model.Email)
-        </div>    
-        <div class="editor-field">
-            @Html.TextBoxFor(x => @Model.Email)
-        </div>
+    <div class="editor-label">
+        @Html.LabelFor(x => @Model.UserName)
+    </div>
+    <div class="editor-field">
+        @Html.TextBoxFor(x => @Model.UserName)
+    </div>
+    <div class="editor-label">
+        @Html.LabelFor(x => @Model.Password)
+    </div>     
+    <div class="editor-field">
+        @Html.PasswordFor(x => @Model.Password)
+        @Html.ValidationMessageFor(x => x.Password)
+    </div>
+    <div class="editor-label">
+        @Html.LabelFor(x => @Model.ConfirmPassword)
+    </div>     
+    <div class="editor-field">
+        @Html.PasswordFor(x => @Model.ConfirmPassword)
+        @Html.ValidationMessageFor(x => x.ConfirmPassword)
+    </div>
+
+    <div class="editor-label">
+        @Html.LabelFor(x => @Model.Email)
+    </div>    
+    <div class="editor-field">
+        @Html.TextBoxFor(x => @Model.Email)
+    </div>
+        
+        if (!string.IsNullOrEmpty(Html.Settings().SpamQuestion))
+        {
+            <div class="editor-label">
+                <label for="SpamAnswer">@Html.Settings().SpamQuestion</label>
+            </div>    
+            <div class="editor-field">
+                @Html.TextBoxFor(x => @Model.SpamAnswer)
+            </div>             
+        }
     
-        <div class="submit-holder">
-            <input type="submit" class="btn btn-large btn-success" value="@Html.LanguageString("Members.Register")" />
-        </div>
+    <div class="submit-holder">
+        <input type="submit" class="btn btn-large btn-success" value="@Html.LanguageString("Members.Register")" />
+    </div>
     }
 
 }

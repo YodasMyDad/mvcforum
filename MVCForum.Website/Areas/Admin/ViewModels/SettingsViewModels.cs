@@ -136,5 +136,11 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [DisplayName("Enter Your Akismet Key Here")]
         public string AkismentKey { get; set; }
+
+        [DisplayName("Enter a Spam registration prevention question")]
+        public string SpamQuestion { get; set; }
+
+        [DisplayName("Enter the answer to your Spam question")]
+        public string SpamAnswer { get; set; }
     }
 }
