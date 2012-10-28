@@ -78,7 +78,7 @@ namespace MVCForum.Website.Controllers
                 if(!string.IsNullOrEmpty(SettingsService.GetSettings().SpamQuestion))
                 {
                     // There is a spam question, if answer is wrong return with error
-                    if(userModel.SpamAnswer.Trim() != SettingsService.GetSettings().SpamAnswer)
+                    if(userModel.SpamAnswer == null || userModel.SpamAnswer.Trim() != SettingsService.GetSettings().SpamAnswer)
                     {
                         // POTENTIAL SPAMMER!
                         ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Error.WrongAnswerRegistration"));
