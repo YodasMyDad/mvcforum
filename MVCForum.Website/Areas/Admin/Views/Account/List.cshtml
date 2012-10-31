@@ -66,7 +66,7 @@
                 <td>
                     @if (!disabled)
                     {
-                        <a href="@Url.Action("Delete", new { Id = user.Id })" class="btn btn-small">
+                        <a href="@Url.Action("Delete", new { user.Id, p = Model.PageIndex, search = Model.Search})" class="btn btn-small">
                             <i class="icon-remove"></i>
                         </a> 
                     } 

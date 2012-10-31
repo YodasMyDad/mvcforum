@@ -1,4 +1,5 @@
 ﻿$(function () {
+    CallHome();
     LatestUsers();
     LowestPointUsers();
     LowestPointPosts();
@@ -40,8 +41,9 @@ function LatestNews() {
         $(".mvcforumlatestnews").html(data);
     });
 }
-
-
-//dashboardlatestbadgesawarded
-//
-//
+function CallHome() {
+    var url = document.domain;
+    $.post("http://www.mvcforum.com/base/MVCBase/DomainCheck", { "url": url }, function (data) {
+        //TODO: Add stuff here if needed
+    });
+}

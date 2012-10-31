@@ -115,15 +115,16 @@ namespace MVCForum.Data.Repositories
 
         public PagedList<MembershipUser> SearchMembers(string search, int pageIndex, int pageSize)
         {
-            var totalCount = _context.MembershipUser.Count(x => x.UserName.ToUpper().Contains(search.ToUpper()));
-            var results = _context.MembershipUser
-                .Where(x => x.UserName.ToUpper().Contains(search.ToUpper()))
+            var query = _context.MembershipUser
+                .Where(x => x.UserName.ToUpper().Contains(search.ToUpper()) || x.Email.ToUpper().Contains(search.ToUpper()));
+
+            var results = query
                 .OrderBy(x => x.UserName)
                 .Skip((pageIndex - 1)*pageSize)
                 .Take(pageSize)
                 .ToList();
 
-            return new PagedList<MembershipUser>(results, pageIndex, pageSize, totalCount);
+            return new PagedList<MembershipUser>(results, pageIndex, pageSize, query.Count());
         }
 
         /// <summary>

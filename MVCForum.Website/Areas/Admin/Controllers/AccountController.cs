@@ -193,7 +193,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
 
         [Authorize(Roles = AppConstants.AdminRoleName)]
-        public ActionResult Delete(Guid Id)
+        public ActionResult Delete(Guid Id, int? p, string search)
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
@@ -225,6 +225,20 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         _topicService.Delete(topic);
                     }
 
+                    // Also clear their points
+                    var userPoints = user.Points;
+                    if (userPoints.Any())
+                    {
+                        var pointsList = new List<MembershipUserPoints>();
+                        pointsList.AddRange(userPoints);
+                        foreach (var point in pointsList)
+                        {
+                            point.User = null;
+                            _membershipUserPointsService.Delete(point);
+                        }
+                        user.Points.Clear();
+                    }
+
                     unitOfWork.SaveChanges();
 
                     MembershipService.Delete(user);
@@ -246,7 +260,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         MessageType = GenericMessages.error
                     };
                 }
-                return ListUsers(null, null);
+                return RedirectToAction("Manage", new {p, search});
             }
         }
 
