@@ -321,3 +321,9 @@ div.tagsinput div { display:block; float: left; }
 /* Overlays */
 .ui-widget-overlay { background: #aaaaaa; opacity: .3;filter:Alpha(Opacity=30)/*{opacityOverlay}*/; }
 .ui-widget-shadow { margin: -8px/*{offsetTopShadow}*/ 0 0 -8px/*{offsetLeftShadow}*/; padding: 8px/*{thicknessShadow}*/; background: #aaaaaa; opacity: .3;filter:Alpha(Opacity=30)/*{opacityShadow}*/; -moz-border-radius: 8px/*{cornerRadiusShadow}*/; -khtml-border-radius: 8px/*{cornerRadiusShadow}*/; -webkit-border-radius: 8px/*{cornerRadiusShadow}*/; border-radius: 8px/*{cornerRadiusShadow}*/; }
+
+/*--- Facebook / OAuth Login ---*/
+.loginortext { text-align: center;padding-top: 50px;font-size: 28px;}
+.oauthbuttons {}
+.facebookloginbutton { padding: 50px 0 0 0;}
+.facebookloginbutton a { width: 225px;height: 38px;display: block;margin: 0 auto;background-image: url('../Images/facebook-connect-large.png');background-repeat: no-repeat;text-transform: capitalize;text-indent: -9999px;}

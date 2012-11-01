@@ -57,13 +57,16 @@ namespace MVCForum.Domain.DomainModel
         public string Facebook { get; set; }
 
         public string Avatar { get; set; }
-        public string FacebookLoginId { get; set; }
-        public string OpenIdLoginId { get; set; }
-        public string TwitterLoginId { get; set; }
-        public string GoogleLoginId { get; set; }
-        public string YahooLoginId { get; set; }
+        public string FacebookAccessToken { get; set; }
+        public long? FacebookId { get; set; }
+        public string TwitterAccessToken { get; set; }
+        public string TwitterId { get; set; }
+        public string GoogleAccessToken { get; set; }
+        public string GoogleId { get; set; }
         public bool? IsExternalAccount { get; set; }
         public bool? TwitterShowFeed { get; set; }
+        public DateTime? LoginIdExpires { get; set; }
+        public string MiscAccessToken { get; set; }
 
         public virtual IList<MembershipRole> Roles { get; set; }
         public virtual IList<Post> Posts { get; set; }

@@ -1,5 +1,5 @@
-﻿@model MVCForum.Website.ViewModels.LogOnViewModel
-
+﻿@using MVCForum.Utilities
+@model MVCForum.Website.ViewModels.LogOnViewModel
 @{
     ViewBag.Title = Html.LanguageString("LogOn.LogOn");
 }
@@ -7,57 +7,79 @@
 @section Header
 {
     @(
-        Bundle.JavaScript()
+ Bundle.JavaScript()
             .Add("~/Scripts/jquery.validate.min.js")
             .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
-            
+
             .MvcRender("/scripts/cache/validate-combined_#.js")
     )
 }
 
 <div class="row">
-    
-    
-    <div class="span6 mainlogonform">
-    
+
+
+    <div class="span4 mainlogonform">
+
         @Html.ValidationSummary(false)
 
+        <h3>@ViewBag.Title</h3>
+
         @using (Html.BeginForm("LogOn", "Members", FormMethod.Post, new { @class = "form-horizontal" }))
-        {
-            <fieldset>
-                <legend>@ViewBag.Title</legend>
-            
-                <p>@Html.Raw(string.Format(Html.LanguageString("Members.LogOnMessage"), Html.ActionLink("Register", "Register")))</p>
+        {            
+            <p>@Html.Raw(string.Format(Html.LanguageString("Members.LogOnMessage"), Html.ActionLink("Register", "Register")))</p>
 
-                <div class="editor-label">
-                    @Html.LabelFor(m => m.UserName)
-                </div>
-                <div class="editor-field">
-                    @Html.TextBoxFor(m => m.UserName)
-                    @Html.ValidationMessageFor(m => m.UserName)
-                </div>
+            <div class="editor-label">
+                @Html.LabelFor(m => m.UserName)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(m => m.UserName)
+                @Html.ValidationMessageFor(m => m.UserName)
+            </div>
 
-                <div class="editor-label">
-                    @Html.LabelFor(m => m.Password)
-                </div>
-                <div class="editor-field">
-                    @Html.PasswordFor(m => m.Password)
-                    @Html.ValidationMessageFor(m => m.Password)
-                </div>
+            <div class="editor-label">
+                @Html.LabelFor(m => m.Password)
+            </div>
+            <div class="editor-field">
+                @Html.PasswordFor(m => m.Password)
+                @Html.ValidationMessageFor(m => m.Password)
+            </div>
 
-                <div class="editor-label">
-                    <label class="checkbox inline">
-                        @Html.CheckBoxFor(m => m.RememberMe)
-                        @Html.LabelFor(m => m.RememberMe)
-                    </label>
-                </div>
+            <div class="editor-label">
+                <label class="checkbox inline">
+                    @Html.CheckBoxFor(m => m.RememberMe)
+                    @Html.LabelFor(m => m.RememberMe)
+                </label>
+            </div>
 
-                <div class="submit-holder">
-                    <input type="submit" class="btn btn-success btn-large" value="@Html.LanguageString("Buttons.LogOn ")" />
-                </div>
-            </fieldset>
+            <div class="submit-holder">
+                <input type="submit" class="btn btn-success btn-large" value="@Html.LanguageString("Buttons.LogOn ")" />
+            </div>
+
         }
         <p class="forgotpasswordtext"><a href="@Url.Action("ForgotPassword")">@Html.LanguageString("Members.ForgotPassword.Link")</a></p>
     </div>
+    
+    @if(Html.Settings().EnableSocialLogins == true)
+    {
+        <div class="span1 loginortext">
+            @Html.LanguageString("Members.LoginOrText")
+        </div>
+
+        <div class="span4 oauthbuttons">
+            
+            @if (!string.IsNullOrEmpty(ConfigUtils.GetAppSetting("FacebookAppId")) && !string.IsNullOrEmpty(ConfigUtils.GetAppSetting("FacebookAppSecret")))
+            {
+                <div class="facebookloginbutton">
+                    @Html.ActionLink(Html.LanguageString("Members.LogonFacebookButton"), "LogonFacebook", "Members", null, new { @class = "facebookloginbutton" })
+                </div>   
+            }
+            else
+            {
+                @Html.LanguageString("Facebook.Error.EnabledButNotAddedKeys")
+            }
+
+        </div>
+    }
+
 
 </div>

@@ -9,15 +9,18 @@ N/A
 ==============================
 
 Added primary key to Activity Table 'Id' field
- |Example of adding primary key to a field
- |ALTER TABLE dbo.Person ADD CONSTRAINT PK_Person
- |PRIMARY KEY CLUSTERED (PersonID);
+ALTER TABLE [dbo].[Activity] ADD  CONSTRAINT [PK_Activity] PRIMARY KEY CLUSTERED 
+([Id] ASC) WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
 
 Added primary key to BadgeTypeTimeLastChecked Table 'Id' field
- |Example above
+ALTER TABLE [dbo].[BadgeTypeTimeLastChecked] ADD  CONSTRAINT [PK_BadgeTypeTimeLastChecked] PRIMARY KEY CLUSTERED 
+([Id] ASC)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+GO
 
 Updated table 'Topic'
 ---- Poll_Id (Guid) allow nulls
+ALTER TABLE Topic ADD Poll_Id uniqueidentifier
 
 Added new table 'Poll'
 ---- Id (Guid) PK
@@ -46,20 +49,24 @@ Added to Settings
 ---- SMTPPort (nvarchar(10)) allow nulls
 ---- SpamQuestion (nvarchar(500)) allow nulls
 ---- SpamAnswer (nvarchar(500)) allow nulls
+---- SMTPEnableSSL (bit)
+---- EnableSocialLogins (bit)
 
 Added to Post
 ---- FlaggedAsSpam (bit) allow nulls
 
 Added to MembershipUser
 ---- Avatar (nvarchar(250)) allow nulls
----- FacebookLoginId (nvarchar(150)) allow nulls
----- OpenIdLoginId (nvarchar(150)) allow nulls
----- TwitterLoginId (nvarchar(150)) allow nulls
----- GoogleLoginId (nvarchar(150)) allow nulls
----- YahooLoginId (nvarchar(150)) allow nulls
+---- FacebookAccessToken (nvarchar(150)) allow nulls
+---- FacebookId (bigint) allow nulls
+---- TwitterAccessToken (nvarchar(150)) allow nulls
+---- TwitterId (nvarchar(150)) allow nulls
+---- GoogleAccessToken (nvarchar(150)) allow nulls
+---- GoogleId (nvarchar(150)) allow nulls
+---- MiscAccessToken (nvarchar(150)) allow nulls
 ---- IsExternalAccount (bit) allow nulls
 ---- TwitterShowFeed (bit) allow nulls
-++ Make sure 'Facebook' column allows nulls
+---- LoginIdExpires (datetime) allow nulls
 
 Language Strings To Add
 Topic.Label.TopicTitle = Title
@@ -69,3 +76,9 @@ Poll.Placeholder.TypeAnswerHere = Type A Poll Answer Here
 Topic.OptionsHeading = Topic Options
 Poll.Button.Vote = Submit Vote
 Error.WrongAnswerRegistration = There was an error with your answer, please try again
+Members.LoginOrText = Or
+Facebook.Error.EnabledButNotAddedKeys = You have enabled Facebook login but not added your AppId or Secret key to the web.config
+
+Web.config Changes
+<add key="FacebookAppId" value=""/>
+<add key="FacebookAppSecret" value="" />

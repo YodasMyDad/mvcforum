@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using System.Web.Security;
+using Facebook;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
@@ -73,12 +75,12 @@ namespace MVCForum.Website.Controllers
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-                
+
                 // First see if there is a spam question and if so, the answer matches
-                if(!string.IsNullOrEmpty(SettingsService.GetSettings().SpamQuestion))
+                if (!string.IsNullOrEmpty(SettingsService.GetSettings().SpamQuestion))
                 {
                     // There is a spam question, if answer is wrong return with error
-                    if(userModel.SpamAnswer == null || userModel.SpamAnswer.Trim() != SettingsService.GetSettings().SpamAnswer)
+                    if (userModel.SpamAnswer == null || userModel.SpamAnswer.Trim() != SettingsService.GetSettings().SpamAnswer)
                     {
                         // POTENTIAL SPAMMER!
                         ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Error.WrongAnswerRegistration"));
@@ -121,7 +123,6 @@ namespace MVCForum.Website.Controllers
                             MessageType = GenericMessages.success
                         };
                         homeRedirect = true;
-
                     }
                     else
                     {
@@ -131,7 +132,6 @@ namespace MVCForum.Website.Controllers
                             MessageType = GenericMessages.success
                         };
                     }
-
 
                     try
                     {
@@ -148,11 +148,190 @@ namespace MVCForum.Website.Controllers
                         ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }
                 }
-                
+
                 return View();
             }
         }
 
+        public ActionResult LogonFacebook()
+        {
+            // Build the Return URI form the Request Url
+            if (Request.Url != null)
+            {
+                var redirectUri = new UriBuilder(Request.Url) { Path = Url.Action("FacebookAuth") };
+
+                var client = new FacebookClient();
+
+                // Generate the Facebook OAuth URL
+                // Example: https://www.facebook.com/dialog/oauth?
+                //                client_id=YOUR_APP_ID
+                //               &redirect_uri=YOUR_REDIRECT_URI
+                //               &scope=COMMA_SEPARATED_LIST_OF_PERMISSION_NAMES
+                //               &state=SOME_ARBITRARY_BUT_UNIQUE_STRING
+                var uri = client.GetLoginUrl(new
+                    {
+                        client_id = ConfigUtils.GetAppSetting("FacebookAppId"),
+                        redirect_uri = redirectUri.Uri.AbsoluteUri,
+                        scope = "email",
+                    });
+
+                return Redirect(uri.ToString());
+            }
+            return RedirectToAction("LogOn");
+        }
+
+        public ActionResult FacebookAuth(string returnUrl)
+        {
+            var client = new FacebookClient();
+            var oauthResult = client.ParseOAuthCallbackUrl(Request.Url);
+
+            // Build the Return URI form the Request Url
+            if (Request.Url != null)
+            {
+                var redirectUri = new UriBuilder(Request.Url) { Path = Url.Action("FacebookAuth") };
+
+                // Exchange the code for an access token
+                dynamic result = client.Get("/oauth/access_token", new
+                    {
+                        client_id = ConfigUtils.GetAppSetting("FacebookAppId"),
+                        redirect_uri = redirectUri.Uri.AbsoluteUri,
+                        client_secret = ConfigUtils.GetAppSetting("FacebookAppSecret"),
+                        code = oauthResult.Code,
+                    });
+
+                // Read the auth values
+                string accessToken = result.access_token;
+
+                // Get the user's profile information
+                dynamic me = client.Get("/me",
+                    new
+                        {
+                            fields = "first_name,last_name,email",
+                            access_token = accessToken
+                        });
+
+                // Read the Facebook user values ready for use
+                long facebookId = Convert.ToInt64(me.id);
+                string firstName = me.first_name;
+                string lastName = me.last_name;
+                string email = me.email;
+                DateTime expires = DateTime.UtcNow.AddSeconds(Convert.ToDouble(result.expires));
+
+                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                {
+                    var doCommit = true;
+                    // First thing check if this user has already registered using facebook before
+                    // Get the user by their FB Id
+                    var fbUser = MembershipService.GetUserByFacebookId(facebookId);
+
+                    if (fbUser == null)
+                    {
+                        // First time logging in, so need to register them as new user
+                        // password is irrelavant as they'll login using FB Id so generate random one
+                        fbUser = new MembershipUser
+                        {
+                            UserName = string.Format("{0} {1}", firstName, lastName),
+                            Email = email,
+                            Password = StringUtils.RandomString(8),
+                            FacebookId = facebookId,
+                            FacebookAccessToken = accessToken,
+                            LoginIdExpires = expires,
+                            IsExternalAccount = true
+                            //IsApproved = userModel.IsApproved                            
+                        };
+
+                        // Check not already someone with that user name, if so append count
+                        var exists = MembershipService.GetUser(fbUser.UserName);
+                        if (exists != null)
+                        {
+                            fbUser.UserName = string.Format("{0} (1)", fbUser.UserName);
+                        }
+
+                        // Now check settings, see if users need to be manually authorised
+                        var manuallyAuthoriseMembers = SettingsService.GetSettings().ManuallyAuthoriseNewMembers;
+                        if (manuallyAuthoriseMembers)
+                        {
+                            fbUser.IsApproved = false;
+                        }
+
+                        var createStatus = MembershipService.CreateUser(fbUser);
+                        if (createStatus != MembershipCreateStatus.Success)
+                        {
+                            doCommit = false;
+                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                            {
+                                Message = MembershipService.ErrorCodeToString(createStatus),
+                                MessageType = GenericMessages.error
+                            };
+                        }
+                        else
+                        {
+                            if (!manuallyAuthoriseMembers)
+                            {
+                                // If not manually authorise then log the user in
+                                FormsAuthentication.SetAuthCookie(fbUser.UserName, true);
+
+                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                {
+                                    Message = LocalizationService.GetResourceString("Members.NowRegistered"),
+                                    MessageType = GenericMessages.success
+                                };
+                            }
+                            else
+                            {
+                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                {
+                                    Message = LocalizationService.GetResourceString("Members.NowRegisteredNeedApproval"),
+                                    MessageType = GenericMessages.success
+                                };
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        // Do an update to make sure we have the most recent details
+                        fbUser.Email = email;
+                        fbUser.FacebookAccessToken = accessToken;
+                        fbUser.LoginIdExpires = expires;
+
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = LocalizationService.GetResourceString("Members.NowLoggedIn"),
+                            MessageType = GenericMessages.success
+                        };
+
+                        // Log the user in
+                        FormsAuthentication.SetAuthCookie(fbUser.UserName, true);
+                    }
+
+                    if (doCommit)
+                    {
+                        try
+                        {
+                            unitOfWork.Commit();
+                            return RedirectToAction("Index", "Home");
+                        }
+                        catch (Exception ex)
+                        {
+                            unitOfWork.Rollback();
+                            LoggingService.Error(ex);
+                        }
+                    }
+
+                }
+            }
+
+            if (TempData[AppConstants.MessageViewBagName] == null)
+            {
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = LocalizationService.GetResourceString("Members.Errors.LogonGeneric"),
+                    MessageType = GenericMessages.error
+                };   
+            }
+            return RedirectToAction("LogOn");
+        }
 
         /// <summary>
         /// Log on
@@ -189,7 +368,7 @@ namespace MVCForum.Website.Controllers
                             {
                                 FormsAuthentication.SetAuthCookie(username, model.RememberMe);
                                 user.LastLoginDate = DateTime.Now;
- 
+
                                 // We use temp data because we are doing a redirect
                                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                                 {
@@ -347,7 +526,7 @@ namespace MVCForum.Website.Controllers
                 user.Twitter = userModel.Twitter;
                 user.UserName = userModel.UserName;
                 user.Website = userModel.Website;
-                                
+
                 MembershipService.ProfileUpdated(user);
 
                 ViewBag.Message = new GenericMessageViewModel
@@ -387,7 +566,7 @@ namespace MVCForum.Website.Controllers
         public PartialViewResult SideAdminPanel()
         {
             var count = _privateMessageService.NewPrivateMessageCount(LoggedOnUser.Id);
-            return PartialView(new ViewAdminSidePanelViewModel { CurrentUser = LoggedOnUser, NewPrivateMessageCount = count});
+            return PartialView(new ViewAdminSidePanelViewModel { CurrentUser = LoggedOnUser, NewPrivateMessageCount = count });
         }
 
         public PartialViewResult AdminMemberProfileTools()
@@ -473,9 +652,12 @@ namespace MVCForum.Website.Controllers
                 // Redisplay list of users
                 var allViewModelUsers = allUsers.Select(user => new PublicSingleMemberListViewModel
                                                                     {
-                                                                        UserName = user.UserName, NiceUrl = user.NiceUrl, CreateDate = user.CreateDate, TotalPoints = user.TotalPoints,
+                                                                        UserName = user.UserName,
+                                                                        NiceUrl = user.NiceUrl,
+                                                                        CreateDate = user.CreateDate,
+                                                                        TotalPoints = user.TotalPoints,
                                                                     }).ToList();
-               
+
                 var memberListModel = new PublicMemberListViewModel
                 {
                     Users = allViewModelUsers,
@@ -586,32 +768,32 @@ namespace MVCForum.Website.Controllers
             // Success send newpassword to the user telling them password has been changed
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                        var sb = new StringBuilder();
-                        sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.ForgotPassword.Email"), SettingsService.GetSettings().ForumName));
-                        sb.AppendFormat("<p><b>{0}</b></p>", newPassword);
-                        var email = new Email
-                                        {
-                                            EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
-                                            EmailTo = currentUser.Email,
-                                            Body = sb.ToString(),
-                                            NameTo = currentUser.UserName,
-                                            Subject = LocalizationService.GetResourceString("Members.ForgotPassword.Subject")
-                                        };
-                        _emailService.SendMail(email);
+                var sb = new StringBuilder();
+                sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.ForgotPassword.Email"), SettingsService.GetSettings().ForumName));
+                sb.AppendFormat("<p><b>{0}</b></p>", newPassword);
+                var email = new Email
+                                {
+                                    EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
+                                    EmailTo = currentUser.Email,
+                                    Body = sb.ToString(),
+                                    NameTo = currentUser.UserName,
+                                    Subject = LocalizationService.GetResourceString("Members.ForgotPassword.Subject")
+                                };
+                _emailService.SendMail(email);
 
-                        if (changePasswordSucceeded)
-                        {
-                            // We use temp data because we are doing a redirect
-                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                            {
-                                Message = LocalizationService.GetResourceString("Members.ForgotPassword.SuccessMessage"),
-                                MessageType = GenericMessages.success
-                            };
-                            return View();
-                        }
+                if (changePasswordSucceeded)
+                {
+                    // We use temp data because we are doing a redirect
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = LocalizationService.GetResourceString("Members.ForgotPassword.SuccessMessage"),
+                        MessageType = GenericMessages.success
+                    };
+                    return View();
+                }
 
-                        ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ForgotPassword.ErrorMessage"));
-                        return View(forgotPasswordViewModel);
+                ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ForgotPassword.ErrorMessage"));
+                return View(forgotPasswordViewModel);
             }
         }
 

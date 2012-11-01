@@ -265,9 +265,16 @@ namespace MVCForum.Services
                     status = MembershipCreateStatus.InvalidUserName;
                 }
 
+                // get by username
                 if (_membershipRepository.GetUser(newUser.UserName) != null)
                 {
                     status = MembershipCreateStatus.DuplicateUserName;
+                }
+
+                // Add get by email address
+                if (_membershipRepository.GetUserByEmail(newUser.Email) != null)
+                {
+                    status = MembershipCreateStatus.DuplicateEmail;
                 }
 
                 if (string.IsNullOrEmpty(newUser.Password))
@@ -365,6 +372,16 @@ namespace MVCForum.Services
         {
             slug = StringUtils.GetSafeHtml(slug);
             return _membershipRepository.GetUserBySlug(slug);
+        }
+
+        /// <summary>
+        /// Gets a user by their facebook id
+        /// </summary>
+        /// <param name="facebookId"></param>
+        /// <returns></returns>
+        public MembershipUser GetUserByFacebookId(long facebookId)
+        {
+            return _membershipRepository.GetUserByFacebookId(facebookId);
         }
 
         /// <summary>

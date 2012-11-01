@@ -59,6 +59,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\YUICompressor.NET.2.0.0.0\lib\NET20\EcmaScript.NET.dll</HintPath>
     </Reference>
+    <Reference Include="Facebook">
+      <HintPath>..\packages\Facebook.6.0.24\lib\net40-client\Facebook.dll</HintPath>
+    </Reference>
     <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\YUICompressor.NET.2.0.0.0\lib\NET20\Iesi.Collections.dll</HintPath>
@@ -779,6 +782,7 @@
     <Content Include="Themes\Metro\Content\Images\delete.png" />
     <Content Include="Themes\Metro\Content\Images\down-arrow.png" />
     <Content Include="Themes\Metro\Content\Images\edit.png" />
+    <Content Include="Themes\Metro\Content\Images\facebook-connect-large.png" />
     <Content Include="Themes\Metro\Content\Images\favicon.ico" />
     <Content Include="Themes\Metro\Content\Images\glyphicons-halflings-white.png" />
     <Content Include="Themes\Metro\Content\Images\glyphicons-halflings.png" />
@@ -803,6 +807,7 @@
     <Content Include="Themes\n3o\Content\Images\admin-n3o-logo.png" />
     <Content Include="Themes\n3o\Content\Images\apple-touch-icon-57-precomposed.png" />
     <Content Include="Themes\n3o\Content\Images\arrow-spinner-blue.gif" />
+    <Content Include="Themes\n3o\Content\Images\facebook-connect-large.png" />
     <Content Include="Themes\n3o\Content\Images\favicon.ico" />
     <Content Include="Themes\n3o\Content\Images\mail-add.png" />
     <Content Include="Themes\n3o\Content\Images\mail-delete.png" />
@@ -904,6 +909,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Styles\" />
+    <Folder Include="Installer\Db\1.1\" />
     <Folder Include="Themes\n3o\Views\Shared\" />
     <Folder Include="Views\Extensions\" />
   </ItemGroup>

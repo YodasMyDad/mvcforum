@@ -115,6 +115,9 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("SMTP Port - If different from 25")]
         public int? SMTPPort { get; set; }
 
+        [DisplayName("SMTP SSL - Enable SSL for sending via gmail etc...")]
+        public bool SMTPEnableSSL { get; set; }
+
         [DisplayName("Current Theme")]
         [Required]
         public string Theme { get; set; }
@@ -142,5 +145,8 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [DisplayName("Enter the answer to your Spam question")]
         public string SpamAnswer { get; set; }
+
+        [DisplayName("Enable social logins (Facebook etc...) - You must have correct AppId/Keys too in web.config")]
+        public bool EnableSocialLogins { get; set; }
     }
 }

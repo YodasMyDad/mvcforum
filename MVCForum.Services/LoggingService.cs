@@ -18,6 +18,7 @@ namespace MVCForum.Services
     {
         private const string LogFileNameOnly = @"LogFile";
         private const string LogFileExtension = @".txt";
+        private const string LogFileDirectory = @"~/App_Data";
 
         private const string DateTimeFormat = @"dd/MM/yyyy HH:mm:ss";
         private static readonly Object LogLock = new Object();
@@ -31,7 +32,7 @@ namespace MVCForum.Services
         public LoggingService()
         {
             // If we have no http context current then assume testing mode i.e. log file in run folder
-            _logFileFolder = HttpContext.Current != null ? HttpContext.Current.Server.MapPath(@"~/App_Data") : @".";
+            _logFileFolder = HttpContext.Current != null ? HttpContext.Current.Server.MapPath(LogFileDirectory) : @".";
             _logFileName = MakeLogFileName(false);
         }
 
@@ -67,29 +68,32 @@ namespace MVCForum.Services
         /// <param name="message"></param>
         private static void Write(string message)
         {
-            try
+            if (message != "File does not exist.")
             {
-                // Note there is a lock here. This class is only suitable for error logging,
-                // not ANY form of trace logging...
-                lock (LogLock)
+                try
                 {
-                    if (Length() >= _maxLogSize)
+                    // Note there is a lock here. This class is only suitable for error logging,
+                    // not ANY form of trace logging...
+                    lock (LogLock)
                     {
-                        ArchiveLog();
-                    }
+                        if (Length() >= _maxLogSize)
+                        {
+                            ArchiveLog();
+                        }
 
-                    using (var tw = TextWriter.Synchronized(File.AppendText(_logFileName)))
-                    {
-                        var callStack = new StackFrame(2, true); // Go back one stack frame to get module info
+                        using (var tw = TextWriter.Synchronized(File.AppendText(_logFileName)))
+                        {
+                            var callStack = new StackFrame(2, true); // Go back one stack frame to get module info
 
-                        tw.WriteLine("{0} | {1} | {2} | {3}", DateTime.Now.ToString(DateTimeFormat),
-                                     callStack.GetMethod().Module.Name, callStack.GetMethod().Name, message);
+                            tw.WriteLine("{0} | {1} | {2} | {3}", DateTime.Now.ToString(DateTimeFormat),
+                                         callStack.GetMethod().Module.Name, callStack.GetMethod().Name, message);
+                        }
                     }
                 }
-            }
-            catch (Exception)
-            {
-                // Not much to do if logging failed...
+                catch (Exception)
+                {
+                    // Not much to do if logging failed...
+                } 
             }
         }
 
@@ -190,6 +194,11 @@ namespace MVCForum.Services
         /// Force creation of a new log file
         /// </summary>
         public void Recycle()
+        {
+            ArchiveLog();
+        }
+
+        public void ClearLogFiles()
         {
             ArchiveLog();
         }

@@ -22,6 +22,7 @@ namespace MVCForum.Domain.Interfaces.Services
         MembershipUser GetUser(string username);
         MembershipUser GetUserByEmail(string email);
         MembershipUser GetUserBySlug(string slug);
+        MembershipUser GetUserByFacebookId(long facebookId);
         IList<MembershipUser> GetUsersById(List<Guid> guids);
         MembershipUser GetUser(Guid id);
         bool ChangePassword(MembershipUser user, string oldPassword, string newPassword);

@@ -31,7 +31,17 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public MembershipUser GetUser(string username)
         {
-            return _context.MembershipUser.SingleOrDefault(name => name.UserName.ToUpper().Contains(username.ToUpper()));
+            return _context.MembershipUser.SingleOrDefault(name => name.UserName.ToLower() == username.ToLower());
+        }
+
+        /// <summary>
+        /// Returns a user by their facebook id
+        /// </summary>
+        /// <param name="facebookId"></param>
+        /// <returns></returns>
+        public MembershipUser GetUserByFacebookId(long facebookId)
+        {
+            return _context.MembershipUser.SingleOrDefault(name => name.FacebookId == facebookId);
         }
 
         public IList<MembershipUser> SearchMembers(string username, int amount)

@@ -18,6 +18,9 @@ h5 {}
 /* ---- Paragraph Styles ---- */
 p {}
 
+.text-right { text-align: right;}
+.text-left { text-align: left;}
+
 /*--- Forms --------*/
 
 /*labels*/

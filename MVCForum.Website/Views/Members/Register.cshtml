@@ -16,55 +16,75 @@
 
 @if (!User.Identity.IsAuthenticated)
 {    
-    <h2>@ViewBag.Title</h2>
     
-    using (Html.BeginForm("Register", "Members", FormMethod.Post, new { @class = "form-horizontal" }))
-    {
-    @Html.ValidationSummary(false)
+    <div class="row">
 
-    <div class="editor-label">
-        @Html.LabelFor(x => @Model.UserName)
-    </div>
-    <div class="editor-field">
-        @Html.TextBoxFor(x => @Model.UserName)
-    </div>
-    <div class="editor-label">
-        @Html.LabelFor(x => @Model.Password)
-    </div>     
-    <div class="editor-field">
-        @Html.PasswordFor(x => @Model.Password)
-        @Html.ValidationMessageFor(x => x.Password)
-    </div>
-    <div class="editor-label">
-        @Html.LabelFor(x => @Model.ConfirmPassword)
-    </div>     
-    <div class="editor-field">
-        @Html.PasswordFor(x => @Model.ConfirmPassword)
-        @Html.ValidationMessageFor(x => x.ConfirmPassword)
-    </div>
 
-    <div class="editor-label">
-        @Html.LabelFor(x => @Model.Email)
-    </div>    
-    <div class="editor-field">
-        @Html.TextBoxFor(x => @Model.Email)
-    </div>
+        <div class="span4 mainregisterform">
+
+            <h3>@ViewBag.Title</h3>
+
+            @using (Html.BeginForm("Register", "Members", FormMethod.Post, new { @class = "form-horizontal" }))
+            {
+                @Html.ValidationSummary(false)
+
+                <div class="editor-label">
+                    @Html.LabelFor(x => @Model.UserName)
+                </div>
+                <div class="editor-field">
+                    @Html.TextBoxFor(x => @Model.UserName)
+                </div>
+                <div class="editor-label">
+                    @Html.LabelFor(x => @Model.Password)
+                </div>     
+                <div class="editor-field">
+                    @Html.PasswordFor(x => @Model.Password)
+                    @Html.ValidationMessageFor(x => x.Password)
+                </div>
+                <div class="editor-label">
+                    @Html.LabelFor(x => @Model.ConfirmPassword)
+                </div>     
+                <div class="editor-field">
+                    @Html.PasswordFor(x => @Model.ConfirmPassword)
+                    @Html.ValidationMessageFor(x => x.ConfirmPassword)
+                </div>
+
+                <div class="editor-label">
+                    @Html.LabelFor(x => @Model.Email)
+                </div>    
+                <div class="editor-field">
+                    @Html.TextBoxFor(x => @Model.Email)
+                </div>
         
-        if (!string.IsNullOrEmpty(Html.Settings().SpamQuestion))
-        {
-            <div class="editor-label">
-                <label for="SpamAnswer">@Html.Settings().SpamQuestion</label>
-            </div>    
-            <div class="editor-field">
-                @Html.TextBoxFor(x => @Model.SpamAnswer)
-            </div>             
-        }
+                if (!string.IsNullOrEmpty(Html.Settings().SpamQuestion))
+                {
+                <div class="editor-label">
+                    <label for="SpamAnswer">@Html.Settings().SpamQuestion</label>
+                </div>    
+                <div class="editor-field">
+                    @Html.TextBoxFor(x => @Model.SpamAnswer)
+                </div>             
+                }
     
-    <div class="submit-holder">
-        <input type="submit" class="btn btn-large btn-success" value="@Html.LanguageString("Members.Register")" />
-    </div>
-    }
+                <div class="submit-holder">
+                    <input type="submit" class="btn btn-large btn-success" value="@Html.LanguageString("Members.Register")" />
+                </div>
+            }
+        </div>
 
+        <div class="span1 loginortext">
+            @Html.LanguageString("Members.LoginOrText")
+        </div>
+
+        <div class="span4 oauthbuttons">
+
+            <div class="facebookloginbutton">
+                @Html.ActionLink(Html.LanguageString("Members.LogonFacebookButton"), "LogonFacebook", "Members", null, new { @class = "facebookloginbutton" })
+            </div>
+
+        </div>
+
+    </div>
 }
 else
 {

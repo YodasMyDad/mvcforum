@@ -71,6 +71,7 @@ namespace MVCForum.Services
                     var smtpUsername = _settingsService.GetSettings().SMTPUsername;
                     var smtpPassword = _settingsService.GetSettings().SMTPPassword;
                     var smtpPort = _settingsService.GetSettings().SMTPPort;
+                    var smtpEnableSsl = _settingsService.GetSettings().SMTPEnableSSL;
 
                     if (string.IsNullOrEmpty(smtp)) return;
 
@@ -78,6 +79,11 @@ namespace MVCForum.Services
                     if (!string.IsNullOrEmpty(smtpUsername) && !string.IsNullOrEmpty(smtpPassword))
                     {
                         mySmtpClient.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
+                    }
+
+                    if (smtpEnableSsl != null)
+                    {
+                        mySmtpClient.EnableSsl = (bool)smtpEnableSsl;
                     }
 
                     if(smtpPort != null)

@@ -32,6 +32,7 @@
             <li><a data-toggle="tab" href="#role">Starting Role</a></li>
             <li><a data-toggle="tab" href="#language">Default Language</a></li>
             <li><a data-toggle="tab" href="#spam">Spam</a></li>
+            <li><a data-toggle="tab" href="#social">Social</a></li>
         </ul>
  
         <div class="tab-content">
@@ -271,6 +272,14 @@
                     @Html.EditorFor(model => model.SMTPPort)
                     @Html.ValidationMessageFor(model => model.SMTPPort)
                 </div>
+                
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.SMTPEnableSSL)
+                </div>
+                <div class="editor-field">
+                    @Html.CheckBoxFor(model => model.SMTPEnableSSL)
+                    @Html.ValidationMessageFor(model => model.SMTPEnableSSL)
+                </div>
 
             </div>
             
@@ -335,6 +344,16 @@
                 <div class="editor-field">
                     @Html.EditorFor(model => model.SpamAnswer)
                     @Html.ValidationMessageFor(model => model.SpamAnswer)
+                </div>
+            </div>
+            
+            <div class="tab-pane" id="social">
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.EnableSocialLogins)
+                </div>
+                <div class="editor-field">
+                    @Html.CheckBoxFor(model => model.EnableSocialLogins)
+                    @Html.ValidationMessageFor(model => model.EnableSocialLogins)
                 </div>
             </div>
 

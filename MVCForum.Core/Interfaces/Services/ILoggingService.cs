@@ -11,5 +11,6 @@ namespace MVCForum.Domain.Interfaces.Services
         void Initialise(int maxLogSize);
         IList<LogEntry> ListLogFile();
         void Recycle();
+        void ClearLogFiles();
     }
 }

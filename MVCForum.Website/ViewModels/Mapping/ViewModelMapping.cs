@@ -68,7 +68,6 @@ namespace MVCForum.Website.ViewModels.Mapping
             return viewModel;
         }
 
-
         public static Settings SettingsViewModelToSettings(EditSettingsViewModel settingsViewModel, Settings existingSettings)
         {
             existingSettings.Id = settingsViewModel.Id;
@@ -107,7 +106,8 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.SMTPPort = settingsViewModel.SMTPPort;
             existingSettings.SpamQuestion = settingsViewModel.SpamQuestion;
             existingSettings.SpamAnswer = settingsViewModel.SpamAnswer;
-
+            existingSettings.SMTPEnableSSL = settingsViewModel.SMTPEnableSSL;
+            existingSettings.EnableSocialLogins = settingsViewModel.EnableSocialLogins;
             return existingSettings;
         }
 
@@ -151,7 +151,9 @@ namespace MVCForum.Website.ViewModels.Mapping
                 SMTPPort = currentSettings.SMTPPort,
                 SpamQuestion = currentSettings.SpamQuestion,
                 SpamAnswer = currentSettings.SpamAnswer,
-                Themes = AppHelpers.GetThemeFolders()
+                Themes = AppHelpers.GetThemeFolders(),
+                SMTPEnableSSL = currentSettings.SMTPEnableSSL ?? false,
+                EnableSocialLogins = currentSettings.EnableSocialLogins ?? false
             };
 
             return settingViewModel;

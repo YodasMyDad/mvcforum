@@ -41,5 +41,17 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             return View(new ListLogViewModel{LogFiles = logs});
         }
 
+        public ActionResult ClearLog()
+        {
+            LoggingService.ClearLogFiles();
+
+            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            {
+                Message = "Log File Cleared",
+                MessageType = GenericMessages.success
+            };
+            return RedirectToAction("Index");
+        }
+
     }
 }

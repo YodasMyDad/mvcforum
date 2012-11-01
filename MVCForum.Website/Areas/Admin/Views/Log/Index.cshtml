@@ -1,27 +1,34 @@
 ﻿@model MVCForum.Website.Areas.Admin.ViewModels.ListLogViewModel
-
 @{
     ViewBag.Title = "Log";
 }
 
-<h2>Log</h2>
+<div class="row">
+    <div class="span5">
+        <h2>Log</h2>
+    </div>
+    <div class="span5 text-right">
+        <a href="@Url.Action("ClearLog")" class="btn">Clear Log</a>
+    </div>
+</div>
+<div class="clearer"></div>
 <p>This is a limited view of the log, if you need to see even more logs then you you'll need to open the logfile.txt in the App_Data folder</p>
-@foreach(var log in Model.LogFiles)
+@foreach (var log in Model.LogFiles)
 {
     <div class="logentry row">
-        <div class="logentrydate span2">
+        <div class="logentrydate span1">
             @log.Date
         </div>
-        
+
         <div class="logentrydate span2">
             @log.Module
         </div>
-        
+
         <div class="logentrydate span2">
             @log.Method
         </div>
 
-        <div class="logentrymessage span2">
+        <div class="logentrymessage span5">
             @log.ErrorMessage
         </div>
     </div>
