@@ -411,6 +411,19 @@ namespace MVCForum.Utilities
             return md.Transform(str);
         }
 
+        public static string EmbedVideosInPosts(string str)
+        {
+            // YouTube Insert Video, just add the video ID and it inserts video into post
+            var exp = new Regex(@"\[youtube\]([^\]]+)\[/youtube\]");
+            str = exp.Replace(str, "<iframe title=\"YouTube video player\" width=\"500\" height=\"281\" src=\"http://www.youtube.com/embed/$1\" frameborder=\"0\" allowfullscreen></iframe>");
+
+            // YouTube Insert Video, just add the video ID and it inserts video into post
+            exp = new Regex(@"\[vimeo\]([^\]]+)\[/vimeo\]");
+            str = exp.Replace(str, "<iframe src=\"http://player.vimeo.com/video/$1?portrait=0\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe>");
+
+            return str;
+        }
+
         /// <summary>
         /// A method to convert basic BBCode to HTML
         /// </summary>
@@ -488,14 +501,6 @@ namespace MVCForum.Utilities
             // becomes: <span style="font-size:1.2em;"></span>
             exp = new Regex(@"\[size\=([^\]]+)\]([^\]]+)\[/size\]");
             str = exp.Replace(str, "<span style=\"font-size:$1em;\">$2</span>");
-
-            // YouTube Insert Video, just add the video ID and it inserts video into post
-            exp = new Regex(@"\[youtube\]([^\]]+)\[/youtube\]");
-            str = exp.Replace(str, "<iframe title=\"YouTube video player\" width=\"500\" height=\"281\" src=\"http://www.youtube.com/embed/$1\" frameborder=\"0\" allowfullscreen></iframe>");
-
-            // YouTube Insert Video, just add the video ID and it inserts video into post
-            exp = new Regex(@"\[vimeo\]([^\]]+)\[/vimeo\]");
-            str = exp.Replace(str, "<iframe src=\"http://player.vimeo.com/video/$1?portrait=0\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe>");
 
             return str;
         }

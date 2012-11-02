@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("MVCForum.Core")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyCompany("n3o Ltd")]
 [assembly: AssemblyProduct("MVCForum.Core")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2012")]
+
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

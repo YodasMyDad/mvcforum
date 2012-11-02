@@ -8,10 +8,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("MVCForum.Website")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyCompany("n3o Ltd")]
 [assembly: AssemblyProduct("MVCForum.Website")]
-[assembly: AssemblyCopyright("Copyright © n3o 2012")]
-[assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

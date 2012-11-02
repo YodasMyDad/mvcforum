@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Badges")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyCompany("n3o Ltd")]
 [assembly: AssemblyProduct("Badges")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2012")]
+
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

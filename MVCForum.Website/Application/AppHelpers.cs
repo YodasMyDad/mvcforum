@@ -124,10 +124,15 @@ namespace MVCForum.Website.Application
         public static string ConvertPostContent(string post)
         {
             // If using the BBCode Editor uncomment this line
-            //return StringUtils.ConvertBbCodeToHtml(post);
+            //post = StringUtils.ConvertBbCodeToHtml(post);
 
             // If using the PageDown/MarkDown Editor uncomment this line
-            return StringUtils.ConvertMarkDown(post);
+            post = StringUtils.ConvertMarkDown(post);
+
+            // Allow video embeds
+            post = StringUtils.EmbedVideosInPosts(post);
+
+            return post;
         }
 
         public static string ReturnBadgeUrl(string badgeFile)
