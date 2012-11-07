@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using MVCForum.Domain.Constants;
@@ -44,9 +45,10 @@ namespace MVCForum.Website.Controllers
         {
             if (SettingsService.GetSettings().IsClosed)
             {
-                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Closed" }, { "action", "Index" } }); ;                
+                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Closed" }, { "action", "Index" } });               
             }
         }
+
 
         /// <summary>
         /// Return the currently logged on user

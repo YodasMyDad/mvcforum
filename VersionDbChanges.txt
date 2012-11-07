@@ -78,7 +78,10 @@ Poll.Button.Vote = Submit Vote
 Error.WrongAnswerRegistration = There was an error with your answer, please try again
 Members.LoginOrText = Or
 Facebook.Error.EnabledButNotAddedKeys = You have enabled Facebook login but not added your AppId or Secret key to the web.config
+Members.Profile.IsSocialAccount = Social Account
 
 Web.config Changes
 <add key="FacebookAppId" value=""/>
 <add key="FacebookAppSecret" value="" />
+
+<globalization fileEncoding="utf-8" requestEncoding="utf-8" responseEncoding="utf-8" />

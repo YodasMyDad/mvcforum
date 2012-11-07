@@ -206,6 +206,16 @@ namespace MVCForum.Services
             return specificActivities;
         }
 
+        /// <summary>
+        /// Gets all activities by search data field for a Guid
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public IEnumerable<Activity> GetDataFieldByGuid(Guid guid)
+        {
+            return _activityRepository.GetDataFieldByGuid(guid);
+        }
+
         public PagedList<ActivityBase> SearchPagedGroupedActivities(string search, int pageIndex, int pageSize)
         {
             // Read the database for all activities and convert each to a more specialised activity type
@@ -255,6 +265,17 @@ namespace MVCForum.Services
             _activityRepository.Add(profileUpdatedActivity);
         }
 
+        /// <summary>
+        /// Delete a list of activities
+        /// </summary>
+        /// <param name="activities"></param>
+        public void Delete(IList<Activity> activities)
+        {
+            foreach (var activity in activities)
+            {
+                _activityRepository.Delete(activity);
+            }
+        }
     }
 }
 

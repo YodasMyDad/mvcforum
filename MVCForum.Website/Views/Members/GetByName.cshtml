@@ -51,6 +51,14 @@
             <p>@Html.LanguageString("Members.Profile.Posts") @Model.User.Posts.Count</p>
             <p>@Html.LanguageString("Members.Profile.Points") @Model.User.TotalPoints</p>
             
+            @if (User.IsInRole(AppConstants.AdminRoleName))
+            {
+              if (Convert.ToBoolean(Model.User.IsExternalAccount))
+              {
+                <p>@Html.LanguageString("Members.Profile.IsSocialAccount")</p>    
+              }
+            }
+            
             @if(User.Identity.IsAuthenticated && Html.Settings().EnableMemberReporting && Model.User.Id != Model.LoggedOnUserId)
             {
                 <p><a href="@Url.Action("Report", "Members", new { id = Model.User.Id }, null)" class="btn">@Html.LanguageString("Buttons.Report")</a></p>

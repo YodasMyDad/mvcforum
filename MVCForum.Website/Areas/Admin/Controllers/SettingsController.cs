@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
@@ -51,12 +52,11 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 {
                     try
                     {
+                        
                         var existingSettings = SettingsService.GetSettings();
                         var updatedSettings = ViewModelMapping.SettingsViewModelToSettings(settingsViewModel, existingSettings);
 
                         // Map over viewModel from 
-
-
                         if (settingsViewModel.NewMemberStartingRole != null)
                         {
                             updatedSettings.NewMemberStartingRole =
@@ -68,8 +68,13 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                             updatedSettings.DefaultLanguage =
                                 LocalizationService.Get(settingsViewModel.DefaultLanguage.Value);
                         }
-                        
+
+                        var culture = new CultureInfo(updatedSettings.DefaultLanguage.LanguageCulture);
+
                         unitOfWork.Commit();
+
+                        // Set the culture session too
+                        Session["Culture"] = culture;
                     }
                     catch (Exception ex)
                     {
@@ -89,6 +94,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     settingsViewModel.Themes = AppHelpers.GetThemeFolders();
                     settingsViewModel.Roles = _roleService.AllRoles().ToList();
                     settingsViewModel.Languages = LocalizationService.AllLanguages.ToList();
+                    
                 }
 
             }

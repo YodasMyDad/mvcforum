@@ -14,6 +14,13 @@ namespace MVCForum.Domain.Interfaces.Repositories
         IEnumerable<Activity> GetAll();
 
         /// <summary>
+        /// Gets all activities by search data field for a Guid
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        IEnumerable<Activity> GetDataFieldByGuid(Guid guid);
+            
+        /// <summary>
         /// Add a new activity (expected id already assigned)
         /// </summary>
         /// <param name="newActivity"></param>

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Globalization;
 using System.Reflection;
+using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -107,7 +109,7 @@ namespace MVCForum.Website
             var version = Assembly.GetExecutingAssembly().GetName().Version;
 
             // Store the value for use in the app
-            Application["Version"] = string.Format("{0}.{1}", version.Major, version.Minor);            
+            Application["Version"] = string.Format("{0}.{1}", version.Major, version.Minor);
 
             // Now check the version in the web.config
             var currentVersion = ConfigUtils.GetAppSetting("MVCForumVersion");
@@ -162,11 +164,33 @@ namespace MVCForum.Website
                 Application["GoToInstaller"] = "False";
                 Response.Redirect("~/install/");
             }
-        }   
+        }
+
+        protected void Application_AcquireRequestState(object sender, EventArgs e)
+        {
+
+            //It's important to check whether session object is ready
+            if (HttpContext.Current.Session != null)
+            {
+                var ci = (CultureInfo)this.Session["Culture"];
+                //Checking first if there is no value in session 
+                //and set default language 
+                //this can happen for first user's request
+                if (ci == null)
+                {
+                    ci = new CultureInfo(SettingsService.GetSettings().DefaultLanguage.LanguageCulture);
+                    this.Session["Culture"] = ci;
+                }
+                //Finally setting culture for each request
+                Thread.CurrentThread.CurrentUICulture = ci;
+                Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(ci.Name);
+            }
+
+        }
 
         protected void Application_EndRequest(object sender, EventArgs e)
         {
-          
+
         }
 
         protected void Application_Error(object sender, EventArgs e)

@@ -35,6 +35,17 @@ namespace MVCForum.Data.Repositories
         }
 
         /// <summary>
+        /// Gets all activities by search data field for a Guid
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public IEnumerable<Activity> GetDataFieldByGuid(Guid guid)
+        {
+            var stringGuid = guid.ToString();
+            return _context.Activity.Where(x => x.Data.Contains(stringGuid));
+        }
+
+        /// <summary>
         /// Add a new activity (expected id already assigned)
         /// </summary>
         /// <param name="newActivity"></param>

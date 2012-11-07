@@ -90,7 +90,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 {
                     var permission = new Permission
                                          {
-                                             Id = permissionViewModel.Id,
                                              Name = StringUtils.GetSafeHtml(permissionViewModel.Name),
                                          };
                         

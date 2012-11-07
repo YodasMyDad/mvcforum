@@ -15,6 +15,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 {
     public class AccountController : BaseAdminController
     {
+        public IActivityService _activityService { get; set; }
         private readonly IRoleService _roleService;
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
@@ -32,14 +33,16 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         /// <param name="postService"> </param>
         /// <param name="topicService"> </param>
         /// <param name="membershipUserPointsService"> </param>
+        /// <param name="activityService"> </param>
         public AccountController(ILoggingService loggingService,
             IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService,
             ILocalizationService localizationService,
             IRoleService roleService,
-            ISettingsService settingsService, IPostService postService, ITopicService topicService, IMembershipUserPointsService membershipUserPointsService)
+            ISettingsService settingsService, IPostService postService, ITopicService topicService, IMembershipUserPointsService membershipUserPointsService, IActivityService activityService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
+            _activityService = activityService;
             _roleService = roleService;
             _postService = postService;
             _topicService = topicService;
@@ -240,6 +243,11 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     }
 
                     unitOfWork.SaveChanges();
+
+                    // Now clear all activities for this user
+                    var usersActivities = _activityService.GetDataFieldByGuid(user.Id);
+                    _activityService.Delete(usersActivities.ToList());
+
 
                     MembershipService.Delete(user);
 

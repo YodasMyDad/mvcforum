@@ -16,6 +16,13 @@ namespace MVCForum.Domain.Interfaces.Services
         PagedList<ActivityBase> GetPagedGroupedActivities(int pageIndex, int pageSize);
 
         /// <summary>
+        /// Gets all activities by search data field for a Guid
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        IEnumerable<Activity> GetDataFieldByGuid(Guid guid);
+
+        /// <summary>
         /// Get a paged list of activities by search string
         /// </summary>
         /// <param name="search"></param>
@@ -41,5 +48,11 @@ namespace MVCForum.Domain.Interfaces.Services
         /// </summary>
         /// <param name="user"></param>
         void ProfileUpdated(MembershipUser user);
+
+        /// <summary>
+        /// Delete a number of activities
+        /// </summary>
+        /// <param name="activities"></param>
+        void Delete(IList<Activity> activities);
     }
 }
