@@ -24,6 +24,11 @@ namespace MVCForum.Data.Repositories
             return _context.PollAnswer.ToList();
         }
 
+        public List<PollAnswer> GetAllPollAnswersByPoll(Poll poll)
+        {
+            return _context.PollAnswer.Where(x => x.Poll.Id == poll.Id).ToList();
+        }
+
         public PollAnswer Add(PollAnswer pollAnswer)
         {
             return _context.PollAnswer.Add(pollAnswer);

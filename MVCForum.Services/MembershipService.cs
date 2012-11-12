@@ -301,7 +301,7 @@ namespace MVCForum.Services
                     newUser.IsLockedOut = false;
 
                     // url generator
-                    newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, x => _membershipRepository.GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)));                    
+                    newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, x => _membershipRepository.GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)));            
 
                     try
                     {

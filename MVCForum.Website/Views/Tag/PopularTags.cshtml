@@ -6,7 +6,7 @@
         @foreach(var tag in Model.PopularTags)
         {
             <li>
-                <span class="tagName"><a href="/@AppConstants.TagsUrlIdentifier/@tag.Key">@tag.Key</a></span>
+                <span class="tagName"><a href="/@AppConstants.TagsUrlIdentifier/@Html.Raw(tag.Key)">@Html.Raw(tag.Key)</a></span>
                 <span class="tagCount">@tag.Value</span>
             </li>
         }

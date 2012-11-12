@@ -49,8 +49,9 @@ Added to Settings
 ---- SMTPPort (nvarchar(10)) allow nulls
 ---- SpamQuestion (nvarchar(500)) allow nulls
 ---- SpamAnswer (nvarchar(500)) allow nulls
----- SMTPEnableSSL (bit)
----- EnableSocialLogins (bit)
+---- SMTPEnableSSL (bit) allow nulls
+---- EnableSocialLogins (bit) allow nulls
+---- EnablePolls (bit) allow nulls
 
 Added to Post
 ---- FlaggedAsSpam (bit) allow nulls
@@ -67,6 +68,11 @@ Added to MembershipUser
 ---- IsExternalAccount (bit) allow nulls
 ---- TwitterShowFeed (bit) allow nulls
 ---- LoginIdExpires (datetime) allow nulls
+---- Latitude (nvarchar(40)) allow nulls
+---- Longitude (nvarchar(40)) allow nulls
+
+Added to Permission (Data)
+---- Vote In Polls
 
 Language Strings To Add
 Topic.Label.TopicTitle = Title
@@ -83,5 +89,4 @@ Members.Profile.IsSocialAccount = Social Account
 Web.config Changes
 <add key="FacebookAppId" value=""/>
 <add key="FacebookAppSecret" value="" />
-
 <globalization fileEncoding="utf-8" requestEncoding="utf-8" responseEncoding="utf-8" />

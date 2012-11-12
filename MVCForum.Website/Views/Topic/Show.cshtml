@@ -37,8 +37,6 @@
     @Html.Action("CurrentWeekHighPointUsers", "Point")
 }
 
-
-
 <div class="row topicheading">
 
     <div class="span7 topicheaderholder">
@@ -58,18 +56,17 @@
 
 </div>
 
-<div class="pollcontainer">
-
-    @if (Model.User != null && Model.Topic.Poll != null)
-    {
-        // Show the poll if there is one
-        var viewModel = new ShowPollViewModel { Poll = Model.Topic.Poll, TotalVotesInPoll = Model.TotalVotesInPoll, UserHasAlreadyVoted = Model.UserHasAlreadyVotedInPoll };
-        Html.RenderPartial("_Poll", viewModel);
-    }
-</div>
-
-
-
+@if (Html.Settings().EnablePolls == true)
+{
+    <div class="pollcontainer">
+        @if (Model.User != null && Model.Topic.Poll != null)
+        {
+            // Show the poll if there is one
+            var viewModel = new ShowPollViewModel { Poll = Model.Topic.Poll, TotalVotesInPoll = Model.TotalVotesInPoll, UserHasAlreadyVoted = Model.UserHasAlreadyVotedInPoll, UserAllowedToVote = Model.Permissions[AppConstants.PermissionVoteInPolls].IsTicked };
+            Html.RenderPartial("_Poll", viewModel);
+        }
+    </div>
+}
 
 @foreach (var post in Model.Posts)
 {

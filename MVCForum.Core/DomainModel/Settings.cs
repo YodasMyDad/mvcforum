@@ -54,6 +54,8 @@ namespace MVCForum.Domain.DomainModel
         public string AkismentKey { get; set; }
         public string CurrentDatabaseVersion { get; set; }
 
+        public bool? EnablePolls { get; set; }
+
         public virtual MembershipRole NewMemberStartingRole { get; set; }
         public virtual Language DefaultLanguage { get; set; }
     }

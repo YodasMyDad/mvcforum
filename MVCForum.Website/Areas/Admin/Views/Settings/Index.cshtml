@@ -85,6 +85,12 @@
                     @Html.LabelFor(model => model.EnableMarkAsSolution)
                     @Html.ValidationMessageFor(model => model.EnableMarkAsSolution)
                 </div>
+                
+                <div class="editor-field n3ocheckboxfield">
+                    @Html.EditorFor(model => model.EnablePolls)
+                    @Html.LabelFor(model => model.EnablePolls)
+                    @Html.ValidationMessageFor(model => model.EnablePolls)
+                </div>
 
                 <div class="editor-field n3ocheckboxfield">
                     @Html.EditorFor(model => model.EnableSpamReporting)

@@ -25,11 +25,14 @@
         <p>You will also need to add the name into the AppConstants file, as its used as the key.</p>
 
         <p><a href="@Url.Action("AddType")" class="btn btn-large btn-success">Add New Permission Type</a></p>
-        <h4>Current Permission Types</h4>
+
+        <h2>Current Permission Types</h2>
+
+        <p><strong><u>WARNING:</u></strong> Deleting permission types that are in use could break your forum, be very careful,</p>
         <ul>
             @foreach (var permission in Model.Permissions)
             {
-                <li>@permission.Name</li>
+                <li>@permission.Name (@Html.ActionLink("Delete", "DeletePermission", new{id = permission.Id}))</li>
             }
         </ul>
     </div>

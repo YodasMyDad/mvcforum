@@ -68,6 +68,9 @@ namespace MVCForum.Domain.DomainModel
         public DateTime? LoginIdExpires { get; set; }
         public string MiscAccessToken { get; set; }
 
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
+
         public virtual IList<MembershipRole> Roles { get; set; }
         public virtual IList<Post> Posts { get; set; }
         public virtual IList<Topic> Topics { get; set; }

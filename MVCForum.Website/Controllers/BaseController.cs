@@ -45,7 +45,11 @@ namespace MVCForum.Website.Controllers
         {
             if (SettingsService.GetSettings().IsClosed)
             {
-                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Closed" }, { "action", "Index" } });               
+                var controller = filterContext.RouteData.Values["controller"];
+                if(controller.ToString().ToLower() != "closed")
+                {
+                    filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Closed" }, { "action", "Index" } });        
+                }          
             }
         }
 

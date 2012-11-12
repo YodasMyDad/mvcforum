@@ -37,10 +37,14 @@
             <div class="span5 topictitleholder">
                 <h2>@ViewBag.Title</h2>
             </div>
-            <div class="span4 pollcreatebuttonholder">
-                <a href="#" class="btn createpollbutton">@Html.LanguageString("Poll.Button.Create")</a>
-                <a href="#" style="display: none;" class="btn removepollbutton">@Html.LanguageString("Poll.Button.Remove")</a>
-            </div>
+            @if (Html.Settings().EnablePolls == true)
+            {
+                <div class="span4 pollcreatebuttonholder">
+                    <a href="#" class="btn createpollbutton">@Html.LanguageString("Poll.Button.Create")</a>
+                    <a href="#" style="display: none;" class="btn removepollbutton">@Html.LanguageString("Poll.Button.Remove")</a>
+                </div>
+            }
+
         </div>    
     
         <div class="row paddedrow">
@@ -55,18 +59,20 @@
             </div>
         </div>
         
-        <div class="row paddedrow pollanswerholder" style="display:none;">
-            <div class="span7">
-                <ul class="pollanswerlist">
-                    
-                </ul>
-                <input type="hidden" id="pollanswerplaceholder" value="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")"/>
+       if (Html.Settings().EnablePolls == true)
+       {
+            <div class="row paddedrow pollanswerholder" style="display: none;">
+                <div class="span7">
+                    <ul class="pollanswerlist">
+                    </ul>
+                    <input type="hidden" id="pollanswerplaceholder" value="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")"/>
+                </div>
+                <div class="span2 polladdremovenewanswers">
+                    <a href="#" class="btn addanswer"><i class="icon-plus-sign"></i></a><a href="#" class="btn removeanswer" style="display: none;"><i class="icon-remove-sign"></i></a>
+                </div>
             </div>
-            <div class="span2 polladdremovenewanswers">
-                <a href="#" class="btn addanswer"><i class="icon-plus-sign"></i></a> <a href="#" class="btn removeanswer" style="display: none;"><i class="icon-remove-sign"></i></a>
-            </div>
-        </div>
-        
+       }
+
         <div class="row">
             <div class="span9 topiccontent">
                 <div class="editor-field editorholder">
@@ -99,7 +105,7 @@
             <h3>@Html.LanguageString("Topic.OptionsHeading")</h3>
 
             <div class="row">
-              <div class="span9 topicreplynotify">
+                <div class="span9 topicreplynotify">
                     <div class="editor-field n3ocheckboxfield">
                         @Html.CheckBoxFor(x => x.SubscribeToTopic)
                         @Html.LabelFor(model => model.SubscribeToTopic)
@@ -109,7 +115,7 @@
                     <div class="editor-field">
                         @Html.TextAreaFor(model => model.Tags, new { @class = "tagstextarea tags", title = Html.LanguageString("Topic.TagThisTopic") })
                     </div>
-                </div> 
+                </div>
             </div>
         </div>
 

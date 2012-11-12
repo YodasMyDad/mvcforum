@@ -20,6 +20,9 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
+        private readonly IPollService _pollService;
+        private readonly IPollVoteService _pollVoteService;
+        private readonly IPollAnswerService _pollAnswerService;
 
         /// <summary>
         /// Constructor
@@ -34,12 +37,16 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         /// <param name="topicService"> </param>
         /// <param name="membershipUserPointsService"> </param>
         /// <param name="activityService"> </param>
+        /// <param name="pollService"> </param>
+        /// <param name="pollVoteService"> </param>
+        /// <param name="pollAnswerService"> </param>
         public AccountController(ILoggingService loggingService,
             IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService,
             ILocalizationService localizationService,
             IRoleService roleService,
-            ISettingsService settingsService, IPostService postService, ITopicService topicService, IMembershipUserPointsService membershipUserPointsService, IActivityService activityService)
+            ISettingsService settingsService, IPostService postService, ITopicService topicService, IMembershipUserPointsService membershipUserPointsService, 
+            IActivityService activityService, IPollService pollService, IPollVoteService pollVoteService, IPollAnswerService pollAnswerService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
             _activityService = activityService;
@@ -47,6 +54,9 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             _postService = postService;
             _topicService = topicService;
             _membershipUserPointsService = membershipUserPointsService;
+            _pollService = pollService;
+            _pollVoteService = pollVoteService;
+            _pollAnswerService = pollAnswerService;
         }
 
         #region Users
@@ -172,7 +182,26 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 user.Twitter = userModel.Twitter;
                 user.UserName = userModel.UserName;
                 user.Website = userModel.Website;
-                               
+
+                // If there is a location try and save the longitude and latitude
+                if (!string.IsNullOrEmpty(user.Location))
+                {
+                    try
+                    {
+                        var longLat = LocalisationUtils.GeocodeGoogle(user.Location);
+                        if (longLat != null && longLat[0] != "0")
+                        {
+                            // Got the long lat and save them to the user
+                            user.Latitude = longLat[0];
+                            user.Longitude = longLat[1];
+                        }
+                    }
+                    catch
+                    {
+                        LoggingService.Error("Error getting longitude and latitude from location");
+                    }
+                }
+
                 try
                 {
                     unitOfWork.Commit();
@@ -208,46 +237,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         throw new ApplicationException("Cannot delete user - user does not exist");
                     }
 
-                    // Delete all posts
-                    var posts = user.Posts;
-                    var postList = new List<Post>();
-                    postList.AddRange(posts);
-                    foreach (var post in postList)
-                    {
-                        _postService.Delete(post);
-                    }
-
-                    unitOfWork.SaveChanges();
-
-                    // Delete all topics
-                    var topics = user.Topics;
-                    var topicList = new List<Topic>();
-                    topicList.AddRange(topics);
-                    foreach (var topic in topicList)
-                    {
-                        _topicService.Delete(topic);
-                    }
-
-                    // Also clear their points
-                    var userPoints = user.Points;
-                    if (userPoints.Any())
-                    {
-                        var pointsList = new List<MembershipUserPoints>();
-                        pointsList.AddRange(userPoints);
-                        foreach (var point in pointsList)
-                        {
-                            point.User = null;
-                            _membershipUserPointsService.Delete(point);
-                        }
-                        user.Points.Clear();
-                    }
-
-                    unitOfWork.SaveChanges();
-
-                    // Now clear all activities for this user
-                    var usersActivities = _activityService.GetDataFieldByGuid(user.Id);
-                    _activityService.Delete(usersActivities.ToList());
-
+                    ClearUserData(user, unitOfWork);
 
                     MembershipService.Delete(user);
 
@@ -403,46 +393,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
 
-                // Delete all posts
-                var posts = user.Posts;
-                if(posts.Any())
-                {
-                    var postList = new List<Post>();
-                    postList.AddRange(posts);
-                    foreach (var post in postList)
-                    {
-                        _postService.Delete(post);
-                    }
-                    unitOfWork.SaveChanges();
-                }
-
-
-                // Delete all topics
-                var topics = user.Topics;
-                if (topics.Any())
-                {
-                    var topicList = new List<Topic>();
-                    topicList.AddRange(topics);
-                    foreach (var topic in topicList)
-                    {
-                        _topicService.Delete(topic);
-                    }
-                    unitOfWork.SaveChanges();
-                }
-
-                // Also clear their points
-                var userPoints = user.Points;
-                if(userPoints.Any())
-                {
-                    var pointsList = new List<MembershipUserPoints>();
-                    pointsList.AddRange(userPoints);
-                    foreach (var point in pointsList)
-                    {
-                        point.User = null;
-                        _membershipUserPointsService.Delete(point);
-                    }
-                    user.Points.Clear();
-                }
+                ClearUserData(user, unitOfWork);
 
                 try
                 {
@@ -506,6 +457,96 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         }
 
         #endregion
+
+        private void ClearUserData(MembershipUser user, IUnitOfWork unitOfWork)
+        {
+            // Delete all posts
+            var posts = user.Posts;
+            var postList = new List<Post>();
+            postList.AddRange(posts);
+            foreach (var post in postList)
+            {
+                _postService.Delete(post);
+            }
+
+            unitOfWork.SaveChanges();
+
+            // Also clear their poll votes
+            var userPollVotes = user.PollVotes;
+            if (userPollVotes.Any())
+            {
+                var pollList = new List<PollVote>();
+                pollList.AddRange(userPollVotes);
+                foreach (var vote in pollList)
+                {
+                    vote.User = null;
+                    _pollVoteService.Delete(vote);
+                }
+                user.PollVotes.Clear();
+            }
+
+            unitOfWork.SaveChanges();
+
+
+            // Also clear their polls
+            var userPolls = user.Polls;
+            if (userPolls.Any())
+            {
+                var polls = new List<Poll>();
+                polls.AddRange(userPolls);
+                foreach (var poll in polls)
+                {
+                    //Delete the poll answers
+                    var pollAnswers = poll.PollAnswers;
+                    if (pollAnswers.Any())
+                    {
+                        var pollAnswersList = new List<PollAnswer>();
+                        pollAnswersList.AddRange(pollAnswers);
+                        foreach (var answer in pollAnswersList)
+                        {
+                            answer.Poll = null;
+                            _pollAnswerService.Delete(answer);
+                        }
+                    }
+
+                    poll.PollAnswers.Clear();
+                    poll.User = null;
+                    _pollService.Delete(poll);
+                }
+                user.Polls.Clear();
+            }
+
+            unitOfWork.SaveChanges();
+
+            // Delete all topics
+            var topics = user.Topics;
+            var topicList = new List<Topic>();
+            topicList.AddRange(topics);
+            foreach (var topic in topicList)
+            {
+                _topicService.Delete(topic);
+            }
+
+            // Also clear their points
+            var userPoints = user.Points;
+            if (userPoints.Any())
+            {
+                var pointsList = new List<MembershipUserPoints>();
+                pointsList.AddRange(userPoints);
+                foreach (var point in pointsList)
+                {
+                    point.User = null;
+                    _membershipUserPointsService.Delete(point);
+                }
+                user.Points.Clear();
+            }
+
+            unitOfWork.SaveChanges();
+
+            // Now clear all activities for this user
+            var usersActivities = _activityService.GetDataFieldByGuid(user.Id);
+            _activityService.Delete(usersActivities.ToList());
+        }
 
     }
 }

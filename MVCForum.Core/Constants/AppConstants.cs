@@ -42,6 +42,8 @@
         public const string PermissionCreateStickyTopics = "Sticky Topics";
         public const string PermissionDenyAccess = "Deny Access";
         public const string PermissionLockTopics = "Lock Topics";
+        public const string PermissionVoteInPolls = "Vote In Polls";
+
 
         // Paging options
         public const int AdminListPageSize = 30;

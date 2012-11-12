@@ -108,6 +108,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.SpamAnswer = settingsViewModel.SpamAnswer;
             existingSettings.SMTPEnableSSL = settingsViewModel.SMTPEnableSSL;
             existingSettings.EnableSocialLogins = settingsViewModel.EnableSocialLogins;
+            existingSettings.EnablePolls = settingsViewModel.EnablePolls;
             return existingSettings;
         }
 
@@ -153,7 +154,8 @@ namespace MVCForum.Website.ViewModels.Mapping
                 SpamAnswer = currentSettings.SpamAnswer,
                 Themes = AppHelpers.GetThemeFolders(),
                 SMTPEnableSSL = currentSettings.SMTPEnableSSL ?? false,
-                EnableSocialLogins = currentSettings.EnableSocialLogins ?? false
+                EnableSocialLogins = currentSettings.EnableSocialLogins ?? false,
+                EnablePolls = currentSettings.EnablePolls ?? false
             };
 
             return settingViewModel;

@@ -1,4 +1,5 @@
-﻿using MVCForum.Domain.Constants;
+﻿using System.Web;
+using MVCForum.Domain.Constants;
 
 namespace MVCForum.Domain
 {
@@ -26,7 +27,7 @@ namespace MVCForum.Domain
 
         public static string GenerateUrl(UrlType e, string slug)
         {
-            return string.Format("/{0}/{1}", UrlTypeName(e), slug);
+            return string.Format("/{0}/{1}", UrlTypeName(e), HttpUtility.UrlDecode(slug));
         }
     }
 }

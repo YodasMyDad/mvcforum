@@ -77,6 +77,9 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Allow Member Signatures")]
         public bool EnableSignatures { get; set; }
 
+        [DisplayName("Enable Members To Create Polls")]
+        public bool EnablePolls { get; set; }
+
         [DisplayName("Allow Points")]
         public bool EnablePoints { get; set; }
 

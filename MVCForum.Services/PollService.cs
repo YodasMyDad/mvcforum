@@ -38,6 +38,5 @@ namespace MVCForum.Services
         {
             _pollRepository.Delete(item);
         }
-
     }
 }
