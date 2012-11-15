@@ -90,6 +90,8 @@ namespace MVCForum.Data.Repositories
             var results = _context.Topic
                                 .Include(x => x.Posts)
                                 .Include(x => x.LastPost)
+                                .Include(x => x.LastPost.User)
+                                .Include(x => x.Category)          
                                 .OrderByDescending(x => x.LastPost.DateCreated)
                                 .Skip((pageIndex - 1) * pageSize)
                                 .Take(pageSize)
@@ -105,6 +107,8 @@ namespace MVCForum.Data.Repositories
             var results = _context.Topic
                                 .Include(x => x.Posts)
                                 .Include(x => x.LastPost)
+                                .Include(x => x.LastPost.User)
+                                .Include(x => x.Category)
                                 .OrderByDescending(s => s.CreateDate)
                                 .Take(amountToTake)
                                 .ToList();
@@ -125,6 +129,8 @@ namespace MVCForum.Data.Repositories
             var results = _context.Topic
                                 .Include(x => x.Posts)
                                 .Include(x => x.LastPost)
+                                .Include(x => x.LastPost.User)
+                                .Include(x => x.Category)
                                 .Where(x => x.Category.Id == categoryId)
                                 .ToList();
             return results;
@@ -145,6 +151,8 @@ namespace MVCForum.Data.Repositories
             var results = _context.Topic
                                 .Include(x => x.Posts)
                                 .Include(x => x.LastPost)
+                                .Include(x => x.LastPost.User)
+                                .Include(x => x.Category)
                                 .Where(x => x.Category.Id == categoryId)
                                 .OrderByDescending(x => x.IsSticky)
                                 .ThenByDescending(x => x.LastPost.DateCreated)
@@ -170,6 +178,8 @@ namespace MVCForum.Data.Repositories
             var results = _context.Topic
                                 .Include(x => x.Posts)
                                 .Include(x => x.LastPost)
+                                .Include(x => x.LastPost.User)
+                                .Include(x => x.Category)
                                 .OrderByDescending(x => x.IsSticky)
                                 .ThenByDescending(x => x.LastPost.DateCreated)
                                 .Take(pageSize)
@@ -196,6 +206,7 @@ namespace MVCForum.Data.Repositories
             // be incorrect if all posts are from one topic.
             var results = _context.Post
                             .Include(x => x.Topic)
+                            .Include(x => x.User)
                             .Where(x => x.PostContent.Contains(searchTerm) | x.Topic.Name.Contains(searchTerm))
                             .OrderByDescending(x => x.DateCreated)
                             .Skip((pageIndex - 1) * pageSize)
@@ -224,6 +235,8 @@ namespace MVCForum.Data.Repositories
             var results = _context.Topic
                             .Include(x => x.Posts)
                             .Include(x => x.LastPost)
+                            .Include(x => x.LastPost.User)
+                            .Include(x => x.Category)
                             .Where(x => csv.Contains(x.Id))
                             .OrderByDescending(x => x.LastPost.DateCreated)
                             .Skip((pageIndex - 1) * pageSize)
@@ -239,6 +252,8 @@ namespace MVCForum.Data.Repositories
             return _context.Topic
                             .Include(x => x.Posts)
                             .Include(x => x.LastPost)
+                            .Include(x => x.LastPost.User)
+                            .Include(x => x.Category)    
                             .Where(x => x.Category.Id == categoryId)
                             .OrderByDescending(x => x.LastPost.DateCreated)
                             .Take(amountToTake)
@@ -259,6 +274,9 @@ namespace MVCForum.Data.Repositories
             var results = _context.Topic
                                 .Include(x => x.Posts)
                                 .Include(x => x.LastPost)
+                                .Include(x => x.LastPost.User)
+                                .Include(x => x.Category)
+                                .Include(x => x.Tags.Select(t => t.Tag))
                                 .OrderByDescending(x => x.IsSticky)
                                 .ThenByDescending(x => x.LastPost.DateCreated)
                                 .Where(e => e.Tags.Select(t => t.Tag).Contains(tag))
@@ -274,12 +292,19 @@ namespace MVCForum.Data.Repositories
         public Topic GetTopicBySlug(string slug)
         {
             return _context.Topic
+                .Include(x => x.Poll)
+                .Include(x => x.Poll.PollAnswers)
+                .Include(x => x.User)
                 .SingleOrDefault(x => x.Slug == slug);
         }
 
         public IList<Topic> GetTopicBySlugLike(string slug)
         {
             return _context.Topic
+                            .Include(x => x.Posts)
+                            .Include(x => x.LastPost)
+                            .Include(x => x.LastPost.User)
+                            .Include(x => x.Category)
                             .Where(x => x.Slug.Contains(slug))
                             .ToList();
         }
@@ -299,6 +324,8 @@ namespace MVCForum.Data.Repositories
             return _context.Topic
                             .Include(x => x.Posts)
                             .Include(x => x.LastPost)
+                            .Include(x => x.LastPost.User)
+                            .Include(x => x.Category)
                             .Where(x => x.User.Id == memberId)
                             .Where(x => x.Posts.Select(p => p.IsSolution).Contains(true))
                             .ToList();

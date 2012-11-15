@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
+using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels.Mapping;
@@ -30,15 +31,13 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var currentSettings = SettingsService.GetSettings();
-
+                CacheUtils.Clear(AppConstants.SettingsCacheName);   
+                var currentSettings = SettingsService.GetSettings(false);
                 var settingViewModel = ViewModelMapping.SettingsToSettingsViewModel(currentSettings);
-
-                settingViewModel.NewMemberStartingRole = _roleService.GetRole(SettingsService.GetSettings().NewMemberStartingRole.Id).Id;
+                settingViewModel.NewMemberStartingRole = _roleService.GetRole(SettingsService.GetSettings(false).NewMemberStartingRole.Id).Id;
                 settingViewModel.DefaultLanguage = LocalizationService.DefaultLanguage.Id;
                 settingViewModel.Roles = _roleService.AllRoles().ToList();
                 settingViewModel.Languages = LocalizationService.AllLanguages.ToList();
-
                 return View(settingViewModel);
             }
         }
@@ -53,7 +52,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     try
                     {
                         
-                        var existingSettings = SettingsService.GetSettings();
+                        var existingSettings = SettingsService.GetSettings(false);
                         var updatedSettings = ViewModelMapping.SettingsViewModelToSettings(settingsViewModel, existingSettings);
 
                         // Map over viewModel from 
@@ -94,9 +93,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     settingsViewModel.Themes = AppHelpers.GetThemeFolders();
                     settingsViewModel.Roles = _roleService.AllRoles().ToList();
                     settingsViewModel.Languages = LocalizationService.AllLanguages.ToList();
-                    
+                    CacheUtils.Clear(AppConstants.SettingsCacheName);                    
                 }
-
             }
             return View(settingsViewModel);
         }

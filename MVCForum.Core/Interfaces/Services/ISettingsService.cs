@@ -5,7 +5,7 @@ namespace MVCForum.Domain.Interfaces.Services
 {
     public interface ISettingsService
     {
-        Settings GetSettings();
+        Settings GetSettings(bool useCache = true);
         void Save(Settings settings);
     }
 }
