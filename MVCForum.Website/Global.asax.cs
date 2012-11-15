@@ -110,6 +110,7 @@ namespace MVCForum.Website
 
             // Store the value for use in the app
             Application["Version"] = string.Format("{0}.{1}", version.Major, version.Minor);
+            Application["Installing"] = "True";
 
             // Now check the version in the web.config
             var currentVersion = ConfigUtils.GetAppSetting("MVCForumVersion");
@@ -117,6 +118,8 @@ namespace MVCForum.Website
             // If the versions are different kick the installer into play
             if (currentVersion == Application["Version"].ToString())
             {
+                Application["Installing"] = "False";
+
                 // If the same carry on as normal
                 LoggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
                 LoggingService.Error("START APP");
@@ -127,7 +130,7 @@ namespace MVCForum.Website
 
                 // Set up the EF Caching provider
                 EFCachingProviderConfiguration.DefaultCache = new AspNetCache();
-                EFCachingProviderConfiguration.DefaultCachingPolicy = CachingPolicy.NoCaching;
+                EFCachingProviderConfiguration.DefaultCachingPolicy = CachingPolicy.CacheAll;
 
                 // Do the badge processing
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
@@ -170,20 +173,23 @@ namespace MVCForum.Website
         {
 
             //It's important to check whether session object is ready
-            if (HttpContext.Current.Session != null)
+            if (Application["Installing"].ToString() != "True")
             {
-                var ci = (CultureInfo)this.Session["Culture"];
-                //Checking first if there is no value in session 
-                //and set default language 
-                //this can happen for first user's request
-                if (ci == null)
+                if (HttpContext.Current.Session != null)
                 {
-                    ci = new CultureInfo(SettingsService.GetSettings().DefaultLanguage.LanguageCulture);
-                    this.Session["Culture"] = ci;
+                    var ci = (CultureInfo)this.Session["Culture"];
+                    //Checking first if there is no value in session 
+                    //and set default language 
+                    //this can happen for first user's request
+                    if (ci == null)
+                    {
+                        ci = new CultureInfo(SettingsService.GetSettings().DefaultLanguage.LanguageCulture);
+                        this.Session["Culture"] = ci;
+                    }
+                    //Finally setting culture for each request
+                    Thread.CurrentThread.CurrentUICulture = ci;
+                    Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(ci.Name);
                 }
-                //Finally setting culture for each request
-                Thread.CurrentThread.CurrentUICulture = ci;
-                Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(ci.Name);
             }
 
         }

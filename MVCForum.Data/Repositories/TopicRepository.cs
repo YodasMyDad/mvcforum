@@ -88,10 +88,10 @@ namespace MVCForum.Data.Repositories
 
             // Get the topics using an efficient
             var results = _context.Topic
-                                .Include(x => x.Posts)
+                                //.Include(x => x.Posts)
                                 .Include(x => x.LastPost)
                                 .Include(x => x.LastPost.User)
-                                .Include(x => x.Category)          
+                                .Include(x => x.Category)  
                                 .OrderByDescending(x => x.LastPost.DateCreated)
                                 .Skip((pageIndex - 1) * pageSize)
                                 .Take(pageSize)
@@ -105,7 +105,7 @@ namespace MVCForum.Data.Repositories
         {
             // Get the topics using an efficient
             var results = _context.Topic
-                                .Include(x => x.Posts)
+                                //.Include(x => x.Posts)
                                 .Include(x => x.LastPost)
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.Category)
@@ -127,7 +127,7 @@ namespace MVCForum.Data.Repositories
         public IList<Topic> GetAllTopicsByCategory(Guid categoryId)
         {
             var results = _context.Topic
-                                .Include(x => x.Posts)
+                                //.Include(x => x.Posts)
                                 .Include(x => x.LastPost)
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.Category)
@@ -149,7 +149,7 @@ namespace MVCForum.Data.Repositories
 
             // Get the topics using an efficient
             var results = _context.Topic
-                                .Include(x => x.Posts)
+                                //.Include(x => x.Posts)
                                 .Include(x => x.LastPost)
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.Category)
@@ -176,7 +176,7 @@ namespace MVCForum.Data.Repositories
 
             // Get the topics using an efficient
             var results = _context.Topic
-                                .Include(x => x.Posts)
+                                //.Include(x => x.Posts)
                                 .Include(x => x.LastPost)
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.Category)
@@ -233,7 +233,7 @@ namespace MVCForum.Data.Repositories
             // This is an interim solution, as its flawed due to multiple posts in one topic so the paging might
             // be incorrect if all posts are from one topic.
             var results = _context.Topic
-                            .Include(x => x.Posts)
+                            //.Include(x => x.Posts)
                             .Include(x => x.LastPost)
                             .Include(x => x.LastPost.User)
                             .Include(x => x.Category)
@@ -250,7 +250,7 @@ namespace MVCForum.Data.Repositories
         public IList<Topic> GetRssTopicsByCategory(int amountToTake, Guid categoryId)
         {
             return _context.Topic
-                            .Include(x => x.Posts)
+                            //.Include(x => x.Posts)
                             .Include(x => x.LastPost)
                             .Include(x => x.LastPost.User)
                             .Include(x => x.Category)    
@@ -272,7 +272,7 @@ namespace MVCForum.Data.Repositories
 
             // Get the topics using an efficient
             var results = _context.Topic
-                                .Include(x => x.Posts)
+                                //.Include(x => x.Posts)
                                 .Include(x => x.LastPost)
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.Category)
@@ -301,7 +301,7 @@ namespace MVCForum.Data.Repositories
         public IList<Topic> GetTopicBySlugLike(string slug)
         {
             return _context.Topic
-                            .Include(x => x.Posts)
+                            //.Include(x => x.Posts)
                             .Include(x => x.LastPost)
                             .Include(x => x.LastPost.User)
                             .Include(x => x.Category)
@@ -322,7 +322,7 @@ namespace MVCForum.Data.Repositories
         public IList<Topic> GetSolvedTopicsByMember(Guid memberId)
         {
             return _context.Topic
-                            .Include(x => x.Posts)
+                            //.Include(x => x.Posts)
                             .Include(x => x.LastPost)
                             .Include(x => x.LastPost.User)
                             .Include(x => x.Category)

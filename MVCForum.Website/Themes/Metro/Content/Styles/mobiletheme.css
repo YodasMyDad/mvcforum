@@ -167,6 +167,11 @@ h6 {font-size:18px; margin-bottom:8px;}
 .mobileview .createtopicholder .topicreplynotify, .mobileview .editpostholder .topicreplynotify {width: 100%;margin: 0;padding: 0;clear: both;}
 .mobileview .createtopicholder .submit-holder input[type=submit], .mobileview .editpostholder .submit-holder input[type=submit] { padding-left: 0;padding-right: 0;width: 100%;font-size:28px;}
 .mobileview .editpostholder .topicadmincheckboxes {}
+.mobileview .createtopicholder .row .createtopicbuttonholder { width: 100%;padding: 0;margin: 0;}
+.mobileview .createtopicholder .topictagholder { display: none;}
+.mobileview .createtopicholder .topiccategory { padding: 15px 0;}
+.mobileview .createtopicholder .pollcreatebuttonholder { display: none;}
+.mobileview .createtopicholder .row .topictitleholder {width: 100%;padding: 0;margin: 0;}
 
 /*--- Pagination ---*/
 .mobileview .pagination {}
