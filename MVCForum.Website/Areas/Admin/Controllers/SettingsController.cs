@@ -31,10 +31,9 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                CacheUtils.Clear(AppConstants.SettingsCacheName);   
-                var currentSettings = SettingsService.GetSettings(false);
+                var currentSettings = SettingsService.GetSettings();
                 var settingViewModel = ViewModelMapping.SettingsToSettingsViewModel(currentSettings);
-                settingViewModel.NewMemberStartingRole = _roleService.GetRole(SettingsService.GetSettings(false).NewMemberStartingRole.Id).Id;
+                settingViewModel.NewMemberStartingRole = _roleService.GetRole(SettingsService.GetSettings().NewMemberStartingRole.Id).Id;
                 settingViewModel.DefaultLanguage = LocalizationService.DefaultLanguage.Id;
                 settingViewModel.Roles = _roleService.AllRoles().ToList();
                 settingViewModel.Languages = LocalizationService.AllLanguages.ToList();
@@ -52,7 +51,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     try
                     {
                         
-                        var existingSettings = SettingsService.GetSettings(false);
+                        var existingSettings = SettingsService.GetSettings();
                         var updatedSettings = ViewModelMapping.SettingsViewModelToSettings(settingsViewModel, existingSettings);
 
                         // Map over viewModel from 
@@ -92,8 +91,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     };
                     settingsViewModel.Themes = AppHelpers.GetThemeFolders();
                     settingsViewModel.Roles = _roleService.AllRoles().ToList();
-                    settingsViewModel.Languages = LocalizationService.AllLanguages.ToList();
-                    CacheUtils.Clear(AppConstants.SettingsCacheName);                    
+                    settingsViewModel.Languages = LocalizationService.AllLanguages.ToList();                   
                 }
             }
             return View(settingsViewModel);

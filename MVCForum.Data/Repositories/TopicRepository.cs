@@ -276,7 +276,7 @@ namespace MVCForum.Data.Repositories
                                 .Include(x => x.LastPost)
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.Category)
-                                .Include(x => x.Tags.Select(t => t.Tag))
+                                .Include(x => x.Tags)
                                 .OrderByDescending(x => x.IsSticky)
                                 .ThenByDescending(x => x.LastPost.DateCreated)
                                 .Where(e => e.Tags.Select(t => t.Tag).Contains(tag))

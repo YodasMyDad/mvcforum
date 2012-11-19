@@ -1,4 +1,5 @@
-﻿using MVCForum.Domain.Constants;
+﻿using System.Web;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
@@ -22,18 +23,16 @@ namespace MVCForum.Services
         /// <returns></returns>
         public Settings GetSettings(bool useCache = true)
         {
-            //// Use our own cache here to improve performance
-            //if(useCache)
-            //{
-            //    Settings settings;
-            //    if (!CacheUtils.Get(AppConstants.SettingsCacheName, out settings))
-            //    {
-            //        settings = _settingsRepository.GetSettings();
-            //        CacheUtils.Add(settings, AppConstants.SettingsCacheName);
-            //    }
-            //    return settings;   
-            //}
-
+            //TODO  Testing for performance, assign settings per request to save hits and making hashcodes constantly from same request for settings
+            if (useCache)
+            {
+                var objectContextKey = HttpContext.Current.GetHashCode().ToString("x");
+                if (!HttpContext.Current.Items.Contains(objectContextKey))
+                {
+                    HttpContext.Current.Items.Add(objectContextKey, _settingsRepository.GetSettings());
+                }
+                return HttpContext.Current.Items[objectContextKey] as Settings;   
+            }
             return _settingsRepository.GetSettings();
         }
 
