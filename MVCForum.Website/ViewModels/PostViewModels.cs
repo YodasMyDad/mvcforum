@@ -28,7 +28,7 @@ namespace MVCForum.Website.ViewModels
     {
         [ForumMvcResourceDisplayName("Post.Label.TopicName")]
         [Required]
-        [StringLength(150)]
+        [StringLength(600)]
         public string Name { get; set; }
 
         [ForumMvcResourceDisplayName("Post.Label.IsStickyTopic")]

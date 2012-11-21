@@ -20,7 +20,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [DisplayName("Category Name")]
         [Required]
-        [StringLength(150)]
+        [StringLength(600)]
         public string Name { get; set; }
 
         [DisplayName("Category Description")]

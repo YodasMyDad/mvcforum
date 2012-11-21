@@ -153,7 +153,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public PagedList<Topic> GetPagedTopicsByTag(int pageIndex, int pageSize, int amountToTake, string tag)
         {
-            return _topicRepository.GetPagedTopicsByTag(pageIndex, pageSize, amountToTake, StringUtils.SafePlainText(tag));
+            return _topicRepository.GetPagedTopicsByTag(pageIndex, pageSize, amountToTake, StringUtils.GetSafeHtml(tag));
         }
 
         /// <summary>

@@ -55,7 +55,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [Required]
         [Display(Name = "User Name")]
-        [StringLength(50)]
+        [StringLength(150)]
         public string UserName { get; set; }
 
         [Display(Name = "Password Question")]

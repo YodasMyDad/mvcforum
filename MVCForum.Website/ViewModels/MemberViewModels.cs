@@ -56,7 +56,7 @@ namespace MVCForum.Website.ViewModels
 
         [Required]
         [ForumMvcResourceDisplayName("Members.Label.Username")]
-        [StringLength(50)]
+        [StringLength(150)]
         public string UserName { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.EmailAddress")]

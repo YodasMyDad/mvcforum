@@ -94,7 +94,7 @@ namespace MVCForum.Services
         {
             if(!string.IsNullOrEmpty(tags))
             {
-                var splitTags = StringUtils.SafePlainText(tags).Replace(" ", "").Split(',');
+                var splitTags = tags.Replace(" ", "").Split(',');
               
                 if(topic.Tags == null)
                 {

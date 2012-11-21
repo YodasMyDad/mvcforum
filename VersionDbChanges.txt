@@ -21,6 +21,15 @@ GO
 Updated table 'Topic'
 ---- Poll_Id (Guid) allow nulls
 ALTER TABLE Topic ADD Poll_Id uniqueidentifier
+** Update name to nvarchar(450)
+** Update slug to nvarchar(450)
+
+Updated table 'Category'
+** Update name to nvarchar(450)
+** Update slug to nvarchar(450)
+
+Updated table 'TopicTag'
+** Update name to nvarchar(100)
 
 Added new table 'Poll'
 ---- Id (Guid) PK
@@ -70,6 +79,8 @@ Added to MembershipUser
 ---- LoginIdExpires (datetime) allow nulls
 ---- Latitude (nvarchar(40)) allow nulls
 ---- Longitude (nvarchar(40)) allow nulls
+** Updated UserName to nvarchar(150)
+** Update slug to nvarchar(150)
 
 Added to Permission (Data)
 ---- Vote In Polls
@@ -90,3 +101,13 @@ Web.config Changes
 <add key="FacebookAppId" value=""/>
 <add key="FacebookAppSecret" value="" />
 <globalization fileEncoding="utf-8" requestEncoding="utf-8" responseEncoding="utf-8" />
+
+<system.webServer>
+    <security>
+        <requestFiltering allowDoubleEscaping="true"/>
+    </security>
+</system.webServer>
+
+<httpRuntime requestValidationMode="2.0"
+             requestPathInvalidCharacters="*,:,&amp;,\"
+             relaxedUrlToFileSystemMapping="true" maxRequestPathLength="260" maxQueryStringLength="2048" />

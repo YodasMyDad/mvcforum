@@ -6,6 +6,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 using Microsoft.Security.Application;
 
 namespace MVCForum.Utilities
@@ -313,6 +314,26 @@ namespace MVCForum.Utilities
         }
 
         /// <summary>
+        /// Decode a url
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string UrlDecode(string input)
+        {
+            return HttpUtility.UrlDecode(input);
+        }
+
+        /// <summary>
+        /// decode a chunk of html or url
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public static string HtmlDecode(string input)
+        {
+            return HttpUtility.HtmlDecode(input);
+        }
+
+        /// <summary>
         /// Uses regex to strip HTML from a string
         /// </summary>
         /// <param name="input"></param>
@@ -387,7 +408,10 @@ namespace MVCForum.Utilities
         /// <returns></returns>
         public static string CreateUrl(string strInput, string replaceWith)
         {
-            return StripNonAlphaNumeric(strInput, replaceWith).ToLower();
+            // Doing this to stop the urls getting encoded
+            var decodeUrl = HtmlDecode(strInput);
+            var result = StripNonAlphaNumeric(decodeUrl, replaceWith).ToLower();
+            return Microsoft.Security.Application.Encoder.HtmlEncode(result);
         }
 
         /// <summary>

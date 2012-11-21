@@ -34,7 +34,7 @@ namespace MVCForum.Website.ViewModels
     public class CreateTopicViewModel
     {
         [Required]
-        [StringLength(150)]
+        [StringLength(600)]
         [ForumMvcResourceDisplayName("Topic.Label.TopicTitle")]
         public string Name { get; set; }
 

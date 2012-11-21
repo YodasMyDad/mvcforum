@@ -17,7 +17,7 @@ namespace MVCForum.Website.ViewModels
     public class CreatePrivateMessageViewModel
     {
         [ForumMvcResourceDisplayName("PM.RecipientUsername")]
-        [StringLength(100)]
+        [StringLength(150)]
         [Required]
         public string UserToUsername { get; set; }
 

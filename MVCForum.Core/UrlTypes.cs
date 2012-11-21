@@ -27,7 +27,7 @@ namespace MVCForum.Domain
 
         public static string GenerateUrl(UrlType e, string slug)
         {
-            return string.Format("/{0}/{1}", UrlTypeName(e), HttpUtility.UrlDecode(slug));
+            return string.Format("/{0}/{1}", UrlTypeName(e), HttpUtility.HtmlDecode(slug));
         }
     }
 }
