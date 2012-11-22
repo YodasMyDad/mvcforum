@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Lucene.Net</id>
+    <version>3.0.3</version>
+    <title>Lucene.Net</title>
+    <authors>Lucene.Net Community</authors>
+    <owners>Lucene.Net Community</owners>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.html</licenseUrl>
+    <projectUrl>http://lucenenet.apache.org/</projectUrl>
+    <iconUrl>https://svn.apache.org/repos/asf/lucene.net/trunk/branding/logo/lucene-net-icon-128x128.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Lucene.Net is a port of the Lucene search engine library, written in C# and targeted at .NET runtime users.
+	This package contains only the core Lucene.Net assembly.</description>
+    <summary>Lucene.Net is a port of the Lucene search engine library, written in C# and targeted at .NET runtime users.</summary>
+    <copyright>Copyright 2006-2012 The Apache Software Foundation</copyright>
+    <tags>lucene.net core text search information retrieval lucene apache</tags>
+    <dependencies>
+      <dependency id="SharpZipLib" version="0.86.0" />
+    </dependencies>
+  </metadata>
+</package>

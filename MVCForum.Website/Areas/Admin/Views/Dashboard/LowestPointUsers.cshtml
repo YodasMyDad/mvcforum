@@ -5,7 +5,7 @@
  <ul>
  @foreach (var user in Model.Users)
  {
-     <li><a href="@user.Key.NiceUrl">@user.Key.UserName (<strong>@user.Value</strong>)</a></li>
+     <li><a href="@user.Key.NiceUrl">@Html.Raw(user.Key.UserName) (<strong>@user.Value</strong>)</a></li>
  }
  </ul>
 }

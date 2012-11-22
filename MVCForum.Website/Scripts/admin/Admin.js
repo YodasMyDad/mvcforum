@@ -20,7 +20,7 @@
         var strung = JSON.stringify(ajaxRoleUpdateViewModel);
 
         $.ajax({
-            url: '/Admin/Account/UpdateUserRoles',
+            url: app_base + 'Admin/Account/UpdateUserRoles',
             type: 'POST',
             dataType: 'json',
             data: strung,
@@ -59,7 +59,7 @@
         var strung = JSON.stringify(ajaxEditPermissionViewModel);
 
         $.ajax({
-            url: '/Admin/Permissions/UpdatePermission',
+            url: app_base + 'Admin/Permissions/UpdatePermission',
             type: 'POST',
             dataType: 'json',
             data: strung,
@@ -140,7 +140,7 @@
             var strung = JSON.stringify(ajaxEditLanguageValueViewModel);
 
             $.ajax({
-                url: '/Admin/AdminLanguage/UpdateResourceValue',
+                url: app_base + 'Admin/AdminLanguage/UpdateResourceValue',
                 type: 'POST',
                 dataType: 'json',
                 data: strung,
@@ -195,7 +195,7 @@
             var strung = JSON.stringify(ajaxEditLanguageKeyViewModel);
 
             $.ajax({
-                url: '/Admin/AdminLanguage/UpdateResourceKey',
+                url: app_base + 'Admin/AdminLanguage/UpdateResourceKey',
                 type: 'POST',
                 dataType: 'json',
                 data: strung,
@@ -252,7 +252,7 @@
             var strung = JSON.stringify(ajaxEditTagViewModel);
 
             $.ajax({
-                url: '/Admin/AdminTag/UpdateTag',
+                url: app_base + 'Admin/AdminTag/UpdateTag',
                 type: 'POST',
                 dataType: 'json',
                 data: strung,

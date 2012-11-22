@@ -5,7 +5,7 @@
  <ul>
  @foreach (var topic in Model.Topics)
  {
-    <li><a href="@topic.NiceUrl">@topic.Name (@topic.Views)</a></li>
+    <li><a href="@topic.NiceUrl">@Html.Raw(topic.Name) (@topic.Views)</a></li>
  }
  </ul>
 }

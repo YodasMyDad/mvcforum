@@ -22,7 +22,7 @@ $(function () {
         var strung = JSON.stringify(VoteUpViewModel);
 
         $.ajax({
-            url: '/Vote/VoteUpPost',
+            url: app_base + 'Vote/VoteUpPost',
             type: 'POST',
             dataType: 'json',
             data: strung,
@@ -52,7 +52,7 @@ $(function () {
         var strung = JSON.stringify(VoteDownViewModel);
 
         $.ajax({
-            url: '/Vote/VoteDownPost',
+            url: app_base + 'Vote/VoteDownPost',
             type: 'POST',
             dataType: 'json',
             data: strung,
@@ -78,7 +78,7 @@ $(function () {
         var strung = JSON.stringify(deletePrivateMessageViewModel);
 
         $.ajax({
-            url: '/PrivateMessage/Delete',
+            url: app_base + 'PrivateMessage/Delete',
             type: 'POST',
             dataType: 'json',
             data: strung,
@@ -106,7 +106,7 @@ $(function () {
         var strung = JSON.stringify(MarkAsSolutionViewModel);
 
         $.ajax({
-            url: '/Vote/MarkAsSolution',
+            url: app_base + 'Vote/MarkAsSolution',
             type: 'POST',
             dataType: 'json',
             data: strung,
@@ -136,7 +136,7 @@ $(function () {
         var strung = JSON.stringify(subscribeEmailViewModel);
 
         $.ajax({
-            url: '/Email/Subscribe',
+            url: app_base + 'Email/Subscribe',
             type: 'POST',
             dataType: 'json',
             data: strung,
@@ -166,7 +166,7 @@ $(function () {
         var strung = JSON.stringify(unSubscribeEmailViewModel);
 
         $.ajax({
-            url: '/Email/UnSubscribe',
+            url: app_base + 'Email/UnSubscribe',
             type: 'POST',
             dataType: 'json',
             data: strung,
@@ -260,7 +260,7 @@ $(function () {
         var strung = JSON.stringify(UpdatePollViewModel);
 
         $.ajax({
-            url: '/Poll/UpdatePoll',
+            url: app_base + 'Poll/UpdatePoll',
             type: 'POST',
             dataType: 'html',
             data: strung,
@@ -305,7 +305,7 @@ function AddShowVoters() {
                 var strung = JSON.stringify(GetVotersViewModel);
 
                 $.ajax({
-                    url: '/Vote/GetVoters',
+                    url: app_base + 'Vote/GetVoters',
                     type: 'POST',
                     dataType: 'html',
                     data: strung,
@@ -354,7 +354,7 @@ function BadgeMarkAsSolution(postId) {
     var strung = JSON.stringify(markAsSolutionBadgeViewModel);
 
     $.ajax({
-        url: '/Badge/MarkAsSolution',
+        url: app_base + 'Badge/MarkAsSolution',
         type: 'POST',
         dataType: 'json',
         data: strung,
@@ -378,7 +378,7 @@ function BadgeVoteUp(postId) {
         var strung = JSON.stringify(voteUpBadgeViewModel);
 
         $.ajax({
-            url: '/Badge/VoteUpPost',
+            url: app_base + 'Badge/VoteUpPost',
             type: 'POST',
             dataType: 'json',
             data: strung,
@@ -395,7 +395,7 @@ function BadgeVoteUp(postId) {
 function UserPost() {
 
     $.ajax({
-        url: '/Badge/Post',
+        url: app_base + 'Badge/Post',
         type: 'POST',
         dataType: 'json',
         contentType: 'application/json; charset=utf-8',
