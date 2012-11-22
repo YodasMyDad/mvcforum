@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>AjaxMin</id>
+    <version>4.48.4489.28432</version>
+    <title>Ajax Minifier Library</title>
+    <authors>Microsoft Corporation</authors>
+    <owners>Microsoft Corporation</owners>
+    <licenseUrl>http://ajaxmin.codeplex.com/license</licenseUrl>
+    <projectUrl>http://ajaxmin.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>JavaScript and CSS minification Library</description>
+    <copyright>Copyright 2011 by Microsoft Corp. All rights reserved.</copyright>
+    <tags>JavaScript CSS minification crunch parser ast ajaxmin</tags>
+  </metadata>
+</package>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>YUICompressor.NET</id>
+    <version>2.0.0.0</version>
+    <title>YUICompressor .NET</title>
+    <authors>Pure Krome &amp; FreeRanger</authors>
+    <owners>Pure Krome &amp; FreeRanger</owners>
+    <licenseUrl>http://yuicompressor.codeplex.com/license/</licenseUrl>
+    <projectUrl>http://yuicompressor.codeplex.com/</projectUrl>
+    <iconUrl>http://download.codeplex.com/Project/Download/FileDownload.aspx?ProjectName=YUICompressor&amp;DownloadId=36338</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This library allow you to minify and/or combine any Javascript and/or Cascading Style Sheets. It includes MSBuild and NANT tasks so you can automate this process, per build. 
+            
+This is a direct .NET port of the original Yahoo! UI Library: YUI Compressor version 2.4.4.</description>
+    <summary>Minify and/or Combine JavaScript and/or Cascading Style Sheets.</summary>
+    <releaseNotes />
+    <copyright>2008 - 2012</copyright>
+    <tags>compression, minification, obfuscation, minify, combine, javascript, js, CSS, cascading style sheets, nant, msbuild, compressor</tags>
+  </metadata>
+</package>
