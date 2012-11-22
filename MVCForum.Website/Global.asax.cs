@@ -9,6 +9,7 @@ using EFCachingProvider;
 using EFCachingProvider.Caching;
 using EFCachingProvider.Web;
 using LowercaseRoutesMVC;
+using MVCForum.Domain;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.Services;
@@ -131,6 +132,10 @@ namespace MVCForum.Website
                 // Set up the EF Caching provider
                 EFCachingProviderConfiguration.DefaultCache = new AspNetCache();
                 EFCachingProviderConfiguration.DefaultCachingPolicy = CachingPolicy.CacheAll;
+
+
+                var thing = DependencyResolver.Current.GetService<ITestSingleton>();
+                thing.Refresh();
 
                 // Do the badge processing
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())

@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Data.Entity;
 using MVCForum.Data.Context;
+using MVCForum.Domain;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
@@ -17,13 +18,15 @@ namespace MVCForum.Data.Repositories
     public class LocalizationRepository : ILocalizationRepository
     {
         private readonly MVCForumContext _context;
+        private ITestSingleton _testSingleton;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="context"> </param>
-        public LocalizationRepository(IMVCForumContext context)
+        public LocalizationRepository(IMVCForumContext context, ITestSingleton testSingleton)
         {
+            _testSingleton = testSingleton;
             _context = context as MVCForumContext;
         }
 
