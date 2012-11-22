@@ -3,6 +3,7 @@ using MVCForum.API;
 using MVCForum.Data.Context;
 using MVCForum.Data.Repositories;
 using MVCForum.Data.UnitOfWork;
+using MVCForum.Domain;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Repositories;
@@ -25,6 +26,11 @@ namespace MVCForum.IOC
         public static void BindInRequestScope<T1, T2>(this IUnityContainer container) where T2 : T1
         {
             container.RegisterType<T1, T2>(new HierarchicalLifetimeManager());
+        }
+
+        public static void BindInSingletonScope<T1, T2>(this IUnityContainer container) where T2 : T1
+        {
+            container.RegisterType<T1, T2>(new ContainerControlledLifetimeManager());
         }
     }
 
@@ -51,6 +57,7 @@ namespace MVCForum.IOC
 
             // register all your components with the container here
             // it is NOT necessary to register your controllers
+            container.BindInSingletonScope<ITestSingleton, TestSingleton>();
 
             // Database context, one per request, ensure it is disposed
             container.BindInRequestScope<IMVCForumContext, MVCForumContext>();
