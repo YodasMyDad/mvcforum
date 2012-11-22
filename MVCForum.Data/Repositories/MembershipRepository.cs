@@ -31,7 +31,9 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public MembershipUser GetUser(string username)
         {
-            return _context.MembershipUser.SingleOrDefault(name => name.UserName.ToLower() == username.ToLower());
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .SingleOrDefault(name => name.UserName.ToLower() == username.ToLower());
         }
 
         /// <summary>
@@ -41,7 +43,9 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public MembershipUser GetUserByFacebookId(long facebookId)
         {
-            return _context.MembershipUser.SingleOrDefault(name => name.FacebookId == facebookId);
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .SingleOrDefault(name => name.FacebookId == facebookId);
         }
 
         public IList<MembershipUser> SearchMembers(string username, int amount)
@@ -56,18 +60,23 @@ namespace MVCForum.Data.Repositories
         public MembershipUser GetUserBySlug(string slug)
         {
 
-            return _context.MembershipUser.SingleOrDefault(name => name.Slug == slug);
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .SingleOrDefault(name => name.Slug == slug);
 
         }
 
         public MembershipUser GetUserByEmail(string email)
         {
-            return _context.MembershipUser.SingleOrDefault(name => name.Email == email);
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .SingleOrDefault(name => name.Email == email);
         }
 
         public IList<MembershipUser> GetUserBySlugLike(string slug)
         {
             return _context.MembershipUser
+                    .Include(x => x.Roles)
                     .Where(name => name.Slug.ToUpper().Contains(slug.ToUpper()))
                     .ToList();
         }
@@ -81,7 +90,9 @@ namespace MVCForum.Data.Repositories
 
         public MembershipUser Get(Guid id)
         {
-            return _context.MembershipUser.FirstOrDefault(x => x.Id == id);
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .FirstOrDefault(x => x.Id == id);
         }
 
         public IList<MembershipUser> GetLatestUsers(int amountToTake)

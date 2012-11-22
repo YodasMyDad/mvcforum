@@ -130,7 +130,7 @@ namespace MVCForum.Website
 
                 // Set up the EF Caching provider
                 EFCachingProviderConfiguration.DefaultCache = new AspNetCache();
-                EFCachingProviderConfiguration.DefaultCachingPolicy = CachingPolicy.CacheAll;
+                EFCachingProviderConfiguration.DefaultCachingPolicy = CachingPolicy.NoCaching;
 
                 // Do the badge processing
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
