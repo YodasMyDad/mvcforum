@@ -57,7 +57,6 @@ namespace MVCForum.IOC
 
             // register all your components with the container here
             // it is NOT necessary to register your controllers
-            container.BindInSingletonScope<ITestSingleton, TestSingleton>();
 
             // Database context, one per request, ensure it is disposed
             container.BindInRequestScope<IMVCForumContext, MVCForumContext>();

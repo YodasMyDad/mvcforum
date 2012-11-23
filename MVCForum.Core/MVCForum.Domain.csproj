@@ -162,7 +162,6 @@
     <Compile Include="DomainModel\PollAnswer.cs" />
     <Compile Include="DomainModel\PollVote.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestSingleton.cs" />
     <Compile Include="UrlTypes.cs" />
   </ItemGroup>
   <ItemGroup>

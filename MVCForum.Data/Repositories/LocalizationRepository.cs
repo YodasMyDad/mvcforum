@@ -18,15 +18,13 @@ namespace MVCForum.Data.Repositories
     public class LocalizationRepository : ILocalizationRepository
     {
         private readonly MVCForumContext _context;
-        private ITestSingleton _testSingleton;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="context"> </param>
-        public LocalizationRepository(IMVCForumContext context, ITestSingleton testSingleton)
+        public LocalizationRepository(IMVCForumContext context)
         {
-            _testSingleton = testSingleton;
             _context = context as MVCForumContext;
         }
 
@@ -66,6 +64,20 @@ namespace MVCForum.Data.Repositories
                 .Select(item => item.LocaleStringResource).ToList();
 
             return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, totalCount);
+        }
+
+        public Dictionary<string, string> GetAllLanguageStringsByLangauge(Guid languageId)
+        {
+            var results = _context.LocaleStringResource
+                                .Where(x => x.Language.Id == languageId)
+                                  .Join(_context.LocaleResourceKey,
+                                        strRes => strRes.LocaleResourceKey.Id,
+                                        resKey => resKey.Id,
+                                        (strRes, resKey) =>
+                                        new {LocaleStringResource = strRes, LocaleResourceKey = resKey})                                        
+                                  .ToDictionary(arg => arg.LocaleResourceKey.Name, arg => arg.LocaleStringResource.ResourceValue);
+
+            return results;
         }
 
         /// <summary>

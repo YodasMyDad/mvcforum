@@ -65,6 +65,13 @@ namespace MVCForum.Domain.Interfaces.Repositories
         PagedList<LocaleStringResource> GetAllValues(Guid languageId, int pageIndex, int pageSize);
 
         /// <summary>
+        /// Get all the values with keys for a language
+        /// </summary>
+        /// <param name="languageId"></param>
+        /// <returns></returns>
+        Dictionary<string, string> GetAllLanguageStringsByLangauge(Guid languageId);
+
+        /// <summary>
         /// Get resource values for all languages for a key
         /// </summary>
         /// <param name="resourceKeyId"> </param>

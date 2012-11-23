@@ -40,7 +40,7 @@ namespace MVCForum.Website.Application
         public static string LanguageString(this HtmlHelper helper, string key)
         {
             var locService = DependencyResolver.Current.GetService<ILocalizationService>();
-            return locService.GetResourceString(locService.CurrentLanguage, key);
+            return locService.GetResourceString(key);
         }
 
         public static IEnumerable<T> Distinct<T, TKey>(this IEnumerable<T> list, Func<T, TKey> lookup) where TKey : struct

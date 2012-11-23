@@ -20,19 +20,23 @@ namespace MVCForum.Services
         private readonly ILocalizationRepository _localizationRepository;
         private readonly ISettingsRepository _settingsRepository;
         private readonly ILoggingService _loggingService;
-
         private Language _currentLanguage;
+
+        private readonly Dictionary<string, string> _perRequestLanguageStrings;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="localizationRepository"> </param>
         /// <param name="settingsRepository"> </param>
+        /// <param name="loggingService"></param>
         public LocalizationService(ILocalizationRepository localizationRepository, ISettingsRepository settingsRepository, ILoggingService loggingService)
         {
             _localizationRepository = localizationRepository;
             _settingsRepository = settingsRepository;
             _loggingService = loggingService;
+
+            _perRequestLanguageStrings = ResourceKeysByLanguage(CurrentLanguage);
         }
 
         #region Private methods
@@ -157,7 +161,7 @@ namespace MVCForum.Services
         public LocaleStringResource GetResource(Guid languageId, string key)
         {
             try
-            {
+            {         
                 return _localizationRepository.GetResource(languageId, key.Trim());
             }
             catch (Exception ex)
@@ -185,6 +189,7 @@ namespace MVCForum.Services
         public string GetResourceString(Language language, string key)
         {
             var resFormat = GetResource(language.Id, key);
+
             if (resFormat != null)
             {
                 var resValue = resFormat.ResourceValue;
@@ -202,7 +207,8 @@ namespace MVCForum.Services
         /// <returns></returns>
         public string GetResourceString(string key)
         {
-            return GetResourceString(CurrentLanguage, key);
+            return _perRequestLanguageStrings[key];
+            //return GetResourceString(CurrentLanguage, key);
         }
 
         #endregion
@@ -323,6 +329,16 @@ namespace MVCForum.Services
         public PagedList<LocaleResourceKey> GetAllResourceKeys(int pageIndex, int pageSize)
         {
             return _localizationRepository.GetAllResourceKeys(pageIndex, pageSize);
+        }
+
+        /// <summary>
+        /// Get all resource strings for a language
+        /// </summary>
+        /// <param name="language"></param>
+        /// <returns></returns>
+        public Dictionary<string, string> ResourceKeysByLanguage(Language language)
+        {
+            return _localizationRepository.GetAllLanguageStringsByLangauge(language.Id);
         }
 
         /// <summary>

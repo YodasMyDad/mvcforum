@@ -157,6 +157,13 @@ namespace MVCForum.Domain.Interfaces.Services
         PagedList<LocaleResourceKey> GetAllResourceKeys(int pageIndex, int pageSize);
 
         /// <summary>
+        /// Puts the entire 
+        /// </summary>
+        /// <param name="language"></param>
+        /// <returns></returns>
+        Dictionary<string, string> ResourceKeysByLanguage(Language language);
+
+        /// <summary>
         /// Return all the resource keys in the system - non paged
         /// </summary>
         /// <returns></returns>
