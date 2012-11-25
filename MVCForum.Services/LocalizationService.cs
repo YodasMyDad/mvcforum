@@ -207,8 +207,14 @@ namespace MVCForum.Services
         /// <returns></returns>
         public string GetResourceString(string key)
         {
-            return _perRequestLanguageStrings[key];
-            //return GetResourceString(CurrentLanguage, key);
+            try
+            {
+                return _perRequestLanguageStrings[key.Trim()];
+            }
+            catch
+            {
+                return key.Trim();
+            }
         }
 
         #endregion

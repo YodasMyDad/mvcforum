@@ -553,7 +553,6 @@
     <Content Include="Installer\Db\1.0\database.sql" />
     <Content Include="Installer\Db\1.1\database.sql" />
     <Content Include="Installer\ReadMe.txt" />
-    <Content Include="README.jQuery.vsdoc.txt" />
     <Content Include="Scripts\cache\Cache.txt" />
     <Content Include="Scripts\dashboard.js" />
     <Content Include="Scripts\bbeditor\jquery.sceditor.default.min.css" />
