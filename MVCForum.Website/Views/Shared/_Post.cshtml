@@ -69,7 +69,7 @@
             <div class="tagsinput">
                 @foreach (var tag in Model.ParentTopic.Tags)
                 {
-                    <span class="tag"><span><a href="/@AppConstants.TagsUrlIdentifier/@StringUtils.HtmlDecode(tag.Tag)">@StringUtils.HtmlDecode(tag.Tag)</a></span></span>   
+                    <span class="tag"><span><a href="@UrlTypes.GenerateUrl(UrlType.Tag, tag.Tag)">@StringUtils.HtmlDecode(tag.Tag)</a></span></span>   
                 }
             </div>
         }

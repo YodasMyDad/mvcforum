@@ -9,7 +9,8 @@ namespace MVCForum.Domain
     {
         Category,
         Topic,
-        Member
+        Member,
+        Tag
     }
 
     public static class UrlTypes
@@ -22,6 +23,8 @@ namespace MVCForum.Domain
                     return AppConstants.TopicUrlIdentifier;
                 case UrlType.Member:
                     return AppConstants.MemberUrlIdentifier;
+                case UrlType.Tag:
+                    return AppConstants.TagsUrlIdentifier;
                 default:
                     return AppConstants.CategoryUrlIdentifier;
             }

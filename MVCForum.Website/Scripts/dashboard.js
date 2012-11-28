@@ -8,35 +8,35 @@
 });
 
 function LatestUsers() {
-    $.post("/Admin/Dashboard/LatestUsers",
+    $.post(app_base + "Admin/Dashboard/LatestUsers",
     function (data) {
         $(".dashboardlatestusers").html(data);
     });
 }
 
 function LowestPointUsers() {
-    $.post("/Admin/Dashboard/LowestPointUsers",
+    $.post(app_base + "Admin/Dashboard/LowestPointUsers",
     function (data) {
         $(".dashboardlowestpointusers").html(data);
     });
 }
 
 function LowestPointPosts() {
-    $.post("/Admin/Dashboard/LowestPointPosts",
+    $.post(app_base + "Admin/Dashboard/LowestPointPosts",
     function (data) {
         $(".dashboardlowestpointposts").html(data);
     });
 }
 
 function HighestViewedTopics() {
-    $.post("/Admin/Dashboard/HighestViewedTopics",
+    $.post(app_base + "Admin/Dashboard/HighestViewedTopics",
     function (data) {
         $(".dashboardhighestviewedtopics").html(data);
     });
 }
 
 function LatestNews() {
-    $.post("/Admin/Dashboard/MvcForumLatestNews",
+    $.post(app_base + "Admin/Dashboard/MvcForumLatestNews",
     function (data) {
         $(".mvcforumlatestnews").html(data);
     });
