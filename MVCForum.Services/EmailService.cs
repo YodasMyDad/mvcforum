@@ -88,7 +88,7 @@ namespace MVCForum.Services
 
                     if(smtpPort != null)
                     {
-                        mySmtpClient.Port = (int)smtpPort;
+                        mySmtpClient.Port = Convert.ToInt32(smtpPort);
                     }
 
                     if (email.Count == 1)

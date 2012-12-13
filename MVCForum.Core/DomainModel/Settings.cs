@@ -42,7 +42,7 @@ namespace MVCForum.Domain.DomainModel
         public string SMTP { get; set; }
         public string SMTPUsername { get; set; }
         public string SMTPPassword { get; set; }
-        public int? SMTPPort { get; set; }
+        public string SMTPPort { get; set; }
         public bool? SMTPEnableSSL { get; set; }
         public string Theme { get; set; }
 

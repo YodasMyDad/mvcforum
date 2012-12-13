@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
@@ -103,7 +104,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.Theme = settingsViewModel.Theme;
             existingSettings.AkismentKey = settingsViewModel.AkismentKey;
             existingSettings.EnableAkisment = settingsViewModel.EnableAkisment;
-            existingSettings.SMTPPort = settingsViewModel.SMTPPort;
+            existingSettings.SMTPPort = settingsViewModel.SMTPPort.ToString();
             existingSettings.SpamQuestion = settingsViewModel.SpamQuestion;
             existingSettings.SpamAnswer = settingsViewModel.SpamAnswer;
             existingSettings.SMTPEnableSSL = settingsViewModel.SMTPEnableSSL;
@@ -149,7 +150,7 @@ namespace MVCForum.Website.ViewModels.Mapping
                 AkismentKey = currentSettings.AkismentKey,
                 EnableAkisment = currentSettings.EnableAkisment != null && (bool)currentSettings.EnableAkisment,
                 Theme = currentSettings.Theme,
-                SMTPPort = currentSettings.SMTPPort,
+                SMTPPort = string.IsNullOrEmpty(currentSettings.SMTPPort) ? null : (int?)(Convert.ToInt32(currentSettings.SMTPPort)),
                 SpamQuestion = currentSettings.SpamQuestion,
                 SpamAnswer = currentSettings.SpamAnswer,
                 Themes = AppHelpers.GetThemeFolders(),
