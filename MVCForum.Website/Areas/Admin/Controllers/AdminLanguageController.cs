@@ -643,8 +643,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 {
                     var resourceKeyToSave = new LocaleResourceKey
                                                 {
-                                                    Name = StringUtils.GetSafeHtml(newResourceKeyViewModel.Name),
-                                                    Notes = StringUtils.GetSafeHtml(newResourceKeyViewModel.Notes),
+                                                    Name = newResourceKeyViewModel.Name,
+                                                    Notes = newResourceKeyViewModel.Notes,
                                                     DateAdded = newResourceKeyViewModel.DateAdded
                                                 };
                        

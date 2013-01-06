@@ -4,6 +4,7 @@ using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
@@ -18,6 +19,13 @@ namespace MVCForum.Services
             _membershipRepository = membershipRepository;
         }
 
+        public PrivateMessage SanitizeMessage(PrivateMessage privateMessage)
+        {
+            privateMessage.Message = StringUtils.GetSafeHtml(privateMessage.Message);
+            privateMessage.Subject = StringUtils.SafePlainText(privateMessage.Subject);
+            return privateMessage;
+        }
+
         /// <summary>
         /// Add a private message
         /// </summary>
@@ -25,6 +33,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public PrivateMessage Add(PrivateMessage message)
         {
+            message = SanitizeMessage(message);
             message.DateSent = DateTime.Now;
             return _privateMessageRepository.Add(message);
         }
@@ -45,6 +54,7 @@ namespace MVCForum.Services
         /// <param name="message"></param>
         public void Save(PrivateMessage message)
         {
+            message = SanitizeMessage(message);
             _privateMessageRepository.Update(message); 
         }
 

@@ -62,7 +62,7 @@ namespace MVCForum.Website.Controllers
 
                 topic = _topicService.Get(post.Topic);
                 
-                var postContent = StringUtils.GetSafeHtml(post.PostContent, true);
+                var postContent = post.PostContent;
 
                 var akismetHelper = new AkismetHelper(SettingsService);
 
@@ -176,7 +176,7 @@ namespace MVCForum.Website.Controllers
                 if (post.User.Id == LoggedOnUser.Id || permissions[AppConstants.PermissionEditPosts].IsTicked)
                 {
                     // User has permission so update the post
-                    post.PostContent = StringUtils.GetSafeHtml(editPostViewModel.Content, true);
+                    post.PostContent = editPostViewModel.Content;
                     post.DateEdited = DateTime.Now;
 
                     // if topic starter update the topic
@@ -191,7 +191,7 @@ namespace MVCForum.Website.Controllers
 
                         topic.IsLocked = editPostViewModel.IsLocked;
                         topic.IsSticky = editPostViewModel.IsSticky;
-                        topic.Name = StringUtils.GetSafeHtml(editPostViewModel.Name);
+                        topic.Name = editPostViewModel.Name;
 
                         //_topicService.SaveOrUpdate(topic);
 
@@ -200,7 +200,7 @@ namespace MVCForum.Website.Controllers
                         topic.Tags.Clear();
                         if(!string.IsNullOrEmpty(editPostViewModel.Tags))
                         {
-                            _topicTagService.Add(StringUtils.GetSafeHtml(editPostViewModel.Tags.ToLower()), topic);
+                            _topicTagService.Add(editPostViewModel.Tags.ToLower(), topic);
                         }
                     }
 
@@ -391,7 +391,7 @@ namespace MVCForum.Website.Controllers
                     var post = _postService.Get(viewModel.PostId);
                     var report = new Report
                     {
-                        Reason = StringUtils.SafePlainText(viewModel.Reason),
+                        Reason = viewModel.Reason,
                         ReportedPost = post,
                         Reporter = LoggedOnUser
                     };

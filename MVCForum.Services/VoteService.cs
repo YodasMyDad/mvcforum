@@ -29,6 +29,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public Vote Add(Vote vote)
         {
+
             var e = new VoteEventArgs {Vote = vote, Api = _api};
             EventManager.Instance.FireBeforeVoteMade(this, e);
 

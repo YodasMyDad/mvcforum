@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
@@ -32,6 +33,7 @@ namespace MVCForum.Services
         /// <param name="permission"></param>
         public void Add(Permission permission)
         {
+            permission.Name = StringUtils.SafePlainText(permission.Name);
             _permissionRepository.Add(permission);
         }
 

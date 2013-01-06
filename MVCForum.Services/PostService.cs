@@ -40,6 +40,12 @@ namespace MVCForum.Services
             return user == null ? _roleService.GetRole(AppConstants.GuestRoleName) : user.Roles.FirstOrDefault();
         }
 
+        public Post SanitizePost(Post post)
+        {
+            post.PostContent = StringUtils.GetSafeHtml(post.PostContent);
+            return post;
+        }
+
         /// <summary>
         /// Return all posts
         /// </summary>
@@ -134,6 +140,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public Post Add(Post post)
         {
+            post = SanitizePost(post);
             return _api.Post.Create(post);
         }
 
@@ -227,6 +234,8 @@ namespace MVCForum.Services
                                    User = user,
                                    Topic = topic
                                };
+
+            newPost = SanitizePost(newPost);
 
             var e = new PostMadeEventArgs { Post = newPost, Api = _api };
             EventManager.Instance.FireBeforePostMade(this, e);

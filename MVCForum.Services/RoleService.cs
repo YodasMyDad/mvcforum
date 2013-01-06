@@ -7,6 +7,7 @@ using MVCForum.Domain.Exceptions;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
@@ -72,7 +73,8 @@ namespace MVCForum.Services
         /// <param name="role"></param>
         public void CreateRole(MembershipRole role)
         {
-                    _roleRepository.Add(role);
+            role.RoleName = StringUtils.SafePlainText(role.RoleName);
+            _roleRepository.Add(role);
         }
 
         /// <summary>
@@ -110,6 +112,7 @@ namespace MVCForum.Services
         /// <param name="role"></param>
         public void Save(MembershipRole role)
         {
+            role.RoleName = StringUtils.SafePlainText(role.RoleName);
             _roleRepository.Update(role);  
         }
 

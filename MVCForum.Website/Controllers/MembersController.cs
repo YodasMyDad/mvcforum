@@ -90,11 +90,11 @@ namespace MVCForum.Website.Controllers
 
                 var userToSave = new MembershipUser
                 {
-                    UserName = StringUtils.GetSafeHtml(userModel.UserName),
-                    Email = StringUtils.GetSafeHtml(userModel.Email),
-                    Password = StringUtils.GetSafeHtml(userModel.Password),
+                    UserName = userModel.UserName,
+                    Email = userModel.Email,
+                    Password = userModel.Password,
                     IsApproved = userModel.IsApproved,
-                    Comment = StringUtils.GetSafeHtml(userModel.Comment),
+                    Comment = userModel.Comment,
                 };
 
                 var homeRedirect = false;
@@ -353,8 +353,8 @@ namespace MVCForum.Website.Controllers
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-                var username = StringUtils.SafePlainText(model.UserName);
-                var password = StringUtils.SafePlainText(model.Password);
+                var username = model.UserName;
+                var password = model.Password;
 
                 try
                 {
@@ -644,7 +644,7 @@ namespace MVCForum.Website.Controllers
                     var user = MembershipService.GetUser(viewModel.Id);
                     var report = new Report
                                      {
-                                         Reason = StringUtils.SafePlainText(viewModel.Reason),
+                                         Reason = viewModel.Reason,
                                          ReportedMember = user,
                                          Reporter = LoggedOnUser
                                      };

@@ -66,6 +66,23 @@ namespace MVCForum.Services
             _api = api;
         }
 
+
+        public MembershipUser SanitizeUser(MembershipUser membershipUser)
+        {
+            membershipUser.Avatar = StringUtils.SafePlainText(membershipUser.Avatar);
+            membershipUser.Comment = StringUtils.SafePlainText(membershipUser.Comment);
+            membershipUser.Email = StringUtils.SafePlainText(membershipUser.Email);
+            membershipUser.Password = StringUtils.SafePlainText(membershipUser.Password);
+            membershipUser.PasswordAnswer = StringUtils.SafePlainText(membershipUser.PasswordAnswer);
+            membershipUser.PasswordQuestion = StringUtils.SafePlainText(membershipUser.PasswordQuestion);
+            membershipUser.Signature = StringUtils.GetSafeHtml(membershipUser.Signature);
+            membershipUser.Twitter = StringUtils.SafePlainText(membershipUser.Twitter);
+            membershipUser.UserName = StringUtils.SafePlainText(membershipUser.UserName);
+            membershipUser.Website = StringUtils.SafePlainText(membershipUser.Website);
+            return membershipUser;
+        }
+
+
         /// <summary>
         /// Create a salt for the password hash (just makes it a bit more complex)
         /// </summary>
@@ -249,6 +266,8 @@ namespace MVCForum.Services
         /// <returns></returns>
         public MembershipCreateStatus CreateUser(MembershipUser newUser)
         {
+            newUser = SanitizeUser(newUser);
+
             var status = MembershipCreateStatus.Success;
 
             var e = new RegisterUserEventArgs { User = newUser, Api = _api };
@@ -598,6 +617,9 @@ namespace MVCForum.Services
         /// <param name="user"></param>
         public void Save(MembershipUser user)
         {
+
+            user = SanitizeUser(user);
+
             _membershipRepository.Update(user);
         }
 

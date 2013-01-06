@@ -40,7 +40,7 @@ namespace MVCForum.Data.Repositories
                 .Where(x => x.TopicCount > 0)
                 .OrderByDescending(s => s.TopicCount).ToList();
 
-            return tags.ToDictionary(tag => StringUtils.HtmlDecode(tag.TopicName), tag => tag.TopicCount);
+            return tags.ToDictionary(tag => tag.TopicName, tag => tag.TopicCount);
         }
 
         public TopicTag GetTagName(string tag)

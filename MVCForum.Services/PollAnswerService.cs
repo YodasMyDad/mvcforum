@@ -5,6 +5,7 @@ using System.Text;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
@@ -22,9 +23,10 @@ namespace MVCForum.Services
             return _pollAnswerRepository.GetAllPollAnswers();
         }
 
-        public PollAnswer Add(PollAnswer PollAnswer)
+        public PollAnswer Add(PollAnswer pollAnswer)
         {
-            return _pollAnswerRepository.Add(PollAnswer);
+            pollAnswer.Answer = StringUtils.SafePlainText(pollAnswer.Answer);
+            return _pollAnswerRepository.Add(pollAnswer);
         }
 
         public PollAnswer Get(Guid id)

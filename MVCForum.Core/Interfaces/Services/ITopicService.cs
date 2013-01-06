@@ -6,6 +6,7 @@ namespace MVCForum.Domain.Interfaces.Services
 {
     public interface ITopicService
     {
+        Topic SanitizeTopic(Topic topic);
         IList<Topic> GetAll();
         IList<Topic> GetHighestViewedTopics(int amountToTake);
         Topic Add(Topic topic);

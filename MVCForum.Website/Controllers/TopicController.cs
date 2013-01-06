@@ -103,12 +103,12 @@ namespace MVCForum.Website.Controllers
                     {
                         topic = new Topic
                         {
-                            Name = StringUtils.GetSafeHtml(topicViewModel.Name),
+                            Name = topicViewModel.Name,
                             Category = category,
                             User = LoggedOnUser
                         };
 
-                        topicViewModel.Content = StringUtils.GetSafeHtml(topicViewModel.Content, true);                        
+                        topicViewModel.Content = topicViewModel.Content;                        
                         
                         if (!string.IsNullOrEmpty(topicViewModel.Content))
                         {
@@ -167,7 +167,7 @@ namespace MVCForum.Website.Controllers
                                 // Add the tags if any too
                                 if (!string.IsNullOrEmpty(topicViewModel.Tags))
                                 {
-                                    _topicTagService.Add(StringUtils.SafePlainText(topicViewModel.Tags.ToLower()), topic);
+                                    _topicTagService.Add(topicViewModel.Tags.ToLower(), topic);
                                 }
 
                                 // Subscribe the user to the topic as they have checked the checkbox

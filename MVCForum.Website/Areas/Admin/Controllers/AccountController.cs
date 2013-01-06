@@ -324,7 +324,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 var existingRole = _roleService.GetRole(role.Id);
-                existingRole.RoleName = StringUtils.SafePlainText(role.RoleName);
+                existingRole.RoleName = role.RoleName;
                
                 try
                 {

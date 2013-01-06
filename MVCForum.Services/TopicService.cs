@@ -29,6 +29,12 @@ namespace MVCForum.Services
             _topicNotificationService = topicNotificationService;
         }
 
+        public Topic SanitizeTopic(Topic topic)
+        {
+            topic.Name = StringUtils.SafePlainText(topic.Name);
+            return topic;
+        }
+
         /// <summary>
         /// Get all topics
         /// </summary>
@@ -50,6 +56,8 @@ namespace MVCForum.Services
         /// <returns></returns>
         public Topic Add(Topic topic)
         {
+            topic = SanitizeTopic(topic);
+
             topic.CreateDate = DateTime.Now;
 
             // url slug generator
@@ -68,13 +76,15 @@ namespace MVCForum.Services
         public Topic AddLastPost(Topic topic, string postContent)
         {
 
+            topic = SanitizeTopic(topic);
+
             // Create the post
             var post = new Post
             {
                 DateCreated = DateTime.Now,
                 IsTopicStarter = true,
                 DateEdited = DateTime.Now,
-                PostContent = postContent,
+                PostContent = StringUtils.GetSafeHtml(postContent),
                 User = topic.User,
                 Topic = topic
             };
@@ -201,6 +211,8 @@ namespace MVCForum.Services
         /// <param name="topic"></param>
         public void SaveOrUpdate(Topic topic)
         {
+            topic = SanitizeTopic(topic);
+
             _topicRepository.Update(topic);
         }
 

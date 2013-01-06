@@ -39,6 +39,28 @@ namespace MVCForum.Services
             _perRequestLanguageStrings = ResourceKeysByLanguage(CurrentLanguage);
         }
 
+
+        public Language SanitizeLanguage(Language language)
+        {
+            language.Name = StringUtils.SafePlainText(language.Name);
+            language.LanguageCulture = StringUtils.SafePlainText(language.LanguageCulture);
+            return language;
+        }
+
+        public LocaleResourceKey SanitizeLocaleResourceKey(LocaleResourceKey localeResourceKey)
+        {
+            localeResourceKey.Name = StringUtils.SafePlainText(localeResourceKey.Name);
+            localeResourceKey.Notes = StringUtils.SafePlainText(localeResourceKey.Notes);
+            return localeResourceKey;
+        }
+
+        public LocaleStringResource SanitizeLocaleStringResource(LocaleStringResource localeStringResource)
+        {
+            localeStringResource.ResourceValue = StringUtils.SafePlainText(localeStringResource.ResourceValue);
+            return localeStringResource;
+        }
+
+
         #region Private methods
 
         /// <summary>
@@ -57,7 +79,7 @@ namespace MVCForum.Services
                 throw new ApplicationException(string.Format("Unable to update resource with key {0} for language {1}. No resource found.", resourceKey, languageId));
             }
 
-            localeStringResource.ResourceValue = newValue;
+            localeStringResource.ResourceValue = StringUtils.SafePlainText(newValue);
         }
 
         /// <summary>
@@ -67,6 +89,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         private LocaleStringResource Add(LocaleStringResource newLocaleStringResource)
         {
+            newLocaleStringResource = SanitizeLocaleStringResource(newLocaleStringResource);
             return _localizationRepository.Add(newLocaleStringResource);
         }
 
@@ -100,6 +123,9 @@ namespace MVCForum.Services
                 language.LocaleStringResources.Add(resourceValue);
             }
 
+            //Sanitze
+            newLocaleResourceKey = SanitizeLocaleResourceKey(newLocaleResourceKey);
+
             // Add the key
             return _localizationRepository.Add(newLocaleResourceKey);
         }
@@ -130,6 +156,8 @@ namespace MVCForum.Services
                 };
                 language.LocaleStringResources.Add(localeStringResource);
             }
+
+            language = SanitizeLanguage(language);
 
             _localizationRepository.Add(language);
         }
@@ -258,7 +286,8 @@ namespace MVCForum.Services
         {
             get
             {
-                var language = _settingsRepository.GetSettings().DefaultLanguage;
+                var settings = _settingsRepository.GetSettings();
+                var language = settings.DefaultLanguage;
 
                 if (language == null)
                 {
@@ -439,6 +468,7 @@ namespace MVCForum.Services
         {
             try
             {
+                language = SanitizeLanguage(language);
                 _localizationRepository.Update(language);
             }
             catch (Exception ex)

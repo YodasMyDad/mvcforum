@@ -6,6 +6,7 @@ namespace MVCForum.Domain.Interfaces.Services
 {
     public interface IPrivateMessageService
     {
+        PrivateMessage SanitizeMessage(PrivateMessage privateMessage);
         PrivateMessage Add(PrivateMessage message);
         PrivateMessage Get(Guid id);
         void Save(PrivateMessage id);

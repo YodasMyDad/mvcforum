@@ -7,6 +7,11 @@ namespace MVCForum.Domain.Interfaces.Services
 {
     public interface ILocalizationService
     {
+
+        Language SanitizeLanguage(Language language);
+        LocaleResourceKey SanitizeLocaleResourceKey(LocaleResourceKey localeResourceKey);
+        LocaleStringResource SanitizeLocaleStringResource(LocaleStringResource localeStringResource);
+
         #region Language
 
         /// <summary>

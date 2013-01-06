@@ -88,8 +88,12 @@ namespace MVCForum.Services
         /// <param name="category"></param>
         public void Add(Category category)
         {
+            // Sanitize
+            category = SanitizeCategory(category);
+
             // Set the create date
             category.DateCreated = DateTime.Now;
+
             // url slug generator
             category.Slug = ServiceHelpers.GenerateSlug(category.Name, x => _categoryRepository.GetBySlugLike(ServiceHelpers.CreateUrl(category.Name)));            
 
@@ -103,7 +107,23 @@ namespace MVCForum.Services
         /// <param name="category"></param>
         public void UpdateSlugFromName(Category category)
         {
+            // Sanitize
+            category = SanitizeCategory(category);
+
             category.Slug = ServiceHelpers.GenerateSlug(category.Name, x => _categoryRepository.GetBySlugLike(category.Slug)); 
+        }
+
+        /// <summary>
+        /// Sanitizes a category
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        public Category SanitizeCategory(Category category)
+        {
+            // Sanitize any strings in a category
+            category.Description = StringUtils.GetSafeHtml(category.Description);
+            category.Name = StringUtils.SafePlainText(category.Name);
+            return category;
         }
 
         /// <summary>
@@ -168,6 +188,9 @@ namespace MVCForum.Services
         /// <param name="category"></param>
         public void Save(Category category)
         {
+            // Sanitize
+            category = SanitizeCategory(category);
+
             _categoryRepository.Update(category);
         }
     }

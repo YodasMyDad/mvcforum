@@ -16,5 +16,6 @@ namespace MVCForum.Domain.Interfaces.Services
         void Add(Category category);
         void Save(Category category);
         void UpdateSlugFromName(Category category);
+        Category SanitizeCategory(Category category);
     }
 }

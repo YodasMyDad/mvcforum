@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using HtmlAgilityPack;
 using Microsoft.Security.Application;
 
 namespace MVCForum.Utilities
@@ -77,6 +78,8 @@ namespace MVCForum.Utilities
             return IsValidEmail(email) ? string.Format("http://www.gravatar.com/avatar/{0}?s={1}", md5HashString(email), size) : "";
         }
         #endregion
+
+
 
         public static string md5HashString(string toHash)
         {
@@ -274,24 +277,14 @@ namespace MVCForum.Utilities
         }
 
         /// <summary>
-        /// Returns XSS safe HTML using XSS library
+        /// Used to pass all string input in the system  - Strips all nasties from a string/html
         /// </summary>
         /// <param name="html"></param>
-        /// <param name="keepLineBreaks"> </param>
         /// <returns></returns>
-        public static string GetSafeHtml(string html, bool keepLineBreaks = false)
+        public static string GetSafeHtml(string html)
         {
-            if (string.IsNullOrEmpty(html)) return html;
-
-            if (keepLineBreaks)
-            {
-                html = Microsoft.Security.Application.Encoder.HtmlEncode(SwapLineBreaks(html));
-                return SwapLineBreaksBack(html);
-            }
-
-            return Microsoft.Security.Application.Encoder.HtmlEncode(html);
+            return ScrubHtml(html);
         }
-
 
         private const string _nlReplace = "--newline--";
         private static string SwapLineBreaks(string lines)
@@ -302,6 +295,79 @@ namespace MVCForum.Utilities
         {
             return lines.Replace(_nlReplace, Environment.NewLine);
         }
+
+
+        /// <summary>
+        /// Takes in HTML and returns santized Html/string
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        public static string ScrubHtml(string html)
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+
+            //Remove potentially harmful elements
+            var nc = doc.DocumentNode.SelectNodes("//script|//link|//iframe|//frameset|//frame|//applet|//object|//embed");
+            if (nc != null)
+            {
+                foreach (var node in nc)
+                {
+                    node.ParentNode.RemoveChild(node, false);
+
+                }
+            }
+
+            //remove hrefs to java/j/vbscript URLs
+            nc = doc.DocumentNode.SelectNodes("//a[starts-with(translate(@href, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'javascript')]|//a[starts-with(translate(@href, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'jscript')]|//a[starts-with(translate(@href, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'vbscript')]");
+            if (nc != null)
+            {
+
+                foreach (var node in nc)
+                {
+                    node.SetAttributeValue("href", "#");
+                }
+            }
+
+            //remove img with refs to java/j/vbscript URLs
+            nc = doc.DocumentNode.SelectNodes("//img[starts-with(translate(@src, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'javascript')]|//img[starts-with(translate(@src, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'jscript')]|//img[starts-with(translate(@src, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'vbscript')]");
+            if (nc != null)
+            {
+                foreach (var node in nc)
+                {
+                    node.SetAttributeValue("src", "#");
+                }
+            }
+
+            //remove on<Event> handlers from all tags
+            nc = doc.DocumentNode.SelectNodes("//*[@onclick or @onmouseover or @onfocus or @onblur or @onmouseout or @ondoubleclick or @onload or @onunload]");
+            if (nc != null)
+            {
+                foreach (var node in nc)
+                {
+                    node.Attributes.Remove("onFocus");
+                    node.Attributes.Remove("onBlur");
+                    node.Attributes.Remove("onClick");
+                    node.Attributes.Remove("onMouseOver");
+                    node.Attributes.Remove("onMouseOut");
+                    node.Attributes.Remove("onDoubleClick");
+                    node.Attributes.Remove("onLoad");
+                    node.Attributes.Remove("onUnload");
+                }
+            }
+
+            // remove any style attributes that contain the word expression (IE evaluates this as script)
+            nc = doc.DocumentNode.SelectNodes("//*[contains(translate(@style, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'expression')]");
+            if (nc != null)
+            {
+                foreach (var node in nc)
+                {
+                    node.Attributes.Remove("stYle");
+                }
+            }
+
+            return doc.DocumentNode.WriteTo();
+        } 
 
         /// <summary>
         /// Url Encodes a string using the XSS library

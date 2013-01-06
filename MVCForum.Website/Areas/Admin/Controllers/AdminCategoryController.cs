@@ -79,8 +79,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     {
                         var category = new Category
                                            {
-                                               Name = StringUtils.GetSafeHtml(categoryViewModel.Name),
-                                               Description = StringUtils.GetSafeHtml(categoryViewModel.Description),
+                                               Name = categoryViewModel.Name,
+                                               Description = categoryViewModel.Description,
                                                IsLocked = categoryViewModel.IsLocked,
                                                SortOrder = categoryViewModel.SortOrder,
                                            };

@@ -99,7 +99,7 @@ namespace MVCForum.Website.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var userTo = StringUtils.SafePlainText(createPrivateMessageViewModel.UserToUsername);
+                    var userTo = createPrivateMessageViewModel.UserToUsername;
 
                     // first check they are not trying to message themself!
                     if (userTo.ToLower() != LoggedOnUser.UserName.ToLower())
@@ -108,8 +108,8 @@ namespace MVCForum.Website.Controllers
                         var privateMessage = new PrivateMessage
                                                  {
                                                      UserFrom = LoggedOnUser,
-                                                     Subject = StringUtils.GetSafeHtml(createPrivateMessageViewModel.Subject),
-                                                     Message = StringUtils.GetSafeHtml(createPrivateMessageViewModel.Message),
+                                                     Subject = createPrivateMessageViewModel.Subject,
+                                                     Message = createPrivateMessageViewModel.Message,
                                                  };                            
                         // now get the user its being sent to
                         var memberTo = MembershipService.GetUser(userTo);

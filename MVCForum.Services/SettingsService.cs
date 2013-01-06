@@ -42,6 +42,18 @@ namespace MVCForum.Services
         /// <param name="settings"></param>
         public void Save(Settings settings)
         {
+            settings.AdminEmailAddress = StringUtils.SafePlainText(settings.AdminEmailAddress);
+            settings.AkismentKey = StringUtils.SafePlainText(settings.AkismentKey);
+            settings.CurrentDatabaseVersion = StringUtils.SafePlainText(settings.CurrentDatabaseVersion);
+            settings.ForumName = StringUtils.SafePlainText(settings.ForumName);
+            settings.ForumUrl = StringUtils.SafePlainText(settings.ForumUrl);
+            settings.NotificationReplyEmail = StringUtils.SafePlainText(settings.NotificationReplyEmail);
+            settings.SMTP = StringUtils.SafePlainText(settings.SMTP);
+            settings.SMTPPassword = StringUtils.SafePlainText(settings.SMTPPassword);
+            settings.SMTPPort = StringUtils.SafePlainText(settings.SMTPPort);
+            settings.SMTPUsername = StringUtils.SafePlainText(settings.SMTPUsername);
+            settings.SpamAnswer = StringUtils.SafePlainText(settings.SpamAnswer);
+            settings.SpamQuestion = StringUtils.SafePlainText(settings.SpamQuestion);
             _settingsRepository.Update(settings);
         }
     }
