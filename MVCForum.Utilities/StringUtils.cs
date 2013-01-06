@@ -475,9 +475,7 @@ namespace MVCForum.Utilities
         public static string CreateUrl(string strInput, string replaceWith)
         {
             // Doing this to stop the urls getting encoded
-            var decodeUrl = HtmlDecode(strInput);
-            var result = StripNonAlphaNumeric(decodeUrl, replaceWith).ToLower();
-            return Microsoft.Security.Application.Encoder.HtmlEncode(result);
+            return StripNonAlphaNumeric(strInput, replaceWith).ToLower();
         }
 
         /// <summary>
