@@ -94,7 +94,7 @@ namespace MVCForum.Website.Controllers
                     var permissions = RoleService.GetPermissions(category, UsersRole);
 
                     // Check this users role has permission to create a post
-                    if (permissions[AppConstants.PermissionDenyAccess].IsTicked && permissions[AppConstants.PermissionReadOnly].IsTicked)
+                    if (permissions[AppConstants.PermissionDenyAccess].IsTicked || permissions[AppConstants.PermissionReadOnly].IsTicked)
                     {
                         // Throw exception so Ajax caller picks it up
                         ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.NoPermission"));

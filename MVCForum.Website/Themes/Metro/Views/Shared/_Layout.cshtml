@@ -26,7 +26,7 @@
         <link rel="shortcut icon" href="@Url.Content(themePath + "/content/images/favicon.ico")">
         <link rel="apple-touch-icon-precomposed" href="@Url.Content(themePath + "/content/images/apple-touch-icon-57-precomposed.png")">
         <script type="text/javascript">
-             var app_base = '@HttpContext.Current.Request.ApplicationPath';
+            var app_base = '@Url.Content("~/")';
         </script>
         @(Bundle.JavaScript()
                     //.Add("~/Scripts/jquery.1.7.2.min.js")

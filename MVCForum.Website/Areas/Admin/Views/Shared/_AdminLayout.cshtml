@@ -27,7 +27,7 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <script type="text/javascript">
-        var app_base = '@HttpContext.Current.Request.ApplicationPath';
+        var app_base = '@Url.Content("~/")';
     </script>
     @(Bundle.JavaScript()
         .Add("~/Scripts/jquery.1.7.2.min.js")
