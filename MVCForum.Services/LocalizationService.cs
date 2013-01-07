@@ -99,6 +99,10 @@ namespace MVCForum.Services
         /// <param name="newLocaleResourceKey"></param>
         public LocaleResourceKey Add(LocaleResourceKey newLocaleResourceKey)
         {
+
+            // Trim name to stop any issues
+            newLocaleResourceKey.Name = newLocaleResourceKey.Name.Trim();
+
             // Check to see if a respource key of this name already exists
             var existingResourceKey = _localizationRepository.GetResourceKey(newLocaleResourceKey.Name);
 

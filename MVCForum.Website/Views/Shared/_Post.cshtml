@@ -51,14 +51,14 @@
         <div class="postbodytop">
             <a class="postmember-@postId" href="@Html.Raw(Model.Post.User.NiceUrl)">@Html.Raw(Model.Post.User.UserName)</a> 
             @Html.LanguageString("Post.PostedThis") 
-            @DateUtils.GetPrettyDate(Model.Post.DateCreated.ToString())
+            @DatesUI.GetPrettyDate(Model.Post.DateCreated.ToString())
         </div>
         <div id="postcontent-@postId" class="postcontent">
             <p>@Html.Raw(AppHelpers.ConvertPostContent(Model.Post.PostContent))</p>
             @if (Html.Settings().DisplayEditedBy && Model.Post.DateEdited > Model.Post.DateCreated)
             {
                 <p class="postlastedited">
-                    @Html.LanguageString("Post.LastEdited")  @DateUtils.GetPrettyDate(Model.Post.DateEdited.ToString())</p>
+                    @Html.LanguageString("Post.LastEdited")  @DatesUI.GetPrettyDate(Model.Post.DateEdited.ToString())</p>
             }
             @if (Html.Settings().EnableSignatures && !string.IsNullOrEmpty(Model.Post.User.Signature))
             {

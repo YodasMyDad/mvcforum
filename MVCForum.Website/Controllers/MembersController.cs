@@ -460,7 +460,7 @@ namespace MVCForum.Website.Controllers
                     var posts = _postService.GetByMember(Id, 100);
 
                     // Get the distinct topics
-                    var topics = posts.Select(x => x.Topic).Distinct().Take(6).ToList();
+                    var topics = posts.Select(x => x.Topic).Distinct().Take(6).OrderByDescending(x => x.LastPost.DateCreated).ToList();
 
                     // Get all the categories for this topic collection
                     var categories = topics.Select(x => x.Category).Distinct();

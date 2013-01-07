@@ -10,29 +10,18 @@ namespace MVCForum.Website.Installer
 {
     public static class InstallerHelper
     {
-        public static InstallerResult InstallMainForumTables()
+
+        #region Main table install
+
+        public static InstallerResult RunSql(string filePath)
         {
             // Setup the installer result
-            var insResult = new InstallerResult {Result = true};
-            string appVersion;
-
-            try
-            {
-                // Get the app version to change to
-                appVersion = HttpContext.Current.Application["Version"].ToString();
-            }
-            catch
-            {
-                // Error return the error
-                insResult.Result = false;
-                insResult.ResultMessage = "Unable to obtain MVC Forum version";
-                return insResult;
-            }
+            var insResult = new InstallerResult { Result = true };
 
             try
             {
                 // Now create the database tables
-                var dbScriptPath = string.Format("~/Installer/Db/{0}/database.sql", appVersion);
+                var dbScriptPath = filePath;
                 var connString = ConfigurationManager.ConnectionStrings["MVCForumContext"].ConnectionString;
 
                 var file = new FileInfo(HttpContext.Current.Server.MapPath(dbScriptPath));
@@ -56,21 +45,17 @@ namespace MVCForum.Website.Installer
             catch (System.Exception)
             {
                 insResult.Result = false;
-                insResult.ResultMessage = "Error creating the database tables, check your web.config connection string is correct and the database user has the correct permissions";
+                insResult.ResultMessage = "Error creating/updating the database, check your web.config connection string is correct and the database user has the correct permissions";
                 return insResult;
             }
 
-            if(Utilities.ConfigUtils.UpdateAppSetting("MVCForumVersion", appVersion) == false)
-            {
-                insResult.Result = false;
-                insResult.ResultMessage = string.Format("Error updating the {0} version number in the web.config, try updating it manually to {1} and restarting the site", "MVCForumContext", appVersion);
-                return insResult;
-            }
-      
-            insResult.Result = true;
-            insResult.ResultMessage = "Congratulations, MVC Forum has installed successfully";
             return insResult;
-        }
+        } 
+
+        #endregion
+
+
+        #region Helpers
 
         public static void TouchWebConfig()
         {
@@ -79,6 +64,19 @@ namespace MVCForum.Website.Installer
             xDoc.Load(webConfigPath);
             xDoc.Save(webConfigPath);
         }
+
+        public static string GetMainDatabaseFilePath(string appVersion)
+        {
+            return string.Format("~/Installer/Db/{0}/database.sql", appVersion);
+        }
+
+        public static string GetUpdateDatabaseFilePath(string appVersion)
+        {
+            return string.Format("~/Installer/Db/{0}/Upgrade/upgrade.sql", appVersion);
+        }
+
+        #endregion
+
     }
 
     public class InstallerResult

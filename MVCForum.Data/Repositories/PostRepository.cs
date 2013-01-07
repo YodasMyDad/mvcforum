@@ -54,7 +54,7 @@ namespace MVCForum.Data.Repositories
         {
             return _context.Post
                 .Where(x => x.User.Id == memberId)
-                .OrderBy(x => x.DateCreated)
+                .OrderByDescending(x => x.DateCreated)
                 .Take(amountToTake)
                 .ToList();
         }

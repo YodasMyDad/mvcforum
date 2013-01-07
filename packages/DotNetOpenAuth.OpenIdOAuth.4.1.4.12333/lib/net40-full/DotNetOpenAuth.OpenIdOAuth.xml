@@ -1,0 +1,165 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DotNetOpenAuth.OpenIdOAuth</name>
+    </assembly>
+    <members>
+        <member name="T:DotNetOpenAuth.OAuth.ChannelElements.ICombinedOpenIdProviderTokenManager">
+            <summary>
+            An interface that providers that play a dual role as OpenID Provider
+            and OAuth Service Provider should implement on their token manager classes.
+            </summary>
+            <remarks>
+            This interface should be implemented by the same class that implements
+            <see cref="T:DotNetOpenAuth.OAuth.ChannelElements.ITokenManager"/> in order to enable the OpenID+OAuth extension.
+            </remarks>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth.ChannelElements.IOpenIdOAuthTokenManager">
+            <summary>
+            Additional methods an <see cref="T:DotNetOpenAuth.OAuth.ChannelElements.ITokenManager"/> implementing class
+            may implement to support the OpenID+OAuth extension.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth.ChannelElements.IOpenIdOAuthTokenManager.StoreOpenIdAuthorizedRequestToken(System.String,DotNetOpenAuth.OpenId.Extensions.OAuth.AuthorizationApprovedResponse)">
+            <summary>
+            Stores a new request token obtained over an OpenID request.
+            </summary>
+            <param name="consumerKey">The consumer key.</param>
+            <param name="authorization">The authorization message carrying the request token and authorized access scope.</param>
+            <remarks>
+            <para>The token secret is the empty string.</para>
+            <para>Tokens stored by this method should be short-lived to mitigate 
+            possible security threats.  Their lifetime should be sufficient for the
+            relying party to receive the positive authentication assertion and immediately
+            send a follow-up request for the access token.</para>
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth.ChannelElements.ICombinedOpenIdProviderTokenManager.GetConsumerKey(DotNetOpenAuth.OpenId.Realm)">
+            <summary>
+            Gets the OAuth consumer key for a given OpenID relying party realm.
+            </summary>
+            <param name="realm">The relying party's OpenID realm.</param>
+            <returns>The OAuth consumer key for a given OpenID realm.</returns>
+            <para>This is a security-critical function.  Since OpenID requests 
+            and OAuth extensions for those requests can be formulated by ANYONE 
+            (no signing is required by the relying party), and since the response to 
+            the authentication will include access the user is granted to the 
+            relying party who CLAIMS to be from some realm, it is of paramount 
+            importance that the realm is recognized as belonging to the consumer 
+            key by the host service provider in order to protect against phishers.</para>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth.ServiceProviderOpenIdProvider">
+            <summary>
+            A web application that allows access via OAuth and can respond to OpenID+OAuth requests.
+            </summary>
+            <remarks>
+            <para>The Service Provider’s documentation should include:</para>
+            <list>
+            <item>The URLs (Request URLs) the Consumer will use when making OAuth requests, and the HTTP methods (i.e. GET, POST, etc.) used in the Request Token URL and Access Token URL.</item>
+            <item>Signature methods supported by the Service Provider.</item>
+            <item>Any additional request parameters that the Service Provider requires in order to obtain a Token. Service Provider specific parameters MUST NOT begin with oauth_.</item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth.ServiceProviderOpenIdProvider.#ctor(DotNetOpenAuth.OAuth.ServiceProviderDescription,DotNetOpenAuth.OAuth.ChannelElements.IServiceProviderTokenManager)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth.ServiceProviderOpenIdProvider"/> class.
+            </summary>
+            <param name="serviceDescription">The endpoints and behavior on the Service Provider.</param>
+            <param name="tokenManager">The host's method of storing and recalling tokens and secrets.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth.ServiceProviderOpenIdProvider.#ctor(DotNetOpenAuth.OAuth.ServiceProviderDescription,DotNetOpenAuth.OAuth.ChannelElements.IServiceProviderTokenManager,DotNetOpenAuth.OAuth.ChannelElements.OAuthServiceProviderMessageFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth.ServiceProviderOpenIdProvider"/> class.
+            </summary>
+            <param name="serviceDescription">The service description.</param>
+            <param name="tokenManager">The token manager.</param>
+            <param name="messageTypeProvider">The message type provider.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth.ServiceProviderOpenIdProvider.#ctor(DotNetOpenAuth.OAuth.ServiceProviderDescription,DotNetOpenAuth.OAuth.ChannelElements.IServiceProviderTokenManager,DotNetOpenAuth.Messaging.Bindings.INonceStore)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth.ServiceProviderOpenIdProvider"/> class.
+            </summary>
+            <param name="serviceDescription">The service description.</param>
+            <param name="tokenManager">The token manager.</param>
+            <param name="nonceStore">The nonce store.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth.ServiceProviderOpenIdProvider.#ctor(DotNetOpenAuth.OAuth.ServiceProviderDescription,DotNetOpenAuth.OAuth.ChannelElements.IServiceProviderTokenManager,DotNetOpenAuth.Messaging.Bindings.INonceStore,DotNetOpenAuth.OAuth.ChannelElements.OAuthServiceProviderMessageFactory)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth.ServiceProviderOpenIdProvider"/> class.
+            </summary>
+            <param name="serviceDescription">The service description.</param>
+            <param name="tokenManager">The token manager.</param>
+            <param name="nonceStore">The nonce store.</param>
+            <param name="messageTypeProvider">The message type provider.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth.ServiceProviderOpenIdProvider.ReadAuthorizationRequest(DotNetOpenAuth.OpenId.Provider.IHostProcessedRequest)">
+            <summary>
+            Gets the OAuth authorization request included with an OpenID authentication
+            request, if there is one.
+            </summary>
+            <param name="openIdRequest">The OpenID authentication request.</param>
+            <returns>
+            The scope of access the relying party is requesting, or null if no OAuth request
+            is present.
+            </returns>
+            <remarks>
+            <para>Call this method rather than simply extracting the OAuth extension
+            out from the authentication request directly to ensure that the additional
+            security measures that are required are taken.</para>
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth.ServiceProviderOpenIdProvider.AttachAuthorizationResponse(DotNetOpenAuth.OpenId.Provider.IHostProcessedRequest,System.String,System.String)">
+            <summary>
+            Attaches the authorization response to an OpenID authentication response.
+            </summary>
+            <param name="openIdAuthenticationRequest">The OpenID authentication request.</param>
+            <param name="consumerKey">The consumer key.  Must be <c>null</c> if and only if <paramref name="scope"/> is null.</param>
+            <param name="scope">The approved access scope.  Use <c>null</c> to indicate no access was granted.  The empty string will be interpreted as some default level of access is granted.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth.ServiceProviderOpenIdProvider.AttachAuthorizationResponse(DotNetOpenAuth.OpenId.Provider.IHostProcessedRequest,System.String)">
+            <summary>
+            Attaches the authorization response to an OpenID authentication response.
+            </summary>
+            <param name="openIdAuthenticationRequest">The OpenID authentication request.</param>
+            <param name="scope">The approved access scope.  Use <c>null</c> to indicate no access was granted.  The empty string will be interpreted as some default level of access is granted.</param>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth.WebConsumerOpenIdRelyingParty">
+            <summary>
+            A website or application that uses OAuth to access the Service Provider on behalf of the User
+            and can attach OAuth requests to outbound OpenID authentication requests.
+            </summary>
+            <remarks>
+            The methods on this class are thread-safe.  Provided the properties are set and not changed
+            afterward, a single instance of this class may be used by an entire web application safely.
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth.WebConsumerOpenIdRelyingParty.#ctor(DotNetOpenAuth.OAuth.ServiceProviderDescription,DotNetOpenAuth.OAuth.ChannelElements.IConsumerTokenManager)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth.WebConsumerOpenIdRelyingParty"/> class.
+            </summary>
+            <param name="serviceDescription">The endpoints and behavior of the Service Provider.</param>
+            <param name="tokenManager">The host's method of storing and recalling tokens and secrets.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth.WebConsumerOpenIdRelyingParty.AttachAuthorizationRequest(DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest,System.String)">
+            <summary>
+            Attaches an OAuth authorization request to an outgoing OpenID authentication request.
+            </summary>
+            <param name="openIdAuthenticationRequest">The OpenID authentication request.</param>
+            <param name="scope">The scope of access that is requested of the service provider.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth.WebConsumerOpenIdRelyingParty.ProcessUserAuthorization(DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationResponse)">
+            <summary>
+            Processes an incoming authorization-granted message from an SP and obtains an access token.
+            </summary>
+            <param name="openIdAuthenticationResponse">The OpenID authentication response that may be carrying an authorized request token.</param>
+            <returns>
+            The access token, or null if OAuth authorization was denied by the user or service provider.
+            </returns>
+            <remarks>
+            The access token, if granted, is automatically stored in the <see cref="P:DotNetOpenAuth.OAuth.ConsumerBase.TokenManager"/>.
+            The token manager instance must implement <see cref="T:DotNetOpenAuth.OAuth.ChannelElements.IOpenIdOAuthTokenManager"/>.
+            </remarks>
+        </member>
+    </members>
+</doc>
