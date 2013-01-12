@@ -304,6 +304,11 @@ namespace MVCForum.Utilities
         /// <returns></returns>
         public static string ScrubHtml(string html)
         {
+            if (string.IsNullOrEmpty(html))
+            {
+                return html;
+            }
+
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
 
