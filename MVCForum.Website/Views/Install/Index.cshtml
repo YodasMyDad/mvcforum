@@ -8,13 +8,13 @@
     <p>You are about to install MVC Forum @HttpContext.Current.Application["Version"].ToString(). If this is a first time install the installer assumes you have a few things done already, 
         but if you have installed via the Web Platform Installer then you will be fine to continue.</p>
 
-    <h3>First Time Install Checklist</h3>
+    <h3>If First Time Install - See Checklist</h3>
 
     <ol>
         <li>Make sure you have a blank database ready</li>
         <li>Make sure the connection string in the web.config is updated to point to this new database</li>
         <li>Make sure the database user has the correct permissions to create new tables</li>
     </ol>
-
-    <p class="submit-holder"><a href="@Url.Action("CreateDb", "Install")" class="btn btn-large">Start Install...</a></p>
+    
+    <p class="submit-holder"><a href="@Url.Action("CreateDb", "Install")" class="btn btn-large">Start Install/Update...</a></p>
 </div>
