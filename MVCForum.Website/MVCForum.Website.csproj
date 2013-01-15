@@ -564,6 +564,7 @@
     <Content Include="Scripts\bbeditor\jquery.sceditor.min.js" />
     <Content Include="Scripts\bbeditor\jquery.sceditor.min.png" />
     <Content Include="Scripts\jquery-1.8.0.min.js" />
+    <Content Include="Areas\Admin\Views\Settings\TestEmail.cshtml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />

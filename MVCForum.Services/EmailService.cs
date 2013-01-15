@@ -86,7 +86,7 @@ namespace MVCForum.Services
                         mySmtpClient.EnableSsl = (bool)smtpEnableSsl;
                     }
 
-                    if(smtpPort != null)
+                    if (!string.IsNullOrEmpty(smtpPort))
                     {
                         mySmtpClient.Port = Convert.ToInt32(smtpPort);
                     }

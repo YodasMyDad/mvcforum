@@ -115,7 +115,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("SMTP Server Password")]
         public string SMTPPassword { get; set; }
 
-        [DisplayName("SMTP Port - If different from 25")]
+        [DisplayName("Optional: SMTP Port")]
         public int? SMTPPort { get; set; }
 
         [DisplayName("SMTP SSL - Enable SSL for sending via gmail etc...")]

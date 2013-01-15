@@ -1,29 +1,28 @@
 ﻿@model MVCForum.Website.Areas.Admin.ViewModels.EditSettingsViewModel
-
 @{
     ViewBag.Title = "Settings";
 }
 
 @section AdminHeader
 {
-        @(
-        Bundle.JavaScript()
+    @(
+ Bundle.JavaScript()
             .Add("~/Scripts/jquery.validate.min.js")
             .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
-            
+
             .MvcRender("/scripts/cache/validate-combined_#.js")
-    )  
+    )
 }
 
 @using (Html.BeginForm("Index", "Settings", FormMethod.Post, new { @class = "form-horizontal" }))
 {
-        @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.Id)
 
 
-        @Html.ValidationSummary(false)
+    @Html.ValidationSummary(false)
 
-        <div class="tabbable tabs-below">
-            
+    <div class="tabbable tabs-below">
+
         <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a data-toggle="tab" href="#general">General</a></li>
             <li><a data-toggle="tab" href="#points">Points</a></li>
@@ -34,10 +33,10 @@
             <li><a data-toggle="tab" href="#spam">Spam</a></li>
             <li><a data-toggle="tab" href="#social">Social</a></li>
         </ul>
- 
+
         <div class="tab-content">
             <div class="tab-pane active" id="general">
-        
+
                 <div class="editor-label">
                     @Html.LabelFor(model => model.ForumName)
                 </div>
@@ -85,7 +84,7 @@
                     @Html.LabelFor(model => model.EnableMarkAsSolution)
                     @Html.ValidationMessageFor(model => model.EnableMarkAsSolution)
                 </div>
-                
+
                 <div class="editor-field n3ocheckboxfield">
                     @Html.EditorFor(model => model.EnablePolls)
                     @Html.LabelFor(model => model.EnablePolls)
@@ -137,7 +136,7 @@
                     @Html.EditorFor(model => model.PostsPerPage)
                     @Html.ValidationMessageFor(model => model.PostsPerPage)
                 </div>
-                
+
 
                 <div class="editor-label">
                     @Html.LabelFor(model => model.ActivitiesPerPage)
@@ -179,7 +178,7 @@
 
             </div>
             <div class="tab-pane" id="points">
-                
+
                 <div class="editor-label">
                     @Html.LabelFor(model => model.EnablePoints)
                 </div>
@@ -219,7 +218,7 @@
                     @Html.EditorFor(model => model.PointsDeductedNagativeVote)
                     @Html.ValidationMessageFor(model => model.PointsDeductedNagativeVote)
                 </div>
-                
+
                 <div class="editor-label">
                     @Html.LabelFor(model => model.PointsAddedForSolution)
                 </div>
@@ -230,7 +229,11 @@
 
             </div>
             <div class="tab-pane" id="email">
-        
+
+                <div class="submit-holder">
+                    <p>Complete the settings below and save, then send a test email using the button below</p>
+                    <p><a href="@Url.Action("TestEmail")" class="btn btn-large btn-success">Test Email Settings</a></p>
+                </div>
                 <div class="editor-label">
                     @Html.LabelFor(model => model.AdminEmailAddress)
                 </div>
@@ -270,7 +273,7 @@
                     @Html.EditorFor(model => model.SMTPPassword)
                     @Html.ValidationMessageFor(model => model.SMTPPassword)
                 </div>
-                
+
                 <div class="editor-label">
                     @Html.LabelFor(model => model.SMTPPort)
                 </div>
@@ -278,7 +281,7 @@
                     @Html.EditorFor(model => model.SMTPPort)
                     @Html.ValidationMessageFor(model => model.SMTPPort)
                 </div>
-                
+
                 <div class="editor-label">
                     @Html.LabelFor(model => model.SMTPEnableSSL)
                 </div>
@@ -286,9 +289,10 @@
                     @Html.CheckBoxFor(model => model.SMTPEnableSSL)
                     @Html.ValidationMessageFor(model => model.SMTPEnableSSL)
                 </div>
-
+                <p><i><strong>IMPORTANT:</strong> Only port 25 works in medium trust environments. You will need to comment out the medium trust entry in the web.config if you want to 
+                        use any other port number.</i></p>
             </div>
-            
+
             <div class="tab-pane" id="theme">
                 <div class="editor-label">
                     @Html.LabelFor(model => model.Theme)
@@ -298,7 +302,7 @@
                     @Html.ValidationMessageFor(model => model.Theme)
                 </div>
             </div>
-            
+
             <div class="tab-pane" id="role">
                 <div class="editor-label">
                     @Html.LabelFor(model => model.NewMemberStartingRole)
@@ -308,7 +312,7 @@
                     @Html.ValidationMessageFor(model => model.NewMemberStartingRole)
                 </div>
             </div>
-            
+
             <div class="tab-pane" id="language">
                 <div class="editor-label">
                     @Html.LabelFor(model => model.DefaultLanguage)
@@ -318,7 +322,7 @@
                     @Html.ValidationMessageFor(model => model.DefaultLanguage)
                 </div>
             </div>
-            
+
             <div class="tab-pane" id="spam">
                 <div class="editor-label">
                     @Html.LabelFor(model => model.EnableAkisment)
@@ -327,7 +331,7 @@
                     @Html.EditorFor(model => model.EnableAkisment)
                     @Html.ValidationMessageFor(model => model.EnableAkisment)
                 </div>
-                
+
                 <div class="editor-label">
                     @Html.LabelFor(model => model.AkismentKey)
                 </div>
@@ -335,7 +339,7 @@
                     @Html.EditorFor(model => model.AkismentKey)
                     @Html.ValidationMessageFor(model => model.AkismentKey)
                 </div>
-                
+
                 <div class="editor-label">
                     @Html.LabelFor(model => model.SpamQuestion)
                 </div>
@@ -343,7 +347,7 @@
                     @Html.EditorFor(model => model.SpamQuestion)
                     @Html.ValidationMessageFor(model => model.SpamQuestion)
                 </div>
-                
+
                 <div class="editor-label">
                     @Html.LabelFor(model => model.SpamAnswer)
                 </div>
@@ -352,7 +356,7 @@
                     @Html.ValidationMessageFor(model => model.SpamAnswer)
                 </div>
             </div>
-            
+
             <div class="tab-pane" id="social">
                 <div class="editor-label">
                     @Html.LabelFor(model => model.EnableSocialLogins)
@@ -363,13 +367,13 @@
                 </div>
             </div>
 
-        </div> 
-
         </div>
 
-        <div class="submit-holder">
-            <input type="submit" class="btn btn-large btn-success" value="Save Settings" />
-        </div>
+    </div>
+
+    <div class="submit-holder">
+        <input type="submit" class="btn btn-large btn-success" value="Save Settings" />
+    </div>
 
 }
 

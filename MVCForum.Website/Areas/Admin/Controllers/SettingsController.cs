@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
+using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Utilities;
@@ -16,15 +18,17 @@ namespace MVCForum.Website.Areas.Admin.Controllers
     public class SettingsController : BaseAdminController
     {
         private readonly IRoleService _roleService;
+        private readonly IEmailService _emailService;
 
         public SettingsController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
             ILocalizationService localizationService,
             IMembershipService membershipService,
             IRoleService roleService,
-            ISettingsService settingsService)
+            ISettingsService settingsService, IEmailService emailService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
             _roleService = roleService;
+            _emailService = emailService;
         }
 
         public ActionResult Index()
@@ -95,6 +99,34 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 }
             }
             return View(settingsViewModel);
+        }
+
+        public ActionResult TestEmail()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult SendTestEmail()
+        {
+            var sb = new StringBuilder();
+            sb.AppendFormat("<p>{0}</p>", string.Concat("This is a test email from ", SettingsService.GetSettings().ForumName));
+            var email = new Email
+                {
+                    Body = sb.ToString(),
+                    EmailFrom = SettingsService.GetSettings().AdminEmailAddress,
+                    EmailTo = SettingsService.GetSettings().AdminEmailAddress,
+                    NameTo = "Email Test Admin",
+                    Subject = string.Concat("Email Test From", SettingsService.GetSettings().ForumName)
+                };
+            _emailService.SendMail(email);
+
+            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            {
+                Message = "Test Email Sent",
+                MessageType = GenericMessages.success
+            };
+            return RedirectToAction("TestEmail");
         }
     }
 }

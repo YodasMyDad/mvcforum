@@ -1,0 +1,14 @@
+﻿@{
+    ViewBag.Title = "Send Test Email";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("SendTestEmail", "Settings", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.ValidationSummary(false)
+    <p>Click the button below to send the test email</p>
+    <div class="submit-holder">
+        <input type="submit" class="btn btn-large btn-success" value="Send Test Email" />
+    </div>
+}
