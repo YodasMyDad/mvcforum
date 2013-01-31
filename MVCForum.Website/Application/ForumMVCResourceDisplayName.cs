@@ -22,7 +22,7 @@ namespace MVCForum.Website.Application
                 get
                 {
                     var localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
-                    _resourceValue = localizationService.GetResourceString(localizationService.CurrentLanguage, ResourceKey.Trim());
+                    _resourceValue = localizationService.GetResourceString(ResourceKey.Trim());
                     return _resourceValue;
                 }
             }

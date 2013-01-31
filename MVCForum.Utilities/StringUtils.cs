@@ -286,17 +286,6 @@ namespace MVCForum.Utilities
             return ScrubHtml(html);
         }
 
-        private const string _nlReplace = "--newline--";
-        private static string SwapLineBreaks(string lines)
-        {
-            return lines.Replace(Environment.NewLine, _nlReplace);
-        }
-        private static string SwapLineBreaksBack(string lines)
-        {
-            return lines.Replace(_nlReplace, Environment.NewLine);
-        }
-
-
         /// <summary>
         /// Takes in HTML and returns santized Html/string
         /// </summary>
