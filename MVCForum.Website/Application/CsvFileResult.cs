@@ -16,7 +16,8 @@ namespace MVCForum.Website.Application
             if (!string.IsNullOrEmpty(Body))
             {
                 // Write result to output-stream
-                var byteArray = Encoding.Default.GetBytes(Body);
+                //var byteArray = Encoding.Default.GetBytes(Body);
+                var byteArray = Encoding.Unicode.GetBytes(Body);
                 response.OutputStream.Write(byteArray, 0, byteArray.GetLength(0));
             }
         }

@@ -75,7 +75,7 @@ namespace MVCForum.Data.Repositories
                                         resKey => resKey.Id,
                                         (strRes, resKey) =>
                                         new {LocaleStringResource = strRes, LocaleResourceKey = resKey})                                        
-                                  .ToDictionary(arg => arg.LocaleResourceKey.Name, arg => arg.LocaleStringResource.ResourceValue);
+                                  .ToDictionary(arg => arg.LocaleResourceKey.Name.Trim(), arg => arg.LocaleStringResource.ResourceValue);
 
             return results;
         }
