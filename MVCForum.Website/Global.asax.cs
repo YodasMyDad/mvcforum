@@ -183,8 +183,11 @@ namespace MVCForum.Website
                     //this can happen for first user's request
                     if (ci == null)
                     {
-                        ci = new CultureInfo(SettingsService.GetSettings().DefaultLanguage.LanguageCulture);
-                        this.Session["Culture"] = ci;
+                        using (UnitOfWorkManager.NewUnitOfWork())
+                        {
+                            ci = new CultureInfo(SettingsService.GetSettings().DefaultLanguage.LanguageCulture);
+                            this.Session["Culture"] = ci;   
+                        }
                     }
                     //Finally setting culture for each request
                     Thread.CurrentThread.CurrentUICulture = ci;
