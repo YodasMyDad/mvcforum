@@ -61,7 +61,7 @@
     </Reference>
     <Reference Include="Facebook, Version=6.0.10.0, Culture=neutral, PublicKeyToken=58cb4f2111d1e6de, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Facebook.6.1.2\lib\net40-client\Facebook.dll</HintPath>
+      <HintPath>..\packages\Facebook.6.1.4\lib\net40-client\Facebook.dll</HintPath>
     </Reference>
     <Reference Include="Iesi.Collections">
       <HintPath>..\packages\YUICompressor.NET.2.0.0.0\lib\NET20\Iesi.Collections.dll</HintPath>
@@ -565,13 +565,14 @@
     <Content Include="Scripts\bbeditor\jquery.sceditor.min.png" />
     <Content Include="Scripts\jquery-1.8.0.min.js" />
     <Content Include="Areas\Admin\Views\Settings\TestEmail.cshtml" />
-    <None Include="Scripts\jquery-1.8.2.intellisense.js" />
-    <Content Include="Scripts\jquery-1.8.2.js" />
-    <Content Include="Scripts\jquery-1.8.2.min.js" />
+    <None Include="Scripts\jquery-1.9.0.intellisense.js" />
+    <Content Include="Scripts\jquery-1.9.0.js" />
+    <Content Include="Scripts\jquery-1.9.0.min.js" />
     <Content Include="Scripts\jquery-ui-1.8.21.custom.min.js" />
     <Content Include="Scripts\jquery-ui-1.9.0.js" />
     <Content Include="Scripts\jquery-ui-1.9.0.min.js" />
     <Content Include="Scripts\jquery.placeholder.min.js" />
+    <Content Include="Scripts\jquery-1.9.0.min.map" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
