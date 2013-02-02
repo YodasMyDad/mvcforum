@@ -1,3 +1,9 @@
+#### NOTE #### 
+
+Db & Upgrade scripts that you can paste directly into SQL Express are found in MVCforum.Website project
+
+Installer > Db > 'Then Choose version number'
+
 ==============================
 ============ v1.0 ============
 ==============================
@@ -85,19 +91,20 @@ Added to MembershipUser
 Added to Permission (Data)
 ---- Vote In Polls
 
-Language Strings To Add
-Topic.Label.TopicTitle = Title
-Poll.Button.Create = Add A Poll To This Topic
-Poll.Button.Remove = Remove Poll From Topic
-Poll.Placeholder.TypeAnswerHere = Type A Poll Answer Here
-Topic.OptionsHeading = Topic Options
-Poll.Button.Vote = Submit Vote
-Error.WrongAnswerRegistration = There was an error with your answer, please try again
-Members.LoginOrText = Or
-Facebook.Error.EnabledButNotAddedKeys = You have enabled Facebook login but not added your AppId or Secret key to the web.config
-Members.Profile.IsSocialAccount = Social Account
+Added Language Strings
+---- Topic.Label.TopicTitle = Title
+---- Poll.Button.Create = Add A Poll To This Topic
+---- Poll.Button.Remove = Remove Poll From Topic
+---- Poll.Placeholder.TypeAnswerHere = Type A Poll Answer Here
+---- Topic.OptionsHeading = Topic Options
+---- Poll.Button.Vote = Submit Vote
+---- Error.WrongAnswerRegistration = There was an error with your answer, please try again
+---- Members.LoginOrText = Or
+---- Facebook.Error.EnabledButNotAddedKeys = You have enabled Facebook login but not added your AppId or Secret key to the web.config
+---- Members.Profile.IsSocialAccount = Social Account
 
 Web.config Changes
+
 <add key="FacebookAppId" value=""/>
 <add key="FacebookAppSecret" value="" />
 <globalization fileEncoding="utf-8" requestEncoding="utf-8" responseEncoding="utf-8" />
@@ -111,3 +118,23 @@ Web.config Changes
 <httpRuntime requestValidationMode="2.0"
              requestPathInvalidCharacters="*,:,&amp;,\"
              relaxedUrlToFileSystemMapping="true" maxRequestPathLength="260" maxQueryStringLength="2048" />
+
+==============================
+============ v1.2 ============
+==============================
+
+---- Added Language Strings
+---- Date.JustNow = Just now
+---- Date.OneMinuteAgo = 1 minute ago
+---- Date.MinutesAgo = {0} minutes ago
+---- Date.OneHourAgo = 1 hour ago
+---- Date.HoursAgo = {0} hours ago
+---- Date.Yesterday = yesterday
+---- Date.DaysAgo = {0} days ago
+---- Date.WeeksAgo = {0} weeks ago
+---- Side.Search = Search
+---- Search.NoResults = Sorry no results found
+
+==============================
+============ v1.3 ============
+==============================
