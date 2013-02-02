@@ -12,4 +12,4 @@ Db & Upgrade scripts that you can paste directly into SQL Express are found in M
 
 Installer > Db > 'Then Choose version number'
 
-Testing v1.3 branch
+Still testing it 
