@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Utilities;
+using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.Installer;
 
@@ -45,8 +46,8 @@ namespace MVCForum.Website.Controllers
 
             // Get the versions so we can check if its a stright install
             // Or if its an upgrade
-            var previousVersion = PreviousVersionNo();
-            var currentVersion = GetCurrentVersionNo();
+            var previousVersion = AppHelpers.PreviousVersionNo();
+            var currentVersion = AppHelpers.GetCurrentVersionNo();
 
             // Create an installer result so we know everything was successful
             var installerResult = new InstallerResult{Result = false};
@@ -143,36 +144,14 @@ namespace MVCForum.Website.Controllers
         {
             //Installer for new versions and first startup
             // Store the value for use in the app
-            var currentVersionNo = GetCurrentVersionNo();
+            var currentVersionNo = AppHelpers.GetCurrentVersionNo();
 
             // Now check the version in the web.config
-            var previousVersionNo = PreviousVersionNo();
+            var previousVersionNo = AppHelpers.PreviousVersionNo();
 
             // If the versions are different kick the installer into play
             return (currentVersionNo != previousVersionNo);
         }
 
-        /// <summary>
-        /// Get the current version number of the app
-        /// </summary>
-        /// <returns></returns>
-        private static string GetCurrentVersionNo()
-        {
-            //Installer for new versions and first startup
-            // Get the current version
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-
-            // Store the value for use in the app
-            return string.Format("{0}.{1}", version.Major, version.Minor);
-        }
-
-        /// <summary>
-        /// Get the previous version number if there is one from the web.config
-        /// </summary>
-        /// <returns></returns>
-        private static string PreviousVersionNo()
-        {
-            return ConfigUtils.GetAppSetting("MVCForumVersion");
-        }
     }
 }

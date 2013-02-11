@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
@@ -33,6 +34,29 @@ namespace MVCForum.Website.Application
                 throw new ApplicationException("Theme folder not found");
             }
             return folders;
+        }
+
+        #endregion
+
+        #region Version Info
+
+        public static string GetCurrentVersionNo()
+        {
+            //Installer for new versions and first startup
+            // Get the current version
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+
+            // Store the value for use in the app
+            return string.Format("{0}.{1}", version.Major, version.Minor);
+        }
+
+        /// <summary>
+        /// Get the previous version number if there is one from the web.config
+        /// </summary>
+        /// <returns></returns>
+        public static string PreviousVersionNo()
+        {
+            return ConfigUtils.GetAppSetting("MVCForumVersion");
         }
 
         #endregion

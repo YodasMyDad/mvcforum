@@ -9,7 +9,7 @@
 {
     <script type="text/javascript">
         $(function () {
-                $.post("/Members/GetMemberDiscussions",
+            $.post(app_base + "Members/GetMemberDiscussions",
                 { "Id": '@Model.User.Id' },
                 function (data) {
                     $(".memberdiscussions").html(data);
@@ -21,7 +21,7 @@
             timeBadgeViewModel.Id = '@Model.User.Id';
             var strung = JSON.stringify(timeBadgeViewModel);
             $.ajax({
-                url: '/Badge/Time', type: 'POST', dataType: 'json', data: strung,
+                url: app_base + 'Badge/Time', type: 'POST', dataType: 'json', data: strung,
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
 
@@ -102,7 +102,7 @@
                                 @foreach (var badge in Model.User.Badges)
                                 {
                                     <li>
-                                    <img src="@AppHelpers.ReturnBadgeUrl(badge.Image)" alt="@badge.Name" title="@badge.Name"/>  @Html.Raw(badge.DisplayName)
+                                        <img src="@Url.Content(AppHelpers.ReturnBadgeUrl(badge.Image))" alt="@badge.Name" title="@badge.Name"/>  @Html.Raw(badge.DisplayName)
                                     </li>
                                 }
                                 </ul>
