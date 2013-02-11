@@ -17,6 +17,9 @@
     <thead>
         <tr>
             <th>
+                &nbsp;
+            </th>
+            <th>
                 <strong>Badge Name </strong>
             </th>
             <th>
@@ -29,8 +32,10 @@
         {
 
             <tr>
-                <td class="badgevalue">
-                    <img src="@AppHelpers.ReturnBadgeUrl(badge.Image)" alt="Badge" title="@badge.Name" width="10px"/>
+                <td>
+                    <img src="@Url.Content(AppHelpers.ReturnBadgeUrl(badge.Image))" alt="Badge" title="@badge.Name" width="40"/>
+                </td>
+                <td class="badgevalue">                    
                     @Html.Raw(badge.DisplayName)
                 </td>
                 <td class="badgevalue">

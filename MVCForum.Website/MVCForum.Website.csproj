@@ -74,11 +74,13 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="SquishIt.Framework">
-      <HintPath>..\packages\SquishIt.0.9.2-beta3\lib\SquishIt.Framework.dll</HintPath>
+    <Reference Include="SquishIt.Framework, Version=0.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SquishIt.0.9.2\lib\SquishIt.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="SquishIt.Mvc">
-      <HintPath>..\packages\SquishIt.Mvc.0.9.2-beta3\lib\SquishIt.Mvc.dll</HintPath>
+    <Reference Include="SquishIt.Mvc, Version=0.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SquishIt.Mvc.0.9.2\lib\SquishIt.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -480,18 +482,8 @@
     <Content Include="Content\Images\mail-add.png" />
     <Content Include="Content\Images\mail-delete.png" />
     <Content Include="Content\Images\rss-icon.png" />
-    <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
-    <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
-    <Content Include="Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
-    <Content Include="Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
-    <Content Include="Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
-    <Content Include="Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
-    <Content Include="Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
-    <Content Include="Content\themes\base\images\ui-icons_222222_256x240.png" />
-    <Content Include="Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
-    <Content Include="Content\themes\base\images\ui-icons_454545_256x240.png" />
-    <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
-    <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\images\animated-overlay.gif" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
     <Content Include="Content\themes\base\jquery-ui.css" />
     <Content Include="Content\themes\base\jquery.ui.accordion.css" />
     <Content Include="Content\themes\base\jquery.ui.all.css" />
@@ -510,6 +502,7 @@
     <Content Include="Content\themes\base\jquery.ui.tabs.css" />
     <Content Include="Content\themes\base\jquery.ui.theme.css" />
     <Content Include="Content\themes\base\jquery.ui.tooltip.css" />
+    <Content Include="Content\themes\base\minified\images\animated-overlay.gif" />
     <Content Include="Content\themes\base\minified\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\minified\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\minified\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -565,12 +558,13 @@
     <Content Include="Scripts\bbeditor\jquery.sceditor.min.png" />
     <Content Include="Scripts\jquery-1.8.0.min.js" />
     <Content Include="Areas\Admin\Views\Settings\TestEmail.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_GetCurrentVersion.cshtml" />
     <None Include="Scripts\jquery-1.9.0.intellisense.js" />
     <Content Include="Scripts\jquery-1.9.0.js" />
     <Content Include="Scripts\jquery-1.9.0.min.js" />
+    <Content Include="Scripts\jquery-ui-1.10.0.js" />
+    <Content Include="Scripts\jquery-ui-1.10.0.min.js" />
     <Content Include="Scripts\jquery-ui-1.8.21.custom.min.js" />
-    <Content Include="Scripts\jquery-ui-1.9.0.js" />
-    <Content Include="Scripts\jquery-ui-1.9.0.min.js" />
     <Content Include="Scripts\jquery.placeholder.min.js" />
     <Content Include="Scripts\jquery-1.9.0.min.map" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />

@@ -11,7 +11,7 @@
         {
             <div class="publicbadgeline row">
                 <div class="publicbadge span1">
-                    <img src="@AppHelpers.ReturnBadgeUrl(badge.Image)" alt="@badge.Name" />
+                    <img src="@Url.Content(AppHelpers.ReturnBadgeUrl(badge.Image))" alt="@badge.Name" />
                 </div>
                 <div class="publicbadgedetails span8">
                     <p class="publicbadgename">@Html.Raw(badge.DisplayName)</p>

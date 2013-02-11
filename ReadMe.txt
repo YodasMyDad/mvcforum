@@ -11,3 +11,5 @@
 Db & Upgrade scripts that you can paste directly into SQL Express are found in MVCforum.Website project
 
 Installer > Db > 'Then Choose version number'
+
+Still testing it 

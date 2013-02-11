@@ -55,10 +55,10 @@ select {  }
 .n3ocheckboxfield input { float: left;}
 
 /*--- Ajax Spinner ---*/
-.ajaxspinner { display: block;width:16px;height:16px;background: transparent url('../Images/arrow-spinner-blue.gif') no-repeat;text-transform: capitalize;text-indent: -9999px;}
+.ajaxspinner { display: block;width:16px;height:16px;background: transparent url(../../../Content/Images/arrow-spinner-blue.gif) no-repeat;text-transform: capitalize;text-indent: -9999px;}
 
 /*submit buttons*/
 .submit-holder { padding: 10px 0;}
 
 /*--- Logo at the top ---*/
-.brand { padding: 4px 0 0 0; margin: 10px auto 10px auto;width: 270px;height: 52px;display: block;text-transform: capitalize;text-indent: -9999px;background: transparent url('/installer/content/images/logo.png') no-repeat;}
+.brand { padding: 4px 0 0 0; margin: 10px auto 10px auto;width: 270px;height: 52px;display: block;text-transform: capitalize;text-indent: -9999px;background: transparent url('../Images/logo.png') no-repeat;}

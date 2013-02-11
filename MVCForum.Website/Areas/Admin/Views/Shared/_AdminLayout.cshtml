@@ -13,7 +13,6 @@
             .Add("~/Content/admin/bootstrap.css")
             .Add("~/Content/admin/Admin.css")
             .Add("~/Scripts/fancybox/jquery.fancybox.css")
-
             .MvcRender("~/content/cache/combinedadmin_#.css")
     )
 
@@ -41,7 +40,6 @@
         .Add("~/Scripts/admin/bootstrap-tab.js")
         .Add("~/Scripts/fancybox/jquery.fancybox.js")
         .Add("~/Scripts/admin/admin.js")
-
         .MvcRender("~/scripts/cache/combinedadmin_#.js")
     )
 
@@ -59,7 +57,7 @@
                 </a>
                 <div class="nav-collapse">
                     <ul class="nav">
-                        <li><a href="/">Main Site</a></li>
+                        <li><a href="@Url.Content("~/")">Main Site</a></li>
                         <li>@Html.AdminActionLink("Admin Home", "Index", "Admin")</li>
                     </ul>
                 </div>
@@ -69,7 +67,7 @@
 
     <div class="container">
 
-        @Html.Partial("_GenericMessage")
+        @Html.Partial("_GenericMessage")       
 
         <div class="row">
             @if (User.Identity.IsAuthenticated)
@@ -143,6 +141,7 @@
 
                         </ul>
                     </div>
+                    @Html.Partial("_GetCurrentVersion")
                 </div>
             }
             <div class="span10 mainadminbody">

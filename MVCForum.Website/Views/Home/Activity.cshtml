@@ -41,7 +41,7 @@
         var badgeActivity = activity as BadgeActivity;
 
         <div class="activitybadge span1">
-            <img src="@Html.Raw(AppHelpers.ReturnBadgeUrl(badgeActivity.Badge.Image))" alt="@badgeActivity.Badge.DisplayName"/>
+            <img src="@Url.Content(AppHelpers.ReturnBadgeUrl(badgeActivity.Badge.Image))" alt="@badgeActivity.Badge.DisplayName"/>
         </div>
         
         <div class="activityinfo span8">
