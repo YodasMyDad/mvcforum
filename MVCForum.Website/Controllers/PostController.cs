@@ -220,7 +220,7 @@ namespace MVCForum.Website.Controllers
                             _luceneService.AddUpdate(_luceneService.MapToModel(post));
                         }
 
-                        return Redirect(string.Concat("~", topic.NiceUrl));
+                        return Redirect(topic.NiceUrl);
                     }
                     catch (Exception ex)
                     {
@@ -315,7 +315,7 @@ namespace MVCForum.Website.Controllers
                 MessageType = GenericMessages.success
             };
 
-            return Redirect(string.Concat("~", topic.NiceUrl));
+            return Redirect(topic.NiceUrl);
         }
 
         private ActionResult NoPermission(Topic topic)
@@ -326,7 +326,7 @@ namespace MVCForum.Website.Controllers
                 Message = LocalizationService.GetResourceString("Errors.NoPermission"),
                 MessageType = GenericMessages.error
             };
-            return Redirect(string.Concat("~", topic.NiceUrl));
+            return Redirect(topic.NiceUrl);
         }
 
         private void NotifyNewTopics(Topic topic)

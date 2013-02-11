@@ -10,9 +10,8 @@
 @section Header {
         @(
         Bundle.JavaScript()
-            .Add("~/Scripts/leaderboard.js")
-            
-            .MvcRender("/scripts/cache/leaderboard-combined_#.js")
+            .Add("~/Scripts/leaderboard.js")            
+            .MvcRender("~/scripts/cache/leaderboard-combined_#.js")
     )
 }
 

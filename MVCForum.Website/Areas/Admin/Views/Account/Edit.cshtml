@@ -9,7 +9,7 @@
         Bundle.JavaScript()
             .Add("~/Scripts/jquery.validate.min.js")
             .Add("~/Scripts/jquery.validate.unobtrusive.min.js")            
-            .MvcRender("/scripts/cache/validate-combined_#.js")
+            .MvcRender("~/scripts/cache/validate-combined_#.js")
      )  
 }
 @using (Html.BeginForm("Edit", "Account", FormMethod.Post, new { @class = "form-horizontal" }))

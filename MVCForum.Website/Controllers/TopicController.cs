@@ -222,7 +222,7 @@ namespace MVCForum.Website.Controllers
                         // Success so now send the emails
                         NotifyNewTopics(category);
                         // Redirect to the newly created topic
-                        return Redirect(string.Format("~{0}?postbadges=true", topic.NiceUrl));
+                        return Redirect(string.Format("{0}?postbadges=true", topic.NiceUrl));
                     }
 
                     var allowedCategories = _categoryService.GetAllowedCategories(UsersRole).ToList();

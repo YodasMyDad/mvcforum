@@ -137,7 +137,7 @@ namespace MVCForum.Website.Application
 
         public static string ReturnBadgeUrl(string badgeFile)
         {
-            return string.Concat("/content/badges/", badgeFile);
+            return string.Concat("~/content/badges/", badgeFile);
         }
 
         #endregion
