@@ -125,6 +125,8 @@ namespace MVCForum.Website.ViewModels
 
     public class LogOnViewModel
     {
+        public string ReturnUrl { get; set; }
+
         [Required]
         [ForumMvcResourceDisplayName("Members.Label.Username")]
         public string UserName { get; set; }
