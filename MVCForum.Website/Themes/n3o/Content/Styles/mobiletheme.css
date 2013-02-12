@@ -180,6 +180,6 @@ h6 {font-size:20px; margin-bottom:8px;}
 .mobileview .pagination li a:visited {}
 
 /*--- Register ---*/
-.mobileview .mainregisterform {width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .mainregisterform {width: 100% !Important;margin: 0;padding: 0;clear: both;}
 .mobileview .loginortext {width: 100%;margin: 0;padding: 0;clear: both;}
 .mobileview .oauthbuttons {width: 100%;margin: 0;padding: 0;clear: both;}
