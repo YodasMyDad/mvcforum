@@ -70,6 +70,8 @@
                 <div class="submit-holder">
                     <input type="submit" class="btn btn-large btn-success" value="@Html.LanguageString("Members.Register")" />
                 </div>
+                
+                @Html.HiddenFor(x => x.ReturnUrl)
             }
         </div>
 
