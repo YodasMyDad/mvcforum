@@ -14,11 +14,11 @@
                 function (data) {
                     $(".memberdiscussions").html(data);
                 });
-                TimeBadges();
-        });        
-        function TimeBadges() {                    
-            var timeBadgeViewModel = new Object();
-            timeBadgeViewModel.Id = '@Model.User.Id';
+            TimeBadges();
+        });
+            function TimeBadges() {
+                var timeBadgeViewModel = new Object();
+                timeBadgeViewModel.Id = '@Model.User.Id';
             var strung = JSON.stringify(timeBadgeViewModel);
             $.ajax({
                 url: app_base + 'Badge/Time', type: 'POST', dataType: 'json', data: strung,
@@ -29,8 +29,8 @@
                 error: function (xhr, ajaxOptions, thrownError) {
                     ShowUserMessage("Error: " + xhr.status + " " + thrownError);
                 }
-            });            
-        }        
+            });
+        }
     </script>
 }
 
@@ -39,44 +39,40 @@
     @Html.Action("ListCategorySideMenu", "Category")
 }
 
-<div class="memberprofilepublic">    
-    
-<h2>@Model.User.UserName</h2>
+<div class="memberprofilepublic">
+
+    <h2>@Model.User.UserName</h2>
 
     <div class="row">
-        
+
         <div class="span2 memberavatardetails">
             <p><img src="@StringUtils.GetGravatarImage(Model.User.Email, AppConstants.GravatarProfileSize)" alt="@Model.User.UserName"></p>
             <p>@Html.LanguageString("Members.Profile.Joined") @Model.User.CreateDate.ToShortDateString()</p>
             <p>@Html.LanguageString("Members.Profile.Posts") @Model.User.Posts.Count</p>
             <p>@Html.LanguageString("Members.Profile.Points") @Model.User.TotalPoints</p>
-            
-            @if (User.IsInRole(AppConstants.AdminRoleName))
-            {
-              if (Convert.ToBoolean(Model.User.IsExternalAccount))
-              {
-                <p>@Html.LanguageString("Members.Profile.IsSocialAccount")</p>    
-              }
-            }
-            
-            @if(User.Identity.IsAuthenticated && Html.Settings().EnableMemberReporting && Model.User.Id != Model.LoggedOnUserId)
+
+            @if (User.Identity.IsAuthenticated && Html.Settings().EnableMemberReporting && Model.User.Id != Model.LoggedOnUserId)
             {
                 <p><a href="@Url.Action("Report", "Members", new { id = Model.User.Id }, null)" class="btn">@Html.LanguageString("Buttons.Report")</a></p>
             }
-            
+
             @if (User.IsInRole(AppConstants.AdminRoleName))
             {
+                if (Convert.ToBoolean(Model.User.IsExternalAccount))
+                {
+                    <p>@Html.LanguageString("Members.Profile.IsSocialAccount")</p>    
+                }
                 <div class="memberprofileadminsection">
                     @Html.Partial("AdminMemberProfileTools")
-                </div>
+                </div>       
             }
         </div>
-    
+
         <div class="span7 membermaindetails">
-            
-            <div class="row">                
+
+            <div class="row">
                 <div class="span3 memberbio">
-                    
+
                     <p>@Html.LanguageString("Members.Profile.Age") @Html.Raw(Model.User.Age > 0 ? Model.User.Age.ToString() : "")</p>
                     <p>@Html.LanguageString("Members.Profile.Location") @Html.Raw(string.IsNullOrEmpty(Model.User.Location) ? "" : Model.User.Location)</p>
                     <p>@Html.LanguageString("Members.Profile.Website") @Html.Raw(string.IsNullOrEmpty(Model.User.Website) ? "" : string.Format("<a href='{0}' rel='nofollow'>{0}</a>", Model.User.Website))</p>
@@ -91,22 +87,23 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="span7 badgeactivity">
                     <h3>@Html.LanguageString("Members.Profile.Badges")</h3>
                     <div class="memberactivity">
-                            @if (Model.User.Badges != null && Model.User.Badges.Any())
-                            {
-                                <ul class="memberbadgelist">
+                        @if (Model.User.Badges != null && Model.User.Badges.Any())
+                        {
+                            <ul class="memberbadgelist">
                                 @foreach (var badge in Model.User.Badges)
                                 {
                                     <li>
-                                        <img src="@Url.Content(AppHelpers.ReturnBadgeUrl(badge.Image))" alt="@badge.Name" title="@badge.Name"/>  @Html.Raw(badge.DisplayName)
+                                        <img src="@Url.Content(AppHelpers.ReturnBadgeUrl(badge.Image))" alt="@badge.Name" title="@badge.Name"/>
+                                        @Html.Raw(badge.DisplayName)
                                     </li>
                                 }
-                                </ul>
-                            }
+                            </ul>
+                        }
                     </div>
                 </div>
             </div>

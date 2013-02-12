@@ -139,3 +139,5 @@ Web.config Changes
 ============ v1.3 ============
 ==============================
 
+---- Added Language Strings
+--- Members.DeleteAllPosts
