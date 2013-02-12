@@ -43,7 +43,8 @@ namespace MVCForum.Data.Repositories
 
         public IList<Post> GetHighestVotedPost(int amountToTake)
         {
-            return _context.Post                
+            return _context.Post
+                .Include(x => x.Votes)
                 .Where(x => x.VoteCount > 0)
                 .OrderByDescending(x => x.VoteCount)
                 .Take(amountToTake)
@@ -53,6 +54,7 @@ namespace MVCForum.Data.Repositories
         public IList<Post> GetByMember(Guid memberId, int amountToTake)
         {
             return _context.Post
+                .Include(x => x.Votes)
                 .Where(x => x.User.Id == memberId)
                 .OrderByDescending(x => x.DateCreated)
                 .Take(amountToTake)
@@ -67,6 +69,7 @@ namespace MVCForum.Data.Repositories
         public IList<Post> GetSolutionsByMember(Guid memberId)
         {
             return _context.Post
+                .Include(x => x.Votes)
                 .Where(x => x.User.Id == memberId)
                 .Where(x => x.IsSolution)
                 .OrderByDescending(x => x.DateCreated)
@@ -76,6 +79,7 @@ namespace MVCForum.Data.Repositories
         public IList<Post> GetPostsByTopic(Guid topicId)
         {
             return _context.Post
+                .Include(x => x.Votes)
                 .Where(x => x.Topic.Id == topicId)
                 .OrderByDescending(x => x.DateCreated)
                 .ToList();
@@ -109,6 +113,7 @@ namespace MVCForum.Data.Repositories
         public IList<Post> GetPostsByMember(Guid memberId)
         {
             return _context.Post
+                .Include(x => x.Votes)
                 .Where(x => x.User.Id == memberId)
                 .OrderByDescending(x => x.DateCreated)
                 .ToList();
@@ -117,6 +122,7 @@ namespace MVCForum.Data.Repositories
         public IList<Post> GetAllSolutionPosts()
         {
             return _context.Post
+                .Include(x => x.Votes)
                 .Where(x => x.IsSolution)
                 .OrderByDescending(x => x.DateCreated)
                 .ToList();
@@ -134,6 +140,7 @@ namespace MVCForum.Data.Repositories
 
             // Get the Posts
             var results = _context.Post
+                            .Include(x => x.Votes)
                             .Where(x => x.PostContent.Contains(searchTerm) | x.Topic.Name.Contains(searchTerm))
                             .OrderByDescending(x => x.DateCreated)
                             .Skip((pageIndex - 1) * pageSize)
