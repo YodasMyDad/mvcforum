@@ -81,7 +81,7 @@ namespace MVCForum.Website.Controllers
                 if (ConfigUtils.UpdateAppSetting("MVCForumVersion", currentVersion) == false)
                 {
                     installerResult.ResultMessage = string.Format(@"Database installed/updated. But there was an error updating the version number in the web.config, you need to manually 
-                                                                    update it to {0} and restarting the site",
+                                                                    update it to {0}",
                                                                     currentVersion);
                 }
                 else
