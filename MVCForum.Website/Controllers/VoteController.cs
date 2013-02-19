@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -6,6 +7,7 @@ using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Website.ViewModels;
+using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
 
 namespace MVCForum.Website.Controllers
 {
@@ -18,15 +20,15 @@ namespace MVCForum.Website.Controllers
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly IBadgeService _badgeService;
 
-        public VoteController(ILoggingService loggingService, 
-            IUnitOfWorkManager unitOfWorkManager, 
-            IMembershipService membershipService, 
-            ILocalizationService localizationService, 
+        public VoteController(ILoggingService loggingService,
+            IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService,
+            ILocalizationService localizationService,
             IRoleService roleService,
-            IPostService postService, 
-            IVoteService voteService, 
-            ISettingsService settingsService, 
-            ITopicService topicService, 
+            IPostService postService,
+            IVoteService voteService,
+            ISettingsService settingsService,
+            ITopicService topicService,
             IMembershipUserPointsService membershipUserPointsService,
             IBadgeService badgeService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
@@ -51,45 +53,20 @@ namespace MVCForum.Website.Controllers
                 }
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
+                    // Firstly get the post
+                    var post = _postService.Get(voteUpViewModel.Post);
+
+                    // Now get the current user
+                    var voter = LoggedOnUser;
+
+                    // Also get the user that wrote the post
+                    var postWriter = MembershipService.GetUser(post.User.Id);
+
+                    // Mark the post up or down
+                    MarkPostUpOrDown(post, postWriter, voter, PostType.Positive);
+
                     try
                     {
-                        // Firstly get the post
-                        var post = _postService.Get(voteUpViewModel.Post);
-
-                        // Now get the current user
-                        var voter = LoggedOnUser;
-
-                        // Also get the user that wrote the post
-                        var postWriter = MembershipService.GetUser(post.User.Id);
-
-                        // Check this user is not the post owner
-                        if (voter.Id != postWriter.Id)
-                        {
-                            // Not the same person, now check they haven't voted on this post before
-                            if (!post.Votes.Select(x => x.User.Id == LoggedOnUser.Id).Any())
-                            {
-                                // Good to go, no tinkering
-                                //new post point count
-                                var newPointTotal = (post.VoteCount + 1);
-
-                                // Update the users points who wrote the post
-                                _membershipUserPointsService.Add(new MembershipUserPoints
-                                                                     {
-                                                                         Points =
-                                                                             SettingsService.GetSettings().
-                                                                             PointsAddedPostiveVote,
-                                                                         User = postWriter
-                                                                     });
-
-                                // Update the post with the new vote of the voter
-                                var vote = new Vote { Post = post, User = voter, Amount = 1 };
-                                _voteService.Add(vote);
-
-                                // Update the post with the new points amount
-                                post.VoteCount = newPointTotal;
-                            }
-                        }
-
                         unitOfWork.Commit();
                     }
 
@@ -127,28 +104,8 @@ namespace MVCForum.Website.Controllers
                     // Also get the user that wrote the post
                     var postWriter = MembershipService.GetUser(post.User.Id);
 
-                    // Check this user is not the post owner
-                    if (voter.Id != postWriter.Id)
-                    {
-                        // Not the same person, now check they haven't voted on this post before
-                        if (!post.Votes.Select(x => x.User.Id == LoggedOnUser.Id).Any())
-                        {
-                            // Good to go, no tinkering
-                            //new post point count
-                            var newPointTotal = (post.VoteCount - 1);
-
-                            // Update the users points who wrote the post
-                            _membershipUserPointsService.Add(new MembershipUserPoints { Points = SettingsService.GetSettings().PointsDeductedNagativeVote, User = postWriter });
-
-                            // Update the post with the new vote of the voter
-                            var vote = new Vote { Post = post, User = voter, Amount = -1 };
-                            _voteService.Add(vote);
-
-                            // Update the post with the new points amount
-                            post.VoteCount = newPointTotal;
-
-                        }
-                    }
+                    // Mark the post up or down
+                    MarkPostUpOrDown(post, postWriter, voter, PostType.Negative);
 
                     try
                     {
@@ -164,6 +121,45 @@ namespace MVCForum.Website.Controllers
                 }
             }
         }
+
+
+        private void MarkPostUpOrDown(Post post, MembershipUser postWriter, MembershipUser voter, PostType postType)
+        {
+            // Check this user is not the post owner
+            if (voter.Id != postWriter.Id)
+            {
+                // Not the same person, now check they haven't voted on this post before
+                if (post.Votes.All(x => x.User.Id != LoggedOnUser.Id))
+                {
+
+                    // Points to add or subtract to a user
+                    var usersPoints = (postType == PostType.Negative) ?
+                                        (-SettingsService.GetSettings().PointsDeductedNagativeVote) : (SettingsService.GetSettings().PointsAddedPostiveVote);
+
+                    // Update the users points who wrote the post
+                    _membershipUserPointsService.Add(new MembershipUserPoints { Points = usersPoints, User = postWriter });
+
+                    // Update the post with the new vote of the voter
+                    var vote = new Vote
+                    {
+                        Post = post,
+                        User = voter,
+                        Amount = (postType == PostType.Negative) ? (-1) : (1)
+                    };
+                    _voteService.Add(vote);
+
+                    // Update the post with the new points amount
+                    var newPointTotal = (postType == PostType.Negative) ? (post.VoteCount - 1) : (post.VoteCount + 1);
+                    post.VoteCount = newPointTotal;
+                }
+            }
+        }
+
+        private enum PostType
+        {
+            Positive,
+            Negative,
+        };
 
         [HttpPost]
         public void MarkAsSolution(MarkAsSolutionViewModel markAsSolutionViewModel)
@@ -193,7 +189,7 @@ namespace MVCForum.Website.Controllers
                     try
                     {
                         var solved = _topicService.SolveTopic(topic, post, marker, solutionWriter);
-                   
+
                         if (solved)
                         {
                             unitOfWork.Commit();
@@ -218,7 +214,7 @@ namespace MVCForum.Website.Controllers
             {
                 var post = _postService.Get(voteUpViewModel.Post);
                 var positiveVotes = post.Votes.Where(x => x.Amount > 0);
-                var viewModel = new ShowVotersViewModel {Votes = positiveVotes.ToList()};
+                var viewModel = new ShowVotersViewModel { Votes = positiveVotes.ToList() };
                 return PartialView(viewModel);
             }
             return null;
