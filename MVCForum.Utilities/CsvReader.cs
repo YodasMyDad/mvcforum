@@ -106,7 +106,7 @@ namespace MVCForum.Utilities
         {
             var allLines = new List<string>();
 
-            using (var sr = new StreamReader(stream, System.Text.Encoding.UTF8, true))
+            using (var sr = new StreamReader(stream, System.Text.Encoding.Default, true))
             {
                 while (sr.Peek() >= 0)
                 {
