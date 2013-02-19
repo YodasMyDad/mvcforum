@@ -8,6 +8,7 @@ namespace MVCForum.Domain.Interfaces.Repositories
     {
         IList<Topic> GetAll();
         IList<Topic> GetHighestViewedTopics(int amountToTake);
+        IList<Topic> GetTodaysTopics(int amountToTake);
         IList<Topic> GetSolvedTopicsByMember(Guid memberId);
         PagedList<Topic> GetRecentTopics(int pageIndex, int pageSize, int amountToTake);
         IList<Topic> GetRecentRssTopics(int amountToTake);

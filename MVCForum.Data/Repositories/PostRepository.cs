@@ -36,7 +36,7 @@ namespace MVCForum.Data.Repositories
             return _context.Post
                 .Include(x => x.Votes)
                 .Where(x => x.VoteCount < 0)
-                .OrderByDescending(x => x.VoteCount)
+                .OrderBy(x => x.VoteCount)
                 .Take(amountToTake)
                 .ToList();
         }

@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Utilities;
 using MVCForum.Website.Areas.Admin.ViewModels;
-using MVCForum.Website.ViewModels;
 
 namespace MVCForum.Website.Areas.Admin.Controllers
 {
@@ -31,6 +26,19 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             _postService = postService;
             _topicService = topicService;
             _topicTagService = topicTagService;
+        }
+
+        [HttpPost]
+        public PartialViewResult TodaysTopics()
+        {
+            if (Request.IsAjaxRequest())
+            {
+                using (UnitOfWorkManager.NewUnitOfWork())
+                {
+                    return PartialView(new TodaysTopics { Topics = _topicService.GetTodaysTopics(AmountToShow) });
+                }
+            }
+            return null;
         }
 
         [HttpPost]
@@ -91,7 +99,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             if (Request.IsAjaxRequest())
             {
                     var reader = new RssReader();
-                    var viewModel = new LatestNewsViewModel {RssFeed = reader.GetRssFeed("http://www.mvcforum.com/rss")};
+                    var viewModel = new LatestNewsViewModel { RssFeed = reader.GetRssFeed("http://www.mvcforum.com/rss").Take(AmountToShow).ToList() };
                     return PartialView(viewModel);
             }
             return null;

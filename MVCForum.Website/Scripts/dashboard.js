@@ -5,6 +5,7 @@
     LowestPointPosts();
     HighestViewedTopics();
     LatestNews();
+    TodaysTopics();
 });
 
 function LatestUsers() {
@@ -25,6 +26,13 @@ function LowestPointPosts() {
     $.post(app_base + "Admin/Dashboard/LowestPointPosts",
     function (data) {
         $(".dashboardlowestpointposts").html(data);
+    });
+}
+
+function TodaysTopics() {
+    $.post(app_base + "Admin/Dashboard/TodaysTopics",
+    function (data) {
+        $(".dashboardtodaystopics").html(data);
     });
 }
 

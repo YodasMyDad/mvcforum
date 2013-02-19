@@ -5,7 +5,7 @@
  <ul>
  @foreach (var user in Model.Users)
  {
-    <li><a href="@user.NiceUrl">@Html.Raw(user.UserName)</a></li>
+    <li><a href="@user.NiceUrl">@Html.Raw(user.UserName)</a> On @user.CreateDate.ToShortDateString()</li>
  }
  </ul>
 }

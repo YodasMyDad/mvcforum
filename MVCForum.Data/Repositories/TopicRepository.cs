@@ -41,9 +41,20 @@ namespace MVCForum.Data.Repositories
         public IList<Topic> GetHighestViewedTopics(int amountToTake)
         {
             return _context.Topic
+                    .Include(x => x.User)
                             .OrderByDescending(x => x.Views)
                             .Take(amountToTake)
                             .ToList();
+        }
+
+        public IList<Topic> GetTodaysTopics(int amountToTake)
+        {
+            return _context.Topic
+                        .Include(x => x.User)
+                        .Where(c => c.CreateDate >= DateTime.Today)
+                        .OrderByDescending(x => x.CreateDate)
+                        .Take(amountToTake)
+                        .ToList();
         }
 
         public Topic Add(Topic topic)
@@ -57,6 +68,7 @@ namespace MVCForum.Data.Repositories
             return _context.Topic
                             .Include(x => x.Posts)
                             .Include(x => x.LastPost)
+                            .Include(x => x.User)
                             .FirstOrDefault(x => x.Id == id);
         }
 

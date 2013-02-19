@@ -67,6 +67,16 @@ namespace MVCForum.Services
         }
 
         /// <summary>
+        /// Get todays topics
+        /// </summary>
+        /// <param name="amountToTake"></param>
+        /// <returns></returns>
+        public IList<Topic> GetTodaysTopics(int amountToTake)
+        {
+            return _topicRepository.GetTodaysTopics(amountToTake);
+        }
+
+        /// <summary>
         /// Add a last post to a topic. Must be part of a separate database update
         /// in EF because of circular dependencies. So save the topic before calling this.
         /// </summary>
