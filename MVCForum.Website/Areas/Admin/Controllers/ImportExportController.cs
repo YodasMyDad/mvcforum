@@ -100,7 +100,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     {
                         // Unpack the data
                         var allLines = new List<string>();
-                        using (var streamReader = new StreamReader(file.InputStream))
+                        using (var streamReader = new StreamReader(file.InputStream, System.Text.Encoding.UTF8, true))
                         {
                             while (streamReader.Peek() >= 0)
                             {
@@ -184,7 +184,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     {
                         // Unpack the data
                         var allLines = new List<string>();
-                        using (var streamReader = new StreamReader(file.InputStream))
+                        using (var streamReader = new StreamReader(file.InputStream, System.Text.Encoding.UTF8, true))
                         {
                             while (streamReader.Peek() >= 0)
                             {
