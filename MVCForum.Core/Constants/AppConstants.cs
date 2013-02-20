@@ -30,12 +30,14 @@
         // This is the role a non logged in user defaults to
         public const string GuestRoleName = "Guest";
 
+        // Main moderator Role [This should never be changed]
+        public const string ModeratorRoleName = "Moderator";
+
         /// <summary>
         ///  These are the permission names used as keys to return them
         ///  So they must be the same as the database value 
         /// </summary>
 
-        //public const string PermissionAttachFiles = "Attach Files";
         public const string PermissionReadOnly = "Read Only";
         public const string PermissionDeletePosts = "Delete Posts";
         public const string PermissionEditPosts = "Edit Posts";
@@ -43,6 +45,10 @@
         public const string PermissionDenyAccess = "Deny Access";
         public const string PermissionLockTopics = "Lock Topics";
         public const string PermissionVoteInPolls = "Vote In Polls";
+        //Added in v1.3
+        public const string PermissionCreatePolls = "Create Polls";
+        public const string PermissionCreateTopics = "Create Topics";
+        public const string PermissionAttachFiles = "Attach Files";
 
 
         // Paging options

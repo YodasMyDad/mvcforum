@@ -55,16 +55,22 @@
             {
                 <p><a href="@Url.Action("Report", "Members", new { id = Model.User.Id }, null)" class="btn">@Html.LanguageString("Buttons.Report")</a></p>
             }
-
-            @if (User.IsInRole(AppConstants.AdminRoleName))
+                        
+            @if (User.IsInRole(AppConstants.AdminRoleName) || User.IsInRole(AppConstants.ModeratorRoleName))
             {
+                // Show whether this is a social account or not
                 if (Convert.ToBoolean(Model.User.IsExternalAccount))
                 {
                     <p>@Html.LanguageString("Members.Profile.IsSocialAccount")</p>    
                 }
-                <div class="memberprofileadminsection">
-                    @Html.Partial("AdminMemberProfileTools")
-                </div>       
+                
+                // If this is an admins profile then do not show
+                if (!Model.User.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
+                {
+                    <div class="memberprofileadminsection">
+                        @Html.Partial("AdminMemberProfileTools")
+                    </div>
+                }
             }
         </div>
 

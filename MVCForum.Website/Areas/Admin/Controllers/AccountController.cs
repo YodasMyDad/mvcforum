@@ -237,7 +237,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         throw new ApplicationException("Cannot delete user - user does not exist");
                     }
 
-                    ClearUserData(user, unitOfWork);
+                    DeleteUsersPostsPollsVotesAndPoints(user, unitOfWork);
 
                     MembershipService.Delete(user);
 
@@ -385,44 +385,117 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             return View(role);
         }
 
-        [Authorize(Roles = AppConstants.AdminRoleName)]
-        public ActionResult DeleteUsersPosts(Guid id)
+        [Authorize(Roles = AppConstants.AdminRoleName + "," + AppConstants.ModeratorRoleName)]
+        public ActionResult DeleteUsersPosts(Guid id, bool profileClick = false)
         {
             var user = MembershipService.GetUser(id);
 
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-
-                ClearUserData(user, unitOfWork);
-
-                try
+                if (!user.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
                 {
-                    unitOfWork.Commit();
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    DeleteUsersPostsPollsVotesAndPoints(user, unitOfWork);
+                    try
                     {
-                        Message = "All posts and topics deleted",
-                        MessageType = GenericMessages.success
-                    };
-                }
-                catch (Exception ex)
-                {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        unitOfWork.Commit();
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = "All posts and topics deleted",
+                            MessageType = GenericMessages.success
+                        };
+                    }
+                    catch (Exception ex)
                     {
-                        Message = "Error trying to delete posts and topics",
-                        MessageType = GenericMessages.error
-                    };
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = "Error trying to delete posts and topics",
+                            MessageType = GenericMessages.error
+                        };
+                    }
                 }
             }
 
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                if (profileClick)
+                {
+                    return Redirect(user.NiceUrl);
+                }
                 var viewModel = ViewModelMapping.UserToMemberEditViewModel(user);
                 viewModel.AllRoles = _roleService.AllRoles();
                 return View("Edit", viewModel);
             }
 
+        }
+
+        [Authorize(Roles = AppConstants.AdminRoleName + "," + AppConstants.ModeratorRoleName)]
+        public ActionResult BanMember(Guid id)
+        {
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                var user = MembershipService.GetUser(id);
+                if (!user.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
+                {
+                    user.IsLockedOut = true;
+
+                    try
+                    {
+                        unitOfWork.Commit();
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = "User is now banned",
+                            MessageType = GenericMessages.success
+                        };
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = "Error trying to ban user",
+                            MessageType = GenericMessages.error
+                        };
+                    }   
+                }
+                return Redirect(user.NiceUrl);
+            }
+        }
+
+        [Authorize(Roles = AppConstants.AdminRoleName + "," + AppConstants.ModeratorRoleName)]
+        public ActionResult UnBanMember(Guid id)
+        {
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                var user = MembershipService.GetUser(id);
+                if (!user.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
+                {
+                    user.IsLockedOut = false;
+
+                    try
+                    {
+                        unitOfWork.Commit();
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = "User is now unbanned",
+                            MessageType = GenericMessages.success
+                        };
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = "Error trying to un ban user",
+                            MessageType = GenericMessages.error
+                        };
+                    }
+                }
+                return Redirect(user.NiceUrl);
+            }
         }
 
         [HttpPost]
@@ -458,7 +531,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
         #endregion
 
-        private void ClearUserData(MembershipUser user, IUnitOfWork unitOfWork)
+        private void DeleteUsersPostsPollsVotesAndPoints(MembershipUser user, IUnitOfWork unitOfWork)
         {
             // Delete all posts
             var posts = user.Posts;

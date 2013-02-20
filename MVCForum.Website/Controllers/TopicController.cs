@@ -10,6 +10,7 @@ using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Utilities;
 using MVCForum.Website.Application;
+using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
 
 namespace MVCForum.Website.Controllers
@@ -73,7 +74,6 @@ namespace MVCForum.Website.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 // Quick check to see if user is locked out, when logged in
                 if (LoggedOnUser.IsLockedOut | !LoggedOnUser.IsApproved)
                 {
@@ -94,56 +94,69 @@ namespace MVCForum.Website.Controllers
                     var permissions = RoleService.GetPermissions(category, UsersRole);
 
                     // Check this users role has permission to create a post
-                    if (permissions[AppConstants.PermissionDenyAccess].IsTicked || permissions[AppConstants.PermissionReadOnly].IsTicked)
+                    if (permissions[AppConstants.PermissionDenyAccess].IsTicked || permissions[AppConstants.PermissionReadOnly].IsTicked || !permissions[AppConstants.PermissionCreateTopics].IsTicked)
                     {
                         // Throw exception so Ajax caller picks it up
                         ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.NoPermission"));
                     }
                     else
                     {
+
                         topic = new Topic
                         {
                             Name = topicViewModel.Name,
                             Category = category,
                             User = LoggedOnUser
-                        };
-
-                        topicViewModel.Content = topicViewModel.Content;                        
+                        };                       
                         
+                        // See if the user has actually added some content to the topic
                         if (!string.IsNullOrEmpty(topicViewModel.Content))
                         {
                             // See if this is a poll and add it to the topic
                             if (topicViewModel.PollAnswers != null && topicViewModel.PollAnswers.Count > 0)
                             {
-                                // Create a new Poll
-                                var newPoll = new Poll
+
+                                if (permissions[AppConstants.PermissionCreatePolls].IsTicked)
                                 {
-                                    User = LoggedOnUser
-                                };
+                                    // Create a new Poll
+                                    var newPoll = new Poll
+                                    {
+                                        User = LoggedOnUser
+                                    };
 
-                                // Create the poll
-                                _pollService.Add(newPoll);
+                                    // Create the poll
+                                    _pollService.Add(newPoll);
 
-                                // Save the poll in the context so we can add answers
-                                unitOfWork.SaveChanges();
+                                    // Save the poll in the context so we can add answers
+                                    unitOfWork.SaveChanges();
 
-                                // Now sort the answers
-                                var newPollAnswers = new List<PollAnswer>();
-                                foreach (var pollAnswer in topicViewModel.PollAnswers)
-                                {
-                                    // Attach newly created poll to each answer
-                                    pollAnswer.Poll = newPoll;
-                                    _pollAnswerService.Add(pollAnswer);
-                                    newPollAnswers.Add(pollAnswer);
+                                    // Now sort the answers
+                                    var newPollAnswers = new List<PollAnswer>();
+                                    foreach (var pollAnswer in topicViewModel.PollAnswers)
+                                    {
+                                        // Attach newly created poll to each answer
+                                        pollAnswer.Poll = newPoll;
+                                        _pollAnswerService.Add(pollAnswer);
+                                        newPollAnswers.Add(pollAnswer);
+                                    }
+                                    // Attach answers to poll
+                                    newPoll.PollAnswers = newPollAnswers;
+
+                                    // Save the new answers in the context
+                                    unitOfWork.SaveChanges();
+
+                                    // Add the poll to the topic
+                                    topic.Poll = newPoll;   
                                 }
-                                // Attach answers to poll
-                                newPoll.PollAnswers = newPollAnswers;
-
-                                // Save the new answers in the context
-                                unitOfWork.SaveChanges();
-
-                                // Add the poll to the topic
-                                topic.Poll = newPoll;
+                                else
+                                {
+                                   //No permission to create a Poll so show a message but create the topic
+                                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                    {
+                                        Message = LocalizationService.GetResourceString("Errors.NoPermissionPolls"),
+                                        MessageType = GenericMessages.info
+                                    };
+                                }
                             }
 
                             // Update the users points score for posting
@@ -156,8 +169,10 @@ namespace MVCForum.Website.Controllers
                             // Create the topic (The topic service creates the related post)
                             topic = _topicService.Add(topic);
 
+                            // Save the changes
                             unitOfWork.SaveChanges();
 
+                            // Now add the post to the topic
                             _topicService.AddLastPost(topic, topicViewModel.Content);
 
                             // Now check its not spam

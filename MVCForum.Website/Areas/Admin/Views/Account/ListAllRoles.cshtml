@@ -20,7 +20,7 @@
         @foreach (var role in Model.MembershipRoles)
         {        
             var usersCount = role.Users.Count;
-            var hideRole = (role.RoleName == AppConstants.AdminRoleName | role.RoleName == AppConstants.GuestRoleName);
+            var hideRole = (role.RoleName == AppConstants.AdminRoleName || role.RoleName == AppConstants.GuestRoleName || role.RoleName == AppConstants.ModeratorRoleName);
 
             if (!hideRole)
             {

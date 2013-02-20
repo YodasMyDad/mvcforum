@@ -123,7 +123,7 @@ Web.config Changes
 ============ v1.2 ============
 ==============================
 
----- Added Language Strings
+Added Language Strings
 ---- Date.JustNow = Just now
 ---- Date.OneMinuteAgo = 1 minute ago
 ---- Date.MinutesAgo = {0} minutes ago
@@ -139,12 +139,27 @@ Web.config Changes
 ============ v1.3 ============
 ==============================
 
---- Added Language Strings
---- Members.DeleteAllPosts
---- Poll.Button.Remove = Remove Poll
---- Poll.Button.Create = Create Poll
---- Poll.Placeholder.TypeAnswerHere = Type Answer Here
---- Topic.OptionsHeading = More Options
---- Buttons.CreatePost = Add Post
---- Topic.Label.Category = Choose Category
---- Editor.NeedHelp = Need formatting help?
+---Added Language Strings
+Members.DeleteAllPosts = Delete All Posts
+Poll.Button.Remove = Remove Poll
+Poll.Button.Create = Create Poll
+Poll.Placeholder.TypeAnswerHere = Type Answer Here
+Topic.OptionsHeading = More Options
+Buttons.CreatePost = Add Post
+Topic.Label.Category = Choose Category
+Editor.NeedHelp = Need formatting help?
+Members.BanUser = Ban User
+Members.UnBanUser = Unban User
+Errors.NoPermissionPolls = Topic Created, But you do not have permission to create polls
+
+--- MembershipRole
+78947C78-FED6-43D9-8FCF-A16B00EAB040	Moderator
+
+--- Permission
+CA1C39FB-6B2C-4E5D-9F28-A16B00F3BA76	Create Polls
+3744D1FF-B87E-497D-8130-A16B00F3C560	Create Topics
+D4D9817E-4AFA-4006-94C3-A16B00F3D43C	Attach Files
+
+
+
+
