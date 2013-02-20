@@ -256,6 +256,13 @@ div.tagsinput div { display:block; float: left; }
 .showvotersbox ul { padding: 0;margin: 0;}
 .showvotersbox ul li { padding:2px 0;list-style: none;}
 
+/*--- Polls --*/
+ul.pollanswerlist { padding: 0;margin: 0;}
+ul.pollanswerlist li { list-style: none;padding: 4px 0;}
+.polladdremovenewanswers {}
+.polladdremovenewanswers .addanswer { margin: 0 5px 0 0;}
+.pollcreatebuttonholder { text-align: right;}
+
 
 /*--- Jquery UI ----*/
 /* Layout helpers

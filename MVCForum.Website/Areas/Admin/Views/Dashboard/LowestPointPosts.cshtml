@@ -5,7 +5,7 @@
  <ul>
  @foreach (var post in Model.Posts)
  {
-    <li><a href="@post.Topic.NiceUrl">By: @post.User.UserName (@post.VoteCount)</a></li>
+    <li><a href="@post.Topic.NiceUrl">@post.Topic.Name By @post.User.UserName <strong>(@post.VoteCount)</strong></a></li>
  }
  </ul>
 }

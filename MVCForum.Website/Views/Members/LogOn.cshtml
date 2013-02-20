@@ -7,11 +7,10 @@
 @section Header
 {
     @(
- Bundle.JavaScript()
-            .Add("~/Scripts/jquery.validate.min.js")
-            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
-
-            .MvcRender("~/scripts/cache/validate-combined_#.js")
+        Bundle.JavaScript()
+        .Add("~/Scripts/jquery.validate.min.js")
+        .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
+        .MvcRender("~/scripts/cache/validate-combined_#.js")
     )
 }
 
@@ -55,6 +54,7 @@
                 <input type="submit" class="btn btn-success btn-large" value="@Html.LanguageString("Buttons.LogOn ")" />
             </div>
 
+            @Html.HiddenFor(x => x.ReturnUrl)
         }
         <p class="forgotpasswordtext"><a href="@Url.Action("ForgotPassword")">@Html.LanguageString("Members.ForgotPassword.Link")</a></p>
     </div>

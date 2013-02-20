@@ -47,6 +47,8 @@ namespace MVCForum.Website.ViewModels
         public IList<MembershipRole> AllRoles { get; set; }
 
         public string SpamAnswer { get; set; }
+
+        public string ReturnUrl { get; set; }
     }
 
     public class MemberFrontEndEditViewModel
@@ -125,6 +127,8 @@ namespace MVCForum.Website.ViewModels
 
     public class LogOnViewModel
     {
+        public string ReturnUrl { get; set; }
+
         [Required]
         [ForumMvcResourceDisplayName("Members.Label.Username")]
         public string UserName { get; set; }

@@ -32,4 +32,9 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
     {
         public IList<RssItem> RssFeed { get; set; }
     }
+
+    public class TodaysTopics
+    {
+        public IList<Topic> Topics { get; set; }
+    }
 }

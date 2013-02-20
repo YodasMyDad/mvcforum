@@ -40,6 +40,10 @@ namespace MVCForum.Website.Application
 
         #region Version Info
 
+        /// <summary>
+        /// Gets the main version number (Used by installer)
+        /// </summary>
+        /// <returns></returns>
         public static string GetCurrentVersionNo()
         {
             //Installer for new versions and first startup
@@ -48,6 +52,20 @@ namespace MVCForum.Website.Application
 
             // Store the value for use in the app
             return string.Format("{0}.{1}", version.Major, version.Minor);
+        }
+
+        /// <summary>
+        /// Get the full version number shown in the admin
+        /// </summary>
+        /// <returns></returns>
+        public static string GetCurrentVersionNoFull()
+        {
+            //Installer for new versions and first startup
+            // Get the current version
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+
+            // Store the value for use in the app
+            return string.Format("{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
         }
 
         /// <summary>

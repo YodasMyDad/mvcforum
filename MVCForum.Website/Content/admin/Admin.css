@@ -102,7 +102,7 @@ select {  }
 .sidebar-nav ul { padding: 0;}
 .sidebar-nav ul li {}
 
-.admindashboard { border: 1px #efefef solid;-moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px;padding: 4px;}
+.admindashboard { border: 1px #efefef solid;-moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px;padding: 4px; min-height:150px; height:auto !important; height:150px;}
 .dashboardrow { padding: 0 0 18px 0;}
 
 /*--- Log ---*/

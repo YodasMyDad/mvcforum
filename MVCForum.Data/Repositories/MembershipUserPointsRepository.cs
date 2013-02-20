@@ -61,7 +61,8 @@ namespace MVCForum.Data.Repositories
             var end = start.AddDays(7);
 
             var results = _context.MembershipUserPoints
-                .Where(x => x.DateAdded >= start && x.DateAdded < end)                
+                .Include(x => x.User)
+                .Where(x => x.DateAdded >= start && x.DateAdded < end)
                 .ToList();
 
             return results.GroupBy(x => x.User)
@@ -77,6 +78,7 @@ namespace MVCForum.Data.Repositories
             var thisYear = DateTime.Now.Year;
 
             var results = _context.MembershipUserPoints
+                .Include(x => x.User)
                 .Where(x => x.DateAdded.Year == thisYear)                
                 .ToList();
 
@@ -92,7 +94,7 @@ namespace MVCForum.Data.Repositories
             amountToTake = amountToTake ?? int.MaxValue;
 
             var results = _context.MembershipUserPoints
-                .Take((int)amountToTake)
+                .Include(x => x.User)
                 .ToList();
 
             return results.GroupBy(x => x.User)
@@ -107,8 +109,8 @@ namespace MVCForum.Data.Repositories
             amountToTake = amountToTake ?? int.MaxValue;
 
             var results = _context.MembershipUserPoints
-                .Take((int)amountToTake)
-                .ToList();
+                        .Include(x => x.User)
+                        .ToList();
 
             return results.GroupBy(x => x.User)
                         .ToDictionary(x => x.Key, x => x.Select(p => p.Points).Sum())

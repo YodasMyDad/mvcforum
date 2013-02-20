@@ -42,10 +42,10 @@ namespace MVCForum.Website.Installer
                 }
                 conn.Close();
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
                 insResult.Result = false;
-                insResult.ResultMessage = "Error creating/updating the database, check your web.config connection string is correct and the database user has the correct permissions";
+                insResult.ResultMessage = string.Format("Error creating/updating the database - {0}", ex.Message);
                 return insResult;
             }
 

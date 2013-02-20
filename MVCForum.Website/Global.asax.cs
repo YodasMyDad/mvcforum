@@ -199,7 +199,15 @@ namespace MVCForum.Website
 
         protected void Application_EndRequest(object sender, EventArgs e)
         {
+            //foreach (var item in HttpContext.Current.Items.Values)
+            //{
+            //    var disposableItem = item as IDisposable;
 
+            //    if (disposableItem != null)
+            //    {
+            //        disposableItem.Dispose();
+            //    }
+            //}
         }
 
         protected void Application_Error(object sender, EventArgs e)

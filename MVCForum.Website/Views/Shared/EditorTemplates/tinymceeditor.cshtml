@@ -1,9 +1,9 @@
-﻿<script src="/scripts/tiny_mce/jquery.tinymce.js" type="text/javascript"></script>
+﻿<script src="@Url.Content("~/scripts/tiny_mce/jquery.tinymce.js")" type="text/javascript"></script>
 <script type="text/javascript">
     $().ready(function () {
         $('textarea.tinymce').tinymce({
             // Location of TinyMCE script
-            script_url: '/scripts/tiny_mce/jquery.tinymce.js',
+            script_url: '@Url.Content("~/scripts/tiny_mce/jquery.tinymce.js")',
 
             // General options
             theme: "advanced",

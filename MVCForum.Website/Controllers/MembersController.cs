@@ -54,6 +54,8 @@ namespace MVCForum.Website.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var user = MembershipService.CreateEmptyUser();
+
+                // Populate empty viewmodel
                 var viewModel = new MemberAddViewModel
                                     {
                                         UserName = user.UserName,
@@ -63,6 +65,13 @@ namespace MVCForum.Website.Controllers
                                         Comment = user.Comment,
                                         AllRoles = RoleService.AllRoles()
                                     };
+
+                // See if a return url is present or not and add it
+                var returnUrl = Request["ReturnUrl"];
+                if (!string.IsNullOrEmpty(returnUrl))
+                {
+                    viewModel.ReturnUrl = returnUrl;
+                }
 
                 return View(viewModel);
             }
@@ -138,6 +147,11 @@ namespace MVCForum.Website.Controllers
                         unitOfWork.Commit();
                         if (homeRedirect)
                         {
+                            if (Url.IsLocalUrl(userModel.ReturnUrl) && userModel.ReturnUrl.Length > 1 && userModel.ReturnUrl.StartsWith("/")
+                            && !userModel.ReturnUrl.StartsWith("//") && !userModel.ReturnUrl.StartsWith("/\\"))
+                            {
+                                return Redirect(userModel.ReturnUrl);
+                            }
                             return RedirectToAction("Index", "Home", new { area = string.Empty });
                         }
                     }
@@ -339,17 +353,26 @@ namespace MVCForum.Website.Controllers
         /// <returns></returns>
         public ActionResult LogOn()
         {
-            return View();
+            // Create the empty view model
+            var viewModel = new LogOnViewModel();
+
+            // See if a return url is present or not and add it
+            var returnUrl = Request["ReturnUrl"];
+            if (!string.IsNullOrEmpty(returnUrl))
+            {
+                viewModel.ReturnUrl = returnUrl;
+            }
+
+            return View(viewModel);
         }
 
         /// <summary>
         /// Log on post
         /// </summary>
         /// <param name="model"></param>
-        /// <param name="returnUrl"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult LogOn(LogOnViewModel model, string returnUrl)
+        public ActionResult LogOn(LogOnViewModel model)
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
@@ -376,10 +399,10 @@ namespace MVCForum.Website.Controllers
                                     MessageType = GenericMessages.success
                                 };
 
-                                if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
-                                    && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
+                                if (Url.IsLocalUrl(model.ReturnUrl) && model.ReturnUrl.Length > 1 && model.ReturnUrl.StartsWith("/")
+                                    && !model.ReturnUrl.StartsWith("//") && !model.ReturnUrl.StartsWith("/\\"))
                                 {
-                                    return Redirect(returnUrl);
+                                    return Redirect(model.ReturnUrl);
                                 }
                                 return RedirectToAction("Index", "Home", new { area = string.Empty });
                             }

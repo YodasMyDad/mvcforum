@@ -559,6 +559,7 @@
     <Content Include="Scripts\jquery-1.8.0.min.js" />
     <Content Include="Areas\Admin\Views\Settings\TestEmail.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_GetCurrentVersion.cshtml" />
+    <Content Include="Areas\Admin\Views\Dashboard\TodaysTopics.cshtml" />
     <None Include="Scripts\jquery-1.9.0.intellisense.js" />
     <Content Include="Scripts\jquery-1.9.0.js" />
     <Content Include="Scripts\jquery-1.9.0.min.js" />

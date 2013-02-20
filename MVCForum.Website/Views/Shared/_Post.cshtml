@@ -5,9 +5,9 @@
 @{
     var postId = Model.Post.Id;
     var loggedOnUserId = Model.User != null ? Model.User.Id : Guid.Empty;
-    var allowedToVote = (Model.User != null && loggedOnUserId != Model.Post.User.Id &&
-                         Model.User.TotalPoints > Html.Settings().PointsAllowedToVoteAmount &&
-                         !Model.Post.Votes.Select(x => x.User.Id == Model.User.Id).Any());
+    var allowedToVote = (Model.User != null && loggedOnUserId != Model.Post.User.Id && 
+                         Model.User.TotalPoints > Html.Settings().PointsAllowedToVoteAmount && 
+                         Model.Post.Votes.All(x => x.User.Id != Model.User.Id));
     var showVotersClass = (Model.Post.VoteCount > 0 && User.Identity.IsAuthenticated) ? "showvoters" : "";
 }
 <div class="post row solution-True post-@postId">
