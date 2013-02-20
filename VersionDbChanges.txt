@@ -139,3 +139,8 @@ Web.config Changes
 ============ v1.3 ============
 ==============================
 
+--- Added Language Strings
+--- Poll.Button.Remove = Remove Poll
+--- Poll.Button.Create = Create Poll
+--- Poll.Placeholder.TypeAnswerHere = Type Answer Here
+--- Topic.OptionsHeading = More Options

@@ -9,7 +9,7 @@
     <h5>@Html.LanguageString("Points.ThisWeeksHighEarners")</h5>
 
     <ul>
-        @foreach (var dict in Model.HighEarners)
+        @foreach (var dict in Model.HighEarners.Where(x => x.Value > 0))
         {    
             <li>
                 <span class="earnername">

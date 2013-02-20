@@ -62,7 +62,7 @@ namespace MVCForum.Data.Repositories
 
             var results = _context.MembershipUserPoints
                 .Include(x => x.User)
-                .Where(x => x.DateAdded >= start && x.DateAdded < end)                
+                .Where(x => x.DateAdded >= start && x.DateAdded < end)
                 .ToList();
 
             return results.GroupBy(x => x.User)
