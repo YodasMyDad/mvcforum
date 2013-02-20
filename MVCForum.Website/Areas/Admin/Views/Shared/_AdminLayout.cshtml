@@ -109,6 +109,20 @@
                                     <i class='icon-bookmark'></i>Badges
                                 </a>
                             </li>
+                            <li class="nav-header">Membership</li>
+                            <li>
+                                <a href="@Url.Action("Manage", "Account", new { area = "Admin" }, null)">
+                                    <i class='icon-user'></i>Manage Users
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("ListAllRoles", "Account", new { area = "Admin" }, null)"><i class="icon-flag"></i>Manage Roles</a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("AddRole", "Account", new { area = "Admin" }, null)"><i class="icon-plus"></i>Add Roles</a>
+                            </li>
+
+                            <li class="nav-header">Tools</li>
                             <li>
                                 <a href="@Url.Action("Index", "ImportExport", new { area = "Admin" })">
                                     <i class='icon-random'></i>Import / Export
@@ -124,21 +138,6 @@
                                     <i class='icon-exclamation-sign'></i>Log
                                 </a>
                             </li>
-
-                            <li class="nav-header">Membership</li>
-                            <li>
-                                <a href="@Url.Action("Manage", "Account", new { area = "Admin" }, null)">
-                                    <i class='icon-user'></i>Manage Users
-                                </a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("ListAllRoles", "Account", new { area = "Admin" }, null)"><i class="icon-flag"></i>Manage Roles</a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("AddRole", "Account", new { area = "Admin" }, null)"><i class="icon-plus"></i>Add Roles</a>
-                            </li>
-
-
                         </ul>
                     </div>
                     @Html.Partial("_GetCurrentVersion")

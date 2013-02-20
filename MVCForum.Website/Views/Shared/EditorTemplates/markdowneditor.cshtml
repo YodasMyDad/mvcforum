@@ -25,7 +25,7 @@
         @*<textarea class="wmd-input" id="wmd-input"></textarea>*@
         @Html.TextArea(string.Empty, new {@class = "wmd-input"})
     </div>
-    <p><a target="_blank" href="http://stackoverflow.com/editing-help">Need formatting help?</a></p>
+    <p><a target="_blank" href="http://stackoverflow.com/editing-help">@Html.LanguageString("Editor.NeedHelp")</a></p>
     <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
          
 </div>

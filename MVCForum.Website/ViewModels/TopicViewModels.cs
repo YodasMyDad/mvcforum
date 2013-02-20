@@ -47,7 +47,9 @@ namespace MVCForum.Website.ViewModels
         public bool IsLocked { get; set; }
 
         [Required]
+        [ForumMvcResourceDisplayName("Topic.Label.Category")]
         public Guid Category { get; set; }
+
         public string Tags { get; set; }
 
         public IEnumerable<Category> Categories { get; set; }

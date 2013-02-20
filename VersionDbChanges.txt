@@ -144,3 +144,6 @@ Web.config Changes
 --- Poll.Button.Create = Create Poll
 --- Poll.Placeholder.TypeAnswerHere = Type Answer Here
 --- Topic.OptionsHeading = More Options
+--- Buttons.CreatePost = Add Post
+--- Topic.Label.Category = Choose Category
+--- Editor.NeedHelp = Need formatting help?
