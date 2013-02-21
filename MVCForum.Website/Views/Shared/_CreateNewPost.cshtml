@@ -12,7 +12,7 @@
                                                                         }, new { @id = "postcodeform" }))
     {
         <div class="editorholder">
-            @Html.EditorFor(x => x.PostContent, new { @class = "createpost required" })
+            @Html.EditorFor(x => x.PostContent, new { @class = "createpost required rte" })
             @Html.ValidationMessageFor(x => x.PostContent)
         </div>
         <input type="submit" id="createpostbutton" class="btn btn-success btn-large" value="@Html.LanguageString("Buttons.CreatePost")"/> 

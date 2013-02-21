@@ -71,7 +71,8 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [Display(Name = "Signature")]
         [StringLength(1000)]
         //[UIHint("bbeditor"), AllowHtml]
-        [UIHint("markdowneditor"), AllowHtml]
+        [UIHint("tinymceeditor"), AllowHtml]
+        //[UIHint("markdowneditor"), AllowHtml]
         public string Signature { get; set; }
 
         [Display(Name = "Age")]
