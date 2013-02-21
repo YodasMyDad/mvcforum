@@ -37,7 +37,7 @@ namespace MVCForum.Website.Controllers
                 var pageIndex = p ?? 1;
 
                 // Get lucene to search
-                var foundTopicIds = _luceneService.Search(term).Select(x => x.TopicId).ToList();
+                var foundTopicIds = _luceneService.Search(term, false).Select(x => x.TopicId).ToList();
 
                 //// Get all the topics based on the search value
                 //var topics = _topicsService.SearchTopics(pageIndex,

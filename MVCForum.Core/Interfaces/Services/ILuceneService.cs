@@ -15,8 +15,8 @@ namespace MVCForum.Domain.Interfaces.Services
         void OptimiseIndex();
         LuceneSearchModel MapToModel(Post post);
         LuceneSearchModel MapToModel(Topic topic);
-        IEnumerable<LuceneSearchModel> Search(string searchTerm, string fieldName);
-        IEnumerable<LuceneSearchModel> Search(string searchTerm);
+        IEnumerable<LuceneSearchModel> Search(string searchTerm, string fieldName, bool doFuzzySearch = false);
+        IEnumerable<LuceneSearchModel> Search(string searchTerm, bool doFuzzySearch = false);
         IEnumerable<LuceneSearchModel> GetAll();
    }
 }

@@ -124,20 +124,22 @@ namespace MVCForum.Services
         /// </summary>
         /// <param name="searchTerm"></param>
         /// <param name="fieldName"></param>
+        /// <param name="doFuzzySearch"></param>
         /// <returns></returns>
-        public IEnumerable<LuceneSearchModel> Search(string searchTerm, string fieldName)
+        public IEnumerable<LuceneSearchModel> Search(string searchTerm, string fieldName, bool doFuzzySearch = false)
         {
-            return GoLucene.Search(searchTerm, fieldName);
+            return GoLucene.Search(searchTerm, fieldName, doFuzzySearch);
         }
 
         /// <summary>
         /// Search the index by search term
         /// </summary>
         /// <param name="searchTerm"></param>
+        /// <param name="doFuzzySearch"></param>
         /// <returns></returns>
-        public IEnumerable<LuceneSearchModel> Search(string searchTerm)
+        public IEnumerable<LuceneSearchModel> Search(string searchTerm, bool doFuzzySearch = false)
         {
-            return GoLucene.Search(searchTerm);
+            return GoLucene.Search(searchTerm, string.Empty, doFuzzySearch);
         }
 
         /// <summary>

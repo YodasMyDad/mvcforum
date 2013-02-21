@@ -18,5 +18,8 @@ namespace MVCForum.Lucene.LuceneModel
         // User Stuff
         public string Username { get; set; }
         public Guid UserId { get; set; }
+
+        //Score
+        public float Score { get; set; }
     }
 }
