@@ -7,6 +7,7 @@ using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
+using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.ViewModels;
 
@@ -35,6 +36,9 @@ namespace MVCForum.Website.Controllers
             {
                 // Set the page index
                 var pageIndex = p ?? 1;
+
+                // Returns the formatted string to search on
+                var formattedSearchTerm = StringUtils.ReturnSearchString(term);
 
                 // Get lucene to search
                 var foundTopicIds = _luceneService.Search(term, false).Select(x => x.TopicId).ToList();
