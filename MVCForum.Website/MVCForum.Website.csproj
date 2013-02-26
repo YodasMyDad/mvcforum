@@ -479,6 +479,8 @@
     <Content Include="Content\cache\Cache.txt" />
     <Content Include="Content\Emails\EmailNotification.htm" />
     <Content Include="Content\Images\arrow-spinner-blue.gif" />
+    <Content Include="Content\Images\icon-poll.png" />
+    <Content Include="Content\Images\icon-sticky.png" />
     <Content Include="Content\Images\mail-add.png" />
     <Content Include="Content\Images\mail-delete.png" />
     <Content Include="Content\Images\rss-icon.png" />

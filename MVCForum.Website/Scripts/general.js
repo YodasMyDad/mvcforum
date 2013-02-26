@@ -190,7 +190,14 @@ $(function () {
     }
 
     // Poll Answer counter
-    var counter = 0;
+    //var counter = 0;
+    
+    // This check is for the edit page
+    //if (typeof counter === 'undefined') {
+    //    // variable is undefined
+    //} else {
+    //    ShowHideRemovePollAnswerButton(counter);
+    //}    
 
     // Remove the polls
     $(".removepollbutton").click(function (e) {
@@ -224,16 +231,16 @@ $(function () {
         e.preventDefault();
         AddNewPollAnswer(counter);
         counter++;
-        ShowHideRemovePollAnswerButton(counter);
+        //ShowHideRemovePollAnswerButton(counter);
     });
 
     // Remove a poll answer
     $(".removeanswer").click(function (e) {
         e.preventDefault();
-        if (counter > 1) {
+        if (counter > 0) {
             counter--;
             $("#answer" + counter).remove();
-            ShowHideRemovePollAnswerButton(counter);
+            //ShowHideRemovePollAnswerButton(counter);
         }
     });
     
@@ -330,14 +337,14 @@ function AddNewPollAnswer(counter) {
     liHolder.appendTo(".pollanswerlist");
 }
 
-function ShowHideRemovePollAnswerButton(counter) {
-    var removeButton = $('.removeanswer');
-    if(counter > 1) {
-        removeButton.show();
-    } else {
-        removeButton.hide();
-    }
-}
+//function ShowHideRemovePollAnswerButton(counter) {
+//    var removeButton = $('.removeanswer');
+//    if(counter > 1) {
+//        removeButton.show();
+//    } else {
+//        removeButton.hide();
+//    }
+//}
 
 //---------------- Functions------------------------
 function RemovePrivateMessageTableRow(linkClicked) {

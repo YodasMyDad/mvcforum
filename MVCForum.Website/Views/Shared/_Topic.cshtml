@@ -27,7 +27,11 @@
                     <h3><a href="@Html.Raw(topic.NiceUrl)">
                             @if (topic.IsSticky)
                             {
-                                <i class="icon-exclamation-sign"></i>
+                                <img src="@Url.Content("~/Content/Images/icon-sticky.png")" class="topicicon" alt="" /> 
+                            }
+                            @if (topic.Poll != null)
+                            {
+                                <img src="@Url.Content("~/Content/Images/icon-poll.png")" class="topicicon" alt="" />
                             }
                             @Html.Raw(topic.Name)
                         </a></h3>

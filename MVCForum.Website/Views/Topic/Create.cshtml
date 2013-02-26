@@ -10,14 +10,17 @@
 @section Header
 {
     @(
- Bundle.JavaScript()
+        Bundle.JavaScript()
             .Add("~/Scripts/jquery.validate.min.js")
             .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
             .Add("~/Scripts/jquery.tagsinput.min.js")
             .Add("~/Scripts/tags.js")
 
             .MvcRender("~/scripts/cache/topic-combined_#.js")
-    )
+          )
+    <script type="text/javascript">
+        counter = 0;
+    </script>
 }
 
 @section side
@@ -77,7 +80,7 @@
                     <input type="hidden" id="pollanswerplaceholder" value="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")"/>
                 </div>
                 <div class="span2 polladdremovenewanswers">
-                    <a href="#" class="btn addanswer"><i class="icon-plus-sign"></i></a><a href="#" class="btn removeanswer" style="display: none;"><i class="icon-remove-sign"></i></a>
+                    <a href="#" class="btn addanswer"><i class="icon-plus-sign"></i></a><a href="#" class="btn removeanswer"><i class="icon-remove-sign"></i></a>
                 </div>
             </div>
        }

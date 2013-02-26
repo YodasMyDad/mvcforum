@@ -1,7 +1,7 @@
 ﻿
 <div class="side-box sidesearchbox">
     <h5>@Html.LanguageString("Side.Search")</h5>
-    @using (Html.BeginForm("Index", "Search"))
+    @using (Html.BeginForm("Index", "Search", FormMethod.Get))
     {
         <ul class="clearfix">
             <li>

@@ -30,6 +30,7 @@ namespace MVCForum.Website.Controllers
             _luceneService = luceneService;
         }
 
+        [HttpGet]
         public ActionResult Index(int? p, string term)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -41,7 +42,7 @@ namespace MVCForum.Website.Controllers
                 var formattedSearchTerm = StringUtils.ReturnSearchString(term);
 
                 // Get lucene to search
-                var foundTopicIds = _luceneService.Search(term, false).Select(x => x.TopicId).ToList();
+                var foundTopicIds = _luceneService.Search(formattedSearchTerm, false).Select(x => x.TopicId).ToList();
 
                 //// Get all the topics based on the search value
                 //var topics = _topicsService.SearchTopics(pageIndex,
@@ -63,7 +64,8 @@ namespace MVCForum.Website.Controllers
                     Topics = topics,
                     AllPermissionSets = new Dictionary<Category, PermissionSet>(),
                     PageIndex = pageIndex,
-                    TotalCount = topics.TotalCount
+                    TotalCount = topics.TotalCount,
+                    Term = formattedSearchTerm
                 };
 
                 // loop through the categories and get the permissions
@@ -89,20 +91,5 @@ namespace MVCForum.Website.Controllers
             return PartialView();
         }
 
-    }
-
-    public static class testing
-    {
-        public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
-        {
-            var seenKeys = new HashSet<TKey>();
-            foreach (TSource element in source)
-            {
-                if (seenKeys.Add(keySelector(element)))
-                {
-                    yield return element;
-                }
-            }
-        }
     }
 }

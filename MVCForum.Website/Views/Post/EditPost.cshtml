@@ -2,7 +2,8 @@
 @model MVCForum.Website.ViewModels.EditPostViewModel
 
 @{
-    ViewBag.Title = Html.LanguageString("Post.Edit");    
+    ViewBag.Title = Html.LanguageString("Post.Edit");
+    var count = 0;
 }
 
 @section Header
@@ -15,7 +16,10 @@
             .Add("~/Scripts/tags.js")
             
             .MvcRender("~/scripts/cache/topic-combined_#.js")
-    )
+          )
+    <script type="text/javascript">
+        counter = @(Model.PollAnswers != null ? @Model.PollAnswers.Count : 0);
+    </script>
 }
 
 @section side
@@ -58,6 +62,29 @@
                     </div>
                 </div>
             </div>
+        
+            if (Html.Settings().EnablePolls == true && Model.PollAnswers != null && Model.PollAnswers.Any())
+           {
+                <div class="row paddedrow pollanswerholder">
+                    <div class="span7">
+                        <ul class="pollanswerlist">
+                        @foreach (var pollAnswer in Model.PollAnswers.OrderBy(x => x.Answer))
+                        {
+                            <li id="answer@(@count)">
+                                <input type="text" name="PollAnswers[@(@count)].Answer" id="PollAnswers_@(@count)_Answer" value="@pollAnswer.Answer" placeholder="Type Answer Here">
+                                <input type="hidden" value="@pollAnswer.Id" name="PollAnswers[@(@count)].Id" id="PollAnswers_@(@count)Id" />
+                            </li>
+                            
+                            count++;
+                        }
+                        </ul>
+                        <input type="hidden" id="pollanswerplaceholder" value="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")"/>
+                    </div>
+                    <div class="span2 polladdremovenewanswers">
+                        <a href="#" class="btn addanswer"><i class="icon-plus-sign"></i></a><a href="#" class="btn removeanswer" style="display: none;"><i class="icon-remove-sign"></i></a>
+                    </div>
+                </div>
+           }
         }
         
             <div class="row">

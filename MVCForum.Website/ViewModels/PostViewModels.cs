@@ -44,6 +44,8 @@ namespace MVCForum.Website.ViewModels
 
         public string Tags { get; set; }
 
+        public IList<PollAnswer> PollAnswers { get; set; }
+
         public IEnumerable<Category> Categories { get; set; }
                 
         //[UIHint("bbeditor"), AllowHtml]
