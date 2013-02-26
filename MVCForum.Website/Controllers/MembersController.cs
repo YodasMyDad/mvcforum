@@ -51,120 +51,132 @@ namespace MVCForum.Website.Controllers
         /// <returns></returns>
         public ActionResult Register()
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
+            if (SettingsService.GetSettings().SuspendRegistration != true)
             {
-                var user = MembershipService.CreateEmptyUser();
-
-                // Populate empty viewmodel
-                var viewModel = new MemberAddViewModel
-                                    {
-                                        UserName = user.UserName,
-                                        Email = user.Email,
-                                        Password = user.Password,
-                                        IsApproved = user.IsApproved,
-                                        Comment = user.Comment,
-                                        AllRoles = RoleService.AllRoles()
-                                    };
-
-                // See if a return url is present or not and add it
-                var returnUrl = Request["ReturnUrl"];
-                if (!string.IsNullOrEmpty(returnUrl))
+                using (UnitOfWorkManager.NewUnitOfWork())
                 {
-                    viewModel.ReturnUrl = returnUrl;
-                }
+                    var user = MembershipService.CreateEmptyUser();
 
-                return View(viewModel);
+                    // Populate empty viewmodel
+                    var viewModel = new MemberAddViewModel
+                    {
+                        UserName = user.UserName,
+                        Email = user.Email,
+                        Password = user.Password,
+                        IsApproved = user.IsApproved,
+                        Comment = user.Comment,
+                        AllRoles = RoleService.AllRoles()
+                    };
+
+                    // See if a return url is present or not and add it
+                    var returnUrl = Request["ReturnUrl"];
+                    if (!string.IsNullOrEmpty(returnUrl))
+                    {
+                        viewModel.ReturnUrl = returnUrl;
+                    }
+
+                    return View(viewModel);
+                }
             }
+            return RedirectToAction("Index", "Home");
         }
 
-        //
-        // POST /Account/Add
+        /// <summary>
+        /// Add a new user
+        /// </summary>
+        /// <param name="userModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult Register(MemberAddViewModel userModel)
         {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            if (SettingsService.GetSettings().SuspendRegistration != true)
             {
 
-                // First see if there is a spam question and if so, the answer matches
-                if (!string.IsNullOrEmpty(SettingsService.GetSettings().SpamQuestion))
+                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
-                    // There is a spam question, if answer is wrong return with error
-                    if (userModel.SpamAnswer == null || userModel.SpamAnswer.Trim() != SettingsService.GetSettings().SpamAnswer)
+
+                    // First see if there is a spam question and if so, the answer matches
+                    if (!string.IsNullOrEmpty(SettingsService.GetSettings().SpamQuestion))
                     {
-                        // POTENTIAL SPAMMER!
-                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Error.WrongAnswerRegistration"));
-                        return View();
-                    }
-                }
-
-                var userToSave = new MembershipUser
-                {
-                    UserName = userModel.UserName,
-                    Email = userModel.Email,
-                    Password = userModel.Password,
-                    IsApproved = userModel.IsApproved,
-                    Comment = userModel.Comment,
-                };
-
-                var homeRedirect = false;
-
-                // Now check settings, see if users need to be manually authorised
-                var manuallyAuthoriseMembers = SettingsService.GetSettings().ManuallyAuthoriseNewMembers;
-                if (manuallyAuthoriseMembers)
-                {
-                    userToSave.IsApproved = false;
-                }
-
-                var createStatus = MembershipService.CreateUser(userToSave);
-                if (createStatus != MembershipCreateStatus.Success)
-                {
-                    ModelState.AddModelError(string.Empty, MembershipService.ErrorCodeToString(createStatus));
-                }
-                else
-                {
-                    if (!manuallyAuthoriseMembers)
-                    {
-                        // If not manually authorise then log the user in
-                        FormsAuthentication.SetAuthCookie(userToSave.UserName, false);
-                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        // There is a spam question, if answer is wrong return with error
+                        if (userModel.SpamAnswer == null || userModel.SpamAnswer.Trim() != SettingsService.GetSettings().SpamAnswer)
                         {
-                            Message = LocalizationService.GetResourceString("Members.NowRegistered"),
-                            MessageType = GenericMessages.success
-                        };
-                        homeRedirect = true;
+                            // POTENTIAL SPAMMER!
+                            ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Error.WrongAnswerRegistration"));
+                            return View();
+                        }
+                    }
+
+                    var userToSave = new MembershipUser
+                    {
+                        UserName = userModel.UserName,
+                        Email = userModel.Email,
+                        Password = userModel.Password,
+                        IsApproved = userModel.IsApproved,
+                        Comment = userModel.Comment,
+                    };
+
+                    var homeRedirect = false;
+
+                    // Now check settings, see if users need to be manually authorised
+                    var manuallyAuthoriseMembers = SettingsService.GetSettings().ManuallyAuthoriseNewMembers;
+                    if (manuallyAuthoriseMembers)
+                    {
+                        userToSave.IsApproved = false;
+                    }
+
+                    var createStatus = MembershipService.CreateUser(userToSave);
+                    if (createStatus != MembershipCreateStatus.Success)
+                    {
+                        ModelState.AddModelError(string.Empty, MembershipService.ErrorCodeToString(createStatus));
                     }
                     else
                     {
-                        ViewBag.Message = new GenericMessageViewModel
+                        if (!manuallyAuthoriseMembers)
                         {
-                            Message = LocalizationService.GetResourceString("Members.NowRegisteredNeedApproval"),
-                            MessageType = GenericMessages.success
-                        };
-                    }
-
-                    try
-                    {
-                        unitOfWork.Commit();
-                        if (homeRedirect)
-                        {
-                            if (Url.IsLocalUrl(userModel.ReturnUrl) && userModel.ReturnUrl.Length > 1 && userModel.ReturnUrl.StartsWith("/")
-                            && !userModel.ReturnUrl.StartsWith("//") && !userModel.ReturnUrl.StartsWith("/\\"))
+                            // If not manually authorise then log the user in
+                            FormsAuthentication.SetAuthCookie(userToSave.UserName, false);
+                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                             {
-                                return Redirect(userModel.ReturnUrl);
+                                Message = LocalizationService.GetResourceString("Members.NowRegistered"),
+                                MessageType = GenericMessages.success
+                            };
+                            homeRedirect = true;
+                        }
+                        else
+                        {
+                            ViewBag.Message = new GenericMessageViewModel
+                            {
+                                Message = LocalizationService.GetResourceString("Members.NowRegisteredNeedApproval"),
+                                MessageType = GenericMessages.success
+                            };
+                        }
+
+                        try
+                        {
+                            unitOfWork.Commit();
+                            if (homeRedirect)
+                            {
+                                if (Url.IsLocalUrl(userModel.ReturnUrl) && userModel.ReturnUrl.Length > 1 && userModel.ReturnUrl.StartsWith("/")
+                                && !userModel.ReturnUrl.StartsWith("//") && !userModel.ReturnUrl.StartsWith("/\\"))
+                                {
+                                    return Redirect(userModel.ReturnUrl);
+                                }
+                                return RedirectToAction("Index", "Home", new { area = string.Empty });
                             }
-                            return RedirectToAction("Index", "Home", new { area = string.Empty });
+                        }
+                        catch (Exception ex)
+                        {
+                            unitOfWork.Rollback();
+                            LoggingService.Error(ex);
+                            ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        unitOfWork.Rollback();
-                        LoggingService.Error(ex);
-                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
-                    }
-                }
 
-                return View();
+                    return View();
+                }
             }
+            return RedirectToAction("Index", "Home");
         }
 
         public ActionResult LogonFacebook()
@@ -342,7 +354,7 @@ namespace MVCForum.Website.Controllers
                 {
                     Message = LocalizationService.GetResourceString("Members.Errors.LogonGeneric"),
                     MessageType = GenericMessages.error
-                };   
+                };
             }
             return RedirectToAction("LogOn");
         }
@@ -561,7 +573,7 @@ namespace MVCForum.Website.Controllers
                             // Got the long lat and save them to the user
                             user.Latitude = longLat[0];
                             user.Longitude = longLat[1];
-                        }  
+                        }
                     }
                     catch
                     {

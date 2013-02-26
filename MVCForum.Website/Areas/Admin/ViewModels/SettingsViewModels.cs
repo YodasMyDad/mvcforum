@@ -151,5 +151,8 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [DisplayName("Enable social logins (Facebook etc...) - You must have correct AppId/Keys too in web.config")]
         public bool EnableSocialLogins { get; set; }
+
+        [DisplayName("Suspend the registration (Don't allow any new members to register)")]
+        public bool SuspendRegistration { get; set; }
     }
 }

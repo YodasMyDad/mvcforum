@@ -17,19 +17,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Externals", "Externals", "{
 		Externals\NHibernate.Caches.SysCache.dll = Externals\NHibernate.Caches.SysCache.dll
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{AA1C25B1-47B4-4AB2-822E-23C040D0A784}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Badges", "Badges", "{30C79D19-A83A-4B54-A0D7-1768F44EE489}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Events", "Events", "{E9B80120-C1CF-40D7-B6C6-4D72FC540934}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{4425AF88-0237-48A1-AEA0-F3C4AE397C36}"
 	ProjectSection(SolutionItems) = preProject
 		ReadMe.txt = ReadMe.txt
 		VersionDbChanges.txt = VersionDbChanges.txt
 	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{9C8E5C1C-3A0A-4B45-BEB5-3D890C8FE117}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6688F28A-4514-420C-B5F7-DA1D222FEE78}"
 	ProjectSection(SolutionItems) = preProject
@@ -72,8 +64,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.ConsoleApp", "MVCForum.Console\MVCForum.ConsoleApp.csproj", "{6947B6B5-9EDF-406B-A8C1-A97CF0244BBF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Lucene", "MVCForum.Lucene\MVCForum.Lucene.csproj", "{09B73E3F-171F-4DF3-8802-60BE071CFFBD}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Badge", "Badge", "{083B0A57-613A-4B9C-A144-7588B75BF523}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -236,14 +226,14 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{30C79D19-A83A-4B54-A0D7-1768F44EE489} = {AA1C25B1-47B4-4AB2-822E-23C040D0A784}
-		{E9B80120-C1CF-40D7-B6C6-4D72FC540934} = {AA1C25B1-47B4-4AB2-822E-23C040D0A784}
-		{9C8E5C1C-3A0A-4B45-BEB5-3D890C8FE117} = {AA1C25B1-47B4-4AB2-822E-23C040D0A784}
 		{E9B10F80-134F-4DC1-BA6F-7728EF2CAE58} = {5C377A3D-654A-48DF-AE1A-FF7CE84C15B5}
 		{5E373803-C182-47CF-AA62-254BD4CECE32} = {5C377A3D-654A-48DF-AE1A-FF7CE84C15B5}
 		{BAF62DE6-51D0-49AB-9E4E-9240E85E9C35} = {5C377A3D-654A-48DF-AE1A-FF7CE84C15B5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.2.1.505.2\lib\NET35
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
