@@ -16,7 +16,7 @@ namespace Badges.Time
         public bool Rule(MembershipUser user, IMVCForumAPI api)
         {
             var anniversary = new DateTime(user.CreateDate.Year + 1, user.CreateDate.Month, user.CreateDate.Day);
-            return DateTime.Now >= anniversary;
+            return DateTime.UtcNow >= anniversary;
         }
     }
 }

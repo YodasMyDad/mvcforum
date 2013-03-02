@@ -62,7 +62,7 @@ namespace MVCForum.Website.Controllers
 
             // Check flood control
             var lastMessage = _privateMessageService.GetLastSentPrivateMessage(LoggedOnUser.Id);
-            if (lastMessage != null && DateUtils.TimeDifferenceInMinutes(DateTime.Now, lastMessage.DateSent) < SettingsService.GetSettings().PrivateMessageFloodControl)
+            if (lastMessage != null && DateUtils.TimeDifferenceInMinutes(DateTime.UtcNow, lastMessage.DateSent) < SettingsService.GetSettings().PrivateMessageFloodControl)
             {
                 return ErrorToInbox(LocalizationService.GetResourceString("PM.SendingToQuickly"));
             }

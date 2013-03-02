@@ -221,7 +221,7 @@ namespace MVCForum.Services
             if (user.FailedPasswordAttemptCount >= allowedPasswordAttempts)
             {
                 user.IsLockedOut = true;
-                user.LastLockoutDate = DateTime.Now;
+                user.LastLockoutDate = DateTime.UtcNow;
             }
 
             if (!passwordMatches)
@@ -239,7 +239,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public MembershipUser CreateEmptyUser()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             return new MembershipUser
                        {
@@ -312,9 +312,9 @@ namespace MVCForum.Services
                     newUser.Roles = new List<MembershipRole> { _settingsRepository.GetSettings().NewMemberStartingRole };
 
                     // Set dates
-                    newUser.CreateDate = newUser.LastPasswordChangedDate = DateTime.Now;
+                    newUser.CreateDate = newUser.LastPasswordChangedDate = DateTime.UtcNow;
                     newUser.LastLockoutDate = (DateTime)SqlDateTime.MinValue;
-                    newUser.LastLoginDate = DateTime.Now;
+                    newUser.LastLoginDate = DateTime.UtcNow;
 
                     newUser.IsApproved = !_settingsRepository.GetSettings().ManuallyAuthoriseNewMembers;
                     newUser.IsLockedOut = false;
@@ -462,7 +462,7 @@ namespace MVCForum.Services
 
             existingUser.Password = newHash;
             existingUser.PasswordSalt = salt;
-            existingUser.LastPasswordChangedDate = DateTime.Now;
+            existingUser.LastPasswordChangedDate = DateTime.UtcNow;
 
             return true;
         }
@@ -482,7 +482,7 @@ namespace MVCForum.Services
 
             existingUser.Password = newHash;
             existingUser.PasswordSalt = salt;
-            existingUser.LastPasswordChangedDate = DateTime.Now;
+            existingUser.LastPasswordChangedDate = DateTime.UtcNow;
             
             return true;
         }
@@ -795,7 +795,7 @@ namespace MVCForum.Services
                     {
                         createDateStr = values[2];
                     }
-                    userToImport.CreateDate = createDateStr.IsNullEmpty() ? DateTime.Now : DateTime.Parse(createDateStr);
+                    userToImport.CreateDate = createDateStr.IsNullEmpty() ? DateTime.UtcNow : DateTime.Parse(createDateStr);
 
                     if (values.Length >= 4)
                     {

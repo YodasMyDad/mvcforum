@@ -58,7 +58,7 @@ namespace MVCForum.Services
         {
             topic = SanitizeTopic(topic);
 
-            topic.CreateDate = DateTime.Now;
+            topic.CreateDate = DateTime.UtcNow;
 
             // url slug generator
             topic.Slug = ServiceHelpers.GenerateSlug(topic.Name, x => _topicRepository.GetTopicBySlugLike(ServiceHelpers.CreateUrl(topic.Name)));
@@ -91,9 +91,9 @@ namespace MVCForum.Services
             // Create the post
             var post = new Post
             {
-                DateCreated = DateTime.Now,
+                DateCreated = DateTime.UtcNow,
                 IsTopicStarter = true,
-                DateEdited = DateTime.Now,
+                DateEdited = DateTime.UtcNow,
                 PostContent = StringUtils.GetSafeHtml(postContent),
                 User = topic.User,
                 Topic = topic

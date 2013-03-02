@@ -66,7 +66,7 @@ namespace MVCForum.Tests.Service_Tests
         public bool Rule(MembershipUser user, IMVCForumAPI api)
         {
             var anniversary = new DateTime(user.CreateDate.Year + 1, user.CreateDate.Month, user.CreateDate.Day);
-            return DateTime.Now >= anniversary;
+            return DateTime.UtcNow >= anniversary;
         }
     }
 
@@ -747,7 +747,7 @@ namespace MVCForum.Tests.Service_Tests
             _api.Topic = Substitute.For<ITopicAPI>();
             _badgeService = new BadgeService(_badgeRepository,  _api, _loggingService, _localizationService, _activityService);
 
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             var user = new MembershipUser
                            {
                                CreateDate = new DateTime(now.Year - 1, now.Month, now.Day),
@@ -772,7 +772,7 @@ namespace MVCForum.Tests.Service_Tests
             _api.Topic = Substitute.For<ITopicAPI>();
             _badgeService = new BadgeService(_badgeRepository,  _api, _loggingService, _localizationService, _activityService);
 
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
             var user = new MembershipUser
             {
                 CreateDate = new DateTime(now.Year, now.Month, now.Day),
@@ -822,13 +822,13 @@ namespace MVCForum.Tests.Service_Tests
         public static DateTime GetTimeAllowsBadgeUpdate()
         {
             var timeOffset = new TimeSpan(0, BadgeService.BadgeCheckIntervalMinutes + 1, 0);
-            return DateTime.Now.Subtract(timeOffset);            
+            return DateTime.UtcNow.Subtract(timeOffset);            
         }
 
         public static DateTime GetTimeDisAllowsBadgeUpdate()
         {
             var timeOffset = new TimeSpan(0, BadgeService.BadgeCheckIntervalMinutes - 10, 0);
-            return DateTime.Now.Subtract(timeOffset);
+            return DateTime.UtcNow.Subtract(timeOffset);
         }
 
         public static void AppendBadgeClassPath()

@@ -92,7 +92,7 @@ namespace MVCForum.Services
             category = SanitizeCategory(category);
 
             // Set the create date
-            category.DateCreated = DateTime.Now;
+            category.DateCreated = DateTime.UtcNow;
 
             // url slug generator
             category.Slug = ServiceHelpers.GenerateSlug(category.Name, x => _categoryRepository.GetBySlugLike(ServiceHelpers.CreateUrl(category.Name)));            

@@ -24,7 +24,7 @@ namespace MVCForum.Services
 
         public Poll Add(Poll poll)
         {
-            poll.DateCreated = DateTime.Now;
+            poll.DateCreated = DateTime.UtcNow;
             poll.IsClosed = false;
             return _pollRepository.Add(poll);
         }

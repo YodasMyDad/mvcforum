@@ -111,7 +111,7 @@ namespace MVCForum.Services
                 throw new ApplicationException(string.Format("The resource key with name '{0}' already exists.", newLocaleResourceKey.Name));
             }
 
-            newLocaleResourceKey.DateAdded = DateTime.Now;
+            newLocaleResourceKey.DateAdded = DateTime.UtcNow;
 
             // Now add an empty value for each language
             newLocaleResourceKey.LocaleStringResources = new List<LocaleStringResource>();
@@ -636,7 +636,7 @@ namespace MVCForum.Services
                         resourceKey = new LocaleResourceKey
                                           {
                                               Name = key,
-                                              DateAdded = DateTime.Now,
+                                              DateAdded = DateTime.UtcNow,
                                           };
 
                         Add(resourceKey);

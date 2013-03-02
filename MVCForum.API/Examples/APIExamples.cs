@@ -46,7 +46,7 @@ namespace MVCForum.API.Examples
         public void CreateTopic(MembershipUser user)
         {
             var category = _api.Category.GetBySlug("development");
-            var newTopic = new Topic {User = user, Category = category, CreateDate = DateTime.Now};
+            var newTopic = new Topic {User = user, Category = category, CreateDate = DateTime.UtcNow};
             _api.Topic.Create(newTopic);
         }
 

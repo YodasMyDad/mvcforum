@@ -44,7 +44,7 @@ namespace EFCachingProvider.Caching
         public InMemoryCache(int maxItems)
         {
             this.MaxItems = maxItems;
-            this.GetCurrentDate = () => DateTime.Now;
+            this.GetCurrentDate = () => DateTime.UtcNow;
         }
 
         /// <summary>

@@ -268,7 +268,7 @@ namespace MVCForum.Lucene
 }
 
 // Example date order by
-//var dateValue = DateTools.DateToString(DateTime.Now, DateTools.Resolution.MILLISECOND);
+//var dateValue = DateTools.DateToString(DateTime.UtcNow, DateTools.Resolution.MILLISECOND);
 //var filter = FieldCacheRangeFilter.NewStringRange("date", 
 //                 lowerVal: dateValue, includeLower: true, 
 //                 upperVal: null, includeUpper: false);

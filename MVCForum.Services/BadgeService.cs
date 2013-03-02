@@ -195,7 +195,7 @@ namespace MVCForum.Services
         private bool RecentlyProcessed(BadgeType badgeType, MembershipUser user)
         {
             var recentlyProcessed = false;
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             BadgeTypeTimeLastChecked timeBadgeLastChecked = null;
 
@@ -478,7 +478,7 @@ namespace MVCForum.Services
                                 user.Badges.Add(_badgeRepository.Get(badgeMapping.DbBadge.Id));
 
                                 badgeAwarded = true;
-                                _activityService.BadgeAwarded(badgeMapping.DbBadge, user, DateTime.Now);
+                                _activityService.BadgeAwarded(badgeMapping.DbBadge, user, DateTime.UtcNow);
 
                                 EventManager.Instance.FireAfterBadgeAwarded(this,
                                                                             new BadgeEventArgs

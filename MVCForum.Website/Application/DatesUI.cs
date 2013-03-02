@@ -24,7 +24,7 @@ namespace MVCForum.Website.Application
             DateTime time;
             if (DateTime.TryParse(date, out time))
             {
-                var span = DateTime.Now.Subtract(time);
+                var span = DateTime.UtcNow.Subtract(time);
                 var totalDays = (int)span.TotalDays;
                 var totalSeconds = (int)span.TotalSeconds;
                 if ((totalDays < 0) || (totalDays >= 0x1f))

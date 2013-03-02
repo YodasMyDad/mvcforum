@@ -402,7 +402,7 @@ namespace MVCForum.Website.Controllers
                             if (user.IsApproved && !user.IsLockedOut)
                             {
                                 FormsAuthentication.SetAuthCookie(username, model.RememberMe);
-                                user.LastLoginDate = DateTime.Now;
+                                user.LastLoginDate = DateTime.UtcNow;
 
                                 // We use temp data because we are doing a redirect
                                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel

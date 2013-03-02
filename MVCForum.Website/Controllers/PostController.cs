@@ -188,7 +188,7 @@ namespace MVCForum.Website.Controllers
                 {
                     // User has permission so update the post
                     post.PostContent = editPostViewModel.Content;
-                    post.DateEdited = DateTime.Now;
+                    post.DateEdited = DateTime.UtcNow;
 
                     // if topic starter update the topic
                     if (post.IsTopicStarter)
