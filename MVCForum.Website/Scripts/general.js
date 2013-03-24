@@ -9,59 +9,55 @@ $(function () {
 
     //---------------- On Click------------------------
 
-    $(".thumbuplink").click(function (e) {
-        var postId = $(this).attr('rel');
-        var karmascore = ".karmascore-" + postId;
-        var karmathumbholder = ".postkarmathumbs-" + postId;
-        $(karmathumbholder).remove();
+    // We add the post click events like this, so we can reattach when we do the show more posts
+    AddPostClickEvents();
 
-        var VoteUpViewModel = new Object();
-        VoteUpViewModel.Post = postId;
+    $(".showmoreposts").click(function (e) {
+        var topicId = $('#topicId').val();
+        var pageIndex = $('#pageIndex');
+        var totalPages = parseInt($('#totalPages').val());
+        var activeText = $('span.smpactive');
+        var loadingText = $('span.smploading');
+        var showMoreLink = $(this);
+
+        activeText.hide();
+        loadingText.show();
+
+        var getMorePostsViewModel = new Object();
+        getMorePostsViewModel.TopicId = topicId;
+        getMorePostsViewModel.PageIndex = pageIndex.val();
 
         // Ajax call to post the view model to the controller
-        var strung = JSON.stringify(VoteUpViewModel);
+        var strung = JSON.stringify(getMorePostsViewModel);
 
         $.ajax({
-            url: app_base + 'Vote/VoteUpPost',
+            url: app_base + 'Topic/AjaxMorePosts',
             type: 'POST',
-            dataType: 'json',
+            dataType: 'html',
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
-                SuccessfulThumbUp(karmascore);
-                BadgeVoteUp(postId);
+                // Now add the new posts
+                AddNewPosts(showMoreLink, data);
+
+                // Update the page index value
+                var newPageIdex = (parseInt(pageIndex.val()) + parseInt(1));
+                pageIndex.val(newPageIdex);
+                
+                // If the new pageindex is greater than the total pages, then hide the show more button
+                if (newPageIdex > totalPages) {
+                    showMoreLink.hide();
+                }
+                
+                // Lastly reattch the click events
+                AddPostClickEvents();
+                activeText.show();
+                loadingText.hide();
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-            }
-        });
-        e.preventDefault();
-        e.stopImmediatePropagation();
-    });
-
-    $(".thumbdownlink").click(function (e) {
-        var postId = $(this).attr('rel');
-        var karmascore = ".karmascore-" + postId;
-        var karmathumbholder = ".postkarmathumbs-" + postId;
-        $(karmathumbholder).remove();
-
-        var VoteDownViewModel = new Object();
-        VoteDownViewModel.Post = postId;
-
-        // Ajax call to post the view model to the controller
-        var strung = JSON.stringify(VoteDownViewModel);
-
-        $.ajax({
-            url: app_base + 'Vote/VoteDownPost',
-            type: 'POST',
-            dataType: 'json',
-            data: strung,
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
-                SuccessfulThumbDown(karmascore);
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                activeText.show();
+                loadingText.hide();
             }
         });
         e.preventDefault();
@@ -86,34 +82,6 @@ $(function () {
             success: function (data) {
                 // deleted, remove table row
                 RemovePrivateMessageTableRow(linkClicked);
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-            }
-        });
-        e.preventDefault();
-        e.stopImmediatePropagation();
-    });
-
-    $(".issolution").click(function (e) {
-        var solutionHolder = $(this);
-        var postId = solutionHolder.attr('rel');
-
-        var MarkAsSolutionViewModel = new Object();
-        MarkAsSolutionViewModel.Post = postId;
-
-        // Ajax call to post the view model to the controller
-        var strung = JSON.stringify(MarkAsSolutionViewModel);
-
-        $.ajax({
-            url: app_base + 'Vote/MarkAsSolution',
-            type: 'POST',
-            dataType: 'json',
-            data: strung,
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
-                MarkAsSolution(solutionHolder);
-                BadgeMarkAsSolution(postId);
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 ShowUserMessage("Error: " + xhr.status + " " + thrownError);
@@ -285,6 +253,99 @@ $(function () {
     
 
 });
+
+function AddPostClickEvents() {
+    $(".issolution").click(function (e) {
+        var solutionHolder = $(this);
+        var postId = solutionHolder.attr('rel');
+
+        var MarkAsSolutionViewModel = new Object();
+        MarkAsSolutionViewModel.Post = postId;
+
+        // Ajax call to post the view model to the controller
+        var strung = JSON.stringify(MarkAsSolutionViewModel);
+
+        $.ajax({
+            url: app_base + 'Vote/MarkAsSolution',
+            type: 'POST',
+            dataType: 'json',
+            data: strung,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                MarkAsSolution(solutionHolder);
+                BadgeMarkAsSolution(postId);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+            }
+        });
+        e.preventDefault();
+        e.stopImmediatePropagation();
+    });
+
+    $(".thumbuplink").click(function (e) {
+        var postId = $(this).attr('rel');
+        var karmascore = ".karmascore-" + postId;
+        var karmathumbholder = ".postkarmathumbs-" + postId;
+        $(karmathumbholder).remove();
+
+        var VoteUpViewModel = new Object();
+        VoteUpViewModel.Post = postId;
+
+        // Ajax call to post the view model to the controller
+        var strung = JSON.stringify(VoteUpViewModel);
+
+        $.ajax({
+            url: app_base + 'Vote/VoteUpPost',
+            type: 'POST',
+            dataType: 'json',
+            data: strung,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                SuccessfulThumbUp(karmascore);
+                BadgeVoteUp(postId);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+            }
+        });
+        e.preventDefault();
+        e.stopImmediatePropagation();
+    });
+
+    $(".thumbdownlink").click(function (e) {
+        var postId = $(this).attr('rel');
+        var karmascore = ".karmascore-" + postId;
+        var karmathumbholder = ".postkarmathumbs-" + postId;
+        $(karmathumbholder).remove();
+
+        var VoteDownViewModel = new Object();
+        VoteDownViewModel.Post = postId;
+
+        // Ajax call to post the view model to the controller
+        var strung = JSON.stringify(VoteDownViewModel);
+
+        $.ajax({
+            url: app_base + 'Vote/VoteDownPost',
+            type: 'POST',
+            dataType: 'json',
+            data: strung,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                SuccessfulThumbDown(karmascore);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+            }
+        });
+        e.preventDefault();
+        e.stopImmediatePropagation();
+    });
+}
+
+function AddNewPosts(showMoreLink, posts) {
+    showMoreLink.before(posts);
+}
 
 function AddShowVoters() {
     if ($(".showvoters").length > 0) {

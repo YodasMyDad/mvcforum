@@ -154,6 +154,14 @@ p.lastedited { font-size:0.9em; font-style:italic; color:#595959;}
 
 .createpostholder .ajaxspinner { float: right;margin: 0 0 0 0;}
 
+/*--- Topic Starter Post ---*/
+.topicstarterpost { padding: 0 0 10px 0;border-bottom: 3px #ccc solid;margin: 0 0 35px 0;}
+.topicstarterpost .post { margin-bottom: 0;}
+.topicstarterpostcomments { font-size: 22px;margin: 0; padding: 0}
+
+/*--- Show more posts button ---*/
+.showmoreposts { width: 100%;padding-left: 0;padding-right: 0;}
+
 /*--- TAGS ---*/
 div.tagsinput {background: #FFF; padding:10px 0 0 0; width:675px !Important; height:40px !Important; overflow-y: auto;}
 div.tagsinput span.tag { border: 1px solid #a5d24a; -moz-border-radius:2px; -webkit-border-radius:2px; display: block; float: left; padding: 2px 5px; text-decoration:none; background: #cde69c; color: #638421; margin-right: 5px; margin-bottom:5px;}

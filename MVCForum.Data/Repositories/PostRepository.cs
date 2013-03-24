@@ -26,6 +26,11 @@ namespace MVCForum.Data.Repositories
             return _context.Post;
         }
 
+        public Post GetTopicStarterPost(Guid topicId)
+        {
+            return _context.Post.Include(x => x.Topic).FirstOrDefault(x => x.Topic.Id == topicId && x.IsTopicStarter);
+        }
+
         public IEnumerable<Post> GetAllWithTopics()
         {
             return _context.Post.Include(x => x.Topic);
@@ -100,8 +105,8 @@ namespace MVCForum.Data.Repositories
                                 .Include(x => x.User)
                                 .Include(x => x.Topic)
                                 .Include(x => x.Votes)
-                                .Where(x => x.Topic.Id == topicId)
-                                .OrderBy(x => x.DateCreated)
+                                .Where(x => x.Topic.Id == topicId && !x.IsTopicStarter)
+                                .OrderByDescending(x => x.DateCreated)
                                 .Skip((pageIndex - 1) * pageSize)
                                 .Take(pageSize)
                                 .ToList();

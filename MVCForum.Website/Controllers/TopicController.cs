@@ -272,11 +272,13 @@ namespace MVCForum.Website.Controllers
                     //                        pageIndex,
                     //                        SettingsService.GetSettings().PostsPerPage,
                     //                        topic.Posts.Count());
-
                     var posts = _postService.GetPagedPostsByTopic(pageIndex,
                                                                   SettingsService.GetSettings().PostsPerPage,
                                                                   int.MaxValue, 
                                                                   topic.Id);
+
+                    // Get the topic starter post
+                    var topicStarter = _postService.GetTopicStarterPost(topic.Id);
 
                     // Get the permissions for the category that this topic is in
                     var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
@@ -301,7 +303,8 @@ namespace MVCForum.Website.Controllers
                         Permissions = permissions,
                         User = LoggedOnUser,
                         IsSubscribed = isSubscribed,
-                        UserHasAlreadyVotedInPoll = false
+                        UserHasAlreadyVotedInPoll = false,
+                        TopicStarterPost = topicStarter
                     };
 
                     // See if the topic has a poll, and if so see if this user viewing has already voted
@@ -339,6 +342,31 @@ namespace MVCForum.Website.Controllers
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
 
+        [HttpPost]
+        public PartialViewResult AjaxMorePosts(GetMorePostsViewModel getMorePostsViewModel)
+        {
+            // Get the topic
+            var topic = _topicService.Get(getMorePostsViewModel.TopicId);
+
+            // Get the permissions for the category that this topic is in
+            var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
+
+            // If this user doesn't have access to this topic then just return nothing
+            if (permissions[AppConstants.PermissionDenyAccess].IsTicked)
+            {
+                return null;
+            }
+
+            var viewModel = new ShowMorePostsViewModel
+                {
+                    Posts = _postService.GetPagedPostsByTopic(getMorePostsViewModel.PageIndex, SettingsService.GetSettings().PostsPerPage, int.MaxValue, topic.Id),
+                    Topic = topic,
+                    Permissions = permissions,
+                    User = LoggedOnUser
+                };
+                        
+            return PartialView(viewModel);
+        }
 
         public ActionResult TopicsByTag(string tag, int? p)
         {

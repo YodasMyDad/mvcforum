@@ -68,10 +68,22 @@
     </div>
 }
 
+<div class="topicstarterpost">
+    @{
+        var topicStarterPostModel = new ViewPostViewModel { Permissions = Model.Permissions, Post = Model.TopicStarterPost, User = Model.User, ParentTopic = Model.Topic };
+        Html.RenderPartial("_Post", topicStarterPostModel);
+    }
+    <p class="topicstarterpostcomments">@(totalCount - 1) @Html.LanguageString("Topic.Comments")</p>
+</div>
+
 @foreach (var post in Model.Posts)
 {
-    var viewModel = new ViewPostViewModel { Permissions = Model.Permissions, Post = post, User = Model.User, ParentTopic = Model.Topic };
+    var viewModel = new ViewPostViewModel {Permissions = Model.Permissions, Post = post, User = Model.User, ParentTopic = Model.Topic};
     Html.RenderPartial("_Post", viewModel);
+}
+
+@if (Model.Posts.TotalPages > 1){
+    <a href="#" class="showmoreposts btn"><span class="smpactive">@Html.LanguageString("Topic.ShowMorePosts")</span><span class="smploading" style="display: none;">@Html.LanguageString("Topic.ShowMorePostsLoading")</span></a>
 }
 
 @if (!Model.Topic.IsLocked)
@@ -88,7 +100,11 @@ else
     <p class="topiclockedmessage">@Html.LanguageString("Topic.IsLocked")</p>
 }
 
-@if (Model.Posts.TotalPages > 1)
+@*@if (Model.Posts.TotalPages > 1)
 {
     @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().PostsPerPage, totalCount, null)
-}
+}*@
+
+<input type="hidden" id="pageIndex" value="@(Model.PageIndex + 1)" />
+<input type="hidden" id="topicId" value="@Model.Topic.Id" />
+<input type="hidden" id="totalPages" value="@Model.Posts.TotalPages" />

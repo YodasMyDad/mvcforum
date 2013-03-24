@@ -7,6 +7,7 @@ namespace MVCForum.Domain.Interfaces.Services
     public interface IPostService
     {
         Post SanitizePost(Post post);
+        Post GetTopicStarterPost(Guid topicId);
         IEnumerable<Post> GetAll();
         IList<Post> GetLowestVotedPost(int amountToTake);
         IList<Post> GetHighestVotedPost(int amountToTake);

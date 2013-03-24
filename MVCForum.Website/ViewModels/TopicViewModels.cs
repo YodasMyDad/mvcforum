@@ -39,8 +39,8 @@ namespace MVCForum.Website.ViewModels
         public string Name { get; set; }
 
         //[UIHint("bbeditor"), AllowHtml]
-        [UIHint("tinymceeditor"), AllowHtml]
-        //[UIHint("markdowneditor"), AllowHtml]
+        //[UIHint("tinymceeditor"), AllowHtml]
+        [UIHint("markdowneditor"), AllowHtml]
         public string Content { get; set; }
 
         public bool IsSticky { get; set; }
@@ -62,6 +62,7 @@ namespace MVCForum.Website.ViewModels
 
     public class ShowTopicViewModel
     {
+        public Post TopicStarterPost { get; set; }
         public Topic Topic { get; set; }
         public PagedList<Post> Posts { get; set; }
         public PermissionSet Permissions { get; set; }
@@ -71,6 +72,20 @@ namespace MVCForum.Website.ViewModels
         public bool IsSubscribed { get; set; }
         public bool UserHasAlreadyVotedInPoll { get; set; }
         public int TotalVotesInPoll { get; set; }
+    }
+
+    public class GetMorePostsViewModel
+    {
+        public Guid TopicId { get; set; }
+        public int PageIndex { get; set; }
+    }
+
+    public class ShowMorePostsViewModel
+    {
+        public PagedList<Post> Posts { get; set; }
+        public PermissionSet Permissions { get; set; }
+        public MembershipUser User { get; set; }
+        public Topic Topic { get; set; }
     }
 
     public class ShowPollViewModel

@@ -970,6 +970,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Install\ManualUpgradeNeeded.cshtml" />
+    <Content Include="Views\Topic\AjaxMorePosts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Styles\" />

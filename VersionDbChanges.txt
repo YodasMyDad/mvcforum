@@ -151,6 +151,8 @@ Editor.NeedHelp = Need formatting help?
 Members.BanUser = Ban User
 Members.UnBanUser = Unban User
 Errors.NoPermissionPolls = Topic Created, But you do not have permission to create polls
+Topic.ShowMorePosts = Show More Posts
+Topic.ShowMorePostsLoading = Loading Posts...
 
 --- MembershipRole
 78947C78-FED6-43D9-8FCF-A16B00EAB040	Moderator

@@ -26,8 +26,8 @@ namespace MVCForum.Website.ViewModels
         public string Subject { get; set; }
 
         //[UIHint("bbeditor"), AllowHtml]
-        [UIHint("tinymceeditor"), AllowHtml]
-        //[UIHint("markdowneditor"), AllowHtml]
+        //[UIHint("tinymceeditor"), AllowHtml]
+        [UIHint("markdowneditor"), AllowHtml]
         public string Message { get; set; }
 
         public string PreviousMessage { get; set; }

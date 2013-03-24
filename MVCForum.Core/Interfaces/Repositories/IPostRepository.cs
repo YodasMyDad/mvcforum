@@ -7,6 +7,7 @@ namespace MVCForum.Domain.Interfaces.Repositories
     public interface IPostRepository
     {
         IEnumerable<Post> GetAll();
+        Post GetTopicStarterPost(Guid topicId);
         IEnumerable<Post> GetAllWithTopics();
         IList<Post> GetLowestVotedPost(int amountToTake);
         IList<Post> GetHighestVotedPost(int amountToTake);

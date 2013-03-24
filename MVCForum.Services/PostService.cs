@@ -46,6 +46,11 @@ namespace MVCForum.Services
             return post;
         }
 
+        public Post GetTopicStarterPost(Guid topicId)
+        {
+            return _postRepository.GetTopicStarterPost(topicId);
+        }
+
         /// <summary>
         /// Return all posts
         /// </summary>
