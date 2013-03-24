@@ -59,7 +59,7 @@
 @if (Html.Settings().EnablePolls == true)
 {
     <div class="pollcontainer">
-        @if (Model.User != null && Model.Topic.Poll != null)
+        @if (Model.Topic.Poll != null)
         {
             // Show the poll if there is one
             var viewModel = new ShowPollViewModel { Poll = Model.Topic.Poll, TotalVotesInPoll = Model.TotalVotesInPoll, UserHasAlreadyVoted = Model.UserHasAlreadyVotedInPoll, UserAllowedToVote = Model.Permissions[AppConstants.PermissionVoteInPolls].IsTicked };

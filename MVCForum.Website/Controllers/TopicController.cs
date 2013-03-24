@@ -308,12 +308,15 @@ namespace MVCForum.Website.Controllers
                     };
 
                     // See if the topic has a poll, and if so see if this user viewing has already voted
-                    if (topic.Poll != null && LoggedOnUser != null)
+                    if (topic.Poll != null)
                     {
                         // There is a poll and a user
                         // see if the user has voted or not
                         var votes = topic.Poll.PollAnswers.SelectMany(x => x.PollVotes).ToList();
-                        viewModel.UserHasAlreadyVotedInPoll = (votes.Count(x => x.User.Id == LoggedOnUser.Id) > 0);
+                        if (LoggedOnUser != null)
+                        {
+                            viewModel.UserHasAlreadyVotedInPoll = (votes.Count(x => x.User.Id == LoggedOnUser.Id) > 0);                            
+                        }
                         viewModel.TotalVotesInPoll = votes.Count();
                     }
 

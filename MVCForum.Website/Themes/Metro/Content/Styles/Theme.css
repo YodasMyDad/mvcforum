@@ -80,7 +80,7 @@ select {}
 .n3ocheckboxfield input { float: left;}
 
 /*--- Ajax Spinner ---*/
-.ajaxspinner { display: block;width:16px;height:16px;background: transparent url('../Images/arrow-spinner-blue.gif') no-repeat;text-transform: capitalize;text-indent: -9999px;}
+.ajaxspinner {width:16px;height:16px;background: transparent url('../Images/arrow-spinner-blue.gif') no-repeat;padding: 0 0 0 20px;}
 
 /*submit buttons*/
 .submit-holder { padding: 18px 0;}
