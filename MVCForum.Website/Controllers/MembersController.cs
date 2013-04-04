@@ -201,6 +201,7 @@ namespace MVCForum.Website.Controllers
                         scope = "email",
                     });
 
+
                 return Redirect(uri.ToString());
             }
             return RedirectToAction("LogOn");
@@ -311,6 +312,17 @@ namespace MVCForum.Website.Controllers
                                     MessageType = GenericMessages.success
                                 };
                             }
+
+                            // New Registration - So post to the users wall
+                            //var postparameters = new Dictionary<string, object>();
+                            //postparameters["message"] = "MVC Forum Message";
+                            //postparameters["name"] = "MVC Forum Name";
+                            //postparameters["link"] = "http://www.mvcforum.com";
+                            //postparameters["description"] = "MVC Forum Description";
+                            //postparameters["access_token"] = accessToken;
+
+                            //dynamic postResult = client.Post("/me/feed", postparameters);
+
                         }
 
                     }
