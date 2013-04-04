@@ -102,7 +102,7 @@ select {  }
 .topicpreview { padding: 2px 0 0 0;}
 .answered { background-color: #5BB75B; color: #ffffff !Important; }
 .answered .topiccomments, .answered .topicvotes {color: #ffffff !Important; }
-.topicrowstatscategory {font-size: 12px; font-style: italic;color: #808185;}
+.topicrowstatscategory {font-size: 12px; font-style: italic;color: #808185;padding: 5px 0;}
 
 .topicrecent { text-align: center;}
 .topicrecent p { margin: 0; font-size: 10px;}

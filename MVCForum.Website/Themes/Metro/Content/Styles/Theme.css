@@ -131,7 +131,7 @@ select {}
 .topicpreview { padding: 2px 0 0 0;}
 .answered { background-color: #90c153; color: #ffffff !Important; }
 .answered .topiccomments, .answered .topicvotes {color: #ffffff !Important; border-top: 2px solid #86b54b;}
-.topicrowstatscategory {font-size: 12px; font-style: italic;color: #a3a3a3;padding: 10px 0 0 0;}
+.topicrowstatscategory {font-size: 12px; font-style: italic;color: #a3a3a3;padding: 5px 0;}
 .topicrowstatscategory a, .topicrowstatscategory a:visited {color: #a3a3a3;text-decoration: underline;}
 .topicrowstatscategory a:hover { text-decoration: none;}
 
