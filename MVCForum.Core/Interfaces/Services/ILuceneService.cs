@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
-using MVCForum.Lucene.LuceneModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {

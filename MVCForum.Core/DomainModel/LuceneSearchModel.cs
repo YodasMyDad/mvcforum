@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MVCForum.Lucene.LuceneModel
+namespace MVCForum.Domain.DomainModel
 {
     public class LuceneSearchModel
     {

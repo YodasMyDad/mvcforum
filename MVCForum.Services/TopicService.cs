@@ -195,6 +195,11 @@ namespace MVCForum.Services
             return _topicRepository.GetTopicsByCsv(pageIndex, pageSize, amountToTake, topicIds);
         }
 
+        public IList<Topic> GetTopicsByCsv(int amountToTake, List<Guid> topicIds)
+        {
+            return _topicRepository.GetTopicsByCsv(amountToTake, topicIds);
+        }
+
         /// <summary>
         /// Return a topic by url slug
         /// </summary>

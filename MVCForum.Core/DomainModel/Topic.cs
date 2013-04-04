@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
@@ -31,6 +32,11 @@ namespace MVCForum.Domain.DomainModel
         public string NiceUrl
         {
             get { return UrlTypes.GenerateUrl(UrlType.Topic, Slug); }
+        }
+
+        public int VoteCount
+        {
+            get { return Posts.Select(x => x.VoteCount).Sum(); }
         }
     }
 }

@@ -407,10 +407,27 @@ namespace MVCForum.Website.Controllers
                 return View(viewModel);
             }
         }
-        
+
+        [HttpPost]
+        public PartialViewResult GetSimilarTopics(string searchTerm)
+        {
+            // Returns the formatted string to search on
+            var formattedSearchTerm = StringUtils.ReturnSearchString(searchTerm);
+
+            // Get lucene to search, we are just searching on the topic name at the moment
+            // Really need a more powerful lucene search for similar questions
+            var foundTopicIds = _luceneService.Search(formattedSearchTerm, AppConstants.LucTopicName, false).Select(x => x.TopicId).ToList();
+
+            // Get the topics
+            var topics = _topicService.GetTopicsByCsv(AppConstants.SimilarTopicsListSize, foundTopicIds);
+
+            // Pass the list to the partial view
+            return PartialView(topics);
+        }
 
         private void NotifyNewTopics(Category cat)
         {
+                // *CHANGE THIS TO BE CALLED LIKE THE BADGES VIA AN AJAX Method* 
                 // TODO: This really needs to be an async call so it doesn't hang when a user creates  
                 // TODO: a topic if there are 1000's of users
 

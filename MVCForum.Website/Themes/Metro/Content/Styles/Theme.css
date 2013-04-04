@@ -121,6 +121,7 @@ select {}
 .topicstatsblock {background: none repeat scroll 0 0 #BFBFBF; padding:0; width: 50px;}
 .topicvotes { font-size: 22px;font-weight: bold; padding: 3px 0 4px 0;color: #fff;border-bottom: 3px solid #ffffff; border-top: 2px solid #a8a7a7;}
 .topicvotes span { font-size: 10px;font-weight: normal;display: block;}
+.topicvotessmall { background: none repeat scroll 0 0 #BFBFBF;display: block;width: 25px;font-size: 18px;text-align: center;}
 
 .topiccomments {font-size: 22px;font-weight: bold;color: #fff;padding:3px 0 4px 0; border-top: 2px solid #a8a7a7;}
 .topiccomments span {font-size: 10px;font-weight: normal;display: block;}
@@ -403,5 +404,8 @@ ul.tagCloud li span.tagCount {float: left; padding: 0 2px; width: auto;display: 
 .relatedtopicsholder { display: none;}
 .relatedtopicsholder .relatedtopics {}
 .relatedtopicsholder .relatedtopics h5 {}
-.relatedtopicsholder .relatedtopics ul {}
-.relatedtopicsholder .relatedtopics ul li {}
+.relatedtopicsholder .relatedtopics ul { display: block; height: 150px;overflow-y: scroll; overflow-x: clip;padding: 0;margin: 0;}
+.relatedtopicsholder .relatedtopics ul li { padding: 1px 0;display: block;margin: 0;}
+.relatedtopicsholder .relatedtopics ul li span.topicvotessmall { float: left;margin: 0 8px 0 0;border-bottom: none;}
+.relatedtopicsholder .relatedtopics ul li a, .relatedtopicsholder .relatedtopics ul li a:visited { font-size: 16px;line-height: 25px;color: #4891dc;}
+.relatedtopicsholder .relatedtopics ul li a:hover {}

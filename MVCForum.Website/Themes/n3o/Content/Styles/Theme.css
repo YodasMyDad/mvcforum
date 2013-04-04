@@ -92,6 +92,7 @@ select {  }
 .topicstatsblock {background: none repeat scroll 0 0 #EEEEEE; padding:6px 0;-moz-border-radius: 4px; -webkit-border-radius: 4px; -khtml-border-radius: 4px; border-radius: 4px;}
 .topicvotes { font-size: 26px;font-weight: bold;margin: 0 0 6px 0;padding: 0 0 6px 0;color: #808185;border-bottom: 2px solid #ffffff;}
 .topicvotes span { font-size: 10px;font-weight: normal;display: block;}
+.topicvotessmall { background: none repeat scroll 0 0 #EEEEEE;display: block;width: 25px;font-size: 18px;text-align: center;margin: 0;padding:5px 0;}
 
 .topiccomments {font-size: 26px;font-weight: bold;color: #8e8f91;}
 .topiccomments span {font-size: 10px;font-weight: normal;display: block;}
@@ -346,6 +347,9 @@ ul.pollanswerlist li { list-style: none;padding: 4px 0;}
 /*--- Related Question Lookup ---*/
 .relatedtopicsholder { display: none;}
 .relatedtopicsholder .relatedtopics {}
-.relatedtopicsholder .relatedtopics h5 {}
-.relatedtopicsholder .relatedtopics ul {}
-.relatedtopicsholder .relatedtopics ul li {}
+.relatedtopicsholder .relatedtopics h5 { font-size: 18px;padding: 0 0 8px 0;}
+.relatedtopicsholder .relatedtopics ul { display: block; height: 150px;overflow-y: scroll; overflow-x: clip;padding: 0;margin: 0;}
+.relatedtopicsholder .relatedtopics ul li { padding: 1px 0;display: block;margin: 0;}
+.relatedtopicsholder .relatedtopics ul li span.topicvotessmall { float: left;margin: 0 8px 0 0;border-bottom: none;}
+.relatedtopicsholder .relatedtopics ul li a, .relatedtopicsholder .relatedtopics ul li a:visited { font-size: 16px;line-height: 25px;color: #4891dc;}
+.relatedtopicsholder .relatedtopics ul li a:hover {}

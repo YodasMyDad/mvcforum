@@ -12,6 +12,33 @@ $(function () {
     // We add the post click events like this, so we can reattach when we do the show more posts
     AddPostClickEvents();
 
+    var topicName = $(".createtopicname");
+    if (topicName.length > 0) {
+        topicName.focusout(function () {
+            var tbValue = $.trim(topicName.val()); 
+            var length = tbValue.length;
+            if (length > 5) {
+                // Someone has entered some text more than 5 charactors and now clicked
+                // out of the textbox, so search
+                $.ajax({
+                    url: app_base + 'Topic/GetSimilarTopics',
+                    type: 'POST',
+                    dataType: 'html',
+                    data: { 'searchTerm': tbValue },
+                    success: function (data) {
+                        if (data != '') {
+                            $('.relatedtopicskey').html(data);
+                            $('.relatedtopicsholder').show();
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                    }
+                });
+            }
+        });
+    }
+
     $(".showmoreposts").click(function (e) {
         var topicId = $('#topicId').val();
         var pageIndex = $('#pageIndex');

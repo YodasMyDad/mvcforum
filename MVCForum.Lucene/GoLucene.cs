@@ -9,7 +9,8 @@ using Lucene.Net.Index;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
-using MVCForum.Lucene.LuceneModel;
+using MVCForum.Domain.Constants;
+using MVCForum.Domain.DomainModel;
 using Version = Lucene.Net.Util.Version;
 
 namespace MVCForum.Lucene
@@ -17,17 +18,6 @@ namespace MVCForum.Lucene
     public static class GoLucene
     {
         // Constants - These are the name of the fields in the lucene model
-        private const string LucId = "Id";
-        private const string LucPostContent = "PostContent";
-        private const string LucDateCreated = "DateCreated";
-        private const string LucTopicName = "TopicName";
-        private const string LucTopicId = "TopicId";
-        //private const string LucTopicTags = "TopicTags";
-        private const string LucTopicUrl = "TopicUrl";
-        private const string LucUsername = "Username";
-        private const string LucUserId = "UserId";
-
-
         private const string LuceneDirectoryName = "lucene_index";
 
         // properties
@@ -99,6 +89,7 @@ namespace MVCForum.Lucene
                 {
                     var parser = new QueryParser(Version.LUCENE_30, searchField, analyzer);
                     var query = parseQuery(searchQuery, parser);
+                    searcher.SetDefaultFieldSortScoring(true, true);
                     var hits = searcher.Search(query, hitsLimit).ScoreDocs;
                     var results = _mapLuceneToDataList(hits, searcher);
                     analyzer.Close();
@@ -108,8 +99,9 @@ namespace MVCForum.Lucene
                 // search by multiple fields (ordered by RELEVANCE)
                 else
                 {
-                    var parser = new MultiFieldQueryParser(Version.LUCENE_30, new[] { LucId, LucTopicName, LucPostContent }, analyzer);
+                    var parser = new MultiFieldQueryParser(Version.LUCENE_30, new[] { AppConstants.LucId, AppConstants.LucTopicName, AppConstants.LucPostContent }, analyzer);
                     var query = parseQuery(searchQuery, parser);
+                    searcher.SetDefaultFieldSortScoring(true, true);
                     var hits = searcher.Search(query, null, hitsLimit, Sort.INDEXORDER).ScoreDocs;
                     var results = _mapLuceneToDataList(hits, searcher);
                     analyzer.Close();
@@ -148,14 +140,14 @@ namespace MVCForum.Lucene
         {
             return new LuceneSearchModel
             {
-                Id = Guid.Parse(doc.Get(LucId)),
-                TopicName = doc.Get(LucTopicName),
-                PostContent = doc.Get(LucPostContent),
-                DateCreated = DateTools.StringToDate(doc.Get(LucDateCreated)),
-                TopicId = Guid.Parse(doc.Get(LucTopicId)),
-                UserId = Guid.Parse(doc.Get(LucUserId)),
-                Username = doc.Get(LucUsername),
-                TopicUrl = doc.Get(LucTopicUrl),
+                Id = Guid.Parse(doc.Get(AppConstants.LucId)),
+                TopicName = doc.Get(AppConstants.LucTopicName),
+                PostContent = doc.Get(AppConstants.LucPostContent),
+                DateCreated = DateTools.StringToDate(doc.Get(AppConstants.LucDateCreated)),
+                TopicId = Guid.Parse(doc.Get(AppConstants.LucTopicId)),
+                UserId = Guid.Parse(doc.Get(AppConstants.LucUserId)),
+                Username = doc.Get(AppConstants.LucUsername),
+                TopicUrl = doc.Get(AppConstants.LucTopicUrl),
                 Score = score
             };
         }
@@ -188,7 +180,7 @@ namespace MVCForum.Lucene
             using (var writer = new IndexWriter(_directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED))
             {
                 // remove older index entry
-                var searchQuery = new TermQuery(new Term(LucId, record_id.ToString()));
+                var searchQuery = new TermQuery(new Term(AppConstants.LucId, record_id.ToString()));
                 writer.DeleteDocuments(searchQuery);
 
                 // close handles
@@ -233,7 +225,7 @@ namespace MVCForum.Lucene
         private static void _addToLuceneIndex(LuceneSearchModel searchModel, IndexWriter writer)
         {
             // remove older index entry
-            var searchQuery = new TermQuery(new Term(LucId, searchModel.Id.ToString()));
+            var searchQuery = new TermQuery(new Term(AppConstants.LucId, searchModel.Id.ToString()));
             writer.DeleteDocuments(searchQuery);
 
             // add new index entry
@@ -241,24 +233,24 @@ namespace MVCForum.Lucene
 
             // add lucene fields mapped to db fields
             // Posts
-            doc.Add(new Field(LucId, searchModel.Id.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-            doc.Add(new Field(LucPostContent, searchModel.PostContent, Field.Store.YES, Field.Index.ANALYZED));
+            doc.Add(new Field(AppConstants.LucId, searchModel.Id.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+            doc.Add(new Field(AppConstants.LucPostContent, searchModel.PostContent, Field.Store.YES, Field.Index.ANALYZED));
 
             //Topics
             if (!string.IsNullOrEmpty(searchModel.TopicName))
             {
-                doc.Add(new Field(LucTopicName, searchModel.TopicName, Field.Store.YES, Field.Index.ANALYZED));
+                doc.Add(new Field(AppConstants.LucTopicName, searchModel.TopicName, Field.Store.YES, Field.Index.ANALYZED));
             }
-            doc.Add(new Field(LucTopicUrl, searchModel.TopicUrl, Field.Store.YES, Field.Index.NOT_ANALYZED));            
+            doc.Add(new Field(AppConstants.LucTopicUrl, searchModel.TopicUrl, Field.Store.YES, Field.Index.NOT_ANALYZED));            
 
             // Chnage the date so we can query in date order
             var dateValue = DateTools.DateToString(searchModel.DateCreated, DateTools.Resolution.MILLISECOND);
-            doc.Add(new Field(LucDateCreated, dateValue, Field.Store.YES, Field.Index.NOT_ANALYZED));
-            doc.Add(new Field(LucTopicId, searchModel.TopicId.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+            doc.Add(new Field(AppConstants.LucDateCreated, dateValue, Field.Store.YES, Field.Index.NOT_ANALYZED));
+            doc.Add(new Field(AppConstants.LucTopicId, searchModel.TopicId.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
 
             //User
-            doc.Add(new Field(LucUsername, searchModel.Username, Field.Store.YES, Field.Index.ANALYZED));
-            doc.Add(new Field(LucUserId, searchModel.UserId.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+            doc.Add(new Field(AppConstants.LucUsername, searchModel.Username, Field.Store.YES, Field.Index.ANALYZED));
+            doc.Add(new Field(AppConstants.LucUserId, searchModel.UserId.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
 
             // add entry to index
             writer.AddDocument(doc);

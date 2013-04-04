@@ -6,7 +6,6 @@ using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Lucene;
-using MVCForum.Lucene.LuceneModel;
 
 namespace MVCForum.Services
 {

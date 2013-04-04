@@ -239,19 +239,11 @@ namespace MVCForum.Data.Repositories
 
         public PagedList<Topic> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> csv)
         {
-            // We might only want to display the top 100
-            // but there might not be 100 topics
-            var total = csv.Count;
-            if (amountToTake < total)
-            {
-                total = amountToTake;
-            }
 
             // Get the Posts and then get the topics from the post
             // This is an interim solution, as its flawed due to multiple posts in one topic so the paging might
             // be incorrect if all posts are from one topic.
             var results = _context.Topic
-                            //.Include(x => x.Posts)
                             .Include(x => x.LastPost)
                             .Include(x => x.LastPost.User)
                             .Include(x => x.Category)
@@ -263,13 +255,26 @@ namespace MVCForum.Data.Repositories
                             .ToList();
 
             // Return a paged list
-            return new PagedList<Topic>(results, pageIndex, pageSize, total);
+            return new PagedList<Topic>(results, pageIndex, pageSize, results.Count);
+        }
+
+        public IList<Topic> GetTopicsByCsv(int amountToTake, List<Guid> topicIds)
+        {
+
+            return _context.Topic
+                            .Include(x => x.LastPost)
+                            .Include(x => x.LastPost.User)
+                            .Include(x => x.Category)
+                            .Include(x => x.Posts.Select(v => v.Votes))
+                            .Where(x => topicIds.Contains(x.Id))
+                            .OrderByDescending(x => x.LastPost.DateCreated)
+                            .Take(amountToTake)
+                            .ToList();
         }
 
         public IList<Topic> GetRssTopicsByCategory(int amountToTake, Guid categoryId)
         {
             return _context.Topic
-                            //.Include(x => x.Posts)
                             .Include(x => x.LastPost)
                             .Include(x => x.LastPost.User)
                             .Include(x => x.Category)

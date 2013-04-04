@@ -5,7 +5,6 @@
     var topic = Model.Topic;
     var posts = topic.Posts.ToList();
     var topicSolved = Model.Topic.Solved ? "answered" : "";
-    var voteCount = posts.Select(x => x.VoteCount).Sum();
 }
     @if (!Model.Permissions[AppConstants.PermissionDenyAccess].IsTicked)
     {
@@ -16,7 +15,7 @@
                     <div class="topicstatsblock @topicSolved">
                         @if(Html.Settings().EnablePoints)
                         {
-                            <div class="topicvotes">@voteCount <span>@Html.LanguageString("Topic.Votes")</span></div>
+                            <div class="topicvotes">@topic.VoteCount <span>@Html.LanguageString("Topic.Votes")</span></div>
                         }                       
                         <div class="topiccomments">@(posts.Count() - 1) <span>@Html.LanguageString("Topic.Comments")</span></div>
                     </div>

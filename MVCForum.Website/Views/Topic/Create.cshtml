@@ -56,7 +56,7 @@
                     @Html.LabelFor(model => model.Name)
                 </div>
                 <div class="editor-field">
-                    @Html.TextBoxFor(model => model.Name)
+                    @Html.TextBoxFor(model => model.Name, new {@class = "createtopicname"})
                     @Html.ValidationMessageFor(model => model.Name)
                 </div>
             </div>
@@ -64,10 +64,8 @@
         
         <div class="row paddedrow relatedtopicsholder">
             <div class="span9 relatedtopics">
-                <h5></h5>
-                <ul>
-                    <li>Some cool topic name here</li>
-                </ul>
+                <h5>@Html.LanguageString("Topic.AlreadyAnswered")</h5>
+                <div class="relatedtopicskey"></div>
             </div>
         </div>
         

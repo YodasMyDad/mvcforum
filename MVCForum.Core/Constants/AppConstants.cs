@@ -2,6 +2,17 @@
 {
     public static class AppConstants
     {
+        // Lucene String NAmes
+        public const string LucId = "Id";
+        public const string LucPostContent = "PostContent";
+        public const string LucDateCreated = "DateCreated";
+        public const string LucTopicName = "TopicName";
+        public const string LucTopicId = "TopicId";
+        public const string LucTopicUrl = "TopicUrl";
+        public const string LucUsername = "Username";
+        public const string LucUserId = "UserId";
+        //private const string LucTopicTags = "TopicTags";
+
         // Cookie names
         public const string LanguageCultureCookieName = "LanguageCulture";
 
@@ -57,6 +68,7 @@
         public const int ActiveTopicsListSize = 20;
         public const int PrivateMessageListSize = 30;
         public const string PagingUrlFormat = "{0}?p={1}";
+        public const int SimilarTopicsListSize = 20;
 
         // Social
         public const int GravatarPostSize = 45;
@@ -74,6 +86,5 @@
 
         public const string InstallerName = "YesImAnInstallerSpankMe";
         public const string InMobileView = "InMobileView";
-
     }
 }

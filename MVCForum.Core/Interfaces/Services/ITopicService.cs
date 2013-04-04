@@ -19,6 +19,7 @@ namespace MVCForum.Domain.Interfaces.Services
         PagedList<Topic> GetPagedTopicsByTag(int pageIndex, int pageSize, int amountToTake, string tag);
         PagedList<Topic> SearchTopics(int pageIndex, int pageSize, int amountToTake, string searchTerm);
         PagedList<Topic> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> topicIds);
+        IList<Topic> GetTopicsByCsv(int amountToTake, List<Guid> topicIds);
         IList<Topic> GetSolvedTopicsByMember(Guid memberId);
         Topic GetTopicBySlug(string slug);
         Topic Get(Guid topicId);
