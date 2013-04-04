@@ -12,7 +12,7 @@
     
     @(
         Bundle.Css()
-            .Add("~/Content/admin/bootstrap.css")
+            .Add("~/Content/Styles/bootstrap.css")
             .Add("~/Content/admin/Admin.css")
             .Add("~/Scripts/fancybox/jquery.fancybox.css")                
             .MvcRender("~/content/cache/combinedadmin_#.css")
@@ -25,21 +25,16 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <link rel="shortcut icon" href="@Url.Content("~/ico/admin/favicon.ico")">
-    <link rel="apple-touch-icon-precomposed" href="@Url.Content("~/ico/admin/apple-touch-icon-57-precomposed.png")">
+    <link rel="shortcut icon" href="@Url.Content("~/content/admin/images/favicon.ico")">
+    <link rel="apple-touch-icon-precomposed" href="@Url.Content("~/content/admin/images/apple-touch-icon-57-precomposed.png")">
         <script type="text/javascript">
             var app_base = '@Url.Content("~/")';
         </script>
         @(Bundle.JavaScript()
-        .Add("~/Scripts/jquery.1.7.2.min.js")
+        .Add("~/Scripts/jquery-1.9.1.min.js")
         .Add("~/Scripts/jquery.unobtrusive-ajax.js")
         .Add("~/Scripts/jquery-ui.1.8.min.js")
-        .Add("~/Scripts/admin/bootstrap-tooltip.js")
-        .Add("~/Scripts/admin/bootstrap-popover.js")
-        .Add("~/Scripts/admin/bootstrap-button.js")
-        .Add("~/Scripts/admin/bootstrap-alert.js")
-        .Add("~/Scripts/admin/bootstrap-transition.js")
-        .Add("~/Scripts/admin/bootstrap-tab.js")
+        .Add("~/Scripts/bootstrap.min.js")
         .Add("~/Scripts/fancybox/jquery.fancybox.js")
         .Add("~/Scripts/admin/admin.js")
         

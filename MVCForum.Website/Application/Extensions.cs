@@ -64,8 +64,9 @@ namespace MVCForum.Website.Application
             currentPage = Math.Min(currentPage, pageCount);
 
             var urlHelper = new UrlHelper(helper.ViewContext.RequestContext, helper.RouteCollection);
-            var container = new TagBuilder("div");
-            container.AddCssClass("pagination");
+            var containerdiv = new TagBuilder("div");
+            containerdiv.AddCssClass("pagination");
+            var container = new TagBuilder("ul");
             var actionName = helper.ViewContext.RouteData.GetRequiredString("Action");
 
             // calculate the last page group number starting from the current page  	
@@ -144,8 +145,8 @@ namespace MVCForum.Website.Application
                 nextli.InnerHtml = next.ToString();
                 container.InnerHtml += nextli.ToString();
             }
-
-            return MvcHtmlString.Create(container.ToString());
+            containerdiv.InnerHtml = container.ToString();
+            return MvcHtmlString.Create(containerdiv.ToString());
         }
     }
 

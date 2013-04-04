@@ -13,7 +13,7 @@
         @ViewBag.Canonical
 
         @(Bundle.Css()
-              .Add(themePath + "/Content/Styles/bootstrap.css")
+              .Add("~/Content/Styles/bootstrap.css")
               .Add(themePath + "/Content/Styles/theme.css")
               .MvcRender("~/content/cache/combined_" + theme + "_#.css"))
            
@@ -29,13 +29,9 @@
             var app_base = '@Url.Content("~/")';
         </script>
         @(Bundle.JavaScript()
-              .Add("~/Scripts/jquery.1.7.2.min.js")
+              .Add("~/Scripts/jquery-1.9.1.min.js")
               .Add("~/Scripts/jquery.unobtrusive-ajax.js")
-              .Add("~/Scripts/bootstrap-tooltip.js")
-              .Add("~/Scripts/bootstrap-popover.js")
-              .Add("~/Scripts/bootstrap-button.js")
-              .Add("~/Scripts/bootstrap-alert.js")
-              .Add("~/Scripts/bootstrap-transition.js")
+              .Add("~/Scripts/bootstrap.min.js")
               .Add("~/Scripts/jquery.placeholder.min.js")
               .Add("~/Scripts/general.js")
               .Add(themePath + "/Content/Scripts/general.js")
@@ -84,32 +80,38 @@
     <div class="container">
         @Html.Partial("_GenericMessage")
         @Html.Partial("_NoScript")
-        <section id="main">
-            <div class="row mainbody">
-                <div class="span9">
-                    @RenderBody()
-                </div>
-                <div class="span3 sidelayoutsection">
-                    <div class="main-side-box">
-                        @if (User.Identity.IsAuthenticated)
-                        {                        
-                            <p><a href="@Url.Action("Create", "Topic")" class="btn btn-large btn-success new-discussion-button">@Html.LanguageString("Layout.CreateButton")</a></p>
-                            @Html.Action("SideAdminPanel", "Members")
-                        }
-                        @RenderSection("side", false)
-                    </div>
+        <div id="main" class="row mainbody">
+
+            <div class="span9">
+                @RenderBody()
+            </div>
+            <div class="span3 sidelayoutsection">
+                <div class="main-side-box">
+                    @if (User.Identity.IsAuthenticated)
+                    {                        
+                        <p><a href="@Url.Action("Create", "Topic")" class="btn btn-large btn-success new-discussion-button">@Html.LanguageString("Layout.CreateButton")</a></p>
+                        @Html.Action("SideAdminPanel", "Members")
+                    }
+                    @RenderSection("side", false)
                 </div>
             </div>
-        </section>
+
+        </div>
+        <hr>
+        @Html.Action("GetMainStats", "Stats")
         @RenderSection("Footer", false)
         <hr>
         <footer>
-            <!-- ########### IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE, THEY HELP US FUND DEVELOPMENT ###########
-                ########### To remove the powered by notice, then please vist http://www.mvcforum.com/license ########### -->
-
-            <p>&copy; @DateTime.UtcNow.Year - @Html.LanguageString("Layout.PoweredBy") <a href="http://www.mvcforum.com">MVCForum</a></p>
-
-            <!--########### IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE, THEY HELP US FUND DEVELOPMENT ########### -->
+            <div class="row">
+                <div class="span12">
+                    <!-- ########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ###########################
+                        If you would like to remove the powered by notice, then please vist http://www.mvcforum.com/license -->
+                    <p>
+                        &copy; @DateTime.UtcNow.Year - @Html.LanguageString("Layout.PoweredBy") <a href="http://www.mvcforum.com">MVC
+                                                                                                    Forum</a></p>
+                    <!--########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ########################### -->  
+                </div>
+            </div>
         </footer>
     </div>
 </body>

@@ -13,37 +13,42 @@
     {
         postToolTip = string.Concat(StringUtils.ReturnAmountWordsFromString(StringUtils.StripHtmlFromString(firstPost.PostContent), 50), "....");
     }
-    
+    var answerCount = (posts.Count() - 1);
+    var answerText = answerCount == 1 ? Html.LanguageString("Topic.Comment") : Html.LanguageString("Topic.Comments");
 }
 @if (!Model.Permissions[AppConstants.PermissionDenyAccess].IsTicked)
 {
-    <div class="topicrow topicsticky-@topic.IsSticky topiclocked-@topic.IsLocked">
-        <div class="row">
+    <div class="row">
+        <div class="topicrow topicsticky-@topic.IsSticky topiclocked-@topic.IsLocked">
 
-            <div class="span1 topicstats">
-                <div class="topicstatsblock @topicSolved">
+            <div class="span2 topicstats">
+
                     @if (Html.Settings().EnablePoints)
                     {
-                        <div class="topicvotes">@topic.VoteCount <span>@Html.LanguageString("Topic.Votes")</span></div>
+                        <div class="topicvotes statsblock @topicSolved">@topic.VoteCount <span>@Html.LanguageString("Topic.Votes")</span></div>
                     }
-                    <div class="topiccomments">@(posts.Count() - 1) <span>@Html.LanguageString("Topic.Comments")</span></div>
-                </div>
-                <span class="topicviews">@topic.Views @Html.LanguageString("Topic.Views")</span>
-            </div>
-            
+                    <div class="topiccomments topiccomments@(Html.Settings().EnablePoints) statsblock @topicSolved">
+                        @answerCount <span>@answerText</span>
+                    </div>
+                    <div class="topicviews topicviews@(Html.Settings().EnablePoints) statsblock @topicSolved">
+                        @topic.Views <span>@Html.LanguageString("Topic.Views")</span>
+                    </div>
 
-            <div class="span7 topicrowdetails">
+            </div>
+
+
+            <div class="span6 topicrowdetails">
                 <h3><a title="@postToolTip" href="@Html.Raw(topic.NiceUrl)">
-                    @if (topic.IsSticky)
-                    {
-                        <img src="@Url.Content("~/Content/Images/icon-sticky.png")" class="topicicon" alt="" /> 
-                    }
-                    @if (topic.Poll != null)
-                    {
-                        <img src="@Url.Content("~/Content/Images/icon-poll.png")" class="topicicon" alt="" />
-                    }
-                    @Html.Raw(topic.Name)
-                </a></h3>
+                        @if (topic.IsSticky)
+                        {
+                            <img src="@Url.Content("~/Content/Images/icon-sticky.png")" class="topicicon" alt="" /> 
+                        }
+                        @if (topic.Poll != null)
+                        {
+                            <img src="@Url.Content("~/Content/Images/icon-poll.png")" class="topicicon" alt="" />
+                        }
+                        @Html.Raw(topic.Name)
+                    </a></h3>
                 @if (topic.Tags.Any())
                 {
                     <div class="tagsinput">
@@ -64,14 +69,14 @@
             </div>
 
             <div class="span1 topicrecent">
-                <p class="topicrecenttitle">@Html.LanguageString("Topic.LatestBy")</p>
                 <p class="topicrecentavatar">
                     <a href="@topic.LastPost.User.NiceUrl">
-                        <img src="@StringUtils.GetGravatarImage(topic.LastPost.User.Email, AppConstants.GravatarTopicSize)" alt="@topic.LastPost.User.UserName" title="@topic.LastPost.User.UserName"></a>
+                        <img src="@StringUtils.GetGravatarImage(topic.LastPost.User.Email, AppConstants.GravatarTopicSize)" alt="@Html.LanguageString("Topic.LatestBy") @topic.LastPost.User.UserName" title="@Html.LanguageString("Topic.LatestBy") @topic.LastPost.User.UserName"></a>
                 </p>
                 <p class="topicrecentdate">@DatesUI.GetPrettyDate(topic.LastPost.DateCreated.ToString())</p>
             </div>
-
         </div>
     </div>
+    
+    <hr class="thin"/>
 }

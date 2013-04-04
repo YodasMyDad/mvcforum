@@ -14,7 +14,7 @@
     @ViewBag.Canonical
 
     @(Bundle.Css()
-              .Add(themePath + "/Content/Styles/bootstrap.css")
+              .Add("~/Content/Styles/bootstrap.css")
               .Add(themePath + "/Content/Styles/theme.css")
               .Add(themePath + "/Content/Styles/mobiletheme.css")
               .MvcRender("~/content/cache/combinedmobile_" + theme + "_#.css"))
@@ -29,9 +29,9 @@
         var app_base = '@Url.Content("~/")';
     </script>
     @(Bundle.JavaScript()
-              .Add("~/Scripts/jquery.1.7.2.min.js")
+              .Add("~/Scripts/jquery-1.9.1.min.js")
               .Add("~/Scripts/jquery.unobtrusive-ajax.js")
-              .Add("~/Scripts/bootstrap-alert.js")
+              .Add("~/Scripts/bootstrap.min.js")
               .Add("~/Scripts/jquery.placeholder.min.js")
               .Add("~/Scripts/general.js")
               .Add(themePath + "/Content/Scripts/mobilegeneral.js")

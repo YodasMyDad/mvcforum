@@ -20,6 +20,9 @@ h5 {}
 /* ---- Paragraph Styles ---- */
 p {}
 
+hr.thin { margin: 14px 0;}
+.span9 hr.thin:last-child { display: none;}
+
 /*--- Padded Row ---*/
 .paddedrow { padding-top: 10px;padding-bottom: 10px;}
 
@@ -81,27 +84,25 @@ select {  }
 .new-discussion-button { display: block;}
 
 /*--- Topic Listing Pages ---*/
-.topicrow { padding: 15px 0 2px 0;  border-bottom: 1px #eeeeee solid; *zoom: 1;}
+.topicrow { padding: 15px 0 2px 0; *zoom: 1;}
 .topicrow:before, .topicrow:after { display: table; content: ""; }
 .topicrow:after { clear: both; }
-.topicrow:last-child { border-bottom: none;  }
 .topicrowdetails {}
 .topicrowdetails .tagsinput { margin: 0;padding: 0;}
-.topicrowdetails h3 { margin: 0 0 9px 0;}
+.topicrowdetails h3 { margin: 0 0 9px 0;line-height:inherit;}
 
 .topicstats {text-align: center;}
-.topicstatsblock {background: none repeat scroll 0 0 #EEEEEE; padding:6px 0;-moz-border-radius: 4px; -webkit-border-radius: 4px; -khtml-border-radius: 4px; border-radius: 4px;}
-.topicvotes { font-size: 26px;font-weight: bold;margin: 0 0 6px 0;padding: 0 0 6px 0;color: #808185;border-bottom: 2px solid #ffffff;}
-.topicvotes span { font-size: 10px;font-weight: normal;display: block;}
-.topicvotessmall { background: none repeat scroll 0 0 #EEEEEE;display: block;width: 25px;font-size: 18px;text-align: center;margin: 0;padding:5px 0;}
+.statsblock {font-size: 22px;font-weight: bold; padding: 8px 0 2px 0;color: #808185;border: 1px solid #BFBFBF;height: 45px;width: 42px;float: left;background: none repeat scroll 0 0 #f5f5f5;-moz-border-radius: 5px;-webkit-border-radius: 5px;-khtml-border-radius: 5px;border-radius: 5px;}
+.statsblock span { font-size: 10px;font-weight: normal;display: block;}
 
-.topiccomments {font-size: 26px;font-weight: bold;color: #8e8f91;}
-.topiccomments span {font-size: 10px;font-weight: normal;display: block;}
-.topicviews { padding: 2px 0;font-size: 11px;color: #808185;font-style: italic;}
+.topicvotes {}
+.topicvotessmall { background: none repeat scroll 0 0 #BFBFBF;display: block;width: 25px;font-size: 18px;text-align: center;}
+.topiccomments { margin: 0 4px;}
+.topicviews {}
 
 .topicpreview { padding: 2px 0 0 0;}
-.answered { background-color: #5BB75B; color: #ffffff !Important; }
-.answered .topiccomments, .answered .topicvotes {color: #ffffff !Important; }
+.answered { background-color: #90c153; color: #ffffff !Important; border-color: #86b54b;}
+
 .topicrowstatscategory {font-size: 12px; font-style: italic;color: #808185;padding: 5px 0;}
 
 .topicrecent { text-align: center;}

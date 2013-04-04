@@ -155,6 +155,11 @@ Topic.ShowMorePosts = Show More Posts
 Topic.ShowMorePostsLoading = Loading Posts...
 Topic.AlreadyAnswered = Questions that may already have your answer
 Topic.CommentsDetails = Comments - Newest First
+Topic.Comment = Answer
+
++++ CHANGES TO EXISTING LANGUAGE STRINGS
+
+Topic.Comments = Answers
 
 --- MembershipRole
 78947C78-FED6-43D9-8FCF-A16B00EAB040	Moderator
