@@ -63,7 +63,7 @@ border-color: #86b54b #86b54b #387038; border-color: rgba(0, 0, 0, 0.1) rgba(0, 
 .editor-field input[type=text], .editor-field input[type="password"] {font-size:15px; width: 95%; line-height: 28px; height: 28px;}
 
 /*textareas*/
-textarea { min-height:220px; height:auto !important; height:220px;width: 95%;}
+textarea { min-height:220px; width: 95%;}
 
 /*dropdowns*/
 select {}
@@ -109,17 +109,18 @@ select {}
 .new-discussion-button { display: block;line-height:45px;height:45px;text-align: center;padding: 0;}
 
 /*--- Topic Listing Pages ---*/
-.topicrow { padding: 16px 0;  border-bottom: 1px #EFEFEF solid; *zoom: 1;}
+.topicrow { padding: 15px 0 2px 0;  border-bottom: 1px #EFEFEF solid; *zoom: 1;}
 .topicrow:before, .topicrow:after {display: table; content: "";}
 .topicrow:after {clear: both;}
 .topicrow:last-child { border-bottom: none;  }
 .topicrowdetails {}
+.topicrowdetails .tagsinput { margin: 0;padding: 0;}
 .topicrowdetails h3 { margin: 0 0 9px 0;}
 .topicrowdetails h3 a, .topicrowdetails h3 a:visited { color: #4891DC;font-size: 26px;}
 
 .topicstats {text-align: center;}
 .topicstatsblock {background: none repeat scroll 0 0 #BFBFBF; padding:0; width: 50px;}
-.topicvotes { font-size: 22px;font-weight: bold; padding: 3px 0 4px 0;color: #fff;border-bottom: 3px solid #ffffff; border-top: 2px solid #a8a7a7;}
+.topicvotes { font-size: 22px;font-weight: bold; padding: 2px 0 2px 0;color: #fff;border-bottom: 3px solid #ffffff; border-top: 2px solid #a8a7a7;}
 .topicvotes span { font-size: 10px;font-weight: normal;display: block;}
 .topicvotessmall { background: none repeat scroll 0 0 #BFBFBF;display: block;width: 25px;font-size: 18px;text-align: center;}
 
@@ -211,14 +212,14 @@ p.lastedited { font-size:11px; font-style:italic; color:#595959;}
 /*--- Topic Starter Post ---*/
 .topicstarterpost { padding: 0 0 10px 0;border-bottom: 3px #ccc solid;margin: 0 0 35px 0;}
 .topicstarterpost .post { margin-bottom: 0;}
-.topicstarterpostcomments { font-size: 22px;margin: 0; padding: 0}
+.topicstarterpostcomments { font-size: 22px;margin: 0;padding: 6px 0 0 0;}
 
 /*--- Show more posts button ---*/
 .showmoreposts { width: 100%;padding:10px 0;display: block;font-size: 18px;margin: 0 0 25px 0;clear: both;}
 
 
 /*--- TAGS ---*/
-div.tagsinput {background: #FFF; padding:10px 0 0 0; width:675px !Important; height:40px !Important; overflow-y: auto;}
+div.tagsinput {background: #FFF; padding:10px 0 0 0; overflow-y: auto;}
 div.tagsinput span.tag { border: 1px solid #a5d24a; -moz-border-radius:2px; -webkit-border-radius:2px; display: block; float: left; padding: 2px 5px; text-decoration:none; background: #cde69c; color: #638421; margin-right: 5px; margin-bottom:5px;}
 div.tagsinput span.tag:hover { background-color: #c3dc91;}
 div.tagsinput span.tag a { font-weight: bold; color: #82ad2b; text-decoration:none; font-size: 11px;  } 

@@ -73,7 +73,7 @@
         var topicStarterPostModel = new ViewPostViewModel { Permissions = Model.Permissions, Post = Model.TopicStarterPost, User = Model.User, ParentTopic = Model.Topic };
         Html.RenderPartial("_Post", topicStarterPostModel);
     }
-    <p class="topicstarterpostcomments">@(totalCount - 1) @Html.LanguageString("Topic.Comments")</p>
+    <p class="topicstarterpostcomments">@(totalCount - 1) @Html.LanguageString("Topic.CommentsDetails")</p>
 </div>
 
 @foreach (var post in Model.Posts)

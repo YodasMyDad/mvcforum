@@ -3,7 +3,7 @@
         'interactive': true,
         'defaultText': 'add a tag',
         'removeWithBackspace': true,
-        'minChars': 3,
+        'minChars': 2,
         'maxChars': 20,
         onAddTag: function (value) {
             if (hasWhiteSpace(value)) {
