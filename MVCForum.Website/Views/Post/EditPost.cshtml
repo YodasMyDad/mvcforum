@@ -1,6 +1,5 @@
 ﻿@using MVCForum.Domain.Constants
 @model MVCForum.Website.ViewModels.EditPostViewModel
-
 @{
     ViewBag.Title = Html.LanguageString("Post.Edit");
     var count = 0;
@@ -9,12 +8,12 @@
 @section Header
 {
     @(
-        Bundle.JavaScript()
+ Bundle.JavaScript()
             .Add("~/Scripts/jquery.validate.min.js")
             .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
             .Add("~/Scripts/jquery.tagsinput.min.js")
             .Add("~/Scripts/tags.js")
-            
+
             .MvcRender("~/scripts/cache/topic-combined_#.js")
           )
     <script type="text/javascript">
@@ -29,91 +28,106 @@
 }
 
 <div class="editpostholder">
-    
+
     @using (Html.BeginForm())
-{    
-    @Html.ValidationSummary(true)
-    @Html.AntiForgeryToken()
+    {    
+        @Html.ValidationSummary(true)
+        @Html.AntiForgeryToken()
 
         <h2>@ViewBag.Title</h2>     
         
         if (Model.IsTopicStarter)
         {
-            <div class="row paddedrow">
-                <div class="span5 topicname">
-                
-                    <div class="editor-label">
-                        @Html.LabelFor(model => model.Name)
-                    </div>
-                    <div class="editor-field">
-                        @Html.EditorFor(model => model.Name)
-                        @Html.ValidationMessageFor(model => model.Name)
-                    </div>
-
+            
+        <div class="row paddedrow">
+            <div class="span9 topicname">
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.Name)
                 </div>
-
+                <div class="editor-field">
+                    @Html.TextBoxFor(model => model.Name, new { @class = "createtopicname" })
+                    @Html.ValidationMessageFor(model => model.Name)
+                </div>
+            </div>
+        </div>
+        
+        <div class="row paddedrow relatedtopicsholder">
+            <div class="span9 relatedtopics">
+                <h5>@Html.LanguageString("Topic.AlreadyAnswered")</h5>
+                <div class="relatedtopicskey"></div>
+            </div>
+        </div>
+        
+            if (Html.Settings().EnablePolls == true && Model.PollAnswers != null && Model.PollAnswers.Any())
+            {
+        <div class="row paddedrow pollanswerholder">
+            <div class="span7">
+                <ul class="pollanswerlist">
+                    @foreach (var pollAnswer in Model.PollAnswers.OrderBy(x => x.Answer))
+                    {
+                        <li id="answer@(@count)">
+                            <input type="text" name="PollAnswers[@(@count)].Answer" id="PollAnswers_@(@count)_Answer" value="@pollAnswer.Answer" placeholder="Type Answer Here">
+                            <input type="hidden" value="@pollAnswer.Id" name="PollAnswers[@(@count)].Id" id="PollAnswers_@(@count)Id" />
+                        </li>
+                            
+                        count++;
+                    }
+                </ul>
+                <input type="hidden" id="pollanswerplaceholder" value="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")"/>
+            </div>
+            <div class="span2 polladdremovenewanswers">
+                <a href="#" class="btn addanswer"><i class="icon-plus-sign"></i></a><a href="#" class="btn removeanswer"><i class="icon-remove-sign"></i></a>
+            </div>
+        </div>
+            }
+        }
+        
+        <div class="row">
+            <div class="span9 topiccontent">
+                <div class="editor-field editorholder">
+                    @Html.EditorFor(model => model.Content)
+                    @Html.ValidationMessageFor(model => model.Content)
+                </div>
+            </div>
+        </div>   
+        
+        <div class="row">
+            <div class="span4 createtopicbuttonholder">
+                <div class="submit-holder">
+                    <input type="submit" class="btn btn-large btn-success" value="@Html.LanguageString("Topic.CreateDiscussion")" />
+                </div>
+            </div>
+            @if (Model.IsTopicStarter)
+            {
                 <div class="span4 topiccategory">
                     <div class="editor-label">
                         @Html.LabelFor(model => model.Category)
                     </div>
                     <div class="editor-field">
-                        @Html.DropDownListFor(model => model.Category, new SelectList(Model.Categories, "id", "Name"), Model.Categories.FirstOrDefault().Id)
+                        @Html.DropDownListFor(model => model.Category, new SelectList(Model.Categories, "id", "Name"))
                         @Html.ValidationMessageFor(model => model.Category)
                     </div>
                 </div>
-            </div>
-        
-            if (Html.Settings().EnablePolls == true && Model.PollAnswers != null && Model.PollAnswers.Any())
-           {
-                <div class="row paddedrow pollanswerholder">
-                    <div class="span7">
-                        <ul class="pollanswerlist">
-                        @foreach (var pollAnswer in Model.PollAnswers.OrderBy(x => x.Answer))
-                        {
-                            <li id="answer@(@count)">
-                                <input type="text" name="PollAnswers[@(@count)].Answer" id="PollAnswers_@(@count)_Answer" value="@pollAnswer.Answer" placeholder="Type Answer Here">
-                                <input type="hidden" value="@pollAnswer.Id" name="PollAnswers[@(@count)].Id" id="PollAnswers_@(@count)Id" />
-                            </li>
-                            
-                            count++;
-                        }
-                        </ul>
-                        <input type="hidden" id="pollanswerplaceholder" value="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")"/>
-                    </div>
-                    <div class="span2 polladdremovenewanswers">
-                        <a href="#" class="btn addanswer"><i class="icon-plus-sign"></i></a><a href="#" class="btn removeanswer" style="display: none;"><i class="icon-remove-sign"></i></a>
-                    </div>
-                </div>
-           }
-        }
-        
-            <div class="row">
-                <div class="span9 topiccontent">
+            }
+        </div>
+         
+            if (Model.IsTopicStarter)
+            {
+        <div class="topicoptionsholder">
 
-                    <div class="editor-label">
-                        @Html.LabelFor(model => model.Content)
-                    </div>
-                    <div class="editor-field">
-                        @Html.EditorFor(model => model.Content)
-                        @Html.ValidationMessageFor(model => model.Content)
-                    </div>
+            <h3>@Html.LanguageString("Topic.OptionsHeading")</h3>
 
-                </div>
-            </div>
-
-        if (Model.IsTopicStarter)
-        {
             <div class="row">
                 <div class="span9 topicadmincheckboxes">
-                    @if(Model.Permissions[AppConstants.PermissionCreateStickyTopics].IsTicked)
+                    @if (Model.Permissions[AppConstants.PermissionCreateStickyTopics].IsTicked)
                     {
                         <div class="editor-field n3ocheckboxfield">
                             @Html.CheckBoxFor(x => x.IsSticky)
                             @Html.LabelFor(x => x.IsSticky)
                         </div>
                     }
-                    
-                    @if(Model.Permissions[AppConstants.PermissionLockTopics].IsTicked)
+
+                    @if (Model.Permissions[AppConstants.PermissionLockTopics].IsTicked)
                     {
                         <div class="editor-field n3ocheckboxfield">
                             @Html.CheckBoxFor(x => x.IsLocked)
@@ -121,22 +135,21 @@
                         </div>
                     }
                 </div>
-            </div>
-            
-            <div class="row">
                 <div class="span9 topictagholder">
                     <div class="editor-field">
-                        @Html.TextBoxFor(model => model.Tags, new { @class = "tagstextarea tags", title = "Tag this topic" })
+                        @Html.TextAreaFor(model => model.Tags, new { @class = "tagstextarea tags", title = Html.LanguageString("Topic.TagThisTopic") })
                     </div>
                 </div>
             </div>
-        }
-
-        <div class="submit-holder">
-            <input type="submit" class="btn btn-large btn-success" value="@Html.LanguageString("Buttons.Edit")" />
         </div>
+        
+        
 
-    @Html.HiddenFor(x => x.Id)
-}
+
+            }
+
+
+        @Html.HiddenFor(x => x.Id)
+    }
 
 </div>

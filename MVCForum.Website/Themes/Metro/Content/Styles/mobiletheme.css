@@ -117,7 +117,7 @@ h6 {font-size:18px; margin-bottom:8px;}
 .mobileview .container-fluid .row .topicrow .topicstats .topicviews {} 
 .mobileview .container-fluid .row .topicrow .topicrowdetails {width: 65.95744680199999%;}
 .mobileview .container-fluid .row .topicrow .topicrowdetails h3 {}
-.mobileview .container-fluid .row .topicrow .topicrowdetails h3 a, .mobileview .topicrow .row .topicrowdetails h3 a:visited {font-size: 31px;}
+.mobileview .container-fluid .row .topicrow .topicrowdetails h3 a, .mobileview .container-fluid .row .topicrow .topicrowdetails h3 a:visited {font-size: 31px;}
 .mobileview .container-fluid .row .topicrow .topicrowdetails .topicpreview {}
 .mobileview .container-fluid .row .topicrow .topicrowdetails .topicpreview p {}
 .mobileview .container-fluid .row .topicrow .topicrowdetails .topicrowstatscategory { font-size: 13px;}
@@ -144,7 +144,7 @@ h6 {font-size:18px; margin-bottom:8px;}
 .mobileview .container-fluid .post .postmemberdetails .karmaholder .karmascore{ font-size: 23px;}
 .mobileview .container-fluid .post .postbody {width: 82.97872340425532% !Important; *width: 82.92553191489361% !Important;text-align: left;}
 .mobileview .container-fluid .post .postbody .postbodytop { font-size: 14px;}
-.mobileview .container-fluid .post .postbody .postbodytop a, .mobileview .post .postbody .postbodytop a:visited {}
+.mobileview .container-fluid .post .postbody .postbodytop a, .mobileview .container-fluid .post .postbody .postbodytop a:visited {}
 .mobileview .container-fluid .post .postbody .postbodytop a:hover {}
 .mobileview .container-fluid .post .postbody .postcontent {}
 .mobileview .container-fluid .post .postbody .postcontent img { max-width: 100%;}
@@ -170,7 +170,7 @@ h6 {font-size:18px; margin-bottom:8px;}
 .mobileview .container-fluid .footerstats ul.latestmembersjoined {}
 .mobileview .container-fluid .footerstats ul.latestmembersjoined li.latestmemberheading {}
 .mobileview .container-fluid .footerstats ul.latestmembersjoined li {}
-.mobileview .container-fluid .footerstats ul.latestmembersjoined li a, .mobileview .footerstats ul.latestmembersjoined li a:visited {}
+.mobileview .container-fluid .footerstats ul.latestmembersjoined li a, .mobileview .container-fluid .footerstats ul.latestmembersjoined li a:visited {}
 .mobileview .container-fluid .footerstats ul.latestmembersjoined li a:hover {}
             
 /*--- Bottom Side Nav ---*/
@@ -227,17 +227,17 @@ h6 {font-size:18px; margin-bottom:8px;}
 .mobileview #createpostholder input[type=submit]#createpostbutton { padding-left: 0;padding-right: 0;text-align: center;width: 100%;font-size: 24px;}
 
 /*--- Create Topic ---*/
-.mobileview .container-fluid .createtopicholder, .mobileview .editpostholder {}
-.mobileview .container-fluid .createtopicholder .topicname, .mobileview .editpostholder .topicname {width: 100%;margin: 0;padding: 0;clear: both;}
-.mobileview .container-fluid .createtopicholder .topiccategory, .mobileview .editpostholder .topiccategory {width: 100%;margin: 0;padding: 0;clear: both;}
-.mobileview .container-fluid .createtopicholder .topiccategory select, .mobileview .editpostholder .topiccategory select {}
-.mobileview .container-fluid .createtopicholder .topiccontent, .mobileview .editpostholder .topiccontent {width: 100%;margin: 0;padding: 0;clear: both;}
-.mobileview .container-fluid .createtopicholder .topictagholder, .mobileview .editpostholder .topictagholder {width: 100%;margin: 0;padding: 0;clear: both;}
-.mobileview .container-fluid .createtopicholder .topicreplynotify, .mobileview .editpostholder .topicreplynotify {width: 100%;margin: 0;padding: 0;clear: both;}
-.mobileview .container-fluid .createtopicholder .submit-holder input[type=submit], .mobileview .editpostholder .submit-holder input[type=submit] { padding-left: 0;padding-right: 0;width: 100%;font-size:24px;}
+.mobileview .container-fluid .createtopicholder, .mobileview .container-fluid .editpostholder {}
+.mobileview .container-fluid .createtopicholder .topicname, .mobileview .container-fluid .editpostholder .topicname {width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .createtopicholder .topiccategory, .mobileview .container-fluid .editpostholder .topiccategory {width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .createtopicholder .topiccategory select, .mobileview .container-fluid .editpostholder .topiccategory select {}
+.mobileview .container-fluid .createtopicholder .topiccontent, .mobileview .container-fluid .editpostholder .topiccontent {width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .createtopicholder .topictagholder, .mobileview .container-fluid .editpostholder .topictagholder {width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .createtopicholder .topicreplynotify, .mobileview .container-fluid .editpostholder .topicreplynotify {width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .createtopicholder .submit-holder input[type=submit], .mobileview .container-fluid .editpostholder .submit-holder input[type=submit] { padding-left: 0;padding-right: 0;width: 100%;font-size:24px;}
 .mobileview .container-fluid .editpostholder .topicadmincheckboxes {}
 .mobileview .container-fluid .createtopicholder .row .createtopicbuttonholder { width: 100%;padding: 0;margin: 0;}
-.mobileview .container-fluid .createtopicholder .topictagholder { display: none;}
+.mobileview .container-fluid .createtopicholder .topictagholder, .mobileview .container-fluid .editpostholder .topictagholder  { display: none;}
 .mobileview .container-fluid .createtopicholder .topiccategory { padding: 15px 0;}
 .mobileview .container-fluid .createtopicholder .pollcreatebuttonholder { display: none;}
 .mobileview .container-fluid .createtopicholder .row .topictitleholder {width: 100%;padding: 0;margin: 0;}
@@ -248,7 +248,7 @@ h6 {font-size:18px; margin-bottom:8px;}
 /*--- Pagination ---*/
 .mobileview .container-fluid .pagination {}
 .mobileview .container-fluid .pagination li {}
-.mobileview .container-fluid .pagination li a, .mobileview .pagination li a:hover { font-size: 19px;}
+.mobileview .container-fluid .pagination li a, .mobileview .container-fluid .pagination li a:hover { font-size: 19px;}
 .mobileview .container-fluid .pagination li a:visited {}
 
 /*--- Register ---*/

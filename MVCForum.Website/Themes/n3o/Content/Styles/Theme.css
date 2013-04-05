@@ -269,11 +269,20 @@ div.tagsinput div { display:block; float: left; }
 .showvotersbox ul li { padding:2px 0;list-style: none;}
 
 /*--- Polls --*/
-ul.pollanswerlist { padding: 0;margin: 0;}
-ul.pollanswerlist li { list-style: none;padding: 4px 0;}
-.polladdremovenewanswers {}
-.polladdremovenewanswers .addanswer { margin: 0 5px 0 0;}
 .pollcreatebuttonholder { text-align: right;}
+.createpollbutton {}
+.removepollbutton {}
+.pollanswerholder {}
+.pollanswerholder ul { padding: 0;margin: 0; list-style: none;}
+.pollanswerholder ul li { list-style: none; padding: 0 0 5px;}
+.pollanswerholder ul li input { width: 95%;height: 19px;line-height: 19px;}
+.showpollholder { padding: 0 0 15px 0;}
+.pollanswerrow { padding: 5px 0;font-size: 18px;padding: 5px 0;}
+.pollbar { background-color: #AAAAAA;height: 20px; float: left;margin: 0 11px 0 0; }
+.pollvotebuttonholder { padding: 10px 0;}
+.pollanswerrowholder { font-size: 14px;padding: 0 0 3px 0;font-style: italic;}
+.pollradiobuttonholder { float: left;width: 40px;text-align: center;height: 20px;}
+input[type="radio"].pollanswerselect { margin: 3px 0 0 15px;float: left;}
 
 
 /*--- Jquery UI ----*/
