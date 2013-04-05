@@ -90,7 +90,7 @@ namespace MVCForum.Data.Repositories
                 .ToList();
         }
 
-        public PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId)
+        public PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId, bool orderDescending = false)
         {
             // We might only want to display the top 100
             // but there might not be 100 topics
@@ -102,17 +102,17 @@ namespace MVCForum.Data.Repositories
 
             // Get the topics using an efficient
             var results = _context.Post
-                                .Include(x => x.User)
-                                .Include(x => x.Topic)
-                                .Include(x => x.Votes)
-                                .Where(x => x.Topic.Id == topicId && !x.IsTopicStarter)
-                                .OrderByDescending(x => x.DateCreated)
-                                .Skip((pageIndex - 1) * pageSize)
-                                .Take(pageSize)
-                                .ToList();
+                                  .Include(x => x.User)
+                                  .Include(x => x.Topic)
+                                  .Include(x => x.Votes)
+                                  .Where(x => x.Topic.Id == topicId && !x.IsTopicStarter);
 
+            results = orderDescending ? 
+                        results.OrderByDescending(x => x.DateCreated).Skip((pageIndex - 1) * pageSize).Take(pageSize)
+                         : results.OrderBy(x => x.DateCreated).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+                                                                
             // Return a paged list
-            return new PagedList<Post>(results, pageIndex, pageSize, total);
+            return new PagedList<Post>(results.ToList(), pageIndex, pageSize, total);
         }
 
         public IList<Post> GetPostsByMember(Guid memberId)

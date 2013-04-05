@@ -119,11 +119,11 @@ select {}
 .topicrow:after {clear: both;}
 .topicrowdetails {}
 .topicrowdetails .tagsinput { margin: 0;padding: 0;}
-.topicrowdetails h3 { margin: 0 0 12px 0;line-height:inherit;}
+.topicrowdetails h3 { margin: 0 0 12px 0;line-height:25px;}
 .topicrowdetails h3 a, .topicrowdetails h3 a:visited { color: #4891DC;font-size: 26px;}
 
 .topicstats {text-align: center;}
-.statsblock {font-size: 22px;font-weight: bold; padding: 8px 0 2px 0;color: #fff;border-top: 2px solid #a8a7a7;height: 45px;width: 44px;float: left;background: none repeat scroll 0 0 #BFBFBF;}
+.statsblock {font-size: 20px;font-weight: bold; padding: 8px 0 2px 0;color: #fff;border-top: 2px solid #a8a7a7;height: 45px;width: 44px;float: left;background: none repeat scroll 0 0 #BFBFBF;}
 .statsblock span { font-size: 9px;font-weight: normal;display: block;}
 
 .topicvotes {}

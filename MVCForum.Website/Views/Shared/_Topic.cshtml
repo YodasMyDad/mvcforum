@@ -22,18 +22,18 @@
         <div class="topicrow topicsticky-@topic.IsSticky topiclocked-@topic.IsLocked">
 
             <div class="span2 topicstats">
-
+            
                     @if (Html.Settings().EnablePoints)
                     {
-                        <div class="topicvotes statsblock @topicSolved">@topic.VoteCount <span>@Html.LanguageString("Topic.Votes")</span></div>
+                        <div class="topicvotes statsblock @topicSolved">@topic.VoteCount.KiloFormat() <span>@Html.LanguageString("Topic.Votes")</span></div>
                     }
                     <div class="topiccomments topiccomments@(Html.Settings().EnablePoints) statsblock @topicSolved">
-                        @answerCount <span>@answerText</span>
+                        @answerCount.KiloFormat() <span>@answerText</span>
                     </div>
                     <div class="topicviews topicviews@(Html.Settings().EnablePoints) statsblock @topicSolved">
-                        @topic.Views <span>@Html.LanguageString("Topic.Views")</span>
+                        @topic.Views.KiloFormat() <span>@Html.LanguageString("Topic.Views")</span>
                     </div>
-
+            
             </div>
 
 

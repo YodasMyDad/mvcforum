@@ -154,7 +154,7 @@ Errors.NoPermissionPolls = Topic Created, But you do not have permission to crea
 Topic.ShowMorePosts = Show More Posts
 Topic.ShowMorePostsLoading = Loading Posts...
 Topic.AlreadyAnswered = Questions that may already have your answer
-Topic.CommentsDetails = Comments - Newest First
+Topic.CommentsDetails = Comments
 Topic.Comment = Answer
 
 +++ CHANGES TO EXISTING LANGUAGE STRINGS
