@@ -5,11 +5,18 @@
 5) Hit run in visual studio
 6) Login to the admin using 'admin' and 'password'
 
-
 #### NOTE #### 
 
 Db & Upgrade scripts that you can paste directly into SQL Express are found in MVCforum.Website project
 
 Installer > Db > 'Then Choose version number'
 
-Still testing it 
+The installer is still being updated/tested for 'upgrades' between versions. Its still flakey in my opinion, so bare with us
+
+
+##### DATABASE/SITE RESET ORDER ######
+
+If you want to clear the database and reset an existing forum, then you need to do it in this order
+to avoid the foreign keys issues
+
+

@@ -12,6 +12,14 @@ $(function () {
     // We add the post click events like this, so we can reattach when we do the show more posts
     AddPostClickEvents();
 
+    var mobilenavbutton = $('.showmobilenavbar');
+    if (mobilenavbutton.length > 0) {
+        mobilenavbutton.click(function (e) {
+            e.preventDefault();
+            $('.mobilenavbar-inner ul.nav').slideToggle();
+        });
+    }
+
     var topicName = $(".createtopicname");
     if (topicName.length > 0) {
         topicName.focusout(function () {
@@ -492,8 +500,6 @@ function UserPost() {
     $.ajax({
         url: app_base + 'Badge/Post',
         type: 'POST',
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8',
         success: function (data) {
             // No need to do anything
         },

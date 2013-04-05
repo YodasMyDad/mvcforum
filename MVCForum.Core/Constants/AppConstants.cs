@@ -13,6 +13,9 @@
         public const string LucUserId = "UserId";
         //private const string LucTopicTags = "TopicTags";
 
+        //Mobile Check Name
+        public const string IsMobileDevice = "IsMobileDevice";
+
         // Cookie names
         public const string LanguageCultureCookieName = "LanguageCulture";
 

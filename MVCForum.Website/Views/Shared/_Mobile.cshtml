@@ -44,7 +44,15 @@
         
     <div class="mobilenavbar">
         <div class="mobilenavbar-inner">
-@*            <a class="brand" href="@Url.Action("Index", "Home")"></a>*@
+            <div class="mobilenavbartopstrip clearfix">
+                <a class="showmobilelogo" href="@Url.Action("Index", "Home")">
+                    <img src="@Url.Content(themePath + "/content/images/admin-n3o-logo.png")" alt=""/>
+                </a>
+                <div class="showmobilenavbar">
+                    <img src="@Url.Content(themePath + "/content/images/mobile-nav-icon.png")" alt=""/>
+                </div>
+            </div>
+            @*            *@
             <ul class="nav">
                 <li><a href="@Url.Action("Index", "Home")">@Html.LanguageString("Layout.Nav.Home")</a></li>
                 @if (Html.Settings().EnablePoints)

@@ -808,6 +808,7 @@
     <Content Include="Themes\Metro\Content\Images\glyphicons\glyphicons_266_book_open.png" />
     <Content Include="Themes\Metro\Content\Images\mail-add.png" />
     <Content Include="Themes\Metro\Content\Images\mail-delete.png" />
+    <Content Include="Themes\Metro\Content\Images\mobile-nav-icon.png" />
     <Content Include="Themes\Metro\Content\Images\rss-icon.png" />
     <Content Include="Themes\Metro\Content\Images\solve-tick.png" />
     <Content Include="Themes\Metro\Content\Images\up-arrow.png" />
@@ -822,6 +823,7 @@
     <Content Include="Themes\n3o\Content\Images\favicon.ico" />
     <Content Include="Themes\n3o\Content\Images\mail-add.png" />
     <Content Include="Themes\n3o\Content\Images\mail-delete.png" />
+    <Content Include="Themes\n3o\Content\Images\mobile-nav-icon.png" />
     <Content Include="Themes\n3o\Content\Images\rss-icon.png" />
     <Content Include="Themes\n3o\Content\Images\down-arrow.png" />
     <Content Include="Themes\n3o\Content\Images\solve-tick.png" />

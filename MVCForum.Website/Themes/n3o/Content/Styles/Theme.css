@@ -25,10 +25,10 @@ hr.thin { margin: 14px 0;}
 
 /*--- Padded Row ---*/
 .paddedrow { padding-top: 10px;padding-bottom: 10px;}
-
 .sidelayoutsection { position: relative;}
 
 /*--- Forms --------*/
+form { margin-bottom: 5px;}
 
 /*--- Validation errors ---*/
 .validation-summary-errors {background-color: #F2DEDE; color: #B94A48; border: 1px solid #EED3D7; border-radius: 4px 4px 4px 4px; margin-bottom: 18px; padding: 8px 14px 8px 14px;text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);}
@@ -255,9 +255,10 @@ div.tagsinput div { display:block; float: left; }
 
 /*---- Side Search Box ----*/
 .sidesearchbox {}
-.sidesearchbox ul { padding: 0;margin: 0;}
-.sidesearchbox ul li { display: inline;float: left;padding: 0;margin: 0;}
-.sidesearchbox ul li input[type=text]{ width: 100%;}
+.sidesearchbox ul { padding: 0;margin: 0;border: none !Important;}
+.sidesearchbox ul li {float: left;padding: 0;margin: 0;clear: none;width: 20%;border: none !Important;}
+.sidesearchbox ul li.sidesearchboxtb {width: 75%;}
+.sidesearchbox ul li input[type=text]{ width:90%;}
 .sidesearchbox form { padding: 0;margin: 0;}
 
 /*--- Show Voters ---*/
@@ -355,3 +356,6 @@ ul.pollanswerlist li { list-style: none;padding: 4px 0;}
 .relatedtopicsholder .relatedtopics ul li span.topicvotessmall { float: left;margin: 0 8px 0 0;border-bottom: none;}
 .relatedtopicsholder .relatedtopics ul li a, .relatedtopicsholder .relatedtopics ul li a:visited { font-size: 16px;line-height: 25px;color: #4891dc;}
 .relatedtopicsholder .relatedtopics ul li a:hover {}
+
+/*--- Misc Mobile Style ---*/
+.mobileview .mobilenavbar .mobilenavbartopstrip {background-color: #4891DC;}

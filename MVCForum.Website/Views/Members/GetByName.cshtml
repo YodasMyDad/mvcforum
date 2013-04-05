@@ -21,7 +21,10 @@
                 timeBadgeViewModel.Id = '@Model.User.Id';
             var strung = JSON.stringify(timeBadgeViewModel);
             $.ajax({
-                url: app_base + 'Badge/Time', type: 'POST', dataType: 'json', data: strung,
+                url: app_base + 'Badge/Time',
+                type: 'POST',
+                dataType: 'html',
+                data: strung,
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
 

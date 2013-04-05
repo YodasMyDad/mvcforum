@@ -17,6 +17,7 @@ h5 {font-size:17px; margin-bottom:8px; color:#AAAAAA; font-weight:normal; font-f
 h6 {font-size:16px; margin-bottom:8px; color:#AAAAAA; font-weight:normal; font-family: 'MVCforumLight';}
 
 input[type=text],input[type=password],textarea,select {-moz-border-radius:0; -webkit-border-radius:0; -khtml-border-radius:0; border-radius:0;}
+form { margin-bottom:5px;}
 
 /* ---- Paragraph Styles ---- */
 p {margin:0 0 14px 0; line-height:20px;font-size:14px;font-family:'MVCforumLight', Calibri, Arial, Helvetica, sans-serif;}
@@ -412,3 +413,6 @@ ul.tagCloud li span.tagCount {float: left; padding: 0 2px; width: auto;display: 
 .relatedtopicsholder .relatedtopics ul li span.topicvotessmall { float: left;margin: 0 8px 0 0;border-bottom: none;}
 .relatedtopicsholder .relatedtopics ul li a, .relatedtopicsholder .relatedtopics ul li a:visited { font-size: 16px;line-height: 25px;color: #4891dc;}
 .relatedtopicsholder .relatedtopics ul li a:hover {}
+
+/*--- Misc Mobile Style ---*/
+.mobileview .mobilenavbar .mobilenavbartopstrip {background-color: #4891DC;}
