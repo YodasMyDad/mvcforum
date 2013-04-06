@@ -156,6 +156,7 @@ Topic.ShowMorePostsLoading = Loading Posts...
 Topic.AlreadyAnswered = Questions that may already have your answer
 Topic.CommentsDetails = Comments
 Topic.Comment = Answer
+Stats.FooterActiveUsersText = Members Currently Online
 
 +++ CHANGES TO EXISTING LANGUAGE STRINGS
 Topic.Comments = Answers

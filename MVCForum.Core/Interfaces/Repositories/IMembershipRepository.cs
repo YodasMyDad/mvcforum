@@ -9,6 +9,7 @@ namespace MVCForum.Domain.Interfaces.Repositories
         MembershipUser GetUser(string username);
         MembershipUser GetUserByFacebookId(long facebookId);
         IList<MembershipUser> SearchMembers(string username, int amount);
+        IList<MembershipUser> GetActiveMembers();
         PagedList<MembershipUser> SearchMembers(string search, int pageIndex, int pageSize);
         MembershipUser GetUserBySlug(string slug);
         MembershipUser GetUserByEmail(string slug);

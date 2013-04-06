@@ -263,11 +263,11 @@ ul.tagCloud li span.tagCount {float: left; padding: 0 2px; width: auto;display: 
 .emailunsubscription {background-image: url('../Images/mail-delete.png');}
 
 /*--- Footer Stats ---*/
-.latestmembersjoined { padding: 0;margin: 0;}
-.latestmembersjoined li { display: inline;padding: 2px 5px 2px 0;}
-.latestmembersjoined li a, .latestmembersjoined li a:visited {color: #4891DC;text-decoration: underline;}
-.latestmembersjoined li a:hover { text-decoration: none;}
-.latestmemberheading { font-weight: bold;}
+.latestmembersjoined, .activememberslist { padding: 5px 0;margin: 0;}
+.latestmembersjoined li, .activememberslist li { display: inline;padding: 2px 5px 2px 0;}
+.latestmembersjoined li a, .latestmembersjoined li a:visited, .activememberslist li a, .activememberslist li a:visited {color: #4891DC;text-decoration: underline;}
+.latestmembersjoined li a:hover, .activememberslist li a:hover {}
+.latestmemberheading, .activememberslistheading { font-weight: bold;}
 
 /*--- Private Messages ---*/
 .privatemessagefrom { font-size:12px;padding: 5px 0;}

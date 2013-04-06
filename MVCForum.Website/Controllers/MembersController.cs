@@ -35,6 +35,18 @@ namespace MVCForum.Website.Controllers
             _privateMessageService = privateMessageService;
         }
 
+        [ChildActionOnly]
+        public PartialViewResult GetCurrentActiveMembers()
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var viewModel = new ActiveMembersViewModel
+                {
+                    ActiveMembers = MembershipService.GetActiveMembers()
+                };
+                return PartialView(viewModel);
+            }
+        }
 
         public JsonResult LastActiveCheck()
         {

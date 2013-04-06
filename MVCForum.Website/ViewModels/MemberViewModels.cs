@@ -9,6 +9,10 @@ using MVCForum.Website.Areas.Admin.ViewModels;
 
 namespace MVCForum.Website.ViewModels
 {
+    public class ActiveMembersViewModel
+    {
+        public IList<MembershipUser> ActiveMembers { get; set; } 
+    }
 
     public class MemberAddViewModel
     {

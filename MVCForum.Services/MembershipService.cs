@@ -511,6 +511,11 @@ namespace MVCForum.Services
             return _membershipRepository.SearchMembers(StringUtils.SafePlainText(username), amount);
         }
 
+        public IList<MembershipUser> GetActiveMembers()
+        {
+            return _membershipRepository.GetActiveMembers();
+        }
+
         /// <summary>
         /// Get user by id
         /// </summary>

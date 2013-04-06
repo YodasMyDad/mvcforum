@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Data.Entity;
 using MVCForum.Data.Context;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
@@ -55,6 +56,15 @@ namespace MVCForum.Data.Repositories
                             .OrderBy(x => x.UserName)
                             .Take(amount)
                             .ToList();
+        }
+
+        public IList<MembershipUser> GetActiveMembers()
+        {
+            // Get members that last activity date is valid
+            var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
+            return _context.MembershipUser
+                .Where(x => x.LastActivityDate > date)
+                .ToList();
         }
 
         public MembershipUser GetUserBySlug(string slug)

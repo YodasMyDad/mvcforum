@@ -75,6 +75,7 @@
 
         // Last Activity Time Check
         public const int TimeSpanInMinutesToDoCheck = 10;
+        public const int TimeSpanInMinutesToShowMembers = 20;
 
         // Social
         public const int GravatarPostSize = 45;
