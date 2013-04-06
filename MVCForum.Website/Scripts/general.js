@@ -7,6 +7,9 @@ $(function () {
     // Show the voters box
     AddShowVoters();
 
+    // Sort the date of the member
+    SortWhosOnline();
+
     //---------------- On Click------------------------
 
     // We add the post click events like this, so we can reattach when we do the show more posts
@@ -288,6 +291,10 @@ $(function () {
     
 
 });
+
+function SortWhosOnline() {
+    $.getJSON(app_base + 'Members/LastActiveCheck');
+}
 
 function AddPostClickEvents() {
     $(".issolution").click(function (e) {

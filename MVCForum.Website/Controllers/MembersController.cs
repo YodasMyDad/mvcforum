@@ -35,6 +35,42 @@ namespace MVCForum.Website.Controllers
             _privateMessageService = privateMessageService;
         }
 
+
+        public JsonResult LastActiveCheck()
+        {
+            if (LoggedOnUser != null)
+            {
+                var rightNow = DateTime.UtcNow;
+                var usersDate = LoggedOnUser.LastActivityDate ?? DateTime.Now.AddDays(-1);
+
+                var span = rightNow.Subtract(usersDate);
+                var totalMins = span.TotalMinutes;
+
+                if (totalMins > AppConstants.TimeSpanInMinutesToDoCheck)
+                {
+                    using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                    {
+                        // Update users last activity date so we can show the latest users online
+                        LoggedOnUser.LastActivityDate = DateTime.UtcNow;
+
+                        // Update
+                        try
+                        {
+                            unitOfWork.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            unitOfWork.Rollback();
+                            LoggingService.Error(ex);
+                        }
+                    }
+                }
+            }
+
+            // You can return anything to reset the timer.
+            return Json(new { Timer = "reset" }, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult GetByName(string slug)
         {
             using (UnitOfWorkManager.NewUnitOfWork())

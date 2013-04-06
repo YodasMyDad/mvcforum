@@ -73,6 +73,9 @@
         public const string PagingUrlFormat = "{0}?p={1}";
         public const int SimilarTopicsListSize = 20;
 
+        // Last Activity Time Check
+        public const int TimeSpanInMinutesToDoCheck = 10;
+
         // Social
         public const int GravatarPostSize = 45;
         public const int GravatarTopicSize = 32;

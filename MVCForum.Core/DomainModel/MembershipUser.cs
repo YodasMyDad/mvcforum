@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
@@ -45,6 +44,7 @@ namespace MVCForum.Domain.DomainModel
         public DateTime LastLoginDate { get; set; }
         public DateTime LastPasswordChangedDate { get; set; }
         public DateTime LastLockoutDate { get; set; }
+        public DateTime? LastActivityDate { get; set; }
         public int FailedPasswordAttemptCount { get; set; }
         public int FailedPasswordAnswerAttempt { get; set; }
         public string Comment { get; set; }

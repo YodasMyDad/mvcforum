@@ -139,7 +139,7 @@ Added Language Strings
 ============ v1.3 ============
 ==============================
 
----Added Language Strings
+---Added New Language Strings
 Members.DeleteAllPosts = Delete All Posts
 Poll.Button.Remove = Remove Poll
 Poll.Button.Create = Create Poll
@@ -158,11 +158,13 @@ Topic.CommentsDetails = Comments
 Topic.Comment = Answer
 
 +++ CHANGES TO EXISTING LANGUAGE STRINGS
-
 Topic.Comments = Answers
 
 --- MembershipRole
 78947C78-FED6-43D9-8FCF-A16B00EAB040	Moderator
+
+--- MembershipUser
+LastActivityDate - DateTime allow nulls
 
 --- Permission
 CA1C39FB-6B2C-4E5D-9F28-A16B00F3BA76	Create Polls

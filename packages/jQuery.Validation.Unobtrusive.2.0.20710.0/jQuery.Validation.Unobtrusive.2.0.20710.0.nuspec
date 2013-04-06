@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>jQuery.Validation.Unobtrusive</id>
+    <version>2.0.20710.0</version>
+    <title>jQuery Unobtrusive Validation</title>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <licenseUrl>http://go.microsoft.com/fwlink/?LinkID=227523</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Legacy package, jQuery.Validation.Unobtrusive is now included in the 'Microsoft.jQuery.Unobtrusive.Validation' package.</description>
+    <summary>Legacy package, jQuery.Validation.Unobtrusive is now included in the 'Microsoft.jQuery.Unobtrusive.Validation' package.</summary>
+    <dependencies>
+      <dependency id="Microsoft.jQuery.Unobtrusive.Validation" version="2.0.20613.0" />
+    </dependencies>
+    <references />
+  </metadata>
+</package>
