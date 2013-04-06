@@ -22,7 +22,6 @@
         $.ajax({
             url: app_base + 'Admin/Account/UpdateUserRoles',
             type: 'POST',
-            dataType: 'json',
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
@@ -61,7 +60,6 @@
         $.ajax({
             url: app_base + 'Admin/Permissions/UpdatePermission',
             type: 'POST',
-            dataType: 'json',
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
@@ -142,7 +140,6 @@
             $.ajax({
                 url: app_base + 'Admin/AdminLanguage/UpdateResourceValue',
                 type: 'POST',
-                dataType: 'json',
                 data: strung,
                 contentType: 'application/json; charset=utf-8',
                 error: function (xhr, ajaxOptions, thrownError) {
@@ -197,7 +194,6 @@
             $.ajax({
                 url: app_base + 'Admin/AdminLanguage/UpdateResourceKey',
                 type: 'POST',
-                dataType: 'json',
                 data: strung,
                 contentType: 'application/json; charset=utf-8',
                 error: function (xhr, ajaxOptions, thrownError) {
@@ -254,7 +250,6 @@
             $.ajax({
                 url: app_base + 'Admin/AdminTag/UpdateTag',
                 type: 'POST',
-                dataType: 'json',
                 data: strung,
                 contentType: 'application/json; charset=utf-8',
                 error: function (xhr, ajaxOptions, thrownError) {

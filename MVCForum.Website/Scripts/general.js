@@ -114,7 +114,6 @@ $(function () {
         $.ajax({
             url: app_base + 'PrivateMessage/Delete',
             type: 'POST',
-            dataType: 'json',
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
@@ -144,7 +143,6 @@ $(function () {
         $.ajax({
             url: app_base + 'Email/Subscribe',
             type: 'POST',
-            dataType: 'json',
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
@@ -174,7 +172,6 @@ $(function () {
         $.ajax({
             url: app_base + 'Email/UnSubscribe',
             type: 'POST',
-            dataType: 'json',
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
@@ -310,7 +307,6 @@ function AddPostClickEvents() {
         $.ajax({
             url: app_base + 'Vote/MarkAsSolution',
             type: 'POST',
-            dataType: 'json',
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
@@ -340,7 +336,6 @@ function AddPostClickEvents() {
         $.ajax({
             url: app_base + 'Vote/VoteUpPost',
             type: 'POST',
-            dataType: 'json',
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
@@ -370,7 +365,6 @@ function AddPostClickEvents() {
         $.ajax({
             url: app_base + 'Vote/VoteDownPost',
             type: 'POST',
-            dataType: 'json',
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
@@ -466,7 +460,6 @@ function BadgeMarkAsSolution(postId) {
     $.ajax({
         url: app_base + 'Badge/MarkAsSolution',
         type: 'POST',
-        dataType: 'json',
         data: strung,
         contentType: 'application/json; charset=utf-8',
         success: function (data) {
@@ -490,7 +483,6 @@ function BadgeVoteUp(postId) {
         $.ajax({
             url: app_base + 'Badge/VoteUpPost',
             type: 'POST',
-            dataType: 'json',
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
