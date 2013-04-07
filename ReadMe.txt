@@ -16,7 +16,9 @@ The installer is still being updated/tested for 'upgrades' between versions. Its
 
 ##### DATABASE/SITE RESET ORDER ######
 
-If you want to clear the database and reset an existing forum, then you need to do it in this order
-to avoid the foreign keys issues
+If you want to clear the database and reset a test/dev forum, then use the file 'dbReset.sql' in this 'Database' solution folder
 
+----THEN Update Web.config
 
+1) Remove version number
+2) Clear Facebook settings

@@ -162,15 +162,15 @@ Stats.FooterActiveUsersText = Members Currently Online
 Topic.Comments = Answers
 
 --- MembershipRole
-78947C78-FED6-43D9-8FCF-A16B00EAB040	Moderator
+Add > Moderator
 
 --- MembershipUser
 LastActivityDate - DateTime allow nulls
 
 --- Permission
-CA1C39FB-6B2C-4E5D-9F28-A16B00F3BA76	Create Polls
-3744D1FF-B87E-497D-8130-A16B00F3C560	Create Topics
-D4D9817E-4AFA-4006-94C3-A16B00F3D43C	Attach Files
+Add > Create Polls
+Add > Create Topics
+Add > Attach Files
 
 --- Settings
 SuspendRegistration bit allow nulls
