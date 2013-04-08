@@ -136,9 +136,6 @@ namespace MVCForum.Website.Controllers
 
             //***** Old version is v1.3 or greater so we can run the installer ****
 
-            //Initialise the services
-            InitialiseServices();
-
             // Firstly add any new tables needed via the SQL
             // Get the SQL file and if it exists then run it
             var dbFilePath = Server.MapPath(InstallerHelper.GetUpdateDatabaseFilePath(currentVersionNo));
@@ -156,7 +153,7 @@ namespace MVCForum.Website.Controllers
             }
 
             // Tables created or updated - So now update all the data
-            installerResult = UpdateData(currentVersionNo, previousVersionNo);
+            installerResult = UpdateData(currentVersionNo, previousVersionNo, installerResult);
 
             // See if upgrade was successful or not
             if (installerResult.Successful)
@@ -196,13 +193,26 @@ namespace MVCForum.Website.Controllers
 
         #region Private Methods
 
-        private InstallerResult UpdateData(string currentVersion, string previousVersion)
+        private InstallerResult UpdateData(string currentVersion, string previousVersion, InstallerResult installerResult)
         {
+            //Initialise the services
+            InitialiseServices();
+
             // Need to run the updater through all of the below, so we need to do 
-            // checks before we add anything to make sure it doesn't already exist
+            // checks before we add anything to make sure it doesn't already exist and if,
+            // update where necessary.
+            // Whatever the version update the language strings as these are always the master ones
+            // held in the en-GB.csv in the Installer folder root
+            installerResult = AddOrUpdateTheDefaultLanguageStrings(installerResult);
+            if (!installerResult.Successful)
+            {
+                return installerResult;
+            }   
 
             //---------------- v1.3 to v1.4 -----------------
             throw new NotImplementedException("The upgrader is still in development");
+
+            return installerResult;
         }
 
         private InstallerResult CreateInitialData()
@@ -255,65 +265,12 @@ namespace MVCForum.Website.Controllers
                 }
             }
 
-            using (var unitOfWork = _UnitOfWorkManager.NewUnitOfWork())
+            // Add / Update the default language strings
+            installerResult = AddOrUpdateTheDefaultLanguageStrings(installerResult);
+            if (!installerResult.Successful)
             {
-                // Read in CSV and import like it does normally in the admin section
-                var report = new CsvReport();
-
-                try
-                {
-                    // If there is already a language then it must have been successful 
-                    // so no need to do anything
-                    if (!_localizationService.AllLanguages.Any())
-                    {
-                        // Get the base language file
-                        var file = System.Web.HttpContext.Current.Server.MapPath(@"~/Installer/en-GB.csv");
-
-                        // Verify that the user selected a file
-                        if (file != null)
-                        {
-                            // Unpack the data
-                            var allLines = new List<string>();
-                            using (var streamReader = new StreamReader(file, Encoding.Unicode, true))
-                            {
-                                while (streamReader.Peek() >= 0)
-                                {
-                                    allLines.Add(streamReader.ReadLine());
-                                }
-                            }
-
-                            // Read the CSV file and generate a language
-                            report = _localizationService.FromCsv("en-GB", allLines);
-                        }
-
-                        unitOfWork.Commit();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    unitOfWork.Rollback();
-
-                    //Loop through report errors and spit them out in the installer result message?
-                    var sb = new StringBuilder();
-                    foreach (var error in report.Errors)
-                    {
-                        if (error.ErrorWarningType == CsvErrorWarningType.BadDataFormat ||
-                            error.ErrorWarningType == CsvErrorWarningType.GeneralError)
-                        {
-                            sb.AppendFormat("{0}<br />", error.Message);
-                        }
-                    }
-
-                    installerResult.Exception = ex;
-                    installerResult.Message = "Error creating the initial data >>  Language Strings";
-                    if (!string.IsNullOrEmpty(sb.ToString()))
-                    {
-                        installerResult.Message += string.Concat("<br />", sb.ToString());
-                    }
-                    installerResult.Successful = false;
-                    return installerResult;
-                }
-            }
+                return installerResult;
+            }   
 
             // Now we have saved the above we can create the rest of the data
             using (var unitOfWork = _UnitOfWorkManager.NewUnitOfWork())
@@ -444,6 +401,64 @@ namespace MVCForum.Website.Controllers
             }
 
             return installerResult;
+        }
+
+        private InstallerResult AddOrUpdateTheDefaultLanguageStrings(InstallerResult installerResult)
+        {            
+            // Read in CSV and import like it does normally in the admin section
+            using (var unitOfWork = _UnitOfWorkManager.NewUnitOfWork())
+            {
+                var report = new CsvReport();
+
+                try
+                {
+                        // Get the base language file
+                        var file = System.Web.HttpContext.Current.Server.MapPath(@"~/Installer/en-GB.csv");
+
+                        // Verify that the user selected a file
+                        if (file != null)
+                        {
+                            // Unpack the data
+                            var allLines = new List<string>();
+                            using (var streamReader = new StreamReader(file, Encoding.Unicode, true))
+                            {
+                                while (streamReader.Peek() >= 0)
+                                {
+                                    allLines.Add(streamReader.ReadLine());
+                                }
+                            }
+
+                            // Read the CSV file and generate a language
+                            report = _localizationService.FromCsv("en-GB", allLines);
+                        }
+
+                        unitOfWork.Commit();
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+
+                    //Loop through report errors and spit them out in the installer result message?
+                    var sb = new StringBuilder();
+                    foreach (var error in report.Errors)
+                    {
+                        if (error.ErrorWarningType == CsvErrorWarningType.BadDataFormat ||
+                            error.ErrorWarningType == CsvErrorWarningType.GeneralError)
+                        {
+                            sb.AppendFormat("{0}<br />", error.Message);
+                        }
+                    }
+
+                    installerResult.Exception = ex;
+                    installerResult.Message = "Error creating the initial data >>  Language Strings";
+                    if (!string.IsNullOrEmpty(sb.ToString()))
+                    {
+                        installerResult.Message += string.Concat("<br />", sb.ToString());
+                    }
+                    installerResult.Successful = false;
+                }
+                return installerResult; 
+            }
         }
 
         private void InitialiseServices()

@@ -574,6 +574,7 @@ namespace MVCForum.Services
 
             // Look up the language and culture
             Language language;
+
             try
             {
                 var cultureInfo = LanguageUtils.GetCulture(langKey);
@@ -589,7 +590,8 @@ namespace MVCForum.Services
                     return report;
                 }
 
-                language = Add(cultureInfo);
+                // See if this language exists already, and if not then create it
+                language = GetLanguageByLanguageCulture(langKey) ?? Add(cultureInfo);
             }
             catch (LanguageOrCultureAlreadyExistsException ex)
             {
@@ -601,6 +603,7 @@ namespace MVCForum.Services
                 report.Errors.Add(new CsvErrorWarning { ErrorWarningType = CsvErrorWarningType.ItemBad, Message = ex.Message });
                 return report;
             }
+
             try
             {
                 var lineCounter = 0;
