@@ -7,5 +7,6 @@ namespace MVCForum.Domain.Interfaces.Services
     {
         Settings GetSettings(bool useCache = true);
         void Save(Settings settings);
+        Settings Add(Settings settings);
     }
 }

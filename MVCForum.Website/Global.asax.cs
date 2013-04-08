@@ -115,14 +115,14 @@ namespace MVCForum.Website
             // Now check the version in the web.config
             var currentVersion = ConfigUtils.GetAppSetting("MVCForumVersion");
 
+            // If the same carry on as normal
+            LoggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
+            LoggingService.Error("START APP");
+
             // If the versions are different kick the installer into play
             if (currentVersion == Application["Version"].ToString())
             {
                 Application["Installing"] = "False";
-
-                // If the same carry on as normal
-                LoggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
-                LoggingService.Error("START APP");
 
                 // Set the view engine
                 ViewEngines.Engines.Clear();

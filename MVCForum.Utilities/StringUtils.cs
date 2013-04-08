@@ -668,12 +668,16 @@ namespace MVCForum.Utilities
         /// A method to convert basic BBCode to HTML
         /// </summary>
         /// <param name="str">A string formatted in BBCode</param>
+        /// <param name="replaceLineBreaks">Whether or not to replace line breaks with br's</param>
         /// <returns>The HTML representation of the BBCode string</returns>
-        public static string ConvertBbCodeToHtml(string str)
+        public static string ConvertBbCodeToHtml(string str, bool replaceLineBreaks = true)
         {
-            // As this is a BBEditor we need to replace line breaks
-            // or they won't show in the front end
-            str = ReplaceLineBreaks(str, "<br>");
+            if (replaceLineBreaks)
+            {
+                // As this is a BBEditor we need to replace line breaks
+                // or they won't show in the front end
+                str = ReplaceLineBreaks(str, "<br>");
+            }
 
             // format the bold tags: [b][/b]
             // becomes: <strong></strong>

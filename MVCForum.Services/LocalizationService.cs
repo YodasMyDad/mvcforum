@@ -683,7 +683,7 @@ namespace MVCForum.Services
             get
             {
                 var allLanguagesNotInDb = new List<CultureInfo>();
-                var allLanguagesInDb = AllLanguages;
+                var allLanguagesInDb = AllLanguages.ToList();
 
                 foreach (var cultureInfo in LanguageUtils.AllCultures)
                 {

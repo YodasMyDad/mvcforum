@@ -61,6 +61,7 @@
     <Compile Include="ConfigUtils.cs" />
     <Compile Include="DateUtils.cs" />
     <Compile Include="GuidComb.cs" />
+    <Compile Include="InstallerHelper.cs" />
     <Compile Include="LanguageUtils.cs" />
     <Compile Include="LocalisationUtils.cs" />
     <Compile Include="PorterStemmingAlgorithm.cs" />

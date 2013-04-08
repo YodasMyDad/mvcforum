@@ -52,6 +52,7 @@
     <Compile Include="BadgeService.cs" />
     <Compile Include="CategoryNotificationService.cs" />
     <Compile Include="ActivityService.cs" />
+    <Compile Include="InstallerService.cs" />
     <Compile Include="PollAnswerService.cs" />
     <Compile Include="PollVoteService.cs" />
     <Compile Include="EmailService.cs" />
@@ -79,6 +80,14 @@
     <Compile Include="VoteService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EFProvider Wrappers\EFCachingProvider.Web\EFCachingProvider.Web.csproj">
+      <Project>{5e373803-c182-47cf-aa62-254bd4cece32}</Project>
+      <Name>EFCachingProvider.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EFProvider Wrappers\EFCachingProvider\EFCachingProvider.csproj">
+      <Project>{e9b10f80-134f-4dc1-ba6f-7728ef2cae58}</Project>
+      <Name>EFCachingProvider</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MVCForum.Core\MVCForum.Domain.csproj">
       <Project>{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}</Project>
       <Name>MVCForum.Domain</Name>

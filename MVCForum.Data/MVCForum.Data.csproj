@@ -45,6 +45,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -85,6 +86,7 @@
     <Compile Include="Repositories\CategoryPermissionForRoleRepository.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />
     <Compile Include="Repositories\ActivityRepository.cs" />
+    <Compile Include="Repositories\InstallerRepository.cs" />
     <Compile Include="Repositories\PollAnswerRepository.cs" />
     <Compile Include="Repositories\PollVoteRepository.cs" />
     <Compile Include="Repositories\MembershipUserPointsRepository.cs" />

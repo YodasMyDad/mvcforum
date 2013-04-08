@@ -56,5 +56,10 @@ namespace MVCForum.Services
             settings.SpamQuestion = StringUtils.SafePlainText(settings.SpamQuestion);
             _settingsRepository.Update(settings);
         }
+
+        public Settings Add(Settings settings)
+        {
+            return _settingsRepository.Add(settings);
+        }
     }
 }

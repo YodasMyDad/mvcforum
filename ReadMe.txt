@@ -22,3 +22,10 @@ If you want to clear the database and reset a test/dev forum, then use the file 
 
 1) Remove version number
 2) Clear Facebook settings
+
+##### Blank a database ###########
+
+If you want to blank a database quickly to test installer, then keep running the line below over and
+over until all data is gone and no more errors
+
+EXEC sp_MSforeachtable @command1 = "DROP TABLE ?"

@@ -138,6 +138,7 @@
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\ViewModels\AdminBadgeViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\DashboardViewModels.cs" />
+    <Compile Include="Controllers\BaseInstallController.cs" />
     <Compile Include="Controllers\BadgeController.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseAdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminCategoryController.cs" />
@@ -174,7 +175,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Installer\InstallerHelper.cs" />
     <Compile Include="Membership\MembershipProvider.cs" />
     <Compile Include="Membership\RoleProvider.cs" />
     <Compile Include="Areas\Admin\ViewModels\AccountViewModels.cs" />
@@ -183,6 +183,7 @@
     <Compile Include="ViewModels\CategoryViewModels.cs" />
     <Compile Include="ViewModels\EmailViewModels.cs" />
     <Compile Include="ViewModels\HomeViewModels.cs" />
+    <Compile Include="ViewModels\InstallViewModels.cs" />
     <Compile Include="ViewModels\LanguageViewModels.cs" />
     <Compile Include="Application\AkismetHelper.cs" />
     <Compile Include="ViewModels\Mapping\ViewModelMapping.cs" />
@@ -498,6 +499,7 @@
     <Content Include="Installer\Db\1.1\database.sql" />
     <Content Include="Installer\Db\1.2\database.sql" />
     <Content Include="Installer\Db\1.2\Upgrade\upgrade.sql" />
+    <Content Include="Installer\Db\1.3\database.sql" />
     <Content Include="Installer\ReadMe.txt" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -511,6 +513,7 @@
     <Content Include="Areas\Admin\Views\Settings\TestEmail.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_GetCurrentVersion.cshtml" />
     <Content Include="Areas\Admin\Views\Dashboard\TodaysTopics.cshtml" />
+    <Content Include="Installer\en-GB.csv" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-1.9.1.min.js" />
