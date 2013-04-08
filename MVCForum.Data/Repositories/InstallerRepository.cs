@@ -61,29 +61,36 @@ namespace MVCForum.Data.Repositories
             }
 
 
-            try
-            {
-                using (var conn = new SqlConnection(connString))
-                {
-                    // split script on GO command
-                    IEnumerable<string> commandStrings = Regex.Split(script, "^\\s*GO\\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
 
-                    conn.Open();
-                    foreach (var commandString in commandStrings)
+            using (var conn = new SqlConnection(connString))
+            {
+                // split script on GO command
+                IEnumerable<string> commandStrings = Regex.Split(script, "^\\s*GO\\s*$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+
+                conn.Open();
+                foreach (var commandString in commandStrings)
+                {
+                    if (commandString.Trim() != "")
                     {
-                        if (commandString.Trim() != "")
+                        try
                         {
                             new SqlCommand(commandString, conn).ExecuteNonQuery();
                         }
+                        catch (Exception ex)
+                        {
+                            //NOTE: Surpress errors where tables already exist, and just carry on
+                            if (!ex.Message.Contains("There is already an object named") &&
+                                !ex.Message.Contains("Column already has a DEFAULT bound to it"))
+                            {
+                                insResult.Exception = ex;
+                                insResult.Message = "Error trying to create the database tables. Check you have correct permissions in SQL Server";
+                                insResult.Successful = false;
+                                return insResult;   
+                            }
+                        }
+
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                insResult.Exception = ex;
-                insResult.Message = "Error trying to create the database tables. Check SQL file is not corrupted, also check you have correct permissions in SQL Server to create tables";
-                insResult.Successful = false;
-                return insResult;
             }
 
             return insResult;

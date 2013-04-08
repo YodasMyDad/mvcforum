@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using EFCachingProvider;
@@ -37,7 +38,7 @@ namespace MVCForum.Website.Controllers
         // This is the default installer
         public ActionResult Index()
         {
-            return View();    
+            return View();
         }
 
         /// <summary>
@@ -50,8 +51,8 @@ namespace MVCForum.Website.Controllers
             var previousVersionNo = AppHelpers.PreviousVersionNo();
             var viewModel = new CreateDbViewModel
                 {
-                    IsUpgrade = !string.IsNullOrEmpty(previousVersionNo), 
-                    PreviousVersion = previousVersionNo, 
+                    IsUpgrade = !string.IsNullOrEmpty(previousVersionNo),
+                    PreviousVersion = previousVersionNo,
                     CurrentVersion = AppHelpers.GetCurrentVersionNo()
                 };
 
@@ -152,23 +153,31 @@ namespace MVCForum.Website.Controllers
             // First UOW to create the data needed for other saves
             using (var unitOfWork = _UnitOfWorkManager.NewUnitOfWork())
             {
-                // Add the example category
-                var exampleCat = new Category{Name = "Example Category"};
-                _categoryService.Add(exampleCat);
-
-                // Add the default roles
-                var standardRole = new MembershipRole { RoleName = "Standard Members" };
-                var guestRole = new MembershipRole { RoleName = "Guest" };
-                var moderatorRole = new MembershipRole { RoleName = "Moderator" };
-                var adminRole = new MembershipRole { RoleName = "Admin" };
-                _roleService.CreateRole(standardRole);
-                _roleService.CreateRole(guestRole);
-                _roleService.CreateRole(moderatorRole);
-                _roleService.CreateRole(adminRole);
-
                 try
                 {
-                    unitOfWork.Commit();
+                    // Check if category exists or not, we only do a single check for the first object within this
+                    // UOW because, if anything failed inside. Everything else would be rolled back to because of the 
+                    // transaction
+                    const string exampleCatName = "Example Category";
+                    if (_categoryService.GetAll().FirstOrDefault(x => x.Name == exampleCatName) == null)
+                    {
+                        // Doesn't exist so add the example category
+                        var exampleCat = new Category { Name = exampleCatName };
+                        _categoryService.Add(exampleCat);
+
+                        // Add the default roles
+                        var standardRole = new MembershipRole { RoleName = "Standard Members" };
+                        var guestRole = new MembershipRole { RoleName = "Guest" };
+                        var moderatorRole = new MembershipRole { RoleName = "Moderator" };
+                        var adminRole = new MembershipRole { RoleName = "Admin" };
+                        _roleService.CreateRole(standardRole);
+                        _roleService.CreateRole(guestRole);
+                        _roleService.CreateRole(moderatorRole);
+                        _roleService.CreateRole(adminRole);
+
+                        unitOfWork.Commit();
+                    }
+
                 }
                 catch (Exception ex)
                 {
@@ -177,39 +186,42 @@ namespace MVCForum.Website.Controllers
                     installerResult.Message = "Error creating the initial data >> Category & Roles";
                     installerResult.Successful = false;
                     return installerResult;
-                } 
+                }
             }
 
             using (var unitOfWork = _UnitOfWorkManager.NewUnitOfWork())
             {
-                // Create the language
                 // Read in CSV and import like it does normally in the admin section
                 var report = new CsvReport();
 
-                // Get the base language file
-                var file = System.Web.HttpContext.Current.Server.MapPath(@"~/Installer/en-GB.csv");
-  
-                // Verify that the user selected a file
-                if (file != null)
-                {
-                    // Unpack the data
-                    var allLines = new List<string>();
-                    using (var streamReader = new StreamReader(file, Encoding.Unicode, true))
-                    {
-                        while (streamReader.Peek() >= 0)
-                        {
-                            allLines.Add(streamReader.ReadLine());
-                        }
-                    }
-
-                    // Read the CSV file and generate a language
-                    report = _localizationService.FromCsv("en-GB", allLines);
-                }
-
-
                 try
                 {
-                    unitOfWork.Commit();
+                    // If there is already a language then it must have been successful 
+                    // so no need to do anything
+                    if (!_localizationService.AllLanguages.Any())
+                    {
+                        // Get the base language file
+                        var file = System.Web.HttpContext.Current.Server.MapPath(@"~/Installer/en-GB.csv");
+
+                        // Verify that the user selected a file
+                        if (file != null)
+                        {
+                            // Unpack the data
+                            var allLines = new List<string>();
+                            using (var streamReader = new StreamReader(file, Encoding.Unicode, true))
+                            {
+                                while (streamReader.Peek() >= 0)
+                                {
+                                    allLines.Add(streamReader.ReadLine());
+                                }
+                            }
+
+                            // Read the CSV file and generate a language
+                            report = _localizationService.FromCsv("en-GB", allLines);
+                        }
+
+                        unitOfWork.Commit();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -225,7 +237,7 @@ namespace MVCForum.Website.Controllers
                             sb.AppendFormat("{0}<br />", error.Message);
                         }
                     }
-                    
+
                     installerResult.Exception = ex;
                     installerResult.Message = "Error creating the initial data >>  Language Strings";
                     if (!string.IsNullOrEmpty(sb.ToString()))
@@ -240,54 +252,58 @@ namespace MVCForum.Website.Controllers
             // Now we have saved the above we can create the rest of the data
             using (var unitOfWork = _UnitOfWorkManager.NewUnitOfWork())
             {
-                // Get the default language
-                var startingLanguage = _localizationService.GetLanguageByName("en-GB");
-
-                // Get the Standard Members role
-                var startingRole = _roleService.GetRole("Standard Members");
-                
-                // create the settings
-                var settings = new Settings
-                    {
-                        ForumName = "MVC Forum",
-                        ForumUrl = "http://www.mydomain.com",
-                        IsClosed = false,
-                        EnableRSSFeeds = true,
-                        DisplayEditedBy = true,
-                        EnablePostFileAttachments = false,
-                        EnableMarkAsSolution = true,
-                        EnableSpamReporting = true,
-                        EnableMemberReporting = true,
-                        EnableEmailSubscriptions = true,
-                        ManuallyAuthoriseNewMembers = false,
-                        EmailAdminOnNewMemberSignUp = true,
-                        TopicsPerPage = 20,
-                        PostsPerPage = 20,
-                        EnablePrivateMessages = true,
-                        MaxPrivateMessagesPerMember = 50,
-                        PrivateMessageFloodControl = 1,
-                        EnableSignatures = false,
-                        EnablePoints = true,
-                        PointsAllowedToVoteAmount = 1,
-                        PointsAddedPerPost = 1,
-                        PointsAddedForSolution = 4,
-                        PointsDeductedNagativeVote = 2,
-                        AdminEmailAddress = "my@email.com",
-                        NotificationReplyEmail = "noreply@myemail.com",
-                        SMTPEnableSSL = false,
-                        Theme = "Metro",
-                        NewMemberStartingRole = startingRole,
-                        DefaultLanguage = startingLanguage,
-                        ActivitiesPerPage = 20,
-                        EnableAkisment = false,
-                        EnableSocialLogins = false,
-                        EnablePolls = true
-                    };
-                _settingsService.Add(settings);
-
                 try
                 {
-                    unitOfWork.Commit();
+                    // if the settings already exist then do nothing
+                    if (_settingsService.GetSettings(false) == null)
+                    {
+                        // Get the default language
+                        var startingLanguage = _localizationService.GetLanguageByName("en-GB");
+
+                        // Get the Standard Members role
+                        var startingRole = _roleService.GetRole("Standard Members");
+
+                        // create the settings
+                        var settings = new Settings
+                            {
+                                ForumName = "MVC Forum",
+                                ForumUrl = "http://www.mydomain.com",
+                                IsClosed = false,
+                                EnableRSSFeeds = true,
+                                DisplayEditedBy = true,
+                                EnablePostFileAttachments = false,
+                                EnableMarkAsSolution = true,
+                                EnableSpamReporting = true,
+                                EnableMemberReporting = true,
+                                EnableEmailSubscriptions = true,
+                                ManuallyAuthoriseNewMembers = false,
+                                EmailAdminOnNewMemberSignUp = true,
+                                TopicsPerPage = 20,
+                                PostsPerPage = 20,
+                                EnablePrivateMessages = true,
+                                MaxPrivateMessagesPerMember = 50,
+                                PrivateMessageFloodControl = 1,
+                                EnableSignatures = false,
+                                EnablePoints = true,
+                                PointsAllowedToVoteAmount = 1,
+                                PointsAddedPerPost = 1,
+                                PointsAddedForSolution = 4,
+                                PointsDeductedNagativeVote = 2,
+                                AdminEmailAddress = "my@email.com",
+                                NotificationReplyEmail = "noreply@myemail.com",
+                                SMTPEnableSSL = false,
+                                Theme = "Metro",
+                                NewMemberStartingRole = startingRole,
+                                DefaultLanguage = startingLanguage,
+                                ActivitiesPerPage = 20,
+                                EnableAkisment = false,
+                                EnableSocialLogins = false,
+                                EnablePolls = true
+                            };
+                        _settingsService.Add(settings);
+
+                        unitOfWork.Commit();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -303,49 +319,53 @@ namespace MVCForum.Website.Controllers
             // Now we have saved the above we can create the rest of the data
             using (var unitOfWork = _UnitOfWorkManager.NewUnitOfWork())
             {
-                // Set up the initial permissions
-                var readOnly = new Permission { Name = "Read Only" };
-                var deletePosts = new Permission { Name = "Delete Posts" };
-                var editPosts = new Permission { Name = "Edit Posts" };
-                var stickyTopics = new Permission { Name = "Sticky Topics" };
-                var lockTopics = new Permission { Name = "Lock Topics" };
-                var voteInPolls = new Permission { Name = "Vote In Polls" };
-                var createPolls = new Permission { Name = "Create Polls" };
-                var createTopics = new Permission { Name = "Create Topics" };
-                var attachFiles = new Permission { Name = "Attach Files" };
-                var denyAccess = new Permission { Name = "Deny Access" };
-
-                _permissionService.Add(readOnly);
-                _permissionService.Add(deletePosts);
-                _permissionService.Add(editPosts);
-                _permissionService.Add(stickyTopics);
-                _permissionService.Add(lockTopics);
-                _permissionService.Add(voteInPolls);
-                _permissionService.Add(createPolls);
-                _permissionService.Add(createTopics);
-                _permissionService.Add(attachFiles);
-                _permissionService.Add(denyAccess);
-
-                // create the admin user and put him in the admin role
-                var admin = new MembershipUser
-                {
-                    Email = "you@email.com",
-                    UserName = "admin",
-                    Password = "password",
-                    IsApproved = true
-                };
-                _membershipService.CreateUser(admin);
-
-                // Do a save changes just in case
-                unitOfWork.SaveChanges();
-
-                // Put the admin in the admin role
-                var adminRole = _roleService.GetRole("Admin");
-                admin.Roles = new List<MembershipRole> { adminRole };
-
                 try
                 {
-                    unitOfWork.Commit();
+                    // If the admin user exists then don't do anything else
+                    if (_membershipService.GetUser("admin") == null)
+                    {
+                        // Set up the initial permissions
+                        var readOnly = new Permission { Name = "Read Only" };
+                        var deletePosts = new Permission { Name = "Delete Posts" };
+                        var editPosts = new Permission { Name = "Edit Posts" };
+                        var stickyTopics = new Permission { Name = "Sticky Topics" };
+                        var lockTopics = new Permission { Name = "Lock Topics" };
+                        var voteInPolls = new Permission { Name = "Vote In Polls" };
+                        var createPolls = new Permission { Name = "Create Polls" };
+                        var createTopics = new Permission { Name = "Create Topics" };
+                        var attachFiles = new Permission { Name = "Attach Files" };
+                        var denyAccess = new Permission { Name = "Deny Access" };
+
+                        _permissionService.Add(readOnly);
+                        _permissionService.Add(deletePosts);
+                        _permissionService.Add(editPosts);
+                        _permissionService.Add(stickyTopics);
+                        _permissionService.Add(lockTopics);
+                        _permissionService.Add(voteInPolls);
+                        _permissionService.Add(createPolls);
+                        _permissionService.Add(createTopics);
+                        _permissionService.Add(attachFiles);
+                        _permissionService.Add(denyAccess);
+
+                        // create the admin user and put him in the admin role
+                        var admin = new MembershipUser
+                        {
+                            Email = "you@email.com",
+                            UserName = "admin",
+                            Password = "password",
+                            IsApproved = true
+                        };
+                        _membershipService.CreateUser(admin);
+
+                        // Do a save changes just in case
+                        unitOfWork.SaveChanges();
+
+                        // Put the admin in the admin role
+                        var adminRole = _roleService.GetRole("Admin");
+                        admin.Roles = new List<MembershipRole> { adminRole };
+
+                        unitOfWork.Commit(); 
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -391,7 +411,7 @@ namespace MVCForum.Website.Controllers
         {
             return View();
         }
-        
+
         /// <summary>
         /// Show this when the installer is complete
         /// </summary>

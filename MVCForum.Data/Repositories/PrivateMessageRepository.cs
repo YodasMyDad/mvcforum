@@ -64,7 +64,7 @@ namespace MVCForum.Data.Repositories
                                 .Where(x => x.UserFrom.Id == Id)
                                 .OrderByDescending(x => x.DateSent)
                                 .Take(1)
-                                .SingleOrDefault();
+                                .FirstOrDefault();
         }
 
         public IList<PrivateMessage> GetAllSentByUser(Guid Id)

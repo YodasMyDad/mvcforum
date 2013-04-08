@@ -35,7 +35,7 @@ namespace MVCForum.Website.Controllers
             // Add to temp data and show
             TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
             {
-                Message = installerResult.Message,
+                Message = installerResult.OnScreenMessage,
                 MessageType = status
             };
 

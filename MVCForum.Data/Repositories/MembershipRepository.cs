@@ -34,7 +34,7 @@ namespace MVCForum.Data.Repositories
         {
             return _context.MembershipUser
                 .Include(x => x.Roles)
-                .SingleOrDefault(name => name.UserName.ToLower() == username.ToLower());
+                .FirstOrDefault(name => name.UserName.ToLower() == username.ToLower());
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace MVCForum.Data.Repositories
         {
             return _context.MembershipUser
                 .Include(x => x.Roles)
-                .SingleOrDefault(name => name.FacebookId == facebookId);
+                .FirstOrDefault(name => name.FacebookId == facebookId);
         }
 
         public IList<MembershipUser> SearchMembers(string username, int amount)
@@ -72,7 +72,7 @@ namespace MVCForum.Data.Repositories
 
             return _context.MembershipUser
                 .Include(x => x.Roles)
-                .SingleOrDefault(name => name.Slug == slug);
+                .FirstOrDefault(name => name.Slug == slug);
 
         }
 
@@ -80,7 +80,7 @@ namespace MVCForum.Data.Repositories
         {
             return _context.MembershipUser
                 .Include(x => x.Roles)
-                .SingleOrDefault(name => name.Email == email);
+                .FirstOrDefault(name => name.Email == email);
         }
 
         public IList<MembershipUser> GetUserBySlugLike(string slug)

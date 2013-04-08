@@ -72,7 +72,7 @@ namespace MVCForum.Data.Repositories
 
         public Category GetBySlug(string slug)
         {
-            return _context.Category.SingleOrDefault(x => x.Slug == slug);
+            return _context.Category.FirstOrDefault(x => x.Slug == slug);
         }
 
         public IList<Category> GetBySlugLike(string slug)

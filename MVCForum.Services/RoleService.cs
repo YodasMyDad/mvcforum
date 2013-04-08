@@ -169,7 +169,7 @@ namespace MVCForum.Services
                                                             x.MembershipRole == role);
 
                     // Set the Deny Access value in the results. If it's null for this role/category, record it as false in the results
-                    var categoryPermissionForRole = permissions.SingleOrDefault(x => x.Permission.Name == AppConstants.PermissionDenyAccess);
+                    var categoryPermissionForRole = permissions.FirstOrDefault(x => x.Permission.Name == AppConstants.PermissionDenyAccess);
                     if (categoryPermissionForRole != null)
                     {
                         categoryPermissionForRole.IsTicked = denyAccessPermission != null && denyAccessPermission.IsTicked;

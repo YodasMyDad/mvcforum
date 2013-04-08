@@ -321,7 +321,7 @@ namespace MVCForum.Data.Repositories
                 .Include(x => x.Poll)
                 .Include(x => x.Poll.PollAnswers)
                 .Include(x => x.User)
-                .SingleOrDefault(x => x.Slug == slug);
+                .FirstOrDefault(x => x.Slug == slug);
         }
 
         public IList<Topic> GetTopicBySlugLike(string slug)
