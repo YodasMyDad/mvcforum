@@ -291,6 +291,14 @@ namespace MVCForum.Services
             get
             {
                 var settings = _settingsRepository.GetSettings();
+
+                if (settings == null)
+                {
+                    // This is a one off scenario and means the system has no settings
+                    // usually when running the installer, so we need to return a default language
+                    return new Language{Name = "Setup Language", LanguageCulture = "en-GB"};
+                }
+
                 var language = settings.DefaultLanguage;
 
                 if (language == null)
@@ -648,10 +656,27 @@ namespace MVCForum.Services
                     }
 
                     // In the new language (only) set the value for the resource
-                    foreach (var res in language.LocaleStringResources.Where(res => res.LocaleResourceKey.Name == resourceKey.Name))
+                    var stringResources = language.LocaleStringResources.Where(res => res.LocaleResourceKey.Name == resourceKey.Name).ToList();
+                    if (stringResources.Any())
                     {
-                        res.ResourceValue = value;
-                        break;
+                        foreach (var res in stringResources)
+                        {
+                            res.ResourceValue = value;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        // No string resources have been created, so most probably
+                        // this is the installer creating the keys so we need to create the 
+                        // string resource to go with it and add it
+                        var stringResource = new LocaleStringResource
+                            {
+                                Language = language,
+                                LocaleResourceKey = resourceKey,
+                                ResourceValue = value
+                            };
+                        _localizationRepository.Add(stringResource);
                     }
                 }
             }

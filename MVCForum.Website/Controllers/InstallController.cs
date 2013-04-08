@@ -27,6 +27,7 @@ namespace MVCForum.Website.Controllers
         private ILocalizationService _localizationService;
         private ISettingsService _settingsService;
         private IUnitOfWorkManager _UnitOfWorkManager;
+        private IPermissionService _permissionService;
 
         public InstallController(IInstallerService installerService)
         {
@@ -104,15 +105,18 @@ namespace MVCForum.Website.Controllers
                     installerResult.Message = string.Format(@"Database installed/updated. But there was an error updating the version number in the web.config, you need to manually 
                                                                     update it to {0}", currentVersion);
                     installerResult.Successful = false;
+
+                    TempData[AppConstants.InstallerName] = AppConstants.InstallerName;
+
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = installerResult.OnScreenMessage,
+                        MessageType = GenericMessages.error
+                    };
                 }
 
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                {
-                    Message = installerResult.OnScreenMessage,
-                    MessageType = GenericMessages.success
-                };
-
-                InstallerHelper.TouchWebConfig();
+                // This code will never be hit as the update to the web.config above will trigger the app restart and 
+                // it will find the version number and redircet them to the home page - Only way its hit is if the update doesn't work
                 return RedirectToAction("Complete");
             }
 
@@ -133,8 +137,8 @@ namespace MVCForum.Website.Controllers
             var installerResult = new InstallerResult { Successful = true, Message = "Congratulations, MVC Forum has installed successfully" };
 
             // I think this is all I need to call to kick EF into life
-            EFCachingProviderConfiguration.DefaultCache = new AspNetCache();
-            EFCachingProviderConfiguration.DefaultCachingPolicy = CachingPolicy.CacheAll;
+            //EFCachingProviderConfiguration.DefaultCache = new AspNetCache();
+            //EFCachingProviderConfiguration.DefaultCachingPolicy = CachingPolicy.CacheAll;
 
             // Now setup the services as we can't do it in the constructor
             _categoryService = DependencyResolver.Current.GetService<ICategoryService>();
@@ -143,6 +147,7 @@ namespace MVCForum.Website.Controllers
             _localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
             _settingsService = DependencyResolver.Current.GetService<ISettingsService>();
             _UnitOfWorkManager = DependencyResolver.Current.GetService<IUnitOfWorkManager>();
+            _permissionService = DependencyResolver.Current.GetService<IPermissionService>();
 
             // First UOW to create the data needed for other saves
             using (var unitOfWork = _UnitOfWorkManager.NewUnitOfWork())
@@ -236,7 +241,7 @@ namespace MVCForum.Website.Controllers
             using (var unitOfWork = _UnitOfWorkManager.NewUnitOfWork())
             {
                 // Get the default language
-                var startingLanguage = _localizationService.GetLanguageByName("English");
+                var startingLanguage = _localizationService.GetLanguageByName("en-GB");
 
                 // Get the Standard Members role
                 var startingRole = _roleService.GetRole("Standard Members");
@@ -280,14 +285,55 @@ namespace MVCForum.Website.Controllers
                     };
                 _settingsService.Add(settings);
 
+                try
+                {
+                    unitOfWork.Commit();
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    installerResult.Exception = ex;
+                    installerResult.Message = "Error creating the initial data >> Settings";
+                    installerResult.Successful = false;
+                    return installerResult;
+                }
+            }
+
+
+            // Now we have saved the above we can create the rest of the data
+            using (var unitOfWork = _UnitOfWorkManager.NewUnitOfWork())
+            {
+                // Set up the initial permissions
+                var readOnly = new Permission { Name = "Read Only" };
+                var deletePosts = new Permission { Name = "Delete Posts" };
+                var editPosts = new Permission { Name = "Edit Posts" };
+                var stickyTopics = new Permission { Name = "Sticky Topics" };
+                var lockTopics = new Permission { Name = "Lock Topics" };
+                var voteInPolls = new Permission { Name = "Vote In Polls" };
+                var createPolls = new Permission { Name = "Create Polls" };
+                var createTopics = new Permission { Name = "Create Topics" };
+                var attachFiles = new Permission { Name = "Attach Files" };
+                var denyAccess = new Permission { Name = "Deny Access" };
+
+                _permissionService.Add(readOnly);
+                _permissionService.Add(deletePosts);
+                _permissionService.Add(editPosts);
+                _permissionService.Add(stickyTopics);
+                _permissionService.Add(lockTopics);
+                _permissionService.Add(voteInPolls);
+                _permissionService.Add(createPolls);
+                _permissionService.Add(createTopics);
+                _permissionService.Add(attachFiles);
+                _permissionService.Add(denyAccess);
+
                 // create the admin user and put him in the admin role
                 var admin = new MembershipUser
-                    {
-                        Email = "you@email.com",
-                        UserName = "admin",
-                        Password = "password",
-                        IsApproved = true
-                    };
+                {
+                    Email = "you@email.com",
+                    UserName = "admin",
+                    Password = "password",
+                    IsApproved = true
+                };
                 _membershipService.CreateUser(admin);
 
                 // Do a save changes just in case
@@ -305,7 +351,7 @@ namespace MVCForum.Website.Controllers
                 {
                     unitOfWork.Rollback();
                     installerResult.Exception = ex;
-                    installerResult.Message = "Error creating the initial data >> Admin user & Settings";
+                    installerResult.Message = "Error creating the initial data >> Admin user & Permissions";
                     installerResult.Successful = false;
                     return installerResult;
                 }

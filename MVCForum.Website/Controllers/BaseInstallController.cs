@@ -13,7 +13,16 @@ namespace MVCForum.Website.Controllers
     {
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            TempData[AppConstants.InstallerName] = AppConstants.InstallerName;
+            // If it gets to the complete action reset the 
+            var actionName = filterContext.ActionDescriptor.ActionName;
+            if (actionName.Contains("complete"))
+            {
+                TempData[AppConstants.InstallerName] = null;
+            }
+            else
+            {
+                TempData[AppConstants.InstallerName] = AppConstants.InstallerName;   
+            }
 
             if (!AppHelpers.ShowInstall())
             {                
