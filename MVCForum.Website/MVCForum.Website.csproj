@@ -891,6 +891,7 @@
     <Content Include="Views\Topic\AjaxMorePosts.cshtml" />
     <Content Include="Views\Topic\GetSimilarTopics.cshtml" />
     <Content Include="Views\Members\GetCurrentActiveMembers.cshtml" />
+    <Content Include="Views\Install\UpgradeDb.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Themes\n3o\Views\Shared\" />

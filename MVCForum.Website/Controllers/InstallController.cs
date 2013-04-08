@@ -101,20 +101,7 @@ namespace MVCForum.Website.Controllers
             if (installerResult.Successful)
             {
                 // Now we need to update the version in the web.config
-                if (ConfigUtils.UpdateAppSetting("MVCForumVersion", currentVersion) == false)
-                {
-                    installerResult.Message = string.Format(@"Database installed/updated. But there was an error updating the version number in the web.config, you need to manually 
-                                                                    update it to {0}", currentVersion);
-                    installerResult.Successful = false;
-
-                    TempData[AppConstants.InstallerName] = AppConstants.InstallerName;
-
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = installerResult.OnScreenMessage,
-                        MessageType = GenericMessages.error
-                    };
-                }
+                UpdateWebConfigVersionNo(installerResult, currentVersion);
 
                 // This code will never be hit as the update to the web.config above will trigger the app restart and 
                 // it will find the version number and redircet them to the home page - Only way its hit is if the update doesn't work
@@ -133,6 +120,91 @@ namespace MVCForum.Website.Controllers
             return RedirectToCreateDb(installerResult, GenericMessages.error);
         }
 
+        public ActionResult UpgradeDb()
+        {
+            // Work out this install can be upgraded, and if not redirect
+            var previousVersionNo = AppHelpers.PreviousVersionNo();
+            var currentVersionNo = AppHelpers.GetCurrentVersionNo();
+
+            var installerResult = new InstallerResult{Successful = true, Message = string.Format("Upgrade to v{0} was successful", currentVersionNo)};
+
+            // Can't upgrade so redirect
+            if (Convert.ToDouble(previousVersionNo) < 1.3d)
+            {
+                return RedirectToAction("ManualUpgradeNeeded");
+            }
+
+            //***** Old version is v1.3 or greater so we can run the installer ****
+
+            //Initialise the services
+            InitialiseServices();
+
+            // Firstly add any new tables needed via the SQL
+            // Get the SQL file and if it exists then run it
+            var dbFilePath = Server.MapPath(InstallerHelper.GetUpdateDatabaseFilePath(currentVersionNo));
+
+            // See whether this version needs a table update
+            if (System.IO.File.Exists(dbFilePath))
+            {
+                // There is a file so update the database with the new tables
+                installerResult = _installerService.CreateDbTables(null, dbFilePath, currentVersionNo);
+                if (!installerResult.Successful)
+                {
+                    // Was an error creating the tables
+                    return RedirectToCreateDb(installerResult, GenericMessages.error);
+                }
+            }
+
+            // Tables created or updated - So now update all the data
+            installerResult = UpdateData(currentVersionNo, previousVersionNo);
+
+            // See if upgrade was successful or not
+            if (installerResult.Successful)
+            {
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = installerResult.OnScreenMessage,
+                    MessageType = GenericMessages.success
+                };
+
+                // Finally update the web.config to the new version
+                UpdateWebConfigVersionNo(installerResult, currentVersionNo);
+
+                return RedirectToAction("Complete");
+            }
+
+            return RedirectToCreateDb(installerResult, GenericMessages.error);
+        }
+
+        /// <summary>
+        /// Show this if a manual upgrade is needed
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ManualUpgradeNeeded()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// Show this when the installer is complete
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Complete()
+        {
+            return View();
+        }
+
+        #region Private Methods
+
+        private InstallerResult UpdateData(string currentVersion, string previousVersion)
+        {
+            // Need to run the updater through all of the below, so we need to do 
+            // checks before we add anything to make sure it doesn't already exist
+
+            //---------------- v1.3 to v1.4 -----------------
+            throw new NotImplementedException("The upgrader is still in development");
+        }
+
         private InstallerResult CreateInitialData()
         {
             var installerResult = new InstallerResult { Successful = true, Message = "Congratulations, MVC Forum has installed successfully" };
@@ -142,13 +214,7 @@ namespace MVCForum.Website.Controllers
             //EFCachingProviderConfiguration.DefaultCachingPolicy = CachingPolicy.CacheAll;
 
             // Now setup the services as we can't do it in the constructor
-            _categoryService = DependencyResolver.Current.GetService<ICategoryService>();
-            _membershipService = DependencyResolver.Current.GetService<IMembershipService>();
-            _roleService = DependencyResolver.Current.GetService<IRoleService>();
-            _localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
-            _settingsService = DependencyResolver.Current.GetService<ISettingsService>();
-            _UnitOfWorkManager = DependencyResolver.Current.GetService<IUnitOfWorkManager>();
-            _permissionService = DependencyResolver.Current.GetService<IPermissionService>();
+            InitialiseServices();
 
             // First UOW to create the data needed for other saves
             using (var unitOfWork = _UnitOfWorkManager.NewUnitOfWork())
@@ -265,41 +331,41 @@ namespace MVCForum.Website.Controllers
 
                         // create the settings
                         var settings = new Settings
-                            {
-                                ForumName = "MVC Forum",
-                                ForumUrl = "http://www.mydomain.com",
-                                IsClosed = false,
-                                EnableRSSFeeds = true,
-                                DisplayEditedBy = true,
-                                EnablePostFileAttachments = false,
-                                EnableMarkAsSolution = true,
-                                EnableSpamReporting = true,
-                                EnableMemberReporting = true,
-                                EnableEmailSubscriptions = true,
-                                ManuallyAuthoriseNewMembers = false,
-                                EmailAdminOnNewMemberSignUp = true,
-                                TopicsPerPage = 20,
-                                PostsPerPage = 20,
-                                EnablePrivateMessages = true,
-                                MaxPrivateMessagesPerMember = 50,
-                                PrivateMessageFloodControl = 1,
-                                EnableSignatures = false,
-                                EnablePoints = true,
-                                PointsAllowedToVoteAmount = 1,
-                                PointsAddedPerPost = 1,
-                                PointsAddedForSolution = 4,
-                                PointsDeductedNagativeVote = 2,
-                                AdminEmailAddress = "my@email.com",
-                                NotificationReplyEmail = "noreply@myemail.com",
-                                SMTPEnableSSL = false,
-                                Theme = "Metro",
-                                NewMemberStartingRole = startingRole,
-                                DefaultLanguage = startingLanguage,
-                                ActivitiesPerPage = 20,
-                                EnableAkisment = false,
-                                EnableSocialLogins = false,
-                                EnablePolls = true
-                            };
+                        {
+                            ForumName = "MVC Forum",
+                            ForumUrl = "http://www.mydomain.com",
+                            IsClosed = false,
+                            EnableRSSFeeds = true,
+                            DisplayEditedBy = true,
+                            EnablePostFileAttachments = false,
+                            EnableMarkAsSolution = true,
+                            EnableSpamReporting = true,
+                            EnableMemberReporting = true,
+                            EnableEmailSubscriptions = true,
+                            ManuallyAuthoriseNewMembers = false,
+                            EmailAdminOnNewMemberSignUp = true,
+                            TopicsPerPage = 20,
+                            PostsPerPage = 20,
+                            EnablePrivateMessages = true,
+                            MaxPrivateMessagesPerMember = 50,
+                            PrivateMessageFloodControl = 1,
+                            EnableSignatures = false,
+                            EnablePoints = true,
+                            PointsAllowedToVoteAmount = 1,
+                            PointsAddedPerPost = 1,
+                            PointsAddedForSolution = 4,
+                            PointsDeductedNagativeVote = 2,
+                            AdminEmailAddress = "my@email.com",
+                            NotificationReplyEmail = "noreply@myemail.com",
+                            SMTPEnableSSL = false,
+                            Theme = "Metro",
+                            NewMemberStartingRole = startingRole,
+                            DefaultLanguage = startingLanguage,
+                            ActivitiesPerPage = 20,
+                            EnableAkisment = false,
+                            EnableSocialLogins = false,
+                            EnablePolls = true
+                        };
                         _settingsService.Add(settings);
 
                         unitOfWork.Commit();
@@ -364,7 +430,7 @@ namespace MVCForum.Website.Controllers
                         var adminRole = _roleService.GetRole("Admin");
                         admin.Roles = new List<MembershipRole> { adminRole };
 
-                        unitOfWork.Commit(); 
+                        unitOfWork.Commit();
                     }
                 }
                 catch (Exception ex)
@@ -380,48 +446,36 @@ namespace MVCForum.Website.Controllers
             return installerResult;
         }
 
-        public ActionResult UpgradeDb()
+        private void InitialiseServices()
         {
-            throw new NotImplementedException();
-
-            // I think this is all I need to call to kick EF into life
-            EFCachingProviderConfiguration.DefaultCache = new AspNetCache();
-            EFCachingProviderConfiguration.DefaultCachingPolicy = CachingPolicy.CacheAll;
-
-            // OLD ORIGINAL CODE
-            //var dbFilePath = InstallerHelper.GetUpdateDatabaseFilePath(currentVersion);
-
-            //// Not blank so need to work out what to upgrade
-            //switch (currentVersion)
-            //{
-            //    // If 1.2 we are upgrading from 1.1 to 1.2
-            //    case "1.2":
-            //        installerResult = InstallerHelper.RunSql(dbFilePath);
-            //        break;
-            //}
-
-            //return View();
+            _categoryService = DependencyResolver.Current.GetService<ICategoryService>();
+            _membershipService = DependencyResolver.Current.GetService<IMembershipService>();
+            _roleService = DependencyResolver.Current.GetService<IRoleService>();
+            _localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
+            _settingsService = DependencyResolver.Current.GetService<ISettingsService>();
+            _UnitOfWorkManager = DependencyResolver.Current.GetService<IUnitOfWorkManager>();
+            _permissionService = DependencyResolver.Current.GetService<IPermissionService>();
         }
 
-        /// <summary>
-        /// Show this if a manual upgrade is needed
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult ManualUpgradeNeeded()
+        private void UpdateWebConfigVersionNo(InstallerResult installerResult, string currentVersion)
         {
-            return View();
-        }
+            if (ConfigUtils.UpdateAppSetting("MVCForumVersion", currentVersion) == false)
+            {
+                Session[AppConstants.GoToInstaller] = "False";
 
-        /// <summary>
-        /// Show this when the installer is complete
-        /// </summary>
-        /// <returns></returns>
-        public ActionResult Complete()
-        {
-            return View();
-        }
+                installerResult.Message = string.Format(@"Database installed/updated. But there was an error updating the version number in the web.config, you need to manually 
+                                                                    update it to {0}", currentVersion);
+                installerResult.Successful = false;
 
+                TempData[AppConstants.InstallerName] = AppConstants.InstallerName;
 
-
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = installerResult.OnScreenMessage,
+                    MessageType = GenericMessages.error
+                };
+            }
+        } 
+        #endregion
     }
 }

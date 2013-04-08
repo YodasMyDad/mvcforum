@@ -23,6 +23,13 @@ namespace MVCForum.Data.Repositories
             _context = context as MVCForumContext;
         }
 
+        /// <summary>
+        /// Creates database tables and reports back with an installer result
+        /// </summary>
+        /// <param name="connectionStringOveride">If you don't want to run this sql against the default DB then pass in a different connection string here</param>
+        /// <param name="sqlFilePath">Overide what SQL you want to run, pass in the file path here i.e. /myfolder/myscript.sql</param>
+        /// <param name="currentVersion">The current app version</param>
+        /// <returns></returns>
         public InstallerResult CreateDbTables(string connectionStringOveride, string sqlFilePath, string currentVersion)
         {
             // Setup the installer result

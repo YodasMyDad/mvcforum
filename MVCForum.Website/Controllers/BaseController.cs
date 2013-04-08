@@ -43,12 +43,17 @@ namespace MVCForum.Website.Controllers
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            var controller = filterContext.RouteData.Values["controller"];
+
+            //if (Session[AppConstants.GoToInstaller] != null && Session[AppConstants.GoToInstaller].ToString() == "True")
+            //{
+            //    filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Install" }, { "action", "Index" } });
+            //}
             if (SettingsService.GetSettings().IsClosed)
-            {
-                var controller = filterContext.RouteData.Values["controller"];
+            {                
                 if(controller.ToString().ToLower() != "closed")
                 {
-                    filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Closed" }, { "action", "Index" } });        
+                    filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Closed" }, { "action", "Index" } });
                 }          
             }
         }

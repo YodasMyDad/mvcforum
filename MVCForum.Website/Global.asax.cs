@@ -150,24 +150,29 @@ namespace MVCForum.Website
                 EventManager.Instance.Initialize(LoggingService);
 
                 // Don't go to installer
-                Application["GoToInstaller"] = "False";
+                Application[AppConstants.GoToInstaller] = "False";
             }
             else
             {
                 // Go to the installer
-                Application["GoToInstaller"] = "True";
+                Application[AppConstants.GoToInstaller] = "True";
+                
             }
         }
 
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
-            if (Application["GoToInstaller"].ToString() == "True")
+            if (Application[AppConstants.GoToInstaller].ToString() == "True")
             {
                 // Beford I redirect set it to false or we'll end up in a loop
-                Application["GoToInstaller"] = "False";
+                // But set the Session to true as we'll check this in the base controller
+                // of the normal app to stop people breaking out of the installer before its 
+                // completed correctly
+                Application[AppConstants.GoToInstaller] = "False";
                 Response.Redirect("~/install/");
             }
         }
+
 
         protected void Application_AcquireRequestState(object sender, EventArgs e)
         {
