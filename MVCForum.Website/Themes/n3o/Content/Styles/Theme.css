@@ -137,7 +137,7 @@ select {  }
 .editorholder { margin: 0 0 15px 0;}
 .editorholder textarea { height: 220px;}
 .karmaholder { text-align: center;margin: 0; min-height:70px;height:auto !important;height:70px;}
-.karmascore {background-color: #fff; display:block; font-size:3.2em; padding:6px 0 8px;line-height: 30px;-moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px;margin: 5px 0;border: 1px solid #ccc; }
+.karmascore {background-color: #fff; display:block; font-size:26px; padding:6px 0 8px;line-height: 30px;-moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px;margin: 5px 0;border: 1px solid #ccc; }
 .postissolution {background-color: #5BB75B; color: #ffffff !Important;border-color: #fff;}
 
 .thumbuplink {height:13px;width: 26px;font-size: 0; display:block; line-height: 0;margin: 0 auto;background-image: url('../Images/up-arrow.png');background-repeat: no-repeat;text-indent: -9999em;cursor: pointer;}
@@ -267,6 +267,12 @@ div.tagsinput div { display:block; float: left; }
 .showvotersbox .smallspinner {background: transparent url('../Images/arrow-spinner-blue.gif') no-repeat;width: 16px;height: 16px;display: block;}
 .showvotersbox ul { padding: 0;margin: 0;}
 .showvotersbox ul li { padding:2px 0;list-style: none;}
+
+/*--- Expand Votes --*/
+.expandvotes { cursor: pointer;}
+.expandvotesholder {}
+.expandvotesholder .upvotes { color: green; font-weight: bold; padding: 0 0 4px;margin: 0 4px;}
+.expandvotesholder .downvotes { color: maroon; font-weight: bold; padding: 4px 0 0;margin: 0 4px; border-top: 1px dotted #ccc; }
 
 /*--- Polls --*/
 .pollcreatebuttonholder { text-align: right;}

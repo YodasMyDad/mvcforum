@@ -4,9 +4,6 @@ $(function () {
 
     $('input, textarea').placeholder();
 
-    // Show the voters box
-    AddShowVoters();
-
     // Sort the date of the member
     SortWhosOnline();
 
@@ -26,7 +23,7 @@ $(function () {
     var topicName = $(".createtopicname");
     if (topicName.length > 0) {
         topicName.focusout(function () {
-            var tbValue = $.trim(topicName.val()); 
+            var tbValue = $.trim(topicName.val());
             var length = tbValue.length;
             if (length > 5) {
                 // Someone has entered some text more than 5 charactors and now clicked
@@ -81,12 +78,12 @@ $(function () {
                 // Update the page index value
                 var newPageIdex = (parseInt(pageIndex.val()) + parseInt(1));
                 pageIndex.val(newPageIdex);
-                
+
                 // If the new pageindex is greater than the total pages, then hide the show more button
                 if (newPageIdex > totalPages) {
                     showMoreLink.hide();
                 }
-                
+
                 // Lastly reattch the click events
                 AddPostClickEvents();
                 activeText.show();
@@ -185,7 +182,7 @@ $(function () {
         e.preventDefault();
         e.stopImmediatePropagation();
     });
-    
+
     // Some manual ajax badge checks
     if ($.QueryString["postbadges"] == "true") {
         // Do a post badge check
@@ -194,7 +191,7 @@ $(function () {
 
     // Poll Answer counter
     //var counter = 0;
-    
+
     // This check is for the edit page
     //if (typeof counter === 'undefined') {
     //    // variable is undefined
@@ -227,8 +224,8 @@ $(function () {
         $(this).hide();
         // Show the remove poll button
         $(".removepollbutton").show();
-    });    
-    
+    });
+
     // Add a new answer
     $(".addanswer").click(function (e) {
         e.preventDefault();
@@ -246,7 +243,7 @@ $(function () {
             //ShowHideRemovePollAnswerButton(counter);
         }
     });
-    
+
     // Poll vote radio button click
     $(".pollanswerselect").click(function () {
         //Firstly Show the submit poll button
@@ -255,10 +252,10 @@ $(function () {
         var answerId = $(this).data("answerid");
         $('.selectedpollanswer').val(answerId);
     });
-    
+
     $(".pollvotebutton").click(function (e) {
         e.preventDefault();
-        
+
         var pollId = $('#Poll_Id').val();
         var answerId = $('.selectedpollanswer').val();
 
@@ -282,10 +279,10 @@ $(function () {
                 ShowUserMessage("Error: " + xhr.status + " " + thrownError);
             }
         });
-        
+
     });
-    
-    
+
+
 
 });
 
@@ -294,6 +291,9 @@ function SortWhosOnline() {
 }
 
 function AddPostClickEvents() {
+
+    ShowExpandedVotes();
+
     $(".issolution").click(function (e) {
         var solutionHolder = $(this);
         var postId = solutionHolder.attr('rel');
@@ -383,11 +383,45 @@ function AddNewPosts(showMoreLink, posts) {
     showMoreLink.before(posts);
 }
 
-function AddShowVoters() {
-    if ($(".showvoters").length > 0) {
-        // Container/Parent
-        var showVoters = $(".showvoters");
+function ShowExpandedVotes() {
+    var expandVotes = $(".expandvotes");
+    if (expandVotes.length > 0) {
+        expandVotes.click(function (e) {
+            e.preventDefault();
 
+            var votesSpan = $(this).find("span.votenumber");            
+
+            var expandVotesViewModel = new Object();
+            expandVotesViewModel.Post = votesSpan.attr("id");
+
+            // Ajax call to post the view model to the controller
+            var strung = JSON.stringify(expandVotesViewModel);
+            var thisExpandVotes = $(this);
+            $.ajax({
+                url: app_base + 'Vote/GetVotes',
+                type: 'POST',
+                dataType: 'html',
+                data: strung,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    votesSpan.html(data);
+                    // remove the css class to remove the click pointer and show multple calls to this
+                    thisExpandVotes.removeClass('expandvotes');
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+
+        });
+    }
+}
+
+// Unused now
+function AddShowVoters() {
+    var showVoters = $(".showvoters");
+    if (showVoters.length > 0) {
+        // Container/Parent
         showVoters.click(function (e) {
             e.preventDefault();
             // This the child box
@@ -398,10 +432,10 @@ function AddShowVoters() {
 
             // Now show it
             voterBox.toggle();
-            
+
             if (voterBox.is(":visible")) {
                 // Is being shown so do the Ajax call
-                
+
                 var GetVotersViewModel = new Object();
                 GetVotersViewModel.Post = voterBox.attr("id");
 
@@ -423,7 +457,7 @@ function AddShowVoters() {
                 });
 
             }
-        });       
+        });
     }
 }
 
@@ -472,26 +506,26 @@ function BadgeMarkAsSolution(postId) {
 }
 
 function BadgeVoteUp(postId) {
-    
-        // Ajax call to post the view model to the controller
-        var voteUpBadgeViewModel = new Object();
-        voteUpBadgeViewModel.PostId = postId;
 
-        // Ajax call to post the view model to the controller
-        var strung = JSON.stringify(voteUpBadgeViewModel);
+    // Ajax call to post the view model to the controller
+    var voteUpBadgeViewModel = new Object();
+    voteUpBadgeViewModel.PostId = postId;
 
-        $.ajax({
-            url: app_base + 'Badge/VoteUpPost',
-            type: 'POST',
-            data: strung,
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
-                // No need to do anything
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-            }
-        });
+    // Ajax call to post the view model to the controller
+    var strung = JSON.stringify(voteUpBadgeViewModel);
+
+    $.ajax({
+        url: app_base + 'Badge/VoteUpPost',
+        type: 'POST',
+        data: strung,
+        contentType: 'application/json; charset=utf-8',
+        success: function (data) {
+            // No need to do anything
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+        }
+    });
 }
 
 function UserPost() {
@@ -558,7 +592,7 @@ function AjaxPostSuccess() {
 
     // Re-enable the button
     $('#createpostbutton').attr("disabled", false);
-    
+
     // Finally do an async badge check
     UserPost();
 }
@@ -573,9 +607,9 @@ function AjaxPostError(message) {
 }
 
 (function ($) {
-    $.QueryString = (function(a) {
-        if (a == "") return { };
-        var b = { };
+    $.QueryString = (function (a) {
+        if (a == "") return {};
+        var b = {};
         for (var i = 0; i < a.length; ++i) {
             var p = a[i].split('=');
             if (p.length != 2) continue;

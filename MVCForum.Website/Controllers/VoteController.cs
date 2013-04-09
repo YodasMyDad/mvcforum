@@ -219,5 +219,19 @@ namespace MVCForum.Website.Controllers
             }
             return null;
         }
+
+        [HttpPost]
+        public PartialViewResult GetVotes(VoteUpViewModel voteUpViewModel)
+        {
+            if (Request.IsAjaxRequest())
+            {
+                var post = _postService.Get(voteUpViewModel.Post);
+                var positiveVotes = post.Votes.Count(x => x.Amount > 0);
+                var negativeVotes = post.Votes.Count(x => x.Amount <= 0);
+                var viewModel = new ShowVotesViewModel { DownVotes = negativeVotes, UpVotes = positiveVotes};
+                return PartialView(viewModel);
+            }
+            return null;
+        }
     }
 }
