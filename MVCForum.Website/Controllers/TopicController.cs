@@ -416,7 +416,7 @@ namespace MVCForum.Website.Controllers
 
             // Get lucene to search, we are just searching on the topic name at the moment
             // Really need a more powerful lucene search for similar questions
-            var foundTopicIds = _luceneService.Search(formattedSearchTerm, AppConstants.LucTopicName, false).Select(x => x.TopicId).ToList();
+            var foundTopicIds = _luceneService.Search(formattedSearchTerm, string.Empty, AppConstants.SimilarTopicsListSize).Select(x => x.TopicId).ToList();
 
             // Get the topics
             var topics = _topicService.GetTopicsByCsv(AppConstants.SimilarTopicsListSize, foundTopicIds);

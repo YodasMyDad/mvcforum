@@ -60,6 +60,10 @@
       <Project>{20ad3d3c-153e-47ac-ba9c-3e4db876990e}</Project>
       <Name>MVCForum.Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Utilities\MVCForum.Utilities.csproj">
+      <Project>{d0ce5e27-041d-4f1e-8c8c-5f4888c72155}</Project>
+      <Name>MVCForum.Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

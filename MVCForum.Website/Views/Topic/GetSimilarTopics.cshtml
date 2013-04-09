@@ -6,7 +6,7 @@
         {
             <li class="clearfix">
                 <span class="topicvotes topicvotessmall">@topic.VoteCount</span>
-                <a href="@topic.NiceUrl">@topic.Name</a>
+                <a href="@Html.Raw(topic.NiceUrl)">@Html.Raw(topic.Name)</a>
             </li>
         }
     </ul>

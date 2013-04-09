@@ -239,23 +239,30 @@ namespace MVCForum.Data.Repositories
 
         public PagedList<Topic> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> csv)
         {
+            // Get the count
+            var total = _context.Topic
+                                .Join(csv,
+                                      topic => topic.Id,
+                                      guidFromCsv => guidFromCsv,
+                                      (topic, guidFromCsv) => new { topic, guidFromCsv }
+                                      ).Count(x => x.guidFromCsv == x.topic.Id);
 
-            // Get the Posts and then get the topics from the post
-            // This is an interim solution, as its flawed due to multiple posts in one topic so the paging might
-            // be incorrect if all posts are from one topic.
+            // Now get the paged stuff
             var results = _context.Topic
-                            .Include(x => x.LastPost)
-                            .Include(x => x.LastPost.User)
-                            .Include(x => x.Category)
-                            .Include(x => x.Posts.Select(v => v.Votes))
-                            .Where(x => csv.Contains(x.Id))
-                            .OrderByDescending(x => x.LastPost.DateCreated)
-                            .Skip((pageIndex - 1) * pageSize)
-                            .Take(pageSize)
-                            .ToList();
+                .Join(csv,
+                        topic => topic.Id,
+                        guidFromCsv => guidFromCsv,
+                        (topic, guidFromCsv) => new { topic, guidFromCsv }
+                    )
+                    .Where(x => x.guidFromCsv == x.topic.Id)
+                    .OrderByDescending(x => x.topic.LastPost.DateCreated)
+                    .Skip((pageIndex - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(x => x.topic)
+                    .ToList();
 
             // Return a paged list
-            return new PagedList<Topic>(results, pageIndex, pageSize, results.Count);
+            return new PagedList<Topic>(results, pageIndex, pageSize, total);
         }
 
         public IList<Topic> GetTopicsByCsv(int amountToTake, List<Guid> topicIds)

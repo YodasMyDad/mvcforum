@@ -42,7 +42,8 @@ namespace MVCForum.Website.Controllers
                 var formattedSearchTerm = StringUtils.ReturnSearchString(term);
 
                 // Get lucene to search
-                var foundTopicIds = _luceneService.Search(formattedSearchTerm, false).Select(x => x.TopicId).ToList();
+                var luceneResults = _luceneService.Search(formattedSearchTerm, pageIndex, SettingsService.GetSettings().TopicsPerPage);
+
 
                 //// Get all the topics based on the search value
                 //var topics = _topicsService.SearchTopics(pageIndex,
@@ -50,10 +51,7 @@ namespace MVCForum.Website.Controllers
                 //                                     AppConstants.ActiveTopicsListSize,
                 //                                     term);
 
-                var topics = _topicsService.GetTopicsByCsv(pageIndex,
-                                                     SettingsService.GetSettings().TopicsPerPage,
-                                                     AppConstants.ActiveTopicsListSize,
-                                                     foundTopicIds);
+                var topics = _topicsService.GetTopicsByCsv(pageIndex, SettingsService.GetSettings().TopicsPerPage, AppConstants.ActiveTopicsListSize, luceneResults.Select(x => x.TopicId).ToList());
 
                 // Get all the categories for this topic collection
                 var categories = topics.Select(x => x.Category).Distinct();
@@ -64,7 +62,7 @@ namespace MVCForum.Website.Controllers
                     Topics = topics,
                     AllPermissionSets = new Dictionary<Category, PermissionSet>(),
                     PageIndex = pageIndex,
-                    TotalCount = topics.TotalCount,
+                    TotalCount = luceneResults.TotalCount,
                     Term = formattedSearchTerm
                 };
 

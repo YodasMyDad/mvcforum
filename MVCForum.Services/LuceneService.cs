@@ -130,6 +130,11 @@ namespace MVCForum.Services
             return GoLucene.Search(searchTerm, fieldName, doFuzzySearch);
         }
 
+        public IEnumerable<LuceneSearchModel> Search(string searchTerm, string fieldName, int amountToTake, bool doFuzzySearch = false)
+        {
+            return GoLucene.Search(searchTerm, amountToTake, fieldName, doFuzzySearch);
+        }
+
         /// <summary>
         /// Search the index by search term
         /// </summary>
@@ -148,6 +153,12 @@ namespace MVCForum.Services
         public IEnumerable<LuceneSearchModel> GetAll()
         {
             return GoLucene.GetAllIndexRecords();
+        }
+
+
+        public PagedList<LuceneSearchModel> Search(string searchTerm, int pageIndex, int pageSize, bool doFuzzySearch = false)
+        {
+            return GoLucene.Search(searchTerm, pageIndex, pageSize, doFuzzySearch);
         }
     }
 }
