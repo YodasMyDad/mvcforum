@@ -4,6 +4,7 @@ using System.Data.SqlTypes;
 using System.Security.Cryptography;
 using System.Text;
 using System.Linq;
+using System.Web;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.API;
@@ -363,7 +364,6 @@ namespace MVCForum.Services
         /// <returns></returns>
         public MembershipUser GetUser(string username)
         {
-            username = StringUtils.SafePlainText(username);
             return _membershipRepository.GetUser(username);
         }
 

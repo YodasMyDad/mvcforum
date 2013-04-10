@@ -161,6 +161,9 @@ PostFilter.OrderBy = Order By:
 PostFilter.Standard = Standard
 PostFilter.Newest = Newest
 PostFilter.Votes = Votes
+PM.NewPrivateMessageSubject = New Private Message
+PM.NewPrivateMessageBody = {0} has just sent you a private message.
+Post.DeleteConfirmation = Are you sure you want to delete?
 
 +++ CHANGES TO EXISTING LANGUAGE STRINGS
 Topic.Comments = Answers

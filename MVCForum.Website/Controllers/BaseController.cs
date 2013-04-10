@@ -22,6 +22,8 @@ namespace MVCForum.Website.Controllers
         protected readonly ISettingsService SettingsService;
         protected readonly ILoggingService LoggingService;
 
+        private readonly MembershipUser _loggedInUser;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -58,7 +60,6 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-
         /// <summary>
         /// Return the currently logged on user
         /// </summary>
@@ -68,8 +69,9 @@ namespace MVCForum.Website.Controllers
             {
                 if (User.Identity.IsAuthenticated)
                 {
-                        var currentUser = MembershipService.GetUser(User.Identity.Name);
-                        return currentUser; 
+                    //TODO: THIS GETS HIT LOADS OF TIMES!! NEED TO MOVE / REFACTOR
+                    var currentUser = MembershipService.GetUser(User.Identity.Name);
+                    return currentUser;
                 }
                 return null;
             }

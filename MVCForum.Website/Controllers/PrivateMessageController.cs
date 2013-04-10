@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
@@ -14,12 +15,15 @@ namespace MVCForum.Website.Controllers
     public class PrivateMessageController : BaseController
     {
         private readonly IPrivateMessageService _privateMessageService;
+        private readonly IEmailService _emailService;
 
         public PrivateMessageController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
-            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IPrivateMessageService privateMessageService)
+            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IPrivateMessageService privateMessageService,
+            IEmailService emailService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _privateMessageService = privateMessageService;
+            _emailService = emailService;
         }
 
         public ActionResult Index(int? p)
@@ -140,6 +144,21 @@ namespace MVCForum.Website.Controllers
                                     };
 
                                     unitOfWork.Commit();
+
+                                    // Finally send an email to the user so they know they have a new private message
+                                    var email = new Email
+                                        {
+                                            EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
+                                            EmailTo = memberTo.Email,
+                                            Subject = LocalizationService.GetResourceString("PM.NewPrivateMessageSubject"),
+                                            NameTo = memberTo.UserName
+                                        };
+
+                                    var sb = new StringBuilder();
+                                    sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("PM.NewPrivateMessageBody"), LoggedOnUser.UserName));
+                                    email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+
+                                    _emailService.SendMail(email);
 
                                     return RedirectToAction("Index");
                                 }

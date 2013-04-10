@@ -111,7 +111,7 @@
                     }
                     @if (Model.Post.User.Id == loggedOnUserId || Model.Permissions[AppConstants.PermissionDeletePosts].IsTicked)
                     {
-                        <a href="@Url.Action("DeletePost", "Post", new { id = Model.Post.Id })">@Html.LanguageString("Post.Delete")</a>
+                        <a onclick="return confirm('@(Html.LanguageString("Post.DeleteConfirmation"))')" href="@Url.Action("DeletePost", "Post", new { id = Model.Post.Id })">@Html.LanguageString("Post.Delete")</a>
                     }
                 </div>
             }

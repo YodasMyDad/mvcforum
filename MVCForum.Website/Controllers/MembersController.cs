@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using Facebook;
@@ -614,12 +616,10 @@ namespace MVCForum.Website.Controllers
                 var user = MembershipService.GetUser(userModel.Id);
 
                 user.Age = userModel.Age;
-                user.Email = userModel.Email;
                 user.Facebook = userModel.Facebook;
                 user.Location = userModel.Location;
                 user.Signature = userModel.Signature;
                 user.Twitter = userModel.Twitter;
-                user.UserName = userModel.UserName;
                 user.Website = userModel.Website;
 
                 // If there is a location try and save the longitude and latitude
@@ -639,6 +639,36 @@ namespace MVCForum.Website.Controllers
                     {
                         LoggingService.Error("Error getting longitude and latitude from location");
                     }
+                }
+
+                // User is trying to change username, need to check if a user already exists
+                // with the username they are trying to change to
+                var changedUsername = false;
+                if (userModel.UserName != user.UserName)
+                {
+                    if (MembershipService.GetUser(userModel.UserName) != null)
+                    {
+                        unitOfWork.Rollback();
+                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.DuplicateUserName"));
+                        return View(userModel);
+                    }
+
+                    user.UserName = userModel.UserName;
+                    changedUsername = true;
+                }
+
+                // User is trying to update their email address, need to 
+                // check the email is not already in use
+                if (userModel.Email != user.Email)
+                {
+                    // Add get by email address
+                    if (MembershipService.GetUserByEmail(userModel.Email) != null)
+                    {
+                        unitOfWork.Rollback();
+                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.DuplicateEmail"));
+                        return View(userModel);
+                    }
+                    user.Email = userModel.Email;
                 }
 
                 MembershipService.ProfileUpdated(user);
@@ -665,6 +695,38 @@ namespace MVCForum.Website.Controllers
                 try
                 {
                     unitOfWork.Commit();
+
+                    if (changedUsername)
+                    {
+                        // User has changed their username so need to log them in
+                        // as there new username of 
+                        var authCookie = Request.Cookies[FormsAuthentication.FormsCookieName];
+                        if (authCookie != null)
+                        {
+                            var authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+                            if (authTicket != null)
+                            {
+                                var newFormsIdentity = new FormsIdentity(new FormsAuthenticationTicket(authTicket.Version,
+                                                                                                       user.UserName, 
+                                                                                                       authTicket.IssueDate, 
+                                                                                                       authTicket.Expiration, 
+                                                                                                       authTicket.IsPersistent, 
+                                                                                                       authTicket.UserData));
+                                var roles = authTicket.UserData.Split("|".ToCharArray());
+                                var newGenericPrincipal = new GenericPrincipal(newFormsIdentity, roles);
+                                System.Web.HttpContext.Current.User = newGenericPrincipal;
+                            }
+                        }
+
+                        // sign out current user
+                        FormsAuthentication.SignOut();
+
+                        // Abandon the session
+                        Session.Abandon();
+
+                        // Sign in new user
+                        FormsAuthentication.SetAuthCookie(user.UserName, false);
+                    }
                 }
                 catch (Exception ex)
                 {
