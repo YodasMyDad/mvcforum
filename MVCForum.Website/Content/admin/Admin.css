@@ -70,7 +70,7 @@ select {  }
 .field-validation-error { display: block;}
 
 /*--- Main Admin Body ---*/
-.mainadminbody {}
+.mainadminbody { padding-top: 29px;}
 .mainadminbody li { padding: 4px 0;}
 
 /*--- Category List ---*/
@@ -111,6 +111,10 @@ select {  }
 .logentry .logentrythreadid {}
 .logentry .logentryerrorlevel {}
 .logentry .logentrymessage {}
+
+/*--- Role permission list --*/
+.rolepermissionlist { padding: 0;margin: 0;}
+.rolepermissionlist li { list-style: none;float: left;display: inline;padding: 0 5px 5px 0;}
 
 /*--- Admin section holders ---*/
 .adminsection { border: 1px #efefef solid;-moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px;padding: 10px;clear: both;margin: 0 0 20px 0;}

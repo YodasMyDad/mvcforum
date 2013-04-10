@@ -34,9 +34,9 @@
             <th>
                 Edit
             </th>
-            <th>
+@*            <th>
                 Edit in all languages
-            </th>
+            </th>*@
             <th>
                 Resource Name
             </th>
@@ -61,11 +61,11 @@
                         </a>
                     </span>
                 </td>
-                <td>
+@*                <td>
                     <a href="@Url.Action("EditAll", new { resourceKeyId = resource.ResourceKeyId })" class="btn btn-small">
                         <i class="icon-pencil"></i>
                     </a>
-                </td>
+                </td>*@
                 <td>
                     @Html.DisplayFor(modelItem => resource.LocaleResourceKey)
                 </td>

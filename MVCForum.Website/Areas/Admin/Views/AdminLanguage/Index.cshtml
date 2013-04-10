@@ -2,14 +2,20 @@
     ViewBag.Title = "Languages"; 
 }
 
-<div class="row">
-    
-    <div class="span6">
-        <h1>Manage Languages</h1>
+
+    <h2>Languages</h2>
+    <p>This section provides several features to help administrate the forum language</p>
+
+    <div class="adminsection">
+        
+        <h3>Manage Languages</h3>
         @Html.Action("GetLanguages")
     </div>
-    <div class="span4">
-        @Html.Action("CreateLanguage")
-    </div>
 
-</div>
+
+    <div class="adminsection">
+        
+        <h3>Members</h3>
+        @Html.Action("CreateLanguage")
+
+    </div>

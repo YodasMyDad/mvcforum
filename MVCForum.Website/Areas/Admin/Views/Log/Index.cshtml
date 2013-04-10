@@ -13,23 +13,46 @@
 </div>
 <div class="clearer"></div>
 <p>This is a limited view of the log, if you need to see even more logs then you you'll need to open the logfile.txt in the App_Data folder</p>
-@foreach (var log in Model.LogFiles)
+
+@if (Model.LogFiles.Any())
 {
-    <div class="logentry row">
-        <div class="logentrydate span1">
-            @log.Date
-        </div>
+    <table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>
+                Entry Date
+            </th>
+            <th>
+                Module
+            </th>
+            <th>
+                Method
+            </th>
+            <th>
+                Message
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var log in Model.LogFiles)
+        {           
+            <tr>
 
-        <div class="logentrydate span2">
-            @log.Module
-        </div>
+                <td class="logentrydate">
+                    @log.Date
+                </td>
+                <td class="logentrymodule">
+                    @log.Module
+                </td>
+                <td class="logentrymethod">
+                    @log.Method
+                </td>
+                <td class="logentrymessage">
+                    @log.ErrorMessage
+                </td>
 
-        <div class="logentrydate span2">
-            @log.Method
-        </div>
-
-        <div class="logentrymessage span5">
-            @log.ErrorMessage
-        </div>
-    </div>
+            </tr>
+        }
+    </tbody>
+</table>
 }
