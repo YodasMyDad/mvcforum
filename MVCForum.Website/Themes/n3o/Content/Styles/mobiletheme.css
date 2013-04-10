@@ -131,15 +131,20 @@ h6 {font-size:18px; margin-bottom:8px;}
 .mobileview .container-fluid .row .topicrow .topicstats .topicviews {} 
 .mobileview .container-fluid .row .topicrow .topicrowdetails {width: 65.95744680199999%;}
 .mobileview .container-fluid .row .topicrow .topicrowdetails h3 {}
-.mobileview .container-fluid .row .topicrow .topicrowdetails h3 a, .mobileview .container-fluid .row .topicrow .topicrowdetails h3 a:visited {font-size: 31px;}
+.mobileview .container-fluid .row .topicrow .topicrowdetails h3 a, .mobileview .container-fluid .row .topicrow .topicrowdetails h3 a:visited {font-size: 24px;}
 .mobileview .container-fluid .row .topicrow .topicrowdetails .topicpreview {}
 .mobileview .container-fluid .row .topicrow .topicrowdetails .topicpreview p {}
-.mobileview .container-fluid .row .topicrow .topicrowdetails .topicrowstatscategory { font-size: 13px;}
+.mobileview .container-fluid .row .topicrow .topicrowdetails .topicrowstatscategory { font-size: 11px;}
 .mobileview .container-fluid .row .topicrow .topicrecent {width: 14.89361702%;}
+.mobileview .container-fluid .row .topicrow .topicrecent p { font-size: 11px;}
 .mobileview .container-fluid .row .topicrow .topicrecent .topicrecenttitle { display: none;}
 .mobileview .container-fluid .row .topicrow .topicrecent .topicrecentavatar { text-align: right;}
 .mobileview .container-fluid .row .topicrow .topicrecent .topicrecentavatar img { width: 37px;}
 .mobileview .container-fluid .row .topicrow .topicrecent .topicrecentdate { text-align: right;}
+
+/*--- TAGS ---*/
+.mobileview .container-fluid .row div.tagsinput {}
+.mobileview .container-fluid .row div.tagsinput span.tag { padding: 3px;font-size: 11px;line-height: 12px;}
 
 .mobileview .container-fluid .row .statsblock  { float: none;width: 100%;margin: 0 0 2px 0;height: auto;padding: 2px 0;}
 .mobileview .container-fluid .row .statsblock span { line-height: normal;}
@@ -152,27 +157,28 @@ h6 {font-size:18px; margin-bottom:8px;}
 
 /*--- Post Rows ---*/
 .mobileview .container-fluid .post {}
-.mobileview .container-fluid .post .postmemberdetails{}
+.mobileview .container-fluid .post .postmemberdetails{width: 14.89361702%;}
 .mobileview .container-fluid .post .postmemberdetails .karmaholder{}
-.mobileview .container-fluid .post .postmemberdetails .karmaholder .solutionholder { display: none;}
+.mobileview .container-fluid .post .postmemberdetails .karmaholder .solutionholder { padding: 19px 0 0 0;}
 .mobileview .container-fluid .post .postmemberdetails .karmaholder .karmascore{ font-size: 23px;}
-.mobileview .container-fluid .post .postbody {width: 82.97872340425532% !Important; *width: 82.92553191489361% !Important;text-align: left;}
-.mobileview .container-fluid .post .postbody .postbodytop { font-size: 14px;}
+.mobileview .container-fluid .post .postbody {width: 65.95744680199999%;text-align: left;}
+.mobileview .container-fluid .post .postbody .postbodytop { font-size: 11px;}
 .mobileview .container-fluid .post .postbody .postbodytop a, .mobileview .container-fluid .post .postbody .postbodytop a:visited {}
 .mobileview .container-fluid .post .postbody .postbodytop a:hover {}
 .mobileview .container-fluid .post .postbody .postcontent {}
 .mobileview .container-fluid .post .postbody .postcontent img { max-width: 100%;}
-.mobileview .container-fluid .post .postbody .postcontent p { font-size: 16px;} 
-.mobileview .container-fluid .post .postkarmaouter { line-height: 18px;}
+.mobileview .container-fluid .post .postbody .postcontent p { font-size: 14px;}
+.mobileview .container-fluid .post .postbody .postcontent iframe { width: 100% !Important;}
+.mobileview .container-fluid .post .postkarmaouter { line-height: 18px;width: 14.89361702%;}
 .mobileview .container-fluid .post .postkarmaouter .postadminui {}
 .mobileview .container-fluid .post .postkarmaouter .postadminui .userpostadmin { padding: 0;}
 .mobileview .container-fluid .post .postkarmaouter .postadminui .userpostadmin a { margin: 7px 0;}
 .mobileview .container-fluid .post .postkarmaouter .postmemberdetailsinner { font-size: 13px;}
 .mobileview .container-fluid .post .postkarmaouter .postmemberdetailsinner .postmemberavatar {}
 .mobileview .container-fluid .post .postkarmaouter .postmemberdetailsinner .postmemberavatar img { width: 37px;}
-.mobileview .container-fluid .post .postkarmaouter .postmemberdetailsinner .postmemberposts {}
+.mobileview .container-fluid .post .postkarmaouter .postmemberdetailsinner .postmemberposts { display: none;}
 .mobileview .container-fluid .post .postkarmaouter .postmemberdetailsinner .postmemberposts span {}
-.mobileview .container-fluid .post .postkarmaouter .postmemberdetailsinner .postmemberkarma {}
+.mobileview .container-fluid .post .postkarmaouter .postmemberdetailsinner .postmemberkarma { display: none;}
 .mobileview .container-fluid .post .postkarmaouter .postmemberdetailsinner .postmemberkarma span {}
 
 /*--- Polls ---*/
