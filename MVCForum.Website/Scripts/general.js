@@ -61,6 +61,7 @@ $(function () {
         var getMorePostsViewModel = new Object();
         getMorePostsViewModel.TopicId = topicId;
         getMorePostsViewModel.PageIndex = pageIndex.val();
+        getMorePostsViewModel.Order = $.QueryString["order"];
 
         // Ajax call to post the view model to the controller
         var strung = JSON.stringify(getMorePostsViewModel);

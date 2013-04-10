@@ -1,4 +1,5 @@
 ﻿@using MVCForum.Domain.Constants
+@using MVCForum.Domain.DomainModel
 @using MVCForum.Website.Application
 @using MVCForum.Website.ViewModels
 @model ShowTopicViewModel
@@ -23,6 +24,7 @@
 
     // Set a ViewBag for the category
     TempData[AppConstants.DefaultCategoryViewBagName] = Model.Topic.Category.Id;
+    var qs = Request.QueryString[AppConstants.PostOrderBy] ?? string.Empty;
 }
 
 @section Header
@@ -73,16 +75,32 @@
         var topicStarterPostModel = new ViewPostViewModel { Permissions = Model.Permissions, Post = Model.TopicStarterPost, User = Model.User, ParentTopic = Model.Topic };
         Html.RenderPartial("_Post", topicStarterPostModel);
     }
-    <p class="topicstarterpostcomments">@(totalCount - 1) @Html.LanguageString("Topic.CommentsDetails")</p>
+    <div class="row topicstarterpostbeginpostsheading">
+        <div class="span6 topicstarterpostcomments">
+            @(totalCount - 1) @Html.LanguageString("Topic.CommentsDetails")
+        </div>
+        <div class="span3 topicpostorderfilter">
+            @if ((totalCount - 1) > 0)
+            {
+                <text> @Html.LanguageString("PostFilter.OrderBy")
+                <a class="orderfilerlink @(string.IsNullOrEmpty(qs) ? "orderfilerlinkactive" : "")" href="@Model.Topic.NiceUrl">@Html.LanguageString("PostFilter.Standard")</a> | 
+                <a class="orderfilerlink @(qs.Contains(PostOrderBy.Newest.ToString()) ? "orderfilerlinkactive" : "")" href="?@AppConstants.PostOrderBy=@PostOrderBy.Newest.ToString()">@Html.LanguageString("PostFilter.Newest")</a> | 
+                <a class="orderfilerlink @(qs.Contains(PostOrderBy.Votes.ToString()) ? "orderfilerlinkactive" : "")" href="?@AppConstants.PostOrderBy=@PostOrderBy.Votes.ToString()">@Html.LanguageString("PostFilter.Votes")</a>  
+                </text>              
+            }
+        </div>
+    </div>
+
 </div>
 
 @foreach (var post in Model.Posts)
 {
-    var viewModel = new ViewPostViewModel {Permissions = Model.Permissions, Post = post, User = Model.User, ParentTopic = Model.Topic};
+    var viewModel = new ViewPostViewModel { Permissions = Model.Permissions, Post = post, User = Model.User, ParentTopic = Model.Topic };
     Html.RenderPartial("_Post", viewModel);
 }
 
-@if (Model.Posts.TotalPages > 1){
+@if (Model.Posts.TotalPages > 1)
+{
     <a href="#" class="showmoreposts btn"><span class="smpactive">@Html.LanguageString("Topic.ShowMorePosts")</span><span class="smploading" style="display: none;">@Html.LanguageString("Topic.ShowMorePostsLoading")</span></a>
 }
 

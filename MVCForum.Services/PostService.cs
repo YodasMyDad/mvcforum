@@ -113,10 +113,11 @@ namespace MVCForum.Services
         /// <param name="pageSize"></param>
         /// <param name="amountToTake"></param>
         /// <param name="topicId"></param>
+        /// <param name="order"></param>
         /// <returns></returns>
-        public PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId)
+        public PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId, PostOrderBy order)
         {
-            return _postRepository.GetPagedPostsByTopic(pageIndex, pageSize, amountToTake, topicId);
+            return _postRepository.GetPagedPostsByTopic(pageIndex, pageSize, amountToTake, topicId, order);
         }
 
         /// <summary>

@@ -319,7 +319,7 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public LocaleResourceKey GetResourceKey(string name)
         {
-            return _context.LocaleResourceKey.FirstOrDefault(x => x.Name == name);       
+            return _context.LocaleResourceKey.FirstOrDefault(x => x.Name.Trim() == name);       
         }
 
         /// <summary>

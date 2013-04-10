@@ -149,7 +149,8 @@ h6 {font-size:18px; margin-bottom:8px;}
 .mobileview .container-fluid .row .statsblock  { float: none;width: 100%;margin: 0 0 2px 0;height: auto;padding: 2px 0;}
 .mobileview .container-fluid .row .statsblock span { line-height: normal;}
 
-.mobileview .container-fluid .topicstarterpostcomments { font-size: 20px;}
+.mobileview .container-fluid .row .topicstarterpostcomments { font-size: 20px; margin: 0;padding: 0;width: 100%;float: none;}
+.mobileview .container-fluid .row .topicpostorderfilter { margin: 0;padding: 0;width: 100%;float: none;text-align: center;}
 
 /*--- Profile ---*/
 .mobileview .container-fluid .memberprofilepublic {}

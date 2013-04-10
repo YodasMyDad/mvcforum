@@ -157,6 +157,10 @@ Topic.AlreadyAnswered = Questions that may already have your answer
 Topic.CommentsDetails = Comments
 Topic.Comment = Answer
 Stats.FooterActiveUsersText = Members Currently Online
+PostFilter.OrderBy = Order By:
+PostFilter.Standard = Standard
+PostFilter.Newest = Newest
+PostFilter.Votes = Votes
 
 +++ CHANGES TO EXISTING LANGUAGE STRINGS
 Topic.Comments = Answers

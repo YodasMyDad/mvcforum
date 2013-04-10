@@ -267,15 +267,17 @@ namespace MVCForum.Website.Controllers
                     // Note: Don't use topic.Posts as its not a very efficient SQL statement
                     // Use the post service to get them as it includes other used entities in one
                     // statement rather than loads of sql selects
-                    // --- Get all the posts in this topic and put into a full paged list
-                    //var posts = new PagedFullList<Post>(topic.Posts.OrderBy(x => x.DateCreated),
-                    //                        pageIndex,
-                    //                        SettingsService.GetSettings().PostsPerPage,
-                    //                        topic.Posts.Count());
+
+                    var sortQuerystring = Request.QueryString[AppConstants.PostOrderBy];
+                    var orderBy = !string.IsNullOrEmpty(sortQuerystring) ? 
+                                              EnumUtils.ReturnEnumValueFromString<PostOrderBy>(sortQuerystring) : PostOrderBy.Standard;
+
+
                     var posts = _postService.GetPagedPostsByTopic(pageIndex,
                                                                   SettingsService.GetSettings().PostsPerPage,
                                                                   int.MaxValue, 
-                                                                  topic.Id);
+                                                                  topic.Id,
+                                                                  orderBy);
 
                     // Get the topic starter post
                     var topicStarter = _postService.GetTopicStarterPost(topic.Id);
@@ -360,9 +362,14 @@ namespace MVCForum.Website.Controllers
                 return null;
             }
 
+
+            var orderBy = !string.IsNullOrEmpty(getMorePostsViewModel.Order) ?
+                                      EnumUtils.ReturnEnumValueFromString<PostOrderBy>(getMorePostsViewModel.Order) : PostOrderBy.Standard;
+
+
             var viewModel = new ShowMorePostsViewModel
                 {
-                    Posts = _postService.GetPagedPostsByTopic(getMorePostsViewModel.PageIndex, SettingsService.GetSettings().PostsPerPage, int.MaxValue, topic.Id),
+                    Posts = _postService.GetPagedPostsByTopic(getMorePostsViewModel.PageIndex, SettingsService.GetSettings().PostsPerPage, int.MaxValue, topic.Id, orderBy),
                     Topic = topic,
                     Permissions = permissions,
                     User = LoggedOnUser

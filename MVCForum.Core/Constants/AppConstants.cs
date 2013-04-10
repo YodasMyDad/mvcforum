@@ -24,6 +24,9 @@
         public const string LocalizationCacheName = "Localization";
         public const string MemberCacheName = "#member#-{0}";
         
+        //Querystring names
+        public const string PostOrderBy = "order";
+
         // Themes
         public const string ThemeRootFolderName = "Themes";
 

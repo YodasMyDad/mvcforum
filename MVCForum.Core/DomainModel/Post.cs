@@ -4,6 +4,13 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
+    public enum PostOrderBy
+    {
+        Standard,
+        Newest,
+        Votes
+    }
+
     public class Post : Entity
     {
         public Post()

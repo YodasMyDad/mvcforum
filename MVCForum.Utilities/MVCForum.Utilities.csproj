@@ -60,6 +60,7 @@
     <Compile Include="CacheUtils.cs" />
     <Compile Include="ConfigUtils.cs" />
     <Compile Include="DateUtils.cs" />
+    <Compile Include="EnumUtils.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GuidComb.cs" />
     <Compile Include="InstallerHelper.cs" />

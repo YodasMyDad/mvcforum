@@ -78,6 +78,7 @@ namespace MVCForum.Website.ViewModels
     {
         public Guid TopicId { get; set; }
         public int PageIndex { get; set; }
+        public string Order { get; set; }
     }
 
     public class ShowMorePostsViewModel

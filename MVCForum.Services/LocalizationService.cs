@@ -437,6 +437,21 @@ namespace MVCForum.Services
             return _localizationRepository.SearchResourceKeys(languageId, StringUtils.SafePlainText(search), pageIndex, pageSize);
         }
 
+        public IList<CultureInfo> LanguagesAll
+        {
+            get
+            {
+                var allLanguagesNotInDb = new List<CultureInfo>();
+
+                foreach (var cultureInfo in LanguageUtils.AllCultures)
+                {
+                        allLanguagesNotInDb.Add(cultureInfo);
+                }
+
+                return allLanguagesNotInDb.OrderBy(info => info.EnglishName).ToList();
+            }
+        }
+
         /// <summary>
         /// Get an individual language
         /// </summary>
@@ -631,6 +646,7 @@ namespace MVCForum.Services
                         // Ignore empty keys
                         continue;
                     }
+                    key = key.Trim();
 
                     var value = keyValuePair[1];
 

@@ -13,7 +13,7 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<Post> GetHighestVotedPost(int amountToTake);
         IList<Post> GetByMember(Guid memberId, int amountToTake);
         PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm);
-        PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId);
+        PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId, PostOrderBy order);
         Post Add(Post post);
         Post Get(Guid postId);
         void SaveOrUpdate(Post post);

@@ -229,7 +229,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 var languageImportExportViewModel = new LanguageImportExportViewModel
                 {
                     ExportLanguages = _localizationService.LanguagesInDb,
-                    ImportLanguages = _localizationService.LanguagesNotInDb
+                    ImportLanguages = _localizationService.LanguagesAll
                 };
                 importExportViewModel.LanguageViewModel = languageImportExportViewModel;
 

@@ -9,7 +9,7 @@
                          Model.User.TotalPoints > Html.Settings().PointsAllowedToVoteAmount && 
                          Model.Post.Votes.All(x => x.User.Id != Model.User.Id));                         
     var showVotersClass = (Model.Post.VoteCount > 0 && User.Identity.IsAuthenticated) ? "showvoters" : "";
-    var showExtendedVotes = Model.Post.Votes.Any() ? "expandvotes" : "";
+    var showExtendedVotes = (Model.Post.Votes != null && Model.Post.Votes.Any()) ? "expandvotes" : "";
 }
 <div class="post row solution-True post-@postId">
     <div class="postmemberdetails span1">

@@ -90,7 +90,7 @@ namespace MVCForum.Data.Repositories
                 .ToList();
         }
 
-        public PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId, bool orderDescending = false)
+        public PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId, PostOrderBy order)
         {
             // We might only want to display the top 100
             // but there might not be 100 topics
@@ -107,9 +107,24 @@ namespace MVCForum.Data.Repositories
                                   .Include(x => x.Votes)
                                   .Where(x => x.Topic.Id == topicId && !x.IsTopicStarter);
 
-            results = orderDescending ? 
-                        results.OrderByDescending(x => x.DateCreated).Skip((pageIndex - 1) * pageSize).Take(pageSize)
-                         : results.OrderBy(x => x.DateCreated).Skip((pageIndex - 1) * pageSize).Take(pageSize);
+            // Sort what order the posts are sorted in
+            switch (order)
+            {
+                case PostOrderBy.Newest:
+                    results = results.OrderByDescending(x => x.DateCreated);
+                    break;
+
+                case PostOrderBy.Votes:
+                    results = results.OrderByDescending(x => x.VoteCount).ThenBy(x => x.DateCreated);
+                    break;
+
+                default:
+                    results = results.OrderBy(x => x.DateCreated);
+                    break;
+            }
+
+            // sort the paging out
+            results = results.Skip((pageIndex - 1)*pageSize).Take(pageSize);
                                                                 
             // Return a paged list
             return new PagedList<Post>(results.ToList(), pageIndex, pageSize, total);
