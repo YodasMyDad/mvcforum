@@ -328,21 +328,17 @@ namespace MVCForum.Services
 
                         if (_settingsRepository.GetSettings().EmailAdminOnNewMemberSignUp)
                         {
+                            var sb = new StringBuilder();
+                            sb.AppendFormat("<p>{0}</p>", string.Format(_localizationService.GetResourceString("Members.NewMemberRegistered"), _settingsRepository.GetSettings().ForumName, _settingsRepository.GetSettings().ForumUrl));
+                            sb.AppendFormat("<p>{0} - {1}</p>", newUser.UserName, newUser.Email);
                             var email = new Email
                                             {
-                                                Body =
-                                                    string.Format(
-                                                        _localizationService.GetResourceString(
-                                                            "Members.NewMemberRegistered"),
-                                                        _settingsRepository.GetSettings().ForumName,
-                                                        _settingsRepository.GetSettings().ForumUrl),
                                                 EmailTo = _settingsRepository.GetSettings().AdminEmailAddress,
                                                 EmailFrom = _settingsRepository.GetSettings().NotificationReplyEmail,
                                                 NameTo = _localizationService.GetResourceString("Members.Admin"),
-                                                Subject =
-                                                    _localizationService.GetResourceString("Members.NewMemberSubject")
+                                                Subject = _localizationService.GetResourceString("Members.NewMemberSubject")
                                             };
-
+                             email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
                             _emailService.SendMail(email);
                         }
 

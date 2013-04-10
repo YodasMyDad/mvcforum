@@ -889,10 +889,10 @@ namespace MVCForum.Website.Controllers
                                 {
                                     EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
                                     EmailTo = currentUser.Email,
-                                    Body = sb.ToString(),
                                     NameTo = currentUser.UserName,
                                     Subject = LocalizationService.GetResourceString("Members.ForgotPassword.Subject")
                                 };
+                email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
                 _emailService.SendMail(email);
 
                 if (changePasswordSucceeded)
