@@ -22,7 +22,7 @@ namespace MVCForum.Website.Controllers
         protected readonly ISettingsService SettingsService;
         protected readonly ILoggingService LoggingService;
 
-        private readonly MembershipUser _loggedInUser;
+        //private readonly MembershipUser _loggedInUser;
 
         /// <summary>
         /// Constructor
@@ -60,30 +60,46 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        /// <summary>
-        /// Return the currently logged on user
-        /// </summary>
-        protected MembershipUser LoggedOnUser
+        protected bool UserIsAuthenticated
         {
             get
             {
-                if (User.Identity.IsAuthenticated)
-                {
-                    //TODO: THIS GETS HIT LOADS OF TIMES!! NEED TO MOVE / REFACTOR
-                    var currentUser = MembershipService.GetUser(User.Identity.Name);
-                    return currentUser;
-                }
-                return null;
+                return System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             }
         }
 
-        protected MembershipRole UsersRole
+        protected string Username
         {
             get
             {
-                    return LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault(); 
+                return UserIsAuthenticated ? System.Web.HttpContext.Current.User.Identity.Name : null;
             }
         }
+
+        ///// <summary>
+        ///// Return the currently logged on user
+        ///// </summary>
+        //protected MembershipUser LoggedOnUser
+        //{
+        //    get
+        //    {
+        //        if (User.Identity.IsAuthenticated)
+        //        {
+        //            //TODO: THIS GETS HIT LOADS OF TIMES!! NEED TO MOVE / REFACTOR
+        //            var currentUser = MembershipService.GetUser(User.Identity.Name);
+        //            return currentUser;
+        //        }
+        //        return null;
+        //    }
+        //}
+
+        //protected MembershipRole UsersRole
+        //{
+        //    get
+        //    {
+        //            return LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault(); 
+        //    }
+        //}
 
         internal ActionResult ErrorToHomePage(string errorMessage)
         {

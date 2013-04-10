@@ -12,6 +12,8 @@ namespace MVCForum.Website.Controllers
         private readonly IBadgeService _badgeService;
         private readonly IPostService _postService;
 
+        private MembershipUser LoggedOnUser;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -34,6 +36,8 @@ namespace MVCForum.Website.Controllers
         {
             _badgeService = badgeService;
             _postService = postService;
+
+            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
         }
 
 
@@ -44,8 +48,7 @@ namespace MVCForum.Website.Controllers
             {
                 try
                 {
-                    var currentUser = MembershipService.GetUser(User.Identity.Name);
-                    var badgeAwardedCurrentUser = _badgeService.ProcessBadge(BadgeType.VoteUp, currentUser);
+                    var badgeAwardedCurrentUser = _badgeService.ProcessBadge(BadgeType.VoteUp, LoggedOnUser);
                     if (badgeAwardedCurrentUser)
                     {
                         unitOfwork.SaveChanges();
@@ -80,8 +83,7 @@ namespace MVCForum.Website.Controllers
                 {
                     try
                     {
-                        var currentUser = MembershipService.GetUser(User.Identity.Name);
-                        var badgeAwardedCurrentUser = _badgeService.ProcessBadge(BadgeType.Post, currentUser);
+                        var badgeAwardedCurrentUser = _badgeService.ProcessBadge(BadgeType.Post, LoggedOnUser);
 
                         if (badgeAwardedCurrentUser)
                         {

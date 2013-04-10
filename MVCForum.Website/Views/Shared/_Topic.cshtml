@@ -9,6 +9,7 @@
 
     var firstPost = posts.FirstOrDefault(x => x.IsTopicStarter);
     var postToolTip = string.Empty;
+    var voteCount = firstPost != null ? firstPost.VoteCount : 0;
     if (firstPost != null)
     {
         postToolTip = string.Concat(StringUtils.ReturnAmountWordsFromString(StringUtils.StripHtmlFromString(firstPost.PostContent), 50), "....");
@@ -25,7 +26,7 @@
             
                     @if (Html.Settings().EnablePoints)
                     {
-                        <div class="topicvotes statsblock @topicSolved">@topic.VoteCount.KiloFormat() <span>@Html.LanguageString("Topic.Votes")</span></div>
+                        <div class="topicvotes statsblock @topicSolved">@voteCount.KiloFormat() <span>@Html.LanguageString("Topic.Votes")</span></div>
                     }
                     <div class="topiccomments topiccomments@(Html.Settings().EnablePoints) statsblock @topicSolved">
                         @answerCount.KiloFormat() <span>@answerText</span>

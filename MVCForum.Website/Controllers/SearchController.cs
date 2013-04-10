@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Utilities;
-using MVCForum.Website.Application;
 using MVCForum.Website.ViewModels;
 
 namespace MVCForum.Website.Controllers
@@ -19,6 +16,9 @@ namespace MVCForum.Website.Controllers
         private readonly ITopicService _topicsService;
         private readonly ILuceneService _luceneService;
 
+        private MembershipUser LoggedOnUser;
+        private MembershipRole UsersRole;
+
         public SearchController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, 
             IMembershipService membershipService, ILocalizationService localizationService, 
             IRoleService roleService, ISettingsService settingsService, 
@@ -28,6 +28,9 @@ namespace MVCForum.Website.Controllers
             _postService = postService;
             _topicsService = topicService;
             _luceneService = luceneService;
+
+            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
+            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
         [HttpGet]

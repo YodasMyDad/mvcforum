@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
@@ -16,6 +15,9 @@ namespace MVCForum.Website.Controllers
         private readonly ICategoryService _categoryService;
         private readonly ICategoryNotificationService _categoryNotificationService;
         private readonly ITopicService _topicService;
+
+        private MembershipUser LoggedOnUser;
+        private MembershipRole UsersRole;
 
         /// <summary>
         /// Constructor
@@ -40,6 +42,9 @@ namespace MVCForum.Website.Controllers
             _categoryService = categoryService;
             _topicService = topicService;
             _categoryNotificationService = categoryNotificationService;
+
+            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
+            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
         [ChildActionOnly]
@@ -85,7 +90,7 @@ namespace MVCForum.Website.Controllers
                                                                         SettingsService.GetSettings().TopicsPerPage,
                                                                         int.MaxValue, category.Id);
 
-                    var isSubscribed = LoggedOnUser != null && (_categoryNotificationService.GetByUserAndCategory(LoggedOnUser, category).Any());
+                    var isSubscribed = UserIsAuthenticated && (_categoryNotificationService.GetByUserAndCategory(LoggedOnUser, category).Any());
 
                     return View(new ViewCategoryViewModel
                                     {

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using Facebook;
@@ -27,6 +25,9 @@ namespace MVCForum.Website.Controllers
         private readonly IEmailService _emailService;
         private readonly IPrivateMessageService _privateMessageService;
 
+        private MembershipUser LoggedOnUser;
+        private MembershipRole UsersRole;
+
         public MembersController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService,
             IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
@@ -35,11 +36,17 @@ namespace MVCForum.Website.Controllers
             _reportService = reportService;
             _emailService = emailService;
             _privateMessageService = privateMessageService;
-        }
 
+            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
+            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
+
+        }
+        
         [ChildActionOnly]
         public PartialViewResult GetCurrentActiveMembers()
         {
+            var r = UserIsAuthenticated;
+
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var viewModel = new ActiveMembersViewModel
@@ -52,7 +59,7 @@ namespace MVCForum.Website.Controllers
 
         public JsonResult LastActiveCheck()
         {
-            if (LoggedOnUser != null)
+            if (UserIsAuthenticated)
             {
                 var rightNow = DateTime.UtcNow;
                 var usersDate = LoggedOnUser.LastActivityDate ?? DateTime.Now.AddDays(-1);
@@ -90,7 +97,7 @@ namespace MVCForum.Website.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var member = MembershipService.GetUserBySlug(slug);
-                var loggedonId = LoggedOnUser != null ? LoggedOnUser.Id : Guid.Empty;
+                var loggedonId = UserIsAuthenticated ? LoggedOnUser.Id : Guid.Empty;
                 return View(new ViewMemberViewModel { User = member, LoggedOnUserId = loggedonId });
             }
         }
@@ -872,8 +879,7 @@ namespace MVCForum.Website.Controllers
                 if (ModelState.IsValid)
                 {
                     // ChangePassword will throw an exception rather than return false in certain failure scenarios.
-                    var currentUser = MembershipService.GetUser(User.Identity.Name);
-                    changePasswordSucceeded = MembershipService.ChangePassword(currentUser, model.OldPassword, model.NewPassword);
+                    changePasswordSucceeded = MembershipService.ChangePassword(LoggedOnUser, model.OldPassword, model.NewPassword);
 
                     try
                     {

@@ -18,6 +18,9 @@ namespace MVCForum.Website.Controllers
         private readonly ITopicService _topicService;
         private readonly IActivityService _activityService;
 
+        private MembershipUser LoggedOnUser;
+        private MembershipRole UsersRole;
+
         public HomeController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IActivityService activityService, IMembershipService membershipService, 
             ITopicService topicService, ILocalizationService localizationService, IRoleService roleService,
             ISettingsService settingsService)
@@ -25,6 +28,9 @@ namespace MVCForum.Website.Controllers
         {
             _topicService = topicService;
             _activityService = activityService;
+
+            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
+            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
         //[OutputCache(Duration = 10, VaryByParam = "p")]

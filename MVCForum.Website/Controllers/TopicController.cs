@@ -12,6 +12,7 @@ using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
+using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
 
 namespace MVCForum.Website.Controllers
 {
@@ -28,6 +29,9 @@ namespace MVCForum.Website.Controllers
         private readonly ILuceneService _luceneService;
         private readonly IPollService _pollService;
         private readonly IPollAnswerService _pollAnswerService;
+
+        private MembershipUser LoggedOnUser;
+        private MembershipRole UsersRole;
 
         public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
@@ -46,6 +50,9 @@ namespace MVCForum.Website.Controllers
             _luceneService = luceneService;
             _pollService = pollService;
             _pollAnswerService = pollAnswerService;
+
+            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
+            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
         [Authorize]
@@ -293,7 +300,7 @@ namespace MVCForum.Website.Controllers
                     }
                     
                     // See if the user has subscribed to this topic or not
-                    var isSubscribed = LoggedOnUser != null && (_topicNotificationService.GetByUserAndTopic(LoggedOnUser, topic).Any());
+                    var isSubscribed = UserIsAuthenticated && (_topicNotificationService.GetByUserAndTopic(LoggedOnUser, topic).Any());
 
                     // Populate the view model for this page
                     var viewModel = new ShowTopicViewModel
@@ -315,7 +322,7 @@ namespace MVCForum.Website.Controllers
                         // There is a poll and a user
                         // see if the user has voted or not
                         var votes = topic.Poll.PollAnswers.SelectMany(x => x.PollVotes).ToList();
-                        if (LoggedOnUser != null)
+                        if (UserIsAuthenticated)
                         {
                             viewModel.UserHasAlreadyVotedInPoll = (votes.Count(x => x.User.Id == LoggedOnUser.Id) > 0);                            
                         }
@@ -324,7 +331,7 @@ namespace MVCForum.Website.Controllers
 
                     // User has permission lets update the topic view count
                     // but only if this topic doesn't belong to the user looking at it
-                    var addView = !(LoggedOnUser != null && LoggedOnUser.Id == topic.User.Id);
+                    var addView = !(UserIsAuthenticated && LoggedOnUser.Id == topic.User.Id);
 
                     if (!BotUtils.UserIsBot() && addView)
                     {

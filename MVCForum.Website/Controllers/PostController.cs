@@ -8,10 +8,10 @@ using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
+using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
 
 namespace MVCForum.Website.Controllers
 {
@@ -28,6 +28,9 @@ namespace MVCForum.Website.Controllers
         private readonly ILuceneService _luceneService;
         private readonly IPollAnswerService _pollAnswerService;
         private readonly IPollService _pollService;
+
+        private MembershipUser LoggedOnUser;
+        private MembershipRole UsersRole;
 
         public PostController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
             ILocalizationService localizationService, IRoleService roleService, ITopicService topicService, IPostService postService, 
@@ -46,6 +49,9 @@ namespace MVCForum.Website.Controllers
             _luceneService = luceneService;
             _pollAnswerService = pollAnswerService;
             _pollService = pollService;
+
+            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
+            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
 
