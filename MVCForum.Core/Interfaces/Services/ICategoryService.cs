@@ -11,6 +11,7 @@ namespace MVCForum.Domain.Interfaces.Services
         IEnumerable<Category> GetAllMainCategories();
         IEnumerable<Category> GetAllowedCategories(MembershipRole role);
         Category Get(Guid id);
+        CategoryWithSubCategories GetBySlugWithSubCategories(string slug);
         Category Get(string slug);
         void Delete(Category category);
         void Add(Category category);

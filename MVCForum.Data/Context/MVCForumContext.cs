@@ -92,6 +92,9 @@ namespace MVCForum.Data.Context
             modelBuilder.Configurations.Add(new TopicTagMapping());
             modelBuilder.Configurations.Add(new VoteMapping());
 
+            // Ignore properties on domain models
+            //modelBuilder.Entity<Category>().Ignore(cat => cat.SubCategories);
+
             base.OnModelCreating(modelBuilder);
         }
 

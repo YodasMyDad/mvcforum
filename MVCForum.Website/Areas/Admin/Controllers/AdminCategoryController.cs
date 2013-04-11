@@ -51,7 +51,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             {
                 var viewModel = new ListCategoriesViewModel
                                     {
-                                        Categories = _categoryService.GetAllMainCategories()
+                                        Categories = _categoryService.GetAll().OrderBy(x => x.SortOrder)
                                     };
                 return PartialView(viewModel);
             }

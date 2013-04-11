@@ -137,6 +137,16 @@ namespace MVCForum.Services
         }
 
         /// <summary>
+        /// Return model with Sub categories
+        /// </summary>
+        /// <param name="slug"></param>
+        /// <returns></returns>
+        public CategoryWithSubCategories GetBySlugWithSubCategories(string slug)
+        {
+            return _categoryRepository.GetBySlugWithSubCategories(slug);
+        }
+
+        /// <summary>
         /// Return category by Url slug
         /// </summary>
         /// <param name="slug"></param>

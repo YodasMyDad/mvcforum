@@ -17,7 +17,6 @@
                 <tr>
                     <td class="editcategory mainadmincategory">
                         <a href="@Url.Action("EditCategory", new { id = cat.Id })" class="catfancybox">@Html.Raw(cat.Name)</a>
-                        @Html.Action("ListAllCategories", new { id = cat.Id })
                     </td>
                     <td>
                         <a href="@Url.Action("DeleteCategoryConfirmation", new { id = cat.Id })" title="Delete @Html.Raw(cat.Name)" class="btn btn-small"><i class="icon-remove"></i></a>

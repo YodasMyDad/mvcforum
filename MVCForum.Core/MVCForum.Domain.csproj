@@ -61,6 +61,7 @@
     <Compile Include="DomainModel\CategoryNotification.cs" />
     <Compile Include="DomainModel\BadgeTypeTimeLastChecked.cs" />
     <Compile Include="DomainModel\Activity\Activity.cs" />
+    <Compile Include="DomainModel\CategoryWithSubCategories.cs" />
     <Compile Include="DomainModel\InstallerResult.cs" />
     <Compile Include="DomainModel\LuceneSearchModel.cs" />
     <Compile Include="DomainModel\Poll.cs" />

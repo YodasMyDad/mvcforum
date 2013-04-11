@@ -898,6 +898,7 @@
     <Content Include="Views\Members\GetCurrentActiveMembers.cshtml" />
     <Content Include="Views\Install\UpgradeDb.cshtml" />
     <Content Include="Views\Vote\GetVotes.cshtml" />
+    <Content Include="Views\Shared\_SubCategories.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Themes\n3o\Views\Shared\" />

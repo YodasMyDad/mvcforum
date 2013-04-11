@@ -70,10 +70,37 @@ namespace MVCForum.Data.Repositories
             return category;
         }
 
+        public CategoryWithSubCategories GetBySlugWithSubCategories(string slug)
+        {
+            var cat = (from category in _context.Category
+                          where category.Slug == slug
+                          select new CategoryWithSubCategories
+                              {
+                                  Category = category,
+                                  SubCategories = (from cats in _context.Category
+                                                   where cats.ParentCategory.Id == category.Id
+                                                   select cats)
+                              }).FirstOrDefault();
+
+            //var cat = _context
+            //.Category
+            //.Where(x => x.Slug == slug)
+            //.Select(x => new CategoryWithSubCategories
+            //{
+            //    Category = x,
+            //    SubCategories = (from cats in _context.Category
+            //                     where cats.ParentCategory.Id == x.Id
+            //                     select cats).ToList()
+            //})
+            //.FirstOrDefault();
+            return cat;
+        }
+
         public Category GetBySlug(string slug)
         {
             return _context.Category.FirstOrDefault(x => x.Slug == slug);
         }
+
 
         public IList<Category> GetBySlugLike(string slug)
         {
