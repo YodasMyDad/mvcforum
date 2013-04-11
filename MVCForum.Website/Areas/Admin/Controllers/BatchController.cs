@@ -103,6 +103,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
                     categoryFrom.Topics.Clear();
 
+                    viewModel.Categories = _categoryService.GetAll().ToList();
+
                     unitOfWork.Commit();
 
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
