@@ -1,6 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using DataAnnotationsExtensions;
+using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Website.Areas.Admin.ViewModels
 {
@@ -21,6 +24,14 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
     public class BatchMoveTopicsViewModel
     {
+        public List<Category> Categories { get; set; }
 
+        [Required]        
+        [DisplayName("Move all Topics in this Category")]
+        public Guid? FromCategory { get; set; }
+
+        [Required]
+        [DisplayName("To this new Category")]
+        public Guid? ToCategory { get; set; }
     }
 }

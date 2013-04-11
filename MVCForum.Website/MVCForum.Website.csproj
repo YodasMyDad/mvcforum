@@ -518,6 +518,7 @@
     <Content Include="Installer\en-GB.csv" />
     <Content Include="Areas\Admin\Views\Batch\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Batch\BatchDeleteMembers.cshtml" />
+    <Content Include="Areas\Admin\Views\Batch\BatchMoveTopics.cshtml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-1.9.1.min.js" />
