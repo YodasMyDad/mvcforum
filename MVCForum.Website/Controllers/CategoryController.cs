@@ -47,6 +47,14 @@ namespace MVCForum.Website.Controllers
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
+        public ActionResult Index()
+        {
+            return View(new IndexCategoryViewModel
+                {
+                    Categories = _categoryService.GetAllMainCategories(true).ToList()
+                });
+        }   
+
         [ChildActionOnly]
         [OutputCache(Duration = AppConstants.DefaultCacheLengthInSeconds)]
         public PartialViewResult ListCategorySideMenu()

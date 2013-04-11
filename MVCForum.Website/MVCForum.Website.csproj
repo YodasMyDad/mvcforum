@@ -899,6 +899,7 @@
     <Content Include="Views\Install\UpgradeDb.cshtml" />
     <Content Include="Views\Vote\GetVotes.cshtml" />
     <Content Include="Views\Shared\_SubCategories.cshtml" />
+    <Content Include="Views\Category\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Themes\n3o\Views\Shared\" />

@@ -7,9 +7,9 @@ namespace MVCForum.Domain.Interfaces.Services
     public interface ICategoryService
     {
         IEnumerable<Category> GetAll();
-        IEnumerable<Category> GetAllSubCategories(Guid parentId);
-        IEnumerable<Category> GetAllMainCategories();
+        IEnumerable<Category> GetAllMainCategories(bool getWithExtendedData = false);
         IEnumerable<Category> GetAllowedCategories(MembershipRole role);
+        IEnumerable<Category> GetAllSubCategories(Guid parentId);
         Category Get(Guid id);
         CategoryWithSubCategories GetBySlugWithSubCategories(string slug);
         Category Get(string slug);

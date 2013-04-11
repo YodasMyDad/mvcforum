@@ -7,8 +7,6 @@ using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
-using MVCForum.Utilities;
-
 
 namespace MVCForum.Data.Repositories
 {
@@ -55,10 +53,19 @@ namespace MVCForum.Data.Repositories
                     .ToList();
         }
 
-        public IList<Category> GetMainCategories()
+        public IList<Category> GetMainCategories(bool getWithExtendedData)
         {
-            return _context.Category
-                     .Where(cat => cat.ParentCategory == null)
+            var categories = _context.Category
+                                .Where(cat => cat.ParentCategory == null);
+
+            if (getWithExtendedData)
+            {
+                categories = categories
+                    .Include(x => x.Topics.Select(p => p.Posts))
+                    .Include(x => x.Topics.Select(p => p.LastPost));
+            }
+
+            return categories.Where(cat => cat.ParentCategory == null)
                      .OrderBy(x => x.SortOrder)
                      .ToList();
         }
@@ -82,17 +89,6 @@ namespace MVCForum.Data.Repositories
                                                    select cats)
                               }).FirstOrDefault();
 
-            //var cat = _context
-            //.Category
-            //.Where(x => x.Slug == slug)
-            //.Select(x => new CategoryWithSubCategories
-            //{
-            //    Category = x,
-            //    SubCategories = (from cats in _context.Category
-            //                     where cats.ParentCategory.Id == x.Id
-            //                     select cats).ToList()
-            //})
-            //.FirstOrDefault();
             return cat;
         }
 

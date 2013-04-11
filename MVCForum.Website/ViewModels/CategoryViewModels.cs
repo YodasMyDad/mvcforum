@@ -26,4 +26,9 @@ namespace MVCForum.Website.ViewModels
         public Dictionary<Category, PermissionSet> AllPermissionSets { get; set; }
         public Category ParentCategory { get; set; }
     }
+
+    public class IndexCategoryViewModel
+    {
+        public IList<Category> Categories { get; set; }
+    }
 }
