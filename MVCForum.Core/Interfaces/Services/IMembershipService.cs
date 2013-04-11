@@ -25,6 +25,7 @@ namespace MVCForum.Domain.Interfaces.Services
         MembershipUser GetUserBySlug(string slug);
         MembershipUser GetUserByFacebookId(long facebookId);
         IList<MembershipUser> GetUsersById(List<Guid> guids);
+        IList<MembershipUser> GetUsersByDaysPostsPoints(int amoutOfDaysSinceRegistered, int amoutOfPosts);
         MembershipUser GetUser(Guid id);
         bool ChangePassword(MembershipUser user, string oldPassword, string newPassword);
         bool ResetPassword(MembershipUser user, string newPassword);

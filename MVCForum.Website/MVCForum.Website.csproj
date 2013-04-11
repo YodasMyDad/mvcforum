@@ -135,8 +135,10 @@
     <Compile Include="Areas\Admin\Controllers\AdminLanguageController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminBadgeController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminLuceneController.cs" />
+    <Compile Include="Areas\Admin\Controllers\BatchController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\ViewModels\AdminBadgeViewModels.cs" />
+    <Compile Include="Areas\Admin\ViewModels\BatchViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\DashboardViewModels.cs" />
     <Compile Include="Controllers\BaseInstallController.cs" />
     <Compile Include="Controllers\BadgeController.cs" />
@@ -514,6 +516,8 @@
     <Content Include="Areas\Admin\Views\Shared\_GetCurrentVersion.cshtml" />
     <Content Include="Areas\Admin\Views\Dashboard\TodaysTopics.cshtml" />
     <Content Include="Installer\en-GB.csv" />
+    <Content Include="Areas\Admin\Views\Batch\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Batch\BatchDeleteMembers.cshtml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-1.9.1.min.js" />

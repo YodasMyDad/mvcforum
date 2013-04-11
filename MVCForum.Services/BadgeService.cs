@@ -447,7 +447,7 @@ namespace MVCForum.Services
         /// <returns>True if badge was awarded</returns>
         public bool ProcessBadge(BadgeType badgeType, MembershipUser user)
         {
-            var badgeAwarded = false;
+            var databaseUpdateNeeded = false;
 
             var e = new BadgeEventArgs {User = user, BadgeType = badgeType, Api = _mvcForumAPI};
             EventManager.Instance.FireBeforeBadgeAwarded(this, e);
@@ -458,6 +458,8 @@ namespace MVCForum.Services
                 {
                     if (!RecentlyProcessed(badgeType, user))
                     {
+                        databaseUpdateNeeded = true;
+
                         var badgeSet = _badges[badgeType];
 
                         foreach (var badgeMapping in badgeSet)
@@ -477,7 +479,6 @@ namespace MVCForum.Services
                                 //var dbBadge = _badgeRepository.Get(badgeMapping.DbBadge.Id);
                                 user.Badges.Add(_badgeRepository.Get(badgeMapping.DbBadge.Id));
 
-                                badgeAwarded = true;
                                 _activityService.BadgeAwarded(badgeMapping.DbBadge, user, DateTime.UtcNow);
 
                                 EventManager.Instance.FireAfterBadgeAwarded(this,
@@ -492,7 +493,7 @@ namespace MVCForum.Services
                     }
                 }
             }
-            return badgeAwarded;
+            return databaseUpdateNeeded;
         }
 
         /// <summary>

@@ -409,6 +409,17 @@ namespace MVCForum.Services
             return _membershipRepository.GetUsersById(guids);
         }
 
+        /// <summary>
+        /// Get by posts and date
+        /// </summary>
+        /// <param name="amoutOfDaysSinceRegistered"></param>
+        /// <param name="amoutOfPosts"></param>
+        /// <returns></returns>
+        public IList<MembershipUser> GetUsersByDaysPostsPoints(int amoutOfDaysSinceRegistered, int amoutOfPosts)
+        {
+            return _membershipRepository.GetUsersByDaysPostsPoints(amoutOfDaysSinceRegistered, amoutOfPosts);
+        }
+
 
         /// <summary>
         /// Return the roles found for this username
@@ -543,6 +554,14 @@ namespace MVCForum.Services
                 _privateMessageService.DeleteMessage(msgToDelete);
             }
 
+            // Delete all badge times last checked
+            var badgeTypesTimeLastCheckedToDelete = new List<BadgeTypeTimeLastChecked>();
+            badgeTypesTimeLastCheckedToDelete.AddRange(user.BadgeTypesTimeLastChecked);
+            foreach (var badgeTypeTimeLastCheckedToDelete in badgeTypesTimeLastCheckedToDelete)
+            {
+                _badgeService.DeleteTimeLastChecked(badgeTypeTimeLastCheckedToDelete);
+            }
+
             // Delete all points from this user
             var pointsToDelete = new List<MembershipUserPoints>();
             pointsToDelete.AddRange(user.Points);
@@ -565,14 +584,6 @@ namespace MVCForum.Services
             foreach (var voteToDelete in votesToDelete)
             {
                 _voteService.Delete(voteToDelete);
-            }
-
-            // Delete all badge times last checked
-            var badgeTypesTimeLastCheckedToDelete = new List<BadgeTypeTimeLastChecked>();
-            badgeTypesTimeLastCheckedToDelete.AddRange(user.BadgeTypesTimeLastChecked);
-            foreach (var badgeTypeTimeLastCheckedToDelete in badgeTypesTimeLastCheckedToDelete)
-            {
-                _badgeService.DeleteTimeLastChecked(badgeTypeTimeLastCheckedToDelete);
             }
 
             // Delete all user's badges

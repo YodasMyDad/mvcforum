@@ -25,11 +25,11 @@ namespace MVCForum.Website.Controllers
         /// <param name="localizationService"></param>
         /// <param name="roleService"> </param>
         /// <param name="settingsService"> </param>
-        public BadgeController(ILoggingService loggingService, 
-            IUnitOfWorkManager unitOfWorkManager, 
-            IBadgeService badgeService, 
+        public BadgeController(ILoggingService loggingService,
+            IUnitOfWorkManager unitOfWorkManager,
+            IBadgeService badgeService,
             IPostService postService,
-            IMembershipService membershipService, 
+            IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService,
             ISettingsService settingsService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
@@ -42,26 +42,27 @@ namespace MVCForum.Website.Controllers
 
 
         [HttpPost]
-        public void VoteUpPost(VoteUpBadgeViewModel voteUpBadgeViewModel)
+        [Authorize]
+        public void VoteUpPost(VoteBadgeViewModel voteUpBadgeViewModel)
         {
             using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
             {
                 try
                 {
-                    var badgeAwardedCurrentUser = _badgeService.ProcessBadge(BadgeType.VoteUp, LoggedOnUser);
-                    if (badgeAwardedCurrentUser)
+                    var databaseUpdateNeededOne = _badgeService.ProcessBadge(BadgeType.VoteUp, LoggedOnUser);
+                    if (databaseUpdateNeededOne)
                     {
                         unitOfwork.SaveChanges();
                     }
 
                     var post = _postService.Get(voteUpBadgeViewModel.PostId);
-                    var badgeAwardedPostUser = _badgeService.ProcessBadge(BadgeType.VoteUp, post.User);
-                    if (badgeAwardedPostUser)
+                    var databaseUpdateNeededTwo = _badgeService.ProcessBadge(BadgeType.VoteUp, post.User);
+                    if (databaseUpdateNeededTwo)
                     {
                         unitOfwork.SaveChanges();
                     }
 
-                    if (badgeAwardedCurrentUser || badgeAwardedPostUser)
+                    if (databaseUpdateNeededOne || databaseUpdateNeededTwo)
                     {
                         unitOfwork.Commit();
                     }
@@ -75,17 +76,53 @@ namespace MVCForum.Website.Controllers
         }
 
         [HttpPost]
+        [Authorize]
+        public void VoteDownPost(VoteBadgeViewModel voteUpBadgeViewModel)
+        {
+            using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                try
+                {
+                    var databaseUpdateNeededOne = _badgeService.ProcessBadge(BadgeType.VoteDown, LoggedOnUser);
+                    if (databaseUpdateNeededOne)
+                    {
+                        unitOfwork.SaveChanges();
+                    }
+
+                    var post = _postService.Get(voteUpBadgeViewModel.PostId);
+                    var databaseUpdateNeededTwo = _badgeService.ProcessBadge(BadgeType.VoteDown, post.User);
+
+                    if (databaseUpdateNeededTwo)
+                    {
+                        unitOfwork.SaveChanges();
+                    }
+
+                    if (databaseUpdateNeededOne || databaseUpdateNeededTwo)
+                    {
+                        unitOfwork.Commit();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    unitOfwork.Rollback();
+                    LoggingService.Error(ex);
+                }
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
         public void Post()
         {
-            if(Request.IsAjaxRequest())
+            if (Request.IsAjaxRequest())
             {
                 using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
                 {
                     try
                     {
-                        var badgeAwardedCurrentUser = _badgeService.ProcessBadge(BadgeType.Post, LoggedOnUser);
+                        var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Post, LoggedOnUser);
 
-                        if (badgeAwardedCurrentUser)
+                        if (databaseUpdateNeeded)
                         {
                             unitOfwork.Commit();
                         }
@@ -95,11 +132,12 @@ namespace MVCForum.Website.Controllers
                         unitOfwork.Rollback();
                         LoggingService.Error(ex);
                     }
-                }   
+                }
             }
         }
 
         [HttpPost]
+        [Authorize]
         public void MarkAsSolution(MarkAsSolutionBadgeViewModel markAsSolutionBadgeViewModel)
         {
             using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
@@ -107,9 +145,9 @@ namespace MVCForum.Website.Controllers
                 try
                 {
                     var post = _postService.Get(markAsSolutionBadgeViewModel.PostId);
-                    var badgeAwarded =_badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.User) | _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.Topic.User);
+                    var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.User) | _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.Topic.User);
 
-                    if (badgeAwarded)
+                    if (databaseUpdateNeeded)
                     {
                         unitOfwork.Commit();
                     }
@@ -130,13 +168,13 @@ namespace MVCForum.Website.Controllers
                 try
                 {
                     var user = MembershipService.GetUser(timeBadgeViewModel.Id);
-                    var badgeAwarded = _badgeService.ProcessBadge(BadgeType.Time, user);
+                    var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Time, user);
 
-                    if (badgeAwarded)
+                    if (databaseUpdateNeeded)
                     {
                         unitOfwork.Commit();
                     }
-                    
+
                 }
                 catch (Exception ex)
                 {
@@ -154,7 +192,7 @@ namespace MVCForum.Website.Controllers
 
                 var badgesListModel = new AllBadgesViewModel
                 {
-                   AllBadges = allBadges
+                    AllBadges = allBadges
                 };
 
                 return View(badgesListModel);

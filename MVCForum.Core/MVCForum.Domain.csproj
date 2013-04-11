@@ -105,6 +105,7 @@
     <Compile Include="Interfaces\Badges\IMarkAsSolutionBadge.cs" />
     <Compile Include="Interfaces\Badges\ITimeBadge.cs" />
     <Compile Include="Interfaces\Badges\IBadge.cs" />
+    <Compile Include="Interfaces\Badges\IVoteDownBadge.cs" />
     <Compile Include="Interfaces\Badges\IVoteUpBadge.cs" />
     <Compile Include="Interfaces\Events\IEventHandler.cs" />
     <Compile Include="Interfaces\Events\IEventManager.cs" />

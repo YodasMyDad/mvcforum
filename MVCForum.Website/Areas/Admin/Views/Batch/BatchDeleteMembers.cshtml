@@ -1,0 +1,59 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.BatchDeleteMembersViewModel
+@{
+    ViewBag.Title = "Batch Delete Members";
+}
+
+<h2>Batch Delete Members</h2>
+
+<p>
+    Batch delete members that have registered within a set amount of days and have less than or equal to the specified post count.
+    i.e. To delete members who haven't posted, within the last year then you would set the following.
+</p>
+<p>
+    <strong>Amount Of Days = 365</strong>
+    <br />
+    <strong>Amount Of Posts = 0</strong>
+</p>
+<p><span class="label label-important">Warning</span> As soon as you click the button members will be deleted. This action cannot be undone.</p>
+<p>&nbsp;</p>
+<div class="clearer"></div>
+
+<div class="row">
+
+    @using (Html.BeginForm("BatchDeleteMembers", "Batch", FormMethod.Post, new { @class = "form-horizontal" }))
+    {
+        @Html.ValidationSummary(true)
+        @Html.AntiForgeryToken()
+
+        <div class="span5">
+            <div class="editor-label">
+                @Html.LabelFor(m => m.AmoutOfDaysSinceRegistered)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(m => m.AmoutOfDaysSinceRegistered)
+                @Html.ValidationMessageFor(m => m.AmoutOfDaysSinceRegistered)
+            </div>
+        </div>
+        <div class="span5">
+            <div class="editor-label">
+                @Html.LabelFor(m => m.AmoutOfPosts)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(m => m.AmoutOfPosts)
+                @Html.ValidationMessageFor(m => m.AmoutOfPosts)
+            </div>
+        </div>
+        
+        <div class="clearer"></div>        
+
+        <div class="span10">
+            <div class="submit-holder">
+                <p>&nbsp;</p>
+                <input type="submit" class="btn btn-large btn-success" value="Delete Members" />
+            </div>
+        </div>
+        
+    }
+
+</div>
+

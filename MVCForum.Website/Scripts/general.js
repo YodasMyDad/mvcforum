@@ -370,6 +370,7 @@ function AddPostClickEvents() {
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
                 SuccessfulThumbDown(karmascore);
+                BadgeVoteDown(postId);
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 ShowUserMessage("Error: " + xhr.status + " " + thrownError);
@@ -517,6 +518,29 @@ function BadgeVoteUp(postId) {
 
     $.ajax({
         url: app_base + 'Badge/VoteUpPost',
+        type: 'POST',
+        data: strung,
+        contentType: 'application/json; charset=utf-8',
+        success: function (data) {
+            // No need to do anything
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+        }
+    });
+}
+
+function BadgeVoteDown(postId) {
+
+    // Ajax call to post the view model to the controller
+    var voteUpBadgeViewModel = new Object();
+    voteUpBadgeViewModel.PostId = postId;
+
+    // Ajax call to post the view model to the controller
+    var strung = JSON.stringify(voteUpBadgeViewModel);
+
+    $.ajax({
+        url: app_base + 'Badge/VoteDownPost',
         type: 'POST',
         data: strung,
         contentType: 'application/json; charset=utf-8',

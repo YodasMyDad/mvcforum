@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Batch Tools</h2>
+<p>This section will allow you to perform batch tasks</p>
+
+    <div class="adminsection">
+        
+        <h3>Batch Delete Members</h3>
+        <p>This tool will allow you to batch delete members that haven't posted and registed within a set amount of days</p>
+        <a href="@Url.Action("BatchDeleteMembers", "Batch", new { area = "Admin" }, null)" class="btn btn-large">Go to Batch Delete Members</a>
+
+    </div>
+
+
+    <div class="adminsection">
+        
+        <h3>Batch Move Topics</h3>
+        <p>This tool allows you to batch move topics into another category</p>
+        <a href="@Url.Action("BatchMoveTopics", "Batch", new { area = "Admin" }, null)" class="btn btn-large">Go to Batch Move Topics</a>
+
+    </div>
+
+
