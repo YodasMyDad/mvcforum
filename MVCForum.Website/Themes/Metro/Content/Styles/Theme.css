@@ -4,11 +4,14 @@ input[type=submit] {-webkit-appearance: none;}
 body { font-family: 'MVCforumLight' , Calibri, Arial, Helvetica, sans-serif; color: #626262; }
 
 /* ---- Generic Link Styles ---- */
-a, a:visited {color:#626262;}
+a, a:visited { color: #2470BB; }
 a:hover, a:focus { color: #585858; }
+
+
 
 /* ---- Generic Heading Styles ---- */
 h1,h2,h3,h4,h5,h6{text-rendering:optimizelegibility;}
+h1 a,h2 a,h3 a,h4 a,h5 a,h6 a{ color: #4891DC;}
 h1 {font-size:30px; margin-bottom:13px; color:#4891DC; font-weight:normal; font-family: 'MVCforumLight';}
 h2 { font-size: 26px; margin-bottom: 13px; color: #AAAAAA; font-weight: normal; font-family: 'MVCforumLight'; }
 h3 {font-size:22px; margin-bottom:8px; color:#AAAAAA; font-weight:normal; font-family: 'MVCforumLight';}
@@ -101,10 +104,10 @@ select {}
 .side-box ul { padding: 0;margin: 0;border-bottom: 1px #fff solid;}
 .side-box ul li { padding:4px 0;font-size: 14px;border-top: 1px #fff solid;list-style: none;}
 .side-box h5 { font-size: 17px;padding:8px 12px;color: #efefef; font-family: 'MVCforumLight';background-color: #4891dc;}
-.side-box a, .side-box a:visited {}
+.side-box a, .side-box a:visited { color: #626262;}
 .side-box a:hover {}
 .categories-box ul li, .profile-box ul li {margin:0 0 3px 0;padding: 0;}
-.categories-box ul li a, .categories-box ul li a:visited, .profile-box ul li a, .profile-box ul li a:visited { display: block;clear: both;margin: 0;background-color: #efefef;padding: 5px 10px;}
+.categories-box ul li a, .categories-box ul li a:visited, .profile-box ul li a, .profile-box ul li a:visited { display: block;clear: both;margin: 0;background-color: #efefef;padding: 5px 10px;color: #626262;}
 .categories-box ul li a:hover, .profile-box ul li a:hover { background-color:#ccc;}
 
 /*--- Subcategories --*/
@@ -114,7 +117,6 @@ select {}
 .subcategoryholder ul li { display: block;float: left;list-style: none;width: 33%;}
 .subcategoryholder ul li a, .subcategoryholder ul li a:visited {display: block;margin:2px;background-color: #efefef;padding: 5px 10px;}
 .subcategoryholder ul li a:hover {background-color:#ccc;}
-
 
 /*--- category rows ---*/
 .catrow { border-bottom: 1px #BFBFBF solid;}
@@ -294,7 +296,7 @@ ul.tagCloud li span.tagCount {float: left; padding: 0 2px; width: auto;display: 
 .leaderboardholders {}
 .leaderboardholders ul { padding: 0;margin: 0;}
 .leaderboardholders ul li { overflow: hidden;padding: 2px;margin: 0 0 3px 0;background-color: #efefef;font-size: 16px;}
-.leaderboardholders ul li a, .leaderboardholders ul li a:visited {}
+.leaderboardholders ul li a, .leaderboardholders ul li a:visited { color: #626262;}
 .leaderboardholders ul li .earnername { display: block;float: left;padding: 5px;}
 .leaderboardholders ul li .earneramount { display: block;float: right;padding: 5px;background-color: #fff;}
 
@@ -435,3 +437,19 @@ ul.tagCloud li span.tagCount {float: left; padding: 0 2px; width: auto;display: 
 
 /*--- Misc Mobile Style ---*/
 .mobileview .mobilenavbar .mobilenavbartopstrip {background-color: #4891DC;}
+
+/*--- Category Index ---*/
+.categoryindex {}
+.categoryindex .categorydetails { padding-bottom: 17px;margin-bottom:7px;border-bottom: 1px solid #eeeeee;}
+.categoryindex .categorydetails h2 { padding: 0 0 0 0;margin: 0 0 0 0;}
+.categoryindex .categorydetails p { padding: 0 0 8px 0;margin: 0 0 0 0;font-size: 15px;}
+.categoryindex .categorydetailsfooter { font-size: 12px;padding-top: 5px;padding-bottom: 0;}
+.categoryindex .categorydetailsfooter .catrss { float: left;width: 6%;}
+.categoryindex .categorydetailsfooter .catrss .rsssubscribe { float: none;margin: 0 0 0 20px;}
+.categoryindex .categorydetailsfooter .catdiscussions { float: left;width: 14%;text-align: center;}
+.categoryindex .categorydetailsfooter .catcomments {float: left;width: 14%;text-align: center;}
+.categoryindex .categorydetailsfooter .catmostrecent {float: left;width: 66%;text-align: right;}
+
+/*--- Pager ---*/
+.pagination ul li a { color: #626262;}
+

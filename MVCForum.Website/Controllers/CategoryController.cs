@@ -49,9 +49,23 @@ namespace MVCForum.Website.Controllers
 
         public ActionResult Index()
         {
+            var catViewModel = new CategoryListViewModel
+            {
+                AllPermissionSets = new Dictionary<Category, PermissionSet>()
+            };
+
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                foreach (var category in _categoryService.GetAllMainCategories(true))
+                {
+                    var permissionSet = RoleService.GetPermissions(category, UsersRole);
+                    catViewModel.AllPermissionSets.Add(category, permissionSet);
+                }
+            }
+
             return View(new IndexCategoryViewModel
                 {
-                    Categories = _categoryService.GetAllMainCategories(true).ToList()
+                    Categories = catViewModel
                 });
         }   
 

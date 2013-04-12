@@ -165,6 +165,8 @@ PM.NewPrivateMessageSubject = New Private Message
 PM.NewPrivateMessageBody = {0} has just sent you a private message.
 Post.DeleteConfirmation = Are you sure you want to delete?
 Category.SubCategoriesHeading = Sub Categories In
+Category.AllCategories = All Categories
+Category.MostRecent = Most recent:
 
 +++ CHANGES TO EXISTING LANGUAGE STRINGS
 Topic.Comments = Answers

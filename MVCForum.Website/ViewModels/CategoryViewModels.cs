@@ -29,6 +29,6 @@ namespace MVCForum.Website.ViewModels
 
     public class IndexCategoryViewModel
     {
-        public IList<Category> Categories { get; set; }
+        public CategoryListViewModel Categories { get; set; }
     }
 }
