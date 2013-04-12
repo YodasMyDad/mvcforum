@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>DotNetOpenAuth.OAuth2.AuthorizationServer</id>
+    <version>4.2.2.13055</version>
+    <title>DotNetOpenAuth OAuth 2.0 Authorization Server</title>
+    <authors>Andrew Arnott</authors>
+    <owners>Andrew Arnott</owners>
+    <licenseUrl>http://www.opensource.org/licenses/ms-pl.html</licenseUrl>
+    <projectUrl>http://www.dotnetopenauth.net/</projectUrl>
+    <iconUrl>https://github.com/AArnott/dotnetopenid/raw/v3.4/doc/logo/dnoa-logo_32x32.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Protect your users' data while allowing them to programmatically access it, including from other web applications,
+			all without disclosing their login credential with you to 3rd parties.</description>
+    <summary>Add an OAuth 2.0 Authorization Server role to an ASP.NET web application, allowing it to authorize calls to its users' protected data on resource servers.</summary>
+    <dependencies>
+      <dependency id="DotNetOpenAuth.OAuth2.ClientAuthorization" version="[4.2.2.13055]" />
+    </dependencies>
+    <references>
+      <reference file="DotNetOpenAuth.OAuth2.AuthorizationServer.dll" />
+    </references>
+  </metadata>
+</package>

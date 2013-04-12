@@ -49,6 +49,13 @@ namespace MVCForum.Data.Repositories
                 .FirstOrDefault(name => name.FacebookId == facebookId);
         }
 
+        public MembershipUser GetUserByOpenIdToken(string openId)
+        {
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .FirstOrDefault(name => name.MiscAccessToken == openId);
+        }
+
         public IList<MembershipUser> SearchMembers(string username, int amount)
         {
             return _context.MembershipUser

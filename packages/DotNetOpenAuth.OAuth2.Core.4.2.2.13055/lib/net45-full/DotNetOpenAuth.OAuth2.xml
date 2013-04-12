@@ -1,0 +1,1095 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DotNetOpenAuth.OAuth2</name>
+    </assembly>
+    <members>
+        <member name="T:DotNetOpenAuth.Configuration.OAuth2SectionGroup">
+            <summary>
+            Represents the &lt;oauth&gt; element in the host's .config file.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.Configuration.OAuth2SectionGroup.SectionName">
+            <summary>
+            The name of the oauth section.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.Configuration.OAuth2SectionGroup.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.Configuration.OAuth2SectionGroup"/> class.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.AccessToken">
+            <summary>
+            A short-lived token that accompanies HTTP requests to protected data to authorize the request.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.ChannelElements.AuthorizationDataBag">
+            <summary>
+            A data bag that stores authorization data.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.ChannelElements.IAuthorizationDescription">
+            <summary>
+            Describes a delegated authorization between a resource server, a client, and a user.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.IAuthorizationDescription.ClientIdentifier">
+            <summary>
+            Gets the identifier of the client authorized to access protected data.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.IAuthorizationDescription.UtcIssued">
+            <summary>
+            Gets the date this authorization was established or the token was issued.
+            </summary>
+            <value>A date/time expressed in UTC.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.IAuthorizationDescription.User">
+            <summary>
+            Gets the name on the account whose data on the resource server is accessible using this authorization.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.IAuthorizationDescription.Scope">
+            <summary>
+            Gets the scope of operations the client is allowed to invoke.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ChannelElements.AuthorizationDataBag.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.ChannelElements.AuthorizationDataBag"/> class.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.AuthorizationDataBag.ClientIdentifier">
+            <summary>
+            Gets or sets the identifier of the client authorized to access protected data.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.AuthorizationDataBag.UtcIssued">
+            <summary>
+            Gets the date this authorization was established or the token was issued.
+            </summary>
+            <value>A date/time expressed in UTC.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.AuthorizationDataBag.User">
+            <summary>
+            Gets or sets the name on the account whose data on the resource server is accessible using this authorization.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.AuthorizationDataBag.Scope">
+            <summary>
+            Gets the scope of operations the client is allowed to invoke.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.AccessToken.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.AccessToken"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.AccessToken.CreateFormatter(System.Security.Cryptography.RSACryptoServiceProvider,System.Security.Cryptography.RSACryptoServiceProvider)">
+            <summary>
+            Creates a formatter capable of serializing/deserializing an access token.
+            </summary>
+            <param name="signingKey">The crypto service provider with the authorization server's private key used to asymmetrically sign the access token.</param>
+            <param name="encryptingKey">The crypto service provider with the resource server's public key used to encrypt the access token.</param>
+            <returns>An access token serializer.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.AccessToken.ApplyAuthorization(DotNetOpenAuth.OAuth2.ChannelElements.IAuthorizationDescription)">
+            <summary>
+            Initializes this instance of the <see cref="T:DotNetOpenAuth.OAuth2.AccessToken"/> class.
+            </summary>
+            <param name="authorization">The authorization to apply to this access token.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.AccessToken.ApplyAuthorization(System.Collections.Generic.IEnumerable{System.String},System.String,System.Nullable{System.TimeSpan})">
+            <summary>
+            Initializes this instance of the <see cref="T:DotNetOpenAuth.OAuth2.AccessToken"/> class.
+            </summary>
+            <param name="scopes">The scopes.</param>
+            <param name="username">The username of the account that authorized this token.</param>
+            <param name="lifetime">The lifetime for this access token.</param>
+            <remarks>
+            The <see cref="P:DotNetOpenAuth.OAuth2.ChannelElements.AuthorizationDataBag.ClientIdentifier"/> is left <c>null</c> in this case because this constructor
+            is invoked in the case where the client is <em>not</em> authenticated, and therefore no
+            trust in the client_id is appropriate.
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.AccessToken.Serialize">
+            <summary>
+            Serializes this instance to a simple string for transmission to the client.
+            </summary>
+            <returns>A non-empty string.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.AccessToken.EnsureValidMessage">
+            <summary>
+            Checks the message state for conformity to the protocol specification
+            and throws an exception if the message is invalid.
+            </summary>
+            <remarks>
+            	<para>Some messages have required fields, or combinations of fields that must relate to each other
+            in specialized ways.  After deserializing a message, this method checks the state of the
+            message to see if it conforms to the protocol.</para>
+            	<para>Note that this property should <i>not</i> check signatures or perform any state checks
+            outside this scope of this particular message.</para>
+            </remarks>
+            <exception cref="T:DotNetOpenAuth.Messaging.ProtocolException">Thrown if the message is invalid.</exception>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.AccessToken.Lifetime">
+            <summary>
+            Gets or sets the lifetime of the access token.
+            </summary>
+            <value>The lifetime.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.AccessToken.BagType">
+            <summary>
+            Gets the type of this instance.
+            </summary>
+            <value>The type of the bag.</value>
+            <remarks>
+            This ensures that one token cannot be misused as another kind of token.
+            </remarks>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.ChannelElements.ClientAuthenticationResult">
+            <summary>
+            Describes the various levels at which client information may be extracted from an inbound message.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.ChannelElements.ClientAuthenticationResult.NoAuthenticationRecognized">
+            <summary>
+            No client identification or authentication was discovered.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.ChannelElements.ClientAuthenticationResult.ClientIdNotAuthenticated">
+            <summary>
+            The client identified itself, but did not attempt to authenticate itself.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.ChannelElements.ClientAuthenticationResult.ClientAuthenticated">
+            <summary>
+            The client authenticated itself (provided compelling evidence that it was who it claims to be).
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.ChannelElements.ClientAuthenticationResult.ClientAuthenticationRejected">
+            <summary>
+            The client failed in an attempt to authenticate itself, claimed to be an unrecognized client, or otherwise messed up.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.ChannelElements.IAccessTokenCarryingRequest">
+            <summary>
+            A message that carries an access token between client and authorization server.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.ChannelElements.IAuthorizationCarryingRequest">
+            <summary>
+            A message that carries some kind of token from the client to the authorization or resource server.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.IAuthorizationCarryingRequest.AuthorizationDescription">
+            <summary>
+            Gets the authorization that the code or token describes.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.IAccessTokenCarryingRequest.AccessToken">
+            <summary>
+            Gets or sets the access token.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.IAccessTokenCarryingRequest.AuthorizationDescription">
+            <summary>
+            Gets or sets the authorization that the token describes.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.IScopeSatisfiedCheck">
+            <summary>
+            An extensibility point that allows authorization servers and resource servers to customize how scopes may be considered
+            supersets of each other.
+            </summary>
+            <remarks>
+            Implementations must be thread-safe.
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.IScopeSatisfiedCheck.IsScopeSatisfied(System.Collections.Generic.HashSet{System.String},System.Collections.Generic.HashSet{System.String})">
+            <summary>
+            Checks whether the granted scope is a superset of the required scope.
+            </summary>
+            <param name="requiredScope">The set of strings that the resource server demands in an access token's scope in order to complete some operation.</param>
+            <param name="grantedScope">The set of strings that define the scope within an access token that the client is authorized to.</param>
+            <returns><c>true</c> if <paramref name="grantedScope"/> is a superset of <paramref name="requiredScope"/> to allow the request to proceed; <c>false</c> otherwise.</returns>
+            <remarks>
+            The default reasonable implementation of this is:
+            <code>
+                return <paramref name="grantedScope"/>.IsSupersetOf(<paramref name="requiredScope"/>);
+            </code>
+            <para>In some advanced cases it may not be so simple.  One case is that there may be a string that aggregates the capabilities of several others
+            in order to simplify common scenarios.  For example, the scope "ReadAll" may represent the same authorization as "ReadProfile", "ReadEmail", and 
+            "ReadFriends".
+            </para>
+            <para>Great care should be taken in implementing this method as this is a critical security module for the authorization and resource servers.</para>
+            </remarks>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.ChannelElements.ScopeEncoder">
+            <summary>
+            Encodes or decodes a set of scopes into the OAuth 2.0 scope message part.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ChannelElements.ScopeEncoder.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.ChannelElements.ScopeEncoder"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ChannelElements.ScopeEncoder.Encode(System.Object)">
+            <summary>
+            Encodes the specified value.
+            </summary>
+            <param name="value">The value.  Guaranteed to never be null.</param>
+            <returns>
+            The <paramref name="value"/> in string form, ready for message transport.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ChannelElements.ScopeEncoder.Decode(System.String)">
+            <summary>
+            Decodes the specified value.
+            </summary>
+            <param name="value">The string value carried by the transport.  Guaranteed to never be null, although it may be empty.</param>
+            <returns>
+            The deserialized form of the given string.
+            </returns>
+            <exception cref="T:System.FormatException">Thrown when the string value given cannot be decoded into the required object type.</exception>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.ChannelElements.IAuthorizationDescriptionContract">
+            <summary>
+            Code contract for the <see cref="T:DotNetOpenAuth.OAuth2.ChannelElements.IAuthorizationDescription"/> interface.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ChannelElements.IAuthorizationDescriptionContract.#ctor">
+            <summary>
+            Prevents a default instance of the <see cref="T:DotNetOpenAuth.OAuth2.ChannelElements.IAuthorizationDescriptionContract"/> class from being created.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.IAuthorizationDescriptionContract.DotNetOpenAuth#OAuth2#ChannelElements#IAuthorizationDescription#ClientIdentifier">
+            <summary>
+            Gets the identifier of the client authorized to access protected data.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.IAuthorizationDescriptionContract.DotNetOpenAuth#OAuth2#ChannelElements#IAuthorizationDescription#UtcIssued">
+            <summary>
+            Gets the date this authorization was established or the token was issued.
+            </summary>
+            <value>A date/time expressed in UTC.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.IAuthorizationDescriptionContract.DotNetOpenAuth#OAuth2#ChannelElements#IAuthorizationDescription#User">
+            <summary>
+            Gets the name on the account whose data on the resource server is accessible using this authorization, if applicable.
+            </summary>
+            <value>A username, or <c>null</c> if the authorization is to access the client's own data (not a distinct resource owner's data).</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.IAuthorizationDescriptionContract.DotNetOpenAuth#OAuth2#ChannelElements#IAuthorizationDescription#Scope">
+            <summary>
+            Gets the scope of operations the client is allowed to invoke.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.Messages.AccessProtectedResourceRequest">
+            <summary>
+            A message that accompanies an HTTP request to a resource server that provides authorization.
+            </summary>
+            <remarks>
+            In its current form, this class only accepts bearer access tokens. 
+            When support for additional access token types is added, this class should probably be refactored
+            into derived types, where each derived type supports a particular access token type.
+            </remarks>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.Messages.MessageBase">
+            <summary>
+            A common message base class for OAuth messages.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Messages.MessageBase.extraData">
+            <summary>
+            A dictionary to contain extra message data.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Messages.MessageBase.originatingRequest">
+            <summary>
+            The originating request.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Messages.MessageBase.version">
+            <summary>
+            The backing field for the <see cref="P:DotNetOpenAuth.Messaging.IMessage.Version"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Messages.MessageBase.messageTransport">
+            <summary>
+            A value indicating whether this message is a direct or indirect message.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.Messages.MessageBase.#ctor(System.Version)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.Messages.MessageBase"/> class
+            that is used for direct response messages.
+            </summary>
+            <param name="version">The version.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.Messages.MessageBase.#ctor(DotNetOpenAuth.Messaging.IDirectedProtocolMessage,System.Uri)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.Messages.MessageBase"/> class.
+            </summary>
+            <param name="request">The originating request.</param>
+            <param name="recipient">The recipient of the directed message.  Null if not applicable.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.Messages.MessageBase.#ctor(System.Version,DotNetOpenAuth.Messaging.MessageTransport,System.Uri)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.Messages.MessageBase"/> class
+            that is used for directed messages.
+            </summary>
+            <param name="version">The version.</param>
+            <param name="messageTransport">The message transport.</param>
+            <param name="recipient">The recipient.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.Messages.MessageBase.DotNetOpenAuth#Messaging#IMessage#EnsureValidMessage">
+            <summary>
+            Checks the message state for conformity to the protocol specification
+            and throws an exception if the message is invalid.
+            </summary>
+            <remarks>
+            	<para>Some messages have required fields, or combinations of fields that must relate to each other
+            in specialized ways.  After deserializing a message, this method checks the state of the
+            message to see if it conforms to the protocol.</para>
+            	<para>Note that this property should <i>not</i> check signatures or perform any state checks
+            outside this scope of this particular message.</para>
+            </remarks>
+            <exception cref="T:DotNetOpenAuth.Messaging.ProtocolException">Thrown if the message is invalid.</exception>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.Messages.MessageBase.EnsureValidMessage">
+            <summary>
+            Checks the message state for conformity to the protocol specification
+            and throws an exception if the message is invalid.
+            </summary>
+            <remarks>
+            	<para>Some messages have required fields, or combinations of fields that must relate to each other
+            in specialized ways.  After deserializing a message, this method checks the state of the
+            message to see if it conforms to the protocol.</para>
+            	<para>Note that this property should <i>not</i> check signatures or perform any state checks
+            outside this scope of this particular message.</para>
+            </remarks>
+            <exception cref="T:DotNetOpenAuth.Messaging.ProtocolException">Thrown if the message is invalid.</exception>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.MessageBase.DotNetOpenAuth#Messaging#IMessage#Version">
+            <summary>
+            Gets the version of the protocol or extension this message is prepared to implement.
+            </summary>
+            <remarks>
+            Implementations of this interface should ensure that this property never returns null.
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.MessageBase.ExtraData">
+            <summary>
+            Gets the extra, non-standard Protocol parameters included in the message.
+            </summary>
+            <value></value>
+            <remarks>
+            Implementations of this interface should ensure that this property never returns null.
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.MessageBase.DotNetOpenAuth#Messaging#IProtocolMessage#RequiredProtection">
+            <summary>
+            Gets the level of protection this message requires.
+            </summary>
+            <value><see cref="F:DotNetOpenAuth.Messaging.MessageProtections.None"/></value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.MessageBase.DotNetOpenAuth#Messaging#IProtocolMessage#Transport">
+            <summary>
+            Gets a value indicating whether this is a direct or indirect message.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.MessageBase.DotNetOpenAuth#Messaging#IDirectedProtocolMessage#HttpMethods">
+            <summary>
+            Gets the preferred method of transport for the message.
+            </summary>
+            <remarks>
+            For indirect messages this will likely be GET+POST, which both can be simulated in the user agent:
+            the GET with a simple 301 Redirect, and the POST with an HTML form in the response with javascript
+            to automate submission.
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.MessageBase.DotNetOpenAuth#Messaging#IDirectedProtocolMessage#Recipient">
+            <summary>
+            Gets the URL of the intended receiver of this message.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.MessageBase.DotNetOpenAuth#Messaging#IDirectResponseProtocolMessage#OriginatingRequest">
+            <summary>
+            Gets the originating request message that caused this response to be formed.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.MessageBase.RequiredProtection">
+            <summary>
+            Gets the level of protection this message requires.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.MessageBase.Transport">
+            <summary>
+            Gets a value indicating whether this is a direct or indirect message.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.MessageBase.Version">
+            <summary>
+            Gets the version of the protocol or extension this message is prepared to implement.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.MessageBase.HttpMethods">
+            <summary>
+            Gets or sets the preferred method of transport for the message.
+            </summary>
+            <remarks>
+            For indirect messages this will likely be GET+POST, which both can be simulated in the user agent:
+            the GET with a simple 301 Redirect, and the POST with an HTML form in the response with javascript
+            to automate submission.
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.MessageBase.OriginatingRequest">
+            <summary>
+            Gets the originating request message that caused this response to be formed.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.MessageBase.Recipient">
+            <summary>
+            Gets the URL of the intended receiver of this message.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.Messages.AccessProtectedResourceRequest.#ctor(System.Uri,System.Version)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.Messages.AccessProtectedResourceRequest"/> class.
+            </summary>
+            <param name="recipient">The recipient.</param>
+            <param name="version">The version.</param>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.AccessProtectedResourceRequest.DotNetOpenAuth#OAuth2#ChannelElements#IAccessTokenCarryingRequest#AccessToken">
+            <summary>
+            Gets or sets the access token.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.AccessProtectedResourceRequest.DotNetOpenAuth#OAuth2#ChannelElements#IAccessTokenCarryingRequest#AuthorizationDescription">
+            <summary>
+            Gets or sets the authorization that the token describes.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.AccessProtectedResourceRequest.DotNetOpenAuth#OAuth2#ChannelElements#IAuthorizationCarryingRequest#AuthorizationDescription">
+            <summary>
+            Gets the authorization that the token describes.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.AccessProtectedResourceRequest.TokenType">
+            <summary>
+            Gets the type of the access token.
+            </summary>
+            <value>
+            Always "bearer".
+            </value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.AccessProtectedResourceRequest.AccessToken">
+            <summary>
+            Gets or sets the access token.
+            </summary>
+            <value>The access token.</value>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse">
+            <summary>
+            A direct response sent in response to a rejected Bearer access token.
+            </summary>
+            <remarks>
+            This satisfies the spec in: http://self-issued.info/docs/draft-ietf-oauth-v2-bearer.html#authn-header
+            </remarks>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse.headers">
+            <summary>
+            The headers in the response message.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse.#ctor(System.Version)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse"/> class.
+            </summary>
+            <param name="version">The protocol version.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse.#ctor(DotNetOpenAuth.Messaging.IDirectedProtocolMessage)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse"/> class.
+            </summary>
+            <param name="request">The request.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse.InvalidRequest(DotNetOpenAuth.Messaging.ProtocolException,System.Version)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse"/> class
+            to inform the client that the request was invalid.
+            </summary>
+            <param name="exception">The exception.</param>
+            <param name="version">The version of OAuth 2 that is in use.</param>
+            <returns>The error message.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse.InvalidToken(DotNetOpenAuth.Messaging.IDirectedProtocolMessage,DotNetOpenAuth.Messaging.ProtocolException)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse"/> class
+            to inform the client that the bearer token included in the request was rejected.
+            </summary>
+            <param name="request">The request.</param>
+            <param name="exception">The exception.</param>
+            <returns>The error message.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse.InsufficientScope(DotNetOpenAuth.Messaging.IDirectedProtocolMessage,System.Collections.Generic.HashSet{System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse"/> class
+            to inform the client of the required set of scopes required to perform this operation.
+            </summary>
+            <param name="request">The request.</param>
+            <param name="requiredScopes">The set of scopes required to perform this operation.</param>
+            <returns>The error message.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse.EnsureValidMessage">
+            <summary>
+            Ensures the message is valid.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse.VerifyErrorCodeOrDescription(System.String,System.String)">
+            <summary>
+            Ensures the error or error_description parameters contain only allowed characters.
+            </summary>
+            <param name="value">The argument.</param>
+            <param name="parameterName">The name of the parameter being validated.  Used when errors are reported.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse.VerifyErrorUri(System.Uri)">
+            <summary>
+            Ensures the error_uri parameter contains only allowed characters and is an absolute URI.
+            </summary>
+            <param name="valueUri">The absolute URI.</param>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse.HttpStatusCode">
+            <summary>
+            Gets or sets the HTTP status code that the direct response should be sent with.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse.Headers">
+            <summary>
+            Gets the HTTP headers to add to the response.
+            </summary>
+            <value>May be an empty collection, but must not be <c>null</c>.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse.ErrorCode">
+            <summary>
+            Gets or sets the well known error code.
+            </summary>
+            <value>One of the values from <see cref="T:DotNetOpenAuth.OAuth2.Protocol.BearerTokenErrorCodes"/>.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse.ErrorDescription">
+            <summary>
+            Gets or sets a human-readable explanation for developers that is not meant to be displayed to end users.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse.ErrorUri">
+            <summary>
+            Gets or sets an absolute URI identifying a human-readable web page explaining the error.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse.Realm">
+            <summary>
+            Gets or sets the realm.
+            </summary>
+            <value>The realm.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse.Scope">
+            <summary>
+            Gets or sets the scope.
+            </summary>
+            <value>The scope.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Messages.UnauthorizedResponse.Scheme">
+            <summary>
+            Gets the scheme to use in the WWW-Authenticate header.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.OAuthUtilities">
+            <summary>
+            Some common utility methods for OAuth 2.0.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.OAuthUtilities.HttpBasicAuthScheme">
+            <summary>
+            The string "Basic ".
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.OAuthUtilities.ScopeStringComparer">
+            <summary>
+            The <see cref="T:System.StringComparer"/> instance to use when comparing scope equivalence.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.OAuthUtilities.scopeDelimiter">
+            <summary>
+            The delimiter between scope elements.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.OAuthUtilities.ColonSeparator">
+            <summary>
+            A colon, in a 1-length character array.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.OAuthUtilities.HttpBasicEncoding">
+            <summary>
+            The encoding to use when preparing credentials for transit in HTTP Basic base64 encoding form.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.OAuthUtilities.accessTokenAuthorizationHeaderAllowedCharacters">
+            <summary>
+            The characters that may appear in an access token that is included in an HTTP Authorization header.
+            </summary>
+            <remarks>
+            This is defined in OAuth 2.0 DRAFT 10, section 5.1.1. (http://tools.ietf.org/id/draft-ietf-oauth-v2-10.html#authz-header)
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.OAuthUtilities.SplitScopes(System.String)">
+            <summary>
+            Identifies individual scope elements
+            </summary>
+            <param name="scope">The space-delimited list of scopes.</param>
+            <returns>A set of individual scopes, with any duplicates removed.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.OAuthUtilities.JoinScopes(System.Collections.Generic.HashSet{System.String})">
+            <summary>
+            Serializes a set of scopes as a space-delimited list.
+            </summary>
+            <param name="scopes">The scopes to serialize.</param>
+            <returns>A space-delimited list.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.OAuthUtilities.ParseScopeSet(System.String)">
+            <summary>
+            Parses a space-delimited list of scopes into a set.
+            </summary>
+            <param name="scopes">The space-delimited string.</param>
+            <returns>A set.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.OAuthUtilities.ParseScopeSet(System.String[])">
+            <summary>
+            Creates a set out of an array of strings.
+            </summary>
+            <param name="scopes">The array of strings.</param>
+            <returns>A set.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.OAuthUtilities.VerifyValidScopeTokens(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Verifies that a sequence of scope tokens are all valid.
+            </summary>
+            <param name="scopes">The scopes.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.OAuthUtilities.VerifyValidScopeToken(System.String)">
+            <summary>
+            Verifies that a given scope token (not a space-delimited set, but a single token) is valid.
+            </summary>
+            <param name="scopeToken">The scope token.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.OAuthUtilities.AuthorizeWithBearerToken(System.Net.HttpWebRequest,System.String)">
+            <summary>
+            Authorizes an HTTP request using an OAuth 2.0 access token in an HTTP Authorization header.
+            </summary>
+            <param name="request">The request to authorize.</param>
+            <param name="accessToken">The access token previously obtained from the Authorization Server.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.OAuthUtilities.AuthorizeWithBearerToken(System.Net.WebHeaderCollection,System.String)">
+            <summary>
+            Authorizes an HTTP request using an OAuth 2.0 access token in an HTTP Authorization header.
+            </summary>
+            <param name="requestHeaders">The headers on the request for protected resources from the service provider.</param>
+            <param name="accessToken">The access token previously obtained from the Authorization Server.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.OAuthUtilities.ApplyHttpBasicAuth(System.Net.WebHeaderCollection,System.String,System.String)">
+            <summary>
+            Applies the HTTP Authorization header for HTTP Basic authentication.
+            </summary>
+            <param name="headers">The headers collection to set the authorization header to.</param>
+            <param name="userName">The username.  Cannot be empty.</param>
+            <param name="password">The password.  Cannot be null.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.OAuthUtilities.ParseHttpBasicAuth(System.Net.WebHeaderCollection)">
+            <summary>
+            Extracts the username and password from an HTTP Basic authorized web header.
+            </summary>
+            <param name="headers">The incoming web headers.</param>
+            <returns>The network credentials; or <c>null</c> if none could be discovered in the request.</returns>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.StandardScopeSatisfiedCheck">
+            <summary>
+            The default scope superset checker, which assumes that no scopes overlap.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.StandardScopeSatisfiedCheck.IsScopeSatisfied(System.Collections.Generic.HashSet{System.String},System.Collections.Generic.HashSet{System.String})">
+            <summary>
+            Checks whether the granted scope is a superset of the required scope.
+            </summary>
+            <param name="requiredScope">The set of strings that the resource server demands in an access token's scope in order to complete some operation.</param>
+            <param name="grantedScope">The set of strings that define the scope within an access token that the client is authorized to.</param>
+            <returns><c>true</c> if <paramref name="grantedScope"/> is a superset of <paramref name="requiredScope"/> to allow the request to proceed; <c>false</c> otherwise.</returns>
+            <remarks>
+            The default reasonable implementation of this is:
+            <code>
+                return <paramref name="grantedScope"/>.IsSupersetOf(<paramref name="requiredScope"/>);
+            </code>
+            <para>In some advanced cases it may not be so simple.  One case is that there may be a string that aggregates the capabilities of several others
+            in order to simplify common scenarios.  For example, the scope "ReadAll" may represent the same authorization as "ReadProfile", "ReadEmail", and 
+            "ReadFriends".
+            </para>
+            <para>Great care should be taken in implementing this method as this is a critical security module for the authorization and resource servers.</para>
+            </remarks>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.ProtocolVersion">
+            <summary>
+            An enumeration of the OAuth protocol versions supported by this library.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.ProtocolVersion.V20">
+            <summary>
+            The OAuth 2.0 specification.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.Protocol">
+            <summary>
+            Protocol constants for OAuth 2.0.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.BearerHttpAuthorizationScheme">
+            <summary>
+            The HTTP authorization scheme "Bearer";
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.BearerHttpAuthorizationSchemeWithTrailingSpace">
+            <summary>
+            The HTTP authorization scheme "Bearer ";
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.BearerHttpAuthorizationHeaderFormat">
+            <summary>
+            The format of the HTTP Authorization header value that authorizes OAuth 2.0 requests using bearer access tokens.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.BearerTokenEncodedUrlParameterName">
+            <summary>
+            The name of the parameter whose value is an OAuth 2.0 bearer access token, as it is defined
+            in a URL-encoded POST entity or URL query string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.state">
+            <summary>
+            The "state" string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.redirect_uri_mismatch">
+            <summary>
+            The "redirect_uri_mismatch" string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.redirect_uri">
+            <summary>
+            The "redirect_uri" string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.client_id">
+            <summary>
+            The "client_id" string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.scope">
+            <summary>
+            The "scope" string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.client_secret">
+            <summary>
+            The "client_secret" string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.code">
+            <summary>
+            The "code" string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.error">
+            <summary>
+            The "error" string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.access_token">
+            <summary>
+            The "access_token" string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.token_type">
+            <summary>
+            The "token_type" string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.refresh_token">
+            <summary>
+            The "refresh_token" string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.expires_in">
+            <summary>
+            The "expires_in" string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.username">
+            <summary>
+            The "username" string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.password">
+            <summary>
+            The "password" string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.error_uri">
+            <summary>
+            The "error_uri" string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.error_description">
+            <summary>
+            The "error_description" string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.response_type">
+            <summary>
+            The "response_type" string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.grant_type">
+            <summary>
+            The "grant_type" string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.V20">
+            <summary>
+            Gets the <see cref="T:DotNetOpenAuth.OAuth2.Protocol"/> instance with values initialized for V1.0 of the protocol.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.AllVersions">
+            <summary>
+            A list of all supported OAuth versions, in order starting from newest version.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.Default">
+            <summary>
+            The default (or most recent) supported version of the OpenID protocol.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.Protocol.Lookup(DotNetOpenAuth.OAuth2.ProtocolVersion)">
+            <summary>
+            Gets the OAuth Protocol instance to use for the given version.
+            </summary>
+            <param name="version">The OAuth version to get.</param>
+            <returns>A matching <see cref="T:DotNetOpenAuth.OAuth2.Protocol"/> instance.</returns>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Protocol.Version">
+            <summary>
+            Gets or sets the OAuth 2.0 version represented by this instance.
+            </summary>
+            <value>The version.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.Protocol.ProtocolVersion">
+            <summary>
+            Gets or sets the OAuth 2.0 version represented by this instance.
+            </summary>
+            <value>The protocol version.</value>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.Protocol.ResponseTypes">
+            <summary>
+            Values for the "response_type" parameter.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.ResponseTypes.Code">
+            <summary>
+            The string "code".
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.ResponseTypes.Token">
+            <summary>
+            The string "token".
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.Protocol.AccessTokenRequestErrorCodes">
+            <summary>
+            Error codes that an authorization server can return to a client in response to a malformed or unsupported access token request.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.AccessTokenRequestErrorCodes.InvalidRequest">
+            <summary>
+            The request is missing a required parameter, includes an unknown parameter or parameter value, repeats a parameter,
+            includes multiple credentials, utilizes more than one mechanism for authenticating the client, or is otherwise malformed.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.AccessTokenRequestErrorCodes.InvalidClient">
+            <summary>
+            Client authentication failed (e.g. unknown client, no client authentication included, or unsupported authentication method).
+            The authorization server MAY return an HTTP 401 (Unauthorized) status code to indicate which HTTP authentication schemes are supported.
+            If the client attempted to authenticate via the Authorization request header field, the authorization server MUST respond with
+            an HTTP 401 (Unauthorized) status code, and include the WWW-Authenticate response header field matching the authentication scheme
+            used by the client.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.AccessTokenRequestErrorCodes.InvalidGrant">
+            <summary>
+            The provided authorization grant (e.g. authorization code, resource owner credentials) or refresh token is invalid, expired,
+            revoked, does not match the redirection URI used in the authorization request, or was issued to another client.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.AccessTokenRequestErrorCodes.UnauthorizedClient">
+            <summary>
+            The authenticated client is not authorized to use this authorization grant type.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.AccessTokenRequestErrorCodes.UnsupportedGrantType">
+            <summary>
+            The authorization grant type is not supported by the authorization server.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.AccessTokenRequestErrorCodes.InvalidScope">
+            <summary>
+            The requested scope is invalid, unknown, malformed, or exceeds the scope granted by the resource owner.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.Protocol.EndUserAuthorizationRequestErrorCodes">
+            <summary>
+            Error codes that an authorization server can return to a client in response to a malformed or unsupported end user authorization request.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.EndUserAuthorizationRequestErrorCodes.InvalidRequest">
+            <summary>
+            The request is missing a required parameter, includes an unknown parameter or parameter value, or is otherwise malformed.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.EndUserAuthorizationRequestErrorCodes.UnauthorizedClient">
+            <summary>
+            The client is not authorized to use the requested response type.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.EndUserAuthorizationRequestErrorCodes.AccessDenied">
+            <summary>
+            The end-user or authorization server denied the request.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.EndUserAuthorizationRequestErrorCodes.UnsupportedResponseType">
+            <summary>
+            The requested response type is not supported by the authorization server.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.EndUserAuthorizationRequestErrorCodes.InvalidScope">
+            <summary>
+            The requested scope is invalid, unknown, or malformed.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.EndUserAuthorizationRequestErrorCodes.ServerError">
+            <summary>
+            The authorization server encountered an unexpected condition which prevented it from fulfilling the request.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.EndUserAuthorizationRequestErrorCodes.TemporarilyUnavailable">
+            <summary>
+            The authorization server is currently unable to handle the request due to a temporary overloading or maintenance of the server.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.Protocol.AccessTokenTypes">
+            <summary>
+            Recognized access token types.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.AccessTokenTypes.Bearer">
+            <summary>
+            The "bearer" token type.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.Protocol.BearerTokenErrorCodes">
+            <summary>
+            The error codes prescribed in http://self-issued.info/docs/draft-ietf-oauth-v2-bearer.html#resource-error-codes
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.BearerTokenErrorCodes.InvalidRequest">
+            <summary>
+            The request is missing a required parameter, includes an unsupported parameter or parameter value,
+            repeats the same parameter, uses more than one method for including an access token, or is otherwise
+            malformed. The resource server SHOULD respond with the HTTP 400 (Bad Request) status code.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.BearerTokenErrorCodes.InvalidToken">
+            <summary>
+            The access token provided is expired, revoked, malformed, or invalid for other reasons.
+            The resource SHOULD respond with the HTTP 401 (Unauthorized) status code. The client MAY request
+            a new access token and retry the protected resource request.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.Protocol.BearerTokenErrorCodes.InsufficientScope">
+            <summary>
+            The request requires higher privileges than provided by the access token. The resource server
+            SHOULD respond with the HTTP 403 (Forbidden) status code and MAY include the scope attribute
+            with the scope necessary to access the protected resource.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.OAuthStrings">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.OAuthStrings.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.OAuthStrings.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.OAuthStrings.AbsoluteUriRequired">
+            <summary>
+              Looks up a localized string similar to The value for message part &quot;{0}&quot; must be an absolute URI..
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.OAuthStrings.AccessTokenInvalidForHttpAuthorizationHeader">
+            <summary>
+              Looks up a localized string similar to The access token contains characters that must not appear in the HTTP Authorization header..
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.OAuthStrings.BearerTokenUnauthorizedAtLeastOneParameterRequired">
+            <summary>
+              Looks up a localized string similar to At least one parameter is required for the Bearer scheme in its WWW-Authenticate header..
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.OAuthStrings.HttpsRequired">
+            <summary>
+              Looks up a localized string similar to This message can only be sent over HTTPS..
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.OAuthStrings.InvalidScopeToken">
+            <summary>
+              Looks up a localized string similar to The scope token &quot;{0}&quot; contains illegal characters or is empty..
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.OAuthStrings.NoGrantNoRefreshToken">
+            <summary>
+              Looks up a localized string similar to Refresh tokens should not be granted without the request including an access grant..
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.OAuthStrings.ParameterContainsIllegalCharacters">
+            <summary>
+              Looks up a localized string similar to The &apos;{0}&apos; parameter contains the illegal character &apos;{1}&apos;..
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.OAuthStrings.ResultShouldNotBeNull">
+            <summary>
+              Looks up a localized string similar to The return value of {0}.{1} should never be null..
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.OAuthStrings.ScopesMayNotContainSpaces">
+            <summary>
+              Looks up a localized string similar to Individual scopes may not contain spaces..
+            </summary>
+        </member>
+    </members>
+</doc>

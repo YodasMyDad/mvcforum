@@ -177,6 +177,12 @@ Add > Moderator
 --- MembershipUser
 LastActivityDate - DateTime allow nulls
 
++++ CHANGES
+FacebookAccessToken - change to nvarchar(250)
+TwitterAccessToken - change to nvarchar(250)
+GoogleAccessToken - change to nvarchar(250)
+MiscAccessToken - change to nvarchar(250)
+
 --- Permission
 Add > Create Polls
 Add > Create Topics

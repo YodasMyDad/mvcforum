@@ -400,6 +400,17 @@ namespace MVCForum.Services
         }
 
         /// <summary>
+        /// Get users by openid token
+        /// </summary>
+        /// <param name="openId"></param>
+        /// <returns></returns>
+        public MembershipUser GetUserByOpenIdToken(string openId)
+        {
+            openId = StringUtils.GetSafeHtml(openId);
+            return _membershipRepository.GetUserByOpenIdToken(openId);
+        }
+
+        /// <summary>
         /// Get users from a list of Id's
         /// </summary>
         /// <param name="guids"></param>

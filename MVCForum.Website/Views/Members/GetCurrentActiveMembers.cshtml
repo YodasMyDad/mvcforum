@@ -1,4 +1,5 @@
-﻿@model MVCForum.Website.ViewModels.ActiveMembersViewModel
+﻿@using MVCForum.Utilities
+@model MVCForum.Website.ViewModels.ActiveMembersViewModel
 
 @if (Model.ActiveMembers.Any())
 {
@@ -6,7 +7,12 @@
         <li class="activememberslistheading">@Html.LanguageString("Stats.FooterActiveUsersText")</li>
         @foreach (var member in Model.ActiveMembers)
         {
-            <li><a href="@member.NiceUrl">@member.UserName</a></li>
+            <li>
+                <a title="@Html.Raw(member.UserName)" href="@member.NiceUrl">
+                    <img src="@StringUtils.GetGravatarImage(member.Email, AppConstants.GravatarLeaderboardSize)" alt="@Html.Raw(member.UserName)" />
+                </a>
+            </li>
         }
     </ul>
+    
 }

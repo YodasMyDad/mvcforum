@@ -1,0 +1,964 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DotNetOpenAuth.OAuth2.Client</name>
+    </assembly>
+    <members>
+        <member name="T:DotNetOpenAuth.Configuration.OAuth2ClientSection">
+            <summary>
+            Represents the &lt;oauth2/client&gt; section in the host's .config file.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.Configuration.OAuth2ClientSection.SectionName">
+            <summary>
+            The name of the oauth2/client section.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.Configuration.OAuth2ClientSection.MaxAuthorizationTimePropertyName">
+            <summary>
+            The name of the @maxAuthorizationTime attribute.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.Configuration.OAuth2ClientSection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.Configuration.OAuth2ClientSection"/> class.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.Configuration.OAuth2ClientSection.Configuration">
+            <summary>
+            Gets the configuration section from the .config file.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.Configuration.OAuth2ClientSection.MaxAuthorizationTime">
+            <summary>
+            Gets or sets the maximum time a user can take to complete authentication.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.AuthorizationServerDescription">
+            <summary>
+            A description of an OAuth Authorization Server as seen by an OAuth Client.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.AuthorizationServerDescription.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.AuthorizationServerDescription"/> class.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.AuthorizationServerDescription.TokenEndpoint">
+            <summary>
+            Gets or sets the Authorization Server URL from which an Access Token is requested by the Client.
+            </summary>
+            <value>An HTTPS URL.</value>
+            <remarks>
+            <para>After obtaining authorization from the resource owner, clients request an access token from the authorization server's token endpoint.</para>
+            <para>The URI of the token endpoint can be found in the service documentation, or can be obtained by the client by making an unauthorized protected resource request (from the WWW-Authenticate response header token-uri (The 'authorization-uri' Attribute) attribute).</para>
+            <para>The token endpoint advertised by the resource server MAY include a query component as defined by [RFC3986] (Berners-Lee, T., Fielding, R., and L. Masinter, “Uniform Resource Identifier (URI): Generic Syntax,” January 2005.) section 3.</para>
+            <para>Since requests to the token endpoint result in the transmission of plain text credentials in the HTTP request and response, the authorization server MUST require the use of a transport-layer mechanism such as TLS/SSL (or a secure channel with equivalent protections) when sending requests to the token endpoints. </para>
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.AuthorizationServerDescription.AuthorizationEndpoint">
+            <summary>
+            Gets or sets the Authorization Server URL where the Client (re)directs the User
+            to make an authorization request.
+            </summary>
+            <value>An HTTPS URL.</value>
+            <remarks>
+            <para>Clients direct the resource owner to the authorization endpoint to approve their access request. Before granting access, the resource owner first authenticates with the authorization server. The way in which the authorization server authenticates the end-user (e.g. username and password login, OpenID, session cookies) and in which the authorization server obtains the end-user's authorization, including whether it uses a secure channel such as TLS/SSL, is beyond the scope of this specification. However, the authorization server MUST first verify the identity of the end-user.</para>
+            <para>The URI of the authorization endpoint can be found in the service documentation, or can be obtained by the client by making an unauthorized protected resource request (from the WWW-Authenticate response header auth-uri (The 'authorization-uri' Attribute) attribute).</para>
+            <para>The authorization endpoint advertised by the resource server MAY include a query component as defined by [RFC3986] (Berners-Lee, T., Fielding, R., and L. Masinter, “Uniform Resource Identifier (URI): Generic Syntax,” January 2005.) section 3.</para>
+            <para>Since requests to the authorization endpoint result in user authentication and the transmission of sensitive values, the authorization server SHOULD require the use of a transport-layer mechanism such as TLS/SSL (or a secure channel with equivalent protections) when sending requests to the authorization endpoints.</para>
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.AuthorizationServerDescription.ProtocolVersion">
+            <summary>
+            Gets or sets the OAuth version supported by the Authorization Server.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.AuthorizationServerDescription.Version">
+            <summary>
+            Gets the version of the OAuth protocol to use with this Authorization Server.
+            </summary>
+            <value>The version.</value>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.AuthorizationState">
+            <summary>
+            A simple in-memory copy of an authorization state.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.IAuthorizationState">
+            <summary>
+            Provides access to a persistent object that tracks the state of an authorization.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.IAuthorizationState.Delete">
+            <summary>
+            Deletes this authorization, including access token and refresh token where applicable.
+            </summary>
+            <remarks>
+            This method is invoked when an authorization attempt fails, is rejected, is revoked, or
+            expires and cannot be renewed.
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.IAuthorizationState.SaveChanges">
+            <summary>
+            Saves any changes made to this authorization object's properties.
+            </summary>
+            <remarks>
+            This method is invoked after DotNetOpenAuth changes any property.
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.IAuthorizationState.Callback">
+            <summary>
+            Gets or sets the callback URL used to obtain authorization.
+            </summary>
+            <value>The callback URL.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.IAuthorizationState.RefreshToken">
+            <summary>
+            Gets or sets the long-lived token used to renew the short-lived <see cref="P:DotNetOpenAuth.OAuth2.IAuthorizationState.AccessToken"/>.
+            </summary>
+            <value>The refresh token.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.IAuthorizationState.AccessToken">
+            <summary>
+            Gets or sets the access token.
+            </summary>
+            <value>The access token.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.IAuthorizationState.AccessTokenIssueDateUtc">
+            <summary>
+            Gets or sets the access token issue date UTC.
+            </summary>
+            <value>The access token issue date UTC.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.IAuthorizationState.AccessTokenExpirationUtc">
+            <summary>
+            Gets or sets the access token UTC expiration date.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.IAuthorizationState.Scope">
+            <summary>
+            Gets the scope the token is (to be) authorized for.
+            </summary>
+            <value>The scope.</value>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.AuthorizationState.#ctor(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.AuthorizationState"/> class.
+            </summary>
+            <param name="scopes">The scopes of access being requested or that was obtained.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.AuthorizationState.Delete">
+            <summary>
+            Deletes this authorization, including access token and refresh token where applicable.
+            </summary>
+            <remarks>
+            This method is invoked when an authorization attempt fails, is rejected, is revoked, or
+            expires and cannot be renewed.
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.AuthorizationState.SaveChanges">
+            <summary>
+            Saves any changes made to this authorization object's properties.
+            </summary>
+            <remarks>
+            This method is invoked after DotNetOpenAuth changes any property.
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.AuthorizationState.Callback">
+            <summary>
+            Gets or sets the callback URL used to obtain authorization.
+            </summary>
+            <value>The callback URL.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.AuthorizationState.RefreshToken">
+            <summary>
+            Gets or sets the long-lived token used to renew the short-lived <see cref="P:DotNetOpenAuth.OAuth2.AuthorizationState.AccessToken"/>.
+            </summary>
+            <value>The refresh token.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.AuthorizationState.AccessToken">
+            <summary>
+            Gets or sets the access token.
+            </summary>
+            <value>The access token.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.AuthorizationState.AccessTokenExpirationUtc">
+            <summary>
+            Gets or sets the access token UTC expiration date.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.AuthorizationState.AccessTokenIssueDateUtc">
+            <summary>
+            Gets or sets the access token issue date UTC.
+            </summary>
+            <value>The access token issue date UTC.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.AuthorizationState.Scope">
+            <summary>
+            Gets the scope the token is (to be) authorized for.
+            </summary>
+            <value>The scope.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.AuthorizationState.IsDeleted">
+            <summary>
+            Gets or sets a value indicating whether this instance is deleted.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is deleted; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.BearerTokenHttpMessageHandler">
+            <summary>
+            An <see cref="T:System.Net.Http.HttpMessageHandler"/> that applies a bearer token to each outbound HTTP request.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.BearerTokenHttpMessageHandler.#ctor(System.String,System.Net.Http.HttpMessageHandler)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.BearerTokenHttpMessageHandler"/> class.
+            </summary>
+            <param name="bearerToken">The bearer token.</param>
+            <param name="innerHandler">The inner handler.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.BearerTokenHttpMessageHandler.#ctor(DotNetOpenAuth.OAuth2.ClientBase,DotNetOpenAuth.OAuth2.IAuthorizationState,System.Net.Http.HttpMessageHandler)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.BearerTokenHttpMessageHandler"/> class.
+            </summary>
+            <param name="client">The client associated with the authorization.</param>
+            <param name="authorization">The authorization.</param>
+            <param name="innerHandler">The inner handler.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.BearerTokenHttpMessageHandler.SendAsync(System.Net.Http.HttpRequestMessage,System.Threading.CancellationToken)">
+            <summary>
+            Sends an HTTP request to the inner handler to send to the server as an asynchronous operation.
+            </summary>
+            <param name="request">The HTTP request message to send to the server.</param>
+            <param name="cancellationToken">A cancellation token to cancel operation.</param>
+            <returns>
+            Returns <see cref="T:System.Threading.Tasks.Task`1" />. The task object representing the asynchronous operation.
+            </returns>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.BearerTokenHttpMessageHandler.BearerToken">
+            <summary>
+            Gets the bearer token.
+            </summary>
+            <value>
+            The bearer token.
+            </value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.BearerTokenHttpMessageHandler.Authorization">
+            <summary>
+            Gets the authorization.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.BearerTokenHttpMessageHandler.Client">
+            <summary>
+            Gets the OAuth 2 client associated with the <see cref="P:DotNetOpenAuth.OAuth2.BearerTokenHttpMessageHandler.Authorization"/>.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.ChannelElements.IOAuth2ChannelWithClient">
+            <summary>
+            An interface that defines the OAuth2 client specific channel additions.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.IOAuth2ChannelWithClient.ClientIdentifier">
+            <summary>
+            Gets or sets the identifier by which this client is known to the Authorization Server.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.IOAuth2ChannelWithClient.ClientCredentialApplicator">
+            <summary>
+            Gets or sets the client credentials applicator extension to use.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.IOAuth2ChannelWithClient.JsonReaderQuotas">
+            <summary>
+            Gets quotas used when deserializing JSON.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.ChannelElements.OAuth2ClientChannel">
+            <summary>
+            The messaging channel used by OAuth 2.0 Clients.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.ChannelElements.OAuth2ClientChannel.MessageTypes">
+            <summary>
+            The messages receivable by this channel.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ChannelElements.OAuth2ClientChannel.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.ChannelElements.OAuth2ClientChannel"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ChannelElements.OAuth2ClientChannel.CreateHttpRequest(DotNetOpenAuth.Messaging.IDirectedProtocolMessage)">
+            <summary>
+            Prepares an HTTP request that carries a given message.
+            </summary>
+            <param name="request">The message to send.</param>
+            <returns>
+            The <see cref="T:System.Net.HttpWebRequest"/> prepared to send the request.
+            </returns>
+            <remarks>
+            This method must be overridden by a derived class, unless the <see cref="M:DotNetOpenAuth.Messaging.Channel.RequestCore(DotNetOpenAuth.Messaging.IDirectedProtocolMessage)"/> method
+            is overridden and does not require this method.
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ChannelElements.OAuth2ClientChannel.ReadFromResponseCore(DotNetOpenAuth.Messaging.IncomingWebResponse)">
+            <summary>
+            Gets the protocol message that may be in the given HTTP response.
+            </summary>
+            <param name="response">The response that is anticipated to contain an protocol message.</param>
+            <returns>
+            The deserialized message parts, if found.  Null otherwise.
+            </returns>
+            <exception cref="T:DotNetOpenAuth.Messaging.ProtocolException">Thrown when the response is not valid.</exception>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ChannelElements.OAuth2ClientChannel.ReadFromRequestCore(System.Web.HttpRequestBase)">
+            <summary>
+            Gets the protocol message that may be embedded in the given HTTP request.
+            </summary>
+            <param name="request">The request to search for an embedded message.</param>
+            <returns>
+            The deserialized message, if one is found.  Null otherwise.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ChannelElements.OAuth2ClientChannel.PrepareDirectResponse(DotNetOpenAuth.Messaging.IProtocolMessage)">
+            <summary>
+            Queues a message for sending in the response stream where the fields
+            are sent in the response stream in querystring style.
+            </summary>
+            <param name="response">The message to send as a response.</param>
+            <returns>
+            The pending user agent redirect based message to be sent as an HttpResponse.
+            </returns>
+            <remarks>
+            This method implements spec OAuth V1.0 section 5.3.
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ChannelElements.OAuth2ClientChannel.PrepareHttpWebRequest(System.Net.HttpWebRequest)">
+            <summary>
+            Performs additional processing on an outgoing web request before it is sent to the remote server.
+            </summary>
+            <param name="request">The request.</param>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.OAuth2ClientChannel.ClientIdentifier">
+            <summary>
+            Gets or sets the identifier by which this client is known to the Authorization Server.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.OAuth2ClientChannel.ClientCredentialApplicator">
+            <summary>
+            Gets or sets the tool to use to apply client credentials to authenticated requests to the Authorization Server.
+            </summary>
+            <value>May be <c>null</c> if this client has no client secret.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ChannelElements.OAuth2ClientChannel.JsonReaderQuotas">
+            <summary>
+            Gets quotas used when deserializing JSON.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.ClientCredentialApplicator">
+            <summary>
+            A base class for extensions that apply client authentication to messages for the authorization server in specific ways.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.ClientCredentialApplicator"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.PostParameter(System.String)">
+            <summary>
+            Transmits the secret the client shares with the authorization server as a parameter in the POST entity payload.
+            </summary>
+            <param name="clientSecret">The secret the client shares with the authorization server.</param>
+            <returns>The credential applicator to provide to the <see cref="T:DotNetOpenAuth.OAuth2.ClientBase"/> instance.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.NetworkCredential(System.Net.NetworkCredential)">
+            <summary>
+            Transmits the client identifier and secret in the HTTP Authorization header via HTTP Basic authentication.
+            </summary>
+            <param name="credential">The client id and secret.</param>
+            <returns>The credential applicator to provide to the <see cref="T:DotNetOpenAuth.OAuth2.ClientBase"/> instance.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.NetworkCredential(System.String)">
+            <summary>
+            Transmits the client identifier and secret in the HTTP Authorization header via HTTP Basic authentication.
+            </summary>
+            <param name="clientSecret">The secret the client shares with the authorization server.</param>
+            <returns>The credential applicator to provide to the <see cref="T:DotNetOpenAuth.OAuth2.ClientBase"/> instance.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.NoSecret">
+            <summary>
+            Never transmits a secret.  Useful for anonymous clients or clients unable to keep a secret.
+            </summary>
+            <returns>The credential applicator to provide to the <see cref="T:DotNetOpenAuth.OAuth2.ClientBase"/> instance.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.ApplyClientCredential(System.String,DotNetOpenAuth.OAuth2.Messages.AuthenticatedClientRequestBase)">
+            <summary>
+            Applies the client identifier and (when applicable) the client authentication to an outbound message.
+            </summary>
+            <param name="clientIdentifier">The identifier by which the authorization server should recognize this client.</param>
+            <param name="request">The outbound message to apply authentication information to.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.ApplyClientCredential(System.String,System.Net.HttpWebRequest)">
+            <summary>
+            Applies the client identifier and (when applicable) the client authentication to an outbound message.
+            </summary>
+            <param name="clientIdentifier">The identifier by which the authorization server should recognize this client.</param>
+            <param name="request">The outbound message to apply authentication information to.</param>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.NetworkCredentialApplicator">
+            <summary>
+            Authenticates the client via HTTP Basic.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.NetworkCredentialApplicator.credential">
+            <summary>
+            The client identifier and secret.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.NetworkCredentialApplicator.clientSecret">
+            <summary>
+            The client secret.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.NetworkCredentialApplicator.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.NetworkCredentialApplicator"/> class.
+            </summary>
+            <param name="clientSecret">The client secret.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.NetworkCredentialApplicator.#ctor(System.Net.NetworkCredential)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.NetworkCredentialApplicator"/> class.
+            </summary>
+            <param name="credential">The client credential.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.NetworkCredentialApplicator.ApplyClientCredential(System.String,DotNetOpenAuth.OAuth2.Messages.AuthenticatedClientRequestBase)">
+            <summary>
+            Applies the client identifier and (when applicable) the client authentication to an outbound message.
+            </summary>
+            <param name="clientIdentifier">The identifier by which the authorization server should recognize this client.</param>
+            <param name="request">The outbound message to apply authentication information to.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.NetworkCredentialApplicator.ApplyClientCredential(System.String,System.Net.HttpWebRequest)">
+            <summary>
+            Applies the client identifier and (when applicable) the client authentication to an outbound message.
+            </summary>
+            <param name="clientIdentifier">The identifier by which the authorization server should recognize this client.</param>
+            <param name="request">The outbound message to apply authentication information to.</param>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.PostParameterApplicator">
+            <summary>
+            Authenticates the client via a client_secret parameter in the message.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.PostParameterApplicator.secret">
+            <summary>
+            The client secret.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.PostParameterApplicator.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.PostParameterApplicator"/> class.
+            </summary>
+            <param name="clientSecret">The client secret.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientCredentialApplicator.PostParameterApplicator.ApplyClientCredential(System.String,DotNetOpenAuth.OAuth2.Messages.AuthenticatedClientRequestBase)">
+            <summary>
+            Applies the client identifier and (when applicable) the client authentication to an outbound message.
+            </summary>
+            <param name="clientIdentifier">The identifier by which the authorization server should recognize this client.</param>
+            <param name="request">The outbound message to apply authentication information to.</param>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.IClientAuthorizationTracker">
+            <summary>
+            A token manager implemented by some clients to assist in tracking authorization state.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.IClientAuthorizationTracker.GetAuthorizationState(System.Uri,System.String)">
+            <summary>
+            Gets the state of the authorization for a given callback URL and client state.
+            </summary>
+            <param name="callbackUrl">The callback URL.</param>
+            <param name="clientState">State of the client stored at the beginning of an authorization request.</param>
+            <returns>The authorization state; may be <c>null</c> if no authorization state matches.</returns>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.IClientAuthorizationTrackerContract">
+            <summary>
+            Contract class for the <see cref="T:DotNetOpenAuth.OAuth2.IClientAuthorizationTracker"/> interface.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.IClientAuthorizationTrackerContract.#ctor">
+            <summary>
+            Prevents a default instance of the <see cref="T:DotNetOpenAuth.OAuth2.IClientAuthorizationTrackerContract"/> class from being created.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.IClientAuthorizationTrackerContract.DotNetOpenAuth#OAuth2#IClientAuthorizationTracker#GetAuthorizationState(System.Uri,System.String)">
+            <summary>
+            Gets the state of the authorization for a given callback URL and client state.
+            </summary>
+            <param name="callbackUrl">The callback URL.</param>
+            <param name="clientState">State of the client stored at the beginning of an authorization request.</param>
+            <returns>
+            The authorization state; may be <c>null</c> if no authorization state matches.
+            </returns>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.Messages.AccessTokenAuthorizationCodeRequestC">
+            <summary>
+            A request from a Client to an Authorization Server to exchange an authorization code for an access token,
+            and (at the authorization server's option) a refresh token.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.Messages.AccessTokenAuthorizationCodeRequestC.#ctor(DotNetOpenAuth.OAuth2.AuthorizationServerDescription)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.Messages.AccessTokenAuthorizationCodeRequestC"/> class.
+            </summary>
+            <param name="authorizationServer">The authorization server.</param>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.Messages.AccessTokenRefreshRequestC">
+            <summary>
+            A request from the client to the token endpoint for a new access token
+            in exchange for a refresh token that the client has previously obtained.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.Messages.AccessTokenRefreshRequestC.#ctor(DotNetOpenAuth.OAuth2.AuthorizationServerDescription)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.Messages.AccessTokenRefreshRequestC"/> class.
+            </summary>
+            <param name="authorizationServer">The authorization server.</param>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.Messages.EndUserAuthorizationImplicitRequestC">
+            <summary>
+            A message sent by a web application Client to the AuthorizationServer
+            via the user agent to obtain authorization from the user and prepare
+            to issue an access token to the client if permission is granted.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.Messages.EndUserAuthorizationImplicitRequestC.#ctor(DotNetOpenAuth.OAuth2.AuthorizationServerDescription)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.Messages.EndUserAuthorizationImplicitRequestC"/> class.
+            </summary>
+            <param name="authorizationServer">The authorization server.</param>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.Messages.EndUserAuthorizationRequestC">
+            <summary>
+            A message sent by a web application Client to the AuthorizationServer
+            via the user agent to obtain authorization from the user and prepare
+            to issue an access token to the client if permission is granted.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.Messages.EndUserAuthorizationRequestC.#ctor(DotNetOpenAuth.OAuth2.AuthorizationServerDescription)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.Messages.EndUserAuthorizationRequestC"/> class.
+            </summary>
+            <param name="authorizationServer">The authorization server.</param>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.ClientStrings">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ClientStrings.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ClientStrings.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ClientStrings.AccessTokenRefreshFailed">
+            <summary>
+              Looks up a localized string similar to Access token has expired and cannot be automatically refreshed..
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ClientStrings.AuthorizationExpired">
+            <summary>
+              Looks up a localized string similar to Authorization has expired..
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ClientStrings.AuthorizationResponseUnexpectedMismatch">
+            <summary>
+              Looks up a localized string similar to Unexpected OAuth authorization response received with callback and client state that does not match an expected value..
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ClientStrings.CannotObtainAccessTokenWithReason">
+            <summary>
+              Looks up a localized string similar to Failed to obtain access token.  Authorization Server reports reason: {0}.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ClientStrings.UnexpectedResponseContentType">
+            <summary>
+              Looks up a localized string similar to Unexpected response Content-Type {0}.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.UserAgentClient">
+            <summary>
+            The OAuth client for the user-agent flow, providing services for installed apps
+            and in-browser Javascript widgets.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.ClientBase">
+            <summary>
+            A base class for common OAuth Client behaviors.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientBase.#ctor(DotNetOpenAuth.OAuth2.AuthorizationServerDescription,System.String,DotNetOpenAuth.OAuth2.ClientCredentialApplicator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.ClientBase"/> class.
+            </summary>
+            <param name="authorizationServer">The token issuer.</param>
+            <param name="clientIdentifier">The client identifier.</param>
+            <param name="clientCredentialApplicator">
+            The tool to use to apply client credentials to authenticated requests to the Authorization Server.  
+            May be <c>null</c> for clients with no secret or other means of authentication.
+            </param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientBase.AuthorizeRequest(System.Net.HttpWebRequest,System.String)">
+            <summary>
+            Adds the necessary HTTP Authorization header to an HTTP request for protected resources
+            so that the Service Provider will allow the request through.
+            </summary>
+            <param name="request">The request for protected resources from the service provider.</param>
+            <param name="accessToken">The access token previously obtained from the Authorization Server.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientBase.AuthorizeRequest(System.Net.WebHeaderCollection,System.String)">
+            <summary>
+            Adds the necessary HTTP Authorization header to an HTTP request for protected resources
+            so that the Service Provider will allow the request through.
+            </summary>
+            <param name="requestHeaders">The headers on the request for protected resources from the service provider.</param>
+            <param name="accessToken">The access token previously obtained from the Authorization Server.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientBase.AuthorizeRequest(System.Net.HttpWebRequest,DotNetOpenAuth.OAuth2.IAuthorizationState)">
+            <summary>
+            Adds the OAuth authorization token to an outgoing HTTP request, renewing a
+            (nearly) expired access token if necessary.
+            </summary>
+            <param name="request">The request for protected resources from the service provider.</param>
+            <param name="authorization">The authorization for this request previously obtained via OAuth.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientBase.AuthorizeRequest(System.Net.WebHeaderCollection,DotNetOpenAuth.OAuth2.IAuthorizationState)">
+            <summary>
+            Adds the OAuth authorization token to an outgoing HTTP request, renewing a
+            (nearly) expired access token if necessary.
+            </summary>
+            <param name="requestHeaders">The headers on the request for protected resources from the service provider.</param>
+            <param name="authorization">The authorization for this request previously obtained via OAuth.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientBase.CreateAuthorizingHandler(System.String,System.Net.Http.HttpMessageHandler)">
+            <summary>
+            Creates an HTTP handler that automatically applies an OAuth 2 (bearer) access token to outbound HTTP requests.
+            The result of this method can be supplied to the <see cref="M:System.Net.Http.HttpClient.#ctor(System.Net.Http.HttpMessageHandler)"/> constructor.
+            </summary>
+            <param name="bearerAccessToken">The bearer token to apply to each outbound HTTP message.</param>
+            <param name="innerHandler">The inner HTTP handler to use.  The default uses <see cref="T:System.Net.Http.HttpClientHandler"/> as the inner handler.</param>
+            <returns>An <see cref="T:System.Net.Http.HttpMessageHandler"/> instance.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientBase.CreateAuthorizingHandler(DotNetOpenAuth.OAuth2.IAuthorizationState,System.Net.Http.HttpMessageHandler)">
+            <summary>
+            Creates an HTTP handler that automatically applies the OAuth 2 access token to outbound HTTP requests.
+            The result of this method can be supplied to the <see cref="M:System.Net.Http.HttpClient.#ctor(System.Net.Http.HttpMessageHandler)"/> constructor.
+            </summary>
+            <param name="authorization">The authorization to apply to the message.</param>
+            <param name="innerHandler">The inner HTTP handler to use.  The default uses <see cref="T:System.Net.Http.HttpClientHandler"/> as the inner handler.</param>
+            <returns>An <see cref="T:System.Net.Http.HttpMessageHandler"/> instance.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientBase.RefreshAuthorization(DotNetOpenAuth.OAuth2.IAuthorizationState,System.Nullable{System.TimeSpan})">
+            <summary>
+            Refreshes a short-lived access token using a longer-lived refresh token
+            with a new access token that has the same scope as the refresh token.
+            The refresh token itself may also be refreshed.
+            </summary>
+            <param name="authorization">The authorization to update.</param>
+            <param name="skipIfUsefulLifeExceeds">If given, the access token will <em>not</em> be refreshed if its remaining lifetime exceeds this value.</param>
+            <returns>A value indicating whether the access token was actually renewed; <c>true</c> if it was renewed, or <c>false</c> if it still had useful life remaining.</returns>
+            <remarks>
+            This method may modify the value of the <see cref="P:DotNetOpenAuth.OAuth2.IAuthorizationState.RefreshToken"/> property on
+            the <paramref name="authorization"/> parameter if the authorization server has cycled out your refresh token.
+            If the parameter value was updated, this method calls <see cref="M:DotNetOpenAuth.OAuth2.IAuthorizationState.SaveChanges"/> on that instance.
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientBase.GetScopedAccessToken(System.String,System.Collections.Generic.HashSet{System.String})">
+            <summary>
+            Gets an access token that may be used for only a subset of the scope for which a given
+            refresh token is authorized.
+            </summary>
+            <param name="refreshToken">The refresh token.</param>
+            <param name="scope">The scope subset desired in the access token.</param>
+            <returns>A description of the obtained access token, and possibly a new refresh token.</returns>
+            <remarks>
+            If the return value includes a new refresh token, the old refresh token should be discarded and
+            replaced with the new one.
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientBase.ExchangeUserCredentialForToken(System.String,System.String,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Exchanges a resource owner's password credential for OAuth 2.0 refresh and access tokens.
+            </summary>
+            <param name="userName">The resource owner's username, as it is known by the authorization server.</param>
+            <param name="password">The resource owner's account password.</param>
+            <param name="scopes">The desired scope of access.</param>
+            <returns>The result, containing the tokens if successful.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientBase.GetClientAccessToken(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Obtains an access token for accessing client-controlled resources on the resource server.
+            </summary>
+            <param name="scopes">The desired scopes.</param>
+            <returns>The result of the authorization request.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientBase.UpdateAuthorizationWithResponse(DotNetOpenAuth.OAuth2.IAuthorizationState,DotNetOpenAuth.OAuth2.Messages.AccessTokenSuccessResponse)">
+            <summary>
+            Updates the authorization state maintained by the client with the content of an outgoing response.
+            </summary>
+            <param name="authorizationState">The authorization state maintained by the client.</param>
+            <param name="accessTokenSuccess">The access token containing response message.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientBase.UpdateAuthorizationWithResponse(DotNetOpenAuth.OAuth2.IAuthorizationState,DotNetOpenAuth.OAuth2.Messages.EndUserAuthorizationSuccessAccessTokenResponse)">
+            <summary>
+            Updates the authorization state maintained by the client with the content of an outgoing response.
+            </summary>
+            <param name="authorizationState">The authorization state maintained by the client.</param>
+            <param name="accessTokenSuccess">The access token containing response message.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientBase.UpdateAuthorizationWithResponse(DotNetOpenAuth.OAuth2.IAuthorizationState,DotNetOpenAuth.OAuth2.Messages.EndUserAuthorizationSuccessAuthCodeResponse)">
+            <summary>
+            Updates authorization state with a success response from the Authorization Server.
+            </summary>
+            <param name="authorizationState">The authorization state to update.</param>
+            <param name="authorizationSuccess">The authorization success message obtained from the authorization server.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientBase.DefaultSecretApplicator(System.String)">
+            <summary>
+            Applies the default client authentication mechanism given a client secret.
+            </summary>
+            <param name="secret">The client secret.  May be <c>null</c></param>
+            <returns>The client credential applicator.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientBase.ApplyClientCredential(DotNetOpenAuth.OAuth2.Messages.AuthenticatedClientRequestBase)">
+            <summary>
+            Applies any applicable client credential to an authenticated outbound request to the authorization server.
+            </summary>
+            <param name="request">The request to apply authentication information to.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientBase.ProportionalLifeRemaining(DotNetOpenAuth.OAuth2.IAuthorizationState)">
+            <summary>
+            Calculates the fraction of life remaining in an access token.
+            </summary>
+            <param name="authorization">The authorization to measure.</param>
+            <returns>A fractional number no greater than 1.  Could be negative if the access token has already expired.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.ClientBase.RequestAccessToken(DotNetOpenAuth.OAuth2.Messages.ScopedAccessTokenRequest,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Requests an access token using a partially .initialized request message.
+            </summary>
+            <param name="request">The request message.</param>
+            <param name="scopes">The scopes requested by the client.</param>
+            <returns>The result of the request.</returns>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ClientBase.AuthorizationServer">
+            <summary>
+            Gets the token issuer.
+            </summary>
+            <value>The token issuer.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ClientBase.Channel">
+            <summary>
+            Gets the OAuth channel.
+            </summary>
+            <value>The channel.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ClientBase.ClientIdentifier">
+            <summary>
+            Gets or sets the identifier by which this client is known to the Authorization Server.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ClientBase.ClientCredentialApplicator">
+            <summary>
+            Gets or sets the tool to use to apply client credentials to authenticated requests to the Authorization Server.
+            </summary>
+            <value>May be <c>null</c> if this client has no client secret.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ClientBase.JsonReaderQuotas">
+            <summary>
+            Gets quotas used when deserializing JSON.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.ClientBase.OAuthChannel">
+            <summary>
+            Gets the OAuth client channel.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.UserAgentClient.#ctor(DotNetOpenAuth.OAuth2.AuthorizationServerDescription,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.UserAgentClient"/> class.
+            </summary>
+            <param name="authorizationServer">The token issuer.</param>
+            <param name="clientIdentifier">The client identifier.</param>
+            <param name="clientSecret">The client secret.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.UserAgentClient.#ctor(System.Uri,System.Uri,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.UserAgentClient"/> class.
+            </summary>
+            <param name="authorizationEndpoint">The authorization endpoint.</param>
+            <param name="tokenEndpoint">The token endpoint.</param>
+            <param name="clientIdentifier">The client identifier.</param>
+            <param name="clientSecret">The client secret.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.UserAgentClient.#ctor(System.Uri,System.Uri,System.String,DotNetOpenAuth.OAuth2.ClientCredentialApplicator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.UserAgentClient"/> class.
+            </summary>
+            <param name="authorizationEndpoint">The authorization endpoint.</param>
+            <param name="tokenEndpoint">The token endpoint.</param>
+            <param name="clientIdentifier">The client identifier.</param>
+            <param name="clientCredentialApplicator">
+            The tool to use to apply client credentials to authenticated requests to the Authorization Server.  
+            May be <c>null</c> for clients with no secret or other means of authentication.
+            </param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.UserAgentClient.#ctor(DotNetOpenAuth.OAuth2.AuthorizationServerDescription,System.String,DotNetOpenAuth.OAuth2.ClientCredentialApplicator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.UserAgentClient"/> class.
+            </summary>
+            <param name="authorizationServer">The token issuer.</param>
+            <param name="clientIdentifier">The client identifier.</param>
+            <param name="clientCredentialApplicator">
+            The tool to use to apply client credentials to authenticated requests to the Authorization Server.  
+            May be <c>null</c> for clients with no secret or other means of authentication.
+            </param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.UserAgentClient.RequestUserAuthorization(System.Collections.Generic.IEnumerable{System.String},System.String,System.Uri)">
+            <summary>
+            Generates a URL that the user's browser can be directed to in order to authorize
+            this client to access protected data at some resource server.
+            </summary>
+            <param name="scope">The scope of authorized access requested.</param>
+            <param name="state">The client state that should be returned with the authorization response.</param>
+            <param name="returnTo">The URL that the authorization response should be sent to via a user-agent redirect.</param>
+            <returns>
+            A fully-qualified URL suitable to initiate the authorization flow.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.UserAgentClient.RequestUserAuthorization(DotNetOpenAuth.OAuth2.IAuthorizationState,System.Boolean,System.String)">
+            <summary>
+            Generates a URL that the user's browser can be directed to in order to authorize
+            this client to access protected data at some resource server.
+            </summary>
+            <param name="authorization">The authorization state that is tracking this particular request.  Optional.</param>
+            <param name="implicitResponseType">
+            <c>true</c> to request an access token in the fragment of the response's URL;
+            <c>false</c> to authenticate to the authorization server and acquire the access token (and possibly a refresh token) via a private channel.
+            </param>
+            <param name="state">The client state that should be returned with the authorization response.</param>
+            <returns>
+            A fully-qualified URL suitable to initiate the authorization flow.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.UserAgentClient.ProcessUserAuthorization(System.Uri,DotNetOpenAuth.OAuth2.IAuthorizationState)">
+            <summary>
+            Scans the incoming request for an authorization response message.
+            </summary>
+            <param name="actualRedirectUrl">The actual URL of the incoming HTTP request.</param>
+            <param name="authorizationState">The authorization.</param>
+            <returns>The granted authorization, or <c>null</c> if the incoming HTTP request did not contain an authorization server response or authorization was rejected.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.UserAgentClient.ProcessUserAuthorization(DotNetOpenAuth.OAuth2.IAuthorizationState,DotNetOpenAuth.Messaging.IDirectedProtocolMessage)">
+            <summary>
+            Scans the incoming request for an authorization response message.
+            </summary>
+            <param name="authorizationState">The authorization.</param>
+            <param name="response">The incoming authorization response message.</param>
+            <returns>
+            The granted authorization, or <c>null</c> if the incoming HTTP request did not contain an authorization server response or authorization was rejected.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.UserAgentClient.PrepareRequestUserAuthorization(DotNetOpenAuth.OAuth2.IAuthorizationState,System.Boolean,System.String)">
+            <summary>
+            Generates a URL that the user's browser can be directed to in order to authorize
+            this client to access protected data at some resource server.
+            </summary>
+            <param name="authorization">The authorization state that is tracking this particular request.  Optional.</param>
+            <param name="implicitResponseType">
+            <c>true</c> to request an access token in the fragment of the response's URL;
+            <c>false</c> to authenticate to the authorization server and acquire the access token (and possibly a refresh token) via a private channel.
+            </param>
+            <param name="state">The client state that should be returned with the authorization response.</param>
+            <returns>
+            A message to send to the authorization server.
+            </returns>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth2.WebServerClient">
+            <summary>
+            An OAuth 2.0 consumer designed for web applications.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth2.WebServerClient.XsrfCookieName">
+            <summary>
+            The cookie name for XSRF mitigation during authorization code grant flows.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.WebServerClient.#ctor(DotNetOpenAuth.OAuth2.AuthorizationServerDescription,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.WebServerClient"/> class.
+            </summary>
+            <param name="authorizationServer">The authorization server.</param>
+            <param name="clientIdentifier">The client identifier.</param>
+            <param name="clientSecret">The client secret.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.WebServerClient.#ctor(DotNetOpenAuth.OAuth2.AuthorizationServerDescription,System.String,DotNetOpenAuth.OAuth2.ClientCredentialApplicator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth2.WebServerClient"/> class.
+            </summary>
+            <param name="authorizationServer">The authorization server.</param>
+            <param name="clientIdentifier">The client identifier.</param>
+            <param name="clientCredentialApplicator">
+            The tool to use to apply client credentials to authenticated requests to the Authorization Server.
+            May be <c>null</c> for clients with no secret or other means of authentication.
+            </param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.WebServerClient.RequestUserAuthorization(System.Collections.Generic.IEnumerable{System.String},System.Uri)">
+            <summary>
+            Prepares a request for user authorization from an authorization server.
+            </summary>
+            <param name="scope">The scope of authorized access requested.</param>
+            <param name="returnTo">The URL the authorization server should redirect the browser (typically on this site) to when the authorization is completed.  If null, the current request's URL will be used.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.WebServerClient.PrepareRequestUserAuthorization(System.Collections.Generic.IEnumerable{System.String},System.Uri)">
+            <summary>
+            Prepares a request for user authorization from an authorization server.
+            </summary>
+            <param name="scopes">The scope of authorized access requested.</param>
+            <param name="returnTo">The URL the authorization server should redirect the browser (typically on this site) to when the authorization is completed.  If null, the current request's URL will be used.</param>
+            <returns>The authorization request.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.WebServerClient.PrepareRequestUserAuthorization(DotNetOpenAuth.OAuth2.IAuthorizationState)">
+            <summary>
+            Prepares a request for user authorization from an authorization server.
+            </summary>
+            <param name="authorization">The authorization state to associate with this particular request.</param>
+            <returns>The authorization request.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth2.WebServerClient.ProcessUserAuthorization(System.Web.HttpRequestBase)">
+            <summary>
+            Processes the authorization response from an authorization server, if available.
+            </summary>
+            <param name="request">The incoming HTTP request that may carry an authorization response.</param>
+            <returns>The authorization state that contains the details of the authorization.</returns>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth2.WebServerClient.AuthorizationTracker">
+            <summary>
+            Gets or sets an optional component that gives you greater control to record and influence the authorization process.
+            </summary>
+            <value>The authorization tracker.</value>
+        </member>
+    </members>
+</doc>

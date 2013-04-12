@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Principal;
 using System.Text;
 using System.Web.Mvc;
 using System.Web.Security;
-using Facebook;
+using DotNetOpenAuth.Messaging;
+using DotNetOpenAuth.OAuth2;
+using DotNetOpenAuth.OpenId.Extensions.AttributeExchange;
+using DotNetOpenAuth.OpenId.RelyingParty;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
+using MVCForum.OpenAuth;
+using MVCForum.OpenAuth.Facebook;
 using MVCForum.Utilities;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
@@ -41,12 +47,278 @@ namespace MVCForum.Website.Controllers
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
 
         }
-        
+
+        #region Common Methods
+
+        private bool ProcessSocialLogonUser(MembershipUser user, bool doCommit)
+        {            
+            // Check not already someone with that user name, if so append count
+            var exists = MembershipService.GetUser(user.UserName);
+            if (exists != null)
+            {
+                user.UserName = string.Format("{0} (1)", user.UserName);
+            }
+
+            // Now check settings, see if users need to be manually authorised
+            var manuallyAuthoriseMembers = SettingsService.GetSettings().ManuallyAuthoriseNewMembers;
+            if (manuallyAuthoriseMembers)
+            {
+                user.IsApproved = false;
+            }
+
+            var createStatus = MembershipService.CreateUser(user);
+            if (createStatus != MembershipCreateStatus.Success)
+            {
+                doCommit = false;
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = MembershipService.ErrorCodeToString(createStatus),
+                    MessageType = GenericMessages.error
+                };
+            }
+            else
+            {
+                if (!manuallyAuthoriseMembers)
+                {
+                    // If not manually authorise then log the user in
+                    FormsAuthentication.SetAuthCookie(user.UserName, true);
+
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = LocalizationService.GetResourceString("Members.NowRegistered"),
+                        MessageType = GenericMessages.success
+                    };
+                }
+                else
+                {
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = LocalizationService.GetResourceString("Members.NowRegisteredNeedApproval"),
+                        MessageType = GenericMessages.success
+                    };
+                }
+            }
+
+            return doCommit;
+        }
+
+        #endregion
+
+        #region Social Logons
+
+        public ActionResult LogonFacebook()
+        {
+            var client = new OpenAuth.Facebook.FacebookClient
+            {
+                ClientIdentifier = ConfigUtils.GetAppSetting("FacebookAppId"),
+                ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(ConfigUtils.GetAppSetting("FacebookAppSecret"))
+            };
+
+            var authorization = client.ProcessUserAuthorization();
+            if (authorization == null)
+            {
+                // Kick off authorization request
+                client.RequestUserAuthorization(client.ScopeParameters);
+            }
+            else
+            {
+                if (authorization.AccessToken == null)
+                {
+                    // User has cancelled so just redirect to home page
+                    return RedirectToAction("Index", "Home");
+                }
+
+                var request = WebRequest.Create(string.Concat("https://graph.facebook.com/me?access_token=", Uri.EscapeDataString(authorization.AccessToken)));
+                using (var response = request.GetResponse())
+                {
+                    using (var responseStream = response.GetResponseStream())
+                    {
+                        var fbModel = FacebookModel.Deserialize(responseStream);
+
+                        // use the data in the graph object to authorise the user
+                        using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                        {
+                            var doCommit = true;
+                            // First thing check if this user has already registered using facebook before
+                            // Get the user by their FB Id
+                            var fbUser = MembershipService.GetUserByFacebookId(fbModel.Id);
+
+                            if (fbUser == null)
+                            {
+                                // First time logging in, so need to register them as new user
+                                // password is irrelavant as they'll login using FB Id so generate random one
+                                fbUser = new MembershipUser
+                                {
+                                    UserName = fbModel.Name,
+                                    Email = fbModel.Email,
+                                    Password = StringUtils.RandomString(8),
+                                    FacebookId = fbModel.Id,
+                                    FacebookAccessToken = authorization.AccessToken,
+                                    IsExternalAccount = true
+                                };
+
+                                doCommit = ProcessSocialLogonUser(fbUser, doCommit);
+
+                            }
+                            else
+                            {
+                                // Do an update to make sure we have the most recent details
+                                fbUser.Email = fbModel.Email;
+                                fbUser.FacebookAccessToken = authorization.AccessToken;
+
+                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                {
+                                    Message = LocalizationService.GetResourceString("Members.NowLoggedIn"),
+                                    MessageType = GenericMessages.success
+                                };
+
+                                // Log the user in
+                                FormsAuthentication.SetAuthCookie(fbUser.UserName, true);
+                            }
+
+                            if (doCommit)
+                            {
+                                try
+                                {
+                                    unitOfWork.Commit();
+                                    return RedirectToAction("Index", "Home");
+                                }
+                                catch (Exception ex)
+                                {
+                                    unitOfWork.Rollback();
+                                    LoggingService.Error(ex);
+                                    FormsAuthentication.SignOut();
+                                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                    {
+                                        Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+                                        MessageType = GenericMessages.error
+                                    };
+
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            return RedirectToAction("LogOn");
+        }
+
+        public ActionResult LogonGoogle(string returnUrl)
+        {
+            var response = OpenAuthHelpers.CheckOpenIdResponse();
+
+            // If this is null we haven't gone off to the providers request permission page yet
+            if (response == null)
+            {
+                // Set the request to the specific provider
+                var request = OpenAuthHelpers.GetRedirectActionRequest(WellKnownProviders.Google);
+
+                // Redirect to the providers login page and asks user for permission to share the profile fields requested.
+                return request.RedirectingResponse.AsActionResult();
+            }
+
+            // If we get here then we have been to the provider page and been redirected back here
+            switch (response.Status)
+            {
+                case AuthenticationStatus.Authenticated:
+                    // Woot! All good in the hood - User has authorised us
+
+                    // Get the identifier from the provider
+                    var oid = response.ClaimedIdentifier.ToString();
+
+                    using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                    {
+                        var doCommit = true;
+
+                        // See if the user has already logged in to this site using open Id
+                        var user = MembershipService.GetUserByOpenIdToken(oid);
+                        var fetch = response.GetExtension<FetchResponse>();
+                        if (user == null)
+                        {
+                            // First time logging in, so need to register them as new user
+                            // password is irrelavant as they'll login using FB Id so generate random one
+
+                            user = new MembershipUser
+                            {
+                                Email = fetch.GetAttributeValue(WellKnownAttributes.Contact.Email),
+                                Password = StringUtils.RandomString(8),
+                                MiscAccessToken = oid,
+                                IsExternalAccount = true,
+                            };
+                            user.UserName = user.Email;
+
+                            doCommit = ProcessSocialLogonUser(user, doCommit);
+
+                        }
+                        else
+                        {
+                            // Do an update to make sure we have the most recent details
+                            user.Email = fetch.GetAttributeValue(WellKnownAttributes.Contact.Email);
+                            user.MiscAccessToken = oid;
+
+                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                            {
+                                Message = LocalizationService.GetResourceString("Members.NowLoggedIn"),
+                                MessageType = GenericMessages.success
+                            };
+
+                            // Log the user in
+                            FormsAuthentication.SetAuthCookie(user.UserName, true);
+                        }
+
+                        if (doCommit)
+                        {
+                            try
+                            {
+                                unitOfWork.Commit();
+                                return RedirectToAction("Index", "Home");
+                            }
+                            catch (Exception ex)
+                            {
+                                unitOfWork.Rollback();
+                                LoggingService.Error(ex);
+                                FormsAuthentication.SignOut();
+                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                {
+                                    Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+                                    MessageType = GenericMessages.error
+                                };
+
+                            }
+                        }
+
+                    }
+                    break;
+
+                case AuthenticationStatus.Canceled:
+                    // Bugger. User cancelled for some reason
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = LocalizationService.GetResourceString("Members.LoginCancelledByUser"),
+                        MessageType = GenericMessages.error
+                    };
+                    break;
+
+                case AuthenticationStatus.Failed:
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = LocalizationService.GetResourceString("Members.LoginFailedByOpenID"),
+                        MessageType = GenericMessages.error
+                    };
+                    break;
+            }
+
+            return RedirectToAction("LogOn");
+        }
+
+        #endregion
+
+
         [ChildActionOnly]
         public PartialViewResult GetCurrentActiveMembers()
         {
-            var r = UserIsAuthenticated;
-
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var viewModel = new ActiveMembersViewModel
@@ -226,6 +498,7 @@ namespace MVCForum.Website.Controllers
                         {
                             unitOfWork.Rollback();
                             LoggingService.Error(ex);
+                            FormsAuthentication.SignOut();
                             ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
                         }
                     }
@@ -234,198 +507,6 @@ namespace MVCForum.Website.Controllers
                 }
             }
             return RedirectToAction("Index", "Home");
-        }
-
-        public ActionResult LogonFacebook()
-        {
-            // Build the Return URI form the Request Url
-            if (Request.Url != null)
-            {
-                var redirectUri = new UriBuilder(Request.Url) { Path = Url.Action("FacebookAuth") };
-
-                var client = new FacebookClient();
-
-                // Generate the Facebook OAuth URL
-                // Example: https://www.facebook.com/dialog/oauth?
-                //                client_id=YOUR_APP_ID
-                //               &redirect_uri=YOUR_REDIRECT_URI
-                //               &scope=COMMA_SEPARATED_LIST_OF_PERMISSION_NAMES
-                //               &state=SOME_ARBITRARY_BUT_UNIQUE_STRING
-                var uri = client.GetLoginUrl(new
-                    {
-                        client_id = ConfigUtils.GetAppSetting("FacebookAppId"),
-                        redirect_uri = redirectUri.Uri.AbsoluteUri,
-                        scope = "email",
-                    });
-
-
-                return Redirect(uri.ToString());
-            }
-            return RedirectToAction("LogOn");
-        }
-
-        public ActionResult FacebookAuth(string returnUrl)
-        {
-            var client = new FacebookClient();
-            var oauthResult = client.ParseOAuthCallbackUrl(Request.Url);
-
-            // Build the Return URI form the Request Url
-            if (Request.Url != null)
-            {
-                var redirectUri = new UriBuilder(Request.Url) { Path = Url.Action("FacebookAuth") };
-
-                // Exchange the code for an access token
-                dynamic result = client.Get("/oauth/access_token", new
-                    {
-                        client_id = ConfigUtils.GetAppSetting("FacebookAppId"),
-                        redirect_uri = redirectUri.Uri.AbsoluteUri,
-                        client_secret = ConfigUtils.GetAppSetting("FacebookAppSecret"),
-                        code = oauthResult.Code,
-                    });
-
-                // Read the auth values
-                string accessToken = result.access_token;
-
-                // Get the user's profile information
-                dynamic me = client.Get("/me",
-                    new
-                        {
-                            fields = "first_name,last_name,email",
-                            access_token = accessToken
-                        });
-
-                // Read the Facebook user values ready for use
-                long facebookId = Convert.ToInt64(me.id);
-                string firstName = me.first_name;
-                string lastName = me.last_name;
-                string email = me.email;
-                DateTime expires = DateTime.UtcNow.AddSeconds(Convert.ToDouble(result.expires));
-
-                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-                {
-                    var doCommit = true;
-                    // First thing check if this user has already registered using facebook before
-                    // Get the user by their FB Id
-                    var fbUser = MembershipService.GetUserByFacebookId(facebookId);
-
-                    if (fbUser == null)
-                    {
-                        // First time logging in, so need to register them as new user
-                        // password is irrelavant as they'll login using FB Id so generate random one
-                        fbUser = new MembershipUser
-                        {
-                            UserName = string.Format("{0} {1}", firstName, lastName),
-                            Email = email,
-                            Password = StringUtils.RandomString(8),
-                            FacebookId = facebookId,
-                            FacebookAccessToken = accessToken,
-                            LoginIdExpires = expires,
-                            IsExternalAccount = true
-                            //IsApproved = userModel.IsApproved                            
-                        };
-
-                        // Check not already someone with that user name, if so append count
-                        var exists = MembershipService.GetUser(fbUser.UserName);
-                        if (exists != null)
-                        {
-                            fbUser.UserName = string.Format("{0} (1)", fbUser.UserName);
-                        }
-
-                        // Now check settings, see if users need to be manually authorised
-                        var manuallyAuthoriseMembers = SettingsService.GetSettings().ManuallyAuthoriseNewMembers;
-                        if (manuallyAuthoriseMembers)
-                        {
-                            fbUser.IsApproved = false;
-                        }
-
-                        var createStatus = MembershipService.CreateUser(fbUser);
-                        if (createStatus != MembershipCreateStatus.Success)
-                        {
-                            doCommit = false;
-                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                            {
-                                Message = MembershipService.ErrorCodeToString(createStatus),
-                                MessageType = GenericMessages.error
-                            };
-                        }
-                        else
-                        {
-                            if (!manuallyAuthoriseMembers)
-                            {
-                                // If not manually authorise then log the user in
-                                FormsAuthentication.SetAuthCookie(fbUser.UserName, true);
-
-                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                                {
-                                    Message = LocalizationService.GetResourceString("Members.NowRegistered"),
-                                    MessageType = GenericMessages.success
-                                };
-                            }
-                            else
-                            {
-                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                                {
-                                    Message = LocalizationService.GetResourceString("Members.NowRegisteredNeedApproval"),
-                                    MessageType = GenericMessages.success
-                                };
-                            }
-
-                            // New Registration - So post to the users wall
-                            //var postparameters = new Dictionary<string, object>();
-                            //postparameters["message"] = "MVC Forum Message";
-                            //postparameters["name"] = "MVC Forum Name";
-                            //postparameters["link"] = "http://www.mvcforum.com";
-                            //postparameters["description"] = "MVC Forum Description";
-                            //postparameters["access_token"] = accessToken;
-
-                            //dynamic postResult = client.Post("/me/feed", postparameters);
-
-                        }
-
-                    }
-                    else
-                    {
-                        // Do an update to make sure we have the most recent details
-                        fbUser.Email = email;
-                        fbUser.FacebookAccessToken = accessToken;
-                        fbUser.LoginIdExpires = expires;
-
-                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                        {
-                            Message = LocalizationService.GetResourceString("Members.NowLoggedIn"),
-                            MessageType = GenericMessages.success
-                        };
-
-                        // Log the user in
-                        FormsAuthentication.SetAuthCookie(fbUser.UserName, true);
-                    }
-
-                    if (doCommit)
-                    {
-                        try
-                        {
-                            unitOfWork.Commit();
-                            return RedirectToAction("Index", "Home");
-                        }
-                        catch (Exception ex)
-                        {
-                            unitOfWork.Rollback();
-                            LoggingService.Error(ex);
-                        }
-                    }
-
-                }
-            }
-
-            if (TempData[AppConstants.MessageViewBagName] == null)
-            {
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                {
-                    Message = LocalizationService.GetResourceString("Members.Errors.LogonGeneric"),
-                    MessageType = GenericMessages.error
-                };
-            }
-            return RedirectToAction("LogOn");
         }
 
         /// <summary>

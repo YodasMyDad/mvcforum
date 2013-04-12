@@ -1,0 +1,662 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DotNetOpenAuth.InfoCard.UI</name>
+    </assembly>
+    <members>
+        <member name="T:DotNetOpenAuth.ComponentModel.IssuersSuggestions">
+            <summary>
+            A design-time helper to give a Uri property an auto-complete functionality
+            listing the URIs in the <see cref="T:DotNetOpenAuth.InfoCard.WellKnownIssuers"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.ComponentModel.IssuersSuggestions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.ComponentModel.IssuersSuggestions"/> class.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.ComponentModel.IssuersSuggestions.WellKnownValuesType">
+            <summary>
+            Gets the type to reflect over to extract the well known values.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.ComponentModel.UriConverter">
+            <summary>
+            A design-time helper to allow controls to have properties
+            of type <see cref="T:System.Uri"/>.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.ComponentModel.UriConverter.#ctor">
+            <summary>
+            Initializes a new instance of the UriConverter class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.ComponentModel.UriConverter.IsValid(System.ComponentModel.ITypeDescriptorContext,System.Object)">
+            <summary>
+            Returns whether the given value object is valid for this type and for the specified context.
+            </summary>
+            <param name="context">An <see cref="T:System.ComponentModel.ITypeDescriptorContext"/> that provides a format context.</param>
+            <param name="value">The <see cref="T:System.Object"/> to test for validity.</param>
+            <returns>
+            true if the specified value is valid for this object; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.ComponentModel.UriConverter.ConvertFrom(System.String)">
+            <summary>
+            Converts a value from its string representation to its strongly-typed object.
+            </summary>
+            <param name="value">The value.</param>
+            <returns>The strongly-typed object.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.ComponentModel.UriConverter.CreateFrom(System.Uri)">
+            <summary>
+            Creates the reflection instructions for recreating an instance later.
+            </summary>
+            <param name="value">The value to recreate later.</param>
+            <returns>
+            The description of how to recreate an instance.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.ComponentModel.UriConverter.ConvertToString(System.Uri)">
+            <summary>
+            Converts the strongly-typed value to a string.
+            </summary>
+            <param name="value">The value to convert.</param>
+            <returns>The string representation of the object.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.ComponentModel.UriConverter.GetStandardValuesForCache">
+            <summary>
+            Gets the standard claim type URIs known to the library.
+            </summary>
+            <returns>An array of the standard claim types.</returns>
+        </member>
+        <member name="P:DotNetOpenAuth.ComponentModel.UriConverter.WellKnownValuesType">
+            <summary>
+            Gets the type to reflect over to extract the well known values.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.InfoCard.ClaimType">
+            <summary>
+            Description of a claim that is requested or required in a submitted Information Card.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.ClaimType.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.InfoCard.ClaimType"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.ClaimType.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+            </summary>
+            <returns>
+            A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+            </returns>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.ClaimType.Name">
+            <summary>
+            Gets or sets the URI of a requested claim.
+            </summary>
+            <remarks>
+            For a list of well-known claim type URIs, see the <see cref="T:System.IdentityModel.Claims.ClaimTypes"/> class.
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.ClaimType.IsOptional">
+            <summary>
+            Gets or sets a value indicating whether this claim is optional.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is optional; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:DotNetOpenAuth.InfoCard.InfoCardImageSize">
+            <summary>
+            A set of sizes for which standard InfoCard icons are available.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardImageSize.Size14x10">
+            <summary>
+            A standard InfoCard icon with size 14x10
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardImageSize.Size23x16">
+            <summary>
+            A standard InfoCard icon with size 23x16
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardImageSize.Size34x24">
+            <summary>
+            A standard InfoCard icon with size 34x24
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardImageSize.Size41x29">
+            <summary>
+            A standard InfoCard icon with size 41x29
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardImageSize.Size50x35">
+            <summary>
+            A standard InfoCard icon with size 50x35
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardImageSize.Size60x42">
+            <summary>
+            A standard InfoCard icon with size 60x42
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardImageSize.Size71x50">
+            <summary>
+            A standard InfoCard icon with size 71x50
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardImageSize.Size92x64">
+            <summary>
+            A standard InfoCard icon with size 92x64
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardImageSize.Size114x80">
+            <summary>
+            A standard InfoCard icon with size 114x80
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardImageSize.Size164x108">
+            <summary>
+            A standard InfoCard icon with size 164x108
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardImageSize.Size214x50">
+            <summary>
+            A standard InfoCard icon with size 214x50
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardImageSize.Size300x210">
+            <summary>
+            A standard InfoCard icon with size 300x210
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardImageSize.Size365x256">
+            <summary>
+            A standard InfoCard icon with size 365x256
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.InfoCard.InfoCardImage">
+            <summary>
+            Assists in selecting the InfoCard image to display in the user agent.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardImage.DefaultImageSize">
+            <summary>
+            The default size of the InfoCard icon to use.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardImage.UrlFormatString">
+            <summary>
+            The format to use when generating the image manifest resource stream name.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.InfoCardImage.GetImageManifestResourceStreamName(DotNetOpenAuth.InfoCard.InfoCardImageSize)">
+            <summary>
+            Gets the name of the image manifest resource stream for an InfoCard image of the given size.
+            </summary>
+            <param name="size">The size of the desired InfoCard image.</param>
+            <returns>The manifest resource stream name.</returns>
+        </member>
+        <member name="T:DotNetOpenAuth.InfoCard.ReceivingTokenEventArgs">
+            <summary>
+            Arguments for the <see cref="E:DotNetOpenAuth.InfoCard.InfoCardSelector.ReceivingToken"/> event.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.ReceivingTokenEventArgs.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.InfoCard.ReceivingTokenEventArgs"/> class.
+            </summary>
+            <param name="tokenXml">The raw token XML, prior to any decryption.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.ReceivingTokenEventArgs.AddDecryptingToken(System.IdentityModel.Tokens.SecurityToken)">
+            <summary>
+            Adds a security token that may be used to decrypt the incoming token.
+            </summary>
+            <param name="securityToken">The security token.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.ReceivingTokenEventArgs.AddDecryptingToken(System.Security.Cryptography.X509Certificates.X509Certificate2)">
+            <summary>
+            Adds an X.509 certificate with a private key that may be used to decrypt the incoming token.
+            </summary>
+            <param name="certificate">The certificate.</param>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.ReceivingTokenEventArgs.IsEncrypted">
+            <summary>
+            Gets a value indicating whether the token is encrypted.
+            </summary>
+            <value>
+            	<c>true</c> if the token is encrypted; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.ReceivingTokenEventArgs.TokenXml">
+            <summary>
+            Gets the raw token XML, prior to any decryption.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.ReceivingTokenEventArgs.Cancel">
+            <summary>
+            Gets or sets a value indicating whether processing
+            this token should be canceled.
+            </summary>
+            <value><c>true</c> if cancel; otherwise, <c>false</c>.</value>
+            <remarks>
+            If set the <c>true</c>, the <see cref="E:DotNetOpenAuth.InfoCard.InfoCardSelector.ReceivedToken"/>
+            event will never be fired.
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.ReceivingTokenEventArgs.DecryptingTokens">
+            <summary>
+            Gets a list where security tokens such as X.509 certificates may be
+            added to be used for token decryption.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.InfoCard.TokenProcessingErrorEventArgs">
+            <summary>
+            Arguments for the <see cref="E:DotNetOpenAuth.InfoCard.InfoCardSelector.TokenProcessingError"/> event.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.TokenProcessingErrorEventArgs.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.InfoCard.TokenProcessingErrorEventArgs"/> class.
+            </summary>
+            <param name="tokenXml">The token XML.</param>
+            <param name="exception">The exception.</param>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.TokenProcessingErrorEventArgs.TokenXml">
+            <summary>
+            Gets the raw token XML.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.TokenProcessingErrorEventArgs.Exception">
+            <summary>
+            Gets the exception that was generated while processing the token.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.InfoCard.RenderMode">
+            <summary>
+            The style to use for NOT displaying a hidden region.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.RenderMode.Static">
+            <summary>
+            A hidden region should be invisible while still occupying space in the page layout.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.RenderMode.Dynamic">
+            <summary>
+            A hidden region should collapse so that it does not occupy space in the page layout.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.InfoCard.InfoCardSelector">
+            <summary>
+            An Information Card selector ASP.NET control.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.ScriptResourceName">
+            <summary>
+            The resource name for getting at the SupportingScript.js embedded manifest stream.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.RenderModeDefault">
+            <summary>
+            Default value for the <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.RenderMode"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.AutoPostBackDefault">
+            <summary>
+            Default value for the <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.AutoPostBack"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.AutoPopupDefault">
+            <summary>
+            Default value for the <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.AutoPopup"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.PrivacyUrlDefault">
+            <summary>
+            Default value for the <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.PrivacyUrl"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.PrivacyVersionDefault">
+            <summary>
+            Default value for the <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.PrivacyVersion"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.InfoCardImageDefault">
+            <summary>
+            Default value for the <see cref="T:DotNetOpenAuth.InfoCard.InfoCardImage"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.IssuerPolicyDefault">
+            <summary>
+            Default value for the <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.IssuerPolicy"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.IssuerDefault">
+            <summary>
+            Default value for the <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.Issuer"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.TokenTypeDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.TokenType"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.IssuerViewStateKey">
+            <summary>
+            The viewstate key for storing the <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.Issuer"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.IssuerPolicyViewStateKey">
+            <summary>
+            The viewstate key for storing the <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.IssuerPolicy"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.AutoPopupViewStateKey">
+            <summary>
+            The viewstate key for storing the <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.AutoPopup"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.ClaimsRequestedViewStateKey">
+            <summary>
+            The viewstate key for storing the <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.ClaimsRequested"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.TokenTypeViewStateKey">
+            <summary>
+            The viewstate key for storing the <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.TokenType"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.PrivacyUrlViewStateKey">
+            <summary>
+            The viewstate key for storing the <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.PrivacyUrl"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.PrivacyVersionViewStateKey">
+            <summary>
+            The viewstate key for storing the <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.PrivacyVersion"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.AudienceViewStateKey">
+            <summary>
+            The viewstate key for storing the <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.Audience"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.AutoPostBackViewStateKey">
+            <summary>
+            The viewstate key for storing the <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.AutoPostBack"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.ImageSizeViewStateKey">
+            <summary>
+            The viewstate key for storing the <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.ImageSize"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.RenderModeViewStateKey">
+            <summary>
+            The viewstate key for storing the <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.RenderMode"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.BehaviorCategory">
+            <summary>
+            The "Behavior" property category.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.AppearanceCategory">
+            <summary>
+            The "Appearance" property category.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.InfoCardCategory">
+            <summary>
+            The "InfoCard" property category.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.infoCardSupportedPanel">
+            <summary>
+            The panel containing the controls to display if InfoCard is supported in the user agent.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.infoCardNotSupportedPanel">
+            <summary>
+            The panel containing the controls to display if InfoCard is NOT supported in the user agent.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.InfoCard.InfoCardSelector.audienceSet">
+            <summary>
+            Recalls whether the <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.Audience"/> property has been set yet,
+            so its default can be set as soon as possible without overwriting
+            an intentional value.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.InfoCardSelector.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.InfoCard.InfoCardSelector"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.InfoCardSelector.System#Web#UI#IPostBackEventHandler#RaisePostBackEvent(System.String)">
+            <summary>
+            When implemented by a class, enables a server control to process an event raised when a form is posted to the server.
+            </summary>
+            <param name="eventArgument">A <see cref="T:System.String"/> that represents an optional event argument to be passed to the event handler.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.InfoCardSelector.RaisePostBackEvent(System.String)">
+            <summary>
+            When implemented by a class, enables a server control to process an event raised when a form is posted to the server.
+            </summary>
+            <param name="eventArgument">A <see cref="T:System.String"/> that represents an optional event argument to be passed to the event handler.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.InfoCardSelector.OnReceivingToken(System.String)">
+            <summary>
+            Fires the <see cref="E:DotNetOpenAuth.InfoCard.InfoCardSelector.ReceivingToken"/> event.
+            </summary>
+            <param name="tokenXml">The token XML, prior to any processing.</param>
+            <returns>The event arguments sent to the event handlers.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.InfoCardSelector.OnReceivedToken(DotNetOpenAuth.InfoCard.Token)">
+            <summary>
+            Fires the <see cref="E:DotNetOpenAuth.InfoCard.InfoCardSelector.ReceivedToken"/> event.
+            </summary>
+            <param name="token">The token, if it was decrypted.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.InfoCardSelector.OnTokenProcessingError(System.String,System.Exception)">
+            <summary>
+            Fires the <see cref="E:DotNetOpenAuth.InfoCard.InfoCardSelector.TokenProcessingError"/> event.
+            </summary>
+            <param name="unprocessedToken">The unprocessed token.</param>
+            <param name="ex">The exception generated while processing the token.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.InfoCardSelector.OnInit(System.EventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Web.UI.Control.Init"/> event.
+            </summary>
+            <param name="e">An <see cref="T:System.EventArgs"/> object that contains the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.InfoCardSelector.CreateChildControls">
+            <summary>
+            Called by the ASP.NET page framework to notify server controls that use composition-based implementation to create any child controls they contain in preparation for posting back or rendering.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.InfoCardSelector.OnPreRender(System.EventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Web.UI.Control.PreRender"/> event.
+            </summary>
+            <param name="e">An <see cref="T:System.EventArgs"/> object that contains the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.InfoCardSelector.CreateParamJs(System.String,System.String)">
+            <summary>
+            Creates a control that renders to &lt;Param Name="{0}" Value="{1}" /&gt;
+            </summary>
+            <param name="name">The parameter name.</param>
+            <param name="value">The parameter value.</param>
+            <returns>The control that renders to the Param tag.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.InfoCardSelector.CreateInfoCardSupportedPanel">
+            <summary>
+            Creates the panel whose contents are displayed to the user
+            on a user agent that has an Information Card selector.
+            </summary>
+            <returns>The Panel control</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.InfoCardSelector.GetInfoCardSelectorActivationScript(System.Boolean)">
+            <summary>
+            Gets the InfoCard selector activation script.
+            </summary>
+            <param name="alwaysPostback">Whether a postback should always immediately follow the selector, even if <see cref="P:DotNetOpenAuth.InfoCard.InfoCardSelector.AutoPostBack"/> is <c>false</c>.</param>
+            <returns>The javascript to inject into the surrounding context.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.InfoCardSelector.CreateInfoCardUnsupportedPanel">
+            <summary>
+            Creates the panel whose contents are displayed to the user
+            on a user agent that does not have an Information Card selector.
+            </summary>
+            <returns>The Panel control.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.InfoCardSelector.RegisterInfoCardSelectorObjectScript">
+            <summary>
+            Adds the javascript that adds the info card selector &lt;object&gt; HTML tag to the page.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.InfoCardSelector.CreateInfoCardImage">
+            <summary>
+            Creates the info card clickable image.
+            </summary>
+            <returns>An Image object.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.InfoCardSelector.GetRequestedClaims(System.String@,System.String@)">
+            <summary>
+            Compiles lists of requested/required claims that should accompany
+            any submitted Information Card.
+            </summary>
+            <param name="required">A space-delimited list of claim type URIs for claims that must be included in a submitted Information Card.</param>
+            <param name="optional">A space-delimited list of claim type URIs for claims that may optionally be included in a submitted Information Card.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.InfoCardSelector.RenderSupportingScript">
+            <summary>
+            Adds Javascript snippets to the page to help the Information Card selector do its work,
+            or to downgrade gracefully if the user agent lacks an Information Card selector.
+            </summary>
+        </member>
+        <member name="E:DotNetOpenAuth.InfoCard.InfoCardSelector.ReceivingToken">
+            <summary>
+            Occurs when an InfoCard has been submitted but not decoded yet.
+            </summary>
+        </member>
+        <member name="E:DotNetOpenAuth.InfoCard.InfoCardSelector.ReceivedToken">
+            <summary>
+            Occurs when an InfoCard has been submitted and decoded.
+            </summary>
+        </member>
+        <member name="E:DotNetOpenAuth.InfoCard.InfoCardSelector.TokenProcessingError">
+            <summary>
+            Occurs when an InfoCard token is submitted but an error occurs in processing.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.InfoCardSelector.ClaimsRequested">
+            <summary>
+            Gets the set of claims that are requested from the Information Card.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.InfoCardSelector.Issuer">
+            <summary>
+            Gets or sets the issuer URI.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.InfoCardSelector.IssuerPolicy">
+            <summary>
+            Gets or sets the issuer policy URI.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.InfoCardSelector.PrivacyUrl">
+            <summary>
+            Gets or sets the URL to this site's privacy policy.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.InfoCardSelector.PrivacyVersion">
+            <summary>
+            Gets or sets the version of the privacy policy file.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.InfoCardSelector.Audience">
+            <summary>
+            Gets or sets the URI that must be found for the SAML token's intended audience
+            in order for the token to be processed.
+            </summary>
+            <value>Typically the URI of the page hosting the control, or <c>null</c> to disable audience verification.</value>
+            <remarks>
+            Disabling audience verification introduces a security risk 
+            because tokens can be redirected to allow access to unintended resources.
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.InfoCardSelector.AutoPostBack">
+            <summary>
+            Gets or sets a value indicating whether a postback will automatically
+            be invoked when the user selects an Information Card.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.InfoCardSelector.ImageSize">
+            <summary>
+            Gets or sets the size of the standard InfoCard image to display.
+            </summary>
+            <value>The default size is 114x80.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.InfoCardSelector.UnsupportedTemplate">
+            <summary>
+            Gets or sets the template to display when the user agent lacks
+            an Information Card selector.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.InfoCardSelector.RenderMode">
+            <summary>
+            Gets or sets a value indicating whether a hidden region (either
+            the unsupported or supported InfoCard HTML)
+            collapses or merely becomes invisible when it is not to be displayed.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.InfoCardSelector.AutoPopup">
+            <summary>
+            Gets or sets a value indicating whether the identity selector will be triggered at page load.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.InfoCardSelector.HiddenFieldName">
+            <summary>
+            Gets the name of the hidden field that is used to transport the token back to the server.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.InfoCardSelector.SelectorObjectId">
+            <summary>
+            Gets the id of the OBJECT tag that creates the InfoCard Selector.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.InfoCardSelector.TokenXml">
+            <summary>
+            Gets the XML token, which will be encrypted if it was received over SSL.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.InfoCardSelector.TokenType">
+            <summary>
+            Gets or sets the type of token the page is prepared to receive.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.InfoCard.ReceivedTokenEventArgs">
+            <summary>
+            Arguments for the <see cref="E:DotNetOpenAuth.InfoCard.InfoCardSelector.ReceivedToken"/> event.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.InfoCard.ReceivedTokenEventArgs.#ctor(DotNetOpenAuth.InfoCard.Token)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.InfoCard.ReceivedTokenEventArgs"/> class.
+            </summary>
+            <param name="token">The token.</param>
+        </member>
+        <member name="P:DotNetOpenAuth.InfoCard.ReceivedTokenEventArgs.Token">
+            <summary>
+            Gets the processed token.
+            </summary>
+        </member>
+    </members>
+</doc>
