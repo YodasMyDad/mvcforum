@@ -170,6 +170,8 @@ Category.MostRecent = Most recent:
 Members.LogonFacebookButton = Login with Facebook
 Members.LogonGoogleButton = Login with Google
 Members.LogonYahooButton = Login with Yahoo
+Members.LogonTwitterButton = Login with Twitter
+Twitter.Error.EnabledButNotAddedKeys = You have enabled social logins but not added the Twitter id and secret key in the web.config
 
 +++ CHANGES TO EXISTING LANGUAGE STRINGS
 Topic.Comments = Answers
@@ -179,6 +181,7 @@ Add > Moderator
 
 --- MembershipUser
 LastActivityDate - DateTime allow nulls
+DisableEmailNotifications (bit) allow nulls
 
 +++ CHANGES
 FacebookAccessToken - change to nvarchar(250)
@@ -193,3 +196,7 @@ Add > Attach Files
 
 --- Settings
 SuspendRegistration bit allow nulls
+
+--- Web.Config add the following
+<add key="TwitterAppId" value="" />
+<add key="TwitterAppSecret" value="" />

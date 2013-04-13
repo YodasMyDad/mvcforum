@@ -65,6 +65,7 @@ namespace MVCForum.Domain.DomainModel
         public string GoogleId { get; set; }
         public bool? IsExternalAccount { get; set; }
         public bool? TwitterShowFeed { get; set; }
+        public bool? DisableEmailNotifications { get; set; }
         public DateTime? LoginIdExpires { get; set; }
         public string MiscAccessToken { get; set; }
 

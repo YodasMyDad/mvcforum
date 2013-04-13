@@ -28,7 +28,14 @@ namespace MVCForum.OpenAuth
 
         public string GetTokenSecret(string token)
         {
-            return this._tokensAndSecrets[token];
+            try
+            {
+                return this._tokensAndSecrets[token];
+            }
+            catch (Exception)
+            {
+                return string.Empty;
+            }
         }
 
         public void StoreNewRequestToken(UnauthorizedTokenRequest request,

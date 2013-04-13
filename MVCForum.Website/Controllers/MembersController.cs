@@ -111,26 +111,101 @@ namespace MVCForum.Website.Controllers
 
         #region Social Logons
 
+        public ActionResult LogonTwitter()
+        {
+            var client = new TwitterClient(_tokenManager);
+            client.StartAuthentication();
+            return null;
+        }
 
-        //public ActionResult LogonTwitter()
-        //{
-        //    var client = new TwitterClient(_tokenManager);
-        //    client.StartAuthentication();
-        //    return null;
-        //}
+        public ActionResult TwitterCallback()
+        {
+            var client = new TwitterClient(_tokenManager);
 
-        //public ActionResult TwitterCallback()
-        //{
-        //    var client = new TwitterClient(_tokenManager);
+            if (client.FinishAuthentication())
+            {
+                // Boom we are in, get the stuff we need
+                //client.UserName;
+                //client.AccessToken;
+                //client.SecretToken;
 
-        //    if (client.FinishAuthentication())
-        //    {
-        //        return new RedirectResult("/");
-        //    }
+                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                {
+                    var doCommit = true;
 
-        //    // show error
-        //    return View("LogOn");
-        //}
+                    // See if the user has already logged in to this site using open Id
+                    var user = MembershipService.GetUserByOpenIdToken(client.AccessToken);
+                    var fakeEmail = string.Format("{0}@twitter.com", client.UserName);
+
+                    if (user == null)
+                    {
+                        // First time logging in, so need to register them as new user
+                        // password is irrelavant as they'll login using FB Id so generate random one
+
+                        user = new MembershipUser
+                        {
+                            // Bit shit, but twitter won't give you an email. So we do this and
+                            // Set notifications to false.
+                            Email = fakeEmail,
+                            Password = StringUtils.RandomString(8),
+                            MiscAccessToken = client.AccessToken,
+                            IsExternalAccount = true,
+                            DisableEmailNotifications = true,
+                            UserName = client.UserName
+                        };
+
+                        doCommit = ProcessSocialLogonUser(user, doCommit);
+
+                    }
+                    else
+                    {
+                        // Do an update to make sure we have the most recent details
+                        user.Email = fakeEmail;
+                        user.MiscAccessToken = client.AccessToken;
+
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = LocalizationService.GetResourceString("Members.NowLoggedIn"),
+                            MessageType = GenericMessages.success
+                        };
+
+                        // Log the user in
+                        FormsAuthentication.SetAuthCookie(user.UserName, true);
+                    }
+
+                    if (doCommit)
+                    {
+                        try
+                        {
+                            unitOfWork.Commit();
+                            return RedirectToAction("Index", "Home");
+                        }
+                        catch (Exception ex)
+                        {
+                            unitOfWork.Rollback();
+                            LoggingService.Error(ex);
+                            FormsAuthentication.SignOut();
+                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                            {
+                                Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+                                MessageType = GenericMessages.error
+                            };
+
+                        }
+                    }
+
+                }
+
+            }
+
+            // Either cancelled or there was an error
+            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            {
+                Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+                MessageType = GenericMessages.error
+            };
+            return RedirectToAction("LogOn", "Members");
+        }
 
 
 

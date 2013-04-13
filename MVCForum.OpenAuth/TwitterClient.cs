@@ -11,7 +11,9 @@ namespace MVCForum.OpenAuth
 {
     public class TwitterClient
     {
-        private string UserName { get; set; }
+        public string UserName { get; set; }
+        public string AccessToken { get; set; }
+        public string SecretToken { get; set; }
 
         private static readonly ServiceProviderDescription ServiceDescription =
             new ServiceProviderDescription
@@ -60,6 +62,8 @@ namespace MVCForum.OpenAuth
                 var accessTokenResponse = twitter.ProcessUserAuthorization();
                 if (accessTokenResponse != null)
                 {
+                    AccessToken = accessTokenResponse.AccessToken;
+                    SecretToken = _tokenManager.GetTokenSecret(AccessToken);
                     UserName = accessTokenResponse.ExtraData["screen_name"];
                     return true;
                 }
