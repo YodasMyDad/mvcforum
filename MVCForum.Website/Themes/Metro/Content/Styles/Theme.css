@@ -423,9 +423,15 @@ ul.tagCloud li span.tagCount {float: left; padding: 0 2px; width: auto;display: 
 
 /*--- Facebook / OAuth Login ---*/
 .loginortext { text-align: center;padding-top: 50px;font-size: 28px;}
-.oauthbuttons {}
-.facebookloginbutton { padding: 50px 0 0 0;}
-.facebookloginbutton a { width: 225px;height: 38px;display: block;margin: 0 auto;background-image: url('../Images/facebook-connect-large.png');background-repeat: no-repeat;text-transform: capitalize;text-indent: -9999px;}
+.oauthbuttons { padding: 50px 0 0 0;}
+.oauthbuttons a.btn { display: block;width: 90%;margin: 10px 0;line-height: 29px;font-size: 18px;text-align: left;color: #626262;}
+.oauthbuttons a.btn img.socialicon {width: 32px;float: left;margin: 0 5px 0 0;}
+.oauthbuttons a.facebookloginbutton {}
+.oauthbuttons a.twitterloginbutton {}
+.oauthbuttons a.googleloginbutton {}
+.oauthbuttons a.myopenidloginbutton {}
+.oauthbuttons a.yahoologinbutton {}
+
 
 /*--- Related Question Lookup ---*/
 .relatedtopicsholder { display: none;}

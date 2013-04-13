@@ -341,6 +341,114 @@ namespace MVCForum.Website.Controllers
             return RedirectToAction("LogOn");
         }
 
+        public ActionResult LogonYahoo(string returnUrl)
+        {
+            var response = OpenAuthHelpers.CheckOpenIdResponse();
+
+            // If this is null we haven't gone off to the providers request permission page yet
+            if (response == null)
+            {
+                // Set the request to the specific provider
+                var request = OpenAuthHelpers.GetRedirectActionRequest(WellKnownProviders.Yahoo);
+
+                // Redirect to the providers login page and asks user for permission to share the profile fields requested.
+                return request.RedirectingResponse.AsActionResult();
+            }
+
+            // If we get here then we have been to the provider page and been redirected back here
+            switch (response.Status)
+            {
+                case AuthenticationStatus.Authenticated:
+                    // Woot! All good in the hood - User has authorised us
+
+                    // Get the identifier from the provider
+                    var oid = response.ClaimedIdentifier.ToString();
+
+                    using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                    {
+                        var doCommit = true;
+
+                        // See if the user has already logged in to this site using open Id
+                        var user = MembershipService.GetUserByOpenIdToken(oid);
+                        var fetch = response.GetExtension<FetchResponse>();
+                        if (user == null)
+                        {
+                            // First time logging in, so need to register them as new user
+                            // password is irrelavant as they'll login using FB Id so generate random one
+
+                            user = new MembershipUser
+                            {
+                                Email = fetch.GetAttributeValue(WellKnownAttributes.Contact.Email),
+                                Password = StringUtils.RandomString(8),
+                                MiscAccessToken = oid,
+                                IsExternalAccount = true,
+                            };
+                            user.UserName = user.Email;
+
+                            doCommit = ProcessSocialLogonUser(user, doCommit);
+
+                        }
+                        else
+                        {
+                            // Do an update to make sure we have the most recent details
+                            user.Email = fetch.GetAttributeValue(WellKnownAttributes.Contact.Email);
+                            user.MiscAccessToken = oid;
+
+                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                            {
+                                Message = LocalizationService.GetResourceString("Members.NowLoggedIn"),
+                                MessageType = GenericMessages.success
+                            };
+
+                            // Log the user in
+                            FormsAuthentication.SetAuthCookie(user.UserName, true);
+                        }
+
+                        if (doCommit)
+                        {
+                            try
+                            {
+                                unitOfWork.Commit();
+                                return RedirectToAction("Index", "Home");
+                            }
+                            catch (Exception ex)
+                            {
+                                unitOfWork.Rollback();
+                                LoggingService.Error(ex);
+                                FormsAuthentication.SignOut();
+                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                {
+                                    Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+                                    MessageType = GenericMessages.error
+                                };
+
+                            }
+                        }
+
+                    }
+                    break;
+
+                case AuthenticationStatus.Canceled:
+                    // Bugger. User cancelled for some reason
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = LocalizationService.GetResourceString("Members.LoginCancelledByUser"),
+                        MessageType = GenericMessages.error
+                    };
+                    break;
+
+                case AuthenticationStatus.Failed:
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = LocalizationService.GetResourceString("Members.LoginFailedByOpenID"),
+                        MessageType = GenericMessages.error
+                    };
+                    break;
+            }
+
+            return RedirectToAction("LogOn");
+        }
+
         #endregion
 
 

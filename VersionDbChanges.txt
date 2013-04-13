@@ -167,6 +167,9 @@ Post.DeleteConfirmation = Are you sure you want to delete?
 Category.SubCategoriesHeading = Sub Categories In
 Category.AllCategories = All Categories
 Category.MostRecent = Most recent:
+Members.LogonFacebookButton = Login with Facebook
+Members.LogonGoogleButton = Login with Google
+Members.LogonYahooButton = Login with Yahoo
 
 +++ CHANGES TO EXISTING LANGUAGE STRINGS
 Topic.Comments = Answers
