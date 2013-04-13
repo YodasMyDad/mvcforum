@@ -114,6 +114,7 @@
       <HintPath>..\packages\Microsoft.Net.Http.2.1.3-beta\lib\net40\System.Net.Http.WebRequest.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -123,9 +124,11 @@
   <ItemGroup>
     <Compile Include="Facebook\FacebookClient.cs" />
     <Compile Include="Facebook\FacebookModel.cs" />
+    <Compile Include="InMemoryTokenManager.cs" />
     <Compile Include="OpenAuthHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TokenManager.cs" />
+    <Compile Include="Facebook\fbTokenManager.cs" />
+    <Compile Include="TwitterClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

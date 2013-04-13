@@ -6,7 +6,7 @@ using DotNetOpenAuth.OAuth2;
 
 namespace MVCForum.OpenAuth
 {
-    public class TokenManager : IClientAuthorizationTracker
+    public class fbTokenManager : IClientAuthorizationTracker
     {
         public IAuthorizationState GetAuthorizationState(
           Uri callbackUrl, string clientState)

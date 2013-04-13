@@ -7,6 +7,7 @@ using System.Text;
 using System.Web.Mvc;
 using System.Web.Security;
 using DotNetOpenAuth.Messaging;
+using DotNetOpenAuth.OAuth;
 using DotNetOpenAuth.OAuth2;
 using DotNetOpenAuth.OpenId.Extensions.AttributeExchange;
 using DotNetOpenAuth.OpenId.RelyingParty;
@@ -34,6 +35,8 @@ namespace MVCForum.Website.Controllers
         private MembershipUser LoggedOnUser;
         private MembershipRole UsersRole;
 
+        private readonly InMemoryTokenManager _tokenManager;
+
         public MembersController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService,
             IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
@@ -46,6 +49,7 @@ namespace MVCForum.Website.Controllers
             LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
 
+            _tokenManager = new InMemoryTokenManager(ConfigUtils.GetAppSetting("TwitterAppId"), ConfigUtils.GetAppSetting("TwitterAppSecret"));
         }
 
         #region Common Methods
@@ -56,7 +60,8 @@ namespace MVCForum.Website.Controllers
             var exists = MembershipService.GetUser(user.UserName);
             if (exists != null)
             {
-                user.UserName = string.Format("{0} (1)", user.UserName);
+                var howMany = MembershipService.SearchMembers(user.UserName, int.MaxValue);
+                user.UserName = string.Format("{0} ({1})", user.UserName, howMany != null ? howMany.Count : 1);
             }
 
             // Now check settings, see if users need to be manually authorised
@@ -106,9 +111,32 @@ namespace MVCForum.Website.Controllers
 
         #region Social Logons
 
+
+        //public ActionResult LogonTwitter()
+        //{
+        //    var client = new TwitterClient(_tokenManager);
+        //    client.StartAuthentication();
+        //    return null;
+        //}
+
+        //public ActionResult TwitterCallback()
+        //{
+        //    var client = new TwitterClient(_tokenManager);
+
+        //    if (client.FinishAuthentication())
+        //    {
+        //        return new RedirectResult("/");
+        //    }
+
+        //    // show error
+        //    return View("LogOn");
+        //}
+
+
+
         public ActionResult LogonFacebook()
         {
-            var client = new OpenAuth.Facebook.FacebookClient
+            var client = new FacebookClient
             {
                 ClientIdentifier = ConfigUtils.GetAppSetting("FacebookAppId"),
                 ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(ConfigUtils.GetAppSetting("FacebookAppSecret"))

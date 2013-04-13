@@ -13,7 +13,7 @@ namespace MVCForum.OpenAuth.Facebook
           = new AuthorizationServerDescription
           {
               TokenEndpoint = new Uri("https://graph.facebook.com/oauth/access_token"),
-              AuthorizationEndpoint = new Uri("https://graph.facebook.com/oauth/authorize"),
+              AuthorizationEndpoint = new Uri("https://graph.facebook.com/oauth/authorize")
           };
 
         // Add any extra scopes you need i.e. Email authorisation = email, publish to users wall = publish_stream
@@ -29,7 +29,7 @@ namespace MVCForum.OpenAuth.Facebook
         public FacebookClient()
             : base(FacebookDescription)
         {
-            this.AuthorizationTracker = new TokenManager();
+            this.AuthorizationTracker = new fbTokenManager();
         }
     }
 }
