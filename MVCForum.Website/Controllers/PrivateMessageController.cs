@@ -150,7 +150,10 @@ namespace MVCForum.Website.Controllers
                                     unitOfWork.Commit();
 
                                     // Finally send an email to the user so they know they have a new private message
-                                    var email = new Email
+                                    // As long as they have not had notifications disabled
+                                    if (memberTo.DisableEmailNotifications != true)
+                                    {
+                                        var email = new Email
                                         {
                                             EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
                                             EmailTo = memberTo.Email,
@@ -158,11 +161,11 @@ namespace MVCForum.Website.Controllers
                                             NameTo = memberTo.UserName
                                         };
 
-                                    var sb = new StringBuilder();
-                                    sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("PM.NewPrivateMessageBody"), LoggedOnUser.UserName));
-                                    email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
-
-                                    _emailService.SendMail(email);
+                                        var sb = new StringBuilder();
+                                        sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("PM.NewPrivateMessageBody"), LoggedOnUser.UserName));
+                                        email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+                                        _emailService.SendMail(email);   
+                                    }
 
                                     return RedirectToAction("Index");
                                 }

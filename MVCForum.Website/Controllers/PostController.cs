@@ -441,8 +441,8 @@ namespace MVCForum.Website.Controllers
                     sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Post.Notification.NewPosts"), topic.Name));
                     sb.AppendFormat("<p>{0}</p>", string.Concat(SettingsService.GetSettings().ForumUrl, topic.NiceUrl));
 
-                    // create the emails
-                    var emails = usersToNotify.Select(user => new Email
+                    // create the emails only to people who haven't had notifications disabled
+                    var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true).Select(user => new Email
                     {
                         Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
                         EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,

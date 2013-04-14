@@ -14,6 +14,7 @@ namespace MVCForum.OpenAuth
         public string UserName { get; set; }
         public string AccessToken { get; set; }
         public string SecretToken { get; set; }
+        private string CallBackUrl { get; set; }
 
         private static readonly ServiceProviderDescription ServiceDescription =
             new ServiceProviderDescription
@@ -36,11 +37,12 @@ namespace MVCForum.OpenAuth
                 TamperProtectionElements = new ITamperProtectionChannelBindingElement[] { new HmacSha1SigningBindingElement() },
             };
 
-        IConsumerTokenManager _tokenManager;
+        readonly IConsumerTokenManager _tokenManager;
 
-        public TwitterClient(IConsumerTokenManager tokenManager)
+        public TwitterClient(IConsumerTokenManager tokenManager, string callBackUrl)
         {
             _tokenManager = tokenManager;
+            CallBackUrl = callBackUrl;
         }
 
         public void StartAuthentication()
@@ -48,7 +50,7 @@ namespace MVCForum.OpenAuth
             var request = HttpContext.Current.Request;
             using (var twitter = new WebConsumer(ServiceDescription, _tokenManager))
             {
-                var callBackUrl = new Uri(request.Url.Scheme + "://" + request.Url.Authority + "/Members/TwitterCallback");
+                var callBackUrl = new Uri(request.Url.Scheme + "://" + request.Url.Authority + CallBackUrl);
                 twitter.Channel.Send(
                     twitter.PrepareRequestUserAuthorization(callBackUrl, null, null)
                 );

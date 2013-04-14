@@ -113,14 +113,14 @@ namespace MVCForum.Website.Controllers
 
         public ActionResult LogonTwitter()
         {
-            var client = new TwitterClient(_tokenManager);
+            var client = new TwitterClient(_tokenManager, Url.Action("TwitterCallback"));
             client.StartAuthentication();
             return null;
         }
 
         public ActionResult TwitterCallback()
         {
-            var client = new TwitterClient(_tokenManager);
+            var client = new TwitterClient(_tokenManager, Url.Action("TwitterCallback"));
 
             if (client.FinishAuthentication())
             {

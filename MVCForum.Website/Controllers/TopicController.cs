@@ -243,6 +243,7 @@ namespace MVCForum.Website.Controllers
                     {
                         // Success so now send the emails
                         NotifyNewTopics(category);
+
                         // Redirect to the newly created topic
                         return Redirect(string.Format("{0}?postbadges=true", topic.NiceUrl));
                     }
@@ -464,8 +465,8 @@ namespace MVCForum.Website.Controllers
                         sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Topic.Notification.NewTopics"), cat.Name));
                         sb.AppendFormat("<p>{0}</p>", string.Concat(SettingsService.GetSettings().ForumUrl, cat.NiceUrl));
 
-                        // create the emails
-                        var emails = usersToNotify.Select(user => new Email
+                        // create the emails and only send them to people who have not had notifications disabled
+                        var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true).Select(user => new Email
                         {
                             Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
                             EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
