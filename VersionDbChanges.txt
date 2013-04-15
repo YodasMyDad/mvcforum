@@ -191,6 +191,10 @@ TwitterAccessToken - change to nvarchar(250)
 GoogleAccessToken - change to nvarchar(250)
 MiscAccessToken - change to nvarchar(250)
 
+--- Vote
+Added VotedByMembershipUser_Id (uniqueidentifier) allow nulls
+Added DateVoted (datetime) allow nulls
+
 --- Permission
 Add > Create Polls
 Add > Create Topics

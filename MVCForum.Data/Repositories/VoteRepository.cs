@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using MVCForum.Data.Context;
@@ -47,6 +48,11 @@ namespace MVCForum.Data.Repositories
                 throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
             }
             _context.Entry(item).State = EntityState.Modified;    
+        }
+
+        public IList<Vote> GetAllVotesByUser(Guid membershipId)
+        {
+            return _context.Vote.Where(x => x.VotedByMembershipUser.Id == membershipId).ToList();
         }
     }
 }

@@ -626,7 +626,18 @@ namespace MVCForum.Utilities
         public static string CreateUrl(string strInput, string replaceWith)
         {
             // Doing this to stop the urls getting encoded
-            return StripNonAlphaNumeric(strInput, replaceWith).ToLower();
+            var url = RemoveAccents(strInput);
+            return StripNonAlphaNumeric(url, replaceWith).ToLower();
+        }
+
+        static string RemoveAccents(string input)
+        {
+            var normalized = input.Normalize(NormalizationForm.FormKD);
+            var removal = Encoding.GetEncoding(Encoding.ASCII.CodePage,
+                                                    new EncoderReplacementFallback(""),
+                                                    new DecoderReplacementFallback(""));
+            byte[] bytes = removal.GetBytes(normalized);
+            return Encoding.ASCII.GetString(bytes);
         }
 
         /// <summary>

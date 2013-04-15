@@ -89,6 +89,9 @@ h6 {font-size:18px; margin-bottom:8px;}
 .mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a, .mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a:visited { background-color: #4891DC;color: #fff;padding: 11px 0;}
 .mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a:hover { background-color: #BFBFBF;}
 
+/*--- All Categories ---*/
+.mobileview  .container-fluid .categorydetails {margin: 0;padding: 0;width: 100% !Important;}
+
 /*--- Side Boxes ---*/
 .side-box h5 {font-family:Calibri, Arial, Helvetica, sans-serif;}
 

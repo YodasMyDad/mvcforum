@@ -148,7 +148,9 @@ namespace MVCForum.Website.Controllers
                     {
                         Post = post,
                         User = voter,
-                        Amount = (postType == PostType.Negative) ? (-1) : (1)
+                        Amount = (postType == PostType.Negative) ? (-1) : (1),
+                        VotedByMembershipUser = LoggedOnUser,
+                        DateVoted = DateTime.Now
                     };
                     _voteService.Add(vote);
 
