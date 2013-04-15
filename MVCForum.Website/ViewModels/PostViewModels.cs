@@ -15,6 +15,8 @@ namespace MVCForum.Website.ViewModels
         public string PostContent { get; set; }
 
         public Guid Topic { get; set; }
+
+        public bool DisablePosting { get; set; }
     }
 
     public class ViewPostViewModel

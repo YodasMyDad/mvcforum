@@ -182,6 +182,9 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 user.Twitter = userModel.Twitter;
                 user.UserName = userModel.UserName;
                 user.Website = userModel.Website;
+                user.DisableEmailNotifications = userModel.DisableEmailNotifications;
+                user.DisablePosting = userModel.DisablePosting;
+                user.DisablePrivateMessages = userModel.DisablePrivateMessages;
 
                 // If there is a location try and save the longitude and latitude
                 if (!string.IsNullOrEmpty(user.Location))

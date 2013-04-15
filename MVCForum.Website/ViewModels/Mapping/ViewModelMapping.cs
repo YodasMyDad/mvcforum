@@ -45,7 +45,11 @@ namespace MVCForum.Website.ViewModels.Mapping
                 PasswordQuestion = user.PasswordQuestion,
                 Signature = user.Signature,
                 Twitter = user.Twitter,
-                Website = user.Website
+                Website = user.Website,
+                DisableEmailNotifications = (user.DisableEmailNotifications == true),
+                DisablePosting = (user.DisablePosting == true),
+                DisablePrivateMessages = (user.DisablePrivateMessages == true)
+                
             };
             return viewModel;
         }

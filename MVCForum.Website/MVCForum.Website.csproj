@@ -1031,6 +1031,7 @@
     <Content Include="Views\Shared\_SubCategories.cshtml" />
     <Content Include="Views\Category\Index.cshtml" />
     <Content Include="Views\Shared\_SocialLoginButtons.cshtml" />
+    <Content Include="Views\Topic\CreateTopicButton.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Themes\n3o\Views\Shared\" />

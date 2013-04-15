@@ -134,7 +134,7 @@ namespace MVCForum.Website.Controllers
                     var doCommit = true;
 
                     // See if the user has already logged in to this site using open Id
-                    var user = MembershipService.GetUserByOpenIdToken(client.AccessToken);
+                    var user = MembershipService.GetUserByTwitterId(client.AccessToken);
                     var fakeEmail = string.Format("{0}@twitter.com", client.UserName);
 
                     if (user == null)
@@ -148,10 +148,11 @@ namespace MVCForum.Website.Controllers
                             // Set notifications to false.
                             Email = fakeEmail,
                             Password = StringUtils.RandomString(8),
-                            MiscAccessToken = client.AccessToken,
+                            TwitterAccessToken = client.AccessToken,
                             IsExternalAccount = true,
                             DisableEmailNotifications = true,
-                            UserName = client.UserName
+                            UserName = client.UserName,
+                            Twitter = string.Format("http://twitter.com/{0}", client.UserName)
                         };
 
                         doCommit = ProcessSocialLogonUser(user, doCommit);
@@ -336,7 +337,7 @@ namespace MVCForum.Website.Controllers
                         var doCommit = true;
 
                         // See if the user has already logged in to this site using open Id
-                        var user = MembershipService.GetUserByOpenIdToken(oid);
+                        var user = MembershipService.GetUserByGoogleId(oid);
                         var fetch = response.GetExtension<FetchResponse>();
                         if (user == null)
                         {
@@ -347,7 +348,7 @@ namespace MVCForum.Website.Controllers
                             {
                                 Email = fetch.GetAttributeValue(WellKnownAttributes.Contact.Email),
                                 Password = StringUtils.RandomString(8),
-                                MiscAccessToken = oid,
+                                GoogleAccessToken = oid,
                                 IsExternalAccount = true,
                             };
                             user.UserName = user.Email;

@@ -8,6 +8,8 @@ namespace MVCForum.Domain.Interfaces.Repositories
     {
         MembershipUser GetUser(string username);
         MembershipUser GetUserByFacebookId(long facebookId);
+        MembershipUser GetUserByTwitterId(string twitterId);
+        MembershipUser GetUserByGoogleId(string googleId);
         MembershipUser GetUserByOpenIdToken(string openId);
         IList<MembershipUser> SearchMembers(string username, int amount);
         IList<MembershipUser> GetActiveMembers();

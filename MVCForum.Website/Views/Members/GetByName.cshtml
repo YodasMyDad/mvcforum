@@ -120,6 +120,16 @@
                 </div>
             </div>
 
+            @if (User.IsInRole(AppConstants.AdminRoleName) || User.IsInRole(AppConstants.ModeratorRoleName))
+            { 
+                // Show the admin/mod notes on this user in case they are a spammer etc...
+                <div class="row adminpublicomments">
+                    <div class="span7">
+                        @Html.Raw(Model.User.Comment)
+                    </div>
+                </div>   
+            }
+
         </div>
 
     </div>

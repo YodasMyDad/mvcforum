@@ -7,6 +7,11 @@ using MVCForum.Website.Application;
 
 namespace MVCForum.Website.ViewModels
 {
+    public class CreateTopicButtonViewModel
+    {
+        public MembershipUser LoggedOnUser { get; set; }
+    }
+
     public class ActiveTopicsViewModel
     {
         public PagedList<Topic> Topics { get; set; }
@@ -58,6 +63,8 @@ namespace MVCForum.Website.ViewModels
             
         [ForumMvcResourceDisplayName("Topic.Label.SubscribeToTopic")]
         public bool SubscribeToTopic { get; set; }
+
+        public MembershipUser LoggedOnUser { get; set; }
     }
 
     public class ShowTopicViewModel

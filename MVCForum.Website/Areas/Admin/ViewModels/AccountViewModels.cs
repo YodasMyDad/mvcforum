@@ -101,6 +101,15 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [Display(Name = "User is Approved")]
         public bool IsApproved { get; set; }
 
+        [Display(Name = "Disable email notifications for this member")]
+        public bool DisableEmailNotifications { get; set; }
+        
+        [Display(Name = "Disable posting. The user will not be able to post or create topics")]
+        public bool DisablePosting { get; set; }
+        
+        [Display(Name = "Disable private messages for this user")]
+        public bool DisablePrivateMessages { get; set; }
+
         [Display(Name = "User is Locked Out")]
         public bool IsLockedOut { get; set; }
 

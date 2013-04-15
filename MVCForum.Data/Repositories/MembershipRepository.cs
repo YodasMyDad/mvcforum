@@ -49,6 +49,20 @@ namespace MVCForum.Data.Repositories
                 .FirstOrDefault(name => name.FacebookId == facebookId);
         }
 
+        public MembershipUser GetUserByTwitterId(string twitterId)
+        {
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .FirstOrDefault(name => name.TwitterAccessToken == twitterId);
+        }
+
+        public MembershipUser GetUserByGoogleId(string googleId)
+        {
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .FirstOrDefault(name => name.GoogleAccessToken == googleId);
+        }
+
         public MembershipUser GetUserByOpenIdToken(string openId)
         {
             return _context.MembershipUser

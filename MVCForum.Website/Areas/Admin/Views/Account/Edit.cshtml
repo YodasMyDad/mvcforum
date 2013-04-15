@@ -6,11 +6,11 @@
 @section AdminHeader
 {
     @(
-        Bundle.JavaScript()
+ Bundle.JavaScript()
             .Add("~/Scripts/jquery.validate.min.js")
-            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")            
+            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
             .MvcRender("~/scripts/cache/validate-combined_#.js")
-     )  
+     )
 }
 @using (Html.BeginForm("Edit", "Account", FormMethod.Post, new { @class = "form-horizontal" }))
 {
@@ -58,7 +58,7 @@
             @Html.TextBoxFor(x => x.Email)
             @Html.ValidationMessageFor(x => x.Email)
         </div>
-        
+
         <div class="editor-label">
             @Html.LabelFor(x => x.Age)
         </div>
@@ -66,7 +66,7 @@
             @Html.TextBoxFor(x => x.Age)
             @Html.ValidationMessageFor(x => x.Age)
         </div>
-        
+
         <div class="editor-label">
             @Html.LabelFor(x => x.Location)
         </div>
@@ -74,7 +74,7 @@
             @Html.TextBoxFor(x => x.Location)
             @Html.ValidationMessageFor(x => x.Location)
         </div>
-        
+
         <div class="editor-label">
             @Html.LabelFor(x => x.Website)
         </div>
@@ -82,7 +82,7 @@
             @Html.TextBoxFor(x => x.Website)
             @Html.ValidationMessageFor(x => x.Website)
         </div>
-        
+
         <div class="editor-label">
             @Html.LabelFor(x => x.Twitter)
         </div>
@@ -90,7 +90,7 @@
             @Html.TextBoxFor(x => x.Twitter)
             @Html.ValidationMessageFor(x => x.Twitter)
         </div>
-        
+
         <div class="editor-label">
             @Html.LabelFor(x => x.Facebook)
         </div>
@@ -98,7 +98,7 @@
             @Html.TextBoxFor(x => x.Facebook)
             @Html.ValidationMessageFor(x => x.Facebook)
         </div>
-        
+
         <div class="editor-label">
             @Html.LabelFor(x => x.Signature)
         </div>
@@ -106,8 +106,30 @@
             @Html.EditorFor(x => x.Signature)
             @Html.ValidationMessageFor(x => x.Signature)
         </div>
-        
+
         <h2>Admin Specific</h2>
+
+        <div class="editor-label">
+            <p><a href="@Url.Action("DeleteUsersPosts", "Account", new { area = "Admin", id = Model.Id }, null)" onclick="return confirm('Be careful, as soon as you click this all @Model.UserName posts and topics will be deleted')" class="btn">Delete All Members Posts</a></p>
+        </div>
+
+        <div class="editor-field n3ocheckboxfield">
+            @Html.CheckBoxFor(x => x.DisableEmailNotifications)
+            @Html.LabelFor(x => x.DisableEmailNotifications)
+            @Html.ValidationMessageFor(x => x.DisableEmailNotifications)
+        </div>
+
+        <div class="editor-field n3ocheckboxfield">
+            @Html.CheckBoxFor(x => x.DisablePosting)
+            @Html.LabelFor(x => x.DisablePosting)
+            @Html.ValidationMessageFor(x => x.DisablePosting)
+        </div>
+
+        <div class="editor-field n3ocheckboxfield">
+            @Html.CheckBoxFor(x => x.DisablePrivateMessages)
+            @Html.LabelFor(x => x.DisablePrivateMessages)
+            @Html.ValidationMessageFor(x => x.DisablePrivateMessages)
+        </div>
 
         <div class="editor-field n3ocheckboxfield">
             @Html.CheckBoxFor(x => x.IsApproved)
@@ -118,11 +140,6 @@
             @Html.CheckBoxFor(x => x.IsLockedOut)
             @Html.LabelFor(x => x.IsLockedOut)
             @Html.ValidationMessageFor(x => x.IsLockedOut)
-        </div>
-        
-        <div class="editor-label">
-            <a href="@Url.Action("DeleteUsersPosts", "Account", new { area = "Admin", id = Model.Id }, null)" class="btn">Delete All Members Posts</a>
-            <p>Be careful, as soon as you click this all @Model.UserName posts and topics will be deleted.</p>
         </div>
 
         <div class="editor-label">
@@ -148,7 +165,7 @@
         </div>*@
 
         <div class="submit-holder">
-            <input type="submit" class="btn btn-large btn-success" value="Save" />
+            <input type="submit" class="btn btn-large btn-success" value="Save" /> <a href="@Url.Action("Delete", new{Model.Id})" onclick="return confirm('Are you sure you want to delete @Model.UserName?')" class="btn btn-large btn-danger">Delete</a>
         </div>
     </fieldset>
 }

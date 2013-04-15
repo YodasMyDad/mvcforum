@@ -399,6 +399,16 @@ namespace MVCForum.Services
             return _membershipRepository.GetUserByFacebookId(facebookId);
         }
 
+        public MembershipUser GetUserByTwitterId(string twitterId)
+        {
+            return _membershipRepository.GetUserByTwitterId(twitterId);
+        }
+
+        public MembershipUser GetUserByGoogleId(string googleId)
+        {
+            return _membershipRepository.GetUserByGoogleId(googleId);
+        }
+
         /// <summary>
         /// Get users by openid token
         /// </summary>

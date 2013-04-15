@@ -32,6 +32,15 @@ namespace MVCForum.Website.Controllers
 
         public ActionResult Index(int? p)
         {
+            if (LoggedOnUser.DisablePrivateMessages == true)
+            {
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = LocalizationService.GetResourceString("Errors.NoPermission"),
+                    MessageType = GenericMessages.error
+                };                
+                return RedirectToAction("Index", "Home");
+            }
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = p ?? 1;
@@ -63,7 +72,7 @@ namespace MVCForum.Website.Controllers
         public ActionResult Create(Guid? id)
         {
             // Check if private messages are enabled
-            if(!SettingsService.GetSettings().EnablePrivateMessages)
+            if (!SettingsService.GetSettings().EnablePrivateMessages || LoggedOnUser.DisablePrivateMessages == true)
             {
                 return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
             }
@@ -99,7 +108,7 @@ namespace MVCForum.Website.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(CreatePrivateMessageViewModel createPrivateMessageViewModel)
         {
-            if (!SettingsService.GetSettings().EnablePrivateMessages)
+            if (!SettingsService.GetSettings().EnablePrivateMessages || LoggedOnUser.DisablePrivateMessages == true)
             {
                 return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
             }
@@ -118,7 +127,7 @@ namespace MVCForum.Website.Controllers
                                                      UserFrom = LoggedOnUser,
                                                      Subject = createPrivateMessageViewModel.Subject,
                                                      Message = createPrivateMessageViewModel.Message,
-                                                 };                            
+                                                 };
                         // now get the user its being sent to
                         var memberTo = MembershipService.GetUser(userTo);
 
@@ -164,7 +173,7 @@ namespace MVCForum.Website.Controllers
                                         var sb = new StringBuilder();
                                         sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("PM.NewPrivateMessageBody"), LoggedOnUser.UserName));
                                         email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
-                                        _emailService.SendMail(email);   
+                                        _emailService.SendMail(email);
                                     }
 
                                     return RedirectToAction("Index");
@@ -174,7 +183,7 @@ namespace MVCForum.Website.Controllers
                                     unitOfWork.Rollback();
                                     LoggingService.Error(ex);
                                     ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
-                                }   
+                                }
                             }
                         }
                         else

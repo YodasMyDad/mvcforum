@@ -55,17 +55,27 @@ namespace MVCForum.Website.Controllers
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
+        public PartialViewResult CreateTopicButton()
+        {
+            var viewModel = new CreateTopicButtonViewModel
+                {
+                    LoggedOnUser = LoggedOnUser
+                };
+            return PartialView(viewModel);
+        }
+
         [Authorize]
         public ActionResult Create()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                     var allowedCategories = _categoryService.GetAllowedCategories(UsersRole).ToList();
-                    if (allowedCategories.Any())
+                    if (allowedCategories.Any() && LoggedOnUser.DisablePosting != true)
                     {
                         var viewModel = new CreateTopicViewModel
                         {
-                            Categories = allowedCategories
+                            Categories = allowedCategories,
+                            LoggedOnUser = LoggedOnUser
                         };
 
                         return View(viewModel);
@@ -82,7 +92,7 @@ namespace MVCForum.Website.Controllers
             if (ModelState.IsValid)
             {
                 // Quick check to see if user is locked out, when logged in
-                if (LoggedOnUser.IsLockedOut | !LoggedOnUser.IsApproved)
+                if (LoggedOnUser.IsLockedOut || LoggedOnUser.DisablePosting == true || !LoggedOnUser.IsApproved)
                 {
                     FormsAuthentication.SignOut();
                     return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoAccess"));
