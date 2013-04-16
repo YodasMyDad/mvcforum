@@ -60,6 +60,7 @@
     <Compile Include="Context\MVCForumContext.cs" />
     <Compile Include="Mapping\BadgeMapping.cs" />
     <Compile Include="Mapping\BadgeTypeTimeLastCheckedMapping.cs" />
+    <Compile Include="Mapping\BannedEmailMapping.cs" />
     <Compile Include="Mapping\CategoryMapping.cs" />
     <Compile Include="Mapping\CategoryNotificationMapping.cs" />
     <Compile Include="Mapping\CategoryPermissionForRoleMapping.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Mapping\MembershipRoleMapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\BadgeRepository.cs" />
+    <Compile Include="Repositories\BannedEmailRepository.cs" />
     <Compile Include="Repositories\CategoryNotificationRepository.cs" />
     <Compile Include="Repositories\CategoryPermissionForRoleRepository.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />

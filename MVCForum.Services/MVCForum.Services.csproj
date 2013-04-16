@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BadgeService.cs" />
+    <Compile Include="BannedEmailService.cs" />
     <Compile Include="CategoryNotificationService.cs" />
     <Compile Include="ActivityService.cs" />
     <Compile Include="InstallerService.cs" />
