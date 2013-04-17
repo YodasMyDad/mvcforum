@@ -172,6 +172,7 @@ Members.LogonGoogleButton = Login with Google
 Members.LogonYahooButton = Login with Yahoo
 Members.LogonTwitterButton = Login with Twitter
 Twitter.Error.EnabledButNotAddedKeys = You have enabled social logins but not added the Twitter id and secret key in the web.config
+Error.EmailIsBanned = The email address or domain you are trying to use is banned
 
 +++ CHANGES TO EXISTING LANGUAGE STRINGS
 Topic.Comments = Answers

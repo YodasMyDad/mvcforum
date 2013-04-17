@@ -31,6 +31,7 @@ namespace MVCForum.Website.Controllers
         private readonly IReportService _reportService;
         private readonly IEmailService _emailService;
         private readonly IPrivateMessageService _privateMessageService;
+        private readonly IBannedEmailService _bannedEmailService;
 
         private MembershipUser LoggedOnUser;
         private MembershipRole UsersRole;
@@ -38,13 +39,14 @@ namespace MVCForum.Website.Controllers
         private readonly InMemoryTokenManager _tokenManager;
 
         public MembersController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService,
-            IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService)
+            IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _postService = postService;
             _reportService = reportService;
             _emailService = emailService;
             _privateMessageService = privateMessageService;
+            _bannedEmailService = bannedEmailService;
 
             LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
@@ -55,53 +57,66 @@ namespace MVCForum.Website.Controllers
         #region Common Methods
 
         private bool ProcessSocialLogonUser(MembershipUser user, bool doCommit)
-        {            
-            // Check not already someone with that user name, if so append count
-            var exists = MembershipService.GetUser(user.UserName);
-            if (exists != null)
-            {
-                var howMany = MembershipService.SearchMembers(user.UserName, int.MaxValue);
-                user.UserName = string.Format("{0} ({1})", user.UserName, howMany != null ? howMany.Count : 1);
-            }
-
-            // Now check settings, see if users need to be manually authorised
-            var manuallyAuthoriseMembers = SettingsService.GetSettings().ManuallyAuthoriseNewMembers;
-            if (manuallyAuthoriseMembers)
-            {
-                user.IsApproved = false;
-            }
-
-            var createStatus = MembershipService.CreateUser(user);
-            if (createStatus != MembershipCreateStatus.Success)
+        {
+            // Secondly see if the email is banned
+            if (_bannedEmailService.EmailIsBanned(user.Email))
             {
                 doCommit = false;
                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
-                    Message = MembershipService.ErrorCodeToString(createStatus),
+                    Message = LocalizationService.GetResourceString("Error.EmailIsBanned"),
                     MessageType = GenericMessages.error
                 };
             }
             else
             {
-                if (!manuallyAuthoriseMembers)
+                // Check not already someone with that user name, if so append count
+                var exists = MembershipService.GetUser(user.UserName);
+                if (exists != null)
                 {
-                    // If not manually authorise then log the user in
-                    FormsAuthentication.SetAuthCookie(user.UserName, true);
+                    var howMany = MembershipService.SearchMembers(user.UserName, int.MaxValue);
+                    user.UserName = string.Format("{0} ({1})", user.UserName, howMany != null ? howMany.Count : 1);
+                }
 
+                // Now check settings, see if users need to be manually authorised
+                var manuallyAuthoriseMembers = SettingsService.GetSettings().ManuallyAuthoriseNewMembers;
+                if (manuallyAuthoriseMembers)
+                {
+                    user.IsApproved = false;
+                }
+
+                var createStatus = MembershipService.CreateUser(user);
+                if (createStatus != MembershipCreateStatus.Success)
+                {
+                    doCommit = false;
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                     {
-                        Message = LocalizationService.GetResourceString("Members.NowRegistered"),
-                        MessageType = GenericMessages.success
+                        Message = MembershipService.ErrorCodeToString(createStatus),
+                        MessageType = GenericMessages.error
                     };
                 }
                 else
                 {
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    if (!manuallyAuthoriseMembers)
                     {
-                        Message = LocalizationService.GetResourceString("Members.NowRegisteredNeedApproval"),
-                        MessageType = GenericMessages.success
-                    };
-                }
+                        // If not manually authorise then log the user in
+                        FormsAuthentication.SetAuthCookie(user.UserName, true);
+
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = LocalizationService.GetResourceString("Members.NowRegistered"),
+                            MessageType = GenericMessages.success
+                        };
+                    }
+                    else
+                    {
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = LocalizationService.GetResourceString("Members.NowRegisteredNeedApproval"),
+                            MessageType = GenericMessages.success
+                        };
+                    }
+                }   
             }
 
             return doCommit;
@@ -199,12 +214,16 @@ namespace MVCForum.Website.Controllers
 
             }
 
-            // Either cancelled or there was an error
-            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            // Only add this if one hasn't been added already
+            if (TempData[AppConstants.MessageViewBagName] == null)
             {
-                Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
-                MessageType = GenericMessages.error
-            };
+                // Either cancelled or there was an error
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+                    MessageType = GenericMessages.error
+                };
+            }
             return RedirectToAction("LogOn", "Members");
         }
 
@@ -305,7 +324,16 @@ namespace MVCForum.Website.Controllers
                     }
                 }
             }
-
+            // Only add this if one hasn't been added already
+            if (TempData[AppConstants.MessageViewBagName] == null)
+            {
+                // Either cancelled or there was an error
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+                    MessageType = GenericMessages.error
+                };
+            }
             return RedirectToAction("LogOn");
         }
 
@@ -413,7 +441,16 @@ namespace MVCForum.Website.Controllers
                     };
                     break;
             }
-
+            // Only add this if one hasn't been added already
+            if (TempData[AppConstants.MessageViewBagName] == null)
+            {
+                // Either cancelled or there was an error
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+                    MessageType = GenericMessages.error
+                };
+            }
             return RedirectToAction("LogOn");
         }
 
@@ -522,6 +559,16 @@ namespace MVCForum.Website.Controllers
                     break;
             }
 
+            // Only add this if one hasn't been added already
+            if (TempData[AppConstants.MessageViewBagName] == null)
+            {
+                // Either cancelled or there was an error
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+                    MessageType = GenericMessages.error
+                };
+            }
             return RedirectToAction("LogOn");
         }
 
@@ -646,6 +693,13 @@ namespace MVCForum.Website.Controllers
                             ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Error.WrongAnswerRegistration"));
                             return View();
                         }
+                    }
+
+                    // Secondly see if the email is banned
+                    if (_bannedEmailService.EmailIsBanned(userModel.Email))
+                    {
+                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Error.EmailIsBanned"));
+                        return View();
                     }
 
                     var userToSave = new MembershipUser

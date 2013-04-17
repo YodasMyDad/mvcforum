@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Website.Areas.Admin.ViewModels;
-using MVCForum.Website.ViewModels.Mapping;
 
 namespace MVCForum.Website.Areas.Admin.Controllers
 {
@@ -16,14 +12,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
     public class BannedEmailController : BaseAdminController
     {
 
-        public IActivityService _activityService { get; set; }
-        private readonly IRoleService _roleService;
-        private readonly IPostService _postService;
-        private readonly ITopicService _topicService;
-        private readonly IMembershipUserPointsService _membershipUserPointsService;
-        private readonly IPollService _pollService;
-        private readonly IPollVoteService _pollVoteService;
-        private readonly IPollAnswerService _pollAnswerService;
         private readonly IBannedEmailService _bannedEmailService;
 
         /// <summary>
@@ -32,34 +20,17 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         /// <param name="unitOfWorkManager"> </param>
         /// <param name="membershipService"></param>
         /// <param name="localizationService"> </param>
-        /// <param name="roleService"> </param>
         /// <param name="settingsService"> </param>
         /// <param name="loggingService"> </param>
-        /// <param name="postService"> </param>
-        /// <param name="topicService"> </param>
-        /// <param name="membershipUserPointsService"> </param>
-        /// <param name="activityService"> </param>
-        /// <param name="pollService"> </param>
-        /// <param name="pollVoteService"> </param>
-        /// <param name="pollAnswerService"> </param>
         /// <param name="bannedEmailService"></param>
         public BannedEmailController(ILoggingService loggingService,
             IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService,
             ILocalizationService localizationService,
-            IRoleService roleService,
-            ISettingsService settingsService, IPostService postService, ITopicService topicService, IMembershipUserPointsService membershipUserPointsService, 
-            IActivityService activityService, IPollService pollService, IPollVoteService pollVoteService, IPollAnswerService pollAnswerService, IBannedEmailService bannedEmailService)
+            ISettingsService settingsService, 
+            IBannedEmailService bannedEmailService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
-            _activityService = activityService;
-            _roleService = roleService;
-            _postService = postService;
-            _topicService = topicService;
-            _membershipUserPointsService = membershipUserPointsService;
-            _pollService = pollService;
-            _pollVoteService = pollVoteService;
-            _pollAnswerService = pollAnswerService;
             _bannedEmailService = bannedEmailService;
         }
 
