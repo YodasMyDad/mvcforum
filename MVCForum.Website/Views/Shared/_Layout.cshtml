@@ -14,6 +14,7 @@
 
         @(Bundle.Css()
               .Add("~/Content/Styles/bootstrap.css")
+              .Add("~/Content/Styles/bootstrap-prettify.css")
               .Add(themePath + "/Content/Styles/theme.css")
               .MvcRender("~/content/cache/combined_" + theme + "_#.css"))
            
@@ -33,6 +34,7 @@
               .Add("~/Scripts/jquery.unobtrusive-ajax.js")
               .Add("~/Scripts/bootstrap.min.js")
               .Add("~/Scripts/jquery.placeholder.min.js")
+              .Add("~/Scripts/bootstrap-prettify.js")
               .Add("~/Scripts/general.js")
               .Add(themePath + "/Content/Scripts/general.js")
               .MvcRender("~/scripts/cache/combined_" + theme + "_#.js")
@@ -114,6 +116,6 @@
                 </div>
             </div>
         </footer>
-    </div>
+    </div>    
 </body>
 </html>

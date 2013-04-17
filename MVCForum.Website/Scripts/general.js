@@ -2,6 +2,9 @@
 
 $(function () {
 
+    // make code pretty
+    window.prettyPrint && prettyPrint();
+
     $('input, textarea').placeholder();
 
     // Sort the date of the member

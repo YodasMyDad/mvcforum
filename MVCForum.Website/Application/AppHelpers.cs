@@ -133,6 +133,9 @@ namespace MVCForum.Website.Application
             // Allow video embeds
             post = StringUtils.EmbedVideosInPosts(post);
 
+            // Add Google prettify code snippets
+            post = post.Replace("<pre>", "<pre class='prettyprint'>");
+
             return post;
         }
 
