@@ -53,7 +53,14 @@ namespace MVCForum.Website.Controllers
             LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
 
-            _tokenManager = new InMemoryTokenManager(ConfigUtils.GetAppSetting("TwitterAppId"), ConfigUtils.GetAppSetting("TwitterAppSecret"));
+            var twitterAppId = ConfigUtils.GetAppSetting("TwitterAppId");
+            var twitterAppSecret = ConfigUtils.GetAppSetting("TwitterAppSecret");
+
+            // Only instantiate if the twitter credentials are not null
+            if (!string.IsNullOrEmpty(twitterAppId) && !string.IsNullOrEmpty(twitterAppSecret))
+            {
+                _tokenManager = new InMemoryTokenManager(ConfigUtils.GetAppSetting("TwitterAppId"), ConfigUtils.GetAppSetting("TwitterAppSecret"));
+            }
         }
 
         #region Common Methods

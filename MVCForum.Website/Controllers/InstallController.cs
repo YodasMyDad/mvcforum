@@ -373,7 +373,10 @@ namespace MVCForum.Website.Controllers
                             Email = "you@email.com",
                             UserName = "admin",
                             Password = "password",
-                            IsApproved = true
+                            IsApproved = true,
+                            DisableEmailNotifications = false,
+                            DisablePosting = false,
+                            DisablePrivateMessages = false
                         };
                         _membershipService.CreateUser(admin);
 

@@ -1365,12 +1365,12 @@
   <ItemGroup>
     <Content Include="Areas\Admin\Views\AdminLucene\Index.cshtml" />
     <None Include="Properties\PublishProfiles\Profile1.pubxml" />
-    <None Include="Themes\Metro\Content\Fonts\mvcforumli.eot" />
-    <None Include="Themes\Metro\Content\Fonts\mvcforumli.ttf" />
-    <None Include="Themes\Metro\Content\Fonts\mvcforumli.woff" />
-    <None Include="Themes\Metro\Content\Fonts\mvcforumsb.eot" />
-    <None Include="Themes\Metro\Content\Fonts\mvcforumsb.ttf" />
-    <None Include="Themes\Metro\Content\Fonts\mvcforumsb.woff" />
+    <Content Include="Themes\Metro\Content\Fonts\mvcforumli.eot" />
+    <Content Include="Themes\Metro\Content\Fonts\mvcforumli.ttf" />
+    <Content Include="Themes\Metro\Content\Fonts\mvcforumli.woff" />
+    <Content Include="Themes\Metro\Content\Fonts\mvcforumsb.eot" />
+    <Content Include="Themes\Metro\Content\Fonts\mvcforumsb.ttf" />
+    <Content Include="Themes\Metro\Content\Fonts\mvcforumsb.woff" />
     <Content Include="Views\Badge\AllBadges.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\Search\SideSearch.cshtml" />
