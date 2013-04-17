@@ -167,7 +167,7 @@
         tableInfo.Row.find(".resourcekeyvaluedisplay").hide();
         tableInfo.Cell.find(".editresourcekey").hide();
     });
-
+    
     // Handler for click on the resource key save button
     $('span.saveresourcekey').click(function (e) {
         e.preventDefault();
@@ -208,6 +208,58 @@
         tableInfo.Row.find(".resourcekeyvaluedisplay").show();
         tableInfo.Cell.find(".saveresourcekey").hide();
         tableInfo.Row.find(".resourcekeyvalueedit").hide();
+    });
+    
+    $('span.editbannedemail').click(function (e) {
+        e.preventDefault();
+        var tableInfo = new tableContext($(this));
+
+        tableInfo.Cell.find(".savebannedemail").show();
+        tableInfo.Row.find(".bannedemailvalueedit").show();
+        tableInfo.Row.find(".bannedemailvaluedisplay").hide();
+        tableInfo.Cell.find(".editbannedemail").hide();
+    });
+
+    // Handler for click on the resource key save button
+    $('span.savebannedemail').click(function (e) {
+        e.preventDefault();
+        var tableInfo = new tableContext($(this));
+
+        var inputfield = tableInfo.Row.find(".bannedemailvalueedit input");
+        var displayfield = tableInfo.Row.find(".bannedemailvaluedisplay");
+
+        // Ajax call setup
+        var emailid = inputfield.data('emailid');
+        var oldvalue = inputfield.data('oldvalue');
+        var newvalue = inputfield.val();
+
+        // Don't allow a null/empty string value, and don't update if nothing changed
+        if ((newvalue != null && newvalue != "") && (newvalue != oldvalue)) {
+            // Make a view model instance
+            var AjaxEditEmailViewModel = new Object();
+            AjaxEditEmailViewModel.EmailId = emailid;
+            AjaxEditEmailViewModel.NewName = newvalue;
+
+            // Ajax call to post the view model to the controller
+            var strung = JSON.stringify(AjaxEditEmailViewModel);
+
+            $.ajax({
+                url: app_base + 'Admin/BannedEmail/AjaxUpdateEmail',
+                type: 'POST',
+                data: strung,
+                contentType: 'application/json; charset=utf-8',
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+
+            displayfield.text(newvalue);
+        }
+
+        tableInfo.Cell.find(".editbannedemail").show();
+        tableInfo.Row.find(".bannedemailvaluedisplay").show();
+        tableInfo.Cell.find(".savebannedemail").hide();
+        tableInfo.Row.find(".bannedemailvalueedit").hide();
     });
 
 

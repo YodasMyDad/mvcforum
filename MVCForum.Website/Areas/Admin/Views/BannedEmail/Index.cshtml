@@ -1,0 +1,79 @@
+﻿@using MVCForum.Domain.Constants
+@model MVCForum.Website.Areas.Admin.ViewModels.BannedEmailListViewModel
+@{
+    ViewBag.Title = "Banned Email";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="row">
+    <div class="span5">
+        @using (Html.BeginForm("Index", "BannedEmail", FormMethod.Get, new { @class = "form-horizontal" }))
+        {    
+            <div class="search large-search input-append">
+                @Html.TextBoxFor(x => Model.Search)
+                <button class="btn">Search</button>
+                @Html.Hidden("p", Model.PageIndex)
+            </div>
+        }
+    </div>
+    <div class="span5">
+        @using (Html.BeginForm("Add", "BannedEmail", FormMethod.Post, new { @class = "form-horizontal" }))
+        {    
+            <div class="search large-search input-append">
+                @Html.TextBox("Email")
+                <button class="btn">Add</button>
+            </div>
+        }
+    </div>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Edit</th>
+            <th>Email</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var email in Model.Emails)
+        {
+            <tr>
+                <td>
+                    <span class="editbannedemail">
+                        <a href="#" class="btn btn-small">
+                            <i class="icon-pencil"></i>
+                        </a>
+                    </span>
+                    <span class="savebannedemail" style="display: none;">
+                        <a href="#" class="btn btn-small">
+                            <i class="icon-ok"></i>
+                        </a>
+                    </span>
+                </td>
+                <td class="bannedemailvalue">                                       
+                    <span class="bannedemailvaluedisplay">
+                                  @Html.Raw(email.Email)
+                    </span>
+                    <span class="bannedemailvalueedit" style="display: none;">
+                        <input data-emailid="@email.Id" data-oldvalue="@email.Email" type="text" id="@email.Id" value="@email.Email" class="bannedemailinput"/>
+                    </span>
+                </td>
+                <td>
+                    <a href="@Url.Action("Delete", new { email.Id, p = Model.PageIndex, search = Model.Search })" class="btn btn-small">
+                        <i class="icon-remove"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@Html.Pager(Convert.ToInt32(Model.PageIndex), AppConstants.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
+
+
+<div class="btn-group">
+    @Html.ActionLink("Back", "Index", "Admin", new { Area = "Admin" }, new { @class = "btn btn-success" })
+</div>
+
