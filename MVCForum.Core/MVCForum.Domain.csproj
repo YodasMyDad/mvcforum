@@ -63,6 +63,7 @@
     <Compile Include="DomainModel\BadgeTypeTimeLastChecked.cs" />
     <Compile Include="DomainModel\Activity\Activity.cs" />
     <Compile Include="DomainModel\CategoryWithSubCategories.cs" />
+    <Compile Include="DomainModel\BannedWord.cs" />
     <Compile Include="DomainModel\InstallerResult.cs" />
     <Compile Include="DomainModel\LuceneSearchModel.cs" />
     <Compile Include="DomainModel\Poll.cs" />
@@ -114,6 +115,7 @@
     <Compile Include="Interfaces\IModelAttribute.cs" />
     <Compile Include="Interfaces\IMVCForumContext.cs" />
     <Compile Include="Interfaces\IPagedList.cs" />
+    <Compile Include="Interfaces\Repositories\IBannedWordRepository.cs" />
     <Compile Include="Interfaces\Repositories\IBannedEmailRepository.cs" />
     <Compile Include="Interfaces\Repositories\IInstallerRepository.cs" />
     <Compile Include="Interfaces\Repositories\IPollAnswerRepository.cs" />
@@ -137,6 +139,7 @@
     <Compile Include="Interfaces\Repositories\ITopicRepository.cs" />
     <Compile Include="Interfaces\Repositories\IVoteRepository.cs" />
     <Compile Include="Interfaces\Services\IBannedEmailService.cs" />
+    <Compile Include="Interfaces\Services\IBannedWordService.cs" />
     <Compile Include="Interfaces\Services\IInstallerService.cs" />
     <Compile Include="Interfaces\Services\IPollAnswerService.cs" />
     <Compile Include="Interfaces\Services\IPollVoteService.cs" />

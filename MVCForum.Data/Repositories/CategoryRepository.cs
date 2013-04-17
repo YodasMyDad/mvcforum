@@ -28,6 +28,7 @@ namespace MVCForum.Data.Repositories
             return _context.Category
                     .OrderBy(x => x.SortOrder)
                     .ToList();
+
         }
 
         public Category Get(Guid id)

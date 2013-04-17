@@ -60,6 +60,7 @@
     <Compile Include="Context\MVCForumContext.cs" />
     <Compile Include="Mapping\BadgeMapping.cs" />
     <Compile Include="Mapping\BadgeTypeTimeLastCheckedMapping.cs" />
+    <Compile Include="Mapping\BannedWordMapping.cs" />
     <Compile Include="Mapping\BannedEmailMapping.cs" />
     <Compile Include="Mapping\CategoryMapping.cs" />
     <Compile Include="Mapping\CategoryNotificationMapping.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="Repositories\CategoryPermissionForRoleRepository.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />
     <Compile Include="Repositories\ActivityRepository.cs" />
+    <Compile Include="Repositories\BannedWordRepository.cs" />
     <Compile Include="Repositories\InstallerRepository.cs" />
     <Compile Include="Repositories\PollAnswerRepository.cs" />
     <Compile Include="Repositories\PollVoteRepository.cs" />

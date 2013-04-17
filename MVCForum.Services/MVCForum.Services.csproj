@@ -53,6 +53,7 @@
     <Compile Include="BannedEmailService.cs" />
     <Compile Include="CategoryNotificationService.cs" />
     <Compile Include="ActivityService.cs" />
+    <Compile Include="BannedWordService.cs" />
     <Compile Include="InstallerService.cs" />
     <Compile Include="PollAnswerService.cs" />
     <Compile Include="PollVoteService.cs" />
