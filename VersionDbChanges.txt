@@ -220,10 +220,29 @@ CONSTRAINT [PK_BannedEmail] PRIMARY KEY CLUSTERED
 ) ON [PRIMARY]
 GO
 
+--- Add new BannedWord Table using the SQL below
+
+/****** Object:  Table [dbo].[BannedWord]    Script Date: 04/17/2013 14:34:45 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[BannedWord](
+	[Id] [uniqueidentifier] NOT NULL,
+	[Word] [nvarchar](75) NOT NULL,
+	[DateAdded] [datetime] NOT NULL,
+ CONSTRAINT [PK_BannedWord] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
 --- Web.Config add the following app settings
 
 <add key="TwitterAppId" value="" />
 <add key="TwitterAppSecret" value="" />
+<add key="BannedWordReplaceCharactor" value="?" />
 
 --- Web.config added dotnet open auth
 

@@ -36,7 +36,7 @@ namespace MVCForum.Utilities
         private static string StarCensoredMatch(Match m)
         {
             var word = m.Captures[0].Value;
-            return new string('*', word.Length);
+            return new string(Convert.ToChar(ConfigUtils.GetAppSetting("BannedWordReplaceCharactor")), word.Length);
         }
 
         private static string ToRegexPattern(string wildcardSearch)

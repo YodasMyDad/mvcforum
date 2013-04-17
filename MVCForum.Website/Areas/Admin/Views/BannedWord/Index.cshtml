@@ -1,0 +1,85 @@
+﻿@using MVCForum.Domain.Constants
+@model MVCForum.Website.Areas.Admin.ViewModels.BannedWordListViewModel
+@{
+    ViewBag.Title = "Banned Word";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>Banned words that are matched will be replaced with a charactor that you can define in a web.config app setting called BannedWordReplaceCharactor</p>
+<p>By default its set to '?' (i.e. if you had <strong>feck</strong> in the list, it would become <strong>????</strong>). You can add a single word, or you can add wildcards at the end of your word.</p>
+<p>For example, if you wanted to ban feck, fecking, feckers etc... You can add <strong>feck*</strong> which will match feck AND anything after.</p>
+
+<div class="row">
+    <div class="span5">
+        @using (Html.BeginForm("Index", "BannedWord", FormMethod.Get, new { @class = "form-horizontal" }))
+        {    
+            <div class="search large-search input-append">
+                @Html.TextBoxFor(x => Model.Search)
+                <button class="btn">Search</button>
+                @Html.Hidden("p", Model.PageIndex)
+            </div>
+        }
+    </div>
+    <div class="span5">
+        @using (Html.BeginForm("Add", "BannedWord", FormMethod.Post, new { @class = "form-horizontal" }))
+        {    
+            <div class="search large-search input-append">
+                @Html.TextBox("Word")
+                <button class="btn">Add</button>
+            </div>
+        }
+    </div>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Edit</th>
+            <th>Word</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var word in Model.Words)
+        {
+            <tr>
+                <td>
+                    <span class="editbannedword">
+                        <a href="#" class="btn btn-small">
+                            <i class="icon-pencil"></i>
+                        </a>
+                    </span>
+                    <span class="savebannedword" style="display: none;">
+                        <a href="#" class="btn btn-small">
+                            <i class="icon-ok"></i>
+                        </a>
+                    </span>
+                </td>
+                <td class="bannedwordvalue">                                       
+                    <span class="bannedwordvaluedisplay">
+                                  @Html.Raw(word.Word)
+                    </span>
+                    <span class="bannedwordvalueedit" style="display: none;">
+                        <input data-wordid="@word.Id" data-oldvalue="@word.Word" type="text" id="@word.Id" value="@word.Word" class="bannedwordinput"/>
+                    </span>
+                </td>
+                <td>
+                    <a href="@Url.Action("Delete", new { word.Id, p = Model.PageIndex, search = Model.Search })" class="btn btn-small">
+                        <i class="icon-remove"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.Words.TotalPages > 1)
+{
+    @Html.Pager(Convert.ToInt32(Model.PageIndex), AppConstants.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new {search = Model.Search})
+}
+
+<div class="btn-group">
+    @Html.ActionLink("Back", "Index", "Admin", new { Area = "Admin" }, new { @class = "btn btn-success" })
+</div>
+

@@ -3,7 +3,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Data.Mapping
 {
-    public class BannedWordMapping : EntityTypeConfiguration<BannedEmail>
+    public class BannedWordMapping : EntityTypeConfiguration<BannedWord>
     {
         public BannedWordMapping()
         {

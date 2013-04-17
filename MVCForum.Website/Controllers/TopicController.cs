@@ -29,6 +29,7 @@ namespace MVCForum.Website.Controllers
         private readonly ILuceneService _luceneService;
         private readonly IPollService _pollService;
         private readonly IPollAnswerService _pollAnswerService;
+        private readonly IBannedWordService _bannedWordService;
 
         private MembershipUser LoggedOnUser;
         private MembershipRole UsersRole;
@@ -36,7 +37,7 @@ namespace MVCForum.Website.Controllers
         public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
             ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, ILuceneService luceneService, IPollService pollService,
-            IPollAnswerService pollAnswerService)
+            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
@@ -50,6 +51,7 @@ namespace MVCForum.Website.Controllers
             _luceneService = luceneService;
             _pollService = pollService;
             _pollAnswerService = pollAnswerService;
+            _bannedWordService = bannedWordService;
 
             LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
@@ -121,7 +123,7 @@ namespace MVCForum.Website.Controllers
 
                         topic = new Topic
                         {
-                            Name = topicViewModel.Name,
+                            Name = _bannedWordService.SanitiseBannedWords(topicViewModel.Name),
                             Category = category,
                             User = LoggedOnUser
                         };                       
@@ -129,6 +131,9 @@ namespace MVCForum.Website.Controllers
                         // See if the user has actually added some content to the topic
                         if (!string.IsNullOrEmpty(topicViewModel.Content))
                         {
+                            // Check for any banned words
+                            topicViewModel.Content = _bannedWordService.SanitiseBannedWords(topicViewModel.Content);
+
                             // See if this is a poll and add it to the topic
                             if (topicViewModel.PollAnswers != null && topicViewModel.PollAnswers.Count > 0)
                             {

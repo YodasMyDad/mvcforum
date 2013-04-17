@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
@@ -43,6 +45,17 @@ namespace MVCForum.Services
         public PagedList<BannedWord> GetAllPaged(string search, int pageIndex, int pageSize)
         {
             return _bannedWordRepository.GetAllPaged(search, pageIndex, pageSize);
+        }
+
+        public string SanitiseBannedWords(string content)
+        {
+            var bannedWords = GetAll();
+            if (bannedWords.Any())
+            {
+                var censor = new CensorUtils(bannedWords.Select(x => x.Word).ToList());
+                return censor.CensorText(content);   
+            }
+            return content;
         }
     }
 }

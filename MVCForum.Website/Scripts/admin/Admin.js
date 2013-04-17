@@ -210,6 +210,58 @@
         tableInfo.Row.find(".resourcekeyvalueedit").hide();
     });
     
+    $('span.editbannedword').click(function (e) {
+        e.preventDefault();
+        var tableInfo = new tableContext($(this));
+
+        tableInfo.Cell.find(".savebannedword").show();
+        tableInfo.Row.find(".bannedwordvalueedit").show();
+        tableInfo.Row.find(".bannedwordvaluedisplay").hide();
+        tableInfo.Cell.find(".editbannedword").hide();
+    });
+
+    // Handler for click on the resource key save button
+    $('span.savebannedword').click(function (e) {
+        e.preventDefault();
+        var tableInfo = new tableContext($(this));
+
+        var inputfield = tableInfo.Row.find(".bannedwordvalueedit input");
+        var displayfield = tableInfo.Row.find(".bannedwordvaluedisplay");
+
+        // Ajax call setup
+        var wordid = inputfield.data('wordid');
+        var oldvalue = inputfield.data('oldvalue');
+        var newvalue = inputfield.val();
+
+        // Don't allow a null/empty string value, and don't update if nothing changed
+        if ((newvalue != null && newvalue != "") && (newvalue != oldvalue)) {
+            // Make a view model instance
+            var AjaxEditWordViewModel = new Object();
+            AjaxEditWordViewModel.WordId = wordid;
+            AjaxEditWordViewModel.NewName = newvalue;
+
+            // Ajax call to post the view model to the controller
+            var strung = JSON.stringify(AjaxEditWordViewModel);
+
+            $.ajax({
+                url: app_base + 'Admin/BannedWord/AjaxUpdateWord',
+                type: 'POST',
+                data: strung,
+                contentType: 'application/json; charset=utf-8',
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+
+            displayfield.text(newvalue);
+        }
+
+        tableInfo.Cell.find(".editbannedword").show();
+        tableInfo.Row.find(".bannedwordvaluedisplay").show();
+        tableInfo.Cell.find(".savebannedword").hide();
+        tableInfo.Row.find(".bannedwordvalueedit").hide();
+    });
+    
     $('span.editbannedemail').click(function (e) {
         e.preventDefault();
         var tableInfo = new tableContext($(this));

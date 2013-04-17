@@ -32,6 +32,7 @@ namespace MVCForum.Website.Controllers
         private readonly IEmailService _emailService;
         private readonly IPrivateMessageService _privateMessageService;
         private readonly IBannedEmailService _bannedEmailService;
+        private readonly IBannedWordService _bannedWordService;
 
         private MembershipUser LoggedOnUser;
         private MembershipRole UsersRole;
@@ -39,7 +40,7 @@ namespace MVCForum.Website.Controllers
         private readonly InMemoryTokenManager _tokenManager;
 
         public MembersController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService,
-            IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService)
+            IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService, IBannedWordService bannedWordService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _postService = postService;
@@ -47,6 +48,7 @@ namespace MVCForum.Website.Controllers
             _emailService = emailService;
             _privateMessageService = privateMessageService;
             _bannedEmailService = bannedEmailService;
+            _bannedWordService = bannedWordService;
 
             LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
@@ -166,8 +168,8 @@ namespace MVCForum.Website.Controllers
                             TwitterAccessToken = client.AccessToken,
                             IsExternalAccount = true,
                             DisableEmailNotifications = true,
-                            UserName = client.UserName,
-                            Twitter = string.Format("http://twitter.com/{0}", client.UserName)
+                            UserName = _bannedWordService.SanitiseBannedWords(client.UserName),
+                            Twitter = string.Format("http://twitter.com/{0}", _bannedWordService.SanitiseBannedWords(client.UserName))
                         };
 
                         doCommit = ProcessSocialLogonUser(user, doCommit);
@@ -272,7 +274,7 @@ namespace MVCForum.Website.Controllers
                                 // password is irrelavant as they'll login using FB Id so generate random one
                                 fbUser = new MembershipUser
                                 {
-                                    UserName = fbModel.Name,
+                                    UserName = _bannedWordService.SanitiseBannedWords(fbModel.Name),
                                     Email = fbModel.Email,
                                     Password = StringUtils.RandomString(8),
                                     FacebookId = fbModel.Id,
@@ -379,7 +381,7 @@ namespace MVCForum.Website.Controllers
                                 GoogleAccessToken = oid,
                                 IsExternalAccount = true,
                             };
-                            user.UserName = user.Email;
+                            user.UserName = _bannedWordService.SanitiseBannedWords(user.Email);
 
                             doCommit = ProcessSocialLogonUser(user, doCommit);
 
@@ -496,7 +498,7 @@ namespace MVCForum.Website.Controllers
                                 MiscAccessToken = oid,
                                 IsExternalAccount = true,
                             };
-                            user.UserName = user.Email;
+                            user.UserName = _bannedWordService.SanitiseBannedWords(user.Email);
 
                             doCommit = ProcessSocialLogonUser(user, doCommit);
 
@@ -704,7 +706,7 @@ namespace MVCForum.Website.Controllers
 
                     var userToSave = new MembershipUser
                     {
-                        UserName = userModel.UserName,
+                        UserName = _bannedWordService.SanitiseBannedWords(userModel.UserName),
                         Email = userModel.Email,
                         Password = userModel.Password,
                         IsApproved = userModel.IsApproved,
@@ -970,11 +972,11 @@ namespace MVCForum.Website.Controllers
                 var user = MembershipService.GetUser(userModel.Id);
 
                 user.Age = userModel.Age;
-                user.Facebook = userModel.Facebook;
-                user.Location = userModel.Location;
-                user.Signature = userModel.Signature;
-                user.Twitter = userModel.Twitter;
-                user.Website = userModel.Website;
+                user.Facebook = _bannedWordService.SanitiseBannedWords(userModel.Facebook);
+                user.Location = _bannedWordService.SanitiseBannedWords(userModel.Location);
+                user.Signature = _bannedWordService.SanitiseBannedWords(userModel.Signature);
+                user.Twitter = _bannedWordService.SanitiseBannedWords(userModel.Twitter);
+                user.Website = _bannedWordService.SanitiseBannedWords(userModel.Website);
 
                 // If there is a location try and save the longitude and latitude
                 if (!string.IsNullOrEmpty(user.Location))
@@ -998,16 +1000,17 @@ namespace MVCForum.Website.Controllers
                 // User is trying to change username, need to check if a user already exists
                 // with the username they are trying to change to
                 var changedUsername = false;
-                if (userModel.UserName != user.UserName)
+                var sanitisedUsername = _bannedWordService.SanitiseBannedWords(userModel.UserName);
+                if (sanitisedUsername != user.UserName)
                 {
-                    if (MembershipService.GetUser(userModel.UserName) != null)
+                    if (MembershipService.GetUser(sanitisedUsername) != null)
                     {
                         unitOfWork.Rollback();
                         ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.DuplicateUserName"));
                         return View(userModel);
                     }
 
-                    user.UserName = userModel.UserName;
+                    user.UserName = sanitisedUsername;
                     changedUsername = true;
                 }
 

@@ -28,6 +28,7 @@ namespace MVCForum.Website.Controllers
         private readonly ILuceneService _luceneService;
         private readonly IPollAnswerService _pollAnswerService;
         private readonly IPollService _pollService;
+        private readonly IBannedWordService _bannedWordService;
 
         private MembershipUser LoggedOnUser;
         private MembershipRole UsersRole;
@@ -36,7 +37,7 @@ namespace MVCForum.Website.Controllers
             ILocalizationService localizationService, IRoleService roleService, ITopicService topicService, IPostService postService, 
             ISettingsService settingsService, ICategoryService categoryService, ITopicTagService topicTagService, 
             ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, ILuceneService luceneService, IPollAnswerService pollAnswerService, 
-            IPollService pollService)
+            IPollService pollService, IBannedWordService bannedWordService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
@@ -49,6 +50,7 @@ namespace MVCForum.Website.Controllers
             _luceneService = luceneService;
             _pollAnswerService = pollAnswerService;
             _pollService = pollService;
+            _bannedWordService = bannedWordService;
 
             LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
@@ -73,7 +75,7 @@ namespace MVCForum.Website.Controllers
 
                 topic = _topicService.Get(post.Topic);
                 
-                var postContent = post.PostContent;
+                var postContent = _bannedWordService.SanitiseBannedWords(post.PostContent);
 
                 var akismetHelper = new AkismetHelper(SettingsService);
 
@@ -193,7 +195,7 @@ namespace MVCForum.Website.Controllers
                 if (post.User.Id == LoggedOnUser.Id || permissions[AppConstants.PermissionEditPosts].IsTicked)
                 {
                     // User has permission so update the post
-                    post.PostContent = editPostViewModel.Content;
+                    post.PostContent = _bannedWordService.SanitiseBannedWords(editPostViewModel.Content);
                     post.DateEdited = DateTime.UtcNow;
 
                     // if topic starter update the topic
@@ -208,7 +210,7 @@ namespace MVCForum.Website.Controllers
 
                         topic.IsLocked = editPostViewModel.IsLocked;
                         topic.IsSticky = editPostViewModel.IsSticky;
-                        topic.Name = editPostViewModel.Name;
+                        topic.Name = _bannedWordService.SanitiseBannedWords(editPostViewModel.Name);
 
                         // See if there is a poll
                         if (editPostViewModel.PollAnswers != null && editPostViewModel.PollAnswers.Count > 0)

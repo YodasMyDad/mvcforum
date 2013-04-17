@@ -12,5 +12,6 @@ namespace MVCForum.Domain.Interfaces.Services
         BannedWord Get(Guid id);
         PagedList<BannedWord> GetAllPaged(int pageIndex, int pageSize);
         PagedList<BannedWord> GetAllPaged(string search, int pageIndex, int pageSize);
+        string SanitiseBannedWords(string content);
     }
 }

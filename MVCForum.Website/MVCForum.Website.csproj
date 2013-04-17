@@ -225,10 +225,12 @@
     <Compile Include="Areas\Admin\Controllers\AdminLuceneController.cs" />
     <Compile Include="Areas\Admin\Controllers\BannedEmailController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchController.cs" />
+    <Compile Include="Areas\Admin\Controllers\BannedWordController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\ViewModels\AdminBadgeViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\BannedEmailViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\BatchViewModels.cs" />
+    <Compile Include="Areas\Admin\ViewModels\BannedWordViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\DashboardViewModels.cs" />
     <Compile Include="Controllers\BaseInstallController.cs" />
     <Compile Include="Controllers\BadgeController.cs" />
@@ -659,6 +661,7 @@
     <Content Include="Areas\Admin\Views\Batch\BatchDeleteMembers.cshtml" />
     <Content Include="Areas\Admin\Views\Batch\BatchMoveTopics.cshtml" />
     <Content Include="Areas\Admin\Views\BannedEmail\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\BannedWord\Index.cshtml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.9.1.js" />
     <Content Include="Scripts\jquery-1.9.1.min.js" />
