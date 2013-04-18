@@ -630,7 +630,7 @@ namespace MVCForum.Utilities
             return StripNonAlphaNumeric(url, replaceWith).ToLower();
         }
 
-        static string RemoveAccents(string input)
+        public static string RemoveAccents(string input)
         {
             var normalized = input.Normalize(NormalizationForm.FormKD);
             var removal = Encoding.GetEncoding(Encoding.ASCII.CodePage,

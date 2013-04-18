@@ -52,8 +52,17 @@ namespace MVCForum.Services
             var bannedWords = GetAll();
             if (bannedWords.Any())
             {
-                var censor = new CensorUtils(bannedWords.Select(x => x.Word).ToList());
-                return censor.CensorText(content);   
+                return SanitiseBannedWords(content, bannedWords.Select(x => x.Word).ToList());
+            }
+            return content;
+        }
+
+        public string SanitiseBannedWords(string content, IList<string> words)
+        {
+            if (words != null && words.Any())
+            {
+                var censor = new CensorUtils(words);
+                return censor.CensorText(content);
             }
             return content;
         }

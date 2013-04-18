@@ -36,55 +36,55 @@ namespace MVCForum.Website.Controllers
         [HttpGet]
         public ActionResult Index(int? p, string term)
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
+            if (!string.IsNullOrEmpty(term))
             {
-                // Set the page index
-                var pageIndex = p ?? 1;
-
-                // Returns the formatted string to search on
-                var formattedSearchTerm = StringUtils.ReturnSearchString(term);
-
-                // Get lucene to search
-                var luceneResults = _luceneService.Search(formattedSearchTerm, pageIndex, SettingsService.GetSettings().TopicsPerPage);
-
-
-                //// Get all the topics based on the search value
-                //var topics = _topicsService.SearchTopics(pageIndex,
-                //                                     SettingsService.GetSettings().TopicsPerPage,
-                //                                     AppConstants.ActiveTopicsListSize,
-                //                                     term);
-
-                var topics = _topicsService.GetTopicsByCsv(pageIndex, SettingsService.GetSettings().TopicsPerPage, AppConstants.ActiveTopicsListSize, luceneResults.Select(x => x.TopicId).ToList());
-
-                // Get all the categories for this topic collection
-                var categories = topics.Select(x => x.Category).Distinct();
-
-                // create the view model
-                var viewModel = new SearchViewModel
+                using (UnitOfWorkManager.NewUnitOfWork())
                 {
-                    Topics = topics,
-                    AllPermissionSets = new Dictionary<Category, PermissionSet>(),
-                    PageIndex = pageIndex,
-                    TotalCount = luceneResults.TotalCount,
-                    Term = formattedSearchTerm
-                };
+                    // Set the page index
+                    var pageIndex = p ?? 1;
 
-                // loop through the categories and get the permissions
-                foreach (var category in categories)
-                {
-                    var permissionSet = RoleService.GetPermissions(category, UsersRole);
-                    viewModel.AllPermissionSets.Add(category, permissionSet);
-                }
+                    // Returns the formatted string to search on
+                    var formattedSearchTerm = StringUtils.ReturnSearchString(term);
 
-                return View(viewModel);
+                    // Get lucene to search
+                    var luceneResults = _luceneService.Search(formattedSearchTerm, pageIndex, SettingsService.GetSettings().TopicsPerPage);
+
+
+                    //// Get all the topics based on the search value
+                    //var topics = _topicsService.SearchTopics(pageIndex,
+                    //                                     SettingsService.GetSettings().TopicsPerPage,
+                    //                                     AppConstants.ActiveTopicsListSize,
+                    //                                     term);
+
+                    var topics = _topicsService.GetTopicsByCsv(pageIndex, SettingsService.GetSettings().TopicsPerPage, AppConstants.ActiveTopicsListSize, luceneResults.Select(x => x.TopicId).ToList());
+
+                    // Get all the categories for this topic collection
+                    var categories = topics.Select(x => x.Category).Distinct();
+
+                    // create the view model
+                    var viewModel = new SearchViewModel
+                    {
+                        Topics = topics,
+                        AllPermissionSets = new Dictionary<Category, PermissionSet>(),
+                        PageIndex = pageIndex,
+                        TotalCount = luceneResults.TotalCount,
+                        Term = formattedSearchTerm
+                    };
+
+                    // loop through the categories and get the permissions
+                    foreach (var category in categories)
+                    {
+                        var permissionSet = RoleService.GetPermissions(category, UsersRole);
+                        viewModel.AllPermissionSets.Add(category, permissionSet);
+                    }
+
+                    return View(viewModel);
+                } 
             }
+
+            return RedirectToAction("Index", "Home");
         }
 
-        //public ActionResult Testing(string term)
-        //{
-        //    var results = _luceneService.Search(term).Select(x => x.TopicId);
-        //    return View(results);
-        //}
 
         [ChildActionOnly]
         public PartialViewResult SideSearch()

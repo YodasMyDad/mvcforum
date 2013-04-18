@@ -120,10 +120,18 @@ namespace MVCForum.Website.Controllers
                     }
                     else
                     {
+                        // We get the banned words here and pass them in, so its just one call
+                        // instead of calling it several times and each call getting all the words back
+                        var bannedWordsList = _bannedWordService.GetAll();
+                        List<string> bannedWords = null;
+                        if (bannedWordsList.Any())
+                        {
+                            bannedWords = bannedWordsList.Select(x => x.Word).ToList();
+                        }
 
                         topic = new Topic
                         {
-                            Name = _bannedWordService.SanitiseBannedWords(topicViewModel.Name),
+                            Name = _bannedWordService.SanitiseBannedWords(topicViewModel.Name, bannedWords),
                             Category = category,
                             User = LoggedOnUser
                         };                       
@@ -132,7 +140,7 @@ namespace MVCForum.Website.Controllers
                         if (!string.IsNullOrEmpty(topicViewModel.Content))
                         {
                             // Check for any banned words
-                            topicViewModel.Content = _bannedWordService.SanitiseBannedWords(topicViewModel.Content);
+                            topicViewModel.Content = _bannedWordService.SanitiseBannedWords(topicViewModel.Content, bannedWords);
 
                             // See if this is a poll and add it to the topic
                             if (topicViewModel.PollAnswers != null && topicViewModel.PollAnswers.Count > 0)
@@ -204,6 +212,13 @@ namespace MVCForum.Website.Controllers
                                 // Add the tags if any too
                                 if (!string.IsNullOrEmpty(topicViewModel.Tags))
                                 {
+                                    // Sanitise the tags
+                                    topicViewModel.Tags = _bannedWordService.SanitiseBannedWords(topicViewModel.Tags, bannedWords);
+
+                                    // Remove diacritics 
+                                    topicViewModel.Tags = StringUtils.RemoveAccents(topicViewModel.Tags);
+
+                                    // Now add the tags
                                     _topicTagService.Add(topicViewModel.Tags.ToLower(), topic);
                                 }
 

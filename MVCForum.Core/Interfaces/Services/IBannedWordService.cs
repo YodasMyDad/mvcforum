@@ -13,5 +13,6 @@ namespace MVCForum.Domain.Interfaces.Services
         PagedList<BannedWord> GetAllPaged(int pageIndex, int pageSize);
         PagedList<BannedWord> GetAllPaged(string search, int pageIndex, int pageSize);
         string SanitiseBannedWords(string content);
+        string SanitiseBannedWords(string content, IList<string> words);
     }
 }
