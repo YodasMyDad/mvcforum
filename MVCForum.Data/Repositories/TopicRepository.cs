@@ -296,7 +296,7 @@ namespace MVCForum.Data.Repositories
         {
             // We might only want to display the top 100
             // but there might not be 100 topics
-            var total = _context.Topic.Count(e => e.Tags.Select(t => t.Tag).Contains(tag));
+            var total = _context.Topic.Count(e => e.Tags.Any(t => t.Slug == tag));
             if (amountToTake < total)
             {
                 total = amountToTake;
@@ -312,7 +312,7 @@ namespace MVCForum.Data.Repositories
                                 .Include(x => x.Tags)
                                 .OrderByDescending(x => x.IsSticky)
                                 .ThenByDescending(x => x.LastPost.DateCreated)
-                                .Where(e => e.Tags.Select(t => t.Tag).Contains(tag))
+                                .Where(e => e.Tags.Any(t => t.Slug == tag))
                                 .Take(pageSize)
                                 .Skip((pageIndex - 1) * pageSize)
                                 .ToList();

@@ -118,7 +118,12 @@ namespace MVCForum.Services
                     else
                     {
                         // Doesn't exists
-                        var nTag = new TopicTag {Tag = newTag};
+                        var nTag = new TopicTag
+                            {
+                                Tag = newTag,
+                                Slug = ServiceHelpers.CreateUrl(newTag)
+                            };
+
                         _tagRepository.Add(nTag);
                         newTags.Add(nTag);
                     }

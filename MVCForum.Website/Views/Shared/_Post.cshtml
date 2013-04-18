@@ -75,7 +75,7 @@
             <div class="tagsinput">
                 @foreach (var tag in Model.ParentTopic.Tags)
                 {
-                    <span class="tag"><span><a href="@UrlTypes.GenerateUrl(UrlType.Tag, tag.Tag)">@tag.Tag</a></span></span>   
+                    <span class="tag"><span><a href="@Html.Raw(tag.NiceUrl)">@Html.Raw(tag.Tag)</a></span></span>
                 }
             </div>
         }

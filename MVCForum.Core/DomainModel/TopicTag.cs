@@ -10,8 +10,14 @@ namespace MVCForum.Domain.DomainModel
         {
             Id = GuidComb.GenerateComb();
         }
-        public Guid Id { get; set; }  
+        public Guid Id { get; set; }
         public string Tag { get; set; }
+        public string Slug { get; set; }
+
+        public string NiceUrl
+        {
+            get { return UrlTypes.GenerateUrl(UrlType.Tag, Slug); }
+        }
 
         public virtual IList<Topic> Topics { get; set; }
     }

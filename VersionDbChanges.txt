@@ -201,6 +201,13 @@ Add > Create Polls
 Add > Create Topics
 Add > Attach Files
 
+--- TopicTag
+Slug (nvarchar(100)) do not allow nulls
+
+// Use this SQL to update existing site with tags
+UPDATE TopicTag
+SET Slug = Tag
+
 --- Settings
 SuspendRegistration bit allow nulls
 

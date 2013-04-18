@@ -215,9 +215,6 @@ namespace MVCForum.Website.Controllers
                                     // Sanitise the tags
                                     topicViewModel.Tags = _bannedWordService.SanitiseBannedWords(topicViewModel.Tags, bannedWords);
 
-                                    // Remove diacritics 
-                                    topicViewModel.Tags = StringUtils.RemoveAccents(topicViewModel.Tags);
-
                                     // Now add the tags
                                     _topicTagService.Add(topicViewModel.Tags.ToLower(), topic);
                                 }
