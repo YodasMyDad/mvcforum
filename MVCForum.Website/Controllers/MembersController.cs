@@ -7,7 +7,6 @@ using System.Text;
 using System.Web.Mvc;
 using System.Web.Security;
 using DotNetOpenAuth.Messaging;
-using DotNetOpenAuth.OAuth;
 using DotNetOpenAuth.OAuth2;
 using DotNetOpenAuth.OpenId.Extensions.AttributeExchange;
 using DotNetOpenAuth.OpenId.RelyingParty;
@@ -37,7 +36,7 @@ namespace MVCForum.Website.Controllers
         private MembershipUser LoggedOnUser;
         private MembershipRole UsersRole;
 
-        private readonly InMemoryTokenManager _tokenManager;
+        private InMemoryTokenManager _tokenManager;
 
         public MembersController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService,
             IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService, IBannedWordService bannedWordService)
@@ -53,14 +52,6 @@ namespace MVCForum.Website.Controllers
             LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
 
-            var twitterAppId = ConfigUtils.GetAppSetting("TwitterAppId");
-            var twitterAppSecret = ConfigUtils.GetAppSetting("TwitterAppSecret");
-
-            // Only instantiate if the twitter credentials are not null
-            if (!string.IsNullOrEmpty(twitterAppId) && !string.IsNullOrEmpty(twitterAppSecret))
-            {
-                _tokenManager = new InMemoryTokenManager(ConfigUtils.GetAppSetting("TwitterAppId"), ConfigUtils.GetAppSetting("TwitterAppSecret"));
-            }
         }
 
         #region Common Methods
@@ -135,8 +126,21 @@ namespace MVCForum.Website.Controllers
 
         #region Social Logons
 
+        private void InstantiateTwitterInMemoryTokenManager()
+        {
+            var twitterAppId = ConfigUtils.GetAppSetting("TwitterAppId");
+            var twitterAppSecret = ConfigUtils.GetAppSetting("TwitterAppSecret");
+
+            // Only instantiate if the twitter credentials are not null
+            if (!string.IsNullOrEmpty(twitterAppId) && !string.IsNullOrEmpty(twitterAppSecret))
+            {
+                _tokenManager = new InMemoryTokenManager(twitterAppId, twitterAppSecret);
+            }
+        }
+
         public ActionResult LogonTwitter()
         {
+            InstantiateTwitterInMemoryTokenManager();
             var client = new TwitterClient(_tokenManager, Url.Action("TwitterCallback"));
             client.StartAuthentication();
             return null;
@@ -144,6 +148,8 @@ namespace MVCForum.Website.Controllers
 
         public ActionResult TwitterCallback()
         {
+            InstantiateTwitterInMemoryTokenManager();
+
             var client = new TwitterClient(_tokenManager, Url.Action("TwitterCallback"));
 
             if (client.FinishAuthentication())
