@@ -2,6 +2,9 @@
 
 $(function () {
 
+
+    //$('a[href$=".gif"], a[href$=".jpg"], a[href$=".png"], a[href$=".bmp"], a[href$=".jpeg"]')
+
     // Attach files click handler
     ShowFileUploadClickHandler();
 

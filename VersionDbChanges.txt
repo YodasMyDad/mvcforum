@@ -178,6 +178,7 @@ Post.Attach = Attach
 Post.Upload = Upload Files
 Post.UploadBannedFileExtension = File extension not allowed
 Post.UploadFileTooBig = File upload is too big
+File.SuccessfullyDeleted = File deleted
 
 +++ CHANGES TO EXISTING LANGUAGE STRINGS
 Topic.Comments = Answers
