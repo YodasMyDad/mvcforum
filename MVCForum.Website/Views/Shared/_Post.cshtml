@@ -85,7 +85,15 @@
             <div class="postuploadedfilesholder">
                 @foreach (var file in Model.Post.Files.OrderByDescending(o => o.DateCreated))
                 {
-                    <span class="tag"><span><a href="@Html.Raw(file.Filename)">@Html.Raw(file.Filename)</a></span></span>
+                    <span class="fileupload">
+                        <a href="@Html.Raw(Url.Content(file.FilePath))">@Html.Raw(file.FriendlyFilename)</a>
+                        @if (Model.Post.User.Id == loggedOnUserId || User.IsInRole(AppConstants.AdminRoleName))
+                        {
+                            <span class="deleteupload" title="@Html.LanguageString("Post.Delete")">
+                                <a href="@Url.Action("DeleteUploadedFile", "Upload", new { file.Id })">x</a>
+                            </span>
+                        }
+                    </span>
                 }
             </div>
         }

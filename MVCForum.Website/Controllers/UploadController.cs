@@ -22,7 +22,7 @@ namespace MVCForum.Website.Controllers
         private readonly MembershipRole UsersRole;
 
         public UploadController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
-            IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, 
+            IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
             IPostService postService, IUploadedFileService uploadedFileService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
@@ -79,7 +79,7 @@ namespace MVCForum.Website.Controllers
                                 {
                                     var fileName = Path.GetFileName(file.FileName);
                                     if (fileName != null)
-                                    {                   
+                                    {
                                         //Before we do anything, check file size
                                         if (file.ContentLength > Convert.ToInt32(ConfigUtils.GetAppSetting("FileUploadMaximumFileSizeInBytes")))
                                         {
@@ -167,12 +167,78 @@ namespace MVCForum.Website.Controllers
                             return topic != null ? Redirect(topic.NiceUrl) : ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
                         }
 
-                    } 
+                    }
                 }
 
             }
 
             // Else return with error to home page
+            return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
+        }
+
+        public ActionResult DeleteUploadedFile(Guid id)
+        {
+            if (id != Guid.Empty)
+            {
+                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                {
+                    Topic topic = null;
+                    try
+                    {
+                        // Get the file and associated objects we'll need
+                        var uploadedFile = _uploadedFileService.Get(id);
+                        var post = uploadedFile.Post;
+                        topic = post.Topic;
+
+                        if (UsersRole.RoleName == AppConstants.AdminRoleName || uploadedFile.MembershipUser.Id == LoggedOnUser.Id)
+                        {
+                            // Ok to delete file
+                            // Remove it from the post
+                            post.Files.Remove(uploadedFile);
+
+                            // store the file path as we'll need it to delete on the file system
+                            var filePath = uploadedFile.FilePath;
+
+                            // Now delete it
+                            _uploadedFileService.Delete(uploadedFile);
+
+
+                            // And finally delete from the file system
+                            System.IO.File.Delete(Server.MapPath(filePath));
+                        }
+                        else
+                        {
+                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                            {
+                                Message = LocalizationService.GetResourceString("Errors.NoPermission"),
+                                MessageType = GenericMessages.error
+                            };
+                            Redirect(topic.NiceUrl);
+                        }
+
+                        //Commit
+                        unitOfWork.Commit();
+
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = LocalizationService.GetResourceString("File.SuccessfullyDeleted"),
+                            MessageType = GenericMessages.success
+                        };
+                        return Redirect(topic.NiceUrl);
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+                            MessageType = GenericMessages.error
+                        };
+                        return topic != null ? Redirect(topic.NiceUrl) : ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
+                    }
+                }
+            }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
 

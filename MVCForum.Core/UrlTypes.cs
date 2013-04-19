@@ -32,5 +32,10 @@ namespace MVCForum.Domain
         {
             return VirtualPathUtility.ToAbsolute(string.Format("~/{0}/{1}", UrlTypeName(e), HttpUtility.HtmlDecode(slug)));            
         }
+
+        public static string GenerateFileUrl(string filePath)
+        {
+            return VirtualPathUtility.ToAbsolute(filePath);
+        }
     }
 }
