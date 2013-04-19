@@ -42,7 +42,6 @@
             @if (!Model.Post.IsTopicStarter && Html.Settings().EnableMarkAsSolution && Model.ParentTopic.User.Id == loggedOnUserId)
             {
                 var showTick = !(Model.ParentTopic.Solved && !Model.Post.IsSolution);
-
                 if (showTick)
                 {
                     var isSolved = Model.ParentTopic.Solved ? "issolution-solved" : "issolution";
@@ -82,10 +81,10 @@
         }
         @if (Model.Post.Files != null && Model.Post.Files.Any())
         {
-            <div class="postuploadedfilesholder">
+            <div class="postuploadedfilesholder clearfix">
                 @foreach (var file in Model.Post.Files.OrderByDescending(o => o.DateCreated))
                 {
-                    <span class="fileupload">
+                    <div class="fileupload">
                         <a href="@Html.Raw(Url.Content(file.FilePath))">@Html.Raw(file.FriendlyFilename)</a>
                         @if (Model.Post.User.Id == loggedOnUserId || User.IsInRole(AppConstants.AdminRoleName))
                         {
@@ -93,7 +92,7 @@
                                 <a href="@Url.Action("DeleteUploadedFile", "Upload", new { file.Id })">x</a>
                             </span>
                         }
-                    </span>
+                    </div>
                 }
             </div>
         }

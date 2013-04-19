@@ -30,6 +30,13 @@
 
 @section Header
 {
+    @(Bundle.Css()
+              .Add("~/Scripts/fancybox/jquery.fancybox.css")
+              .MvcRender("~/content/cache/fancybox_#.css"))
+    @(Bundle.JavaScript()
+        .Add("~/Scripts/fancybox/jquery.fancybox.js")
+        .Add("~/Scripts/topic.js")
+        .MvcRender("~/scripts/cache/topic_#.js"))
 }
 
 @section side

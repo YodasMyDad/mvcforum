@@ -1,4 +1,5 @@
-﻿@model MVCForum.Website.ViewModels.HighEarnersPointViewModel
+﻿@using MVCForum.Utilities
+@model MVCForum.Website.ViewModels.HighEarnersPointViewModel
 
 <ul>
     @foreach (var dict in Model.HighEarners.Where(x => x.Value > 0))

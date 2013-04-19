@@ -463,8 +463,8 @@ ul.tagCloud li span.tagCount {float: left; padding: 0 2px; width: auto;display: 
 
 /*--- Attach Files ---*/
 .postuploadholder { display: none;}
-.postuploadholder .span7 { border: 1px #ccc solid;padding: 6px;}
-.postuploadedfilesholder { padding: 10px 0 0 0;}
-.postuploadedfilesholder span.fileupload { border: 1px solid #2D82D7; -moz-border-radius: 2px; -webkit-border-radius: 2px; display: block; float: left; padding: 0 5px; text-decoration: none; color: #2676C6; margin-right: 5px; margin-bottom: 5px; background-color: #4891dc;line-height: 24px; }
-.postuploadedfilesholder span.fileupload a { color: #fff;}
-.postuploadedfilesholder span.fileupload span.deleteupload{ font-weight: bold;font-size: 20px;padding: 0 0 0 14px;line-height: 20px;}
+.postuploadholder .span7 { border-top: 1px #bfbfbf dotted;padding: 15px 0 0 0;margin-top: 15px;}
+.postuploadedfilesholder { border-top: 1px #bfbfbf dotted;padding: 15px 0 0 0;margin-top: 15px;}
+.postuploadedfilesholder div.fileupload { border: 1px solid #2D82D7;width: 46.5%; -moz-border-radius: 2px; -webkit-border-radius: 2px; display: block; float: left; padding: 0 5px; text-decoration: none; color: #2676C6; margin-right: 5px; margin-bottom: 5px; background-color: #4891dc;line-height: 24px; }
+.postuploadedfilesholder div.fileupload a { color: #fff;font-size: 15px;}
+.postuploadedfilesholder div.fileupload span.deleteupload a{ font-weight: bold;font-size: 22px;padding: 0 0 0 14px;line-height: 22px;float: right;}
