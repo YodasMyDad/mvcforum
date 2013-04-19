@@ -80,7 +80,7 @@
                 }
             </div>
         }
-        @if (Model.Post.Files.Any())
+        @if (Model.Post.Files != null && Model.Post.Files.Any())
         {
             <div class="postuploadedfilesholder">
                 @foreach (var file in Model.Post.Files.OrderByDescending(o => o.DateCreated))
