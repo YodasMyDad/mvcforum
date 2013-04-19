@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
@@ -23,8 +21,9 @@ namespace MVCForum.Website.Controllers
         private readonly MembershipUser LoggedOnUser;
         private readonly MembershipRole UsersRole;
 
-        public UploadController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, 
-            IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IPostService postService, IUploadedFileService uploadedFileService) 
+        public UploadController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, 
+            IPostService postService, IUploadedFileService uploadedFileService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _postService = postService;
@@ -80,7 +79,51 @@ namespace MVCForum.Website.Controllers
                                 {
                                     var fileName = Path.GetFileName(file.FileName);
                                     if (fileName != null)
-                                    {
+                                    {                   
+                                        //Before we do anything, check file size
+                                        if (file.ContentLength > Convert.ToInt32(ConfigUtils.GetAppSetting("FileUploadMaximumFileSizeInBytes")))
+                                        {
+                                            //File is too big
+                                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                            {
+                                                Message = LocalizationService.GetResourceString("Post.UploadFileTooBig"),
+                                                MessageType = GenericMessages.error
+                                            };
+                                            return Redirect(topic.NiceUrl);
+                                        }
+
+                                        // now check allowed extensions
+                                        var allowedFileExtensions = ConfigUtils.GetAppSetting("FileUploadAllowedExtensions");
+                                        if (!string.IsNullOrEmpty(allowedFileExtensions))
+                                        {
+                                            // Turn into a list and strip unwanted commas as we don't trust users!
+                                            var allowedFileExtensionsList = allowedFileExtensions.ToLower().Trim()
+                                                                             .TrimStart(',').TrimEnd(',').Split(',').ToList();
+
+                                            // Get the file extension
+                                            var fileExtension = Path.GetExtension(file.FileName.ToLower());
+
+                                            // If can't work out extension then just error
+                                            if (string.IsNullOrEmpty(fileExtension))
+                                            {
+                                                return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
+                                            }
+
+                                            // Remove the dot then check against the extensions in the web.config settings
+                                            fileExtension = fileExtension.TrimStart('.');
+                                            if (!allowedFileExtensionsList.Contains(fileExtension))
+                                            {
+                                                // File extension now allowed
+                                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                                {
+                                                    Message = LocalizationService.GetResourceString("Post.UploadBannedFileExtension"),
+                                                    MessageType = GenericMessages.error
+                                                };
+                                                return Redirect(topic.NiceUrl);
+                                            }
+                                        }
+
+
                                         // Sort the file name
                                         var newFileName = string.Format("{0}_{1}", GuidComb.GenerateComb(), file.FileName.Trim(' ').Replace("_", "-").Replace(" ", "-").ToLower());
                                         var path = Path.Combine(uploadFolderPath, newFileName);

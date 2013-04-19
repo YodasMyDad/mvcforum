@@ -176,6 +176,8 @@ Error.EmailIsBanned = The email address or domain you are trying to use is banne
 Post.FilesUploaded = Files uploaded successfully
 Post.Attach = Attach
 Post.Upload = Upload Files
+Post.UploadBannedFileExtension = File extension not allowed
+Post.UploadFileTooBig = File upload is too big
 
 +++ CHANGES TO EXISTING LANGUAGE STRINGS
 Topic.Comments = Answers
@@ -269,6 +271,8 @@ GO
 <add key="TwitterAppId" value="" />
 <add key="TwitterAppSecret" value="" />
 <add key="BannedWordReplaceCharactor" value="?" />
+<add key="FileUploadAllowedExtensions" value="jpg,jpeg,png,gif" />
+<add key="FileUploadMaximumFileSizeInBytes" value="1048576" />
 
 --- Web.config added dotnet open auth
 
