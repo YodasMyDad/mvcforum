@@ -76,31 +76,6 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        ///// <summary>
-        ///// Return the currently logged on user
-        ///// </summary>
-        //protected MembershipUser LoggedOnUser
-        //{
-        //    get
-        //    {
-        //        if (User.Identity.IsAuthenticated)
-        //        {
-        //            //TODO: THIS GETS HIT LOADS OF TIMES!! NEED TO MOVE / REFACTOR
-        //            var currentUser = MembershipService.GetUser(User.Identity.Name);
-        //            return currentUser;
-        //        }
-        //        return null;
-        //    }
-        //}
-
-        //protected MembershipRole UsersRole
-        //{
-        //    get
-        //    {
-        //            return LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault(); 
-        //    }
-        //}
-
         internal ActionResult ErrorToHomePage(string errorMessage)
         {
             // Use temp data as its a redirect

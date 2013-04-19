@@ -23,7 +23,6 @@ namespace MVCForum.Services
         /// <returns></returns>
         public Settings GetSettings(bool useCache = true)
         {
-            //TODO  Testing for performance, assign settings per request to save hits and making hashcodes constantly from same request for settings
             if (useCache)
             {
                 var objectContextKey = HttpContext.Current.GetHashCode().ToString("x");

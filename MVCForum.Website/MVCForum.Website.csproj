@@ -265,6 +265,7 @@
     <Compile Include="Controllers\StatsController.cs" />
     <Compile Include="Controllers\TagController.cs" />
     <Compile Include="Controllers\TopicController.cs" />
+    <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="Controllers\VoteController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -273,6 +274,7 @@
     <Compile Include="Membership\RoleProvider.cs" />
     <Compile Include="Areas\Admin\ViewModels\AccountViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\UploadViewModels.cs" />
     <Compile Include="ViewModels\BadgeViewModels.cs" />
     <Compile Include="ViewModels\CategoryViewModels.cs" />
     <Compile Include="ViewModels\EmailViewModels.cs" />
@@ -624,6 +626,7 @@
     <Content Include="Content\Styles\bootstrap.min.css" />
     <Content Include="Content\Styles\images\glyphicons-halflings-white.png" />
     <Content Include="Content\Styles\images\glyphicons-halflings.png" />
+    <Content Include="Content\uploads\readme.txt" />
     <Content Include="Installer\Content\arrow-spinner-blue.gif" />
     <Content Include="Installer\Content\Images\glyphicons\glyphicons_009_magic.png" />
     <Content Include="Installer\Content\Images\glyphicons\glyphicons_042_group.png" />
@@ -1075,6 +1078,7 @@
     <Content Include="Views\Category\Index.cshtml" />
     <Content Include="Views\Shared\_SocialLoginButtons.cshtml" />
     <Content Include="Views\Topic\CreateTopicButton.cshtml" />
+    <Content Include="Views\Home\UploadFiles.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Themes\n3o\Views\Shared\" />

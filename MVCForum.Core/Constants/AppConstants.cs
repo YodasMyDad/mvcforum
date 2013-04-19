@@ -97,5 +97,8 @@
         public const string InstallerName = "YesImAnInstallerSpankMe";
         public const string InMobileView = "InMobileView";
         public const string GoToInstaller = "GoToInstaller";
+
+        //Uploads
+        public const string UploadFolderPath = "~/content/uploads/";
     }
 }

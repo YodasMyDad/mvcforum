@@ -461,3 +461,6 @@ ul.tagCloud li span.tagCount {float: left; padding: 0 2px; width: auto;display: 
 /*--- Pager ---*/
 .pagination ul li a { color: #626262;}
 
+/*--- Attach Files ---*/
+.postuploadholder { display: none;}
+.postuploadholder .span7 { border: 1px #ccc solid;padding: 6px;}

@@ -19,7 +19,9 @@ namespace MVCForum.Utilities
         public string CensorText(string text)
         {
             if (text == null)
-                throw new ArgumentNullException("text");
+            {
+                return null;
+            }
 
             var censoredText = text;
 

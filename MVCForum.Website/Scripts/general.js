@@ -2,6 +2,11 @@
 
 $(function () {
 
+    // Attach files click handler
+    ShowFileUploadClickHandler();
+
+    DisplayWaitForPostUploadClickHandler();
+
     // make code pretty
     window.prettyPrint && prettyPrint();
 
@@ -289,6 +294,30 @@ $(function () {
 
 
 });
+
+function DisplayWaitForPostUploadClickHandler() {
+    var postUploadButton = $('.postuploadbutton');
+    if (postUploadButton.length > 0) {
+        postUploadButton.click(function (e) {
+            var uploadHolder = $(this).closest("div.postuploadholder");
+            var ajaxSpinner = uploadHolder.find("span.ajaxspinner");
+            ajaxSpinner.show();
+            $(this).hide();
+        });
+    }
+}
+
+function ShowFileUploadClickHandler() {
+    var attachButton = $('.postshowattach');
+    if (attachButton.length > 0) {
+        attachButton.click(function (e) {
+            e.preventDefault();
+            var postHolder = $(this).closest("div.post");
+            var uploadHolder = postHolder.find("div.postuploadholder");
+            uploadHolder.toggle();
+        });
+    }
+}
 
 function SortWhosOnline() {
     $.getJSON(app_base + 'Members/LastActiveCheck');

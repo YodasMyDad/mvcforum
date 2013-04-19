@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
@@ -21,7 +24,7 @@ namespace MVCForum.Website.Controllers
         private MembershipUser LoggedOnUser;
         private MembershipRole UsersRole;
 
-        public HomeController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IActivityService activityService, IMembershipService membershipService, 
+        public HomeController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IActivityService activityService, IMembershipService membershipService,
             ITopicService topicService, ILocalizationService localizationService, IRoleService roleService,
             ISettingsService settingsService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
@@ -32,6 +35,28 @@ namespace MVCForum.Website.Controllers
             LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
+
+        #region Upload Test Code
+        
+        public ActionResult UploadFiles()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult UploadFiles(AttachFileToPostViewModel attachFileToPostViewModel)
+        {
+            foreach (var file in attachFileToPostViewModel.Files)
+            {
+                //string path = System.IO.Path.Combine(Server.MapPath("~/App_Data"), System.IO.Path.GetFileName(file.FileName));
+                //file.SaveAs(path);
+            }
+
+            return RedirectToAction("index");
+        }
+
+        #endregion
+
 
         //[OutputCache(Duration = 10, VaryByParam = "p")]
         public ActionResult Index(int? p)
@@ -65,7 +90,7 @@ namespace MVCForum.Website.Controllers
                     var permissionSet = RoleService.GetPermissions(category, UsersRole);
                     viewModel.AllPermissionSets.Add(category, permissionSet);
                 }
-                return View(viewModel); 
+                return View(viewModel);
             }
         }
 
@@ -133,12 +158,12 @@ namespace MVCForum.Website.Controllers
                         {
                             var firstOrDefault = topic.Posts.FirstOrDefault(x => x.IsTopicStarter);
                             if (firstOrDefault != null)
-                                rssTopics.Add(new RssItem { Description = firstOrDefault.PostContent, Link = topic.NiceUrl, Title = topic.Name, PublishedDate = topic.CreateDate});
+                                rssTopics.Add(new RssItem { Description = firstOrDefault.PostContent, Link = topic.NiceUrl, Title = topic.Name, PublishedDate = topic.CreateDate });
                         }
                     }
                 }
 
-                return new RssResult(rssTopics, LocalizationService.GetResourceString("Rss.LatestActivity.Title"), LocalizationService.GetResourceString("Rss.LatestActivity.Description")); 
+                return new RssResult(rssTopics, LocalizationService.GetResourceString("Rss.LatestActivity.Title"), LocalizationService.GetResourceString("Rss.LatestActivity.Description"));
             }
         }
 
@@ -158,7 +183,7 @@ namespace MVCForum.Website.Controllers
                 foreach (var activity in activities)
                 {
                     if (activity is BadgeActivity)
-                    {        
+                    {
                         var badgeActivity = activity as BadgeActivity;
                         rssActivities.Add(new RssItem
                             {

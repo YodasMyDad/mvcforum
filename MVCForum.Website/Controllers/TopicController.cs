@@ -31,8 +31,8 @@ namespace MVCForum.Website.Controllers
         private readonly IPollAnswerService _pollAnswerService;
         private readonly IBannedWordService _bannedWordService;
 
-        private MembershipUser LoggedOnUser;
-        private MembershipRole UsersRole;
+        private readonly MembershipUser LoggedOnUser;
+        private readonly MembershipRole UsersRole;
 
         public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,

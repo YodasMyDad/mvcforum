@@ -394,3 +394,7 @@ input[type="radio"].pollanswerselect { margin: 3px 0 0 15px;float: left;}
 
 /*--- Misc Mobile Style ---*/
 .mobileview .mobilenavbar .mobilenavbartopstrip {background-color: #4891DC;}
+
+/*--- Attach Files ---*/
+.postuploadholder { display: none;}
+.postuploadholder .span7 { border: 1px #ccc solid;padding: 6px;}

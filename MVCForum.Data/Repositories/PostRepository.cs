@@ -105,6 +105,7 @@ namespace MVCForum.Data.Repositories
                                   .Include(x => x.User)
                                   .Include(x => x.Topic)
                                   .Include(x => x.Votes)
+                                  .Include(x => x.Files)
                                   .Where(x => x.Topic.Id == topicId && !x.IsTopicStarter);
 
             // Sort what order the posts are sorted in

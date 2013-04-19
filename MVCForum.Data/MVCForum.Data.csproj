@@ -70,6 +70,7 @@
     <Compile Include="Mapping\PollVoteMapping.cs" />
     <Compile Include="Mapping\TopicNotificationMapping.cs" />
     <Compile Include="Mapping\TopicTagMapping.cs" />
+    <Compile Include="Mapping\UploadedFileMapping.cs" />
     <Compile Include="Mapping\VoteMapping.cs" />
     <Compile Include="Mapping\PrivateMessageMapping.cs" />
     <Compile Include="Mapping\PostMapping.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="Repositories\RoleRepository.cs" />
     <Compile Include="Repositories\SettingsRepository.cs" />
     <Compile Include="Repositories\TopicRepository.cs" />
+    <Compile Include="Repositories\UploadedFileRepository.cs" />
     <Compile Include="Repositories\VoteRepository.cs" />
     <Compile Include="UnitOfWork\UnitOfWork.cs" />
     <Compile Include="UnitOfWork\UnitOfWorkManager.cs" />

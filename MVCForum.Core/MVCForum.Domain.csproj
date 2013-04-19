@@ -89,6 +89,7 @@
     <Compile Include="DomainModel\Post.cs" />
     <Compile Include="DomainModel\Settings.cs" />
     <Compile Include="DomainModel\Topic.cs" />
+    <Compile Include="DomainModel\UploadedFile.cs" />
     <Compile Include="DomainModel\Vote.cs" />
     <Compile Include="Events\BadgeEventArgs.cs" />
     <Compile Include="Events\EventManager.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="Interfaces\IModelAttribute.cs" />
     <Compile Include="Interfaces\IMVCForumContext.cs" />
     <Compile Include="Interfaces\IPagedList.cs" />
+    <Compile Include="Interfaces\Repositories\IUploadedFileRepository.cs" />
     <Compile Include="Interfaces\Repositories\IBannedWordRepository.cs" />
     <Compile Include="Interfaces\Repositories\IBannedEmailRepository.cs" />
     <Compile Include="Interfaces\Repositories\IInstallerRepository.cs" />
@@ -167,6 +169,7 @@
     <Compile Include="Interfaces\Services\IServiceBase.cs" />
     <Compile Include="Interfaces\Services\ISettingsService.cs" />
     <Compile Include="Interfaces\Services\ITopicService.cs" />
+    <Compile Include="Interfaces\Services\IUploadedFileService.cs" />
     <Compile Include="Interfaces\Services\IVoteService.cs" />
     <Compile Include="Interfaces\UnitOfWork\IUnitOfWork.cs" />
     <Compile Include="Interfaces\UnitOfWork\IUnitOfWorkManager.cs" />

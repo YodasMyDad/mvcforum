@@ -55,6 +55,7 @@
     <Compile Include="ActivityService.cs" />
     <Compile Include="BannedWordService.cs" />
     <Compile Include="InstallerService.cs" />
+    <Compile Include="UploadedFileService.cs" />
     <Compile Include="PollAnswerService.cs" />
     <Compile Include="PollVoteService.cs" />
     <Compile Include="EmailService.cs" />
