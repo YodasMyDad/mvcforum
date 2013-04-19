@@ -132,7 +132,7 @@
                     {
                         <a href="@Url.Action("EditPost", "Post", new { id = Model.Post.Id })">@Html.LanguageString("Post.Edit")</a>
                     }
-                    @if (Model.Permissions[AppConstants.PermissionAttachFiles].IsTicked)
+                    @if ((Model.Post.User.Id == loggedOnUserId || User.IsInRole(AppConstants.AdminRoleName)) && Model.Permissions[AppConstants.PermissionAttachFiles].IsTicked)
                     {
                         <a class="postshowattach" href="#">@Html.LanguageString("Post.Attach")</a>
                     }

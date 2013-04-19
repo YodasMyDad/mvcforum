@@ -652,6 +652,10 @@ function AjaxPostSuccess() {
 
     // Finally do an async badge check
     UserPost();
+    
+    // Attached the upload click events
+    ShowFileUploadClickHandler();
+    DisplayWaitForPostUploadClickHandler();
 }
 
 function AjaxPostBegin() {
