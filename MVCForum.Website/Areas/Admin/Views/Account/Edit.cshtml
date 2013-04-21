@@ -130,6 +130,12 @@
             @Html.LabelFor(x => x.DisablePrivateMessages)
             @Html.ValidationMessageFor(x => x.DisablePrivateMessages)
         </div>
+        
+        <div class="editor-field n3ocheckboxfield">
+            @Html.CheckBoxFor(x => x.DisableFileUploads)
+            @Html.LabelFor(x => x.DisableFileUploads)
+            @Html.ValidationMessageFor(x => x.DisableFileUploads)
+        </div>
 
         <div class="editor-field n3ocheckboxfield">
             @Html.CheckBoxFor(x => x.IsApproved)

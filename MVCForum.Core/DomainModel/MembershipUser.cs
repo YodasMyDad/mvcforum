@@ -71,6 +71,7 @@ namespace MVCForum.Domain.DomainModel
         public bool? DisableEmailNotifications { get; set; }
         public bool? DisablePosting { get; set; }
         public bool? DisablePrivateMessages { get; set; }
+        public bool? DisableFileUploads { get; set; }
 
         public string Latitude { get; set; }
         public string Longitude { get; set; }

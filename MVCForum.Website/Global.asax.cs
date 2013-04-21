@@ -191,7 +191,7 @@ namespace MVCForum.Website
                         using (UnitOfWorkManager.NewUnitOfWork())
                         {
                             ci = new CultureInfo(SettingsService.GetSettings().DefaultLanguage.LanguageCulture);
-                            this.Session["Culture"] = ci;   
+                            this.Session["Culture"] = ci; 
                         }
                     }
                     //Finally setting culture for each request

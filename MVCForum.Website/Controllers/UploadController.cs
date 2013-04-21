@@ -59,7 +59,7 @@ namespace MVCForum.Website.Controllers
                             // Get the permissions for this category, and check they are allowed to update and 
                             // not trying to be a sneaky mofo
                             var permissions = RoleService.GetPermissions(category, UsersRole);
-                            if (permissions[AppConstants.PermissionAttachFiles].IsTicked == false)
+                            if (permissions[AppConstants.PermissionAttachFiles].IsTicked == false && LoggedOnUser.DisableFileUploads != true)
                             {
                                 return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
                             }

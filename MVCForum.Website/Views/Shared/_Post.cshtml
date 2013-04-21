@@ -131,16 +131,21 @@
                     {
                         <a href="@Url.Action("EditPost", "Post", new { id = Model.Post.Id })">@Html.LanguageString("Post.Edit")</a>
                     }
+
                     @if ((Model.Post.User.Id == loggedOnUserId || User.IsInRole(AppConstants.AdminRoleName)) && Model.Permissions[AppConstants.PermissionAttachFiles].IsTicked)
                     {
-                        <a class="postshowattach" href="#">@Html.LanguageString("Post.Attach")</a>
+                        if (Model.Post.User.DisableFileUploads != true)
+                        {
+                            <a class="postshowattach" href="#">@Html.LanguageString("Post.Attach")</a>
+                        }                        
                     }
+
                 </div>
             }
         </div>
     </div>
 
-    @if (Model.Permissions[AppConstants.PermissionAttachFiles].IsTicked)
+    @if (Model.Permissions[AppConstants.PermissionAttachFiles].IsTicked && Model.Post.User.DisableFileUploads != true)
     {
         <div class="postuploadholder span9">
             @using (Html.BeginForm("UploadPostFiles", "Upload", FormMethod.Post, new { enctype = "multipart/form-data" }))

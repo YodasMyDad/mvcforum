@@ -23,6 +23,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         private readonly IPollService _pollService;
         private readonly IPollVoteService _pollVoteService;
         private readonly IPollAnswerService _pollAnswerService;
+        private readonly IUploadedFileService _uploadedFileService;
 
         /// <summary>
         /// Constructor
@@ -40,13 +41,14 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         /// <param name="pollService"> </param>
         /// <param name="pollVoteService"> </param>
         /// <param name="pollAnswerService"> </param>
+        /// <param name="uploadedFileService"></param>
         public AccountController(ILoggingService loggingService,
             IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService,
             ILocalizationService localizationService,
             IRoleService roleService,
             ISettingsService settingsService, IPostService postService, ITopicService topicService, IMembershipUserPointsService membershipUserPointsService, 
-            IActivityService activityService, IPollService pollService, IPollVoteService pollVoteService, IPollAnswerService pollAnswerService)
+            IActivityService activityService, IPollService pollService, IPollVoteService pollVoteService, IPollAnswerService pollAnswerService, IUploadedFileService uploadedFileService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
             _activityService = activityService;
@@ -57,6 +59,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             _pollService = pollService;
             _pollVoteService = pollVoteService;
             _pollAnswerService = pollAnswerService;
+            _uploadedFileService = uploadedFileService;
         }
 
         #region Users
@@ -536,12 +539,29 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
         private void DeleteUsersPostsPollsVotesAndPoints(MembershipUser user, IUnitOfWork unitOfWork)
         {
+            // Delete all file uploads
+            var files = _uploadedFileService.GetAllByUser(user.Id);
+            var filesList = new List<UploadedFile>();
+            filesList.AddRange(files);
+            foreach (var file in filesList)
+            {
+                // store the file path as we'll need it to delete on the file system
+                var filePath = file.FilePath;
+
+                // Now delete it
+                _uploadedFileService.Delete(file);
+
+                // And finally delete from the file system
+                System.IO.File.Delete(Server.MapPath(filePath));
+            }
+
             // Delete all posts
             var posts = user.Posts;
             var postList = new List<Post>();
             postList.AddRange(posts);
             foreach (var post in postList)
             {
+                post.Files.Clear();
                 _postService.Delete(post);
             }
 

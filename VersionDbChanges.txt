@@ -191,6 +191,7 @@ LastActivityDate - DateTime allow nulls
 DisableEmailNotifications (bit) allow nulls
 DisablePosting (bit) allow nulls
 DisablePrivateMessages (bit) allow nulls
+DisableFileUploads (bit) allow nulls
 
 +++ CHANGES
 FacebookAccessToken - change to nvarchar(250)
