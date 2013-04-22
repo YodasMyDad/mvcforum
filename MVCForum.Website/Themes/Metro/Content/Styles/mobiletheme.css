@@ -266,3 +266,8 @@ h6 {font-size:18px; margin-bottom:8px;}
 .mobileview .container-fluid .mainregisterform {width: 100% !Important;margin: 0;padding: 0;clear: both;}
 .mobileview .container-fluid .loginortext {width: 100%;margin: 0;padding: 0;clear: both;}
 .mobileview .container-fluid .oauthbuttons {width: 100%;margin: 0;padding: 0;clear: both;}
+
+/*--- File Uploads ---*/
+.mobileview .container-fluid .row .postuploadholder {width: 100% !Important;margin: 0;padding: 0;clear: both;display: none;}
+.mobileview .container-fluid .row .postuploadholder .offset1 { margin-left: 14.89361702%;}
+.mobileview .container-fluid .row .postuploadholder .span7 { width: 65.95744680199999%;}
