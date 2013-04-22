@@ -162,7 +162,7 @@ namespace MVCForum.Services
             var logs = new List<LogEntry>();
 
             // Read the file and display it line by line.
-            using (var file = new StreamReader(_logFileName, Encoding.Default, true))
+            using (var file = new StreamReader(_logFileName, true))
             {
                 string line;
                 while ((line = file.ReadLine()) != null)

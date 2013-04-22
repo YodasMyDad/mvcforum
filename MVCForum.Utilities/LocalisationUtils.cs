@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Web.Script.Serialization;
 
 namespace MVCForum.Utilities
@@ -16,7 +14,7 @@ namespace MVCForum.Utilities
             var req = (HttpWebRequest)WebRequest.Create(string.Format("http://www.google.com/uds/GlocalSearch?q={0}&v=1.0", postcode));
             using (var resp = req.GetResponse())
             using (var respStream = resp.GetResponseStream())
-            using (var reader = new StreamReader(respStream, Encoding.Default, true))
+            using (var reader = new StreamReader(respStream, true))
             {
                 var response = reader.ReadToEnd();
                 var serializer = new JavaScriptSerializer();

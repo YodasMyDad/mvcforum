@@ -444,11 +444,10 @@ namespace MVCForum.Utilities
         public static string StripNonAlphaNumeric(string strInput, string replaceWith)
         {
             strInput = Regex.Replace(strInput, "[^\\w]", replaceWith);
-            strInput = strInput.Replace("--", "-");
-            if (strInput.EndsWith("-"))
-            {
-                strInput = strInput.Substring(0, (strInput.Length - 1));
-            }
+            strInput = strInput.Replace(string.Concat(replaceWith, replaceWith, replaceWith), replaceWith)
+                                .Replace(string.Concat(replaceWith, replaceWith), replaceWith)
+                                .TrimStart(Convert.ToChar(replaceWith))
+                                .TrimEnd(Convert.ToChar(replaceWith));
             return strInput;
         }
 
@@ -632,12 +631,46 @@ namespace MVCForum.Utilities
 
         public static string RemoveAccents(string input)
         {
-            var normalized = input.Normalize(NormalizationForm.FormKD);
-            var removal = Encoding.GetEncoding(Encoding.ASCII.CodePage,
-                                                    new EncoderReplacementFallback(""),
-                                                    new DecoderReplacementFallback(""));
-            byte[] bytes = removal.GetBytes(normalized);
-            return Encoding.ASCII.GetString(bytes);
+            // Replace accented characters for the closest ones:
+            var from = "ÂÃÄÀÁÅÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïðñòóôõöøùúûüýÿ".ToCharArray();
+            var to = "AAAAAACEEEEIIIIDNOOOOOOUUUUYaaaaaaceeeeiiiidnoooooouuuuyy".ToCharArray();
+            for (var i = 0; i < from.Length; i++)
+            {
+                input = input.Replace(from[i], to[i]);
+            }
+
+            // Thorn http://en.wikipedia.org/wiki/%C3%9E
+            input = input.Replace("Þ", "TH");
+            input = input.Replace("þ", "th");
+
+            // Eszett http://en.wikipedia.org/wiki/%C3%9F
+            input = input.Replace("ß", "ss");
+
+            // AE http://en.wikipedia.org/wiki/%C3%86
+            input = input.Replace("Æ", "AE");
+            input = input.Replace("æ", "ae");
+
+            return input;
+
+            // ------------ SECOND SOLUTION ---------------
+            ////!\\ Warning 'œ' will be replaced with a 'o' not an 'oe'
+            //var normalizedString = input.Normalize(NormalizationForm.FormD);
+            //var stringBuilder = new StringBuilder();
+            //for (var i = 0; i < normalizedString.Length; i++)
+            //{
+            //    var c = normalizedString[i];
+            //    if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+            //        stringBuilder.Append(c);
+            //}
+            //return stringBuilder.ToString();
+
+            //---------- ORIGINAL SOLUTION------------
+            //var normalized = input.Normalize(NormalizationForm.FormKD);
+            //var removal = Encoding.GetEncoding(Encoding.ASCII.CodePage,
+            //                                        new EncoderReplacementFallback(""),
+            //                                        new DecoderReplacementFallback(""));
+            //byte[] bytes = removal.GetBytes(normalized);
+            //return Encoding.ASCII.GetString(bytes);
         }
 
         /// <summary>
