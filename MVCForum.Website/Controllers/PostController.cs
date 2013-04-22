@@ -8,10 +8,10 @@ using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
+using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
 
 namespace MVCForum.Website.Controllers
 {
@@ -26,11 +26,18 @@ namespace MVCForum.Website.Controllers
         private readonly IEmailService _emailService;
         private readonly IReportService _reportService;
         private readonly ILuceneService _luceneService;
+        private readonly IPollAnswerService _pollAnswerService;
+        private readonly IPollService _pollService;
+        private readonly IBannedWordService _bannedWordService;
+
+        private MembershipUser LoggedOnUser;
+        private MembershipRole UsersRole;
 
         public PostController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
             ILocalizationService localizationService, IRoleService roleService, ITopicService topicService, IPostService postService, 
             ISettingsService settingsService, ICategoryService categoryService, ITopicTagService topicTagService, 
-            ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, ILuceneService luceneService)
+            ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, ILuceneService luceneService, IPollAnswerService pollAnswerService, 
+            IPollService pollService, IBannedWordService bannedWordService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
@@ -41,6 +48,12 @@ namespace MVCForum.Website.Controllers
             _emailService = emailService;
             _reportService = reportService;
             _luceneService = luceneService;
+            _pollAnswerService = pollAnswerService;
+            _pollService = pollService;
+            _bannedWordService = bannedWordService;
+
+            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
+            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
 
@@ -62,7 +75,7 @@ namespace MVCForum.Website.Controllers
 
                 topic = _topicService.Get(post.Topic);
                 
-                var postContent = post.PostContent;
+                var postContent = _bannedWordService.SanitiseBannedWords(post.PostContent);
 
                 var akismetHelper = new AkismetHelper(SettingsService);
 
@@ -142,12 +155,18 @@ namespace MVCForum.Website.Controllers
                         viewModel.IsLocked = topic.IsLocked;
                         viewModel.IsSticky = topic.IsSticky;
                         viewModel.IsTopicStarter = post.IsTopicStarter;
+                        // Tags
                         if (topic.Tags.Any())
                         {
                             viewModel.Tags = string.Join<string>(",", topic.Tags.Select(x => x.Tag));
                         }
                         viewModel.Name = topic.Name;
                         viewModel.Categories = _categoryService.GetAllowedCategories(UsersRole).ToList();
+                        if(topic.Poll != null && topic.Poll.PollAnswers.Any())
+                        {
+                            // Has a poll so add it to the view model
+                            viewModel.PollAnswers = topic.Poll.PollAnswers;
+                        }
                     }
 
                     return View(viewModel);
@@ -176,8 +195,8 @@ namespace MVCForum.Website.Controllers
                 if (post.User.Id == LoggedOnUser.Id || permissions[AppConstants.PermissionEditPosts].IsTicked)
                 {
                     // User has permission so update the post
-                    post.PostContent = editPostViewModel.Content;
-                    post.DateEdited = DateTime.Now;
+                    post.PostContent = _bannedWordService.SanitiseBannedWords(editPostViewModel.Content);
+                    post.DateEdited = DateTime.UtcNow;
 
                     // if topic starter update the topic
                     if (post.IsTopicStarter)
@@ -191,12 +210,86 @@ namespace MVCForum.Website.Controllers
 
                         topic.IsLocked = editPostViewModel.IsLocked;
                         topic.IsSticky = editPostViewModel.IsSticky;
-                        topic.Name = editPostViewModel.Name;
+                        topic.Name = _bannedWordService.SanitiseBannedWords(editPostViewModel.Name);
 
-                        //_topicService.SaveOrUpdate(topic);
+                        // See if there is a poll
+                        if (editPostViewModel.PollAnswers != null && editPostViewModel.PollAnswers.Count > 0)
+                        {
+                            // Now sort the poll answers, what to add and what to remove
+                            // Poll answers already in this poll.
+                            var postedIds = editPostViewModel.PollAnswers.Select(x => x.Id);
+                            //var existingAnswers = topic.Poll.PollAnswers.Where(x => postedIds.Contains(x.Id)).ToList();
+                            var existingAnswers = editPostViewModel.PollAnswers.Where(x => topic.Poll.PollAnswers.Select(p => p.Id).Contains(x.Id)).ToList();
+                            var newPollAnswers = editPostViewModel.PollAnswers.Where(x => !topic.Poll.PollAnswers.Select(p => p.Id).Contains(x.Id)).ToList();
+                            var pollAnswersToRemove = topic.Poll.PollAnswers.Where(x => !postedIds.Contains(x.Id)).ToList();
 
-                        // Tags                        
-                        //_topicTagService.DeleteByTopic(topic);
+                            // Loop through existing and update names if need be
+                            //TODO: Need to think about this in future versions if they change the name
+                            //TODO: As they could game the system by getting votes and changing name?
+                            foreach (var existPollAnswer in existingAnswers)
+                            {
+                                // Get the existing answer from the current topic
+                                var pa = topic.Poll.PollAnswers.FirstOrDefault(x => x.Id == existPollAnswer.Id);
+                                if (pa != null && pa.Answer != existPollAnswer.Answer)
+                                {
+                                    // If the answer has changed then update it
+                                    pa.Answer = existPollAnswer.Answer;
+                                }
+                            }
+
+                            // Loop through and remove the old poll answers and delete
+                            foreach (var oldPollAnswer in pollAnswersToRemove)
+                            {
+                                // Delete
+                                _pollAnswerService.Delete(oldPollAnswer);
+
+                                // Remove from Poll
+                                topic.Poll.PollAnswers.Remove(oldPollAnswer);
+                            }
+
+                            // Poll answers to add
+                            foreach (var newPollAnswer in newPollAnswers)
+                            {
+                                var npa = new PollAnswer
+                                {
+                                    Poll = topic.Poll,
+                                    Answer = newPollAnswer.Answer
+                                };
+                                _pollAnswerService.Add(npa);
+                                topic.Poll.PollAnswers.Add(npa);
+                            } 
+                        }
+                        else
+                        {
+                            // Need to check if this topic has a poll, because if it does
+                            // All the answers have now been removed so remove the poll.
+                            if (topic.Poll != null)
+                            {
+                                //Firstly remove the answers if there are any
+                                if (topic.Poll.PollAnswers != null && topic.Poll.PollAnswers.Any())
+                                {
+                                    var answersToDelete = new List<PollAnswer>();
+                                    answersToDelete.AddRange(topic.Poll.PollAnswers);
+                                    foreach (var answer in answersToDelete)
+                                    {
+                                        // Delete
+                                        _pollAnswerService.Delete(answer);
+
+                                        // Remove from Poll
+                                        topic.Poll.PollAnswers.Remove(answer);
+                                    }
+                                }
+
+                                // Now delete the poll
+                                var pollToDelete = topic.Poll;
+                                _pollService.Delete(pollToDelete);
+
+                                // Remove from topic.
+                                topic.Poll = null;
+                            }
+                        }
+
+                        // Tags
                         topic.Tags.Clear();
                         if(!string.IsNullOrEmpty(editPostViewModel.Tags))
                         {
@@ -350,8 +443,8 @@ namespace MVCForum.Website.Controllers
                     sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Post.Notification.NewPosts"), topic.Name));
                     sb.AppendFormat("<p>{0}</p>", string.Concat(SettingsService.GetSettings().ForumUrl, topic.NiceUrl));
 
-                    // create the emails
-                    var emails = usersToNotify.Select(user => new Email
+                    // create the emails only to people who haven't had notifications disabled
+                    var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true).Select(user => new Email
                     {
                         Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
                         EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,

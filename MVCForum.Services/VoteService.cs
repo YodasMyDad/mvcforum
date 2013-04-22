@@ -1,4 +1,6 @@
-﻿using MVCForum.Domain.DomainModel;
+﻿using System;
+using System.Collections.Generic;
+using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Repositories;
@@ -20,6 +22,11 @@ namespace MVCForum.Services
         public void Delete(Vote vote)
         {
             _voteRepository.Delete(vote);
+        }
+
+        public IList<Vote> GetAllVotesByUser(Guid membershipId)
+        {
+            return _voteRepository.GetAllVotesByUser(membershipId);
         }
 
         /// <summary>

@@ -1,0 +1,51 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.BatchMoveTopicsViewModel
+
+@{
+    ViewBag.Title = "Batch Move Topics";
+}
+
+<h2>Batch Move Topics</h2>
+<p>Use this tool to move all topics from one category to another one.</p>
+
+<p><span class="label label-important">Warning</span> As soon as you click the button the topics will be moved.</p>
+<p>&nbsp;</p>
+<div class="clearer"></div>
+
+<div class="row">
+
+    @using (Html.BeginForm("BatchMoveTopics", "Batch", FormMethod.Post, new { @class = "form-horizontal" }))
+    {
+        @Html.ValidationSummary(true)
+        @Html.AntiForgeryToken()
+
+        <div class="span5">
+            <div class="editor-label">
+                @Html.LabelFor(m => m.FromCategory)
+            </div>
+            <div class="editor-field">
+                @Html.DropDownListFor(m => m.FromCategory, new SelectList(Model.Categories, "Id", "Name"))
+                @Html.ValidationMessageFor(m => m.FromCategory)
+            </div>
+        </div>
+        <div class="span5">
+            <div class="editor-label">
+                @Html.LabelFor(m => m.ToCategory)
+            </div>
+            <div class="editor-field">
+                @Html.DropDownListFor(m => m.ToCategory, new SelectList(Model.Categories, "Id", "Name"))
+                @Html.ValidationMessageFor(m => m.ToCategory)
+            </div>
+        </div>
+        
+        <div class="clearer"></div>        
+
+        <div class="span10">
+            <div class="submit-holder">
+                <p>&nbsp;</p>
+                <input type="submit" class="btn btn-large btn-success" value="Move Topics" />
+            </div>
+        </div>
+        
+    }
+
+</div>

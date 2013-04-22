@@ -71,6 +71,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [Display(Name = "Signature")]
         [StringLength(1000)]
         //[UIHint("bbeditor"), AllowHtml]
+        //[UIHint("tinymceeditor"), AllowHtml]
         [UIHint("markdowneditor"), AllowHtml]
         public string Signature { get; set; }
 
@@ -99,6 +100,18 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [Display(Name = "User is Approved")]
         public bool IsApproved { get; set; }
+
+        [Display(Name = "Disable email notifications for this member")]
+        public bool DisableEmailNotifications { get; set; }
+        
+        [Display(Name = "Disable posting. The user will not be able to post or create topics")]
+        public bool DisablePosting { get; set; }
+        
+        [Display(Name = "Disable private messages for this user")]
+        public bool DisablePrivateMessages { get; set; }
+
+        [Display(Name = "Disable file uploading on posts and topics for this user")]
+        public bool DisableFileUploads { get; set; }
 
         [Display(Name = "User is Locked Out")]
         public bool IsLockedOut { get; set; }

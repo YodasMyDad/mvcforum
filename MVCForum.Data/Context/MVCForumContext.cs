@@ -36,6 +36,9 @@ namespace MVCForum.Data.Context
         public DbSet<TopicNotification> TopicNotification { get; set; }
         public DbSet<Vote> Vote { get; set; }
         public DbSet<TopicTag> TopicTag { get; set; }
+        public DbSet<BannedEmail> BannedEmail { get; set; }
+        public DbSet<BannedWord> BannedWord { get; set; }
+        public DbSet<UploadedFile> UploadedFile { get; set; }
 
         /// <summary>
         /// Constructor
@@ -91,6 +94,12 @@ namespace MVCForum.Data.Context
             modelBuilder.Configurations.Add(new TopicNotificationMapping());         
             modelBuilder.Configurations.Add(new TopicTagMapping());
             modelBuilder.Configurations.Add(new VoteMapping());
+            modelBuilder.Configurations.Add(new BannedEmailMapping());
+            modelBuilder.Configurations.Add(new BannedWordMapping());
+            modelBuilder.Configurations.Add(new UploadedFileMapping());
+
+            // Ignore properties on domain models
+            //modelBuilder.Entity<Category>().Ignore(cat => cat.SubCategories);
 
             base.OnModelCreating(modelBuilder);
         }

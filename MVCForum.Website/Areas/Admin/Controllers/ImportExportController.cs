@@ -100,7 +100,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     {
                         // Unpack the data
                         var allLines = new List<string>();
-                        using (var streamReader = new StreamReader(file.InputStream, System.Text.Encoding.Default, true))
+                        using (var streamReader = new StreamReader(file.InputStream, true))
                         {
                             while (streamReader.Peek() >= 0)
                             {
@@ -184,7 +184,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     {
                         // Unpack the data
                         var allLines = new List<string>();
-                        using (var streamReader = new StreamReader(file.InputStream, System.Text.Encoding.Default, true))
+                        using (var streamReader = new StreamReader(file.InputStream, true))
                         {
                             while (streamReader.Peek() >= 0)
                             {
@@ -229,7 +229,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 var languageImportExportViewModel = new LanguageImportExportViewModel
                 {
                     ExportLanguages = _localizationService.LanguagesInDb,
-                    ImportLanguages = _localizationService.LanguagesNotInDb
+                    ImportLanguages = _localizationService.LanguagesAll
                 };
                 importExportViewModel.LanguageViewModel = languageImportExportViewModel;
 

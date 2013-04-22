@@ -1,6 +1,7 @@
 ﻿@using System.Reflection
 @using MVCForum.Domain
 @using MVCForum.Domain.Constants
+@using MVCForum.Domain.DomainModel
 @using MVCForum.Domain.DomainModel.Activity
 @using MVCForum.Domain.Interfaces.Services
 
@@ -20,8 +21,8 @@
         // If this is a mobile device use the mobile layout
         // Swap the lines below for testing
         //var isMobileUser = true;
-        var isMobileUser = Context.IsMobileDevice();
-        if (isMobileUser)
+        PageData[AppConstants.IsMobileDevice] = Context.IsMobileDevice();
+        if (PageData[AppConstants.IsMobileDevice])
         {
             layoutName = "_Mobile";
             Layout = "~/Views/Shared/" + layoutName + ".cshtml";

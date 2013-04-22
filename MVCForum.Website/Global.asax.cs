@@ -115,14 +115,14 @@ namespace MVCForum.Website
             // Now check the version in the web.config
             var currentVersion = ConfigUtils.GetAppSetting("MVCForumVersion");
 
+            // If the same carry on as normal
+            LoggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
+            LoggingService.Error("START APP");
+
             // If the versions are different kick the installer into play
             if (currentVersion == Application["Version"].ToString())
             {
                 Application["Installing"] = "False";
-
-                // If the same carry on as normal
-                LoggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
-                LoggingService.Error("START APP");
 
                 // Set the view engine
                 ViewEngines.Engines.Clear();
@@ -150,24 +150,29 @@ namespace MVCForum.Website
                 EventManager.Instance.Initialize(LoggingService);
 
                 // Don't go to installer
-                Application["GoToInstaller"] = "False";
+                Application[AppConstants.GoToInstaller] = "False";
             }
             else
             {
                 // Go to the installer
-                Application["GoToInstaller"] = "True";
+                Application[AppConstants.GoToInstaller] = "True";
+                
             }
         }
 
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
-            if (Application["GoToInstaller"].ToString() == "True")
+            if (Application[AppConstants.GoToInstaller].ToString() == "True")
             {
                 // Beford I redirect set it to false or we'll end up in a loop
-                Application["GoToInstaller"] = "False";
+                // But set the Session to true as we'll check this in the base controller
+                // of the normal app to stop people breaking out of the installer before its 
+                // completed correctly
+                Application[AppConstants.GoToInstaller] = "False";
                 Response.Redirect("~/install/");
             }
         }
+
 
         protected void Application_AcquireRequestState(object sender, EventArgs e)
         {
@@ -186,7 +191,7 @@ namespace MVCForum.Website
                         using (UnitOfWorkManager.NewUnitOfWork())
                         {
                             ci = new CultureInfo(SettingsService.GetSettings().DefaultLanguage.LanguageCulture);
-                            this.Session["Culture"] = ci;   
+                            this.Session["Culture"] = ci; 
                         }
                     }
                     //Finally setting culture for each request

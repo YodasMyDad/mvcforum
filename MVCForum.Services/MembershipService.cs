@@ -4,6 +4,7 @@ using System.Data.SqlTypes;
 using System.Security.Cryptography;
 using System.Text;
 using System.Linq;
+using System.Web;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.API;
@@ -221,7 +222,7 @@ namespace MVCForum.Services
             if (user.FailedPasswordAttemptCount >= allowedPasswordAttempts)
             {
                 user.IsLockedOut = true;
-                user.LastLockoutDate = DateTime.Now;
+                user.LastLockoutDate = DateTime.UtcNow;
             }
 
             if (!passwordMatches)
@@ -239,7 +240,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public MembershipUser CreateEmptyUser()
         {
-            var now = DateTime.Now;
+            var now = DateTime.UtcNow;
 
             return new MembershipUser
                        {
@@ -312,9 +313,9 @@ namespace MVCForum.Services
                     newUser.Roles = new List<MembershipRole> { _settingsRepository.GetSettings().NewMemberStartingRole };
 
                     // Set dates
-                    newUser.CreateDate = newUser.LastPasswordChangedDate = DateTime.Now;
+                    newUser.CreateDate = newUser.LastPasswordChangedDate = DateTime.UtcNow;
                     newUser.LastLockoutDate = (DateTime)SqlDateTime.MinValue;
-                    newUser.LastLoginDate = DateTime.Now;
+                    newUser.LastLoginDate = DateTime.UtcNow;
 
                     newUser.IsApproved = !_settingsRepository.GetSettings().ManuallyAuthoriseNewMembers;
                     newUser.IsLockedOut = false;
@@ -328,21 +329,17 @@ namespace MVCForum.Services
 
                         if (_settingsRepository.GetSettings().EmailAdminOnNewMemberSignUp)
                         {
+                            var sb = new StringBuilder();
+                            sb.AppendFormat("<p>{0}</p>", string.Format(_localizationService.GetResourceString("Members.NewMemberRegistered"), _settingsRepository.GetSettings().ForumName, _settingsRepository.GetSettings().ForumUrl));
+                            sb.AppendFormat("<p>{0} - {1}</p>", newUser.UserName, newUser.Email);
                             var email = new Email
                                             {
-                                                Body =
-                                                    string.Format(
-                                                        _localizationService.GetResourceString(
-                                                            "Members.NewMemberRegistered"),
-                                                        _settingsRepository.GetSettings().ForumName,
-                                                        _settingsRepository.GetSettings().ForumUrl),
                                                 EmailTo = _settingsRepository.GetSettings().AdminEmailAddress,
                                                 EmailFrom = _settingsRepository.GetSettings().NotificationReplyEmail,
                                                 NameTo = _localizationService.GetResourceString("Members.Admin"),
-                                                Subject =
-                                                    _localizationService.GetResourceString("Members.NewMemberSubject")
+                                                Subject = _localizationService.GetResourceString("Members.NewMemberSubject")
                                             };
-
+                             email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
                             _emailService.SendMail(email);
                         }
 
@@ -367,7 +364,6 @@ namespace MVCForum.Services
         /// <returns></returns>
         public MembershipUser GetUser(string username)
         {
-            username = StringUtils.SafePlainText(username);
             return _membershipRepository.GetUser(username);
         }
 
@@ -403,6 +399,27 @@ namespace MVCForum.Services
             return _membershipRepository.GetUserByFacebookId(facebookId);
         }
 
+        public MembershipUser GetUserByTwitterId(string twitterId)
+        {
+            return _membershipRepository.GetUserByTwitterId(twitterId);
+        }
+
+        public MembershipUser GetUserByGoogleId(string googleId)
+        {
+            return _membershipRepository.GetUserByGoogleId(googleId);
+        }
+
+        /// <summary>
+        /// Get users by openid token
+        /// </summary>
+        /// <param name="openId"></param>
+        /// <returns></returns>
+        public MembershipUser GetUserByOpenIdToken(string openId)
+        {
+            openId = StringUtils.GetSafeHtml(openId);
+            return _membershipRepository.GetUserByOpenIdToken(openId);
+        }
+
         /// <summary>
         /// Get users from a list of Id's
         /// </summary>
@@ -411,6 +428,17 @@ namespace MVCForum.Services
         public IList<MembershipUser> GetUsersById(List<Guid> guids)
         {
             return _membershipRepository.GetUsersById(guids);
+        }
+
+        /// <summary>
+        /// Get by posts and date
+        /// </summary>
+        /// <param name="amoutOfDaysSinceRegistered"></param>
+        /// <param name="amoutOfPosts"></param>
+        /// <returns></returns>
+        public IList<MembershipUser> GetUsersByDaysPostsPoints(int amoutOfDaysSinceRegistered, int amoutOfPosts)
+        {
+            return _membershipRepository.GetUsersByDaysPostsPoints(amoutOfDaysSinceRegistered, amoutOfPosts);
         }
 
 
@@ -462,7 +490,7 @@ namespace MVCForum.Services
 
             existingUser.Password = newHash;
             existingUser.PasswordSalt = salt;
-            existingUser.LastPasswordChangedDate = DateTime.Now;
+            existingUser.LastPasswordChangedDate = DateTime.UtcNow;
 
             return true;
         }
@@ -482,7 +510,7 @@ namespace MVCForum.Services
 
             existingUser.Password = newHash;
             existingUser.PasswordSalt = salt;
-            existingUser.LastPasswordChangedDate = DateTime.Now;
+            existingUser.LastPasswordChangedDate = DateTime.UtcNow;
             
             return true;
         }
@@ -509,6 +537,11 @@ namespace MVCForum.Services
         public IList<MembershipUser> SearchMembers(string username, int amount)
         {
             return _membershipRepository.SearchMembers(StringUtils.SafePlainText(username), amount);
+        }
+
+        public IList<MembershipUser> GetActiveMembers()
+        {
+            return _membershipRepository.GetActiveMembers();
         }
 
         /// <summary>
@@ -542,6 +575,14 @@ namespace MVCForum.Services
                 _privateMessageService.DeleteMessage(msgToDelete);
             }
 
+            // Delete all badge times last checked
+            var badgeTypesTimeLastCheckedToDelete = new List<BadgeTypeTimeLastChecked>();
+            badgeTypesTimeLastCheckedToDelete.AddRange(user.BadgeTypesTimeLastChecked);
+            foreach (var badgeTypeTimeLastCheckedToDelete in badgeTypesTimeLastCheckedToDelete)
+            {
+                _badgeService.DeleteTimeLastChecked(badgeTypeTimeLastCheckedToDelete);
+            }
+
             // Delete all points from this user
             var pointsToDelete = new List<MembershipUserPoints>();
             pointsToDelete.AddRange(user.Points);
@@ -564,14 +605,6 @@ namespace MVCForum.Services
             foreach (var voteToDelete in votesToDelete)
             {
                 _voteService.Delete(voteToDelete);
-            }
-
-            // Delete all badge times last checked
-            var badgeTypesTimeLastCheckedToDelete = new List<BadgeTypeTimeLastChecked>();
-            badgeTypesTimeLastCheckedToDelete.AddRange(user.BadgeTypesTimeLastChecked);
-            foreach (var badgeTypeTimeLastCheckedToDelete in badgeTypesTimeLastCheckedToDelete)
-            {
-                _badgeService.DeleteTimeLastChecked(badgeTypeTimeLastCheckedToDelete);
             }
 
             // Delete all user's badges
@@ -795,7 +828,7 @@ namespace MVCForum.Services
                     {
                         createDateStr = values[2];
                     }
-                    userToImport.CreateDate = createDateStr.IsNullEmpty() ? DateTime.Now : DateTime.Parse(createDateStr);
+                    userToImport.CreateDate = createDateStr.IsNullEmpty() ? DateTime.UtcNow : DateTime.Parse(createDateStr);
 
                     if (values.Length >= 4)
                     {

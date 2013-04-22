@@ -1,0 +1,2877 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DotNetOpenAuth.OpenId.RelyingParty.UI</name>
+    </assembly>
+    <members>
+        <member name="T:DotNetOpenAuth.ComponentModel.IdentifierConverter">
+            <summary>
+            A design-time helper to give an OpenID Identifier property an auto-complete functionality
+            listing the OP Identifiers in the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.WellKnownProviders"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.ComponentModel.IdentifierConverter.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.ComponentModel.IdentifierConverter"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.ComponentModel.IdentifierConverter.ConvertFrom(System.String)">
+            <summary>
+            Converts a value from its string representation to its strongly-typed object.
+            </summary>
+            <param name="value">The value.</param>
+            <returns>The strongly-typed object.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.ComponentModel.IdentifierConverter.CreateFrom(DotNetOpenAuth.OpenId.Identifier)">
+            <summary>
+            Creates the reflection instructions for recreating an instance later.
+            </summary>
+            <param name="value">The value to recreate later.</param>
+            <returns>
+            The description of how to recreate an instance.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.ComponentModel.IdentifierConverter.ConvertToString(DotNetOpenAuth.OpenId.Identifier)">
+            <summary>
+            Converts the strongly-typed value to a string.
+            </summary>
+            <param name="value">The value to convert.</param>
+            <returns>The string representation of the object.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.ComponentModel.IdentifierConverter.GetStandardValuesForCache">
+            <summary>
+            Gets the standard values to suggest with Intellisense in the designer.
+            </summary>
+            <returns>A collection of the standard values.</returns>
+        </member>
+        <member name="T:DotNetOpenAuth.Mvc.OpenIdAjaxOptions">
+            <summary>
+            A set of customizations available for the scripts sent to the browser in AJAX OpenID scenarios.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.Mvc.OpenIdAjaxOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.Mvc.OpenIdAjaxOptions"/> class.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.Mvc.OpenIdAjaxOptions.AssertionHiddenFieldId">
+            <summary>
+            Gets or sets the ID of the hidden field that should carry the positive assertion
+            until it is posted to the RP.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.Mvc.OpenIdAjaxOptions.ReturnUrlHiddenFieldId">
+            <summary>
+            Gets or sets the ID of the hidden field that should be set with the parent window/frame's URL
+            prior to posting the form with the positive assertion.  Useful for jQuery popup dialogs.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.Mvc.OpenIdAjaxOptions.FormIndex">
+            <summary>
+            Gets or sets the index of the form in the document.forms array on the browser that should
+            be submitted when the user is ready to send the positive assertion to the RP.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.Mvc.OpenIdAjaxOptions.FormId">
+            <summary>
+            Gets or sets the id of the form in the document.forms array on the browser that should
+            be submitted when the user is ready to send the positive assertion to the RP.  A value
+            in this property takes precedence over any value in the <see cref="P:DotNetOpenAuth.Mvc.OpenIdAjaxOptions.FormIndex"/> property.
+            </summary>
+            <value>The form id.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.Mvc.OpenIdAjaxOptions.PreloadedDiscoveryResults">
+            <summary>
+            Gets or sets the preloaded discovery results.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.Mvc.OpenIdAjaxOptions.ShowDiagnosticTrace">
+            <summary>
+            Gets or sets a value indicating whether to print diagnostic trace messages in the browser.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.Mvc.OpenIdAjaxOptions.ShowDiagnosticIFrame">
+            <summary>
+            Gets or sets a value indicating whether to show all the "hidden" iframes that facilitate
+            asynchronous authentication of the user for diagnostic purposes.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.Mvc.OpenIdAjaxOptions.FormKey">
+            <summary>
+            Gets the form key to use when accessing the relevant form.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.Mvc.OpenIdHelper">
+            <summary>
+            Methods that generate HTML or Javascript for hosting AJAX OpenID "controls" on
+            ASP.NET MVC web sites.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.Mvc.OpenIdHelper.OpenIdSelectorStyles(System.Web.Mvc.HtmlHelper)">
+            <summary>
+            Emits a series of stylesheet import tags to support the AJAX OpenID Selector.
+            </summary>
+            <param name="html">The <see cref="T:System.Web.Mvc.HtmlHelper"/> on the view.</param>
+            <returns>HTML that should be sent directly to the browser.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.Mvc.OpenIdHelper.OpenIdSelectorScripts(System.Web.Mvc.HtmlHelper)">
+            <summary>
+            Emits a series of script import tags and some inline script to support the AJAX OpenID Selector.
+            </summary>
+            <param name="html">The <see cref="T:System.Web.Mvc.HtmlHelper"/> on the view.</param>
+            <returns>HTML that should be sent directly to the browser.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.Mvc.OpenIdHelper.OpenIdSelectorScripts(System.Web.Mvc.HtmlHelper,DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector,DotNetOpenAuth.Mvc.OpenIdAjaxOptions)">
+            <summary>
+            Emits a series of script import tags and some inline script to support the AJAX OpenID Selector.
+            </summary>
+            <param name="html">The <see cref="T:System.Web.Mvc.HtmlHelper"/> on the view.</param>
+            <param name="selectorOptions">An optional instance of an <see cref="M:DotNetOpenAuth.Mvc.OpenIdHelper.OpenIdSelector(System.Web.Mvc.HtmlHelper,DotNetOpenAuth.OpenId.RelyingParty.SelectorButton[])"/> control, whose properties have been customized to express how this MVC control should be rendered.</param>
+            <param name="additionalOptions">An optional set of additional script customizations.</param>
+            <returns>
+            HTML that should be sent directly to the browser.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.Mvc.OpenIdHelper.OpenIdSelectorOPButton(System.Web.Mvc.HtmlHelper,DotNetOpenAuth.OpenId.Identifier,System.String)">
+            <summary>
+            Emits the HTML to render an OpenID Provider button as a part of the overall OpenID Selector UI.
+            </summary>
+            <param name="html">The <see cref="T:System.Web.Mvc.HtmlHelper"/> on the view.</param>
+            <param name="providerIdentifier">The OP Identifier.</param>
+            <param name="imageUrl">The URL of the image to display on the button.</param>
+            <returns>
+            HTML that should be sent directly to the browser.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.Mvc.OpenIdHelper.OpenIdSelectorOpenIdButton(System.Web.Mvc.HtmlHelper,System.String)">
+            <summary>
+            Emits the HTML to render a generic OpenID button as a part of the overall OpenID Selector UI,
+            allowing the user to enter their own OpenID.
+            </summary>
+            <param name="html">The <see cref="T:System.Web.Mvc.HtmlHelper"/> on the view.</param>
+            <param name="imageUrl">The URL of the image to display on the button.</param>
+            <returns>
+            HTML that should be sent directly to the browser.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.Mvc.OpenIdHelper.OpenIdSelector(System.Web.Mvc.HtmlHelper,DotNetOpenAuth.OpenId.RelyingParty.SelectorButton[])">
+            <summary>
+            Emits the HTML to render the entire OpenID Selector UI.
+            </summary>
+            <param name="html">The <see cref="T:System.Web.Mvc.HtmlHelper"/> on the view.</param>
+            <param name="buttons">The buttons to include on the selector.</param>
+            <returns>
+            HTML that should be sent directly to the browser.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.Mvc.OpenIdHelper.OpenIdAjaxTextBox(System.Web.Mvc.HtmlHelper)">
+            <summary>
+            Emits the HTML to render the <see cref="M:DotNetOpenAuth.Mvc.OpenIdHelper.OpenIdAjaxTextBox(System.Web.Mvc.HtmlHelper)"/> control as a part of the overall
+            OpenID Selector UI.
+            </summary>
+            <param name="html">The <see cref="T:System.Web.Mvc.HtmlHelper"/> on the view.</param>
+            <returns>
+            HTML that should be sent directly to the browser.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.Mvc.OpenIdHelper.OpenIdSelectorButton(System.Web.Mvc.HtmlHelper,System.String,System.String,System.String)">
+            <summary>
+            Emits the HTML to render a button as a part of the overall OpenID Selector UI.
+            </summary>
+            <param name="html">The <see cref="T:System.Web.Mvc.HtmlHelper"/> on the view.</param>
+            <param name="id">The value to assign to the HTML id attribute.</param>
+            <param name="cssClass">The value to assign to the HTML class attribute.</param>
+            <param name="imageUrl">The URL of the image to draw on the button.</param>
+            <returns>
+            HTML that should be sent directly to the browser.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.Mvc.OpenIdHelper.WriteScriptTagsUrls(System.IO.TextWriter,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Emits &lt;script&gt; tags that import a given set of scripts given their URLs.
+            </summary>
+            <param name="writer">The writer to emit the tags to.</param>
+            <param name="scriptUrls">The locations of the scripts to import.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.Mvc.OpenIdHelper.WriteScriptTags(System.IO.TextWriter,System.String)">
+            <summary>
+            Writes out script tags that import a script from resources embedded in this assembly.
+            </summary>
+            <param name="writer">The writer to emit the tags to.</param>
+            <param name="resourceName">Name of the resource.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.Mvc.OpenIdHelper.WriteScriptTags(System.IO.TextWriter,System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Writes out script tags that import scripts from resources embedded in this assembly.
+            </summary>
+            <param name="writer">The writer to emit the tags to.</param>
+            <param name="resourceNames">The resource names.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.Mvc.OpenIdHelper.WriteScriptBlock(System.IO.TextWriter,System.String)">
+            <summary>
+            Writes a given script block, surrounding it with &lt;script&gt; and CDATA tags.
+            </summary>
+            <param name="writer">The writer to emit the tags to.</param>
+            <param name="script">The script to inline on the page.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.Mvc.OpenIdHelper.WriteStylesheetLink(System.IO.TextWriter,System.String)">
+            <summary>
+            Writes a given CSS link.
+            </summary>
+            <param name="writer">The writer to emit the tags to.</param>
+            <param name="resourceName">Name of the resource containing the CSS content.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.Mvc.OpenIdHelper.WriteStylesheetLinkUrl(System.IO.TextWriter,System.String)">
+            <summary>
+            Writes a given CSS link.
+            </summary>
+            <param name="writer">The writer to emit the tags to.</param>
+            <param name="stylesheet">The stylesheet to link in.</param>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxRelyingParty">
+            <summary>
+            Provides the programmatic facilities to act as an AJAX-enabled OpenID relying party.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxRelyingParty.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxRelyingParty"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxRelyingParty.#ctor(DotNetOpenAuth.OpenId.IOpenIdApplicationStore)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxRelyingParty"/> class.
+            </summary>
+            <param name="applicationStore">The application store.  If <c>null</c>, the relying party will always operate in "dumb mode".</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxRelyingParty.CreateRequests(DotNetOpenAuth.OpenId.Identifier,DotNetOpenAuth.OpenId.Realm,System.Uri)">
+            <summary>
+            Generates AJAX-ready authentication requests that can satisfy the requirements of some OpenID Identifier.
+            </summary>
+            <param name="userSuppliedIdentifier">The Identifier supplied by the user.  This may be a URL, an XRI or i-name.</param>
+            <param name="realm">The shorest URL that describes this relying party web site's address.
+            For example, if your login page is found at https://www.example.com/login.aspx,
+            your realm would typically be https://www.example.com/.</param>
+            <param name="returnToUrl">The URL of the login page, or the page prepared to receive authentication
+            responses from the OpenID Provider.</param>
+            <returns>
+            A sequence of authentication requests, any of which constitutes a valid identity assertion on the Claimed Identifier.
+            Never null, but may be empty.
+            </returns>
+            <remarks>
+            	<para>Any individual generated request can satisfy the authentication.
+            The generated requests are sorted in preferred order.
+            Each request is generated as it is enumerated to.  Associations are created only as
+            <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest.RedirectingResponse"/> is called.</para>
+            	<para>No exception is thrown if no OpenID endpoints were discovered.
+            An empty enumerable is returned instead.</para>
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxRelyingParty.AsAjaxDiscoveryResult(System.Collections.Generic.IEnumerable{DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest})">
+            <summary>
+            Serializes discovery results on some <i>single</i> identifier on behalf of Javascript running on the browser.
+            </summary>
+            <param name="requests">The discovery results from just <i>one</i> identifier to serialize as a JSON response.</param>
+            <returns>
+            The JSON result to return to the user agent.
+            </returns>
+            <remarks>
+            We prepare a JSON object with this interface:
+            <code>
+            class jsonResponse {
+               string claimedIdentifier;
+               Array requests; // never null
+               string error; // null if no error
+            }
+            </code>
+            Each element in the requests array looks like this:
+            <code>
+            class jsonAuthRequest {
+               string endpoint;  // URL to the OP endpoint
+               string immediate; // URL to initiate an immediate request
+               string setup;     // URL to initiate a setup request.
+            }
+            </code>
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxRelyingParty.AsAjaxPreloadedDiscoveryResult(System.Collections.Generic.IEnumerable{DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest})">
+            <summary>
+            Serializes discovery on a set of identifiers for preloading into an HTML page that carries
+            an AJAX-aware OpenID control.
+            </summary>
+            <param name="requests">The discovery results to serialize as a JSON response.</param>
+            <returns>
+            The JSON result to return to the user agent.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxRelyingParty.AsJsonDiscoveryResult(System.Collections.Generic.IEnumerable{DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest})">
+            <summary>
+            Converts a sequence of authentication requests to a JSON object for seeding an AJAX-enabled login page.
+            </summary>
+            <param name="requests">The discovery results from just <i>one</i> identifier to serialize as a JSON response.</param>
+            <returns>A JSON object, not yet serialized.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxRelyingParty.AsJsonPreloadedDiscoveryResult(System.Collections.Generic.IEnumerable{DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest})">
+            <summary>
+            Serializes discovery on a set of identifiers for preloading into an HTML page that carries
+            an AJAX-aware OpenID control.
+            </summary>
+            <param name="requests">The discovery results to serialize as a JSON response.</param>
+            <returns>
+            A JSON object, not yet serialized to a string.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxRelyingParty.GetRedirectUrl(DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest,System.Boolean)">
+            <summary>
+            Gets the full URL that carries an OpenID message, even if it exceeds the normal maximum size of a URL,
+            for purposes of sending to an AJAX component running in the browser.
+            </summary>
+            <param name="request">The authentication request.</param>
+            <param name="immediate"><c>true</c>to create a checkid_immediate request;
+            <c>false</c> to create a checkid_setup request.</param>
+            <returns>The absolute URL that carries the entire OpenID message.</returns>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox">
+            <summary>
+            An ASP.NET control that provides a minimal text box that is OpenID-aware and uses AJAX for
+            a premium login experience.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase">
+            <summary>
+            A common base class for OpenID Relying Party controls.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase">
+            <summary>
+            A common base class for OpenID Relying Party controls.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.EmbeddedJavascriptResource">
+            <summary>
+            The manifest resource name of the javascript file to include on the hosting page.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.PersistentIdentifierCookieName">
+            <summary>
+            The cookie used to persist the Identifier the user logged in with.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.ReturnToReceivingControlId">
+            <summary>
+            The callback parameter name to use to store which control initiated the auth request.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.UIPopupCallbackKey">
+            <summary>
+            The callback parameter to use for recognizing when the callback is in a popup window or hidden iframe.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.PopupUISupportedJSHint">
+            <summary>
+            The parameter name to include in the formulated auth request so that javascript can know whether
+            the OP advertises support for the UI extension.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.AppearanceCategory">
+            <summary>
+            The "Appearance" category for properties.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.BehaviorCategory">
+            <summary>
+            The "Behavior" category for properties.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.OpenIdCategory">
+            <summary>
+            The "OpenID" category for properties and events.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.UsePersistentCookieCallbackKey">
+            <summary>
+            The callback parameter for use with persisting the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.UsePersistentCookie"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.UIPopupCallbackParentKey">
+            <summary>
+            The callback parameter to use for recognizing when the callback is in the parent window.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.StatelessDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Stateless"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.ReturnToUrlDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.ReturnToUrl"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.UsePersistentCookieDefault">
+            <summary>
+            Default value of <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.UsePersistentCookie"/>.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.LogOnModeDefault">
+            <summary>
+            Default value of <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.LogOnMode"/>.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.RealmUrlDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.RealmUrl"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.PopupDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Popup"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.RequireSslDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.RequireSsl"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.ExtensionsViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Extensions"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.StatelessViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Stateless"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.UsePersistentCookieViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.UsePersistentCookie"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.LogOnModeViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.LogOnMode"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.RealmUrlViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.RealmUrl"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.ReturnToUrlViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.ReturnToUrl"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.IdentifierViewStateKey">
+            <summary>
+            The key under which the value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Identifier"/> property will be stored.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.PopupViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Popup"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.RequireSslViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.RequireSsl"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.PersistentIdentifierTimeToLiveDefault">
+            <summary>
+            The lifetime of the cookie used to persist the Identifier the user logged in with.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.relyingParty">
+            <summary>
+            Backing field for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.RelyingParty"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.relyingPartyOwned">
+            <summary>
+            A value indicating whether the <see cref="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.relyingParty"/> field contains
+            an instance that we own and should Dispose.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.LogOff">
+            <summary>
+            Clears any cookie set by this control to help the user on a returning visit next time.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.LogOn">
+            <summary>
+            Immediately redirects to the OpenID Provider to verify the Identifier
+            provided in the text box.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.LogOn(DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest)">
+            <summary>
+            Immediately redirects to the OpenID Provider to verify the Identifier
+            provided in the text box.
+            </summary>
+            <param name="request">The request.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.System#Web#UI#IPostBackEventHandler#RaisePostBackEvent(System.String)">
+            <summary>
+            When implemented by a class, enables a server control to process an event raised when a form is posted to the server.
+            </summary>
+            <param name="eventArgument">A <see cref="T:System.String"/> that represents an optional event argument to be passed to the event handler.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Dispose">
+            <summary>
+            Enables a server control to perform final clean up before it is released from memory.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.CreateRequests(DotNetOpenAuth.OpenId.Identifier)">
+            <summary>
+            Creates the authentication requests for a given user-supplied Identifier.
+            </summary>
+            <param name="identifier">The identifier to create a request for.</param>
+            <returns>
+            A sequence of authentication requests, any one of which may be
+            used to determine the user's control of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest.ClaimedIdentifier"/>.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.RaisePostBackEvent(System.String)">
+            <summary>
+            When implemented by a class, enables a server control to process an event raised when a form is posted to the server.
+            </summary>
+            <param name="eventArgument">A <see cref="T:System.String"/> that represents an optional event argument to be passed to the event handler.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.CreateRequests">
+            <summary>
+            Creates the authentication requests for the value set in the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Identifier"/> property.
+            </summary>
+            <returns>
+            A sequence of authentication requests, any one of which may be
+            used to determine the user's control of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest.ClaimedIdentifier"/>.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.OnLoad(System.EventArgs)">
+            <summary>
+            Raises the <see cref="E:Load"/> event.
+            </summary>
+            <param name="e">The <see cref="T:System.EventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.ScriptClosingPopupOrIFrame">
+            <summary>
+            Notifies the user agent via an AJAX response of a completed authentication attempt.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.OnIdentifierChanged">
+            <summary>
+            Called when the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Identifier"/> property is changed.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.ProcessResponse(DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationResponse)">
+            <summary>
+            Processes the response.
+            </summary>
+            <param name="response">The response.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.OnPreRender(System.EventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Web.UI.Control.PreRender"/> event.
+            </summary>
+            <param name="e">An <see cref="T:System.EventArgs"/> object that contains the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.OnLoggedIn(DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationResponse)">
+            <summary>
+            Fires the <see cref="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.LoggedIn"/> event.
+            </summary>
+            <param name="response">The response.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.OnLoggingIn(DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest)">
+            <summary>
+            Fires the <see cref="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.LoggingIn"/> event.
+            </summary>
+            <param name="request">The request.</param>
+            <returns>
+            Returns whether the login should proceed.  False if some event handler canceled the request.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.OnCanceled(DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationResponse)">
+            <summary>
+            Fires the <see cref="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Canceled"/> event.
+            </summary>
+            <param name="response">The response.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.OnFailed(DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationResponse)">
+            <summary>
+            Fires the <see cref="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Failed"/> event.
+            </summary>
+            <param name="response">The response.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.CreateRelyingParty">
+            <summary>
+            Creates the relying party instance used to generate authentication requests.
+            </summary>
+            <returns>The instantiated relying party.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.CreateRelyingParty(DotNetOpenAuth.OpenId.IOpenIdApplicationStore)">
+            <summary>
+            Creates the relying party instance used to generate authentication requests.
+            </summary>
+            <param name="store">The store to pass to the relying party constructor.</param>
+            <returns>The instantiated relying party.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.ConfigureRelyingParty(DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingParty)">
+            <summary>
+            Configures the relying party.
+            </summary>
+            <param name="relyingParty">The relying party.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.IsPopupAppropriate(DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest)">
+            <summary>
+            Detects whether a popup window should be used to show the Provider's UI.
+            </summary>
+            <param name="request">The request.</param>
+            <returns>
+            	<c>true</c> if a popup should be used; <c>false</c> otherwise.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.RenderOpenIdMessageTransmissionAsAnchorAttributes(System.Web.UI.HtmlTextWriter,DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest,System.String)">
+            <summary>
+            Adds attributes to an HTML &lt;A&gt; tag that will be written by the caller using 
+            <see cref="M:System.Web.UI.HtmlTextWriter.RenderBeginTag(System.Web.UI.HtmlTextWriterTag)"/> after this method.
+            </summary>
+            <param name="writer">The HTML writer.</param>
+            <param name="request">The outgoing authentication request.</param>
+            <param name="windowStatus">The text to try to display in the status bar on mouse hover.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.CreateIdentifierPersistingCookie(DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationResponse)">
+            <summary>
+            Creates the identifier-persisting cookie, either for saving or deleting.
+            </summary>
+            <param name="response">The positive authentication response; or <c>null</c> to clear the cookie.</param>
+            <returns>An persistent cookie.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.CreateRequestsCore(DotNetOpenAuth.OpenId.Identifier)">
+            <summary>
+            Creates the authentication requests for a given user-supplied Identifier.
+            </summary>
+            <param name="identifier">The identifier to create a request for.</param>
+            <returns>
+            A sequence of authentication requests, any one of which may be
+            used to determine the user's control of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest.ClaimedIdentifier"/>.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.CreateGetOrPostAHrefValue(DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest)">
+            <summary>
+            Gets the javascript to executee to redirect or POST an OpenID message to a remote party.
+            </summary>
+            <param name="request">The authentication request to send.</param>
+            <returns>The javascript that should execute.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.ScriptPopupWindow(DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest)">
+            <summary>
+            Wires the return page to immediately display a popup window with the Provider in it.
+            </summary>
+            <param name="request">The request.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.TryPresetIdentifierWithCookie">
+            <summary>
+            Tries to preset the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Identifier"/> property based on a persistent
+            cookie on the browser.
+            </summary>
+            <returns>
+            A value indicating whether the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Identifier"/> property was
+            successfully preset to some non-empty value.
+            </returns>
+        </member>
+        <member name="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.LoggingIn">
+            <summary>
+            Fired when the user has typed in their identifier, discovery was successful
+            and a login attempt is about to begin.
+            </summary>
+        </member>
+        <member name="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.LoggedIn">
+            <summary>
+            Fired upon completion of a successful login.
+            </summary>
+        </member>
+        <member name="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Failed">
+            <summary>
+            Fired when a login attempt fails.
+            </summary>
+        </member>
+        <member name="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Canceled">
+            <summary>
+            Fired when an authentication attempt is canceled at the OpenID Provider.
+            </summary>
+        </member>
+        <member name="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.IdentifierChanged">
+            <summary>
+            Occurs when the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Identifier"/> property is changed.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.RelyingParty">
+            <summary>
+            Gets or sets the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingParty"/> instance to use.
+            </summary>
+            <value>The default value is an <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingParty"/> instance initialized according to the web.config file.</value>
+            <remarks>
+            A performance optimization would be to store off the 
+            instance as a static member in your web site and set it
+            to this property in your <see cref="E:System.Web.UI.Control.Load">Page.Load</see>
+            event since instantiating these instances can be expensive on 
+            heavily trafficked web pages.
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Extensions">
+            <summary>
+            Gets the collection of extension requests this selector should include in generated requests.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Stateless">
+            <summary>
+            Gets or sets a value indicating whether stateless mode is used.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.RealmUrl">
+            <summary>
+            Gets or sets the OpenID <see cref="T:DotNetOpenAuth.OpenId.Realm"/> of the relying party web site.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.ReturnToUrl">
+            <summary>
+            Gets or sets the OpenID ReturnTo of the relying party web site.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.UsePersistentCookie">
+            <summary>
+            Gets or sets a value indicating whether to send a persistent cookie upon successful 
+            login so the user does not have to log in upon returning to this site.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.LogOnMode">
+            <summary>
+            Gets or sets the way a completed login is communicated to the rest of the web site.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Popup">
+            <summary>
+            Gets or sets a value indicating when to use a popup window to complete the login experience.
+            </summary>
+            <value>The default value is <see cref="F:DotNetOpenAuth.OpenId.RelyingParty.PopupBehavior.Never"/>.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.RequireSsl">
+            <summary>
+            Gets or sets a value indicating whether to enforce on high security mode,
+            which requires the full authentication pipeline to be protected by SSL.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.Identifier">
+            <summary>
+            Gets or sets the Identifier that will be used to initiate login.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.AssociationPreference">
+            <summary>
+            Gets or sets the default association preference to set on authentication requests.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.ParentControls">
+            <summary>
+            Gets ancestor controls, starting with the immediate parent, and progressing to more distant ancestors.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.IsEmbeddedInParentOpenIdControl">
+            <summary>
+            Gets a value indicating whether this control is a child control of a composite OpenID control.
+            </summary>
+            <value>
+            	<c>true</c> if this instance is embedded in parent OpenID control; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.EmbeddedAjaxJavascriptResource">
+            <summary>
+            The manifest resource name of the javascript file to include on the hosting page.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.OPEndpointParameterName">
+            <summary>
+            The "dnoa.op_endpoint" string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.ClaimedIdParameterName">
+            <summary>
+            The "dnoa.claimed_id" string.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.MaxPositiveAssertionLifetimeJsName">
+            <summary>
+            The name of the javascript field that stores the maximum time a positive assertion is
+            good for before it must be refreshed.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.CallbackJSFunctionAsync">
+            <summary>
+            The name of the javascript function that will initiate an asynchronous callback.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.CallbackJSFunction">
+            <summary>
+            The name of the javascript function that will initiate a synchronous callback.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.AuthDataViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of a successful authentication.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.AuthenticationResponseViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.AuthenticationResponse"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.AuthenticationProcessedAlreadyViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.AuthenticationProcessedAlready"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.PopupDefault">
+            <summary>
+            Default value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.Popup"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.LogOnModeDefault">
+            <summary>
+            Default value of <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.LogOnMode"/> property..
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.authenticationResponse">
+            <summary>
+            The authentication response that just came in.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.discoveryResult">
+            <summary>
+            Stores the result of an AJAX discovery request while it is waiting
+            to be picked up by ASP.NET on the way down to the user agent.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.RegisterClientScriptExtension``1(System.String)">
+            <summary>
+            Allows an OpenID extension to read data out of an unverified positive authentication assertion
+            and send it down to the client browser so that Javascript running on the page can perform
+            some preprocessing on the extension data.
+            </summary>
+            <typeparam name="T">The extension <i>response</i> type that will read data from the assertion.</typeparam>
+            <param name="propertyName">The property name on the openid_identifier input box object that will be used to store the extension data.  For example: sreg</param>
+            <remarks>
+            This method should be called from the <see cref="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.UnconfirmedPositiveAssertion"/> event handler.
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.System#Web#UI#ICallbackEventHandler#GetCallbackResult">
+            <summary>
+            Returns the result of discovery on some Identifier passed to <see cref="M:System.Web.UI.ICallbackEventHandler.RaiseCallbackEvent(System.String)"/>.
+            </summary>
+            <returns>The result of the callback.</returns>
+            <value>A whitespace delimited list of URLs that can be used to initiate authentication.</value>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.System#Web#UI#ICallbackEventHandler#RaiseCallbackEvent(System.String)">
+            <summary>
+            Performs discovery on some OpenID Identifier.  Called directly from the user agent via
+            AJAX callback mechanisms.
+            </summary>
+            <param name="eventArgument">The identifier to perform discovery on.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.GetCallbackResult">
+            <summary>
+            Returns the results of a callback event that targets a control.
+            </summary>
+            <returns>The result of the callback.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.RaiseCallbackEvent(System.String)">
+            <summary>
+            Processes a callback event that targets a control.
+            </summary>
+            <param name="eventArgument">A string that represents an event argument to pass to the event handler.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.CreateRelyingParty(DotNetOpenAuth.OpenId.IOpenIdApplicationStore)">
+            <summary>
+            Creates the relying party instance used to generate authentication requests.
+            </summary>
+            <param name="store">The store to pass to the relying party constructor.</param>
+            <returns>The instantiated relying party.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.PreloadDiscovery(DotNetOpenAuth.OpenId.Identifier)">
+            <summary>
+            Pre-discovers an identifier and makes the results available to the
+            user agent for javascript as soon as the page loads.
+            </summary>
+            <param name="identifier">The identifier.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.PreloadDiscovery(System.Collections.Generic.IEnumerable{DotNetOpenAuth.OpenId.Identifier})">
+            <summary>
+            Pre-discovers a given set of identifiers and makes the results available to the
+            user agent for javascript as soon as the page loads.
+            </summary>
+            <param name="identifiers">The identifiers to perform discovery on.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.OnUnconfirmedPositiveAssertion">
+            <summary>
+            Fires the <see cref="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.UnconfirmedPositiveAssertion"/> event.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.OnLoad(System.EventArgs)">
+            <summary>
+            Raises the <see cref="E:Load"/> event.
+            </summary>
+            <param name="e">The <see cref="T:System.EventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.OnIdentifierChanged">
+            <summary>
+            Called when the <see cref="T:DotNetOpenAuth.OpenId.Identifier"/> property is changed.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.OnPreRender(System.EventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Web.UI.Control.PreRender"/> event.
+            </summary>
+            <param name="e">An <see cref="T:System.EventArgs"/> object that contains the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.Render(System.Web.UI.HtmlTextWriter)">
+            <summary>
+            Sends server control content to a provided <see cref="T:System.Web.UI.HtmlTextWriter"/> object, which writes the content to be rendered on the client.
+            </summary>
+            <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter"/> object that receives the server control content.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.ScriptClosingPopupOrIFrame">
+            <summary>
+            Notifies the user agent via an AJAX response of a completed authentication attempt.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.GetJsCallbackConvenienceFunction(System.Boolean)">
+            <summary>
+            Constructs a function that will initiate an AJAX callback.
+            </summary>
+            <param name="async">if set to <c>true</c> causes the AJAX callback to be a little more asynchronous.  Note that <c>false</c> does not mean the call is absolutely synchronous.</param>
+            <returns>The string defining a javascript anonymous function that initiates a callback.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.SetWebAppPathOnUserAgent">
+            <summary>
+            Sets the window.aspnetapppath variable on the user agent so that cookies can be set with the proper path.
+            </summary>
+        </member>
+        <member name="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.UnconfirmedPositiveAssertion">
+            <summary>
+            Fired when a Provider sends back a positive assertion to this control,
+            but the authentication has not yet been verified.
+            </summary>
+            <remarks>
+            <b>No security critical decisions should be made within event handlers
+            for this event</b> as the authenticity of the assertion has not been
+            verified yet.  All security related code should go in the event handler
+            for the <see cref="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.LoggedIn"/> event.
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.Popup">
+            <summary>
+            Gets or sets a value indicating when to use a popup window to complete the login experience.
+            </summary>
+            <value>The default value is <see cref="F:DotNetOpenAuth.OpenId.RelyingParty.PopupBehavior.Never"/>.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.LogOnMode">
+            <summary>
+            Gets or sets the way a completed login is communicated to the rest of the web site.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.RelyingParty">
+            <summary>
+            Gets or sets the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingParty"/> instance to use.
+            </summary>
+            <value>
+            The default value is an <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingParty"/> instance initialized according to the web.config file.
+            </value>
+            <remarks>
+            A performance optimization would be to store off the
+            instance as a static member in your web site and set it
+            to this property in your <see cref="E:System.Web.UI.Control.Load">Page.Load</see>
+            event since instantiating these instances can be expensive on
+            heavily trafficked web pages.
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.AuthenticationResponse">
+            <summary>
+            Gets the completed authentication response.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.AjaxRelyingParty">
+            <summary>
+            Gets the relying party as its AJAX type.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.OpenIdAuthDataFormKey">
+            <summary>
+            Gets the name of the open id auth data form key (for the value as stored at the user agent as a FORM field).
+            </summary>
+            <value>Usually a concatenation of the control's name and <c>"_openidAuthData"</c>.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyAjaxControlBase.AuthenticationProcessedAlready">
+            <summary>
+            Gets or sets a value indicating whether an authentication in the page's view state
+            has already been processed and appropriate events fired.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.EmbeddedScriptResourceName">
+            <summary>
+            The name of the manifest stream containing the OpenIdAjaxTextBox.js file.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.EmbeddedStylesheetResourceName">
+            <summary>
+            The name of the manifest stream containing the OpenIdAjaxTextBox.css file.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.EmbeddedSpinnerResourceName">
+            <summary>
+            The name of the manifest stream containing the spinner.gif file.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.EmbeddedLoginSuccessResourceName">
+            <summary>
+            The name of the manifest stream containing the login_success.png file.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.EmbeddedLoginFailureResourceName">
+            <summary>
+            The name of the manifest stream containing the login_failure.png file.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.DownloadYahooUILibraryDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.DownloadYahooUILibrary"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.ThrottleDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.Throttle"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.AutoPostBackViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.AutoPostBack"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.TextViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.Text"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.ColumnsViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.Columns"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.CssClassViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.CssClass"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.OnClientAssertionReceivedViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.OnClientAssertionReceived"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.AuthenticatedAsToolTipViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.AuthenticatedAsToolTip"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.AuthenticationSucceededToolTipViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.AuthenticationSucceededToolTip"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LogOnInProgressMessageViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LogOnInProgressMessage"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.AuthenticationFailedToolTipViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.AuthenticationFailedToolTip"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.IdentifierRequiredMessageViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.IdentifierRequiredMessage"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.BusyToolTipViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.BusyToolTip"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LogOnTextViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LogOnText"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.ThrottleViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.Throttle"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LogOnToolTipViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LogOnToolTip"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LogOnPostBackToolTipViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LogOnPostBackToolTip"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.NameViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.Name"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.TimeoutViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.Timeout"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.TabIndexViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.TabIndex"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.EnabledViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.Enabled"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.RetryToolTipViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.RetryToolTip"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.RetryTextViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.RetryText"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.DownloadYahooUILibraryViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.DownloadYahooUILibrary"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.ShowLogOnPostBackButtonViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.ShowLogOnPostBackButton"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.AutoPostBackDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.AutoPostBack"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.ColumnsDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.Columns"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.CssClassDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.CssClass"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LogOnInProgressMessageDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LogOnInProgressMessage"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.AuthenticationSucceededToolTipDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.AuthenticationSucceededToolTip"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.AuthenticatedAsToolTipDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.AuthenticatedAsToolTip"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.AuthenticationFailedToolTipDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.AuthenticationFailedToolTip"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LogOnTextDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LogOnText"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.BusyToolTipDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.BusyToolTip"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.IdentifierRequiredMessageDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.IdentifierRequiredMessage"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.NameDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.Name"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.TabIndexDefault">
+            <summary>
+            Default value for <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.TabIndex"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.RetryToolTipDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.RetryToolTip"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LogOnToolTipDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LogOnToolTip"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LogOnPostBackToolTipDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LogOnPostBackToolTip"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.RetryTextDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.RetryText"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.ShowLogOnPostBackButtonDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.ShowLogOnPostBackButton"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.YuiLoaderHttp">
+            <summary>
+            The path where the YUI control library should be downloaded from for HTTP pages.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.YuiLoaderHttps">
+            <summary>
+            The path where the YUI control library should be downloaded from for HTTPS pages.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.System#Web#UI#IPostBackDataHandler#LoadPostData(System.String,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            When implemented by a class, processes postback data for an ASP.NET server control.
+            </summary>
+            <param name="postDataKey">The key identifier for the control.</param>
+            <param name="postCollection">The collection of all incoming name values.</param>
+            <returns>
+            true if the server control's state changes as a result of the postback; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.System#Web#UI#IPostBackDataHandler#RaisePostDataChangedEvent">
+            <summary>
+            When implemented by a class, signals the server control to notify the ASP.NET application that the state of the control has changed.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.OnLoad(System.EventArgs)">
+            <summary>
+            Raises the <see cref="E:Load"/> event.
+            </summary>
+            <param name="e">The <see cref="T:System.EventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.OnIdentifierChanged">
+            <summary>
+            Called when the <see cref="T:DotNetOpenAuth.OpenId.Identifier"/> property is changed.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.OnPreRender(System.EventArgs)">
+            <summary>
+            Prepares to render the control.
+            </summary>
+            <param name="e">An <see cref="T:System.EventArgs"/> object that contains the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.Render(System.Web.UI.HtmlTextWriter)">
+            <summary>
+            Renders the control.
+            </summary>
+            <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter"/> object that receives the control content.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LoadPostData(System.String,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            When implemented by a class, processes postback data for an ASP.NET server control.
+            </summary>
+            <param name="postDataKey">The key identifier for the control.</param>
+            <param name="postCollection">The collection of all incoming name values.</param>
+            <returns>
+            true if the server control's state changes as a result of the postback; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.RaisePostDataChangedEvent">
+            <summary>
+            When implemented by a class, signals the server control to notify the ASP.NET application that the state of the control has changed.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.OnTextChanged">
+            <summary>
+            Called on a postback when the Text property has changed.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.PrepareClientJavascript">
+            <summary>
+            Assembles the javascript to send to the client and registers it with ASP.NET for transmission.
+            </summary>
+        </member>
+        <member name="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.TextChanged">
+            <summary>
+            Fired when the content of the text changes between posts to the server.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.OnClientAssertionReceived">
+            <summary>
+            Gets or sets the client-side script that executes when an authentication
+            assertion is received (but before it is verified).
+            </summary>
+            <remarks>
+            <para>In the context of the executing javascript set in this property, the 
+            local variable <i>sender</i> is set to the openid_identifier input box
+            that is executing this code.  
+            This variable has a getClaimedIdentifier() method that may be used to
+            identify the user who is being authenticated.</para>
+            <para>It is <b>very</b> important to note that when this code executes,
+            the authentication has not been verified and may have been spoofed.
+            No security-sensitive operations should take place in this javascript code.
+            The authentication is verified on the server by the time the 
+            <see cref="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.LoggedIn"/> server-side event fires.</para>
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.Text">
+            <summary>
+            Gets or sets the value in the text field, completely unprocessed or normalized.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.AutoPostBack">
+            <summary>
+            Gets or sets a value indicating whether a postback is made to fire the
+            <see cref="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.LoggedIn"/> event as soon as authentication has completed
+            successfully.
+            </summary>
+            <value>
+            	<c>true</c> if a postback should be made automatically upon authentication;
+            otherwise, <c>false</c> to delay the <see cref="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.LoggedIn"/> 
+            event from firing at the server until a postback is made by some other control.
+            </value>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.Columns">
+            <summary>
+            Gets or sets the width of the text box in characters.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.CssClass">
+            <summary>
+            Gets or sets the CSS class assigned to the text box.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.TabIndex">
+            <summary>
+            Gets or sets the tab index of the text box control.  Use 0 to omit an explicit tabindex.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.Enabled">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox"/> is enabled
+            in the browser for editing and will respond to incoming OpenID messages.
+            </summary>
+            <value><c>true</c> if enabled; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.Name">
+            <summary>
+            Gets or sets the HTML name to assign to the text field.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.Timeout">
+            <summary>
+            Gets or sets the time duration for the AJAX control to wait for an OP to respond before reporting failure to the user.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.Throttle">
+            <summary>
+            Gets or sets the maximum number of OpenID Providers to simultaneously try to authenticate with.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LogOnText">
+            <summary>
+            Gets or sets the text that appears on the LOG IN button in cases where immediate (invisible) authentication fails.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LogOnToolTip">
+            <summary>
+            Gets or sets the rool tip text that appears on the LOG IN button in cases where immediate (invisible) authentication fails.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LogOnPostBackToolTip">
+            <summary>
+            Gets or sets the rool tip text that appears on the LOG IN button when clicking the button will result in an immediate postback.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.RetryText">
+            <summary>
+            Gets or sets the text that appears on the RETRY button in cases where authentication times out.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.RetryToolTip">
+            <summary>
+            Gets or sets the tool tip text that appears on the RETRY button in cases where authentication times out.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.AuthenticationSucceededToolTip">
+            <summary>
+            Gets or sets the tool tip text that appears when authentication succeeds.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.AuthenticatedAsToolTip">
+            <summary>
+            Gets or sets the tool tip text that appears on the green checkmark when authentication succeeds.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.AuthenticationFailedToolTip">
+            <summary>
+            Gets or sets the tool tip text that appears when authentication fails.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.BusyToolTip">
+            <summary>
+            Gets or sets the tool tip text that appears over the text box when it is discovering and authenticating.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.IdentifierRequiredMessage">
+            <summary>
+            Gets or sets the message that is displayed if a postback is about to occur before the identifier has been supplied.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.LogOnInProgressMessage">
+            <summary>
+            Gets or sets the message that is displayed if a postback is attempted while login is in process.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.DownloadYahooUILibrary">
+            <summary>
+            Gets or sets a value indicating whether the Yahoo! User Interface Library (YUI)
+            will be downloaded in order to provide a login split button.
+            </summary>
+            <value>
+            	<c>true</c> to use a split button; otherwise, <c>false</c> to use a standard HTML button
+            	or a split button by downloading the YUI library yourself on the hosting web page.
+            </value>
+            <remarks>
+            The split button brings in about 180KB of YUI javascript dependencies.
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.ShowLogOnPostBackButton">
+            <summary>
+            Gets or sets a value indicating whether the "Log in" button will be shown
+            to initiate a postback containing the positive assertion.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.HookFormSubmit">
+            <summary>
+            Gets or sets a value indicating whether the ajax text box should hook the form's submit event for special behavior.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.OpenIdAuthDataFormKey">
+            <summary>
+            Gets the name of the open id auth data form key.
+            </summary>
+            <value>
+            A concatenation of <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.Name"/> and <c>"_openidAuthData"</c>.
+            </value>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.TimeoutDefault">
+            <summary>
+            Gets the default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox.Timeout"/> property.
+            </summary>
+            <value>8 seconds; or eternity if the debugger is attached.</value>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdButton">
+            <summary>
+            An ASP.NET control that renders a button that initiates an
+            authentication when clicked.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdButton.TextDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdButton.Text"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdButton.PrecreateRequestDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdButton.PrecreateRequest"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdButton.TextViewStateKey">
+            <summary>
+            The key under which the value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdButton.Text"/> property will be stored.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdButton.ImageUrlViewStateKey">
+            <summary>
+            The key under which the value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdButton.ImageUrl"/> property will be stored.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdButton.PrecreateRequestViewStateKey">
+            <summary>
+            The key under which the value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdButton.PrecreateRequest"/> property will be stored.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdButton.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdButton"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdButton.RaisePostBackEvent(System.String)">
+            <summary>
+            When implemented by a class, enables a server control to process an event raised when a form is posted to the server.
+            </summary>
+            <param name="eventArgument">A <see cref="T:System.String"/> that represents an optional event argument to be passed to the event handler.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdButton.OnPreRender(System.EventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Web.UI.Control.PreRender"/> event.
+            </summary>
+            <param name="e">An <see cref="T:System.EventArgs"/> object that contains the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdButton.Render(System.Web.UI.HtmlTextWriter)">
+            <summary>
+            Sends server control content to a provided <see cref="T:System.Web.UI.HtmlTextWriter"/> object, which writes the content to be rendered on the client.
+            </summary>
+            <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter"/> object that receives the server control content.</param>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdButton.Text">
+            <summary>
+            Gets or sets the text to display for the link.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdButton.ImageUrl">
+            <summary>
+            Gets or sets the image to display.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdButton.PrecreateRequest">
+            <summary>
+            Gets or sets a value indicating whether to pre-discover the identifier so
+            the user agent has an immediate redirect.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdButton.Popup">
+            <summary>
+            Gets or sets a value indicating when to use a popup window to complete the login experience.
+            </summary>
+            <value>The default value is <see cref="F:DotNetOpenAuth.OpenId.RelyingParty.PopupBehavior.Never"/>.</value>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdEventArgs">
+            <summary>
+            The event details passed to event handlers.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdEventArgs.#ctor(DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdEventArgs"/> class
+            with minimal information of an incomplete or failed authentication attempt.
+            </summary>
+            <param name="request">The outgoing authentication request.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdEventArgs.#ctor(DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationResponse)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdEventArgs"/> class
+            with information on a completed authentication attempt
+            (whether that attempt was successful or not).
+            </summary>
+            <param name="response">The incoming authentication response.</param>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdEventArgs.Cancel">
+            <summary>
+            Gets or sets a value indicating whether to cancel
+            the OpenID authentication and/or login process.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdEventArgs.ClaimedIdentifier">
+            <summary>
+            Gets the Identifier the user is claiming to own.  Or null if the user
+            is using Directed Identity.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdEventArgs.IsDirectedIdentity">
+            <summary>
+            Gets a value indicating whether the user has selected to let his Provider determine 
+            the ClaimedIdentifier to use as part of successful authentication.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdEventArgs.Request">
+            <summary>
+            Gets the details of the OpenID authentication request,
+            and allows for adding extensions.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdEventArgs.Response">
+            <summary>
+            Gets the details of the OpenID authentication response.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin">
+            <summary>
+            An ASP.NET control providing a complete OpenID login experience.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox">
+            <summary>
+            An ASP.NET control that provides a minimal text box that is OpenID-aware.
+            </summary>
+            <remarks>
+            This control offers greater UI flexibility than the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin"/>
+            control, but requires more work to be done by the hosting web site to 
+            assemble a complete login experience.
+            </remarks>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.EmbeddedLogoResourceName">
+            <summary>
+            The name of the manifest stream containing the
+            OpenID logo that is placed inside the text box.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.TabIndexDefault">
+            <summary>
+            Default value for <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.TabIndex"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.ProfileCategory">
+            <summary>
+            The "Simple Registration" category for properties.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestEmailViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestEmail"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestNicknameViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestNickname"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestPostalCodeViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestPostalCode"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestCountryViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestCountry"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestLanguageViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestLanguage"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestTimeZoneViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestTimeZone"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.EnableRequestProfileViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.EnableRequestProfile"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.PolicyUrlViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.PolicyUrl"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestFullNameViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestFullName"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.PresetBorderViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.PresetBorder"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.ShowLogoViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.ShowLogo"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestGenderViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestGender"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestBirthDateViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestBirthDate"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.CssClassViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.CssClass"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.MaxLengthViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.MaxLength"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.ColumnsViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.Columns"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.TabIndexViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.TabIndex"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.EnabledViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.Enabled"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.NameViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.Name"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.TextViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.Text"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.ColumnsDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.Columns"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.MaxLengthDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.MaxLength"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.NameDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.Name"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.EnableRequestProfileDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.EnableRequestProfile"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.ShowLogoDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.ShowLogo"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.PresetBorderDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.PresetBorder"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.PolicyUrlDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.PolicyUrl"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.CssClassDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.CssClass"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.TextDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.Text"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestEmailDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestEmail"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestPostalCodeDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestPostalCode"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestCountryDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestCountry"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestLanguageDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestLanguage"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestTimeZoneDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestTimeZone"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestNicknameDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestNickname"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestFullNameDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestFullName"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestBirthDateDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestBirthDate"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestGenderDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestGender"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.EmptyClaimsRequest">
+            <summary>
+            An empty sreg request, used to compare with others to see if they too are empty.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.System#Web#UI#IPostBackDataHandler#LoadPostData(System.String,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            When implemented by a class, processes postback data for an ASP.NET server control.
+            </summary>
+            <param name="postDataKey">The key identifier for the control.</param>
+            <param name="postCollection">The collection of all incoming name values.</param>
+            <returns>
+            true if the server control's state changes as a result of the postback; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.System#Web#UI#IPostBackDataHandler#RaisePostDataChangedEvent">
+            <summary>
+            When implemented by a class, signals the server control to notify the ASP.NET application that the state of the control has changed.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.CreateRequests(DotNetOpenAuth.OpenId.Identifier)">
+            <summary>
+            Creates the authentication requests for a given user-supplied Identifier.
+            </summary>
+            <param name="identifier">The identifier to create a request for.</param>
+            <returns>
+            A sequence of authentication requests, any one of which may be
+            used to determine the user's control of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest.ClaimedIdentifier"/>.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.OnLoad(System.EventArgs)">
+            <summary>
+            Checks for incoming OpenID authentication responses and fires appropriate events.
+            </summary>
+            <param name="e">The <see cref="T:System.EventArgs"/> object that contains the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.OnIdentifierChanged">
+            <summary>
+            Called when the <see cref="T:DotNetOpenAuth.OpenId.Identifier"/> property is changed.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.Render(System.Web.UI.HtmlTextWriter)">
+            <summary>
+            Sends server control content to a provided <see cref="T:System.Web.UI.HtmlTextWriter"/> object, which writes the content to be rendered on the client.
+            </summary>
+            <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter"/> object that receives the server control content.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.LoadPostData(System.String,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            When implemented by a class, processes postback data for an ASP.NET server control.
+            </summary>
+            <param name="postDataKey">The key identifier for the control.</param>
+            <param name="postCollection">The collection of all incoming name values.</param>
+            <returns>
+            true if the server control's state changes as a result of the postback; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RaisePostDataChangedEvent">
+            <summary>
+            When implemented by a class, signals the server control to notify the ASP.NET application that the state of the control has changed.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.OnTextChanged">
+            <summary>
+            Called on a postback when the Text property has changed.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.CreateRequestsCore(System.Collections.Generic.IEnumerable{DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest})">
+            <summary>
+            Creates the authentication requests for a given user-supplied Identifier.
+            </summary>
+            <param name="requests">The authentication requests to prepare.</param>
+            <returns>
+            A sequence of authentication requests, any one of which may be
+            used to determine the user's control of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest.ClaimedIdentifier"/>.
+            </returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.AddProfileArgs(DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationRequest)">
+            <summary>
+            Adds extensions to a given authentication request to ask the Provider
+            for user profile data.
+            </summary>
+            <param name="request">The authentication request to add the extensions to.</param>
+        </member>
+        <member name="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.TextChanged">
+            <summary>
+            Occurs when the content of the text changes between posts to the server.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.Text">
+            <summary>
+            Gets or sets the content of the text box.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.Name">
+            <summary>
+            Gets or sets the form name to use for this input field.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.CssClass">
+            <summary>
+            Gets or sets the CSS class assigned to the text box.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.ShowLogo">
+            <summary>
+            Gets or sets a value indicating whether to show the OpenID logo in the text box.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.PresetBorder">
+            <summary>
+            Gets or sets a value indicating whether to use inline styling to force a solid gray border.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.Columns">
+            <summary>
+            Gets or sets the width of the text box in characters.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.MaxLength">
+            <summary>
+            Gets or sets the maximum number of characters the browser should allow
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.TabIndex">
+            <summary>
+            Gets or sets the tab index of the Web server control.
+            </summary>
+            <value></value>
+            <returns>
+            The tab index of the Web server control. The default is 0, which indicates that this property is not set.
+            </returns>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            The specified tab index is not between -32768 and 32767.
+            </exception>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.Enabled">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox"/> is enabled
+            in the browser for editing and will respond to incoming OpenID messages.
+            </summary>
+            <value><c>true</c> if enabled; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestNickname">
+            <summary>
+            Gets or sets your level of interest in receiving the user's nickname from the Provider.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestEmail">
+            <summary>
+            Gets or sets your level of interest in receiving the user's email address from the Provider.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestFullName">
+            <summary>
+            Gets or sets your level of interest in receiving the user's full name from the Provider.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestBirthDate">
+            <summary>
+            Gets or sets your level of interest in receiving the user's birthdate from the Provider.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestGender">
+            <summary>
+            Gets or sets your level of interest in receiving the user's gender from the Provider.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestPostalCode">
+            <summary>
+            Gets or sets your level of interest in receiving the user's postal code from the Provider.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestCountry">
+            <summary>
+            Gets or sets your level of interest in receiving the user's country from the Provider.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestLanguage">
+            <summary>
+            Gets or sets your level of interest in receiving the user's preferred language from the Provider.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.RequestTimeZone">
+            <summary>
+            Gets or sets your level of interest in receiving the user's time zone from the Provider.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.PolicyUrl">
+            <summary>
+            Gets or sets the URL to your privacy policy page that describes how 
+            claims will be used and/or shared.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdTextBox.EnableRequestProfile">
+            <summary>
+            Gets or sets a value indicating whether to use OpenID extensions
+            to retrieve profile data of the authenticating user.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RegisterToolTipDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RegisterToolTip"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RememberMeTextDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RememberMeText"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.ButtonTextDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.ButtonText"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.CanceledTextDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.CanceledText"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.FailedMessageTextDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.FailedMessageText"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.ExamplePrefixDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.ExamplePrefix"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.ExampleUrlDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.ExampleUrl"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.LabelTextDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.LabelText"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RequiredTextDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RequiredText"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.UriFormatTextDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.UriFormatText"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RegisterTextDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RegisterText"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RegisterUrlDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RegisterUrl"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.ButtonToolTipDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.ButtonToolTip"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.ValidationGroupDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.ValidationGroup"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RegisterVisibleDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RegisterVisible"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RememberMeVisibleDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RememberMeVisible"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RememberMeDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RememberMe"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.UriValidatorEnabledDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.UriValidatorEnabled"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.FailedMessageTextViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.FailedMessageText"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.CanceledTextViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.CanceledText"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.IdSelectorIdentifierViewStateKey">
+            <summary>
+            The viewstate key to use for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.IdSelectorIdentifier"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RequiredTextSuffix">
+            <summary>
+            The HTML to append to the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RequiredText"/> property value when rendering.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.TextBoxTabIndexOffset">
+            <summary>
+            The number to add to <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.TabIndex"/> to get the tab index of the textbox control.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.LoginButtonTabIndexOffset">
+            <summary>
+            The number to add to <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.TabIndex"/> to get the tab index of the login button control.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RememberMeTabIndexOffset">
+            <summary>
+            The number to add to <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.TabIndex"/> to get the tab index of the remember me checkbox control.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RegisterTabIndexOffset">
+            <summary>
+            The number to add to <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.TabIndex"/> to get the tab index of the register link control.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.panel">
+            <summary>
+            The control into which all other controls are added.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.loginButton">
+            <summary>
+            The Login button.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.label">
+            <summary>
+            The label that presents the text box.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.requiredValidator">
+            <summary>
+            The validator that flags an empty text box.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.identifierFormatValidator">
+            <summary>
+            The validator that flags invalid formats of OpenID identifiers.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.examplePrefixLabel">
+            <summary>
+            The label that precedes an example OpenID identifier.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.exampleUrlLabel">
+            <summary>
+            The label that contains the example OpenID identifier.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.registerLink">
+            <summary>
+            A link to allow the user to create an account with a popular OpenID Provider.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.rememberMeCheckBox">
+            <summary>
+            The Remember Me checkbox.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.idselectorJavascript">
+            <summary>
+            The javascript snippet that activates the ID Selector javascript control.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.errorLabel">
+            <summary>
+            The label that will display login failure messages.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RenderControl(System.Web.UI.HtmlTextWriter)">
+            <summary>
+            Outputs server control content to a provided <see cref="T:System.Web.UI.HtmlTextWriter"/> object and stores tracing information about the control if tracing is enabled.
+            </summary>
+            <param name="writer">The <see cref="T:System.Web.UI.HTmlTextWriter"/> object that receives the control content.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.CreateChildControls">
+            <summary>
+            Creates the child controls.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.OnPreRender(System.EventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Web.UI.Control.PreRender"/> event.
+            </summary>
+            <param name="e">An <see cref="T:System.EventArgs"/> object that contains the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.InitializeControls">
+            <summary>
+            Initializes the child controls.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.OnInit(System.EventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Web.UI.Control.Init"/> event.
+            </summary>
+            <param name="e">An <see cref="T:System.EventArgs"/> object that contains the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RenderChildren(System.Web.UI.HtmlTextWriter)">
+            <summary>
+            Renders the child controls.
+            </summary>
+            <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter"/> object that receives the rendered content.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.OnFailed(DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationResponse)">
+            <summary>
+            Adds failure handling to display an error message to the user.
+            </summary>
+            <param name="response">The response.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.OnCanceled(DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationResponse)">
+            <summary>
+            Adds authentication cancellation behavior to display a message to the user.
+            </summary>
+            <param name="response">The response.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.OnRememberMeChanged">
+            <summary>
+            Fires the <see cref="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RememberMeChanged"/> event.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.IdentifierFormatValidator_ServerValidate(System.Object,System.Web.UI.WebControls.ServerValidateEventArgs)">
+            <summary>
+            Handles the ServerValidate event of the identifierFormatValidator control.
+            </summary>
+            <param name="source">The source of the event.</param>
+            <param name="args">The <see cref="T:System.Web.UI.WebControls.ServerValidateEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RememberMeCheckBox_CheckedChanged(System.Object,System.EventArgs)">
+            <summary>
+            Handles the CheckedChanged event of the rememberMeCheckBox control.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">The <see cref="T:System.EventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.LoginButton_Click(System.Object,System.EventArgs)">
+            <summary>
+            Handles the Click event of the loginButton control.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">The <see cref="T:System.EventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RenderControlInner(System.Web.UI.HtmlTextWriter)">
+            <summary>
+            Renders the control inner.
+            </summary>
+            <param name="writer">The writer.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.SetChildControlReferenceIds">
+            <summary>
+            Sets child control properties that depend on this control's ID.
+            </summary>
+        </member>
+        <member name="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RememberMeChanged">
+            <summary>
+            Fired when the Remember Me checkbox is changed by the user.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.Controls">
+            <summary>
+            Gets a <see cref="T:System.Web.UI.ControlCollection"/> object that represents the child controls for a specified server control in the UI hierarchy.
+            </summary>
+            <returns>
+            The collection of child controls for the specified server control.
+            </returns>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.LabelText">
+            <summary>
+            Gets or sets the caption that appears before the text box.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.ExamplePrefix">
+            <summary>
+            Gets or sets the text that introduces the example OpenID url.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.ExampleUrl">
+            <summary>
+            Gets or sets the example OpenID Identifier to display to the user.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RequiredText">
+            <summary>
+            Gets or sets the text to display if the user attempts to login 
+            without providing an Identifier.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.UriFormatText">
+            <summary>
+            Gets or sets the text to display if the user provides an invalid form for an Identifier.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.UriValidatorEnabled">
+            <summary>
+            Gets or sets a value indicating whether to perform Identifier 
+            format validation prior to an authentication attempt.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RegisterText">
+            <summary>
+            Gets or sets the text of the link users can click on to obtain an OpenID.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RegisterUrl">
+            <summary>
+            Gets or sets the URL to link users to who click the link to obtain a new OpenID.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RegisterToolTip">
+            <summary>
+            Gets or sets the text of the tooltip to display when the user hovers 
+            over the link to obtain a new OpenID.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RegisterVisible">
+            <summary>
+            Gets or sets a value indicating whether to display a link to 
+            allow users to easily obtain a new OpenID.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.ButtonText">
+            <summary>
+            Gets or sets the text that appears on the button that initiates login.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RememberMeText">
+            <summary>
+            Gets or sets the text of the "Remember Me" checkbox.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.FailedMessageText">
+            <summary>
+            Gets or sets the message display in the event of a failed 
+            authentication.  {0} may be used to insert the actual error.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.CanceledText">
+            <summary>
+            Gets or sets the text to display in the event of an authentication canceled at the Provider.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RememberMeVisible">
+            <summary>
+            Gets or sets a value indicating whether the "Remember Me" checkbox should be displayed.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.RememberMe">
+            <summary>
+            Gets or sets a value indicating whether a successful authentication should result in a persistent
+            cookie being saved to the browser.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.TabIndex">
+            <summary>
+            Gets or sets the starting tab index to distribute across the controls.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.ButtonToolTip">
+            <summary>
+            Gets or sets the tooltip to display when the user hovers over the login button.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.ValidationGroup">
+            <summary>
+            Gets or sets the validation group that the login button and text box validator belong to.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.IdSelectorIdentifier">
+            <summary>
+            Gets or sets the unique hash string that ends your idselector.com account.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.UsePersistentCookie">
+            <summary>
+            Gets or sets a value indicating whether a FormsAuthentication 
+            cookie should persist across user sessions.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.InPlaceControl">
+            <summary>
+            A control that acts as a placeholder to indicate where
+            the OpenIdLogin control should render its OpenIdTextBox parent.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.InPlaceControl.renderControl">
+            <summary>
+            The owning control to render.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.InPlaceControl.#ctor(DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.InPlaceControl"/> class.
+            </summary>
+            <param name="renderControl">The render control.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdLogin.InPlaceControl.Render(System.Web.UI.HtmlTextWriter)">
+            <summary>
+            Sends server control content to a provided <see cref="T:System.Web.UI.HtmlTextWriter"/> object, which writes the content to be rendered on the client.
+            </summary>
+            <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter"/> object that receives the server control content.</param>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.RelyingParty.LogOnSiteNotification">
+            <summary>
+            Methods of indicating to the rest of the web site that the user has logged in.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.LogOnSiteNotification.None">
+            <summary>
+            The rest of the web site is unaware that the user just completed an OpenID login.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.LogOnSiteNotification.FormsAuthentication">
+            <summary>
+            After the <see cref="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.LoggedIn"/> event is fired
+            the control automatically calls <see cref="M:System.Web.Security.FormsAuthentication.RedirectFromLoginPage(System.String,System.Boolean)"/>
+            with the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.IAuthenticationResponse.ClaimedIdentifier"/> as the username
+            unless the <see cref="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdRelyingPartyControlBase.LoggedIn"/> event handler sets
+            <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdEventArgs.Cancel"/> property to true.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.RelyingParty.LogOnPersistence">
+            <summary>
+            How an OpenID user session should be persisted across visits.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.LogOnPersistence.Session">
+            <summary>
+            The user should only be logged in as long as the browser window remains open.
+            Nothing is persisted to help the user on a return visit.  Public kiosk mode.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.LogOnPersistence.SessionAndPersistentIdentifier">
+            <summary>
+            The user should only be logged in as long as the browser window remains open.
+            The OpenID Identifier is persisted to help expedite re-authentication when
+            the user visits the next time.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.LogOnPersistence.PersistentAuthentication">
+            <summary>
+            The user is issued a persistent authentication ticket so that no login is
+            necessary on their return visit.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector">
+            <summary>
+            An ASP.NET control that provides a user-friendly way of logging into a web site using OpenID.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.EmbeddedScriptResourceName">
+            <summary>
+            The name of the manifest stream containing the OpenIdButtonPanel.js file.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.EmbeddedStylesheetResourceName">
+            <summary>
+            The name of the manifest stream containing the OpenIdButtonPanel.css file.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.AuthDataFormKeySuffix">
+            <summary>
+            The substring to append to the end of the id or name of this control to form the
+            unique name of the hidden field that will carry the positive assertion on postback.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.ButtonsViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.Buttons"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.AuthenticatedAsToolTipViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.AuthenticatedAsToolTip"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.AuthenticatedAsToolTipDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.AuthenticatedAsToolTip"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.textBox">
+            <summary>
+            The OpenIdAjaxTextBox that remains hidden until the user clicks the OpenID button.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.positiveAssertionField">
+            <summary>
+            The hidden field that will transmit the positive assertion to the RP.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.CreateChildControls">
+            <summary>
+            Called by the ASP.NET page framework to notify server controls that use composition-based implementation to create any child controls they contain in preparation for posting back or rendering.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.EnsureChildControlsAreCreatedSafe">
+            <summary>
+            Ensures that the child controls have been built, but doesn't set control
+            properties that require executing <see cref="M:System.Web.UI.Control.EnsureID"/> in order to avoid
+            certain initialization order problems.
+            </summary>
+            <remarks>
+            We don't just call EnsureChildControls() and then set the property on
+            this.textBox itself because (apparently) setting this property in the ASPX
+            page and thus calling this EnsureID() via EnsureChildControls() this early
+            results in no ID.
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.OnInit(System.EventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Web.UI.Control.Init"/> event.
+            </summary>
+            <param name="e">An <see cref="T:System.EventArgs"/> object that contains the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.OnPreRender(System.EventArgs)">
+            <summary>
+            Raises the <see cref="E:System.Web.UI.Control.PreRender"/> event.
+            </summary>
+            <param name="e">An <see cref="T:System.EventArgs"/> object that contains the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.Render(System.Web.UI.HtmlTextWriter)">
+            <summary>
+            Sends server control content to a provided <see cref="T:System.Web.UI.HtmlTextWriter"/> object, which writes the content to be rendered on the client.
+            </summary>
+            <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter"/> object that receives the server control content.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.EnsureValidButtons">
+            <summary>
+            Ensures the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.Buttons"/> collection has a valid set of buttons.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.TextBox">
+            <summary>
+            Gets the text box where applicable.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.Throttle">
+            <summary>
+            Gets or sets the maximum number of OpenID Providers to simultaneously try to authenticate with.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.Timeout">
+            <summary>
+            Gets or sets the time duration for the AJAX control to wait for an OP to respond before reporting failure to the user.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.AuthenticatedAsToolTip">
+            <summary>
+            Gets or sets the tool tip text that appears on the green checkmark when authentication succeeds.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.DownloadYahooUILibrary">
+            <summary>
+            Gets or sets a value indicating whether the Yahoo! User Interface Library (YUI)
+            will be downloaded in order to provide a login split button.
+            </summary>
+            <value>
+            	<c>true</c> to use a split button; otherwise, <c>false</c> to use a standard HTML button
+            	or a split button by downloading the YUI library yourself on the hosting web page.
+            </value>
+            <remarks>
+            The split button brings in about 180KB of YUI javascript dependencies.
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.Buttons">
+            <summary>
+            Gets the collection of buttons this selector should render to the browser.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.Controls">
+            <summary>
+            Gets a <see cref="T:System.Web.UI.ControlCollection"/> object that represents the child controls for a specified server control in the UI hierarchy.
+            </summary>
+            <returns>
+            The collection of child controls for the specified server control.
+            </returns>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.OpenIdAuthDataFormKey">
+            <summary>
+            Gets the name of the open id auth data form key (for the value as stored at the user agent as a FORM field).
+            </summary>
+            <value>
+            Usually a concatenation of the control's name and <c>"_openidAuthData"</c>.
+            </value>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.OpenIdTextBoxVisible">
+            <summary>
+            Gets a value indicating whether some button in the selector will want
+            to display the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdAjaxTextBox"/> control.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.RelyingParty.PopupBehavior">
+            <summary>
+            Several ways that the relying party can direct the user to the Provider
+            to complete authentication.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.PopupBehavior.Never">
+            <summary>
+            A full browser window redirect will be used to send the
+            user to the Provider.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.PopupBehavior.Always">
+            <summary>
+            A popup window will be used to send the user to the Provider.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.PopupBehavior.IfProviderSupported">
+            <summary>
+            A popup window will be used to send the user to the Provider
+            if the Provider advertises support for the popup UI extension;
+            otherwise a standard redirect is used.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.RelyingParty.SelectorButton">
+            <summary>
+            A button that would appear in the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector"/> control via its <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector.Buttons"/> collection.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorButton.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.SelectorButton"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorButton.EnsureValid">
+            <summary>
+            Ensures that this button has been initialized to a valid state.
+            </summary>
+            <remarks>
+            This is "internal" -- NOT "protected internal" deliberately.  It makes it impossible
+            to derive from this class outside the assembly, which suits our purposes since the
+            <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector"/> control is not designed for an extensible set of button types.
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorButton.RenderLeadingAttributes(System.Web.UI.HtmlTextWriter)">
+            <summary>
+            Renders the leading attributes for the LI tag.
+            </summary>
+            <param name="writer">The writer.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorButton.RenderButtonContent(System.Web.UI.HtmlTextWriter,DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector)">
+            <summary>
+            Renders the content of the button.
+            </summary>
+            <param name="writer">The writer.</param>
+            <param name="selector">The containing selector control.</param>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.RelyingParty.SelectorButtonContract">
+            <summary>
+            The contract class for the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.SelectorButton"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorButtonContract.EnsureValid">
+            <summary>
+            Ensures that this button has been initialized to a valid state.
+            </summary>
+            <remarks>
+            This is "internal" -- NOT "protected internal" deliberately.  It makes it impossible
+            to derive from this class outside the assembly, which suits our purposes since the
+            <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector"/> control is not designed for an extensible set of button types.
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorButtonContract.RenderLeadingAttributes(System.Web.UI.HtmlTextWriter)">
+            <summary>
+            Renders the leading attributes for the LI tag.
+            </summary>
+            <param name="writer">The writer.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorButtonContract.RenderButtonContent(System.Web.UI.HtmlTextWriter,DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector)">
+            <summary>
+            Renders the content of the button.
+            </summary>
+            <param name="writer">The writer.</param>
+            <param name="selector">The containing selector control.</param>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.RelyingParty.SelectorOpenIdButton">
+            <summary>
+            A button that appears in the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector"/> control that
+            allows the user to type in a user-supplied identifier.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorOpenIdButton.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.SelectorOpenIdButton"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorOpenIdButton.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.SelectorOpenIdButton"/> class.
+            </summary>
+            <param name="imageUrl">The image to display on the button.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorOpenIdButton.EnsureValid">
+            <summary>
+            Ensures that this button has been initialized to a valid state.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorOpenIdButton.RenderLeadingAttributes(System.Web.UI.HtmlTextWriter)">
+            <summary>
+            Renders the leading attributes for the LI tag.
+            </summary>
+            <param name="writer">The writer.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorOpenIdButton.RenderButtonContent(System.Web.UI.HtmlTextWriter,DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector)">
+            <summary>
+            Renders the content of the button.
+            </summary>
+            <param name="writer">The writer.</param>
+            <param name="selector">The containing selector control.</param>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.SelectorOpenIdButton.Image">
+            <summary>
+            Gets or sets the path to the image to display on the button's surface.
+            </summary>
+            <value>The virtual path to the image.</value>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.RelyingParty.SelectorProviderButton">
+            <summary>
+            A button that appears in the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector"/> control that
+            provides one-click access to a popular OpenID Provider.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorProviderButton.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.SelectorProviderButton"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorProviderButton.#ctor(DotNetOpenAuth.OpenId.Identifier,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.SelectorProviderButton"/> class.
+            </summary>
+            <param name="providerIdentifier">The OP Identifier.</param>
+            <param name="imageUrl">The image to display on the button.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorProviderButton.EnsureValid">
+            <summary>
+            Ensures that this button has been initialized to a valid state.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorProviderButton.RenderLeadingAttributes(System.Web.UI.HtmlTextWriter)">
+            <summary>
+            Renders the leading attributes for the LI tag.
+            </summary>
+            <param name="writer">The writer.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorProviderButton.RenderButtonContent(System.Web.UI.HtmlTextWriter,DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector)">
+            <summary>
+            Renders the content of the button.
+            </summary>
+            <param name="writer">The writer.</param>
+            <param name="selector">The containing selector control.</param>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.SelectorProviderButton.Image">
+            <summary>
+            Gets or sets the path to the image to display on the button's surface.
+            </summary>
+            <value>The virtual path to the image.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.SelectorProviderButton.OPIdentifier">
+            <summary>
+            Gets or sets the OP Identifier represented by the button.
+            </summary>
+            <value>
+            The OP identifier, which may be provided in the easiest "user-supplied identifier" form,
+            but for security should be provided with a leading https:// if possible.
+            For example: "yahoo.com" or "https://me.yahoo.com/".
+            </value>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.SelectorProviderButton.SkipBackgroundAuthentication">
+            <summary>
+            Gets or sets a value indicating whether this Provider doesn't handle
+            checkid_immediate messages correctly and background authentication
+            should not be attempted.
+            </summary>
+        </member>
+    </members>
+</doc>

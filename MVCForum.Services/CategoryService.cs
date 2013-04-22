@@ -57,9 +57,9 @@ namespace MVCForum.Services
         /// Get all main categories (Categories with no parent category)
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Category> GetAllMainCategories()
+        public IEnumerable<Category> GetAllMainCategories(bool getWithExtendedData = false)
         {
-            return _categoryRepository.GetMainCategories();
+            return _categoryRepository.GetMainCategories(getWithExtendedData);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace MVCForum.Services
             category = SanitizeCategory(category);
 
             // Set the create date
-            category.DateCreated = DateTime.Now;
+            category.DateCreated = DateTime.UtcNow;
 
             // url slug generator
             category.Slug = ServiceHelpers.GenerateSlug(category.Name, x => _categoryRepository.GetBySlugLike(ServiceHelpers.CreateUrl(category.Name)));            
@@ -134,6 +134,16 @@ namespace MVCForum.Services
         public Category Get(Guid id)
         {
             return _categoryRepository.Get(id);
+        }
+
+        /// <summary>
+        /// Return model with Sub categories
+        /// </summary>
+        /// <param name="slug"></param>
+        /// <returns></returns>
+        public CategoryWithSubCategories GetBySlugWithSubCategories(string slug)
+        {
+            return _categoryRepository.GetBySlugWithSubCategories(slug);
         }
 
         /// <summary>

@@ -18,6 +18,7 @@ namespace MVCForum.Website.Application
                 // Write result to output-stream
                 //var byteArray = Encoding.Default.GetBytes(Body);
                 var byteArray = Encoding.Unicode.GetBytes(Body);
+                response.Charset = "windows-1254";
                 response.OutputStream.Write(byteArray, 0, byteArray.GetLength(0));
             }
         }

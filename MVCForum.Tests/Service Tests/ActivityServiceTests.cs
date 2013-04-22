@@ -36,7 +36,7 @@ namespace MVCForum.Tests.Service_Tests
             var user = new MembershipUser { Id = new Guid(guidStrUser), UserName = "SpongeBob" };
             var badge = new Badge { Id = new Guid(guidStrBadge) };
 
-            activityService.BadgeAwarded(badge, user, DateTime.Now);
+            activityService.BadgeAwarded(badge, user, DateTime.UtcNow);
 
             activityRepository.Received().Add((Arg.Is<Activity>(x => x.Data == BadgeActivity.KeyBadgeId + "=" + guidStrBadge + "," + BadgeActivity.KeyUserId + "=" + guidStrUser)));
         }
@@ -47,7 +47,7 @@ namespace MVCForum.Tests.Service_Tests
             const string guidStr = "515b7240-3be1-43d4-8846-c0b589cd1cd2";
             const string guidStrUser = "0c462b02-a991-48d8-8435-92f04e666675";
 
-            var timestamp = DateTime.Now;
+            var timestamp = DateTime.UtcNow;
             var activityRepository = Substitute.For<IActivityRepository>();
             var badgeActivitiesInDb = new List<Activity>
                                           {
@@ -88,7 +88,7 @@ namespace MVCForum.Tests.Service_Tests
         {
             const string guidStr = "515b7240-3be1-43d4-8846-c0b589cd1cd2";
 
-            var timestamp = DateTime.Now;
+            var timestamp = DateTime.UtcNow;
             var activityRepository = Substitute.For<IActivityRepository>();
 
             _membershipRepository.Get(new Guid(guidStr)).Returns(new MembershipUser());
@@ -128,7 +128,7 @@ namespace MVCForum.Tests.Service_Tests
         public void ProfileUpdatedActivityGet()
         {
             const string guidStr = "515b7240-3be1-43d4-8846-c0b589cd1cd2";
-            var timestamp = DateTime.Now;
+            var timestamp = DateTime.UtcNow;
             var activityRepository = Substitute.For<IActivityRepository>();
             var profileUpdatedActivitiesInDb = new List<Activity>
                                           {

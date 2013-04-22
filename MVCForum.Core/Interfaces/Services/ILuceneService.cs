@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
-using MVCForum.Lucene.LuceneModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
@@ -15,8 +14,10 @@ namespace MVCForum.Domain.Interfaces.Services
         void OptimiseIndex();
         LuceneSearchModel MapToModel(Post post);
         LuceneSearchModel MapToModel(Topic topic);
-        IEnumerable<LuceneSearchModel> Search(string searchTerm, string fieldName);
-        IEnumerable<LuceneSearchModel> Search(string searchTerm);
+        IEnumerable<LuceneSearchModel> Search(string searchTerm, string fieldName, bool doFuzzySearch = false);
+        IEnumerable<LuceneSearchModel> Search(string searchTerm, string fieldName, int amountToTake, bool doFuzzySearch = false);
+        IEnumerable<LuceneSearchModel> Search(string searchTerm, bool doFuzzySearch = false);
         IEnumerable<LuceneSearchModel> GetAll();
+        PagedList<LuceneSearchModel> Search(string searchTerm, int pageIndex, int pageSize, bool doFuzzySearch = false);
    }
 }

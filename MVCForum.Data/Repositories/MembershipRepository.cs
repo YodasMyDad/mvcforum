@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Data.Entity;
 using MVCForum.Data.Context;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
@@ -33,7 +34,7 @@ namespace MVCForum.Data.Repositories
         {
             return _context.MembershipUser
                 .Include(x => x.Roles)
-                .SingleOrDefault(name => name.UserName.ToLower() == username.ToLower());
+                .FirstOrDefault(name => name.UserName.ToLower() == username.ToLower());
         }
 
         /// <summary>
@@ -45,7 +46,28 @@ namespace MVCForum.Data.Repositories
         {
             return _context.MembershipUser
                 .Include(x => x.Roles)
-                .SingleOrDefault(name => name.FacebookId == facebookId);
+                .FirstOrDefault(name => name.FacebookId == facebookId);
+        }
+
+        public MembershipUser GetUserByTwitterId(string twitterId)
+        {
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .FirstOrDefault(name => name.TwitterAccessToken == twitterId);
+        }
+
+        public MembershipUser GetUserByGoogleId(string googleId)
+        {
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .FirstOrDefault(name => name.GoogleAccessToken == googleId);
+        }
+
+        public MembershipUser GetUserByOpenIdToken(string openId)
+        {
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .FirstOrDefault(name => name.MiscAccessToken == openId);
         }
 
         public IList<MembershipUser> SearchMembers(string username, int amount)
@@ -57,12 +79,39 @@ namespace MVCForum.Data.Repositories
                             .ToList();
         }
 
+        public IList<MembershipUser> GetActiveMembers()
+        {
+            // Get members that last activity date is valid
+            var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
+            return _context.MembershipUser
+                .Where(x => x.LastActivityDate > date)
+                .ToList();
+        }
+
+        public IList<MembershipUser> GetUsersByDaysPostsPoints(int amoutOfDaysSinceRegistered, int amoutOfPosts)
+        {
+            var registerEnd = DateTime.UtcNow;
+            var registerStart = registerEnd.AddDays(-amoutOfDaysSinceRegistered);
+            return _context.MembershipUser
+                .Include(x => x.Posts)
+                .Include(x => x.Points)
+                .Include(x => x.PrivateMessagesReceived)
+                .Include(x => x.PrivateMessagesSent)
+                .Include(x => x.Votes)
+                .Include(x => x.PollVotes)
+                .Where(x =>
+                        x.Posts.Count <= amoutOfPosts &&
+                        x.CreateDate > registerStart && 
+                        x.CreateDate <= registerEnd)
+                .ToList();
+        }
+
         public MembershipUser GetUserBySlug(string slug)
         {
 
             return _context.MembershipUser
                 .Include(x => x.Roles)
-                .SingleOrDefault(name => name.Slug == slug);
+                .FirstOrDefault(name => name.Slug == slug);
 
         }
 
@@ -70,7 +119,7 @@ namespace MVCForum.Data.Repositories
         {
             return _context.MembershipUser
                 .Include(x => x.Roles)
-                .SingleOrDefault(name => name.Email == email);
+                .FirstOrDefault(name => name.Email == email);
         }
 
         public IList<MembershipUser> GetUserBySlugLike(string slug)

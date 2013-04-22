@@ -5,9 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using MVCForum.Domain;
-using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Utilities;
@@ -111,7 +109,7 @@ namespace MVCForum.Services
                 throw new ApplicationException(string.Format("The resource key with name '{0}' already exists.", newLocaleResourceKey.Name));
             }
 
-            newLocaleResourceKey.DateAdded = DateTime.Now;
+            newLocaleResourceKey.DateAdded = DateTime.UtcNow;
 
             // Now add an empty value for each language
             newLocaleResourceKey.LocaleStringResources = new List<LocaleStringResource>();
@@ -291,6 +289,14 @@ namespace MVCForum.Services
             get
             {
                 var settings = _settingsRepository.GetSettings();
+
+                if (settings == null)
+                {
+                    // This is a one off scenario and means the system has no settings
+                    // usually when running the installer, so we need to return a default language
+                    return new Language{Name = "Setup Language", LanguageCulture = "en-GB"};
+                }
+
                 var language = settings.DefaultLanguage;
 
                 if (language == null)
@@ -427,6 +433,21 @@ namespace MVCForum.Services
         public PagedList<LocaleStringResource> SearchResourceKeys(Guid languageId, string search, int pageIndex, int pageSize)
         {
             return _localizationRepository.SearchResourceKeys(languageId, StringUtils.SafePlainText(search), pageIndex, pageSize);
+        }
+
+        public IList<CultureInfo> LanguagesAll
+        {
+            get
+            {
+                var allLanguagesNotInDb = new List<CultureInfo>();
+
+                foreach (var cultureInfo in LanguageUtils.AllCultures)
+                {
+                        allLanguagesNotInDb.Add(cultureInfo);
+                }
+
+                return allLanguagesNotInDb.OrderBy(info => info.EnglishName).ToList();
+            }
         }
 
         /// <summary>
@@ -566,6 +587,7 @@ namespace MVCForum.Services
 
             // Look up the language and culture
             Language language;
+
             try
             {
                 var cultureInfo = LanguageUtils.GetCulture(langKey);
@@ -581,7 +603,8 @@ namespace MVCForum.Services
                     return report;
                 }
 
-                language = Add(cultureInfo);
+                // See if this language exists already, and if not then create it
+                language = GetLanguageByLanguageCulture(langKey) ?? Add(cultureInfo);
             }
             catch (LanguageOrCultureAlreadyExistsException ex)
             {
@@ -593,6 +616,7 @@ namespace MVCForum.Services
                 report.Errors.Add(new CsvErrorWarning { ErrorWarningType = CsvErrorWarningType.ItemBad, Message = ex.Message });
                 return report;
             }
+
             try
             {
                 var lineCounter = 0;
@@ -620,6 +644,7 @@ namespace MVCForum.Services
                         // Ignore empty keys
                         continue;
                     }
+                    key = key.Trim();
 
                     var value = keyValuePair[1];
 
@@ -636,7 +661,7 @@ namespace MVCForum.Services
                         resourceKey = new LocaleResourceKey
                                           {
                                               Name = key,
-                                              DateAdded = DateTime.Now,
+                                              DateAdded = DateTime.UtcNow,
                                           };
 
                         Add(resourceKey);
@@ -648,10 +673,27 @@ namespace MVCForum.Services
                     }
 
                     // In the new language (only) set the value for the resource
-                    foreach (var res in language.LocaleStringResources.Where(res => res.LocaleResourceKey.Name == resourceKey.Name))
+                    var stringResources = language.LocaleStringResources.Where(res => res.LocaleResourceKey.Name == resourceKey.Name).ToList();
+                    if (stringResources.Any())
                     {
-                        res.ResourceValue = value;
-                        break;
+                        foreach (var res in stringResources)
+                        {
+                            res.ResourceValue = value;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        // No string resources have been created, so most probably
+                        // this is the installer creating the keys so we need to create the 
+                        // string resource to go with it and add it
+                        var stringResource = new LocaleStringResource
+                            {
+                                Language = language,
+                                LocaleResourceKey = resourceKey,
+                                ResourceValue = value
+                            };
+                        _localizationRepository.Add(stringResource);
                     }
                 }
             }
@@ -683,7 +725,7 @@ namespace MVCForum.Services
             get
             {
                 var allLanguagesNotInDb = new List<CultureInfo>();
-                var allLanguagesInDb = AllLanguages;
+                var allLanguagesInDb = AllLanguages.ToList();
 
                 foreach (var cultureInfo in LanguageUtils.AllCultures)
                 {

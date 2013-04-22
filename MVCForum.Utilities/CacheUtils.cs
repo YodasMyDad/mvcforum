@@ -28,7 +28,7 @@ namespace MVCForum.Utilities
                 key,
                 o,
                 null,
-                DateTime.Now.AddMinutes(Cachetimeinminutes),
+                DateTime.UtcNow.AddMinutes(Cachetimeinminutes),
                 System.Web.Caching.Cache.NoSlidingExpiration);
         }
 

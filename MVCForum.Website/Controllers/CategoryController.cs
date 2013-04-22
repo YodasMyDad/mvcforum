@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
@@ -16,6 +15,9 @@ namespace MVCForum.Website.Controllers
         private readonly ICategoryService _categoryService;
         private readonly ICategoryNotificationService _categoryNotificationService;
         private readonly ITopicService _topicService;
+
+        private MembershipUser LoggedOnUser;
+        private MembershipRole UsersRole;
 
         /// <summary>
         /// Constructor
@@ -40,15 +42,39 @@ namespace MVCForum.Website.Controllers
             _categoryService = categoryService;
             _topicService = topicService;
             _categoryNotificationService = categoryNotificationService;
+
+            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
+            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
+
+        public ActionResult Index()
+        {
+            var catViewModel = new CategoryListViewModel
+            {
+                AllPermissionSets = new Dictionary<Category, PermissionSet>()
+            };
+
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                foreach (var category in _categoryService.GetAllMainCategories(true))
+                {
+                    var permissionSet = RoleService.GetPermissions(category, UsersRole);
+                    catViewModel.AllPermissionSets.Add(category, permissionSet);
+                }
+            }
+
+            return View(new IndexCategoryViewModel
+                {
+                    Categories = catViewModel
+                });
+        }   
 
         [ChildActionOnly]
         [OutputCache(Duration = AppConstants.DefaultCacheLengthInSeconds)]
         public PartialViewResult ListCategorySideMenu()
         {
             var catViewModel = new CategoryListViewModel { 
-                AllPermissionSets = new Dictionary<Category, PermissionSet>(), 
-                AllSubCategories = new Dictionary<Category, IEnumerable<Category>>() };
+                AllPermissionSets = new Dictionary<Category, PermissionSet>()};
 
             using (UnitOfWorkManager.NewUnitOfWork())
             {
@@ -56,9 +82,6 @@ namespace MVCForum.Website.Controllers
                 {
                     var permissionSet = RoleService.GetPermissions(category, UsersRole);
                     catViewModel.AllPermissionSets.Add(category, permissionSet);
-
-                    var subCats = _categoryService.GetAllSubCategories(category.Id);
-                    catViewModel.AllSubCategories.Add(category, subCats); 
                 }
             }
 
@@ -70,33 +93,51 @@ namespace MVCForum.Website.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 // Get the category
-                var category = _categoryService.Get(slug);
+                var category = _categoryService.GetBySlugWithSubCategories(slug);
 
                 // Set the page index
                 var pageIndex = p ?? 1;
 
                 // check the user has permission to this category
-                var permissions = RoleService.GetPermissions(category, UsersRole);
+                var permissions = RoleService.GetPermissions(category.Category, UsersRole);
 
                 if (!permissions[AppConstants.PermissionDenyAccess].IsTicked)
                 {
 
                     var topics = _topicService.GetPagedTopicsByCategory(pageIndex,
                                                                         SettingsService.GetSettings().TopicsPerPage,
-                                                                        int.MaxValue, category.Id);
+                                                                        int.MaxValue, category.Category.Id);
 
-                    var isSubscribed = LoggedOnUser != null && (_categoryNotificationService.GetByUserAndCategory(LoggedOnUser, category).Any());
+                    var isSubscribed = UserIsAuthenticated && (_categoryNotificationService.GetByUserAndCategory(LoggedOnUser, category.Category).Any());
 
-                    return View(new ViewCategoryViewModel
-                                    {
-                                        Permissions = permissions,
-                                        Topics = topics,
-                                        Category = category,
-                                        PageIndex = pageIndex,
-                                        TotalCount = topics.TotalCount,
-                                        User = LoggedOnUser,
-                                        IsSubscribed = isSubscribed
-                                    });
+                    // Create the main view model for the category
+                    var viewModel = new ViewCategoryViewModel
+                        {
+                            Permissions = permissions,
+                            Topics = topics,
+                            Category = category.Category,
+                            PageIndex = pageIndex,
+                            TotalCount = topics.TotalCount,
+                            User = LoggedOnUser,
+                            IsSubscribed = isSubscribed
+                        };
+
+                    // If there are subcategories then add then with their permissions
+                    if (category.SubCategories.Any())
+                    {
+                        var subCatViewModel = new CategoryListViewModel
+                            {
+                                AllPermissionSets = new Dictionary<Category, PermissionSet>()
+                            };
+                        foreach (var subCategory in category.SubCategories)
+                        {
+                            var permissionSet = RoleService.GetPermissions(subCategory, UsersRole);
+                            subCatViewModel.AllPermissionSets.Add(subCategory, permissionSet);
+                        }
+                        viewModel.SubCategories = subCatViewModel;
+                    }
+
+                    return View(viewModel);
                 }
 
                 return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));

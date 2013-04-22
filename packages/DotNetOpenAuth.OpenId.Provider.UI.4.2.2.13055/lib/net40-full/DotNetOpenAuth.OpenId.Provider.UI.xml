@@ -1,0 +1,318 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DotNetOpenAuth.OpenId.Provider.UI</name>
+    </assembly>
+    <members>
+        <member name="T:DotNetOpenAuth.OpenId.Provider.AnonymousRequestEventArgs">
+            <summary>
+            The event arguments that include details of the incoming request.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.Provider.AnonymousRequestEventArgs.#ctor(DotNetOpenAuth.OpenId.Provider.IAnonymousRequest)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.Provider.AnonymousRequestEventArgs"/> class.
+            </summary>
+            <param name="request">The incoming OpenID request.</param>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.Provider.AnonymousRequestEventArgs.Request">
+            <summary>
+            Gets the incoming OpenID request.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.Provider.AuthenticationChallengeEventArgs">
+            <summary>
+            The event arguments that include details of the incoming request.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.Provider.AuthenticationChallengeEventArgs.#ctor(DotNetOpenAuth.OpenId.Provider.IAuthenticationRequest)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.Provider.AuthenticationChallengeEventArgs"/> class.
+            </summary>
+            <param name="request">The incoming authentication request.</param>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.Provider.AuthenticationChallengeEventArgs.Request">
+            <summary>
+            Gets the incoming authentication request.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint">
+            <summary>
+            An ASP.NET control that manages the OpenID identity advertising tags
+            of a user's Identity Page that allow a relying party web site to discover
+            how to authenticate a user.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.AutoNormalizeRequestViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.AutoNormalizeRequest"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.ProviderLocalIdentifierViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.ProviderLocalIdentifier"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.ProviderVersionViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.ProviderVersion"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.ProviderEndpointUrlViewStateKey">
+            <summary>
+            The viewstate key to use for storing the value of the <see cref="P:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.ProviderEndpointUrl"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.ProviderVersionDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.ProviderVersion"/> property.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.OnNormalize">
+            <summary>
+            Checks the incoming request and invokes a browser redirect if the URL has not been normalized.
+            </summary>
+            <seealso cref="P:DotNetOpenAuth.OpenId.Provider.IdentityEndpointNormalizationEventArgs.NormalizedIdentifier"/>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.OnLoad(System.EventArgs)">
+            <summary>
+            Checks the incoming request and invokes a browser redirect if the URL has not been normalized.
+            </summary>
+            <param name="e">The <see cref="T:System.EventArgs"/> object that contains the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.Render(System.Web.UI.HtmlTextWriter)">
+            <summary>
+            Renders OpenID identity tags.
+            </summary>
+            <param name="writer">The <see cref="T:System.Web.UI.HtmlTextWriter"/> object that receives the server control content.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.BestGuessNormalization(System.Uri)">
+            <summary>
+            Normalizes the URL by making the path and query lowercase, and trimming trailing slashes.
+            </summary>
+            <param name="uri">The URI to normalize.</param>
+            <returns>The normalized URI.</returns>
+        </member>
+        <member name="E:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.NormalizeUri">
+            <summary>
+            Fired at each page request so the host web site can return the normalized
+            version of the request URI.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.ProviderVersion">
+            <summary>
+            Gets or sets the OpenID version supported by the provider.
+            If multiple versions are supported, this should be set to the latest
+            version that this library and the Provider both support.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.ProviderEndpointUrl">
+            <summary>
+            Gets or sets the Provider URL that processes OpenID requests.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.ProviderLocalIdentifier">
+            <summary>
+            Gets or sets the Identifier that is controlled by the Provider.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.AutoNormalizeRequest">
+            <summary>
+            Gets or sets a value indicating whether every incoming request 
+            will be checked for normalized form and redirected if it is not.
+            </summary>
+            <remarks>
+            <para>If set to true (and it should be), you should also handle the <see cref="E:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.NormalizeUri"/>
+            event and apply your own policy for normalizing the URI.</para>
+            If multiple <see cref="T:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint"/> controls are on a single page (to support
+            multiple versions of OpenID for example) then only one of them should have this 
+            property set to true.
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.Protocol">
+            <summary>
+            Gets the protocol to use for advertising OpenID on the identity page.
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.Provider.IdentityEndpointNormalizationEventArgs">
+            <summary>
+            The event arguments passed to the <see cref="E:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint.NormalizeUri"/> event handler.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.Provider.IdentityEndpointNormalizationEventArgs.#ctor(DotNetOpenAuth.OpenId.UriIdentifier)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.Provider.IdentityEndpointNormalizationEventArgs"/> class.
+            </summary>
+            <param name="userSuppliedIdentifier">The user supplied identifier.</param>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.Provider.IdentityEndpointNormalizationEventArgs.UserSuppliedIdentifier">
+            <summary>
+            Gets or sets the portion of the incoming page request URI that is relevant to normalization.
+            </summary>
+            <remarks>
+            This identifier should be used to look up the user whose identity page is being queried.
+            It MAY be set in case some clever web server URL rewriting is taking place that ASP.NET
+            does not know about but your site does. If this is the case this property should be set
+            to whatever the original request URL was.
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.Provider.IdentityEndpointNormalizationEventArgs.NormalizedIdentifier">
+            <summary>
+            Gets or sets the normalized form of the user's identifier, according to the host site's policy.
+            </summary>
+            <remarks>
+            <para>This should be set to some constant value for an individual user.  
+            For example, if <see cref="P:DotNetOpenAuth.OpenId.Provider.IdentityEndpointNormalizationEventArgs.UserSuppliedIdentifier"/> indicates that identity page
+            for "BOB" is being called up, then the following things should be considered:</para>
+            <list>
+            <item>Normalize the capitalization of the URL: for example, change http://provider/BOB to
+            http://provider/bob.</item>
+            <item>Switch to HTTPS is it is offered: change http://provider/bob to https://provider/bob.</item>
+            <item>Strip off the query string if it is not part of the canonical identity:
+            https://provider/bob?timeofday=now becomes https://provider/bob</item>
+            <item>Ensure that any trailing slash is either present or absent consistently.  For example,
+            change https://provider/bob/ to https://provider/bob.</item>
+            </list>
+            <para>When this property is set, the <see cref="T:DotNetOpenAuth.OpenId.Provider.IdentityEndpoint"/> control compares it to
+            the request that actually came in, and redirects the browser to use the normalized identifier
+            if necessary.</para>
+            <para>Using the normalized identifier in the request is <i>very</i> important as it
+            helps the user maintain a consistent identity across sites and across site visits to an individual site.
+            For example, without normalizing the URL, Bob might sign into a relying party site as 
+            http://provider/bob one day and https://provider/bob the next day, and the relying party
+            site <i>should</i> interpret Bob as two different people because the URLs are different.
+            By normalizing the URL at the Provider's identity page for Bob, whichever URL Bob types in
+            from day-to-day gets redirected to a normalized form, so Bob is seen as the same person
+            all the time, which is of course what Bob wants.
+            </para>
+            </remarks>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint">
+            <summary>
+            An OpenID Provider control that automatically responds to certain
+            automated OpenID messages, and routes authentication requests to
+            custom code via an event handler.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.PendingRequestKey">
+            <summary>
+            The key used to store the pending authentication request in the ASP.NET session.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.EnabledDefault">
+            <summary>
+            The default value for the <see cref="P:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.Enabled"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.EnabledViewStateKey">
+            <summary>
+            The view state key in which to store the value of the <see cref="P:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.Enabled"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.provider">
+            <summary>
+            Backing field for the <see cref="P:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.Provider"/> property.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.providerInitializerLock">
+            <summary>
+            The lock that must be obtained when initializing the provider field.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.SendResponse">
+            <summary>
+            Sends the response for the <see cref="P:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.PendingAuthenticationRequest"/> and clears the property.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.OnLoad(System.EventArgs)">
+            <summary>
+            Checks for incoming OpenID requests, responds to ones it can
+            respond to without policy checks, and fires events for custom
+            handling of the ones it cannot decide on automatically.
+            </summary>
+            <param name="e">The <see cref="T:System.EventArgs"/> object that contains the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.OnAuthenticationChallenge(DotNetOpenAuth.OpenId.Provider.IAuthenticationRequest)">
+            <summary>
+            Fires the <see cref="E:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.AuthenticationChallenge"/> event.
+            </summary>
+            <param name="request">The request to include in the event args.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.OnAnonymousRequest(DotNetOpenAuth.OpenId.Provider.IAnonymousRequest)">
+            <summary>
+            Fires the <see cref="E:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.AnonymousRequest"/> event.
+            </summary>
+            <param name="request">The request to include in the event args.</param>
+            <returns><c>true</c> if there were any anonymous request handlers.</returns>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.CreateProvider">
+            <summary>
+            Creates the default OpenIdProvider to use.
+            </summary>
+            <returns>The new instance of OpenIdProvider.</returns>
+        </member>
+        <member name="E:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.AuthenticationChallenge">
+            <summary>
+            Fired when an incoming OpenID request is an authentication challenge
+            that must be responded to by the Provider web site according to its
+            own user database and policies.
+            </summary>
+        </member>
+        <member name="E:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.AnonymousRequest">
+            <summary>
+            Fired when an incoming OpenID message carries extension requests
+            but is not regarding any OpenID identifier.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.Provider">
+            <summary>
+            Gets or sets the <see cref="T:DotNetOpenAuth.OpenId.Provider.OpenIdProvider"/> instance to use for all instances of this control.
+            </summary>
+            <value>The default value is an <see cref="T:DotNetOpenAuth.OpenId.Provider.OpenIdProvider"/> instance initialized according to the web.config file.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.PendingAuthenticationRequest">
+            <summary>
+            Gets or sets an incoming OpenID authentication request that has not yet been responded to.
+            </summary>
+            <remarks>
+            This request is stored in the ASP.NET Session state, so it will survive across
+            redirects, postbacks, and transfers.  This allows you to authenticate the user
+            yourself, and confirm his/her desire to authenticate to the relying party site
+            before responding to the relying party's authentication request.
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.PendingAnonymousRequest">
+            <summary>
+            Gets or sets an incoming OpenID anonymous request that has not yet been responded to.
+            </summary>
+            <remarks>
+            This request is stored in the ASP.NET Session state, so it will survive across
+            redirects, postbacks, and transfers.  This allows you to authenticate the user
+            yourself, and confirm his/her desire to provide data to the relying party site
+            before responding to the relying party's request.
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.PendingRequest">
+            <summary>
+            Gets or sets an incoming OpenID request that has not yet been responded to.
+            </summary>
+            <remarks>
+            This request is stored in the ASP.NET Session state, so it will survive across
+            redirects, postbacks, and transfers.  This allows you to authenticate the user
+            yourself, and confirm his/her desire to provide data to the relying party site
+            before responding to the relying party's request.
+            </remarks>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.Provider.ProviderEndpoint.Enabled">
+            <summary>
+            Gets or sets a value indicating whether or not this control should 
+            be listening for and responding to incoming OpenID requests.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -45,7 +45,7 @@ namespace MVCForum.Data.Repositories
 
         public TopicTag GetTagName(string tag)
         {
-            return _context.TopicTag.SingleOrDefault(x => x.Tag == tag);
+            return _context.TopicTag.FirstOrDefault(x => x.Tag == tag);
         }
 
         public PagedList<TopicTag> GetPagedGroupedTags(int pageIndex, int pageSize)

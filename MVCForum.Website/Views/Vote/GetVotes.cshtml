@@ -1,0 +1,13 @@
+﻿@model MVCForum.Website.ViewModels.ShowVotesViewModel
+
+@if (Model.DownVotes > 0 || Model.UpVotes > 0)
+{
+    <div class="expandvotesholder">
+        <div class="upvotes">
+            +@(Model.UpVotes.KiloFormat())
+        </div>
+        <div class="downvotes">
+            -@(Model.DownVotes.KiloFormat())
+        </div>
+    </div>
+}

@@ -35,7 +35,8 @@ namespace MVCForum.Services
                 var sb = sr.ReadToEnd();
                 sr.Close();
                 sb = sb.Replace("#CONTENT#", content);
-                
+                sb = sb.Replace("#SITENAME#", _settingsService.GetSettings().ForumName);
+                sb = sb.Replace("#SITEURL#", _settingsService.GetSettings().ForumUrl);
                 if(!string.IsNullOrEmpty(to))
                 {
                     to = string.Format("<p>{0},</p>", to);

@@ -10,7 +10,7 @@
 
         @(
             Bundle.Css()
-                .Add("~/Content/admin/bootstrap.css")
+                .Add("~/Content/Styles/bootstrap.css")
                 .Add("~/Content/admin/Admin.css")
                 .Add("~/Scripts/fancybox/jquery.fancybox.css")
                 
@@ -36,15 +36,10 @@
             var app_base = '@Url.Content("~/")';
         </script>
         @(Bundle.JavaScript()
-        .Add("~/Scripts/jquery.1.7.2.min.js")
+        .Add("~/Scripts/jquery-1.9.1.min.js")
         .Add("~/Scripts/jquery.unobtrusive-ajax.js")
-        .Add("~/Scripts/jquery-ui.1.8.min.js")
-        .Add("~/Scripts/admin/bootstrap-tooltip.js")
-        .Add("~/Scripts/admin/bootstrap-popover.js")
-        .Add("~/Scripts/admin/bootstrap-button.js")
-        .Add("~/Scripts/admin/bootstrap-alert.js")
-        .Add("~/Scripts/admin/bootstrap-transition.js")
-        .Add("~/Scripts/admin/bootstrap-tab.js")
+        .Add("~/Scripts/jquery-ui-1.10.0.min.js")
+        .Add("~/Scripts/bootstrap.min.js")
         .Add("~/Scripts/fancybox/jquery.fancybox.js")
         .Add("~/Scripts/admin/admin.js")
         
@@ -83,7 +78,7 @@
       <hr>
 
       <footer>
-          <p>&copy; <a href="http://www.webdesigncompany.co.uk">n3o Digital</a> @DateTime.Now.Year</p>
+          <p>&copy; <a href="http://www.webdesigncompany.co.uk">n3o Digital</a> @DateTime.UtcNow.Year</p>
           @RenderSection("AdminFooter", false)
       </footer>
 

@@ -2,66 +2,109 @@
 
 $(function () {
 
+
+    //$('a[href$=".gif"], a[href$=".jpg"], a[href$=".png"], a[href$=".bmp"], a[href$=".jpeg"]')
+
+    // Attach files click handler
+    ShowFileUploadClickHandler();
+
+    DisplayWaitForPostUploadClickHandler();
+
+    // make code pretty
+    window.prettyPrint && prettyPrint();
+
     $('input, textarea').placeholder();
 
-    // Show the voters box
-    AddShowVoters();
+    // Sort the date of the member
+    SortWhosOnline();
 
     //---------------- On Click------------------------
 
-    $(".thumbuplink").click(function (e) {
-        var postId = $(this).attr('rel');
-        var karmascore = ".karmascore-" + postId;
-        var karmathumbholder = ".postkarmathumbs-" + postId;
-        $(karmathumbholder).remove();
+    // We add the post click events like this, so we can reattach when we do the show more posts
+    AddPostClickEvents();
 
-        var VoteUpViewModel = new Object();
-        VoteUpViewModel.Post = postId;
+    var mobilenavbutton = $('.showmobilenavbar');
+    if (mobilenavbutton.length > 0) {
+        mobilenavbutton.click(function (e) {
+            e.preventDefault();
+            $('.mobilenavbar-inner ul.nav').slideToggle();
+        });
+    }
 
-        // Ajax call to post the view model to the controller
-        var strung = JSON.stringify(VoteUpViewModel);
-
-        $.ajax({
-            url: app_base + 'Vote/VoteUpPost',
-            type: 'POST',
-            dataType: 'json',
-            data: strung,
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
-                SuccessfulThumbUp(karmascore);
-                BadgeVoteUp(postId);
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+    var topicName = $(".createtopicname");
+    if (topicName.length > 0) {
+        topicName.focusout(function () {
+            var tbValue = $.trim(topicName.val());
+            var length = tbValue.length;
+            if (length > 5) {
+                // Someone has entered some text more than 5 charactors and now clicked
+                // out of the textbox, so search
+                $.ajax({
+                    url: app_base + 'Topic/GetSimilarTopics',
+                    type: 'POST',
+                    dataType: 'html',
+                    data: { 'searchTerm': tbValue },
+                    success: function (data) {
+                        if (data != '') {
+                            $('.relatedtopicskey').html(data);
+                            $('.relatedtopicsholder').show();
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                    }
+                });
             }
         });
-        e.preventDefault();
-        e.stopImmediatePropagation();
-    });
+    }
 
-    $(".thumbdownlink").click(function (e) {
-        var postId = $(this).attr('rel');
-        var karmascore = ".karmascore-" + postId;
-        var karmathumbholder = ".postkarmathumbs-" + postId;
-        $(karmathumbholder).remove();
+    $(".showmoreposts").click(function (e) {
+        var topicId = $('#topicId').val();
+        var pageIndex = $('#pageIndex');
+        var totalPages = parseInt($('#totalPages').val());
+        var activeText = $('span.smpactive');
+        var loadingText = $('span.smploading');
+        var showMoreLink = $(this);
 
-        var VoteDownViewModel = new Object();
-        VoteDownViewModel.Post = postId;
+        activeText.hide();
+        loadingText.show();
+
+        var getMorePostsViewModel = new Object();
+        getMorePostsViewModel.TopicId = topicId;
+        getMorePostsViewModel.PageIndex = pageIndex.val();
+        getMorePostsViewModel.Order = $.QueryString["order"];
 
         // Ajax call to post the view model to the controller
-        var strung = JSON.stringify(VoteDownViewModel);
+        var strung = JSON.stringify(getMorePostsViewModel);
 
         $.ajax({
-            url: app_base + 'Vote/VoteDownPost',
+            url: app_base + 'Topic/AjaxMorePosts',
             type: 'POST',
-            dataType: 'json',
+            dataType: 'html',
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
-                SuccessfulThumbDown(karmascore);
+                // Now add the new posts
+                AddNewPosts(showMoreLink, data);
+
+                // Update the page index value
+                var newPageIdex = (parseInt(pageIndex.val()) + parseInt(1));
+                pageIndex.val(newPageIdex);
+
+                // If the new pageindex is greater than the total pages, then hide the show more button
+                if (newPageIdex > totalPages) {
+                    showMoreLink.hide();
+                }
+
+                // Lastly reattch the click events
+                AddPostClickEvents();
+                activeText.show();
+                loadingText.hide();
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                activeText.show();
+                loadingText.hide();
             }
         });
         e.preventDefault();
@@ -80,40 +123,11 @@ $(function () {
         $.ajax({
             url: app_base + 'PrivateMessage/Delete',
             type: 'POST',
-            dataType: 'json',
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
                 // deleted, remove table row
                 RemovePrivateMessageTableRow(linkClicked);
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-            }
-        });
-        e.preventDefault();
-        e.stopImmediatePropagation();
-    });
-
-    $(".issolution").click(function (e) {
-        var solutionHolder = $(this);
-        var postId = solutionHolder.attr('rel');
-
-        var MarkAsSolutionViewModel = new Object();
-        MarkAsSolutionViewModel.Post = postId;
-
-        // Ajax call to post the view model to the controller
-        var strung = JSON.stringify(MarkAsSolutionViewModel);
-
-        $.ajax({
-            url: app_base + 'Vote/MarkAsSolution',
-            type: 'POST',
-            dataType: 'json',
-            data: strung,
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
-                MarkAsSolution(solutionHolder);
-                BadgeMarkAsSolution(postId);
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 ShowUserMessage("Error: " + xhr.status + " " + thrownError);
@@ -138,7 +152,6 @@ $(function () {
         $.ajax({
             url: app_base + 'Email/Subscribe',
             type: 'POST',
-            dataType: 'json',
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
@@ -168,7 +181,6 @@ $(function () {
         $.ajax({
             url: app_base + 'Email/UnSubscribe',
             type: 'POST',
-            dataType: 'json',
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
@@ -182,7 +194,7 @@ $(function () {
         e.preventDefault();
         e.stopImmediatePropagation();
     });
-    
+
     // Some manual ajax badge checks
     if ($.QueryString["postbadges"] == "true") {
         // Do a post badge check
@@ -190,7 +202,14 @@ $(function () {
     }
 
     // Poll Answer counter
-    var counter = 0;
+    //var counter = 0;
+
+    // This check is for the edit page
+    //if (typeof counter === 'undefined') {
+    //    // variable is undefined
+    //} else {
+    //    ShowHideRemovePollAnswerButton(counter);
+    //}    
 
     // Remove the polls
     $(".removepollbutton").click(function (e) {
@@ -217,26 +236,26 @@ $(function () {
         $(this).hide();
         // Show the remove poll button
         $(".removepollbutton").show();
-    });    
-    
+    });
+
     // Add a new answer
     $(".addanswer").click(function (e) {
         e.preventDefault();
         AddNewPollAnswer(counter);
         counter++;
-        ShowHideRemovePollAnswerButton(counter);
+        //ShowHideRemovePollAnswerButton(counter);
     });
 
     // Remove a poll answer
     $(".removeanswer").click(function (e) {
         e.preventDefault();
-        if (counter > 1) {
+        if (counter > 0) {
             counter--;
             $("#answer" + counter).remove();
-            ShowHideRemovePollAnswerButton(counter);
+            //ShowHideRemovePollAnswerButton(counter);
         }
     });
-    
+
     // Poll vote radio button click
     $(".pollanswerselect").click(function () {
         //Firstly Show the submit poll button
@@ -245,10 +264,10 @@ $(function () {
         var answerId = $(this).data("answerid");
         $('.selectedpollanswer').val(answerId);
     });
-    
+
     $(".pollvotebutton").click(function (e) {
         e.preventDefault();
-        
+
         var pollId = $('#Poll_Id').val();
         var answerId = $('.selectedpollanswer').val();
 
@@ -272,18 +291,174 @@ $(function () {
                 ShowUserMessage("Error: " + xhr.status + " " + thrownError);
             }
         });
-        
+
     });
-    
-    
+
+
 
 });
 
-function AddShowVoters() {
-    if ($(".showvoters").length > 0) {
-        // Container/Parent
-        var showVoters = $(".showvoters");
+function DisplayWaitForPostUploadClickHandler() {
+    var postUploadButton = $('.postuploadbutton');
+    if (postUploadButton.length > 0) {
+        postUploadButton.click(function (e) {
+            var uploadHolder = $(this).closest("div.postuploadholder");
+            var ajaxSpinner = uploadHolder.find("span.ajaxspinner");
+            ajaxSpinner.show();
+            $(this).hide();
+        });
+    }
+}
 
+function ShowFileUploadClickHandler() {
+    var attachButton = $('.postshowattach');
+    if (attachButton.length > 0) {
+        attachButton.click(function (e) {
+            e.preventDefault();
+            var postHolder = $(this).closest("div.post");
+            var uploadHolder = postHolder.find("div.postuploadholder");
+            uploadHolder.toggle();
+        });
+    }
+}
+
+function SortWhosOnline() {
+    $.getJSON(app_base + 'Members/LastActiveCheck');
+}
+
+function AddPostClickEvents() {
+
+    ShowExpandedVotes();
+
+    $(".issolution").click(function (e) {
+        var solutionHolder = $(this);
+        var postId = solutionHolder.attr('rel');
+
+        var MarkAsSolutionViewModel = new Object();
+        MarkAsSolutionViewModel.Post = postId;
+
+        // Ajax call to post the view model to the controller
+        var strung = JSON.stringify(MarkAsSolutionViewModel);
+
+        $.ajax({
+            url: app_base + 'Vote/MarkAsSolution',
+            type: 'POST',
+            data: strung,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                MarkAsSolution(solutionHolder);
+                BadgeMarkAsSolution(postId);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+            }
+        });
+        e.preventDefault();
+        e.stopImmediatePropagation();
+    });
+
+    $(".thumbuplink").click(function (e) {
+        var postId = $(this).attr('rel');
+        var karmascore = ".karmascore-" + postId;
+        var karmathumbholder = ".postkarmathumbs-" + postId;
+        $(karmathumbholder).remove();
+
+        var VoteUpViewModel = new Object();
+        VoteUpViewModel.Post = postId;
+
+        // Ajax call to post the view model to the controller
+        var strung = JSON.stringify(VoteUpViewModel);
+
+        $.ajax({
+            url: app_base + 'Vote/VoteUpPost',
+            type: 'POST',
+            data: strung,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                SuccessfulThumbUp(karmascore);
+                BadgeVoteUp(postId);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+            }
+        });
+        e.preventDefault();
+        e.stopImmediatePropagation();
+    });
+
+    $(".thumbdownlink").click(function (e) {
+        var postId = $(this).attr('rel');
+        var karmascore = ".karmascore-" + postId;
+        var karmathumbholder = ".postkarmathumbs-" + postId;
+        $(karmathumbholder).remove();
+
+        var VoteDownViewModel = new Object();
+        VoteDownViewModel.Post = postId;
+
+        // Ajax call to post the view model to the controller
+        var strung = JSON.stringify(VoteDownViewModel);
+
+        $.ajax({
+            url: app_base + 'Vote/VoteDownPost',
+            type: 'POST',
+            data: strung,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                SuccessfulThumbDown(karmascore);
+                BadgeVoteDown(postId);
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+            }
+        });
+        e.preventDefault();
+        e.stopImmediatePropagation();
+    });
+}
+
+function AddNewPosts(showMoreLink, posts) {
+    showMoreLink.before(posts);
+}
+
+function ShowExpandedVotes() {
+    var expandVotes = $(".expandvotes");
+    if (expandVotes.length > 0) {
+        expandVotes.click(function (e) {
+            e.preventDefault();
+
+            var votesSpan = $(this).find("span.votenumber");            
+
+            var expandVotesViewModel = new Object();
+            expandVotesViewModel.Post = votesSpan.attr("id");
+
+            // Ajax call to post the view model to the controller
+            var strung = JSON.stringify(expandVotesViewModel);
+            var thisExpandVotes = $(this);
+            $.ajax({
+                url: app_base + 'Vote/GetVotes',
+                type: 'POST',
+                dataType: 'html',
+                data: strung,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    votesSpan.html(data);
+                    // remove the css class to remove the click pointer and show multple calls to this
+                    thisExpandVotes.removeClass('expandvotes');
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+
+        });
+    }
+}
+
+// Unused now
+function AddShowVoters() {
+    var showVoters = $(".showvoters");
+    if (showVoters.length > 0) {
+        // Container/Parent
         showVoters.click(function (e) {
             e.preventDefault();
             // This the child box
@@ -294,10 +469,10 @@ function AddShowVoters() {
 
             // Now show it
             voterBox.toggle();
-            
+
             if (voterBox.is(":visible")) {
                 // Is being shown so do the Ajax call
-                
+
                 var GetVotersViewModel = new Object();
                 GetVotersViewModel.Post = voterBox.attr("id");
 
@@ -319,7 +494,7 @@ function AddShowVoters() {
                 });
 
             }
-        });       
+        });
     }
 }
 
@@ -330,14 +505,14 @@ function AddNewPollAnswer(counter) {
     liHolder.appendTo(".pollanswerlist");
 }
 
-function ShowHideRemovePollAnswerButton(counter) {
-    var removeButton = $('.removeanswer');
-    if(counter > 1) {
-        removeButton.show();
-    } else {
-        removeButton.hide();
-    }
-}
+//function ShowHideRemovePollAnswerButton(counter) {
+//    var removeButton = $('.removeanswer');
+//    if(counter > 1) {
+//        removeButton.show();
+//    } else {
+//        removeButton.hide();
+//    }
+//}
 
 //---------------- Functions------------------------
 function RemovePrivateMessageTableRow(linkClicked) {
@@ -356,7 +531,6 @@ function BadgeMarkAsSolution(postId) {
     $.ajax({
         url: app_base + 'Badge/MarkAsSolution',
         type: 'POST',
-        dataType: 'json',
         data: strung,
         contentType: 'application/json; charset=utf-8',
         success: function (data) {
@@ -369,27 +543,49 @@ function BadgeMarkAsSolution(postId) {
 }
 
 function BadgeVoteUp(postId) {
-    
-        // Ajax call to post the view model to the controller
-        var voteUpBadgeViewModel = new Object();
-        voteUpBadgeViewModel.PostId = postId;
 
-        // Ajax call to post the view model to the controller
-        var strung = JSON.stringify(voteUpBadgeViewModel);
+    // Ajax call to post the view model to the controller
+    var voteUpBadgeViewModel = new Object();
+    voteUpBadgeViewModel.PostId = postId;
 
-        $.ajax({
-            url: app_base + 'Badge/VoteUpPost',
-            type: 'POST',
-            dataType: 'json',
-            data: strung,
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
-                // No need to do anything
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-            }
-        });
+    // Ajax call to post the view model to the controller
+    var strung = JSON.stringify(voteUpBadgeViewModel);
+
+    $.ajax({
+        url: app_base + 'Badge/VoteUpPost',
+        type: 'POST',
+        data: strung,
+        contentType: 'application/json; charset=utf-8',
+        success: function (data) {
+            // No need to do anything
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+        }
+    });
+}
+
+function BadgeVoteDown(postId) {
+
+    // Ajax call to post the view model to the controller
+    var voteUpBadgeViewModel = new Object();
+    voteUpBadgeViewModel.PostId = postId;
+
+    // Ajax call to post the view model to the controller
+    var strung = JSON.stringify(voteUpBadgeViewModel);
+
+    $.ajax({
+        url: app_base + 'Badge/VoteDownPost',
+        type: 'POST',
+        data: strung,
+        contentType: 'application/json; charset=utf-8',
+        success: function (data) {
+            // No need to do anything
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+        }
+    });
 }
 
 function UserPost() {
@@ -397,8 +593,6 @@ function UserPost() {
     $.ajax({
         url: app_base + 'Badge/Post',
         type: 'POST',
-        dataType: 'json',
-        contentType: 'application/json; charset=utf-8',
         success: function (data) {
             // No need to do anything
         },
@@ -458,9 +652,13 @@ function AjaxPostSuccess() {
 
     // Re-enable the button
     $('#createpostbutton').attr("disabled", false);
-    
+
     // Finally do an async badge check
     UserPost();
+    
+    // Attached the upload click events
+    ShowFileUploadClickHandler();
+    DisplayWaitForPostUploadClickHandler();
 }
 
 function AjaxPostBegin() {
@@ -473,9 +671,9 @@ function AjaxPostError(message) {
 }
 
 (function ($) {
-    $.QueryString = (function(a) {
-        if (a == "") return { };
-        var b = { };
+    $.QueryString = (function (a) {
+        if (a == "") return {};
+        var b = {};
         for (var i = 0; i < a.length; ++i) {
             var p = a[i].split('=');
             if (p.length != 2) continue;

@@ -1,6 +1,4 @@
-﻿using System.Security.Policy;
-using System.Web;
-using System.Web.UI;
+﻿using System.Web;
 using MVCForum.Domain.Constants;
 
 namespace MVCForum.Domain
@@ -33,6 +31,11 @@ namespace MVCForum.Domain
         public static string GenerateUrl(UrlType e, string slug)
         {
             return VirtualPathUtility.ToAbsolute(string.Format("~/{0}/{1}", UrlTypeName(e), HttpUtility.HtmlDecode(slug)));            
+        }
+
+        public static string GenerateFileUrl(string filePath)
+        {
+            return VirtualPathUtility.ToAbsolute(filePath);
         }
     }
 }

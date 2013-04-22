@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
@@ -14,16 +15,32 @@ namespace MVCForum.Website.Controllers
     public class PrivateMessageController : BaseController
     {
         private readonly IPrivateMessageService _privateMessageService;
+        private readonly IEmailService _emailService;
+
+        private MembershipUser LoggedOnUser;
 
         public PrivateMessageController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
-            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IPrivateMessageService privateMessageService)
+            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IPrivateMessageService privateMessageService,
+            IEmailService emailService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _privateMessageService = privateMessageService;
+            _emailService = emailService;
+
+            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
         }
 
         public ActionResult Index(int? p)
         {
+            if (LoggedOnUser.DisablePrivateMessages == true)
+            {
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = LocalizationService.GetResourceString("Errors.NoPermission"),
+                    MessageType = GenericMessages.error
+                };                
+                return RedirectToAction("Index", "Home");
+            }
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = p ?? 1;
@@ -55,14 +72,14 @@ namespace MVCForum.Website.Controllers
         public ActionResult Create(Guid? id)
         {
             // Check if private messages are enabled
-            if(!SettingsService.GetSettings().EnablePrivateMessages)
+            if (!SettingsService.GetSettings().EnablePrivateMessages || LoggedOnUser.DisablePrivateMessages == true)
             {
                 return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
             }
 
             // Check flood control
             var lastMessage = _privateMessageService.GetLastSentPrivateMessage(LoggedOnUser.Id);
-            if (lastMessage != null && DateUtils.TimeDifferenceInMinutes(DateTime.Now, lastMessage.DateSent) < SettingsService.GetSettings().PrivateMessageFloodControl)
+            if (lastMessage != null && DateUtils.TimeDifferenceInMinutes(DateTime.UtcNow, lastMessage.DateSent) < SettingsService.GetSettings().PrivateMessageFloodControl)
             {
                 return ErrorToInbox(LocalizationService.GetResourceString("PM.SendingToQuickly"));
             }
@@ -91,7 +108,7 @@ namespace MVCForum.Website.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(CreatePrivateMessageViewModel createPrivateMessageViewModel)
         {
-            if (!SettingsService.GetSettings().EnablePrivateMessages)
+            if (!SettingsService.GetSettings().EnablePrivateMessages || LoggedOnUser.DisablePrivateMessages == true)
             {
                 return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
             }
@@ -110,7 +127,7 @@ namespace MVCForum.Website.Controllers
                                                      UserFrom = LoggedOnUser,
                                                      Subject = createPrivateMessageViewModel.Subject,
                                                      Message = createPrivateMessageViewModel.Message,
-                                                 };                            
+                                                 };
                         // now get the user its being sent to
                         var memberTo = MembershipService.GetUser(userTo);
 
@@ -141,6 +158,24 @@ namespace MVCForum.Website.Controllers
 
                                     unitOfWork.Commit();
 
+                                    // Finally send an email to the user so they know they have a new private message
+                                    // As long as they have not had notifications disabled
+                                    if (memberTo.DisableEmailNotifications != true)
+                                    {
+                                        var email = new Email
+                                        {
+                                            EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
+                                            EmailTo = memberTo.Email,
+                                            Subject = LocalizationService.GetResourceString("PM.NewPrivateMessageSubject"),
+                                            NameTo = memberTo.UserName
+                                        };
+
+                                        var sb = new StringBuilder();
+                                        sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("PM.NewPrivateMessageBody"), LoggedOnUser.UserName));
+                                        email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+                                        _emailService.SendMail(email);
+                                    }
+
                                     return RedirectToAction("Index");
                                 }
                                 catch (Exception ex)
@@ -148,7 +183,7 @@ namespace MVCForum.Website.Controllers
                                     unitOfWork.Rollback();
                                     LoggingService.Error(ex);
                                     ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
-                                }   
+                                }
                             }
                         }
                         else

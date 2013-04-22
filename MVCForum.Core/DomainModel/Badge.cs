@@ -7,6 +7,7 @@ namespace MVCForum.Domain.DomainModel
     public enum BadgeType
     {
         VoteUp,
+        VoteDown,
         MarkAsSolution,
         Time,
         Post
@@ -27,7 +28,8 @@ namespace MVCForum.Domain.DomainModel
                                                                 {BadgeType.VoteUp, "MVCForum.Domain.Interfaces.Badges.IVoteUpBadge"},
                                                                 {BadgeType.MarkAsSolution, "MVCForum.Domain.Interfaces.Badges.IMarkAsSolutionBadge"},
                                                                 {BadgeType.Time, "MVCForum.Domain.Interfaces.Badges.ITimeBadge"},
-                                                                {BadgeType.Post, "MVCForum.Domain.Interfaces.Badges.IPostBadge"}
+                                                                {BadgeType.Post, "MVCForum.Domain.Interfaces.Badges.IPostBadge"},
+                                                                {BadgeType.VoteDown, "MVCForum.Domain.Interfaces.Badges.IVoteDownBadge"}
                                                             };
 
         public Guid Id { get; set; }

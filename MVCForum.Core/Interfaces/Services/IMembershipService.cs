@@ -24,7 +24,11 @@ namespace MVCForum.Domain.Interfaces.Services
         MembershipUser GetUserByEmail(string email);
         MembershipUser GetUserBySlug(string slug);
         MembershipUser GetUserByFacebookId(long facebookId);
+        MembershipUser GetUserByTwitterId(string twitterId);
+        MembershipUser GetUserByGoogleId(string googleId);
+        MembershipUser GetUserByOpenIdToken(string openId);
         IList<MembershipUser> GetUsersById(List<Guid> guids);
+        IList<MembershipUser> GetUsersByDaysPostsPoints(int amoutOfDaysSinceRegistered, int amoutOfPosts);
         MembershipUser GetUser(Guid id);
         bool ChangePassword(MembershipUser user, string oldPassword, string newPassword);
         bool ResetPassword(MembershipUser user, string newPassword);
@@ -36,6 +40,7 @@ namespace MVCForum.Domain.Interfaces.Services
         PagedList<MembershipUser> GetAll(int pageIndex, int pageSize);
         PagedList<MembershipUser> SearchMembers(string search, int pageIndex, int pageSize);
         IList<MembershipUser> SearchMembers(string username, int amount);
+        IList<MembershipUser> GetActiveMembers();
         void Save(MembershipUser user);
         void ProfileUpdated(MembershipUser user);
         void Delete(MembershipUser user);

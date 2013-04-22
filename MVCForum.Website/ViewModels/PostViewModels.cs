@@ -10,10 +10,13 @@ namespace MVCForum.Website.ViewModels
     public class CreateAjaxPostViewModel
     {
         //[UIHint("bbeditor"), AllowHtml]
+        //[UIHint("tinymceeditor"), AllowHtml]
         [UIHint("markdowneditor"), AllowHtml]
         public string PostContent { get; set; }
 
         public Guid Topic { get; set; }
+
+        public bool DisablePosting { get; set; }
     }
 
     public class ViewPostViewModel
@@ -43,9 +46,12 @@ namespace MVCForum.Website.ViewModels
 
         public string Tags { get; set; }
 
+        public IList<PollAnswer> PollAnswers { get; set; }
+
         public IEnumerable<Category> Categories { get; set; }
                 
         //[UIHint("bbeditor"), AllowHtml]
+        //[UIHint("tinymceeditor"), AllowHtml]
         [UIHint("markdowneditor"), AllowHtml]
         public string Content { get; set; }
 

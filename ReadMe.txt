@@ -5,11 +5,29 @@
 5) Hit run in visual studio
 6) Login to the admin using 'admin' and 'password'
 
-
 #### NOTE #### 
 
 Db & Upgrade scripts that you can paste directly into SQL Express are found in MVCforum.Website project
 
 Installer > Db > 'Then Choose version number'
 
-Still testing it 
+The installer is still being updated/tested for 'upgrades' between versions. Its still flakey in my opinion, so bare with us
+
+
+##### DATABASE/SITE RESET ORDER ######
+
+If you want to clear the database and reset a test/dev forum, then use the file 'dbReset.sql' in this 'Database' solution folder
+
+----THEN Update Web.config
+
+1) Remove version number
+2) Clear Facebook settings
+
+--- Then clear the log file
+
+##### Blank a database ###########
+
+If you want to blank a database quickly to test installer, then keep running the line below over and
+over until all data is gone and no more errors
+
+EXEC sp_MSforeachtable @command1 = "DROP TABLE ?"

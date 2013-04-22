@@ -10,6 +10,7 @@ namespace MVCForum.Website.ViewModels
     {
         public PagedList<Topic> Topics { get; set; }
         public Dictionary<Category, PermissionSet> AllPermissionSets { get; set; }
+        public string Term { get; set; }
 
         public int? PageIndex { get; set; }
         public int? TotalCount { get; set; }

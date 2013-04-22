@@ -5,26 +5,28 @@
     var poll = Model.Poll;
     var displayVote = !Model.UserHasAlreadyVoted;
     
-    <div class="row showpollholder">
+    <div class="showpollholder">
         @foreach (var pollAnswer in poll.PollAnswers.OrderBy(x => x.Answer))
         {
             var answerVotes = pollAnswer.PollVotes.Count;
-            var widthPercentage = answerVotes > 0 ? ((((float)answerVotes/(float)Model.TotalVotesInPoll)*100) - 10) : 1;
+            var widthPercentage = answerVotes > 0 ? ((((float)answerVotes / (float)Model.TotalVotesInPoll) * 100) - 10) : 1;
                 
-            <div class="pollanswerrow span9">
-                <div class="pollanswerrowholder clearfix">
-                    @pollAnswer.Answer
-                </div>
+            <div class="row">
+                <div class="pollanswerrow span9">
+                    <div class="pollanswerrowholder clearfix">
+                        @pollAnswer.Answer
+                    </div>
 
-                <div class="pollbarrowholder clearfix">
-                    @if (Model.UserAllowedToVote && displayVote)
-                    {
-                        <div class="pollradiobuttonholder">
-                            <input type="radio" class="pollanswerselect" name="pollanswers" data-answerid="@pollAnswer.Id" />
-                        </div>
-                    }
-                    <div class="pollbar" style="width: @(widthPercentage)%;"></div>
-                    @answerVotes
+                    <div class="pollbarrowholder clearfix">
+                        @if (Model.UserAllowedToVote && displayVote)
+                        {
+                            <div class="pollradiobuttonholder">
+                                <input type="radio" class="pollanswerselect" name="pollanswers" data-answerid="@pollAnswer.Id" />
+                            </div>
+                        }
+                        <div class="pollbar" style="width: @(widthPercentage)%;"></div>
+                        @answerVotes
+                    </div>
                 </div>
             </div>
         }

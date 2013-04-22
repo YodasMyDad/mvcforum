@@ -104,6 +104,88 @@ namespace MVCForum.Utilities
         }
 
         /// <summary>
+        /// Checks to see if the string passed in is a valid email address
+        /// </summary>
+        /// <param name="strIn"></param>
+        /// <returns></returns>
+        public static bool IsValidEmail(string strIn)
+        {
+            if (strIn.IsNullEmpty())
+            {
+                return false;
+            }
+
+            // Return true if strIn is in valid e-mail format.
+            return Regex.IsMatch(strIn,
+                   @"^(?("")("".+?""@)|(([0-9a-zA-Z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-zA-Z])@))" +
+                   @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,6}))$");
+        }
+
+        /// <summary>
+        /// Converts a csv list of string guids into a real list of guids
+        /// </summary>
+        /// <param name="csv"></param>
+        /// <returns></returns>
+        public static List<Guid> CsvIdConverter(string csv)
+        {
+            return csv.TrimStart(',').TrimEnd(',').Split(',').Select(Guid.Parse).ToList();
+        }
+
+
+        /// <summary>
+        /// Downloads a web page and returns the HTML as a string
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public static HttpWebResponse DownloadWebPage(string url)
+        {
+            var ub = new UriBuilder(url);
+            var request = (HttpWebRequest)WebRequest.Create(ub.Uri);
+            request.Proxy = null;
+            return (HttpWebResponse)request.GetResponse();
+        }
+
+        #region Numeric Helpers
+        /// <summary>
+        /// Strips numeric charators from a string
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static string StripNonNumerics(string source)
+        {
+            var digitRegex = new Regex(@"[^\d]");
+            return digitRegex.Replace(source, "");
+        }
+
+        /// <summary>
+        /// Checks to see if the object is numeric or not
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        public static bool IsNumeric(object expression)
+        {
+            double retNum;
+            var isNum = Double.TryParse(Convert.ToString(expression), NumberStyles.Any, NumberFormatInfo.InvariantInfo, out retNum);
+            return isNum;
+        }
+        #endregion
+
+        #region String content helpers
+
+        private static readonly Random _rng = new Random();
+        private const string _chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+        public static string RandomString(int size)
+        {
+            var buffer = new char[size];
+            for (var i = 0; i < size; i++)
+            {
+                buffer[i] = _chars[_rng.Next(_chars.Length)];
+            }
+            return new string(buffer);
+        }
+
+        /// <summary>
         /// Returns the number of occurances of one string within another
         /// </summary>
         /// <param name="text"></param>
@@ -122,61 +204,6 @@ namespace MVCForum.Utilities
         }
 
         /// <summary>
-        /// Checks to see if the string passed in is a valid email address
-        /// </summary>
-        /// <param name="strIn"></param>
-        /// <returns></returns>
-        public static bool IsValidEmail(string strIn)
-        {
-            if (strIn.IsNullEmpty())
-            {
-                return false;
-            }
-
-            // Return true if strIn is in valid e-mail format.
-            return Regex.IsMatch(strIn,
-                   @"^(?("")("".+?""@)|(([0-9a-zA-Z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-zA-Z])@))" +
-                   @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,6}))$");
-        }
-
-
-        /// <summary>
-        /// Strips numeric charators from a string
-        /// </summary>
-        /// <param name="source"></param>
-        /// <returns></returns>
-        public static string StripNonNumerics(string source)
-        {
-            var digitRegex = new Regex(@"[^\d]");
-            return digitRegex.Replace(source, "");
-        }
-
-        /// <summary>
-        /// Downloads a web page and returns the HTML as a string
-        /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        public static HttpWebResponse DownloadWebPage(string url)
-        {
-            var ub = new UriBuilder(url);
-            var request = (HttpWebRequest)WebRequest.Create(ub.Uri);
-            request.Proxy = null;
-            return (HttpWebResponse)request.GetResponse();
-        }
-
-        /// <summary>
-        /// Checks to see if the object is numeric or not
-        /// </summary>
-        /// <param name="expression"></param>
-        /// <returns></returns>
-        public static bool IsNumeric(object expression)
-        {
-            double retNum;
-            var isNum = Double.TryParse(Convert.ToString(expression), NumberStyles.Any, NumberFormatInfo.InvariantInfo, out retNum);
-            return isNum;
-        }
-
-        /// <summary>
         /// reverses a string
         /// </summary>
         /// <param name="str"></param>
@@ -190,16 +217,6 @@ namespace MVCForum.Utilities
                 arr[i] = str[len - 1 - i];
             }
             return new string(arr);
-        }
-
-        /// <summary>
-        /// Converts a csv list of string guids into a real list of guids
-        /// </summary>
-        /// <param name="csv"></param>
-        /// <returns></returns>
-        public static List<Guid> CsvIdConverter(string csv)
-        {
-            return csv.TrimStart(',').TrimEnd(',').Split(',').Select(Guid.Parse).ToList();
         }
 
         /// <summary>
@@ -277,6 +294,138 @@ namespace MVCForum.Utilities
         }
 
         /// <summary>
+        /// Returns a string to do a related question/search lookup
+        /// </summary>
+        /// <param name="searchTerm"></param>
+        /// <returns></returns>
+        public static string ReturnSearchString(string searchTerm)
+        {
+            // Lower case
+            searchTerm = searchTerm.ToLower();
+
+            // Firstly strip non alpha numeric charactors out
+            searchTerm = Regex.Replace(searchTerm, @"[^\w\.@\- ]", "");
+
+            // Now strip common words out and retun the final result
+            return string.Join(" ", searchTerm.Split().Where(w => !CommonWords().Contains(w)).ToArray());
+        }
+
+        /// <summary>
+        /// Returns a list of the most common english words
+        /// TODO: Need to put this in something so people can add other language lists of common words
+        /// </summary>
+        /// <returns></returns>
+        public static IList<string> CommonWords()
+        {
+            return new List<string>
+                {
+                    "the", "be",  "to",  
+                    "of",  
+                    "and",
+                    "a",
+                    "in",   
+                    "that",  
+                    "have",
+                    "i",
+                    "it",   
+                    "for",
+                    "not",
+                    "on",
+                    "with",
+                    "he",
+                    "as",
+                    "you",
+                    "do",
+                    "at",
+                    "this",
+                    "but",
+                    "his",
+                    "by",
+                    "from",
+                    "they",
+                    "we",
+                    "say",
+                    "her",
+                    "she",
+                    "or",
+                    "an",
+                    "will",
+                    "my",
+                    "one",
+                    "all",
+                    "would",
+                    "there",
+                    "their",
+                    "what",
+                    "so",
+                    "up",
+                    "out",
+                    "if",
+                    "about",
+                    "who",
+                    "get",
+                    "which",
+                    "go",
+                    "me",
+                    "when",
+                    "make",
+                    "can",
+                    "like",
+                    "time",
+                    "no",
+                    "just",
+                    "him",
+                    "know",
+                    "take",
+                    "people",
+                    "into",
+                    "year",
+                    "your",
+                    "good",
+                    "some",
+                    "could",
+                    "them",
+                    "see",
+                    "other",
+                    "than",
+                    "then",
+                    "now",
+                    "look",
+                    "only",
+                    "come",
+                    "its",
+                    "over",
+                    "think",
+                    "also",
+                    "back",
+                    "after",
+                    "use",
+                    "two",
+                    "how",
+                    "our",
+                    "work",
+                    "first",
+                    "well",
+                    "way",
+                    "even",
+                    "new",
+                    "want",
+                    "because",
+                    "any",
+                    "these",
+                    "give",
+                    "day",
+                    "most",
+                    "cant",
+                    "us"
+                };
+        } 
+
+        #endregion
+
+        #region Sanitising
+
+        /// <summary>
         /// Used to pass all string input in the system  - Strips all nasties from a string/html
         /// </summary>
         /// <param name="html"></param>
@@ -284,6 +433,22 @@ namespace MVCForum.Utilities
         public static string GetSafeHtml(string html)
         {
             return ScrubHtml(html);
+        }
+
+        /// <summary>
+        /// Strips all non alpha/numeric charators from a string
+        /// </summary>
+        /// <param name="strInput"></param>
+        /// <param name="replaceWith"></param>
+        /// <returns></returns>
+        public static string StripNonAlphaNumeric(string strInput, string replaceWith)
+        {
+            strInput = Regex.Replace(strInput, "[^\\w]", replaceWith);
+            strInput = strInput.Replace(string.Concat(replaceWith, replaceWith, replaceWith), replaceWith)
+                                .Replace(string.Concat(replaceWith, replaceWith), replaceWith)
+                                .TrimStart(Convert.ToChar(replaceWith))
+                                .TrimEnd(Convert.ToChar(replaceWith));
+            return strInput;
         }
 
         /// <summary>
@@ -361,7 +526,7 @@ namespace MVCForum.Utilities
             }
 
             return doc.DocumentNode.WriteTo();
-        } 
+        }
 
         /// <summary>
         /// Url Encodes a string using the XSS library
@@ -412,14 +577,16 @@ namespace MVCForum.Utilities
         /// <returns></returns>
         public static string SafePlainText(string input)
         {
-            if(!string.IsNullOrEmpty(input))
+            if (!string.IsNullOrEmpty(input))
             {
                 input = StripHtmlFromString(input);
                 input = GetSafeHtml(input);
             }
             return input;
-        }
+        } 
+        #endregion
 
+        #region Html Element Helpers
         /// <summary>
         /// Returns a HTML link
         /// </summary>
@@ -432,6 +599,11 @@ namespace MVCForum.Utilities
             return string.Format(openinnewwindow ? "<a rel='nofollow' target='_blank' href=\"{0}\">{1}</a>" : "<a rel='nofollow' href=\"{0}\">{1}</a>", href, anchortext);
         }
 
+        public static string CheckLinkHasHttp(string url)
+        {
+            return !url.Contains("http://") ? string.Concat("http://", url) : url;
+        }
+
         /// <summary>
         /// Returns a HTML image tag
         /// </summary>
@@ -441,24 +613,8 @@ namespace MVCForum.Utilities
         public static string ReturnImageHtml(string url, string alt)
         {
             return string.Format("<img src=\"{0}\" alt=\"{1}\" />", url, alt);
-        }
-
-        /// <summary>
-        /// Strips all non alpha/numeric charators from a string
-        /// </summary>
-        /// <param name="strInput"></param>
-        /// <param name="replaceWith"></param>
-        /// <returns></returns>
-        public static string StripNonAlphaNumeric(string strInput, string replaceWith)
-        {
-            strInput = Regex.Replace(strInput, "[^\\w]", replaceWith);
-            strInput = strInput.Replace("--", "-");
-            if(strInput.EndsWith("-"))
-            {
-                strInput = strInput.Substring(0, (strInput.Length - 1));
-            }
-            return strInput;
-        }
+        } 
+        #endregion
 
         /// <summary>
         /// Creates a URL freindly string, good for SEO
@@ -469,7 +625,52 @@ namespace MVCForum.Utilities
         public static string CreateUrl(string strInput, string replaceWith)
         {
             // Doing this to stop the urls getting encoded
-            return StripNonAlphaNumeric(strInput, replaceWith).ToLower();
+            var url = RemoveAccents(strInput);
+            return StripNonAlphaNumeric(url, replaceWith).ToLower();
+        }
+
+        public static string RemoveAccents(string input)
+        {
+            // Replace accented characters for the closest ones:
+            var from = "ÂÃÄÀÁÅÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïðñòóôõöøùúûüýÿ".ToCharArray();
+            var to = "AAAAAACEEEEIIIIDNOOOOOOUUUUYaaaaaaceeeeiiiidnoooooouuuuyy".ToCharArray();
+            for (var i = 0; i < from.Length; i++)
+            {
+                input = input.Replace(from[i], to[i]);
+            }
+
+            // Thorn http://en.wikipedia.org/wiki/%C3%9E
+            input = input.Replace("Þ", "TH");
+            input = input.Replace("þ", "th");
+
+            // Eszett http://en.wikipedia.org/wiki/%C3%9F
+            input = input.Replace("ß", "ss");
+
+            // AE http://en.wikipedia.org/wiki/%C3%86
+            input = input.Replace("Æ", "AE");
+            input = input.Replace("æ", "ae");
+
+            return input;
+
+            // ------------ SECOND SOLUTION ---------------
+            ////!\\ Warning 'œ' will be replaced with a 'o' not an 'oe'
+            //var normalizedString = input.Normalize(NormalizationForm.FormD);
+            //var stringBuilder = new StringBuilder();
+            //for (var i = 0; i < normalizedString.Length; i++)
+            //{
+            //    var c = normalizedString[i];
+            //    if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+            //        stringBuilder.Append(c);
+            //}
+            //return stringBuilder.ToString();
+
+            //---------- ORIGINAL SOLUTION------------
+            //var normalized = input.Normalize(NormalizationForm.FormKD);
+            //var removal = Encoding.GetEncoding(Encoding.ASCII.CodePage,
+            //                                        new EncoderReplacementFallback(""),
+            //                                        new DecoderReplacementFallback(""));
+            //byte[] bytes = removal.GetBytes(normalized);
+            //return Encoding.ASCII.GetString(bytes);
         }
 
         /// <summary>
@@ -482,6 +683,7 @@ namespace MVCForum.Utilities
             return amount != null ? string.Format("{0:C}", amount) : "n/a";
         }
 
+        #region Rich Text Formatting
         /// <summary>
         /// Converts markdown into HTML
         /// </summary>
@@ -510,12 +712,16 @@ namespace MVCForum.Utilities
         /// A method to convert basic BBCode to HTML
         /// </summary>
         /// <param name="str">A string formatted in BBCode</param>
+        /// <param name="replaceLineBreaks">Whether or not to replace line breaks with br's</param>
         /// <returns>The HTML representation of the BBCode string</returns>
-        public static string ConvertBbCodeToHtml(string str)
+        public static string ConvertBbCodeToHtml(string str, bool replaceLineBreaks = true)
         {
-            // As this is a BBEditor we need to replace line breaks
-            // or they won't show in the front end
-            str = ReplaceLineBreaks(str, "<br>");
+            if (replaceLineBreaks)
+            {
+                // As this is a BBEditor we need to replace line breaks
+                // or they won't show in the front end
+                str = ReplaceLineBreaks(str, "<br>");
+            }
 
             // format the bold tags: [b][/b]
             // becomes: <strong></strong>
@@ -585,24 +791,8 @@ namespace MVCForum.Utilities
             str = exp.Replace(str, "<span style=\"font-size:$1em;\">$2</span>");
 
             return str;
-        }
+        } 
+        #endregion
 
-        public static string CheckLinkHasHttp(string url)
-        {
-            return !url.Contains("http://") ? string.Concat("http://", url) : url;
-        }
-
-        private static readonly Random _rng = new Random();
-        private const string _chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-        public static string RandomString(int size)
-        {
-            var buffer = new char[size];
-            for (var i = 0; i < size; i++)
-            {
-                buffer[i] = _chars[_rng.Next(_chars.Length)];
-            }
-            return new string(buffer);
-        }
     }
 }

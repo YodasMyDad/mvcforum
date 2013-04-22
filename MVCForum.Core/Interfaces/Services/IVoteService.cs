@@ -1,4 +1,6 @@
-﻿using MVCForum.Domain.DomainModel;
+﻿using System;
+using System.Collections.Generic;
+using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
@@ -6,5 +8,6 @@ namespace MVCForum.Domain.Interfaces.Services
     {
         Vote Add(Vote vote);
         void Delete(Vote vote);
+        IList<Vote> GetAllVotesByUser(Guid membershipId);
     }
 }

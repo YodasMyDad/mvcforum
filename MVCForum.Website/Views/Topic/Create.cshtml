@@ -17,7 +17,10 @@
             .Add("~/Scripts/tags.js")
 
             .MvcRender("~/scripts/cache/topic-combined_#.js")
-    )
+          )
+    <script type="text/javascript">
+        counter = 0;
+    </script>
 }
 
 @section side
@@ -53,25 +56,32 @@
                     @Html.LabelFor(model => model.Name)
                 </div>
                 <div class="editor-field">
-                    @Html.TextBoxFor(model => model.Name)
+                    @Html.TextBoxFor(model => model.Name, new { @class = "createtopicname" })
                     @Html.ValidationMessageFor(model => model.Name)
                 </div>
             </div>
         </div>
         
-       if (Html.Settings().EnablePolls == true)
-       {
-            <div class="row paddedrow pollanswerholder" style="display: none;">
-                <div class="span7">
-                    <ul class="pollanswerlist">
-                    </ul>
-                    <input type="hidden" id="pollanswerplaceholder" value="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")"/>
-                </div>
-                <div class="span2 polladdremovenewanswers">
-                    <a href="#" class="btn addanswer"><i class="icon-plus-sign"></i></a><a href="#" class="btn removeanswer" style="display: none;"><i class="icon-remove-sign"></i></a>
-                </div>
+        <div class="row paddedrow relatedtopicsholder">
+            <div class="span9 relatedtopics">
+                <h5>@Html.LanguageString("Topic.AlreadyAnswered")</h5>
+                <div class="relatedtopicskey"></div>
             </div>
-       }
+        </div>
+        
+            if (Html.Settings().EnablePolls == true)
+            {
+        <div class="row paddedrow pollanswerholder" style="display: none;">
+            <div class="span7">
+                <ul class="pollanswerlist">
+                </ul>
+                <input type="hidden" id="pollanswerplaceholder" value="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")"/>
+            </div>
+            <div class="span2 polladdremovenewanswers">
+                <a href="#" class="btn addanswer"><i class="icon-plus-sign"></i></a><a href="#" class="btn removeanswer"><i class="icon-remove-sign"></i></a>
+            </div>
+        </div>
+            }
 
         <div class="row">
             <div class="span9 topiccontent">

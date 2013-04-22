@@ -23,7 +23,6 @@ namespace MVCForum.Services
         /// <returns></returns>
         public Settings GetSettings(bool useCache = true)
         {
-            //TODO  Testing for performance, assign settings per request to save hits and making hashcodes constantly from same request for settings
             if (useCache)
             {
                 var objectContextKey = HttpContext.Current.GetHashCode().ToString("x");
@@ -55,6 +54,11 @@ namespace MVCForum.Services
             settings.SpamAnswer = StringUtils.SafePlainText(settings.SpamAnswer);
             settings.SpamQuestion = StringUtils.SafePlainText(settings.SpamQuestion);
             _settingsRepository.Update(settings);
+        }
+
+        public Settings Add(Settings settings)
+        {
+            return _settingsRepository.Add(settings);
         }
     }
 }

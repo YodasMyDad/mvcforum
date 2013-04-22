@@ -5,52 +5,56 @@
 @{
     var postId = Model.Post.Id;
     var loggedOnUserId = Model.User != null ? Model.User.Id : Guid.Empty;
-    var allowedToVote = (Model.User != null && loggedOnUserId != Model.Post.User.Id && 
-                         Model.User.TotalPoints > Html.Settings().PointsAllowedToVoteAmount && 
+    var allowedToVote = (Model.User != null && loggedOnUserId != Model.Post.User.Id &&
+                         Model.User.TotalPoints > Html.Settings().PointsAllowedToVoteAmount &&
                          Model.Post.Votes.All(x => x.User.Id != Model.User.Id));
-    var showVotersClass = (Model.Post.VoteCount > 0 && User.Identity.IsAuthenticated) ? "showvoters" : "";
+    var showExtendedVotes = (Model.Post.Votes != null && Model.Post.Votes.Any()) ? "expandvotes" : "";
+    
 }
 <div class="post row solution-True post-@postId">
     <div class="postmemberdetails span1">
         <div class="karmaholder">
-            
-            @if(Html.Settings().EnablePoints)
-            {                
+
+            @if (Html.Settings().EnablePoints)
+            {
                 if (allowedToVote)
                 {
-                    <div class="postkarmathumbs-@postId">
-                        <a class="thumbuplink" rel="@postId">@Html.LanguageString("Post.VoteUp")</a>
-                    </div>
+                <div class="postkarmathumbs-@postId">
+                    <a class="thumbuplink" rel="@postId">@Html.LanguageString("Post.VoteUp")</a>
+                </div>
                 }
-                
+
                 var solvedClass = Model.Post.IsSolution ? "postissolution" : "";
                 
-                <div class="karmascore karmascore-@postId @solvedClass @showVotersClass">@Model.Post.VoteCount<div class="showvotersbox" id="@postId"><span class="smallspinner"></span></div></div>
+                <div class="karmascore karmascore-@postId @solvedClass @showExtendedVotes">
+                    <span class="votenumber" id="@postId">
+                        @Model.Post.VoteCount.KiloFormat()
+                    </span>
+                </div>
                 if (allowedToVote)
                 {
-                    <div class="postkarmathumbs-@postId">
-                        <a class="thumbdownlink" rel="@postId">@Html.LanguageString("Post.VoteDown")</a>
-                    </div>
+                <div class="postkarmathumbs-@postId">
+                    <a class="thumbdownlink" rel="@postId">@Html.LanguageString("Post.VoteDown")</a>
+                </div>
                 }
             }
-            
+
             @if (!Model.Post.IsTopicStarter && Html.Settings().EnableMarkAsSolution && Model.ParentTopic.User.Id == loggedOnUserId)
             {
                 var showTick = !(Model.ParentTopic.Solved && !Model.Post.IsSolution);
-
                 if (showTick)
                 {
                     var isSolved = Model.ParentTopic.Solved ? "issolution-solved" : "issolution";
                     var isSolvedTitle = Model.ParentTopic.Solved ? "This topic is already marked as solved" : "Mark as solution";
-                    <a class="solutionholder solution-@postId @isSolved" rel="@postId" title="@isSolvedTitle">@Html.LanguageString("Post.IsSolution")</a>
+                <a class="solutionholder solution-@postId @isSolved" rel="@postId" title="@isSolvedTitle">@Html.LanguageString("Post.IsSolution")</a>
                 }
             }
         </div>
     </div>
     <div class="postbody span7">
         <div class="postbodytop">
-            <a class="postmember-@postId" href="@Html.Raw(Model.Post.User.NiceUrl)">@Html.Raw(Model.Post.User.UserName)</a> 
-            @Html.LanguageString("Post.PostedThis") 
+            <a class="postmember-@postId" href="@Html.Raw(Model.Post.User.NiceUrl)">@Html.Raw(Model.Post.User.UserName)</a>
+            @Html.LanguageString("Post.PostedThis")
             @DatesUI.GetPrettyDate(Model.Post.DateCreated.ToString())
         </div>
         <div id="postcontent-@postId" class="postcontent">
@@ -58,7 +62,8 @@
             @if (Html.Settings().DisplayEditedBy && Model.Post.DateEdited > Model.Post.DateCreated)
             {
                 <p class="postlastedited">
-                    @Html.LanguageString("Post.LastEdited")  @DatesUI.GetPrettyDate(Model.Post.DateEdited.ToString())</p>
+                    @Html.LanguageString("Post.LastEdited")  @DatesUI.GetPrettyDate(Model.Post.DateEdited.ToString())
+                </p>
             }
             @if (Html.Settings().EnableSignatures && !string.IsNullOrEmpty(Model.Post.User.Signature))
             {
@@ -70,7 +75,24 @@
             <div class="tagsinput">
                 @foreach (var tag in Model.ParentTopic.Tags)
                 {
-                    <span class="tag"><span><a href="@UrlTypes.GenerateUrl(UrlType.Tag, tag.Tag)">@tag.Tag</a></span></span>   
+                    <span class="tag"><span><a href="@Html.Raw(tag.NiceUrl)">@Html.Raw(tag.Tag)</a></span></span>
+                }
+            </div>
+        }
+        @if (Model.Post.Files != null && Model.Post.Files.Any())
+        {
+            <div class="postuploadedfilesholder clearfix">
+                @foreach (var file in Model.Post.Files.OrderByDescending(o => o.DateCreated))
+                {
+                    <div class="fileupload">
+                        <a href="@Html.Raw(Url.Content(file.FilePath))">@Html.Raw(file.FriendlyFilename)</a>
+                        @if (Model.Post.User.Id == loggedOnUserId || User.IsInRole(AppConstants.AdminRoleName))
+                        {
+                            <span class="deleteupload" title="@Html.LanguageString("Post.Delete")">
+                                <a href="@Url.Action("DeleteUploadedFile", "Upload", new { file.Id })">x</a>
+                            </span>
+                        }
+                    </div>
                 }
             </div>
         }
@@ -101,16 +123,42 @@
                     {
                         <a href="@Url.Action("Report", "Post", new { id = Model.Post.Id })">@Html.LanguageString("Post.Report")</a>
                     }
+                    @if (Model.Post.User.Id == loggedOnUserId || Model.Permissions[AppConstants.PermissionDeletePosts].IsTicked)
+                    {
+                        <a onclick="return confirm('@(Html.LanguageString("Post.DeleteConfirmation"))')" href="@Url.Action("DeletePost", "Post", new { id = Model.Post.Id })">@Html.LanguageString("Post.Delete")</a>
+                    }
                     @if (Model.Post.User.Id == loggedOnUserId || Model.Permissions[AppConstants.PermissionEditPosts].IsTicked)
                     {
                         <a href="@Url.Action("EditPost", "Post", new { id = Model.Post.Id })">@Html.LanguageString("Post.Edit")</a>
                     }
-                    @if (Model.Post.User.Id == loggedOnUserId || Model.Permissions[AppConstants.PermissionDeletePosts].IsTicked)
+
+                    @if ((Model.Post.User.Id == loggedOnUserId || User.IsInRole(AppConstants.AdminRoleName)) && Model.Permissions[AppConstants.PermissionAttachFiles].IsTicked)
                     {
-                        <a href="@Url.Action("DeletePost", "Post", new { id = Model.Post.Id })">@Html.LanguageString("Post.Delete")</a>
+                        if (Model.Post.User.DisableFileUploads != true)
+                        {
+                            <a class="postshowattach" href="#">@Html.LanguageString("Post.Attach")</a>
+                        }                        
                     }
+
                 </div>
             }
         </div>
     </div>
+
+    @if (Model.Permissions[AppConstants.PermissionAttachFiles].IsTicked && Model.Post.User.DisableFileUploads != true)
+    {
+        <div class="postuploadholder span9">
+            @using (Html.BeginForm("UploadPostFiles", "Upload", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {                
+                <div class="row">
+                    <div class="offset1 span7">
+                        <span style="display: none;" id="createpostwait" class="ajaxspinner" title="@Html.LanguageString("Post.PleaseWait")">@Html.LanguageString("Post.PleaseWait")</span>
+                        <input type="submit" value="@Html.LanguageString("Post.Upload")" class="btn postuploadbutton" />
+                        <input type="file" name="files" id="files" value="" multiple="multiple" />
+                        <input type="hidden" name="uploadPostId" id="uploadPostId" value="@Model.Post.Id" />
+                    </div>
+                </div>                
+            }
+        </div>
+    }
 </div>

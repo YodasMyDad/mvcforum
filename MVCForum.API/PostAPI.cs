@@ -23,8 +23,8 @@ namespace MVCForum.API
         public Post Create(Post post)
         {
             post.IsSolution = false;
-            post.DateCreated = DateTime.Now;
-            post.DateEdited = DateTime.Now;
+            post.DateCreated = DateTime.UtcNow;
+            post.DateEdited = DateTime.UtcNow;
             _postRepository.Add(post);
             return post;
         }

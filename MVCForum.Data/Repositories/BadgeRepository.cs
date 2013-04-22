@@ -31,7 +31,7 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public Badge GetBadge(string name)
         {
-            return _context.Badge.SingleOrDefault(x => x.Name == name);
+            return _context.Badge.FirstOrDefault(x => x.Name == name);
         }
 
         /// <summary>

@@ -71,12 +71,18 @@
                 </div>
 
                 @*
-                // TODO: look into adding this in v1.1
+                // TODO: look into adding this in v1.5
                 <div class="editor-field n3ocheckboxfield">
                     @Html.EditorFor(model => model.EnablePostFileAttachments)
                     @Html.LabelFor(model => model.EnablePostFileAttachments)
                     @Html.ValidationMessageFor(model => model.EnablePostFileAttachments)
                 </div>*@
+                
+                <div class="editor-field n3ocheckboxfield">
+                    @Html.CheckBoxFor(model => model.SuspendRegistration)
+                    @Html.LabelFor(model => model.SuspendRegistration)
+                    @Html.ValidationMessageFor(model => model.SuspendRegistration)
+                </div>
 
                 <div class="editor-field n3ocheckboxfield">
                     @Html.EditorFor(model => model.EnableMarkAsSolution)

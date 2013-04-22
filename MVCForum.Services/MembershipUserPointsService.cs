@@ -37,7 +37,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public MembershipUserPoints Add(MembershipUserPoints points)
         {
-            points.DateAdded = DateTime.Now;
+            points.DateAdded = DateTime.UtcNow;
             return _membershipUserPointsRepository.Add(points);
         }
 

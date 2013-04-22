@@ -7,13 +7,65 @@
 /*--- Main Holder ---*/
 body { font-size: 17px;}
 .mobileview { padding: 0 5px;}
-.mobileview p { font-size: 17px; margin: 0 0 16px;}
+.mobileview p { font-size: 14px;}
+
+form { margin-bottom: 5px;}
+
+/*--- Overiding the fluid styles to work with mobile bootstrap  --*/
+.mobileview .container-fluid .row { width: 100%; *zoom: 1; }
+.mobileview .container-fluid .row:before,
+.mobileview .container-fluid .row:after { display: table; line-height: 0; content: ""; }
+.mobileview .container-fluid .row:after { clear: both; }
+.mobileview .container-fluid .row [class*="span"] { display: block; float: left; width: 100%; min-height: 30px; margin-left: 2.127659574468085%; *margin-left: 2.074468085106383%; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; }
+.mobileview .container-fluid .row [class*="span"]:first-child { margin-left: 0; }
+.mobileview .container-fluid .row .controls-row [class*="span"] + [class*="span"] { margin-left: 2.127659574468085%; }
+.mobileview .container-fluid .row .span12 { width: 100%; *width: 99.94680851063829%; }
+.mobileview .container-fluid .row .span11 { width: 91.48936170212765%; *width: 91.43617021276594%; }
+.mobileview .container-fluid .row .span10 { width: 82.97872340425532%; *width: 82.92553191489361%; }
+.mobileview .container-fluid .row .span9 { width: 74.46808510638297%; *width: 74.41489361702126%; }
+.mobileview .container-fluid .row .span8 { width: 65.95744680851064%; *width: 65.90425531914893%; }
+.mobileview .container-fluid .row .span7 { width: 57.44680851063829%; *width: 57.39361702127659%; }
+.mobileview .container-fluid .row .span6 { width: 48.93617021276595%; *width: 48.88297872340425%; }
+.mobileview .container-fluid .row .span5 { width: 40.42553191489362%; *width: 40.37234042553192%; }
+.mobileview .container-fluid .row .span4 { width: 31.914893617021278%; *width: 31.861702127659576%; }
+.mobileview .container-fluid .row .span3 { width: 23.404255319148934%; *width: 23.351063829787233%; }
+.mobileview .container-fluid .row .span2 { width: 14.893617021276595%; *width: 14.840425531914894%; }
+.mobileview .container-fluid .row .span1 { width: 6.382978723404255%; *width: 6.329787234042553%; }
+.mobileview .container-fluid .row .offset12 { margin-left: 104.25531914893617%; *margin-left: 104.14893617021275%; }
+.mobileview .container-fluid .row .offset12:first-child { margin-left: 102.12765957446808%; *margin-left: 102.02127659574467%; }
+.mobileview .container-fluid .row .offset11 { margin-left: 95.74468085106382%; *margin-left: 95.6382978723404%; }
+.mobileview .container-fluid .row .offset11:first-child { margin-left: 93.61702127659574%; *margin-left: 93.51063829787232%; }
+.mobileview .container-fluid .row .offset10 { margin-left: 87.23404255319149%; *margin-left: 87.12765957446807%; }
+.mobileview .container-fluid .row .offset10:first-child { margin-left: 85.1063829787234%; *margin-left: 84.99999999999999%; }
+.mobileview .container-fluid .row .offset9 { margin-left: 78.72340425531914%; *margin-left: 78.61702127659572%; }
+.mobileview .container-fluid .row .offset9:first-child { margin-left: 76.59574468085106%; *margin-left: 76.48936170212764%; }
+.mobileview .container-fluid .row .offset8 { margin-left: 70.2127659574468%; *margin-left: 70.10638297872339%; }
+.mobileview .container-fluid .row .offset8:first-child { margin-left: 68.08510638297872%; *margin-left: 67.9787234042553%; }
+.mobileview .container-fluid .row .offset7 { margin-left: 61.70212765957446%; *margin-left: 61.59574468085106%; }
+.mobileview .container-fluid .row .offset7:first-child { margin-left: 59.574468085106375%; *margin-left: 59.46808510638297%; }
+.mobileview .container-fluid .row .offset6 { margin-left: 53.191489361702125%; *margin-left: 53.085106382978715%; }
+.mobileview .container-fluid .row .offset6:first-child { margin-left: 51.063829787234035%; *margin-left: 50.95744680851063%; }
+.mobileview .container-fluid .row .offset5 { margin-left: 44.68085106382979%; *margin-left: 44.57446808510638%; }
+.mobileview .container-fluid .row .offset5:first-child { margin-left: 42.5531914893617%; *margin-left: 42.4468085106383%; }
+.mobileview .container-fluid .row .offset4 { margin-left: 36.170212765957444%; *margin-left: 36.06382978723405%; }
+.mobileview .container-fluid .row .offset4:first-child { margin-left: 34.04255319148936%; *margin-left: 33.93617021276596%; }
+.mobileview .container-fluid .row .offset3 { margin-left: 27.659574468085104%; *margin-left: 27.5531914893617%; }
+.mobileview .container-fluid .row .offset3:first-child { margin-left: 25.53191489361702%; *margin-left: 25.425531914893618%; }
+.mobileview .container-fluid .row .offset2 { margin-left: 19.148936170212764%; *margin-left: 19.04255319148936%; }
+.mobileview .container-fluid .row .offset2:first-child { margin-left: 17.02127659574468%; *margin-left: 16.914893617021278%; }
+.mobileview .container-fluid .row .offset1 { margin-left: 10.638297872340425%; *margin-left: 10.53191489361702%; }
+.mobileview .container-fluid .row .offset1:first-child { margin-left: 8.51063829787234%; *margin-left: 8.404255319148938%; }
 
 /*--- New Discussion Button ---*/
-.mobileview .new-discussion-button { font-size: 28px;}
+.mobileview .new-discussion-button { font-size: 24px;}
+
+/*--- Sort all inputs out---*/
+.mobileview .container-fluid input[type=text], .mobileview .container-fluid input[type=email], .mobileview .container-fluid input[type="password"], .mobileview .container-fluid textarea, .mobileview .container-fluid select {-moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;width: 100%;text-align: left;}
+.mobileview .container-fluid input[type=text], .mobileview .container-fluid input[type="password"], .mobileview .container-fluid input[type=email] { height: 33px;line-height: 33px;}
+.mobileview .container-fluid .editor-label { text-align: center;}
 
 /*--- Bootstrap overides ---*/
-.mobileview .container-fluid  { padding: 0;}
+.mobileview .container-fluid  { padding: 0;text-align: center;}
 .mobileview .row { margin-left: 0;margin-right: 0;}
 
 /*--- Main heading ---*/
@@ -25,161 +77,197 @@ h4 {font-size:22px; margin-bottom:8px;}
 h5 {font-size:20px; margin-bottom:8px;}
 h6 {font-size:18px; margin-bottom:8px;}
 
-/*--- Side Boxes ---*/
-.side-box h5 {font-family:Calibri, Arial, Helvetica, sans-serif;}
-
-/*--- Home / Latest Topics ---*/
-.mobileview .latesttopicsheader {}
-.mobileview .latesttopicsheader .latesttopicheading { margin: 0;padding: 0;width: 100%;}
-.mobileview .latesttopicsheader .latesttopicheading h2 {font-size: 35px;}
-.mobileview .latesttopicsheader .latesttopicrss { display: none;}
-
-/*--- Topic Rows ---*/
-.mobileview .topicheading {}
-.mobileview .topicheading .topicheaderholder { width: 100%;margin: 0;padding: 0;}
-.mobileview .topicheading .topicheaderholder h1 { margin: 0 0 8px 0;}
-.mobileview .topicheading .topicsubscription { width: 100%;margin: 0;padding: 0;}
-.mobileview .topicheading .topicsubscription .emailsubscription {}
-.mobileview .topicheading .topicsubscription .emailunsubscription {}
-.mobileview .topicheading .topicsubscription .emailsubscriptionimage{}
-.mobileview .topicheading .topicsubscription .emailunsubscriptionimage {}
-.mobileview .topicrow {}
-.mobileview .topicrow .row {}
-.mobileview .topicrow .row .topicstats {width: 14.89361702%;} 
-.mobileview .topicrow .row .topicstats .topicstatsblock { width: 100%;}
-.mobileview .topicrow .row .topicstats .topicstatsblock .topicvotes { font-size: 22px;}
-.mobileview .topicrow .row .topicstats .topicstatsblock .topicvotes span {}
-.mobileview .topicrow .row .topicstats .topicstatsblock .topiccomments {font-size: 22px;}
-.mobileview .topicrow .row .topicstats .topicstatsblock .topiccomments span {}
-.mobileview .topicrow .row .topicstats .topicviews { width: 100%;} 
-.mobileview .topicrow .row .topicrowdetails {width: 65.95744680199999%;}
-.mobileview .topicrow .row .topicrowdetails h3 {}
-.mobileview .topicrow .row .topicrowdetails h3 a, .mobileview .topicrow .row .topicrowdetails h3 a:visited {font-size: 31px;}
-.mobileview .topicrow .row .topicrowdetails .topicpreview {}
-.mobileview .topicrow .row .topicrowdetails .topicpreview p {}
-.mobileview .topicrow .row .topicrowdetails .topicrowstatscategory { font-size: 13px;}
-.mobileview .topicrow .row .topicrecent {width: 14.89361702%;}
-.mobileview .topicrow .row .topicrecent .topicrecenttitle { display: none;}
-.mobileview .topicrow .row .topicrecent .topicrecentavatar { text-align: right;}
-.mobileview .topicrow .row .topicrecent .topicrecentavatar img { width: 37px;}
-.mobileview .topicrow .row .topicrecent .topicrecentdate { display: none;}
-
-/*--- Post Rows ---*/
-.mobileview .post {}
-.mobileview .post .postmemberdetails{width: 14.89361702%;}
-.mobileview .post .postmemberdetails .karmaholder{}
-.mobileview .post .postmemberdetails .karmaholder .solutionholder { display: none;}
-.mobileview .post .postmemberdetails .karmaholder .karmascore{ font-size: 23px;}
-.mobileview .post .postbody {width: 65.95744680199999%;}
-.mobileview .post .postbody .postbodytop {}
-.mobileview .post .postbody .postbodytop a, .mobileview .post .postbody .postbodytop a:visited {}
-.mobileview .post .postbody .postbodytop a:hover {}
-.mobileview .post .postbody .postcontent {}
-.mobileview .post .postbody .postcontent img { max-width: 100%;}
-.mobileview .post .postbody .postcontent p {} 
-.mobileview .post .postkarmaouter {width: 14.89361702%;}
-.mobileview .post .postkarmaouter .postadminui {}
-.mobileview .post .postkarmaouter .postmemberdetailsinner {}
-.mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberavatar {}
-.mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberavatar img { width: 37px;}
-.mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberposts {}
-.mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberposts span {}
-.mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberkarma {}
-.mobileview .post .postkarmaouter .postmemberdetailsinner .postmemberkarma span {}
-
-
 /*--- Main Nav ---*/
 .mobileview .mobilenavbar { padding: 5px 0 0 0;}
+.mobileview .mobilenavbar .mobilenavbartopstrip { clear: both;padding: 5px;margin: -5px 0 4px 0;}
+.mobileview .mobilenavbar .mobilenavbartopstrip .brand { float: left;width:52px ;height: 32px;}
+.mobileview .mobilenavbar .mobilenavbartopstrip .showmobilenavbar { float: right;width:52px ;height: 32px;cursor: pointer;}
+.mobileview .mobilenavbar .mobilenavbartopstrip .showmobilelogo { float: left;height: 32px;}
 .mobileview .mobilenavbar .mobilenavbar-inner{}
-.mobileview .mobilenavbar .mobilenavbar-inner ul.nav {}
+.mobileview .mobilenavbar .mobilenavbar-inner ul.nav { display: none;}
 .mobileview .mobilenavbar .mobilenavbar-inner ul.nav li { margin: 0 0 4px 0;text-align: center;font-size: 24px;}
 .mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a, .mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a:visited { background-color: #4891DC;color: #fff;padding: 11px 0;}
 .mobileview .mobilenavbar .mobilenavbar-inner ul.nav li a:hover { background-color: #BFBFBF;}
 
-/*--- Footer ---*/
-.mobileview .footerstats {}
-.mobileview .footerstats ul.latestmembersjoined {}
-.mobileview .footerstats ul.latestmembersjoined li.latestmemberheading {}
-.mobileview .footerstats ul.latestmembersjoined li {}
-.mobileview .footerstats ul.latestmembersjoined li a, .mobileview .footerstats ul.latestmembersjoined li a:visited {}
-.mobileview .footerstats ul.latestmembersjoined li a:hover {}
+/*--- All Categories ---*/
+.mobileview  .container-fluid .categorydetails {margin: 0;padding: 0;width: 100% !Important;}
 
+/*--- Side Boxes ---*/
+.side-box h5 {font-family:Calibri, Arial, Helvetica, sans-serif;}
+
+/*--- Home / Latest Topics ---*/
+.mobileview .container-fluid .latesttopicsheader {}
+.mobileview .container-fluid .latesttopicsheader .latesttopicheading { margin: 0;padding: 0;width: 100%;}
+.mobileview .container-fluid .latesttopicsheader .latesttopicheading h2 {font-size: 35px;}
+.mobileview .container-fluid .latesttopicsheader .latesttopicrss { display: none;}
+
+/*--- Topic Rows ---*/
+.mobileview .container-fluid .topicheading {}
+.mobileview .container-fluid .topicheading .topicheaderholder { width: 100% !Important;margin: 0;padding: 0;}
+.mobileview .container-fluid .topicheading .topicheaderholder h1 { margin: 0 0 8px 0;}
+.mobileview .container-fluid .topicheading .topicsubscription { width: 100% !Important;margin: 0!Important;padding: 0;}
+.mobileview .container-fluid .topicheading .topicsubscription .emailsubscription { float: none;}
+.mobileview .container-fluid .topicheading .topicsubscription .emailunsubscription {}
+.mobileview .container-fluid .topicheading .topicsubscription .emailsubscriptionimage{}
+.mobileview .container-fluid .topicheading .topicsubscription .emailunsubscriptionimage {}
+.mobileview .container-fluid .topicrow { text-align: left;}
+.mobileview .container-fluid .row .topicrow .topicstats {width: 14.89361702%;} 
+.mobileview .container-fluid .row .topicrow .topicstats .topicstatsblock { width: 100%;}
+.mobileview .container-fluid .row .topicrow .topicstats .topicstatsblock .topicvotes { font-size: 22px;}
+.mobileview .container-fluid .row .topicrow .topicstats .topicstatsblock .topicvotes span {}
+.mobileview .container-fluid .row .topicrow .topicstats .topicstatsblock .topiccomments {font-size: 22px;}
+.mobileview .container-fluid .row .topicrow .topicstats .topicstatsblock .topiccomments span {}
+.mobileview .container-fluid .row .topicrow .topicstats .topicviews {} 
+.mobileview .container-fluid .row .topicrow .topicrowdetails {width: 65.95744680199999%;}
+.mobileview .container-fluid .row .topicrow .topicrowdetails h3 {}
+.mobileview .container-fluid .row .topicrow .topicrowdetails h3 a, .mobileview .container-fluid .row .topicrow .topicrowdetails h3 a:visited {font-size:24px;}
+.mobileview .container-fluid .row .topicrow .topicrowdetails .topicpreview {}
+.mobileview .container-fluid .row .topicrow .topicrowdetails .topicpreview p {}
+.mobileview .container-fluid .row .topicrow .topicrowdetails .topicrowstatscategory { font-size: 11px;}
+.mobileview .container-fluid .row .topicrow .topicrecent {width: 14.89361702%;}
+.mobileview .container-fluid .row .topicrow .topicrecent p { font-size: 11px;}
+.mobileview .container-fluid .row .topicrow .topicrecent .topicrecenttitle { display: none;}
+.mobileview .container-fluid .row .topicrow .topicrecent .topicrecentavatar { text-align: right;}
+.mobileview .container-fluid .row .topicrow .topicrecent .topicrecentavatar img { width: 37px;}
+.mobileview .container-fluid .row .topicrow .topicrecent .topicrecentdate { text-align: right;}
+
+/*--- TAGS ---*/
+.mobileview .container-fluid .row div.tagsinput {}
+.mobileview .container-fluid .row div.tagsinput span.tag { padding: 3px;font-size: 11px;line-height: 12px;}
+
+.mobileview .container-fluid .row .statsblock  { float: none;width: 100%;margin: 0;height: auto;padding: 2px 0;}
+.mobileview .container-fluid .row .statsblock span { line-height: normal;}
+
+.mobileview .container-fluid .row .topicstarterpostcomments { font-size: 20px; margin: 0;padding: 0;width: 100%;float: none;}
+.mobileview .container-fluid .row .topicpostorderfilter { margin: 0;padding: 0;width: 100%;float: none;text-align: center;}
+
+
+/*--- Profile ---*/
+.mobileview .container-fluid .memberprofilepublic {}
+.mobileview .container-fluid .memberprofilepublic p { font-size: 15px;}
+
+/*--- Post Rows ---*/
+.mobileview .container-fluid .post {}
+.mobileview .container-fluid .post .postmemberdetails{width: 14.89361702%;}
+.mobileview .container-fluid .post .postmemberdetails .karmaholder{}
+.mobileview .container-fluid .post .postmemberdetails .karmaholder .solutionholder { padding: 19px 0 0 0;}
+.mobileview .container-fluid .post .postmemberdetails .karmaholder .karmascore{ font-size: 23px;}
+.mobileview .container-fluid .post .postbody {width: 65.95744680199999%;text-align: left;}
+.mobileview .container-fluid .post .postbody .postbodytop { font-size: 11px;}
+.mobileview .container-fluid .post .postbody .postbodytop a, .mobileview .container-fluid .post .postbody .postbodytop a:visited {}
+.mobileview .container-fluid .post .postbody .postbodytop a:hover {}
+.mobileview .container-fluid .post .postbody .postcontent {}
+.mobileview .container-fluid .post .postbody .postcontent img { max-width: 100%;}
+.mobileview .container-fluid .post .postbody .postcontent { font-size: 14px !Important;} 
+.mobileview .container-fluid .post .postbody .postcontent iframe { width: 100% !Important;}
+.mobileview .container-fluid .post .postkarmaouter { line-height: 18px;width: 14.89361702%;}
+.mobileview .container-fluid .post .postkarmaouter .postadminui {}
+.mobileview .container-fluid .post .postkarmaouter .postadminui .userpostadmin { padding: 0;}
+.mobileview .container-fluid .post .postkarmaouter .postadminui .userpostadmin a { margin: 7px 0;}
+.mobileview .container-fluid .post .postkarmaouter .postmemberdetailsinner { font-size: 13px;}
+.mobileview .container-fluid .post .postkarmaouter .postmemberdetailsinner .postmemberavatar {}
+.mobileview .container-fluid .post .postkarmaouter .postmemberdetailsinner .postmemberavatar img { width: 37px;}
+.mobileview .container-fluid .post .postkarmaouter .postmemberdetailsinner .postmemberposts { display: none;}
+.mobileview .container-fluid .post .postkarmaouter .postmemberdetailsinner .postmemberposts span {}
+.mobileview .container-fluid .post .postkarmaouter .postmemberdetailsinner .postmemberkarma { display: none;}
+.mobileview .container-fluid .post .postkarmaouter .postmemberdetailsinner .postmemberkarma span {}
+
+/*--- Polls ---*/
+.mobileview .container-fluid .pollcontainer { text-align: left;}
+.mobileview .container-fluid .pollcontainer .pollanswerrow { width: 100%;}
+
+/*--- Footer ---*/
+.mobileview .container-fluid .footerstats {}
+.mobileview .container-fluid .footerstats ul.latestmembersjoined {}
+.mobileview .container-fluid .footerstats ul.latestmembersjoined li.latestmemberheading {}
+.mobileview .container-fluid .footerstats ul.latestmembersjoined li {}
+.mobileview .container-fluid .footerstats ul.latestmembersjoined li a, .mobileview .container-fluid .footerstats ul.latestmembersjoined li a:visited {}
+.mobileview .container-fluid .footerstats ul.latestmembersjoined li a:hover {}
+            
 /*--- Bottom Side Nav ---*/
-.mobileview .bottomsidenav {}
-.mobileview .bottomsidenav .sidelayoutsection {}
-.mobileview .bottomsidenav .sidelayoutsection .main-side-box {}
-.mobileview .bottomsidenav .sidelayoutsection .main-side-box .side-box {}
-.mobileview .bottomsidenav .sidelayoutsection .main-side-box .sidesearchbox ul li { display: block;padding: 0 0 10px 0;clear: both;float: none;}
-.mobileview .bottomsidenav .sidelayoutsection .main-side-box .sidesearchbox ul li input[type="text"] { width: 98%;font-size: 28px;line-height: normal;}
-.mobileview .bottomsidenav .sidelayoutsection .main-side-box .sidesearchbox ul li input[type="submit"] {padding: 10px 0;text-align: center;width: 100%;font-size: 26px;line-height: normal;}
-.mobileview .bottomsidenav .sidelayoutsection .main-side-box .side-box ul li { font-size: 22px;}
-.mobileview .bottomsidenav .sidelayoutsection .main-side-box .categories-box {}
-.mobileview .bottomsidenav .sidelayoutsection .main-side-box .popular-tags-box {}
-.mobileview .bottomsidenav .sidelayoutsection .main-side-box .sidesearchbox {}
-.mobileview .bottomsidenav .sidelayoutsection .main-side-box .highearners-box {}
+.mobileview .container-fluid .bottomsidenav {}
+.mobileview .container-fluid .bottomsidenav .sidelayoutsection {}
+.mobileview .container-fluid .bottomsidenav .sidelayoutsection .main-side-box {}
+.mobileview .container-fluid .bottomsidenav .sidelayoutsection .main-side-box .side-box {}
+.mobileview .container-fluid .bottomsidenav .sidelayoutsection .main-side-box .sidesearchbox ul li { display: block;padding: 0 0 10px 0;clear: both;float: none;}
+.mobileview .container-fluid .bottomsidenav .sidelayoutsection .main-side-box .sidesearchbox ul li input[type="text"] {}
+.mobileview .container-fluid .bottomsidenav .sidelayoutsection .main-side-box .sidesearchbox ul li input[type="submit"] {padding: 10px 0;text-align: center;width: 100%;font-size: 26px;line-height: normal;}
+.mobileview .container-fluid .bottomsidenav .sidelayoutsection .main-side-box .side-box ul li { font-size: 22px;}
+.mobileview .container-fluid .bottomsidenav .sidelayoutsection .main-side-box .categories-box {}
+.mobileview .container-fluid .bottomsidenav .sidelayoutsection .main-side-box .popular-tags-box {}
+.mobileview .container-fluid .bottomsidenav .sidelayoutsection .main-side-box .sidesearchbox {}
+.mobileview .container-fluid .bottomsidenav .sidelayoutsection .main-side-box .highearners-box {}
 
 /*--- Leaderboard ---*/
-.mobileview .row .thisweeksstars { float: none;padding: 0 0 30px 0;margin: 0;width: 100%;clear: both;}
-.mobileview .row .thisyearsstars { float: none;padding: 0 0 30px 0;margin: 0;width: 100%;clear: both;}
+.mobileview .container-fluid .row .thisweeksstars { float: none;padding: 0 0 30px 0;margin: 0;width: 100%;clear: both;}
+.mobileview .container-fluid .row .thisyearsstars { float: none;padding: 0 0 30px 0;margin: 0;width: 100%;clear: both;}
 
 /*--- Member Profile ---*/
-.mobileview .memberprofilepublic .row p {}
-.mobileview .memberprofilepublic .row .memberavatardetails { width: 100%;margin: 0;padding: 0;clear: both;}
-.mobileview .memberprofilepublic .row .membermaindetails {width: 100%;margin: 0;padding: 0;clear: both;}
-.mobileview .memberprofilepublic .row .membermaindetails .memberbio {width: 100%;margin: 0;padding: 0;clear: both;}
-.mobileview .memberprofilepublic .row .membermaindetails .memberlatesttopics {width: 100%;margin: 0;padding: 0;clear: both;}
-.mobileview .memberprofilepublic .row .badgeactivity {width: 100%;margin: 28px 0;padding: 0;clear: both;}
+.mobileview .container-fluid .memberprofilepublic .row p {}
+.mobileview .container-fluid .memberprofilepublic .row .memberavatardetails { width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .memberprofilepublic .row .membermaindetails {width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .memberprofilepublic .row .membermaindetails .memberbio {width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .memberprofilepublic .row .membermaindetails .memberlatesttopics {width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .memberprofilepublic .row .badgeactivity {width: 100%;margin: 28px 0;padding: 0;clear: both;}
 
 /*--- Activity Page ---*/
-.mobileview .activityheader .activityheading { margin: 0;padding: 0;width: 100%;}
-.mobileview .activityheader .activityheading h2 {font-size: 35px;}
-.mobileview .activityheader .activityrss { display: none;}
-.mobileview .activityholder {}
-.mobileview .activityholder .activityentry {}
-.mobileview .activityholder .activityentry .activitybadge {width: 100%;margin: 0;padding: 0;clear: both;text-align: center;}
-.mobileview .activityholder .activityentry .activityinfo {width: 100%;margin: 0;padding: 0;clear: both;text-align: center;font-size: 14px;}
-.mobileview .activityholder .activityentry .activityinfo .activityinfotext {font-size: 14px;}
+.mobileview .container-fluid .activityheader .activityheading { margin: 0;padding: 0;width: 100%;}
+.mobileview .container-fluid .activityheader .activityheading h2 {font-size: 35px;}
+.mobileview .container-fluid .activityheader .activityrss { display: none;}
+.mobileview .container-fluid .activityholder {}
+.mobileview .container-fluid .activityholder .activityentry {}
+.mobileview .container-fluid .activityholder .activityentry .activitybadge {width: 100%;margin: 0;padding: 0;clear: both;text-align: center;}
+.mobileview .container-fluid .activityholder .activityentry .activityinfo {width: 100%;margin: 0;padding: 0;clear: both;text-align: center;font-size: 14px;}
+.mobileview .container-fluid .activityholder .activityentry .activityinfo .activityinfotext {font-size: 14px;}
 
 /*--- Badge List Page ---*/
-.mobileview .badgeholder {}
-.mobileview .badgeholder .publicbadgeline { text-align: center;}
-.mobileview .badgeholder .publicbadgeline .publicbadge {width: 100%;margin: 0;padding: 0;clear: both;}
-.mobileview .badgeholder .publicbadgeline .publicbadgedetails {width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .badgeholder {}
+.mobileview .container-fluid .badgeholder .publicbadgeline { text-align: center;}
+.mobileview .container-fluid .badgeholder .publicbadgeline .publicbadge {width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .badgeholder .publicbadgeline .publicbadgedetails {width: 100%;margin: 0;padding: 0;clear: both;}
 
 /*--- Logon Form ---*/
-.mobileview .row .mainlogonform {width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .row .mainlogonform ,.mobileview .container-fluid .row .loginortext, .mobileview .container-fluid .row .oauthbuttons {width: 100%;margin: 0;padding: 0;clear: both;}
 
 /*--- Category ---*/
-.mobileview .categoryheader {}
-.mobileview .categoryheader .categoryheading {width: 100%;margin: 0;padding: 0;clear: both;}
-.mobileview .categoryheader .categoryrss {display: none;}
+.mobileview .container-fluid .categoryheader {}
+.mobileview .container-fluid .categoryheader .categoryheading {width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .categoryheader .categoryrss {display: none;}
 
 /*--- Reply Post ---*/
-.mobileview #createpostholder input[type=submit]#createpostbutton { padding-left: 0;padding-right: 0;text-align: center;width: 100%;font-size: 28px;}
+.mobileview #createpostholder input[type=submit]#createpostbutton { padding-left: 0;padding-right: 0;text-align: center;width: 100%;font-size: 24px;}
 
 /*--- Create Topic ---*/
-.mobileview .createtopicholder, .mobileview .editpostholder {}
-.mobileview .createtopicholder .topicname, .mobileview .editpostholder .topicname {width: 100%;margin: 0;padding: 0;clear: both;}
-.mobileview .createtopicholder .topiccategory, .mobileview .editpostholder .topiccategory {width: 100%;margin: 0;padding: 0;clear: both;}
-.mobileview .createtopicholder .topiccategory select, .mobileview .editpostholder .topiccategory select { width: 95%;}
-.mobileview .createtopicholder .topiccontent, .mobileview .editpostholder .topiccontent {width: 100%;margin: 0;padding: 0;clear: both;}
-.mobileview .createtopicholder .topictagholder, .mobileview .editpostholder .topictagholder {width: 100%;margin: 0;padding: 0;clear: both;}
-.mobileview .createtopicholder .topicreplynotify, .mobileview .editpostholder .topicreplynotify {width: 100%;margin: 0;padding: 0;clear: both;}
-.mobileview .createtopicholder .submit-holder input[type=submit], .mobileview .editpostholder .submit-holder input[type=submit] { padding-left: 0;padding-right: 0;width: 100%;font-size:28px;}
-.mobileview .editpostholder .topicadmincheckboxes {}
-.mobileview .createtopicholder .row .createtopicbuttonholder { width: 100%;padding: 0;margin: 0;}
-.mobileview .createtopicholder .topictagholder { display: none;}
-.mobileview .createtopicholder .topiccategory { padding: 15px 0;}
-.mobileview .createtopicholder .pollcreatebuttonholder { display: none;}
-.mobileview .createtopicholder .row .topictitleholder {width: 100%;padding: 0;margin: 0;}
+.mobileview .container-fluid .createtopicholder, .mobileview .container-fluid .editpostholder {}
+.mobileview .container-fluid .createtopicholder .topicname, .mobileview .container-fluid .editpostholder .topicname {width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .createtopicholder .topiccategory, .mobileview .container-fluid .editpostholder .topiccategory {width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .createtopicholder .topiccategory select, .mobileview .container-fluid .editpostholder .topiccategory select {}
+.mobileview .container-fluid .createtopicholder .topiccontent, .mobileview .container-fluid .editpostholder .topiccontent {width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .createtopicholder .topictagholder, .mobileview .container-fluid .editpostholder .topictagholder {width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .createtopicholder .topicreplynotify, .mobileview .container-fluid .editpostholder .topicreplynotify {width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .createtopicholder .submit-holder input[type=submit], .mobileview .container-fluid .editpostholder .submit-holder input[type=submit] { padding-left: 0;padding-right: 0;width: 100%;font-size:24px;}
+.mobileview .container-fluid .editpostholder .topicadmincheckboxes {}
+.mobileview .container-fluid .createtopicholder .row .createtopicbuttonholder { width: 100%;padding: 0;margin: 0;}
+.mobileview .container-fluid .createtopicholder .topictagholder, .mobileview .container-fluid .editpostholder .topictagholder  { display: none;}
+.mobileview .container-fluid .createtopicholder .topiccategory { padding: 15px 0;}
+.mobileview .container-fluid .createtopicholder .pollcreatebuttonholder { display: none;}
+.mobileview .container-fluid .createtopicholder .row .topictitleholder {width: 100%;padding: 0;margin: 0;}
+
+/*--- Related Topics ---*/
+.mobileview .container-fluid .createtopicholder .relatedtopics { width: 100%;}
 
 /*--- Pagination ---*/
-.mobileview .pagination {}
-.mobileview .pagination li {}
-.mobileview .pagination li a, .mobileview .pagination li a:hover { font-size: 19px;}
-.mobileview .pagination li a:visited {}
+.mobileview .container-fluid .pagination {}
+.mobileview .container-fluid .pagination li {}
+.mobileview .container-fluid .pagination li a, .mobileview .container-fluid .pagination li a:hover { font-size: 19px;}
+.mobileview .container-fluid .pagination li a:visited {}
 
 /*--- Register ---*/
-.mobileview .mainregisterform {width: 100% !Important;margin: 0;padding: 0;clear: both;}
-.mobileview .loginortext {width: 100%;margin: 0;padding: 0;clear: both;}
-.mobileview .oauthbuttons {width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .mainregisterform {width: 100% !Important;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .loginortext {width: 100%;margin: 0;padding: 0;clear: both;}
+.mobileview .container-fluid .oauthbuttons {width: 100%;margin: 0;padding: 0;clear: both;}
+
+/*--- File Uploads ---*/
+.mobileview .container-fluid .row .postuploadholder {width: 100% !Important;margin: 0;padding: 0;clear: both;display: none;}
+.mobileview .container-fluid .row .postuploadholder .offset1 { margin-left: 14.89361702%;}
+.mobileview .container-fluid .row .postuploadholder .span7 { width: 65.95744680199999%;}

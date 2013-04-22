@@ -31,7 +31,7 @@ namespace MVCForum.Data.Repositories
 
         public CategoryPermissionForRole GetByPermissionRoleCategoryId(Guid permId, Guid roleId, Guid catId)
         {
-                return _context.CategoryPermissionForRole.SingleOrDefault(x => x.Category.Id == catId && 
+                return _context.CategoryPermissionForRole.FirstOrDefault(x => x.Category.Id == catId && 
                                                                                x.Permission.Id == permId && 
                                                                                x.MembershipRole.Id == roleId);
         }

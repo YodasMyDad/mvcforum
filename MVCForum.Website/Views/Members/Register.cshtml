@@ -75,27 +75,7 @@
             }
         </div>
 
-    @if(Html.Settings().EnableSocialLogins == true)
-    {
-        <div class="span1 loginortext">
-            @Html.LanguageString("Members.LoginOrText")
-        </div>
-
-        <div class="span4 oauthbuttons">
-            
-            @if (!string.IsNullOrEmpty(ConfigUtils.GetAppSetting("FacebookAppId")) && !string.IsNullOrEmpty(ConfigUtils.GetAppSetting("FacebookAppSecret")))
-            {
-                <div class="facebookloginbutton">
-                    @Html.ActionLink(Html.LanguageString("Members.LogonFacebookButton"), "LogonFacebook", "Members", null, new { @class = "facebookloginbutton" })
-                </div>   
-            }
-            else
-            {
-                @Html.LanguageString("Facebook.Error.EnabledButNotAddedKeys")
-            }
-
-        </div>
-    }
+        @Html.Partial("_SocialLoginButtons")
 
     </div>
 }

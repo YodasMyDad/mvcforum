@@ -67,9 +67,9 @@ namespace MVCForum.Tests.Service_Tests
             var topic = new Topic { Name = "Captain America"};
 
             // Create some posts with one to delete
-            var postToDelete = new Post { Id = Guid.NewGuid(), Topic = topic, IsTopicStarter = false, DateCreated = DateTime.Now};
-            var postToStay = new Post { Id = Guid.NewGuid(), Topic = topic, IsTopicStarter = false, DateCreated = DateTime.Now.Subtract(TimeSpan.FromDays(2)) };
-            var postToStayTwo = new Post { Id = Guid.NewGuid(), Topic = topic, IsTopicStarter = false, DateCreated = DateTime.Now.Subtract(TimeSpan.FromDays(3)) };
+            var postToDelete = new Post { Id = Guid.NewGuid(), Topic = topic, IsTopicStarter = false, DateCreated = DateTime.UtcNow};
+            var postToStay = new Post { Id = Guid.NewGuid(), Topic = topic, IsTopicStarter = false, DateCreated = DateTime.UtcNow.Subtract(TimeSpan.FromDays(2)) };
+            var postToStayTwo = new Post { Id = Guid.NewGuid(), Topic = topic, IsTopicStarter = false, DateCreated = DateTime.UtcNow.Subtract(TimeSpan.FromDays(3)) };
 
             // set last post
             topic.LastPost = postToDelete;

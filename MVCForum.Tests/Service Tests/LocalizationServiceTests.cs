@@ -228,7 +228,7 @@ namespace MVCForum.Tests.Service_Tests
 
             var resourceKey1 = new LocaleResourceKey
                                    {
-                                       DateAdded = DateTime.Now,
+                                       DateAdded = DateTime.UtcNow,
                                        Id = Guid.NewGuid(),
                                        Name = "testKey1",
                                        Notes = "test notes"
@@ -242,7 +242,7 @@ namespace MVCForum.Tests.Service_Tests
 
             var resourceKey2 = new LocaleResourceKey
                                    {
-                                       DateAdded = DateTime.Now,
+                                       DateAdded = DateTime.UtcNow,
                                        Id = Guid.NewGuid(),
                                        Name = "testKey2",
                                        Notes = "test notes"
@@ -301,7 +301,7 @@ namespace MVCForum.Tests.Service_Tests
 
             var resourceKey1 = new LocaleResourceKey
                                    {
-                                       DateAdded = DateTime.Now,
+                                       DateAdded = DateTime.UtcNow,
                                        Id = Guid.NewGuid(),
                                        Name = "testKey1",
                                        Notes = "test notes"
@@ -315,7 +315,7 @@ namespace MVCForum.Tests.Service_Tests
 
             var resourceKey2 = new LocaleResourceKey
                                    {
-                                       DateAdded = DateTime.Now,
+                                       DateAdded = DateTime.UtcNow,
                                        Id = Guid.NewGuid(),
                                        Name = "testKey2",
                                        Notes = "test notes"

@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>DotNetOpenAuth</id>
+    <version>4.2.2.13055</version>
+    <title>DotNetOpenAuth</title>
+    <authors>Andrew Arnott</authors>
+    <owners>Andrew Arnott</owners>
+    <licenseUrl>http://www.opensource.org/licenses/ms-pl.html</licenseUrl>
+    <projectUrl>http://www.dotnetopenauth.net/</projectUrl>
+    <iconUrl>https://github.com/AArnott/dotnetopenid/raw/v3.4/doc/logo/dnoa-logo_32x32.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Add OpenID 1.1/2.0, OAuth 1.0(a), &amp; InfoCard authentication and authorization functionality for client and server applications.
+			This allows your (web) application to issue identities or accept issued identites from other web applications, and even access your users'
+			data on other services.</description>
+    <summary>OpenID, OAuth, &amp; InfoCard library for web and desktop applications.</summary>
+    <language>en-US</language>
+    <dependencies>
+      <dependency id="DotNetOpenAuth.OpenId.RelyingParty.UI" version="[4.2.2.13055]" />
+      <dependency id="DotNetOpenAuth.OpenId.Provider.UI" version="[4.2.2.13055]" />
+      <dependency id="DotNetOpenAuth.OAuth.Consumer" version="[4.2.2.13055]" />
+      <dependency id="DotNetOpenAuth.OAuth.ServiceProvider" version="[4.2.2.13055]" />
+      <dependency id="DotNetOpenAuth.OpenIdInfoCard.UI" version="[4.2.2.13055]" />
+      <dependency id="DotNetOpenAuth.OpenIdOAuth" version="[4.2.2.13055]" />
+      <dependency id="DotNetOpenAuth.OAuth2.Client.UI" version="[4.2.2.13055]" />
+      <dependency id="DotNetOpenAuth.OAuth2.AuthorizationServer" version="[4.2.2.13055]" />
+      <dependency id="DotNetOpenAuth.OAuth2.ResourceServer" version="[4.2.2.13055]" />
+    </dependencies>
+    <references />
+  </metadata>
+</package>

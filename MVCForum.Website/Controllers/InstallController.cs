@@ -1,23 +1,41 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
+using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
-using MVCForum.Website.Installer;
+using MVCForum.Website.ViewModels;
 
 namespace MVCForum.Website.Controllers
 {
-    public class InstallController : Controller
+    public class InstallController : BaseInstallController
     {
+        private readonly IInstallerService _installerService;
+
+        private ICategoryService _categoryService;
+        private IMembershipService _membershipService;
+        private IRoleService _roleService;
+        private ILocalizationService _localizationService;
+        private ISettingsService _settingsService;
+        private IUnitOfWorkManager _UnitOfWorkManager;
+        private IPermissionService _permissionService;
+
+        public InstallController(IInstallerService installerService)
+        {
+            _installerService = installerService;
+        }
+
         // This is the default installer
         public ActionResult Index()
         {
-            // Check installer should be running
-            if (!ShowInstall()) return RedirectToAction("Index", "Home");
-
-            TempData[AppConstants.InstallerName] = AppConstants.InstallerName;
-            return View();    
+            return View();
         }
 
         /// <summary>
@@ -27,10 +45,15 @@ namespace MVCForum.Website.Controllers
         public ActionResult CreateDb()
         {
             // Check installer should be running
-            if (!ShowInstall()) return RedirectToAction("Index", "Home");
+            var previousVersionNo = AppHelpers.PreviousVersionNo();
+            var viewModel = new CreateDbViewModel
+                {
+                    IsUpgrade = !string.IsNullOrEmpty(previousVersionNo),
+                    PreviousVersion = previousVersionNo,
+                    CurrentVersion = AppHelpers.GetCurrentVersionNo()
+                };
 
-            TempData[AppConstants.InstallerName] = AppConstants.InstallerName;
-            return View();
+            return View(viewModel);
         }
 
         /// <summary>
@@ -39,82 +62,112 @@ namespace MVCForum.Website.Controllers
         /// <returns></returns>
         public ActionResult CreateDbTables()
         {
-            TempData[AppConstants.InstallerName] = AppConstants.InstallerName;
-
-            // Check installer should be running
-            if (!ShowInstall()) return RedirectToAction("Index", "Home");
-
             // Get the versions so we can check if its a stright install
             // Or if its an upgrade
-            var previousVersion = AppHelpers.PreviousVersionNo();
             var currentVersion = AppHelpers.GetCurrentVersionNo();
 
             // Create an installer result so we know everything was successful
-            var installerResult = new InstallerResult{Result = false};
+            var installerResult = new InstallerResult { Successful = true, Message = "Congratulations, MVC Forum has installed successfully" };
 
-            // If blank previous version just install the main database
-            if (string.IsNullOrEmpty(previousVersion))
+            // Create the main database tables
+            // NOTE: For testing you can overide the connectionstring and filepath to the sql
+            // Just replace the nulls below
+            installerResult = _installerService.CreateDbTables(null, null, currentVersion);
+
+            if (installerResult.Successful)
             {
-                // Get the file path
-                var dbFilePath = InstallerHelper.GetMainDatabaseFilePath(currentVersion);
-                installerResult = InstallerHelper.RunSql(dbFilePath);
+                // Create the base data
+                //installerResult = _installerService.CreateInitialData();
+                installerResult = CreateInitialData();
+
+                // If error creating the base data then return the error
+                if (!installerResult.Successful)
+                {
+                    // There was an error creating the database
+                    return RedirectToCreateDb(installerResult, GenericMessages.error);
+                }
             }
             else
             {
-
-                var dbFilePath = InstallerHelper.GetUpdateDatabaseFilePath(currentVersion);
-
-                // Not blank so need to work out what to upgrade
-                switch (currentVersion)
-                {
-                    // If 1.2 we are upgrading from 1.1 to 1.2
-                    case "1.2":
-                        installerResult = InstallerHelper.RunSql(dbFilePath);
-                        break;
-                }
+                // There was an error creating the database
+                return RedirectToCreateDb(installerResult, GenericMessages.error);
             }
-            
+
+
             // Install seems fine
-            if (installerResult.Result)
+            if (installerResult.Successful)
             {
                 // Now we need to update the version in the web.config
-                if (ConfigUtils.UpdateAppSetting("MVCForumVersion", currentVersion) == false)
-                {
-                    installerResult.ResultMessage = string.Format(@"Database installed/updated. But there was an error updating the version number in the web.config, you need to manually 
-                                                                    update it to {0}",
-                                                                    currentVersion);
-                }
-                else
-                {
-                    installerResult.ResultMessage = "Congratulations, MVC Forum has installed successfully";
-                }
+                UpdateWebConfigVersionNo(installerResult, currentVersion);
 
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                {
-                    Message = installerResult.ResultMessage,
-                    MessageType = GenericMessages.success
-                };
-
-                InstallerHelper.TouchWebConfig();
+                // This code will never be hit as the update to the web.config above will trigger the app restart and 
+                // it will find the version number and redircet them to the home page - Only way its hit is if the update doesn't work
                 return RedirectToAction("Complete");
             }
 
             // If we get here there was an error, so update the UI to tell them
             // If the message is empty then add one
-            if (string.IsNullOrEmpty(installerResult.ResultMessage))
+            if (string.IsNullOrEmpty(installerResult.Message))
             {
-                installerResult.ResultMessage = "There was an error during the installer, please try again";
+                installerResult.Message = @"There was an unkown error during the installer, please try again. If the problem continues 
+                                                    then please let us know <a target='_blank' href='http://chat.mvcforum.com'>on the support forums</a>";
             }
 
             // Add to temp data and show
-            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-            {
-                Message = installerResult.ResultMessage,
-                MessageType = GenericMessages.error
-            };
+            return RedirectToCreateDb(installerResult, GenericMessages.error);
+        }
 
-            // Fall back telling user they need a manual upgrade
-            return RedirectToAction("CreateDb");
+        public ActionResult UpgradeDb()
+        {
+            // Work out this install can be upgraded, and if not redirect
+            var previousVersionNo = AppHelpers.PreviousVersionNo();
+            var currentVersionNo = AppHelpers.GetCurrentVersionNo();
+
+            var installerResult = new InstallerResult{Successful = true, Message = string.Format("Upgrade to v{0} was successful", currentVersionNo)};
+
+            // Can't upgrade so redirect
+            if (Convert.ToDouble(previousVersionNo) < 1.3d)
+            {
+                return RedirectToAction("ManualUpgradeNeeded");
+            }
+
+            //***** Old version is v1.3 or greater so we can run the installer ****
+
+            // Firstly add any new tables needed via the SQL
+            // Get the SQL file and if it exists then run it
+            var dbFilePath = Server.MapPath(InstallerHelper.GetUpdateDatabaseFilePath(currentVersionNo));
+
+            // See whether this version needs a table update
+            if (System.IO.File.Exists(dbFilePath))
+            {
+                // There is a file so update the database with the new tables
+                installerResult = _installerService.CreateDbTables(null, dbFilePath, currentVersionNo);
+                if (!installerResult.Successful)
+                {
+                    // Was an error creating the tables
+                    return RedirectToCreateDb(installerResult, GenericMessages.error);
+                }
+            }
+
+            // Tables created or updated - So now update all the data
+            installerResult = UpdateData(currentVersionNo, previousVersionNo, installerResult);
+
+            // See if upgrade was successful or not
+            if (installerResult.Successful)
+            {
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = installerResult.OnScreenMessage,
+                    MessageType = GenericMessages.success
+                };
+
+                // Finally update the web.config to the new version
+                UpdateWebConfigVersionNo(installerResult, currentVersionNo);
+
+                return RedirectToAction("Complete");
+            }
+
+            return RedirectToCreateDb(installerResult, GenericMessages.error);
         }
 
         /// <summary>
@@ -125,7 +178,7 @@ namespace MVCForum.Website.Controllers
         {
             return View();
         }
-        
+
         /// <summary>
         /// Show this when the installer is complete
         /// </summary>
@@ -135,23 +188,309 @@ namespace MVCForum.Website.Controllers
             return View();
         }
 
-        /// <summary>
-        /// This checks whether the installer should be called, it stops people trying to call the installer
-        /// when the application is already installed
-        /// </summary>
-        /// <returns></returns>
-        private static bool ShowInstall()
+        #region Private Methods
+
+        private InstallerResult UpdateData(string currentVersion, string previousVersion, InstallerResult installerResult)
         {
-            //Installer for new versions and first startup
-            // Store the value for use in the app
-            var currentVersionNo = AppHelpers.GetCurrentVersionNo();
+            //Initialise the services
+            InitialiseServices();
 
-            // Now check the version in the web.config
-            var previousVersionNo = AppHelpers.PreviousVersionNo();
+            // Need to run the updater through all of the below, so we need to do 
+            // checks before we add anything to make sure it doesn't already exist and if,
+            // update where necessary.
+            // Whatever the version update the language strings as these are always the master ones
+            // held in the en-GB.csv in the Installer folder root
+            installerResult = AddOrUpdateTheDefaultLanguageStrings(installerResult);
+            if (!installerResult.Successful)
+            {
+                return installerResult;
+            }   
 
-            // If the versions are different kick the installer into play
-            return (currentVersionNo != previousVersionNo);
+            //---------------- v1.3 to v1.4 -----------------
+            throw new NotImplementedException("The upgrader is still in development");
+
+            return installerResult;
         }
 
+        private InstallerResult CreateInitialData()
+        {
+            var installerResult = new InstallerResult { Successful = true, Message = "Congratulations, MVC Forum has installed successfully" };
+
+            // I think this is all I need to call to kick EF into life
+            //EFCachingProviderConfiguration.DefaultCache = new AspNetCache();
+            //EFCachingProviderConfiguration.DefaultCachingPolicy = CachingPolicy.CacheAll;
+
+            // Now setup the services as we can't do it in the constructor
+            InitialiseServices();
+
+            // First UOW to create the data needed for other saves
+            using (var unitOfWork = _UnitOfWorkManager.NewUnitOfWork())
+            {
+                try
+                {
+                    // Check if category exists or not, we only do a single check for the first object within this
+                    // UOW because, if anything failed inside. Everything else would be rolled back to because of the 
+                    // transaction
+                    const string exampleCatName = "Example Category";
+                    if (_categoryService.GetAll().FirstOrDefault(x => x.Name == exampleCatName) == null)
+                    {
+                        // Doesn't exist so add the example category
+                        var exampleCat = new Category { Name = exampleCatName };
+                        _categoryService.Add(exampleCat);
+
+                        // Add the default roles
+                        var standardRole = new MembershipRole { RoleName = "Standard Members" };
+                        var guestRole = new MembershipRole { RoleName = "Guest" };
+                        var moderatorRole = new MembershipRole { RoleName = "Moderator" };
+                        var adminRole = new MembershipRole { RoleName = "Admin" };
+                        _roleService.CreateRole(standardRole);
+                        _roleService.CreateRole(guestRole);
+                        _roleService.CreateRole(moderatorRole);
+                        _roleService.CreateRole(adminRole);
+
+                        unitOfWork.Commit();
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    installerResult.Exception = ex;
+                    installerResult.Message = "Error creating the initial data >> Category & Roles";
+                    installerResult.Successful = false;
+                    return installerResult;
+                }
+            }
+
+            // Add / Update the default language strings
+            installerResult = AddOrUpdateTheDefaultLanguageStrings(installerResult);
+            if (!installerResult.Successful)
+            {
+                return installerResult;
+            }   
+
+            // Now we have saved the above we can create the rest of the data
+            using (var unitOfWork = _UnitOfWorkManager.NewUnitOfWork())
+            {
+                try
+                {
+                    // if the settings already exist then do nothing
+                    if (_settingsService.GetSettings(false) == null)
+                    {
+                        // Get the default language
+                        var startingLanguage = _localizationService.GetLanguageByName("en-GB");
+
+                        // Get the Standard Members role
+                        var startingRole = _roleService.GetRole("Standard Members");
+
+                        // create the settings
+                        var settings = new Settings
+                        {
+                            ForumName = "MVC Forum",
+                            ForumUrl = "http://www.mydomain.com",
+                            IsClosed = false,
+                            EnableRSSFeeds = true,
+                            DisplayEditedBy = true,
+                            EnablePostFileAttachments = false,
+                            EnableMarkAsSolution = true,
+                            EnableSpamReporting = true,
+                            EnableMemberReporting = true,
+                            EnableEmailSubscriptions = true,
+                            ManuallyAuthoriseNewMembers = false,
+                            EmailAdminOnNewMemberSignUp = true,
+                            TopicsPerPage = 20,
+                            PostsPerPage = 20,
+                            EnablePrivateMessages = true,
+                            MaxPrivateMessagesPerMember = 50,
+                            PrivateMessageFloodControl = 1,
+                            EnableSignatures = false,
+                            EnablePoints = true,
+                            PointsAllowedToVoteAmount = 1,
+                            PointsAddedPerPost = 1,
+                            PointsAddedForSolution = 4,
+                            PointsDeductedNagativeVote = 2,
+                            AdminEmailAddress = "my@email.com",
+                            NotificationReplyEmail = "noreply@myemail.com",
+                            SMTPEnableSSL = false,
+                            Theme = "Metro",
+                            NewMemberStartingRole = startingRole,
+                            DefaultLanguage = startingLanguage,
+                            ActivitiesPerPage = 20,
+                            EnableAkisment = false,
+                            EnableSocialLogins = false,
+                            EnablePolls = true
+                        };
+                        _settingsService.Add(settings);
+
+                        unitOfWork.Commit();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    installerResult.Exception = ex;
+                    installerResult.Message = "Error creating the initial data >> Settings";
+                    installerResult.Successful = false;
+                    return installerResult;
+                }
+            }
+
+
+            // Now we have saved the above we can create the rest of the data
+            using (var unitOfWork = _UnitOfWorkManager.NewUnitOfWork())
+            {
+                try
+                {
+                    // If the admin user exists then don't do anything else
+                    if (_membershipService.GetUser("admin") == null)
+                    {
+                        // Set up the initial permissions
+                        var readOnly = new Permission { Name = "Read Only" };
+                        var deletePosts = new Permission { Name = "Delete Posts" };
+                        var editPosts = new Permission { Name = "Edit Posts" };
+                        var stickyTopics = new Permission { Name = "Sticky Topics" };
+                        var lockTopics = new Permission { Name = "Lock Topics" };
+                        var voteInPolls = new Permission { Name = "Vote In Polls" };
+                        var createPolls = new Permission { Name = "Create Polls" };
+                        var createTopics = new Permission { Name = "Create Topics" };
+                        var attachFiles = new Permission { Name = "Attach Files" };
+                        var denyAccess = new Permission { Name = "Deny Access" };
+
+                        _permissionService.Add(readOnly);
+                        _permissionService.Add(deletePosts);
+                        _permissionService.Add(editPosts);
+                        _permissionService.Add(stickyTopics);
+                        _permissionService.Add(lockTopics);
+                        _permissionService.Add(voteInPolls);
+                        _permissionService.Add(createPolls);
+                        _permissionService.Add(createTopics);
+                        _permissionService.Add(attachFiles);
+                        _permissionService.Add(denyAccess);
+
+                        // create the admin user and put him in the admin role
+                        var admin = new MembershipUser
+                        {
+                            Email = "you@email.com",
+                            UserName = "admin",
+                            Password = "password",
+                            IsApproved = true,
+                            DisableEmailNotifications = false,
+                            DisablePosting = false,
+                            DisablePrivateMessages = false
+                        };
+                        _membershipService.CreateUser(admin);
+
+                        // Do a save changes just in case
+                        unitOfWork.SaveChanges();
+
+                        // Put the admin in the admin role
+                        var adminRole = _roleService.GetRole("Admin");
+                        admin.Roles = new List<MembershipRole> { adminRole };
+
+                        unitOfWork.Commit();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    installerResult.Exception = ex;
+                    installerResult.Message = "Error creating the initial data >> Admin user & Permissions";
+                    installerResult.Successful = false;
+                    return installerResult;
+                }
+            }
+
+            return installerResult;
+        }
+
+        private InstallerResult AddOrUpdateTheDefaultLanguageStrings(InstallerResult installerResult)
+        {            
+            // Read in CSV and import like it does normally in the admin section
+            using (var unitOfWork = _UnitOfWorkManager.NewUnitOfWork())
+            {
+                var report = new CsvReport();
+
+                try
+                {
+                        // Get the base language file
+                        var file = System.Web.HttpContext.Current.Server.MapPath(@"~/Installer/en-GB.csv");
+
+                        // Verify that the user selected a file
+                        if (file != null)
+                        {
+                            // Unpack the data
+                            var allLines = new List<string>();
+                            using (var streamReader = new StreamReader(file, true))
+                            {
+                                while (streamReader.Peek() >= 0)
+                                {
+                                    allLines.Add(streamReader.ReadLine());
+                                }
+                            }
+
+                            // Read the CSV file and generate a language
+                            report = _localizationService.FromCsv("en-GB", allLines);
+                        }
+
+                        unitOfWork.Commit();
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+
+                    //Loop through report errors and spit them out in the installer result message?
+                    var sb = new StringBuilder();
+                    foreach (var error in report.Errors)
+                    {
+                        if (error.ErrorWarningType == CsvErrorWarningType.BadDataFormat ||
+                            error.ErrorWarningType == CsvErrorWarningType.GeneralError)
+                        {
+                            sb.AppendFormat("{0}<br />", error.Message);
+                        }
+                    }
+
+                    installerResult.Exception = ex;
+                    installerResult.Message = "Error creating the initial data >>  Language Strings";
+                    if (!string.IsNullOrEmpty(sb.ToString()))
+                    {
+                        installerResult.Message += string.Concat("<br />", sb.ToString());
+                    }
+                    installerResult.Successful = false;
+                }
+                return installerResult; 
+            }
+        }
+
+        private void InitialiseServices()
+        {
+            _categoryService = DependencyResolver.Current.GetService<ICategoryService>();
+            _membershipService = DependencyResolver.Current.GetService<IMembershipService>();
+            _roleService = DependencyResolver.Current.GetService<IRoleService>();
+            _localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
+            _settingsService = DependencyResolver.Current.GetService<ISettingsService>();
+            _UnitOfWorkManager = DependencyResolver.Current.GetService<IUnitOfWorkManager>();
+            _permissionService = DependencyResolver.Current.GetService<IPermissionService>();
+        }
+
+        private void UpdateWebConfigVersionNo(InstallerResult installerResult, string currentVersion)
+        {
+            if (ConfigUtils.UpdateAppSetting("MVCForumVersion", currentVersion) == false)
+            {
+                Session[AppConstants.GoToInstaller] = "False";
+
+                installerResult.Message = string.Format(@"Database installed/updated. But there was an error updating the version number in the web.config, you need to manually 
+                                                                    update it to {0}", currentVersion);
+                installerResult.Successful = false;
+
+                TempData[AppConstants.InstallerName] = AppConstants.InstallerName;
+
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = installerResult.OnScreenMessage,
+                    MessageType = GenericMessages.error
+                };
+            }
+        } 
+        #endregion
     }
 }

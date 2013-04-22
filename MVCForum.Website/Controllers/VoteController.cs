@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -11,7 +10,7 @@ using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
 
 namespace MVCForum.Website.Controllers
 {
-    [Authorize]
+
     public class VoteController : BaseController
     {
         private readonly IPostService _postService;
@@ -19,6 +18,8 @@ namespace MVCForum.Website.Controllers
         private readonly ITopicService _topicService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly IBadgeService _badgeService;
+
+        private MembershipUser LoggedOnUser;
 
         public VoteController(ILoggingService loggingService,
             IUnitOfWorkManager unitOfWorkManager,
@@ -38,9 +39,12 @@ namespace MVCForum.Website.Controllers
             _topicService = topicService;
             _membershipUserPointsService = membershipUserPointsService;
             _badgeService = badgeService;
+
+            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
         }
 
         [HttpPost]
+        [Authorize]
         public void VoteUpPost(VoteUpViewModel voteUpViewModel)
         {
             if (Request.IsAjaxRequest())
@@ -81,6 +85,7 @@ namespace MVCForum.Website.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public void VoteDownPost(VoteDownViewModel voteDownViewModel)
         {
             if (Request.IsAjaxRequest())
@@ -122,7 +127,6 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-
         private void MarkPostUpOrDown(Post post, MembershipUser postWriter, MembershipUser voter, PostType postType)
         {
             // Check this user is not the post owner
@@ -144,7 +148,9 @@ namespace MVCForum.Website.Controllers
                     {
                         Post = post,
                         User = voter,
-                        Amount = (postType == PostType.Negative) ? (-1) : (1)
+                        Amount = (postType == PostType.Negative) ? (-1) : (1),
+                        VotedByMembershipUser = LoggedOnUser,
+                        DateVoted = DateTime.Now
                     };
                     _voteService.Add(vote);
 
@@ -162,6 +168,7 @@ namespace MVCForum.Website.Controllers
         };
 
         [HttpPost]
+        [Authorize]
         public void MarkAsSolution(MarkAsSolutionViewModel markAsSolutionViewModel)
         {
             if (Request.IsAjaxRequest())
@@ -215,6 +222,20 @@ namespace MVCForum.Website.Controllers
                 var post = _postService.Get(voteUpViewModel.Post);
                 var positiveVotes = post.Votes.Where(x => x.Amount > 0);
                 var viewModel = new ShowVotersViewModel { Votes = positiveVotes.ToList() };
+                return PartialView(viewModel);
+            }
+            return null;
+        }
+
+        [HttpPost]
+        public PartialViewResult GetVotes(VoteUpViewModel voteUpViewModel)
+        {
+            if (Request.IsAjaxRequest())
+            {
+                var post = _postService.Get(voteUpViewModel.Post);
+                var positiveVotes = post.Votes.Count(x => x.Amount > 0);
+                var negativeVotes = post.Votes.Count(x => x.Amount <= 0);
+                var viewModel = new ShowVotesViewModel { DownVotes = negativeVotes, UpVotes = positiveVotes};
                 return PartialView(viewModel);
             }
             return null;

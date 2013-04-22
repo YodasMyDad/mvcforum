@@ -42,12 +42,13 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public MembershipRole GetRole(string rolename)
         {
-            return _context.MembershipRole.SingleOrDefault(y => y.RoleName.Contains(rolename));
+            return _context.MembershipRole.FirstOrDefault(y => y.RoleName.Contains(rolename));
         }
 
         public MembershipRole Add(MembershipRole item)
         {
-            return _context.MembershipRole.Add(item);
+            var role = GetRole(item.RoleName);
+            return role ?? _context.MembershipRole.Add(item);
         }
 
         public MembershipRole Get(Guid id)

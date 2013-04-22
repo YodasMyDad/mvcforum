@@ -6,7 +6,6 @@ using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Lucene;
-using MVCForum.Lucene.LuceneModel;
 
 namespace MVCForum.Services
 {
@@ -124,20 +123,27 @@ namespace MVCForum.Services
         /// </summary>
         /// <param name="searchTerm"></param>
         /// <param name="fieldName"></param>
+        /// <param name="doFuzzySearch"></param>
         /// <returns></returns>
-        public IEnumerable<LuceneSearchModel> Search(string searchTerm, string fieldName)
+        public IEnumerable<LuceneSearchModel> Search(string searchTerm, string fieldName, bool doFuzzySearch = false)
         {
-            return GoLucene.Search(searchTerm, fieldName);
+            return GoLucene.Search(searchTerm, fieldName, doFuzzySearch);
+        }
+
+        public IEnumerable<LuceneSearchModel> Search(string searchTerm, string fieldName, int amountToTake, bool doFuzzySearch = false)
+        {
+            return GoLucene.Search(searchTerm, amountToTake, fieldName, doFuzzySearch);
         }
 
         /// <summary>
         /// Search the index by search term
         /// </summary>
         /// <param name="searchTerm"></param>
+        /// <param name="doFuzzySearch"></param>
         /// <returns></returns>
-        public IEnumerable<LuceneSearchModel> Search(string searchTerm)
+        public IEnumerable<LuceneSearchModel> Search(string searchTerm, bool doFuzzySearch = false)
         {
-            return GoLucene.Search(searchTerm);
+            return GoLucene.Search(searchTerm, string.Empty, doFuzzySearch);
         }
 
         /// <summary>
@@ -147,6 +153,12 @@ namespace MVCForum.Services
         public IEnumerable<LuceneSearchModel> GetAll()
         {
             return GoLucene.GetAllIndexRecords();
+        }
+
+
+        public PagedList<LuceneSearchModel> Search(string searchTerm, int pageIndex, int pageSize, bool doFuzzySearch = false)
+        {
+            return GoLucene.Search(searchTerm, pageIndex, pageSize, doFuzzySearch);
         }
     }
 }

@@ -26,6 +26,11 @@ namespace MVCForum.Data.Repositories
             return _context.Post;
         }
 
+        public Post GetTopicStarterPost(Guid topicId)
+        {
+            return _context.Post.Include(x => x.Topic).FirstOrDefault(x => x.Topic.Id == topicId && x.IsTopicStarter);
+        }
+
         public IEnumerable<Post> GetAllWithTopics()
         {
             return _context.Post.Include(x => x.Topic);
@@ -85,7 +90,7 @@ namespace MVCForum.Data.Repositories
                 .ToList();
         }
 
-        public PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId)
+        public PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId, PostOrderBy order)
         {
             // We might only want to display the top 100
             // but there might not be 100 topics
@@ -97,17 +102,33 @@ namespace MVCForum.Data.Repositories
 
             // Get the topics using an efficient
             var results = _context.Post
-                                .Include(x => x.User)
-                                .Include(x => x.Topic)
-                                .Include(x => x.Votes)
-                                .Where(x => x.Topic.Id == topicId)
-                                .OrderBy(x => x.DateCreated)
-                                .Skip((pageIndex - 1) * pageSize)
-                                .Take(pageSize)
-                                .ToList();
+                                  .Include(x => x.User)
+                                  .Include(x => x.Topic)
+                                  .Include(x => x.Votes)
+                                  .Include(x => x.Files)
+                                  .Where(x => x.Topic.Id == topicId && !x.IsTopicStarter);
 
+            // Sort what order the posts are sorted in
+            switch (order)
+            {
+                case PostOrderBy.Newest:
+                    results = results.OrderByDescending(x => x.DateCreated);
+                    break;
+
+                case PostOrderBy.Votes:
+                    results = results.OrderByDescending(x => x.VoteCount).ThenBy(x => x.DateCreated);
+                    break;
+
+                default:
+                    results = results.OrderBy(x => x.DateCreated);
+                    break;
+            }
+
+            // sort the paging out
+            results = results.Skip((pageIndex - 1)*pageSize).Take(pageSize);
+                                                                
             // Return a paged list
-            return new PagedList<Post>(results, pageIndex, pageSize, total);
+            return new PagedList<Post>(results.ToList(), pageIndex, pageSize, total);
         }
 
         public IList<Post> GetPostsByMember(Guid memberId)

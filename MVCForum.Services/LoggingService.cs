@@ -46,7 +46,7 @@ namespace MVCForum.Services
         private static string MakeLogFileName(bool isArchive)
         {
             return !isArchive ? String.Format("{0}//{1}{2}", _logFileFolder, LogFileNameOnly, LogFileExtension) :
-                String.Format("{0}//{1}_{2}{3}", _logFileFolder, LogFileNameOnly, DateTime.Now.ToString("ddMMyyyy_hhmmss"), LogFileExtension);
+                String.Format("{0}//{1}_{2}{3}", _logFileFolder, LogFileNameOnly, DateTime.UtcNow.ToString("ddMMyyyy_hhmmss"), LogFileExtension);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace MVCForum.Services
                         {
                             var callStack = new StackFrame(2, true); // Go back one stack frame to get module info
 
-                            tw.WriteLine("{0} | {1} | {2} | {3}", DateTime.Now.ToString(DateTimeFormat),
+                            tw.WriteLine("{0} | {1} | {2} | {3}", DateTime.UtcNow.ToString(DateTimeFormat),
                                          callStack.GetMethod().Module.Name, callStack.GetMethod().Name, message);
                         }
                     }
@@ -162,7 +162,7 @@ namespace MVCForum.Services
             var logs = new List<LogEntry>();
 
             // Read the file and display it line by line.
-            using (var file = new StreamReader(_logFileName, Encoding.Default, true))
+            using (var file = new StreamReader(_logFileName, true))
             {
                 string line;
                 while ((line = file.ReadLine()) != null)

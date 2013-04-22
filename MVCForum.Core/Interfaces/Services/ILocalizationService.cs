@@ -23,6 +23,11 @@ namespace MVCForum.Domain.Interfaces.Services
         /// Finds all languages NOT in database and returns them as culture info objects
         /// </summary>
         IList<CultureInfo> LanguagesNotInDb { get; }
+
+        /// <summary>
+        /// Returns all languages and returns them as culture info objects
+        /// </summary>
+        IList<CultureInfo> LanguagesAll { get; }
         
             /// <summary>
         /// Get a language by id

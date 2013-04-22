@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Website.ViewModels
 {
-    public class VoteUpBadgeViewModel
+    public class VoteBadgeViewModel
     {
         public Guid PostId { get; set; }
     }

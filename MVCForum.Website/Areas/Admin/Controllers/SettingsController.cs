@@ -113,12 +113,12 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             sb.AppendFormat("<p>{0}</p>", string.Concat("This is a test email from ", SettingsService.GetSettings().ForumName));
             var email = new Email
                 {
-                    Body = sb.ToString(),
                     EmailFrom = SettingsService.GetSettings().AdminEmailAddress,
                     EmailTo = SettingsService.GetSettings().AdminEmailAddress,
                     NameTo = "Email Test Admin",
-                    Subject = string.Concat("Email Test From", SettingsService.GetSettings().ForumName)
+                    Subject = string.Concat("Email Test From ", SettingsService.GetSettings().ForumName)
                 };
+            email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
             _emailService.SendMail(email);
 
             TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel

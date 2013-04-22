@@ -11,6 +11,8 @@ namespace MVCForum.Data.Mapping
 
             HasRequired(x => x.Post).WithMany(x => x.Votes).Map(x => x.MapKey("Post_Id"));
             HasRequired(x => x.User).WithMany(x => x.Votes).Map(x => x.MapKey("MembershipUser_Id"));
+            HasOptional(x => x.VotedByMembershipUser);
+
         }
     }
 }

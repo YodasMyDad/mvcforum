@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Application;
+using MVCForum.Utilities;
 using MVCForum.Website.ViewModels;
 
 namespace MVCForum.Website.Controllers
@@ -18,6 +16,9 @@ namespace MVCForum.Website.Controllers
         private readonly ITopicService _topicsService;
         private readonly ILuceneService _luceneService;
 
+        private MembershipUser LoggedOnUser;
+        private MembershipRole UsersRole;
+
         public SearchController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, 
             IMembershipService membershipService, ILocalizationService localizationService, 
             IRoleService roleService, ISettingsService settingsService, 
@@ -27,57 +28,63 @@ namespace MVCForum.Website.Controllers
             _postService = postService;
             _topicsService = topicService;
             _luceneService = luceneService;
+
+            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
+            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
+        [HttpGet]
         public ActionResult Index(int? p, string term)
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
+            if (!string.IsNullOrEmpty(term))
             {
-                // Set the page index
-                var pageIndex = p ?? 1;
-
-                // Get lucene to search
-                var foundTopicIds = _luceneService.Search(term).Select(x => x.TopicId).ToList();
-
-                //// Get all the topics based on the search value
-                //var topics = _topicsService.SearchTopics(pageIndex,
-                //                                     SettingsService.GetSettings().TopicsPerPage,
-                //                                     AppConstants.ActiveTopicsListSize,
-                //                                     term);
-
-                var topics = _topicsService.GetTopicsByCsv(pageIndex,
-                                                     SettingsService.GetSettings().TopicsPerPage,
-                                                     AppConstants.ActiveTopicsListSize,
-                                                     foundTopicIds);
-
-                // Get all the categories for this topic collection
-                var categories = topics.Select(x => x.Category).Distinct();
-
-                // create the view model
-                var viewModel = new SearchViewModel
+                using (UnitOfWorkManager.NewUnitOfWork())
                 {
-                    Topics = topics,
-                    AllPermissionSets = new Dictionary<Category, PermissionSet>(),
-                    PageIndex = pageIndex,
-                    TotalCount = topics.TotalCount
-                };
+                    // Set the page index
+                    var pageIndex = p ?? 1;
 
-                // loop through the categories and get the permissions
-                foreach (var category in categories)
-                {
-                    var permissionSet = RoleService.GetPermissions(category, UsersRole);
-                    viewModel.AllPermissionSets.Add(category, permissionSet);
-                }
+                    // Returns the formatted string to search on
+                    var formattedSearchTerm = StringUtils.ReturnSearchString(term);
 
-                return View(viewModel);
+                    // Get lucene to search
+                    var luceneResults = _luceneService.Search(formattedSearchTerm, pageIndex, SettingsService.GetSettings().TopicsPerPage);
+
+
+                    //// Get all the topics based on the search value
+                    //var topics = _topicsService.SearchTopics(pageIndex,
+                    //                                     SettingsService.GetSettings().TopicsPerPage,
+                    //                                     AppConstants.ActiveTopicsListSize,
+                    //                                     term);
+
+                    var topics = _topicsService.GetTopicsByCsv(pageIndex, SettingsService.GetSettings().TopicsPerPage, AppConstants.ActiveTopicsListSize, luceneResults.Select(x => x.TopicId).ToList());
+
+                    // Get all the categories for this topic collection
+                    var categories = topics.Select(x => x.Category).Distinct();
+
+                    // create the view model
+                    var viewModel = new SearchViewModel
+                    {
+                        Topics = topics,
+                        AllPermissionSets = new Dictionary<Category, PermissionSet>(),
+                        PageIndex = pageIndex,
+                        TotalCount = luceneResults.TotalCount,
+                        Term = formattedSearchTerm
+                    };
+
+                    // loop through the categories and get the permissions
+                    foreach (var category in categories)
+                    {
+                        var permissionSet = RoleService.GetPermissions(category, UsersRole);
+                        viewModel.AllPermissionSets.Add(category, permissionSet);
+                    }
+
+                    return View(viewModel);
+                } 
             }
+
+            return RedirectToAction("Index", "Home");
         }
 
-        //public ActionResult Testing(string term)
-        //{
-        //    var results = _luceneService.Search(term).Select(x => x.TopicId);
-        //    return View(results);
-        //}
 
         [ChildActionOnly]
         public PartialViewResult SideSearch()
@@ -85,20 +92,5 @@ namespace MVCForum.Website.Controllers
             return PartialView();
         }
 
-    }
-
-    public static class testing
-    {
-        public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
-        {
-            var seenKeys = new HashSet<TKey>();
-            foreach (TSource element in source)
-            {
-                if (seenKeys.Add(keySelector(element)))
-                {
-                    yield return element;
-                }
-            }
-        }
     }
 }

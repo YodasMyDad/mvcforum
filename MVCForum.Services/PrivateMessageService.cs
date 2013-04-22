@@ -34,7 +34,7 @@ namespace MVCForum.Services
         public PrivateMessage Add(PrivateMessage message)
         {
             message = SanitizeMessage(message);
-            message.DateSent = DateTime.Now;
+            message.DateSent = DateTime.UtcNow;
             return _privateMessageRepository.Add(message);
         }
 

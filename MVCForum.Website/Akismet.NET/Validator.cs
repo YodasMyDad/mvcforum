@@ -175,8 +175,8 @@ namespace MVCForum.Website.Akismet.NET
             }
 
             // retrieve the response
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+            var response = (HttpWebResponse)request.GetResponse();
+            using (var reader = new StreamReader(response.GetResponseStream(), true))
             {
                 // retrieve response
                 String result = reader.ReadToEnd();
@@ -201,7 +201,7 @@ namespace MVCForum.Website.Akismet.NET
                 return null;
 
             // initialize result
-            NameValueCollection result = new NameValueCollection();
+            var result = new NameValueCollection();
 
             // add required information
             result["blog"] = HttpUtility.UrlEncode(comment.blog);

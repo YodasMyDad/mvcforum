@@ -28,6 +28,15 @@
     @Html.Action("CurrentWeekHighPointUsers", "Point")
 }
 
+@if (Model.SubCategories != null)
+{
+    Html.RenderPartial("_SubCategories", new SubCategoryViewModel
+        {
+            AllPermissionSets = Model.SubCategories.AllPermissionSets, 
+            ParentCategory = Model.Category
+        });
+}
+
 <div class="row categoryheader">
    
     <div class="span6 categoryheading">

@@ -28,7 +28,7 @@ namespace MVCForum.Utilities
         public static DateTime ParseDate(object theDate)
         {
             DateTime date;
-            return DateTime.TryParse(theDate.ToString(), out date) ? date : DateTime.Now;
+            return DateTime.TryParse(theDate.ToString(), out date) ? date : DateTime.UtcNow;
         }
 
         public static string FormatDateTime(string date, string format)
@@ -64,7 +64,7 @@ namespace MVCForum.Utilities
 
         public static string GetCurrentMonthName()
         {
-            return string.Format("{0:MMMM}", DateTime.Now);
+            return string.Format("{0:MMMM}", DateTime.UtcNow);
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace MVCForum.Utilities
         /// <summary>
         /// Gets a specific day of the weeks date and the next consectuive Nth days dates, example would be every Fridays date for the current month
         /// </summary>
-        /// <param name="dt">The date to start from (usually DateTime.Now)</param>
+        /// <param name="dt">The date to start from (usually DateTime.UtcNow)</param>
         /// <param name="weekday">The day of the week to look for</param>
         /// <param name="amounttoshow">How man to return, defaults to next 4</param>
         /// <returns>Returns the date of each of the days</returns>
@@ -127,7 +127,7 @@ namespace MVCForum.Utilities
         /// <summary>
         /// Gets a specific day of the weeks date and the next consectuive Nth days dates, example would be every Fridays date for however many you want to show
         /// </summary>
-        /// <param name="dt">The date to start from (usually DateTime.Now)</param>
+        /// <param name="dt">The date to start from (usually DateTime.UtcNow)</param>
         /// <param name="weekday">The day of the week to look for</param>
         /// <param name="amounttoshow">How man to return, defaults to next 4</param>
         /// <returns>Returns the date of each of the days</returns>

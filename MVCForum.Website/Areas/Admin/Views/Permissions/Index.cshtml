@@ -1,39 +1,53 @@
 ﻿@using MVCForum.Domain.Constants
 @model MVCForum.Website.Areas.Admin.ViewModels.ChoosePermissionsViewModel
-
 @{
     ViewBag.Title = "Permissions";
 }
 
-<div class="row">
-    <div class="span5">
-        <h1>Role Permissions</h1>
 
-        <p>From this page you can set role permissions per category on the site</p>
+<h2>Permissions</h2>
+<p>This section allows you to update and edit permissions and assign new permissions to roles</p>
 
-        @foreach(var role in Model.MembershipRoles)
-        {
-            if(role.RoleName != AppConstants.AdminRoleName)
+<div class="adminsection clearfix">
+
+    <h3>Role Permissions</h3>
+    <p>From this page you can set permissions per category for each role.</p>
+
+    @foreach (var role in Model.MembershipRoles)
+    {
+        <ul class="rolepermissionlist">
+            @if (role.RoleName != AppConstants.AdminRoleName)
             {
-                <p><a href="@Url.Action("EditPermissions", new { role.Id })" class="btn">@role.RoleName</a></p>                
+                <li><a href="@Url.Action("EditPermissions", new { role.Id })" class="btn">@role.RoleName</a></li>
             }
-        }
-    </div>
+        </ul>
+    }
+
+</div>
+
+
+<div class="adminsection clearfix">
+
     <div class="span5">
-        <h2>Add Permissions</h2>
+        <h3>Add Permissions</h3>
         <p>If you want to add your own custom permission, add it into the database using the button below.</p>
         <p>You will also need to add the name into the AppConstants file, as its used as the key.</p>
 
         <p><a href="@Url.Action("AddType")" class="btn btn-large btn-success">Add New Permission Type</a></p>
+    </div>
 
-        <h2>Current Permission Types</h2>
+    <div class="span4">
 
-        <p><strong><u>WARNING:</u></strong> Deleting permission types that are in use could break your forum, be very careful,</p>
+        <h3>Current Permission Types</h3>
+
+        <p><strong><u style="color: maroon;">WARNING:</u></strong> Deleting permission types that are in use could break your forum, be very careful,</p>
         <ul>
             @foreach (var permission in Model.Permissions)
             {
-                <li>@permission.Name (@Html.ActionLink("Delete", "DeletePermission", new{id = permission.Id}))</li>
+                <li>@permission.Name (@Html.ActionLink("Delete", "DeletePermission", new { id = permission.Id }))</li>
             }
         </ul>
     </div>
+
 </div>
+

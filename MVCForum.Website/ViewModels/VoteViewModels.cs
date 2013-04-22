@@ -29,4 +29,10 @@ namespace MVCForum.Website.ViewModels
         public List<Vote> Votes { get; set; }
     }
 
+    public class ShowVotesViewModel
+    {
+        public int UpVotes { get; set; }
+        public int DownVotes { get; set; }
+    }
+
 }

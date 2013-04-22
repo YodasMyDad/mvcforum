@@ -20,13 +20,9 @@
         <![endif]-->
 
         @(Bundle.JavaScript()
-              .Add("~/Scripts/jquery.1.7.2.min.js")
+              .Add("~/Scripts/jquery-1.9.1.min.js")
               .Add("~/Scripts/jquery.unobtrusive-ajax.js")
-              .Add("~/Scripts/bootstrap-tooltip.js")
-              .Add("~/Scripts/bootstrap-popover.js")
-              .Add("~/Scripts/bootstrap-button.js")
-              .Add("~/Scripts/bootstrap-alert.js")
-              .Add("~/Scripts/bootstrap-transition.js")
+              .Add("~/Scripts/bootstrap.min.js")
               .Add("~/installer/Content/Scripts/general.js")
               .MvcRender("~/scripts/cache/combined_installer_#.js")
               )
@@ -53,7 +49,7 @@
         <hr>
 
         <footer>
-            <p>&copy; @DateTime.Now.Year - <a href="http://www.mvcforum.com">MVC Forum</a></p>
+            <p>&copy; @DateTime.UtcNow.Year - <a href="http://www.mvcforum.com">MVC Forum</a></p>
         </footer>
 
     </div>

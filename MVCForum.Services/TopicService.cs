@@ -58,7 +58,7 @@ namespace MVCForum.Services
         {
             topic = SanitizeTopic(topic);
 
-            topic.CreateDate = DateTime.Now;
+            topic.CreateDate = DateTime.UtcNow;
 
             // url slug generator
             topic.Slug = ServiceHelpers.GenerateSlug(topic.Name, x => _topicRepository.GetTopicBySlugLike(ServiceHelpers.CreateUrl(topic.Name)));
@@ -91,9 +91,9 @@ namespace MVCForum.Services
             // Create the post
             var post = new Post
             {
-                DateCreated = DateTime.Now,
+                DateCreated = DateTime.UtcNow,
                 IsTopicStarter = true,
-                DateEdited = DateTime.Now,
+                DateEdited = DateTime.UtcNow,
                 PostContent = StringUtils.GetSafeHtml(postContent),
                 User = topic.User,
                 Topic = topic
@@ -193,6 +193,11 @@ namespace MVCForum.Services
         public PagedList<Topic> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> topicIds)
         {
             return _topicRepository.GetTopicsByCsv(pageIndex, pageSize, amountToTake, topicIds);
+        }
+
+        public IList<Topic> GetTopicsByCsv(int amountToTake, List<Guid> topicIds)
+        {
+            return _topicRepository.GetTopicsByCsv(amountToTake, topicIds);
         }
 
         /// <summary>

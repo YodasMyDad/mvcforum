@@ -56,6 +56,8 @@ namespace MVCForum.Domain.DomainModel
 
         public bool? EnablePolls { get; set; }
 
+        public bool? SuspendRegistration { get; set; }
+
         public virtual MembershipRole NewMemberStartingRole { get; set; }
         public virtual Language DefaultLanguage { get; set; }
     }

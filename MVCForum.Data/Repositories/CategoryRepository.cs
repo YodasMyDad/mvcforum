@@ -7,8 +7,6 @@ using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
-using MVCForum.Utilities;
-
 
 namespace MVCForum.Data.Repositories
 {
@@ -30,6 +28,7 @@ namespace MVCForum.Data.Repositories
             return _context.Category
                     .OrderBy(x => x.SortOrder)
                     .ToList();
+
         }
 
         public Category Get(Guid id)
@@ -55,10 +54,19 @@ namespace MVCForum.Data.Repositories
                     .ToList();
         }
 
-        public IList<Category> GetMainCategories()
+        public IList<Category> GetMainCategories(bool getWithExtendedData)
         {
-            return _context.Category
-                     .Where(cat => cat.ParentCategory == null)
+            var categories = _context.Category
+                                .Where(cat => cat.ParentCategory == null);
+
+            if (getWithExtendedData)
+            {
+                categories = categories
+                    .Include(x => x.Topics.Select(p => p.Posts))
+                    .Include(x => x.Topics.Select(p => p.LastPost));
+            }
+
+            return categories.Where(cat => cat.ParentCategory == null)
                      .OrderBy(x => x.SortOrder)
                      .ToList();
         }
@@ -70,10 +78,26 @@ namespace MVCForum.Data.Repositories
             return category;
         }
 
+        public CategoryWithSubCategories GetBySlugWithSubCategories(string slug)
+        {
+            var cat = (from category in _context.Category
+                          where category.Slug == slug
+                          select new CategoryWithSubCategories
+                              {
+                                  Category = category,
+                                  SubCategories = (from cats in _context.Category
+                                                   where cats.ParentCategory.Id == category.Id
+                                                   select cats)
+                              }).FirstOrDefault();
+
+            return cat;
+        }
+
         public Category GetBySlug(string slug)
         {
-            return _context.Category.SingleOrDefault(x => x.Slug == slug);
+            return _context.Category.FirstOrDefault(x => x.Slug == slug);
         }
+
 
         public IList<Category> GetBySlugLike(string slug)
         {

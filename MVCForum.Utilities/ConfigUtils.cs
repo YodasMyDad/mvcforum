@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Web;
 using System.Xml;
@@ -7,6 +8,11 @@ namespace MVCForum.Utilities
 {
     public static class ConfigUtils
     {
+        private static string WebConfigPath
+        {
+            get { return HttpContext.Current.Server.MapPath("~/web.config"); }
+        }
+
         /// <summary>
         /// Gets application setting
         /// </summary>
@@ -71,10 +77,8 @@ namespace MVCForum.Utilities
         {
             try
             {
-                var webConfigPath = HttpContext.Current.Server.MapPath("~/web.config");
+                var xDoc = GetWebConfig();
                 var xpathToSetting = string.Format("//add[@key='{0}']", name);
-                var xDoc = new XmlDocument();
-                xDoc.Load(webConfigPath);
                 var settingNodes = xDoc.GetElementsByTagName("appSettings");
                 var appSettingNode = settingNodes[0].SelectSingleNode(xpathToSetting);
                 if (appSettingNode != null && appSettingNode.Attributes != null)
@@ -83,7 +87,7 @@ namespace MVCForum.Utilities
                     if(idAttribute != null)
                     {
                         idAttribute.Value = value;
-                        xDoc.Save(webConfigPath);
+                        xDoc.Save(WebConfigPath);
                         return true;
                     }
                 }
@@ -95,5 +99,112 @@ namespace MVCForum.Utilities
                 return false;
             }
         }
+
+        public static bool InsertConnectionString(string name, string connectionString, string providerName = "System.Data.SqlClient")
+        {
+            try
+            {
+                var xDoc = GetWebConfig();
+
+                var connectionStrings = xDoc.GetElementsByTagName("connectionStrings")[0];
+
+                var newSettingNode = xDoc.CreateElement("add");
+                newSettingNode.SetAttribute("name", name);
+                newSettingNode.SetAttribute("connectionString", connectionString);
+                newSettingNode.SetAttribute("providerName", providerName);
+
+                connectionStrings.AppendChild(newSettingNode);
+                xDoc.Save(WebConfigPath);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public static bool UpdateConnectionString(string name, string value)
+        {
+            try
+            {
+                var xDoc = GetWebConfig();
+                var connectionStrings = xDoc.GetElementsByTagName("connectionStrings")[0];
+                var xpathToConnString = string.Format("//add[@name='{0}']", name);
+                var connectionstring = connectionStrings.SelectSingleNode(xpathToConnString);
+                if (connectionstring != null && connectionstring.Attributes != null)
+                {
+                    var connectionStringAttribute = connectionstring.Attributes["connectionString"];
+                    if (connectionStringAttribute != null)
+                    {
+                        connectionStringAttribute.Value = value;
+                        xDoc.Save(WebConfigPath);
+                        return true;
+                    }
+                }
+                return false;
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public static bool InsertAppSetting(string name, string value)
+        {
+            try
+            {
+                var xDoc = GetWebConfig();
+
+                var settingNodes = xDoc.GetElementsByTagName("appSettings")[0];
+
+                var newSettingNode = xDoc.CreateElement("add");
+                newSettingNode.SetAttribute("key", name);
+                newSettingNode.SetAttribute("value", value);
+
+                settingNodes.AppendChild(newSettingNode);
+                xDoc.Save(WebConfigPath);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }            
+        }
+
+        public static bool InsertAppSetting(Dictionary<string, string> multipleSettings)
+        {
+            try
+            {
+                var xDoc = GetWebConfig();
+
+                var settingNodes = xDoc.GetElementsByTagName("appSettings")[0];
+
+                foreach (var dict in multipleSettings)
+                {
+                    var newSettingNode = xDoc.CreateElement("add");
+                    newSettingNode.SetAttribute("key", dict.Key);
+                    newSettingNode.SetAttribute("value", dict.Value);
+                    settingNodes.AppendChild(newSettingNode);   
+                }
+
+                xDoc.Save(WebConfigPath);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }   
+        }
+
+
+        private static XmlDocument GetWebConfig()
+        {
+            var xDoc = new XmlDocument();
+            xDoc.Load(WebConfigPath);
+            return xDoc;
+        }
+
     }
 }

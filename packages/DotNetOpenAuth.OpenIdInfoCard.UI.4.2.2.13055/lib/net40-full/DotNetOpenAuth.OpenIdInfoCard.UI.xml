@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DotNetOpenAuth.OpenIdInfoCard.UI</name>
+    </assembly>
+    <members>
+        <member name="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdInfoCardSelector">
+            <summary>
+            An ASP.NET control that provides a user-friendly way of logging into a web site using OpenID.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.OpenIdInfoCardSelector.selectorButton">
+            <summary>
+            The InfoCard selector button.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdInfoCardSelector.EnsureChildControlsAreCreatedSafe">
+            <summary>
+            Ensures that the child controls have been built, but doesn't set control
+            properties that require executing <see cref="M:System.Web.UI.Control.EnsureID"/> in order to avoid
+            certain initialization order problems.
+            </summary>
+            <remarks>
+            We don't just call EnsureChildControls() and then set the property on
+            this.textBox itself because (apparently) setting this property in the ASPX
+            page and thus calling this EnsureID() via EnsureChildControls() this early
+            results in no ID.
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdInfoCardSelector.OnReceivedToken(DotNetOpenAuth.InfoCard.ReceivedTokenEventArgs)">
+            <summary>
+            Fires the <see cref="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdInfoCardSelector.ReceivedToken"/> event.
+            </summary>
+            <param name="e">The token, if it was decrypted.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdInfoCardSelector.OnTokenProcessingError(DotNetOpenAuth.InfoCard.TokenProcessingErrorEventArgs)">
+            <summary>
+            Raises the <see cref="E:TokenProcessingError"/> event.
+            </summary>
+            <param name="e">The <see cref="T:DotNetOpenAuth.InfoCard.TokenProcessingErrorEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdInfoCardSelector.InfoCardSelector_ReceivedToken(System.Object,DotNetOpenAuth.InfoCard.ReceivedTokenEventArgs)">
+            <summary>
+            Handles the ReceivedToken event of the infoCardSelector control.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">The <see cref="T:DotNetOpenAuth.InfoCard.ReceivedTokenEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.OpenIdInfoCardSelector.InfoCardSelector_TokenProcessingError(System.Object,DotNetOpenAuth.InfoCard.TokenProcessingErrorEventArgs)">
+            <summary>
+            Handles the TokenProcessingError event of the infoCardSelector control.
+            </summary>
+            <param name="sender">The source of the event.</param>
+            <param name="e">The <see cref="T:DotNetOpenAuth.InfoCard.TokenProcessingErrorEventArgs"/> instance containing the event data.</param>
+        </member>
+        <member name="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdInfoCardSelector.ReceivedToken">
+            <summary>
+            Occurs when an InfoCard has been submitted and decoded.
+            </summary>
+        </member>
+        <member name="E:DotNetOpenAuth.OpenId.RelyingParty.OpenIdInfoCardSelector.TokenProcessingError">
+            <summary>
+            Occurs when [token processing error].
+            </summary>
+        </member>
+        <member name="T:DotNetOpenAuth.OpenId.RelyingParty.SelectorInfoCardButton">
+            <summary>
+            A button that appears in the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector"/> control that
+            activates the Information Card selector on the browser, if one is available.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OpenId.RelyingParty.SelectorInfoCardButton.infoCardSelector">
+            <summary>
+            The backing field for the <see cref="P:DotNetOpenAuth.OpenId.RelyingParty.SelectorInfoCardButton.InfoCardSelector"/> property.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorInfoCardButton.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OpenId.RelyingParty.SelectorInfoCardButton"/> class.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorInfoCardButton.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorInfoCardButton.EnsureValid">
+            <summary>
+            Ensures that this button has been initialized to a valid state.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorInfoCardButton.RenderLeadingAttributes(System.Web.UI.HtmlTextWriter)">
+            <summary>
+            Renders the leading attributes for the LI tag.
+            </summary>
+            <param name="writer">The writer.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorInfoCardButton.RenderButtonContent(System.Web.UI.HtmlTextWriter,DotNetOpenAuth.OpenId.RelyingParty.OpenIdSelector)">
+            <summary>
+            Renders the content of the button.
+            </summary>
+            <param name="writer">The writer.</param>
+            <param name="selector">The containing selector control.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OpenId.RelyingParty.SelectorInfoCardButton.Dispose(System.Boolean)">
+            <summary>
+            Releases unmanaged and - optionally - managed resources
+            </summary>
+            <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        </member>
+        <member name="P:DotNetOpenAuth.OpenId.RelyingParty.SelectorInfoCardButton.InfoCardSelector">
+            <summary>
+            Gets or sets the InfoCard selector which may be displayed alongside the OP buttons.
+            </summary>
+        </member>
+    </members>
+</doc>

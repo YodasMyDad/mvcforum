@@ -239,37 +239,49 @@ namespace MVCForum.Data.Repositories
 
         public PagedList<Topic> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> csv)
         {
-            // We might only want to display the top 100
-            // but there might not be 100 topics
-            var total = csv.Count;
-            if (amountToTake < total)
-            {
-                total = amountToTake;
-            }
+            // Get the count
+            var total = _context.Topic
+                                .Join(csv,
+                                      topic => topic.Id,
+                                      guidFromCsv => guidFromCsv,
+                                      (topic, guidFromCsv) => new { topic, guidFromCsv }
+                                      ).Count(x => x.guidFromCsv == x.topic.Id);
 
-            // Get the Posts and then get the topics from the post
-            // This is an interim solution, as its flawed due to multiple posts in one topic so the paging might
-            // be incorrect if all posts are from one topic.
+            // Now get the paged stuff
             var results = _context.Topic
-                            //.Include(x => x.Posts)
-                            .Include(x => x.LastPost)
-                            .Include(x => x.LastPost.User)
-                            .Include(x => x.Category)
-                            .Include(x => x.Posts.Select(v => v.Votes))
-                            .Where(x => csv.Contains(x.Id))
-                            .OrderByDescending(x => x.LastPost.DateCreated)
-                            .Skip((pageIndex - 1) * pageSize)
-                            .Take(pageSize)
-                            .ToList();
+                .Join(csv,
+                        topic => topic.Id,
+                        guidFromCsv => guidFromCsv,
+                        (topic, guidFromCsv) => new { topic, guidFromCsv }
+                    )
+                    .Where(x => x.guidFromCsv == x.topic.Id)
+                    .OrderByDescending(x => x.topic.LastPost.DateCreated)
+                    .Skip((pageIndex - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(x => x.topic)
+                    .ToList();
 
             // Return a paged list
             return new PagedList<Topic>(results, pageIndex, pageSize, total);
         }
 
+        public IList<Topic> GetTopicsByCsv(int amountToTake, List<Guid> topicIds)
+        {
+
+            return _context.Topic
+                            .Include(x => x.LastPost)
+                            .Include(x => x.LastPost.User)
+                            .Include(x => x.Category)
+                            .Include(x => x.Posts.Select(v => v.Votes))
+                            .Where(x => topicIds.Contains(x.Id))
+                            .OrderByDescending(x => x.LastPost.DateCreated)
+                            .Take(amountToTake)
+                            .ToList();
+        }
+
         public IList<Topic> GetRssTopicsByCategory(int amountToTake, Guid categoryId)
         {
             return _context.Topic
-                            //.Include(x => x.Posts)
                             .Include(x => x.LastPost)
                             .Include(x => x.LastPost.User)
                             .Include(x => x.Category)
@@ -284,7 +296,7 @@ namespace MVCForum.Data.Repositories
         {
             // We might only want to display the top 100
             // but there might not be 100 topics
-            var total = _context.Topic.Count(e => e.Tags.Select(t => t.Tag).Contains(tag));
+            var total = _context.Topic.Count(e => e.Tags.Any(t => t.Slug == tag));
             if (amountToTake < total)
             {
                 total = amountToTake;
@@ -300,7 +312,7 @@ namespace MVCForum.Data.Repositories
                                 .Include(x => x.Tags)
                                 .OrderByDescending(x => x.IsSticky)
                                 .ThenByDescending(x => x.LastPost.DateCreated)
-                                .Where(e => e.Tags.Select(t => t.Tag).Contains(tag))
+                                .Where(e => e.Tags.Any(t => t.Slug == tag))
                                 .Take(pageSize)
                                 .Skip((pageIndex - 1) * pageSize)
                                 .ToList();
@@ -316,7 +328,7 @@ namespace MVCForum.Data.Repositories
                 .Include(x => x.Poll)
                 .Include(x => x.Poll.PollAnswers)
                 .Include(x => x.User)
-                .SingleOrDefault(x => x.Slug == slug);
+                .FirstOrDefault(x => x.Slug == slug);
         }
 
         public IList<Topic> GetTopicBySlugLike(string slug)

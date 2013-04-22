@@ -22,6 +22,8 @@ namespace MVCForum.Website.Controllers
         protected readonly ISettingsService SettingsService;
         protected readonly ILoggingService LoggingService;
 
+        //private readonly MembershipUser _loggedInUser;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -43,38 +45,34 @@ namespace MVCForum.Website.Controllers
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            var controller = filterContext.RouteData.Values["controller"];
+
+            //if (Session[AppConstants.GoToInstaller] != null && Session[AppConstants.GoToInstaller].ToString() == "True")
+            //{
+            //    filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Install" }, { "action", "Index" } });
+            //}
             if (SettingsService.GetSettings().IsClosed)
-            {
-                var controller = filterContext.RouteData.Values["controller"];
+            {                
                 if(controller.ToString().ToLower() != "closed")
                 {
-                    filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Closed" }, { "action", "Index" } });        
+                    filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Closed" }, { "action", "Index" } });
                 }          
             }
         }
 
-
-        /// <summary>
-        /// Return the currently logged on user
-        /// </summary>
-        protected MembershipUser LoggedOnUser
+        protected bool UserIsAuthenticated
         {
             get
             {
-                if (User.Identity.IsAuthenticated)
-                {
-                        var currentUser = MembershipService.GetUser(User.Identity.Name);
-                        return currentUser; 
-                }
-                return null;
+                return System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             }
         }
 
-        protected MembershipRole UsersRole
+        protected string Username
         {
             get
             {
-                    return LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault(); 
+                return UserIsAuthenticated ? System.Web.HttpContext.Current.User.Identity.Name : null;
             }
         }
 

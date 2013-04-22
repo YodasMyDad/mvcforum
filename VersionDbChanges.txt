@@ -123,7 +123,7 @@ Web.config Changes
 ============ v1.2 ============
 ==============================
 
----- Added Language Strings
+Added Language Strings
 ---- Date.JustNow = Just now
 ---- Date.OneMinuteAgo = 1 minute ago
 ---- Date.MinutesAgo = {0} minutes ago
@@ -139,11 +139,220 @@ Web.config Changes
 ============ v1.3 ============
 ==============================
 
---- Added Language Strings
---- Poll.Button.Remove = Remove Poll
---- Poll.Button.Create = Create Poll
---- Poll.Placeholder.TypeAnswerHere = Type Answer Here
---- Topic.OptionsHeading = More Options
---- Buttons.CreatePost = Add Post
---- Topic.Label.Category = Choose Category
---- Editor.NeedHelp = Need formatting help?
+---Added New Language Strings
+Members.DeleteAllPosts = Delete All Posts
+Poll.Button.Remove = Remove Poll
+Poll.Button.Create = Create Poll
+Poll.Placeholder.TypeAnswerHere = Type Answer Here
+Topic.OptionsHeading = More Options
+Buttons.CreatePost = Add Post
+Topic.Label.Category = Choose Category
+Editor.NeedHelp = Need formatting help?
+Members.BanUser = Ban User
+Members.UnBanUser = Unban User
+Errors.NoPermissionPolls = Topic Created, But you do not have permission to create polls
+Topic.ShowMorePosts = Show More Posts
+Topic.ShowMorePostsLoading = Loading Posts...
+Topic.AlreadyAnswered = Questions that may already have your answer
+Topic.CommentsDetails = Comments
+Topic.Comment = Answer
+Stats.FooterActiveUsersText = Members Currently Online
+PostFilter.OrderBy = Order By:
+PostFilter.Standard = Standard
+PostFilter.Newest = Newest
+PostFilter.Votes = Votes
+PM.NewPrivateMessageSubject = New Private Message
+PM.NewPrivateMessageBody = {0} has just sent you a private message.
+Post.DeleteConfirmation = Are you sure you want to delete?
+Category.SubCategoriesHeading = Sub Categories In
+Category.AllCategories = All Categories
+Category.MostRecent = Most recent:
+Members.LogonFacebookButton = Login with Facebook
+Members.LogonGoogleButton = Login with Google
+Members.LogonYahooButton = Login with Yahoo
+Members.LogonTwitterButton = Login with Twitter
+Twitter.Error.EnabledButNotAddedKeys = You have enabled social logins but not added the Twitter id and secret key in the web.config
+Error.EmailIsBanned = The email address or domain you are trying to use is banned
+Post.FilesUploaded = Files uploaded successfully
+Post.Attach = Attach
+Post.Upload = Upload Files
+Post.UploadBannedFileExtension = File extension not allowed
+Post.UploadFileTooBig = File upload is too big
+File.SuccessfullyDeleted = File deleted
+
++++ CHANGES TO EXISTING LANGUAGE STRINGS
+Topic.Comments = Answers
+
+--- MembershipRole
+Add > Moderator
+
+--- MembershipUser
+LastActivityDate - DateTime allow nulls
+DisableEmailNotifications (bit) allow nulls
+DisablePosting (bit) allow nulls
+DisablePrivateMessages (bit) allow nulls
+DisableFileUploads (bit) allow nulls
+
++++ CHANGES
+FacebookAccessToken - change to nvarchar(250)
+TwitterAccessToken - change to nvarchar(250)
+GoogleAccessToken - change to nvarchar(250)
+MiscAccessToken - change to nvarchar(250)
+
+--- Vote
+Added VotedByMembershipUser_Id (uniqueidentifier) allow nulls
+Added DateVoted (datetime) allow nulls
+
+--- Permission
+Add > Create Polls
+Add > Create Topics
+Add > Attach Files
+
+--- TopicTag
+Slug (nvarchar(100)) do not allow nulls
+
+// Use this SQL to update existing site with tags
+UPDATE TopicTag
+SET Slug = Tag
+
+--- Settings
+SuspendRegistration bit allow nulls
+
+--- Add new BannedEmail Table using the SQL below
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[BannedEmail](
+	[Id] [uniqueidentifier] NOT NULL,
+	[Email] [nvarchar](200) NOT NULL,
+	[DateAdded] [datetime] NOT NULL,
+CONSTRAINT [PK_BannedEmail] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+--- Add new BannedWord Table using the SQL below
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[BannedWord](
+	[Id] [uniqueidentifier] NOT NULL,
+	[Word] [nvarchar](75) NOT NULL,
+	[DateAdded] [datetime] NOT NULL,
+ CONSTRAINT [PK_BannedWord] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+--- Add new UploadedFile Table using the SQL below
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[UploadedFile](
+	[Id] [uniqueidentifier] NOT NULL,
+	[Filename] [nvarchar](200) NOT NULL,
+	[MembershipUser_Id] [uniqueidentifier] NOT NULL,
+	[Post_Id] [uniqueidentifier] NOT NULL,
+	[DateCreated] [datetime] NOT NULL,
+ CONSTRAINT [PK_UploadedFile] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+--- Web.Config add the following app settings
+
+<add key="TwitterAppId" value="" />
+<add key="TwitterAppSecret" value="" />
+<add key="BannedWordReplaceCharactor" value="?" />
+<add key="FileUploadAllowedExtensions" value="jpg,jpeg,png,gif" />
+<add key="FileUploadMaximumFileSizeInBytes" value="1048576" />
+
+--- Web.config added dotnet open auth
+
+<configSections>
+<sectionGroup name="dotNetOpenAuth" type="DotNetOpenAuth.Configuration.DotNetOpenAuthSection, DotNetOpenAuth.Core">
+    <section name="messaging" type="DotNetOpenAuth.Configuration.MessagingElement, DotNetOpenAuth.Core" requirePermission="false" allowLocation="true" />
+    <section name="reporting" type="DotNetOpenAuth.Configuration.ReportingElement, DotNetOpenAuth.Core" requirePermission="false" allowLocation="true" />
+    <section name="openid" type="DotNetOpenAuth.Configuration.OpenIdElement, DotNetOpenAuth.OpenId" requirePermission="false" allowLocation="true" />
+    <section name="oauth" type="DotNetOpenAuth.Configuration.OAuthElement, DotNetOpenAuth.OAuth" requirePermission="false" allowLocation="true" />
+</sectionGroup>
+</configSections>
+
+---
+
+<dependentAssembly>
+	<assemblyIdentity name="System.Net.Http" publicKeyToken="b03f5f7f11d50a3a" culture="neutral" />
+	<bindingRedirect oldVersion="0.0.0.0-2.0.0.0" newVersion="2.0.0.0" />
+</dependentAssembly>
+
+---
+
+<!-- This prevents the Windows Event Log from frequently logging that HMAC1 is being used (when the other party needs it). -->
+<legacyHMACWarning enabled="0" />
+<!-- When targeting ASP.NET MVC 3, this assemblyBinding makes MVC 1 and 2 references relink
+	    to MVC 3 so libraries such as DotNetOpenAuth that compile against MVC 1 will work with it.
+<assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+	<dependentAssembly>
+		<assemblyIdentity name="System.Web.Mvc" publicKeyToken="31bf3856ad364e35" />
+		<bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+	</dependentAssembly>
+</assemblyBinding>
+-->
+
+---
+
+<system.net>
+<defaultProxy enabled="true" />
+<settings>
+    <!-- This setting causes .NET to check certificate revocation lists (CRL) 
+			    before trusting HTTPS certificates.  But this setting tends to not 
+			    be allowed in shared hosting environments. -->
+    <!--<servicePointManager checkCertificateRevocationList="true"/>-->
+</settings>
+</system.net>
+<dotNetOpenAuth>
+<messaging>
+    <untrustedWebRequest>
+    <whitelistHosts>
+        <!-- Uncomment to enable communication with localhost (should generally not activate in production!) -->
+        <!--<add name="localhost" />-->
+    </whitelistHosts>
+    </untrustedWebRequest>
+</messaging>
+<!-- Allow DotNetOpenAuth to publish usage statistics to library authors to improve the library. -->
+<reporting enabled="true" />
+<!-- This is an optional configuration section where aspects of dotnetopenauth can be customized. -->
+<!-- For a complete set of configuration options see http://www.dotnetopenauth.net/developers/code-snippets/configuration-options/ -->
+<openid>
+    <relyingParty>
+    <security requireSsl="false">
+        <!-- Uncomment the trustedProviders tag if your relying party should only accept positive assertions from a closed set of OpenID Providers. -->
+        <!--<trustedProviders rejectAssertionsFromUntrustedProviders="true">
+					<add endpoint="https://www.google.com/accounts/o8/ud" />
+				</trustedProviders>-->
+    </security>
+    <behaviors>
+        <!-- The following OPTIONAL behavior allows RPs to use SREG only, but be compatible
+					    with OPs that use Attribute Exchange (in various formats). -->
+        <add type="DotNetOpenAuth.OpenId.RelyingParty.Behaviors.AXFetchAsSregTransform, DotNetOpenAuth.OpenId.RelyingParty" />
+    </behaviors>
+    </relyingParty>
+    <provider></provider>
+</openid>
+</dotNetOpenAuth>
+<uri>
+<!-- The uri section is necessary to turn on .NET 3.5 support for IDN (international domain names),
+		    which is necessary for OpenID urls with unicode characters in the domain/host name.
+		    It is also required to put the Uri class into RFC 3986 escaping mode, which OpenID and OAuth require. -->
+<idn enabled="All" />
+<iriParsing enabled="true" />
+</uri>

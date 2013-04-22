@@ -257,7 +257,7 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public Language GetLanguageByLanguageCulture(string languageCulture)
         {
-            return _context.Language.SingleOrDefault(x => x.LanguageCulture == languageCulture);
+            return _context.Language.FirstOrDefault(x => x.LanguageCulture == languageCulture);
         }
 
         /// <summary>
@@ -309,7 +309,7 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public LocaleResourceKey GetResourceKey(Guid id)
         {
-            return _context.LocaleResourceKey.SingleOrDefault(x => x.Id == id);
+            return _context.LocaleResourceKey.FirstOrDefault(x => x.Id == id);
         }
 
                 /// <summary>
@@ -319,7 +319,7 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public LocaleResourceKey GetResourceKey(string name)
         {
-            return _context.LocaleResourceKey.SingleOrDefault(x => x.Name == name);       
+            return _context.LocaleResourceKey.FirstOrDefault(x => x.Name.Trim() == name);       
         }
 
         /// <summary>

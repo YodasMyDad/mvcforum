@@ -9,7 +9,9 @@ using Lucene.Net.Index;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
-using MVCForum.Lucene.LuceneModel;
+using MVCForum.Domain.Constants;
+using MVCForum.Domain.DomainModel;
+using MVCForum.Utilities;
 using Version = Lucene.Net.Util.Version;
 
 namespace MVCForum.Lucene
@@ -17,17 +19,6 @@ namespace MVCForum.Lucene
     public static class GoLucene
     {
         // Constants - These are the name of the fields in the lucene model
-        private const string LucId = "Id";
-        private const string LucPostContent = "PostContent";
-        private const string LucDateCreated = "DateCreated";
-        private const string LucTopicName = "TopicName";
-        private const string LucTopicId = "TopicId";
-        //private const string LucTopicTags = "TopicTags";
-        private const string LucTopicUrl = "TopicUrl";
-        private const string LucUsername = "Username";
-        private const string LucUserId = "UserId";
-
-
         private const string LuceneDirectoryName = "lucene_index";
 
         // properties
@@ -55,6 +46,7 @@ namespace MVCForum.Lucene
             // set up lucene searcher
             var searcher = new IndexSearcher(_directory, false);
             var reader = IndexReader.Open(_directory, false);
+            searcher.SetDefaultFieldSortScoring(true, true);
             var docs = new List<Document>();
             var term = reader.TermDocs();
             while (term.Next()) docs.Add(searcher.Doc(term.Doc));
@@ -63,25 +55,65 @@ namespace MVCForum.Lucene
             return _mapLuceneToDataList(docs);
         }
 
-        public static IEnumerable<LuceneSearchModel> Search(string input, string fieldName = "")
+        public static IEnumerable<LuceneSearchModel> SearchDefault(string input, string fieldName = "")
+        {
+            return string.IsNullOrEmpty(input) ? new List<LuceneSearchModel>() : _search(input, int.MaxValue, fieldName);
+        }
+
+        public static IEnumerable<LuceneSearchModel> Search(string input, int amountToTake, string fieldName = "", bool doFuzzySearch = false)
         {
             if (string.IsNullOrEmpty(input)) return new List<LuceneSearchModel>();
 
-            var terms = input.Trim().Replace("-", " ").Split(' ')
-                .Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Trim() + "*");
+            // Add a tilda for fuzzy search, or keep original search
+            var searchOperator = doFuzzySearch ? "~" : "*";
+
+            var terms = input.Trim().Replace("-", " ").Split(' ').Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Trim() + searchOperator);
             input = string.Join(" ", terms);
 
-            return _search(input, fieldName);
+            return _search(input, amountToTake, fieldName);
         }
 
-        public static IEnumerable<LuceneSearchModel> SearchDefault(string input, string fieldName = "")
+        public static IEnumerable<LuceneSearchModel> Search(string input, string fieldName = "", bool doFuzzySearch = false)
         {
-            return string.IsNullOrEmpty(input) ? new List<LuceneSearchModel>() : _search(input, fieldName);
+            return Search(input, int.MaxValue, fieldName, doFuzzySearch);
         }
 
+        public static PagedList<LuceneSearchModel> Search(string input, int pageIndex, int pageSize, bool doFuzzySearch = false)
+        {
+            if (string.IsNullOrEmpty(input)) return null;
+
+            // Add a tilda for fuzzy search, or keep original search
+            var searchOperator = doFuzzySearch ? "~" : "*";
+
+            var terms = input.Trim().Replace("-", " ").Split(' ').Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Trim() + searchOperator);
+            input = string.Join(" ", terms);
+
+            return _search(input, pageIndex, pageSize);
+        }
+
+        private static PagedList<LuceneSearchModel> _search(string searchQuery, int pageIndex, int pageSize)
+        {
+            // validation
+            if (string.IsNullOrEmpty(searchQuery.Replace("*", "").Replace("?", ""))) return null;
+            // set up lucene searcher
+            using (var searcher = new IndexSearcher(_directory, false))
+            {
+                const int hitsLimit = 1000;
+                var analyzer = new StandardAnalyzer(Version.LUCENE_30);
+
+                var parser = new MultiFieldQueryParser(Version.LUCENE_30, new[] { AppConstants.LucId, AppConstants.LucTopicName, AppConstants.LucPostContent }, analyzer);
+                var query = parseQuery(searchQuery, parser);
+                searcher.SetDefaultFieldSortScoring(true, true);
+                var hits = searcher.Search(query, null, hitsLimit, Sort.INDEXORDER).ScoreDocs;
+                var results = _mapLuceneToDataList(hits, searcher, pageIndex, pageSize);
+                analyzer.Close();
+                searcher.Dispose();
+                return results;
+            }
+        }
 
         // main search method
-        private static IEnumerable<LuceneSearchModel> _search(string searchQuery, string searchField = "")
+        private static IEnumerable<LuceneSearchModel> _search(string searchQuery, int amountToTake, string searchField = "")
         {
             // validation
             if (string.IsNullOrEmpty(searchQuery.Replace("*", "").Replace("?", ""))) return new List<LuceneSearchModel>();
@@ -90,15 +122,16 @@ namespace MVCForum.Lucene
             using (var searcher = new IndexSearcher(_directory, false))
             {
                 const int hitsLimit = 1000;
-                var analyzer = new StandardAnalyzer(global::Lucene.Net.Util.Version.LUCENE_30);
+                var analyzer = new StandardAnalyzer(Version.LUCENE_30);
 
                 // search by single field
                 if (!string.IsNullOrEmpty(searchField))
                 {
-                    var parser = new QueryParser(global::Lucene.Net.Util.Version.LUCENE_30, searchField, analyzer);
+                    var parser = new QueryParser(Version.LUCENE_30, searchField, analyzer);
                     var query = parseQuery(searchQuery, parser);
+                    searcher.SetDefaultFieldSortScoring(true, true);
                     var hits = searcher.Search(query, hitsLimit).ScoreDocs;
-                    var results = _mapLuceneToDataList(hits, searcher);
+                    var results = _mapLuceneToDataList(hits, searcher, amountToTake);
                     analyzer.Close();
                     searcher.Dispose();
                     return results;
@@ -106,10 +139,11 @@ namespace MVCForum.Lucene
                 // search by multiple fields (ordered by RELEVANCE)
                 else
                 {
-                    var parser = new MultiFieldQueryParser(global::Lucene.Net.Util.Version.LUCENE_30, new[] { LucId, LucTopicName, LucPostContent }, analyzer);
+                    var parser = new MultiFieldQueryParser(Version.LUCENE_30, new[] { AppConstants.LucId, AppConstants.LucTopicName, AppConstants.LucPostContent }, analyzer);
                     var query = parseQuery(searchQuery, parser);
+                    searcher.SetDefaultFieldSortScoring(true, true);
                     var hits = searcher.Search(query, null, hitsLimit, Sort.INDEXORDER).ScoreDocs;
-                    var results = _mapLuceneToDataList(hits, searcher);
+                    var results = _mapLuceneToDataList(hits, searcher, amountToTake);
                     analyzer.Close();
                     searcher.Dispose();
                     return results;
@@ -134,26 +168,45 @@ namespace MVCForum.Lucene
         // map Lucene search index to data
         private static IEnumerable<LuceneSearchModel> _mapLuceneToDataList(IEnumerable<Document> hits)
         {
-            return hits.Select(_mapLuceneDocumentToData).ToList();
+            return hits.Select(x =>_mapLuceneDocumentToData(x)).ToList();
         }
 
-        private static IEnumerable<LuceneSearchModel> _mapLuceneToDataList(IEnumerable<ScoreDoc> hits, IndexSearcher searcher)
+        private static IEnumerable<LuceneSearchModel> _mapLuceneToDataList(IEnumerable<ScoreDoc> hits, IndexSearcher searcher, int amountToTake)
         {
-            return hits.Select(hit => _mapLuceneDocumentToData(searcher.Doc(hit.Doc))).ToList();
+            return hits
+                    .DistinctBy(x => searcher.Doc(x.Doc).Get(AppConstants.LucTopicId))
+                    .OrderByDescending(x => x.Score)
+                    .Take(amountToTake)
+                    .Select(hit => _mapLuceneDocumentToData(searcher.Doc(hit.Doc), hit.Score))
+                    .ToList();
         }
 
-        private static LuceneSearchModel _mapLuceneDocumentToData(Document doc)
+        private static PagedList<LuceneSearchModel> _mapLuceneToDataList(IEnumerable<ScoreDoc> hits, IndexSearcher searcher, int pageIndex, int pageSize)
+        {
+            var results = hits
+                .DistinctBy(x => searcher.Doc(x.Doc).Get(AppConstants.LucTopicId))
+                .OrderByDescending(x => x.Score)                
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .Select(hit => _mapLuceneDocumentToData(searcher.Doc(hit.Doc), hit.Score))
+                .ToList();
+
+            return new PagedList<LuceneSearchModel>(results, pageIndex, pageSize, hits.Count());
+        }
+
+        private static LuceneSearchModel _mapLuceneDocumentToData(Document doc, float score = 0)
         {
             return new LuceneSearchModel
             {
-                Id = Guid.Parse(doc.Get(LucId)),
-                TopicName = doc.Get(LucTopicName),
-                PostContent = doc.Get(LucPostContent),
-                DateCreated = DateTools.StringToDate(doc.Get(LucDateCreated)),
-                TopicId = Guid.Parse(doc.Get(LucTopicId)),
-                UserId = Guid.Parse(doc.Get(LucUserId)),
-                Username = doc.Get(LucUsername),
-                TopicUrl = doc.Get(LucTopicUrl)
+                Id = Guid.Parse(doc.Get(AppConstants.LucId)),
+                TopicName = doc.Get(AppConstants.LucTopicName),
+                PostContent = doc.Get(AppConstants.LucPostContent),
+                DateCreated = DateTools.StringToDate(doc.Get(AppConstants.LucDateCreated)),
+                TopicId = Guid.Parse(doc.Get(AppConstants.LucTopicId)),
+                UserId = Guid.Parse(doc.Get(AppConstants.LucUserId)),
+                Username = doc.Get(AppConstants.LucUsername),
+                TopicUrl = doc.Get(AppConstants.LucTopicUrl),
+                Score = score
             };
         }
 
@@ -166,7 +219,7 @@ namespace MVCForum.Lucene
         public static void AddUpdateLuceneIndex(IEnumerable<LuceneSearchModel> sampleDatas)
         {
             // init lucene
-            var analyzer = new StandardAnalyzer(global::Lucene.Net.Util.Version.LUCENE_30);
+            var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var writer = new IndexWriter(_directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED))
             {
                 // add data to lucene search index (replaces older entries if any)
@@ -177,14 +230,15 @@ namespace MVCForum.Lucene
                 writer.Dispose();
             }
         }
+
         public static void ClearLuceneIndexRecord(Guid record_id)
         {
             // init lucene
-            var analyzer = new StandardAnalyzer(global::Lucene.Net.Util.Version.LUCENE_30);
+            var analyzer = new StandardAnalyzer(Version.LUCENE_30);
             using (var writer = new IndexWriter(_directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED))
             {
                 // remove older index entry
-                var searchQuery = new TermQuery(new Term(LucId, record_id.ToString()));
+                var searchQuery = new TermQuery(new Term(AppConstants.LucId, record_id.ToString()));
                 writer.DeleteDocuments(searchQuery);
 
                 // close handles
@@ -192,11 +246,12 @@ namespace MVCForum.Lucene
                 writer.Dispose();
             }
         }
+
         public static bool ClearLuceneIndex()
         {
             try
             {
-                var analyzer = new StandardAnalyzer(global::Lucene.Net.Util.Version.LUCENE_30);
+                var analyzer = new StandardAnalyzer(Version.LUCENE_30);
                 using (var writer = new IndexWriter(_directory, analyzer, true, IndexWriter.MaxFieldLength.UNLIMITED))
                 {
                     // remove older index entries
@@ -213,6 +268,7 @@ namespace MVCForum.Lucene
             }
             return true;
         }
+
         public static void Optimize()
         {
             var analyzer = new StandardAnalyzer(Version.LUCENE_30);
@@ -223,10 +279,11 @@ namespace MVCForum.Lucene
                 writer.Dispose();
             }
         }
+
         private static void _addToLuceneIndex(LuceneSearchModel searchModel, IndexWriter writer)
         {
             // remove older index entry
-            var searchQuery = new TermQuery(new Term(LucId, searchModel.Id.ToString()));
+            var searchQuery = new TermQuery(new Term(AppConstants.LucId, searchModel.Id.ToString()));
             writer.DeleteDocuments(searchQuery);
 
             // add new index entry
@@ -234,24 +291,24 @@ namespace MVCForum.Lucene
 
             // add lucene fields mapped to db fields
             // Posts
-            doc.Add(new Field(LucId, searchModel.Id.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-            doc.Add(new Field(LucPostContent, searchModel.PostContent, Field.Store.YES, Field.Index.ANALYZED));
+            doc.Add(new Field(AppConstants.LucId, searchModel.Id.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+            doc.Add(new Field(AppConstants.LucPostContent, searchModel.PostContent, Field.Store.YES, Field.Index.ANALYZED));
 
             //Topics
             if (!string.IsNullOrEmpty(searchModel.TopicName))
             {
-                doc.Add(new Field(LucTopicName, searchModel.TopicName, Field.Store.YES, Field.Index.ANALYZED));
+                doc.Add(new Field(AppConstants.LucTopicName, searchModel.TopicName, Field.Store.YES, Field.Index.ANALYZED));
             }
-            doc.Add(new Field(LucTopicUrl, searchModel.TopicUrl, Field.Store.YES, Field.Index.NOT_ANALYZED));            
+            doc.Add(new Field(AppConstants.LucTopicUrl, searchModel.TopicUrl, Field.Store.YES, Field.Index.NOT_ANALYZED));            
 
             // Chnage the date so we can query in date order
             var dateValue = DateTools.DateToString(searchModel.DateCreated, DateTools.Resolution.MILLISECOND);
-            doc.Add(new Field(LucDateCreated, dateValue, Field.Store.YES, Field.Index.NOT_ANALYZED));
-            doc.Add(new Field(LucTopicId, searchModel.TopicId.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+            doc.Add(new Field(AppConstants.LucDateCreated, dateValue, Field.Store.YES, Field.Index.NOT_ANALYZED));
+            doc.Add(new Field(AppConstants.LucTopicId, searchModel.TopicId.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
 
             //User
-            doc.Add(new Field(LucUsername, searchModel.Username, Field.Store.YES, Field.Index.ANALYZED));
-            doc.Add(new Field(LucUserId, searchModel.UserId.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+            doc.Add(new Field(AppConstants.LucUsername, searchModel.Username, Field.Store.YES, Field.Index.ANALYZED));
+            doc.Add(new Field(AppConstants.LucUserId, searchModel.UserId.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
 
             // add entry to index
             writer.AddDocument(doc);
@@ -261,7 +318,7 @@ namespace MVCForum.Lucene
 }
 
 // Example date order by
-//var dateValue = DateTools.DateToString(DateTime.Now, DateTools.Resolution.MILLISECOND);
+//var dateValue = DateTools.DateToString(DateTime.UtcNow, DateTools.Resolution.MILLISECOND);
 //var filter = FieldCacheRangeFilter.NewStringRange("date", 
 //                 lowerVal: dateValue, includeLower: true, 
 //                 upperVal: null, includeUpper: false);

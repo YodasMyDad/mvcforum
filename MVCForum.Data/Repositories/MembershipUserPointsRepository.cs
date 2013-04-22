@@ -56,7 +56,7 @@ namespace MVCForum.Data.Repositories
         public Dictionary<MembershipUser, int> GetCurrentWeeksPoints(int? amountToTake)
         {
             amountToTake = amountToTake ?? int.MaxValue;
-            var date = DateTime.Now;
+            var date = DateTime.UtcNow;
             var start = date.Date.AddDays(-(int) date.DayOfWeek);
             var end = start.AddDays(7);
 
@@ -75,7 +75,7 @@ namespace MVCForum.Data.Repositories
         public Dictionary<MembershipUser, int> GetThisYearsPoints(int? amountToTake)
         {
             amountToTake = amountToTake ?? int.MaxValue;
-            var thisYear = DateTime.Now.Year;
+            var thisYear = DateTime.UtcNow.Year;
 
             var results = _context.MembershipUserPoints
                 .Include(x => x.User)

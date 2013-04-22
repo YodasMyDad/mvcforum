@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DotNetOpenAuth.OAuth.Common</name>
+    </assembly>
+    <members>
+        <member name="T:DotNetOpenAuth.OAuth.ChannelElements.OAuthIdentity">
+            <summary>
+            Represents an OAuth consumer that is impersonating a known user on the system.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth.ChannelElements.OAuthIdentity.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth.ChannelElements.OAuthIdentity"/> class.
+            </summary>
+            <param name="username">The username.</param>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth.ChannelElements.OAuthIdentity.AuthenticationType">
+            <summary>
+            Gets the type of authentication used.
+            </summary>
+            <value>The constant "OAuth"</value>
+            <returns>
+            The type of authentication used to identify the user.
+            </returns>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth.ChannelElements.OAuthIdentity.IsAuthenticated">
+            <summary>
+            Gets a value indicating whether the user has been authenticated.
+            </summary>
+            <value>The value <c>true</c></value>
+            <returns>true if the user was authenticated; otherwise, false.
+            </returns>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth.ChannelElements.OAuthIdentity.Name">
+            <summary>
+            Gets the name of the user who authorized the OAuth token the consumer is using for authorization.
+            </summary>
+            <returns>
+            The name of the user on whose behalf the code is running.
+            </returns>
+        </member>
+        <member name="T:DotNetOpenAuth.OAuth.ChannelElements.OAuthPrincipal">
+            <summary>
+            Represents an OAuth consumer that is impersonating a known user on the system.
+            </summary>
+        </member>
+        <member name="F:DotNetOpenAuth.OAuth.ChannelElements.OAuthPrincipal.roles">
+            <summary>
+            The roles this user belongs to.
+            </summary>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth.ChannelElements.OAuthPrincipal.#ctor(System.String,System.String[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth.ChannelElements.OAuthPrincipal"/> class.
+            </summary>
+            <param name="userName">The username.</param>
+            <param name="roles">The roles this user belongs to.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth.ChannelElements.OAuthPrincipal.#ctor(DotNetOpenAuth.OAuth.ChannelElements.OAuthIdentity,System.String[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:DotNetOpenAuth.OAuth.ChannelElements.OAuthPrincipal"/> class.
+            </summary>
+            <param name="identity">The identity.</param>
+            <param name="roles">The roles this user belongs to.</param>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth.ChannelElements.OAuthPrincipal.IsInRole(System.String)">
+            <summary>
+            Determines whether the current principal belongs to the specified role.
+            </summary>
+            <param name="role">The name of the role for which to check membership.</param>
+            <returns>
+            true if the current principal is a member of the specified role; otherwise, false.
+            </returns>
+            <remarks>
+            The role membership check uses <see cref="P:System.StringComparer.OrdinalIgnoreCase"/>.
+            </remarks>
+        </member>
+        <member name="M:DotNetOpenAuth.OAuth.ChannelElements.OAuthPrincipal.CreateGenericPrincipal">
+            <summary>
+            Creates a new instance of GenericPrincipal based on this OAuthPrincipal.
+            </summary>
+            <returns>A new instance of GenericPrincipal with a GenericIdentity, having the same username and roles as this OAuthPrincipal and OAuthIdentity</returns>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth.ChannelElements.OAuthPrincipal.AccessToken">
+            <summary>
+            Gets or sets the access token used to create this principal.
+            </summary>
+            <value>A non-empty string.</value>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth.ChannelElements.OAuthPrincipal.Roles">
+            <summary>
+            Gets the roles that this principal has as a ReadOnlyCollection.
+            </summary>
+        </member>
+        <member name="P:DotNetOpenAuth.OAuth.ChannelElements.OAuthPrincipal.Identity">
+            <summary>
+            Gets the identity of the current principal.
+            </summary>
+            <value></value>
+            <returns>
+            The <see cref="T:System.Security.Principal.IIdentity"/> object associated with the current principal.
+            </returns>
+        </member>
+    </members>
+</doc>
