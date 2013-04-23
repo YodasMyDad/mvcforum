@@ -176,7 +176,7 @@ namespace MVCForum.Website.Akismet.NET
 
             // retrieve the response
             var response = (HttpWebResponse)request.GetResponse();
-            using (var reader = new StreamReader(response.GetResponseStream(), true))
+            using (var reader = new StreamReader(response.GetResponseStream(), System.Text.Encoding.UTF8, true))
             {
                 // retrieve response
                 String result = reader.ReadToEnd();

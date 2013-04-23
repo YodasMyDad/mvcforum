@@ -420,7 +420,7 @@ namespace MVCForum.Website.Controllers
                         {
                             // Unpack the data
                             var allLines = new List<string>();
-                            using (var streamReader = new StreamReader(file, true))
+                            using (var streamReader = new StreamReader(file, System.Text.Encoding.UTF8, true))
                             {
                                 while (streamReader.Peek() >= 0)
                                 {

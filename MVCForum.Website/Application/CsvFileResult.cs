@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -15,11 +16,9 @@ namespace MVCForum.Website.Application
         {
             if (!string.IsNullOrEmpty(Body))
             {
-                // Write result to output-stream
-                //var byteArray = Encoding.Default.GetBytes(Body);
-                var byteArray = Encoding.Unicode.GetBytes(Body);
-                response.Charset = "windows-1254";
-                response.OutputStream.Write(byteArray, 0, byteArray.GetLength(0));
+                var data = Encoding.UTF8.GetBytes(Body);
+                var result = Encoding.UTF8.GetPreamble().Concat(data).ToArray();
+                response.OutputStream.Write(result, 0, result.GetLength(0));
             }
         }
 
