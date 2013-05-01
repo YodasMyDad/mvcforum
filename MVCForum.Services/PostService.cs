@@ -194,6 +194,11 @@ namespace MVCForum.Services
                     topic.LastPost = topic.Posts.Where(x => x.Id != post.Id).OrderByDescending(x => x.DateCreated).FirstOrDefault();
                 }
 
+                if (topic.Solved && post.IsSolution)
+                {
+                    topic.Solved = false;
+                }
+
                 topic.Posts.Remove(post);
 
                 deleteTopic = post.IsTopicStarter;

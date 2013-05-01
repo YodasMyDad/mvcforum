@@ -349,6 +349,7 @@ namespace MVCForum.Website.Controllers
 
                 if (post.User.Id == LoggedOnUser.Id || permissions[AppConstants.PermissionDeletePosts].IsTicked)
                 {
+
                     var deleteTopic = _postService.Delete(post);
 
                     unitOfWork.SaveChanges();
