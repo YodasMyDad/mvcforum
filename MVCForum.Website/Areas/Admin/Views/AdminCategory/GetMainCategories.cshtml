@@ -13,10 +13,12 @@
         </thead>
         <tbody>
             @foreach (var cat in Model.Categories)
-            {           
+            {
+                var categoryTitleText = cat.ParentCategory == null ? "Main Category" : string.Concat("Sub Category of ", cat.ParentCategory.Name);
+                var categoryCssClass = cat.ParentCategory == null ? "maincategory" : "subcategory";     
                 <tr>
                     <td class="editcategory mainadmincategory">
-                        <a href="@Url.Action("EditCategory", new { id = cat.Id })" class="catfancybox">@Html.Raw(cat.Name)</a>
+                        <a href="@Url.Action("EditCategory", new { id = cat.Id })" class="catfancybox @categoryCssClass" title="This is a @categoryTitleText">@Html.Raw(cat.Name)</a>
                     </td>
                     <td>
                         <a href="@Url.Action("DeleteCategoryConfirmation", new { id = cat.Id })" title="Delete @Html.Raw(cat.Name)" class="btn btn-small"><i class="icon-remove"></i></a>
