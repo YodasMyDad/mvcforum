@@ -30,7 +30,7 @@
             var app_base = '@Url.Content("~/")';
         </script>
         @(Bundle.JavaScript()
-              .Add("~/Scripts/jquery-1.9.1.min.js")
+              .Add("~/Scripts/jquery-2.0.1.min.js")
               .Add("~/Scripts/jquery.unobtrusive-ajax.js")
               .Add("~/Scripts/bootstrap.min.js")
               .Add("~/Scripts/jquery.placeholder.min.js")
@@ -110,8 +110,7 @@
                     <!-- ########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ###########################
                         If you would like to remove the powered by notice, then please vist http://www.mvcforum.com/license -->
                     <p>
-                        &copy; @DateTime.UtcNow.Year - @Html.LanguageString("Layout.PoweredBy") <a href="http://www.mvcforum.com">MVC
-                                                                                                    Forum</a></p>
+                        &copy; @DateTime.UtcNow.Year - @Html.LanguageString("Layout.PoweredBy") <a href="http://www.mvcforum.com">MVCForum.com</a></p>
                     <!--########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ########################### -->  
                 </div>
             </div>

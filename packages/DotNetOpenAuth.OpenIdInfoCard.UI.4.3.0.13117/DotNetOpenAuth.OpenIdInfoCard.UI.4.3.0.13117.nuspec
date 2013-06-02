@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>DotNetOpenAuth.OpenIdInfoCard.UI</id>
+    <version>4.3.0.13117</version>
+    <title>DotNetOpenAuth OpenID InfoCard Relying Party ASP.NET control</title>
+    <authors>Andrew Arnott</authors>
+    <owners>Andrew Arnott</owners>
+    <licenseUrl>http://www.opensource.org/licenses/ms-pl.html</licenseUrl>
+    <projectUrl>http://www.dotnetopenauth.net/</projectUrl>
+    <iconUrl>https://github.com/AArnott/dotnetopenid/raw/v3.4/doc/logo/dnoa-logo_32x32.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Adds an InfoCard button to an OpenID relying party's login button panel.
+			InfoCards enhance user security while mitigating phishing attacks by removing the
+			need for a password credential or 3rd party identity issuer entirely.</description>
+    <summary>Allow your web site's visitors to log in using InfoCards.</summary>
+    <dependencies>
+      <dependency id="DotNetOpenAuth.OpenId.RelyingParty.UI" version="[4.3.0.13117]" />
+      <dependency id="DotNetOpenAuth.InfoCard.UI" version="[4.3.0.13117]" />
+    </dependencies>
+  </metadata>
+</package>

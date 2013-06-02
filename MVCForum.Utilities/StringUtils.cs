@@ -16,60 +16,60 @@ namespace MVCForum.Utilities
     {
 
         #region Extension Methods
-            /// <summary>
-            /// Checks whether the string is Null Or Empty
-            /// </summary>
-            /// <param name="theInput"></param>
-            /// <returns></returns>
-            public static bool IsNullEmpty(this string theInput)
-            {
-                return string.IsNullOrEmpty(theInput);
-            }
-            
-            /// <summary>
-            /// Converts the string to Int32
-            /// </summary>
-            /// <param name="theInput"></param>
-            /// <returns></returns>
-            public static int ToInt32(this string theInput)
-            {
-                return !string.IsNullOrEmpty(theInput) ? Convert.ToInt32(theInput) : 0;
-            }
-            
-            /// <summary>
-            /// Removes all line breaks from a string
-            /// </summary>
-            /// <param name="lines"></param>
-            /// <returns></returns>
-            public static string RemoveLineBreaks(this string lines)
-            {
-                return lines.Replace("\r\n", "")
-                            .Replace("\r", "")
-                            .Replace("\n", "");
-            }
-            
-            /// <summary>
-            /// Removes all line breaks from a string and replaces them with specified replacement
-            /// </summary>
-            /// <param name="lines"></param>
-            /// <param name="replacement"></param>
-            /// <returns></returns>
-            public static string ReplaceLineBreaks(this string lines, string replacement)
-            {
-                return lines.Replace(Environment.NewLine, replacement);
-            }
-            
-            /// <summary>
-            /// Does a case insensitive contains
-            /// </summary>
-            /// <param name="source"></param>
-            /// <param name="value"></param>
-            /// <returns></returns>
-            public static bool ContainsCaseInsensitive(this string source, string value)
-            {
-                var results = source.IndexOf(value, StringComparison.CurrentCultureIgnoreCase);
-                return results != -1;
-            }
+        /// <summary>
+        /// Checks whether the string is Null Or Empty
+        /// </summary>
+        /// <param name="theInput"></param>
+        /// <returns></returns>
+        public static bool IsNullEmpty(this string theInput)
+        {
+            return string.IsNullOrEmpty(theInput);
+        }
+
+        /// <summary>
+        /// Converts the string to Int32
+        /// </summary>
+        /// <param name="theInput"></param>
+        /// <returns></returns>
+        public static int ToInt32(this string theInput)
+        {
+            return !string.IsNullOrEmpty(theInput) ? Convert.ToInt32(theInput) : 0;
+        }
+
+        /// <summary>
+        /// Removes all line breaks from a string
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <returns></returns>
+        public static string RemoveLineBreaks(this string lines)
+        {
+            return lines.Replace("\r\n", "")
+                        .Replace("\r", "")
+                        .Replace("\n", "");
+        }
+
+        /// <summary>
+        /// Removes all line breaks from a string and replaces them with specified replacement
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <param name="replacement"></param>
+        /// <returns></returns>
+        public static string ReplaceLineBreaks(this string lines, string replacement)
+        {
+            return lines.Replace(Environment.NewLine, replacement);
+        }
+
+        /// <summary>
+        /// Does a case insensitive contains
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool ContainsCaseInsensitive(this string source, string value)
+        {
+            var results = source.IndexOf(value, StringComparison.CurrentCultureIgnoreCase);
+            return results != -1;
+        }
         #endregion
 
         #region Social Helpers
@@ -419,7 +419,7 @@ namespace MVCForum.Utilities
                     "cant",
                     "us"
                 };
-        } 
+        }
 
         #endregion
 
@@ -583,7 +583,7 @@ namespace MVCForum.Utilities
                 input = GetSafeHtml(input);
             }
             return input;
-        } 
+        }
         #endregion
 
         #region Html Element Helpers
@@ -613,7 +613,7 @@ namespace MVCForum.Utilities
         public static string ReturnImageHtml(string url, string alt)
         {
             return string.Format("<img src=\"{0}\" alt=\"{1}\" />", url, alt);
-        } 
+        }
         #endregion
 
         /// <summary>
@@ -632,45 +632,41 @@ namespace MVCForum.Utilities
         public static string RemoveAccents(string input)
         {
             // Replace accented characters for the closest ones:
-            var from = "ÂÃÄÀÁÅÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïðñòóôõöøùúûüýÿ".ToCharArray();
-            var to = "AAAAAACEEEEIIIIDNOOOOOOUUUUYaaaaaaceeeeiiiidnoooooouuuuyy".ToCharArray();
-            for (var i = 0; i < from.Length; i++)
+            //var from = "ÂÃÄÀÁÅÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïðñòóôõöøùúûüýÿ".ToCharArray();
+            //var to = "AAAAAACEEEEIIIIDNOOOOOOUUUUYaaaaaaceeeeiiiidnoooooouuuuyy".ToCharArray();
+            //for (var i = 0; i < from.Length; i++)
+            //{
+            //    input = input.Replace(from[i], to[i]);
+            //}
+
+            //// Thorn http://en.wikipedia.org/wiki/%C3%9E
+            //input = input.Replace("Þ", "TH");
+            //input = input.Replace("þ", "th");
+
+            //// Eszett http://en.wikipedia.org/wiki/%C3%9F
+            //input = input.Replace("ß", "ss");
+
+            //// AE http://en.wikipedia.org/wiki/%C3%86
+            //input = input.Replace("Æ", "AE");
+            //input = input.Replace("æ", "ae");
+
+            //return input;
+
+
+            var stFormD = input.Normalize(NormalizationForm.FormD);
+            var sb = new StringBuilder();
+
+            foreach (var t in stFormD)
             {
-                input = input.Replace(from[i], to[i]);
+                var uc = CharUnicodeInfo.GetUnicodeCategory(t);
+                if (uc != UnicodeCategory.NonSpacingMark)
+                {
+                    sb.Append(t);
+                }
             }
 
-            // Thorn http://en.wikipedia.org/wiki/%C3%9E
-            input = input.Replace("Þ", "TH");
-            input = input.Replace("þ", "th");
+            return (sb.ToString().Normalize(NormalizationForm.FormC));
 
-            // Eszett http://en.wikipedia.org/wiki/%C3%9F
-            input = input.Replace("ß", "ss");
-
-            // AE http://en.wikipedia.org/wiki/%C3%86
-            input = input.Replace("Æ", "AE");
-            input = input.Replace("æ", "ae");
-
-            return input;
-
-            // ------------ SECOND SOLUTION ---------------
-            ////!\\ Warning 'œ' will be replaced with a 'o' not an 'oe'
-            //var normalizedString = input.Normalize(NormalizationForm.FormD);
-            //var stringBuilder = new StringBuilder();
-            //for (var i = 0; i < normalizedString.Length; i++)
-            //{
-            //    var c = normalizedString[i];
-            //    if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
-            //        stringBuilder.Append(c);
-            //}
-            //return stringBuilder.ToString();
-
-            //---------- ORIGINAL SOLUTION------------
-            //var normalized = input.Normalize(NormalizationForm.FormKD);
-            //var removal = Encoding.GetEncoding(Encoding.ASCII.CodePage,
-            //                                        new EncoderReplacementFallback(""),
-            //                                        new DecoderReplacementFallback(""));
-            //byte[] bytes = removal.GetBytes(normalized);
-            //return Encoding.ASCII.GetString(bytes);
         }
 
         /// <summary>
@@ -791,7 +787,7 @@ namespace MVCForum.Utilities
             str = exp.Replace(str, "<span style=\"font-size:$1em;\">$2</span>");
 
             return str;
-        } 
+        }
         #endregion
 
     }

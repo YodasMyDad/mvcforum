@@ -8,6 +8,7 @@ using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
+using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
@@ -195,7 +196,7 @@ namespace MVCForum.Website.Controllers
                 if (post.User.Id == LoggedOnUser.Id || permissions[AppConstants.PermissionEditPosts].IsTicked)
                 {
                     // User has permission so update the post
-                    post.PostContent = _bannedWordService.SanitiseBannedWords(editPostViewModel.Content);
+                    post.PostContent = StringUtils.GetSafeHtml(_bannedWordService.SanitiseBannedWords(editPostViewModel.Content));
                     post.DateEdited = DateTime.UtcNow;
 
                     // if topic starter update the topic
@@ -210,7 +211,7 @@ namespace MVCForum.Website.Controllers
 
                         topic.IsLocked = editPostViewModel.IsLocked;
                         topic.IsSticky = editPostViewModel.IsSticky;
-                        topic.Name = _bannedWordService.SanitiseBannedWords(editPostViewModel.Name);
+                        topic.Name = StringUtils.GetSafeHtml(_bannedWordService.SanitiseBannedWords(editPostViewModel.Name));
 
                         // See if there is a poll
                         if (editPostViewModel.PollAnswers != null && editPostViewModel.PollAnswers.Count > 0)
