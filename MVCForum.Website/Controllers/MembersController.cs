@@ -260,6 +260,7 @@ namespace MVCForum.Website.Controllers
             }
             else
             {
+
                 if (authorization.AccessToken == null)
                 {
                     // User has cancelled so just redirect to home page
