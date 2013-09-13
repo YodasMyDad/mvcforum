@@ -176,22 +176,6 @@ namespace MVCForum.Tests.Service_Tests
         #region Import from CSV
 
         /// <summary>
-        /// Test - cannot import a language where that language exists already
-        /// </summary>
-        [Test]
-        public void ImportCsvLanguageAlreadyExists()
-        {
-            // Ensure that the language is found already
-            _localizationRepositorySub.GetLanguageByLanguageCulture(Arg.Any<string>()).Returns(new Language());
-
-            var testData = new List<string> { "Name,LanguageCulture", "French, fr-FR", string.Empty, };
-            var report = _localizationService.FromCsv("fr-FR", testData);
-
-            Assert.AreEqual(report.Errors.Count, 1);
-            Assert.AreEqual(report.Errors[0].ErrorWarningType, CsvErrorWarningType.AlreadyExists);
-        }
-
-        /// <summary>
         /// Badly formatted language and culture strings in CSV should throw an error
         /// </summary>
         [Test]
