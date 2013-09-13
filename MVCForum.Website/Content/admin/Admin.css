@@ -1,4 +1,8 @@
-﻿/* --- Set main body styles --- */
+﻿/*--- Bootstrap Overides ---*/
+.container-fluid { max-width: 1000px;margin-left: auto;margin-right: auto;}
+.navbar .brand { padding-top: 5px; padding-bottom:3px; }
+
+/* --- Set main body styles --- */
 body {font-family:Calibri, Arial, Helvetica, sans-serif;}
 
 /* ---- Lees Clearer ---- */
@@ -52,7 +56,7 @@ select {  }
 #logindisplay { padding: 0 0 10px 0;}
 
 /*--- Header ---*/
-.navbar .brand { padding: 4px 0 0 0; margin: 0 15px 0 0;}
+
 
 /*--- Validation Errors ---*/
 .input-validation-error {border-color: #B94A48 !Important; color: #B94A48 !Important;}
@@ -121,3 +125,60 @@ select {  }
 
 /*--- Label / Badge overide ---*/
 .label, .badge { font-size: 14px;}
+
+/*--- Admin options button ---*/
+.btn-show-admin-nav {padding: 10px 0; width: 100%;text-align: center;font-size: 16px;line-height: normal;height: auto;display: none;}
+
+
+/*============== MEDIA QUERIES OVERIDES ==============*/
+
+@media (max-width: 1105px) {
+
+}
+
+@media (max-width: 1045px) {
+
+}
+
+@media (max-width: 979px) {
+        body { padding:0 !Important;}
+}
+
+@media (max-width: 925px) {
+}
+
+@media screen and (max-width: 860px) {
+}
+
+@media (max-width: 767px) {
+
+    /*-- Stop gap produced by bootstrap*/
+    body { padding:0;}
+    .container-fluid { padding-left: 10px;padding-right: 10px;}
+    h1 { font-size: 28.5px;}
+
+    /*--- Nav Bar ---*/
+    .navbar-fixed-top, .navbar-fixed-bottom, .navbar-static-top { margin-left: 0;margin-right: 0;}
+    #logindisplay { text-align: center;font-size: 14px;}
+
+    /*-- Dashboard --*/
+    .dashboardrow  { padding: 0;}
+    .dashboardrow .span6 { padding-bottom: 10px;}
+
+    /*-- Admin Options --*/
+    .btn-show-admin-nav { display: block;}
+    .admin-options { display: none;}
+
+    /*--- Tabs ---*/
+    .tabs-below > .nav-tabs { border: none;}
+    .tabs-below > .nav-tabs > li { width: 49%;}
+    .tabs-below > .nav-tabs > .active > a { border-color: #ddd;}
+}
+
+@media (max-width: 600px) {
+
+}
+
+@media (max-width: 480px) {
+
+}

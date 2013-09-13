@@ -150,7 +150,7 @@
         <div class="postuploadholder span9">
             @using (Html.BeginForm("UploadPostFiles", "Upload", FormMethod.Post, new { enctype = "multipart/form-data" }))
             {                
-                <div class="row">
+                <div class="row-fluid">
                     <div class="offset1 span7">
                         <span style="display: none;" class="ajaxspinner" title="@Html.LanguageString("Post.PleaseWait")">@Html.LanguageString("Post.PleaseWait")</span>
                         <input type="submit" value="@Html.LanguageString("Post.Upload")" class="btn postuploadbutton" />

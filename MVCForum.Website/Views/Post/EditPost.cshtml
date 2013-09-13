@@ -39,7 +39,7 @@
         if (Model.IsTopicStarter)
         {
             
-        <div class="row paddedrow">
+        <div class="row-fluid paddedrow">
             <div class="span9 topicname">
                 <div class="editor-label">
                     @Html.LabelFor(model => model.Name)
@@ -51,7 +51,7 @@
             </div>
         </div>
         
-        <div class="row paddedrow relatedtopicsholder">
+        <div class="row-fluid paddedrow relatedtopicsholder">
             <div class="span9 relatedtopics">
                 <h5>@Html.LanguageString("Topic.AlreadyAnswered")</h5>
                 <div class="relatedtopicskey"></div>
@@ -60,7 +60,7 @@
         
             if (Html.Settings().EnablePolls == true && Model.PollAnswers != null && Model.PollAnswers.Any())
             {
-        <div class="row paddedrow pollanswerholder">
+        <div class="row-fluid paddedrow pollanswerholder">
             <div class="span7">
                 <ul class="pollanswerlist">
                     @foreach (var pollAnswer in Model.PollAnswers.OrderBy(x => x.Answer))
@@ -82,7 +82,7 @@
             }
         }
         
-        <div class="row">
+        <div class="row-fluid">
             <div class="span9 topiccontent">
                 <div class="editor-field editorholder">
                     @Html.EditorFor(model => model.Content)
@@ -91,7 +91,7 @@
             </div>
         </div>   
         
-        <div class="row">
+        <div class="row-fluid">
             <div class="span4 createtopicbuttonholder">
                 <div class="submit-holder">
                     <input type="submit" class="btn btn-large btn-success" value="@Html.LanguageString("Post.Edit")" />
@@ -118,7 +118,7 @@
 
             <h3>@Html.LanguageString("Topic.OptionsHeading")</h3>
 
-            <div class="row">
+            <div class="row-fluid">
                 <div class="span9 topicadmincheckboxes">
                     @if (Model.Permissions[AppConstants.PermissionCreateStickyTopics].IsTicked)
                     {

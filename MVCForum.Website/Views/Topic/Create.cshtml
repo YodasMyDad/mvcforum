@@ -36,7 +36,7 @@
         @Html.ValidationSummary(true)
         @Html.AntiForgeryToken()
         
-        <div class="row paddedrow">
+        <div class="row-fluid paddedrow">
             <div class="span5 topictitleholder">
                 <h2>@ViewBag.Title</h2>
             </div>
@@ -49,7 +49,7 @@
             }
         </div>    
     
-        <div class="row paddedrow">
+        <div class="row-fluid paddedrow">
             <div class="span9 topicname">
                 <div class="editor-label">
                     @Html.LabelFor(model => model.Name)
@@ -61,7 +61,7 @@
             </div>
         </div>
         
-        <div class="row paddedrow relatedtopicsholder">
+        <div class="row-fluid paddedrow relatedtopicsholder">
             <div class="span9 relatedtopics">
                 <h5>@Html.LanguageString("Topic.AlreadyAnswered")</h5>
                 <div class="relatedtopicskey"></div>
@@ -70,7 +70,7 @@
         
             if (Html.Settings().EnablePolls == true)
             {
-        <div class="row paddedrow pollanswerholder" style="display: none;">
+        <div class="row-fluid paddedrow pollanswerholder" style="display: none;">
             <div class="span7">
                 <ul class="pollanswerlist">
                 </ul>
@@ -82,7 +82,7 @@
         </div>
             }
 
-        <div class="row">
+        <div class="row-fluid">
             <div class="span9 topiccontent">
                 <div class="editor-field editorholder">
                     @Html.EditorFor(model => model.Content)
@@ -91,7 +91,7 @@
             </div>
         </div>      
 
-        <div class="row">
+        <div class="row-fluid">
             <div class="span4 createtopicbuttonholder">
                 <div class="submit-holder">
                     <input type="submit" class="btn btn-large btn-success" value="@Html.LanguageString("Topic.CreateDiscussion")" />
@@ -113,7 +113,7 @@
 
             <h3>@Html.LanguageString("Topic.OptionsHeading")</h3>
 
-            <div class="row">
+            <div class="row-fluid">
                 <div class="span9 topicreplynotify">
                     <div class="editor-field n3ocheckboxfield">
                         @Html.CheckBoxFor(x => x.SubscribeToTopic)

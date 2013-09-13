@@ -2,6 +2,7 @@
 @{
     var theme = Html.Settings().Theme;
     var themePath = string.Concat(AppConstants.ThemeRootFolder, theme);
+    var globalClass = Convert.ToBoolean(PageData[AppConstants.IsMobileDevice]) ? "mobile" : "desktop";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -17,6 +18,7 @@
         @(
             Bundle.Css()
                 .Add("~/Content/Styles/bootstrap.css")
+                .Add("~/Content/Styles/bootstrap-responsive.css")
                 .Add("~/Content/Styles/bootstrap-prettify.css")
                 .Add(themePath + "/Content/Styles/theme.css")
                 .MvcRender("~/content/cache/combined_" + theme + "_#.css")
@@ -41,12 +43,10 @@
            )
         @RenderSection("Header", false)
     </head>
-        
-    
-
-    <body>
-    <div class="navbar">
-        <div class="navbar-inner clearfix">
+           
+    <body class="@globalClass">
+        <div class="navbar">
+            <div class="navbar-inner clearfix">
 
                 <a class="brand" href="@Url.Action("Index", "Home")"></a>
                 <div class="nav-collapse">
@@ -73,7 +73,7 @@
                             <li><a href="@Url.Action("Index", "Admin", new { area = "Admin" }, null)">@Html.LanguageString("Layout.Nav.Admin")</a></li>
                         }
                         <li><a href="http://www.mvcforum.com">Back To Main Website</a></li>
-                            @*
+                        @*
                             TODO: Need to create dropdown list to swap language
                             Lists out languages
                             @Html.Action("Index","Language")
@@ -81,45 +81,45 @@
                     </ul>
                 </div>
      
+            </div>
         </div>
-    </div>
-    <div class="container">
-        @Html.Partial("_GenericMessage")
-        @Html.Partial("_NoScript")
-        <div id="main" class="row mainbody">
+        <div class="container-fluid">
+            @Html.Partial("_GenericMessage")
+            @Html.Partial("_NoScript")
+            <div id="main" class="row-fluid mainbody">
 
-            <div class="span9">
-                @RenderBody()
-            </div>
-            <div class="span3 sidelayoutsection">
-                <div class="main-side-box">
-                    @if (User.Identity.IsAuthenticated)
-                    {                        
-                        @Html.Action("CreateTopicButton", "Topic")
-                        @Html.Action("SideAdminPanel", "Members")
-                    }
-                    @RenderSection("side", false)
+                <div class="span9">
+                    @RenderBody()
                 </div>
-            </div>
+                <div class="span3 sidelayoutsection">
+                    <div class="main-side-box">
+                        @if (User.Identity.IsAuthenticated)
+                        {                        
+                            @Html.Action("CreateTopicButton", "Topic")
+                            @Html.Action("SideAdminPanel", "Members")
+                        }
+                        @RenderSection("side", false)
+                    </div>
+                </div>
 
+            </div>
+            <hr>
+            @Html.Action("GetMainStats", "Stats")
+            @Html.Action("GetCurrentActiveMembers", "Members")
+            @RenderSection("Footer", false)
+            <hr>
+            <footer>
+                <div class="row-fluid">
+                    <div class="span12">
+                        <!-- ########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ###########################
+                            If you would like to remove the powered by notice, then please vist http://www.mvcforum.com/license -->
+
+                        <p> &copy; @DateTime.UtcNow.Year - @Html.LanguageString("Layout.PoweredBy") <a rel="nofollow" href="http://www.mvcforum.com">MVCForum.com</a></p>
+
+                        <!--########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ########################### -->  
+                    </div>
+                </div>
+            </footer>
         </div>
-        <hr>
-        @Html.Action("GetMainStats", "Stats")
-        @Html.Action("GetCurrentActiveMembers", "Members")
-        @RenderSection("Footer", false)
-        <hr>
-        <footer>
-            <div class="row">
-                <div class="span12">
-                    <!-- ########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ###########################
-                        If you would like to remove the powered by notice, then please vist http://www.mvcforum.com/license -->
-
-                    <p> &copy; @DateTime.UtcNow.Year - @Html.LanguageString("Layout.PoweredBy") <a rel="nofollow" href="http://www.mvcforum.com">MVCForum.com</a></p>
-
-                    <!--########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ########################### -->  
-                </div>
-            </div>
-        </footer>
-    </div>
-</body>
+    </body>
 </html>

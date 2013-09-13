@@ -13,6 +13,7 @@
     @(
         Bundle.Css()
             .Add("~/Content/Styles/bootstrap.css")
+            .Add("~/Content/styles/bootstrap-responsive.css")
             .Add("~/Content/admin/Admin.css")
             .Add("~/Scripts/fancybox/jquery.fancybox.css")                
             .MvcRender("~/content/cache/combinedadmin_#.css")
@@ -46,11 +47,11 @@
 
   <body>
 
-    <div class="container blankcontainer">
+    <div class="container-fluid blankcontainer">
 
         @Html.Partial("_GenericMessage")        
 
-        <div class="row">    
+        <div class="row-fluid">    
                  @RenderBody()
         </div>        
 

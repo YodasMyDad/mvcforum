@@ -9,13 +9,13 @@
     @Html.Action("PopularTags", "Tag")
     @Html.Action("CurrentWeekHighPointUsers", "Point")
 }
-<div class="row">
+<div class="row-fluid">
     <div class="span9">
         <h2>@ViewBag.Title</h2>
     </div>
 </div>
 
-<div class="row categoryindex">
+<div class="row-fluid categoryindex">
     
         @foreach (var cat in Model.Categories.AllPermissionSets.Keys)
         {
@@ -30,7 +30,7 @@
                 <div class="span9 categorydetails">
                     <h2><a href="@cat.NiceUrl">@Html.Raw(cat.Name)</a></h2>
                     <p>@Html.Raw(cat.Description)</p>
-                    <div class="row categorydetailsfooter">
+                    <div class="row-fluid categorydetailsfooter">
                         <div class="catrss">
                             @if(Html.Settings().EnableRSSFeeds)
                             {

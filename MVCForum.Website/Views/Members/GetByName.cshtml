@@ -49,7 +49,7 @@
 
     <h2>@Model.User.UserName</h2>
 
-    <div class="row">
+    <div class="row-fluid">
 
         <div class="span2 memberavatardetails">
             <p><img src="@StringUtils.GetGravatarImage(Model.User.Email, AppConstants.GravatarProfileSize)" alt="@Model.User.UserName"></p>
@@ -82,7 +82,7 @@
 
         <div class="span7 membermaindetails">
 
-            <div class="row">
+            <div class="row-fluid">
                 <div class="span3 memberbio">
 
                     <p>@Html.LanguageString("Members.Profile.Age") @Html.Raw(Model.User.Age > 0 ? Model.User.Age.ToString() : "")</p>
@@ -100,7 +100,7 @@
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row-fluid">
                 <div class="span7 badgeactivity">
                     <h3>@Html.LanguageString("Members.Profile.Badges")</h3>
                     <div class="memberactivity">
@@ -123,7 +123,7 @@
             @if (User.IsInRole(AppConstants.AdminRoleName) || User.IsInRole(AppConstants.ModeratorRoleName))
             { 
                 // Show the admin/mod notes on this user in case they are a spammer etc...
-                <div class="row adminpublicomments">
+                <div class="row-fluid adminpublicomments">
                     <div class="span7">
                         @Html.Raw(Model.User.Comment)
                     </div>

@@ -7,7 +7,7 @@
 <h2>@ViewBag.Title</h2>
 <p>This allows you to ban emails and domains used by members trying to register. Either add in a full email, or you can ban an entire domain by using a wildcard match.</p>
 <p> i.e. To ban all emails from yahoo.com just add <strong>*@@yahoo.com</strong></p>
-<div class="row">
+<div class="row-fluid">
     <div class="span5">
         @using (Html.BeginForm("Index", "BannedEmail", FormMethod.Get, new { @class = "form-horizontal" }))
         {    

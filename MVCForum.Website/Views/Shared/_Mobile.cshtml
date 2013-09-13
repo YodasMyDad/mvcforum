@@ -80,16 +80,16 @@
         <section id="main">
             @if(User.Identity.IsAuthenticated)
             {
-                <div class="row mobilecreatetopic">
+                <div class="row-fluid mobilecreatetopic">
                     <p><a href="@Url.Action("Create", "Topic")" class="btn btn-large btn-success new-discussion-button">@Html.LanguageString("Layout.CreateButton")</a></p>
                 </div>
             }
-            <div class="row mainbody">
+            <div class="row-fluid mainbody">
                 <div class="span12">
                     @RenderBody()
                 </div>
             </div>
-            <div class="row bottomsidenav">
+            <div class="row-fluid bottomsidenav">
                 <div class="span12 sidelayoutsection">
                     <div class="main-side-box">
                         @if (User.Identity.IsAuthenticated)

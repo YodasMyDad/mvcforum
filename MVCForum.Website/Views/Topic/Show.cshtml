@@ -47,7 +47,7 @@
     @Html.Action("CurrentWeekHighPointUsers", "Point")
 }
 
-<div class="row topicheading">
+<div class="row-fluid topicheading">
 
     <div class="span7 topicheaderholder">
         <h1 class="topicheader">@Html.Raw(Model.Topic.Name)</h1>
@@ -83,7 +83,7 @@
         var topicStarterPostModel = new ViewPostViewModel { Permissions = Model.Permissions, Post = Model.TopicStarterPost, User = Model.User, ParentTopic = Model.Topic };
         Html.RenderPartial("_Post", topicStarterPostModel);
     }
-    <div class="row topicstarterpostbeginpostsheading">
+    <div class="row-fluid topicstarterpostbeginpostsheading">
         <div class="span6 topicstarterpostcomments">
             @(totalCount - 1) @Html.LanguageString("Topic.CommentsDetails")
         </div>

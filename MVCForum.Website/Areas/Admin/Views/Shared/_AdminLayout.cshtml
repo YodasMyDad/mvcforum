@@ -11,6 +11,7 @@
     @(
  Bundle.Css()
             .Add("~/Content/styles/bootstrap.css")
+            .Add("~/Content/styles/bootstrap-responsive.css")
             .Add("~/Content/admin/Admin.css")
             .Add("~/Scripts/fancybox/jquery.fancybox.css")
             .MvcRender("~/content/cache/combinedadmin_#.css")
@@ -44,15 +45,20 @@
 
 <body>
 
-    <div class="navbar navbar-fixed-top">
+    <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container">
+                <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
                 <a class="brand" href="@Url.Action("Index", "Admin", new { area = "Admin" }, null)">
                     <img src="@Url.Content("~/Content/admin/Images/admin-n3o-logo.png")" alt="Admin Logo" />
                 </a>
-                <div class="nav-collapse">
+                <div class="nav-collapse collapse">
                     <ul class="nav">
-                        <li><a href="@Url.Content("~/")">Main Site</a></li>
+                        <li><a href="/">Main Site</a></li>
                         <li>@Html.AdminActionLink("Admin Home", "Index", "Admin")</li>
                     </ul>
                 </div>
@@ -60,100 +66,104 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="container-fluid">
 
-        @Html.Partial("_GenericMessage")       
+        @Html.Partial("_GenericMessage")
 
-        <div class="row">
-            @if (User.Identity.IsAuthenticated)
-            {
-                <div class="span2">
-                    <div id="logindisplay">
-                        @Html.Partial("_LogOnPartial")
-                    </div>
-                    <div class="well well-small sidebar-nav">
-                        <ul class="nav nav-list">
-                            <li class="nav-header">Settings</li>
-                            <li>
-                                <a href="@Url.Action("Index", "Settings", new { area = "Admin" }, null)">
-                                    <i class='icon-cog'></i>Configuration
-                                </a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Index", "AdminCategory", new { area = "Admin" }, null)">
-                                    <i class='icon-list-alt'></i>Categories
-                                </a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Index", "Permissions", new { area = "Admin" }, null)">
-                                    <i class='icon-lock'></i>Permissions
-                                </a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Index", "AdminLanguage", new { area = "Admin" })">
-                                    <i class='icon-volume-up'></i>Language
-                                </a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Index", "AdminTag", new { area = "Admin" })">
-                                    <i class='icon-tags'></i>Tags
-                                </a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Index", "AdminBadge", new { area = "Admin" })">
-                                    <i class='icon-bookmark'></i>Badges
-                                </a>
-                            </li>
-                            <li class="nav-header">Membership</li>
-                            <li>
-                                <a href="@Url.Action("Manage", "Account", new { area = "Admin" }, null)">
-                                    <i class='icon-user'></i>Manage Users
-                                </a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("ListAllRoles", "Account", new { area = "Admin" }, null)"><i class="icon-flag"></i>Manage Roles</a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("AddRole", "Account", new { area = "Admin" }, null)"><i class="icon-plus"></i>Add Roles</a>
-                            </li>
+        <div class="row-fluid">
 
-                            <li class="nav-header">Tools</li>
-                            <li>
-                                <a href="@Url.Action("Index", "ImportExport", new { area = "Admin" })">
-                                    <i class='icon-random'></i>Import / Export
-                                </a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Index", "Batch", new { area = "Admin" })">
-                                    <i class='icon-tasks'></i>Batch Tools
-                                </a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Index", "BannedEmail", new { area = "Admin" })">
-                                    <i class='icon-ban-circle'></i>Ban Emails
-                                </a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Index", "BannedWord", new { area = "Admin" })">
-                                    <i class='icon-text-width'></i>Ban Words
-                                </a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Index", "AdminLucene", new { area = "Admin" })">
-                                    <i class='icon-fast-forward'></i>Lucene
-                                </a>
-                            </li>
-                            <li>
-                                <a href="@Url.Action("Index", "Log", new { area = "Admin" })">
-                                    <i class='icon-exclamation-sign'></i>Log
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+            <div class="span3">
+                <div id="logindisplay">
+                    @Html.Partial("_LogOnPartial")
+                </div>
+
+                <a href="#" class="btn btn-show-admin-nav">Show Admin Options</a>
+                <div class="admin-options">
+                    <h6>Settings</h6>
+                    <ul class="nav nav-tabs nav-stacked">
+                        <li>
+                            <a href="@Url.Action("Index", "Settings", new { area = "Admin" }, null)">
+                                <i class='icon-cog'></i>Configuration
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "AdminCategory", new { area = "Admin" }, null)">
+                                <i class='icon-list-alt'></i>Categories
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Permissions", new { area = "Admin" }, null)">
+                                <i class='icon-lock'></i>Permissions
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "AdminLanguage", new { area = "Admin" })">
+                                <i class='icon-volume-up'></i>Language
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "AdminTag", new { area = "Admin" })">
+                                <i class='icon-tags'></i>Tags
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "AdminBadge", new { area = "Admin" })">
+                                <i class='icon-bookmark'></i>Badges
+                            </a>
+                        </li>
+                    </ul>
+                    <h6>Membership</h6>
+                    <ul class="nav nav-tabs nav-stacked">
+                        <li>
+                            <a href="@Url.Action("Manage", "Account", new { area = "Admin" }, null)">
+                                <i class='icon-user'></i>Manage Users
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("ListAllRoles", "Account", new { area = "Admin" }, null)"><i class="icon-flag"></i>Manage Roles</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("AddRole", "Account", new { area = "Admin" }, null)"><i class="icon-plus"></i>Add Roles</a>
+                        </li>
+
+                        <li class="nav-header">Tools</li>
+                        <li>
+                            <a href="@Url.Action("Index", "ImportExport", new { area = "Admin" })">
+                                <i class='icon-random'></i>Import / Export
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Batch", new { area = "Admin" })">
+                                <i class='icon-tasks'></i>Batch Tools
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "BannedEmail", new { area = "Admin" })">
+                                <i class='icon-ban-circle'></i>Ban Emails
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "BannedWord", new { area = "Admin" })">
+                                <i class='icon-text-width'></i>Ban Words
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "AdminLucene", new { area = "Admin" })">
+                                <i class='icon-fast-forward'></i>Lucene
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Log", new { area = "Admin" })">
+                                <i class='icon-exclamation-sign'></i>Log
+                            </a>
+                        </li>
+                    </ul>
                     @Html.Partial("_GetCurrentVersion")
                 </div>
-            }
-            <div class="span10 mainadminbody">
+
+            </div>
+
+            <div class="span9 mainadminbody">
                 @RenderBody()
             </div>
         </div>
