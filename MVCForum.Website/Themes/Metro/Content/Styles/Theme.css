@@ -211,7 +211,7 @@ input[type="radio"].pollanswerselect { margin: 3px 0 0 15px;float: left;}
 #topicheading {margin:0 0 10px 0;}
 p.lastedited { font-size:11px; font-style:italic; color:#595959;}
 
-.userpostadmin { padding: 0 5px;} 
+.userpostadmin {} 
 
 .solutionholder {display: block;text-decoration: none; width: 40px;height: 31px;margin: 10px auto 0 auto; background-image: url('../Images/solve-tick.png');background-repeat: no-repeat;background-position: left; cursor: pointer;display: block;font-size: 0; display:block; line-height: 0;text-indent: -9999em;clear: both;} 
 .solutionholder:hover {background-position: right; }
@@ -452,11 +452,11 @@ ul.tagCloud li span.tagCount {float: left; padding: 0 2px; width: auto;display: 
 .categoryindex .categorydetails h2 { padding: 0 0 0 0;margin: 0 0 0 0;}
 .categoryindex .categorydetails p { padding: 0 0 8px 0;margin: 0 0 0 0;font-size: 15px;}
 .categoryindex .categorydetailsfooter { font-size: 12px;padding-top: 5px;padding-bottom: 0;}
-.categoryindex .categorydetailsfooter .catrss { float: left;width: 6%;}
-.categoryindex .categorydetailsfooter .catrss .rsssubscribe { float: none;margin: 0 0 0 20px;}
-.categoryindex .categorydetailsfooter .catdiscussions { float: left;width: 14%;text-align: center;}
-.categoryindex .categorydetailsfooter .catcomments {float: left;width: 14%;text-align: center;}
-.categoryindex .categorydetailsfooter .catmostrecent {float: left;width: 66%;text-align: right;}
+.categoryindex .categorydetailsfooter .catrss { text-align: left;}
+.categoryindex .categorydetailsfooter .catrss .rsssubscribe {margin-bottom:20px;float: none;margin: 0;}
+.categoryindex .categorydetailsfooter .catdiscussions {text-align: center;}
+.categoryindex .categorydetailsfooter .catcomments {text-align: center;}
+.categoryindex .categorydetailsfooter .catmostrecent {text-align: right;}
 
 /*--- Pager ---*/
 .pagination ul li a { color: #626262;}

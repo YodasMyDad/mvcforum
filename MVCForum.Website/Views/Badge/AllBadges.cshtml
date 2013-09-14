@@ -1,5 +1,4 @@
 ﻿@model MVCForum.Website.ViewModels.AllBadgesViewModel
-
 @{
     ViewBag.Title = Html.LanguageString("Badges.PageTitle");
 }
@@ -7,17 +6,17 @@
 <h2>@ViewBag.Title</h2>
 
 <div class="badgeholder">
-        @foreach (var badge in Model.AllBadges)
-        {
-            <div class="publicbadgeline row">
-                <div class="publicbadge span1">
-                    <img src="@Url.Content(AppHelpers.ReturnBadgeUrl(badge.Image))" alt="@badge.Name" />
-                </div>
-                <div class="publicbadgedetails span8">
-                    <p class="publicbadgename">@Html.Raw(badge.DisplayName)</p>
-                    <p class="publicbadgenamedesc">@badge.Description</p>
-                </div>
+    @foreach (var badge in Model.AllBadges)
+    {
+        <div class="row-fluid publicbadgeline">
+            <div class="publicbadge span2">
+                <img src="@Url.Content(AppHelpers.ReturnBadgeUrl(badge.Image))" alt="@badge.Name" />
             </div>
-            <hr/>
-        }
+            <div class="publicbadgedetails span10">
+                <p class="publicbadgename">@Html.Raw(badge.DisplayName)</p>
+                <p class="publicbadgenamedesc">@badge.Description</p>
+            </div>
+        </div>
+        <hr />
+    }
 </div>

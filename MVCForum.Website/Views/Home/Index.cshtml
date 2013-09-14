@@ -19,10 +19,10 @@
 
 <div class="row-fluid latesttopicsheader">
     
-    <div class="span6 latesttopicheading">
+    <div class="span8 latesttopicheading">
       <h2>@Html.LanguageString("Home.LatestDiscussions")</h2>  
     </div>
-    <div class="span3 latesttopicrss">
+    <div class="span4 latesttopicrss">
         @if (Html.Settings().EnableRSSFeeds)
         {
             <a href="@Url.Action("LatestRss", "Home")" class="rsssubscribe" title="@Html.LanguageString("Home.Rss")">@Html.LanguageString("Home.Rss")</a>   

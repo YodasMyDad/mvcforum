@@ -1,4 +1,9 @@
 ﻿@using MVCForum.Website.Application
+@{
+    //var theme = Html.Settings().Theme;
+    //var themePath = string.Concat(AppConstants.ThemeRootFolder, theme);
+    var globalClass = Context.IsMobileDevice() ? "mobile" : "desktop";
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,7 +52,7 @@
     @RenderSection("AdminHeader", false)
 </head>
 
-<body>
+<body class="@globalClass">
 
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">

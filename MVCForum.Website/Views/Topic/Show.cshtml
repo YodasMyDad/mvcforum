@@ -49,10 +49,10 @@
 
 <div class="row-fluid topicheading">
 
-    <div class="span7 topicheaderholder">
+    <div class="span9 topicheaderholder">
         <h1 class="topicheader">@Html.Raw(Model.Topic.Name)</h1>
     </div>
-    <div class="span2 topicsubscription">
+    <div class="span3 topicsubscription">
         @if (Model.User != null && Html.Settings().EnableEmailSubscriptions)
         {
             <a @Html.Raw(subScribe) title="Subscribe Via Email" href="#" class="emailsubscription" rel="@Model.Topic.Id">
@@ -84,7 +84,7 @@
         Html.RenderPartial("_Post", topicStarterPostModel);
     }
     <div class="row-fluid topicstarterpostbeginpostsheading">
-        <div class="span6 topicstarterpostcomments">
+        <div class="span9 topicstarterpostcomments">
             @(totalCount - 1) @Html.LanguageString("Topic.CommentsDetails")
         </div>
         <div class="span3 topicpostorderfilter">

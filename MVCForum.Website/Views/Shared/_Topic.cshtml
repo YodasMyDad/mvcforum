@@ -22,7 +22,7 @@
     <div class="row-fluid">
         <div class="topicrow topicsticky-@topic.IsSticky topiclocked-@topic.IsLocked">
 
-            <div class="span2 topicstats">
+            <div class="span3 topicstats">
             
                     @if (Html.Settings().EnablePoints)
                     {
@@ -38,7 +38,7 @@
             </div>
 
 
-            <div class="span6 topicrowdetails">
+            <div class="span7 topicrowdetails">
                 <h3><a title="@postToolTip" href="@Html.Raw(topic.NiceUrl)">
                         @if (topic.IsSticky)
                         {
@@ -69,7 +69,7 @@
                 </div>
             </div>
 
-            <div class="span1 topicrecent">
+            <div class="span2 topicrecent">
                 <p class="topicrecentavatar">
                     <a href="@topic.LastPost.User.NiceUrl">
                         <img src="@StringUtils.GetGravatarImage(topic.LastPost.User.Email, AppConstants.GravatarTopicSize)" alt="@Html.LanguageString("Topic.LatestBy") @topic.LastPost.User.UserName" title="@Html.LanguageString("Topic.LatestBy") @topic.LastPost.User.UserName"></a>

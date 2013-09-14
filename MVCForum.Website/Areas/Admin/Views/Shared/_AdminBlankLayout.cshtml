@@ -1,6 +1,11 @@
 ﻿@using MVCForum.Website.Application
 @using SquishIt.Framework
 @using SquishIt.Mvc
+@{
+    //var theme = Html.Settings().Theme;
+    //var themePath = string.Concat(AppConstants.ThemeRootFolder, theme);
+    var globalClass = Context.IsMobileDevice() ? "mobile" : "desktop";
+}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -45,7 +50,7 @@
     @RenderSection("AdminHeader", false)
   </head>
 
-  <body>
+<body class="@globalClass">
 
     <div class="container-fluid blankcontainer">
 

@@ -1465,7 +1465,6 @@
     <Content Include="Views\Shared\_Install.cshtml" />
     <Content Include="Views\Install\CreateDb.cshtml" />
     <Content Include="Views\Install\Complete.cshtml" />
-    <Content Include="Views\Shared\_Mobile.cshtml" />
     <Content Include="Views\Search\Testing.cshtml" />
     <Content Include="Views\Shared\_Poll.cshtml" />
     <Content Include="Views\Shared\_NoScript.cshtml" />

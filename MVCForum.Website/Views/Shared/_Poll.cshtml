@@ -25,7 +25,7 @@
             }                                   
                 
             <div class="row-fluid">
-                <div class="pollanswerrow span9">
+                <div class="pollanswerrow span12">
                     <div class="pollanswerrowholder clearfix">
                         @if (Model.UserAllowedToVote && displayVote)
                         {
@@ -52,7 +52,7 @@
 
         @if (Model.UserAllowedToVote && displayVote)
         {
-            <div class="pollvotebuttonholder span9" style="display: none;">
+            <div class="pollvotebuttonholder span12" style="display: none;">
                 <a href="#" class="pollvotebutton btn">@Html.LanguageString("Poll.Button.Vote")</a>
                 <input type="hidden" class="selectedpollanswer" value="" />
                 @Html.HiddenFor(x => x.Poll.Id)
