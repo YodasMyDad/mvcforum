@@ -395,7 +395,9 @@ namespace MVCForum.Website.Controllers
                                 GoogleAccessToken = oid,
                                 IsExternalAccount = true,
                             };
-                            user.UserName = _bannedWordService.SanitiseBannedWords(user.Email);
+                            user.UserName = _bannedWordService.SanitiseBannedWords(string.Format("{0} {1}", 
+                                            fetch.GetAttributeValue(AppConstants.LoginGoogleFirstName),
+                                            fetch.GetAttributeValue(AppConstants.LoginGoogleLastName)).Trim());
 
                             doCommit = ProcessSocialLogonUser(user, doCommit);
 
