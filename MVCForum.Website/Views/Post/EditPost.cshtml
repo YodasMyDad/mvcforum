@@ -40,7 +40,7 @@
         {
             
         <div class="row-fluid paddedrow">
-            <div class="span9 topicname">
+            <div class="span12 topicname">
                 <div class="editor-label">
                     @Html.LabelFor(model => model.Name)
                 </div>
@@ -52,7 +52,7 @@
         </div>
         
         <div class="row-fluid paddedrow relatedtopicsholder">
-            <div class="span9 relatedtopics">
+            <div class="span12 relatedtopics">
                 <h5>@Html.LanguageString("Topic.AlreadyAnswered")</h5>
                 <div class="relatedtopicskey"></div>
             </div>
@@ -61,7 +61,7 @@
             if (Html.Settings().EnablePolls == true && Model.PollAnswers != null && Model.PollAnswers.Any())
             {
         <div class="row-fluid paddedrow pollanswerholder">
-            <div class="span7">
+            <div class="span9">
                 <ul class="pollanswerlist">
                     @foreach (var pollAnswer in Model.PollAnswers.OrderBy(x => x.Answer))
                     {
@@ -75,7 +75,7 @@
                 </ul>
                 <input type="hidden" id="pollanswerplaceholder" value="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")"/>
             </div>
-            <div class="span2 polladdremovenewanswers">
+            <div class="span3 polladdremovenewanswers">
                 <a href="#" class="btn addanswer"><i class="icon-plus-sign"></i></a><a href="#" class="btn removeanswer"><i class="icon-remove-sign"></i></a>
             </div>
         </div>
@@ -83,7 +83,7 @@
         }
         
         <div class="row-fluid">
-            <div class="span9 topiccontent">
+            <div class="span12 topiccontent">
                 <div class="editor-field editorholder">
                     @Html.EditorFor(model => model.Content)
                     @Html.ValidationMessageFor(model => model.Content)
@@ -92,14 +92,14 @@
         </div>   
         
         <div class="row-fluid">
-            <div class="span4 createtopicbuttonholder">
+            <div class="span6 createtopicbuttonholder">
                 <div class="submit-holder">
                     <input type="submit" class="btn btn-large btn-success" value="@Html.LanguageString("Post.Edit")" />
                 </div>
             </div>
             @if (Model.IsTopicStarter)
             {
-                <div class="span4 topiccategory">
+                <div class="span6 topiccategory">
                     <div class="editor-label">
                         @Html.LabelFor(model => model.Category)
                     </div>
@@ -119,7 +119,7 @@
             <h3>@Html.LanguageString("Topic.OptionsHeading")</h3>
 
             <div class="row-fluid">
-                <div class="span9 topicadmincheckboxes">
+                <div class="span12 topicadmincheckboxes">
                     @if (Model.Permissions[AppConstants.PermissionCreateStickyTopics].IsTicked)
                     {
                         <div class="editor-field n3ocheckboxfield">
@@ -136,7 +136,9 @@
                         </div>
                     }
                 </div>
-                <div class="span9 topictagholder">
+            </div>
+            <div class="row-fluid">
+                <div class="span12 topictagholder">
                     <div class="editor-field">
                         @Html.TextAreaFor(model => model.Tags, new { @class = "tagstextarea tags", title = Html.LanguageString("Topic.TagThisTopic") })
                     </div>

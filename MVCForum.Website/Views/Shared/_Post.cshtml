@@ -13,31 +13,33 @@
 }
 <div class="post row-fluid solution-True post-@postId">
     <div class="postmemberdetails span2">
-        <div class="karmaholder">
+        <div class="karmaholder clearfix">
 
-            @if (Html.Settings().EnablePoints)
-            {
-                if (allowedToVote)
+            <div class="karmapointsholder">
+                @if (Html.Settings().EnablePoints)
                 {
-                <div class="postkarmathumbs-@postId">
-                    <a class="thumbuplink" rel="@postId">@Html.LanguageString("Post.VoteUp")</a>
-                </div>
-                }
+                    if (allowedToVote)
+                    {
+                    <div class="postkarmathumbs-@postId">
+                        <a class="thumbuplink" rel="@postId">@Html.LanguageString("Post.VoteUp")</a>
+                    </div>
+                    }
 
-                var solvedClass = Model.Post.IsSolution ? "postissolution" : "";
+                    var solvedClass = Model.Post.IsSolution ? "postissolution" : "";
                 
-                <div class="karmascore karmascore-@postId @solvedClass @showExtendedVotes">
-                    <span class="votenumber" id="@postId">
-                        @Model.Post.VoteCount.KiloFormat()
-                    </span>
-                </div>
-                if (allowedToVote)
-                {
-                <div class="postkarmathumbs-@postId">
-                    <a class="thumbdownlink" rel="@postId">@Html.LanguageString("Post.VoteDown")</a>
-                </div>
+                    <div class="karmascore karmascore-@postId @solvedClass @showExtendedVotes">
+                        <span class="votenumber" id="@postId">
+                            @Model.Post.VoteCount.KiloFormat()
+                        </span>
+                    </div>
+                    if (allowedToVote)
+                    {
+                    <div class="postkarmathumbs-@postId">
+                        <a class="thumbdownlink" rel="@postId">@Html.LanguageString("Post.VoteDown")</a>
+                    </div>
+                    }
                 }
-            }
+            </div>
 
             @if (!Model.Post.IsTopicStarter && Html.Settings().EnableMarkAsSolution && Model.ParentTopic.User.Id == loggedOnUserId)
             {
@@ -136,8 +138,8 @@
                     {
                         if (Model.Post.User.DisableFileUploads != true)
                         {
-                            <a class="postshowattach" href="#">@Html.LanguageString("Post.Attach")</a>
-                        }                        
+                        <a class="postshowattach" href="#">@Html.LanguageString("Post.Attach")</a>
+                        }
                     }
 
                 </div>
@@ -147,17 +149,15 @@
 
     @if (Model.Permissions[AppConstants.PermissionAttachFiles].IsTicked && Model.Post.User.DisableFileUploads != true)
     {
-        <div class="postuploadholder span9">
+        <div class="postuploadholder row-fluid">
             @using (Html.BeginForm("UploadPostFiles", "Upload", FormMethod.Post, new { enctype = "multipart/form-data" }))
             {                
-                <div class="row-fluid">
-                    <div class="offset1 span7">
-                        <span style="display: none;" class="ajaxspinner" title="@Html.LanguageString("Post.PleaseWait")">@Html.LanguageString("Post.PleaseWait")</span>
-                        <input type="submit" value="@Html.LanguageString("Post.Upload")" class="btn postuploadbutton" />
-                        <input type="file" name="files" id="files" value="" multiple="multiple" />
-                        <input type="hidden" name="uploadPostId" id="uploadPostId" value="@Model.Post.Id" />
-                    </div>
-                </div>                
+                <div class="offset2 span8">
+                    <span style="display: none;" class="ajaxspinner" title="@Html.LanguageString("Post.PleaseWait")">@Html.LanguageString("Post.PleaseWait")</span>
+                    <input type="submit" value="@Html.LanguageString("Post.Upload")" class="btn postuploadbutton" />
+                    <input type="file" name="files" id="files" value="" multiple="multiple" />
+                    <input type="hidden" name="uploadPostId" id="uploadPostId" value="@Model.Post.Id" />
+                </div>         
             }
         </div>
     }
