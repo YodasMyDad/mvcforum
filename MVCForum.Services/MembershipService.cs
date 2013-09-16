@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Linq;
 using System.Web;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.API;
@@ -123,6 +124,8 @@ namespace MVCForum.Services
             var byteHash = algorithm.ComputeHash(plainTextWithSaltBytes.ToArray());
             return Convert.ToBase64String(byteHash);
         }
+
+        
 
         #region Status Codes
         public string ErrorCodeToString(MembershipCreateStatus createStatus)
@@ -861,5 +864,6 @@ namespace MVCForum.Services
 
             return report;
         }
+
     }
 }

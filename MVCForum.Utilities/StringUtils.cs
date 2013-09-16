@@ -48,6 +48,14 @@ namespace MVCForum.Utilities
                         .Replace("\n", "");
         }
 
+        // Gets the full url including 
+        public static string ReturnCurrentDomain()
+        {
+            var r = HttpContext.Current.Request;
+            var builder = new UriBuilder(r.Url.Scheme, r.Url.Host, r.Url.Port);
+            return builder.Uri.ToString().TrimEnd('/');
+        }
+
         /// <summary>
         /// Removes all line breaks from a string and replaces them with specified replacement
         /// </summary>

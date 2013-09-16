@@ -15,8 +15,8 @@
 <div id="jsquickmessage" style="display:none;"></div>
 @if (!string.IsNullOrEmpty(genericMessage.Message))
 {
-<script type="text/javascript"> $(function () { $('div.alert').delay(2600).fadeOut(); });</script>
-<div class="alert alert-block alert-@genericMessage.MessageType.ToString() fade in out">
+<script type="text/javascript"> $(function () { $('div.alert-generic').delay(2600).fadeOut(); });</script>
+<div class="alert alert-block alert-@genericMessage.MessageType.ToString() alert-generic">
     <a href="#" data-dismiss="alert" class="close">&times;</a>
     @Html.Raw(genericMessage.Message)
 </div>

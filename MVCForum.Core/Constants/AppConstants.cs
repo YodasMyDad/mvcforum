@@ -18,6 +18,7 @@
 
         // Cookie names
         public const string LanguageCultureCookieName = "LanguageCulture";
+        public const string MemberEmailConfirmationCookieName = "MVCForumEmailConfirmation";
 
         // Cache names
         public const string SettingsCacheName = "MainSettings";

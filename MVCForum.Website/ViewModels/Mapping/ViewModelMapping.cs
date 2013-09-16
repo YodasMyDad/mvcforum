@@ -115,6 +115,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.EnableSocialLogins = settingsViewModel.EnableSocialLogins;
             existingSettings.EnablePolls = settingsViewModel.EnablePolls;
             existingSettings.SuspendRegistration = settingsViewModel.SuspendRegistration;
+            existingSettings.NewMemberEmailConfirmation = settingsViewModel.NewMemberEmailConfirmation;
             return existingSettings;
         }
 
@@ -154,6 +155,7 @@ namespace MVCForum.Website.ViewModels.Mapping
                 SMTPPassword = currentSettings.SMTPPassword,
                 AkismentKey = currentSettings.AkismentKey,
                 EnableAkisment = currentSettings.EnableAkisment != null && (bool)currentSettings.EnableAkisment,
+                NewMemberEmailConfirmation = currentSettings.NewMemberEmailConfirmation != null && (bool)currentSettings.NewMemberEmailConfirmation,
                 Theme = currentSettings.Theme,
                 SMTPPort = string.IsNullOrEmpty(currentSettings.SMTPPort) ? null : (int?)(Convert.ToInt32(currentSettings.SMTPPort)),
                 SpamQuestion = currentSettings.SpamQuestion,

@@ -50,6 +50,9 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Allow Email Subscriptions")]
         public bool EnableEmailSubscriptions { get; set; }
 
+        [DisplayName("New Members Must Confirm Their Account Via A Link Sent In An Email - Will not work with Twitter accounts!")]
+        public bool NewMemberEmailConfirmation { get; set; }
+
         [DisplayName("Manually Authorise New Members")]
         public bool ManuallyAuthoriseNewMembers { get; set; }
 

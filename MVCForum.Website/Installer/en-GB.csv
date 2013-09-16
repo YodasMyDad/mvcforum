@@ -254,3 +254,9 @@ Post.Upload,Upload Files
 Post.UploadBannedFileExtension,File extension not allowed
 Post.UploadFileTooBig,File upload is too big
 File.SuccessfullyDeleted,File deleted
+Members.MemberEmailAuthorisationNeeded,We have sent you a confirmation email - please click the confirmation link in your email to approve your account.
+Members.MemberEmailAuthorisation.EmailBody,You have registered on {0} - In order to continue you must confirm your email address by clicking the link below.<br> {1}
+Members.MemberEmailAuthorisation.Subject,Email Confirmation
+Members.NowApproved,Your account has now been approved - Thank you
+Members.MemberEmailAuthorisationNeededMessage,Click the link in your confirmation email to approve your account.
+Members.MemberEmailAuthorisationResend,Resend Confirmation Email
