@@ -1,11 +1,11 @@
 ﻿@using MVCForum.Utilities
     @if(Html.Settings().EnableSocialLogins == true)
     {
-        <div class="span1 loginortext">
+        <div class="span2 loginortext">
             @Html.LanguageString("Members.LoginOrText")
         </div>
 
-        <div class="span4 oauthbuttons">
+        <div class="span5 oauthbuttons">
             
             @if (!string.IsNullOrEmpty(ConfigUtils.GetAppSetting("FacebookAppId")) && !string.IsNullOrEmpty(ConfigUtils.GetAppSetting("FacebookAppSecret")))
             {

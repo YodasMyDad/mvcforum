@@ -361,3 +361,5 @@ GO
 ============ v1.4 ============
 ==============================
 
+--- Settings
+NewMemberEmailConfirmation bit allow nulls
