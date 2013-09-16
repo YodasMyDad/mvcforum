@@ -418,19 +418,16 @@ input[type="radio"].pollanswerselect { margin: 3px 0 0 15px;float: left;}
 .postuploadedfilesholder div.fileupload a { color: #fff;font-size: 15px;}
 .postuploadedfilesholder div.fileupload span.deleteupload a{ font-weight: bold;font-size: 22px;padding: 0 0 0 14px;line-height: 22px;float: right;}
 
-
 /*============== MEDIA QUERIES OVERIDES ==============*/
 
 @media (max-width: 1105px) {
-
 }
 
 @media (max-width: 1045px) {
-
 }
 
 @media (max-width: 979px) {
-        body { padding:0 !Important;}
+    body { padding: 0 !Important; }
 }
 
 @media (max-width: 925px) {
@@ -442,72 +439,77 @@ input[type="radio"].pollanswerselect { margin: 3px 0 0 15px;float: left;}
 @media (max-width: 767px) {
 
     /*-- Stop gap produced by bootstrap*/
-    body { padding:0;}
-    .container-fluid { padding-left: 10px;padding-right: 10px;}
+    body { padding: 0; }
+    .container-fluid { padding-left: 10px; padding-right: 10px; }
 
-    .mainbody .btn { padding-left: 0;padding-right: 0;text-align: center;height: auto;line-height: none;width: 100% !Important;}
-    .mainbody .input-append .btn { padding-left: 20px;padding-right: 20px;width: auto!Important;}
+    .mainbody .btn { padding-left: 0; padding-right: 0; text-align: center; height: auto; line-height: none; width: 100% !Important; }
+    .mainbody .input-append .btn { padding-left: 20px; padding-right: 20px; width: auto!Important; }
 
     /*--- Nav Bar ---*/
-    .navbar-fixed-top, .navbar-fixed-bottom, .navbar-static-top { margin-left: 0;margin-right: 0;}
-    #logindisplay { text-align: center;font-size: 14px;}
+    .navbar-fixed-top, .navbar-fixed-bottom, .navbar-static-top { margin-left: 0; margin-right: 0; }
+    #logindisplay { text-align: center; font-size: 14px; }
 
     /*-- side ---*/
-    .sidelayoutsection { padding: 20px 0 0 0;}
+    .sidelayoutsection { padding: 20px 0 0 0; }
 
     /*-- Topic Row --*/
-    .topicrow {}
-    .topicrow .topicrecent { display: none !Important;}
-    .topicrow .topicstats { float: left;width: 18%;}
-    .topicrow .topicstats .statsblock { float: none;width: auto;margin: 0 0 3px 0;height: auto;line-height: normal;}
-    .topicrow .topicrowdetails { float: right;width: 80%;}
-    .topicrow .topicviews { display: none;}
-    .latesttopicsheader .latesttopicheading { float: left;width: 85%;}
-    .latesttopicsheader .latesttopicrss { float: right;width: 15%;}
+    .topicrow { }
+    .topicrow .topicrecent { display: none !Important; }
+    .topicrow .topicstats { float: left; width: 18%; }
+    .topicrow .topicstats .statsblock { float: none; width: auto; margin: 0 0 3px 0; height: auto; line-height: normal; }
+    .topicrow .topicrowdetails { float: right; width: 80%; }
+    .topicrow .topicviews { display: none; }
+    .latesttopicsheader .latesttopicheading { float: left; width: 85%; }
+    .latesttopicsheader .latesttopicrss { float: right; width: 15%; }
 
     /*--- Post ---*/
-    .post { position: relative;}
-    .post .tagsinput {}
-    .post .postkarmaouter {}
-    .post .postmemberdetailsinner { text-align: right;}
-    .mainbody .topicheader { font-size: 25px;line-height: normal;margin-bottom: 5px;}
-    .mainbody .topicsubscription { text-align: center;}
-    .mainbody .postmemberdetailsinner { display: none;}
-    .emailsubscription, .emailunsubscription { float: none;}
-    .postuploadedfilesholder div.fileupload { float: none;width:auto;margin: 0 0 6px 0;}
-    .postkarmaouter .postadminui a, .postkarmaouter .postadminui a:visited { margin: 8px 0;padding: 3px 0;}
-    .mainbody .karmapointsholder { float: left;width:40%;margin: 0;}
-    .mainbody .karmaholder {min-height: initial;height: auto;}
-    .mainbody .karmascore { line-height:normal;padding: 1px 0;}
-    .mainbody .solutionholder  { float: right;clear: none;}
-    .mainbody .postbodytop { margin-bottom: 90px;}
-    .mainbody .postmemberdetails { position: absolute;top: 45px;}
-    .mainbody .topicstarterpostcomments { text-align: center;}
-    .mainbody .topicpostorderfilter { text-align: center;}
-    .mainbody .postuploadbutton { margin-bottom: 15px;}
+    .post { position: relative; }
+    .post .tagsinput { }
+    .post .postkarmaouter { }
+    .post .postmemberdetailsinner { text-align: right; }
+    .mainbody .topicheader { font-size: 25px; line-height: normal; margin-bottom: 5px; }
+    .mainbody .topicsubscription { text-align: center; }
+    .mainbody .postmemberdetailsinner { display: none; }
+    .emailsubscription, .emailunsubscription { float: none; }
+    .postuploadedfilesholder div.fileupload { float: none; width: auto; margin: 0 0 6px 0; }
+    .postkarmaouter .postadminui a, .postkarmaouter .postadminui a:visited { margin: 8px 0; padding: 3px 0; }
+    .mainbody .karmapointsholder { float: left; width: 40%; margin: 0; }
+    .mainbody .karmaholder { min-height: initial; height: auto; }
+    .mainbody .karmascore { line-height: normal; padding: 1px 0; }
+    .mainbody .solutionholder { float: right; clear: none; }
+    .mainbody .postbodytop { margin-bottom: 90px; }
+    .mainbody .postmemberdetails { position: absolute; top: 45px; }
+    .mainbody .topicstarterpostcomments { text-align: center; }
+    .mainbody .topicpostorderfilter { text-align: center; }
+    .mainbody .postuploadbutton { margin-bottom: 15px; }
 
     /*--- Activity ---*/
-    .activityholder .activityentry { text-align: center;padding: 18px 0;}
-    .publicbadgeline { text-align: center;}
+    .activityholder .activityentry { text-align: center; padding: 18px 0; }
+    .publicbadgeline { text-align: center; }
+    .mainbody .activityheading { float: left;width: 90%;}
+    .mainbody .activityrss {float: right;width: 10%;}
 
     /*--- Polls ---*/
-    .polladdremovenewanswers a.btn { width: 49% !Important;}
+    .polladdremovenewanswers a.btn { width: 49% !Important; }
+    .mainbody .progress { margin-bottom: 8px;}
 
     /*--- Search Page ---*/
-    .large-search {}
+    .large-search { }
+
+    /*--- Side Search ---*/
+    .sidesearchbox {}
+    .mainbody .sidesearchbox .btn { padding-left: 10px;padding-right: 10px;}
 
     /*--- All categories ---*/
-    .categoryindex .categorydetailsfooter .catrss { float: left;width: 15%; }
-    .categoryindex .categorydetailsfooter .catdiscussions { float: left;width: 40%;}
-    .categoryindex .categorydetailsfooter .catcomments { float: right;width:40%;}
-    .categoryindex .categorydetailsfooter .catmostrecent { clear: both;text-align: left;}
-
+    .categoryindex .categorydetailsfooter .catrss { float: left; width: 15%; }
+    .categoryindex .categorydetailsfooter .catdiscussions { float: left; width: 40%; }
+    .categoryindex .categorydetailsfooter .catcomments { float: right; width: 40%; }
+    .categoryindex .categorydetailsfooter .catmostrecent { clear: both; text-align: left; }
 }
 
 @media (max-width: 600px) {
-    .topicrow .topicstats .statsblock {font-size: 16px;}
+    .topicrow .topicstats .statsblock { font-size: 16px; }
 }
 
 @media (max-width: 480px) {
-
 }

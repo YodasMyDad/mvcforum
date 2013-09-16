@@ -45,6 +45,48 @@
     </head>
            
     <body class="@globalClass">
+        
+        
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="brand" href="@Url.Action("Index", "Home")">
+                    <img src="@Url.Content(themePath + "/Content/Images/admin-n3o-logo.png")" alt="" />
+                </a>
+                <div class="nav-collapse collapse">
+                    <ul class="nav">
+                        <li><a href="@Url.Action("Index", "Home")">@Html.LanguageString("Layout.Nav.Home")</a></li>
+                        @if (Html.Settings().EnablePoints)
+                        {
+                            <li><a href="@Url.Action("Leaderboard", "Home")">@Html.LanguageString("Layout.Nav.Leaderboard")</a></li>
+                        }
+
+                        <li><a href="@Url.Action("Activity", "Home")">@Html.LanguageString("Layout.Nav.Activity")</a></li>
+                        <li><a href="@Url.Action("AllBadges", "Badge")">@Html.LanguageString("Layout.Nav.Badges")</a></li>
+
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            if (Html.Settings().SuspendRegistration != true)
+                            {
+                            <li><a href="@Url.Action("Register", "Members")">@Html.LanguageString("Layout.Nav.Register")</a></li>
+                            }
+                            <li><a href="@Url.Action("LogOn", "Members")">@Html.LanguageString("Layout.Nav.Logon")</a></li>
+                        }
+                        @if (User.IsInRole(AppConstants.AdminRoleName))
+                        {
+                            <li><a href="@Url.Action("Index", "Admin", new { area = "Admin" }, null)">@Html.LanguageString("Layout.Nav.Admin")</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+        @*
         <div class="navbar">
             <div class="navbar-inner clearfix">
 
@@ -73,16 +115,13 @@
                             <li><a href="@Url.Action("Index", "Admin", new { area = "Admin" }, null)">@Html.LanguageString("Layout.Nav.Admin")</a></li>
                         }
                         <li><a href="http://www.mvcforum.com">Back To Main Website</a></li>
-                        @*
-                            TODO: Need to create dropdown list to swap language
-                            Lists out languages
-                            @Html.Action("Index","Language")
-                            *@
+                        
                     </ul>
                 </div>
      
             </div>
         </div>
+        *@
         <div class="container-fluid">
             @Html.Partial("_GenericMessage")
             @Html.Partial("_NoScript")
