@@ -37,6 +37,7 @@ form { margin-bottom: 5px;}
 /*--- Validation errors ---*/
 .validation-summary-errors {background-color: #F2DEDE; color: #B94A48; border: 1px solid #EED3D7; border-radius: 4px 4px 4px 4px; margin-bottom: 18px; padding: 8px 14px 8px 14px;text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);}
 .validation-summary-errors span { display: block;padding: 0 0 5px 0;}
+.validation-summary-errors ul { margin-bottom: 0;}
 
 /*labels*/
 .editor-label { padding: 5px 0 2px 0;}

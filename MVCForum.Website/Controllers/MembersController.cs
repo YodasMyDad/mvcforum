@@ -817,7 +817,7 @@ namespace MVCForum.Website.Controllers
             {
                 // SEND AUTHORISATION EMAIL
                 var sb = new StringBuilder();
-                var confirmationLink = string.Concat(StringUtils.ReturnCurrentDomain(), Url.Action("EmailConfirmation", new {id = userToSave.Id}));
+                var confirmationLink = string.Concat(StringUtils.ReturnCurrentDomain(), Url.Action("EmailConfirmation", new { id = userToSave.Id }));
                 sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.EmailBody"),
                                             SettingsService.GetSettings().ForumName,
                                             string.Format("<p><a href=\"{0}\">{0}</a></p>", confirmationLink)));
@@ -891,7 +891,7 @@ namespace MVCForum.Website.Controllers
                         // Login code
                         FormsAuthentication.SetAuthCookie(user.UserName, false);
                     }
-                    
+
                     // Show a new message
                     // We use temp data because we are doing a redirect
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
@@ -1019,7 +1019,7 @@ namespace MVCForum.Website.Controllers
                                 default:
                                     ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.LogonGeneric"));
                                     break;
-                            }   
+                            }
                         }
                     }
                 }
@@ -1440,16 +1440,23 @@ namespace MVCForum.Website.Controllers
                 if (ModelState.IsValid)
                 {
                     currentUser = MembershipService.GetUserByEmail(forgotPasswordViewModel.EmailAddress);
-                    changePasswordSucceeded = MembershipService.ResetPassword(currentUser, newPassword);
+                    if (currentUser != null)
+                    {
+                        changePasswordSucceeded = MembershipService.ResetPassword(currentUser, newPassword);
 
-                    try
-                    {
-                        unitOfWork.Commit();
+                        try
+                        {
+                            unitOfWork.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            unitOfWork.Rollback();
+                            LoggingService.Error(ex);
+                            changePasswordSucceeded = false;
+                        }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        unitOfWork.Rollback();
-                        LoggingService.Error(ex);
                         changePasswordSucceeded = false;
                     }
                 }
@@ -1458,21 +1465,22 @@ namespace MVCForum.Website.Controllers
             // Success send newpassword to the user telling them password has been changed
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var sb = new StringBuilder();
-                sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.ForgotPassword.Email"), SettingsService.GetSettings().ForumName));
-                sb.AppendFormat("<p><b>{0}</b></p>", newPassword);
-                var email = new Email
-                                {
-                                    EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
-                                    EmailTo = currentUser.Email,
-                                    NameTo = currentUser.UserName,
-                                    Subject = LocalizationService.GetResourceString("Members.ForgotPassword.Subject")
-                                };
-                email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
-                _emailService.SendMail(email);
 
                 if (changePasswordSucceeded)
                 {
+                    var sb = new StringBuilder();
+                    sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.ForgotPassword.Email"), SettingsService.GetSettings().ForumName));
+                    sb.AppendFormat("<p><b>{0}</b></p>", newPassword);
+                    var email = new Email
+                                    {
+                                        EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
+                                        EmailTo = currentUser.Email,
+                                        NameTo = currentUser.UserName,
+                                        Subject = LocalizationService.GetResourceString("Members.ForgotPassword.Subject")
+                                    };
+                    email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+                    _emailService.SendMail(email);
+
                     // We use temp data because we are doing a redirect
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                     {
