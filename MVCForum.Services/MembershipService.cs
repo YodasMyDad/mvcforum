@@ -29,6 +29,7 @@ namespace MVCForum.Services
         private readonly IVoteService _voteService;
         private readonly IBadgeService _badgeService;
         private readonly ICategoryNotificationService _categoryNotificationService;
+        private readonly ILoggingService _loggingService;
 
         private LoginAttemptStatus _lastLoginStatus = LoginAttemptStatus.LoginSuccessful;
         private readonly IMVCForumAPI _api;
@@ -48,11 +49,12 @@ namespace MVCForum.Services
         /// <param name="badgeService"> </param>
         /// <param name="categoryNotificationService"> </param>
         /// <param name="api"> </param>
+        /// <param name="loggingService"></param>
         public MembershipService(IMembershipRepository membershipRepository, ISettingsRepository settingsRepository,
             IEmailService emailService, ILocalizationService localizationService, IActivityService activityService, 
             IPrivateMessageService privateMessageService, IMembershipUserPointsService membershipUserPointsService, 
             ITopicNotificationService topicNotificationService, IVoteService voteService, IBadgeService badgeService,
-            ICategoryNotificationService categoryNotificationService, IMVCForumAPI api)
+            ICategoryNotificationService categoryNotificationService, IMVCForumAPI api, ILoggingService loggingService)
         {
             _membershipRepository = membershipRepository;
             _settingsRepository = settingsRepository;
@@ -66,6 +68,7 @@ namespace MVCForum.Services
             _badgeService = badgeService;
             _categoryNotificationService = categoryNotificationService;
             _api = api;
+            _loggingService = loggingService;
         }
 
 
@@ -561,75 +564,85 @@ namespace MVCForum.Services
         /// Delete a member
         /// </summary>
         /// <param name="user"></param>
-        public void Delete(MembershipUser user)
+        public bool Delete(MembershipUser user)
         {
-            // Delete all private messages from this user
-            var msgsToDelete = new List<PrivateMessage>();
-            msgsToDelete.AddRange(user.PrivateMessagesSent);            
-            foreach (var msgToDelete in msgsToDelete)
+            try
             {
-                _privateMessageService.DeleteMessage(msgToDelete);
-            }
+                // Delete all private messages from this user
+                var msgsToDelete = new List<PrivateMessage>();
+                msgsToDelete.AddRange(user.PrivateMessagesSent);
+                foreach (var msgToDelete in msgsToDelete)
+                {
+                    _privateMessageService.DeleteMessage(msgToDelete);
+                }
 
-            msgsToDelete.Clear();
-            msgsToDelete.AddRange(user.PrivateMessagesReceived);
-            foreach (var msgToDelete in msgsToDelete)
+                msgsToDelete.Clear();
+                msgsToDelete.AddRange(user.PrivateMessagesReceived);
+                foreach (var msgToDelete in msgsToDelete)
+                {
+                    _privateMessageService.DeleteMessage(msgToDelete);
+                }
+
+                // Delete all badge times last checked
+                var badgeTypesTimeLastCheckedToDelete = new List<BadgeTypeTimeLastChecked>();
+                badgeTypesTimeLastCheckedToDelete.AddRange(user.BadgeTypesTimeLastChecked);
+                foreach (var badgeTypeTimeLastCheckedToDelete in badgeTypesTimeLastCheckedToDelete)
+                {
+                    _badgeService.DeleteTimeLastChecked(badgeTypeTimeLastCheckedToDelete);
+                }
+
+                // Delete all points from this user
+                var pointsToDelete = new List<MembershipUserPoints>();
+                pointsToDelete.AddRange(user.Points);
+                foreach (var pointToDelete in pointsToDelete)
+                {
+                    _membershipUserPointsService.Delete(pointToDelete);
+                }
+
+                // Delete all topic notifications
+                var topicNotificationsToDelete = new List<TopicNotification>();
+                topicNotificationsToDelete.AddRange(user.TopicNotifications);
+                foreach (var topicNotificationToDelete in topicNotificationsToDelete)
+                {
+                    _topicNotificationService.Delete(topicNotificationToDelete);
+                }
+
+                // Delete all user's votes
+                var votesToDelete = new List<Vote>();
+                votesToDelete.AddRange(user.Votes);
+                foreach (var voteToDelete in votesToDelete)
+                {
+                    _voteService.Delete(voteToDelete);
+                }
+
+                // Delete all user's badges
+                var badgesToDelete = new List<Badge>();
+                badgesToDelete.AddRange(user.Badges);
+                foreach (var badgeToDelete in badgesToDelete)
+                {
+                    _badgeService.Delete(badgeToDelete);
+                }
+
+                // Delete all user's category notifications
+                var categoryNotificationsToDelete = new List<CategoryNotification>();
+                categoryNotificationsToDelete.AddRange(user.CategoryNotifications);
+                foreach (var categoryNotificationToDelete in categoryNotificationsToDelete)
+                {
+                    _categoryNotificationService.Delete(categoryNotificationToDelete);
+                }
+
+                // Just clear the roles, don't delete them
+                user.Roles.Clear();
+
+                _membershipRepository.Delete(user);
+
+                return true;
+            }
+            catch (Exception ex)
             {
-                _privateMessageService.DeleteMessage(msgToDelete);
+                _loggingService.Error(ex);
             }
-
-            // Delete all badge times last checked
-            var badgeTypesTimeLastCheckedToDelete = new List<BadgeTypeTimeLastChecked>();
-            badgeTypesTimeLastCheckedToDelete.AddRange(user.BadgeTypesTimeLastChecked);
-            foreach (var badgeTypeTimeLastCheckedToDelete in badgeTypesTimeLastCheckedToDelete)
-            {
-                _badgeService.DeleteTimeLastChecked(badgeTypeTimeLastCheckedToDelete);
-            }
-
-            // Delete all points from this user
-            var pointsToDelete = new List<MembershipUserPoints>();
-            pointsToDelete.AddRange(user.Points);
-            foreach (var pointToDelete in pointsToDelete)
-            {
-                _membershipUserPointsService.Delete(pointToDelete);
-            }
-
-            // Delete all topic notifications
-            var topicNotificationsToDelete = new List<TopicNotification>();
-            topicNotificationsToDelete.AddRange(user.TopicNotifications);
-            foreach (var topicNotificationToDelete in topicNotificationsToDelete)
-            {
-                _topicNotificationService.Delete(topicNotificationToDelete);
-            }
-
-            // Delete all user's votes
-            var votesToDelete = new List<Vote>();
-            votesToDelete.AddRange(user.Votes);
-            foreach (var voteToDelete in votesToDelete)
-            {
-                _voteService.Delete(voteToDelete);
-            }
-
-            // Delete all user's badges
-            var badgesToDelete = new List<Badge>();
-            badgesToDelete.AddRange(user.Badges);
-            foreach (var badgeToDelete in badgesToDelete)
-            {
-                _badgeService.Delete(badgeToDelete);
-            }
-
-            // Delete all user's category notifications
-            var categoryNotificationsToDelete = new List<CategoryNotification>();
-            categoryNotificationsToDelete.AddRange(user.CategoryNotifications);
-            foreach (var categoryNotificationToDelete in categoryNotificationsToDelete)
-            {
-                _categoryNotificationService.Delete(categoryNotificationToDelete);
-            }
-
-            // Just clear the roles, don't delete them
-            user.Roles.Clear();
-
-            _membershipRepository.Delete(user);
+            return false;
         }
 
         public IList<MembershipUser> GetLatestUsers(int amountToTake)

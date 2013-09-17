@@ -3,12 +3,16 @@ using System.Collections.Specialized;
 using System.Web.Mvc;
 using System.Web.Security;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Domain.Interfaces.UnitOfWork;
+using MVCForum.Utilities;
 
 namespace MVCForum.Website.Membership
 {
-    public class MembershipProvider : System.Web.Security.MembershipProvider
+    public class MvcForumMembershipProvider : MembershipProvider
     {
         // MSDN how to implement a custom provider: http://msdn.microsoft.com/en-us/library/6tc47t75.aspx
+
+        // ALL THE METHODS MUST BE USED WITHIN A UNIT OF WORK IN THE CONTROLLERS
 
         private string _applicationName;
         private bool _enablePasswordReset;
@@ -20,11 +24,15 @@ namespace MVCForum.Website.Membership
         private int _minRequiredNonAlphanumericCharacters;
         private int _minRequiredPasswordLength;
 
+        // Use Dependency Resolver
+        //public IUnitOfWorkManager UnitOfWorkManager
+        //{
+        //    get { return DependencyResolver.Current.GetService<IUnitOfWorkManager>(); }
+        //}
         public IMembershipService MembershipService
         {
             get { return DependencyResolver.Current.GetService<IMembershipService>(); }
         }
-
 
         /// <summary>
         /// Read a config file value
@@ -57,7 +65,7 @@ namespace MVCForum.Website.Membership
             if (String.IsNullOrEmpty(config["description"]))
             {
                 config.Remove("description");
-                config.Add("description", "Sample ODBC Membership provider");
+                config.Add("description", "MVCForum Standard Membership Provider");
             }
 
             // Initialize the abstract base class.
@@ -73,6 +81,13 @@ namespace MVCForum.Website.Membership
             _enablePasswordReset = Convert.ToBoolean(GetConfigValue(config["enablePasswordReset"], "true"));
         }
 
+        //var user = MembershipService.GetUser(username);
+        //if (user != null)
+        //{
+        //    return 
+        //}
+        //return false;
+
         /// <summary>
         /// Validate the user (required for membership in MVC)
         /// </summary>
@@ -81,6 +96,7 @@ namespace MVCForum.Website.Membership
         /// <returns></returns>
         public override bool ValidateUser(string username, string password)
         {
+            // use the data in the graph object to authorise the user
             return MembershipService.ValidateUser(username, password, MaxInvalidPasswordAttempts);
         }
 
@@ -94,43 +110,69 @@ namespace MVCForum.Website.Membership
             get { return _maxInvalidPasswordAttempts; }
         }
 
-        #region NOT IMPLEMENTED - not required
 
         public override string ApplicationName
         {
             get
             {
-                throw new System.NotImplementedException();
+                return _applicationName;
             }
             set
             {
-                throw new System.NotImplementedException();
+                _applicationName = value;
             }
         }
 
         public override bool ChangePassword(string username, string oldPassword, string newPassword)
         {
-            throw new System.NotImplementedException();
+            var user = MembershipService.GetUser(username);
+            if (user != null)
+            {
+                return MembershipService.ChangePassword(user, oldPassword, newPassword);
+            }
+            return false;
         }
 
         public override bool ChangePasswordQuestionAndAnswer(string username, string password, string newPasswordQuestion, string newPasswordAnswer)
         {
-            throw new System.NotImplementedException();
+            if (ValidateUser(username, password))
+            {
+                var user = MembershipService.GetUser(username);
+                user.PasswordQuestion = newPasswordQuestion;
+                user.PasswordAnswer = newPasswordAnswer;
+                return true;
+            }
+            return false;
         }
 
         public override bool DeleteUser(string username, bool deleteAllRelatedData)
         {
-            throw new System.NotImplementedException();
+            var user = MembershipService.GetUser(username);
+            if (user != null)
+            {
+                return MembershipService.Delete(user);
+            }
+            return false;
         }
 
         public override bool EnablePasswordReset
         {
-            get { throw new System.NotImplementedException(); }
+            get { return _enablePasswordReset; }
         }
 
         public override bool EnablePasswordRetrieval
         {
-            get { throw new System.NotImplementedException(); }
+            get { return _enablePasswordRetrieval; }
+        }
+
+        public override int MinRequiredNonAlphanumericCharacters
+        {
+            get { return _minRequiredNonAlphanumericCharacters; }
+        }
+
+        public override int PasswordAttemptWindow
+        {
+            get { return _passwordAttemptWindow; }
         }
 
         public override MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize, out int totalRecords)
@@ -173,16 +215,6 @@ namespace MVCForum.Website.Membership
             throw new System.NotImplementedException();
         }
 
-        public override int MinRequiredNonAlphanumericCharacters
-        {
-            get { throw new System.NotImplementedException(); }
-        }
-
-        public override int PasswordAttemptWindow
-        {
-            get { throw new System.NotImplementedException(); }
-        }
-
         public override MembershipPasswordFormat PasswordFormat
         {
             get { throw new System.NotImplementedException(); }
@@ -213,7 +245,6 @@ namespace MVCForum.Website.Membership
             throw new System.NotImplementedException();
         }
 
-
         public override MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out MembershipCreateStatus status)
         {
             throw new NotImplementedException();
@@ -223,9 +254,6 @@ namespace MVCForum.Website.Membership
         {
             throw new NotImplementedException();
         }
-
-        #endregion
-
         
     }
 }

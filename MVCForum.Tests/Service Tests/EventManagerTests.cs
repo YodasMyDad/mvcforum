@@ -24,6 +24,7 @@ namespace MVCForum.Tests.Service_Tests
         private IVoteService _voteService;
         private IBadgeService _badgeService;
         private ICategoryNotificationService _categoryNotificationService;
+        private ILoggingService _loggingService;
 
         [SetUp]
         public void Init()
@@ -37,6 +38,7 @@ namespace MVCForum.Tests.Service_Tests
             _voteService = Substitute.For<IVoteService>();
             _badgeService = Substitute.For<IBadgeService>();
             _categoryNotificationService = Substitute.For<ICategoryNotificationService>();
+            _loggingService = Substitute.For<ILoggingService>();
         }
 
         [Test]
@@ -51,7 +53,7 @@ namespace MVCForum.Tests.Service_Tests
             var localisationService = Substitute.For<ILocalizationService>();
 
             var membershipService = new MembershipService(membershipRepository, settingsRepository, emailService, localisationService, _activityService, _privateMessageService,
-                _membershipUserPointsService, _topicNotificationService, _voteService, _badgeService, _categoryNotificationService, _api);
+                _membershipUserPointsService, _topicNotificationService, _voteService, _badgeService, _categoryNotificationService, _api, _loggingService);
             EventManager.Instance.BeforeRegisterUser += EventManagerInstance_BeforeRegisterUserAllow;
 
             var newUser = new MembershipUser { UserName = "SpongeBob", Password = "Test" };
@@ -79,7 +81,7 @@ namespace MVCForum.Tests.Service_Tests
             var localisationService = Substitute.For<ILocalizationService>();
 
             var membershipService = new MembershipService(membershipRepository, settingsRepository, emailService, localisationService, _activityService, _privateMessageService,
-                _membershipUserPointsService, _topicNotificationService, _voteService, _badgeService, _categoryNotificationService, _api);
+                _membershipUserPointsService, _topicNotificationService, _voteService, _badgeService, _categoryNotificationService, _api, _loggingService);
             EventManager.Instance.BeforeRegisterUser += EventManagerInstance_BeforeRegisterUserCancel;
 
             var newUser = new MembershipUser { UserName = "SpongeBob", Password = "Test" };
@@ -107,7 +109,7 @@ namespace MVCForum.Tests.Service_Tests
             var localisationService = Substitute.For<ILocalizationService>();
 
             var membershipService = new MembershipService(membershipRepository, settingsRepository, emailService, localisationService, _activityService, _privateMessageService,
-                _membershipUserPointsService, _topicNotificationService, _voteService, _badgeService, _categoryNotificationService, _api);
+                _membershipUserPointsService, _topicNotificationService, _voteService, _badgeService, _categoryNotificationService, _api, _loggingService);
             EventManager.Instance.AfterRegisterUser += EventManagerInstance_AfterRegisterUser;
 
             var newUser = new MembershipUser {UserName = "SpongeBob", Password = "Test"};
@@ -594,7 +596,7 @@ namespace MVCForum.Tests.Service_Tests
             var emailService = Substitute.For<IEmailService>();
             var localisationService = Substitute.For<ILocalizationService>();
             var membershipService = new MembershipService(membershipRepository, settingsRepository, emailService, localisationService, _activityService, _privateMessageService,
-                _membershipUserPointsService, _topicNotificationService, _voteService, _badgeService, _categoryNotificationService, _api);
+                _membershipUserPointsService, _topicNotificationService, _voteService, _badgeService, _categoryNotificationService, _api, _loggingService);
 
             var user = new MembershipUser { UserName = "SpongeBob" };
 
@@ -618,7 +620,7 @@ namespace MVCForum.Tests.Service_Tests
             var emailService = Substitute.For<IEmailService>();
             var localisationService = Substitute.For<ILocalizationService>();
             var membershipService = new MembershipService(membershipRepository, settingsRepository, emailService, localisationService, _activityService, _privateMessageService,
-                _membershipUserPointsService, _topicNotificationService, _voteService, _badgeService, _categoryNotificationService, _api);
+                _membershipUserPointsService, _topicNotificationService, _voteService, _badgeService, _categoryNotificationService, _api, _loggingService);
 
             var user = new MembershipUser { UserName = "SpongeBob" };
 
@@ -642,7 +644,7 @@ namespace MVCForum.Tests.Service_Tests
             var emailService = Substitute.For<IEmailService>();
             var localisationService = Substitute.For<ILocalizationService>();
             var membershipService = new MembershipService(membershipRepository, settingsRepository, emailService, localisationService, _activityService, _privateMessageService,
-                _membershipUserPointsService, _topicNotificationService, _voteService, _badgeService, _categoryNotificationService, _api);
+                _membershipUserPointsService, _topicNotificationService, _voteService, _badgeService, _categoryNotificationService, _api, _loggingService);
 
             var user = new MembershipUser {UserName = "SpongeBob"};
 

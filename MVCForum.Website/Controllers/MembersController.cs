@@ -53,7 +53,6 @@ namespace MVCForum.Website.Controllers
 
             LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
-
         }
 
         #region Common Methods
