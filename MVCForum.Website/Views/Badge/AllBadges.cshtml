@@ -3,6 +3,15 @@
     ViewBag.Title = Html.LanguageString("Badges.PageTitle");
 }
 
+@section side
+{
+    @Html.Action("ListCategorySideMenu", "Category")
+    @Html.Action("SideSearch", "Search")
+    @Html.Action("PopularTags", "Tag")
+    @Html.Action("CurrentWeekHighPointUsers", "Point")
+}
+
+
 <h2>@ViewBag.Title</h2>
 
 <div class="badgeholder">
