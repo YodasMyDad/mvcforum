@@ -817,9 +817,10 @@ namespace MVCForum.Website.Controllers
             {
                 // SEND AUTHORISATION EMAIL
                 var sb = new StringBuilder();
+                var confirmationLink = string.Concat(StringUtils.ReturnCurrentDomain(), Url.Action("EmailConfirmation", new {id = userToSave.Id}));
                 sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.EmailBody"),
                                             SettingsService.GetSettings().ForumName,
-                                            string.Concat(StringUtils.ReturnCurrentDomain(), Url.Action("EmailConfirmation", new { id = userToSave.Id }))));
+                                            string.Format("<p><a href=\"{0}\">{0}</a></p>", confirmationLink)));
                 var email = new Email
                 {
                     EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
@@ -878,7 +879,7 @@ namespace MVCForum.Website.Controllers
                     // Set the user to active
                     user.IsApproved = true;
 
-                    // Delete Cookie
+                    // Delete Cookie and log them in if this cookie is present
                     if (Request.Cookies[AppConstants.MemberEmailConfirmationCookieName] != null)
                     {
                         var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
@@ -886,8 +887,11 @@ namespace MVCForum.Website.Controllers
                             Expires = DateTime.Now.AddDays(-1)
                         };
                         Response.Cookies.Add(myCookie);
-                    }
 
+                        // Login code
+                        FormsAuthentication.SetAuthCookie(user.UserName, false);
+                    }
+                    
                     // Show a new message
                     // We use temp data because we are doing a redirect
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
