@@ -815,33 +815,35 @@ namespace MVCForum.Website.Controllers
             var memberEmailAuthorisationNeeded = SettingsService.GetSettings().NewMemberEmailConfirmation ?? false;
             if (manuallyAuthoriseMembers == false && memberEmailAuthorisationNeeded)
             {
-                // SEND AUTHORISATION EMAIL
-                var sb = new StringBuilder();
-                var confirmationLink = string.Concat(StringUtils.ReturnCurrentDomain(), Url.Action("EmailConfirmation", new { id = userToSave.Id }));
-                sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.EmailBody"),
-                                            SettingsService.GetSettings().ForumName,
-                                            string.Format("<p><a href=\"{0}\">{0}</a></p>", confirmationLink)));
-                var email = new Email
+                if (!string.IsNullOrEmpty(userToSave.Email))
                 {
-                    EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
-                    EmailTo = userToSave.Email,
-                    NameTo = userToSave.UserName,
-                    Subject = LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.Subject")
-                };
-                email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
-                _emailService.SendMail(email);
+                    // SEND AUTHORISATION EMAIL
+                    var sb = new StringBuilder();
+                    var confirmationLink = string.Concat(StringUtils.ReturnCurrentDomain(), Url.Action("EmailConfirmation", new { id = userToSave.Id }));
+                    sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.EmailBody"),
+                                                SettingsService.GetSettings().ForumName,
+                                                string.Format("<p><a href=\"{0}\">{0}</a></p>", confirmationLink)));
+                    var email = new Email
+                    {
+                        EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
+                        EmailTo = userToSave.Email,
+                        NameTo = userToSave.UserName,
+                        Subject = LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.Subject")
+                    };
+                    email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+                    _emailService.SendMail(email);
 
-                // ADD COOKIE
-                // We add a cookie for 7 days, which will display the resend email confirmation button
-                // This cookie is removed when they click the confirmation link
-                var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
-                {
-                    Value = string.Format("{0}#{1}", userToSave.Email, userToSave.UserName),
-                    Expires = DateTime.Now.AddDays(7)
-                };
-                // Add the cookie.
-                Response.Cookies.Add(myCookie);
-
+                    // ADD COOKIE
+                    // We add a cookie for 7 days, which will display the resend email confirmation button
+                    // This cookie is removed when they click the confirmation link
+                    var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
+                    {
+                        Value = string.Format("{0}#{1}", userToSave.Email, userToSave.UserName),
+                        Expires = DateTime.Now.AddDays(7)
+                    };
+                    // Add the cookie.
+                    Response.Cookies.Add(myCookie);   
+                }
             }
         }
 
@@ -952,10 +954,11 @@ namespace MVCForum.Website.Controllers
                     if (ModelState.IsValid)
                     {
                         var message = new GenericMessageViewModel();
+                        var user = new MembershipUser();
                         if (MembershipService.ValidateUser(username, password, System.Web.Security.Membership.MaxInvalidPasswordAttempts))
                         {
                             // Set last login date
-                            var user = MembershipService.GetUser(username);
+                            user = MembershipService.GetUser(username);
                             if (user.IsApproved && !user.IsLockedOut)
                             {
                                 FormsAuthentication.SetAuthCookie(username, model.RememberMe);
@@ -1014,6 +1017,8 @@ namespace MVCForum.Website.Controllers
 
                                 case LoginAttemptStatus.UserNotApproved:
                                     ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.UserNotApproved"));
+                                    user = MembershipService.GetUser(username);
+                                    SendEmailConfirmationEmail(user);
                                     break;
 
                                 default:
