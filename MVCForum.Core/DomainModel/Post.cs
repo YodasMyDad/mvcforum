@@ -25,6 +25,7 @@ namespace MVCForum.Domain.DomainModel
         public bool IsSolution { get; set; }
         public bool IsTopicStarter { get; set; }
         public bool? FlaggedAsSpam { get; set; }
+        public string IpAddress { get; set; }
 
         public virtual Topic Topic { get; set; }
         public virtual MembershipUser User { get; set; }

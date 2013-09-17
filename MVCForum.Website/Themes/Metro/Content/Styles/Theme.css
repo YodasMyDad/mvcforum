@@ -358,6 +358,8 @@ ul.tagCloud li span.tagCount { float: left; padding: 0 2px; width: auto; display
 .sidesearchbox ul { padding: 0; margin: 0; }
 .sidesearchbox ul li { display: inline; float: left; padding: 0; margin: 0; }
 .sidesearchbox ul li input[type=text] { width: 100%; }
+.sidesearchbox ul li.sidesearchboxtb {width:75%;}
+.sidesearchbox ul li input[type=text]{ width:90%;}
 .sidesearchbox form { padding: 0; margin: 0; }
 
 /*--- Show Voters ---*/

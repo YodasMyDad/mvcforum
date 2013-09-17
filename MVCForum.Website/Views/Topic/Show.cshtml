@@ -84,10 +84,10 @@
         Html.RenderPartial("_Post", topicStarterPostModel);
     }
     <div class="row-fluid topicstarterpostbeginpostsheading">
-        <div class="span9 topicstarterpostcomments">
+        <div class="span8 topicstarterpostcomments">
             @(totalCount - 1) @Html.LanguageString("Topic.CommentsDetails")
         </div>
-        <div class="span3 topicpostorderfilter">
+        <div class="span4 topicpostorderfilter">
             @if ((totalCount - 1) > 0)
             {
                 <text> @Html.LanguageString("PostFilter.OrderBy")

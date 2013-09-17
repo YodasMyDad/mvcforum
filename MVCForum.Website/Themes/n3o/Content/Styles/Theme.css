@@ -276,7 +276,7 @@ div.tagsinput div { display:block; float: left; }
 .sidesearchbox {}
 .sidesearchbox ul { padding: 0;margin: 0;border: none !Important;}
 .sidesearchbox ul li {float: left;padding: 0;margin: 0;clear: none;width: 20%;border: none !Important;}
-.sidesearchbox ul li.sidesearchboxtb {width: 75%;}
+.sidesearchbox ul li.sidesearchboxtb {width:75%;}
 .sidesearchbox ul li input[type=text]{ width:90%;}
 .sidesearchbox form { padding: 0;margin: 0;}
 

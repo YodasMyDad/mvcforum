@@ -460,6 +460,22 @@ namespace MVCForum.Utilities
         }
 
         /// <summary>
+        /// Get the current users IP address
+        /// </summary>
+        /// <returns></returns>
+        public static string GetUsersIpAddress()
+        {
+            var context = HttpContext.Current;
+            var serverName = context.Request.ServerVariables["SERVER_NAME"];
+            if (serverName.ToLower().Contains("localhost"))
+            {
+                return serverName;
+            }
+            var ipList = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+            return !string.IsNullOrEmpty(ipList) ? ipList.Split(',')[0] : HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
+        }
+
+        /// <summary>
         /// Takes in HTML and returns santized Html/string
         /// </summary>
         /// <param name="html"></param>

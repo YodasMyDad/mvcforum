@@ -242,7 +242,8 @@ namespace MVCForum.Services
                                {
                                    PostContent = postContent,
                                    User = user,
-                                   Topic = topic
+                                   Topic = topic,
+                                   IpAddress = StringUtils.GetUsersIpAddress()
                                };
 
             newPost = SanitizePost(newPost);

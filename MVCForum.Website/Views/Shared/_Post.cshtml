@@ -10,6 +10,7 @@
                          Model.Post.Votes.All(x => x.User.Id != Model.User.Id));
     var showExtendedVotes = (Model.Post.Votes != null && Model.Post.Votes.Any()) ? "expandvotes" : "";
     var postCount = Model.Post.User.Posts.Count;
+    var isAdminOrMod = User.IsInRole(AppConstants.AdminRoleName) || User.IsInRole(AppConstants.ModeratorRoleName);
 }
 <div class="post row-fluid solution-True post-@postId">
     <div class="postmemberdetails span2">
@@ -58,6 +59,10 @@
             <a class="postmember-@postId" href="@Html.Raw(Model.Post.User.NiceUrl)">@Html.Raw(Model.Post.User.UserName)</a>
             @Html.LanguageString("Post.PostedThis")
             @DatesUI.GetPrettyDate(Model.Post.DateCreated.ToString())
+            @if (isAdminOrMod && !string.IsNullOrEmpty(Model.Post.IpAddress))
+            {
+                <text> - @Model.Post.IpAddress</text>
+            }
         </div>
         <div id="postcontent-@postId" class="postcontent">
             <p>@Html.Raw(AppHelpers.ConvertPostContent(Model.Post.PostContent))</p>
