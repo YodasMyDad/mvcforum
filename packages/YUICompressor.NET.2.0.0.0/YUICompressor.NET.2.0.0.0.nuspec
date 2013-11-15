@@ -16,6 +16,6 @@ This is a direct .NET port of the original Yahoo! UI Library: YUI Compressor ver
     <summary>Minify and/or Combine JavaScript and/or Cascading Style Sheets.</summary>
     <releaseNotes />
     <copyright>2008 - 2012</copyright>
-    <tags>compression, minification, obfuscation, minify, combine, javascript, js, CSS, cascading style sheets, nant, msbuild, compressor</tags>
+    <tags>compression minification obfuscation minify combine javascript js CSS cascading style sheets nant msbuild compressor</tags>
   </metadata>
 </package>

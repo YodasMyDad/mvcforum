@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
   <metadata>
     <id>SquishIt</id>
-    <version>0.9.3</version>
+    <version>0.9.5-beta2</version>
     <authors>Justin Etheredge,  Alex Ullrich</authors>
     <owners>Justin Etheredge,  Alex Ullrich</owners>
     <projectUrl>https://github.com/jetheredge/SquishIt</projectUrl>
@@ -10,8 +10,8 @@
     <description>SquishIt lets you easily compress and combine JavaScript and CSS.</description>
     <releaseNotes>If you are upgrading from SquishIt 0.8.x (and earlier) releases this update breaks support for less and coffeescript file processing.  If you use either of these facilities, please install SquishIt.Less or SquishIt.CoffeeScript to enable correct preprocessing of your files.</releaseNotes>
     <dependencies>
-      <dependency id="YUICompressor.NET" version="2.0.0.0" />
-      <dependency id="AjaxMin" version="4.48.4489.28432" />
+      <dependency id="YUICompressor.NET" version="[2.0.0.0]" />
+      <dependency id="AjaxMin" version="[4.48.4489.28432, 4.97.4951.28483]" />
     </dependencies>
   </metadata>
 </package>
