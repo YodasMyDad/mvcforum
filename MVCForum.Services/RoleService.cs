@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Exceptions;
-using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Utilities;
@@ -180,9 +180,6 @@ namespace MVCForum.Services
 
             return permissionSet;
 
-
-
-
         }
 
         /// <summary>
@@ -225,19 +222,28 @@ namespace MVCForum.Services
         public PermissionSet GetPermissions(Category category, MembershipRole role)
         {
             // Pass the role in to see select which permissions to apply
-            switch (role.RoleName)
+            // Going to cache this per request, just to help with performance
+            var objectContextKey = string.Concat(HttpContext.Current.GetHashCode().ToString("x"), "-", category.Id, "-", role.Id);
+            if (!HttpContext.Current.Items.Contains(objectContextKey))
             {
-                case AppConstants.AdminRoleName:
-                    _permissions = GetAdminPermissions(category, role);
-                    break;
-                case AppConstants.GuestRoleName:
-                    _permissions = GetGuestPermissions(category, role);
-                    break;
-                default:
-                    _permissions = GetOtherPermissions(category, role);
-                    break;
+                switch (role.RoleName)
+                {
+                    case AppConstants.AdminRoleName:
+                        _permissions = GetAdminPermissions(category, role);
+                        break;
+                    case AppConstants.GuestRoleName:
+                        _permissions = GetGuestPermissions(category, role);
+                        break;
+                    default:
+                        _permissions = GetOtherPermissions(category, role);
+                        break;
+                }
+
+                HttpContext.Current.Items.Add(objectContextKey, _permissions);
             }
-            return _permissions;
+
+            return HttpContext.Current.Items[objectContextKey] as PermissionSet; 
+
         }
 
         #endregion

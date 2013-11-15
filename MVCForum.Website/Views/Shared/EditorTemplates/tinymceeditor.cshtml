@@ -1,22 +1,24 @@
-﻿<script src="@Url.Content("~/scripts/tinymce/tiny_mce.js")" type="text/javascript"></script>
-<script type="text/javascript">
-    $(function () {
-        tinyMCE.init({
-            // General options
-            mode: "textareas",
-            editor_selector : "rte",
-            editor_deselector: "norte",
-            //content_css: "/css/fonts.css",
-            auto_resize: true,
-            theme: "advanced",
-            remove_linebreaks: false,
-            relative_urls: false,
-            plugins: "advimage",
-            theme_advanced_buttons1_add: "insertimage",
-            theme_advanced_buttons1: "bold,strikethrough,image,|,bullist,numlist,|,link,unlink,formatselect",
-            theme_advanced_toolbar_align: "center",
+﻿@if (!Context.IsMobileDevice())
+{
+<script src="@Url.Content("~/scripts/tinymce/tiny_mce.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(function() {
+            tinyMCE.init({
+                // General options
+                mode: "textareas",
+                editor_selector: "rte",
+                editor_deselector: "norte",
+                //content_css: "/css/fonts.css",
+                auto_resize: true,
+                theme: "advanced",
+                remove_linebreaks: false,
+                relative_urls: false,
+                plugins: "advimage",
+                theme_advanced_buttons1_add: "insertimage",
+                theme_advanced_buttons1: "bold,strikethrough,image,|,bullist,numlist,|,link,unlink,formatselect",
+                theme_advanced_toolbar_align: "center",
 
-            @*
+                            @*
             //theme: "advanced",
             //plugins: "autolink,lists,pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,advlist",
 
@@ -29,11 +31,10 @@
             //theme_advanced_statusbar_location: "bottom",
             //theme_advanced_resizing: true
             *@
-
+            });
         });
-    });
-</script>
-
+    </script>
+}
 <div class="tinymceholder">    
     @Html.TextArea(string.Empty, new {@class = "rte"})     
 </div>

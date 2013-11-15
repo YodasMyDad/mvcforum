@@ -14,7 +14,7 @@ namespace MVCForum.Utilities
             var req = (HttpWebRequest)WebRequest.Create(string.Format("http://www.google.com/uds/GlocalSearch?q={0}&v=1.0", postcode));
             using (var resp = req.GetResponse())
             using (var respStream = resp.GetResponseStream())
-            using (var reader = new StreamReader(respStream, true))
+            using (var reader = new StreamReader(respStream, System.Text.Encoding.UTF8, true))
             {
                 var response = reader.ReadToEnd();
                 var serializer = new JavaScriptSerializer();

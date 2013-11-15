@@ -152,11 +152,18 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         category.IsLocked = categoryViewModel.IsLocked;
                         category.Name = categoryViewModel.Name;
                         category.SortOrder = categoryViewModel.SortOrder;
-                        
+
                         if (categoryViewModel.ParentCategory != null)
                         {
                             category.ParentCategory = _categoryService.Get(categoryViewModel.ParentCategory.Value);
                         }
+                        else
+                        {
+                            // Must access property (trigger lazy-loading) before we can set it to null (Entity Framework bug!!!)
+                            var triggerEfLoad = category.ParentCategory;
+                            category.ParentCategory = null;
+                        }
+
                         _categoryService.UpdateSlugFromName(category);
 
                         TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel

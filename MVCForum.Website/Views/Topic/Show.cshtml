@@ -33,9 +33,10 @@
     @(Bundle.Css()
               .Add("~/Scripts/fancybox/jquery.fancybox.css")
               .MvcRender("~/content/cache/fancybox_#.css"))
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
     @(Bundle.JavaScript()
         .Add("~/Scripts/fancybox/jquery.fancybox.js")
-        .Add("~/Scripts/topic.js")
+        .Add("~/Scripts/topic.js")        
         .MvcRender("~/scripts/cache/topic_#.js"))
 }
 
@@ -47,12 +48,12 @@
     @Html.Action("CurrentWeekHighPointUsers", "Point")
 }
 
-<div class="row topicheading">
+<div class="row-fluid topicheading">
 
-    <div class="span7 topicheaderholder">
+    <div class="span9 topicheaderholder">
         <h1 class="topicheader">@Html.Raw(Model.Topic.Name)</h1>
     </div>
-    <div class="span2 topicsubscription">
+    <div class="span3 topicsubscription">
         @if (Model.User != null && Html.Settings().EnableEmailSubscriptions)
         {
             <a @Html.Raw(subScribe) title="Subscribe Via Email" href="#" class="emailsubscription" rel="@Model.Topic.Id">
@@ -83,11 +84,11 @@
         var topicStarterPostModel = new ViewPostViewModel { Permissions = Model.Permissions, Post = Model.TopicStarterPost, User = Model.User, ParentTopic = Model.Topic };
         Html.RenderPartial("_Post", topicStarterPostModel);
     }
-    <div class="row topicstarterpostbeginpostsheading">
-        <div class="span6 topicstarterpostcomments">
+    <div class="row-fluid topicstarterpostbeginpostsheading">
+        <div class="span8 topicstarterpostcomments">
             @(totalCount - 1) @Html.LanguageString("Topic.CommentsDetails")
         </div>
-        <div class="span3 topicpostorderfilter">
+        <div class="span4 topicpostorderfilter">
             @if ((totalCount - 1) > 0)
             {
                 <text> @Html.LanguageString("PostFilter.OrderBy")

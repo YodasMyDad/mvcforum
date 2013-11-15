@@ -59,7 +59,7 @@
             @Html.LabelFor(model => model.ParentCategory)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(model => model.ParentCategory, new SelectList(Model.AllCategories, "id", "Name"))
+            @Html.DropDownListFor(model => model.ParentCategory, new SelectList(Model.AllCategories, "id", "Name"), string.Empty)
             @Html.ValidationMessageFor(model => model.ParentCategory)
         </div>
 

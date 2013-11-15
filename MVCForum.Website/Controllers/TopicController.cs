@@ -63,6 +63,27 @@ namespace MVCForum.Website.Controllers
                 {
                     LoggedOnUser = LoggedOnUser
                 };
+
+            if (LoggedOnUser != null)
+            {
+                // Add all categories to a permission set
+                var allCategories = _categoryService.GetAll();
+                using (UnitOfWorkManager.NewUnitOfWork())
+                {
+                    foreach (var category in allCategories)
+                    {
+                        // Now check to see if they have access to any categories
+                        // if so, check they are allowed to create topics - If no to either set to false
+                        viewModel.UserCanPostTopics = false;
+                        var permissionSet = RoleService.GetPermissions(category, UsersRole);
+                        if (permissionSet[AppConstants.PermissionCreateTopics].IsTicked)
+                        {                            
+                            viewModel.UserCanPostTopics = true;
+                            break;
+                        }
+                    }
+                }
+            }
             return PartialView(viewModel);
         }
 
@@ -458,10 +479,22 @@ namespace MVCForum.Website.Controllers
 
             // Get lucene to search, we are just searching on the topic name at the moment
             // Really need a more powerful lucene search for similar questions
-            var foundTopicIds = _luceneService.Search(formattedSearchTerm, string.Empty, AppConstants.SimilarTopicsListSize).Select(x => x.TopicId).ToList();
+            List<Topic> topics = null;
+            try
+            {
+                var searchResults = _luceneService.Search(formattedSearchTerm, string.Empty, AppConstants.SimilarTopicsListSize);
+                if (searchResults != null)
+                {
+                    var foundTopicIds = searchResults.Select(x => x.TopicId).ToList();
 
-            // Get the topics
-            var topics = _topicService.GetTopicsByCsv(AppConstants.SimilarTopicsListSize, foundTopicIds);
+                    // Get the topics
+                    topics = _topicService.GetTopicsByCsv(AppConstants.SimilarTopicsListSize, foundTopicIds).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                LoggingService.Error(ex);
+            }
 
             // Pass the list to the partial view
             return PartialView(topics);

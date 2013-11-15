@@ -36,28 +36,6 @@ namespace MVCForum.Website.Controllers
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
-        #region Upload Test Code
-        
-        public ActionResult UploadFiles()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult UploadFiles(AttachFileToPostViewModel attachFileToPostViewModel)
-        {
-            foreach (var file in attachFileToPostViewModel.Files)
-            {
-                //string path = System.IO.Path.Combine(Server.MapPath("~/App_Data"), System.IO.Path.GetFileName(file.FileName));
-                //file.SaveAs(path);
-            }
-
-            return RedirectToAction("index");
-        }
-
-        #endregion
-
-
         //[OutputCache(Duration = 10, VaryByParam = "p")]
         public ActionResult Index(int? p)
         {

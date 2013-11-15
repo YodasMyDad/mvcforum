@@ -36,8 +36,8 @@
         @Html.ValidationSummary(true)
         @Html.AntiForgeryToken()
         
-        <div class="row paddedrow">
-            <div class="span5 topictitleholder">
+        <div class="row-fluid paddedrow">
+            <div class="span8 topictitleholder">
                 <h2>@ViewBag.Title</h2>
             </div>
             @if (Html.Settings().EnablePolls == true)
@@ -47,11 +47,10 @@
                     <a href="#" style="display: none;" class="btn removepollbutton">@Html.LanguageString("Poll.Button.Remove")</a>
                 </div>
             }
-
         </div>    
     
-        <div class="row paddedrow">
-            <div class="span9 topicname">
+        <div class="row-fluid paddedrow">
+            <div class="span12 topicname">
                 <div class="editor-label">
                     @Html.LabelFor(model => model.Name)
                 </div>
@@ -62,8 +61,8 @@
             </div>
         </div>
         
-        <div class="row paddedrow relatedtopicsholder">
-            <div class="span9 relatedtopics">
+        <div class="row-fluid paddedrow relatedtopicsholder">
+            <div class="span12 relatedtopics">
                 <h5>@Html.LanguageString("Topic.AlreadyAnswered")</h5>
                 <div class="relatedtopicskey"></div>
             </div>
@@ -71,20 +70,20 @@
         
             if (Html.Settings().EnablePolls == true)
             {
-        <div class="row paddedrow pollanswerholder" style="display: none;">
-            <div class="span7">
+        <div class="row-fluid paddedrow pollanswerholder" style="display: none;">
+            <div class="span10">
                 <ul class="pollanswerlist">
                 </ul>
                 <input type="hidden" id="pollanswerplaceholder" value="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")"/>
             </div>
             <div class="span2 polladdremovenewanswers">
-                <a href="#" class="btn addanswer"><i class="icon-plus-sign"></i></a><a href="#" class="btn removeanswer"><i class="icon-remove-sign"></i></a>
+                <a href="#" class="btn addanswer"><i class="icon-plus-sign"></i></a><a href="#" class="btn removeanswer"><i class="icon-minus-sign"></i></a>
             </div>
         </div>
             }
 
-        <div class="row">
-            <div class="span9 topiccontent">
+        <div class="row-fluid">
+            <div class="span12 topiccontent">
                 <div class="editor-field editorholder">
                     @Html.EditorFor(model => model.Content)
                     @Html.ValidationMessageFor(model => model.Content)
@@ -92,13 +91,13 @@
             </div>
         </div>      
 
-        <div class="row">
-            <div class="span4 createtopicbuttonholder">
+        <div class="row-fluid">
+            <div class="span6 createtopicbuttonholder">
                 <div class="submit-holder">
                     <input type="submit" class="btn btn-large btn-success" value="@Html.LanguageString("Topic.CreateDiscussion")" />
                 </div>
             </div>
-            <div class="span4 topiccategory">
+            <div class="span6 topiccategory">
                 <div class="editor-label">
                     @Html.LabelFor(model => model.Category)
                 </div>
@@ -114,14 +113,16 @@
 
             <h3>@Html.LanguageString("Topic.OptionsHeading")</h3>
 
-            <div class="row">
-                <div class="span9 topicreplynotify">
+            <div class="row-fluid">
+                <div class="span12 topicreplynotify">
                     <div class="editor-field n3ocheckboxfield">
                         @Html.CheckBoxFor(x => x.SubscribeToTopic)
                         @Html.LabelFor(model => model.SubscribeToTopic)
                     </div>
                 </div>
-                <div class="span9 topictagholder">
+            </div>
+            <div class="row-fluid">
+                <div class="span12 topictagholder">
                     <div class="editor-field">
                         @Html.TextAreaFor(model => model.Tags, new { @class = "tagstextarea tags", title = Html.LanguageString("Topic.TagThisTopic") })
                     </div>

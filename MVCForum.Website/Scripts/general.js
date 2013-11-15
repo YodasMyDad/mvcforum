@@ -603,10 +603,11 @@ function UserPost() {
 }
 
 function MarkAsSolution(solutionHolder) {
-    $(solutionHolder).removeClass("issolution");
-    $(solutionHolder).addClass("issolution-solved");
-    $(solutionHolder).attr('title', '');
-    $('.issolution').hide();
+    $(solutionHolder).removeClass("issolution")
+    .addClass("issolution-solved")
+    .attr('title', '')
+    .unbind("click");
+    $('.issolution').hide();   
 }
 
 function SuccessfulThumbUp(karmascore) {

@@ -192,6 +192,9 @@ namespace MVCForum.Website.Controllers
 
         private InstallerResult UpdateData(string currentVersion, string previousVersion, InstallerResult installerResult)
         {
+
+            //TODO: Still need to write a more robust installer I think
+
             //Initialise the services
             InitialiseServices();
 
@@ -204,11 +207,28 @@ namespace MVCForum.Website.Controllers
             if (!installerResult.Successful)
             {
                 return installerResult;
-            }   
+            }
 
+            installerResult.Successful = true;
+            installerResult.Message = "All data updated successfully";
+
+            //-----------------------------------------------
             //---------------- v1.3 to v1.4 -----------------
-            throw new NotImplementedException("The upgrader is still in development");
+            if (previousVersion.StartsWith("1.3") && currentVersion.StartsWith("1.4"))
+            {
+                try
+                {
+                    // No extra data needed in this upgrade
+                }
+                catch (Exception ex)
+                {
+                    installerResult.Successful = false;
+                    installerResult.Message = string.Format("Error updating from {0} to {1}", previousVersion, currentVersion);
+                    installerResult.Exception = ex;
+                }
 
+            }
+            
             return installerResult;
         }
 
@@ -420,7 +440,7 @@ namespace MVCForum.Website.Controllers
                         {
                             // Unpack the data
                             var allLines = new List<string>();
-                            using (var streamReader = new StreamReader(file, true))
+                            using (var streamReader = new StreamReader(file, System.Text.Encoding.UTF8, true))
                             {
                                 while (streamReader.Peek() >= 0)
                                 {

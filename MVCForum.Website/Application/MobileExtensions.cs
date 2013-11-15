@@ -15,7 +15,7 @@ namespace MVCForum.Website.Application
           if (c.Request.Browser.IsMobileDevice || c.UserAgentContains("Android")
                 || c.UserAgentContains("iPhone") || c.UserAgentContains("iPod")
                 || c.UserAgentContains("Windows Phone") || c.UserAgentContains("Blackberry")
-                || c.UserAgentContains("iemobile") || c.UserAgentContains("iPad"))
+                || c.UserAgentContains("iemobile") || c.UserAgentContains("iPad") || c.UserAgentContains("Opera Mini"))
             {
                 // We know its a mobile device so now work out if we think its a tablet or not
                 if (c.UserAgentContains("ipad") || (c.UserAgentContains("android") && !c.UserAgentContains("mobile")))

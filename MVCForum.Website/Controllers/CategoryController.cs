@@ -70,7 +70,6 @@ namespace MVCForum.Website.Controllers
         }   
 
         [ChildActionOnly]
-        [OutputCache(Duration = AppConstants.DefaultCacheLengthInSeconds)]
         public PartialViewResult ListCategorySideMenu()
         {
             var catViewModel = new CategoryListViewModel { 

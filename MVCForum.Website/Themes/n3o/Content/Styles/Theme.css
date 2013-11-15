@@ -1,4 +1,8 @@
-﻿/* --- Set main body styles --- */
+﻿/*--- Bootstrap Overides ---*/
+.container-fluid { max-width: 1000px;margin-left: auto;margin-right: auto;}
+.navbar .brand { padding-top: 5px; padding-bottom:3px; }
+
+/* --- Set main body styles --- */
 html {-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;}
 input[type=submit] {-webkit-appearance: none;}
 body {font-family:Calibri, Arial, Helvetica, sans-serif;}
@@ -33,6 +37,7 @@ form { margin-bottom: 5px;}
 /*--- Validation errors ---*/
 .validation-summary-errors {background-color: #F2DEDE; color: #B94A48; border: 1px solid #EED3D7; border-radius: 4px 4px 4px 4px; margin-bottom: 18px; padding: 8px 14px 8px 14px;text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);}
 .validation-summary-errors span { display: block;padding: 0 0 5px 0;}
+.validation-summary-errors ul { margin-bottom: 0;}
 
 /*labels*/
 .editor-label { padding: 5px 0 2px 0;}
@@ -100,7 +105,7 @@ select {  }
 .topicrowdetails h3 { margin: 0 0 9px 0;line-height:25px;}
 
 .topicstats {text-align: center;}
-.statsblock {font-size: 20px;font-weight: bold; padding: 8px 0 2px 0;color: #808185;border: 1px solid #BFBFBF;height: 45px;width: 42px;float: left;background: none repeat scroll 0 0 #f5f5f5;-moz-border-radius: 5px;-webkit-border-radius: 5px;-khtml-border-radius: 5px;border-radius: 5px;}
+.statsblock {font-size: 20px;font-weight: bold; padding: 8px 0 2px 0;color: #808185;border: 1px solid #BFBFBF;height: 45px;width: 29.5%;float: left;background: none repeat scroll 0 0 #f5f5f5;-moz-border-radius: 5px;-webkit-border-radius: 5px;-khtml-border-radius: 5px;border-radius: 5px;}
 .statsblock span { font-size: 10px;font-weight: normal;display: block;}
 
 .topicvotes {}
@@ -153,7 +158,7 @@ select {  }
 #topicheading {margin:0 0 10px 0;}
 p.lastedited { font-size:0.9em; font-style:italic; color:#595959;}
 
-.userpostadmin { padding: 0 5px;} 
+.userpostadmin {} 
 
 .solutionholder {display: block;text-decoration: none; width: 40px;height: 31px;margin: 10px auto 0 auto; background-image: url('../Images/solve-tick.png');background-repeat: no-repeat;background-position: left; cursor: pointer;display: block;font-size: 0; display:block; line-height: 0;text-indent: -9999em;clear: both;} 
 .solutionholder:hover {background-position: right; }
@@ -271,7 +276,7 @@ div.tagsinput div { display:block; float: left; }
 .sidesearchbox {}
 .sidesearchbox ul { padding: 0;margin: 0;border: none !Important;}
 .sidesearchbox ul li {float: left;padding: 0;margin: 0;clear: none;width: 20%;border: none !Important;}
-.sidesearchbox ul li.sidesearchboxtb {width: 75%;}
+.sidesearchbox ul li.sidesearchboxtb {width:75%;}
 .sidesearchbox ul li input[type=text]{ width:90%;}
 .sidesearchbox form { padding: 0;margin: 0;}
 
@@ -381,7 +386,6 @@ input[type="radio"].pollanswerselect { margin: 3px 0 0 15px;float: left;}
 .oauthbuttons a.myopenidloginbutton {}
 .oauthbuttons a.yahoologinbutton {}
 
-
 /*--- Related Question Lookup ---*/
 .relatedtopicsholder { display: none;}
 .relatedtopicsholder .relatedtopics {}
@@ -395,10 +399,118 @@ input[type="radio"].pollanswerselect { margin: 3px 0 0 15px;float: left;}
 /*--- Misc Mobile Style ---*/
 .mobileview .mobilenavbar .mobilenavbartopstrip {background-color: #4891DC;}
 
+/*--- Category Index ---*/
+.categoryindex {}
+.categoryindex .categorydetails { padding-bottom: 17px;margin-bottom:7px;border-bottom: 1px solid #eeeeee;}
+.categoryindex .categorydetails h2 { padding: 0 0 0 0;margin: 0 0 0 0;}
+.categoryindex .categorydetails p { padding: 0 0 8px 0;margin: 0 0 0 0;font-size: 15px;}
+.categoryindex .categorydetailsfooter { font-size: 12px;padding-top: 5px;padding-bottom: 0;}
+.categoryindex .categorydetailsfooter .catrss { text-align: left;}
+.categoryindex .categorydetailsfooter .catrss .rsssubscribe {margin-bottom:20px;float: none;margin: 0;}
+.categoryindex .categorydetailsfooter .catdiscussions {text-align: center;}
+.categoryindex .categorydetailsfooter .catcomments {text-align: center;}
+.categoryindex .categorydetailsfooter .catmostrecent {text-align: right;}
+
 /*--- Attach Files ---*/
 .postuploadholder { display: none;}
-.postuploadholder .span7 { border-top: 1px #bfbfbf dotted;padding: 15px 0 0 0;margin-top: 15px;}
-.postuploadedfilesholder { border-top: 1px #bfbfbf dotted;padding: 15px 0 0 0;margin-top: 15px;}
-.postuploadedfilesholder div.fileupload { border: 1px solid #2D82D7;width: 46.5%; -moz-border-radius: 2px; -webkit-border-radius: 2px; display: block; float: left; padding: 0 5px; text-decoration: none; color: #2676C6; margin-right: 5px; margin-bottom: 5px; background-color: #4891dc;line-height: 24px; }
+.postuploadholder .span8 { border-top: 1px #bfbfbf dotted;padding: 15px 0 0 0;margin-top: 15px;}
+.postuploadedfilesholder { border-top: 1px #bfbfbf dotted;padding: 15px 0 0 0;margin-top: 25px;}
+.postuploadedfilesholder div.fileupload { border: 1px solid #2D82D7;width: 46.5%; -moz-border-radius: 2px; -webkit-border-radius: 2px; display: block; float: left; padding: 6px 5px; text-decoration: none; color: #2676C6; margin-right: 5px; margin-bottom: 5px; background-color: #4891dc;line-height: 24px; }
 .postuploadedfilesholder div.fileupload a { color: #fff;font-size: 15px;}
 .postuploadedfilesholder div.fileupload span.deleteupload a{ font-weight: bold;font-size: 22px;padding: 0 0 0 14px;line-height: 22px;float: right;}
+
+/*============== MEDIA QUERIES OVERIDES ==============*/
+
+@media (max-width: 1105px) {
+}
+
+@media (max-width: 1045px) {
+}
+
+@media (max-width: 979px) {
+    body { padding: 0 !Important; }
+}
+
+@media (max-width: 925px) {
+}
+
+@media screen and (max-width: 860px) {
+}
+
+@media (max-width: 767px) {
+
+    /*-- Stop gap produced by bootstrap*/
+    body { padding: 0; }
+    .container-fluid { padding-left: 10px; padding-right: 10px; }
+
+    .mainbody .btn { padding-left: 0; padding-right: 0; text-align: center; height: auto; line-height: none; width: 100% !Important; }
+    .mainbody .input-append .btn { padding-left: 20px; padding-right: 20px; width: auto!Important; }
+
+    /*--- Nav Bar ---*/
+    .navbar-fixed-top, .navbar-fixed-bottom, .navbar-static-top { margin-left: 0; margin-right: 0; }
+    #logindisplay { text-align: center; font-size: 14px; }
+
+    /*-- side ---*/
+    .sidelayoutsection { padding: 20px 0 0 0; }
+
+    /*-- Topic Row --*/
+    .topicrow { }
+    .topicrow .topicrecent { display: none !Important; }
+    .topicrow .topicstats { float: left; width: 18%; }
+    .topicrow .topicstats .statsblock { float: none; width: auto; margin: 0 0 3px 0; height: auto; line-height: normal; }
+    .topicrow .topicrowdetails { float: right; width: 80%; }
+    .topicrow .topicviews { display: none; }
+    .latesttopicsheader .latesttopicheading { float: left; width: 85%; }
+    .latesttopicsheader .latesttopicrss { float: right; width: 15%; }
+
+    /*--- Post ---*/
+    .post { position: relative; }
+    .post .tagsinput { }
+    .post .postkarmaouter { }
+    .post .postmemberdetailsinner { text-align: right; }
+    .mainbody .topicheader { font-size: 25px; line-height: normal; margin-bottom: 5px; }
+    .mainbody .topicsubscription { text-align: center; }
+    .mainbody .postmemberdetailsinner { display: none; }
+    .emailsubscription, .emailunsubscription { float: none; }
+    .postuploadedfilesholder div.fileupload { float: none; width: auto; margin: 0 0 6px 0; }
+    .postkarmaouter .postadminui a, .postkarmaouter .postadminui a:visited { margin: 8px 0; padding: 3px 0; }
+    .mainbody .karmapointsholder { float: left; width: 40%; margin: 0; }
+    .mainbody .karmaholder { min-height: initial; height: auto; }
+    .mainbody .karmascore { line-height: normal; padding: 1px 0; }
+    .mainbody .solutionholder { float: right; clear: none; }
+    .mainbody .postbodytop { margin-bottom: 90px; }
+    .mainbody .postmemberdetails { position: absolute; top: 45px; }
+    .mainbody .topicstarterpostcomments { text-align: center; }
+    .mainbody .topicpostorderfilter { text-align: center; }
+    .mainbody .postuploadbutton { margin-bottom: 15px; }
+
+    /*--- Activity ---*/
+    .activityholder .activityentry { text-align: center; padding: 18px 0; }
+    .publicbadgeline { text-align: center; }
+    .mainbody .activityheading { float: left;width: 90%;}
+    .mainbody .activityrss {float: right;width: 10%;}
+
+    /*--- Polls ---*/
+    .polladdremovenewanswers a.btn { width: 49% !Important; }
+    .mainbody .progress { margin-bottom: 8px;}
+
+    /*--- Search Page ---*/
+    .large-search { }
+
+    /*--- Side Search ---*/
+    .sidesearchbox {}
+    .mainbody .sidesearchbox .btn { padding-left: 10px;padding-right: 10px;}
+
+    /*--- All categories ---*/
+    .categoryindex .categorydetailsfooter .catrss { float: left; width: 15%; }
+    .categoryindex .categorydetailsfooter .catdiscussions { float: left; width: 40%; }
+    .categoryindex .categorydetailsfooter .catcomments { float: right; width: 40%; }
+    .categoryindex .categorydetailsfooter .catmostrecent { clear: both; text-align: left; }
+}
+
+@media (max-width: 600px) {
+    .topicrow .topicstats .statsblock { font-size: 16px; }
+}
+
+@media (max-width: 480px) {
+}

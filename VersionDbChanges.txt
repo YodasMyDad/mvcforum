@@ -356,3 +356,23 @@ GO
 <idn enabled="All" />
 <iriParsing enabled="true" />
 </uri>
+
+==============================
+============ v1.4 ============
+==============================
+
+--- Settings
+NewMemberEmailConfirmation bit allow nulls
+
+--- Post
+IpAddress nvarchar(50) allow nulls
+
+--- Language strings
+Members.MemberEmailAuthorisationNeeded = We have sent you a confirmation email - please click the confirmation link in your email to approve your account.
+Members.MemberEmailAuthorisation.EmailBody = You have registered on {0} - in order to continue you must confirm your email address by clicking the link below.<br> {1}
+Members.MemberEmailAuthorisation.Subject = Email Confirmation
+Members.NowApproved = Your account has now been approved - thank you
+Members.MemberEmailAuthorisationNeededMessage = Click the link in your confirmation email to approve your account.
+Members.MemberEmailAuthorisationResend = Resend Confirmation Email
+Members.MessageMe = Message Me
+Confirmation.DeleteMembersPosts = Are you sure? This will delete all the members posts and topics!

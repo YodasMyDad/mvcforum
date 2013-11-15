@@ -100,6 +100,33 @@ namespace MVCForum.Utilities
             }
         }
 
+        public static bool ChangeApplicationName(string newName, string currentAppName)
+        {
+            try
+            {
+                var xDoc = GetWebConfig();
+
+                var membershipProviders = xDoc.GetElementsByTagName("membership")[0];
+                var xpathToSetting = string.Format("//add[@name='{0}']", currentAppName);
+                var provider = membershipProviders.SelectSingleNode(xpathToSetting);
+                if (provider != null && provider.Attributes != null)
+                {
+                    var idAttribute = provider.Attributes["applicationName"];
+                    if (idAttribute != null)
+                    {
+                        idAttribute.Value = newName;
+                        xDoc.Save(WebConfigPath);
+                        return true;
+                    }
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public static bool InsertConnectionString(string name, string connectionString, string providerName = "System.Data.SqlClient")
         {
             try

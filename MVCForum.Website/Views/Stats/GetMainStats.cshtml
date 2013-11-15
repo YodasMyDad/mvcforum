@@ -1,5 +1,5 @@
 ﻿@model MVCForum.Website.ViewModels.MainStatsViewModel
-<div class="row footerstats">
+<div class="row-fluid footerstats">
     <div class="span12">
         <p>@Html.Raw(string.Format(Html.LanguageString("Stats.FooterMainStatText"), Model.MemberCount, Model.PostCount, Model.TopicCount))</p>
         <ul class="latestmembersjoined">

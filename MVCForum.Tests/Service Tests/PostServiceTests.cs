@@ -123,47 +123,5 @@ namespace MVCForum.Tests.Service_Tests
             Assert.AreEqual(newPost.Topic, topic);
         }
 
-        [Test]
-        public void AddPostNoPermission()
-        {
-            var postRepository = Substitute.For<IPostRepository>();
-            var topicRepository = Substitute.For<ITopicRepository>();
-            var roleService = Substitute.For<IRoleService>();
-            var membershipUserPointsService = Substitute.For<IMembershipUserPointsService>();
-            var settingsService = Substitute.For<ISettingsService>();
-            settingsService.GetSettings().Returns(new Settings { PointsAddedPerPost = 20 });
-            var localisationService = Substitute.For<ILocalizationService>();
-            var postService = new PostService(membershipUserPointsService, settingsService, roleService, postRepository, topicRepository, localisationService, _api);
-
-            var category = new Category();
-            var role = new MembershipRole { RoleName = "TestRole" };
-
-            var categoryPermissionForRoleSet = new List<CategoryPermissionForRole>
-                                                   {
-                                                       new CategoryPermissionForRole { Permission = new Permission { Name = AppConstants.PermissionEditPosts }, IsTicked = true},
-                                                       new CategoryPermissionForRole { Permission = new Permission { Name = AppConstants.PermissionDenyAccess }, IsTicked = true},
-                                                       new CategoryPermissionForRole { Permission = new Permission { Name = AppConstants.PermissionReadOnly  }, IsTicked = false}
-                                                   };
-
-            var permissionSet = new PermissionSet(categoryPermissionForRoleSet);
-            roleService.GetPermissions(category, role).Returns(permissionSet);
-
-            var topic = new Topic { Name = "Captain America", Category = category };
-            var user = new MembershipUser
-            {
-                UserName = "SpongeBob",
-                Roles = new List<MembershipRole> { role }
-            };
-
-            try
-            {
-                var newPost = postService.AddNewPost("A test post", topic, user, out permissionSet);
-            }
-            catch (Exception ex)
-            {
-                Assert.AreEqual(ex.Message, "No permission");
-            }
-          
-        }
     }
 }

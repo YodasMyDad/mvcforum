@@ -2,6 +2,7 @@
 @{
     var theme = Html.Settings().Theme;
     var themePath = string.Concat(AppConstants.ThemeRootFolder, theme);
+    var globalClass = Convert.ToBoolean(PageData[AppConstants.IsMobileDevice]) ? "mobile" : "desktop";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -17,6 +18,7 @@
         @(
             Bundle.Css()
                 .Add("~/Content/Styles/bootstrap.css")
+                .Add("~/Content/Styles/bootstrap-responsive.css")
                 .Add("~/Content/Styles/bootstrap-prettify.css")
                 .Add(themePath + "/Content/Styles/theme.css")
                 .MvcRender("~/content/cache/combined_" + theme + "_#.css")
@@ -24,13 +26,16 @@
         <!--[if lt IE 9]>
             <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
+        <!--[if lt IE 8]>
+            <script src="@Url.Content("~/scripts/json3.js")"></script>
+        <![endif]-->
         <link rel="shortcut icon" href="@Url.Content(themePath + "/content/images/favicon.ico")">
         <link rel="apple-touch-icon-precomposed" href="@Url.Content(themePath + "/content/images/apple-touch-icon-57-precomposed.png")">
         <script type="text/javascript">
             var app_base = '@Url.Content("~/")';
         </script>
         @(Bundle.JavaScript()
-                    .Add("~/Scripts/jquery-1.9.1.min.js")
+                    .Add("~/Scripts/jquery-1.8.0.min.js")
                     .Add("~/Scripts/jquery.unobtrusive-ajax.js")
                     .Add("~/Scripts/bootstrap.min.js")
                     .Add("~/Scripts/jquery.placeholder.min.js")
@@ -41,12 +46,52 @@
            )
         @RenderSection("Header", false)
     </head>
+           
+    <body class="@globalClass">
         
-    
+        
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="brand" href="@Url.Action("Index", "Home")">
+                    <img src="@Url.Content(themePath + "/Content/Images/admin-n3o-logo.png")" alt="" />
+                </a>
+                <div class="nav-collapse collapse">
+                    <ul class="nav">
+                        <li><a href="@Url.Action("Index", "Home")">@Html.LanguageString("Layout.Nav.Home")</a></li>
+                        @if (Html.Settings().EnablePoints)
+                        {
+                            <li><a href="@Url.Action("Leaderboard", "Home")">@Html.LanguageString("Layout.Nav.Leaderboard")</a></li>
+                        }
 
-    <body>
-    <div class="navbar">
-        <div class="navbar-inner clearfix">
+                        <li><a href="@Url.Action("Activity", "Home")">@Html.LanguageString("Layout.Nav.Activity")</a></li>
+                        <li><a href="@Url.Action("AllBadges", "Badge")">@Html.LanguageString("Layout.Nav.Badges")</a></li>
+
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            if (Html.Settings().SuspendRegistration != true)
+                            {
+                            <li><a href="@Url.Action("Register", "Members")">@Html.LanguageString("Layout.Nav.Register")</a></li>
+                            }
+                            <li><a href="@Url.Action("LogOn", "Members")">@Html.LanguageString("Layout.Nav.Logon")</a></li>
+                        }
+                        @if (User.IsInRole(AppConstants.AdminRoleName))
+                        {
+                            <li><a href="@Url.Action("Index", "Admin", new { area = "Admin" }, null)">@Html.LanguageString("Layout.Nav.Admin")</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+        @*
+        <div class="navbar">
+            <div class="navbar-inner clearfix">
 
                 <a class="brand" href="@Url.Action("Index", "Home")"></a>
                 <div class="nav-collapse">
@@ -73,53 +118,51 @@
                             <li><a href="@Url.Action("Index", "Admin", new { area = "Admin" }, null)">@Html.LanguageString("Layout.Nav.Admin")</a></li>
                         }
                         <li><a href="http://www.mvcforum.com">Back To Main Website</a></li>
-                            @*
-                            TODO: Need to create dropdown list to swap language
-                            Lists out languages
-                            @Html.Action("Index","Language")
-                            *@
+                        
                     </ul>
                 </div>
      
+            </div>
         </div>
-    </div>
-    <div class="container">
-        @Html.Partial("_GenericMessage")
-        @Html.Partial("_NoScript")
-        <div id="main" class="row mainbody">
+        *@
+        <div class="container-fluid">
+            @Html.Partial("_GenericMessage")
+            @Html.Partial("_EmailConfirmationNotice")
+            @Html.Partial("_NoScript")
+            <div id="main" class="row-fluid mainbody">
 
-            <div class="span9">
-                @RenderBody()
-            </div>
-            <div class="span3 sidelayoutsection">
-                <div class="main-side-box">
-                    @if (User.Identity.IsAuthenticated)
-                    {                        
-                        @Html.Action("CreateTopicButton", "Topic")
-                        @Html.Action("SideAdminPanel", "Members")
-                    }
-                    @RenderSection("side", false)
+                <div class="span9">
+                    @RenderBody()
                 </div>
-            </div>
+                <div class="span3 sidelayoutsection">
+                    <div class="main-side-box">
+                        @if (User.Identity.IsAuthenticated)
+                        {                        
+                            @Html.Action("CreateTopicButton", "Topic")
+                            @Html.Action("SideAdminPanel", "Members")
+                        }
+                        @RenderSection("side", false)
+                    </div>
+                </div>
 
+            </div>
+            <hr>
+            @Html.Action("GetMainStats", "Stats")
+            @Html.Action("GetCurrentActiveMembers", "Members")
+            @RenderSection("Footer", false)
+            <hr>
+            <footer>
+                <div class="row-fluid">
+                    <div class="span12">
+                        <!-- ########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ###########################
+                            If you would like to remove the powered by notice, then please vist http://www.mvcforum.com/license -->
+
+                        <p> &copy; @DateTime.UtcNow.Year - @Html.LanguageString("Layout.PoweredBy") <a rel="nofollow" href="http://www.mvcforum.com">MVCForum.com</a></p>
+
+                        <!--########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ########################### -->  
+                    </div>
+                </div>
+            </footer>
         </div>
-        <hr>
-        @Html.Action("GetMainStats", "Stats")
-        @Html.Action("GetCurrentActiveMembers", "Members")
-        @RenderSection("Footer", false)
-        <hr>
-        <footer>
-            <div class="row">
-                <div class="span12">
-                    <!-- ########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ###########################
-                        If you would like to remove the powered by notice, then please vist http://www.mvcforum.com/license -->
-
-                    <p> &copy; @DateTime.UtcNow.Year - @Html.LanguageString("Layout.PoweredBy") <a href="http://www.mvcforum.com">MVC Forum</a></p>
-
-                    <!--########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ########################### -->  
-                </div>
-            </div>
-        </footer>
-    </div>
-</body>
+    </body>
 </html>

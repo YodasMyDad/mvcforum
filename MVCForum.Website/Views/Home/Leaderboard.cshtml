@@ -18,8 +18,8 @@
     )
 }
 
-<div class="row">    
-    <div class="span4 thisweeksstars">
+<div class="row-fluid">    
+    <div class="span6 thisweeksstars">
         <h2>@Html.LanguageString("Leaderboard.ThisWeeksStars")</h2>
         
         <div class="leaderboardholders thisweekleaderboard">
@@ -27,7 +27,7 @@
         </div>
 
     </div>
-    <div class="offset1 span4 thisyearsstars">
+    <div class="span6 thisyearsstars">
         <h2>@Html.LanguageString("Leaderboard.ThisYearsStars")</h2>        
         <div class="leaderboardholders alltimeleaderboard">
             <span class="ajaxspinner" title="@Html.LanguageString("Ajax.PleaseWait")">@Html.LanguageString("Ajax.PleaseWait")</span>

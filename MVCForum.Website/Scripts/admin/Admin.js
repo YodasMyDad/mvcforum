@@ -1,5 +1,20 @@
 ﻿$(function () {
 
+    var showNavButton = $(".btn-show-admin-nav");
+    var mainNavHolder = $(".admin-options");
+    showNavButton.click(function (e) {
+        e.preventDefault();
+        mainNavHolder.slideToggle('fast',
+            function () {
+                if (mainNavHolder.is(":hidden")) {
+                    showNavButton.text("Show Main Navigation");
+                } else {
+                    showNavButton.text("Hide Main Navigation");
+                }
+            }
+        );
+    });
+
     // Someone has clicked one of the roles checkboxes
     // On the list page so update
     var listrolecbholder = 'span.listrolecbholder';

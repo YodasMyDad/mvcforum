@@ -1,6 +1,11 @@
 ﻿@using MVCForum.Website.Application
 @using SquishIt.Framework
 @using SquishIt.Mvc
+@{
+    //var theme = Html.Settings().Theme;
+    //var themePath = string.Concat(AppConstants.ThemeRootFolder, theme);
+    var globalClass = Context.IsMobileDevice() ? "mobile" : "desktop";
+}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -13,6 +18,7 @@
     @(
         Bundle.Css()
             .Add("~/Content/Styles/bootstrap.css")
+            .Add("~/Content/styles/bootstrap-responsive.css")
             .Add("~/Content/admin/Admin.css")
             .Add("~/Scripts/fancybox/jquery.fancybox.css")                
             .MvcRender("~/content/cache/combinedadmin_#.css")
@@ -31,9 +37,9 @@
             var app_base = '@Url.Content("~/")';
         </script>
         @(Bundle.JavaScript()
-        .Add("~/Scripts/jquery-1.9.1.min.js")
+        .Add("~/Scripts/jquery-2.0.1.min.js")
         .Add("~/Scripts/jquery.unobtrusive-ajax.js")
-        .Add("~/Scripts/jquery-ui-1.10.0.min.js")
+        .Add("~/Scripts/jquery-ui-1.10.3.min.js")
         .Add("~/Scripts/bootstrap.min.js")
         .Add("~/Scripts/fancybox/jquery.fancybox.js")
         .Add("~/Scripts/admin/admin.js")
@@ -44,13 +50,13 @@
     @RenderSection("AdminHeader", false)
   </head>
 
-  <body>
+<body class="@globalClass">
 
-    <div class="container blankcontainer">
+    <div class="container-fluid blankcontainer">
 
         @Html.Partial("_GenericMessage")        
 
-        <div class="row">    
+        <div class="row-fluid">    
                  @RenderBody()
         </div>        
 

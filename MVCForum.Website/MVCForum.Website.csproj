@@ -56,94 +56,100 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\DataAnnotationsExtensions.MVC3.1.1.0.0\lib\NETFramework40\DataAnnotationsExtensions.ClientValidation.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetOpenAuth.Core, Version=4.2.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+    <Reference Include="DotNetOpenAuth.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DotNetOpenAuth.Core.4.2.2.13055\lib\net40-full\DotNetOpenAuth.Core.dll</HintPath>
+      <HintPath>..\packages\DotNetOpenAuth.Core.4.3.1.13153\lib\net40-full\DotNetOpenAuth.Core.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetOpenAuth.Core.UI, Version=4.2.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+    <Reference Include="DotNetOpenAuth.Core.UI, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DotNetOpenAuth.Core.UI.4.2.2.13055\lib\net40-full\DotNetOpenAuth.Core.UI.dll</HintPath>
+      <HintPath>..\packages\DotNetOpenAuth.Core.UI.4.3.1.13153\lib\net40-full\DotNetOpenAuth.Core.UI.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetOpenAuth.InfoCard, Version=4.2.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+    <Reference Include="DotNetOpenAuth.InfoCard, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DotNetOpenAuth.InfoCard.4.2.2.13055\lib\net40-full\DotNetOpenAuth.InfoCard.dll</HintPath>
+      <HintPath>..\packages\DotNetOpenAuth.InfoCard.4.3.1.13153\lib\net40-full\DotNetOpenAuth.InfoCard.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetOpenAuth.InfoCard.UI, Version=4.2.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+    <Reference Include="DotNetOpenAuth.InfoCard.UI, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DotNetOpenAuth.InfoCard.UI.4.2.2.13055\lib\net40-full\DotNetOpenAuth.InfoCard.UI.dll</HintPath>
+      <HintPath>..\packages\DotNetOpenAuth.InfoCard.UI.4.3.1.13153\lib\net40-full\DotNetOpenAuth.InfoCard.UI.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetOpenAuth.OAuth, Version=4.2.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+    <Reference Include="DotNetOpenAuth.OAuth, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DotNetOpenAuth.OAuth.Core.4.2.2.13055\lib\net40-full\DotNetOpenAuth.OAuth.dll</HintPath>
+      <HintPath>..\packages\DotNetOpenAuth.OAuth.Core.4.3.1.13153\lib\net40-full\DotNetOpenAuth.OAuth.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetOpenAuth.OAuth.Common, Version=4.2.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+    <Reference Include="DotNetOpenAuth.OAuth.Common, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DotNetOpenAuth.OAuth.Common.4.2.2.13055\lib\net40-full\DotNetOpenAuth.OAuth.Common.dll</HintPath>
+      <HintPath>..\packages\DotNetOpenAuth.OAuth.Common.4.3.1.13153\lib\net40-full\DotNetOpenAuth.OAuth.Common.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetOpenAuth.OAuth.Consumer, Version=4.2.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+    <Reference Include="DotNetOpenAuth.OAuth.Consumer, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DotNetOpenAuth.OAuth.Consumer.4.2.2.13055\lib\net40-full\DotNetOpenAuth.OAuth.Consumer.dll</HintPath>
+      <HintPath>..\packages\DotNetOpenAuth.OAuth.Consumer.4.3.1.13153\lib\net40-full\DotNetOpenAuth.OAuth.Consumer.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetOpenAuth.OAuth.ServiceProvider, Version=4.2.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+    <Reference Include="DotNetOpenAuth.OAuth.ServiceProvider, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DotNetOpenAuth.OAuth.ServiceProvider.4.2.2.13055\lib\net40-full\DotNetOpenAuth.OAuth.ServiceProvider.dll</HintPath>
+      <HintPath>..\packages\DotNetOpenAuth.OAuth.ServiceProvider.4.3.1.13153\lib\net40-full\DotNetOpenAuth.OAuth.ServiceProvider.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetOpenAuth.OAuth2">
-      <HintPath>..\packages\DotNetOpenAuth.OAuth2.Core.4.2.2.13055\lib\net40-full\DotNetOpenAuth.OAuth2.dll</HintPath>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.OAuth2.AuthorizationServer">
-      <HintPath>..\packages\DotNetOpenAuth.OAuth2.AuthorizationServer.4.2.2.13055\lib\net40-full\DotNetOpenAuth.OAuth2.AuthorizationServer.dll</HintPath>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.OAuth2.Client">
-      <HintPath>..\packages\DotNetOpenAuth.OAuth2.Client.4.2.2.13055\lib\net40-full\DotNetOpenAuth.OAuth2.Client.dll</HintPath>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.OAuth2.Client.UI">
-      <HintPath>..\packages\DotNetOpenAuth.OAuth2.Client.UI.4.2.2.13055\lib\net40-full\DotNetOpenAuth.OAuth2.Client.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.OAuth2.ClientAuthorization">
-      <HintPath>..\packages\DotNetOpenAuth.OAuth2.ClientAuthorization.4.2.2.13055\lib\net40-full\DotNetOpenAuth.OAuth2.ClientAuthorization.dll</HintPath>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.OAuth2.ResourceServer">
-      <HintPath>..\packages\DotNetOpenAuth.OAuth2.ResourceServer.4.2.2.13055\lib\net40-full\DotNetOpenAuth.OAuth2.ResourceServer.dll</HintPath>
-    </Reference>
-    <Reference Include="DotNetOpenAuth.OpenId, Version=4.2.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+    <Reference Include="DotNetOpenAuth.OAuth2, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DotNetOpenAuth.OpenId.Core.4.2.2.13055\lib\net40-full\DotNetOpenAuth.OpenId.dll</HintPath>
+      <HintPath>..\packages\DotNetOpenAuth.OAuth2.Core.4.3.1.13153\lib\net40-full\DotNetOpenAuth.OAuth2.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetOpenAuth.OpenId.Provider, Version=4.2.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+    <Reference Include="DotNetOpenAuth.OAuth2.AuthorizationServer, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DotNetOpenAuth.OpenId.Provider.4.2.2.13055\lib\net40-full\DotNetOpenAuth.OpenId.Provider.dll</HintPath>
+      <HintPath>..\packages\DotNetOpenAuth.OAuth2.AuthorizationServer.4.3.1.13153\lib\net40-full\DotNetOpenAuth.OAuth2.AuthorizationServer.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetOpenAuth.OpenId.Provider.UI, Version=4.2.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+    <Reference Include="DotNetOpenAuth.OAuth2.Client, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DotNetOpenAuth.OpenId.Provider.UI.4.2.2.13055\lib\net40-full\DotNetOpenAuth.OpenId.Provider.UI.dll</HintPath>
+      <HintPath>..\packages\DotNetOpenAuth.OAuth2.Client.4.3.1.13153\lib\net40-full\DotNetOpenAuth.OAuth2.Client.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetOpenAuth.OpenId.RelyingParty, Version=4.2.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+    <Reference Include="DotNetOpenAuth.OAuth2.Client.UI, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DotNetOpenAuth.OpenId.RelyingParty.4.2.2.13055\lib\net40-full\DotNetOpenAuth.OpenId.RelyingParty.dll</HintPath>
+      <HintPath>..\packages\DotNetOpenAuth.OAuth2.Client.UI.4.3.1.13153\lib\net40-full\DotNetOpenAuth.OAuth2.Client.UI.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetOpenAuth.OpenId.RelyingParty.UI, Version=4.2.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+    <Reference Include="DotNetOpenAuth.OAuth2.ClientAuthorization, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DotNetOpenAuth.OpenId.RelyingParty.UI.4.2.2.13055\lib\net40-full\DotNetOpenAuth.OpenId.RelyingParty.UI.dll</HintPath>
+      <HintPath>..\packages\DotNetOpenAuth.OAuth2.ClientAuthorization.4.3.1.13153\lib\net40-full\DotNetOpenAuth.OAuth2.ClientAuthorization.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetOpenAuth.OpenId.UI, Version=4.2.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+    <Reference Include="DotNetOpenAuth.OAuth2.ResourceServer, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DotNetOpenAuth.OpenId.Core.UI.4.2.2.13055\lib\net40-full\DotNetOpenAuth.OpenId.UI.dll</HintPath>
+      <HintPath>..\packages\DotNetOpenAuth.OAuth2.ResourceServer.4.3.1.13153\lib\net40-full\DotNetOpenAuth.OAuth2.ResourceServer.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetOpenAuth.OpenIdInfoCard.UI, Version=4.2.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+    <Reference Include="DotNetOpenAuth.OpenId, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DotNetOpenAuth.OpenIdInfoCard.UI.4.2.2.13055\lib\net40-full\DotNetOpenAuth.OpenIdInfoCard.UI.dll</HintPath>
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.Core.4.3.1.13153\lib\net40-full\DotNetOpenAuth.OpenId.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetOpenAuth.OpenIdOAuth, Version=4.2.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+    <Reference Include="DotNetOpenAuth.OpenId.Provider, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DotNetOpenAuth.OpenIdOAuth.4.2.2.13055\lib\net40-full\DotNetOpenAuth.OpenIdOAuth.dll</HintPath>
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.Provider.4.3.1.13153\lib\net40-full\DotNetOpenAuth.OpenId.Provider.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId.Provider.UI, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.Provider.UI.4.3.1.13153\lib\net40-full\DotNetOpenAuth.OpenId.Provider.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId.RelyingParty, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.RelyingParty.4.3.1.13153\lib\net40-full\DotNetOpenAuth.OpenId.RelyingParty.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId.RelyingParty.UI, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.RelyingParty.UI.4.3.1.13153\lib\net40-full\DotNetOpenAuth.OpenId.RelyingParty.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenId.UI, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\DotNetOpenAuth.OpenId.Core.UI.4.3.1.13153\lib\net40-full\DotNetOpenAuth.OpenId.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenIdInfoCard.UI, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\DotNetOpenAuth.OpenIdInfoCard.UI.4.3.1.13153\lib\net40-full\DotNetOpenAuth.OpenIdInfoCard.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.OpenIdOAuth, Version=4.3.0.0, Culture=neutral, PublicKeyToken=2780ccd10d57b246, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\DotNetOpenAuth.OpenIdOAuth.4.3.1.13153\lib\net40-full\DotNetOpenAuth.OpenIdOAuth.dll</HintPath>
     </Reference>
     <Reference Include="EcmaScript.NET">
       <HintPath>..\packages\YUICompressor.NET.2.0.0.0\lib\NET20\EcmaScript.NET.dll</HintPath>
     </Reference>
     <Reference Include="Facebook, Version=6.0.10.0, Culture=neutral, PublicKeyToken=58cb4f2111d1e6de, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Facebook.6.1.4\lib\net40-client\Facebook.dll</HintPath>
+      <HintPath>..\packages\Facebook.6.4.2\lib\net40-client\Facebook.dll</HintPath>
     </Reference>
     <Reference Include="Iesi.Collections">
       <HintPath>..\packages\YUICompressor.NET.2.0.0.0\lib\NET20\Iesi.Collections.dll</HintPath>
@@ -156,20 +162,39 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="SquishIt.Framework, Version=0.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SquishIt.Framework, Version=0.9.3.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SquishIt.0.9.2\lib\SquishIt.Framework.dll</HintPath>
+      <HintPath>..\packages\SquishIt.0.9.3\lib\SquishIt.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="SquishIt.Mvc, Version=0.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SquishIt.Mvc, Version=0.9.3.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SquishIt.Mvc.0.9.2\lib\SquishIt.Mvc.dll</HintPath>
+      <HintPath>..\packages\SquishIt.Mvc.0.9.3\lib\SquishIt.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.Entity" />
-    <Reference Include="System.Net.Http, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Net.Http.2.0.20710.0\lib\net40\System.Net.Http.dll</HintPath>
+    <Reference Include="System.IO">
+      <HintPath>..\packages\Microsoft.Bcl.1.1.3\lib\net40\System.IO.dll</HintPath>
     </Reference>
-    <Reference Include="System.Net.Http.WebRequest, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Net.Http.2.0.20710.0\lib\net40\System.Net.Http.WebRequest.dll</HintPath>
+    <Reference Include="System.Net.Http, Version=2.2.13.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.13\lib\net40\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Extensions, Version=2.2.13.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.13\lib\net40\System.Net.Http.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Primitives, Version=2.2.13.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.13\lib\net40\System.Net.Http.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest, Version=2.2.13.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Net.Http.2.2.13\lib\net40\System.Net.Http.WebRequest.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime">
+      <HintPath>..\packages\Microsoft.Bcl.1.1.3\lib\net40\System.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks">
+      <HintPath>..\packages\Microsoft.Bcl.1.1.3\lib\net40\System.Threading.Tasks.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
@@ -626,6 +651,68 @@
     <Content Include="Content\Styles\bootstrap.min.css" />
     <Content Include="Content\Styles\images\glyphicons-halflings-white.png" />
     <Content Include="Content\Styles\images\glyphicons-halflings.png" />
+    <Content Include="Content\themes\base\images\animated-overlay.gif" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\jquery-ui.css" />
+    <Content Include="Content\themes\base\jquery.ui.accordion.css" />
+    <Content Include="Content\themes\base\jquery.ui.all.css" />
+    <Content Include="Content\themes\base\jquery.ui.autocomplete.css" />
+    <Content Include="Content\themes\base\jquery.ui.base.css" />
+    <Content Include="Content\themes\base\jquery.ui.button.css" />
+    <Content Include="Content\themes\base\jquery.ui.core.css" />
+    <Content Include="Content\themes\base\jquery.ui.datepicker.css" />
+    <Content Include="Content\themes\base\jquery.ui.dialog.css" />
+    <Content Include="Content\themes\base\jquery.ui.menu.css" />
+    <Content Include="Content\themes\base\jquery.ui.progressbar.css" />
+    <Content Include="Content\themes\base\jquery.ui.resizable.css" />
+    <Content Include="Content\themes\base\jquery.ui.selectable.css" />
+    <Content Include="Content\themes\base\jquery.ui.slider.css" />
+    <Content Include="Content\themes\base\jquery.ui.spinner.css" />
+    <Content Include="Content\themes\base\jquery.ui.tabs.css" />
+    <Content Include="Content\themes\base\jquery.ui.theme.css" />
+    <Content Include="Content\themes\base\jquery.ui.tooltip.css" />
+    <Content Include="Content\themes\base\minified\images\animated-overlay.gif" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\themes\base\minified\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\themes\base\minified\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\themes\base\minified\jquery-ui.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.accordion.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.autocomplete.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.button.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.core.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.datepicker.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.dialog.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.menu.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.progressbar.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.resizable.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.selectable.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.slider.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.spinner.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.tabs.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
+    <Content Include="Content\themes\base\minified\jquery.ui.tooltip.min.css" />
     <Content Include="Content\uploads\readme.txt" />
     <Content Include="Installer\Content\arrow-spinner-blue.gif" />
     <Content Include="Installer\Content\Images\glyphicons\glyphicons_009_magic.png" />
@@ -645,11 +732,186 @@
     <Content Include="Installer\Db\1.2\database.sql" />
     <Content Include="Installer\Db\1.2\Upgrade\upgrade.sql" />
     <Content Include="Installer\Db\1.3\database.sql" />
+    <Content Include="Installer\Db\1.4\database.sql" />
+    <Content Include="Installer\Db\1.4\Upgrade\upgrade.sql" />
     <Content Include="Installer\ReadMe.txt" />
     <Content Include="Scripts\bootstrap-prettify.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\cache\Cache.txt" />
+    <None Include="Scripts\jquery-2.0.1.intellisense.js" />
+    <Content Include="Scripts\jquery-2.0.1.js" />
+    <Content Include="Scripts\jquery-2.0.1.min.js" />
+    <Content Include="Scripts\jquery-ui-1.10.3.js" />
+    <Content Include="Scripts\jquery-ui-1.10.3.min.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\json2.js" />
+    <Content Include="Scripts\json3.js" />
+    <Content Include="Scripts\markdown\node-pagedown.js" />
+    <Content Include="Scripts\tinymce\license.txt" />
+    <Content Include="Scripts\tinymce\plugins\advlist\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\advlist\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\anchor\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\anchor\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\autolink\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\autolink\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\autoresize\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\autoresize\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\autosave\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\autosave\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\bbcode\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\bbcode\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\charmap\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\charmap\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\code\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\code\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\css\dialog.css" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\img\buttons.png" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\img\items.gif" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\img\menu_arrow.gif" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\img\menu_check.gif" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\img\progress.gif" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\img\tabs.gif" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\tiny_mce_popup.js" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\utils\editable_selects.js" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\utils\form_utils.js" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\utils\mctabs.js" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\utils\validate.js" />
+    <Content Include="Scripts\tinymce\plugins\contextmenu\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\contextmenu\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\directionality\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\directionality\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-cool.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-cry.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-embarassed.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-foot-in-mouth.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-frown.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-innocent.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-kiss.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-laughing.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-money-mouth.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-sealed.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-smile.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-surprised.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-tongue-out.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-undecided.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-wink.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-yell.gif" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\emoticons\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\example\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\example\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\example_dependency\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\example_dependency\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\fullpage\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\fullpage\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\fullscreen\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\fullscreen\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\hr\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\hr\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\image\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\image\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\importcss\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\importcss\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\insertdatetime\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\insertdatetime\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\layer\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\layer\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\legacyoutput\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\legacyoutput\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\link\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\link\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\lists\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\lists\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\media\moxieplayer.swf" />
+    <Content Include="Scripts\tinymce\plugins\media\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\media\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\nonbreaking\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\nonbreaking\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\noneditable\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\noneditable\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\pagebreak\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\pagebreak\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\paste\classes\Clipboard.js" />
+    <Content Include="Scripts\tinymce\plugins\paste\classes\Plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\paste\classes\Quirks.js" />
+    <Content Include="Scripts\tinymce\plugins\paste\classes\WordFilter.js" />
+    <Content Include="Scripts\tinymce\plugins\paste\plugin.dev.js" />
+    <Content Include="Scripts\tinymce\plugins\paste\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\paste\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\preview\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\preview\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\print\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\print\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\save\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\save\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\searchreplace\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\searchreplace\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\spellchecker\classes\DomTextMatcher.js" />
+    <Content Include="Scripts\tinymce\plugins\spellchecker\classes\Plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\spellchecker\plugin.dev.js" />
+    <Content Include="Scripts\tinymce\plugins\spellchecker\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\spellchecker\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\tabfocus\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\tabfocus\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\table\classes\CellSelection.js" />
+    <Content Include="Scripts\tinymce\plugins\table\classes\Plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\table\classes\Quirks.js" />
+    <Content Include="Scripts\tinymce\plugins\table\classes\TableGrid.js" />
+    <Content Include="Scripts\tinymce\plugins\table\plugin.dev.js" />
+    <Content Include="Scripts\tinymce\plugins\table\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\table\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\template\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\template\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\textcolor\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\textcolor\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\css\visualblocks.css" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\img\address.gif" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\img\article.gif" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\img\aside.gif" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\img\blockquote.gif" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\img\div.gif" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\img\figure.gif" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\img\h1.gif" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\img\h2.gif" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\img\h3.gif" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\img\h4.gif" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\img\h5.gif" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\img\h6.gif" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\img\hgroup.gif" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\img\ol.gif" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\img\p.gif" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\img\pre.gif" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\img\section.gif" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\img\ul.gif" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\visualblocks\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\visualchars\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\visualchars\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\wordcount\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\wordcount\plugin.min.js" />
+    <Content Include="Scripts\tinymce\skins\lightgray\content.inline.min.css" />
+    <Content Include="Scripts\tinymce\skins\lightgray\content.min.css" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\icomoon-small.svg" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\icomoon.svg" />
+    <Content Include="Scripts\tinymce\skins\lightgray\img\anchor.gif" />
+    <Content Include="Scripts\tinymce\skins\lightgray\img\loader.gif" />
+    <Content Include="Scripts\tinymce\skins\lightgray\img\object.gif" />
+    <Content Include="Scripts\tinymce\skins\lightgray\img\trans.gif" />
+    <Content Include="Scripts\tinymce\skins\lightgray\img\wline.gif" />
+    <Content Include="Scripts\tinymce\skins\lightgray\skin.ie7.min.css" />
+    <Content Include="Scripts\tinymce\skins\lightgray\skin.min.css" />
+    <Content Include="Scripts\tinymce\themes\modern\theme.js" />
+    <Content Include="Scripts\tinymce\themes\modern\theme.min.js" />
+    <Content Include="Scripts\tinymce\tinymce.js" />
+    <Content Include="Scripts\tinymce\tinymce.min.js" />
     <Content Include="Scripts\topic.js" />
     <Content Include="Scripts\dashboard.js" />
     <Content Include="Scripts\bbeditor\jquery.sceditor.default.min.css" />
@@ -666,20 +928,8 @@
     <Content Include="Areas\Admin\Views\Batch\BatchMoveTopics.cshtml" />
     <Content Include="Areas\Admin\Views\BannedEmail\Index.cshtml" />
     <Content Include="Areas\Admin\Views\BannedWord\Index.cshtml" />
-    <None Include="Scripts\jquery-1.9.1.intellisense.js" />
-    <Content Include="Scripts\jquery-1.9.1.js" />
-    <Content Include="Scripts\jquery-1.9.1.min.js" />
-    <Content Include="Scripts\jquery-ui-1.10.0.js" />
-    <Content Include="Scripts\jquery-ui-1.10.0.min.js" />
     <Content Include="Scripts\jquery.placeholder.min.js" />
-    <Content Include="Scripts\jquery-1.9.1.min.map" />
-    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
-    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery.validate.js" />
-    <Content Include="Scripts\jquery.validate.min.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\jquery-2.0.1.min.map" />
     <Content Include="Scripts\markdown\Markdown.Converter.js" />
     <Content Include="Scripts\markdown\markdown.css" />
     <Content Include="Scripts\markdown\Markdown.Editor.js" />
@@ -719,262 +969,6 @@
     <Content Include="Scripts\Prettify\run_prettify.js" />
     <Content Include="Scripts\tags.js" />
     <Content Include="Scripts\jquery.tagsinput.min.js" />
-    <Content Include="Scripts\tinymce\langs\en.js" />
-    <Content Include="Scripts\tinymce\license.txt" />
-    <Content Include="Scripts\tinymce\plugins\advhr\css\advhr.css" />
-    <Content Include="Scripts\tinymce\plugins\advhr\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\advhr\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\advhr\js\rule.js" />
-    <Content Include="Scripts\tinymce\plugins\advhr\langs\en_dlg.js" />
-    <Content Include="Scripts\tinymce\plugins\advhr\rule.htm" />
-    <Content Include="Scripts\tinymce\plugins\advimage\css\advimage.css" />
-    <Content Include="Scripts\tinymce\plugins\advimage\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\advimage\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\advimage\image.htm" />
-    <Content Include="Scripts\tinymce\plugins\advimage\img\sample.gif" />
-    <Content Include="Scripts\tinymce\plugins\advimage\js\image.js" />
-    <Content Include="Scripts\tinymce\plugins\advimage\langs\en_dlg.js" />
-    <Content Include="Scripts\tinymce\plugins\advlink\css\advlink.css" />
-    <Content Include="Scripts\tinymce\plugins\advlink\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\advlink\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\advlink\js\advlink.js" />
-    <Content Include="Scripts\tinymce\plugins\advlink\langs\en_dlg.js" />
-    <Content Include="Scripts\tinymce\plugins\advlink\link.htm" />
-    <Content Include="Scripts\tinymce\plugins\advlist\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\advlist\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\autolink\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\autolink\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\autoresize\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\autoresize\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\autosave\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\autosave\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\bbcode\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\bbcode\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\contextmenu\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\contextmenu\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\directionality\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\directionality\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\emotions\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\emotions\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\emotions\emotions.htm" />
-    <Content Include="Scripts\tinymce\plugins\emotions\img\smiley-cool.gif" />
-    <Content Include="Scripts\tinymce\plugins\emotions\img\smiley-cry.gif" />
-    <Content Include="Scripts\tinymce\plugins\emotions\img\smiley-embarassed.gif" />
-    <Content Include="Scripts\tinymce\plugins\emotions\img\smiley-foot-in-mouth.gif" />
-    <Content Include="Scripts\tinymce\plugins\emotions\img\smiley-frown.gif" />
-    <Content Include="Scripts\tinymce\plugins\emotions\img\smiley-innocent.gif" />
-    <Content Include="Scripts\tinymce\plugins\emotions\img\smiley-kiss.gif" />
-    <Content Include="Scripts\tinymce\plugins\emotions\img\smiley-laughing.gif" />
-    <Content Include="Scripts\tinymce\plugins\emotions\img\smiley-money-mouth.gif" />
-    <Content Include="Scripts\tinymce\plugins\emotions\img\smiley-sealed.gif" />
-    <Content Include="Scripts\tinymce\plugins\emotions\img\smiley-smile.gif" />
-    <Content Include="Scripts\tinymce\plugins\emotions\img\smiley-surprised.gif" />
-    <Content Include="Scripts\tinymce\plugins\emotions\img\smiley-tongue-out.gif" />
-    <Content Include="Scripts\tinymce\plugins\emotions\img\smiley-undecided.gif" />
-    <Content Include="Scripts\tinymce\plugins\emotions\img\smiley-wink.gif" />
-    <Content Include="Scripts\tinymce\plugins\emotions\img\smiley-yell.gif" />
-    <Content Include="Scripts\tinymce\plugins\emotions\js\emotions.js" />
-    <Content Include="Scripts\tinymce\plugins\emotions\langs\en_dlg.js" />
-    <Content Include="Scripts\tinymce\plugins\example\dialog.htm" />
-    <Content Include="Scripts\tinymce\plugins\example\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\example\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\example\img\example.gif" />
-    <Content Include="Scripts\tinymce\plugins\example\js\dialog.js" />
-    <Content Include="Scripts\tinymce\plugins\example\langs\en.js" />
-    <Content Include="Scripts\tinymce\plugins\example\langs\en_dlg.js" />
-    <Content Include="Scripts\tinymce\plugins\example_dependency\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\example_dependency\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\fullpage\css\fullpage.css" />
-    <Content Include="Scripts\tinymce\plugins\fullpage\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\fullpage\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\fullpage\fullpage.htm" />
-    <Content Include="Scripts\tinymce\plugins\fullpage\js\fullpage.js" />
-    <Content Include="Scripts\tinymce\plugins\fullpage\langs\en_dlg.js" />
-    <Content Include="Scripts\tinymce\plugins\fullscreen\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\fullscreen\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\fullscreen\fullscreen.htm" />
-    <Content Include="Scripts\tinymce\plugins\iespell\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\iespell\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\inlinepopups\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\inlinepopups\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\inlinepopups\skins\clearlooks2\img\alert.gif" />
-    <Content Include="Scripts\tinymce\plugins\inlinepopups\skins\clearlooks2\img\button.gif" />
-    <Content Include="Scripts\tinymce\plugins\inlinepopups\skins\clearlooks2\img\buttons.gif" />
-    <Content Include="Scripts\tinymce\plugins\inlinepopups\skins\clearlooks2\img\confirm.gif" />
-    <Content Include="Scripts\tinymce\plugins\inlinepopups\skins\clearlooks2\img\corners.gif" />
-    <Content Include="Scripts\tinymce\plugins\inlinepopups\skins\clearlooks2\img\horizontal.gif" />
-    <Content Include="Scripts\tinymce\plugins\inlinepopups\skins\clearlooks2\img\vertical.gif" />
-    <Content Include="Scripts\tinymce\plugins\inlinepopups\skins\clearlooks2\window.css" />
-    <Content Include="Scripts\tinymce\plugins\inlinepopups\template.htm" />
-    <Content Include="Scripts\tinymce\plugins\insertdatetime\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\insertdatetime\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\layer\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\layer\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\legacyoutput\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\legacyoutput\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\lists\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\lists\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\media\css\media.css" />
-    <Content Include="Scripts\tinymce\plugins\media\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\media\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\media\js\embed.js" />
-    <Content Include="Scripts\tinymce\plugins\media\js\media.js" />
-    <Content Include="Scripts\tinymce\plugins\media\langs\en_dlg.js" />
-    <Content Include="Scripts\tinymce\plugins\media\media.htm" />
-    <Content Include="Scripts\tinymce\plugins\media\moxieplayer.swf" />
-    <Content Include="Scripts\tinymce\plugins\nonbreaking\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\nonbreaking\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\noneditable\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\noneditable\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\pagebreak\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\pagebreak\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\paste\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\paste\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\paste\js\pastetext.js" />
-    <Content Include="Scripts\tinymce\plugins\paste\js\pasteword.js" />
-    <Content Include="Scripts\tinymce\plugins\paste\langs\en_dlg.js" />
-    <Content Include="Scripts\tinymce\plugins\paste\pastetext.htm" />
-    <Content Include="Scripts\tinymce\plugins\paste\pasteword.htm" />
-    <Content Include="Scripts\tinymce\plugins\preview\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\preview\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\preview\example.html" />
-    <Content Include="Scripts\tinymce\plugins\preview\jscripts\embed.js" />
-    <Content Include="Scripts\tinymce\plugins\preview\preview.html" />
-    <Content Include="Scripts\tinymce\plugins\print\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\print\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\save\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\save\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\searchreplace\css\searchreplace.css" />
-    <Content Include="Scripts\tinymce\plugins\searchreplace\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\searchreplace\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\searchreplace\js\searchreplace.js" />
-    <Content Include="Scripts\tinymce\plugins\searchreplace\langs\en_dlg.js" />
-    <Content Include="Scripts\tinymce\plugins\searchreplace\searchreplace.htm" />
-    <Content Include="Scripts\tinymce\plugins\spellchecker\css\content.css" />
-    <Content Include="Scripts\tinymce\plugins\spellchecker\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\spellchecker\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\spellchecker\img\wline.gif" />
-    <Content Include="Scripts\tinymce\plugins\style\css\props.css" />
-    <Content Include="Scripts\tinymce\plugins\style\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\style\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\style\js\props.js" />
-    <Content Include="Scripts\tinymce\plugins\style\langs\en_dlg.js" />
-    <Content Include="Scripts\tinymce\plugins\style\props.htm" />
-    <Content Include="Scripts\tinymce\plugins\style\readme.txt" />
-    <Content Include="Scripts\tinymce\plugins\tabfocus\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\tabfocus\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\table\cell.htm" />
-    <Content Include="Scripts\tinymce\plugins\table\css\cell.css" />
-    <Content Include="Scripts\tinymce\plugins\table\css\row.css" />
-    <Content Include="Scripts\tinymce\plugins\table\css\table.css" />
-    <Content Include="Scripts\tinymce\plugins\table\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\table\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\table\js\cell.js" />
-    <Content Include="Scripts\tinymce\plugins\table\js\merge_cells.js" />
-    <Content Include="Scripts\tinymce\plugins\table\js\row.js" />
-    <Content Include="Scripts\tinymce\plugins\table\js\table.js" />
-    <Content Include="Scripts\tinymce\plugins\table\langs\en_dlg.js" />
-    <Content Include="Scripts\tinymce\plugins\table\merge_cells.htm" />
-    <Content Include="Scripts\tinymce\plugins\table\row.htm" />
-    <Content Include="Scripts\tinymce\plugins\table\table.htm" />
-    <Content Include="Scripts\tinymce\plugins\template\blank.htm" />
-    <Content Include="Scripts\tinymce\plugins\template\css\template.css" />
-    <Content Include="Scripts\tinymce\plugins\template\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\template\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\template\js\template.js" />
-    <Content Include="Scripts\tinymce\plugins\template\langs\en_dlg.js" />
-    <Content Include="Scripts\tinymce\plugins\template\template.htm" />
-    <Content Include="Scripts\tinymce\plugins\visualblocks\css\visualblocks.css" />
-    <Content Include="Scripts\tinymce\plugins\visualblocks\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\visualblocks\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\visualchars\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\visualchars\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\wordcount\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\wordcount\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\xhtmlxtras\abbr.htm" />
-    <Content Include="Scripts\tinymce\plugins\xhtmlxtras\acronym.htm" />
-    <Content Include="Scripts\tinymce\plugins\xhtmlxtras\attributes.htm" />
-    <Content Include="Scripts\tinymce\plugins\xhtmlxtras\cite.htm" />
-    <Content Include="Scripts\tinymce\plugins\xhtmlxtras\css\attributes.css" />
-    <Content Include="Scripts\tinymce\plugins\xhtmlxtras\css\popup.css" />
-    <Content Include="Scripts\tinymce\plugins\xhtmlxtras\del.htm" />
-    <Content Include="Scripts\tinymce\plugins\xhtmlxtras\editor_plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\xhtmlxtras\editor_plugin_src.js" />
-    <Content Include="Scripts\tinymce\plugins\xhtmlxtras\ins.htm" />
-    <Content Include="Scripts\tinymce\plugins\xhtmlxtras\js\abbr.js" />
-    <Content Include="Scripts\tinymce\plugins\xhtmlxtras\js\acronym.js" />
-    <Content Include="Scripts\tinymce\plugins\xhtmlxtras\js\attributes.js" />
-    <Content Include="Scripts\tinymce\plugins\xhtmlxtras\js\cite.js" />
-    <Content Include="Scripts\tinymce\plugins\xhtmlxtras\js\del.js" />
-    <Content Include="Scripts\tinymce\plugins\xhtmlxtras\js\element_common.js" />
-    <Content Include="Scripts\tinymce\plugins\xhtmlxtras\js\ins.js" />
-    <Content Include="Scripts\tinymce\plugins\xhtmlxtras\langs\en_dlg.js" />
-    <Content Include="Scripts\tinymce\themes\advanced\about.htm" />
-    <Content Include="Scripts\tinymce\themes\advanced\anchor.htm" />
-    <Content Include="Scripts\tinymce\themes\advanced\charmap.htm" />
-    <Content Include="Scripts\tinymce\themes\advanced\color_picker.htm" />
-    <Content Include="Scripts\tinymce\themes\advanced\editor_template.js" />
-    <Content Include="Scripts\tinymce\themes\advanced\editor_template_src.js" />
-    <Content Include="Scripts\tinymce\themes\advanced\image.htm" />
-    <Content Include="Scripts\tinymce\themes\advanced\img\colorpicker.jpg" />
-    <Content Include="Scripts\tinymce\themes\advanced\img\flash.gif" />
-    <Content Include="Scripts\tinymce\themes\advanced\img\icons.gif" />
-    <Content Include="Scripts\tinymce\themes\advanced\img\iframe.gif" />
-    <Content Include="Scripts\tinymce\themes\advanced\img\pagebreak.gif" />
-    <Content Include="Scripts\tinymce\themes\advanced\img\quicktime.gif" />
-    <Content Include="Scripts\tinymce\themes\advanced\img\realmedia.gif" />
-    <Content Include="Scripts\tinymce\themes\advanced\img\shockwave.gif" />
-    <Content Include="Scripts\tinymce\themes\advanced\img\trans.gif" />
-    <Content Include="Scripts\tinymce\themes\advanced\img\video.gif" />
-    <Content Include="Scripts\tinymce\themes\advanced\img\windowsmedia.gif" />
-    <Content Include="Scripts\tinymce\themes\advanced\js\about.js" />
-    <Content Include="Scripts\tinymce\themes\advanced\js\anchor.js" />
-    <Content Include="Scripts\tinymce\themes\advanced\js\charmap.js" />
-    <Content Include="Scripts\tinymce\themes\advanced\js\color_picker.js" />
-    <Content Include="Scripts\tinymce\themes\advanced\js\image.js" />
-    <Content Include="Scripts\tinymce\themes\advanced\js\link.js" />
-    <Content Include="Scripts\tinymce\themes\advanced\js\source_editor.js" />
-    <Content Include="Scripts\tinymce\themes\advanced\langs\en.js" />
-    <Content Include="Scripts\tinymce\themes\advanced\langs\en_dlg.js" />
-    <Content Include="Scripts\tinymce\themes\advanced\link.htm" />
-    <Content Include="Scripts\tinymce\themes\advanced\shortcuts.htm" />
-    <Content Include="Scripts\tinymce\themes\advanced\skins\default\content.css" />
-    <Content Include="Scripts\tinymce\themes\advanced\skins\default\dialog.css" />
-    <Content Include="Scripts\tinymce\themes\advanced\skins\default\img\buttons.png" />
-    <Content Include="Scripts\tinymce\themes\advanced\skins\default\img\items.gif" />
-    <Content Include="Scripts\tinymce\themes\advanced\skins\default\img\menu_arrow.gif" />
-    <Content Include="Scripts\tinymce\themes\advanced\skins\default\img\menu_check.gif" />
-    <Content Include="Scripts\tinymce\themes\advanced\skins\default\img\progress.gif" />
-    <Content Include="Scripts\tinymce\themes\advanced\skins\default\img\tabs.gif" />
-    <Content Include="Scripts\tinymce\themes\advanced\skins\default\ui.css" />
-    <Content Include="Scripts\tinymce\themes\advanced\skins\highcontrast\content.css" />
-    <Content Include="Scripts\tinymce\themes\advanced\skins\highcontrast\dialog.css" />
-    <Content Include="Scripts\tinymce\themes\advanced\skins\highcontrast\ui.css" />
-    <Content Include="Scripts\tinymce\themes\advanced\skins\o2k7\content.css" />
-    <Content Include="Scripts\tinymce\themes\advanced\skins\o2k7\dialog.css" />
-    <Content Include="Scripts\tinymce\themes\advanced\skins\o2k7\img\button_bg.png" />
-    <Content Include="Scripts\tinymce\themes\advanced\skins\o2k7\img\button_bg_black.png" />
-    <Content Include="Scripts\tinymce\themes\advanced\skins\o2k7\img\button_bg_silver.png" />
-    <Content Include="Scripts\tinymce\themes\advanced\skins\o2k7\ui.css" />
-    <Content Include="Scripts\tinymce\themes\advanced\skins\o2k7\ui_black.css" />
-    <Content Include="Scripts\tinymce\themes\advanced\skins\o2k7\ui_silver.css" />
-    <Content Include="Scripts\tinymce\themes\advanced\source_editor.htm" />
-    <Content Include="Scripts\tinymce\themes\simple\editor_template.js" />
-    <Content Include="Scripts\tinymce\themes\simple\editor_template_src.js" />
-    <Content Include="Scripts\tinymce\themes\simple\img\icons.gif" />
-    <Content Include="Scripts\tinymce\themes\simple\langs\en.js" />
-    <Content Include="Scripts\tinymce\themes\simple\skins\default\content.css" />
-    <Content Include="Scripts\tinymce\themes\simple\skins\default\ui.css" />
-    <Content Include="Scripts\tinymce\themes\simple\skins\o2k7\content.css" />
-    <Content Include="Scripts\tinymce\themes\simple\skins\o2k7\img\button_bg.png" />
-    <Content Include="Scripts\tinymce\themes\simple\skins\o2k7\ui.css" />
-    <Content Include="Scripts\tinymce\tiny_mce.js" />
-    <Content Include="Scripts\tinymce\tiny_mce_popup.js" />
-    <Content Include="Scripts\tinymce\tiny_mce_src.js" />
-    <Content Include="Scripts\tinymce\utils\editable_selects.js" />
-    <Content Include="Scripts\tinymce\utils\form_utils.js" />
-    <Content Include="Scripts\tinymce\utils\mctabs.js" />
-    <Content Include="Scripts\tinymce\utils\validate.js" />
     <Content Include="Themes\Metro\Content\Fonts\mvcforumli.svg" />
     <Content Include="Themes\Metro\Content\Fonts\mvcforumsb.svg" />
     <Content Include="Themes\Metro\Content\Images\admin-n3o-logo.png" />
@@ -1001,9 +995,7 @@
     <Content Include="Themes\Metro\Content\Images\rss-icon.png" />
     <Content Include="Themes\Metro\Content\Images\solve-tick.png" />
     <Content Include="Themes\Metro\Content\Images\up-arrow.png" />
-    <Content Include="Themes\Metro\Content\Scripts\mobilegeneral.js" />
     <Content Include="Themes\Metro\Content\Scripts\general.js" />
-    <Content Include="Themes\Metro\Content\Styles\mobiletheme.css" />
     <Content Include="Themes\Metro\Content\Styles\Theme.css" />
     <Content Include="Themes\n3o\Content\Images\admin-n3o-logo.png" />
     <Content Include="Themes\n3o\Content\Images\apple-touch-icon-57-precomposed.png" />
@@ -1052,7 +1044,6 @@
     <Content Include="Global.asax" />
     <Content Include="Scripts\admin\Admin.js" />
     <Content Include="Scripts\admin\FadeOutMessage.js" />
-    <Content Include="Themes\n3o\Content\Styles\mobiletheme.css" />
     <Content Include="Themes\n3o\Content\Styles\Theme.css" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -1080,6 +1071,15 @@
     <Content Include="Views\Shared\_SocialLoginButtons.cshtml" />
     <Content Include="Views\Topic\CreateTopicButton.cshtml" />
     <Content Include="Views\Home\UploadFiles.cshtml" />
+    <Content Include="Views\Shared\_EmailConfirmationNotice.cshtml" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\readme.md" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\icomoon-small.woff" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\icomoon-small.ttf" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\icomoon-small.eot" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\icomoon.woff" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\icomoon.ttf" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\icomoon.eot" />
+    <Content Include="Scripts\tinymce\langs\readme.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Themes\n3o\Views\Shared\" />
@@ -1385,7 +1385,6 @@
     <Content Include="Views\Shared\_Install.cshtml" />
     <Content Include="Views\Install\CreateDb.cshtml" />
     <Content Include="Views\Install\Complete.cshtml" />
-    <Content Include="Views\Shared\_Mobile.cshtml" />
     <Content Include="Views\Search\Testing.cshtml" />
     <Content Include="Views\Shared\_Poll.cshtml" />
     <Content Include="Views\Shared\_NoScript.cshtml" />
@@ -1425,4 +1424,9 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.10\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.10\tools\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
+    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.10\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
+    <Error Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.10\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
+  </Target>
 </Project>

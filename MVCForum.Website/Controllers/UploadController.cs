@@ -101,7 +101,7 @@ namespace MVCForum.Website.Controllers
                                                                              .TrimStart(',').TrimEnd(',').Split(',').ToList();
 
                                             // Get the file extension
-                                            var fileExtension = Path.GetExtension(file.FileName.ToLower());
+                                            var fileExtension = Path.GetExtension(fileName.ToLower());
 
                                             // If can't work out extension then just error
                                             if (string.IsNullOrEmpty(fileExtension))
@@ -125,7 +125,7 @@ namespace MVCForum.Website.Controllers
 
 
                                         // Sort the file name
-                                        var newFileName = string.Format("{0}_{1}", GuidComb.GenerateComb(), file.FileName.Trim(' ').Replace("_", "-").Replace(" ", "-").ToLower());
+                                        var newFileName = string.Format("{0}_{1}", GuidComb.GenerateComb(), fileName.Trim(' ').Replace("_", "-").Replace(" ", "-").ToLower());
                                         var path = Path.Combine(uploadFolderPath, newFileName);
 
                                         // Save the file to disk

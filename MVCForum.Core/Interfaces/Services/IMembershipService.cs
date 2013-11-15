@@ -43,7 +43,7 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<MembershipUser> GetActiveMembers();
         void Save(MembershipUser user);
         void ProfileUpdated(MembershipUser user);
-        void Delete(MembershipUser user);
+        bool Delete(MembershipUser user);
         IList<MembershipUser> GetLatestUsers(int amountToTake);
         IList<MembershipUser> GetLowestPointUsers(int amountToTake);
         int MemberCount();

@@ -21,6 +21,7 @@ namespace MVCForum.Domain.DomainModel
         public bool EnableMemberReporting { get; set; }
         public bool EnableEmailSubscriptions { get; set; }
         public bool ManuallyAuthoriseNewMembers { get; set; }
+        public bool? NewMemberEmailConfirmation { get; set; }
         public bool EmailAdminOnNewMemberSignUp { get; set; }
         public int TopicsPerPage { get; set; }
         public int PostsPerPage { get; set; }

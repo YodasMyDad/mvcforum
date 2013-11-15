@@ -69,7 +69,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        public ActionResult Create(Guid? id)
+        public ActionResult Create(Guid? id, Guid? to)
         {
             // Check if private messages are enabled
             if (!SettingsService.GetSettings().EnablePrivateMessages || LoggedOnUser.DisablePrivateMessages == true)
@@ -90,8 +90,16 @@ namespace MVCForum.Website.Controllers
             {
                 return ErrorToInbox(LocalizationService.GetResourceString("PM.SentItemsOverCapcity"));
             }
-
+                        
             var viewModel = new CreatePrivateMessageViewModel();
+
+            // add the username to the to box if available
+            if (to != null)
+            {
+                var userTo = MembershipService.GetUser((Guid)to);
+                viewModel.UserToUsername = userTo.UserName;
+            }
+
             // See if this is a reply or not
             if (id != null)
             {

@@ -69,14 +69,6 @@
                     @Html.LabelFor(model => model.DisplayEditedBy)
                     @Html.ValidationMessageFor(model => model.DisplayEditedBy)
                 </div>
-
-                @*
-                // TODO: look into adding this in v1.5
-                <div class="editor-field n3ocheckboxfield">
-                    @Html.EditorFor(model => model.EnablePostFileAttachments)
-                    @Html.LabelFor(model => model.EnablePostFileAttachments)
-                    @Html.ValidationMessageFor(model => model.EnablePostFileAttachments)
-                </div>*@
                 
                 <div class="editor-field n3ocheckboxfield">
                     @Html.CheckBoxFor(model => model.SuspendRegistration)
@@ -124,6 +116,12 @@
                     @Html.EditorFor(model => model.EmailAdminOnNewMemberSignUp)
                     @Html.LabelFor(model => model.EmailAdminOnNewMemberSignUp)
                     @Html.ValidationMessageFor(model => model.EmailAdminOnNewMemberSignUp)
+                </div>
+                
+                <div class="editor-field n3ocheckboxfield">
+                    @Html.EditorFor(model => model.NewMemberEmailConfirmation)
+                    @Html.LabelFor(model => model.NewMemberEmailConfirmation)
+                    @Html.ValidationMessageFor(model => model.NewMemberEmailConfirmation)
                 </div>
 
                 <div class="editor-label">

@@ -10,7 +10,7 @@
 <p>By default its set to '?' (i.e. if you had <strong>feck</strong> in the list, it would become <strong>????</strong>). You can add a single word, or you can add wildcards at the end of your word.</p>
 <p>For example, if you wanted to ban feck, fecking, feckers etc... You can add <strong>feck*</strong> which will match feck AND anything after.</p>
 
-<div class="row">
+<div class="row-fluid">
     <div class="span5">
         @using (Html.BeginForm("Index", "BannedWord", FormMethod.Get, new { @class = "form-horizontal" }))
         {    
