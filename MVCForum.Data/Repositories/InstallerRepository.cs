@@ -55,8 +55,8 @@ namespace MVCForum.Data.Repositories
             var filePath = string.Empty;
             try
             {
-                filePath = sqlFilePath ?? InstallerHelper.GetMainDatabaseFilePath(currentVersion);
-                var file = new FileInfo(HttpContext.Current.Server.MapPath(filePath));
+                filePath = string.IsNullOrEmpty(sqlFilePath) ? HttpContext.Current.Server.MapPath(InstallerHelper.GetMainDatabaseFilePath(currentVersion)) : sqlFilePath;
+                var file = new FileInfo(filePath);
                 script = file.OpenText().ReadToEnd();
             }
             catch (Exception ex)

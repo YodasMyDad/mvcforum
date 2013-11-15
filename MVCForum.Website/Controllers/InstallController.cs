@@ -219,6 +219,8 @@ namespace MVCForum.Website.Controllers
                 try
                 {
                     // No extra data needed in this upgrade
+
+
                 }
                 catch (Exception ex)
                 {

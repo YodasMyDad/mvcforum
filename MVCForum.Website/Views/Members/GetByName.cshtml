@@ -57,7 +57,7 @@
             <p>@Html.LanguageString("Members.Profile.Posts") @Model.User.Posts.Count</p>
             <p>@Html.LanguageString("Members.Profile.Points") @Model.User.TotalPoints</p>
             
-            @if (User.Identity.IsAuthenticated)
+            @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name)
             {
                 <p><a href="@Url.Action("Create", "PrivateMessage", new { to = Model.User.Id }, null)" class="btn">@Html.LanguageString("Members.MessageMe")</a></p>
             }

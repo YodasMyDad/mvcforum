@@ -8,7 +8,9 @@
         <title>@ViewBag.Title</title>
 
         @(Bundle.Css()
-              .Add("~/installer/Content/Styles/bootstrap.css")
+              .Add("~/Content/Styles/bootstrap.css")
+              .Add("~/Content/Styles/bootstrap-responsive.css")
+              .Add("~/Content/Styles/bootstrap-prettify.css")
               .Add("~/installer/Content/Styles/install.css")
               .MvcRender("~/content/cache/combined_installer_#.css"))
            

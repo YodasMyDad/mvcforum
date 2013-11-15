@@ -1,6 +1,7 @@
 ﻿/*--- Bootstrap Overides ---*/
 .container-fluid { max-width: 1000px;margin-left: auto;margin-right: auto;}
 .navbar .brand { padding-top: 5px; padding-bottom:3px; }
+.btn-group { margin-top: 10px;margin-bottom: 10px;}
 
 /* --- Set main body styles --- */
 html {-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;}
