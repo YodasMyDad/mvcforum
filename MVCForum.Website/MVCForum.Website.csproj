@@ -969,6 +969,32 @@
     <Content Include="Scripts\Prettify\run_prettify.js" />
     <Content Include="Scripts\tags.js" />
     <Content Include="Scripts\jquery.tagsinput.min.js" />
+    <Content Include="Themes\Dark\Content\Images\admin-n3o-logo.png" />
+    <Content Include="Themes\Dark\Content\Images\apple-touch-icon-57-precomposed.png" />
+    <Content Include="Themes\Dark\Content\Images\arrow-spinner-blue.gif" />
+    <Content Include="Themes\Dark\Content\Images\delete.png" />
+    <Content Include="Themes\Dark\Content\Images\down-arrow.png" />
+    <Content Include="Themes\Dark\Content\Images\edit.png" />
+    <Content Include="Themes\Dark\Content\Images\facebook-connect-large.png" />
+    <Content Include="Themes\Dark\Content\Images\favicon.ico" />
+    <Content Include="Themes\Dark\Content\Images\glyphicons-halflings-white.png" />
+    <Content Include="Themes\Dark\Content\Images\glyphicons-halflings.png" />
+    <Content Include="Themes\Dark\Content\Images\glyphicons\glyphicons_009_magic.png" />
+    <Content Include="Themes\Dark\Content\Images\glyphicons\glyphicons_042_group.png" />
+    <Content Include="Themes\Dark\Content\Images\glyphicons\glyphicons_079_podium.png" />
+    <Content Include="Themes\Dark\Content\Images\glyphicons\glyphicons_082_roundabout.png" />
+    <Content Include="Themes\Dark\Content\Images\glyphicons\glyphicons_155_show_thumbnails.png" />
+    <Content Include="Themes\Dark\Content\Images\glyphicons\glyphicons_163_iphone.png" />
+    <Content Include="Themes\Dark\Content\Images\glyphicons\glyphicons_214_resize_small.png" />
+    <Content Include="Themes\Dark\Content\Images\glyphicons\glyphicons_266_book_open.png" />
+    <Content Include="Themes\Dark\Content\Images\mail-add.png" />
+    <Content Include="Themes\Dark\Content\Images\mail-delete.png" />
+    <Content Include="Themes\Dark\Content\Images\mobile-nav-icon.png" />
+    <Content Include="Themes\Dark\Content\Images\rss-icon.png" />
+    <Content Include="Themes\Dark\Content\Images\solve-tick.png" />
+    <Content Include="Themes\Dark\Content\Images\up-arrow.png" />
+    <Content Include="Themes\Dark\Content\Scripts\general.js" />
+    <Content Include="Themes\Dark\Content\Styles\Theme.css" />
     <Content Include="Themes\Metro\Content\Fonts\mvcforumli.svg" />
     <Content Include="Themes\Metro\Content\Fonts\mvcforumsb.svg" />
     <Content Include="Themes\Metro\Content\Images\admin-n3o-logo.png" />
@@ -1082,6 +1108,7 @@
     <Content Include="Scripts\tinymce\langs\readme.md" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Themes\Dark\Views\Shared\" />
     <Folder Include="Themes\n3o\Views\Shared\" />
     <Folder Include="Views\Extensions\" />
   </ItemGroup>
