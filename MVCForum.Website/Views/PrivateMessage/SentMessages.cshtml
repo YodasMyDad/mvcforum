@@ -6,6 +6,11 @@
 
 <h2>@ViewBag.Title</h2>
 
+<div class="btn-group">    
+        @Html.ActionLink(Html.LanguageString("PM.BackToInbox"), "Index", new { }, new { @class = "btn btn-success" })
+        @Html.ActionLink(Html.LanguageString("PM.Create"), "Create", "PrivateMessage", new { }, new { @class = "btn btn-success" })
+</div>
+
 @if(Model.Messages.Any())
 {
 <table class="table table-bordered table-striped">
@@ -47,9 +52,3 @@ else
 {
     <p>@Html.LanguageString("PM.NoMessages")</p>
 }
-
-
-<div class="btn-group">    
-        @Html.ActionLink(Html.LanguageString("PM.BackToInbox"), "Index", new { }, new { @class = "btn btn-success" })
-        @Html.ActionLink(Html.LanguageString("PM.Create"), "Create", "PrivateMessage", new { }, new { @class = "btn btn-success" })
-</div>

@@ -10,6 +10,7 @@ namespace MVCForum.Website.ViewModels
     public class CreateTopicButtonViewModel
     {
         public MembershipUser LoggedOnUser { get; set; }
+        public bool UserCanPostTopics { get; set; }
     }
 
     public class ActiveTopicsViewModel

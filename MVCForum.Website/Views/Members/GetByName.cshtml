@@ -56,6 +56,11 @@
             <p>@Html.LanguageString("Members.Profile.Joined") @Model.User.CreateDate.ToShortDateString()</p>
             <p>@Html.LanguageString("Members.Profile.Posts") @Model.User.Posts.Count</p>
             <p>@Html.LanguageString("Members.Profile.Points") @Model.User.TotalPoints</p>
+            
+            @if (User.Identity.IsAuthenticated)
+            {
+                <p><a href="@Url.Action("Create", "PrivateMessage", new { to = Model.User.Id }, null)" class="btn">@Html.LanguageString("Members.MessageMe")</a></p>
+            }
 
             @if (User.Identity.IsAuthenticated && Html.Settings().EnableMemberReporting && Model.User.Id != Model.LoggedOnUserId)
             {

@@ -260,3 +260,5 @@ Members.MemberEmailAuthorisation.Subject,Email Confirmation
 Members.NowApproved,Your account has now been approved - Thank you
 Members.MemberEmailAuthorisationNeededMessage,Click the link in your confirmation email to approve your account.
 Members.MemberEmailAuthorisationResend,Resend Confirmation Email
+Members.MessageMe,Message Me
+Confirmation.DeleteMembersPosts,Are you sure? This will delete all the members posts and topics!

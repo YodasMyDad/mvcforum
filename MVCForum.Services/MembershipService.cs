@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Linq;
 using System.Web;
+using System.Web.Security;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Events;
@@ -369,8 +370,17 @@ namespace MVCForum.Services
         /// <param name="username"></param>
         /// <returns></returns>
         public MembershipUser GetUser(string username)
-        {
-            return _membershipRepository.GetUser(username);
+        {            
+            var member = _membershipRepository.GetUser(username);
+
+            // Do a check to log out the user if they are logged in and have been deleted
+            if (member == null && HttpContext.Current.User.Identity.Name == username)
+            {
+                // Member is null so doesn't exist, yet they are logged in with that username - Log them out
+                FormsAuthentication.SignOut();
+            }
+
+            return member;
         }
 
         /// <summary>

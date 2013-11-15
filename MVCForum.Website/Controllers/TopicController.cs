@@ -63,6 +63,27 @@ namespace MVCForum.Website.Controllers
                 {
                     LoggedOnUser = LoggedOnUser
                 };
+
+            if (LoggedOnUser != null)
+            {
+                // Add all categories to a permission set
+                var allCategories = _categoryService.GetAll();
+                using (UnitOfWorkManager.NewUnitOfWork())
+                {
+                    foreach (var category in allCategories)
+                    {
+                        // Now check to see if they have access to any categories
+                        // if so, check they are allowed to create topics - If no to either set to false
+                        viewModel.UserCanPostTopics = false;
+                        var permissionSet = RoleService.GetPermissions(category, UsersRole);
+                        if (permissionSet[AppConstants.PermissionCreateTopics].IsTicked)
+                        {                            
+                            viewModel.UserCanPostTopics = true;
+                            break;
+                        }
+                    }
+                }
+            }
             return PartialView(viewModel);
         }
 

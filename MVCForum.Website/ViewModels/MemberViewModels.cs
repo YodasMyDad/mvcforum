@@ -18,6 +18,7 @@ namespace MVCForum.Website.ViewModels
     {
         [Required]
         [ForumMvcResourceDisplayName("Members.Label.Username")]
+        [StringLength(150, MinimumLength = 4)]
         public string UserName { get; set; }
 
         [Required]
@@ -62,11 +63,12 @@ namespace MVCForum.Website.ViewModels
 
         [Required]
         [ForumMvcResourceDisplayName("Members.Label.Username")]
-        [StringLength(150)]
+        [StringLength(150, MinimumLength = 4)]
         public string UserName { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.EmailAddress")]
         [Email]
+        [Required]
         public string Email { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Signature")]
@@ -98,7 +100,6 @@ namespace MVCForum.Website.ViewModels
         [Url]
         [StringLength(60)]
         public string Facebook { get; set; }
-
     }
 
     public class RegisterViewModel

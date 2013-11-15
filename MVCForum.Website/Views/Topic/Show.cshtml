@@ -33,9 +33,10 @@
     @(Bundle.Css()
               .Add("~/Scripts/fancybox/jquery.fancybox.css")
               .MvcRender("~/content/cache/fancybox_#.css"))
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
     @(Bundle.JavaScript()
         .Add("~/Scripts/fancybox/jquery.fancybox.js")
-        .Add("~/Scripts/topic.js")
+        .Add("~/Scripts/topic.js")        
         .MvcRender("~/scripts/cache/topic_#.js"))
 }
 
