@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+  <metadata>
+    <id>SquishIt.Mvc</id>
+    <version>0.9.5-beta3</version>
+    <authors>Justin Etheredge,  Alex Ullrich</authors>
+    <owners>Justin Etheredge,  Alex Ullrich</owners>
+    <projectUrl>https://github.com/jetheredge/SquishIt</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>ASP.NET MVC Extensions for SquishIt</description>
+    <dependencies>
+      <dependency id="SquishIt" version="0.9.5-beta3" />
+    </dependencies>
+  </metadata>
+</package>
