@@ -289,9 +289,9 @@ namespace MVCForum.Services
                         continue;
                     }
 
-                    if (nextAssembly.FullName.StartsWith("System") || nextAssembly.FullName.StartsWith("Microsoft"))
+                    if (nextAssembly.FullName.StartsWith("System") || nextAssembly.FullName.StartsWith("Microsoft") || nextAssembly.FullName.StartsWith("DotNetOpenAuth"))
                     {
-                        // Skip microsoft assemblies
+                        // Skip microsoft and dotnetauth assemblies
                         continue;
                     }
 
