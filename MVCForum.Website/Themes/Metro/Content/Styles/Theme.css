@@ -48,6 +48,12 @@ h6 { font-size: 16px; margin-bottom: 8px; color: #AAAAAA; font-weight: normal; f
 input[type=text], input[type=password], textarea, select { -moz-border-radius: 0; -webkit-border-radius: 0; -khtml-border-radius: 0; border-radius: 0; }
 form { margin-bottom: 5px; }
 
+/*--- Responsive Videos ---*/
+.video-container { position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden; }
+.video-container iframe,
+.video-container object,
+.video-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
 /* ---- Paragraph Styles ---- */
 p { margin: 0 0 14px 0; line-height: 20px; font-size: 14px; font-family: 'MVCforumLight', Calibri, Arial, Helvetica, sans-serif; }
 p a, p a:visited { text-decoration: underline; }

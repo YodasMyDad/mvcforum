@@ -7,7 +7,11 @@
     // SEO Stuff
     ViewBag.Title = Html.Raw(AppHelpers.CreatePageTitle(Model.Topic, Html.LanguageString("Topic.TitleFallBack")));
     var totalCount = Convert.ToInt32(Model.TotalCount);
-    ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
+    //ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
+    if (Request.QueryString.AllKeys.Any())
+    {
+        ViewBag.Canonical = Html.Raw(string.Format("<link rel=\"canonical\" href=\"{0}\"/>", Model.Topic.NiceUrl));
+    }
 
     // Email subscription
     var subScribe = string.Empty;

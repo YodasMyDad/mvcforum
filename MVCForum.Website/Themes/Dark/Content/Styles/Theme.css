@@ -60,6 +60,12 @@ h3 {}
 h4 {}
 h5 {}
 
+/*--- Responsive Videos ---*/
+.video-container { position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden; }
+.video-container iframe,
+.video-container object,
+.video-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
 /* ---- Paragraph Styles ---- */
 p {}
 
@@ -145,7 +151,7 @@ select {  }
 .topicrowdetails h3 { margin: 0 0 9px 0;line-height:25px;}
 
 .topicstats {text-align: center;}
-.statsblock {font-size: 20px;font-weight: bold; padding: 8px 0 2px 0;color: #808185;border: 1px solid #BFBFBF;height: 45px;width: 29.5%;float: left;background: none repeat scroll 0 0 #f5f5f5;-moz-border-radius: 5px;-webkit-border-radius: 5px;-khtml-border-radius: 5px;border-radius: 5px;}
+.statsblock { font-size: 20px; font-weight: bold; padding: 8px 0 2px 0; color: #ccc; border: 1px solid #292927; height: 45px; width: 29.5%; float: left; background: none repeat scroll 0 0 #31312f; -moz-border-radius: 5px; -webkit-border-radius: 5px; -khtml-border-radius: 5px; border-radius: 5px; }
 .statsblock span { font-size: 10px;font-weight: normal;display: block;}
 
 .topicvotes {}
@@ -190,8 +196,8 @@ select {  }
 .editorholder { margin: 0 0 15px 0;}
 .editorholder textarea { height: 220px;}
 .karmaholder { text-align: center;margin: 0; min-height:70px;height:auto !important;height:70px;}
-.karmascore {background-color: #efefef; display:block; font-size:26px; padding:6px 0 8px;line-height: 30px;-moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px;margin: 5px 0;border: 1px solid #777; }
-span.votenumber { color: #333;}
+.karmascore {background-color: #31312f;color:#ccc; display:block; font-size:26px; padding:6px 0 8px;line-height: 30px;-moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px;margin: 5px 0;border: 1px solid #777; }
+span.votenumber { color: #efefef;}
 .postissolution {background-color: #5BB75B; color: #ffffff !Important;border-color: #fff;}
 
 .thumbuplink {height:13px;width: 26px;font-size: 0; display:block; line-height: 0;margin: 0 auto;background-image: url('../Images/up-arrow.png');background-repeat: no-repeat;text-indent: -9999em;cursor: pointer;}
@@ -223,9 +229,13 @@ p.lastedited { font-size:0.9em; font-style:italic; color:#595959;}
 /*--- Show more posts button ---*/
 .showmoreposts { width: 100%;padding-left: 0;padding-right: 0;}
 
+/*--- Paging ---*/
+.pagination ul > li > a, .pagination ul > li > span {background-color: #31312f;}
+.pagination ul > li > a:hover, .pagination ul > li > a:focus, .pagination ul > .active > a, .pagination ul > .active > span { background-color: #454543; }
+
 /*--- TAGS ---*/
 div.tagsinput {background: none; padding:10px 0 0 0; overflow-y: auto;}
-div.tagsinput span.tag { border: 1px solid #ccc; -moz-border-radius: 2px; -webkit-border-radius: 2px; display: block; float: left; padding: 2px 5px; text-decoration: none; background: #efefef; color: #7E7E7E; margin-right: 5px; margin-bottom: 5px; }
+div.tagsinput span.tag { border: 1px solid #333; -moz-border-radius: 2px; -webkit-border-radius: 2px; display: block; float: left; padding: 2px 5px; text-decoration: none; background: #31312f; color: #7E7E7E; margin-right: 5px; margin-bottom: 5px; }
 div.tagsinput span.tag:hover { background-color: #DDDDDD; }
 div.tagsinput span.tag a { font-weight: bold; color: #7E7E7E; text-decoration:none; font-size: 11px;  } 
 div.tagsinput input { width:80px; margin:0px; font-family: helvetica; font-size: 13px; padding:5px; background: transparent; color: #efefef !Important; outline:0px;  margin-right:5px; margin-bottom:5px; }
@@ -235,9 +245,10 @@ div.tagsinput div { display:block; float: left; }
 
 /*--- Tag Cloud ---*/
 .tagCloud { border: none!Important; overflow: hidden;}
-.tagCloud li { float: left;border: 1px #ddd solid;padding: 2px 3px !Important;-moz-border-radius: 4px; -webkit-border-radius: 4px; -khtml-border-radius: 4px; border-radius: 4px;margin: 0 5px 5px 0;background-color:#fbfafa;}
+.tagCloud li { float: left;border: 1px #272726 solid !Important;padding: 2px 3px !Important;-moz-border-radius: 4px; -webkit-border-radius: 4px; -khtml-border-radius: 4px; border-radius: 4px;margin: 0 5px 5px 0;background-color:#272726;}
 .tagCloud li span.tagName { float: left;width: auto;display: block;margin: 0 5px 0 0;}
-.tagCloud li span.tagName a, .tagCloud li span.tagName a:hover { color: #7E7E7E;}
+.tagCloud li span.tagName a, .tagCloud li span.tagName a:visited { color: #7E7E7E;}
+.tagCloud li span.tagName a:hover { color: #999999;}
 .tagCloud li span.tagCount {float: left; padding: 0 2px; width: auto;display: block;-moz-border-radius: 4px; -webkit-border-radius: 4px; -khtml-border-radius: 4px; border-radius: 4px;background-color: #666; color: #fff;}
 
 /*--- High Earners ---*/
@@ -332,8 +343,8 @@ div.tagsinput div { display:block; float: left; }
 /*--- Expand Votes --*/
 .expandvotes { cursor: pointer;}
 .expandvotesholder {}
-.expandvotesholder .upvotes { color: green; font-weight: bold; padding: 0 0 4px;margin: 0 4px;}
-.expandvotesholder .downvotes { color: maroon; font-weight: bold; padding: 4px 0 0;margin: 0 4px; border-top: 1px dotted #ccc; }
+.expandvotesholder .upvotes { color: #5BBB7D; font-weight: bold; padding: 0 0 4px; margin: 0 4px; }
+.expandvotesholder .downvotes { color: #CB6054; font-weight: bold; padding: 4px 0 0; margin: 0 4px; border-top: 1px dotted #ccc; }
 
 /*--- Polls --*/
 .pollcreatebuttonholder { text-align: right;}

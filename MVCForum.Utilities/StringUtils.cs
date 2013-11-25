@@ -720,11 +720,11 @@ namespace MVCForum.Utilities
         {
             // YouTube Insert Video, just add the video ID and it inserts video into post
             var exp = new Regex(@"\[youtube\]([^\]]+)\[/youtube\]");
-            str = exp.Replace(str, "<iframe title=\"YouTube video player\" width=\"500\" height=\"281\" src=\"http://www.youtube.com/embed/$1\" frameborder=\"0\" allowfullscreen></iframe>");
+            str = exp.Replace(str, "<div class=\"video-container\"><iframe title=\"YouTube video player\" width=\"500\" height=\"281\" src=\"http://www.youtube.com/embed/$1\" frameborder=\"0\" allowfullscreen></iframe></div>");
 
             // YouTube Insert Video, just add the video ID and it inserts video into post
             exp = new Regex(@"\[vimeo\]([^\]]+)\[/vimeo\]");
-            str = exp.Replace(str, "<iframe src=\"http://player.vimeo.com/video/$1?portrait=0\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe>");
+            str = exp.Replace(str, "<div class=\"video-container\"><iframe src=\"http://player.vimeo.com/video/$1?portrait=0\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>");
 
             return str;
         }
