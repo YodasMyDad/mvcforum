@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Utilities;
 
 namespace MVCForum.Website.Application
@@ -29,7 +31,7 @@ namespace MVCForum.Website.Application
                                 .Select(Path.GetFileName)
                                 .Where(x => !x.ToLower().Contains("base")));
             }
-            else 
+            else
             {
                 throw new ApplicationException("Theme folder not found");
             }
@@ -48,7 +50,7 @@ namespace MVCForum.Website.Application
         {
             var urlHelper = new UrlHelper(helper.ViewContext.RequestContext, helper.RouteCollection);
             var currentAction = helper.ViewContext.RouteData.GetRequiredString("Action");
-            var url = urlHelper.Action(currentAction, new {});
+            var url = urlHelper.Action(currentAction, new { });
 
             var pageCount = (int)Math.Ceiling(totalItemCount / (double)pageSize);
 
@@ -81,14 +83,14 @@ namespace MVCForum.Website.Application
             }
 
             // return the canoncal tags
-            return String.Concat(canonicalTag, Environment.NewLine, 
-                                    nextTag, Environment.NewLine, 
+            return String.Concat(canonicalTag, Environment.NewLine,
+                                    nextTag, Environment.NewLine,
                                     previousTag);
         }
 
         public static string CreatePageTitle(Entity entity, string fallBack)
         {
-            if(entity != null)
+            if (entity != null)
             {
                 if (entity is Category)
                 {
@@ -99,7 +101,7 @@ namespace MVCForum.Website.Application
                 {
                     var topic = entity as Topic;
                     return topic.Name;
-                } 
+                }
             }
             return fallBack;
         }
@@ -121,7 +123,7 @@ namespace MVCForum.Website.Application
         #endregion
 
         #region String
-        
+
         public static string ConvertPostContent(string post)
         {
             // Convert any BBCode
@@ -201,6 +203,72 @@ namespace MVCForum.Website.Application
 
             // If the versions are different kick the installer into play
             return (currentVersionNo != previousVersionNo);
+        }
+
+        #endregion
+
+        #region Files
+
+        public static UploadFileResult UploadFile(HttpPostedFileBase file, string uploadFolderPath, ILocalizationService localizationService)
+        {
+            var upResult = new UploadFileResult { UploadSuccessful = true };
+
+            var fileName = Path.GetFileName(file.FileName);
+            if (fileName != null)
+            {
+                //Before we do anything, check file size
+                if (file.ContentLength > Convert.ToInt32(ConfigUtils.GetAppSetting("FileUploadMaximumFileSizeInBytes")))
+                {
+                    //File is too big
+                    upResult.UploadSuccessful = false;
+                    upResult.ErrorMessage = localizationService.GetResourceString("Post.UploadFileTooBig");
+                    return upResult;
+                }
+
+                // now check allowed extensions
+                var allowedFileExtensions = ConfigUtils.GetAppSetting("FileUploadAllowedExtensions");
+                if (!string.IsNullOrEmpty(allowedFileExtensions))
+                {
+                    // Turn into a list and strip unwanted commas as we don't trust users!
+                    var allowedFileExtensionsList = allowedFileExtensions.ToLower().Trim()
+                                                     .TrimStart(',').TrimEnd(',').Split(',').ToList();
+
+                    // Get the file extension
+                    var fileExtension = Path.GetExtension(fileName.ToLower());
+
+                    // If can't work out extension then just error
+                    if (string.IsNullOrEmpty(fileExtension))
+                    {
+                        upResult.UploadSuccessful = false;
+                        upResult.ErrorMessage = localizationService.GetResourceString("Errors.GenericMessage");
+                        return upResult;
+                    }
+
+                    // Remove the dot then check against the extensions in the web.config settings
+                    fileExtension = fileExtension.TrimStart('.');
+                    if (!allowedFileExtensionsList.Contains(fileExtension))
+                    {
+                        upResult.UploadSuccessful = false;
+                        upResult.ErrorMessage = localizationService.GetResourceString("Post.UploadBannedFileExtension");
+                        return upResult;
+                    }
+                }
+
+                // Sort the file name
+                var newFileName = string.Format("{0}_{1}", GuidComb.GenerateComb(), fileName.Trim(' ').Replace("_", "-").Replace(" ", "-").ToLower());
+                var path = Path.Combine(uploadFolderPath, newFileName);
+
+                // Save the file to disk
+                file.SaveAs(path);
+
+                var hostingRoot = HostingEnvironment.MapPath("~/") ?? "";
+                var fileUrl = path.Substring(hostingRoot.Length).Replace('\\', '/').Insert(0, "/");
+
+                upResult.UploadedFileName = newFileName;
+                upResult.UploadedFileUrl = fileUrl;                
+            }
+
+            return upResult;
         }
 
         #endregion

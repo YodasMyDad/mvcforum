@@ -7,6 +7,7 @@ using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Utilities;
+using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
 
@@ -77,69 +78,27 @@ namespace MVCForum.Website.Controllers
                             {
                                 if (file != null)
                                 {
-                                    var fileName = Path.GetFileName(file.FileName);
-                                    if (fileName != null)
+                                    // If successful then upload the file
+                                    var uploadResult = AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService);
+                                    if (!uploadResult.UploadSuccessful)
                                     {
-                                        //Before we do anything, check file size
-                                        if (file.ContentLength > Convert.ToInt32(ConfigUtils.GetAppSetting("FileUploadMaximumFileSizeInBytes")))
+                                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                                         {
-                                            //File is too big
-                                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                                            {
-                                                Message = LocalizationService.GetResourceString("Post.UploadFileTooBig"),
-                                                MessageType = GenericMessages.error
-                                            };
-                                            return Redirect(topic.NiceUrl);
-                                        }
-
-                                        // now check allowed extensions
-                                        var allowedFileExtensions = ConfigUtils.GetAppSetting("FileUploadAllowedExtensions");
-                                        if (!string.IsNullOrEmpty(allowedFileExtensions))
-                                        {
-                                            // Turn into a list and strip unwanted commas as we don't trust users!
-                                            var allowedFileExtensionsList = allowedFileExtensions.ToLower().Trim()
-                                                                             .TrimStart(',').TrimEnd(',').Split(',').ToList();
-
-                                            // Get the file extension
-                                            var fileExtension = Path.GetExtension(fileName.ToLower());
-
-                                            // If can't work out extension then just error
-                                            if (string.IsNullOrEmpty(fileExtension))
-                                            {
-                                                return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
-                                            }
-
-                                            // Remove the dot then check against the extensions in the web.config settings
-                                            fileExtension = fileExtension.TrimStart('.');
-                                            if (!allowedFileExtensionsList.Contains(fileExtension))
-                                            {
-                                                // File extension now allowed
-                                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                                                {
-                                                    Message = LocalizationService.GetResourceString("Post.UploadBannedFileExtension"),
-                                                    MessageType = GenericMessages.error
-                                                };
-                                                return Redirect(topic.NiceUrl);
-                                            }
-                                        }
-
-
-                                        // Sort the file name
-                                        var newFileName = string.Format("{0}_{1}", GuidComb.GenerateComb(), fileName.Trim(' ').Replace("_", "-").Replace(" ", "-").ToLower());
-                                        var path = Path.Combine(uploadFolderPath, newFileName);
-
-                                        // Save the file to disk
-                                        file.SaveAs(path);
-
-                                        // Add the filename to the database
-                                        var uploadedFile = new UploadedFile
-                                            {
-                                                Filename = newFileName,
-                                                Post = post,
-                                                MembershipUser = LoggedOnUser
-                                            };
-                                        _uploadedFileService.Add(uploadedFile);
+                                            Message = uploadResult.ErrorMessage,
+                                            MessageType = GenericMessages.error
+                                        };
+                                        return Redirect(topic.NiceUrl);
                                     }
+
+                                    // Add the filename to the database
+                                    var uploadedFile = new UploadedFile
+                                        {
+                                            Filename = uploadResult.UploadedFileName,
+                                            Post = post,
+                                            MembershipUser = LoggedOnUser
+                                        };
+                                    _uploadedFileService.Add(uploadedFile);
+
                                 }
                             }
 

@@ -90,6 +90,7 @@
     <Compile Include="DomainModel\Settings.cs" />
     <Compile Include="DomainModel\Topic.cs" />
     <Compile Include="DomainModel\UploadedFile.cs" />
+    <Compile Include="DomainModel\UploadFileResult.cs" />
     <Compile Include="DomainModel\Vote.cs" />
     <Compile Include="Events\BadgeEventArgs.cs" />
     <Compile Include="Events\EventManager.cs" />
