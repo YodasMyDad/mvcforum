@@ -376,3 +376,7 @@ Members.MemberEmailAuthorisationNeededMessage = Click the link in your confirmat
 Members.MemberEmailAuthorisationResend = Resend Confirmation Email
 Members.MessageMe = Message Me
 Confirmation.DeleteMembersPosts = Are you sure? This will delete all the members posts and topics!
+
+--- Web.CONFIG 
+We won't be putting changes in here anymore for this, it's best to take the new web.config and just 
+update the connection string and other settings and run the forum.
