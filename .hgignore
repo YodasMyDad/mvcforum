@@ -36,3 +36,4 @@ _ReSharper*/
 *.orig
 *Backup/*
 UpgradeLog2.htm
+*MVCForum.Website/Content/uploads/*
