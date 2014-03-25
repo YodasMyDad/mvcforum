@@ -1,0 +1,40 @@
+﻿@{
+    // Yes this is shitty doing this here, but you are supposed to remove this
+    var actionName = ViewContext.RouteData.GetRequiredString("action").ToLower();
+    var controllerName = ViewContext.RouteData.GetRequiredString("controller").ToLower();
+}
+@if (controllerName == "home" && actionName == "index")
+{
+    <div class="row-fluid documentation-message">
+    <div class="span6">
+        <div class="documentation-message-block">
+            <h3>Need Documentation &amp; Videos?</h3>
+            <p>
+                Then check out main site, it has <a href="http://www.mvcforum.com/videos/">videos</a>, <a href="http://www.mvcforum.com/documentation/">documenation</a> on how 
+                                to extend MVCForum and <a href="http://www.mvcforum.com/live-sites/">examples of live sites</a> using it too
+            </p>
+            <p><a href="http://www.mvcforum.com" class="btn">Go To Main Site</a></p>
+        </div>
+    </div>
+    <div class="span6">
+        <div class="documentation-message-block">
+            <h3>Help Us - Follow & Share</h3>
+            <p>
+                We need your help to improve MVCForum and get the word out about it. Please follow us 
+                                via one of the links below, and also tweet or share MVCForum to your friends and collegues.
+            </p>
+            <div class="row-fluid">
+                <div class="span6">
+                    <iframe src="http://www.facebook.com/plugins/like.php?href=https://www.facebook.com/pages/MVCForum/616922301692423&amp;layout=button_count&amp;show_faces=true&amp;width=180&amp;action=like&amp;font=arial&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border: none; overflow: hidden; width: 95px; height: 21px; padding: 0;" allowtransparency="true">Facebook button</iframe>
+                </div>
+                <div class="span6">
+                    <iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" src="http://platform.twitter.com/widgets/follow_button.1387492107.html#_=1387703846448&amp;id=twitter-widget-0&amp;lang=en&amp;screen_name=forummvc&amp;show_count=false&amp;show_screen_name=true&amp;size=m" class="twitter-follow-button twitter-follow-button" title="Twitter Follow Button" data-twttr-rendered="true" style="width: 131px; height: 20px;"></iframe>
+                    <script type="text/javascript">
+                        !function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = "//platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs); } }(document, "script", "twitter-wjs");
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}

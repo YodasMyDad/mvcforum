@@ -25,6 +25,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <MvcProjectUpgradeChecked>true</MvcProjectUpgradeChecked>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -1138,6 +1139,7 @@
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\icomoon.ttf" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\icomoon.eot" />
     <Content Include="Scripts\tinymce\langs\readme.md" />
+    <Content Include="Views\Shared\_DocumentationBlock.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Themes\Dark\Views\Shared\" />

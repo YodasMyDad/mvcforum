@@ -24,6 +24,12 @@ input.btn, button.btn { font-weight: normal; }
 .navbar-inverse .nav-collapse .dropdown-menu a { color: #fff; }
 .nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a { font-weight: normal; }
 
+/*--- Documentation Styles on home page ---*/
+.documentation-message {}
+.documentation-message .documentation-message-block { border: 1px solid #E4E4E4; background-color: #F4F4F4; padding: 7px 12px 7px 12px; min-height: 170px; }
+.documentation-message .documentation-message-block h3 { margin: 0;padding: 0;}
+.documentation-message .documentation-message-block .btn {padding:8px 0;width: 100%;}
+
 /* --- Set main body styles --- */
 html { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
 input[type=submit] { -webkit-appearance: none; }
@@ -296,7 +302,7 @@ ul.tagCloud li span.tagCount { float: left; padding: 0 2px; width: auto; display
 .topicrowslim { padding: 3px 0; }
 
 /*--- Notification Section ---*/
-.rsssubscribe { float: right; margin: 0 0 0 12px; display: block; width: 17px; height: 17px; background: transparent url('../Images/rss-icon.png') no-repeat; text-transform: capitalize; text-indent: -9999px; }
+.rsssubscribe { float: right; margin:10px 0 0 12px; display: block; width: 17px; height: 17px; background: transparent url('../Images/rss-icon.png') no-repeat; text-transform: capitalize; text-indent: -9999px; }
 .emailsubscription, .emailunsubscription { float: right; margin: 0 0 0 12px; padding: 0 20px 0 0; background-position: right center; background-repeat: no-repeat; height: 16px; line-height: 16px; }
 .emailsubscription { background-image: url('../Images/mail-add.png'); }
 .emailunsubscription { background-image: url('../Images/mail-delete.png'); }
@@ -583,6 +589,9 @@ ul.tagCloud li span.tagCount { float: left; padding: 0 2px; width: auto; display
     .categoryindex .categorydetailsfooter .catdiscussions { float: left; width: 40%; }
     .categoryindex .categorydetailsfooter .catcomments { float: right; width: 40%; }
     .categoryindex .categorydetailsfooter .catmostrecent { clear: both; text-align: left; }
+
+    /*--- Documentation Block ---*/
+    .documentation-message-block { margin-bottom: 10px;}
 }
 
 @media (max-width: 600px) {

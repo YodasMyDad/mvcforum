@@ -217,13 +217,13 @@ namespace MVCForum.Website.Controllers
                                 User = LoggedOnUser
                             });
 
-                            // Create the topic (The topic service creates the related post)
+                            // Create the topic
                             topic = _topicService.Add(topic);
 
                             // Save the changes
                             unitOfWork.SaveChanges();
 
-                            // Now add the post to the topic
+                            // Now create and add the post to the topic
                             _topicService.AddLastPost(topic, topicViewModel.Content);
 
                             // Now check its not spam

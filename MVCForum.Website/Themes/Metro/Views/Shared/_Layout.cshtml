@@ -6,35 +6,35 @@
 }
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>@ViewBag.Title</title>
-        @RenderSection("Meta", false)
-        @ViewBag.Canonical
-        <style type="text/css">
+<head>
+    <meta charset="utf-8">
+    <title>@ViewBag.Title</title>
+    @RenderSection("Meta", false)
+    @ViewBag.Canonical
+    <style type="text/css">
             @@font-face { font-family: 'MVCforumLight'; src: url('@Url.Content(themePath + "/content/fonts/mvcforumli.eot")'); src: url('@Url.Content(themePath + "/content/fonts/mvcforumli.eot")?#iefix') format('embedded-opentype'), url('@Url.Content(themePath + "/content/fonts/mvcforumli.woff")') format('woff'), url('@Url.Content(themePath + "/content/fonts/mvcforumli.ttf")') format('truetype'),url('@Url.Content(themePath + "/content/fonts/mvcforumli.svg")#MVCforumLight') format('svg'); font-weight: normal; font-style: normal; }
             @@font-face { font-family: 'MVCforumSemiBold'; src: url('@Url.Content(themePath + "/content/fonts/mvcforumsb.eot")'); src: url('@Url.Content(themePath + "/content/fonts/mvcforumsb.eot")?#iefix') format('embedded-opentype'), url('@Url.Content(themePath + "/content/fonts/mvcforumsb.woff")') format('woff'), url('@Url.Content(themePath + "/content/fonts/mvcforumsb.ttf")') format('truetype'),url('@Url.Content(themePath + "/content/fonts/mvcforumsb.svg")#MVCforumSemiBold') format('svg'); font-weight: normal; font-style: normal; }
         </style>
-        @(
-            Bundle.Css()
+    @(
+ Bundle.Css()
                 .Add("~/Content/Styles/bootstrap.css")
                 .Add("~/Content/Styles/bootstrap-responsive.css")
                 .Add("~/Content/Styles/bootstrap-prettify.css")
                 .Add(themePath + "/Content/Styles/theme.css")
                 .MvcRender("~/content/cache/combined_" + theme + "_#.css")
            )
-        <!--[if lt IE 9]>
+    <!--[if lt IE 9]>
             <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
-        <!--[if lt IE 8]>
+    <!--[if lt IE 8]>
             <script src="@Url.Content("~/scripts/json3.js")"></script>
         <![endif]-->
-        <link rel="shortcut icon" href="@Url.Content(themePath + "/content/images/favicon.ico")">
-        <link rel="apple-touch-icon-precomposed" href="@Url.Content(themePath + "/content/images/apple-touch-icon-57-precomposed.png")">
-        <script type="text/javascript">
-            var app_base = '@Url.Content("~/")';
-        </script>
-        @(Bundle.JavaScript()
+    <link rel="shortcut icon" href="@Url.Content(themePath + "/content/images/favicon.ico")">
+    <link rel="apple-touch-icon-precomposed" href="@Url.Content(themePath + "/content/images/apple-touch-icon-57-precomposed.png")">
+    <script type="text/javascript">
+        var app_base = '@Url.Content("~/")';
+    </script>
+    @(Bundle.JavaScript()
                     .Add("~/Scripts/jquery-1.8.0.min.js")
                     .Add("~/Scripts/jquery.unobtrusive-ajax.js")
                     .Add("~/Scripts/bootstrap.min.js")
@@ -44,12 +44,12 @@
                     .Add(themePath + "/Content/Scripts/general.js")
                     .MvcRender("~/scripts/cache/combined_" + theme + "_#.js")
            )
-        @RenderSection("Header", false)
-    </head>
-           
-    <body class="@globalClass">
-        
-        
+    @RenderSection("Header", false)
+</head>
+
+<body class="@globalClass">
+
+
     <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container-fluid">
@@ -84,49 +84,55 @@
                         {
                             <li><a href="@Url.Action("Index", "Admin", new { area = "Admin" }, null)">@Html.LanguageString("Layout.Nav.Admin")</a></li>
                         }
+                        <li><a href="http://www.mvcforum.com">Main Website</a></li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
-        <div class="container-fluid">
-            @Html.Partial("_GenericMessage")
-            @Html.Partial("_EmailConfirmationNotice")
-            @Html.Partial("_NoScript")
-            <div id="main" class="row-fluid mainbody">
+    <div class="container-fluid">
+        @Html.Partial("_GenericMessage")
+        @Html.Partial("_EmailConfirmationNotice")
+        @Html.Partial("_NoScript")
+        <div id="main" class="row-fluid mainbody">
 
-                <div class="span9">
-                    @RenderBody()
-                </div>
-                <div class="span3 sidelayoutsection">
-                    <div class="main-side-box">
-                        @if (User.Identity.IsAuthenticated)
-                        {                        
-                            @Html.Action("CreateTopicButton", "Topic")
-                            @Html.Action("SideAdminPanel", "Members")
-                        }
-                        @RenderSection("side", false)
-                    </div>
-                </div>
+            <div class="span9">
+                
+                @* ### Remove ME - Not needed, just for our forum ### *@
+                @Html.Partial("_DocumentationBlock")
+                @* ### Remove ME - Not needed, just for our forum ### *@
 
+                @RenderBody()
             </div>
-            <hr>
-            @Html.Action("GetMainStats", "Stats")
-            @Html.Action("GetCurrentActiveMembers", "Members")
-            @RenderSection("Footer", false)
-            <hr>
-            <footer>
-                <div class="row-fluid">
-                    <div class="span12">
-                        <!-- ########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ###########################
+            <div class="span3 sidelayoutsection">
+                <div class="main-side-box">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        @Html.Action("CreateTopicButton", "Topic")
+                        @Html.Action("SideAdminPanel", "Members")
+                    }
+                    @RenderSection("side", false)
+                </div>
+            </div>
+
+        </div>
+        <hr>
+        @Html.Action("GetMainStats", "Stats")
+        @Html.Action("GetCurrentActiveMembers", "Members")
+        @RenderSection("Footer", false)
+        <hr>
+        <footer>
+            <div class="row-fluid">
+                <div class="span12">
+                    <!-- ########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ###########################
                             If you would like to remove the powered by notice, then please vist http://www.mvcforum.com/license -->
 
-                        <p> &copy; @DateTime.UtcNow.Year - @Html.LanguageString("Layout.PoweredBy") <a rel="nofollow" href="http://www.mvcforum.com">MVCForum.com</a></p>
+                    <p>&copy; @DateTime.UtcNow.Year - @Html.LanguageString("Layout.PoweredBy") <a rel="nofollow" href="http://www.mvcforum.com">MVCForum.com</a></p>
 
-                        <!--########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ########################### -->  
-                    </div>
+                    <!--########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ########################### -->
                 </div>
-            </footer>
-        </div>
-    </body>
+            </div>
+        </footer>
+    </div>
+</body>
 </html>
