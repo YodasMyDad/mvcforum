@@ -1,6 +1,6 @@
 ﻿using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
-using EFCachingProvider;
+//using EFCachingProvider;
 using MVCForum.Data.Mapping;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Activity;
@@ -44,27 +44,27 @@ namespace MVCForum.Data.Context
         /// Constructor
         /// </summary>
         public MVCForumContext()
-            : base(CreateCachingConnection(DatabaseConnectionName), true)      
+            //: base(CreateCachingConnection(DatabaseConnectionName), true)      
         {
             Configuration.LazyLoadingEnabled = true;
         }
 
-        /// <summary>
-        /// Creates tracing connection which is a wrapper around native store connection.
-        /// </summary>
-        /// <returns>Instance of <see cref="EFCachingConnection"/> with enabled caching.</returns>
-        private static EFCachingConnection CreateCachingConnection(string connectionName)
-        {
-            // Based on the tracing example at: http://jkowalski.com/2010/04/23/logging-sql-statements-in-entity-frameworkcode-first/
-            var connection = System.Configuration.ConfigurationManager.ConnectionStrings[connectionName];
+        ///// <summary>
+        ///// Creates tracing connection which is a wrapper around native store connection.
+        ///// </summary>
+        ///// <returns>Instance of <see cref="EFCachingConnection"/> with enabled caching.</returns>
+        //private static EFCachingConnection CreateCachingConnection(string connectionName)
+        //{
+        //    // Based on the tracing example at: http://jkowalski.com/2010/04/23/logging-sql-statements-in-entity-frameworkcode-first/
+        //    var connection = System.Configuration.ConfigurationManager.ConnectionStrings[connectionName];
 
-            var efCachingconnection = new EFCachingConnection
-            {
-                ConnectionString = @"wrappedProvider=" + connection.ProviderName + ";" + connection.ConnectionString
-            };
+        //    var efCachingconnection = new EFCachingConnection
+        //    {
+        //        ConnectionString = @"wrappedProvider=" + connection.ProviderName + ";" + connection.ConnectionString
+        //    };
 
-            return efCachingconnection;
-        }
+        //    return efCachingconnection;
+        //}
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

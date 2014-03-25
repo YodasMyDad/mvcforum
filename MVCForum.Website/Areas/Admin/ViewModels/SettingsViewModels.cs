@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
-using DataAnnotationsExtensions;
 using MVCForum.Domain.DomainModel;
+using DataAnnotationsExtensions;
 
 namespace MVCForum.Website.Areas.Admin.ViewModels
 {
@@ -21,7 +21,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Forum Url")]
         [Required]
         [StringLength(200)]
-        [Url]
+        [System.ComponentModel.DataAnnotations.Url]
         public string ForumUrl { get; set; }
 
         [DisplayName("Close Forum")]

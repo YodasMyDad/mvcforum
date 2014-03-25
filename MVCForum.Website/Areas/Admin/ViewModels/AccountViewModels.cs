@@ -84,17 +84,17 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public string Location { get; set; }
 
         [Display(Name = "Website")]
-        [Url]
+        [System.ComponentModel.DataAnnotations.Url]
         [StringLength(100)]
         public string Website { get; set; }
 
         [Display(Name = "Twitter Url")]
-        [Url]
+        [System.ComponentModel.DataAnnotations.Url]
         [StringLength(60)]
         public string Twitter { get; set; }
 
         [Display(Name = "Facebook Page")]
-        [Url]
+        [System.ComponentModel.DataAnnotations.Url]
         [StringLength(60)]
         public string Facebook { get; set; }
 

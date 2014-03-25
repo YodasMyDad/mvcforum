@@ -33,7 +33,7 @@ namespace MVCForum.Website.ViewModels
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Compare("Password")]
+        [System.Web.Mvc.Compare("Password")]
         [ForumMvcResourceDisplayName("Members.Label.ConfirmPassword")]
         public string ConfirmPassword { get; set; }
 
@@ -87,17 +87,17 @@ namespace MVCForum.Website.ViewModels
         public string Location { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Website")]
-        [Url]
+        [System.ComponentModel.DataAnnotations.Url]
         [StringLength(100)]
         public string Website { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Twitter")]
-        [Url]
+        [System.ComponentModel.DataAnnotations.Url]
         [StringLength(60)]
         public string Twitter { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Facebook")]
-        [Url]
+        [System.ComponentModel.DataAnnotations.Url]
         [StringLength(60)]
         public string Facebook { get; set; }
     }
@@ -120,7 +120,7 @@ namespace MVCForum.Website.ViewModels
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Compare("Password")]
+        [System.Web.Mvc.Compare("Password")]
         [ForumMvcResourceDisplayName("Members.Label.ConfirmPassword")]
         public string ConfirmPassword { get; set; }
 
@@ -236,7 +236,7 @@ namespace MVCForum.Website.ViewModels
 
         [DataType(DataType.Password)]
         [ForumMvcResourceDisplayName("Members.Label.ConfirmNewPassword")]
-        [Compare("NewPassword")]
+        [System.Web.Mvc.Compare("NewPassword")]
         public string ConfirmPassword { get; set; }
     }
 }

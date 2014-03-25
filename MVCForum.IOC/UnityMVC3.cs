@@ -3,7 +3,6 @@ using MVCForum.API;
 using MVCForum.Data.Context;
 using MVCForum.Data.Repositories;
 using MVCForum.Data.UnitOfWork;
-using MVCForum.Domain;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Repositories;
@@ -11,7 +10,7 @@ using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Services;
 using Microsoft.Practices.Unity;
-using Unity.Mvc3;
+using Unity.Mvc4;
 
 namespace MVCForum.IOC
 {

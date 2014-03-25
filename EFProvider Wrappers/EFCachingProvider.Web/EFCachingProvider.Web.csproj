@@ -44,12 +44,6 @@
     <Compile Include="AspNetCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\EFCachingProvider\EFCachingProvider.csproj">
-      <Project>{E9B10F80-134F-4DC1-BA6F-7728EF2CAE58}</Project>
-      <Name>EFCachingProvider</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
