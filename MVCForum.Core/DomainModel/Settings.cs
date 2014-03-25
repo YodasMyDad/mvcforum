@@ -30,14 +30,12 @@ namespace MVCForum.Domain.DomainModel
         public int MaxPrivateMessagesPerMember { get; set; }
         public int PrivateMessageFloodControl { get; set; }
         public bool EnableSignatures { get; set; }
-
         public bool EnablePoints { get; set; }
         public int PointsAllowedToVoteAmount { get; set; }
         public int PointsAddedPerPost { get; set; }
         public int PointsAddedPostiveVote { get; set; }
         public int PointsDeductedNagativeVote { get; set; }
         public int PointsAddedForSolution { get; set; }
-
         public string AdminEmailAddress { get; set; }
         public string NotificationReplyEmail { get; set; }
         public string SMTP { get; set; }
@@ -46,19 +44,14 @@ namespace MVCForum.Domain.DomainModel
         public string SMTPPort { get; set; }
         public bool? SMTPEnableSSL { get; set; }
         public string Theme { get; set; }
-
         public bool? EnableSocialLogins { get; set; }
-
         public string SpamQuestion { get; set; }
         public string SpamAnswer { get; set; }
         public bool? EnableAkisment { get; set; }
         public string AkismentKey { get; set; }
         public string CurrentDatabaseVersion { get; set; }
-
         public bool? EnablePolls { get; set; }
-
         public bool? SuspendRegistration { get; set; }
-
         public virtual MembershipRole NewMemberStartingRole { get; set; }
         public virtual Language DefaultLanguage { get; set; }
     }

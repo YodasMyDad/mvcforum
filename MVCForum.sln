@@ -31,8 +31,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Performance1.psess = Performance1.psess
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EFProvider Wrappers", "EFProvider Wrappers", "{5C377A3D-654A-48DF-AE1A-FF7CE84C15B5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Website", "MVCForum.Website\MVCForum.Website.csproj", "{C149AEDE-0F7A-46A5-B9D4-95ED7B775DE2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Data", "MVCForum.Data\MVCForum.Data.csproj", "{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}"
