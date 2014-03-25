@@ -34,3 +34,5 @@ _ReSharper*/
 *.[Pp]ublish.xml
 *.resharper
 *.orig
+*Backup/*
+UpgradeLog2.htm
