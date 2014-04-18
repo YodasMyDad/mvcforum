@@ -9,14 +9,14 @@ namespace MVCForum.Data.Caching
         public CachingConfiguration()
         {
             //TODO : Look for a second level cache that works
-            //var transactionHandler = new CacheTransactionHandler(new InMemoryCache());
+            var transactionHandler = new CacheTransactionHandler(new InMemoryCache());
 
-            //AddInterceptor(transactionHandler);
+            AddInterceptor(transactionHandler);
 
-            //Loaded +=
-            //  (sender, args) => args.ReplaceService<DbProviderServices>(
-            //    (s, _) => new CachingProviderServices(s, transactionHandler,
-            //      new DefaultCachingPolicy()));
+            Loaded +=
+              (sender, args) => args.ReplaceService<DbProviderServices>(
+                (s, _) => new CachingProviderServices(s, transactionHandler,
+                  new DefaultCachingPolicy()));
         }
     }
 }

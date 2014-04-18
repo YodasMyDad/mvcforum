@@ -15,6 +15,7 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<Topic> GetRecentRssTopics(int amountToTake);
         IList<Topic> GetTopicsByUser(Guid memberId);
         PagedList<Topic> GetPagedTopicsByCategory(int pageIndex, int pageSize, int amountToTake, Guid categoryId);
+        PagedList<Topic> GetPagedPendingTopics(int pageIndex, int pageSize);
         IList<Topic> GetRssTopicsByCategory(int amountToTake, Guid categoryId);
         PagedList<Topic> GetPagedTopicsByTag(int pageIndex, int pageSize, int amountToTake, string tag);
         PagedList<Topic> SearchTopics(int pageIndex, int pageSize, int amountToTake, string searchTerm);

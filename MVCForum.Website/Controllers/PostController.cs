@@ -64,6 +64,7 @@ namespace MVCForum.Website.Controllers
             PermissionSet permissions;
             Post newPost;
             Topic topic;
+            var moderation = false;
 
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {   
@@ -75,7 +76,7 @@ namespace MVCForum.Website.Controllers
                 }
 
                 topic = _topicService.Get(post.Topic);
-                
+
                 var postContent = _bannedWordService.SanitiseBannedWords(post.PostContent);
 
                 var akismetHelper = new AkismetHelper(SettingsService);
@@ -111,23 +112,32 @@ namespace MVCForum.Website.Controllers
 
             }
 
-            // All good send the notifications and send the post back
-            using (UnitOfWorkManager.NewUnitOfWork())
+            //Check for moderation
+            if (newPost.Pending == true)
+            {
+                return PartialView("_PostModeration");
+            }
+            else
             {
 
-                // Create the view model
-                var viewModel = new ViewPostViewModel
+                // All good send the notifications and send the post back
+                using (UnitOfWorkManager.NewUnitOfWork())
                 {
-                    Permissions = permissions,
-                    Post = newPost,
-                    User = LoggedOnUser,
-                    ParentTopic = topic
-                };
 
-                // Success send any notifications
-                NotifyNewTopics(topic);
+                    // Create the view model
+                    var viewModel = new ViewPostViewModel
+                    {
+                        Permissions = permissions,
+                        Post = newPost,
+                        User = LoggedOnUser,
+                        ParentTopic = topic
+                    };
 
-                return PartialView("_Post", viewModel);
+                    // Success send any notifications
+                    NotifyNewTopics(topic);
+
+                    return PartialView("_Post", viewModel);
+                }   
             }
         }
 

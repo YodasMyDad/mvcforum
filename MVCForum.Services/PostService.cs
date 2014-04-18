@@ -120,6 +120,11 @@ namespace MVCForum.Services
             return _postRepository.GetPagedPostsByTopic(pageIndex, pageSize, amountToTake, topicId, order);
         }
 
+        public PagedList<Post> GetPagedPendingPosts(int pageIndex, int pageSize)
+        {
+            return _postRepository.GetPagedPendingPosts(pageIndex, pageSize);
+        }
+
         /// <summary>
         /// Return all posts by a specified member that are marked as solution
         /// </summary>
@@ -248,6 +253,12 @@ namespace MVCForum.Services
 
             newPost = SanitizePost(newPost);
 
+            var category = topic.Category;
+            if (category.ModeratePosts == true)
+            {
+                newPost.Pending = true;
+            }
+
             var e = new PostMadeEventArgs { Post = newPost, Api = _api };
             EventManager.Instance.FireBeforePostMade(this, e);
 
@@ -265,9 +276,6 @@ namespace MVCForum.Services
 
                 // add the last post to the topic
                 topic.LastPost = newPost;
-                
-                // Removed as its updated via the commit
-                //_topicRepository.Update(topic);
 
                 EventManager.Instance.FireAfterPostMade(this, new PostMadeEventArgs { Post = newPost, Api = _api });
 

@@ -62,7 +62,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var categoryViewModel = new CreateCategoryViewModel {AllCategories = _categoryService.GetAll().ToList()};
+                var categoryViewModel = new CreateCategoryViewModel { AllCategories = _categoryService.GetAll().ToList() };
                 return PartialView(categoryViewModel);
             }
         }
@@ -82,9 +82,11 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                                                Name = categoryViewModel.Name,
                                                Description = categoryViewModel.Description,
                                                IsLocked = categoryViewModel.IsLocked,
+                                               ModeratePosts = categoryViewModel.ModeratePosts,
+                                               ModerateTopics = categoryViewModel.ModerateTopics,
                                                SortOrder = categoryViewModel.SortOrder,
                                            };
-                       
+
                         if (categoryViewModel.ParentCategory != null)
                         {
                             category.ParentCategory =
@@ -108,30 +110,42 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     }
                 }
             }
-            
+            else
+            {
+                ModelState.AddModelError("", "There was an error creating the category");
+            }
+
             return RedirectToAction("Index");
         }
-    
 
-    public ActionResult EditCategory(Guid id)
+
+        private EditCategoryViewModel CreateEditCategoryViewModel(Category category)
+        {
+            var categoryViewModel = new EditCategoryViewModel
+            {
+                Name = category.Name,
+                Description = category.Description,
+                IsLocked = category.IsLocked,
+                ModeratePosts = category.ModeratePosts == true,
+                ModerateTopics = category.ModerateTopics == true,
+                SortOrder = category.SortOrder,
+                Id = category.Id,
+                DateCreated = category.DateCreated,
+                NiceUrl = category.NiceUrl,
+                ParentCategory = category.ParentCategory == null ? Guid.Empty : category.ParentCategory.Id,
+                AllCategories = _categoryService.GetAll()
+                    .Where(x => x.Id != category.Id)
+                    .ToList()
+            };
+            return categoryViewModel;
+        }
+
+        public ActionResult EditCategory(Guid id)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var category = _categoryService.Get(id);
-                var categoryViewModel = new EditCategoryViewModel
-                                            {
-                                                Name = category.Name,
-                                                Description = category.Description,
-                                                IsLocked = category.IsLocked,
-                                                SortOrder = category.SortOrder,
-                                                Id = category.Id,
-                                                DateCreated = category.DateCreated,
-                                                NiceUrl = category.NiceUrl,
-                                                ParentCategory = category.ParentCategory == null ? Guid.Empty : category.ParentCategory.Id,
-                                                AllCategories = _categoryService.GetAll()
-                                                    .Where(x => x.Id != category.Id)
-                                                    .ToList(),
-                                            };
+                var categoryViewModel = CreateEditCategoryViewModel(category);
 
                 return View(categoryViewModel);
             }
@@ -150,6 +164,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
                         category.Description = categoryViewModel.Description;
                         category.IsLocked = categoryViewModel.IsLocked;
+                        category.ModeratePosts = categoryViewModel.ModeratePosts;
+                        category.ModerateTopics = categoryViewModel.ModerateTopics;
                         category.Name = categoryViewModel.Name;
                         category.SortOrder = categoryViewModel.SortOrder;
 
@@ -172,6 +188,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                                                                             MessageType = GenericMessages.success
                                                                         };
 
+                        categoryViewModel = CreateEditCategoryViewModel(category);
+
                         unitOfWork.Commit();
                     }
                     catch (Exception ex)
@@ -188,7 +206,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 }
             }
 
-            return View("PopupConfirm");
+            return View(categoryViewModel);
         }
 
         public ActionResult DeleteCategoryConfirmation(Guid id)
@@ -204,7 +222,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                                         SubCategories = subCats
                                     };
 
-            return View(viewModel);
+                return View(viewModel);
             }
         }
 

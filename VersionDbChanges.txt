@@ -380,3 +380,17 @@ Confirmation.DeleteMembersPosts = Are you sure? This will delete all the members
 --- Web.CONFIG 
 We won't be putting changes in here anymore for this, it's best to take the new web.config and just 
 update the connection string and other settings and run the forum.
+
+==============================
+============ v1.5 ============
+==============================
+
+--- Category
+ModerateTopics bit NULL
+ModeratePosts bit NULL
+
+-- Post
+BeenModerated bit NULL
+
+-- Language Strings
+Moderate.AwaitingModeration = Your post is currently awaiting moderation. Once approved it will appear on the site

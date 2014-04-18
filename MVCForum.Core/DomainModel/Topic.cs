@@ -28,7 +28,7 @@ namespace MVCForum.Domain.DomainModel
         public virtual IList<TopicNotification> TopicNotifications { get; set; }
         public virtual Poll Poll { get; set; }
 
-
+        public bool? Pending { get; set; }
         public string NiceUrl
         {
             get { return UrlTypes.GenerateUrl(UrlType.Topic, Slug); }

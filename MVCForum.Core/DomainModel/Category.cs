@@ -14,6 +14,8 @@ namespace MVCForum.Domain.DomainModel
         public string Name { get; set; }
         public string Description { get; set; }
         public bool IsLocked { get; set; }
+        public bool? ModerateTopics { get; set; }
+        public bool? ModeratePosts { get; set; }
         public int SortOrder { get; set; }
         public DateTime DateCreated { get; set; }
         public string Slug { get; set; }

@@ -1,0 +1,84 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.AdminModerateViewModel
+@{
+    ViewBag.Title = "Moderate Topics / Posts";
+}
+
+<div class="tabbable">
+    <ul class="nav nav-tabs" id="myTab">
+        <li class="active"><a data-toggle="tab" href="#topics">Topics</a></li>
+        <li><a data-toggle="tab" href="#posts">Posts</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="topics">
+            <div class="row-fluid">
+                <div class="span12">
+                    @if (Model.Topics.Any())
+                    {
+                        <div class="moderatetopicholder">
+                            @foreach (var topic in Model.Topics)
+                            {
+                                @Html.Partial("_ModerateTopic", topic)
+                            }
+                            
+                            @if (Model.Topics.TotalPages > 1)
+                            {
+                            <a href="#" class="showmoretopics btn">
+                                <span class="smpactive">
+                                    Show More Topics
+                                </span>
+                                <span class="smploading" style="display: none;">
+                                    Loading...
+                                </span>
+                            </a>
+                            }
+
+                            <input type="hidden" id="topicPageIndex" value="@(Model.Topics.PageIndex + 1)" />
+                            <input type="hidden" id="topicTotalPages" value="@Model.Topics.TotalPages" />
+                        </div>
+                    }
+                    else
+                    {
+                        <p>No topics to moderate</p>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="posts">
+            <div class="row-fluid">
+                <div class="span12">
+                    @if (Model.Posts.Any())
+                    {
+                        <div class="moderatepostholder">
+                            @foreach (var post in Model.Posts)
+                            {
+                                @Html.Partial("_ModeratePost", post)
+                            }
+                            
+                            @if (Model.Posts.TotalPages > 1)
+                            {
+                            <a href="#" class="showmoreposts btn">
+                                <span class="smpactive">
+                                    Show More Posts
+                                </span>
+                                <span class="smploading" style="display: none;">
+                                    Loading...
+                                </span>
+                            </a>
+                            }
+
+                            <input type="hidden" id="postsPageIndex" value="@(Model.Posts.PageIndex + 1)" />
+                            <input type="hidden" id="postsTotalPages" value="@Model.Posts.TotalPages" />
+                        </div>
+                       
+                    }
+                    else
+                    {
+                        <p>No post to moderate</p>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

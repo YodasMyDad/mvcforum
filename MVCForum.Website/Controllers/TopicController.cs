@@ -122,6 +122,7 @@ namespace MVCForum.Website.Controllers
                 }
 
                 var successfullyCreated = false;
+                var moderate = false;
                 Category category;
                 var topic = new Topic();
 
@@ -166,7 +167,7 @@ namespace MVCForum.Website.Controllers
                             // See if this is a poll and add it to the topic
                             if (topicViewModel.PollAnswers != null && topicViewModel.PollAnswers.Count > 0)
                             {
-
+                                // Do they have permission to create a new poll
                                 if (permissions[AppConstants.PermissionCreatePolls].IsTicked)
                                 {
                                     // Create a new Poll
@@ -217,6 +218,13 @@ namespace MVCForum.Website.Controllers
                                 User = LoggedOnUser
                             });
 
+                            // Check for moderation
+                            if (category.ModerateTopics == true)
+                            {
+                                topic.Pending = true;
+                                moderate = true;
+                            }
+
                             // Create the topic
                             topic = _topicService.Add(topic);
 
@@ -256,7 +264,11 @@ namespace MVCForum.Website.Controllers
                                 try
                                 {
                                     unitOfWork.Commit();
-                                    successfullyCreated = true;
+                                    if (!moderate)
+                                    {                                    
+                                        successfullyCreated = true; 
+                                    }
+
 
                                     // Successful, add this post to the Lucene index
                                     if (_luceneService.CheckIndexExists())
@@ -294,6 +306,18 @@ namespace MVCForum.Website.Controllers
 
                         // Redirect to the newly created topic
                         return Redirect(string.Format("{0}?postbadges=true", topic.NiceUrl));
+                    }
+                    if (moderate)
+                    {
+                        // Moderation needed
+                        // Tell the user the topic is awaiting moderation
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = LocalizationService.GetResourceString("Moderate.AwaitingModeration"),
+                            MessageType = GenericMessages.info
+                        };
+
+                        return RedirectToAction("Index", "Home");
                     }
 
                     var allowedCategories = _categoryService.GetAllowedCategories(UsersRole).ToList();
@@ -417,7 +441,6 @@ namespace MVCForum.Website.Controllers
             {
                 return null;
             }
-
 
             var orderBy = !string.IsNullOrEmpty(getMorePostsViewModel.Order) ?
                                       EnumUtils.ReturnEnumValueFromString<PostOrderBy>(getMorePostsViewModel.Order) : PostOrderBy.Standard;

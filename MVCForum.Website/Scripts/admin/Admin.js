@@ -1,5 +1,9 @@
 ﻿$(function () {
 
+    AddModerateClickEvents();
+    AddModerateAjaxCalls();
+
+
     var showNavButton = $(".btn-show-admin-nav");
     var mainNavHolder = $(".admin-options");
     showNavButton.click(function (e) {
@@ -330,8 +334,6 @@
     });
 
 
-    // TAGS
-    
     // Handler for click on the tag edit button
     $('span.edittag').click(function (e) {
         e.preventDefault();
@@ -386,6 +388,198 @@
     });
 
 });
+
+function AddModerateAjaxCalls() {
+    // Moderate section
+
+    $(".showmoretopics").click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        var pageIndex = $('#topicPageIndex');
+        var totalPages = parseInt($('#topicTotalPages').val());
+        var activeText = $(this).find('span.smpactive');
+        var loadingText = $(this).find('span.smploading');
+        var showMoreLink = $(this);
+
+        activeText.hide();
+        loadingText.show();
+
+        var AjaxPagingViewModel = new Object();
+        AjaxPagingViewModel.PageIndex = pageIndex.val();
+
+        // Ajax call to post the view model to the controller
+        var strung = JSON.stringify(AjaxPagingViewModel);
+
+        $.ajax({
+            url: app_base + 'Admin/Moderate/GetMoreTopics',
+            type: 'POST',
+            dataType: 'html',
+            data: strung,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                // Add new data to page
+                showMoreLink.before(data);
+
+                // Update the page index value
+                var newPageIdex = (parseInt(pageIndex.val()) + parseInt(1));
+                pageIndex.val(newPageIdex);
+
+                // If the new pageindex is greater than the total pages, then hide the show more button
+                if (newPageIdex > totalPages) {
+                    showMoreLink.hide();
+                }
+
+                // Lastly reattch the click events
+                AddModerateClickEvents();
+                activeText.show();
+                loadingText.hide();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                activeText.show();
+                loadingText.hide();
+            }
+        });
+    });
+
+
+    $(".showmoreposts").click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        var pageIndex = $('#postsPageIndex');
+        var totalPages = parseInt($('#postsTotalPages').val());
+        var activeText = $(this).find('span.smpactive');
+        var loadingText = $(this).find('span.smploading');
+        var showMoreLink = $(this);
+
+        activeText.hide();
+        loadingText.show();
+
+        var AjaxPagingViewModel = new Object();
+        AjaxPagingViewModel.PageIndex = pageIndex.val();
+
+        // Ajax call to post the view model to the controller
+        var strung = JSON.stringify(AjaxPagingViewModel);
+
+        $.ajax({
+            url: app_base + 'Admin/Moderate/GetMorePosts',
+            type: 'POST',
+            dataType: 'html',
+            data: strung,
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                // Add new data to page
+                showMoreLink.before(data);
+
+                // Update the page index value
+                var newPageIdex = (parseInt(pageIndex.val()) + parseInt(1));
+                pageIndex.val(newPageIdex);
+
+                // If the new pageindex is greater than the total pages, then hide the show more button
+                if (newPageIdex > totalPages) {
+                    showMoreLink.hide();
+                }
+
+                // Lastly reattch the click events
+                AddModerateClickEvents();
+                activeText.show();
+                loadingText.hide();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                activeText.show();
+                loadingText.hide();
+            }
+        });
+    });
+
+}
+
+function AddModerateClickEvents() {
+
+    var approvetopic = $('.topicaction');
+    if (approvetopic.length > 0) {
+        approvetopic.click(function (e) {
+            e.preventDefault();
+            var id = $(this).data("topicid");
+            var action = $(this).data("topicaction");
+            var snippetHolder = $('#topic-' + id);
+            var approve = true;
+            if (action == "delete") {
+                if (!confirm('Are you sure you want to delete this?')) {
+                    return false;
+                }
+                approve = false;
+            }
+
+            var moderateActionViewModel = new Object();
+            moderateActionViewModel.IsApproved = approve;
+            moderateActionViewModel.TopicId = id;
+            var strung = JSON.stringify(moderateActionViewModel);
+
+            $.ajax({
+                url: app_base + 'Admin/Moderate/ModerateTopic',
+                type: 'POST',
+                data: strung,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data != "error") {
+                        snippetHolder.fadeOut('fast');
+                    } else {
+                        ShowUserMessage("There was an error, check the error log");
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+
+        });
+    }
+
+    var approvepost = $('.postaction');
+    if (approvepost.length > 0) {
+        approvepost.click(function (e) {
+            e.preventDefault();
+            var id = $(this).data("postid");
+            var action = $(this).data("postaction");
+            var snippetHolder = $('#post-' + id);
+            var approve = true;
+            if (action == "delete") {
+                if (!confirm('Are you sure you want to delete this?')) {
+                    return false;
+                }
+                approve = false;
+            }
+
+            var moderateActionViewModel = new Object();
+            moderateActionViewModel.IsApproved = approve;
+            moderateActionViewModel.PostId = id;
+            var strung = JSON.stringify(moderateActionViewModel);
+
+            $.ajax({
+                url: app_base + 'Admin/Moderate/ModeratePost',
+                type: 'POST',
+                data: strung,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data != "error") {
+                        snippetHolder.fadeOut('fast');
+                    } else {
+                        ShowUserMessage("There was an error, check the error log");
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+
+        });
+    }
+
+}
 
 function HighlightUpdated(clickedElement) {
     $(clickedElement).effect("highlight", {}, 3000);

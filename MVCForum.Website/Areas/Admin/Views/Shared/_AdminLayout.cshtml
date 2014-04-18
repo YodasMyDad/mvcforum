@@ -136,6 +136,11 @@
                     <h6>Tools</h6>
                     <ul class="nav nav-tabs nav-stacked">
                         <li>
+                            <a href="@Url.Action("Index", "Moderate", new { area = "Admin" })">
+                                <i class='icon-warning-sign'></i>Moderate
+                            </a>
+                        </li>
+                        <li>
                             <a href="@Url.Action("Index", "ImportExport", new { area = "Admin" })">
                                 <i class='icon-random'></i>Import / Export
                             </a>
@@ -179,7 +184,7 @@
         <hr>
 
         <footer>
-            <p>&copy; <a href="http://www.webdesigncompany.co.uk">n3o Digital</a> @DateTime.UtcNow.Year</p>
+            <p>&copy; <a href="http://www.aptitude.co.uk">Aptitude</a> @DateTime.UtcNow.Year</p>
             @RenderSection("AdminFooter", false)
         </footer>
 

@@ -19,5 +19,6 @@ namespace MVCForum.Domain.Interfaces.Services
         IEnumerable<LuceneSearchModel> Search(string searchTerm, bool doFuzzySearch = false);
         IEnumerable<LuceneSearchModel> GetAll();
         PagedList<LuceneSearchModel> Search(string searchTerm, int pageIndex, int pageSize, bool doFuzzySearch = false);
+
    }
 }

@@ -47,14 +47,16 @@ namespace MVCForum.Website.Controllers
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             var controller = filterContext.RouteData.Values["controller"];
+            var area = filterContext.RouteData.DataTokens["area"] ?? string.Empty;
 
             //if (Session[AppConstants.GoToInstaller] != null && Session[AppConstants.GoToInstaller].ToString() == "True")
             //{
             //    filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Install" }, { "action", "Index" } });
             //}
-            if (SettingsService.GetSettings().IsClosed)
-            {                
-                if(controller.ToString().ToLower() != "closed")
+            if (SettingsService.GetSettings().IsClosed && !filterContext.IsChildAction)
+            {
+                // Only redirect if its closed and user is NOT in the admin
+                if (controller.ToString().ToLower() != "closed" && controller.ToString().ToLower() != "members" && !area.ToString().ToLower().Contains("admin"))
                 {
                     filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Closed" }, { "action", "Index" } });
                 }          

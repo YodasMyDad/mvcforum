@@ -153,6 +153,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\YUICompressor.NET.2.0.0.0\lib\NET20\EcmaScript.NET.dll</HintPath>
     </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Facebook, Version=6.0.10.0, Culture=neutral, PublicKeyToken=58cb4f2111d1e6de, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Facebook.6.4.2\lib\net40-client\Facebook.dll</HintPath>
@@ -178,7 +186,6 @@
       <HintPath>..\packages\SquishIt.Mvc.0.9.5\lib\SquishIt.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data.Entity" />
     <Reference Include="System.IO">
       <HintPath>..\packages\Microsoft.Bcl.1.1.6\lib\net40\System.IO.dll</HintPath>
     </Reference>
@@ -212,32 +219,32 @@
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.Helpers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Mvc, Version=5.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.1.1\lib\net45\System.Web.Mvc.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.Razor.3.1.1\lib\net45\System.Web.Razor.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.WebPages.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Helpers">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.Helpers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.1.2\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.1.2\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.Routing" />
-    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.1\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    <Reference Include="System.Web.WebPages">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
@@ -280,7 +287,9 @@
     <Compile Include="Areas\Admin\Controllers\BatchController.cs" />
     <Compile Include="Areas\Admin\Controllers\BannedWordController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ModerateController.cs" />
     <Compile Include="Areas\Admin\ViewModels\AdminBadgeViewModels.cs" />
+    <Compile Include="Areas\Admin\ViewModels\AjaxAdminViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\BannedEmailViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\BatchViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\BannedWordViewModels.cs" />
@@ -327,6 +336,7 @@
     <Compile Include="Membership\RoleProvider.cs" />
     <Compile Include="Areas\Admin\ViewModels\AccountViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Areas\Admin\ViewModels\ModerateViewModels.cs" />
     <Compile Include="ViewModels\UploadViewModels.cs" />
     <Compile Include="ViewModels\BadgeViewModels.cs" />
     <Compile Include="ViewModels\CategoryViewModels.cs" />
@@ -760,6 +770,8 @@
     <Content Include="Installer\Db\1.2\database.sql" />
     <Content Include="Installer\Db\1.2\Upgrade\upgrade.sql" />
     <Content Include="Installer\Db\1.3\database.sql" />
+    <Content Include="Installer\Db\1.4 - Copy\database.sql" />
+    <Content Include="Installer\Db\1.4 - Copy\Upgrade\upgrade.sql" />
     <Content Include="Installer\Db\1.4\database.sql" />
     <Content Include="Installer\Db\1.4\Upgrade\upgrade.sql" />
     <Content Include="Installer\ReadMe.txt" />
@@ -767,6 +779,9 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\cache\Cache.txt" />
+    <Content Include="Areas\Admin\Views\Moderate\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Moderate\GetMoreTopics.cshtml" />
+    <Content Include="Areas\Admin\Views\Moderate\GetMorePosts.cshtml" />
     <None Include="Scripts\jquery-2.0.1.intellisense.js" />
     <Content Include="Scripts\jquery-2.0.1.js" />
     <Content Include="Scripts\jquery-2.0.1.min.js" />
@@ -801,6 +816,7 @@
     <Content Include="Scripts\tinymce\plugins\code\plugin.min.js" />
     <Content Include="Scripts\tinymce\plugins\compat3x\css\dialog.css" />
     <Content Include="Scripts\tinymce\plugins\compat3x\img\buttons.png" />
+    <Content Include="Scripts\tinymce\plugins\compat3x\img\icons.gif" />
     <Content Include="Scripts\tinymce\plugins\compat3x\img\items.gif" />
     <Content Include="Scripts\tinymce\plugins\compat3x\img\menu_arrow.gif" />
     <Content Include="Scripts\tinymce\plugins\compat3x\img\menu_check.gif" />
@@ -835,6 +851,7 @@
     <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-yell.gif" />
     <Content Include="Scripts\tinymce\plugins\emoticons\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\emoticons\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\example\dialog.html" />
     <Content Include="Scripts\tinymce\plugins\example\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\example\plugin.min.js" />
     <Content Include="Scripts\tinymce\plugins\example_dependency\plugin.js" />
@@ -871,6 +888,7 @@
     <Content Include="Scripts\tinymce\plugins\paste\classes\Clipboard.js" />
     <Content Include="Scripts\tinymce\plugins\paste\classes\Plugin.js" />
     <Content Include="Scripts\tinymce\plugins\paste\classes\Quirks.js" />
+    <Content Include="Scripts\tinymce\plugins\paste\classes\Utils.js" />
     <Content Include="Scripts\tinymce\plugins\paste\classes\WordFilter.js" />
     <Content Include="Scripts\tinymce\plugins\paste\plugin.dev.js" />
     <Content Include="Scripts\tinymce\plugins\paste\plugin.js" />
@@ -928,13 +946,12 @@
     <Content Include="Scripts\tinymce\plugins\wordcount\plugin.min.js" />
     <Content Include="Scripts\tinymce\skins\lightgray\content.inline.min.css" />
     <Content Include="Scripts\tinymce\skins\lightgray\content.min.css" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\icomoon-small.svg" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\icomoon.svg" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.svg" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.svg" />
     <Content Include="Scripts\tinymce\skins\lightgray\img\anchor.gif" />
     <Content Include="Scripts\tinymce\skins\lightgray\img\loader.gif" />
     <Content Include="Scripts\tinymce\skins\lightgray\img\object.gif" />
     <Content Include="Scripts\tinymce\skins\lightgray\img\trans.gif" />
-    <Content Include="Scripts\tinymce\skins\lightgray\img\wline.gif" />
     <Content Include="Scripts\tinymce\skins\lightgray\skin.ie7.min.css" />
     <Content Include="Scripts\tinymce\skins\lightgray\skin.min.css" />
     <Content Include="Scripts\tinymce\themes\modern\theme.js" />
@@ -1156,15 +1173,20 @@
     <Content Include="Views\Topic\CreateTopicButton.cshtml" />
     <Content Include="Views\Home\UploadFiles.cshtml" />
     <Content Include="Views\Shared\_EmailConfirmationNotice.cshtml" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\readme.md" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\icomoon-small.woff" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\icomoon-small.ttf" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\icomoon-small.eot" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\icomoon.woff" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\icomoon.ttf" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\icomoon.eot" />
-    <Content Include="Scripts\tinymce\langs\readme.md" />
     <Content Include="Views\Shared\_DocumentationBlock.cshtml" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.woff" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.ttf" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.json" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.eot" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.woff" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.ttf" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.json" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.eot" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\readme.md" />
+    <Content Include="Scripts\tinymce\langs\readme.md" />
+    <Content Include="Views\Shared\_ModerateTopic.cshtml" />
+    <Content Include="Views\Shared\_ModeratePost.cshtml" />
+    <Content Include="Views\Shared\_PostModeration.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Themes\Dark\Views\Shared\" />

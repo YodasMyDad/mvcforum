@@ -25,7 +25,7 @@
 
             var topicCount = cat.Topics.Count;
             var latestTopicInCategory = cat.Topics.OrderByDescending(x => x.LastPost.DateCreated).FirstOrDefault();
-            var postCount = cat.Topics.SelectMany(x => x.Posts).Count();
+            var postCount = (cat.Topics.SelectMany(x => x.Posts).Count() - 1);
         <div class="row-fluid">
             <div class="span12 categorydetails">
                 <h2><a href="@cat.NiceUrl">@Html.Raw(cat.Name)</a></h2>

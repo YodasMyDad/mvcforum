@@ -14,6 +14,7 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<Post> GetByMember(Guid memberId, int amountToTake);
         PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm);
         PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId, PostOrderBy order);
+        PagedList<Post> GetPagedPendingPosts(int pageIndex, int pageSize);
         Post Add(Post post);
         Post Get(Guid postId);
         void SaveOrUpdate(Post post);

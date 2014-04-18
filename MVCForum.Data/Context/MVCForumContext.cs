@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using System.Data;
+using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 //using EFCachingProvider;
 using MVCForum.Data.Mapping;
@@ -106,7 +107,10 @@ namespace MVCForum.Data.Context
 
         public new void Dispose()
         {
-            
+            //if (Database.Connection.State == ConnectionState.Open)
+            //{
+            //    Database.Connection.Close();
+            //}
         }
     }
 }

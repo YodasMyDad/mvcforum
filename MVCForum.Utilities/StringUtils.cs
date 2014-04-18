@@ -726,6 +726,10 @@ namespace MVCForum.Utilities
             exp = new Regex(@"\[vimeo\]([^\]]+)\[/vimeo\]");
             str = exp.Replace(str, "<div class=\"video-container\"><iframe src=\"http://player.vimeo.com/video/$1?portrait=0\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>");
 
+            // YouTube Screenr Video, just add the video ID and it inserts video into post
+            exp = new Regex(@"\[screenr\]([^\]]+)\[/screenr\]");
+            str = exp.Replace(str, "<div class=\"video-container\"><iframe src=\"http://www.screenr.com/embed/$1\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>");
+
             return str;
         }
 

@@ -153,6 +153,17 @@ namespace MVCForum.Services
         }
 
         /// <summary>
+        /// Gets all the pending topics in a paged list
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public PagedList<Topic> GetPagedPendingTopics(int pageIndex, int pageSize)
+        {
+            return _topicRepository.GetPagedPendingTopics(pageIndex, pageSize);
+        }
+
+        /// <summary>
         /// Returns a specified amount of most recent topics in a category used for RSS feeds
         /// </summary>
         /// <param name="amountToTake"></param>

@@ -4,7 +4,7 @@
 @model MVCForum.Website.ViewModels.ViewTopicViewModel
 @{
     var topic = Model.Topic;
-    var posts = topic.Posts.ToList();
+    var posts = topic.Posts.Where(x => x.Pending != true).ToList();
     var topicSolved = Model.Topic.Solved ? "answered" : "";
 
     var firstPost = posts.FirstOrDefault(x => x.IsTopicStarter);

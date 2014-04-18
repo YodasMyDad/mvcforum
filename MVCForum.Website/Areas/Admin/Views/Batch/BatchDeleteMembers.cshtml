@@ -25,7 +25,7 @@
         @Html.ValidationSummary(true)
         @Html.AntiForgeryToken()
 
-        <div class="span5">
+        <div class="span12">
             <div class="editor-label">
                 @Html.LabelFor(m => m.AmoutOfDaysSinceRegistered)
             </div>
@@ -34,7 +34,7 @@
                 @Html.ValidationMessageFor(m => m.AmoutOfDaysSinceRegistered)
             </div>
         </div>
-        <div class="span5">
+        <div class="span12">
             <div class="editor-label">
                 @Html.LabelFor(m => m.AmoutOfPosts)
             </div>

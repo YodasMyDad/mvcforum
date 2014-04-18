@@ -30,6 +30,12 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Lock The Category")]
         public bool IsLocked { get; set; }
 
+        [DisplayName("Moderate all topics in this Category")]
+        public bool ModerateTopics { get; set; }
+
+        [DisplayName("Moderate all posts in this Category")]
+        public bool ModeratePosts { get; set; }
+
         [DisplayName("Sort Order")]
         [Numeric]
         public int SortOrder { get; set; }
@@ -37,7 +43,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Parent Category")]
         public Guid? ParentCategory { get; set; }
 
-        public List<Category> AllCategories { get; set; } 
+        public List<Category> AllCategories { get; set; }
     }
 
     public class EditCategoryViewModel
@@ -53,6 +59,12 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [DisplayName("Lock The Category")]
         public bool IsLocked { get; set; }
+
+        [DisplayName("Moderate all topics in this Category")]
+        public bool ModerateTopics { get; set; }
+
+        [DisplayName("Moderate all posts in this Category")]
+        public bool ModeratePosts { get; set; }
 
         [DisplayName("Sort Order")]
         [Numeric]
@@ -70,7 +82,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Parent Category")]
         public Guid? ParentCategory { get; set; }
 
-        public List<Category> AllCategories { get; set; } 
+        public List<Category> AllCategories { get; set; }
     }
 
     public class DeleteCategoryViewModel

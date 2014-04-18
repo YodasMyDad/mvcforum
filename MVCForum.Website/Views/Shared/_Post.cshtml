@@ -21,13 +21,13 @@
                 {
                     if (allowedToVote)
                     {
-                    <div class="postkarmathumbs-@postId">
-                        <a class="thumbuplink" rel="@postId">@Html.LanguageString("Post.VoteUp")</a>
-                    </div>
+                        <div class="postkarmathumbs-@postId">
+                            <a class="thumbuplink" rel="@postId">@Html.LanguageString("Post.VoteUp")</a>
+                        </div>
                     }
 
                     var solvedClass = Model.Post.IsSolution ? "postissolution" : "";
-                
+
                     <div class="karmascore karmascore-@postId @solvedClass @showExtendedVotes">
                         <span class="votenumber" id="@postId">
                             @Model.Post.VoteCount.KiloFormat()
@@ -35,10 +35,14 @@
                     </div>
                     if (allowedToVote)
                     {
-                    <div class="postkarmathumbs-@postId">
-                        <a class="thumbdownlink" rel="@postId">@Html.LanguageString("Post.VoteDown")</a>
-                    </div>
+                        <div class="postkarmathumbs-@postId">
+                            <a class="thumbdownlink" rel="@postId">@Html.LanguageString("Post.VoteDown")</a>
+                        </div>
                     }
+                }
+                else if (Html.Settings().EnableMarkAsSolution && Model.ParentTopic.Solved && Model.Post.IsSolution)
+                {
+                    <a class="solutionholder solution-@postId issolution-solved" rel="@postId">@Html.LanguageString("Post.IsSolution")</a>
                 }
             </div>
 
@@ -49,7 +53,7 @@
                 {
                     var isSolved = Model.ParentTopic.Solved ? "issolution-solved" : "issolution";
                     var isSolvedTitle = Model.ParentTopic.Solved ? "This topic is already marked as solved" : "Mark as solution";
-                <a class="solutionholder solution-@postId @isSolved" rel="@postId" title="@isSolvedTitle">@Html.LanguageString("Post.IsSolution")</a>
+                    <a class="solutionholder solution-@postId @isSolved" rel="@postId" title="@isSolvedTitle">@Html.LanguageString("Post.IsSolution")</a>
                 }
             }
         </div>
@@ -113,14 +117,14 @@
                 </a>
             </div>
             @*<div class="postmemberposts">
-                <span>@Model.Post.User.Posts.Count</span> @Html.LanguageString("Post.Posts")
-            </div>
-            @if (Html.Settings().EnablePoints)
-            {
-                <div class="postmemberkarma">
-                    <span>@Model.Post.User.TotalPoints</span> @Html.LanguageString("Post.Points")
+                    <span>@Model.Post.User.Posts.Count</span> @Html.LanguageString("Post.Posts")
                 </div>
-            }*@
+                @if (Html.Settings().EnablePoints)
+                {
+                    <div class="postmemberkarma">
+                        <span>@Model.Post.User.TotalPoints</span> @Html.LanguageString("Post.Points")
+                    </div>
+                }*@
         </div>
         <div class="postadminui">
             @if (Model.User != null)
@@ -143,7 +147,7 @@
                     {
                         if (Model.Post.User.DisableFileUploads != true)
                         {
-                        <a class="postshowattach" href="#">@Html.LanguageString("Post.Attach")</a>
+                            <a class="postshowattach" href="#">@Html.LanguageString("Post.Attach")</a>
                         }
                     }
 
@@ -156,13 +160,13 @@
     {
         <div class="postuploadholder row-fluid">
             @using (Html.BeginForm("UploadPostFiles", "Upload", FormMethod.Post, new { enctype = "multipart/form-data" }))
-            {                
+            {
                 <div class="offset2 span8">
                     <span style="display: none;" class="ajaxspinner" title="@Html.LanguageString("Post.PleaseWait")">@Html.LanguageString("Post.PleaseWait")</span>
                     <input type="submit" value="@Html.LanguageString("Post.Upload")" class="btn postuploadbutton" />
                     <input type="file" name="files" id="files" value="" multiple="multiple" />
                     <input type="hidden" name="uploadPostId" id="uploadPostId" value="@Model.Post.Id" />
-                </div>         
+                </div>
             }
         </div>
     }

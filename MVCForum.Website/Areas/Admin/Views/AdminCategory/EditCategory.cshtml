@@ -1,7 +1,6 @@
 ﻿@model MVCForum.Website.Areas.Admin.ViewModels.EditCategoryViewModel
 
 @{
-    Layout = "~/Areas/Admin/Views/shared/_AdminBlankLayout.cshtml";
     ViewBag.Title = "Edit Category";    
 }
 
@@ -45,7 +44,19 @@
             @Html.EditorFor(model => model.IsLocked)
             @Html.LabelFor(model => model.IsLocked)
             @Html.ValidationMessageFor(model => model.IsLocked)
-        </div>       
+        </div>
+        
+        <div class="editor-field n3ocheckboxfield">
+            @Html.EditorFor(model => model.ModerateTopics)
+            @Html.LabelFor(model => model.ModerateTopics)
+            @Html.ValidationMessageFor(model => model.ModerateTopics)
+        </div>
+        
+        <div class="editor-field n3ocheckboxfield">
+            @Html.EditorFor(model => model.ModeratePosts)
+            @Html.LabelFor(model => model.ModeratePosts)
+            @Html.ValidationMessageFor(model => model.ModeratePosts)
+        </div>
 
         <div class="editor-label">
             @Html.LabelFor(model => model.SortOrder)

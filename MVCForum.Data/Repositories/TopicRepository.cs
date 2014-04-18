@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Data.Entity;
 using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
-using MVCForum.Utilities;
 
 namespace MVCForum.Data.Repositories
 {
@@ -42,6 +40,7 @@ namespace MVCForum.Data.Repositories
         {
             return _context.Topic
                     .Include(x => x.User)
+                            .Where(x => x.Pending != true)
                             .OrderByDescending(x => x.Views)
                             .Take(amountToTake)
                             .ToList();
@@ -51,7 +50,7 @@ namespace MVCForum.Data.Repositories
         {
             return _context.Topic
                         .Include(x => x.User)
-                        .Where(c => c.CreateDate >= DateTime.Today)
+                        .Where(c => c.CreateDate >= DateTime.Today && c.Pending != true)
                         .OrderByDescending(x => x.CreateDate)
                         .Take(amountToTake)
                         .ToList();
@@ -105,6 +104,7 @@ namespace MVCForum.Data.Repositories
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.Category)
                                 .Include(x => x.Posts.Select(v => v.Votes))
+                                .Where(x => x.Pending != true)
                                 .OrderByDescending(x => x.LastPost.DateCreated)
                                 .Skip((pageIndex - 1) * pageSize)
                                 .Take(pageSize)
@@ -123,6 +123,7 @@ namespace MVCForum.Data.Repositories
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.Category)
                                 .Include(x => x.Posts.Select(v => v.Votes))
+                                .Where(x => x.Pending != true)
                                 .OrderByDescending(s => s.CreateDate)
                                 .Take(amountToTake)
                                 .ToList();
@@ -134,6 +135,7 @@ namespace MVCForum.Data.Repositories
             // Get the topics using an efficient
             var results = _context.Topic
                                 .Where(x => x.User.Id == memberId)
+                                .Where(x => x.Pending != true)
                                 .ToList();
             return results;
         }
@@ -147,8 +149,29 @@ namespace MVCForum.Data.Repositories
                                 .Include(x => x.Category)
                                 .Include(x => x.Posts.Select(v => v.Votes))
                                 .Where(x => x.Category.Id == categoryId)
+                                .Where(x => x.Pending != true)
                                 .ToList();
             return results;
+        }
+
+        public PagedList<Topic> GetPagedPendingTopics(int pageIndex, int pageSize)
+        {
+            // We might only want to display the top 100
+            // but there might not be 100 topics
+            var total = _context.Topic.Count(x => x.Pending == true);
+
+            // Get the topics using an efficient
+            var results = _context.Topic
+                                .Include(x => x.LastPost)
+                                .Include(x => x.LastPost.User)
+                                .Where(x => x.Pending == true)
+                                .OrderBy(x => x.LastPost.DateCreated)
+                                .Skip((pageIndex - 1) * pageSize)
+                                .Take(pageSize)
+                                .ToList();
+
+            // Return a paged list
+            return new PagedList<Topic>(results, pageIndex, pageSize, total);
         }
 
         public PagedList<Topic> GetPagedTopicsByCategory(int pageIndex, int pageSize, int amountToTake, Guid categoryId)
@@ -170,6 +193,7 @@ namespace MVCForum.Data.Repositories
                                 .Include(x => x.Category)
                                 .Include(x => x.Posts.Select(v => v.Votes))
                                 .Where(x => x.Category.Id == categoryId)
+                                .Where(x => x.Pending != true)
                                 .OrderByDescending(x => x.IsSticky)
                                 .ThenByDescending(x => x.LastPost.DateCreated)
                                 .Skip((pageIndex - 1) * pageSize)
@@ -197,6 +221,7 @@ namespace MVCForum.Data.Repositories
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.Category)
                                 .Include(x => x.Posts.Select(v => v.Votes))
+                                .Where(x => x.Pending != true)
                                 .OrderByDescending(x => x.IsSticky)
                                 .ThenByDescending(x => x.LastPost.DateCreated)
                                 .Take(pageSize)
@@ -226,6 +251,7 @@ namespace MVCForum.Data.Repositories
                             .Include(x => x.User)
                             .Include(x => x.Votes)
                             .Where(x => x.PostContent.Contains(searchTerm) | x.Topic.Name.Contains(searchTerm))
+                            .Where(x => x.Pending != true)
                             .OrderByDescending(x => x.DateCreated)
                             .Skip((pageIndex - 1) * pageSize)
                             .Take(pageSize)
@@ -255,6 +281,7 @@ namespace MVCForum.Data.Repositories
                         (topic, guidFromCsv) => new { topic, guidFromCsv }
                     )
                     .Where(x => x.guidFromCsv == x.topic.Id)
+                    .Where(x => x.topic.Pending != true)
                     .OrderByDescending(x => x.topic.LastPost.DateCreated)
                     .Skip((pageIndex - 1) * pageSize)
                     .Take(pageSize)
@@ -274,6 +301,7 @@ namespace MVCForum.Data.Repositories
                             .Include(x => x.Category)
                             .Include(x => x.Posts.Select(v => v.Votes))
                             .Where(x => topicIds.Contains(x.Id))
+                            .Where(x => x.Pending != true)
                             .OrderByDescending(x => x.LastPost.DateCreated)
                             .Take(amountToTake)
                             .ToList();
@@ -287,6 +315,7 @@ namespace MVCForum.Data.Repositories
                             .Include(x => x.Category)
                             .Include(x => x.Posts.Select(v => v.Votes))
                             .Where(x => x.Category.Id == categoryId)
+                            .Where(x => x.Pending != true)
                             .OrderByDescending(x => x.LastPost.DateCreated)
                             .Take(amountToTake)
                             .ToList();
@@ -310,6 +339,7 @@ namespace MVCForum.Data.Repositories
                                 .Include(x => x.Category)
                                 .Include(x => x.Posts.Select(v => v.Votes))
                                 .Include(x => x.Tags)
+                                .Where(x => x.Pending != true)
                                 .OrderByDescending(x => x.IsSticky)
                                 .ThenByDescending(x => x.LastPost.DateCreated)
                                 .Where(e => e.Tags.Any(t => t.Slug == tag))
@@ -361,6 +391,7 @@ namespace MVCForum.Data.Repositories
                             .Include(x => x.Category)
                             .Include(x => x.Posts.Select(v => v.Votes))
                             .Where(x => x.User.Id == memberId)
+                            .Where(x => x.Pending != true)
                             .Where(x => x.Posts.Select(p => p.IsSolution).Contains(true))
                             .ToList();
         }
