@@ -390,7 +390,13 @@ ModerateTopics bit NULL
 ModeratePosts bit NULL
 
 -- Post
-BeenModerated bit NULL
+Pending bit NULL
+
+-- Topic 
+Pending bit NULL
+
+-- PrivateMessage
+IsSentMessage bit NULL
 
 -- Language Strings
 Moderate.AwaitingModeration = Your post is currently awaiting moderation. Once approved it will appear on the site

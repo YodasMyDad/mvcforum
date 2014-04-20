@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Website.Application;
 
@@ -44,9 +45,7 @@ namespace MVCForum.Website.ViewModels
         [ForumMvcResourceDisplayName("Topic.Label.TopicTitle")]
         public string Name { get; set; }
 
-        //[UIHint("bbeditor"), AllowHtml]
-        //[UIHint("tinymceeditor"), AllowHtml]
-        [UIHint("markdowneditor"), AllowHtml]
+        [UIHint(AppConstants.EditorType), AllowHtml]
         public string Content { get; set; }
 
         public bool IsSticky { get; set; }

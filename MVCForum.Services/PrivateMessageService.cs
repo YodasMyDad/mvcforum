@@ -33,9 +33,27 @@ namespace MVCForum.Services
         /// <returns></returns>
         public PrivateMessage Add(PrivateMessage message)
         {
+            // This is the message that the other user sees
             message = SanitizeMessage(message);
             message.DateSent = DateTime.UtcNow;
-            return _privateMessageRepository.Add(message);
+            message.IsSentMessage = false;
+            var origMessage = _privateMessageRepository.Add(message);
+
+            // We create a sent message that sits in the users sent folder, this is 
+            // so that if the receiver deletes the message - The sender still has a record of it.
+            var sentMessage = new PrivateMessage
+            {
+                IsSentMessage = true,
+                DateSent = message.DateSent,
+                Message = message.Message,
+                Subject = message.Subject,
+                UserFrom = message.UserFrom,
+                UserTo = message.UserTo
+            };
+            _privateMessageRepository.Add(sentMessage);
+
+            // Return the main message
+            return origMessage;
         }
 
         /// <summary>
@@ -90,6 +108,11 @@ namespace MVCForum.Services
         public PrivateMessage GetLastSentPrivateMessage(Guid Id)
         {
             return _privateMessageRepository.GetLastSentPrivateMessage(Id);
+        }
+
+        public PrivateMessage GetMatchingSentPrivateMessage(string title, DateTime date, Guid senderId, Guid receiverId)
+        {
+            return _privateMessageRepository.GetMatchingSentPrivateMessage(title, date, senderId, receiverId);
         }
 
         /// <summary>

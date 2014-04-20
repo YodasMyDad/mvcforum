@@ -39,7 +39,11 @@ body { font-family: 'MVCforumLight', Calibri, Arial, Helvetica, sans-serif; colo
 a, a:visited { color: #2470BB; }
 a:hover, a:focus { color: #585858; }
 
+/*--- Topic Social Share ---*/
+.postsocialbuttons { clear: both;float: right;padding:10px 0 0 0;}
 
+/*--- Email subscribe ---*/
+.subscribebuttons { clear: both;}
 
 /* ---- Generic Heading Styles ---- */
 h1, h2, h3, h4, h5, h6 { text-rendering: optimizelegibility; }
@@ -592,6 +596,13 @@ ul.tagCloud li span.tagCount { float: left; padding: 0 2px; width: auto; display
 
     /*--- Documentation Block ---*/
     .documentation-message-block { margin-bottom: 10px;}
+
+    /*--- Topic Social Share ---*/
+    .postsocialbuttons { clear: none;float: right;padding:10px 0 0 0;width: 50%;}
+    .postsocialbuttons .addthis_toolbox { float: right;}
+
+    /*--- Email subscribe ---*/
+    .subscribebuttons { clear: none;float: left;padding:10px 0 0 0;width: 50%;text-align: left;}
 }
 
 @media (max-width: 600px) {

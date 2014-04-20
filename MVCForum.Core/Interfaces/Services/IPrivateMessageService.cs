@@ -13,6 +13,7 @@ namespace MVCForum.Domain.Interfaces.Services
         IPagedList<PrivateMessage> GetPagedSentMessagesByUser(int pageIndex, int pageSize, MembershipUser user);
         IPagedList<PrivateMessage> GetPagedReceivedMessagesByUser(int pageIndex, int pageSize, MembershipUser user);
         PrivateMessage GetLastSentPrivateMessage(Guid Id);
+        PrivateMessage GetMatchingSentPrivateMessage(string title, DateTime date, Guid senderId, Guid receiverId);
         IList<PrivateMessage> GetAllSentByUser(Guid Id);
         int NewPrivateMessageCount(Guid userId);
         IList<PrivateMessage> GetAllReceivedByUser(Guid Id);

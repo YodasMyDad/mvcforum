@@ -16,9 +16,9 @@
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
-            <th>@Html.LanguageString("PM.From")</th>
             <th>@Html.LanguageString("PM.Subject")</th>
             <th>@Html.LanguageString("PM.Date")</th>
+            <th>@Html.LanguageString("PM.From")</th>
             <th>@Html.LanguageString("PM.Read")</th>
             <th>@Html.LanguageString("PM.Delete")</th>
         </tr>
@@ -28,12 +28,12 @@
         {        
             <tr>
                 <td>
-                    <strong><a href="@Html.Raw(message.UserFrom.NiceUrl)">@Html.Raw(message.UserFrom.UserName)</a></strong>
-                </td>
-                <td>
                     @Html.ActionLink(message.Subject, "View", new { id = message.Id})
                 </td>
                 <td>@message.DateSent.ToShortDateString()</td>
+                <td>
+                    <strong><a href="@Html.Raw(message.UserFrom.NiceUrl)">@Html.Raw(message.UserFrom.UserName)</a></strong>
+                </td>
                 <td>@Html.DisplayFor(modelItem => message.IsRead)</td>
                 <td>
                     <a class="privatemessagedelete" rel="@message.Id">

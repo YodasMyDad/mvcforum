@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Website.Application;
 
@@ -9,9 +10,7 @@ namespace MVCForum.Website.ViewModels
 {
     public class CreateAjaxPostViewModel
     {
-        //[UIHint("bbeditor"), AllowHtml]
-        //[UIHint("tinymceeditor"), AllowHtml]
-        [UIHint("markdowneditor"), AllowHtml]
+        [UIHint(AppConstants.EditorType), AllowHtml]
         public string PostContent { get; set; }
 
         public Guid Topic { get; set; }
@@ -49,10 +48,8 @@ namespace MVCForum.Website.ViewModels
         public IList<PollAnswer> PollAnswers { get; set; }
 
         public IEnumerable<Category> Categories { get; set; }
-                
-        //[UIHint("bbeditor"), AllowHtml]
-        //[UIHint("tinymceeditor"), AllowHtml]
-        [UIHint("markdowneditor"), AllowHtml]
+
+        [UIHint(AppConstants.EditorType), AllowHtml]
         public string Content { get; set; }
 
         [HiddenInput]

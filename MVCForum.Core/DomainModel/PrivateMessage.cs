@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
@@ -17,7 +14,7 @@ namespace MVCForum.Domain.DomainModel
         public string Subject { get; set; }
         public string Message { get; set; }
         public bool IsRead { get; set; }
-
+        public bool? IsSentMessage { get; set; }
         public virtual MembershipUser UserTo { get; set; }
         public virtual MembershipUser UserFrom { get; set; }
     }

@@ -31,6 +31,11 @@
         // Themes
         public const string ThemeRootFolderName = "Themes";
 
+        // Editor
+        //public const string EditorType = "bbeditor";
+        public const string EditorType = "tinymceeditor";
+        //public const string EditorType = "markdowneditor";   
+
         // Url names
         public const string CategoryUrlIdentifier = "cat";
         public const string TopicUrlIdentifier = "chat";

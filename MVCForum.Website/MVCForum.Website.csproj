@@ -770,8 +770,8 @@
     <Content Include="Installer\Db\1.2\database.sql" />
     <Content Include="Installer\Db\1.2\Upgrade\upgrade.sql" />
     <Content Include="Installer\Db\1.3\database.sql" />
-    <Content Include="Installer\Db\1.4 - Copy\database.sql" />
-    <Content Include="Installer\Db\1.4 - Copy\Upgrade\upgrade.sql" />
+    <Content Include="Installer\Db\1.5\database.sql" />
+    <Content Include="Installer\Db\1.5\Upgrade\upgrade.sql" />
     <Content Include="Installer\Db\1.4\database.sql" />
     <Content Include="Installer\Db\1.4\Upgrade\upgrade.sql" />
     <Content Include="Installer\ReadMe.txt" />
@@ -797,7 +797,6 @@
     <Content Include="Scripts\json2.js" />
     <Content Include="Scripts\json3.js" />
     <Content Include="Scripts\markdown\node-pagedown.js" />
-    <Content Include="Scripts\tinymce\license.txt" />
     <Content Include="Scripts\tinymce\plugins\advlist\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\advlist\plugin.min.js" />
     <Content Include="Scripts\tinymce\plugins\anchor\plugin.js" />

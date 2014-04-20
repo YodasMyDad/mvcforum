@@ -32,6 +32,7 @@ namespace MVCForum.Data.Repositories
             // Get the topics using an efficient
             var results = _context.PrivateMessage
                                 .Where(x => x.UserFrom.Id == user.Id)
+                                .Where(x => x.IsSentMessage == true)
                                 .OrderByDescending(x => x.DateSent)
                                 .Skip((pageIndex - 1) * pageSize)
                                 .Take(pageSize)
@@ -48,6 +49,7 @@ namespace MVCForum.Data.Repositories
             // Get the topics using an efficient
             var results = _context.PrivateMessage
                                 .Where(x => x.UserTo.Id == user.Id)
+                                .Where(x => x.IsSentMessage != true)
                                 .OrderByDescending(x => x.DateSent)
                                 .Skip((pageIndex - 1) * pageSize)
                                 .Take(pageSize)
@@ -58,27 +60,29 @@ namespace MVCForum.Data.Repositories
             return new PagedList<PrivateMessage>(results, pageIndex, pageSize, totalCount);
         }
 
-        public PrivateMessage GetLastSentPrivateMessage(Guid Id)
+        public PrivateMessage GetLastSentPrivateMessage(Guid id)
         {
-            return _context.PrivateMessage
-                                .Where(x => x.UserFrom.Id == Id)
-                                .OrderByDescending(x => x.DateSent)
-                                .Take(1)
-                                .FirstOrDefault();
+            return _context.PrivateMessage.FirstOrDefault(x => x.UserFrom.Id == id);
         }
 
-        public IList<PrivateMessage> GetAllSentByUser(Guid Id)
+        public PrivateMessage GetMatchingSentPrivateMessage(string title, DateTime date, Guid senderId, Guid receiverId)
         {
             return _context.PrivateMessage
-                                .Where(x => x.UserFrom.Id == Id)
+                .FirstOrDefault(x => x.Subject == title && x.DateSent == date && x.UserFrom.Id == senderId && x.UserTo.Id == receiverId && x.IsSentMessage == true);
+        }
+
+        public IList<PrivateMessage> GetAllSentByUser(Guid id)
+        {
+            return _context.PrivateMessage
+                                .Where(x => x.UserFrom.Id == id)
                                 .OrderByDescending(x => x.DateSent)
                                 .ToList();
         }
 
-        public IList<PrivateMessage> GetAllReceivedByUser(Guid Id)
+        public IList<PrivateMessage> GetAllReceivedByUser(Guid id)
         {
             return _context.PrivateMessage
-                                .Where(x => x.UserTo.Id == Id)
+                                .Where(x => x.UserTo.Id == id)
                                 .OrderByDescending(x => x.DateSent)
                                 .ToList();
         }
@@ -93,7 +97,7 @@ namespace MVCForum.Data.Repositories
 
         public int NewPrivateMessageCount(Guid userId)
         {
-            return _context.PrivateMessage.Count(x => x.UserTo.Id == userId && !x.IsRead);
+            return _context.PrivateMessage.Count(x => x.UserTo.Id == userId && !x.IsRead && x.IsSentMessage != true);
         }
 
         public PrivateMessage Add(PrivateMessage item)

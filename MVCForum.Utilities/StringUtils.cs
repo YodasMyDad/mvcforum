@@ -441,6 +441,7 @@ namespace MVCForum.Utilities
         public static string GetSafeHtml(string html)
         {
             return ScrubHtml(html);
+            //return Sanitizer.GetSafeHtmlFragment(html);
         }
 
         /// <summary>
@@ -729,6 +730,8 @@ namespace MVCForum.Utilities
             // YouTube Screenr Video, just add the video ID and it inserts video into post
             exp = new Regex(@"\[screenr\]([^\]]+)\[/screenr\]");
             str = exp.Replace(str, "<div class=\"video-container\"><iframe src=\"http://www.screenr.com/embed/$1\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>");
+
+            // Add tweets
 
             return str;
         }

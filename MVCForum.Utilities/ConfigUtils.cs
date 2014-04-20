@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Web;
+using System.Web.Configuration;
 using System.Xml;
 
 namespace MVCForum.Utilities
@@ -77,22 +78,27 @@ namespace MVCForum.Utilities
         {
             try
             {
-                var xDoc = GetWebConfig();
-                var xpathToSetting = string.Format("//add[@key='{0}']", name);
-                var settingNodes = xDoc.GetElementsByTagName("appSettings");
-                var appSettingNode = settingNodes[0].SelectSingleNode(xpathToSetting);
-                if (appSettingNode != null && appSettingNode.Attributes != null)
-                {
-                    var idAttribute = appSettingNode.Attributes["value"];
-                    if(idAttribute != null)
-                    {
-                        idAttribute.Value = value;
-                        xDoc.Save(WebConfigPath);
-                        return true;
-                    }
-                }
-                return false;
-
+                //var xDoc = GetWebConfig();
+                //var xpathToSetting = string.Format("//add[@key='{0}']", name);
+                //var settingNodes = xDoc.GetElementsByTagName("appSettings");
+                //var appSettingNode = settingNodes[0].SelectSingleNode(xpathToSetting);
+                //if (appSettingNode != null && appSettingNode.Attributes != null)
+                //{
+                //    var idAttribute = appSettingNode.Attributes["value"];
+                //    if(idAttribute != null)
+                //    {
+                //        idAttribute.Value = value;
+                //        xDoc.Save(WebConfigPath);
+                //        return true;
+                //    }
+                //}
+                //return false;
+                var config = WebConfigurationManager.OpenWebConfiguration("~/");
+                config.AppSettings.Settings[name].Value = value;
+                config.Save(ConfigurationSaveMode.Modified);
+                //config.AppSettings.Settings.Remove(key);
+                //config.AppSettings.Settings.Add(key, value);
+                return true;
             }
             catch (Exception ex)
             {
@@ -176,6 +182,8 @@ namespace MVCForum.Utilities
                 return false;
             }
         }
+
+
 
         public static bool InsertAppSetting(string name, string value)
         {

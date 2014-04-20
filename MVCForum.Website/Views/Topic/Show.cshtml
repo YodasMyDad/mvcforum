@@ -3,7 +3,7 @@
 @using MVCForum.Website.Application
 @using MVCForum.Website.ViewModels
 @model ShowTopicViewModel
-@{    
+@{
     // SEO Stuff
     ViewBag.Title = Html.Raw(AppHelpers.CreatePageTitle(Model.Topic, Html.LanguageString("Topic.TitleFallBack")));
     var totalCount = Convert.ToInt32(Model.TotalCount);
@@ -40,7 +40,7 @@
     <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
     @(Bundle.JavaScript()
         .Add("~/Scripts/fancybox/jquery.fancybox.js")
-        .Add("~/Scripts/topic.js")        
+        .Add("~/Scripts/topic.js")
         .MvcRender("~/scripts/cache/topic_#.js"))
 }
 
@@ -60,13 +60,27 @@
     <div class="span3 topicsubscription">
         @if (Model.User != null && Html.Settings().EnableEmailSubscriptions)
         {
-            <a @Html.Raw(subScribe) title="Subscribe Via Email" href="#" class="emailsubscription" rel="@Model.Topic.Id">
-                <span class="emailsubscriptionimage" rel="topic">@Html.LanguageString("Topic.Subscribe")</span>
-            </a>
-            <a @Html.Raw(unSubscribe) title="Unsubscribe From Emails" href="#" class="emailunsubscription" rel="@Model.Topic.Id">
-                <span class="emailunsubscriptionimage" rel="topic">@Html.LanguageString("Topic.UnSubscribe")</span>
-            </a>
+            <div class="subscribebuttons clearfix">
+                <a @Html.Raw(subScribe) title="Subscribe Via Email" href="#" class="emailsubscription" rel="@Model.Topic.Id">
+                    <span class="emailsubscriptionimage" rel="topic">@Html.LanguageString("Topic.Subscribe")</span>
+                </a>
+                <a @Html.Raw(unSubscribe) title="Unsubscribe From Emails" href="#" class="emailunsubscription" rel="@Model.Topic.Id">
+                    <span class="emailunsubscriptionimage" rel="topic">@Html.LanguageString("Topic.UnSubscribe")</span>
+                </a>
+            </div>
         }
+
+        <div class="postsocialbuttons clearfix">
+            <div class="addthis_toolbox addthis_default_style">
+                <a class="addthis_button_preferred_1"></a>
+                <a class="addthis_button_preferred_2"></a>
+                <a class="addthis_button_preferred_3"></a>
+                <a class="addthis_button_preferred_4"></a>
+                <a class="addthis_button_compact"></a>
+                <a class="addthis_counter addthis_bubble_style"></a>
+            </div>
+        </div>
+
     </div>
 
 </div>
@@ -96,10 +110,10 @@
             @if ((totalCount - 1) > 0)
             {
                 <text> @Html.LanguageString("PostFilter.OrderBy")
-                <a class="orderfilerlink @(string.IsNullOrEmpty(qs) ? "orderfilerlinkactive" : "")" href="@Model.Topic.NiceUrl">@Html.LanguageString("PostFilter.Standard")</a> | 
-                <a class="orderfilerlink @(qs.Contains(PostOrderBy.Newest.ToString()) ? "orderfilerlinkactive" : "")" href="?@AppConstants.PostOrderBy=@PostOrderBy.Newest.ToString()">@Html.LanguageString("PostFilter.Newest")</a> | 
-                <a class="orderfilerlink @(qs.Contains(PostOrderBy.Votes.ToString()) ? "orderfilerlinkactive" : "")" href="?@AppConstants.PostOrderBy=@PostOrderBy.Votes.ToString()">@Html.LanguageString("PostFilter.Votes")</a>  
-                </text>              
+                <a class="orderfilerlink @(string.IsNullOrEmpty(qs) ? "orderfilerlinkactive" : "")" href="@Model.Topic.NiceUrl">@Html.LanguageString("PostFilter.Standard")</a> |
+                <a class="orderfilerlink @(qs.Contains(PostOrderBy.Newest.ToString()) ? "orderfilerlinkactive" : "")" href="?@AppConstants.PostOrderBy=@PostOrderBy.Newest.ToString()">@Html.LanguageString("PostFilter.Newest")</a> |
+                <a class="orderfilerlink @(qs.Contains(PostOrderBy.Votes.ToString()) ? "orderfilerlinkactive" : "")" href="?@AppConstants.PostOrderBy=@PostOrderBy.Votes.ToString()">@Html.LanguageString("PostFilter.Votes")</a>
+                </text>
             }
         </div>
     </div>
@@ -123,7 +137,7 @@
 
     if (!Model.Permissions[AppConstants.PermissionDenyAccess].IsTicked && !Model.Permissions[AppConstants.PermissionReadOnly].IsTicked)
     {
-    @Html.Partial("_CreateNewPost", new CreateAjaxPostViewModel { Topic = Model.Topic.Id, DisablePosting = disablePosting})
+        @Html.Partial("_CreateNewPost", new CreateAjaxPostViewModel { Topic = Model.Topic.Id, DisablePosting = disablePosting })
     }
 }
 else
@@ -132,9 +146,9 @@ else
 }
 
 @*@if (Model.Posts.TotalPages > 1)
-{
-    @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().PostsPerPage, totalCount, null)
-}*@
+    {
+        @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().PostsPerPage, totalCount, null)
+    }*@
 
 <input type="hidden" id="pageIndex" value="@(Model.PageIndex + 1)" />
 <input type="hidden" id="topicId" value="@Model.Topic.Id" />

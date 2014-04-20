@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using DataAnnotationsExtensions;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
@@ -73,9 +74,7 @@ namespace MVCForum.Website.ViewModels
 
         [ForumMvcResourceDisplayName("Members.Label.Signature")]
         [StringLength(1000)]
-        //[UIHint("bbeditor"), AllowHtml]
-        //[UIHint("tinymceeditor"), AllowHtml]
-        [UIHint("markdowneditor"), AllowHtml]
+        [UIHint(AppConstants.EditorType), AllowHtml]
         public string Signature { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Age")]
