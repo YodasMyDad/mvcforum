@@ -54,6 +54,10 @@ h5 { }
 /* ---- Paragraph Styles ---- */
 p { }
 
+/*--- Change Language ---*/
+.languageselector {}
+.languageselector select { width: 98%;}
+
 hr.thin { margin: 14px 0; }
 .span9 hr.thin:last-child { display: none; }
 
@@ -108,10 +112,11 @@ select { }
 
 /*--- Side box styles ---*/
 .side-box { background-color: #31312f; -moz-border-radius: 4px; -webkit-border-radius: 4px; -khtml-border-radius: 4px; border-radius: 4px; margin-bottom: 20px; padding: 12px; }
+.side-box:first-child { padding-top:0; }
 .side-box ul { padding: 0; margin: 0; border-bottom: 1px #ddd solid; }
 .side-box ul li { padding: 4px 0; border-top: 1px #ddd solid; list-style: none; }
 .side-box ul li a { text-decoration: none; }
-.side-box h5 { font-size: 14px; padding: 0 0 5px 0; color: #666; }
+.side-box h5 { font-size: 14px; padding: 0 0 5px 0; color: #666;margin: 0 0 8px 0; }
 
 /*--- Subcategories --*/
 .subcategoryholder { }

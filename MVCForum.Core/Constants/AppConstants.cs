@@ -17,7 +17,7 @@
         public const string IsMobileDevice = "IsMobileDevice";
 
         // Cookie names
-        public const string LanguageCultureCookieName = "LanguageCulture";
+        public const string LanguageIdCookieName = "LanguageCulture";
         public const string MemberEmailConfirmationCookieName = "MVCForumEmailConfirmation";
 
         // Cache names
@@ -72,7 +72,6 @@
         public const string PermissionCreatePolls = "Create Polls";
         public const string PermissionCreateTopics = "Create Topics";
         public const string PermissionAttachFiles = "Attach Files";
-
 
         // Paging options
         public const int AdminListPageSize = 30;

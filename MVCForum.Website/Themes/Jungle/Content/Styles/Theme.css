@@ -66,6 +66,10 @@ p { margin: 0 0 14px 0; line-height: 20px; font-size: 14px; }
 p a, p a:visited { text-decoration: underline; }
 p a:hover { text-decoration: none; }
 
+/*--- Change Language ---*/
+.languageselector {}
+.languageselector select { width: 98%;}
+
 hr.thin { margin: 14px 0; border-top: none; border-bottom: 1px solid #d6d3c2; }
 hr { border-top: none; border-bottom: 1px solid #d6d3c2; }
 .span9 hr.thin:last-child { display: none; }
@@ -133,9 +137,10 @@ select { }
 
 /*--- Side box styles ---*/
 .side-box { padding: 5px 0 20px 0; }
+.side-box:first-child { padding-top:0; }
 .side-box ul { padding: 0; margin: 0; }
 .side-box ul li { padding: 4px 0; font-size: 14px; border-bottom: 1px #b7b5a9 solid; list-style: none; margin: 0; }
-.side-box h5 { font-size: 17px; padding: 8px 12px; color: #efefef; background: transparent url('../Images/side-heading-bg.png'); }
+.side-box h5 { font-size: 17px; padding: 8px 12px; color: #efefef; background: transparent url('../Images/side-heading-bg.png');margin: 0 0 8px 0;}
 .side-box a, .side-box a:visited { color: #4b4a45; }
 .side-box a:hover { }
 .categories-box ul li, .profile-box ul li { margin: 0 0 3px 0; padding: 0; }

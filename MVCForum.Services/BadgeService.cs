@@ -18,7 +18,7 @@ namespace MVCForum.Services
     {
         private readonly ILocalizationService _localizationService;
 
-        public const int BadgeCheckIntervalMinutes = 1;
+        public const int BadgeCheckIntervalMinutes = 10;
 
         /// <summary>
         /// The discovered badge class .Net types, indexed by MVCForum badge type

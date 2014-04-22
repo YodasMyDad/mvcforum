@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
 
 namespace MVCForum.Website.Controllers
@@ -27,18 +27,23 @@ namespace MVCForum.Website.Controllers
             
         }
 
-        //
-        // GET: /Language/
-
         /// <summary>
         /// Lists out all languages in a partial view. For example, used to display list of 
         /// available languages along the top of every page
         /// </summary>
         /// <returns></returns>
         [ChildActionOnly]
-        public PartialViewResult Index()
+        public ActionResult Index()
         {
-            var viewModel = new LanguageListAllViewModel{Alllanguages = LocalizationService.AllLanguages};
+            var viewModel = new LanguageListAllViewModel
+            {
+                Alllanguages = LocalizationService.AllLanguages,
+                CurrentLanguage = LocalizationService.CurrentLanguage.Id
+            };
+            if (viewModel.Alllanguages.Count() <= 1)
+            {
+                return Content(string.Empty);
+            }
             return PartialView("_LanguagePartial", viewModel);
         }
 
@@ -47,6 +52,7 @@ namespace MVCForum.Website.Controllers
         /// </summary>
         /// <param name="lang"></param>
         /// <returns></returns>
+        [HttpPost]
         public ActionResult ChangeLanguage(Guid lang)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -55,22 +61,22 @@ namespace MVCForum.Website.Controllers
                 LocalizationService.CurrentLanguage = language;
 
                 // The current language is stored in a cookie
-                var cookie = new HttpCookie(AppConstants.LanguageCultureCookieName)
+                var cookie = new HttpCookie(AppConstants.LanguageIdCookieName)
                 {
                     HttpOnly = false,
-                    Value = language.LanguageCulture,
+                    Value = language.Id.ToString(),
                     Expires = DateTime.UtcNow.AddYears(1)
                 };
 
                 Response.Cookies.Add(cookie);
 
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                {
-                    Message = LocalizationService.GetResourceString("Language.Changed"),
-                    MessageType = GenericMessages.success
-                };
+                //TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                //{
+                //    Message = LocalizationService.GetResourceString("Language.Changed"),
+                //    MessageType = GenericMessages.success
+                //};
 
-                return RedirectToAction("Index", "Home"); 
+                return Content("success"); 
             }
         }
     }

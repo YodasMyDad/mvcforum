@@ -5,6 +5,8 @@ $(function () {
 
     //$('a[href$=".gif"], a[href$=".jpg"], a[href$=".png"], a[href$=".bmp"], a[href$=".jpeg"]')
 
+    ChangeLanguage();
+
     // Attach files click handler
     ShowFileUploadClickHandler();
 
@@ -297,6 +299,26 @@ $(function () {
 
 
 });
+
+function ChangeLanguage() {
+    var languageSelect = $(".languageselector select");
+    if (languageSelect.length > 0) {
+        languageSelect.change(function () {
+            var langVal = this.value;
+            $.ajax({
+                url: '/Language/ChangeLanguage',
+                type: 'POST',
+                data: { lang: langVal },
+                success: function (data) {
+                    location.reload();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+        });
+    }
+}
 
 function DisplayWaitForPostUploadClickHandler() {
     var postUploadButton = $('.postuploadbutton');

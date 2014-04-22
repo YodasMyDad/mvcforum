@@ -25,6 +25,10 @@ h5 { }
 /* ---- Paragraph Styles ---- */
 p { }
 
+/*--- Change Language ---*/
+.languageselector {}
+.languageselector select { width: 98%;}
+
 /*--- Topic Social Share ---*/
 .postsocialbuttons { clear: both; float: right; padding: 10px 0 0 0; }
 

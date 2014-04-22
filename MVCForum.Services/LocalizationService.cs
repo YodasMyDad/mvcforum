@@ -4,7 +4,9 @@ using System.Data.SqlTypes;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Web;
 using MVCForum.Domain;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
@@ -190,7 +192,7 @@ namespace MVCForum.Services
         public LocaleStringResource GetResource(Guid languageId, string key)
         {
             try
-            {         
+            {
                 return _localizationRepository.GetResource(languageId, key.Trim());
             }
             catch (Exception ex)
@@ -199,7 +201,7 @@ namespace MVCForum.Services
                 _loggingService.Error(string.Format("Unable to retrieve resource key '{0}' for language id {1}. Error: '{2}'.", key, languageId.ToString(), ex.Message));
                 return null;
             }
-            
+
         }
 
         /// <summary>
@@ -275,7 +277,38 @@ namespace MVCForum.Services
         /// <returns></returns>
         public Language CurrentLanguage
         {
-            get { return _currentLanguage ?? (_currentLanguage = DefaultLanguage); }
+            get
+            {
+
+                try
+                {
+                    // Check for cookie, as the user may have switched the language from the deafult one
+                    var languageCooke = HttpContext.Current.Request.Cookies[AppConstants.LanguageIdCookieName];
+                    if (languageCooke != null)
+                    {
+                        // See if it's the same language as already set
+                        var languageGuid = new Guid(languageCooke.Value);
+                        if (_currentLanguage != null && languageGuid == _currentLanguage.Id)
+                        {
+                            return _currentLanguage;
+                        }
+
+                        // User might have a language set
+                        var changedLanguage = Get(languageGuid);
+                        if (changedLanguage != null)
+                        {
+                            // User has set the language so overide it here
+                            _currentLanguage = changedLanguage;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //_loggingService.Error(ex);
+                }
+
+                return _currentLanguage ?? (_currentLanguage = DefaultLanguage);
+            }
 
             set { _currentLanguage = value; }
         }
@@ -293,9 +326,10 @@ namespace MVCForum.Services
                 {
                     // This is a one off scenario and means the system has no settings
                     // usually when running the installer, so we need to return a default language
-                    return new Language{Name = "Setup Language", LanguageCulture = "en-GB"};
+                    return new Language { Name = "Setup Language", LanguageCulture = "en-GB" };
                 }
 
+                // If we get here just set the default language
                 var language = settings.DefaultLanguage;
 
                 if (language == null)
@@ -442,7 +476,7 @@ namespace MVCForum.Services
 
                 foreach (var cultureInfo in LanguageUtils.AllCultures)
                 {
-                        allLanguagesNotInDb.Add(cultureInfo);
+                    allLanguagesNotInDb.Add(cultureInfo);
                 }
 
                 return allLanguagesNotInDb.OrderBy(info => info.EnglishName).ToList();

@@ -404,3 +404,4 @@ AwardsPoints int NULL
 -- Language Strings
 Moderate.AwaitingModeration = Your post is currently awaiting moderation. Once approved it will appear on the site
 Badges.AwardsPoints = Awards {0} points
+Language.Change = Change Language

@@ -69,6 +69,10 @@ p { margin: 0 0 14px 0; line-height: 20px; font-size: 14px; font-family: 'MVCfor
 p a, p a:visited { text-decoration: underline; }
 p a:hover { text-decoration: none; }
 
+/*--- Change Language ---*/
+.languageselector {}
+.languageselector select { width: 98%;}
+
 hr.thin { margin: 14px 0; }
 .span9 hr.thin:last-child { display: none; }
 
@@ -135,9 +139,10 @@ select { }
 
 /*--- Side box styles ---*/
 .side-box { padding: 5px 0 20px 0; }
+.side-box:first-child { padding-top:0; }
 .side-box ul { padding: 0; margin: 0; border-bottom: 1px #fff solid; }
 .side-box ul li { padding: 4px 0; font-size: 14px; border-top: 1px #fff solid; list-style: none; }
-.side-box h5 { font-size: 17px; padding: 8px 12px; color: #efefef; font-family: 'MVCforumLight'; background-color: #4891dc; }
+.side-box h5 { font-size: 17px; padding: 8px 12px; color: #efefef; font-family: 'MVCforumLight'; background-color: #4891dc;margin: 0 0 8px 0; }
 .side-box a, .side-box a:visited { color: #626262; }
 .side-box a:hover { }
 .categories-box ul li, .profile-box ul li { margin: 0 0 3px 0; padding: 0; }

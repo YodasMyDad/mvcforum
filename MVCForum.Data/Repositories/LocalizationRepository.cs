@@ -31,7 +31,7 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public IEnumerable<Language> GetAll()
         {
-            return _context.Language.ToList();
+            return _context.Language.OrderBy(x => x.Name).ToList();
         }
 
         /// <summary>
