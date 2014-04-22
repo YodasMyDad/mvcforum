@@ -11,6 +11,7 @@ namespace Badges.Time
     [DisplayName("Member For A Year")]
     [Description("This badge is awarded to a user after their first year anniversary.")]
     [Image("MemberForAYearBadge.png")]
+    [AwardsPoints(2)]
     public class MemberForAYearBadge : ITimeBadge
     {
         public bool Rule(MembershipUser user, IMVCForumAPI api)

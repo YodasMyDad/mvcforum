@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Repositories
 {
-    public interface IMembershipRepository
+    public partial interface IMembershipRepository
     {
         MembershipUser GetUser(string username);
         MembershipUser GetUserByFacebookId(long facebookId);

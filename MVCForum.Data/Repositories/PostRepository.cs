@@ -7,10 +7,9 @@ using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
 
-
 namespace MVCForum.Data.Repositories
 {
-    public class PostRepository : IPostRepository
+    public partial class PostRepository : IPostRepository
     {
         private readonly MVCForumContext _context;
         public PostRepository(IMVCForumContext context)

@@ -7,7 +7,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
-    public class PermissionService : IPermissionService
+    public partial class PermissionService : IPermissionService
     {
         private readonly IPermissionRepository _permissionRepository;
         private readonly ICategoryPermissionForRoleRepository _categoryPermissionForRoleRepository;

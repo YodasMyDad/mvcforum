@@ -11,7 +11,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
-    public class RoleService : IRoleService
+    public partial class RoleService : IRoleService
     {
         private readonly IRoleRepository _roleRepository;
         private readonly ICategoryPermissionForRoleRepository _categoryPermissionForRoleRepository;

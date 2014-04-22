@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
-    public interface IRoleService
+    public partial interface IRoleService
     {
         IList<MembershipRole> AllRoles();
         void Save(MembershipRole user);

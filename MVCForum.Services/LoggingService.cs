@@ -14,7 +14,7 @@ namespace MVCForum.Services
     /// <summary>
     /// A class for logging errors to a text file. Works in Partial Trust.
     /// </summary>
-    public class LoggingService : ILoggingService
+    public partial class LoggingService : ILoggingService
     {
         private const string LogFileNameOnly = @"LogFile";
         private const string LogFileExtension = @".txt";

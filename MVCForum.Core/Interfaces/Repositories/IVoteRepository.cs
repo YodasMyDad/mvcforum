@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Repositories
 {
-    public interface IVoteRepository
+    public partial interface IVoteRepository
     {
         Vote Add(Vote item);
         Vote Get(Guid id);

@@ -2,7 +2,7 @@
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class PermissionSet : Dictionary<string, CategoryPermissionForRole>
+    public partial class PermissionSet : Dictionary<string, CategoryPermissionForRole>
     {
         public PermissionSet(IEnumerable<CategoryPermissionForRole> permissionsList)
         {

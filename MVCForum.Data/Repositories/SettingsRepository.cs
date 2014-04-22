@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data;
 using System.Linq;
 using MVCForum.Data.Context;
 using System.Data.Entity;
@@ -7,10 +6,9 @@ using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
 
-
 namespace MVCForum.Data.Repositories
 {
-    public class SettingsRepository : ISettingsRepository
+    public partial class SettingsRepository : ISettingsRepository
     {
         private readonly MVCForumContext _context;
 

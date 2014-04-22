@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Repositories
 {
-    public interface IBadgeRepository
+    public partial interface IBadgeRepository
     {
         /// <summary>
         /// Get a badge by name

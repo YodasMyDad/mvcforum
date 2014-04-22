@@ -13,7 +13,7 @@ namespace MVCForum.Domain.DomainModel
         Post
     }
 
-    public class Badge : Entity
+    public partial class Badge : Entity
     {
         public Badge()
         {
@@ -39,6 +39,7 @@ namespace MVCForum.Domain.DomainModel
         public int Milestone { get; set; }
         public string Description { get; set; }
         public string Image { get; set; }
+        public int? AwardsPoints { get; set; }
         public virtual IList<MembershipUser> Users { get; set; }
 
     }

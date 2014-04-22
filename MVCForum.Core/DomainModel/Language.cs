@@ -4,7 +4,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class Language : Entity
+    public partial class Language : Entity
     {
         public Language()
         {

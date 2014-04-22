@@ -60,7 +60,7 @@
 
 </div>
 
-<p>@Html.Raw(@Model.Category.Description)</p>
+<p>@Html.Raw(AppHelpers.ConvertPostContent(Model.Category.Description))</p>
 
 @if (Model.Topics.TotalCount > 0)
 {

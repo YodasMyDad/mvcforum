@@ -3,7 +3,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class Settings : Entity
+    public partial class Settings : Entity
     {
         public Settings()
         {

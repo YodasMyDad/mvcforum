@@ -6,7 +6,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Repositories
 {
-    public interface IInstallerRepository
+    public partial interface IInstallerRepository
     {
         InstallerResult CreateDbTables(string connectionStringOveride, string sqlFilePath, string currentVersion);
     }

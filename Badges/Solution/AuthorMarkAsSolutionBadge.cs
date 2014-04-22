@@ -12,6 +12,7 @@ namespace Badges.Solution
     [DisplayName("Your Question Solved")]
     [Description("This badge is awarded to topic authors the first time they have a post marked as the answer.")]
     [Image("UserMarkAsSolutionBadge.png")]
+    [AwardsPoints(2)]
     public class AuthorMarkAsSolutionBadge : IMarkAsSolutionBadge
     {
         /// <summary>

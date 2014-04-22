@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Data.Entity;
 using MVCForum.Data.Context;
-using MVCForum.Domain;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
-using MVCForum.Utilities;
 
 namespace MVCForum.Data.Repositories
 {
     // Join Methods: http://msdn.microsoft.com/en-us/library/system.linq.enumerable.join.aspx
     // Fluent API: http://msdn.microsoft.com/en-us/library/hh295847%28v=vs.103%29.aspx
 
-    public class LocalizationRepository : ILocalizationRepository
+    public partial class LocalizationRepository : ILocalizationRepository
     {
         private readonly MVCForumContext _context;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MVCForum.Domain.DomainModel;
 using MVCForum.Utilities;
 
 namespace MVCForum.Services
@@ -34,26 +35,42 @@ namespace MVCForum.Services
             return StringUtils.CreateUrl(name, "-");
         }
 
-
-        /// <summary>
-        /// Turn a name into a slug
-        /// </summary>
-        /// <typeparam name="T">The entity type eg MembershipUser</typeparam>
-        /// <param name="arg">The key to use ie the name to convert</param>
-        /// <param name="predicate">The method used to get the entitites that have a similar slug 
-        /// by e.g. _membershipRepository.GetUserBySlugLike(userToImport.UserName) </param>
-        /// <returns>A usable unique slug</returns>
-        public static string GenerateSlug<T>(string arg, Func<string, IList<T>> predicate)
+        public static string GenerateSlug(string stringToSlug, IEnumerable<Entity> similarList, string previousSlug)
         {
             // url generator
-            var slug = CreateUrl(arg);
+            var slug = CreateUrl(stringToSlug);
 
-            // Now check another entity doesn't have the same one
-            var usersBySlug = predicate(arg);
-            if (usersBySlug.Any())
+            // To list the entities
+            var matchingEntities = similarList.ToList();
+                
+            // if the similarList is empty, just return this slug
+            if (!matchingEntities.Any())
             {
-                // someone else has this, grab all like it and do a count, stick a suffix on
-                slug = string.Concat(slug, "-", usersBySlug.Count());
+                return slug;
+            }
+
+            // If the previous slug is null, then it's a newly created Entity
+            if (string.IsNullOrEmpty(previousSlug))
+            {
+                // Now check another entity doesn't have the same one
+                if (matchingEntities.Any())
+                {
+                    // See if there is only one. And if it matches exactly
+                    // someone else has this, grab all like it and do a count, stick a suffix on
+                    slug = string.Concat(slug, "-", matchingEntities.Count());
+                }
+            }
+            else
+            {
+                // It's an update, see if they have changed the title by checking slugs
+                if (slug != previousSlug)
+                {
+                    // Name/Title has changed
+                    if (matchingEntities.Any())
+                    {
+                        slug = string.Concat(slug, "-", matchingEntities.Count());
+                    }
+                }
             }
 
             return slug;

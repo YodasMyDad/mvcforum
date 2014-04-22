@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using MVCForum.Data.Context;
 using System.Data.Entity;
@@ -10,8 +9,7 @@ using MVCForum.Domain.Interfaces.Repositories;
 
 namespace MVCForum.Data.Repositories
 {
-
-    public class BadgeRepository : IBadgeRepository
+    public partial class BadgeRepository : IBadgeRepository
     {
         private readonly MVCForumContext _context;
 

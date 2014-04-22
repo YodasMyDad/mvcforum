@@ -3,7 +3,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class BannedEmail
+    public partial class BannedEmail
     {
         public BannedEmail()
         {

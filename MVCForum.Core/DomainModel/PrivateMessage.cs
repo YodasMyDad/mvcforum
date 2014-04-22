@@ -3,7 +3,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class PrivateMessage : Entity
+    public partial class PrivateMessage : Entity
     {
         public PrivateMessage()
         {

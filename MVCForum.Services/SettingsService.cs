@@ -1,14 +1,12 @@
 ﻿using System.Web;
-using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
-    public class SettingsService : ISettingsService
+    public partial class SettingsService : ISettingsService
     {
         private readonly ISettingsRepository _settingsRepository;
 

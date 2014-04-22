@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MVCForum.Domain.DomainModel
+﻿namespace MVCForum.Domain.DomainModel
 {
-    public class Email
+    public partial class Email
     {
         public string EmailTo { get; set; }
         public string EmailFrom { get; set; }

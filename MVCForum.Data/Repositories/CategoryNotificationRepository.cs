@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using MVCForum.Data.Context;
@@ -10,7 +9,7 @@ using MVCForum.Domain.Interfaces.Repositories;
 
 namespace MVCForum.Data.Repositories
 {
-    public class CategoryNotificationRepository : ICategoryNotificationRepository
+    public partial class CategoryNotificationRepository : ICategoryNotificationRepository
     {
         private readonly MVCForumContext _context;
 

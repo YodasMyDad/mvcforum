@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Data.Entity;
 using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
-using MVCForum.Utilities;
 
 namespace MVCForum.Data.Repositories
 {
-    public class PollVoteRepository : IPollVoteRepository
+    public partial class PollVoteRepository : IPollVoteRepository
     {
         private readonly MVCForumContext _context;
         public PollVoteRepository(IMVCForumContext context)

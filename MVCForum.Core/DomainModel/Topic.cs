@@ -5,7 +5,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class Topic : Entity
+    public partial class Topic : Entity
     {
         public Topic()
         {

@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Repositories
 {
-    public interface IPostRepository
+    public partial interface IPostRepository
     {
         IEnumerable<Post> GetAll();
         Post GetTopicStarterPost(Guid topicId);

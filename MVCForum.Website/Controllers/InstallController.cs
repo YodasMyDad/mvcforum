@@ -26,6 +26,7 @@ namespace MVCForum.Website.Controllers
         private ISettingsService _settingsService;
         private IUnitOfWorkManager _UnitOfWorkManager;
         private IPermissionService _permissionService;
+        private ILuceneService _luceneService;
 
         public InstallController(IInstallerService installerService)
         {
@@ -422,6 +423,9 @@ namespace MVCForum.Website.Controllers
                 }
             }
 
+            // Do this so search works and doesn't create a null reference.
+            _luceneService.UpdateIndex();
+
             return installerResult;
         }
 
@@ -492,6 +496,7 @@ namespace MVCForum.Website.Controllers
             _settingsService = DependencyResolver.Current.GetService<ISettingsService>();
             _UnitOfWorkManager = DependencyResolver.Current.GetService<IUnitOfWorkManager>();
             _permissionService = DependencyResolver.Current.GetService<IPermissionService>();
+            _luceneService = DependencyResolver.Current.GetService<ILuceneService>();
         }
 
         private void UpdateWebConfigVersionNo(InstallerResult installerResult, string currentVersion)

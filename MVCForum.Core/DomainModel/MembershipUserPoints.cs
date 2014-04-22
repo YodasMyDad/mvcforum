@@ -3,7 +3,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class MembershipUserPoints : Entity
+    public partial class MembershipUserPoints : Entity
     {
         public MembershipUserPoints()
         {

@@ -11,7 +11,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
-    public class PostService : IPostService
+    public partial class PostService : IPostService
     {
         private readonly IPostRepository _postRepository;
         private readonly ITopicRepository _topicRepository;

@@ -4,7 +4,7 @@ using MVCForum.Utilities;
 namespace MVCForum.Domain.DomainModel
 {
 
-    public class BadgeTypeTimeLastChecked : Entity
+    public partial class BadgeTypeTimeLastChecked : Entity
     {
         public BadgeTypeTimeLastChecked()
         {

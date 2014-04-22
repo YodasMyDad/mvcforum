@@ -5,7 +5,7 @@ using MVCForum.Domain.DomainModel.Activity;
 
 namespace MVCForum.Domain.Interfaces.Repositories
 {
-    public interface IActivityRepository
+    public partial interface IActivityRepository
     {
         /// <summary>
         /// Get activities

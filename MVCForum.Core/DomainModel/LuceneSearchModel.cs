@@ -2,7 +2,7 @@
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class LuceneSearchModel
+    public partial class LuceneSearchModel
     {
         // Post Stuff
         public Guid Id { get; set; }

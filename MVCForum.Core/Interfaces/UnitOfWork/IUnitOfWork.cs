@@ -2,7 +2,7 @@
 
 namespace MVCForum.Domain.Interfaces.UnitOfWork
 {
-    public interface IUnitOfWork : IDisposable
+    public partial interface IUnitOfWork : IDisposable
     {
         void Commit();
         void Rollback();

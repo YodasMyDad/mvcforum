@@ -9,7 +9,7 @@ using MVCForum.Lucene;
 
 namespace MVCForum.Services
 {
-    public class LuceneService : ILuceneService
+    public partial class LuceneService : ILuceneService
     {
 
         private readonly IPostRepository _postRepository;

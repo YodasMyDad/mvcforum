@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.API
 {
-    public interface IMemberAPI
+    public partial interface IMemberAPI
     {
         /// <summary>
         /// Create a new member

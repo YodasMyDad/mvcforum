@@ -8,7 +8,7 @@ using MVCForum.Domain.Interfaces.Services;
 
 namespace MVCForum.Services
 {
-    public class VoteService : IVoteService
+    public partial class VoteService : IVoteService
     {
         private readonly IVoteRepository _voteRepository;
         private readonly IMVCForumAPI _api;

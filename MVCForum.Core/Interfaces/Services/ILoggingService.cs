@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
-    public interface ILoggingService
+    public partial interface ILoggingService
     {
         void Error(string message);
         void Error(Exception ex);

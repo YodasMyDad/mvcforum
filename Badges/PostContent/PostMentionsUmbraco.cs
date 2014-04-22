@@ -12,6 +12,7 @@ namespace Badges.PostContent
     [DisplayName("Mentioned Umbraco In A Post Or Topic")]
     [Description("This badge is awarded to a user who mentions Umbraco in their latest post.")]
     [Image("MentionsUmbracoBadge.png")]
+    [AwardsPoints(1)]
     public class PostMentionsUmbraco : IPostBadge
     {
         public bool Rule(MembershipUser user, IMVCForumAPI api)

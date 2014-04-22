@@ -3,7 +3,7 @@ using MVCForum.Domain.Interfaces;
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class PagedList<T> : List<T>, IPagedList<T>
+    public partial class PagedList<T> : List<T>, IPagedList<T>
     {
         public PagedList(IEnumerable<T> source, int pageIndex, int pageSize, int total)
         {

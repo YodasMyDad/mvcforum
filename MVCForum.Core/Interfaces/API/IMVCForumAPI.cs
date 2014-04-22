@@ -1,6 +1,6 @@
 ﻿namespace MVCForum.Domain.Interfaces.API
 {
-    public interface IMVCForumAPI
+    public partial interface IMVCForumAPI
     {
         IMemberAPI Member { get; set; }
         IPostAPI Post { get; set; }

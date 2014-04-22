@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Data.Entity;
 using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
-using MVCForum.Utilities;
 
 namespace MVCForum.Data.Repositories
 {
-    public class MembershipUserPointsRepository : IMembershipUserPointsRepository
+    public partial class MembershipUserPointsRepository : IMembershipUserPointsRepository
     {
         private readonly MVCForumContext _context;
 
@@ -41,6 +39,12 @@ namespace MVCForum.Data.Repositories
         public void Delete(MembershipUserPoints item)
         {
             _context.MembershipUserPoints.Remove(item);
+        }
+
+        public void Delete(int amount, MembershipUser user)
+        {
+            var points = _context.MembershipUserPoints.FirstOrDefault(x => x.Points == amount && x.User.Id == user.Id);
+            Delete(points);
         }
 
         public void Update(MembershipUserPoints item)

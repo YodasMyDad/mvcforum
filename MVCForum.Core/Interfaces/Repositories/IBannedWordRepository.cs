@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Repositories
 {
-    public interface IBannedWordRepository
+    public partial interface IBannedWordRepository
     {
         BannedWord Add(BannedWord bannedWord);
         void Delete(BannedWord bannedWord);

@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
-    public interface IBannedEmailService
+    public partial interface IBannedEmailService
     {
         BannedEmail Add(BannedEmail bannedEmail);
         void Delete(BannedEmail bannedEmail);

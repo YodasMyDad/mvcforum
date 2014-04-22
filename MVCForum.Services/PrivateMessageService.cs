@@ -8,7 +8,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
-    public class PrivateMessageService : IPrivateMessageService
+    public partial class PrivateMessageService : IPrivateMessageService
     {
         private readonly IPrivateMessageRepository _privateMessageRepository;
         private readonly IMembershipRepository _membershipRepository;

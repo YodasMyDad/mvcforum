@@ -8,7 +8,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
-    public class BannedWordService : IBannedWordService
+    public partial class BannedWordService : IBannedWordService
     {
         private readonly IBannedWordRepository _bannedWordRepository;
 

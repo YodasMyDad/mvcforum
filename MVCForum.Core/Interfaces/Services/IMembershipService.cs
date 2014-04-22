@@ -14,7 +14,7 @@ namespace MVCForum.Domain.Interfaces.Services
         UserNotApproved,
     }
 
-    public interface IMembershipService
+    public partial interface IMembershipService
     {
         MembershipUser SanitizeUser(MembershipUser membershipUser);
         bool ValidateUser(string userName, string password, int maxInvalidPasswordAttempts);

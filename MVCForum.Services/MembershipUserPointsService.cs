@@ -6,7 +6,7 @@ using MVCForum.Domain.Interfaces.Services;
 
 namespace MVCForum.Services
 {
-    public class MembershipUserPointsService : IMembershipUserPointsService
+    public partial class MembershipUserPointsService : IMembershipUserPointsService
     {
         private readonly IMembershipUserPointsRepository _membershipUserPointsRepository;
 
@@ -19,7 +19,12 @@ namespace MVCForum.Services
         {
             _membershipUserPointsRepository.Delete(points);
         }
-       
+
+        public void Delete(int amount, MembershipUser user)
+        {
+            _membershipUserPointsRepository.Delete(amount, user);
+        }
+
         /// <summary>
         /// Return points by user
         /// </summary>

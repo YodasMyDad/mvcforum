@@ -4,7 +4,7 @@ using MVCForum.Domain.Interfaces;
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class PagedFullList<T> : List<T>, IPagedList<T>
+    public partial class PagedFullList<T> : List<T>, IPagedList<T>
     {
         public PagedFullList(IEnumerable<T> source, int pageIndex, int pageSize, int total)
         {

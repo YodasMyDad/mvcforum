@@ -14,11 +14,11 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
-    public class BadgeService : IBadgeService
+    public partial class BadgeService : IBadgeService
     {
         private readonly ILocalizationService _localizationService;
 
-        public const int BadgeCheckIntervalMinutes = 30;
+        public const int BadgeCheckIntervalMinutes = 1;
 
         /// <summary>
         /// The discovered badge class .Net types, indexed by MVCForum badge type
@@ -84,6 +84,7 @@ namespace MVCForum.Services
             var descAtt = GetAttribute<DescriptionAttribute>(classType);
             var imageAtt = GetAttribute<ImageAttribute>(classType);
             var displayNameAtt = GetAttribute<DisplayNameAttribute>(classType);
+            var awardsPointsAtt = GetAttribute<AwardsPointsAttribute>(classType);
             
             var badge = new Badge
             {
@@ -94,6 +95,7 @@ namespace MVCForum.Services
                 DisplayName = displayNameAtt.DisplayName,
                 Users = new List<MembershipUser>(),
                 Type = badgeType.ToString().TrimEnd(),
+                AwardsPoints = awardsPointsAtt.Points
             };
             return badge;
         }
@@ -417,6 +419,11 @@ namespace MVCForum.Services
                                 dbBadge.Image = classBadge.Image;
                             }
 
+                            if (dbBadge.AwardsPoints != classBadge.AwardsPoints)
+                            {
+                                dbBadge.AwardsPoints = classBadge.AwardsPoints;
+                            }
+
                             // Remove it from insert collection, it's not new
                             badgesToInsert.Remove(classBadge);
                         }
@@ -476,9 +483,17 @@ namespace MVCForum.Services
                             if (badge != null && badge.Rule(user, _mvcForumAPI))
                             {
                                 // Re-fetch the badge otherwise system will try and create new badges!
-                                //var dbBadge = _badgeRepository.Get(badgeMapping.DbBadge.Id);
-                                user.Badges.Add(_badgeRepository.Get(badgeMapping.DbBadge.Id));
-
+                                var dbBadge = _badgeRepository.Get(badgeMapping.DbBadge.Id);
+                                if (dbBadge.AwardsPoints != null && dbBadge.AwardsPoints > 0)
+                                {
+                                    var points = new MembershipUserPoints
+                                    {
+                                        DateAdded = DateTime.UtcNow,
+                                        Points = (int)dbBadge.AwardsPoints
+                                    };
+                                    user.Points.Add(points);
+                                }
+                                user.Badges.Add(dbBadge);
                                 _activityService.BadgeAwarded(badgeMapping.DbBadge, user, DateTime.UtcNow);
 
                                 EventManager.Instance.FireAfterBadgeAwarded(this,

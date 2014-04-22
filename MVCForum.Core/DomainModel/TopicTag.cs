@@ -4,7 +4,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class TopicTag : Entity
+    public partial class TopicTag : Entity
     {
         public TopicTag()
         {

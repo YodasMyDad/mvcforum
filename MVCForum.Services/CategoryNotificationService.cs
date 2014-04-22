@@ -5,7 +5,7 @@ using MVCForum.Domain.Interfaces.Services;
 
 namespace MVCForum.Services
 {
-    public class CategoryNotificationService : ICategoryNotificationService
+    public partial class CategoryNotificationService : ICategoryNotificationService
     {
         private readonly ICategoryNotificationRepository _categoryNotificationRepository;
 

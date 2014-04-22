@@ -3,7 +3,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class LocaleStringResource : Entity
+    public partial class LocaleStringResource : Entity
     {
         public LocaleStringResource()
         {

@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Data.Entity;
 using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
-using MVCForum.Utilities;
 
 namespace MVCForum.Data.Repositories
 {
-    public class CategoryPermissionForRoleRepository : ICategoryPermissionForRoleRepository
+    public partial class CategoryPermissionForRoleRepository : ICategoryPermissionForRoleRepository
     {
         private readonly MVCForumContext _context;
 

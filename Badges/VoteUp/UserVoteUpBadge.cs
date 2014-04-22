@@ -10,6 +10,7 @@ namespace Badges.VoteUp
     [DisplayName("You've Given Your First Vote Up")]
     [Description("This badge is awarded to users after they make their first vote up.")]
     [Image("UserVoteUpBadge.png")]
+    [AwardsPoints(2)]
     public class UserVoteUpBadge : IVoteUpBadge
     {
         public bool Rule(MembershipUser user, IMVCForumAPI api)

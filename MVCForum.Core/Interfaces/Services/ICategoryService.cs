@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
-    public interface ICategoryService
+    public partial interface ICategoryService
     {
         IEnumerable<Category> GetAll();
         IEnumerable<Category> GetAllMainCategories(bool getWithExtendedData = false);

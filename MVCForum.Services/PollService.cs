@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
 
 namespace MVCForum.Services
 {
-    public class PollService : IPollService
+    public partial class PollService : IPollService
     {
         private readonly IPollRepository _pollRepository;
 

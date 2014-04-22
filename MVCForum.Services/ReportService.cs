@@ -4,7 +4,7 @@ using MVCForum.Domain.Interfaces.Services;
 
 namespace MVCForum.Services
 {
-    public class ReportService : IReportService
+    public partial class ReportService : IReportService
     {
         private readonly IEmailService _emailService;
         private readonly ISettingsService _settingsService;

@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
-    public interface ICategoryPermissionForRoleService
+    public partial interface ICategoryPermissionForRoleService
     {
         void Add(CategoryPermissionForRole categoryPermissionForRole);
         CategoryPermissionForRole CheckExists(CategoryPermissionForRole categoryPermissionForRole);

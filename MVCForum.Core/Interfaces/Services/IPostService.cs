@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
-    public interface IPostService
+    public partial interface IPostService
     {
         Post SanitizePost(Post post);
         Post GetTopicStarterPost(Guid topicId);

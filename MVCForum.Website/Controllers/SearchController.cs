@@ -46,9 +46,24 @@ namespace MVCForum.Website.Controllers
                     // Returns the formatted string to search on
                     var formattedSearchTerm = StringUtils.ReturnSearchString(term);
 
+                    // Create an empty viewmodel
+                    var viewModel = new SearchViewModel
+                    {
+                        Topics = new PagedList<Topic>(new List<Topic>(), 1, 20, 0),
+                        AllPermissionSets = new Dictionary<Category, PermissionSet>(),
+                        PageIndex = pageIndex,
+                        TotalCount = 0,
+                        Term = term
+                    };
+
                     // Get lucene to search
                     var luceneResults = _luceneService.Search(formattedSearchTerm, pageIndex, SettingsService.GetSettings().TopicsPerPage);
 
+                    // if there are no results from the filter return an empty search view model.
+	                if (string.IsNullOrWhiteSpace(formattedSearchTerm))
+	                {
+                        return View(viewModel);
+	                }
 
                     //// Get all the topics based on the search value
                     //var topics = _topicsService.SearchTopics(pageIndex,
@@ -62,7 +77,7 @@ namespace MVCForum.Website.Controllers
                     var categories = topics.Select(x => x.Category).Distinct();
 
                     // create the view model
-                    var viewModel = new SearchViewModel
+                    viewModel = new SearchViewModel
                     {
                         Topics = topics,
                         AllPermissionSets = new Dictionary<Category, PermissionSet>(),

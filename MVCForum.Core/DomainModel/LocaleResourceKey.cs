@@ -4,7 +4,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class LocaleResourceKey : Entity
+    public partial class LocaleResourceKey : Entity
     {
         public LocaleResourceKey()
         {

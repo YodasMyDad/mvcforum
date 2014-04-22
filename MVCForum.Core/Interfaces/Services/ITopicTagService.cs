@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
-    public interface ITopicTagService
+    public partial interface ITopicTagService
     {
         IEnumerable<TopicTag> GetAll();
         void DeleteByName(string tagName);

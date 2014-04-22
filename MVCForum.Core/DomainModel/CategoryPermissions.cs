@@ -3,7 +3,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class CategoryPermissionForRole : Entity
+    public partial class CategoryPermissionForRole : Entity
     {
         public CategoryPermissionForRole()
         {

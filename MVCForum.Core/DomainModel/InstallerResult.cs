@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class InstallerResult
+    public partial class InstallerResult
     {
         public string Message { get; set; }
         public bool Successful { get; set; }

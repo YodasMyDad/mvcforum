@@ -3,7 +3,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
-    public interface ITopicNotificationService
+    public partial interface ITopicNotificationService
     {
         IList<TopicNotification> GetAll();
         void Delete(TopicNotification notification);

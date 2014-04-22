@@ -5,7 +5,7 @@ using MVCForum.Domain.Interfaces.Services;
 
 namespace MVCForum.Services
 {
-    public class TopicNotificationService : ITopicNotificationService
+    public partial class TopicNotificationService : ITopicNotificationService
     {
         private readonly ITopicNotificationRepository _topicNotificationRepository;
         public TopicNotificationService(ITopicNotificationRepository topicNotificationRepository)

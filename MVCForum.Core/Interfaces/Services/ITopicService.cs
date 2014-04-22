@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
-    public interface ITopicService
+    public partial interface ITopicService
     {
         Topic SanitizeTopic(Topic topic);
         IList<Topic> GetAll();

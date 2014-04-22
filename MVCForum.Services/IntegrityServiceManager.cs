@@ -4,7 +4,7 @@ using MVCForum.Domain.Interfaces.Services;
 
 namespace MVCForum.Services
 {
-    public class IntegrityServiceManager : IIntegrityServiceManager
+    public partial class IntegrityServiceManager : IIntegrityServiceManager
     {
         private readonly List<IIntegrityService> _integrityServices;
 

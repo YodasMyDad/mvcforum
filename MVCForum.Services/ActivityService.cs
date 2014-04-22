@@ -9,7 +9,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
-    public class ActivityService : IActivityService
+    public partial class ActivityService : IActivityService
     {
         private readonly IActivityRepository _activityRepository;
         private readonly IMembershipRepository _membershipRepository;

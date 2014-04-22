@@ -3,9 +3,10 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
-    public interface IMembershipUserPointsService
+    public partial interface IMembershipUserPointsService
     {
         void Delete(MembershipUserPoints points);
+        void Delete(int amount, MembershipUser user);
         IList<MembershipUserPoints> GetByUser(MembershipUser user);
         MembershipUserPoints Add(MembershipUserPoints points);
         Dictionary<MembershipUser, int> GetCurrentWeeksPoints(int? amountToTake);

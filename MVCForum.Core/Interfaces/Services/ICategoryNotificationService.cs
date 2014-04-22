@@ -3,7 +3,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
-    public interface ICategoryNotificationService
+    public partial interface ICategoryNotificationService
     {
         IList<CategoryNotification> GetAll();
         void Delete(CategoryNotification notification);

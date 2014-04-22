@@ -6,7 +6,6 @@ using System.Text;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
-using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.API;
@@ -16,7 +15,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
-    public class MembershipService : IMembershipService
+    public partial class MembershipService : IMembershipService
     {
         private const int SaltSize = 24;
         private readonly IEmailService _emailService;
@@ -328,7 +327,7 @@ namespace MVCForum.Services
                     newUser.IsLockedOut = false;
 
                     // url generator
-                    newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, x => _membershipRepository.GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)));            
+                    newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, _membershipRepository.GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)), null);          
 
                     try
                     {
@@ -844,7 +843,7 @@ namespace MVCForum.Services
 
                     userToImport = CreateEmptyUser();
                     userToImport.UserName = userName;
-                    userToImport.Slug = ServiceHelpers.GenerateSlug(userToImport.UserName, x => _membershipRepository.GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)));
+                    userToImport.Slug = ServiceHelpers.GenerateSlug(userToImport.UserName, _membershipRepository.GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)), userToImport.Slug);
                     userToImport.Email = email;
                     userToImport.IsApproved = true;
                     userToImport.PasswordSalt = CreateSalt(SaltSize);

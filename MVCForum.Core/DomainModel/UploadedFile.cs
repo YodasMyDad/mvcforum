@@ -3,7 +3,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class UploadedFile
+    public partial class UploadedFile
     {
         public UploadedFile()
         {

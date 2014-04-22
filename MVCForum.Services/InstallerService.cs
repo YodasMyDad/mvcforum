@@ -5,7 +5,7 @@ using MVCForum.Domain.Interfaces.Services;
 
 namespace MVCForum.Services
 {
-    public class InstallerService : IInstallerService
+    public partial class InstallerService : IInstallerService
     {
         private readonly IInstallerRepository _installerRepository;
 

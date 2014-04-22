@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Repositories
 {
-    public interface ICategoryRepository
+    public partial interface ICategoryRepository
     {
         IList<Category> GetAll();
         IList<Category> GetAllSubCategories(Guid parentId);

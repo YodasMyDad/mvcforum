@@ -99,7 +99,6 @@
     <Compile Include="CategoryPermissionForRoleService.cs" />
     <Compile Include="LocalizationService.cs" />
     <Compile Include="PermissionService.cs" />
-    <Compile Include="ServiceBase.cs" />
     <Compile Include="SettingsService.cs" />
     <Compile Include="IntegrityServiceManager.cs" />
     <Compile Include="CategoryService.cs" />

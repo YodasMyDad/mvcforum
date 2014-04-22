@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
 
 namespace MVCForum.Services
 {
-    public class CategoryPermissionForRoleService : ICategoryPermissionForRoleService
+    public partial class CategoryPermissionForRoleService : ICategoryPermissionForRoleService
     {
         private readonly ICategoryPermissionForRoleRepository _categoryPermissionForRoleService;
 

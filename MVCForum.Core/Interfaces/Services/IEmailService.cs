@@ -6,7 +6,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
-    public interface IEmailService
+    public partial interface IEmailService
     {
         void SendMail(Email email);
         void SendMail(List<Email> email);

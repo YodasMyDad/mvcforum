@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Repositories
 {
-    public interface IUploadedFileRepository
+    public partial interface IUploadedFileRepository
     {
         UploadedFile Add(UploadedFile uploadedFile);
         void Delete(UploadedFile uploadedFile);

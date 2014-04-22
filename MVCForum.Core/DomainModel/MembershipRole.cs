@@ -4,7 +4,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class MembershipRole : Entity
+    public partial class MembershipRole : Entity
     {
         public MembershipRole()
         {

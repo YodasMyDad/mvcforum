@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Repositories
 {
-    public interface ICategoryPermissionForRoleRepository
+    public partial interface ICategoryPermissionForRoleRepository
     {
         CategoryPermissionForRole Add(CategoryPermissionForRole categoryPermissionForRole);
         CategoryPermissionForRole GetByPermissionRoleCategoryId(Guid permId, Guid roleId, Guid catId);

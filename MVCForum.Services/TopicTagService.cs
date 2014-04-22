@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
@@ -8,7 +7,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
-    public class TopicTagService : ITopicTagService
+    public partial class TopicTagService : ITopicTagService
     {
         private readonly ITopicTagRepository _tagRepository;
         private readonly ITopicRepository _topicRepository;

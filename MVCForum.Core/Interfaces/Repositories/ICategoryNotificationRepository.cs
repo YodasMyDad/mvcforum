@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Repositories
 {
-    public interface ICategoryNotificationRepository
+    public partial interface ICategoryNotificationRepository
     {
         IList<CategoryNotification> GetAll();
         IList<CategoryNotification> GetByCategory(Category category);

@@ -10,6 +10,7 @@ namespace Badges.Solution
     [DisplayName("Post Selected As Answer")]
     [Description("This badge is awarded to the poster of a post marked as the topic answer, the first time they author an answer.")]
     [Image("PosterMarkAsSolutionBadge.png")]
+    [AwardsPoints(2)]
     public class PosterMarkAsSolutionBadge : IMarkAsSolutionBadge
     {
         public bool Rule(MembershipUser user, IMVCForumAPI api)

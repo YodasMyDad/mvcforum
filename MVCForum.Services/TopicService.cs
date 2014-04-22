@@ -9,7 +9,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
-    public class TopicService : ITopicService
+    public partial class TopicService : ITopicService
     {
         private readonly ITopicRepository _topicRepository;
         private readonly ITopicNotificationService _topicNotificationService;
@@ -61,7 +61,7 @@ namespace MVCForum.Services
             topic.CreateDate = DateTime.UtcNow;
 
             // url slug generator
-            topic.Slug = ServiceHelpers.GenerateSlug(topic.Name, x => _topicRepository.GetTopicBySlugLike(ServiceHelpers.CreateUrl(topic.Name)));
+            topic.Slug = ServiceHelpers.GenerateSlug(topic.Name, _topicRepository.GetTopicBySlugLike(ServiceHelpers.CreateUrl(topic.Name)), null);
             
             return _topicRepository.Add(topic);
         }

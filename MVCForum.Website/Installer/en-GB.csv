@@ -263,3 +263,4 @@ Members.MemberEmailAuthorisationResend,Resend Confirmation Email
 Members.MessageMe,Message Me
 Confirmation.DeleteMembersPosts,Are you sure? This will delete all the members posts and topics!
 Moderate.AwaitingModeration,Your post is currently awaiting moderation. Once approved it will appear on the site
+Badges.AwardsPoints,Awards {0} points

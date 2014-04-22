@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Repositories
 {
-    public interface ITopicRepository
+    public partial interface ITopicRepository
     {
         IList<Topic> GetAll();
         IList<Topic> GetHighestViewedTopics(int amountToTake);
@@ -25,7 +25,6 @@ namespace MVCForum.Domain.Interfaces.Repositories
         Topic GetTopicBySlug(string slug);
         IList<Topic> GetTopicBySlugLike(string slug);
         int TopicCount();
-
         Topic Add(Topic item);
         Topic Get(Guid id);
         void Delete(Topic item);

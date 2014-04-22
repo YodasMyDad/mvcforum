@@ -774,7 +774,6 @@
     <Content Include="Installer\Db\1.5\Upgrade\upgrade.sql" />
     <Content Include="Installer\Db\1.4\database.sql" />
     <Content Include="Installer\Db\1.4\Upgrade\upgrade.sql" />
-    <Content Include="Installer\ReadMe.txt" />
     <Content Include="Scripts\bootstrap-prettify.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

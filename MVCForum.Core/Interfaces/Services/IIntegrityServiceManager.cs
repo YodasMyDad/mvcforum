@@ -9,7 +9,7 @@ namespace MVCForum.Domain.Interfaces.Services
     /// an (injected) instance of this manager class. They can then register
     /// themselves with the manager.
     /// </summary>
-    public interface IIntegrityServiceManager
+    public partial interface IIntegrityServiceManager
     {
         /// <summary>
         /// Register a service - include in collection of services

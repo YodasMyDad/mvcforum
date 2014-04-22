@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using MVCForum.Domain.DomainModel;
+﻿using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
-    public interface IReportService
+    public partial interface IReportService
     {
         void MemberReport(Report report);
         void PostReport(Report report);

@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
-    public interface ILuceneService
+    public partial interface ILuceneService
     {
         void UpdateIndex();
         bool CheckIndexExists();

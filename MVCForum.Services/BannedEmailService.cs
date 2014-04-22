@@ -8,7 +8,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
-    public class BannedEmailService : IBannedEmailService
+    public partial class BannedEmailService : IBannedEmailService
     {
         private readonly IBannedEmailRepository _bannedEmailRepository;
 

@@ -1,6 +1,6 @@
 ﻿namespace MVCForum.Domain.DomainModel
 {
-    public class UploadFileResult
+    public partial class UploadFileResult
     {
         public bool UploadSuccessful { get; set; }
         public string ErrorMessage { get; set; }

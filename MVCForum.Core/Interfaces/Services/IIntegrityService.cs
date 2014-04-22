@@ -7,7 +7,7 @@ namespace MVCForum.Domain.Interfaces.Services
     /// Services can implement this service if they want integrity
     /// issues to be coordinated by the Integrity Manager instance
     /// </summary>
-    public interface IIntegrityService
+    public partial interface IIntegrityService
     {
         /// <summary>
         /// If the specified entity is clear for deletion, return true.

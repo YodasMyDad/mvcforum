@@ -9,7 +9,7 @@ using MVCForum.Domain.Interfaces.Repositories;
 
 namespace MVCForum.Data.Repositories
 {
-    public class TopicRepository : ITopicRepository
+    public partial class TopicRepository : ITopicRepository
     {
         private readonly MVCForumContext _context;
 

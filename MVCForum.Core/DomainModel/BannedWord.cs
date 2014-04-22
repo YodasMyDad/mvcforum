@@ -3,7 +3,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class BannedWord
+    public partial class BannedWord
     {
         public BannedWord()
         {

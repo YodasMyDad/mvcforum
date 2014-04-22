@@ -11,7 +11,7 @@ namespace MVCForum.Domain.DomainModel
         Votes
     }
 
-    public class Post : Entity
+    public partial class Post : Entity
     {
         public Post()
         {

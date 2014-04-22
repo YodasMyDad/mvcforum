@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Repositories
 {
-    public interface ITopicTagRepository
+    public partial interface ITopicTagRepository
     {
         IEnumerable<TopicTag> GetAll();
         Dictionary<string, int> GetPopularTags(int? amountToTake);
@@ -12,7 +12,6 @@ namespace MVCForum.Domain.Interfaces.Repositories
         PagedList<TopicTag> GetPagedGroupedTags(int pageIndex, int pageSize);
         PagedList<TopicTag> SearchPagedGroupedTags(string search, int pageIndex, int pageSize);
         IEnumerable<TopicTag> GetByTopic(Topic topic);
-
         TopicTag Add(TopicTag item);
         TopicTag Get(Guid id);
         void Delete(TopicTag item);

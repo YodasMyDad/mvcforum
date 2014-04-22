@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Repositories
 {
-    public interface ILocalizationRepository
+    public partial interface ILocalizationRepository
     {
         IEnumerable<Language> GetAll();
 

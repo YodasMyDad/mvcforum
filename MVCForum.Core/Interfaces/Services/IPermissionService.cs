@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
-    public interface IPermissionService
+    public partial interface IPermissionService
     {
         IEnumerable<Permission> GetAll();
         void Add(Permission permission);

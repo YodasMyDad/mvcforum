@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
-    public interface IPrivateMessageService
+    public partial interface IPrivateMessageService
     {
         PrivateMessage SanitizeMessage(PrivateMessage privateMessage);
         PrivateMessage Add(PrivateMessage message);

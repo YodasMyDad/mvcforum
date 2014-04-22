@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Configuration;
 using System.Net.Mail;
 using System.Web;
 using MVCForum.Domain.DomainModel;
@@ -12,7 +10,7 @@ using MVCForum.Domain.Interfaces.Services;
 
 namespace MVCForum.Services
 {
-    public class EmailService : IEmailService
+    public partial class EmailService : IEmailService
     {
         private readonly ILoggingService _loggingService;
         private readonly ISettingsService _settingsService;

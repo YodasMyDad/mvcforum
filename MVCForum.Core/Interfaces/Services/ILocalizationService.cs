@@ -5,7 +5,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
-    public interface ILocalizationService
+    public partial interface ILocalizationService
     {
 
         Language SanitizeLanguage(Language language);

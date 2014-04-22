@@ -12,8 +12,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
-
-    public class LocalizationService : ILocalizationService
+    public partial class LocalizationService : ILocalizationService
     {
         private readonly ILocalizationRepository _localizationRepository;
         private readonly ISettingsRepository _settingsRepository;

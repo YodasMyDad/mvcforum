@@ -10,7 +10,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
-    public class CategoryService : ICategoryService
+    public partial class CategoryService : ICategoryService
     {
         private readonly IRoleService _roleService;
         private readonly ICategoryRepository _categoryRepository;
@@ -95,7 +95,7 @@ namespace MVCForum.Services
             category.DateCreated = DateTime.UtcNow;
 
             // url slug generator
-            category.Slug = ServiceHelpers.GenerateSlug(category.Name, x => _categoryRepository.GetBySlugLike(ServiceHelpers.CreateUrl(category.Name)));            
+            category.Slug = ServiceHelpers.GenerateSlug(category.Name, _categoryRepository.GetBySlugLike(ServiceHelpers.CreateUrl(category.Name)), null);            
 
             // Add the category
             _categoryRepository.Add(category);
@@ -110,7 +110,7 @@ namespace MVCForum.Services
             // Sanitize
             category = SanitizeCategory(category);
 
-            category.Slug = ServiceHelpers.GenerateSlug(category.Name, x => _categoryRepository.GetBySlugLike(category.Slug)); 
+            category.Slug = ServiceHelpers.GenerateSlug(category.Name, _categoryRepository.GetBySlugLike(category.Slug), category.Slug);
         }
 
         /// <summary>

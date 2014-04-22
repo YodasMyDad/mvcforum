@@ -29,7 +29,7 @@
         <div class="row-fluid">
             <div class="span12 categorydetails">
                 <h2><a href="@cat.NiceUrl">@Html.Raw(cat.Name)</a></h2>
-                <p>@Html.Raw(cat.Description)</p>
+                <p>@Html.Raw(AppHelpers.ConvertPostContent(cat.Description))</p>
                 <div class="row-fluid categorydetailsfooter">
                     <div class="span1 catrss">
                         @if (Html.Settings().EnableRSSFeeds)

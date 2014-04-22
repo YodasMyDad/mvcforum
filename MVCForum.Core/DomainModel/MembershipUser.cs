@@ -25,7 +25,7 @@ namespace MVCForum.Domain.DomainModel
     /// <summary>
     /// A membership user 
     /// </summary>
-    public class MembershipUser : Entity
+    public partial class MembershipUser : Entity
     {
         public MembershipUser()
         {

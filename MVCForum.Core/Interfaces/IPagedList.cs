@@ -2,7 +2,7 @@
 
 namespace MVCForum.Domain.Interfaces
 {
-    public interface IPagedList<T> : IList<T>
+    public partial interface IPagedList<T> : IList<T>
     {
         int PageIndex { get; }
         int PageSize { get; }

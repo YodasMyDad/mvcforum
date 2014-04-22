@@ -6,7 +6,7 @@ using MVCForum.Domain.Interfaces.Services;
 
 namespace MVCForum.Services
 {
-    public class UploadedFileService : IUploadedFileService
+    public partial class UploadedFileService : IUploadedFileService
     {
         private readonly IUploadedFileRepository _uploadedFileRepository;
 

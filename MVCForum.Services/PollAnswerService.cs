@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
@@ -9,7 +7,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
-    public class PollAnswerService : IPollAnswerService
+    public partial class PollAnswerService : IPollAnswerService
     {
         private readonly IPollAnswerRepository _pollAnswerRepository;
 

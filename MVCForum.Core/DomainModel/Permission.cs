@@ -3,7 +3,7 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class Permission : Entity
+    public partial class Permission : Entity
     {
         public Permission()
         {

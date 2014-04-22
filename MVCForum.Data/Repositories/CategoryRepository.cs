@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Data.Entity;
 using MVCForum.Data.Context;
@@ -10,7 +9,7 @@ using MVCForum.Domain.Interfaces.Repositories;
 
 namespace MVCForum.Data.Repositories
 {
-    public class CategoryRepository : ICategoryRepository
+    public partial class CategoryRepository : ICategoryRepository
     {
         private readonly MVCForumContext _context;
 

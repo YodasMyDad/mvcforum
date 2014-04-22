@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using MVCForum.Data.Context;
 using System.Data.Entity;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
-using MVCForum.Utilities;
-
 
 namespace MVCForum.Data.Repositories
 {
-    public class TopicNotificationRepository : ITopicNotificationRepository
+    public partial class TopicNotificationRepository : ITopicNotificationRepository
     {
         private readonly MVCForumContext _context;
 

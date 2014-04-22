@@ -5,7 +5,7 @@ using MVCForum.Domain.DomainModel.Activity;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
-    public interface IActivityService
+    public partial interface IActivityService
     {
         /// <summary>
         /// Gets a paged list of badges

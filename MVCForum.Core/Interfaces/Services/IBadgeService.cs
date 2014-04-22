@@ -3,13 +3,12 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
-    public interface IBadgeService
+    public partial interface IBadgeService
     {
         /// <summary>
         /// Synchronises badge classes with database badge records
         /// </summary>
         void SyncBadges();
-
 
         /// <summary>
         /// Processes the user for the specified badge type

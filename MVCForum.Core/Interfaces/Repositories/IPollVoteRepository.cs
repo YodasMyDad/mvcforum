@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Repositories
 {
-    public interface IPollVoteRepository
+    public partial interface IPollVoteRepository
     {
         List<PollVote> GetAllPollVotes();
         PollVote Add(PollVote pollVote);

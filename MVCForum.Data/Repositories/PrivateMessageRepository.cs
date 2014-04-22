@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Data.Entity;
-using System.Text;
 using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
-using MVCForum.Utilities;
 
 namespace MVCForum.Data.Repositories
 {
-    public class PrivateMessageRepository : IPrivateMessageRepository
+    public partial class PrivateMessageRepository : IPrivateMessageRepository
     {
         private readonly MVCForumContext _context;
 

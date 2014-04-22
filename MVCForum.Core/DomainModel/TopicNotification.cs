@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
-    public class TopicNotification : Entity
+    public partial class TopicNotification : Entity
     {
         public TopicNotification()
         {

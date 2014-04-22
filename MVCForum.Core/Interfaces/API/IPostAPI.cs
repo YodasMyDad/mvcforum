@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.API
 {
-    public interface IPostAPI
+    public partial interface IPostAPI
     {
         /// <summary>
         /// Create a post

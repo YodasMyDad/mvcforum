@@ -115,7 +115,11 @@
                                 @foreach (var badge in Model.User.Badges)
                                 {
                                     <li>
-                                        <img src="@Url.Content(AppHelpers.ReturnBadgeUrl(badge.Image))" alt="@badge.Name" title="@badge.Name"/>
+                                        <img src="@Url.Content(AppHelpers.ReturnBadgeUrl(badge.Image))" alt="@badge.Name" title="@badge.Name"/>                                        
+                                        @if (badge.AwardsPoints != null && badge.AwardsPoints > 0)
+                                        {
+                                            <strong>[@badge.AwardsPoints]</strong> 
+                                        }
                                         @Html.Raw(badge.DisplayName)
                                     </li>
                                 }

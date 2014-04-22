@@ -8,7 +8,7 @@ using MVCForum.Domain.Interfaces.Repositories;
 
 namespace MVCForum.Data.Repositories
 {
-    public class BannedWordRepository : IBannedWordRepository
+    public partial class BannedWordRepository : IBannedWordRepository
     {
         private readonly MVCForumContext _context;
         public BannedWordRepository(IMVCForumContext context)

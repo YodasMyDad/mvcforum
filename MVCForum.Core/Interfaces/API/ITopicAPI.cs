@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.API
 {
-    public interface ITopicAPI
+    public partial interface ITopicAPI
     {
         Topic Get(Guid id);
 

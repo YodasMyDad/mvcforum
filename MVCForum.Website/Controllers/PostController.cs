@@ -30,6 +30,7 @@ namespace MVCForum.Website.Controllers
         private readonly IPollAnswerService _pollAnswerService;
         private readonly IPollService _pollService;
         private readonly IBannedWordService _bannedWordService;
+        private readonly IMembershipUserPointsService _membershipUserPointsService;
 
         private MembershipUser LoggedOnUser;
         private MembershipRole UsersRole;
@@ -38,7 +39,7 @@ namespace MVCForum.Website.Controllers
             ILocalizationService localizationService, IRoleService roleService, ITopicService topicService, IPostService postService, 
             ISettingsService settingsService, ICategoryService categoryService, ITopicTagService topicTagService, 
             ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, ILuceneService luceneService, IPollAnswerService pollAnswerService, 
-            IPollService pollService, IBannedWordService bannedWordService)
+            IPollService pollService, IBannedWordService bannedWordService, IMembershipUserPointsService membershipUserPointsService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
@@ -52,6 +53,7 @@ namespace MVCForum.Website.Controllers
             _pollAnswerService = pollAnswerService;
             _pollService = pollService;
             _bannedWordService = bannedWordService;
+            _membershipUserPointsService = membershipUserPointsService;
 
             LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
@@ -64,7 +66,6 @@ namespace MVCForum.Website.Controllers
             PermissionSet permissions;
             Post newPost;
             Topic topic;
-            var moderation = false;
 
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {   
@@ -360,9 +361,9 @@ namespace MVCForum.Website.Controllers
 
                 if (post.User.Id == LoggedOnUser.Id || permissions[AppConstants.PermissionDeletePosts].IsTicked)
                 {
+                    var postUser = post.User;
 
                     var deleteTopic = _postService.Delete(post);
-
                     unitOfWork.SaveChanges();
 
                     var postIdList = new List<Guid>();
@@ -371,6 +372,9 @@ namespace MVCForum.Website.Controllers
                         postIdList = topic.Posts.Select(x => x.Id).ToList();
                         _topicService.Delete(topic);
                     }
+
+                    // Remove the points the user got for this post
+                    _membershipUserPointsService.Delete(SettingsService.GetSettings().PointsAddedPerPost, postUser);
 
                     try
                     {

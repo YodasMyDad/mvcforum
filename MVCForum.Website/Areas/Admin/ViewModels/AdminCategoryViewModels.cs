@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using DataAnnotationsExtensions;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Website.Areas.Admin.ViewModels
@@ -25,6 +26,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [DisplayName("Category Description")]
         [DataType(DataType.MultilineText)]
+        [UIHint(AppConstants.EditorType), AllowHtml]
         public string Description { get; set; }
 
         [DisplayName("Lock The Category")]
@@ -55,6 +57,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [DisplayName("Category Description")]
         [DataType(DataType.MultilineText)]
+        [UIHint(AppConstants.EditorType), AllowHtml]
         public string Description { get; set; }
 
         [DisplayName("Lock The Category")]

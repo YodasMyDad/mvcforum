@@ -8,7 +8,7 @@ using MVCForum.Domain.Interfaces.Repositories;
 
 namespace MVCForum.Data.Repositories
 {
-    public class BannedEmailRepository : IBannedEmailRepository
+    public partial class BannedEmailRepository : IBannedEmailRepository
     {
         private readonly MVCForumContext _context;
         public BannedEmailRepository(IMVCForumContext context)
