@@ -713,7 +713,7 @@ namespace MVCForum.Utilities
         /// <returns></returns>
         public static string ConvertMarkDown(string str)
         {
-            var md = new MarkdownSharp.Markdown();
+            var md = new MarkdownSharp.Markdown{AutoHyperlink = true, LinkEmails = false};
             return md.Transform(str);
         }
 

@@ -38,7 +38,6 @@ namespace MVCForum.Services
             _perRequestLanguageStrings = ResourceKeysByLanguage(CurrentLanguage);
         }
 
-
         public Language SanitizeLanguage(Language language)
         {
             language.Name = StringUtils.SafePlainText(language.Name);
@@ -279,7 +278,6 @@ namespace MVCForum.Services
         {
             get
             {
-
                 try
                 {
                     // Check for cookie, as the user may have switched the language from the deafult one

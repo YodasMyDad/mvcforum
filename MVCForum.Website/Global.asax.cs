@@ -44,6 +44,11 @@ namespace MVCForum.Website
             get { return DependencyResolver.Current.GetService<ILoggingService>(); }
         }
 
+        public ILocalizationService LocalizationService
+        {
+            get { return DependencyResolver.Current.GetService<ILocalizationService>(); }
+        }
+
         public ILuceneService LuceneService
         {
             get { return DependencyResolver.Current.GetService<ILuceneService>(); }
@@ -182,19 +187,8 @@ namespace MVCForum.Website
             {
                 if (HttpContext.Current.Session != null)
                 {
-                    var ci = (CultureInfo)this.Session["Culture"];
-                    //Checking first if there is no value in session 
-                    //and set default language 
-                    //this can happen for first user's request
-                    if (ci == null)
-                    {
-                        using (UnitOfWorkManager.NewUnitOfWork())
-                        {
-                            ci = new CultureInfo(SettingsService.GetSettings().DefaultLanguage.LanguageCulture);
-                            this.Session["Culture"] = ci; 
-                        }
-                    }
-                    //Finally setting culture for each request
+                    // Set the culture per request
+                    var ci = new CultureInfo(LocalizationService.CurrentLanguage.LanguageCulture);
                     Thread.CurrentThread.CurrentUICulture = ci;
                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(ci.Name);
                 }

@@ -774,6 +774,53 @@
     <Content Include="Installer\Db\1.5\Upgrade\upgrade.sql" />
     <Content Include="Installer\Db\1.4\database.sql" />
     <Content Include="Installer\Db\1.4\Upgrade\upgrade.sql" />
+    <Content Include="Scripts\bbeditor\emoticons\alien.png" />
+    <Content Include="Scripts\bbeditor\emoticons\angel.png" />
+    <Content Include="Scripts\bbeditor\emoticons\angry.png" />
+    <Content Include="Scripts\bbeditor\emoticons\blink.png" />
+    <Content Include="Scripts\bbeditor\emoticons\blush.png" />
+    <Content Include="Scripts\bbeditor\emoticons\cheerful.png" />
+    <Content Include="Scripts\bbeditor\emoticons\cool.png" />
+    <Content Include="Scripts\bbeditor\emoticons\credits.txt" />
+    <Content Include="Scripts\bbeditor\emoticons\cwy.png" />
+    <Content Include="Scripts\bbeditor\emoticons\devil.png" />
+    <Content Include="Scripts\bbeditor\emoticons\dizzy.png" />
+    <Content Include="Scripts\bbeditor\emoticons\ermm.png" />
+    <Content Include="Scripts\bbeditor\emoticons\face.png" />
+    <Content Include="Scripts\bbeditor\emoticons\getlost.png" />
+    <Content Include="Scripts\bbeditor\emoticons\grin.png" />
+    <Content Include="Scripts\bbeditor\emoticons\happy.png" />
+    <Content Include="Scripts\bbeditor\emoticons\heart.png" />
+    <Content Include="Scripts\bbeditor\emoticons\kissing.png" />
+    <Content Include="Scripts\bbeditor\emoticons\laughing.png" />
+    <Content Include="Scripts\bbeditor\emoticons\ninja.png" />
+    <Content Include="Scripts\bbeditor\emoticons\pinch.png" />
+    <Content Include="Scripts\bbeditor\emoticons\pouty.png" />
+    <Content Include="Scripts\bbeditor\emoticons\sad.png" />
+    <Content Include="Scripts\bbeditor\emoticons\shocked.png" />
+    <Content Include="Scripts\bbeditor\emoticons\sick.png" />
+    <Content Include="Scripts\bbeditor\emoticons\sideways.png" />
+    <Content Include="Scripts\bbeditor\emoticons\silly.png" />
+    <Content Include="Scripts\bbeditor\emoticons\sleeping.png" />
+    <Content Include="Scripts\bbeditor\emoticons\smile.png" />
+    <Content Include="Scripts\bbeditor\emoticons\tongue.png" />
+    <Content Include="Scripts\bbeditor\emoticons\unsure.png" />
+    <Content Include="Scripts\bbeditor\emoticons\w00t.png" />
+    <Content Include="Scripts\bbeditor\emoticons\wassat.png" />
+    <Content Include="Scripts\bbeditor\emoticons\whistling.png" />
+    <Content Include="Scripts\bbeditor\emoticons\wink.png" />
+    <Content Include="Scripts\bbeditor\emoticons\wub.png" />
+    <Content Include="Scripts\bbeditor\jquery.sceditor.bbcode.min.js" />
+    <Content Include="Scripts\bbeditor\jquery.sceditor.xhtml.min.js" />
+    <Content Include="Scripts\bbeditor\plugins\bbcode.js" />
+    <Content Include="Scripts\bbeditor\plugins\format.js" />
+    <Content Include="Scripts\bbeditor\plugins\xhtml.js" />
+    <Content Include="Scripts\bbeditor\themes\default.min.css" />
+    <Content Include="Scripts\bbeditor\themes\famfamfam.png" />
+    <Content Include="Scripts\bbeditor\themes\modern.min.css" />
+    <Content Include="Scripts\bbeditor\themes\office-toolbar.min.css" />
+    <Content Include="Scripts\bbeditor\themes\office.min.css" />
+    <Content Include="Scripts\bbeditor\themes\square.min.css" />
     <Content Include="Scripts\bootstrap-prettify.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -781,6 +828,8 @@
     <Content Include="Areas\Admin\Views\Moderate\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Moderate\GetMoreTopics.cshtml" />
     <Content Include="Areas\Admin\Views\Moderate\GetMorePosts.cshtml" />
+    <Content Include="Scripts\bbeditor\themes\monocons\monocons.eot" />
+    <Content Include="Scripts\bbeditor\themes\monocons\monocons.ttf" />
     <None Include="Scripts\jquery-2.0.1.intellisense.js" />
     <Content Include="Scripts\jquery-2.0.1.js" />
     <Content Include="Scripts\jquery-2.0.1.min.js" />
@@ -796,9 +845,7 @@
     <Content Include="Scripts\json2.js" />
     <Content Include="Scripts\json3.js" />
     <Content Include="Scripts\markdown\node-pagedown.js" />
-    <Content Include="Scripts\tinymce\plugins\advlist\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\advlist\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\anchor\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\anchor\plugin.min.js" />
     <Content Include="Scripts\tinymce\plugins\autolink\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\autolink\plugin.min.js" />
@@ -858,7 +905,6 @@
     <Content Include="Scripts\tinymce\plugins\fullpage\plugin.min.js" />
     <Content Include="Scripts\tinymce\plugins\fullscreen\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\fullscreen\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\hr\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\hr\plugin.min.js" />
     <Content Include="Scripts\tinymce\plugins\image\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\image\plugin.min.js" />
@@ -866,7 +912,6 @@
     <Content Include="Scripts\tinymce\plugins\importcss\plugin.min.js" />
     <Content Include="Scripts\tinymce\plugins\insertdatetime\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\insertdatetime\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\layer\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\layer\plugin.min.js" />
     <Content Include="Scripts\tinymce\plugins\legacyoutput\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\legacyoutput\plugin.min.js" />
@@ -874,7 +919,6 @@
     <Content Include="Scripts\tinymce\plugins\link\plugin.min.js" />
     <Content Include="Scripts\tinymce\plugins\lists\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\lists\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\media\moxieplayer.swf" />
     <Content Include="Scripts\tinymce\plugins\media\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\media\plugin.min.js" />
     <Content Include="Scripts\tinymce\plugins\nonbreaking\plugin.js" />
@@ -893,8 +937,6 @@
     <Content Include="Scripts\tinymce\plugins\paste\plugin.min.js" />
     <Content Include="Scripts\tinymce\plugins\preview\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\preview\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\print\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\print\plugin.min.js" />
     <Content Include="Scripts\tinymce\plugins\save\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\save\plugin.min.js" />
     <Content Include="Scripts\tinymce\plugins\searchreplace\plugin.js" />
@@ -936,7 +978,6 @@
     <Content Include="Scripts\tinymce\plugins\visualblocks\img\pre.gif" />
     <Content Include="Scripts\tinymce\plugins\visualblocks\img\section.gif" />
     <Content Include="Scripts\tinymce\plugins\visualblocks\img\ul.gif" />
-    <Content Include="Scripts\tinymce\plugins\visualblocks\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\visualblocks\plugin.min.js" />
     <Content Include="Scripts\tinymce\plugins\visualchars\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\visualchars\plugin.min.js" />
@@ -946,10 +987,6 @@
     <Content Include="Scripts\tinymce\skins\lightgray\content.min.css" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.svg" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.svg" />
-    <Content Include="Scripts\tinymce\skins\lightgray\img\anchor.gif" />
-    <Content Include="Scripts\tinymce\skins\lightgray\img\loader.gif" />
-    <Content Include="Scripts\tinymce\skins\lightgray\img\object.gif" />
-    <Content Include="Scripts\tinymce\skins\lightgray\img\trans.gif" />
     <Content Include="Scripts\tinymce\skins\lightgray\skin.ie7.min.css" />
     <Content Include="Scripts\tinymce\skins\lightgray\skin.min.css" />
     <Content Include="Scripts\tinymce\themes\modern\theme.js" />
@@ -1180,8 +1217,6 @@
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.ttf" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.json" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.eot" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\readme.md" />
-    <Content Include="Scripts\tinymce\langs\readme.md" />
     <Content Include="Views\Shared\_ModerateTopic.cshtml" />
     <Content Include="Views\Shared\_ModeratePost.cshtml" />
     <Content Include="Views\Shared\_PostModeration.cshtml" />
@@ -1197,9 +1232,29 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Badges\Badges.csproj">
-      <Project>{72cb63cc-41b2-495a-86f7-f233a8a6c0b0}</Project>
-      <Name>Badges</Name>
+    <ProjectReference Include="..\Badges\AuthorMarkAsSolution\AuthorMarkAsSolution.csproj">
+      <Project>{49448f62-01cd-4e2a-8880-a98bb66c4afd}</Project>
+      <Name>AuthorMarkAsSolution</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Badges\MemberForAYearBadge\MemberForAYearBadge.csproj">
+      <Project>{7a15b80d-5167-4181-a7e7-9121b9856526}</Project>
+      <Name>MemberForAYearBadge</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Badges\PosterMarkAsSolution\PosterMarkAsSolution.csproj">
+      <Project>{10bd34f8-9347-4471-9470-a00b143bd50b}</Project>
+      <Name>PosterMarkAsSolution</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Badges\PosterVoteUpBadge\PosterVoteUpBadge.csproj">
+      <Project>{21769e8e-b8ee-4c8f-9eb0-48d7ba6b7873}</Project>
+      <Name>PosterVoteUpBadge</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Badges\PostMentionUmbraco\PostMentionUmbraco.csproj">
+      <Project>{acf6b8fe-4422-4950-802d-5133991741f7}</Project>
+      <Name>PostMentionUmbraco</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Badges\UserVoteUpBadge\UserVoteUpBadge.csproj">
+      <Project>{3bbbfe42-e642-4337-bd42-a8b15ea1fa01}</Project>
+      <Name>UserVoteUpBadge</Name>
     </ProjectReference>
     <ProjectReference Include="..\MVCForum.Core\MVCForum.Domain.csproj">
       <Project>{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}</Project>

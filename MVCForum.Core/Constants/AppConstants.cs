@@ -33,8 +33,8 @@
 
         // Editor
         //public const string EditorType = "bbeditor";
-        public const string EditorType = "tinymceeditor";
-        //public const string EditorType = "markdowneditor";   
+        //public const string EditorType = "tinymceeditor";
+        public const string EditorType = "markdowneditor";   
 
         // Url names
         public const string CategoryUrlIdentifier = "cat";

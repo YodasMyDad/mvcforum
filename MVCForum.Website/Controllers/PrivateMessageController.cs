@@ -226,7 +226,10 @@ namespace MVCForum.Website.Controllers
 
                         // Get the sent version and update that too
                         var sentMessage = _privateMessageService.GetMatchingSentPrivateMessage(message.Subject, message.DateSent,message.UserFrom.Id, message.UserTo.Id);
-                        sentMessage.IsRead = true;
+                        if (sentMessage != null)
+                        {
+                            sentMessage.IsRead = true;   
+                        }
 
                         try
                         {

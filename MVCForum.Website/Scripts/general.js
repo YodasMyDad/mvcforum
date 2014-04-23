@@ -672,6 +672,9 @@ function AjaxPostSuccess() {
         $(".wmd-input").val('');
         $(".wmd-preview").html('');
     }
+    if (typeof tinyMCE != "undefined") {
+        tinyMCE.activeEditor.setContent('');
+    }
 
     // Re-enable the button
     $('#createpostbutton').attr("disabled", false);

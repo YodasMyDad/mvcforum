@@ -1,10 +1,11 @@
+"use strict";
 var Markdown;
 
 if (typeof exports === "object" && typeof require === "function") // we're in a CommonJS (e.g. Node.js) module
     Markdown = exports;
 else
     Markdown = {};
-    
+
 // The following text is included for historical reasons, but should
 // be taken with a pinch of salt; it's not all true anymore.
 
@@ -227,7 +228,7 @@ else
 
             /*
             text = text.replace(/
-                ^[ ]{0,3}\[(.+)\]:  // id = $1  attacklab: g_tab_width - 1
+                ^[ ]{0,3}\[([^\[\]]+)\]:  // id = $1  attacklab: g_tab_width - 1
                 [ \t]*
                 \n?                 // maybe *one* newline
                 [ \t]*
@@ -248,7 +249,7 @@ else
             /gm, function(){...});
             */
 
-            text = text.replace(/^[ ]{0,3}\[(.+)\]:[ \t]*\n?[ \t]*<?(\S+?)>?(?=\s|$)[ \t]*\n?[ \t]*((\n*)["(](.+?)[")][ \t]*)?(?:\n+)/gm,
+            text = text.replace(/^[ ]{0,3}\[([^\[\]]+)\]:[ \t]*\n?[ \t]*<?(\S+?)>?(?=\s|$)[ \t]*\n?[ \t]*((\n*)["(](.+?)[")][ \t]*)?(?:\n+)/gm,
                 function (wholeMatch, m1, m2, m3, m4, m5) {
                     m1 = m1.toLowerCase();
                     g_urls.set(m1, _EncodeAmpsAndAngles(m2));  // Link IDs are case-insensitive
@@ -307,7 +308,7 @@ else
                 )                       // attacklab: there are sentinel newlines at end of document
             /gm,function(){...}};
             */
-            text = text.replace(/^(<(p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|script|noscript|form|fieldset|iframe|math|ins|del)\b[^\r]*?\n<\/\2>[ \t]*(?=\n+))/gm, hashElement);
+            text = text.replace(/^(<(p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|script|noscript|form|fieldset|iframe|math|ins|del)\b[^\r]*?\n<\/\2>[ \t]*(?=\n+))/gm, hashMatch);
 
             //
             // Now match more liberally, simply from `\n<tag>` to `</tag>\n`
@@ -327,7 +328,7 @@ else
                 )                       // attacklab: there are sentinel newlines at end of document
             /gm,function(){...}};
             */
-            text = text.replace(/^(<(p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|script|noscript|form|fieldset|iframe|math)\b[^\r]*?.*<\/\2>[ \t]*(?=\n+)\n)/gm, hashElement);
+            text = text.replace(/^(<(p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|script|noscript|form|fieldset|iframe|math)\b[^\r]*?.*<\/\2>[ \t]*(?=\n+)\n)/gm, hashMatch);
 
             // Special case just for <hr />. It was easier to make a special case than
             // to make the other regex more complicated.  
@@ -344,9 +345,9 @@ else
                     [ \t]*
                     (?=\n{2,})      // followed by a blank line
                 )
-            /g,hashElement);
+            /g,hashMatch);
             */
-            text = text.replace(/\n[ ]{0,3}((<(hr)\b([^<>])*?\/?>)[ \t]*(?=\n{2,}))/g, hashElement);
+            text = text.replace(/\n[ ]{0,3}((<(hr)\b([^<>])*?\/?>)[ \t]*(?=\n{2,}))/g, hashMatch);
 
             // Special case for standalone HTML comments:
 
@@ -361,9 +362,9 @@ else
                     [ \t]*
                     (?=\n{2,})                                  // followed by a blank line
                 )
-            /g,hashElement);
+            /g,hashMatch);
             */
-            text = text.replace(/\n\n[ ]{0,3}(<!(--(?:|(?:[^>-]|-[^>])(?:[^-]|-[^-])*)--)>[ \t]*(?=\n{2,}))/g, hashElement);
+            text = text.replace(/\n\n[ ]{0,3}(<!(--(?:|(?:[^>-]|-[^>])(?:[^-]|-[^-])*)--)>[ \t]*(?=\n{2,}))/g, hashMatch);
 
             // PHP and ASP-style processor instructions (<?...?> and <%...%>)
 
@@ -382,26 +383,21 @@ else
                     [ \t]*
                     (?=\n{2,})      // followed by a blank line
                 )
-            /g,hashElement);
+            /g,hashMatch);
             */
-            text = text.replace(/(?:\n\n)([ ]{0,3}(?:<([?%])[^\r]*?\2>)[ \t]*(?=\n{2,}))/g, hashElement);
+            text = text.replace(/(?:\n\n)([ ]{0,3}(?:<([?%])[^\r]*?\2>)[ \t]*(?=\n{2,}))/g, hashMatch);
 
             return text;
         }
 
-        function hashElement(wholeMatch, m1) {
-            var blockText = m1;
-
-            // Undo double lines
-            blockText = blockText.replace(/^\n+/, "");
-
-            // strip trailing blank lines
-            blockText = blockText.replace(/\n+$/g, "");
-
+        function hashBlock(text) {
+            text = text.replace(/(^\n+|\n+$)/g, "");
             // Replace the element text with a marker ("~KxK" where x is its key)
-            blockText = "\n\n~K" + (g_html_blocks.push(blockText) - 1) + "K\n\n";
+            return "\n\n~K" + (g_html_blocks.push(text) - 1) + "K\n\n";
+        }
 
-            return blockText;
+        function hashMatch(wholeMatch, m1) {
+            return hashBlock(m1);
         }
         
         var blockGamutHookCallback = function (t) { return _RunBlockGamut(t); }
@@ -997,11 +993,6 @@ else
             return text;
         }
 
-        function hashBlock(text) {
-            text = text.replace(/(^\n+|\n+$)/g, "");
-            return "\n\n~K" + (g_html_blocks.push(text) - 1) + "K\n\n";
-        }
-
         function _DoCodeSpans(text) {
             //
             // * Backtick quotes are used for <code></code> spans.
@@ -1088,11 +1079,33 @@ else
         function _DoItalicsAndBold(text) {
 
             // <strong> must go first:
-            text = text.replace(/([\W_]|^)(\*\*|__)(?=\S)([^\r]*?\S[\*_]*)\2([\W_]|$)/g,
-            "$1<strong>$3</strong>$4");
+            
+            // (^|[\W_])           Start with a non-letter or beginning of string. Store in \1.
+            // (?:(?!\1)|(?=^))    Either the next character is *not* the same as the previous,
+            //                     or we started at the end of the string (in which case the previous
+            //                     group had zero width, so we're still there). Because the next
+            //                     character is the marker, this means that if there are e.g. multiple
+            //                     underscores in a row, we can only match the left-most ones (which
+            //                     prevents foo___bar__ from getting bolded)
+            // (\*|_)              The marker character itself, asterisk or underscore. Store in \2.
+            // \2                  The marker again, since bold needs two.
+            // (?=\S)              The first bolded character cannot be a space.
+            // ([^\r]*?\S)         The actual bolded string. At least one character, and it cannot *end*
+            //                     with a space either. Note that like in many other places, [^\r] is
+            //                     just a workaround for JS' lack of single-line regexes; it's equivalent
+            //                     to a . in an /s regex, because the string cannot contain any \r (they
+            //                     are removed in the normalizing step).
+            // \2\2                The marker character, twice -- end of bold.
+            // (?!\2)              Not followed by another marker character (ensuring that we match the
+            //                     rightmost two in a longer row)...
+            // (?=[\W_]|$)         ...but by any other non-word character or the end of string.
+            text = text.replace(/(^|[\W_])(?:(?!\1)|(?=^))(\*|_)\2(?=\S)([^\r]*?\S)\2\2(?!\2)(?=[\W_]|$)/g,
+            "$1<strong>$3</strong>");
 
-            text = text.replace(/([\W_]|^)(\*|_)(?=\S)([^\r\*_]*?\S)\2([\W_]|$)/g,
-            "$1<em>$3</em>$4");
+            // This is almost identical to the <strong> regex, except 1) there's obviously just one marker
+            // character, and 2) the italicized string cannot contain the marker character.
+            text = text.replace(/(^|[\W_])(?:(?!\1)|(?=^))(\*|_)(?=\S)((?:(?!\2)[^\r])*?\S)\2(?!\2)(?=[\W_]|$)/g,
+            "$1<em>$3</em>");
 
             return text;
         }
@@ -1286,7 +1299,7 @@ else
 
             //  autolink anything like <http://example.com>
             
-            var replacer = function (wholematch, m1) { return "<a href=\"" + m1 + "\">" + pluginHooks.plainLinkText(m1) + "</a>"; }
+            var replacer = function (wholematch, m1) { return "<a href=\"" + encodeProblemUrlChars(m1) + "\">" + pluginHooks.plainLinkText(m1) + "</a>"; }
             text = text.replace(/<((https?|ftp):[^'">\s]+)>/gi, replacer);
 
             // Email addresses: <address@domain.foo>
@@ -1365,7 +1378,7 @@ else
         //  attacklab: Utility functions
         //
 
-        var _problemUrlChars = /(?:["'*()[\]:]|~D)/g;
+        var _problemUrlChars = /(?:["'*()[\]:_]|~D)/g;
 
         // hex-encodes some unusual "problem" chars in URLs to avoid URL detection problems 
         function encodeProblemUrlChars(url) {

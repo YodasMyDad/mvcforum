@@ -43,9 +43,6 @@
     <Reference Include="HtmlSanitizationLibrary">
       <HintPath>..\Externals\HtmlSanitizationLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="MarkdownSharp">
-      <HintPath>..\packages\MarkdownSharp.1.13.0.0\lib\35\MarkdownSharp.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
@@ -101,6 +98,7 @@
     <Compile Include="InstallerHelper.cs" />
     <Compile Include="LanguageUtils.cs" />
     <Compile Include="LocalisationUtils.cs" />
+    <Compile Include="Markdown.cs" />
     <Compile Include="PorterStemmingAlgorithm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CsvReader.cs" />
