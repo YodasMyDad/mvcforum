@@ -7,8 +7,8 @@
     <ProjectGuid>{7A15B80D-5167-4181-A7E7-9121B9856526}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MemberForAYearBadge</RootNamespace>
-    <AssemblyName>MemberForAYearBadge</AssemblyName>
+    <RootNamespace>Badge.MemberForAYearBadge</RootNamespace>
+    <AssemblyName>Badge.MemberForAYearBadge</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

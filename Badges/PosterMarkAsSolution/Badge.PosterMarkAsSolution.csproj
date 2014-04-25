@@ -7,8 +7,8 @@
     <ProjectGuid>{10BD34F8-9347-4471-9470-A00B143BD50B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PosterMarkAsSolution</RootNamespace>
-    <AssemblyName>PosterMarkAsSolution</AssemblyName>
+    <RootNamespace>Badge.PosterMarkAsSolution</RootNamespace>
+    <AssemblyName>Badge.PosterMarkAsSolution</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

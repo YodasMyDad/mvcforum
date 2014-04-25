@@ -3,7 +3,7 @@ using MVCForum.Domain.DomainModel.Attributes;
 using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Badges;
 
-namespace AuthorMarkAsSolution
+namespace Badge.AuthorMarkAsSolution
 {
     [Id("d68c289a-e3f7-4f55-ae4f-fc7ac2147781")]
     [Name("AuthorMarkAsSolution")]

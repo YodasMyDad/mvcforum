@@ -4,7 +4,7 @@ using MVCForum.Domain.DomainModel.Attributes;
 using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Badges;
 
-namespace MemberForAYearBadge
+namespace Badge.MemberForAYearBadge
 {
     [Id("52284d2b-7ed6-4154-9ccc-3a7d99b18cca")]
     [Name("MemberForAYear")]

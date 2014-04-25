@@ -50,17 +50,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.OpenAuth", "MVCFor
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Badges", "Badges", "{61250A22-5911-4543-9F49-42B64DDAF07A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostMentionUmbraco", "Badges\PostMentionUmbraco\PostMentionUmbraco.csproj", "{ACF6B8FE-4422-4950-802D-5133991741F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.PostMentionUmbraco", "Badges\PostMentionUmbraco\Badge.PostMentionUmbraco.csproj", "{ACF6B8FE-4422-4950-802D-5133991741F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthorMarkAsSolution", "Badges\AuthorMarkAsSolution\AuthorMarkAsSolution.csproj", "{49448F62-01CD-4E2A-8880-A98BB66C4AFD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.AuthorMarkAsSolution", "Badges\AuthorMarkAsSolution\Badge.AuthorMarkAsSolution.csproj", "{49448F62-01CD-4E2A-8880-A98BB66C4AFD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PosterMarkAsSolution", "Badges\PosterMarkAsSolution\PosterMarkAsSolution.csproj", "{10BD34F8-9347-4471-9470-A00B143BD50B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.PosterMarkAsSolution", "Badges\PosterMarkAsSolution\Badge.PosterMarkAsSolution.csproj", "{10BD34F8-9347-4471-9470-A00B143BD50B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemberForAYearBadge", "Badges\MemberForAYearBadge\MemberForAYearBadge.csproj", "{7A15B80D-5167-4181-A7E7-9121B9856526}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.MemberForAYearBadge", "Badges\MemberForAYearBadge\Badge.MemberForAYearBadge.csproj", "{7A15B80D-5167-4181-A7E7-9121B9856526}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PosterVoteUpBadge", "Badges\PosterVoteUpBadge\PosterVoteUpBadge.csproj", "{21769E8E-B8EE-4C8F-9EB0-48D7BA6B7873}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.PosterVoteUpBadge", "Badges\PosterVoteUpBadge\Badge.PosterVoteUpBadge.csproj", "{21769E8E-B8EE-4C8F-9EB0-48D7BA6B7873}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserVoteUpBadge", "Badges\UserVoteUpBadge\UserVoteUpBadge.csproj", "{3BBBFE42-E642-4337-BD42-A8B15EA1FA01}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.UserVoteUpBadge", "Badges\UserVoteUpBadge\Badge.UserVoteUpBadge.csproj", "{3BBBFE42-E642-4337-BD42-A8B15EA1FA01}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

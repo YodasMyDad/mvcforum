@@ -1232,29 +1232,29 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Badges\AuthorMarkAsSolution\AuthorMarkAsSolution.csproj">
+    <ProjectReference Include="..\Badges\AuthorMarkAsSolution\Badge.AuthorMarkAsSolution.csproj">
       <Project>{49448f62-01cd-4e2a-8880-a98bb66c4afd}</Project>
-      <Name>AuthorMarkAsSolution</Name>
+      <Name>Badge.AuthorMarkAsSolution</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Badges\MemberForAYearBadge\MemberForAYearBadge.csproj">
+    <ProjectReference Include="..\Badges\MemberForAYearBadge\Badge.MemberForAYearBadge.csproj">
       <Project>{7a15b80d-5167-4181-a7e7-9121b9856526}</Project>
-      <Name>MemberForAYearBadge</Name>
+      <Name>Badge.MemberForAYearBadge</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Badges\PosterMarkAsSolution\PosterMarkAsSolution.csproj">
+    <ProjectReference Include="..\Badges\PosterMarkAsSolution\Badge.PosterMarkAsSolution.csproj">
       <Project>{10bd34f8-9347-4471-9470-a00b143bd50b}</Project>
-      <Name>PosterMarkAsSolution</Name>
+      <Name>Badge.PosterMarkAsSolution</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Badges\PosterVoteUpBadge\PosterVoteUpBadge.csproj">
+    <ProjectReference Include="..\Badges\PosterVoteUpBadge\Badge.PosterVoteUpBadge.csproj">
       <Project>{21769e8e-b8ee-4c8f-9eb0-48d7ba6b7873}</Project>
-      <Name>PosterVoteUpBadge</Name>
+      <Name>Badge.PosterVoteUpBadge</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Badges\PostMentionUmbraco\PostMentionUmbraco.csproj">
+    <ProjectReference Include="..\Badges\PostMentionUmbraco\Badge.PostMentionUmbraco.csproj">
       <Project>{acf6b8fe-4422-4950-802d-5133991741f7}</Project>
-      <Name>PostMentionUmbraco</Name>
+      <Name>Badge.PostMentionUmbraco</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Badges\UserVoteUpBadge\UserVoteUpBadge.csproj">
+    <ProjectReference Include="..\Badges\UserVoteUpBadge\Badge.UserVoteUpBadge.csproj">
       <Project>{3bbbfe42-e642-4337-bd42-a8b15ea1fa01}</Project>
-      <Name>UserVoteUpBadge</Name>
+      <Name>Badge.UserVoteUpBadge</Name>
     </ProjectReference>
     <ProjectReference Include="..\MVCForum.Core\MVCForum.Domain.csproj">
       <Project>{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}</Project>

@@ -7,8 +7,8 @@
     <ProjectGuid>{ACF6B8FE-4422-4950-802D-5133991741F7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PostMentionUmbraco</RootNamespace>
-    <AssemblyName>PostMentionUmbraco</AssemblyName>
+    <RootNamespace>Badge.PostMentionUmbraco</RootNamespace>
+    <AssemblyName>Badge.PostMentionUmbraco</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

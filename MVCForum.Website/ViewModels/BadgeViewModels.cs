@@ -26,6 +26,6 @@ namespace MVCForum.Website.ViewModels
 
     public class AllBadgesViewModel
     {
-        public IList<Badge> AllBadges { get; set; }
+        public IList<Domain.DomainModel.Badge> AllBadges { get; set; }
     }
 }
