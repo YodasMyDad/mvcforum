@@ -16,13 +16,11 @@
 
 @using (Html.BeginForm("EditCategory", "AdminCategory", FormMethod.Post, new { @class = "form-horizontal" }))
 {
-    @Html.ValidationSummary(true)
+        @Html.ValidationSummary(false)
     <fieldset>
         <legend>Edit Category</legend>
         
         @Html.HiddenFor(model => model.Id)
-        @Html.HiddenFor(model => model.DateCreated) 
-        @Html.HiddenFor(model => model.NiceUrl)
 
         <div class="editor-label">
             @Html.LabelFor(model => model.Name)

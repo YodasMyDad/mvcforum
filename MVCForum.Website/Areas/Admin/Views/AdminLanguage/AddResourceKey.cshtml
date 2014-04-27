@@ -16,7 +16,7 @@
 
 @using (Html.BeginForm("AddResourceKey", "AdminLanguage", FormMethod.Post, new { @class = "form-horizontal" }))
 {
-    @Html.ValidationSummary(true)
+    @Html.ValidationSummary(false)
     @Html.AntiForgeryToken()
     <fieldset>
         <legend>Create New Resource</legend>

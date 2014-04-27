@@ -51,7 +51,7 @@
     @Html.Action("PopularTags", "Tag")
     @Html.Action("CurrentWeekHighPointUsers", "Point")
 }
-
+@Html.Action("GetTopicBreadcrumb", "Topic", new { topic = Model.Topic })
 <div class="row-fluid topicheading">
 
     <div class="span9 topicheaderholder">

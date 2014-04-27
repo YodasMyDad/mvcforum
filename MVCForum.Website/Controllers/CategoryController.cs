@@ -87,6 +87,21 @@ namespace MVCForum.Website.Controllers
             return PartialView(catViewModel);
         }
 
+
+        [ChildActionOnly]
+        public PartialViewResult GetCategoryBreadcrumb(Category category)
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var viewModel = new BreadcrumbViewModel
+                {
+                    Categories = _categoryService.GetCategoryParents(category).ToList(),
+                    Category = category
+                };
+                return PartialView("GetCategoryBreadcrumb", viewModel);
+            }
+        }
+
         public ActionResult Show(string slug, int? p)
         {
             using (UnitOfWorkManager.NewUnitOfWork())

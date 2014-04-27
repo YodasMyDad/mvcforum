@@ -15,7 +15,7 @@
 
     @using (Html.BeginForm("BatchMoveTopics", "Batch", FormMethod.Post, new { @class = "form-horizontal" }))
     {
-        @Html.ValidationSummary(true)
+        @Html.ValidationSummary(false)
         @Html.AntiForgeryToken()
 
         <div class="span5">

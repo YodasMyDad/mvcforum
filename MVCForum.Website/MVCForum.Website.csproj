@@ -1220,6 +1220,7 @@
     <Content Include="Views\Shared\_ModerateTopic.cshtml" />
     <Content Include="Views\Shared\_ModeratePost.cshtml" />
     <Content Include="Views\Shared\_PostModeration.cshtml" />
+    <Content Include="Views\Shared\GetCategoryBreadcrumb.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Themes\Dark\Views\Shared\" />

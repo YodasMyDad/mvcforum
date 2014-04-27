@@ -1,64 +1,50 @@
-﻿@model MVCForum.Website.Areas.Admin.ViewModels.ListCategoriesViewModel
+﻿@using System.Net.Mime
+@model MVCForum.Website.Areas.Admin.ViewModels.ListCategoriesViewModel
 @{
     var mainCategories = Model.Categories.Where(x => x.ParentCategory == null).ToList();
-    var subCategories = Model.Categories.Where(x => x.ParentCategory != null).ToList();
 }
 
 
-        
-    @if (mainCategories.Any())
-    {
-        <table class="table table-bordered table-striped">
-            <thead>
+@if (mainCategories.Any())
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Main Categories</th>
+                <th>Sub Categories</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cat in mainCategories)
+            {
+                var category = cat;
+                var allSubCategorys = Model.Categories.Where(x => x.Path != null && x.Path.ToLower().Contains(category.Id.ToString().ToLower())).ToList();
                 <tr>
-                    <th>Main Categories
-                    </th>
-                    <th>Delete
-                    </th>
+                    <td class="editcategory mainadmincategory">
+                        <a href="@Url.Action("EditCategory", new { id = cat.Id })">@Html.Raw(cat.Name)</a>
+                    </td>
+                    <td>
+                        @if (allSubCategorys.Any())
+                        {
+                            <ul class="subcatslist">
+                                @foreach (var subCat in allSubCategorys)
+                                {
+                                    <li><a href="@Url.Action("EditCategory", new { id = subCat.Id })">@Html.Raw(subCat.Name)</a></li>
+                                }
+                            </ul>
+                        }
+                    </td>
+                    <td>
+                        <a href="@Url.Action("DeleteCategoryConfirmation", new { id = cat.Id })" title="Delete @Html.Raw(cat.Name)" class="btn btn-small"><i class="icon-remove"></i></a>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var cat in mainCategories)
-                { 
-                    <tr>
-                        <td class="editcategory mainadmincategory">
-                            <a href="@Url.Action("EditCategory", new { id = cat.Id })">@Html.Raw(cat.Name)</a>
-                        </td>
-                        <td>
-                            <a href="@Url.Action("DeleteCategoryConfirmation", new { id = cat.Id })" title="Delete @Html.Raw(cat.Name)" class="btn btn-small"><i class="icon-remove"></i></a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
 
-    @if (subCategories.Any())
-    {
-        <h2>Sub Categories</h2>
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>Sub Categories
-                    </th>
-                    <th>Delete
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var cat in subCategories)
-                { 
-                    <tr>
-                        <td class="editcategory subadmincategory">
-                            <a href="@Url.Action("EditCategory", new { id = cat.Id })" class="catfancybox">@Html.Raw(cat.Name)</a>
-                        </td>
-                        <td>
-                            <a href="@Url.Action("DeleteCategoryConfirmation", new { id = cat.Id })" title="Delete @Html.Raw(cat.Name)" class="btn btn-small"><i class="icon-remove"></i></a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
+            }
+        </tbody>
+    </table>
+}
 
-
+<p><strong>What is this?</strong></p>
+<p>If you upgraded to v1.5, then you will need to sync all the category paths for the new breadcrumb feature to work.</p>
+<p><a href="@Url.Action("SyncCategoryPaths", "AdminCategory")" class="btn">Sync All Category Paths</a></p>

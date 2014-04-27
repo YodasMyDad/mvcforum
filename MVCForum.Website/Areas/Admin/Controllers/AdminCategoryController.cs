@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
@@ -87,10 +88,13 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                                                SortOrder = categoryViewModel.SortOrder,
                                            };
 
+                        
+
                         if (categoryViewModel.ParentCategory != null)
                         {
-                            category.ParentCategory =
-                                _categoryService.Get(categoryViewModel.ParentCategory.Value);
+                            var parentCategory = _categoryService.Get(categoryViewModel.ParentCategory.Value);
+                            category.ParentCategory = parentCategory;
+                            SortPath(category, parentCategory);
                         }
 
                         _categoryService.Add(category);
@@ -130,8 +134,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 ModerateTopics = category.ModerateTopics == true,
                 SortOrder = category.SortOrder,
                 Id = category.Id,
-                DateCreated = category.DateCreated,
-                NiceUrl = category.NiceUrl,
                 ParentCategory = category.ParentCategory == null ? Guid.Empty : category.ParentCategory.Id,
                 AllCategories = _categoryService.GetAll()
                     .Where(x => x.Id != category.Id)
@@ -171,13 +173,21 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
                         if (categoryViewModel.ParentCategory != null)
                         {
-                            category.ParentCategory = _categoryService.Get(categoryViewModel.ParentCategory.Value);
+                            // Set the parent category
+                            var parentCategory = _categoryService.Get(categoryViewModel.ParentCategory.Value);
+                            category.ParentCategory = parentCategory;
+
+                            // Append the path from the parent category
+                            SortPath(category, parentCategory);
                         }
                         else
                         {
                             // Must access property (trigger lazy-loading) before we can set it to null (Entity Framework bug!!!)
                             var triggerEfLoad = category.ParentCategory;
                             category.ParentCategory = null;
+
+                            // Also clear the path
+                            category.Path = null;
                         }
 
                         _categoryService.UpdateSlugFromName(category);
@@ -207,6 +217,22 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             }
 
             return View(categoryViewModel);
+        }
+
+        private void SortPath(Category category, Category parentCategory)
+        {
+            // Append the path from the parent category
+            var path = string.Empty;
+            if (!string.IsNullOrEmpty(parentCategory.Path))
+            {
+                path = string.Concat(parentCategory.Path, ",", parentCategory.Id.ToString());
+            }
+            else
+            {
+                path = parentCategory.Id.ToString();
+            }
+
+            category.Path = path;
         }
 
         public ActionResult DeleteCategoryConfirmation(Guid id)
@@ -248,6 +274,96 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
                 return RedirectToAction("Index");
             }
+        }
+
+        public ActionResult SyncCategoryPaths()
+        {
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                try
+                {
+                    // var all categories
+                    var all = _categoryService.GetAll().ToList();
+
+                    // Get all the categories
+                    var maincategories = all.Where(x => x.ParentCategory == null).ToList();
+
+                    // Get the sub categories
+                    var subcategories = all.Where(x => x.ParentCategory != null).ToList();
+
+                    // loop through the main categories and get all it's sub categories
+                    foreach (var maincategory in maincategories)
+                    {
+                        // get a list of sub categories, from this category
+                        var subCats = new List<Category>();
+                        subCats = GetAllCategorySubCategories(maincategory, subcategories, subCats);
+
+                        // Now loop through these subcategories and set the paths
+                        var count = 1;
+                        var prevCatId = string.Empty;
+                        var prevPath = string.Empty;
+                        foreach (var cat in subCats)
+                        {
+                            if (count == 1)
+                            {
+                                // If first count just set the parent category Id
+                                cat.Path = maincategory.Id.ToString();
+                            }
+                            else
+                            {
+                                // If past one, then we use the previous category
+                                if (string.IsNullOrEmpty(prevPath))
+                                {
+                                    cat.Path = prevCatId;
+                                }
+                                else
+                                {
+                                    cat.Path = string.Concat(prevPath, ",", prevCatId);
+                                }
+
+                            }
+                            prevCatId = cat.Id.ToString();
+                            prevPath = cat.Path;
+                            count++;
+                        }
+
+                        // Save changes on each category
+                        unitOfWork.SaveChanges();
+                    }
+
+
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = "Category Paths Synced",
+                        MessageType = GenericMessages.success
+                    };
+                    unitOfWork.Commit();
+                }
+                catch (Exception)
+                {
+                    unitOfWork.Rollback();
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = "Error syncing paths",
+                        MessageType = GenericMessages.error
+                    };                    
+                }
+
+                return RedirectToAction("Index");
+            }
+        }
+
+        private List<Category> GetAllCategorySubCategories(Category parent, List<Category> allSubCategories, List<Category> subCats)
+        {
+            foreach (var cat in allSubCategories)
+            {
+                if (cat.ParentCategory.Id == parent.Id)
+                {
+                    subCats.Add(cat);
+                    GetAllCategorySubCategories(cat, allSubCategories, subCats);
+                }
+            }
+            return subCats;
         }
     }
 }

@@ -46,6 +46,8 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public Guid? ParentCategory { get; set; }
 
         public List<Category> AllCategories { get; set; }
+        public string PageTitle { get; set; }
+        public string MetaDesc { get; set; }
     }
 
     public class EditCategoryViewModel
@@ -76,16 +78,13 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [HiddenInput]
         public Guid Id { get; set; }
 
-        [HiddenInput]
-        public DateTime DateCreated { get; set; }
-
-        [HiddenInput]
-        public string NiceUrl { get; set; }
-
         [DisplayName("Parent Category")]
         public Guid? ParentCategory { get; set; }
 
         public List<Category> AllCategories { get; set; }
+
+        public string PageTitle { get; set; }
+        public string MetaDesc { get; set; }
     }
 
     public class DeleteCategoryViewModel

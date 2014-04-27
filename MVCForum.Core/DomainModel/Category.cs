@@ -19,7 +19,9 @@ namespace MVCForum.Domain.DomainModel
         public int SortOrder { get; set; }
         public DateTime DateCreated { get; set; }
         public string Slug { get; set; }
-
+        public string PageTitle { get; set; }
+        public string Path { get; set; }
+        public string MetaDescription { get; set; }
         public virtual Category ParentCategory { get; set; }
         public virtual IList<Topic> Topics { get; set; }
         public virtual IList<CategoryNotification> CategoryNotifications { get; set; }

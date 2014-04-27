@@ -136,6 +136,11 @@ namespace MVCForum.Services
             return _categoryRepository.Get(id);
         }
 
+        public IList<Category> Get(IList<Guid> ids)
+        {
+            return _categoryRepository.Get(ids);
+        }
+
         /// <summary>
         /// Return model with Sub categories
         /// </summary>
@@ -154,6 +159,11 @@ namespace MVCForum.Services
         public Category Get(string slug)
         {
             return _categoryRepository.GetBySlug(StringUtils.GetSafeHtml(slug));
+        }
+
+        public IList<Category> GetCategoryParents(Category category)
+        {
+            return _categoryRepository.GetCategoryParents(category);
         }
 
         /// <summary>

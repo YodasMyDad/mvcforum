@@ -14,7 +14,7 @@
 
 @using (Html.BeginForm("CreateCategory", "AdminCategory", FormMethod.Post, new { @class = "form-horizontal" }))
 {
-    @Html.ValidationSummary(true)
+    @Html.ValidationSummary(false)
     @Html.AntiForgeryToken()
     <fieldset>
         <legend>Create New Category</legend>

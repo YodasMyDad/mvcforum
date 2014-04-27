@@ -15,7 +15,7 @@
 
 @using (Html.BeginForm("AddType", "Permissions", FormMethod.Post, new { @class = "form-horizontal" })) 
 {
-    @Html.ValidationSummary(true)
+    @Html.ValidationSummary(false)
     <fieldset>
         <legend>@ViewBag.Title</legend>
 

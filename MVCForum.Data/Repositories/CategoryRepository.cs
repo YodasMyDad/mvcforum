@@ -35,6 +35,11 @@ namespace MVCForum.Data.Repositories
             return _context.Category.FirstOrDefault(x => x.Id == id);
         }
 
+        public IList<Category> Get(IList<Guid> ids)
+        {
+            return _context.Category.Where(x => ids.Contains(x.Id)).ToList();
+        }
+
         public void Update(Category item)
         {
             // Check there's not an object with same identifier already in context
@@ -49,6 +54,20 @@ namespace MVCForum.Data.Repositories
         {
             return _context.Category
                     .Where(x => x.ParentCategory.Id == parentId)
+                    .OrderBy(x => x.SortOrder)
+                    .ToList();
+        }
+
+        /// <summary>
+        /// Gets all categories right the way down
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        public IList<Category> GetAllDeepSubCategories(Category category)
+        {
+            var catGuid = category.Id.ToString().ToLower();
+            return _context.Category
+                    .Where(x => x.Path != null && x.Path.ToLower().Contains(catGuid))
                     .OrderBy(x => x.SortOrder)
                     .ToList();
         }
@@ -103,6 +122,23 @@ namespace MVCForum.Data.Repositories
             return _context.Category
                     .Where(x => x.Slug.Contains(slug))
                     .ToList();
+        }
+
+        /// <summary>
+        /// Gets all parent categorys, all the way up to the root of the forum
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        public IList<Category> GetCategoryParents(Category category)
+        {
+            var path = category.Path;
+            var cats = new List<Category>();
+            if (!string.IsNullOrEmpty(path))
+            {
+                var catGuids = path.Trim().Split(',').Select(x => new Guid(x)).ToList();
+                cats = Get(catGuids).ToList();
+            }            
+            return cats;
         }
 
         public void Delete(Category category)

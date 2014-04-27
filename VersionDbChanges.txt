@@ -388,6 +388,9 @@ update the connection string and other settings and run the forum.
 --- Category
 ModerateTopics bit NULL
 ModeratePosts bit NULL
+PageTitle nvarchar(80) NULL
+MetaDescription nvarchar(200) NULL
+[Path] nvarchar(2500) NULL
 
 -- Post
 Pending bit NULL

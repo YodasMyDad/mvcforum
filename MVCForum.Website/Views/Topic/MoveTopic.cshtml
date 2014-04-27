@@ -8,7 +8,7 @@
 
 @using (Html.BeginForm("MoveTopic", "Topic", FormMethod.Post, new { @class = "form-horizontal" }))
 {
-    @Html.ValidationSummary(true)
+    @Html.ValidationSummary(false)
     @Html.AntiForgeryToken()
     <fieldset>
         <legend>Move: @Model.Name</legend>

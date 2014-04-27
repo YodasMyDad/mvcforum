@@ -7,7 +7,7 @@
 
 @using (Html.BeginForm("CreateLanguage", "AdminLanguage", FormMethod.Post, new { @class = "form-horizontal" }))
 {
-    @Html.ValidationSummary(true)
+    @Html.ValidationSummary(false)
     @Html.AntiForgeryToken()
     <fieldset>
         <legend>Select a New Language</legend>

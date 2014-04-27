@@ -20,7 +20,7 @@
 </h2>
 @using (Html.BeginForm("ManageResourceKeys", "AdminLanguage", FormMethod.Post, new { @class = "form-horizontal" }))
 {
-    @Html.ValidationSummary(true)
+    @Html.ValidationSummary(false)
     @Html.AntiForgeryToken()
     <div class="search large-search input-append">
         @Html.TextBoxFor(x => @Model.Search)

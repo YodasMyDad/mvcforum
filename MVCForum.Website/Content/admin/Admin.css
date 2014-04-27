@@ -25,6 +25,11 @@ p {}
 .text-right { text-align: right;}
 .text-left { text-align: left;}
 
+/*--- Sub Category List ---*/
+.mainadmincategory { font-size: 20px;}
+.subcatslist { margin: 0 0 0 25px;}
+.subcatslist li { padding: 2px 0;margin: 0;}
+
 /*--- Forms --------*/
 
 /*labels*/

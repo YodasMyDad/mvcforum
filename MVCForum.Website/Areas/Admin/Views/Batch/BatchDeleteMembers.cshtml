@@ -22,7 +22,7 @@
 
     @using (Html.BeginForm("BatchDeleteMembers", "Batch", FormMethod.Post, new { @class = "form-horizontal" }))
     {
-        @Html.ValidationSummary(true)
+        @Html.ValidationSummary(false)
         @Html.AntiForgeryToken()
 
         <div class="span12">

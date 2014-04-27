@@ -28,7 +28,7 @@
 }
 @using (Html.BeginForm("Create", "PrivateMessage", FormMethod.Post, new { @class = "form-horizontal" }))
 {
-    @Html.ValidationSummary(true)
+    @Html.ValidationSummary(false)
     @Html.AntiForgeryToken()
 
     <fieldset>

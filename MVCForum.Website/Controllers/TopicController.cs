@@ -57,6 +57,25 @@ namespace MVCForum.Website.Controllers
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
+        [ChildActionOnly]
+        public PartialViewResult GetTopicBreadcrumb(Topic topic)
+        {
+            var category = topic.Category;
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var viewModel = new BreadcrumbViewModel
+                {
+                    Categories = _categoryService.GetCategoryParents(category).ToList(),
+                    Topic = topic
+                };
+                if (!viewModel.Categories.Any())
+                {
+                    viewModel.Categories.Add(topic.Category);
+                }
+                return PartialView("GetCategoryBreadcrumb", viewModel);
+            }
+        }
+
         public PartialViewResult CreateTopicButton()
         {
             var viewModel = new CreateTopicButtonViewModel

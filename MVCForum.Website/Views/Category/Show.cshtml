@@ -27,7 +27,7 @@
     @Html.Action("PopularTags", "Tag")
     @Html.Action("CurrentWeekHighPointUsers", "Point")
 }
-
+@Html.Action("GetCategoryBreadcrumb", "Category", new { category = Model.Category })
 @if (Model.SubCategories != null)
 {
     Html.RenderPartial("_SubCategories", new SubCategoryViewModel
@@ -36,7 +36,6 @@
             ParentCategory = Model.Category
         });
 }
-
 <div class="row-fluid categoryheader">
    
     <div class="span8 categoryheading">
