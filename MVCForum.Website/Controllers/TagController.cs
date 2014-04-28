@@ -6,7 +6,7 @@ using MVCForum.Website.ViewModels;
 
 namespace MVCForum.Website.Controllers
 {
-    public class TagController : BaseController
+    public partial class TagController : BaseController
     {
         private readonly ITopicTagService _topicTagService;
 

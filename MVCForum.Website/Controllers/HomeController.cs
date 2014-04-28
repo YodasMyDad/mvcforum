@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
@@ -16,7 +13,7 @@ using RssItem = MVCForum.Domain.DomainModel.RssItem;
 
 namespace MVCForum.Website.Controllers
 {
-    public class HomeController : BaseController
+    public partial class HomeController : BaseController
     {
         private readonly ITopicService _topicService;
         private readonly IActivityService _activityService;
@@ -37,7 +34,18 @@ namespace MVCForum.Website.Controllers
         }
 
         //[OutputCache(Duration = 10, VaryByParam = "p")]
-        public ActionResult Index(int? p)
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        public ActionResult Leaderboard()
+        {
+            return View();
+        }
+
+        [ChildActionOnly]
+        public ActionResult LatestTopics(int? p)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
@@ -68,13 +76,8 @@ namespace MVCForum.Website.Controllers
                     var permissionSet = RoleService.GetPermissions(category, UsersRole);
                     viewModel.AllPermissionSets.Add(category, permissionSet);
                 }
-                return View(viewModel);
+                return PartialView(viewModel);
             }
-        }
-
-        public ActionResult Leaderboard()
-        {
-            return View();
         }
 
         public ActionResult Activity(int? p)

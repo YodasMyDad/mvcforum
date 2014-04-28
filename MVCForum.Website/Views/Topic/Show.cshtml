@@ -1,11 +1,12 @@
-﻿@using MVCForum.Domain.Constants
-@using MVCForum.Domain.DomainModel
+﻿@using MVCForum.Domain.DomainModel
+@using MVCForum.Utilities
 @using MVCForum.Website.Application
 @using MVCForum.Website.ViewModels
 @model ShowTopicViewModel
 @{
     // SEO Stuff
     ViewBag.Title = Html.Raw(AppHelpers.CreatePageTitle(Model.Topic, Html.LanguageString("Topic.TitleFallBack")));
+    ViewBag.MetaDesc = StringUtils.ReturnAmountWordsFromString(string.Concat(StringUtils.StripHtmlFromString(Model.TopicStarterPost.PostContent), "..."), 20);
     var totalCount = Convert.ToInt32(Model.TotalCount);
     //ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
     if (Request.QueryString.AllKeys.Any())
@@ -30,6 +31,14 @@
     TempData[AppConstants.DefaultCategoryViewBagName] = Model.Topic.Category.Id;
     var qs = Request.QueryString[AppConstants.PostOrderBy] ?? string.Empty;
     var disablePosting = Model.User != null && (Model.User.DisablePosting == true);
+}
+@section SocialMeta {
+    <meta property="og:title" content="@ViewBag.Title" />
+    <meta property="og:url" content="@HttpContext.Current.Request.Url.AbsoluteUri" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="@ViewBag.Title" />
+    <meta name="twitter:description" content="@ViewBag.MetaDesc" />
 }
 
 @section Header
@@ -137,8 +146,9 @@
 
     if (!Model.Permissions[AppConstants.PermissionDenyAccess].IsTicked && !Model.Permissions[AppConstants.PermissionReadOnly].IsTicked)
     {
-        @Html.Partial("_CreateNewPost", new CreateAjaxPostViewModel { Topic = Model.Topic.Id, DisablePosting = disablePosting })
+        @Html.Partial("_CreateNewPost", new CreateAjaxPostViewModel { Topic = Model.Topic.Id, DisablePosting = disablePosting, PostContent = Model.PostContent})
     }
+    <a id="createpost"></a>
 }
 else
 {

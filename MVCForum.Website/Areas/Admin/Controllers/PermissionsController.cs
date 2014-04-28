@@ -5,13 +5,12 @@ using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
 using MVCForum.Website.Areas.Admin.ViewModels;
 
 namespace MVCForum.Website.Areas.Admin.Controllers
 {
     [Authorize(Roles = AppConstants.AdminRoleName)]
-    public class PermissionsController : BaseAdminController
+    public partial class PermissionsController : BaseAdminController
     {
         private readonly IRoleService _roleService;
         private readonly IPermissionService _permissionService;

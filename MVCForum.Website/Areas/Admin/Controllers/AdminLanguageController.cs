@@ -12,7 +12,7 @@ using MVCForum.Website.Areas.Admin.ViewModels;
 
 namespace MVCForum.Website.Areas.Admin.Controllers
 {
-    public class AdminLanguageController : BaseAdminController
+    public partial class AdminLanguageController : BaseAdminController
     {
         /// <summary>
         /// Constructor

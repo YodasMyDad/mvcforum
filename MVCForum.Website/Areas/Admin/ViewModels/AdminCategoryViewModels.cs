@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using System.Web.Mvc.Routing.Constraints;
 using DataAnnotationsExtensions;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
@@ -46,7 +47,13 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public Guid? ParentCategory { get; set; }
 
         public List<Category> AllCategories { get; set; }
+
+        [DisplayName("Page Title")]
+        [MaxLength(80)]
         public string PageTitle { get; set; }
+
+        [DisplayName("Meta Desc")]
+        [MaxLength(200)]
         public string MetaDesc { get; set; }
     }
 
@@ -83,7 +90,12 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         public List<Category> AllCategories { get; set; }
 
+        [DisplayName("Page Title")]
+        [MaxLength(80)]
         public string PageTitle { get; set; }
+
+        [DisplayName("Meta Desc")]
+        [MaxLength(200)]
         public string MetaDesc { get; set; }
     }
 

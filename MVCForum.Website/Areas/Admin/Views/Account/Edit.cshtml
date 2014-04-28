@@ -15,12 +15,6 @@
 @using (Html.BeginForm("Edit", "Account", FormMethod.Post, new { @class = "form-horizontal" }))
 {
     @Html.HiddenFor(x => Model.Id)
-    @Html.HiddenFor(x => Model.CreateDate)
-    @Html.HiddenFor(x => Model.LastLoginDate)
-    @Html.HiddenFor(x => Model.LastPasswordChangedDate)
-    @Html.HiddenFor(x => Model.LastLockoutDate)
-    @Html.HiddenFor(x => Model.FailedPasswordAttemptCount)
-    @Html.HiddenFor(x => Model.FailedPasswordAnswerAttempt)
 
     @Html.ValidationSummary(false)
     

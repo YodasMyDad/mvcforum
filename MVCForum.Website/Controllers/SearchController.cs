@@ -10,7 +10,7 @@ using MVCForum.Website.ViewModels;
 
 namespace MVCForum.Website.Controllers
 {
-    public class SearchController : BaseController
+    public partial class SearchController : BaseController
     {
         private readonly IPostService _postService;
         private readonly ITopicService _topicsService;

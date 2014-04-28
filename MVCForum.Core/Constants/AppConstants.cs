@@ -76,7 +76,7 @@
         // Paging options
         public const int AdminListPageSize = 30;
         public const int PagingGroupSize = 10;
-        public const int ActiveTopicsListSize = 20;
+        public const int ActiveTopicsListSize = 50;
         public const int PrivateMessageListSize = 30;
         public const string PagingUrlFormat = "{0}?p={1}";
         public const int SimilarTopicsListSize = 20;

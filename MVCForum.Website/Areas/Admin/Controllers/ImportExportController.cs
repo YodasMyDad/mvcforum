@@ -15,7 +15,7 @@ using MVCForum.Website.Areas.Admin.ViewModels;
 namespace MVCForum.Website.Areas.Admin.Controllers
 {
     [Authorize(Roles = AppConstants.AdminRoleName)]
-    public class ImportExportController : BaseAdminController
+    public partial class ImportExportController : BaseAdminController
     {
         private readonly ILocalizationService _localizationService;
 

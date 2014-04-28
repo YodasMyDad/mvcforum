@@ -157,5 +157,13 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [DisplayName("Suspend the registration (Don't allow any new members to register)")]
         public bool SuspendRegistration { get; set; }
+
+        [DisplayName("Page Title")]
+        [MaxLength(80)]
+        public string PageTitle { get; set; }
+
+        [DisplayName("Meta Desc")]
+        [MaxLength(200)]
+        public string MetaDesc { get; set; }
     }
 }

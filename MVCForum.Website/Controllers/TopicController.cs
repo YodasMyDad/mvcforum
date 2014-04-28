@@ -16,7 +16,7 @@ using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
 
 namespace MVCForum.Website.Controllers
 {
-    public class TopicController : BaseController
+    public partial class TopicController : BaseController
     {
         private readonly ITopicService _topicService;
         private readonly IPostService _postService;
@@ -407,6 +407,23 @@ namespace MVCForum.Website.Controllers
                         UserHasAlreadyVotedInPoll = false,
                         TopicStarterPost = topicStarter
                     };
+
+                    // If there is a quote querystring
+                    var quote = Request["quote"];
+                    if (!string.IsNullOrEmpty(quote))
+                    {
+                        try
+                        {
+                            // Got a quote
+                            var postToQuote = _postService.Get(new Guid(quote));
+                            viewModel.PostContent = postToQuote.PostContent;
+                        }
+                        catch (Exception ex)
+                        {
+                            LoggingService.Error(ex);
+                        }
+
+                    }
 
                     // See if the topic has a poll, and if so see if this user viewing has already voted
                     if (topic.Poll != null)

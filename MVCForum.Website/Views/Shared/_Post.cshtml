@@ -142,7 +142,7 @@
                     {
                         <a href="@Url.Action("EditPost", "Post", new { id = Model.Post.Id })">@Html.LanguageString("Post.Edit")</a>
                     }
-
+                    <a href="?quote=@Model.Post.Id#createpost">@Html.LanguageString("Post.Quote")</a>
                     @if ((Model.Post.User.Id == loggedOnUserId || User.IsInRole(AppConstants.AdminRoleName)) && Model.Permissions[AppConstants.PermissionAttachFiles].IsTicked)
                     {
                         if (Model.Post.User.DisableFileUploads != true)

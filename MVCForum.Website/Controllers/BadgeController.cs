@@ -7,7 +7,7 @@ using MVCForum.Website.ViewModels;
 
 namespace MVCForum.Website.Controllers
 {
-    public class BadgeController : BaseController
+    public partial class BadgeController : BaseController
     {
         private readonly IBadgeService _badgeService;
         private readonly IPostService _postService;

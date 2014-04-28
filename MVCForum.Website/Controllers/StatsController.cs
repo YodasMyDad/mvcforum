@@ -7,7 +7,7 @@ using MVCForum.Website.ViewModels;
 
 namespace MVCForum.Website.Controllers
 {
-    public class StatsController : BaseController
+    public partial class StatsController : BaseController
     {
         private readonly ITopicService _topicService;
         private readonly IPostService _postService;

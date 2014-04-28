@@ -7,7 +7,7 @@ using MVCForum.Website.Areas.Admin.ViewModels;
 namespace MVCForum.Website.Areas.Admin.Controllers
 {
     [Authorize(Roles = AppConstants.AdminRoleName)]
-    public class AdminBadgeController : BaseAdminController
+    public partial class AdminBadgeController : BaseAdminController
     {
         private readonly IBadgeService _badgeService;
 

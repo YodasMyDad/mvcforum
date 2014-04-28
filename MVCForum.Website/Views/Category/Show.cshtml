@@ -1,9 +1,10 @@
-﻿@using MVCForum.Website.ViewModels
-@using MVCForum.Domain.Constants
+﻿@using MVCForum.Utilities
+@using MVCForum.Website.ViewModels
 @model ViewCategoryViewModel
            
 @{
-    ViewBag.Title = Html.Raw(Model.Category.Name);
+    ViewBag.Title = Html.Raw(Model.Category.PageTitle ?? Model.Category.Name);
+    ViewBag.MetaDesc = Model.Category.MetaDescription ?? StringUtils.StripHtmlFromString(Model.Category.Description);
     var totalCount = Convert.ToInt32(Model.TotalCount);
     ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
 
@@ -19,6 +20,14 @@
         unSubscribe = displayNone;
     }
     TempData[AppConstants.DefaultCategoryViewBagName] = Model.Category.Id;
+}
+@section SocialMeta {
+    <meta property="og:title" content="@ViewBag.Title" />
+    <meta property="og:url" content="@HttpContext.Current.Request.Url.AbsoluteUri" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="@ViewBag.Title" />
+    <meta name="twitter:description" content="@ViewBag.MetaDesc" />
 }
 @section side
 {

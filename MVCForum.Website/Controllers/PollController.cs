@@ -9,7 +9,7 @@ using MVCForum.Website.ViewModels;
 namespace MVCForum.Website.Controllers
 {
     [Authorize]
-    public class PollController : BaseController
+    public partial class PollController : BaseController
     {
         private readonly IPollService _pollService;
         private readonly IPollVoteService _pollVoteService;

@@ -9,7 +9,7 @@ using MVCForum.Website.Areas.Admin.ViewModels;
 namespace MVCForum.Website.Areas.Admin.Controllers
 {
     [Authorize(Roles = AppConstants.AdminRoleName)]
-    public class BannedEmailController : BaseAdminController
+    public partial class BannedEmailController : BaseAdminController
     {
 
         private readonly IBannedEmailService _bannedEmailService;

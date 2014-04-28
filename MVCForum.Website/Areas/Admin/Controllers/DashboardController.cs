@@ -9,7 +9,7 @@ using MVCForum.Website.Areas.Admin.ViewModels;
 namespace MVCForum.Website.Areas.Admin.Controllers
 {
     [Authorize(Roles = AppConstants.AdminRoleName)]
-    public class DashboardController : BaseAdminController
+    public partial class DashboardController : BaseAdminController
     {
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;

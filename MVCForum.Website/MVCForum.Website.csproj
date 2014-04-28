@@ -1221,6 +1221,8 @@
     <Content Include="Views\Shared\_ModeratePost.cshtml" />
     <Content Include="Views\Shared\_PostModeration.cshtml" />
     <Content Include="Views\Shared\GetCategoryBreadcrumb.cshtml" />
+    <Content Include="Views\Home\LatestTopics.cshtml" />
+    <Content Include="Views\Category\ListMainCategories.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Themes\Dark\Views\Shared\" />
@@ -1414,9 +1416,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Post\EditPost.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Topic\MoveTopic.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Tag\PopularTags.cshtml" />

@@ -14,7 +14,7 @@ using MVCForum.Website.ViewModels;
 namespace MVCForum.Website.Controllers
 {
     [Authorize]
-    public class UploadController : BaseController
+    public partial class UploadController : BaseController
     {
         private readonly IPostService _postService;
         private readonly IUploadedFileService _uploadedFileService;

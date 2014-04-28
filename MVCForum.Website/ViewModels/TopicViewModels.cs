@@ -79,6 +79,7 @@ namespace MVCForum.Website.ViewModels
         public bool IsSubscribed { get; set; }
         public bool UserHasAlreadyVotedInPoll { get; set; }
         public int TotalVotesInPoll { get; set; }
+        public string PostContent { get; set; }
     }
 
     public class GetMorePostsViewModel

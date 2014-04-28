@@ -10,7 +10,8 @@
 <head>
     <meta charset="utf-8">
     <title>@ViewBag.Title</title>
-    @RenderSection("Meta", false)
+    <meta name="description" content="@ViewBag.MetaDesc" />
+    @RenderSection("SocialMeta", false)
     @ViewBag.Canonical
 
     @(Bundle.Css()

@@ -51,6 +51,23 @@
                     @Html.EditorFor(model => model.ForumUrl)
                     @Html.ValidationMessageFor(model => model.ForumUrl)
                 </div>
+                
+                <div class="well well-small">
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.PageTitle)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.PageTitle)
+                        @Html.ValidationMessageFor(model => model.PageTitle)
+                    </div>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.MetaDesc)
+                    </div>
+                    <div class="editor-field">
+                        @Html.TextAreaFor(model => model.MetaDesc)
+                        @Html.ValidationMessageFor(model => model.MetaDesc)
+                    </div>
+                </div>
 
                 <div class="editor-field n3ocheckboxfield">
                     @Html.EditorFor(model => model.IsClosed)

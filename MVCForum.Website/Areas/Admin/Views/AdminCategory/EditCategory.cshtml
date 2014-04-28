@@ -71,6 +71,23 @@
             @Html.DropDownListFor(model => model.ParentCategory, new SelectList(Model.AllCategories, "id", "Name"), string.Empty)
             @Html.ValidationMessageFor(model => model.ParentCategory)
         </div>
+        
+        <div class="well well-small">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.PageTitle)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.PageTitle)
+                @Html.ValidationMessageFor(model => model.PageTitle)
+            </div>
+            <div class="editor-label">
+                @Html.LabelFor(model => model.MetaDesc)
+            </div>
+            <div class="editor-field">
+                @Html.TextAreaFor(model => model.MetaDesc)
+                @Html.ValidationMessageFor(model => model.MetaDesc)
+            </div>
+        </div>
 
         <div class="submit-holder">
             <input type="submit" class="btn btn-large btn-success" value="Update" />

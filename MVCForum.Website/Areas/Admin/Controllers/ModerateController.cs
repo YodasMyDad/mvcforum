@@ -10,7 +10,7 @@ using MVCForum.Website.Areas.Admin.ViewModels;
 namespace MVCForum.Website.Areas.Admin.Controllers
 {
     [Authorize(Roles = AppConstants.AdminRoleName)]
-    public class ModerateController : BaseAdminController
+    public partial class ModerateController : BaseAdminController
     {
         public IActivityService _activityService { get; set; }
         private readonly IRoleService _roleService;

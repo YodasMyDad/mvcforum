@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
@@ -7,7 +6,6 @@ using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels.Mapping;
@@ -71,12 +69,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                                 LocalizationService.Get(settingsViewModel.DefaultLanguage.Value);
                         }
 
-                        var culture = new CultureInfo(updatedSettings.DefaultLanguage.LanguageCulture);
-
                         unitOfWork.Commit();
 
-                        // Set the culture session too
-                        Session["Culture"] = culture;
                     }
                     catch (Exception ex)
                     {

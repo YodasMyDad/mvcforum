@@ -12,7 +12,7 @@ using MVCForum.Website.ViewModels;
 namespace MVCForum.Website.Controllers
 {
     [Authorize]
-    public class PrivateMessageController : BaseController
+    public partial class PrivateMessageController : BaseController
     {
         private readonly IPrivateMessageService _privateMessageService;
         private readonly IEmailService _emailService;

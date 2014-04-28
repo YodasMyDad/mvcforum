@@ -63,7 +63,7 @@ namespace MVCForum.Website.Application
             return list.Distinct(new StructEqualityComparer<T, TKey>(lookup));
         }
 
-        public static MvcHtmlString Pager(this HtmlHelper helper, int currentPage, int pageSize, int totalItemCount, object routeValues)
+        public static MvcHtmlString Pager(this HtmlHelper helper, int currentPage, int pageSize, int totalItemCount, object routeValues, string actionOveride = null)
         {
             // how many pages to display in each page group const  	
             const int cGroupSize = AppConstants.PagingGroupSize;
@@ -82,7 +82,7 @@ namespace MVCForum.Website.Application
             var containerdiv = new TagBuilder("div");
             containerdiv.AddCssClass("pagination");
             var container = new TagBuilder("ul");
-            var actionName = helper.ViewContext.RouteData.GetRequiredString("Action");
+            var actionName = !string.IsNullOrEmpty(actionOveride) ? actionOveride : helper.ViewContext.RouteData.GetRequiredString("Action");
 
             // calculate the last page group number starting from the current page  	
             // until we hit the next whole divisible number  	

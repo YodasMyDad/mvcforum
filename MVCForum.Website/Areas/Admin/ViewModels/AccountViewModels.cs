@@ -115,19 +115,6 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [Display(Name = "User is Locked Out")]
         public bool IsLockedOut { get; set; }
 
-        public DateTime CreateDate { get; set; }
-
-        public DateTime LastLoginDate { get; set; }
-
-        public DateTime LastPasswordChangedDate { get; set; }
-
-        public DateTime LastLockoutDate { get; set; }
-
-        public int FailedPasswordAttemptCount { get; set; }
-
-        public int FailedPasswordAnswerAttempt { get; set; }
-
-
         [Display(Name = "Comment")]
         public string Comment { get; set; }
 

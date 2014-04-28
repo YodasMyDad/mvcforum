@@ -10,7 +10,7 @@ using MVCForum.Website.Areas.Admin.ViewModels;
 namespace MVCForum.Website.Areas.Admin.Controllers
 {
     [Authorize(Roles = AppConstants.AdminRoleName)]
-    public class LogController : BaseAdminController
+    public partial class LogController : BaseAdminController
     {
         public LogController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService, ISettingsService settingsService) :
             base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)

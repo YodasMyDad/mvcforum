@@ -8,7 +8,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
     /// <summary>
     /// A base class for the white site controllers
     /// </summary>
-    public class BaseAdminController : Controller
+    public partial class BaseAdminController : Controller
     {
         protected readonly IMembershipService MembershipService;
         protected readonly ILocalizationService LocalizationService;

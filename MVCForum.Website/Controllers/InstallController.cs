@@ -15,7 +15,7 @@ using MVCForum.Website.ViewModels;
 
 namespace MVCForum.Website.Controllers
 {
-    public class InstallController : BaseInstallController
+    public partial class InstallController : BaseInstallController
     {
         private readonly IInstallerService _installerService;
 

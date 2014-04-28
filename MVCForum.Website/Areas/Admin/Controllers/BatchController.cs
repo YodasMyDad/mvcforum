@@ -9,7 +9,7 @@ using MVCForum.Website.Areas.Admin.ViewModels;
 namespace MVCForum.Website.Areas.Admin.Controllers
 {
     [Authorize(Roles = AppConstants.AdminRoleName)]
-    public class BatchController : BaseAdminController
+    public partial class BatchController : BaseAdminController
     {
         private readonly ICategoryService _categoryService;
         private readonly ITopicService _topicService;

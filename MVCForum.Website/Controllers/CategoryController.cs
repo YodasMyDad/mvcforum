@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace MVCForum.Website.Controllers
 {
-    public class CategoryController : BaseController
+    public partial class CategoryController : BaseController
     {
         private readonly ICategoryService _categoryService;
         private readonly ICategoryNotificationService _categoryNotificationService;
@@ -49,6 +49,12 @@ namespace MVCForum.Website.Controllers
 
         public ActionResult Index()
         {
+            return View();
+        }
+
+        [ChildActionOnly]
+        public PartialViewResult ListMainCategories()
+        {
             var catViewModel = new CategoryListViewModel
             {
                 AllPermissionSets = new Dictionary<Category, PermissionSet>()
@@ -63,11 +69,11 @@ namespace MVCForum.Website.Controllers
                 }
             }
 
-            return View(new IndexCategoryViewModel
-                {
-                    Categories = catViewModel
-                });
-        }   
+            return PartialView(new IndexCategoryViewModel
+            {
+                Categories = catViewModel
+            });
+        }
 
         [ChildActionOnly]
         public PartialViewResult ListCategorySideMenu()

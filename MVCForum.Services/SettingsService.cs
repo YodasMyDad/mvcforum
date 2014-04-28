@@ -51,6 +51,8 @@ namespace MVCForum.Services
             settings.SMTPUsername = StringUtils.SafePlainText(settings.SMTPUsername);
             settings.SpamAnswer = StringUtils.SafePlainText(settings.SpamAnswer);
             settings.SpamQuestion = StringUtils.SafePlainText(settings.SpamQuestion);
+            settings.PageTitle = StringUtils.SafePlainText(settings.PageTitle);
+            settings.MetaDesc = StringUtils.SafePlainText(settings.MetaDesc);
             _settingsRepository.Update(settings);
         }
 

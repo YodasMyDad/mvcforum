@@ -6,7 +6,7 @@ using MVCForum.Domain.Interfaces.UnitOfWork;
 namespace MVCForum.Website.Areas.Admin.Controllers
 {
     [Authorize(Roles = AppConstants.AdminRoleName)]
-    public class AdminController : BaseAdminController
+    public partial class AdminController : BaseAdminController
     {
 
         public AdminController(ILoggingService loggingService, 

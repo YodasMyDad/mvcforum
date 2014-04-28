@@ -17,7 +17,7 @@ using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
 namespace MVCForum.Website.Controllers
 {
     [Authorize]
-    public class PostController : BaseController
+    public partial class PostController : BaseController
     {
         private readonly ITopicService _topicService;
         private readonly ITopicTagService _topicTagService;

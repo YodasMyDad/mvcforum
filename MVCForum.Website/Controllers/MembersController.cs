@@ -26,7 +26,7 @@ using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
 
 namespace MVCForum.Website.Controllers
 {
-    public class MembersController : BaseController
+    public partial class MembersController : BaseController
     {
         private readonly IPostService _postService;
         private readonly IReportService _reportService;

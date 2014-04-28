@@ -6,13 +6,12 @@ using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
 using MVCForum.Website.Areas.Admin.ViewModels;
 
 namespace MVCForum.Website.Areas.Admin.Controllers
 {
     [Authorize(Roles = AppConstants.AdminRoleName)]
-    public class AdminCategoryController : BaseAdminController
+    public partial class AdminCategoryController : BaseAdminController
     {
         private readonly ICategoryService _categoryService;
 
@@ -86,6 +85,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                                                ModeratePosts = categoryViewModel.ModeratePosts,
                                                ModerateTopics = categoryViewModel.ModerateTopics,
                                                SortOrder = categoryViewModel.SortOrder,
+                                               PageTitle = categoryViewModel.PageTitle,
+                                               MetaDescription = categoryViewModel.MetaDesc
                                            };
 
                         
@@ -134,6 +135,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 ModerateTopics = category.ModerateTopics == true,
                 SortOrder = category.SortOrder,
                 Id = category.Id,
+                PageTitle = category.PageTitle,
+                MetaDesc = category.MetaDescription,
                 ParentCategory = category.ParentCategory == null ? Guid.Empty : category.ParentCategory.Id,
                 AllCategories = _categoryService.GetAll()
                     .Where(x => x.Id != category.Id)
@@ -170,6 +173,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         category.ModerateTopics = categoryViewModel.ModerateTopics;
                         category.Name = categoryViewModel.Name;
                         category.SortOrder = categoryViewModel.SortOrder;
+                        category.PageTitle = categoryViewModel.PageTitle;
+                        category.MetaDescription = categoryViewModel.MetaDesc;
 
                         if (categoryViewModel.ParentCategory != null)
                         {

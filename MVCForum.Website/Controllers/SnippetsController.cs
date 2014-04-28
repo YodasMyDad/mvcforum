@@ -5,7 +5,7 @@ using MVCForum.Website.ViewModels;
 
 namespace MVCForum.Website.Controllers
 {
-    public class SnippetsController : BaseController
+    public partial class SnippetsController : BaseController
     {
         private readonly IMembershipUserPointsService _membershipUserPointsService;
 

@@ -32,14 +32,8 @@ namespace MVCForum.Website.ViewModels.Mapping
                 UserName = user.UserName,
                 Age = user.Age,
                 Comment = user.Comment,
-                CreateDate = user.CreateDate,
                 Email = user.Email,
                 Facebook = user.Facebook,
-                FailedPasswordAnswerAttempt = user.FailedPasswordAnswerAttempt,
-                FailedPasswordAttemptCount = user.FailedPasswordAttemptCount,
-                LastLockoutDate = user.LastLockoutDate,
-                LastLoginDate = user.LastLoginDate,
-                LastPasswordChangedDate = user.LastPasswordChangedDate,
                 Location = user.Location,
                 PasswordAnswer = user.PasswordAnswer,
                 PasswordQuestion = user.PasswordQuestion,
@@ -116,6 +110,8 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.EnablePolls = settingsViewModel.EnablePolls;
             existingSettings.SuspendRegistration = settingsViewModel.SuspendRegistration;
             existingSettings.NewMemberEmailConfirmation = settingsViewModel.NewMemberEmailConfirmation;
+            existingSettings.PageTitle = settingsViewModel.PageTitle;
+            existingSettings.MetaDesc = settingsViewModel.MetaDesc;
             return existingSettings;
         }
 
@@ -164,7 +160,9 @@ namespace MVCForum.Website.ViewModels.Mapping
                 SMTPEnableSSL = currentSettings.SMTPEnableSSL ?? false,
                 EnableSocialLogins = currentSettings.EnableSocialLogins ?? false,
                 EnablePolls = currentSettings.EnablePolls ?? false,
-                SuspendRegistration = currentSettings.SuspendRegistration ?? false
+                SuspendRegistration = currentSettings.SuspendRegistration ?? false,
+                PageTitle = currentSettings.PageTitle,
+                MetaDesc = currentSettings.MetaDesc
             };
 
             return settingViewModel;

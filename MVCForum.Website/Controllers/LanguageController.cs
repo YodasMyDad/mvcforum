@@ -9,7 +9,7 @@ using MVCForum.Website.ViewModels;
 
 namespace MVCForum.Website.Controllers
 {
-    public class LanguageController : BaseController
+    public partial class LanguageController : BaseController
     {
         /// <summary>
         /// Constructor

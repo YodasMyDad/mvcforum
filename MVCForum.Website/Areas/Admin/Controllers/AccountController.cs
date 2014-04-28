@@ -13,7 +13,7 @@ using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
 
 namespace MVCForum.Website.Areas.Admin.Controllers
 {
-    public class AccountController : BaseAdminController
+    public partial class AccountController : BaseAdminController
     {
         public IActivityService _activityService { get; set; }
         private readonly IRoleService _roleService;
