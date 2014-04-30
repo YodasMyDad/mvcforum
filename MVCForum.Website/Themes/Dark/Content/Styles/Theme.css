@@ -54,6 +54,12 @@ h5 { }
 /* ---- Paragraph Styles ---- */
 p { }
 
+/*--- Breadcrumb ---*/
+.breadcrumb { background: none;padding: 0 0 10px 0;margin: 0;}
+
+/*--- Latest Topics Rss ---*/
+.latesttopicsheader .latesttopicrss { margin-top: 10px;}
+
 /*--- Change Language ---*/
 .languageselector {}
 .languageselector select { width: 98%;}
@@ -293,7 +299,7 @@ div.tagsinput div { display: block; float: left; }
 
 /*--- Activity ---*/
 .activityholder { }
-.activityholder .activityentry { padding: 12px 0; border-bottom: 1px #eee dotted; }
+.activityholder .activityentry { padding-top: 12px; padding-bottom: 12px;border-bottom: 1px #eee dotted; }
 .activityholder .activityentry a, .activityholder .activityentry a:visited { text-decoration: underline; }
 .activityholder .activityentry a:hover { text-decoration: none; }
 .activityholder .activityentry p { margin: 0; }

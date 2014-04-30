@@ -24,6 +24,9 @@ input.btn, button.btn { font-weight: normal; }
 .navbar-inverse .nav-collapse .dropdown-menu a { color: #fff; }
 .nav-collapse .nav > li > a, .nav-collapse .dropdown-menu a { font-weight: normal; }
 
+/*--- Member Edit ---*/
+.membereditavatar { padding-top:14px;padding-bottom: 7px;}
+
 /*--- Breadcrumb ---*/
 .breadcrumb { background: none;padding: 0 0 10px 0;margin: 0;}
 
@@ -358,7 +361,7 @@ ul.tagCloud li span.tagCount { float: left; padding: 0 2px; width: auto; display
 
 /*--- Activity ---*/
 .activityholder { }
-.activityholder .activityentry { padding: 12px 0; border-bottom: 1px #eee dotted; }
+.activityholder .activityentry { padding-top: 12px; padding-bottom: 12px; border-bottom: 1px #eee dotted; }
 .activityholder .activityentry a, .activityholder .activityentry a:visited { text-decoration: underline; }
 .activityholder .activityentry a:hover { text-decoration: none; }
 .activityholder .activityentry p { margin: 0; }

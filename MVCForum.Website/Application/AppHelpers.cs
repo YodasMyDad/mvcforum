@@ -209,7 +209,17 @@ namespace MVCForum.Website.Application
 
         #region Files
 
-        public static UploadFileResult UploadFile(HttpPostedFileBase file, string uploadFolderPath, ILocalizationService localizationService)
+        public static string MemberImage(string avatar, string email, Guid userId, int size)
+        {
+            if (!string.IsNullOrEmpty(avatar))
+            {
+                // Has an avatar image
+                return VirtualPathUtility.ToAbsolute(string.Concat(AppConstants.UploadFolderPath, userId, "/", avatar, string.Format("?width={0}&crop=0,0,{0},{0}", size)));
+            }
+            return StringUtils.GetGravatarImage(email, size);
+        }
+
+        public static UploadFileResult UploadFile(HttpPostedFileBase file, string uploadFolderPath, ILocalizationService localizationService, bool onlyImages = false)
         {
             var upResult = new UploadFileResult { UploadSuccessful = true };
 
@@ -227,6 +237,12 @@ namespace MVCForum.Website.Application
 
                 // now check allowed extensions
                 var allowedFileExtensions = ConfigUtils.GetAppSetting("FileUploadAllowedExtensions");
+
+                if (onlyImages)
+                {
+                    allowedFileExtensions = "jpg,jpeg,png,gif";
+                }
+
                 if (!string.IsNullOrEmpty(allowedFileExtensions))
                 {
                     // Turn into a list and strip unwanted commas as we don't trust users!

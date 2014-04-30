@@ -72,7 +72,7 @@
             <div class="span2 topicrecent">
                 <p class="topicrecentavatar">
                     <a href="@topic.LastPost.User.NiceUrl">
-                        <img src="@StringUtils.GetGravatarImage(topic.LastPost.User.Email, AppConstants.GravatarTopicSize)" alt="@Html.LanguageString("Topic.LatestBy") @topic.LastPost.User.UserName" title="@Html.LanguageString("Topic.LatestBy") @topic.LastPost.User.UserName"></a>
+                        <img src="@topic.LastPost.User.MemberImage(AppConstants.GravatarTopicSize)" alt="@Html.LanguageString("Topic.LatestBy") @topic.LastPost.User.UserName" title="@Html.LanguageString("Topic.LatestBy") @topic.LastPost.User.UserName"></a>
                 </p>
                 <p class="topicrecentdate">@DatesUI.GetPrettyDate(topic.LastPost.DateCreated.ToString())</p>
             </div>

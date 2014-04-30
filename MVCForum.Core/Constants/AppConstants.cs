@@ -86,10 +86,10 @@
         public const int TimeSpanInMinutesToShowMembers = 20;
 
         // Social
-        public const int GravatarPostSize = 45;
-        public const int GravatarTopicSize = 32;
-        public const int GravatarProfileSize = 70;
-        public const int GravatarLeaderboardSize = 22;
+        public const int GravatarPostSize = 50;
+        public const int GravatarTopicSize = 35;
+        public const int GravatarProfileSize = 85;
+        public const int GravatarLeaderboardSize = 25;
 
         // System and default folder
         public const string ThemeRootFolder = "~/Themes/";

@@ -55,6 +55,12 @@ h6 { font-size: 16px; margin-bottom: 8px; color: #43392b; font-weight: normal; f
 input[type=text], input[type=password], textarea, select { -moz-border-radius: 0; -webkit-border-radius: 0; -khtml-border-radius: 0; border-radius: 0; }
 form { margin-bottom: 5px; }
 
+/*--- Breadcrumb ---*/
+.breadcrumb { background: none;padding: 0 0 10px 0;margin: 0;}
+
+/*--- Latest Topics Rss ---*/
+.latesttopicsheader .latesttopicrss { margin-top: 10px;}
+
 /*--- Responsive Videos ---*/
 .video-container { position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden; }
 .video-container iframe,
@@ -351,7 +357,7 @@ ul.tagCloud li span.tagCount { float: left; padding: 0 2px; width: auto; display
 
 /*--- Activity ---*/
 .activityholder { }
-.activityholder .activityentry { padding: 12px 0; border-bottom: 1px #b7b5a9 dotted; }
+.activityholder .activityentry {  padding-top: 12px; padding-bottom: 12px;border-bottom: 1px #b7b5a9 dotted; }
 .activityholder .activityentry a, .activityholder .activityentry a:visited { text-decoration: underline; }
 .activityholder .activityentry a:hover { text-decoration: none; }
 .activityholder .activityentry p { margin: 0; }

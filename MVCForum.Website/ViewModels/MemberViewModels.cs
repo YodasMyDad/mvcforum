@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web;
 using System.Web.Mvc;
 using DataAnnotationsExtensions;
 using MVCForum.Domain.Constants;
@@ -74,7 +75,7 @@ namespace MVCForum.Website.ViewModels
 
         [ForumMvcResourceDisplayName("Members.Label.Signature")]
         [StringLength(1000)]
-        [UIHint(AppConstants.EditorType), AllowHtml]
+        [AllowHtml]
         public string Signature { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Age")]
@@ -95,10 +96,16 @@ namespace MVCForum.Website.ViewModels
         [StringLength(60)]
         public string Twitter { get; set; }
 
+        [ForumMvcResourceDisplayName("Members.Label.UploadNewAvatar")]
+        public HttpPostedFileBase[] Files { get; set; }
+
         [ForumMvcResourceDisplayName("Members.Label.Facebook")]
         [System.ComponentModel.DataAnnotations.Url]
         [StringLength(60)]
         public string Facebook { get; set; }
+
+        public string Avatar { get; set; }
+        public bool DisableFileUploads { get; set; }
     }
 
     public class RegisterViewModel

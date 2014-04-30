@@ -409,3 +409,7 @@ Moderate.AwaitingModeration = Your post is currently awaiting moderation. Once a
 Badges.AwardsPoints = Awards {0} points
 Language.Change = Change Language
 Post.Quote = Quote
+Members.Label.UploadNewAvatar = Upload a new profile image
+
+-- Misc - Membershipuser
+Optional > Change [Avatar] to [nvarchar](500)

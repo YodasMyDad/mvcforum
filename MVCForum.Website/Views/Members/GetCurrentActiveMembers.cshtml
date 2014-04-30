@@ -9,7 +9,7 @@
         {
             <li>
                 <a title="@Html.Raw(member.UserName)" href="@member.NiceUrl">
-                    <img src="@StringUtils.GetGravatarImage(member.Email, AppConstants.GravatarLeaderboardSize)" alt="@Html.Raw(member.UserName)" />
+                    <img src="@member.MemberImage(AppConstants.GravatarLeaderboardSize)" alt="@Html.Raw(member.UserName)" />
                 </a>
             </li>
         }

@@ -31,11 +31,11 @@
 
 </div>
 
-<div class="activityholder row">
+<div class="activityholder">
 
     @foreach (var activity in Model.Activities)
     {
-        <div class="activityentry clearfix">
+        <div class="activityentry row-fluid">
 
             @if (activity is BadgeActivity)
             {
@@ -45,7 +45,7 @@
                     <img src="@Url.Content(AppHelpers.ReturnBadgeUrl(badgeActivity.Badge.Image))" alt="@badgeActivity.Badge.DisplayName" />
                 </div>
 
-                <div class="activityinfo span8">
+                <div class="activityinfo span11">
                     <p class="activityinfotext"><a href="@Html.Raw(badgeActivity.User.NiceUrl)">@Html.Raw(badgeActivity.User.UserName)</a> @Html.LanguageString("Activity.UserAwardedBadge") @Html.Raw(badgeActivity.Badge.DisplayName) @Html.LanguageString("Activity.Badge")</p>
                     <p class="activitybadgedescription">
                         @Html.Raw(badgeActivity.Badge.Description) 
@@ -64,10 +64,10 @@
                 var memberJoinedActivity = activity as MemberJoinedActivity;
 
                 <div class="activitybadge span1">
-                    <img src="@StringUtils.GetGravatarImage(memberJoinedActivity.User.Email, AppConstants.GravatarPostSize)" alt="@memberJoinedActivity.User.UserName" />
+                    <img src="@memberJoinedActivity.User.MemberImage(AppConstants.GravatarPostSize)" alt="@memberJoinedActivity.User.UserName" />
                 </div>
 
-                <div class="activityinfo span8">
+                <div class="activityinfo span11">
                     <p class="activityinfotext"><a href="@Html.Raw(memberJoinedActivity.User.NiceUrl)">@Html.Raw(memberJoinedActivity.User.UserName)</a> @Html.LanguageString("Activity.UserJoined")</p>
                     <p class="activitysubdate">
                         @Html.Raw(memberJoinedActivity.ActivityMapped.Timestamp.ToShortDateString())
@@ -79,10 +79,10 @@
                 var profileUpdatedActivity = activity as ProfileUpdatedActivity;
 
                 <div class="activitybadge span1">
-                    <img src="@StringUtils.GetGravatarImage(profileUpdatedActivity.User.Email, AppConstants.GravatarPostSize)" alt="@profileUpdatedActivity.User.UserName" />
+                    <img src="@profileUpdatedActivity.User.MemberImage(AppConstants.GravatarPostSize)" alt="@profileUpdatedActivity.User.UserName" />
                 </div>
 
-                <div class="activityinfo span8">
+                <div class="activityinfo span11">
                     <p class="activityinfotext"><a href="@Html.Raw(profileUpdatedActivity.User.NiceUrl)">@Html.Raw(profileUpdatedActivity.User.UserName)</a> @Html.LanguageString("Activity.ProfileUpdated")</p>
                     <p class="activitysubdate">
                         @Html.Raw(profileUpdatedActivity.ActivityMapped.Timestamp.ToShortDateString())

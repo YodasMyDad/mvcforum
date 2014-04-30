@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using System.Web.Routing;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Utilities;
 
 namespace MVCForum.Website.Application
 {
@@ -20,6 +22,11 @@ namespace MVCForum.Website.Application
         {
             // http://stackoverflow.com/questions/2036305/how-to-specify-an-area-name-in-an-action-link
             return htmlHelper.ActionLink(linkText, actionName, adminControllerName, new { Area = "Admin" }, new { });
+        }
+
+        public static string MemberImage(this MembershipUser user,  int size)
+        {
+            return AppHelpers.MemberImage(user.Avatar, user.Email, user.Id, size);
         }
 
         /// <summary>

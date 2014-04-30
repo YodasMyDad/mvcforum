@@ -113,7 +113,7 @@
             <a id="comment-@postId"></a>
             <div class="postmemberavatar">
                 <a href="@Html.Raw(Model.Post.User.NiceUrl)">
-                    <img src="@StringUtils.GetGravatarImage(Model.Post.User.Email, AppConstants.GravatarPostSize)" alt="@Model.Post.User.UserName : @postCount @Html.LanguageString("Post.Posts")" title="@Model.Post.User.UserName : @postCount @Html.LanguageString("Post.Posts")">
+                    <img src="@Model.Post.User.MemberImage(AppConstants.GravatarPostSize)" alt="@Model.Post.User.UserName : @postCount @Html.LanguageString("Post.Posts")" title="@Model.Post.User.UserName : @postCount @Html.LanguageString("Post.Posts")">
                 </a>
             </div>
             @*<div class="postmemberposts">

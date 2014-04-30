@@ -41,6 +41,12 @@ p { }
 .video-container object,
 .video-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
+/*--- Breadcrumb ---*/
+.breadcrumb { background: none;padding: 0 0 10px 0;margin: 0;}
+
+/*--- Latest Topics Rss ---*/
+.latesttopicsheader .latesttopicrss { margin-top: 10px;}
+
 hr.thin { margin: 14px 0; }
 .span9 hr.thin:last-child { display: none; }
 
@@ -267,7 +273,7 @@ div.tagsinput div { display: block; float: left; }
 
 /*--- Activity ---*/
 .activityholder { }
-.activityholder .activityentry { padding: 12px 0; border-bottom: 1px #eee dotted; }
+.activityholder .activityentry { padding-top: 12px; padding-bottom: 12px; border-bottom: 1px #eee dotted; }
 .activityholder .activityentry a, .activityholder .activityentry a:visited { text-decoration: underline; }
 .activityholder .activityentry a:hover { text-decoration: none; }
 .activityholder .activityentry p { margin: 0; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Principal;
@@ -19,6 +20,7 @@ using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.OpenAuth;
 using MVCForum.OpenAuth.Facebook;
 using MVCForum.Utilities;
+using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
 using MembershipCreateStatus = MVCForum.Domain.DomainModel.MembershipCreateStatus;
@@ -841,7 +843,7 @@ namespace MVCForum.Website.Controllers
                         Expires = DateTime.Now.AddDays(7)
                     };
                     // Add the cookie.
-                    Response.Cookies.Add(myCookie);   
+                    Response.Cookies.Add(myCookie);
                 }
             }
         }
@@ -1119,6 +1121,8 @@ namespace MVCForum.Website.Controllers
                                         Website = user.Website,
                                         Twitter = user.Twitter,
                                         Facebook = user.Facebook,
+                                        DisableFileUploads = user.DisableFileUploads == true,
+                                        Avatar = user.Avatar
                                     };
 
                 return View(viewModel);
@@ -1133,10 +1137,45 @@ namespace MVCForum.Website.Controllers
             {
                 var user = MembershipService.GetUser(userModel.Id);
 
+                // Sort image out first
+                if (userModel.Files != null)
+                {
+                    // Before we save anything, check the user already has an upload folder and if not create one
+                    var uploadFolderPath = Server.MapPath(string.Concat(AppConstants.UploadFolderPath, LoggedOnUser.Id));
+                    if (!Directory.Exists(uploadFolderPath))
+                    {
+                        Directory.CreateDirectory(uploadFolderPath);
+                    }
+
+                    // Loop through each file and get the file info and save to the users folder and Db
+                    var file = userModel.Files[0];
+                    if (file != null)
+                    {
+                        // If successful then upload the file
+                        var uploadResult = AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService, true);                        
+
+                        if (!uploadResult.UploadSuccessful)
+                        {
+                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                            {
+                                Message = uploadResult.ErrorMessage,
+                                MessageType = GenericMessages.error
+                            };
+                            return View(userModel);
+                        }
+
+
+                        // Save avatar to user
+                        user.Avatar = uploadResult.UploadedFileName;   
+
+                    }
+
+                }
+
                 user.Age = userModel.Age;
                 user.Facebook = _bannedWordService.SanitiseBannedWords(userModel.Facebook);
                 user.Location = _bannedWordService.SanitiseBannedWords(userModel.Location);
-                user.Signature = _bannedWordService.SanitiseBannedWords(userModel.Signature);
+                user.Signature = _bannedWordService.SanitiseBannedWords(StringUtils.ScrubHtml(userModel.Signature));
                 user.Twitter = _bannedWordService.SanitiseBannedWords(userModel.Twitter);
                 user.Website = _bannedWordService.SanitiseBannedWords(userModel.Website);
 
@@ -1209,6 +1248,7 @@ namespace MVCForum.Website.Controllers
                     Website = user.Website,
                     Twitter = user.Twitter,
                     Facebook = user.Facebook,
+                    Avatar = user.Avatar
                 };
 
                 try
@@ -1251,6 +1291,7 @@ namespace MVCForum.Website.Controllers
                 {
                     unitOfWork.Rollback();
                     LoggingService.Error(ex);
+                    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
                 }
 
                 return View(viewModel);
