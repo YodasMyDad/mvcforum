@@ -60,6 +60,14 @@
             @Html.TextBoxFor(x => x.Age)
             @Html.ValidationMessageFor(x => x.Age)
         </div>
+        
+        <div class="editor-label">
+            @Html.LabelFor(x => x.Avatar)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(x => x.Avatar)
+            @Html.ValidationMessageFor(x => x.Avatar)
+        </div>
 
         <div class="editor-label">
             @Html.LabelFor(x => x.Location)

@@ -43,7 +43,8 @@ namespace MVCForum.Website.ViewModels.Mapping
                 DisableEmailNotifications = (user.DisableEmailNotifications == true),
                 DisablePosting = (user.DisablePosting == true),
                 DisablePrivateMessages = (user.DisablePrivateMessages == true),
-                DisableFileUploads = (user.DisableFileUploads == true)                
+                DisableFileUploads = (user.DisableFileUploads == true),
+                Avatar = user.Avatar
             };
             return viewModel;
         }

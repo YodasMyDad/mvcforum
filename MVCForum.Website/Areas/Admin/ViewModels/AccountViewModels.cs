@@ -59,6 +59,9 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [StringLength(150)]
         public string UserName { get; set; }
 
+        [Display(Name = "Users Uploaded Avatar")]
+        public string Avatar { get; set; }
+
         [Display(Name = "Password Question")]
         public string PasswordQuestion { get; set; }
 

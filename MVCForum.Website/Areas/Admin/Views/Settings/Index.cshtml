@@ -140,6 +140,12 @@
                     @Html.LabelFor(model => model.NewMemberEmailConfirmation)
                     @Html.ValidationMessageFor(model => model.NewMemberEmailConfirmation)
                 </div>
+                
+                <div class="editor-field n3ocheckboxfield">
+                    @Html.EditorFor(model => model.EnableSignatures)
+                    @Html.LabelFor(model => model.EnableSignatures)
+                    @Html.ValidationMessageFor(model => model.EnableSignatures)
+                </div>
 
                 <div class="editor-label">
                     @Html.LabelFor(model => model.TopicsPerPage)
@@ -186,14 +192,6 @@
                 <div class="editor-field">
                     @Html.EditorFor(model => model.PrivateMessageFloodControl)
                     @Html.ValidationMessageFor(model => model.PrivateMessageFloodControl)
-                </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.EnableSignatures)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.EnableSignatures)
-                    @Html.ValidationMessageFor(model => model.EnableSignatures)
                 </div>
 
             </div>
