@@ -1,0 +1,44 @@
+﻿@using MVCForum.Utilities
+    @if(Html.Settings().EnableSocialLogins == true)
+    {
+        <div class="span2 loginortext">
+            @Html.LanguageString("Members.LoginOrText")
+        </div>
+
+        <div class="span5 oauthbuttons">
+            
+            @if (!string.IsNullOrEmpty(ConfigUtils.GetAppSetting("FacebookAppId")) && !string.IsNullOrEmpty(ConfigUtils.GetAppSetting("FacebookAppSecret")))
+            {
+                <a class="btn btn-large facebookloginbutton" href="@Url.Action("LogonFacebook", "Members")">
+                    <img src="@Url.Content("~/Content/Images/social-icons/facebook.png")" class="socialicon" alt="@Html.LanguageString("Members.LogonFacebookButton")"/>
+                    @Html.LanguageString("Members.LogonFacebookButton")
+                </a>
+            }
+            else
+            {
+                @Html.LanguageString("Facebook.Error.EnabledButNotAddedKeys")
+            }
+            
+            @if (!string.IsNullOrEmpty(ConfigUtils.GetAppSetting("TwitterAppId")) && !string.IsNullOrEmpty(ConfigUtils.GetAppSetting("TwitterAppSecret")))
+            {
+                <a class="btn btn-large facebookloginbutton" href="@Url.Action("LogonTwitter", "Members")">
+                    <img src="@Url.Content("~/Content/Images/social-icons/twitter.png")" class="socialicon" alt="@Html.LanguageString("Members.LogonTwitterButton")"/>
+                    @Html.LanguageString("Members.LogonTwitterButton")
+                </a>
+            }
+            else
+            {
+                @Html.LanguageString("Twitter.Error.EnabledButNotAddedKeys")
+            }
+            
+            <a class="btn btn-large googleloginbutton" href="@Url.Action("LogonGoogle", "Members")">
+                <img src="@Url.Content("~/Content/Images/social-icons/google.png")" class="socialicon" alt="@Html.LanguageString("Members.LogonGoogleButton")"/>
+                @Html.LanguageString("Members.LogonGoogleButton")
+            </a>
+            <a class="btn btn-large yahoologinbutton" href="@Url.Action("LogonYahoo", "Members")">
+                <img src="@Url.Content("~/Content/Images/social-icons/yahoo.png")" class="socialicon" alt="@Html.LanguageString("Members.LogonYahooButton")"/>
+                @Html.LanguageString("Members.LogonYahooButton")
+            </a>
+
+        </div>
+    }

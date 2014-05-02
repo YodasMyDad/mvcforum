@@ -1,0 +1,65 @@
+﻿@using MVCForum.Utilities
+@model MVCForum.Website.ViewModels.LogOnViewModel
+@{
+    ViewBag.Title = Html.LanguageString("LogOn.LogOn");
+}
+
+@section Header
+{
+    @(
+        Bundle.JavaScript()
+        .Add("~/Scripts/jquery.validate.min.js")
+        .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
+        .MvcRender("~/scripts/cache/validate-combined_#.js")
+    )
+}
+
+<div class="row-fluid">
+
+
+    <div class="span5 mainlogonform">
+
+        @Html.ValidationSummary(false)
+
+        <h3>@ViewBag.Title</h3>
+
+        @using (Html.BeginForm("LogOn", "Members", FormMethod.Post, new { @class = "form-horizontal" }))
+        {            
+            <p>@Html.Raw(string.Format(Html.LanguageString("Members.LogOnMessage"), Html.ActionLink("Register", "Register")))</p>
+
+            <div class="editor-label">
+                @Html.LabelFor(m => m.UserName)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(m => m.UserName)
+                @Html.ValidationMessageFor(m => m.UserName)
+            </div>
+
+            <div class="editor-label">
+                @Html.LabelFor(m => m.Password)
+            </div>
+            <div class="editor-field">
+                @Html.PasswordFor(m => m.Password)
+                @Html.ValidationMessageFor(m => m.Password)
+            </div>
+
+            <div class="editor-label">
+                <label class="checkbox inline">
+                    @Html.CheckBoxFor(m => m.RememberMe)
+                    @Html.LabelFor(m => m.RememberMe)
+                </label>
+            </div>
+
+            <div class="submit-holder">
+                <input type="submit" class="btn btn-success btn-large" value="@Html.LanguageString("Buttons.LogOn ")" />
+            </div>
+
+            @Html.HiddenFor(x => x.ReturnUrl)
+        }
+        <p class="forgotpasswordtext"><a href="@Url.Action("ForgotPassword")">@Html.LanguageString("Members.ForgotPassword.Link")</a></p>
+    </div>
+    
+    @Html.Partial("_SocialLoginButtons")
+
+
+</div>

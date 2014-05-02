@@ -1,0 +1,124 @@
+﻿@using MVCForum.Utilities
+@model MVCForum.Website.ViewModels.MemberFrontEndEditViewModel
+
+@{
+    ViewBag.Title = @Html.LanguageString("Members.EditProfile");
+}
+@section Header
+{
+    @(
+ Bundle.JavaScript()
+            .Add("~/Scripts/jquery.validate.min.js")
+            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
+            .MvcRender("~/scripts/cache/validate-combined_#.js")
+    )
+}
+@section side
+{
+    @Html.Action("ListCategorySideMenu", "Category")
+    @Html.Action("SideSearch", "Search")
+    @Html.Action("PopularTags", "Tag")
+    @Html.Action("CurrentWeekHighPointUsers", "Point")
+}
+
+@using (Html.BeginForm("Edit", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.HiddenFor(x => Model.Id)
+
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>@ViewBag.Title</legend>
+
+        <p class="changepasswordtext">
+            @Html.Raw(string.Format(Html.LanguageString("Members.ChangePassword.Link"), string.Format("<a href=\"{0}\">{1}</a>", Url.Action("ChangePassword"), Html.LanguageString("Members.ChangePassword.Title"))))
+        </p>
+
+        <div class="editor-label">
+            @Html.LabelFor(x => x.UserName)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(x => x.UserName)
+            @Html.ValidationMessageFor(x => x.UserName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(x => x.Email)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(x => x.Email)
+            @Html.ValidationMessageFor(x => x.Email)
+        </div>
+
+        @if (!Model.DisableFileUploads)
+        {
+            <div class="row-fluid membereditavatar">
+                <div class="span2">                    
+                   <img src="@AppHelpers.MemberImage(Model.Avatar, Model.Email, Model.Id, AppConstants.GravatarProfileSize)" alt="@Model.UserName">
+                </div>
+                <div class="span10">
+                    <div class="editor-label">
+                        @Html.LabelFor(x => x.Files)
+                    </div>
+                    <div class="editor-field">
+                        <input type="file" name="files" id="files" value="" />
+                        @Html.ValidationMessageFor(x => x.Files)
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="editor-label">
+            @Html.LabelFor(x => x.Age)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(x => x.Age)
+            @Html.ValidationMessageFor(x => x.Age)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(x => x.Location)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(x => x.Location)
+            @Html.ValidationMessageFor(x => x.Location)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(x => x.Website)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(x => x.Website)
+            @Html.ValidationMessageFor(x => x.Website)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(x => x.Twitter)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(x => x.Twitter)
+            @Html.ValidationMessageFor(x => x.Twitter)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(x => x.Facebook)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(x => x.Facebook)
+            @Html.ValidationMessageFor(x => x.Facebook)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(x => x.Signature)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(x => x.Signature)
+            @Html.ValidationMessageFor(x => x.Signature)
+        </div>
+
+        <div class="submit-holder">
+            <input type="submit" class="btn btn-large btn-success" value="@Html.LanguageString("Buttons.Save")" />
+        </div>
+    </fieldset>
+}
+

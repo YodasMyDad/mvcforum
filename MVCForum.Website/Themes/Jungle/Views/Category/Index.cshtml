@@ -1,0 +1,12 @@
+﻿@using MVCForum.Domain.Constants
+@{
+    ViewBag.Title = Html.Raw(Html.LanguageString("Category.AllCategories"));
+}
+@section side
+{
+    @Html.Action("SideSearch", "Search")
+    @Html.Action("PopularTags", "Tag")
+    @Html.Action("CurrentWeekHighPointUsers", "Point")
+}
+
+@Html.Action("ListMainCategories", "Category")

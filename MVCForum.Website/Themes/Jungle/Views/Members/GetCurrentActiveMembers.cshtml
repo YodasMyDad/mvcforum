@@ -1,0 +1,18 @@
+﻿@using MVCForum.Utilities
+@model MVCForum.Website.ViewModels.ActiveMembersViewModel
+
+@if (Model.ActiveMembers.Any())
+{
+    <ul class="activememberslist">
+        <li class="activememberslistheading">@Html.LanguageString("Stats.FooterActiveUsersText")</li>
+        @foreach (var member in Model.ActiveMembers)
+        {
+            <li>
+                <a title="@Html.Raw(member.UserName)" href="@member.NiceUrl">
+                    <img src="@member.MemberImage(AppConstants.GravatarLeaderboardSize)" alt="@Html.Raw(member.UserName)" />
+                </a>
+            </li>
+        }
+    </ul>
+    
+}

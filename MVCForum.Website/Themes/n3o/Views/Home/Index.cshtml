@@ -1,0 +1,23 @@
+﻿@using MVCForum.Website.Application
+
+@{    
+    ViewBag.Title = Html.Settings().PageTitle ?? Html.Settings().ForumName;
+    ViewBag.MetaDesc = Html.Settings().MetaDesc;
+}
+
+@section side
+{
+    @Html.Action("Index", "Language")
+    @Html.Action("ListCategorySideMenu", "Category")
+    @Html.Action("SideSearch", "Search")
+    @Html.Action("PopularTags", "Tag")
+    @Html.Action("CurrentWeekHighPointUsers", "Point")
+}
+
+
+@Html.Action("LatestTopics", "Home")
+@*
+    If you want to show categories on the home page instead of topics
+    Just uncomment this action out and delete this text (And comment out the above action)
+    @Html.Action("ListMainCategories", "Category")
+*@

@@ -1,0 +1,39 @@
+﻿@using MVCForum.Website.ViewModels
+@model SearchViewModel
+
+@{
+    ViewBag.Title = Html.Settings().ForumName;
+    var totalCount = Convert.ToInt32(Model.TotalCount);
+    var topics = Model.Topics.Distinct(x => x.Id).ToList();
+}
+
+@section side
+{
+    @Html.Action("ListCategorySideMenu", "Category")
+    @Html.Action("SideSearch", "Search")
+    @Html.Action("PopularTags", "Tag")
+    @Html.Action("CurrentWeekHighPointUsers", "Point")
+}
+
+
+@if (topics.Any())
+{
+    foreach (var topic in topics)
+    {
+        // Get the permissions for this topic via its parent category
+        var permissions = Model.AllPermissionSets[topic.Category];
+
+        var viewModel = new ViewTopicViewModel {Permissions = permissions, Topic = topic, ShowCategoryName = false};
+        Html.RenderPartial("_Topic", viewModel);
+    }
+
+    if (Model.Topics.TotalPages > 1)
+    {
+        @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, new{term = Model.Term})
+    }
+}
+else
+{
+    @Html.LanguageString("Search.NoResults")
+}
+

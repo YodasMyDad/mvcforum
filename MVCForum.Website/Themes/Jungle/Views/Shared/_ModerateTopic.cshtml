@@ -1,0 +1,15 @@
+﻿@model MVCForum.Domain.DomainModel.Topic
+           
+<div class="topicsnippet" id="topic-@Model.Id">
+    <div class="row-fluid">
+        <div class="span9">
+            <h2>@Model.Name</h2>
+            <p>@Html.Raw(AppHelpers.ConvertPostContent(Model.LastPost.PostContent))</p>
+            <p class="postuser">@Model.LastPost.User.UserName</p>
+        </div>
+        <div class="span3">
+            <a href="#" data-topicid="@Model.Id" data-topicaction="approve" class="btn btn-info topicaction">Approve</a>
+            <a href="#" data-topicid="@Model.Id" data-topicaction="delete" class="btn btn-danger topicaction">Delete</a>
+        </div>
+    </div>
+</div>

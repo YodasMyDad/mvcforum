@@ -1,0 +1,11 @@
+﻿@{
+    var emailCookie = Request.Cookies[AppConstants.MemberEmailConfirmationCookieName];
+    if (emailCookie != null)
+    {
+        var splitCookie = emailCookie.Value.Split('#');
+        <div class="alert alert-block alert-info">
+            <a href="#" data-dismiss="alert" class="close">&times;</a>
+            @Html.LanguageString("Members.MemberEmailAuthorisationNeededMessage") <a class="btn" href="@Url.Action("ResendEmailConfirmation", "Members", new {username = splitCookie[1]})">@Html.LanguageString("Members.MemberEmailAuthorisationResend")</a>
+        </div>
+    }
+}

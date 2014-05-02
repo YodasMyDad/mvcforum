@@ -1,0 +1,48 @@
+﻿@model MVCForum.Website.ViewModels.BreadcrumbViewModel
+
+@if (Model.Categories.Any())
+{
+    <ul class="breadcrumb">
+        @{
+    var catCount = Model.Categories.Count;
+    if (catCount <= 1)
+    {
+        if (Model.Topic != null)
+        {
+            <li><a href="@Model.Categories[0].NiceUrl">@Model.Categories[0].Name</a> <span class="divider">/</span></li>
+            <li class="active">@Model.Topic.Name</li>
+        }
+        else
+        {
+            <li><a href="@Model.Categories[0].NiceUrl">@Model.Categories[0].Name</a> <span class="divider">/</span></li>
+            <li class="active">@Model.Category.Name</li>
+        }
+    }
+    else
+    {
+        var i = 1;
+        foreach (var cat in Model.Categories)
+        {
+            if (i != catCount)
+            {
+                <li><a href="@cat.NiceUrl">@cat.Name</a> <span class="divider">/</span></li>
+            }
+            else
+            {
+                if (Model.Topic != null)
+                {
+                    <li><a href="@cat.NiceUrl">@cat.Name</a> <span class="divider">/</span></li>
+                    <li class="active">@Model.Topic.Name</li>
+                }
+                else
+                {
+                    <li><a href="@cat.NiceUrl">@cat.Name</a> <span class="divider">/</span></li>
+                    <li class="active">@Model.Category.Name</li>
+                }
+            }
+            i++;
+        }        
+    }
+        }
+    </ul>
+}

@@ -1,0 +1,158 @@
+﻿@using MVCForum.Domain.Constants
+@model MVCForum.Website.ViewModels.EditPostViewModel
+@{
+    ViewBag.Title = Html.LanguageString("Post.Edit");
+    var count = 0;
+}
+
+@section Header
+{
+    @(
+ Bundle.JavaScript()
+            .Add("~/Scripts/jquery.validate.min.js")
+            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
+            .Add("~/Scripts/jquery.tagsinput.min.js")
+            .Add("~/Scripts/tags.js")
+
+            .MvcRender("~/scripts/cache/topic-combined_#.js")
+          )
+    <script type="text/javascript">
+        counter = @(Model.PollAnswers != null ? @Model.PollAnswers.Count : 0);
+    </script>
+}
+
+@section side
+{
+    @Html.Action("ListCategorySideMenu", "Category")
+    @Html.Action("PopularTags", "Tag")
+}
+
+<div class="editpostholder">
+
+    @using (Html.BeginForm())
+    {    
+        @Html.ValidationSummary(false)
+        @Html.AntiForgeryToken()
+
+        <h2>@ViewBag.Title</h2>     
+        
+        if (Model.IsTopicStarter)
+        {
+            
+        <div class="row-fluid paddedrow">
+            <div class="span12 topicname">
+                <div class="editor-label">
+                    @Html.LabelFor(model => model.Name)
+                </div>
+                <div class="editor-field">
+                    @Html.TextBoxFor(model => model.Name, new { @class = "createtopicname" })
+                    @Html.ValidationMessageFor(model => model.Name)
+                </div>
+            </div>
+        </div>
+        
+        <div class="row-fluid paddedrow relatedtopicsholder">
+            <div class="span12 relatedtopics">
+                <h5>@Html.LanguageString("Topic.AlreadyAnswered")</h5>
+                <div class="relatedtopicskey"></div>
+            </div>
+        </div>
+        
+            if (Html.Settings().EnablePolls == true && Model.PollAnswers != null && Model.PollAnswers.Any())
+            {
+        <div class="row-fluid paddedrow pollanswerholder">
+            <div class="span9">
+                <ul class="pollanswerlist">
+                    @foreach (var pollAnswer in Model.PollAnswers.OrderBy(x => x.Answer))
+                    {
+                        <li id="answer@(@count)">
+                            <input type="text" name="PollAnswers[@(@count)].Answer" id="PollAnswers_@(@count)_Answer" value="@pollAnswer.Answer" placeholder="Type Answer Here">
+                            <input type="hidden" value="@pollAnswer.Id" name="PollAnswers[@(@count)].Id" id="PollAnswers_@(@count)Id" />
+                        </li>
+                            
+                        count++;
+                    }
+                </ul>
+                <input type="hidden" id="pollanswerplaceholder" value="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")"/>
+            </div>
+            <div class="span3 polladdremovenewanswers">
+                <a href="#" class="btn addanswer"><i class="icon-plus-sign"></i></a><a href="#" class="btn removeanswer"><i class="icon-minus-sign"></i></a>
+            </div>
+        </div>
+            }
+        }
+        
+        <div class="row-fluid">
+            <div class="span12 topiccontent">
+                <div class="editor-field editorholder">
+                    @Html.EditorFor(model => model.Content)
+                    @Html.ValidationMessageFor(model => model.Content)
+                </div>
+            </div>
+        </div>   
+        
+        <div class="row-fluid">
+            <div class="span6 createtopicbuttonholder">
+                <div class="submit-holder">
+                    <input type="submit" class="btn btn-large btn-success" value="@Html.LanguageString("Post.Edit")" />
+                </div>
+            </div>
+            @if (Model.IsTopicStarter)
+            {
+                <div class="span6 topiccategory">
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.Category)
+                    </div>
+                    <div class="editor-field">
+                        @Html.DropDownListFor(model => model.Category, new SelectList(Model.Categories, "id", "Name"))
+                        @Html.ValidationMessageFor(model => model.Category)
+                    </div>
+                </div>
+            }
+        </div>
+        
+         
+            if (Model.IsTopicStarter)
+            {
+        <div class="topicoptionsholder">
+
+            <h3>@Html.LanguageString("Topic.OptionsHeading")</h3>
+
+            <div class="row-fluid">
+                <div class="span12 topicadmincheckboxes">
+                    @if (Model.Permissions[AppConstants.PermissionCreateStickyTopics].IsTicked)
+                    {
+                        <div class="editor-field n3ocheckboxfield">
+                            @Html.CheckBoxFor(x => x.IsSticky)
+                            @Html.LabelFor(x => x.IsSticky)
+                        </div>
+                    }
+
+                    @if (Model.Permissions[AppConstants.PermissionLockTopics].IsTicked)
+                    {
+                        <div class="editor-field n3ocheckboxfield">
+                            @Html.CheckBoxFor(x => x.IsLocked)
+                            @Html.LabelFor(x => x.IsLocked)
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12 topictagholder">
+                    <div class="editor-field">
+                        @Html.TextAreaFor(model => model.Tags, new { @class = "tagstextarea tags", title = Html.LanguageString("Topic.TagThisTopic") })
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+
+
+            }
+
+
+        @Html.HiddenFor(x => x.Id)
+    }
+
+</div>

@@ -1,0 +1,35 @@
+﻿@model MVCForum.Website.ViewModels.AllBadgesViewModel
+@{
+    ViewBag.Title = Html.LanguageString("Badges.PageTitle");
+}
+
+@section side
+{
+    @Html.Action("ListCategorySideMenu", "Category")
+    @Html.Action("SideSearch", "Search")
+    @Html.Action("PopularTags", "Tag")
+    @Html.Action("CurrentWeekHighPointUsers", "Point")
+}
+
+
+<h2>@ViewBag.Title</h2>
+
+<div class="badgeholder">
+    @foreach (var badge in Model.AllBadges)
+    {
+        <div class="row-fluid publicbadgeline">
+            <div class="publicbadge span2">
+                <img src="@Url.Content(AppHelpers.ReturnBadgeUrl(badge.Image))" alt="@badge.Name" />
+            </div>
+            <div class="publicbadgedetails span10">
+                <p class="publicbadgename">@Html.Raw(badge.DisplayName)</p>
+                <p class="publicbadgenamedesc">@badge.Description</p>
+                @if (badge.AwardsPoints != null && badge.AwardsPoints > 0)
+                {
+                    <p class="publicbadgenamedesc">@string.Format(Html.LanguageString("Badges.AwardsPoints"), badge.AwardsPoints)</p>
+                }
+            </div>
+        </div>
+        <hr />
+    }
+</div>

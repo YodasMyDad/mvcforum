@@ -1,0 +1,20 @@
+﻿@model MVCForum.Website.ViewModels.ViewAdminSidePanelViewModel
+           
+<div class="side-box profile-box">
+    <h5>@Html.LanguageString("SideBox.MyTools")</h5>
+
+    <ul>
+        <li>
+            <a href="@Url.Action("Edit", "Members", new { id = Model.CurrentUser.Id })">@Html.LanguageString("Buttons.Edit") @Model.CurrentUser.UserName</a>
+        </li>
+
+        @if(Html.Settings().EnablePrivateMessages && Model.CurrentUser.DisablePrivateMessages != true)
+        {
+            var count = Model.NewPrivateMessageCount <= 0 ? null : string.Format("({0})", Model.NewPrivateMessageCount);
+            <li><a href="@Url.Action("Index", "PrivateMessage")">@Html.LanguageString("PM.PrivateMessages") @count</a></li>
+        }
+
+        <li>@Html.ActionLink(Html.LanguageString("Members.SearchMembers"), "Search", "Members")</li>
+        <li>@Html.ActionLink(Html.LanguageString("LogOn.LogOff"), "LogOff", "Members")</li>
+    </ul>
+</div>

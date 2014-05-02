@@ -1,40 +1,34 @@
-﻿@using System.Reflection
-@using MVCForum.Domain
-@using MVCForum.Domain.Constants
-@using MVCForum.Domain.DomainModel
-@using MVCForum.Domain.DomainModel.Activity
-@using MVCForum.Domain.Interfaces.Services
-
+﻿@using MVCForum.Domain.Interfaces.Services
 @{
     // Credit where credit is due, this is mainly lifted from Funnel Web MVC
     // http://www.funnelweblog.com/
-
+    
+    // Set the Layout view
+    const string layoutName = "_Layout";
+    
     if (ViewContext.TempData[AppConstants.InstallerName] != null)
     {
+        // If this is the installer then don't set a layout
         Layout = null;
     }
     else
     {
-        var layoutName = "_Layout";
-        Layout = "~/Views/Shared/" + layoutName + ".cshtml";
-
-        // If this is a mobile device use the mobile layout
-        // Swap the lines below for testing
-        PageData[AppConstants.IsMobileDevice] = Context.IsMobileDevice();
-        //if (PageData[AppConstants.IsMobileDevice])
-        //{
-        //    layoutName = "_Mobile";
-        //    Layout = "~/Views/Shared/" + layoutName + ".cshtml";
-        //}
-
+        // Get the current theme
         var currentTheme = DependencyResolver.Current.GetService<ISettingsService>().GetSettings().Theme;
 
+        // Set if this is a mobile device
+        PageData[AppConstants.IsMobileDevice] = Context.IsMobileDevice();
+
+        Layout = string.Concat("~/Themes/", currentTheme, "/Views/Shared/", layoutName, ".cshtml");
+
+        // set the theme locations as valid locations for views
         var locationFormats = new List<string>
                                   {
-                                      "~/Themes/" + currentTheme + "/Views/{0}.cshtml",
-                                      "~/Themes/" + currentTheme + "/Views/Shared/{0}.cshtml",
+                                      string.Concat("~/Themes/", currentTheme, "/Views/{0}.cshtml"),
+                                      string.Concat("~/Themes/", currentTheme, "/Views/Shared/{0}.cshtml"),
                                       "~/Views/Extensions/{0}.cshtml",
                                   };
+
         foreach (var format in locationFormats)
         {
             var virtualPath = String.Format(
@@ -51,7 +45,6 @@
             break;
         }
     }
-    
+
 
 }
-<!-- Powered by MVCForum.com -->

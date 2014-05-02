@@ -1,0 +1,35 @@
+﻿@using MVCForum.Website.Application
+@using MVCForum.Website.ViewModels
+@model ActiveTopicsViewModel
+@{
+    Layout = null;
+    var totalCount = Convert.ToInt32(Model.TotalCount);
+    ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
+}
+
+<div class="row-fluid latesttopicsheader">
+    
+    <div class="span8 latesttopicheading">
+      <h2>@Html.LanguageString("Home.LatestDiscussions")</h2>  
+    </div>
+    <div class="span4 latesttopicrss">
+        @if (Html.Settings().EnableRSSFeeds)
+        {
+            <a href="@Url.Action("LatestRss", "Home")" class="rsssubscribe" title="@Html.LanguageString("Home.Rss")">@Html.LanguageString("Home.Rss")</a>   
+        }  
+    </div>
+</div>
+
+@foreach (var topic in Model.Topics)
+{
+    // Get the permissions for this topic via its parent category
+    var permissions = Model.AllPermissionSets[topic.Category];
+
+    var viewModel = new ViewTopicViewModel { Permissions = permissions, Topic = topic, User = Model.User, ShowCategoryName = true };
+    Html.RenderPartial("_Topic", viewModel);
+}
+
+@if (Model.Topics.TotalPages > 1)
+{
+    @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null, "Index")
+}

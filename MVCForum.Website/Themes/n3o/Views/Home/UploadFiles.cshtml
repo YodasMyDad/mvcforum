@@ -1,0 +1,16 @@
+﻿@{
+    ViewBag.Title = "UploadFilesUi";
+}
+
+
+
+<h2>UploadFilesUi</h2>
+
+
+@using (Html.BeginForm("UploadFiles", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{ 
+    <label for="file">Upload Image:</label>
+    <input type="file" name="files" id="files" value="" multiple="multiple" />
+    <input type="hidden" name="uploadPostId" id="uploadPostId" value="555b3775-62aa-4dcd-82ec-a1a5006dba3a" />
+    <input type="submit" value="Upload Image" />
+}

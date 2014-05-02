@@ -1,0 +1,13 @@
+﻿@model IEnumerable<MVCForum.Domain.DomainModel.LuceneSearchModel>
+@{
+    ViewBag.Title = "Testing";
+}
+
+<h2>Testing</h2>
+
+@foreach(var result in Model)
+{
+    <p>Name: @result.TopicName</p>
+    <p>Content: @result.PostContent</p>
+    <p>Url: @result.TopicUrl</p>
+}

@@ -1196,25 +1196,9 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Shared\_LogOnPartial.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Install\ManualUpgradeNeeded.cshtml" />
-    <Content Include="Views\Topic\AjaxMorePosts.cshtml" />
-    <Content Include="Views\Topic\GetSimilarTopics.cshtml" />
-    <Content Include="Views\Members\GetCurrentActiveMembers.cshtml" />
     <Content Include="Views\Install\UpgradeDb.cshtml" />
-    <Content Include="Views\Vote\GetVotes.cshtml" />
-    <Content Include="Views\Shared\_SubCategories.cshtml" />
-    <Content Include="Views\Category\Index.cshtml" />
-    <Content Include="Views\Shared\_SocialLoginButtons.cshtml" />
-    <Content Include="Views\Topic\CreateTopicButton.cshtml" />
-    <Content Include="Views\Home\UploadFiles.cshtml" />
-    <Content Include="Views\Shared\_EmailConfirmationNotice.cshtml" />
-    <Content Include="Views\Shared\_DocumentationBlock.cshtml" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.woff" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.ttf" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.json" />
@@ -1223,18 +1207,281 @@
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.ttf" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.json" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.eot" />
-    <Content Include="Views\Shared\_ModerateTopic.cshtml" />
-    <Content Include="Views\Shared\_ModeratePost.cshtml" />
-    <Content Include="Views\Shared\_PostModeration.cshtml" />
-    <Content Include="Views\Shared\GetCategoryBreadcrumb.cshtml" />
-    <Content Include="Views\Home\LatestTopics.cshtml" />
-    <Content Include="Views\Category\ListMainCategories.cshtml" />
+    <Content Include="Themes\Metro\Views\Shared\_CreateNewPost.cshtml" />
+    <Content Include="Themes\Metro\Views\Shared\_DocumentationBlock.cshtml" />
+    <Content Include="Themes\Metro\Views\Shared\_EmailConfirmationNotice.cshtml" />
+    <Content Include="Themes\Metro\Views\Shared\_GenericMessage.cshtml" />
+    <Content Include="Themes\Metro\Views\Shared\_LanguagePartial.cshtml" />
+    <Content Include="Themes\Metro\Views\Shared\_LogOnPartial.cshtml" />
+    <Content Include="Themes\Metro\Views\Shared\_ModeratePost.cshtml" />
+    <Content Include="Themes\Metro\Views\Shared\_ModerateTopic.cshtml" />
+    <Content Include="Themes\Metro\Views\Shared\_NoScript.cshtml" />
+    <Content Include="Themes\Metro\Views\Shared\_Poll.cshtml" />
+    <Content Include="Themes\Metro\Views\Shared\_Post.cshtml" />
+    <Content Include="Themes\Metro\Views\Shared\_PostModeration.cshtml" />
+    <Content Include="Themes\Metro\Views\Shared\_SocialLoginButtons.cshtml" />
+    <Content Include="Themes\Metro\Views\Shared\_SubCategories.cshtml" />
+    <Content Include="Themes\Metro\Views\Shared\_Topic.cshtml" />
+    <Content Include="Themes\Metro\Views\Shared\_TopicSlim.cshtml" />
+    <Content Include="Themes\Metro\Views\Shared\Error.cshtml" />
+    <Content Include="Themes\Metro\Views\Shared\GetCategoryBreadcrumb.cshtml" />
+    <Content Include="Themes\Metro\Views\Badge\AllBadges.cshtml" />
+    <Content Include="Themes\Metro\Views\Category\Index.cshtml" />
+    <Content Include="Themes\Metro\Views\Category\ListCategorySideMenu.cshtml" />
+    <Content Include="Themes\Metro\Views\Category\ListMainCategories.cshtml" />
+    <Content Include="Themes\Metro\Views\Category\Show.cshtml" />
+    <Content Include="Themes\Metro\Views\Closed\Index.cshtml" />
+    <Content Include="Themes\Metro\Views\Home\Activity.cshtml" />
+    <Content Include="Themes\Metro\Views\Home\Index.cshtml" />
+    <Content Include="Themes\Metro\Views\Home\LatestTopics.cshtml" />
+    <Content Include="Themes\Metro\Views\Home\Leaderboard.cshtml" />
+    <Content Include="Themes\Metro\Views\Home\UploadFiles.cshtml" />
+    <Content Include="Themes\Metro\Views\Members\AdminMemberProfileTools.cshtml" />
+    <Content Include="Themes\Metro\Views\Members\ChangePassword.cshtml" />
+    <Content Include="Themes\Metro\Views\Members\Edit.cshtml" />
+    <Content Include="Themes\Metro\Views\Members\ForgotPassword.cshtml" />
+    <Content Include="Themes\Metro\Views\Members\GetByName.cshtml" />
+    <Content Include="Themes\Metro\Views\Members\GetCurrentActiveMembers.cshtml" />
+    <Content Include="Themes\Metro\Views\Members\GetMemberDiscussions.cshtml" />
+    <Content Include="Themes\Metro\Views\Members\LatestMembersJoined.cshtml" />
+    <Content Include="Themes\Metro\Views\Members\LogOn.cshtml" />
+    <Content Include="Themes\Metro\Views\Members\Register.cshtml" />
+    <Content Include="Themes\Metro\Views\Members\Report.cshtml" />
+    <Content Include="Themes\Metro\Views\Members\Search.cshtml" />
+    <Content Include="Themes\Metro\Views\Members\SideAdminPanel.cshtml" />
+    <Content Include="Themes\Metro\Views\Point\CurrentWeekHighPointUsers.cshtml" />
+    <Content Include="Themes\Metro\Views\Post\EditPost.cshtml" />
+    <Content Include="Themes\Metro\Views\Post\Report.cshtml" />
+    <Content Include="Themes\Metro\Views\PrivateMessage\Create.cshtml" />
+    <Content Include="Themes\Metro\Views\PrivateMessage\Index.cshtml" />
+    <Content Include="Themes\Metro\Views\PrivateMessage\SentMessages.cshtml" />
+    <Content Include="Themes\Metro\Views\PrivateMessage\View.cshtml" />
+    <Content Include="Themes\Metro\Views\Search\Index.cshtml" />
+    <Content Include="Themes\Metro\Views\Search\SideSearch.cshtml" />
+    <Content Include="Themes\Metro\Views\Search\Testing.cshtml" />
+    <Content Include="Themes\Metro\Views\Snippets\GetThisWeeksTopEarners.cshtml" />
+    <Content Include="Themes\Metro\Views\Snippets\GetThisYearsTopEarners.cshtml" />
+    <Content Include="Themes\Metro\Views\Stats\GetMainStats.cshtml" />
+    <Content Include="Themes\Metro\Views\Tag\PopularTags.cshtml" />
+    <Content Include="Themes\Metro\Views\Topic\AjaxMorePosts.cshtml" />
+    <Content Include="Themes\Metro\Views\Topic\Create.cshtml" />
+    <Content Include="Themes\Metro\Views\Topic\CreateTopicButton.cshtml" />
+    <Content Include="Themes\Metro\Views\Topic\GetSimilarTopics.cshtml" />
+    <Content Include="Themes\Metro\Views\Topic\Show.cshtml" />
+    <Content Include="Themes\Metro\Views\Topic\TopicsByTag.cshtml" />
+    <Content Include="Themes\Metro\Views\Vote\GetVoters.cshtml" />
+    <Content Include="Themes\Metro\Views\Vote\GetVotes.cshtml" />
+    <Content Include="Themes\n3o\Views\Badge\AllBadges.cshtml" />
+    <Content Include="Themes\n3o\Views\Category\Index.cshtml" />
+    <Content Include="Themes\n3o\Views\Category\ListCategorySideMenu.cshtml" />
+    <Content Include="Themes\n3o\Views\Category\ListMainCategories.cshtml" />
+    <Content Include="Themes\n3o\Views\Category\Show.cshtml" />
+    <Content Include="Themes\n3o\Views\Closed\Index.cshtml" />
+    <Content Include="Themes\n3o\Views\Home\Activity.cshtml" />
+    <Content Include="Themes\n3o\Views\Home\Index.cshtml" />
+    <Content Include="Themes\n3o\Views\Home\LatestTopics.cshtml" />
+    <Content Include="Themes\n3o\Views\Home\Leaderboard.cshtml" />
+    <Content Include="Themes\n3o\Views\Home\UploadFiles.cshtml" />
+    <Content Include="Themes\n3o\Views\Members\AdminMemberProfileTools.cshtml" />
+    <Content Include="Themes\n3o\Views\Members\ChangePassword.cshtml" />
+    <Content Include="Themes\n3o\Views\Members\Edit.cshtml" />
+    <Content Include="Themes\n3o\Views\Members\ForgotPassword.cshtml" />
+    <Content Include="Themes\n3o\Views\Members\GetByName.cshtml" />
+    <Content Include="Themes\n3o\Views\Members\GetCurrentActiveMembers.cshtml" />
+    <Content Include="Themes\n3o\Views\Members\GetMemberDiscussions.cshtml" />
+    <Content Include="Themes\n3o\Views\Members\LatestMembersJoined.cshtml" />
+    <Content Include="Themes\n3o\Views\Members\LogOn.cshtml" />
+    <Content Include="Themes\n3o\Views\Members\Register.cshtml" />
+    <Content Include="Themes\n3o\Views\Members\Report.cshtml" />
+    <Content Include="Themes\n3o\Views\Members\Search.cshtml" />
+    <Content Include="Themes\n3o\Views\Members\SideAdminPanel.cshtml" />
+    <Content Include="Themes\n3o\Views\Point\CurrentWeekHighPointUsers.cshtml" />
+    <Content Include="Themes\n3o\Views\Post\EditPost.cshtml" />
+    <Content Include="Themes\n3o\Views\Post\Report.cshtml" />
+    <Content Include="Themes\n3o\Views\PrivateMessage\Create.cshtml" />
+    <Content Include="Themes\n3o\Views\PrivateMessage\Index.cshtml" />
+    <Content Include="Themes\n3o\Views\PrivateMessage\SentMessages.cshtml" />
+    <Content Include="Themes\n3o\Views\PrivateMessage\View.cshtml" />
+    <Content Include="Themes\n3o\Views\Search\Index.cshtml" />
+    <Content Include="Themes\n3o\Views\Search\SideSearch.cshtml" />
+    <Content Include="Themes\n3o\Views\Search\Testing.cshtml" />
+    <Content Include="Themes\n3o\Views\Shared\_CreateNewPost.cshtml" />
+    <Content Include="Themes\n3o\Views\Shared\_DocumentationBlock.cshtml" />
+    <Content Include="Themes\n3o\Views\Shared\_EmailConfirmationNotice.cshtml" />
+    <Content Include="Themes\n3o\Views\Shared\_GenericMessage.cshtml" />
+    <Content Include="Views\Shared\_Install.cshtml" />
+    <Content Include="Themes\n3o\Views\Shared\_LanguagePartial.cshtml" />
+    <Content Include="Themes\n3o\Views\Shared\_Layout.cshtml" />
+    <Content Include="Themes\n3o\Views\Shared\_LogOnPartial.cshtml" />
+    <Content Include="Themes\n3o\Views\Shared\_ModeratePost.cshtml" />
+    <Content Include="Themes\n3o\Views\Shared\_ModerateTopic.cshtml" />
+    <Content Include="Themes\n3o\Views\Shared\_NoScript.cshtml" />
+    <Content Include="Themes\n3o\Views\Shared\_Poll.cshtml" />
+    <Content Include="Themes\n3o\Views\Shared\_Post.cshtml" />
+    <Content Include="Themes\n3o\Views\Shared\_PostModeration.cshtml" />
+    <Content Include="Themes\n3o\Views\Shared\_SocialLoginButtons.cshtml" />
+    <Content Include="Themes\n3o\Views\Shared\_SubCategories.cshtml" />
+    <Content Include="Themes\n3o\Views\Shared\_Topic.cshtml" />
+    <Content Include="Themes\n3o\Views\Shared\_TopicSlim.cshtml" />
+    <Content Include="Themes\n3o\Views\Shared\Error.cshtml" />
+    <Content Include="Themes\n3o\Views\Shared\GetCategoryBreadcrumb.cshtml" />
+    <Content Include="Themes\n3o\Views\Snippets\GetThisWeeksTopEarners.cshtml" />
+    <Content Include="Themes\n3o\Views\Snippets\GetThisYearsTopEarners.cshtml" />
+    <Content Include="Themes\n3o\Views\Stats\GetMainStats.cshtml" />
+    <Content Include="Themes\n3o\Views\Tag\PopularTags.cshtml" />
+    <Content Include="Themes\n3o\Views\Topic\AjaxMorePosts.cshtml" />
+    <Content Include="Themes\n3o\Views\Topic\Create.cshtml" />
+    <Content Include="Themes\n3o\Views\Topic\CreateTopicButton.cshtml" />
+    <Content Include="Themes\n3o\Views\Topic\GetSimilarTopics.cshtml" />
+    <Content Include="Themes\n3o\Views\Topic\Show.cshtml" />
+    <Content Include="Themes\n3o\Views\Topic\TopicsByTag.cshtml" />
+    <Content Include="Themes\n3o\Views\Vote\GetVoters.cshtml" />
+    <Content Include="Themes\n3o\Views\Vote\GetVotes.cshtml" />
+    <Content Include="Themes\Jungle\Views\Badge\AllBadges.cshtml" />
+    <Content Include="Themes\Jungle\Views\Category\Index.cshtml" />
+    <Content Include="Themes\Jungle\Views\Category\ListCategorySideMenu.cshtml" />
+    <Content Include="Themes\Jungle\Views\Category\ListMainCategories.cshtml" />
+    <Content Include="Themes\Jungle\Views\Category\Show.cshtml" />
+    <Content Include="Themes\Jungle\Views\Closed\Index.cshtml" />
+    <Content Include="Themes\Jungle\Views\Home\Activity.cshtml" />
+    <Content Include="Themes\Jungle\Views\Home\Index.cshtml" />
+    <Content Include="Themes\Jungle\Views\Home\LatestTopics.cshtml" />
+    <Content Include="Themes\Jungle\Views\Home\Leaderboard.cshtml" />
+    <Content Include="Themes\Jungle\Views\Home\UploadFiles.cshtml" />
+    <Content Include="Themes\Jungle\Views\Members\AdminMemberProfileTools.cshtml" />
+    <Content Include="Themes\Jungle\Views\Members\ChangePassword.cshtml" />
+    <Content Include="Themes\Jungle\Views\Members\Edit.cshtml" />
+    <Content Include="Themes\Jungle\Views\Members\ForgotPassword.cshtml" />
+    <Content Include="Themes\Jungle\Views\Members\GetByName.cshtml" />
+    <Content Include="Themes\Jungle\Views\Members\GetCurrentActiveMembers.cshtml" />
+    <Content Include="Themes\Jungle\Views\Members\GetMemberDiscussions.cshtml" />
+    <Content Include="Themes\Jungle\Views\Members\LatestMembersJoined.cshtml" />
+    <Content Include="Themes\Jungle\Views\Members\LogOn.cshtml" />
+    <Content Include="Themes\Jungle\Views\Members\Register.cshtml" />
+    <Content Include="Themes\Jungle\Views\Members\Report.cshtml" />
+    <Content Include="Themes\Jungle\Views\Members\Search.cshtml" />
+    <Content Include="Themes\Jungle\Views\Members\SideAdminPanel.cshtml" />
+    <Content Include="Themes\Jungle\Views\Point\CurrentWeekHighPointUsers.cshtml" />
+    <Content Include="Themes\Jungle\Views\Post\EditPost.cshtml" />
+    <Content Include="Themes\Jungle\Views\Post\Report.cshtml" />
+    <Content Include="Themes\Jungle\Views\PrivateMessage\Create.cshtml" />
+    <Content Include="Themes\Jungle\Views\PrivateMessage\Index.cshtml" />
+    <Content Include="Themes\Jungle\Views\PrivateMessage\SentMessages.cshtml" />
+    <Content Include="Themes\Jungle\Views\PrivateMessage\View.cshtml" />
+    <Content Include="Themes\Jungle\Views\Search\Index.cshtml" />
+    <Content Include="Themes\Jungle\Views\Search\SideSearch.cshtml" />
+    <Content Include="Themes\Jungle\Views\Search\Testing.cshtml" />
+    <Content Include="Themes\Jungle\Views\Shared\_CreateNewPost.cshtml" />
+    <Content Include="Themes\Jungle\Views\Shared\_DocumentationBlock.cshtml" />
+    <Content Include="Themes\Jungle\Views\Shared\_EmailConfirmationNotice.cshtml" />
+    <Content Include="Themes\Jungle\Views\Shared\_GenericMessage.cshtml" />
+    <Content Include="Themes\Jungle\Views\Shared\_LanguagePartial.cshtml" />
+    <Content Include="Themes\Jungle\Views\Shared\_Layout.cshtml" />
+    <Content Include="Themes\Jungle\Views\Shared\_LogOnPartial.cshtml" />
+    <Content Include="Themes\Jungle\Views\Shared\_ModeratePost.cshtml" />
+    <Content Include="Themes\Jungle\Views\Shared\_ModerateTopic.cshtml" />
+    <Content Include="Themes\Jungle\Views\Shared\_NoScript.cshtml" />
+    <Content Include="Themes\Jungle\Views\Shared\_Poll.cshtml" />
+    <Content Include="Themes\Jungle\Views\Shared\_Post.cshtml" />
+    <Content Include="Themes\Jungle\Views\Shared\_PostModeration.cshtml" />
+    <Content Include="Themes\Jungle\Views\Shared\_SocialLoginButtons.cshtml" />
+    <Content Include="Themes\Jungle\Views\Shared\_SubCategories.cshtml" />
+    <Content Include="Themes\Jungle\Views\Shared\_Topic.cshtml" />
+    <Content Include="Themes\Jungle\Views\Shared\_TopicSlim.cshtml" />
+    <Content Include="Themes\Jungle\Views\Shared\Error.cshtml" />
+    <Content Include="Themes\Jungle\Views\Shared\GetCategoryBreadcrumb.cshtml" />
+    <Content Include="Themes\Jungle\Views\Snippets\GetThisWeeksTopEarners.cshtml" />
+    <Content Include="Themes\Jungle\Views\Snippets\GetThisYearsTopEarners.cshtml" />
+    <Content Include="Themes\Jungle\Views\Stats\GetMainStats.cshtml" />
+    <Content Include="Themes\Jungle\Views\Tag\PopularTags.cshtml" />
+    <Content Include="Themes\Jungle\Views\Topic\AjaxMorePosts.cshtml" />
+    <Content Include="Themes\Jungle\Views\Topic\Create.cshtml" />
+    <Content Include="Themes\Jungle\Views\Topic\CreateTopicButton.cshtml" />
+    <Content Include="Themes\Jungle\Views\Topic\GetSimilarTopics.cshtml" />
+    <Content Include="Themes\Jungle\Views\Topic\Show.cshtml" />
+    <Content Include="Themes\Jungle\Views\Topic\TopicsByTag.cshtml" />
+    <Content Include="Themes\Jungle\Views\Vote\GetVoters.cshtml" />
+    <Content Include="Themes\Jungle\Views\Vote\GetVotes.cshtml" />
+    <Content Include="Themes\Dark\Views\Badge\AllBadges.cshtml" />
+    <Content Include="Themes\Dark\Views\Category\Index.cshtml" />
+    <Content Include="Themes\Dark\Views\Category\ListCategorySideMenu.cshtml" />
+    <Content Include="Themes\Dark\Views\Category\ListMainCategories.cshtml" />
+    <Content Include="Themes\Dark\Views\Category\Show.cshtml" />
+    <Content Include="Themes\Dark\Views\Closed\Index.cshtml" />
+    <Content Include="Themes\Dark\Views\Home\Activity.cshtml" />
+    <Content Include="Themes\Dark\Views\Home\Index.cshtml" />
+    <Content Include="Themes\Dark\Views\Home\LatestTopics.cshtml" />
+    <Content Include="Themes\Dark\Views\Home\Leaderboard.cshtml" />
+    <Content Include="Themes\Dark\Views\Home\UploadFiles.cshtml" />
+    <Content Include="Themes\Dark\Views\Members\AdminMemberProfileTools.cshtml" />
+    <Content Include="Themes\Dark\Views\Members\ChangePassword.cshtml" />
+    <Content Include="Themes\Dark\Views\Members\Edit.cshtml" />
+    <Content Include="Themes\Dark\Views\Members\ForgotPassword.cshtml" />
+    <Content Include="Themes\Dark\Views\Members\GetByName.cshtml" />
+    <Content Include="Themes\Dark\Views\Members\GetCurrentActiveMembers.cshtml" />
+    <Content Include="Themes\Dark\Views\Members\GetMemberDiscussions.cshtml" />
+    <Content Include="Themes\Dark\Views\Members\LatestMembersJoined.cshtml" />
+    <Content Include="Themes\Dark\Views\Members\LogOn.cshtml" />
+    <Content Include="Themes\Dark\Views\Members\Register.cshtml" />
+    <Content Include="Themes\Dark\Views\Members\Report.cshtml" />
+    <Content Include="Themes\Dark\Views\Members\Search.cshtml" />
+    <Content Include="Themes\Dark\Views\Members\SideAdminPanel.cshtml" />
+    <Content Include="Themes\Dark\Views\Point\CurrentWeekHighPointUsers.cshtml" />
+    <Content Include="Themes\Dark\Views\Post\EditPost.cshtml" />
+    <Content Include="Themes\Dark\Views\Post\Report.cshtml" />
+    <Content Include="Themes\Dark\Views\PrivateMessage\Create.cshtml" />
+    <Content Include="Themes\Dark\Views\PrivateMessage\Index.cshtml" />
+    <Content Include="Themes\Dark\Views\PrivateMessage\SentMessages.cshtml" />
+    <Content Include="Themes\Dark\Views\PrivateMessage\View.cshtml" />
+    <Content Include="Themes\Dark\Views\Search\Index.cshtml" />
+    <Content Include="Themes\Dark\Views\Search\SideSearch.cshtml" />
+    <Content Include="Themes\Dark\Views\Search\Testing.cshtml" />
+    <Content Include="Themes\Dark\Views\Shared\_CreateNewPost.cshtml" />
+    <Content Include="Themes\Dark\Views\Shared\_DocumentationBlock.cshtml" />
+    <Content Include="Themes\Dark\Views\Shared\_EmailConfirmationNotice.cshtml" />
+    <Content Include="Themes\Dark\Views\Shared\_GenericMessage.cshtml" />
+    <Content Include="Themes\Dark\Views\Shared\_LanguagePartial.cshtml" />
+    <Content Include="Themes\Dark\Views\Shared\_Layout.cshtml" />
+    <Content Include="Themes\Dark\Views\Shared\_LogOnPartial.cshtml" />
+    <Content Include="Themes\Dark\Views\Shared\_ModeratePost.cshtml" />
+    <Content Include="Themes\Dark\Views\Shared\_ModerateTopic.cshtml" />
+    <Content Include="Themes\Dark\Views\Shared\_NoScript.cshtml" />
+    <Content Include="Themes\Dark\Views\Shared\_Poll.cshtml" />
+    <Content Include="Themes\Dark\Views\Shared\_Post.cshtml" />
+    <Content Include="Themes\Dark\Views\Shared\_PostModeration.cshtml" />
+    <Content Include="Themes\Dark\Views\Shared\_SocialLoginButtons.cshtml" />
+    <Content Include="Themes\Dark\Views\Shared\_SubCategories.cshtml" />
+    <Content Include="Themes\Dark\Views\Shared\_Topic.cshtml" />
+    <Content Include="Themes\Dark\Views\Shared\_TopicSlim.cshtml" />
+    <Content Include="Themes\Dark\Views\Shared\Error.cshtml" />
+    <Content Include="Themes\Dark\Views\Shared\GetCategoryBreadcrumb.cshtml" />
+    <Content Include="Themes\Dark\Views\Snippets\GetThisWeeksTopEarners.cshtml" />
+    <Content Include="Themes\Dark\Views\Snippets\GetThisYearsTopEarners.cshtml" />
+    <Content Include="Themes\Dark\Views\Stats\GetMainStats.cshtml" />
+    <Content Include="Themes\Dark\Views\Tag\PopularTags.cshtml" />
+    <Content Include="Themes\Dark\Views\Topic\AjaxMorePosts.cshtml" />
+    <Content Include="Themes\Dark\Views\Topic\Create.cshtml" />
+    <Content Include="Themes\Dark\Views\Topic\CreateTopicButton.cshtml" />
+    <Content Include="Themes\Dark\Views\Topic\GetSimilarTopics.cshtml" />
+    <Content Include="Themes\Dark\Views\Topic\Show.cshtml" />
+    <Content Include="Themes\Dark\Views\Topic\TopicsByTag.cshtml" />
+    <Content Include="Themes\Dark\Views\Vote\GetVoters.cshtml" />
+    <Content Include="Themes\Dark\Views\Vote\GetVotes.cshtml" />
+    <Content Include="Themes\Metro\Views\_ViewStart.cshtml" />
+    <Content Include="Themes\n3o\Views\_ViewStart.cshtml" />
+    <Content Include="Themes\Jungle\Views\_ViewStart.cshtml" />
+    <Content Include="Themes\Dark\Views\_ViewStart.cshtml" />
+    <Content Include="Themes\n3o\Views\Web.config" />
+    <Content Include="Themes\Jungle\Views\Web.config" />
+    <Content Include="Themes\Dark\Views\Web.config" />
+    <Content Include="Views\Shared\_GenericMessage.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Themes\Dark\Views\Shared\" />
+    <Folder Include="Themes\Dark\Views\Extensions\" />
     <Folder Include="Themes\Jungle\Content\Fonts\" />
-    <Folder Include="Themes\Jungle\Views\Shared\" />
-    <Folder Include="Themes\n3o\Views\Shared\" />
+    <Folder Include="Themes\Jungle\Views\Extensions\" />
+    <Folder Include="Themes\Metro\Views\Extensions\" />
+    <Folder Include="Themes\n3o\Views\Extensions\" />
     <Folder Include="Views\Extensions\" />
   </ItemGroup>
   <ItemGroup>
@@ -1295,25 +1542,13 @@
     <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Members\ChangePassword.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Areas\Admin\Views\Account\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Account\List.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Members\LogOn.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Areas\Admin\Views\Admin\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Members\Register.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Shared\_GenericMessage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Account\ListAllRoles.cshtml" />
@@ -1364,24 +1599,6 @@
     <Content Include="Areas\Admin\Views\Shared\_AdminFullWidthLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Category\ListCategorySideMenu.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Shared\_LanguagePartial.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Topic\Create.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Category\Show.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Topic\Show.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Shared\_CreateNewPost.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Areas\Admin\Views\AdminLanguage\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -1412,85 +1629,19 @@
     <Content Include="Areas\Admin\Views\Shared\_LanguageOptions.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Shared\_Post.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Areas\Admin\Views\ImportExport\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Shared\_Topic.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Post\EditPost.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Tag\PopularTags.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Topic\TopicsByTag.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\AdminTag\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Point\CurrentWeekHighPointUsers.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Home\Leaderboard.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Snippets\GetThisWeeksTopEarners.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Snippets\GetThisYearsTopEarners.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Members\GetByName.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Home\Activity.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Areas\Admin\Views\AdminBadge\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Members\GetMemberDiscussions.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Shared\_TopicSlim.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Members\Edit.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Members\SideAdminPanel.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Log\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\PrivateMessage\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\PrivateMessage\SentMessages.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Shared\EditorTemplates\bbeditor.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\PrivateMessage\Create.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\PrivateMessage\View.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Members\AdminMemberProfileTools.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Members\Report.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Post\Report.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Dashboard\LatestUsers.cshtml" />
@@ -1518,11 +1669,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Dashboard\MvcForumLatestNews.cshtml" />
-    <Content Include="Views\Closed\Index.cshtml" />
-    <Content Include="Views\Members\LatestMembersJoined.cshtml" />
-    <Content Include="Views\Stats\GetMainStats.cshtml" />
-    <Content Include="Views\Members\Search.cshtml" />
-    <Content Include="Views\Members\ForgotPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\AdminLucene\Index.cshtml" />
@@ -1533,19 +1679,11 @@
     <Content Include="Themes\Metro\Content\Fonts\mvcforumsb.eot" />
     <Content Include="Themes\Metro\Content\Fonts\mvcforumsb.ttf" />
     <Content Include="Themes\Metro\Content\Fonts\mvcforumsb.woff" />
-    <Content Include="Views\Badge\AllBadges.cshtml" />
-    <Content Include="Views\Search\Index.cshtml" />
-    <Content Include="Views\Search\SideSearch.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\markdowneditor.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\tinymceeditor.cshtml" />
     <Content Include="Views\Install\Index.cshtml" />
-    <Content Include="Views\Shared\_Install.cshtml" />
     <Content Include="Views\Install\CreateDb.cshtml" />
     <Content Include="Views\Install\Complete.cshtml" />
-    <Content Include="Views\Search\Testing.cshtml" />
-    <Content Include="Views\Shared\_Poll.cshtml" />
-    <Content Include="Views\Shared\_NoScript.cshtml" />
-    <Content Include="Views\Vote\GetVoters.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

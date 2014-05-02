@@ -1,0 +1,62 @@
+﻿@using MVCForum.Domain.Constants
+@using MVCForum.Utilities
+@model MVCForum.Website.ViewModels.ShowPollViewModel
+@{
+    var poll = Model.Poll;
+    var displayVote = !Model.UserHasAlreadyVoted;
+    
+    <div class="showpollholder">
+        @foreach (var pollAnswer in poll.PollAnswers.OrderBy(x => x.Answer))
+        {
+            var answerVotes = pollAnswer.PollVotes.Count;
+            var widthPercentage = answerVotes > 0 ? ((((float)answerVotes / (float)Model.TotalVotesInPoll) * 100)) : 1;
+            var color = "success";
+            if (widthPercentage > 0 & widthPercentage <= 25)
+            {
+                color = "danger";
+            }
+            if (widthPercentage > 25 & widthPercentage <= 50)
+            {
+                color = "warning";
+            }
+            if (widthPercentage > 50 & widthPercentage <= 75)
+            {
+                color = "info";
+            }                                   
+                
+            <div class="row-fluid">
+                <div class="pollanswerrow span12">
+                    <div class="pollanswerrowholder clearfix">
+                        @if (Model.UserAllowedToVote && displayVote)
+                        {
+                            <div class="pollradiobuttonholder">
+                                <input type="radio" class="pollanswerselect" name="pollanswers" data-answerid="@pollAnswer.Id" />
+                            </div>
+                        }
+                        @pollAnswer.Answer
+                    </div>
+
+                    <div class="pollbarrowholder clearfix">                        
+                        <div class="progress progress-striped" style="width: 100%;">
+                            <div class="bar bar-@color" style="width: @(Convert.ToInt32(widthPercentage))%;">
+                                @answerVotes vote
+                            </div>
+                        </div>
+
+@*                        <div class="pollbar" style="width: @(Convert.ToInt32(widthPercentage))%;"></div>
+                        @answerVotes*@
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (Model.UserAllowedToVote && displayVote)
+        {
+            <div class="pollvotebuttonholder span12" style="display: none;">
+                <a href="#" class="pollvotebutton btn">@Html.LanguageString("Poll.Button.Vote")</a>
+                <input type="hidden" class="selectedpollanswer" value="" />
+                @Html.HiddenFor(x => x.Poll.Id)
+            </div>
+        }
+    </div>
+}

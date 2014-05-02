@@ -1,0 +1,57 @@
+﻿@using MVCForum.Domain.Constants
+
+@model MVCForum.Website.ViewModels.PublicMemberListViewModel
+@{
+    ViewBag.Title = Html.LanguageString("Members.SearchMembers");
+}
+
+@section side
+{
+    @Html.Action("ListCategorySideMenu", "Category")
+    @Html.Action("SideSearch", "Search")
+    @Html.Action("PopularTags", "Tag")
+    @Html.Action("CurrentWeekHighPointUsers", "Point")
+}
+
+
+<h1>@ViewBag.Title</h1>
+
+@using (Html.BeginForm("Search", "Members", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    <div class="search large-search input-append">
+        @Html.TextBoxFor(x => @Model.Search)
+        <button class="btn">@Html.LanguageString("Buttons.Search")</button>
+        @Html.HiddenFor(x => x.PageIndex)
+    </div>
+}
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>@Html.LanguageString("Members.Users")</th>
+            <th>@Html.LanguageString("Members.Points")</th>
+            <th>@Html.LanguageString("Members.DateJoined")</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>
+                    <a href="@user.NiceUrl">@user.UserName</a>
+                </td>
+                <td>
+                    @user.TotalPoints
+                </td>
+                <td>
+                    @user.CreateDate.ToShortDateString()
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Convert.ToInt32(Model.TotalCount) > AppConstants.AdminListPageSize)
+{
+    @Html.Pager(Convert.ToInt32(Model.PageIndex), AppConstants.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
+}
