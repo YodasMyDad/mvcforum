@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
@@ -16,6 +17,7 @@ namespace MVCForum.Website.Controllers
     public partial class HomeController : BaseController
     {
         private readonly ITopicService _topicService;
+        private readonly ICategoryService _categoryService;
         private readonly IActivityService _activityService;
 
         private MembershipUser LoggedOnUser;
@@ -23,10 +25,11 @@ namespace MVCForum.Website.Controllers
 
         public HomeController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IActivityService activityService, IMembershipService membershipService,
             ITopicService topicService, ILocalizationService localizationService, IRoleService roleService,
-            ISettingsService settingsService)
+            ISettingsService settingsService, ICategoryService categoryService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
+            _categoryService = categoryService;
             _activityService = activityService;
 
             LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
@@ -203,6 +206,96 @@ namespace MVCForum.Website.Controllers
                 }
 
                 return new RssResult(rssActivities, LocalizationService.GetResourceString("Rss.LatestActivity.Title"), LocalizationService.GetResourceString("Rss.LatestActivity.Description"));
+            }
+        }
+
+        //[OutputCache(Duration = AppConstants.DefaultCacheLengthInSeconds)]
+        public ActionResult GoogleSitemap()
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                // Get all categoryes
+                var allCategories = _categoryService.GetAll().ToList();
+
+                // Get all topics
+                var allTopics = _topicService.GetAll();
+
+                // get all members profiles
+                var members = MembershipService.GetAll();
+
+                // Sitemap holder
+                var sitemap = new List<SitemapEntry>();
+
+                // create permissions
+                var permissions = new Dictionary<Category, PermissionSet>();
+
+                // loop through the categories and get the permissions
+                foreach (var category in allCategories)
+                {
+                    var permissionSet = RoleService.GetPermissions(category, UsersRole);
+                    permissions.Add(category, permissionSet);
+                }
+
+                // ##### TOPICS
+                // Now loop through the topics and remove any that user does not have permission for
+                foreach (var topic in allTopics)
+                {
+                    // Get the permissions for this topic via its parent category
+                    var permission = permissions[topic.Category];
+
+                    // Add only topics user has permission to
+                    if (!permission[AppConstants.PermissionDenyAccess].IsTicked)
+                    {
+                        if (topic.Posts.Any())
+                        {
+                            var firstOrDefault = topic.Posts.FirstOrDefault(x => x.IsTopicStarter);
+                            if (firstOrDefault != null)
+                            {
+                                var sitemapEntry = new SitemapEntry
+                                {
+                                    Name = topic.Name,
+                                    Url = topic.NiceUrl,
+                                    LastUpdated = topic.LastPost.DateEdited
+                                };
+                                sitemap.Add(sitemapEntry);
+                            }
+                        }
+                    }
+                }
+
+                // #### CATEGORIES
+                foreach (var category in allCategories)
+                {
+                    // Get the permissions for this topic via its parent category
+                    var permission = permissions[category];
+
+                    // Add only topics user has permission to
+                    if (!permission[AppConstants.PermissionDenyAccess].IsTicked)
+                    {
+                        var sitemapEntry = new SitemapEntry
+                        {
+                            Name = category.Name,
+                            Url = category.NiceUrl,
+                            LastUpdated = category.DateCreated
+                        };
+                        sitemap.Add(sitemapEntry);
+                    }
+                }
+
+                // #### MEMBERS
+                foreach (var member in members)
+                {
+                    var sitemapEntry = new SitemapEntry
+                    {
+                        Name = member.UserName,
+                        Url = member.NiceUrl,
+                        LastUpdated = member.CreateDate
+                    };
+                    sitemap.Add(sitemapEntry);       
+                }
+
+
+                return new GoogleSitemapResult(sitemap);
             }
         }
     }

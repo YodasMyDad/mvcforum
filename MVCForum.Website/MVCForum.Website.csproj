@@ -273,6 +273,7 @@
     <Compile Include="Application\AppHelpers.cs" />
     <Compile Include="Application\DatesUI.cs" />
     <Compile Include="Application\ForumMVCResourceDisplayName.cs" />
+    <Compile Include="Application\GoogleSitemapResult.cs" />
     <Compile Include="Application\MobileExtensions.cs" />
     <Compile Include="Application\OpenID.cs" />
     <Compile Include="Application\RssResult.cs" />

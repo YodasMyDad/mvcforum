@@ -96,6 +96,7 @@
     <Compile Include="DomainModel\Poll.cs" />
     <Compile Include="DomainModel\PrivateMessage.cs" />
     <Compile Include="DomainModel\Report.cs" />
+    <Compile Include="DomainModel\SitemapEntry.cs" />
     <Compile Include="DomainModel\TopicNotification.cs" />
     <Compile Include="DomainModel\Email.cs" />
     <Compile Include="DomainModel\LogEntry.cs" />

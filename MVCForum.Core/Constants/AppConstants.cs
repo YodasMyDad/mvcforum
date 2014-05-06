@@ -27,6 +27,7 @@
         
         //Querystring names
         public const string PostOrderBy = "order";
+        public const string AllPosts = "all";
 
         // Themes
         public const string ThemeRootFolderName = "Themes";

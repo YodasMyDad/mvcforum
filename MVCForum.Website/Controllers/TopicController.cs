@@ -371,9 +371,18 @@ namespace MVCForum.Website.Controllers
                     var orderBy = !string.IsNullOrEmpty(sortQuerystring) ? 
                                               EnumUtils.ReturnEnumValueFromString<PostOrderBy>(sortQuerystring) : PostOrderBy.Standard;
 
+                    // Store the amount per page
+                    var amountPerPage = SettingsService.GetSettings().PostsPerPage;
 
+                    if (sortQuerystring == AppConstants.AllPosts)
+                    {
+                        // Overide to show all posts
+                        amountPerPage = int.MaxValue;
+                    }
+
+                    // Get the posts
                     var posts = _postService.GetPagedPostsByTopic(pageIndex,
-                                                                  SettingsService.GetSettings().PostsPerPage,
+                                                                  amountPerPage,
                                                                   int.MaxValue, 
                                                                   topic.Id,
                                                                   orderBy);
@@ -422,7 +431,6 @@ namespace MVCForum.Website.Controllers
                         {
                             LoggingService.Error(ex);
                         }
-
                     }
 
                     // See if the topic has a poll, and if so see if this user viewing has already voted
