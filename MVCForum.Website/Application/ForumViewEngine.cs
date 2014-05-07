@@ -4,7 +4,6 @@
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using MVCForum.Domain.Interfaces.Services;
 
 namespace MVCForum.Website.Application
 {
@@ -14,11 +13,11 @@ namespace MVCForum.Website.Application
         private string _lastTheme;
         private RazorViewEngine _lastEngine;
         private readonly object _lock = new object();
-        private readonly ISettingsService _settingsService;
+        private readonly string _defaultTheme;
 
-        public ForumViewEngine(ISettingsService settingsService)
+        public ForumViewEngine(string defaultTheme)
         {
-            _settingsService = settingsService;
+            _defaultTheme = defaultTheme;
         }
 
         private RazorViewEngine CreateRealViewEngine()
@@ -28,7 +27,7 @@ namespace MVCForum.Website.Application
                 string settingsTheme;
                 try
                 {
-                    settingsTheme = _settingsService.GetSettings().Theme;
+                    settingsTheme = _defaultTheme;
                     if (settingsTheme == _lastTheme)
                     {
                         return _lastEngine;

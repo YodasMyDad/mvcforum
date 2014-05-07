@@ -33,7 +33,8 @@ namespace MVCForum.Website.Controllers
             TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
             {
                 Message = installerResult.OnScreenMessage,
-                MessageType = status
+                MessageType = status,
+                ConstantMessage = true
             };
 
             // Fall back telling user they need a manual upgrade

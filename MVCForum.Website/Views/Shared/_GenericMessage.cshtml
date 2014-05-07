@@ -10,14 +10,15 @@
     {
         genericMessage = (GenericMessageViewModel)ViewBag.Message;
     }
+    var delayTime = genericMessage.ConstantMessage ? 600000 : 3500;
 }
 
 <div id="jsquickmessage" style="display:none;"></div>
 @if (!string.IsNullOrEmpty(genericMessage.Message))
 {
-<script type="text/javascript"> $(function () { $('div.alert-generic').delay(3500).fadeOut(); });</script>
-<div class="alert alert-block alert-@genericMessage.MessageType.ToString() alert-generic">
-    <a href="#" data-dismiss="alert" class="close">&times;</a>
-    @Html.Raw(genericMessage.Message)
-</div>
+    <script type="text/javascript"> $(function () { $('div.alert-generic').delay(@(delayTime)).fadeOut(); });</script>
+    <div class="alert alert-block alert-@genericMessage.MessageType.ToString() alert-generic">
+        <a href="#" data-dismiss="alert" class="close">&times;</a>
+        @Html.Raw(genericMessage.Message)
+    </div>
 }

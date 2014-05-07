@@ -258,7 +258,7 @@ namespace MVCForum.Website.Controllers
                     if (_categoryService.GetAll().FirstOrDefault(x => x.Name == exampleCatName) == null)
                     {
                         // Doesn't exist so add the example category
-                        var exampleCat = new Category { Name = exampleCatName };
+                        var exampleCat = new Category { Name = exampleCatName, ModeratePosts = false, ModerateTopics = false};
                         _categoryService.Add(exampleCat);
 
                         // Add the default roles
@@ -278,7 +278,7 @@ namespace MVCForum.Website.Controllers
                 catch (Exception ex)
                 {
                     unitOfWork.Rollback();
-                    installerResult.Exception = ex;
+                    installerResult.Exception = ex.InnerException;
                     installerResult.Message = "Error creating the initial data >> Category & Roles";
                     installerResult.Successful = false;
                     return installerResult;
@@ -351,7 +351,7 @@ namespace MVCForum.Website.Controllers
                 catch (Exception ex)
                 {
                     unitOfWork.Rollback();
-                    installerResult.Exception = ex;
+                    installerResult.Exception = ex.InnerException;
                     installerResult.Message = "Error creating the initial data >> Settings";
                     installerResult.Successful = false;
                     return installerResult;
@@ -416,7 +416,7 @@ namespace MVCForum.Website.Controllers
                 catch (Exception ex)
                 {
                     unitOfWork.Rollback();
-                    installerResult.Exception = ex;
+                    installerResult.Exception = ex.InnerException;
                     installerResult.Message = "Error creating the initial data >> Admin user & Permissions";
                     installerResult.Successful = false;
                     return installerResult;
@@ -475,7 +475,7 @@ namespace MVCForum.Website.Controllers
                         }
                     }
 
-                    installerResult.Exception = ex;
+                    installerResult.Exception = ex.InnerException;
                     installerResult.Message = "Error creating the initial data >>  Language Strings";
                     if (!string.IsNullOrEmpty(sb.ToString()))
                     {

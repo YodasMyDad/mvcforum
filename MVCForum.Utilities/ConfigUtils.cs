@@ -25,7 +25,7 @@ namespace MVCForum.Utilities
             {
                 throw new ApplicationException("AppSetting is null");
             }
-            return ConfigurationManager.AppSettings[appSettingame];
+            return WebConfigurationManager.AppSettings[appSettingame];
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace MVCForum.Utilities
             {
                 if (!appSettingame.IsNullEmpty())
                 {
-                    appValue = ConfigurationManager.AppSettings[appSettingame];
+                    appValue = WebConfigurationManager.AppSettings[appSettingame];
 
                     if (appValue == null) // Not found in app settings
                     {

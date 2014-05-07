@@ -13,7 +13,6 @@ Installer > Db > 'Then Choose version number'
 
 The installer is still being updated/tested for 'upgrades' between versions. Its still flakey in my opinion, so bare with us
 
-
 ##### DATABASE/SITE RESET ORDER ######
 
 If you want to clear the database and reset a test/dev forum, then use the file 'dbReset.sql' in this 'Database' solution folder

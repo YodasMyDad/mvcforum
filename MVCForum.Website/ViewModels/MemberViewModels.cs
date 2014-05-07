@@ -35,7 +35,7 @@ namespace MVCForum.Website.ViewModels
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [System.Web.Mvc.Compare("Password")]
+        [System.ComponentModel.DataAnnotations.Compare("Password")]
         [ForumMvcResourceDisplayName("Members.Label.ConfirmPassword")]
         public string ConfirmPassword { get; set; }
 
@@ -126,7 +126,7 @@ namespace MVCForum.Website.ViewModels
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [System.Web.Mvc.Compare("Password")]
+        [System.ComponentModel.DataAnnotations.Compare("Password")]
         [ForumMvcResourceDisplayName("Members.Label.ConfirmPassword")]
         public string ConfirmPassword { get; set; }
 
@@ -242,7 +242,7 @@ namespace MVCForum.Website.ViewModels
 
         [DataType(DataType.Password)]
         [ForumMvcResourceDisplayName("Members.Label.ConfirmNewPassword")]
-        [System.Web.Mvc.Compare("NewPassword")]
+        [System.ComponentModel.DataAnnotations.Compare("NewPassword")]
         public string ConfirmPassword { get; set; }
     }
 }

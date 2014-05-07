@@ -109,33 +109,21 @@ namespace MVCForum.Website
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
 
-            //Installer for new versions and first startup
-            // Get the current version
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-
             // Store the value for use in the app
-            Application["Version"] = string.Format("{0}.{1}", version.Major, version.Minor);
-            Application["Installing"] = "True";
-
-            // Now check the version in the web.config
-            var currentVersion = ConfigUtils.GetAppSetting("MVCForumVersion");
+            Application["Version"] = AppHelpers.GetCurrentVersionNo();
 
             // If the same carry on as normal
             LoggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
             LoggingService.Error("START APP");
 
-            // If the versions are different kick the installer into play
-            if (currentVersion == Application["Version"].ToString())
+            // Set default theme
+            var defaultTheme = "Metro";
+
+            // Only load these IF the versions are the same
+            if (AppHelpers.SameVersionNumbers())
             {
-                Application["Installing"] = "False";
-
-                // Set the view engine
-                ViewEngines.Engines.Clear();
-                ViewEngines.Engines.Add(new ForumViewEngine(SettingsService));
-
-                // Set up the EF Caching provider
-                //EFCachingProviderConfiguration.DefaultCache = new AspNetCache();
-                //EFCachingProviderConfiguration.DefaultCachingPolicy = CachingPolicy.CacheAll;
+                // Get the theme from the database.
+                defaultTheme = SettingsService.GetSettings().Theme;
 
                 // Do the badge processing
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
@@ -151,39 +139,29 @@ namespace MVCForum.Website
                     }
                 }
 
-                // Initialise the events
-                EventManager.Instance.Initialize(LoggingService);
+            }
 
-                // Don't go to installer
-                Application[AppConstants.GoToInstaller] = "False";
-            }
-            else
-            {
-                // Go to the installer
-                Application[AppConstants.GoToInstaller] = "True";
-                
-            }
+            // Set the view engine
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.Add(new ForumViewEngine(defaultTheme));
+
+            // Initialise the events
+            EventManager.Instance.Initialize(LoggingService);
         }
 
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
-            if (Application[AppConstants.GoToInstaller].ToString() == "True")
+            if (!AppHelpers.IsStaticResource(this.Request) && !AppHelpers.SameVersionNumbers() && !AppHelpers.InInstaller())
             {
-                // Beford I redirect set it to false or we'll end up in a loop
-                // But set the Session to true as we'll check this in the base controller
-                // of the normal app to stop people breaking out of the installer before its 
-                // completed correctly
-                Application[AppConstants.GoToInstaller] = "False";
-                Response.Redirect("~/install/");
+                Response.Redirect(string.Concat("~", AppConstants.InstallerUrl));
             }
         }
-
 
         protected void Application_AcquireRequestState(object sender, EventArgs e)
         {
 
             //It's important to check whether session object is ready
-            if (Application["Installing"].ToString() != "True")
+            if (!AppHelpers.InInstaller())
             {
                 if (HttpContext.Current.Session != null)
                 {

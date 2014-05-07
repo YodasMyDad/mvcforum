@@ -15,6 +15,94 @@ namespace MVCForum.Website.Application
 {
     public static class AppHelpers
     {
+        #region Application
+
+        public static string GetCurrentMvcForumVersion()
+        {
+            var version = ConfigUtils.GetAppSetting("MVCForumVersion");
+            return version;
+        }
+
+        public static bool SameVersionNumbers()
+        {
+            var version = HttpContext.Current.Application["Version"].ToString();
+            return GetCurrentMvcForumVersion() == version;
+        }
+
+        public static bool InInstaller()
+        {
+            var url = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Path);
+            if (!string.IsNullOrEmpty(url))
+            {
+                url = url.ToLowerInvariant();
+                return url.Contains(AppConstants.InstallerUrl);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Returns true if the requested resource is one of the typical resources that needn't be processed by the cms engine.
+        /// </summary>
+        /// <param name="request">HTTP Request</param>
+        /// <returns>True if the request targets a static resource file.</returns>
+        /// <remarks>
+        /// These are the file extensions considered to be static resources:
+        /// .css
+        ///	.gif
+        /// .png 
+        /// .jpg
+        /// .jpeg
+        /// .js
+        /// .axd
+        /// .ashx
+        /// </remarks>
+        public static bool IsStaticResource(HttpRequest request)
+        {
+            if (request == null)
+                throw new ArgumentNullException("request");
+
+            string path = request.Path;
+            string extension = VirtualPathUtility.GetExtension(path);
+
+            if (extension == null) return false;
+
+            switch (extension.ToLower())
+            {
+                case ".axd":
+                case ".ashx":
+                case ".bmp":
+                case ".css":
+                case ".gif":
+                case ".htm":
+                case ".html":
+                case ".ico":
+                case ".jpeg":
+                case ".jpg":
+                case ".js":
+                case ".png":
+                case ".rar":
+                case ".zip":
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static bool IsDbInstalled()
+        {
+            var filePath = Path.Combine(HostingEnvironment.MapPath("~/App_Data/"), AppConstants.SuccessDbFile);
+            //if (!File.Exists(filePath))
+            //{
+            //    using (File.Create(filePath))
+            //    {
+            //        //we use 'using' to close the file after it's created
+            //    }
+            //}
+            return File.Exists(filePath);
+        }
+
+        #endregion
+
         #region Themes
 
         /// <summary>

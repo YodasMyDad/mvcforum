@@ -101,8 +101,11 @@
         public const int DefaultCacheLengthInSeconds = 600;
 
         public const string InstallerName = "YesImAnInstallerSpankMe";
+        public const string InstallerUrl = "/install/";
         public const string InMobileView = "InMobileView";
         public const string GoToInstaller = "GoToInstaller";
+        public const string SuccessDbFile = "SuccessDbFile.txt";
+
 
         //Uploads
         public const string UploadFolderPath = "~/content/uploads/";
