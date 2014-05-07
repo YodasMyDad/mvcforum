@@ -8,7 +8,7 @@ namespace PostMentionUmbraco
 {
     [Id("9a247d50-35b5-4cd2-adaa-a0cf013325ac")]
     [Name("PostContainsUmbraco")]
-    [DisplayName("Mentioned Umbraco In A Post Or Topic")]
+    [DisplayName("Umbraco Fan")]
     [Description("This badge is awarded to a user who mentions Umbraco in their latest post.")]
     [Image("MentionsUmbracoBadge.png")]
     [AwardsPoints(1)]

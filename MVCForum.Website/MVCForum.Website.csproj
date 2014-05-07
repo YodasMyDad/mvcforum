@@ -631,6 +631,7 @@
     <Content Include="Content\badges\MemberForAYearBadge.png" />
     <Content Include="Content\badges\MentionsUmbracoBadge.png" />
     <Content Include="Content\badges\OneThousandPoints.png" />
+    <Content Include="Content\badges\padawan.png" />
     <Content Include="Content\badges\PosterMarkAsSolutionBadge.png" />
     <Content Include="Content\badges\PosterVoteUpBadge.png" />
     <Content Include="Content\badges\TheGrouch.png" />
@@ -1772,6 +1773,10 @@
     <ProjectReference Include="..\Badges\Badge.OneThousandPoints\Badge.OneThousandPoints.csproj">
       <Project>{43875caf-fcbb-4e7b-b732-ba5e3f0212c9}</Project>
       <Name>Badge.OneThousandPoints</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Badges\Badge.Padawan\Badge.Padawan.csproj">
+      <Project>{36959215-ded3-4d37-bfcc-33a454e51f4d}</Project>
+      <Name>Badge.Padawan</Name>
     </ProjectReference>
     <ProjectReference Include="..\Badges\Badge.VoteTheGrouch\Badge.VoteTheGrouch.csproj">
       <Project>{a4e05fda-ebaf-4f3e-b9c5-8ae4d8d6ec6e}</Project>

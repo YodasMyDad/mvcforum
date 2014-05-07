@@ -8,11 +8,11 @@ namespace Badge.OneThousandPoints
 {
     [Id("a54ec5d1-111d-4698-b2d0-78fbdaa52d1b")]
     [Name("OneThousandPoints")]
-    [DisplayName("You've gained 1000 points")]
+    [DisplayName("Thousand Pointer")]
     [Description("This badge is awarded to users who have received 1000 points.")]
     [Image("OneThousandPoints.png")]
     [AwardsPoints(10)]
-    public class OneThousandPoints : IVoteUpBadge
+    public class OneThousandPoints : IPostBadge
     {
         public bool Rule(MembershipUser user, IMVCForumAPI api)
         {

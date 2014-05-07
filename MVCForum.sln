@@ -66,6 +66,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.VoteTheGrouch", "Badg
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.OneThousandPoints", "Badges\Badge.OneThousandPoints\Badge.OneThousandPoints.csproj", "{43875CAF-FCBB-4E7B-B732-BA5E3F0212C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.Padawan", "Badges\Badge.Padawan\Badge.Padawan.csproj", "{36959215-DED3-4D37-BFCC-33A454E51F4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -274,6 +276,16 @@ Global
 		{43875CAF-FCBB-4E7B-B732-BA5E3F0212C9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{43875CAF-FCBB-4E7B-B732-BA5E3F0212C9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{43875CAF-FCBB-4E7B-B732-BA5E3F0212C9}.Release|x86.ActiveCfg = Release|Any CPU
+		{36959215-DED3-4D37-BFCC-33A454E51F4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36959215-DED3-4D37-BFCC-33A454E51F4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36959215-DED3-4D37-BFCC-33A454E51F4D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{36959215-DED3-4D37-BFCC-33A454E51F4D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{36959215-DED3-4D37-BFCC-33A454E51F4D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{36959215-DED3-4D37-BFCC-33A454E51F4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36959215-DED3-4D37-BFCC-33A454E51F4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36959215-DED3-4D37-BFCC-33A454E51F4D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{36959215-DED3-4D37-BFCC-33A454E51F4D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{36959215-DED3-4D37-BFCC-33A454E51F4D}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -287,6 +299,7 @@ Global
 		{3BBBFE42-E642-4337-BD42-A8B15EA1FA01} = {61250A22-5911-4543-9F49-42B64DDAF07A}
 		{A4E05FDA-EBAF-4F3E-B9C5-8AE4D8D6EC6E} = {61250A22-5911-4543-9F49-42B64DDAF07A}
 		{43875CAF-FCBB-4E7B-B732-BA5E3F0212C9} = {61250A22-5911-4543-9F49-42B64DDAF07A}
+		{36959215-DED3-4D37-BFCC-33A454E51F4D} = {61250A22-5911-4543-9F49-42B64DDAF07A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.2.1.505.2\lib\NET35
