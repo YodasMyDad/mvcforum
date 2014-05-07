@@ -1,0 +1,265 @@
+﻿Topic.TitleFallBack,Diskussionsthema
+Layout.Nav.Admin,Admin
+Post.VoteUp,Positiv abstimmen
+Topic.UnSubscribe,Abonnement kündigen
+Topic.IsLocked,Thema ist geschlossen
+Post.Edit,Bearbeiten
+Layout.Nav.Home,Startseite
+Stats.LatestMembers,Neueste Mitglieder:
+Post.PleaseWait,Bitte warten...
+Post.VoteDown,Negativ abstimmen
+LogOn.LogOff,Abmelden
+Layout.Nav.Activity,Aktivitäten
+Layout.PoweredBy,Powered by 
+Post.LastEdited,Zuletzt bearbeitet:
+Topic.InCategory, in 
+Topic.Views,Aufrufe
+Post.Report,Melden
+Post.IsSolution,Als Lösung markiert
+Topic.Comments,Antworten
+Post.Points,Punkte
+Layout.CreateButton,Neue Diskussion
+Tags.PopularTags,Häufige Schlagwörter
+Topic.CreateDiscussion,Diskussion erstellen
+Topic.StartedBy,{0} von {1}
+LogOn.LogOn,Anmelden
+Layout.Nav.Leaderboard,Bestenliste
+Topic.DiscussionTaggedWith,Diskussionen gekennzeichnet mit:
+Post.PostedThis,verfasste dies
+Post.Posts,Beiträge
+Topic.TagThisTopic,Thema mit Schlagwörtern versehen
+Layout.Nav.Register,Registrieren
+Topic.Votes,Stimmen
+Topic.Subscribe,Abonnieren
+Post.Delete,Löschen
+Topic.LatestBy,Letzter von
+Layout.Nav.Logon,Anmelden
+Poll.Button.Remove,Umfrage entfernen
+Members.DeleteAllPosts,Alle Beiträge löschen
+Members.Profile.IsSocialAccount,Social Network Account
+Members.Errors.PasswordAttemptsExceeded,Die maximale Anzahl von Eingabeversuchen des Passworts wurde erreicht.
+Date.DaysAgo,vor {0} Tagen
+Buttons.LogOn,Anmelden
+Members.EditProfile,Profil bearbeiten
+Badge.BadegEnumNoClass,Für den Orden-Enum-Typ {0} wurde keine zugehörige Klasse definiert.
+Category.CategoriesSideHeading,Kategorien
+PM.BackToInbox,Zurück zum Posteingang
+PM.ReceivedPrivateMessages,Posteingang
+PM.ReceivedItemsOverCapcity,Das Postfach von {0} ist überfüllt - Senden der Nachricht nicht möglich.
+Members.Register,Registrieren
+Post.Updated,Beitrag aktualisiert
+Members.ForgotPassword.ErrorMessage,Fehler beim Zurücksetzen des Passworts.
+Topic.CommentsDetails,Antworten
+Members.ChangePassword.Text,Neue Passwörter müssen mindestens {0} Zeichen lang sein.
+Badges.UnableToAward,Ordenvergabe nicht möglich
+Post.Label.LockTopic,Thema schließen
+Members.Label.RememberMe,An mich erinnern?
+PM.From,Von:
+Buttons.Send,Senden
+Category.NoDiscussions,Zur Zeit sind keine Diskussionen vorhanden.
+Members.Errors.InvalidAnswer,Die Anwort für den Passwort-Erhalt ist ungültig. Bitte Überprüfen Sie Ihre Eingabe.
+Post.Label.IsStickyTopic,Oben angeheftetes Thema
+Members.Errors.InvalidEmail,Die E-Mail-Adresse ist ungültig. Bitte Überprüfen Sie Ihre Eingabe
+Home.Rss,Rss
+Badges.PageTitle,Orden
+Post.DeleteConfirmation,Wollen Sie sicher löschen?
+Members.Label.Facebook,Facebook-Url
+Buttons.Save,Speichern
+Members.Label.Password,Passwort
+Topic.ShowMorePostsLoading,Beiträge werden geladen...
+Members.Profile.Points,Punkte:
+PM.MessageSubject,Betreff
+Members.NowLoggedOut,Sie sind nun abgemeldet.
+Report.PostReport,Post Report
+Members.Points,Punkte
+Members.ChangePassword.Link,Klicken Sie hier zum {0}
+PM.TalkToSelf,"Mit sich selbst zu reden ist etwas seltsam
+Rss.Category.Title,{0} Diskussionen
+Report.PostReported,Post Reported In
+Post.Attach,Datei anhängen
+Members.MemberEmailAuthorisation.EmailBody,Sie haben sich auf {0} registriert - Um Ihre E-Mail-Adresse zu bestätigen müssen Sie dem untenstehenden Link folgen. {1}
+Post.Deleted,Beitrag gelöscht
+Members.Errors.PasswordIncorrect,Benutzername oder Passwort sind falsch.
+Members.LogOnMessage,Bitte geben Sie Benutzernamen und Passwort ein. Oder {0} Sie sich.
+Date.MinutesAgo,vor {0} Minuten
+Rss.LatestActivity.Title,Neueste Diskussionen
+Date.Yesterday,gestern
+PM.RecipientUsername,Empfänger
+Buttons.Report,Melden
+PM.Title,Nachricht
+Notification.UnSubscribe,Abonnement kündigen
+Topic.AlreadyAnswered,Fragen
+Members.AlreadyRegistered,Bereits registriert? Warum würden Sie dies noch einmal machen wollen?
+PM.NewPrivateMessageBody,{0} hat Ihnen eine private Nachricht gesendet.
+Facebook.Error.EnabledButNotAddedKeys,Sie haben Facebook-Login aktiviert
+Notification.Subscribe,Abonnieren
+PM.Delete,Löschen
+Stats.FooterMainStatText,Unsere {0} Mitglieder haben {1} Beiträge in {2} Diskussionen verfasst
+Post.Notification.NewPosts,Zum Thema {0} wurde ein neuer Beitrag erstellt.
+PM.OriginalMessage,Originalnachricht
+Date.WeeksAgo,vor {0} Wochen
+Language.Changed,Sprache geändert
+Members.MessageMe,Nachricht an mich
+Members.ChangePassword.Error,Das aktuelle Passwort ist falsch oder das neue ungültig.
+Members.LogonGoogleButton,Mit Google anmelden
+Topic.Comment,Antworten
+Error.WrongAnswerRegistration,Bei Ihrer Antwort ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.
+Members.DateJoined,Mitglied seit
+Category.SubCategoriesHeading,Subkategorien in
+Post.label.TopicCategory,Themenkategorie
+Members.UnBanUser,Benutzer entsperren
+Date.JustNow,gerade eben
+Date.OneHourAgo,vor 1 Stunde
+Members.LogonFacebookButton,Mit Facebook anmelden
+PM.CreatePrivateMessage,Private Nachricht erstellen
+PM.MessageSent,Nachricht gesendet
+Members.NowRegistered,Sie sind nun registriert.
+Notification.SubscribeByEmail,Abonnieren via E-Mail
+PostFilter.Votes,Stimmen
+Errors.NoPermissionPolls,Thema erstellt
+Buttons.ChangePassword,Passwort ändern
+PM.Reply,Antworten
+Members.Label.EmailAddressBlank,Geben Sie Ihre E-Mail-Adresse an.
+PM.Read,Gelesen
+Members.Label.Comment,Kommentar
+Activity.Badge,Orden verliehen
+Members.CantUnlock,Benutzer existiert nicht - Entsperrung nicht möglich.
+Poll.Button.Create,Umfrage hinzufügen
+Members.LogonTwitterButton,Mit Twitter anmelden
+Poll.Button.Vote,Stimme abgeben
+Errors.NoPermission,Sie haben nicht die Berechtigung diese Aktion auszuführen.
+Twitter.Error.EnabledButNotAddedKeys,Sie haben Anmeldungen über soziale Netzwerke aktiviert aber nicht Twitter id und secret key in web.config eingefügt
+Members.NowRegisteredNeedApproval,Sie sind nun registriert. Der Foren-Admin muss Ihren Account noch bestätigen.
+Members.Profile.Website,Website:
+Members.Label.CurrentPassword,Aktuelles Passwort
+Members.Label.ConfirmNewPassword,Neues Passwort bestätigen
+Members.Errors.DuplicateUserName,Benutzername existiert bereits. Bitte geben Sie einen anderen Benutzernamen an.
+Error.EmailIsBanned,Die E-Mail-Adresse oder Domain ist gesperrt.
+Members.Label.DateJoined,Mitglied seit
+Side.Search,Suchen
+Members.Label.Username,Benutzername
+PostFilter.Newest,Datum
+Members.Profile.Twitter,Twitter:
+Topic.Deleted,Thema gelöscht
+Buttons.Search,Suchen
+Members.NewMemberSubject,Neues Mitglied registriert
+Members.ForgotPassword.Email,Sie haben eine Zurücksetzung Ihres Passworts auf {0} beantragt. Ihr neues Passwort finden Sie weiter unten.
+Points.ThisWeeksHighEarners,Meistverdiener der Woche
+PM.SentPrivateMessages,Gesendete Nachrichten
+PM.SendingToQuickly,Sie versuchen zu schnell Nachrichten zu verschicken.
+Members.Label.ConfirmPassword,Passwort bestätigen
+Members.ForgotPassword.Subject,Passwort zurücksetzen
+Leaderboard.ThisWeeksStars,Stars der Woche
+PM.NoMessages,Sie haben zur Zeit keine privaten Nachrichten.
+Activity.ProfileUpdated,hat ein aktualisiertes Profil
+Buttons.CreatePost,Beitrag erstellen
+Members.EditMember,Mitglied bearbeiten
+Activity.UserAwardedBadge,wurde der
+Members.Label.Roles,Nutzergruppen
+SideBox.MyTools,Meine Optionen
+Members.MemberEmailAuthorisationResend,Bestätigungs-E-Mail erneut senden
+Post.UploadBannedFileExtension,Dateiendung nicht erlaubt
+Members.ChangePassword.Success,Passwort geändert
+Post.FilesUploaded,Dateien erfolgreich hochgeladen
+Members.Label.Website,Website
+Members.Errors.LogonGeneric,Anmeldung nicht möglich.
+PM.Create,Erstellen
+Members.Errors.InvalidPassword,Das Passwort ist ungültig. Bitte Überprüfen Sie Ihre Eingabe.
+Members.Profile.Posts,Beiträge:
+Members.ProfileTitle,Profil
+PM.Send,Senden
+Report.Reason,Grund
+Members.LogonYahooButton,Mit Yahoo anmelden
+PM.To,An
+Category.AllCategories,Alle Kategorien
+Member.ProfileUpdated,Profil aktualisiert
+Stats.FooterActiveUsersText,Derzeit online:
+Post.Upload,Dateien hochladen
+Buttons.Edit,Profil bearbeiten von
+Report.MemberReported,Gemeldetes Mitglied
+Members.Label.NewPassword,Neues Passwort
+Notification.UnSubscribeByEmail,E-Mail-Abonnement kündigen
+Members.Profile.DiscussionActivity,Aktivität in Diskussionen
+Topic.Label.SubscribeToTopic,Über Antworten benachrichtigt werden?
+Members.Profile.Facebook,Facebook:
+Date.OneMinuteAgo,vor 1 Minute
+Leaderboard.LeaderboardTitle,Globale Bestenliste
+Home.LatestDiscussions,Neueste Diskussionen
+Members.Errors.UserNotApproved,Benutzer wurde noch nicht zugelassen.
+Members.Users,Mitglieder
+Topic.Label.Category,Kategorie auswählen
+Errors.NothingToDisplay,Keine Inhalte vorhanden
+Members.Profile.Location,Ort:
+Date.HoursAgo,vor {0} Stunden
+Members.ChangePassword.Title,Passwort ändern
+Members.Errors.InvalidQuestion,Die Frage für den Passwort-Erhalt ist ungültig. Bitte Überprüfen Sie Ihre Eingabe.
+Report.Admin,Admin
+Rss.LatestActivity.Description,Letzte Diskussionen
+Members.SearchMembers,Mitglieder suchen
+Topic.OptionsHeading,Themenoptionen
+Report.ReportPostBy,Beitrag melden von: 
+Members.Label.Age,Alter
+PostFilter.Standard,Standard
+Members.Label.Location,Ort
+PM.Subject,Betreff
+PM.Date,Datum
+Members.ForgotPassword.Title,Passwort vergessen
+Report.Report,Melden
+Buttons.ResetPassword,Passwort zurücksetzen
+Members.Label.Twitter,Twitter-Url
+Members.MemberEmailAuthorisationNeeded,Wir haben Ihnen eine Bestätigungs-E-Mail geschickt - Bitte klicken Sie den Bestätigungslink
+Members.NewMemberRegistered,Neues Mitglied registriert mit {0} ({1})
+PM.UnableFindMember,Mitglied konnte nicht gefunden werden.
+PM.PrivateMessages,Private Nachrichten
+Report.ReportSent,Meldung gesendet
+Members.Label.Signature,Signatur
+Ajax.PleaseWait,Bitte warten...
+Members.NowApproved,Ihr Account wurde nun aktiviert - Danke
+Topic.Notification.Subject,Neue Diskussion um
+Activity.UserJoined,ist ein neues Mitglied im Forum
+Members.ForgotPassword.SuccessMessage,Ein neues Passwort wurde Ihnen per E-Mail zugesandt.
+Errors.GenericMessage,Leider ist ein Fehler aufgetreten. Entschuldigung!
+Members.BanUser,Benutzer sperren
+Members.Admin,Admin
+Activity.ActivityTitle,Aktivitäten
+Members.Errors.UserRejected,Die Benutzererstellung wurde abgebrochen. Bitte Überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. Sollte das Problem weiterhin bestehen
+Members.Label.Users,Benutzer
+Members.ForgotPassword.Link,Passwort vergessen?
+Report.Reporter,Melder
+Post.Label.TopicName,Themenname
+Members.MemberEmailAuthorisation.Subject,E-Mail-Bestätigung
+Members.MemberEmailAuthorisationNeededMessage,Klicken Sie auf den Link in Ihrer Bestätigungs-E-Mail
+Members.NowLoggedIn,Sie sind nun angemeldet.
+Members.Profile.Joined,Mitglied seit:
+Members.Errors.ProviderError,Bei der Authentifizierung ist ein Fehler aufgetreten. Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. Sollte das Problem weiterhin bestehen
+Post.UploadFileTooBig,Datei ist zu groß
+Category.MostRecent,Zuletzt:
+Poll.Placeholder.TypeAnswerHere,Geben Sie eine Antwortmöglichkeit ein
+Report.MemberReport,Mitgliedermeldung
+Search.NoResults,Keine Einträge gefunden
+Leaderboard.ThisYearsStars,Rockstars des Jahres
+Post.Notification.Subject,Neuer Beitrag zu
+Confirmation.DeleteMembersPosts,"Sind Sie sicher? Alle Mitglieder
+Topic.Label.TopicTitle,Titel
+File.SuccessfullyDeleted,Datei gelöscht
+Errors.NoAccess,Kein Zugriff
+Editor.NeedHelp,Brauchen Sie Hilfe beim formatieren?
+PM.SentItemsOverCapcity,Ihre gesendeten Nachrichten haben keinen Platz mehr - Löschen Sie Nachrichten
+Members.Errors.UserLockedOut,Benutzer ist gesperrt.
+PostFilter.OrderBy,Sortieren nach:
+Members.Profile.Badges,Orden
+Members.Errors.InvalidUserName,Der Benutzername ist ungültig. Bitte Überprüfen Sie Ihre Eingabe.
+Members.Errors.DuplicateEmail,Es ist bereits ein Benutzer mit dieser E-Mail-Adresse vorhanden. Bitte geben Sie eine andere E-Mail-Adresse an.
+Members.Label.EmailAddress,E-Mail-Adresse (wird von Gravatar verwendet)
+Members.Profile.Age,Alter:
+Members.Errors.Unknown,Ein unbekannter Fehler ist aufgetreten. Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut. Sollte das Problem weiterhin bestehen
+PM.NewPrivateMessageSubject,Neue Private Nachricht
+Members.Label.UserIsApproved,Benutzer ist zugelassen.
+Topic.ShowMorePosts,Mehr Beiträge anzeigen
+Rss.Category.Description,Neueste Diskussionen der Kategorie {0}
+Members.LoginOrText,Oder
+Badge.UnknownBadge,Unbekannter Orden-Typ {0}
+Layout.Nav.Badges,Orden
+PM.Sent,Gesendet:
+Topic.Notification.NewTopics,In der Kategorie {0} wurde ein neues Thema erstellt.
+Poll.Votes,Stimmen
