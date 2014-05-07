@@ -124,6 +124,7 @@ namespace MVCForum.IOC
             container.BindInRequestScope<ITopicAPI, TopicAPI>();
             container.BindInRequestScope<IMemberAPI, MemberAPI>();
             container.BindInRequestScope<ICategoryAPI, CategoryAPI>();
+            container.BindInRequestScope<IVoteAPI, VoteAPI>();
 
             //container.BindInRequestScope<ISessionHelper, SessionHelper>();
 

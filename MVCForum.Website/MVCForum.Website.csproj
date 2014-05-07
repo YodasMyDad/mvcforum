@@ -630,8 +630,10 @@
     <Content Include="Content\admin\Images\icons\zone.png" />
     <Content Include="Content\badges\MemberForAYearBadge.png" />
     <Content Include="Content\badges\MentionsUmbracoBadge.png" />
+    <Content Include="Content\badges\OneThousandPoints.png" />
     <Content Include="Content\badges\PosterMarkAsSolutionBadge.png" />
     <Content Include="Content\badges\PosterVoteUpBadge.png" />
+    <Content Include="Content\badges\TheGrouch.png" />
     <Content Include="Content\badges\UserMarkAsSolutionBadge.png" />
     <Content Include="Content\badges\UserVoteUpBadge.png" />
     <Content Include="Content\cache\Cache.txt" />
@@ -1766,6 +1768,14 @@
     <ProjectReference Include="..\Badges\AuthorMarkAsSolution\Badge.AuthorMarkAsSolution.csproj">
       <Project>{49448f62-01cd-4e2a-8880-a98bb66c4afd}</Project>
       <Name>Badge.AuthorMarkAsSolution</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Badges\Badge.OneThousandPoints\Badge.OneThousandPoints.csproj">
+      <Project>{43875caf-fcbb-4e7b-b732-ba5e3f0212c9}</Project>
+      <Name>Badge.OneThousandPoints</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Badges\Badge.VoteTheGrouch\Badge.VoteTheGrouch.csproj">
+      <Project>{a4e05fda-ebaf-4f3e-b9c5-8ae4d8d6ec6e}</Project>
+      <Name>Badge.VoteTheGrouch</Name>
     </ProjectReference>
     <ProjectReference Include="..\Badges\MemberForAYearBadge\Badge.MemberForAYearBadge.csproj">
       <Project>{7a15b80d-5167-4181-a7e7-9121b9856526}</Project>

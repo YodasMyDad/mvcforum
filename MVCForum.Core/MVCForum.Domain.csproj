@@ -134,6 +134,7 @@
     <Compile Include="Interfaces\API\ITopicAPI.cs" />
     <Compile Include="Interfaces\API\IMVCForumAPI.cs" />
     <Compile Include="Interfaces\API\IPostAPI.cs" />
+    <Compile Include="Interfaces\API\IVoteApi.cs" />
     <Compile Include="Interfaces\Badges\IPostBadge.cs" />
     <Compile Include="Interfaces\Badges\IMarkAsSolutionBadge.cs" />
     <Compile Include="Interfaces\Badges\ITimeBadge.cs" />

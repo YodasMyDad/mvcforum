@@ -72,6 +72,7 @@
     <Compile Include="Examples\APIExamples.cs" />
     <Compile Include="MemberAPI.cs" />
     <Compile Include="MVCForumAPI.cs" />
+    <Compile Include="VoteAPI.cs" />
     <Compile Include="PostAPI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TopicAPI.cs" />

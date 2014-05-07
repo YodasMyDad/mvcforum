@@ -6,5 +6,6 @@
         IPostAPI Post { get; set; }
         ITopicAPI Topic { get; set; }
         ICategoryAPI Category { get; set; }
+        IVoteAPI Vote { get; set; }
     }   
 }

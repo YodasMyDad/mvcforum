@@ -95,7 +95,7 @@ namespace MVCForum.Services
                 DisplayName = displayNameAtt.DisplayName,
                 Users = new List<MembershipUser>(),
                 Type = badgeType.ToString().TrimEnd(),
-                AwardsPoints = awardsPointsAtt.Points
+                AwardsPoints = awardsPointsAtt != null ? awardsPointsAtt.Points : 0
             };
             return badge;
         }
