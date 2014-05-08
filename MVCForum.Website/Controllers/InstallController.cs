@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Web.Configuration;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
@@ -36,6 +38,21 @@ namespace MVCForum.Website.Controllers
         // This is the default installer
         public ActionResult Index()
         {
+            // Quick check of connection string, see if it's close to the original
+            // and if so, put a message up asking if they have updated it
+            var currentConnectionString = WebConfigurationManager.ConnectionStrings[AppConstants.MvcForumContext].ConnectionString.ToLower();
+            if (currentConnectionString.Contains("user id=user;password=user"))
+            {
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = @"<strong>Just Checking:</strong> Have you updated the connection string in the web.config to point to a new blank database? 
+                                If you have, please ignore this message and continue with the installer.",
+                    MessageType = GenericMessages.info,
+                    ConstantMessage = true
+                };
+            }
+
+
             return View();
         }
 

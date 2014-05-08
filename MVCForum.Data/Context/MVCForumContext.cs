@@ -1,7 +1,5 @@
-﻿using System.Data;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
-//using EFCachingProvider;
 using MVCForum.Data.Mapping;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Activity;
@@ -11,8 +9,6 @@ namespace MVCForum.Data.Context
 {
     public class MVCForumContext : DbContext, IMVCForumContext
     {
-        public const string DatabaseConnectionName = @"MVCForumContext";
-
         // http://blogs.msdn.com/b/adonet/archive/2010/12/06/ef-feature-ctp5-fluent-api-samples.aspx
         public DbSet<Activity> Activity { get; set; }
         public DbSet<Badge> Badge { get; set; }
@@ -44,29 +40,11 @@ namespace MVCForum.Data.Context
         /// <summary>
         /// Constructor
         /// </summary>
-        public MVCForumContext()
-            //: base(CreateCachingConnection(DatabaseConnectionName), true)      
+        public MVCForumContext()   
         {
             Configuration.LazyLoadingEnabled = true;
         }
 
-        ///// <summary>
-        ///// Creates tracing connection which is a wrapper around native store connection.
-        ///// </summary>
-        ///// <returns>Instance of <see cref="EFCachingConnection"/> with enabled caching.</returns>
-        //private static EFCachingConnection CreateCachingConnection(string connectionName)
-        //{
-        //    // Based on the tracing example at: http://jkowalski.com/2010/04/23/logging-sql-statements-in-entity-frameworkcode-first/
-        //    var connection = System.Configuration.ConfigurationManager.ConnectionStrings[connectionName];
-
-        //    var efCachingconnection = new EFCachingConnection
-        //    {
-        //        ConnectionString = @"wrappedProvider=" + connection.ProviderName + ";" + connection.ConnectionString
-        //    };
-
-        //    return efCachingconnection;
-        //}
-    
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             // http://stackoverflow.com/questions/7924758/entity-framework-creates-a-plural-table-name-but-the-view-expects-a-singular-ta
@@ -107,10 +85,7 @@ namespace MVCForum.Data.Context
 
         public new void Dispose()
         {
-            //if (Database.Connection.State == ConnectionState.Open)
-            //{
-            //    Database.Connection.Close();
-            //}
+
         }
     }
 }

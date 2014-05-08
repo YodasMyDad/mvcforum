@@ -35,11 +35,12 @@
 <body>
 
     <div class="container-fluid">
-        @Html.Partial("_GenericMessage")
+
 
         <section id="main">
             <div class="row-fluid">
                 <div class="offset2 span8">
+                    @Html.Partial("_GenericMessage")
                     <a class="brand" href="http://www.mvcforum.com" target="_blank">MVC Forum</a>
                     @RenderBody()
                 </div>

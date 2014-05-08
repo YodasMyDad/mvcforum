@@ -114,5 +114,8 @@
         public const string LoginGoogleFirstName = "http://axschema.org/namePerson/first";
         public const string LoginGoogleLastName = "http://axschema.org/namePerson/last";
 
+        // Database Connection Key
+        public const string MvcForumContext = "MVCForumContext";
+
     }
 }

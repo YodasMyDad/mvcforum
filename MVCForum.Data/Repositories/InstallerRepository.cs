@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data.SqlClient;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Configuration;
 using MVCForum.Data.Context;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
@@ -38,7 +39,7 @@ namespace MVCForum.Data.Repositories
             try
             {
                 // Set the connection string
-                connString = connectionStringOveride ?? ConfigurationManager.ConnectionStrings["MVCForumContext"].ConnectionString;
+                connString = connectionStringOveride ?? WebConfigurationManager.ConnectionStrings[AppConstants.MvcForumContext].ConnectionString;
             }
             catch (Exception ex)
             {
@@ -95,6 +96,8 @@ namespace MVCForum.Data.Repositories
                         }
 
                     }
+
+                    HttpContext.Current.Server.ScriptTimeout = 600;
                 }
             }
 

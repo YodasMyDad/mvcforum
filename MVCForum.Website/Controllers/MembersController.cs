@@ -1302,6 +1302,14 @@ namespace MVCForum.Website.Controllers
         public PartialViewResult SideAdminPanel()
         {
             var count = _privateMessageService.NewPrivateMessageCount(LoggedOnUser.Id);
+            if (count > 0)
+            {
+                ViewBag.Message = new GenericMessageViewModel
+                {
+                    Message = LocalizationService.GetResourceString("Member.HasNewPrivateMessages"),
+                    MessageType = GenericMessages.info
+                };
+            }
             return PartialView(new ViewAdminSidePanelViewModel { CurrentUser = LoggedOnUser, NewPrivateMessageCount = count });
         }
 

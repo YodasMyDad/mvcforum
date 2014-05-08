@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Activity;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.ViewModels;
 using RssItem = MVCForum.Domain.DomainModel.RssItem;
@@ -209,7 +207,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        //[OutputCache(Duration = AppConstants.DefaultCacheLengthInSeconds)]
+        [OutputCache(Duration = AppConstants.DefaultCacheLengthInSeconds)]
         public ActionResult GoogleSitemap()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
