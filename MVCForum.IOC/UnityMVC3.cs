@@ -1,3 +1,4 @@
+using System.Web.Http;
 using System.Web.Mvc;
 using MVCForum.API;
 using MVCForum.Data.Context;
@@ -44,6 +45,8 @@ namespace MVCForum.IOC
             var container = BuildUnityContainer();
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
+
+            GlobalConfiguration.Configuration.DependencyResolver = new Unity.WebApi.UnityDependencyResolver(container);
         }
 
         /// <summary>

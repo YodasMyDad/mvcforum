@@ -1,6 +1,3 @@
-using System.Web.Mvc;
-using MVCForum.Domain;
-using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.IOC;
 using MVCForum.Website.App_Start;
 
