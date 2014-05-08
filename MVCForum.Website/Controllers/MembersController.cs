@@ -1304,7 +1304,7 @@ namespace MVCForum.Website.Controllers
             var count = _privateMessageService.NewPrivateMessageCount(LoggedOnUser.Id);
             if (count > 0)
             {
-                ViewBag.Message = new GenericMessageViewModel
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = LocalizationService.GetResourceString("Member.HasNewPrivateMessages"),
                     MessageType = GenericMessages.info
