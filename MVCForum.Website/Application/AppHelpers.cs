@@ -215,17 +215,20 @@ namespace MVCForum.Website.Application
 
         public static string ConvertPostContent(string post)
         {
-            // Convert any BBCode
-            post = StringUtils.ConvertBbCodeToHtml(post, false);
+            if (!string.IsNullOrEmpty(post))
+            {
+                // Convert any BBCode
+                post = StringUtils.ConvertBbCodeToHtml(post, false);
 
-            // If using the PageDown/MarkDown Editor uncomment this line
-            post = StringUtils.ConvertMarkDown(post);
+                // If using the PageDown/MarkDown Editor uncomment this line
+                post = StringUtils.ConvertMarkDown(post);
 
-            // Allow video embeds
-            post = StringUtils.EmbedVideosInPosts(post);
+                // Allow video embeds
+                post = StringUtils.EmbedVideosInPosts(post);
 
-            // Add Google prettify code snippets
-            post = post.Replace("<pre>", "<pre class='prettyprint'>");
+                // Add Google prettify code snippets
+                post = post.Replace("<pre>", "<pre class='prettyprint'>");
+            }
 
             return post;
         }
