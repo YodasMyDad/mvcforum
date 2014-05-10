@@ -260,7 +260,9 @@ namespace MVCForum.Utilities
         public static int CountWordsInString(string text)
         {
             if (string.IsNullOrEmpty(text))
-            { return 0; }
+            {
+                return 0;                 
+            }
             var tmpStr = text.Replace("\t", " ").Trim();
             tmpStr = tmpStr.Replace("\n", " ");
             tmpStr = tmpStr.Replace("\r", " ");
@@ -277,6 +279,11 @@ namespace MVCForum.Utilities
         /// <returns></returns>
         public static string ReturnAmountWordsFromString(string text, int wordAmount)
         {
+            if (string.IsNullOrEmpty(text))
+            {
+                return text;
+            }
+
             string tmpStr;
             string[] stringArray;
             var tmpStrReturn = "";
@@ -308,6 +315,11 @@ namespace MVCForum.Utilities
         /// <returns></returns>
         public static string ReturnSearchString(string searchTerm)
         {
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                return searchTerm;
+            }
+
             // Lower case
             searchTerm = searchTerm.ToLower();
 
@@ -561,7 +573,11 @@ namespace MVCForum.Utilities
         /// <returns></returns>
         public static string UrlEncode(string input)
         {
-            return Microsoft.Security.Application.Encoder.UrlEncode(input);
+            if (!string.IsNullOrEmpty(input))
+            {
+                return Microsoft.Security.Application.Encoder.UrlEncode(input);
+            }
+            return input;
         }
 
         /// <summary>
@@ -571,7 +587,11 @@ namespace MVCForum.Utilities
         /// <returns></returns>
         public static string UrlDecode(string input)
         {
-            return HttpUtility.UrlDecode(input);
+            if (!string.IsNullOrEmpty(input))
+            {
+                return HttpUtility.UrlDecode(input);  
+            }
+            return input;
         }
 
         /// <summary>
@@ -581,7 +601,11 @@ namespace MVCForum.Utilities
         /// <returns></returns>
         public static string HtmlDecode(string input)
         {
-            return HttpUtility.HtmlDecode(input);
+            if (!string.IsNullOrEmpty(input))
+            {
+                return HttpUtility.HtmlDecode(input);
+            }
+            return input;
         }
 
         /// <summary>
@@ -591,8 +615,11 @@ namespace MVCForum.Utilities
         /// <returns></returns>
         public static string StripHtmlFromString(string input)
         {
-            input = Regex.Replace(input, @"</?\w+((\s+\w+(\s*=\s*(?:"".*?""|'.*?'|[^'"">\s]+))?)+\s*|\s*)/?>", string.Empty, RegexOptions.Singleline);
-            input = Regex.Replace(input, @"\[[^]]+\]", "");
+            if (!string.IsNullOrEmpty(input))
+            {
+                input = Regex.Replace(input, @"</?\w+((\s+\w+(\s*=\s*(?:"".*?""|'.*?'|[^'"">\s]+))?)+\s*|\s*)/?>", string.Empty, RegexOptions.Singleline);
+                input = Regex.Replace(input, @"\[[^]]+\]", "");
+            }
             return input;
         }
 
