@@ -356,7 +356,7 @@ namespace MVCForum.Website.Controllers
                 var request = OpenAuthHelpers.GetRedirectActionRequest(WellKnownProviders.Google);
 
                 // Redirect to the providers login page and asks user for permission to share the profile fields requested.
-                return request.RedirectingResponse.AsActionResult();
+                return request.RedirectingResponse.AsActionResultMvc5();
             }
 
             // If we get here then we have been to the provider page and been redirected back here
@@ -476,7 +476,7 @@ namespace MVCForum.Website.Controllers
                 var request = OpenAuthHelpers.GetRedirectActionRequest(WellKnownProviders.Yahoo);
 
                 // Redirect to the providers login page and asks user for permission to share the profile fields requested.
-                return request.RedirectingResponse.AsActionResult();
+                return request.RedirectingResponse.AsActionResultMvc5();
             }
 
             // If we get here then we have been to the provider page and been redirected back here
