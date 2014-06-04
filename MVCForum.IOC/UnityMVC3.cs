@@ -46,7 +46,8 @@ namespace MVCForum.IOC
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
 
-            GlobalConfiguration.Configuration.DependencyResolver = new Unity.WebApi.UnityDependencyResolver(container);
+            // TODO - Not working?
+            //GlobalConfiguration.Configuration.DependencyResolver = new Unity.WebApi.UnityDependencyResolver(container);
         }
 
         /// <summary>
