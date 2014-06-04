@@ -1,0 +1,45 @@
+# Ignore file for Visual Studio 2008
+# use glob syntax
+syntax: glob
+# Ignore Visual Studio 2008 files
+*.obj
+*.pdb
+*.user
+*.aps
+*.pch
+*.vspscc
+*.vssscc
+*_i.c
+*_p.c
+*.ncb
+*.suo
+*.tlb
+*.tlh
+*.bak
+*.cache
+*.ilk
+*.log
+*.lib
+*.sbr
+*.scc
+[Bb]in
+[Dd]ebug*/
+obj/
+App_Data*/
+[Rr]elease*/
+_ReSharper*/
+[Tt]humbs.db
+[Tt]est[Rr]esult*
+[Bb]uild[Ll]og.*
+*.[Pp]ublish.xml
+*.resharper
+*.orig
+*Backup/*
+UpgradeLog2.htm
+*MVCForum.Website/Content/uploads/*
+Badges/AuthorMarkAsSolution/*.dll
+MVCForum.Website/Content/cache/*.css
+MVCForum.Website/Scripts/cache/*.js
+# Nuget
+packages/*
+!packages/repositories.config

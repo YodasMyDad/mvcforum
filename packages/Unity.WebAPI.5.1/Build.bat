@@ -1,3 +1,0 @@
-nuget pack
-
-pause
