@@ -382,7 +382,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\LogFile.txt" />
-    <Content Include="App_Data\lucene_index\ReadMe.txt" />
+    <Content Include="App_Data\lucene_index\NotHere.txt" />
     <Content Include="Content\admin\Admin.css" />
     <Content Include="Content\admin\Images\apple-touch-icon-57-precomposed.png" />
     <Content Include="Content\admin\Images\favicon.ico" />
