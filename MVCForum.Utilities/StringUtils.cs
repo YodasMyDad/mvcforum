@@ -446,17 +446,6 @@ namespace MVCForum.Utilities
         #region Sanitising
 
         /// <summary>
-        /// Used to pass all string input in the system  - Strips all nasties from a string/html
-        /// </summary>
-        /// <param name="html"></param>
-        /// <returns></returns>
-        public static string GetSafeHtml(string html)
-        {
-            return ScrubHtml(html);
-            //return Sanitizer.GetSafeHtmlFragment(html);
-        }
-
-        /// <summary>
         /// Strips all non alpha/numeric charators from a string
         /// </summary>
         /// <param name="strInput"></param>
@@ -487,6 +476,23 @@ namespace MVCForum.Utilities
             var ipList = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
             return !string.IsNullOrEmpty(ipList) ? ipList.Split(',')[0] : HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
         }
+
+        /// <summary>
+        /// Used to pass all string input in the system  - Strips all nasties from a string/html
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        public static string GetSafeHtml(string html)
+        {
+            // Scrub html
+            html = ScrubHtml(html);
+
+            // remove unwanted html
+            html = RemoveUnwantedTags(html);
+
+            return html;
+        }
+
 
         /// <summary>
         /// Takes in HTML and returns santized Html/string
@@ -564,6 +570,58 @@ namespace MVCForum.Utilities
             }
 
             return doc.DocumentNode.WriteTo();
+        }
+
+        public static string RemoveUnwantedTags(string html)
+        {
+
+            if (string.IsNullOrEmpty(html))
+            {
+                return html;
+            }
+
+            var unwantedTagNames = new List<string>
+            {
+                "span",
+                "div"
+            };
+
+            var htmlDoc = new HtmlDocument();
+
+            // load html
+            htmlDoc.LoadHtml(html);
+
+            var tags = (from tag in htmlDoc.DocumentNode.Descendants()
+                        where unwantedTagNames.Contains(tag.Name)
+                        select tag).Reverse();
+
+
+            // find formatting tags
+            foreach (var item in tags)
+            {
+                if (item.PreviousSibling == null)
+                {
+                    // Prepend children to parent node in reverse order
+                    foreach (var node in item.ChildNodes.Reverse())
+                    {
+                        item.ParentNode.PrependChild(node);
+                    }
+                }
+                else
+                {
+                    // Insert children after previous sibling
+                    foreach (var node in item.ChildNodes)
+                    {
+                        item.ParentNode.InsertAfter(node, item.PreviousSibling);
+                    }
+                }
+
+                // remove from tree
+                item.Remove();
+            }
+
+            // return transformed doc
+            return htmlDoc.DocumentNode.WriteContentTo().Trim();
         }
 
         /// <summary>
@@ -668,6 +726,7 @@ namespace MVCForum.Utilities
             return string.Format("<img src=\"{0}\" alt=\"{1}\" />", url, alt);
         }
         #endregion
+
 
         /// <summary>
         /// Creates a URL freindly string, good for SEO

@@ -11,6 +11,7 @@ namespace MVCForum.Website.ViewModels
     public class CreateAjaxPostViewModel
     {
         [UIHint(AppConstants.EditorType), AllowHtml]
+        [StringLength(6000)]
         public string PostContent { get; set; }
 
         public Guid Topic { get; set; }
@@ -50,6 +51,7 @@ namespace MVCForum.Website.ViewModels
         public IEnumerable<Category> Categories { get; set; }
 
         [UIHint(AppConstants.EditorType), AllowHtml]
+        [StringLength(6000)]
         public string Content { get; set; }
 
         [HiddenInput]

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Externals", "Externals", "{7859E236-ED49-482B-B325-C5EEFE650C14}"
 	ProjectSection(SolutionItems) = preProject
@@ -20,7 +20,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{4425AF88-0237-48A1-AEA0-F3C4AE397C36}"
 	ProjectSection(SolutionItems) = preProject
 		Db\dbReset.sql = Db\dbReset.sql
-		ReadMe.txt = ReadMe.txt
 		VersionDbChanges.txt = VersionDbChanges.txt
 	EndProjectSection
 EndProject

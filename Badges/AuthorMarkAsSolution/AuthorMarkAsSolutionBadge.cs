@@ -20,6 +20,7 @@ namespace Badge.AuthorMarkAsSolution
         public bool Rule(MembershipUser user, IMVCForumAPI api)
         {
             return api.Topic.GetSolvedTopicsByMember(user.Id).Count >= 1;
+
         }
 
     }

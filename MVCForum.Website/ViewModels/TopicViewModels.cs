@@ -46,6 +46,7 @@ namespace MVCForum.Website.ViewModels
         public string Name { get; set; }
 
         [UIHint(AppConstants.EditorType), AllowHtml]
+        [StringLength(6000)]
         public string Content { get; set; }
 
         public bool IsSticky { get; set; }
