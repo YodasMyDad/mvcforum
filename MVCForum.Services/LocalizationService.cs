@@ -300,7 +300,7 @@ namespace MVCForum.Services
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //_loggingService.Error(ex);
                 }
