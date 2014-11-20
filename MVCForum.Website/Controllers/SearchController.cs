@@ -44,7 +44,8 @@ namespace MVCForum.Website.Controllers
                     var pageIndex = p ?? 1;
 
                     // Returns the formatted string to search on
-                    var formattedSearchTerm = StringUtils.ReturnSearchString(term);
+                    //var formattedSearchTerm = StringUtils.ReturnSearchString(term);
+                    var formattedSearchTerm = term;
 
                     // Create an empty viewmodel
                     var viewModel = new SearchViewModel

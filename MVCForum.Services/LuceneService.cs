@@ -88,6 +88,7 @@ namespace MVCForum.Services
                     DateCreated = post.DateCreated,
                     TopicId = post.Topic.Id,
                     TopicUrl = post.Topic.NiceUrl,
+                    TopicTags = post.Topic.Tags.Aggregate("", (current, tag) => current + " " + tag.Tag),
                     Username = post.User.UserName,
                     UserId = post.User.Id
                 };
@@ -112,6 +113,7 @@ namespace MVCForum.Services
                 TopicName = topic.Name,
                 DateCreated = topic.LastPost.DateCreated,
                 TopicId = topic.Id,
+                TopicTags = topic.Tags.Aggregate("", (current, tag) => current + " " + tag.Tag),
                 Username = topic.LastPost.User.UserName,
                 UserId = topic.LastPost.User.Id,
                 TopicUrl = topic.NiceUrl

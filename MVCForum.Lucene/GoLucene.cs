@@ -22,7 +22,7 @@ namespace MVCForum.Lucene
         private const string LuceneDirectoryName = "lucene_index";
 
         // properties
-        public static string _luceneDir = HttpContext.Current.Server.MapPath(string.Concat("~/App_Data", "/", LuceneDirectoryName));
+        public static string _luceneDir = System.Configuration.ConfigurationManager.AppSettings["LuceneDirectory"] ?? HttpContext.Current.Server.MapPath(string.Concat("~/App_Data", "/", LuceneDirectoryName));
         private static FSDirectory _directoryTemp;
         private static FSDirectory _directory
         {
@@ -67,8 +67,8 @@ namespace MVCForum.Lucene
             // Add a tilda for fuzzy search, or keep original search
             var searchOperator = doFuzzySearch ? "~" : "*";
 
-            var terms = input.Trim().Replace("-", " ").Split(' ').Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Trim() + searchOperator);
-            input = string.Join(" ", terms);
+            //var terms = input.Trim().Replace("-", " ").Split(' ').Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Trim() + searchOperator);
+            //input = string.Join(" ", terms);
 
             return _search(input, amountToTake, fieldName);
         }
@@ -85,8 +85,8 @@ namespace MVCForum.Lucene
             // Add a tilda for fuzzy search, or keep original search
             var searchOperator = doFuzzySearch ? "~" : "*";
 
-            var terms = input.Trim().Replace("-", " ").Split(' ').Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Trim() + searchOperator);
-            input = string.Join(" ", terms);
+            //var terms = input.Trim().Replace("-", " ").Split(' ').Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Trim() + searchOperator);
+            //input = string.Join(" ", terms);
 
             return _search(input, pageIndex, pageSize);
         }
@@ -101,7 +101,7 @@ namespace MVCForum.Lucene
                 const int hitsLimit = 1000;
                 var analyzer = new StandardAnalyzer(Version.LUCENE_30);
 
-                var parser = new MultiFieldQueryParser(Version.LUCENE_30, new[] { AppConstants.LucId, AppConstants.LucTopicName, AppConstants.LucPostContent }, analyzer);
+                var parser = new MultiFieldQueryParser(Version.LUCENE_30, new[] { AppConstants.LucId, AppConstants.LucTopicName, AppConstants.LucTopicTags, AppConstants.LucPostContent }, analyzer);
                 var query = parseQuery(searchQuery, parser);
                 searcher.SetDefaultFieldSortScoring(true, true);
                 var hits = searcher.Search(query, null, hitsLimit, Sort.INDEXORDER).ScoreDocs;
@@ -139,7 +139,7 @@ namespace MVCForum.Lucene
                 // search by multiple fields (ordered by RELEVANCE)
                 else
                 {
-                    var parser = new MultiFieldQueryParser(Version.LUCENE_30, new[] { AppConstants.LucId, AppConstants.LucTopicName, AppConstants.LucPostContent }, analyzer);
+                    var parser = new MultiFieldQueryParser(Version.LUCENE_30, new[] { AppConstants.LucId, AppConstants.LucTopicName, AppConstants.LucTopicTags, AppConstants.LucPostContent }, analyzer);
                     var query = parseQuery(searchQuery, parser);
                     searcher.SetDefaultFieldSortScoring(true, true);
                     var hits = searcher.Search(query, null, hitsLimit, Sort.INDEXORDER).ScoreDocs;
@@ -298,6 +298,10 @@ namespace MVCForum.Lucene
             if (!string.IsNullOrEmpty(searchModel.TopicName))
             {
                 doc.Add(new Field(AppConstants.LucTopicName, searchModel.TopicName, Field.Store.YES, Field.Index.ANALYZED));
+            }
+            if (!string.IsNullOrEmpty(searchModel.TopicTags))
+            {
+                doc.Add(new Field(AppConstants.LucTopicTags, searchModel.TopicTags, Field.Store.YES, Field.Index.ANALYZED));
             }
             doc.Add(new Field(AppConstants.LucTopicUrl, searchModel.TopicUrl, Field.Store.YES, Field.Index.NOT_ANALYZED));            
 

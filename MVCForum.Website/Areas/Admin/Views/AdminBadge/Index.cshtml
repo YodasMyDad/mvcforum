@@ -12,6 +12,7 @@
             Search</button>
         @Html.HiddenFor(x => x.PageIndex)
     </div>
+    <a href="@Url.Action("Rebuild", "AdminBadge", new { area = "Admin" }, null)" class="btn btn-large">Rebuild</a>
 }
 <table class="table table-bordered table-striped">
     <thead>

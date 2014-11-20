@@ -13,7 +13,7 @@ namespace MVCForum.Domain.DomainModel
         public string TopicName { get; set; }
         public string TopicUrl { get; set; }
         public Guid TopicId { get; set; }
-        //public string TopicTags { get; set; }
+        public string TopicTags { get; set; }
 
         // User Stuff
         public string Username { get; set; }

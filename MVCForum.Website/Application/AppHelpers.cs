@@ -301,6 +301,15 @@ namespace MVCForum.Website.Application
 
         #region Files
 
+        public static string GetUploadPath()
+        {
+            string dir = System.Configuration.ConfigurationManager.AppSettings["UploadDirectory"];
+            if (!string.IsNullOrEmpty(dir) && System.IO.Directory.Exists(dir))
+                return dir;
+            if (HttpContext.Current != null)
+                return HttpContext.Current.Request.MapPath(AppConstants.UploadFolderPath);
+            return null;
+        }
         public static string MemberImage(string avatar, string email, Guid userId, int size)
         {
             if (!string.IsNullOrEmpty(avatar))

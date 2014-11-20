@@ -18,7 +18,7 @@ namespace MVCForum.Services
     {
         private const string LogFileNameOnly = @"LogFile";
         private const string LogFileExtension = @".txt";
-        private const string LogFileDirectory = @"~/App_Data";
+        private readonly string LogFileDirectory = @"~/App_Data";
 
         private const string DateTimeFormat = @"dd/MM/yyyy HH:mm:ss";
         private static readonly Object LogLock = new Object();
@@ -32,7 +32,10 @@ namespace MVCForum.Services
         public LoggingService()
         {
             // If we have no http context current then assume testing mode i.e. log file in run folder
-            _logFileFolder = HttpContext.Current != null ? HttpContext.Current.Server.MapPath(LogFileDirectory) : @".";
+            if (!string.IsNullOrEmpty(System.Configuration.ConfigurationManager.AppSettings["LogDirectory"]) && System.IO.Directory.Exists(System.Configuration.ConfigurationManager.AppSettings["LogDirectory"]))
+                _logFileFolder = System.Configuration.ConfigurationManager.AppSettings["LogDirectory"];
+            else
+                _logFileFolder = HttpContext.Current != null ? HttpContext.Current.Server.MapPath(LogFileDirectory) : @".";
             _logFileName = MakeLogFileName(false);
         }
 

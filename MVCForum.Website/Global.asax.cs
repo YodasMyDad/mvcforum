@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Reflection;
+using System.Security.Principal;
 using System.Threading;
 using System.Web;
 using System.Web.Mvc;
@@ -8,6 +9,7 @@ using System.Web.Routing;
 //using EFCachingProvider;
 //using EFCachingProvider.Caching;
 //using EFCachingProvider.Web;
+using System.Web.Security;
 using LowercaseRoutesMVC;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.Events;
@@ -15,6 +17,8 @@ using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Utilities;
 using MVCForum.Website.Application;
+using MVCForum.Website.Areas.Admin.ViewModels;
+using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
 
 namespace MVCForum.Website
 {
@@ -171,6 +175,63 @@ namespace MVCForum.Website
                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(ci.Name);
                 }
             }
+
+        }
+
+        protected void Application_PostAuthenticateRequest(object sender, EventArgs e)
+        {
+            if (HttpContext.Current.Request.Url.AbsolutePath.StartsWith("/install"))
+                return;
+
+            bool newUser = false;
+            MembershipUser user = null;
+            var membershipService = DependencyResolver.Current.GetService<IMembershipService>();
+            //var user = new MembershipUser();
+            var identity = HttpContext.Current.User.Identity as System.Security.Principal.WindowsIdentity;
+            if (identity == null || !identity.IsAuthenticated)
+                return;
+
+            var username = identity.Name;
+            user = membershipService.GetUser(username);
+            if (user == null)
+            {
+                string usernameWithoutDomain = (username.Contains("\\") ? username.Split('\\')[1] : username);
+                var userToSave = new MembershipUser
+                {
+                    UserName = username,
+                    Password = "password",
+                    IsApproved = true,
+                    Comment = "Account automatically created from Windows user!",
+                    DisableEmailNotifications = false,
+                    DisablePosting = false,
+                    DisablePrivateMessages = false,
+                    Email = usernameWithoutDomain + "@bwinparty.com"
+                };
+
+                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                {
+
+                    var createStatus = membershipService.CreateUser(userToSave);
+                    try
+                    {
+                        unitOfWork.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                        FormsAuthentication.SignOut();
+                    }
+                }
+                user = membershipService.GetUser(username);
+                newUser = true;
+            }
+            //if (user.IsApproved && !user.IsLockedOut)
+            //{
+            //    LogonWindowsRenewFormsAuthentication(user);
+            //}
+
+
 
         }
 

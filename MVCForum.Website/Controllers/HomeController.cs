@@ -33,7 +33,6 @@ namespace MVCForum.Website.Controllers
             LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
-
         //[OutputCache(Duration = 10, VaryByParam = "p")]
         public ActionResult Index()
         {

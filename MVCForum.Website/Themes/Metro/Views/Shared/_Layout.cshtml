@@ -13,10 +13,6 @@
     <meta name="description" content="@ViewBag.MetaDesc" />
     @RenderSection("SocialMeta", false)
     @ViewBag.Canonical
-    <style type="text/css">
-            @@font-face { font-family: 'MVCforumLight'; src: url('@Url.Content(themePath + "/content/fonts/mvcforumli.eot")'); src: url('@Url.Content(themePath + "/content/fonts/mvcforumli.eot")?#iefix') format('embedded-opentype'), url('@Url.Content(themePath + "/content/fonts/mvcforumli.woff")') format('woff'), url('@Url.Content(themePath + "/content/fonts/mvcforumli.ttf")') format('truetype'),url('@Url.Content(themePath + "/content/fonts/mvcforumli.svg")#MVCforumLight') format('svg'); font-weight: normal; font-style: normal; }
-            @@font-face { font-family: 'MVCforumSemiBold'; src: url('@Url.Content(themePath + "/content/fonts/mvcforumsb.eot")'); src: url('@Url.Content(themePath + "/content/fonts/mvcforumsb.eot")?#iefix') format('embedded-opentype'), url('@Url.Content(themePath + "/content/fonts/mvcforumsb.woff")') format('woff'), url('@Url.Content(themePath + "/content/fonts/mvcforumsb.ttf")') format('truetype'),url('@Url.Content(themePath + "/content/fonts/mvcforumsb.svg")#MVCforumSemiBold') format('svg'); font-weight: normal; font-style: normal; }
-        </style>
     @(
  Bundle.Css()
                 .Add("~/Content/Styles/bootstrap.css")
@@ -61,7 +57,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="brand" href="@Url.Action("Index", "Home")">
-                    <img src="@Url.Content(themePath + "/Content/Images/admin-n3o-logo.png")" alt="" />
+                    <img src="/Content/Images/cmsfaqlogo28.png" alt="" />
                 </a>
                 <div class="nav-collapse collapse">
                     <ul class="nav">
@@ -86,7 +82,7 @@
                         {
                             <li><a href="@Url.Action("Index", "Admin", new { area = "Admin" }, null)">@Html.LanguageString("Layout.Nav.Admin")</a></li>
                         }
-                        <li><a href="http://www.mvcforum.com">Main Website</a></li>
+                        @*<li><a href="http://www.mvcforum.com">Main Website</a></li>*@
                     </ul>
                 </div>
             </div>
@@ -101,7 +97,7 @@
             <div class="span9">
                 
                 @* ### Remove ME - Not needed, just for our forum ### *@
-                @Html.Partial("_DocumentationBlock")
+                @* @Html.Partial("_DocumentationBlock") *@
                 @* ### Remove ME - Not needed, just for our forum ### *@
 
                 @RenderBody()

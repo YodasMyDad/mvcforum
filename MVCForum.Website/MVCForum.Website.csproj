@@ -15,15 +15,15 @@
     <AssemblyName>MVCForum.Website</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
-    <UseIISExpress>true</UseIISExpress>
+    <UseIISExpress>false</UseIISExpress>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
     <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
     <MvcProjectUpgradeChecked>true</MvcProjectUpgradeChecked>
     <TargetFrameworkProfile />
@@ -37,6 +37,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <PublishDatabases>false</PublishDatabases>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -381,8 +382,12 @@
     <Compile Include="Areas\Admin\ViewModels\SettingsViewModels.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\LogFile.txt" />
-    <Content Include="App_Data\lucene_index\NotHere.txt" />
+    <Content Include="App_Data\LogFile.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="App_Data\lucene_index\NotHere.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\admin\Admin.css" />
     <Content Include="Content\admin\Images\apple-touch-icon-57-precomposed.png" />
     <Content Include="Content\admin\Images\favicon.ico" />
@@ -1411,6 +1416,7 @@
     <Content Include="Themes\Metro\Content\Images\admin-n3o-logo.png" />
     <Content Include="Themes\Metro\Content\Images\apple-touch-icon-57-precomposed.png" />
     <Content Include="Themes\Metro\Content\Images\arrow-spinner-blue.gif" />
+    <Content Include="Themes\Metro\Content\Images\CMSFAQLogo28.png" />
     <Content Include="Themes\Metro\Content\Images\delete.png" />
     <Content Include="Themes\Metro\Content\Images\down-arrow.png" />
     <Content Include="Themes\Metro\Content\Images\edit.png" />
@@ -1980,7 +1986,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\AdminLucene\Index.cshtml" />
-    <None Include="Properties\PublishProfiles\Profile1.pubxml" />
+    <None Include="Properties\PublishProfiles\Production.pubxml" />
     <Content Include="Themes\Metro\Content\Fonts\mvcforumli.eot" />
     <Content Include="Themes\Metro\Content\Fonts\mvcforumli.ttf" />
     <Content Include="Themes\Metro\Content\Fonts\mvcforumli.woff" />
@@ -2013,11 +2019,11 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>9666</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:9666/</IISUrl>
+          <IISUrl>http://hgr.cms.bwin.dev</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
