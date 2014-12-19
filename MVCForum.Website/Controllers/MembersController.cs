@@ -19,6 +19,7 @@ using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.OpenAuth;
 using MVCForum.OpenAuth.Facebook;
+using MVCForum.OpenAuth.GooglePlus;
 using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
@@ -347,122 +348,80 @@ namespace MVCForum.Website.Controllers
 
         public ActionResult LogonGoogle(string returnUrl)
         {
-            var response = OpenAuthHelpers.CheckOpenIdResponse();
+            var client = new GooglePlusClient {
+                ClientIdentifier = ConfigUtils.GetAppSetting("GooglePlusAppId"),
+                ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(ConfigUtils.GetAppSetting("GooglePlusAppSecret"))
+            };
 
-            // If this is null we haven't gone off to the providers request permission page yet
-            if (response == null)
-            {
-                // Set the request to the specific provider
-                var request = OpenAuthHelpers.GetRedirectActionRequest(WellKnownProviders.Google);
+            var authorization = client.ProcessUserAuthorization();
+            if (authorization == null) {
+                client.RequestUserAuthorization(client.ScopeParameters);
+            } else {
+                if (authorization.AccessToken == null) {
+                    return RedirectToAction("Index", "Home");
+                }
 
-                // Redirect to the providers login page and asks user for permission to share the profile fields requested.
-                return request.RedirectingResponse.AsActionResultMvc5();
-            }
+                var request = WebRequest.Create(string.Concat("https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=", Uri.EscapeDataString(authorization.AccessToken)));
+                using (var response = request.GetResponse()) {
+                    using (var responseStream = response.GetResponseStream()) {
+                        var gpModel = GooglePlusModel.Deserialize(responseStream);
 
-            // If we get here then we have been to the provider page and been redirected back here
-            switch (response.Status)
-            {
-                case AuthenticationStatus.Authenticated:
-                    // Woot! All good in the hood - User has authorised us
+                        using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork()) {
+                            var doCommit = true;
+                            var gpUser = MembershipService.GetUserByEmail(gpModel.Email);
 
-                    // Get the identifier from the provider
-                    var oid = response.ClaimedIdentifier.ToString();
-
-                    using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-                    {
-                        var doCommit = true;
-
-                        // See if the user has already logged in to this site using open Id
-                        var user = MembershipService.GetUserByGoogleId(oid);
-                        var fetch = response.GetExtension<FetchResponse>();
-                        if (user == null)
-                        {
-                            // First time logging in, so need to register them as new user
-                            // password is irrelavant as they'll login using FB Id so generate random one
-
-                            user = new MembershipUser
-                            {
-                                Email = fetch.GetAttributeValue(WellKnownAttributes.Contact.Email),
-                                Password = StringUtils.RandomString(8),
-                                GoogleAccessToken = oid,
-                                IsExternalAccount = true,
-                            };
-                            user.UserName = _bannedWordService.SanitiseBannedWords(string.Format("{0} {1}",
-                                            fetch.GetAttributeValue(AppConstants.LoginGoogleFirstName),
-                                            fetch.GetAttributeValue(AppConstants.LoginGoogleLastName)).Trim());
-
-                            doCommit = ProcessSocialLogonUser(user, doCommit);
-
-                        }
-                        else
-                        {
-                            // Do an update to make sure we have the most recent details
-                            user.Email = fetch.GetAttributeValue(WellKnownAttributes.Contact.Email);
-                            user.MiscAccessToken = oid;
-
-                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                            {
-                                Message = LocalizationService.GetResourceString("Members.NowLoggedIn"),
-                                MessageType = GenericMessages.success
-                            };
-
-                            // Log the user in
-                            FormsAuthentication.SetAuthCookie(user.UserName, true);
-                        }
-
-                        if (doCommit)
-                        {
-                            try
-                            {
-                                unitOfWork.Commit();
-                                SendEmailConfirmationEmail(user);
-                                return RedirectToAction("Index", "Home");
-                            }
-                            catch (Exception ex)
-                            {
-                                unitOfWork.Rollback();
-                                LoggingService.Error(ex);
-                                FormsAuthentication.SignOut();
-                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                                {
-                                    Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
-                                    MessageType = GenericMessages.error
+                            if (gpUser == null) {
+                                gpUser = new MembershipUser {
+                                    UserName = _bannedWordService.SanitiseBannedWords(gpModel.Name),
+                                    Email = gpModel.Email,
+                                    Password = StringUtils.RandomString(8),
+                                    GoogleId = gpModel.Id,
+                                    GoogleAccessToken = authorization.AccessToken,
+                                    IsExternalAccount = true
                                 };
 
+                                doCommit = ProcessSocialLogonUser(gpUser, doCommit);
+                            } else {
+                                gpUser.Email = gpModel.Email;
+                                gpUser.GoogleAccessToken = authorization.AccessToken;
+
+                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel {
+                                    Message = LocalizationService.GetResourceString("Members.NowLoggedIn"),
+                                    MessageType = GenericMessages.success
+                                };
+
+                                FormsAuthentication.SetAuthCookie(gpUser.UserName, true);
+                            }
+
+                            if (doCommit) {
+                                try {
+                                    unitOfWork.Commit();
+                                    SendEmailConfirmationEmail(gpUser);
+                                    return RedirectToAction("Index", "Home");
+                                } catch (Exception ex) {
+                                    unitOfWork.Rollback();
+                                    LoggingService.Error(ex);
+                                    FormsAuthentication.SignOut();
+                                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel {
+                                        Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+                                        MessageType = GenericMessages.error
+                                    };
+                                }
                             }
                         }
-
                     }
-                    break;
-
-                case AuthenticationStatus.Canceled:
-                    // Bugger. User cancelled for some reason
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = LocalizationService.GetResourceString("Members.LoginCancelledByUser"),
-                        MessageType = GenericMessages.error
-                    };
-                    break;
-
-                case AuthenticationStatus.Failed:
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = LocalizationService.GetResourceString("Members.LoginFailedByOpenID"),
-                        MessageType = GenericMessages.error
-                    };
-                    break;
+                }
             }
-            // Only add this if one hasn't been added already
-            if (TempData[AppConstants.MessageViewBagName] == null)
-            {
-                // Either cancelled or there was an error
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                {
+
+            if (TempData[AppConstants.MessageViewBagName] == null) {
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel {
                     Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
                     MessageType = GenericMessages.error
                 };
             }
-            return RedirectToAction("LogOn");
+
+            return RedirectToAction("Logon");
+ 
         }
 
         public ActionResult LogonYahoo(string returnUrl)

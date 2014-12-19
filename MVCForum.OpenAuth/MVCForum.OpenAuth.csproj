@@ -182,6 +182,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GooglePlus\GooglePlusClient.cs" />
+    <Compile Include="GooglePlus\GooglePlusModel.cs" />
+    <Compile Include="GooglePlus\gpTokenManager.cs" />
     <Compile Include="Facebook\FacebookClient.cs" />
     <Compile Include="Facebook\FacebookModel.cs" />
     <Compile Include="InMemoryTokenManager.cs" />
