@@ -14,11 +14,13 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             _luceneService = luceneService;
         }
 
+        [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult Index()
         {
             return View();
         }
 
+        [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult Update()
         {
             // Set the timeout quite large just in case this takes a while
@@ -35,6 +37,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             return View("Index");
         }
 
+        [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult Optimise()
         {
             // Set the timeout quite large just in case this takes a while
@@ -51,6 +54,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             return View("Index");
         }
 
+        [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult Delete()
         {
             // Set the timeout quite large just in case this takes a while

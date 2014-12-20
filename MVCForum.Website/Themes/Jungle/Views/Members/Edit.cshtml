@@ -24,7 +24,6 @@
 @using (Html.BeginForm("Edit", "Members", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.HiddenFor(x => Model.Id)
-
     @Html.ValidationSummary(true)
 
     <fieldset>

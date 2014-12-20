@@ -70,8 +70,7 @@
 
 @helper DisableCheckBox(string permissionName)
 {
-    if (Model.MembershipRole.RoleName == AppConstants.GuestRoleName &&
-        permissionName != AppConstants.PermissionDenyAccess)
+    if (Model.MembershipRole.RoleName == AppConstants.GuestRoleName && permissionName != AppConstants.PermissionDenyAccess)
     {
         <text>disabled</text>
     }

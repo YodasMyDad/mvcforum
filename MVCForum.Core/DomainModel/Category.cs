@@ -31,4 +31,8 @@ namespace MVCForum.Domain.DomainModel
             get { return UrlTypes.GenerateUrl(UrlType.Category, Slug); }
         }
     }
+
+
+
+
 }
