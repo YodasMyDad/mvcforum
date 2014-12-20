@@ -118,7 +118,6 @@ namespace MVCForum.Tests.Service_Tests
 
         private IBadgeService _badgeService;
         private IBadgeRepository _badgeRepository;
-        private IMembershipRepository _membershipRepository;
         private IMVCForumAPI _api;
         private ILoggingService _loggingService;
         private ILocalizationService _localizationService;
