@@ -16,7 +16,7 @@ namespace MVCForum.Website.Membership
 
         private string _applicationName;
         private bool _enablePasswordReset;
-        private bool _enablePasswordRetrieval;
+        private bool _enablePasswordRetrieval = false;
         private bool _requiresQuestionAndAnswer;
         private bool _requiresUniqueEmail;
         private int _maxInvalidPasswordAttempts;

@@ -100,7 +100,7 @@ namespace MVCForum.Utilities
                 //config.AppSettings.Settings.Add(key, value);
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -127,7 +127,7 @@ namespace MVCForum.Utilities
                 }
                 return false;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -150,7 +150,7 @@ namespace MVCForum.Utilities
                 xDoc.Save(WebConfigPath);
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -177,7 +177,7 @@ namespace MVCForum.Utilities
                 return false;
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }
@@ -201,7 +201,7 @@ namespace MVCForum.Utilities
                 xDoc.Save(WebConfigPath);
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }            
@@ -227,7 +227,7 @@ namespace MVCForum.Utilities
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }   
