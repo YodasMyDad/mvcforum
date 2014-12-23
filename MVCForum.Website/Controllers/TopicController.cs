@@ -26,7 +26,6 @@ namespace MVCForum.Website.Controllers
         private readonly ITopicNotificationService _topicNotificationService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly IEmailService _emailService;
-        private readonly ILuceneService _luceneService;
         private readonly IPollService _pollService;
         private readonly IPollAnswerService _pollAnswerService;
         private readonly IBannedWordService _bannedWordService;
@@ -36,7 +35,7 @@ namespace MVCForum.Website.Controllers
 
         public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
-            ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, ILuceneService luceneService, IPollService pollService,
+            ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, IPollService pollService,
             IPollAnswerService pollAnswerService, IBannedWordService bannedWordService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
@@ -48,7 +47,6 @@ namespace MVCForum.Website.Controllers
             _categoryNotificationService = categoryNotificationService;
             _emailService = emailService;
             _topicNotificationService = topicNotificationService;
-            _luceneService = luceneService;
             _pollService = pollService;
             _pollAnswerService = pollAnswerService;
             _bannedWordService = bannedWordService;
@@ -286,13 +284,6 @@ namespace MVCForum.Website.Controllers
                                     if (!moderate)
                                     {                                    
                                         successfullyCreated = true; 
-                                    }
-
-
-                                    // Successful, add this post to the Lucene index
-                                    if (_luceneService.CheckIndexExists())
-                                    {
-                                        _luceneService.AddUpdate(_luceneService.MapToModel(topic));
                                     }
                                 }
                                 catch (Exception ex)
@@ -549,13 +540,10 @@ namespace MVCForum.Website.Controllers
             List<Topic> topics = null;
             try
             {
-                var searchResults = _luceneService.Search(formattedSearchTerm, string.Empty, AppConstants.SimilarTopicsListSize);
+                var searchResults = _topicService.SearchTopics(0, AppConstants.SimilarTopicsListSize, AppConstants.SimilarTopicsListSize, formattedSearchTerm);
                 if (searchResults != null)
                 {
-                    var foundTopicIds = searchResults.Select(x => x.TopicId).ToList();
-
-                    // Get the topics
-                    topics = _topicService.GetTopicsByCsv(AppConstants.SimilarTopicsListSize, foundTopicIds).ToList();
+                    topics = searchResults.ToList();
                 }
             }
             catch (Exception ex)

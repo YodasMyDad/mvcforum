@@ -299,7 +299,6 @@
     <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminLanguageController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminBadgeController.cs" />
-    <Compile Include="Areas\Admin\Controllers\AdminLuceneController.cs" />
     <Compile Include="Areas\Admin\Controllers\BannedEmailController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchController.cs" />
     <Compile Include="Areas\Admin\Controllers\BannedWordController.cs" />
@@ -1822,14 +1821,6 @@
       <Project>{B3A94898-2420-4FC0-8774-147FDE3B13B2}</Project>
       <Name>MVCForum.IOC</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MVCForum.Lucene\MVCForum.Lucene.csproj">
-      <Project>{09b73e3f-171f-4df3-8802-60be071cffbd}</Project>
-      <Name>MVCForum.Lucene</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MVCForum.OpenAuth\MVCForum.OpenAuth.csproj">
-      <Project>{9f9be9de-d8ff-4e10-a4c6-c40ff3ba40bc}</Project>
-      <Name>MVCForum.OpenAuth</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MVCForum.Utilities\MVCForum.Utilities.csproj">
       <Project>{D0CE5E27-041D-4F1E-8C8C-5F4888C72155}</Project>
       <Name>MVCForum.Utilities</Name>
@@ -1973,7 +1964,6 @@
     <Content Include="Areas\Admin\Views\Dashboard\MvcForumLatestNews.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\AdminLucene\Index.cshtml" />
     <None Include="Properties\PublishProfiles\Profile1.pubxml" />
     <Content Include="Themes\Metro\Content\Fonts\mvcforumli.eot" />
     <Content Include="Themes\Metro\Content\Fonts\mvcforumli.ttf" />

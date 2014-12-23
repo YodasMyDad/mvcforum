@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Globalization;
-using System.Reflection;
 using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
-//using EFCachingProvider;
-//using EFCachingProvider.Caching;
-//using EFCachingProvider.Web;
 using LowercaseRoutesMVC;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.Events;
@@ -18,9 +14,6 @@ using MVCForum.Website.Application;
 
 namespace MVCForum.Website
 {
-    // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
-    // visit http://go.microsoft.com/?LinkId=9394801
-
     public class MvcApplication : HttpApplication
     {
 
@@ -47,11 +40,6 @@ namespace MVCForum.Website
         public ILocalizationService LocalizationService
         {
             get { return DependencyResolver.Current.GetService<ILocalizationService>(); }
-        }
-
-        public ILuceneService LuceneService
-        {
-            get { return DependencyResolver.Current.GetService<ILuceneService>(); }
         }
 
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
@@ -174,18 +162,10 @@ namespace MVCForum.Website
 
         }
 
-        protected void Application_EndRequest(object sender, EventArgs e)
-        {
-            //foreach (var item in HttpContext.Current.Items.Values)
-            //{
-            //    var disposableItem = item as IDisposable;
+        //protected void Application_EndRequest(object sender, EventArgs e)
+        //{
 
-            //    if (disposableItem != null)
-            //    {
-            //        disposableItem.Dispose();
-            //    }
-            //}
-        }
+        //}
 
         protected void Application_Error(object sender, EventArgs e)
         {

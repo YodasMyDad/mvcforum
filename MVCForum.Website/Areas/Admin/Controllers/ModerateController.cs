@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.Interfaces.Services;
@@ -14,7 +12,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
     {
         public IActivityService _activityService { get; set; }
         private readonly IRoleService _roleService;
-        private readonly ILuceneService _luceneService;
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
         private const int ModeratePageSize = 15;
@@ -24,11 +21,10 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             IMembershipService membershipService,
             ILocalizationService localizationService,
             IRoleService roleService,
-            ISettingsService settingsService, IPostService postService, ITopicService topicService, ILuceneService luceneService)
+            ISettingsService settingsService, IPostService postService, ITopicService topicService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
             _topicService = topicService;
-            _luceneService = luceneService;
             _postService = postService;
             _roleService = roleService;
         }
@@ -68,7 +64,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 try
                 {
                     var topic = _topicService.Get(viewModel.TopicId);
-                    var postIdList = new List<Guid>();
 
                     if (viewModel.IsApproved)
                     {
@@ -84,29 +79,11 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
                         if (deleteTopic)
                         {
-                            postIdList = topic.Posts.Select(x => x.Id).ToList();
                             _topicService.Delete(topic);
                         }
                     }
 
-                    // We use temp data because we are doing a redirect
-                    //TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    //{
-                    //    Message = "Category Created",
-                    //    MessageType =
-                    //        GenericMessages.success
-                    //};
                     unitOfWork.Commit();
-
-                    // Delete the topic posts if 
-                    if (_luceneService.CheckIndexExists() && !viewModel.IsApproved)
-                    {
-                        foreach (var guid in postIdList)
-                        {
-                            _luceneService.Delete(guid);
-                        }
-                    }
-
                 }
                 catch (Exception ex)
                 {
@@ -128,7 +105,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 try
                 {
                     var post = _postService.Get(viewModel.PostId);
-                    var postId = post.Id;
 
                     if (viewModel.IsApproved)
                     {
@@ -140,12 +116,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     }
 
                     unitOfWork.Commit();
-
-                    if (_luceneService.CheckIndexExists() && !viewModel.IsApproved)
-                    {
-                        _luceneService.Delete(postId);
-                    }
-
                 }
                 catch (Exception ex)
                 {

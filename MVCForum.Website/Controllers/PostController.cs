@@ -26,7 +26,6 @@ namespace MVCForum.Website.Controllers
         private readonly IPostService _postService;
         private readonly IEmailService _emailService;
         private readonly IReportService _reportService;
-        private readonly ILuceneService _luceneService;
         private readonly IPollAnswerService _pollAnswerService;
         private readonly IPollService _pollService;
         private readonly IBannedWordService _bannedWordService;
@@ -38,7 +37,7 @@ namespace MVCForum.Website.Controllers
         public PostController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
             ILocalizationService localizationService, IRoleService roleService, ITopicService topicService, IPostService postService, 
             ISettingsService settingsService, ICategoryService categoryService, ITopicTagService topicTagService, 
-            ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, ILuceneService luceneService, IPollAnswerService pollAnswerService, 
+            ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, IPollAnswerService pollAnswerService, 
             IPollService pollService, IBannedWordService bannedWordService, IMembershipUserPointsService membershipUserPointsService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
@@ -49,7 +48,6 @@ namespace MVCForum.Website.Controllers
             _topicNotificationService = topicNotificationService;
             _emailService = emailService;
             _reportService = reportService;
-            _luceneService = luceneService;
             _pollAnswerService = pollAnswerService;
             _pollService = pollService;
             _bannedWordService = bannedWordService;
@@ -89,13 +87,6 @@ namespace MVCForum.Website.Controllers
                     try
                     {
                         unitOfWork.Commit();
-
-                        // Successful, add this post to the Lucene index
-                        if (_luceneService.CheckIndexExists())
-                        {
-                            _luceneService.AddUpdate(_luceneService.MapToModel(newPost));
-                        }
-
                     }
                     catch (Exception ex)
                     {
@@ -318,13 +309,6 @@ namespace MVCForum.Website.Controllers
                     try
                     {
                         unitOfWork.Commit();
-
-                        // Successful, add this post to the Lucene index
-                        if (_luceneService.CheckIndexExists())
-                        {
-                            _luceneService.AddUpdate(_luceneService.MapToModel(post));
-                        }
-
                         return Redirect(topic.NiceUrl);
                     }
                     catch (Exception ex)
@@ -379,22 +363,6 @@ namespace MVCForum.Website.Controllers
                     try
                     {
                         unitOfWork.Commit();
-
-                        // Successful, delete post or posts if its a topic deleted
-                        if (_luceneService.CheckIndexExists())
-                        {
-                            if (deleteTopic)
-                            {
-                                foreach (var guid in postIdList)
-                                {
-                                    _luceneService.Delete(guid);
-                                }
-                            }
-                            else
-                            {
-                                _luceneService.Delete(post.Id);
-                            }
-                        }
                     }
                     catch (Exception ex)
                     {

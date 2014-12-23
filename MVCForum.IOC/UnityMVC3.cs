@@ -88,7 +88,6 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IEmailService, EmailService>();
             container.BindInRequestScope<IReportService, ReportService>();
             container.BindInRequestScope<IActivityService, ActivityService>();
-            container.BindInRequestScope<ILuceneService, LuceneService>();
             container.BindInRequestScope<IPollService, PollService>();
             container.BindInRequestScope<IPollVoteService, PollVoteService>();
             container.BindInRequestScope<IPollAnswerService, PollAnswerService>();
@@ -96,7 +95,6 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IBannedEmailService, BannedEmailService>();
             container.BindInRequestScope<IBannedWordService, BannedWordService>();
             container.BindInRequestScope<IUploadedFileService, UploadedFileService>();
-
 
             container.BindInRequestScope<IRoleRepository, RoleRepository>();
             container.BindInRequestScope<ICategoryRepository, CategoryRepository>();

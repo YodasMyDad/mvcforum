@@ -7,9 +7,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
 using System.Web.Security;
-using DotNetOpenAuth.Messaging;
 using DotNetOpenAuth.OAuth2;
 using DotNetOpenAuth.OpenId.Extensions.AttributeExchange;
 using DotNetOpenAuth.OpenId.RelyingParty;
@@ -17,9 +15,6 @@ using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.OpenAuth;
-using MVCForum.OpenAuth.Facebook;
-using MVCForum.OpenAuth.GooglePlus;
 using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
@@ -41,8 +36,6 @@ namespace MVCForum.Website.Controllers
         private MembershipUser LoggedOnUser;
         private MembershipRole UsersRole;
 
-        private InMemoryTokenManager _tokenManager;
-
         public MembersController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService,
             IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService, IBannedWordService bannedWordService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
@@ -58,492 +51,492 @@ namespace MVCForum.Website.Controllers
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
-        #region Common Methods
+        //#region Common Methods
 
-        private bool ProcessSocialLogonUser(MembershipUser user, bool doCommit)
-        {
-            // Secondly see if the email is banned
-            if (_bannedEmailService.EmailIsBanned(user.Email))
-            {
-                doCommit = false;
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                {
-                    Message = LocalizationService.GetResourceString("Error.EmailIsBanned"),
-                    MessageType = GenericMessages.error
-                };
-            }
-            else
-            {
-                // Check not already someone with that user name, if so append count
-                var exists = MembershipService.GetUser(user.UserName);
-                if (exists != null)
-                {
-                    var howMany = MembershipService.SearchMembers(user.UserName, int.MaxValue);
-                    user.UserName = string.Format("{0} ({1})", user.UserName, howMany != null ? howMany.Count : 1);
-                }
+        //private bool ProcessSocialLogonUser(MembershipUser user, bool doCommit)
+        //{
+        //    // Secondly see if the email is banned
+        //    if (_bannedEmailService.EmailIsBanned(user.Email))
+        //    {
+        //        doCommit = false;
+        //        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+        //        {
+        //            Message = LocalizationService.GetResourceString("Error.EmailIsBanned"),
+        //            MessageType = GenericMessages.error
+        //        };
+        //    }
+        //    else
+        //    {
+        //        // Check not already someone with that user name, if so append count
+        //        var exists = MembershipService.GetUser(user.UserName);
+        //        if (exists != null)
+        //        {
+        //            var howMany = MembershipService.SearchMembers(user.UserName, int.MaxValue);
+        //            user.UserName = string.Format("{0} ({1})", user.UserName, howMany != null ? howMany.Count : 1);
+        //        }
 
-                // Now check settings, see if users need to be manually authorised
-                var manuallyAuthoriseMembers = SettingsService.GetSettings().ManuallyAuthoriseNewMembers;
-                var memberEmailAuthorisationNeeded = SettingsService.GetSettings().NewMemberEmailConfirmation ?? false;
-                if (manuallyAuthoriseMembers || memberEmailAuthorisationNeeded)
-                {
-                    user.IsApproved = false;
-                }
+        //        // Now check settings, see if users need to be manually authorised
+        //        var manuallyAuthoriseMembers = SettingsService.GetSettings().ManuallyAuthoriseNewMembers;
+        //        var memberEmailAuthorisationNeeded = SettingsService.GetSettings().NewMemberEmailConfirmation ?? false;
+        //        if (manuallyAuthoriseMembers || memberEmailAuthorisationNeeded)
+        //        {
+        //            user.IsApproved = false;
+        //        }
 
-                var createStatus = MembershipService.CreateUser(user);
-                if (createStatus != MembershipCreateStatus.Success)
-                {
-                    doCommit = false;
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = MembershipService.ErrorCodeToString(createStatus),
-                        MessageType = GenericMessages.error
-                    };
-                }
-                else
-                {
-                    // Set the view bag message here
-                    SetRegisterViewBagMessage(manuallyAuthoriseMembers, memberEmailAuthorisationNeeded, user);
-                }
-            }
+        //        var createStatus = MembershipService.CreateUser(user);
+        //        if (createStatus != MembershipCreateStatus.Success)
+        //        {
+        //            doCommit = false;
+        //            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+        //            {
+        //                Message = MembershipService.ErrorCodeToString(createStatus),
+        //                MessageType = GenericMessages.error
+        //            };
+        //        }
+        //        else
+        //        {
+        //            // Set the view bag message here
+        //            SetRegisterViewBagMessage(manuallyAuthoriseMembers, memberEmailAuthorisationNeeded, user);
+        //        }
+        //    }
 
-            return doCommit;
-        }
+        //    return doCommit;
+        //}
 
-        #endregion
+        //#endregion
 
-        #region Social Logons
+        //#region Social Logons
 
-        private void InstantiateTwitterInMemoryTokenManager()
-        {
-            var twitterAppId = ConfigUtils.GetAppSetting("TwitterAppId");
-            var twitterAppSecret = ConfigUtils.GetAppSetting("TwitterAppSecret");
+        //private void InstantiateTwitterInMemoryTokenManager()
+        //{
+        //    var twitterAppId = ConfigUtils.GetAppSetting("TwitterAppId");
+        //    var twitterAppSecret = ConfigUtils.GetAppSetting("TwitterAppSecret");
 
-            // Only instantiate if the twitter credentials are not null
-            if (!string.IsNullOrEmpty(twitterAppId) && !string.IsNullOrEmpty(twitterAppSecret))
-            {
-                _tokenManager = new InMemoryTokenManager(twitterAppId, twitterAppSecret);
-            }
-        }
+        //    // Only instantiate if the twitter credentials are not null
+        //    if (!string.IsNullOrEmpty(twitterAppId) && !string.IsNullOrEmpty(twitterAppSecret))
+        //    {
+        //        _tokenManager = new InMemoryTokenManager(twitterAppId, twitterAppSecret);
+        //    }
+        //}
 
-        public ActionResult LogonTwitter()
-        {
-            InstantiateTwitterInMemoryTokenManager();
-            var client = new TwitterClient(_tokenManager, Url.Action("TwitterCallback"));
-            client.StartAuthentication();
-            return null;
-        }
+        //public ActionResult LogonTwitter()
+        //{
+        //    InstantiateTwitterInMemoryTokenManager();
+        //    var client = new TwitterClient(_tokenManager, Url.Action("TwitterCallback"));
+        //    client.StartAuthentication();
+        //    return null;
+        //}
 
-        public ActionResult TwitterCallback()
-        {
-            InstantiateTwitterInMemoryTokenManager();
+        //public ActionResult TwitterCallback()
+        //{
+        //    InstantiateTwitterInMemoryTokenManager();
 
-            var client = new TwitterClient(_tokenManager, Url.Action("TwitterCallback"));
+        //    var client = new TwitterClient(_tokenManager, Url.Action("TwitterCallback"));
 
-            if (client.FinishAuthentication())
-            {
-                // Boom we are in, get the stuff we need
-                //client.UserName;
-                //client.AccessToken;
-                //client.SecretToken;
+        //    if (client.FinishAuthentication())
+        //    {
+        //        // Boom we are in, get the stuff we need
+        //        //client.UserName;
+        //        //client.AccessToken;
+        //        //client.SecretToken;
 
-                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-                {
-                    var doCommit = true;
+        //        using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+        //        {
+        //            var doCommit = true;
 
-                    // See if the user has already logged in to this site using open Id
-                    var user = MembershipService.GetUserByTwitterId(client.AccessToken);
-                    var fakeEmail = string.Format("{0}@twitter.com", client.UserName);
+        //            // See if the user has already logged in to this site using open Id
+        //            var user = MembershipService.GetUserByTwitterId(client.AccessToken);
+        //            var fakeEmail = string.Format("{0}@twitter.com", client.UserName);
 
-                    if (user == null)
-                    {
-                        // First time logging in, so need to register them as new user
-                        // password is irrelavant as they'll login using FB Id so generate random one
+        //            if (user == null)
+        //            {
+        //                // First time logging in, so need to register them as new user
+        //                // password is irrelavant as they'll login using FB Id so generate random one
 
-                        user = new MembershipUser
-                        {
-                            // Bit shit, but twitter won't give you an email. So we do this and
-                            // Set notifications to false.
-                            Email = fakeEmail,
-                            Password = StringUtils.RandomString(8),
-                            TwitterAccessToken = client.AccessToken,
-                            IsExternalAccount = true,
-                            DisableEmailNotifications = true,
-                            UserName = _bannedWordService.SanitiseBannedWords(client.UserName),
-                            Twitter = string.Format("http://twitter.com/{0}", _bannedWordService.SanitiseBannedWords(client.UserName))
-                        };
+        //                user = new MembershipUser
+        //                {
+        //                    // Bit shit, but twitter won't give you an email. So we do this and
+        //                    // Set notifications to false.
+        //                    Email = fakeEmail,
+        //                    Password = StringUtils.RandomString(8),
+        //                    TwitterAccessToken = client.AccessToken,
+        //                    IsExternalAccount = true,
+        //                    DisableEmailNotifications = true,
+        //                    UserName = _bannedWordService.SanitiseBannedWords(client.UserName),
+        //                    Twitter = string.Format("http://twitter.com/{0}", _bannedWordService.SanitiseBannedWords(client.UserName))
+        //                };
 
-                        doCommit = ProcessSocialLogonUser(user, doCommit);
+        //                doCommit = ProcessSocialLogonUser(user, doCommit);
 
-                    }
-                    else
-                    {
-                        // Do an update to make sure we have the most recent details
-                        user.Email = fakeEmail;
-                        user.MiscAccessToken = client.AccessToken;
+        //            }
+        //            else
+        //            {
+        //                // Do an update to make sure we have the most recent details
+        //                user.Email = fakeEmail;
+        //                user.MiscAccessToken = client.AccessToken;
 
-                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                        {
-                            Message = LocalizationService.GetResourceString("Members.NowLoggedIn"),
-                            MessageType = GenericMessages.success
-                        };
+        //                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+        //                {
+        //                    Message = LocalizationService.GetResourceString("Members.NowLoggedIn"),
+        //                    MessageType = GenericMessages.success
+        //                };
 
-                        // Log the user in
-                        FormsAuthentication.SetAuthCookie(user.UserName, true);
-                    }
+        //                // Log the user in
+        //                FormsAuthentication.SetAuthCookie(user.UserName, true);
+        //            }
 
-                    if (doCommit)
-                    {
-                        try
-                        {
-                            unitOfWork.Commit();
-                            // Only send the email if the admin is not manually authorising emails or it's pointless
-                            // CAN'T SENT TO TWITTER USERS AS WE DON'T HAVE AN EMAIL! :(
-                            // https://dev.twitter.com/discussions/1737
-                            //SendEmailConfirmationEmail(user);
-                            return RedirectToAction("Index", "Home");
-                        }
-                        catch (Exception ex)
-                        {
-                            unitOfWork.Rollback();
-                            LoggingService.Error(ex);
-                            FormsAuthentication.SignOut();
-                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                            {
-                                Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
-                                MessageType = GenericMessages.error
-                            };
+        //            if (doCommit)
+        //            {
+        //                try
+        //                {
+        //                    unitOfWork.Commit();
+        //                    // Only send the email if the admin is not manually authorising emails or it's pointless
+        //                    // CAN'T SENT TO TWITTER USERS AS WE DON'T HAVE AN EMAIL! :(
+        //                    // https://dev.twitter.com/discussions/1737
+        //                    //SendEmailConfirmationEmail(user);
+        //                    return RedirectToAction("Index", "Home");
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    unitOfWork.Rollback();
+        //                    LoggingService.Error(ex);
+        //                    FormsAuthentication.SignOut();
+        //                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+        //                    {
+        //                        Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+        //                        MessageType = GenericMessages.error
+        //                    };
 
-                        }
-                    }
+        //                }
+        //            }
 
-                }
+        //        }
 
-            }
+        //    }
 
-            // Only add this if one hasn't been added already
-            if (TempData[AppConstants.MessageViewBagName] == null)
-            {
-                // Either cancelled or there was an error
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                {
-                    Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
-                    MessageType = GenericMessages.error
-                };
-            }
-            return RedirectToAction("LogOn", "Members");
-        }
+        //    // Only add this if one hasn't been added already
+        //    if (TempData[AppConstants.MessageViewBagName] == null)
+        //    {
+        //        // Either cancelled or there was an error
+        //        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+        //        {
+        //            Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+        //            MessageType = GenericMessages.error
+        //        };
+        //    }
+        //    return RedirectToAction("LogOn", "Members");
+        //}
 
 
 
-        public ActionResult LogonFacebook()
-        {
-            var client = new FacebookClient
-            {
-                ClientIdentifier = ConfigUtils.GetAppSetting("FacebookAppId"),
-                ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(ConfigUtils.GetAppSetting("FacebookAppSecret"))
-            };
+        //public ActionResult LogonFacebook()
+        //{
+        //    var client = new FacebookClient
+        //    {
+        //        ClientIdentifier = ConfigUtils.GetAppSetting("FacebookAppId"),
+        //        ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(ConfigUtils.GetAppSetting("FacebookAppSecret"))
+        //    };
 
-            var authorization = client.ProcessUserAuthorization();
-            if (authorization == null)
-            {
-                // Kick off authorization request
-                client.RequestUserAuthorization(client.ScopeParameters);
-            }
-            else
-            {
+        //    var authorization = client.ProcessUserAuthorization();
+        //    if (authorization == null)
+        //    {
+        //        // Kick off authorization request
+        //        client.RequestUserAuthorization(client.ScopeParameters);
+        //    }
+        //    else
+        //    {
 
-                if (authorization.AccessToken == null)
-                {
-                    // User has cancelled so just redirect to home page
-                    return RedirectToAction("Index", "Home");
-                }
+        //        if (authorization.AccessToken == null)
+        //        {
+        //            // User has cancelled so just redirect to home page
+        //            return RedirectToAction("Index", "Home");
+        //        }
 
-                var request = WebRequest.Create(string.Concat("https://graph.facebook.com/me?access_token=", Uri.EscapeDataString(authorization.AccessToken)));
-                using (var response = request.GetResponse())
-                {
-                    using (var responseStream = response.GetResponseStream())
-                    {
-                        var fbModel = FacebookModel.Deserialize(responseStream);
+        //        var request = WebRequest.Create(string.Concat("https://graph.facebook.com/me?access_token=", Uri.EscapeDataString(authorization.AccessToken)));
+        //        using (var response = request.GetResponse())
+        //        {
+        //            using (var responseStream = response.GetResponseStream())
+        //            {
+        //                var fbModel = FacebookModel.Deserialize(responseStream);
 
-                        // use the data in the graph object to authorise the user
-                        using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-                        {
-                            var doCommit = true;
-                            // First thing check if this user has already registered using facebook before
-                            // Get the user by their FB Id
-                            var fbUser = MembershipService.GetUserByFacebookId(fbModel.Id);
+        //                // use the data in the graph object to authorise the user
+        //                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+        //                {
+        //                    var doCommit = true;
+        //                    // First thing check if this user has already registered using facebook before
+        //                    // Get the user by their FB Id
+        //                    var fbUser = MembershipService.GetUserByFacebookId(fbModel.Id);
 
-                            if (fbUser == null)
-                            {
-                                // First time logging in, so need to register them as new user
-                                // password is irrelavant as they'll login using FB Id so generate random one
-                                fbUser = new MembershipUser
-                                {
-                                    UserName = _bannedWordService.SanitiseBannedWords(fbModel.Name),
-                                    Email = fbModel.Email,
-                                    Password = StringUtils.RandomString(8),
-                                    FacebookId = fbModel.Id,
-                                    FacebookAccessToken = authorization.AccessToken,
-                                    IsExternalAccount = true
-                                };
+        //                    if (fbUser == null)
+        //                    {
+        //                        // First time logging in, so need to register them as new user
+        //                        // password is irrelavant as they'll login using FB Id so generate random one
+        //                        fbUser = new MembershipUser
+        //                        {
+        //                            UserName = _bannedWordService.SanitiseBannedWords(fbModel.Name),
+        //                            Email = fbModel.Email,
+        //                            Password = StringUtils.RandomString(8),
+        //                            FacebookId = fbModel.Id,
+        //                            FacebookAccessToken = authorization.AccessToken,
+        //                            IsExternalAccount = true
+        //                        };
 
-                                doCommit = ProcessSocialLogonUser(fbUser, doCommit);
+        //                        doCommit = ProcessSocialLogonUser(fbUser, doCommit);
 
-                            }
-                            else
-                            {
-                                // Do an update to make sure we have the most recent details
-                                fbUser.Email = fbModel.Email;
-                                fbUser.FacebookAccessToken = authorization.AccessToken;
+        //                    }
+        //                    else
+        //                    {
+        //                        // Do an update to make sure we have the most recent details
+        //                        fbUser.Email = fbModel.Email;
+        //                        fbUser.FacebookAccessToken = authorization.AccessToken;
 
-                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                                {
-                                    Message = LocalizationService.GetResourceString("Members.NowLoggedIn"),
-                                    MessageType = GenericMessages.success
-                                };
+        //                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+        //                        {
+        //                            Message = LocalizationService.GetResourceString("Members.NowLoggedIn"),
+        //                            MessageType = GenericMessages.success
+        //                        };
 
-                                // Log the user in
-                                FormsAuthentication.SetAuthCookie(fbUser.UserName, true);
-                            }
+        //                        // Log the user in
+        //                        FormsAuthentication.SetAuthCookie(fbUser.UserName, true);
+        //                    }
 
-                            if (doCommit)
-                            {
-                                try
-                                {
-                                    unitOfWork.Commit();
-                                    SendEmailConfirmationEmail(fbUser);
-                                    return RedirectToAction("Index", "Home");
-                                }
-                                catch (Exception ex)
-                                {
-                                    unitOfWork.Rollback();
-                                    LoggingService.Error(ex);
-                                    FormsAuthentication.SignOut();
-                                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                                    {
-                                        Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
-                                        MessageType = GenericMessages.error
-                                    };
+        //                    if (doCommit)
+        //                    {
+        //                        try
+        //                        {
+        //                            unitOfWork.Commit();
+        //                            SendEmailConfirmationEmail(fbUser);
+        //                            return RedirectToAction("Index", "Home");
+        //                        }
+        //                        catch (Exception ex)
+        //                        {
+        //                            unitOfWork.Rollback();
+        //                            LoggingService.Error(ex);
+        //                            FormsAuthentication.SignOut();
+        //                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+        //                            {
+        //                                Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+        //                                MessageType = GenericMessages.error
+        //                            };
 
-                                }
-                            }
+        //                        }
+        //                    }
 
-                        }
-                    }
-                }
-            }
-            // Only add this if one hasn't been added already
-            if (TempData[AppConstants.MessageViewBagName] == null)
-            {
-                // Either cancelled or there was an error
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                {
-                    Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
-                    MessageType = GenericMessages.error
-                };
-            }
-            return RedirectToAction("LogOn");
-        }
+        //                }
+        //            }
+        //        }
+        //    }
+        //    // Only add this if one hasn't been added already
+        //    if (TempData[AppConstants.MessageViewBagName] == null)
+        //    {
+        //        // Either cancelled or there was an error
+        //        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+        //        {
+        //            Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+        //            MessageType = GenericMessages.error
+        //        };
+        //    }
+        //    return RedirectToAction("LogOn");
+        //}
 
-        public ActionResult LogonGoogle(string returnUrl)
-        {
-            var client = new GooglePlusClient {
-                ClientIdentifier = ConfigUtils.GetAppSetting("GooglePlusAppId"),
-                ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(ConfigUtils.GetAppSetting("GooglePlusAppSecret"))
-            };
+        //public ActionResult LogonGoogle(string returnUrl)
+        //{
+        //    var client = new GooglePlusClient {
+        //        ClientIdentifier = ConfigUtils.GetAppSetting("GooglePlusAppId"),
+        //        ClientCredentialApplicator = ClientCredentialApplicator.PostParameter(ConfigUtils.GetAppSetting("GooglePlusAppSecret"))
+        //    };
 
-            var authorization = client.ProcessUserAuthorization();
-            if (authorization == null) {
-                client.RequestUserAuthorization(client.ScopeParameters);
-            } else {
-                if (authorization.AccessToken == null) {
-                    return RedirectToAction("Index", "Home");
-                }
+        //    var authorization = client.ProcessUserAuthorization();
+        //    if (authorization == null) {
+        //        client.RequestUserAuthorization(client.ScopeParameters);
+        //    } else {
+        //        if (authorization.AccessToken == null) {
+        //            return RedirectToAction("Index", "Home");
+        //        }
 
-                var request = WebRequest.Create(string.Concat("https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=", Uri.EscapeDataString(authorization.AccessToken)));
-                using (var response = request.GetResponse()) {
-                    using (var responseStream = response.GetResponseStream()) {
-                        var gpModel = GooglePlusModel.Deserialize(responseStream);
+        //        var request = WebRequest.Create(string.Concat("https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=", Uri.EscapeDataString(authorization.AccessToken)));
+        //        using (var response = request.GetResponse()) {
+        //            using (var responseStream = response.GetResponseStream()) {
+        //                var gpModel = GooglePlusModel.Deserialize(responseStream);
 
-                        using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork()) {
-                            var doCommit = true;
-                            var gpUser = MembershipService.GetUserByEmail(gpModel.Email);
+        //                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork()) {
+        //                    var doCommit = true;
+        //                    var gpUser = MembershipService.GetUserByEmail(gpModel.Email);
 
-                            if (gpUser == null) {
-                                gpUser = new MembershipUser {
-                                    UserName = _bannedWordService.SanitiseBannedWords(gpModel.Name),
-                                    Email = gpModel.Email,
-                                    Password = StringUtils.RandomString(8),
-                                    GoogleId = gpModel.Id,
-                                    GoogleAccessToken = authorization.AccessToken,
-                                    IsExternalAccount = true
-                                };
+        //                    if (gpUser == null) {
+        //                        gpUser = new MembershipUser {
+        //                            UserName = _bannedWordService.SanitiseBannedWords(gpModel.Name),
+        //                            Email = gpModel.Email,
+        //                            Password = StringUtils.RandomString(8),
+        //                            GoogleId = gpModel.Id,
+        //                            GoogleAccessToken = authorization.AccessToken,
+        //                            IsExternalAccount = true
+        //                        };
 
-                                doCommit = ProcessSocialLogonUser(gpUser, doCommit);
-                            } else {
-                                gpUser.Email = gpModel.Email;
-                                gpUser.GoogleAccessToken = authorization.AccessToken;
+        //                        doCommit = ProcessSocialLogonUser(gpUser, doCommit);
+        //                    } else {
+        //                        gpUser.Email = gpModel.Email;
+        //                        gpUser.GoogleAccessToken = authorization.AccessToken;
 
-                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel {
-                                    Message = LocalizationService.GetResourceString("Members.NowLoggedIn"),
-                                    MessageType = GenericMessages.success
-                                };
+        //                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel {
+        //                            Message = LocalizationService.GetResourceString("Members.NowLoggedIn"),
+        //                            MessageType = GenericMessages.success
+        //                        };
 
-                                FormsAuthentication.SetAuthCookie(gpUser.UserName, true);
-                            }
+        //                        FormsAuthentication.SetAuthCookie(gpUser.UserName, true);
+        //                    }
 
-                            if (doCommit) {
-                                try {
-                                    unitOfWork.Commit();
-                                    SendEmailConfirmationEmail(gpUser);
-                                    return RedirectToAction("Index", "Home");
-                                } catch (Exception ex) {
-                                    unitOfWork.Rollback();
-                                    LoggingService.Error(ex);
-                                    FormsAuthentication.SignOut();
-                                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel {
-                                        Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
-                                        MessageType = GenericMessages.error
-                                    };
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        //                    if (doCommit) {
+        //                        try {
+        //                            unitOfWork.Commit();
+        //                            SendEmailConfirmationEmail(gpUser);
+        //                            return RedirectToAction("Index", "Home");
+        //                        } catch (Exception ex) {
+        //                            unitOfWork.Rollback();
+        //                            LoggingService.Error(ex);
+        //                            FormsAuthentication.SignOut();
+        //                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel {
+        //                                Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+        //                                MessageType = GenericMessages.error
+        //                            };
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
 
-            if (TempData[AppConstants.MessageViewBagName] == null) {
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel {
-                    Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
-                    MessageType = GenericMessages.error
-                };
-            }
+        //    if (TempData[AppConstants.MessageViewBagName] == null) {
+        //        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel {
+        //            Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+        //            MessageType = GenericMessages.error
+        //        };
+        //    }
 
-            return RedirectToAction("Logon");
+        //    return RedirectToAction("Logon");
  
-        }
+        //}
 
-        public ActionResult LogonYahoo(string returnUrl)
-        {
-            var response = OpenAuthHelpers.CheckOpenIdResponse();
+        //public ActionResult LogonYahoo(string returnUrl)
+        //{
+        //    var response = OpenAuthHelpers.CheckOpenIdResponse();
 
-            // If this is null we haven't gone off to the providers request permission page yet
-            if (response == null)
-            {
-                // Set the request to the specific provider
-                var request = OpenAuthHelpers.GetRedirectActionRequest(WellKnownProviders.Yahoo);
+        //    // If this is null we haven't gone off to the providers request permission page yet
+        //    if (response == null)
+        //    {
+        //        // Set the request to the specific provider
+        //        var request = OpenAuthHelpers.GetRedirectActionRequest(WellKnownProviders.Yahoo);
 
-                // Redirect to the providers login page and asks user for permission to share the profile fields requested.
-                return request.RedirectingResponse.AsActionResultMvc5();
-            }
+        //        // Redirect to the providers login page and asks user for permission to share the profile fields requested.
+        //        return request.RedirectingResponse.AsActionResultMvc5();
+        //    }
 
-            // If we get here then we have been to the provider page and been redirected back here
-            switch (response.Status)
-            {
-                case AuthenticationStatus.Authenticated:
-                    // Woot! All good in the hood - User has authorised us
+        //    // If we get here then we have been to the provider page and been redirected back here
+        //    switch (response.Status)
+        //    {
+        //        case AuthenticationStatus.Authenticated:
+        //            // Woot! All good in the hood - User has authorised us
 
-                    // Get the identifier from the provider
-                    var oid = response.ClaimedIdentifier.ToString();
+        //            // Get the identifier from the provider
+        //            var oid = response.ClaimedIdentifier.ToString();
 
-                    using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-                    {
-                        var doCommit = true;
+        //            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+        //            {
+        //                var doCommit = true;
 
-                        // See if the user has already logged in to this site using open Id
-                        var user = MembershipService.GetUserByOpenIdToken(oid);
-                        var fetch = response.GetExtension<FetchResponse>();
-                        if (user == null)
-                        {
-                            // First time logging in, so need to register them as new user
-                            // password is irrelavant as they'll login using FB Id so generate random one
+        //                // See if the user has already logged in to this site using open Id
+        //                var user = MembershipService.GetUserByOpenIdToken(oid);
+        //                var fetch = response.GetExtension<FetchResponse>();
+        //                if (user == null)
+        //                {
+        //                    // First time logging in, so need to register them as new user
+        //                    // password is irrelavant as they'll login using FB Id so generate random one
 
-                            user = new MembershipUser
-                            {
-                                Email = fetch.GetAttributeValue(WellKnownAttributes.Contact.Email),
-                                Password = StringUtils.RandomString(8),
-                                MiscAccessToken = oid,
-                                IsExternalAccount = true,
-                            };
-                            user.UserName = _bannedWordService.SanitiseBannedWords(user.Email);
+        //                    user = new MembershipUser
+        //                    {
+        //                        Email = fetch.GetAttributeValue(WellKnownAttributes.Contact.Email),
+        //                        Password = StringUtils.RandomString(8),
+        //                        MiscAccessToken = oid,
+        //                        IsExternalAccount = true,
+        //                    };
+        //                    user.UserName = _bannedWordService.SanitiseBannedWords(user.Email);
 
-                            doCommit = ProcessSocialLogonUser(user, doCommit);
+        //                    doCommit = ProcessSocialLogonUser(user, doCommit);
 
-                        }
-                        else
-                        {
-                            // Do an update to make sure we have the most recent details
-                            user.Email = fetch.GetAttributeValue(WellKnownAttributes.Contact.Email);
-                            user.MiscAccessToken = oid;
+        //                }
+        //                else
+        //                {
+        //                    // Do an update to make sure we have the most recent details
+        //                    user.Email = fetch.GetAttributeValue(WellKnownAttributes.Contact.Email);
+        //                    user.MiscAccessToken = oid;
 
-                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                            {
-                                Message = LocalizationService.GetResourceString("Members.NowLoggedIn"),
-                                MessageType = GenericMessages.success
-                            };
+        //                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+        //                    {
+        //                        Message = LocalizationService.GetResourceString("Members.NowLoggedIn"),
+        //                        MessageType = GenericMessages.success
+        //                    };
 
-                            // Log the user in
-                            FormsAuthentication.SetAuthCookie(user.UserName, true);
-                        }
+        //                    // Log the user in
+        //                    FormsAuthentication.SetAuthCookie(user.UserName, true);
+        //                }
 
-                        if (doCommit)
-                        {
-                            try
-                            {
-                                unitOfWork.Commit();
-                                SendEmailConfirmationEmail(user);
-                                return RedirectToAction("Index", "Home");
-                            }
-                            catch (Exception ex)
-                            {
-                                unitOfWork.Rollback();
-                                LoggingService.Error(ex);
-                                FormsAuthentication.SignOut();
-                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                                {
-                                    Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
-                                    MessageType = GenericMessages.error
-                                };
+        //                if (doCommit)
+        //                {
+        //                    try
+        //                    {
+        //                        unitOfWork.Commit();
+        //                        SendEmailConfirmationEmail(user);
+        //                        return RedirectToAction("Index", "Home");
+        //                    }
+        //                    catch (Exception ex)
+        //                    {
+        //                        unitOfWork.Rollback();
+        //                        LoggingService.Error(ex);
+        //                        FormsAuthentication.SignOut();
+        //                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+        //                        {
+        //                            Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+        //                            MessageType = GenericMessages.error
+        //                        };
 
-                            }
-                        }
+        //                    }
+        //                }
 
-                    }
-                    break;
+        //            }
+        //            break;
 
-                case AuthenticationStatus.Canceled:
-                    // Bugger. User cancelled for some reason
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = LocalizationService.GetResourceString("Members.LoginCancelledByUser"),
-                        MessageType = GenericMessages.error
-                    };
-                    break;
+        //        case AuthenticationStatus.Canceled:
+        //            // Bugger. User cancelled for some reason
+        //            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+        //            {
+        //                Message = LocalizationService.GetResourceString("Members.LoginCancelledByUser"),
+        //                MessageType = GenericMessages.error
+        //            };
+        //            break;
 
-                case AuthenticationStatus.Failed:
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = LocalizationService.GetResourceString("Members.LoginFailedByOpenID"),
-                        MessageType = GenericMessages.error
-                    };
-                    break;
-            }
+        //        case AuthenticationStatus.Failed:
+        //            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+        //            {
+        //                Message = LocalizationService.GetResourceString("Members.LoginFailedByOpenID"),
+        //                MessageType = GenericMessages.error
+        //            };
+        //            break;
+        //    }
 
-            // Only add this if one hasn't been added already
-            if (TempData[AppConstants.MessageViewBagName] == null)
-            {
-                // Either cancelled or there was an error
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                {
-                    Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
-                    MessageType = GenericMessages.error
-                };
-            }
-            return RedirectToAction("LogOn");
-        }
+        //    // Only add this if one hasn't been added already
+        //    if (TempData[AppConstants.MessageViewBagName] == null)
+        //    {
+        //        // Either cancelled or there was an error
+        //        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+        //        {
+        //            Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+        //            MessageType = GenericMessages.error
+        //        };
+        //    }
+        //    return RedirectToAction("LogOn");
+        //}
 
-        #endregion
+        //#endregion
 
 
         [ChildActionOnly]

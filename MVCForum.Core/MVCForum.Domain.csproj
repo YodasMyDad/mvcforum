@@ -181,7 +181,6 @@
     <Compile Include="Interfaces\Services\IPollVoteService.cs" />
     <Compile Include="Interfaces\Services\IPollService.cs" />
     <Compile Include="Interfaces\Services\IActivityService.cs" />
-    <Compile Include="Interfaces\Services\ILuceneService.cs" />
     <Compile Include="Interfaces\Services\IPrivateMessageService.cs" />
     <Compile Include="Interfaces\Services\IReportService.cs" />
     <Compile Include="Interfaces\Services\ITopicNotificationService.cs" />
