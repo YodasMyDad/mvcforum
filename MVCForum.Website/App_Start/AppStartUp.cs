@@ -1,10 +1,10 @@
 using MVCForum.IOC;
-using MVCForum.Website.App_Start;
+using MVCForum.Website;
 
 [assembly: WebActivator.PreApplicationStartMethod(typeof(AppStartUp), "Start")]
 [assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(AppStartUp), "Stop")]
 
-namespace MVCForum.Website.App_Start
+namespace MVCForum.Website
 {
     public static class AppStartUp
     {
@@ -13,7 +13,7 @@ namespace MVCForum.Website.App_Start
         /// </summary>
         public static void Start()
         {
-           UnityMVC3.Start();
+           UnityHelper.Start();
         }
 
         /// <summary>
