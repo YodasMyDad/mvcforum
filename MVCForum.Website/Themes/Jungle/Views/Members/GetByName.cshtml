@@ -1,5 +1,6 @@
 ﻿@using MVCForum.Domain.Constants
 @using MVCForum.Utilities
+@using MVCForum.Website
 @model MVCForum.Website.ViewModels.ViewMemberViewModel
 @{
     ViewBag.Title = string.Concat(Model.User.UserName, Html.LanguageString("Members.ProfileTitle"));
@@ -52,7 +53,7 @@
     <div class="row-fluid">
 
         <div class="span3 memberavatardetails">
-            <p><img src="@Model.User.MemberImage(AppConstants.GravatarProfileSize)" alt="@Model.User.UserName"></p>
+            <p><img src="@Model.User.MemberImage(SiteConstants.GravatarProfileSize)" alt="@Model.User.UserName"></p>
             <p>@Html.LanguageString("Members.Profile.Joined") @Model.User.CreateDate.ToShortDateString()</p>
             <p>@Html.LanguageString("Members.Profile.Posts") @Model.User.Posts.Count</p>
             <p>@Html.LanguageString("Members.Profile.Points") @Model.User.TotalPoints</p>

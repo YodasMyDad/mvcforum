@@ -73,7 +73,7 @@ namespace MVCForum.Website.Application
         public static MvcHtmlString Pager(this HtmlHelper helper, int currentPage, int pageSize, int totalItemCount, object routeValues, string actionOveride = null)
         {
             // how many pages to display in each page group const  	
-            const int cGroupSize = AppConstants.PagingGroupSize;
+            const int cGroupSize = SiteConstants.PagingGroupSize;
             var pageCount = (int)Math.Ceiling(totalItemCount / (double)pageSize);
 
             if(pageCount <= 0)

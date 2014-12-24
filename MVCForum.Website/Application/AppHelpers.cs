@@ -112,7 +112,7 @@ namespace MVCForum.Website.Application
         public static List<string> GetThemeFolders()
         {
             var folders = new List<string>();
-            var themeRootFolder = HttpContext.Current.Server.MapPath(String.Format("~/{0}", AppConstants.ThemeRootFolderName));
+            var themeRootFolder = HttpContext.Current.Server.MapPath(String.Format("~/{0}", SiteConstants.ThemeRootFolderName));
             if (Directory.Exists(themeRootFolder))
             {
                 folders.AddRange(Directory.GetDirectories(themeRootFolder)
@@ -306,7 +306,7 @@ namespace MVCForum.Website.Application
             if (!string.IsNullOrEmpty(avatar))
             {
                 // Has an avatar image
-                return VirtualPathUtility.ToAbsolute(string.Concat(AppConstants.UploadFolderPath, userId, "/", avatar, string.Format("?width={0}&crop=0,0,{0},{0}", size)));
+                return VirtualPathUtility.ToAbsolute(string.Concat(SiteConstants.UploadFolderPath, userId, "/", avatar, string.Format("?width={0}&crop=0,0,{0},{0}", size)));
             }
             return StringUtils.GetGravatarImage(email, size);
         }

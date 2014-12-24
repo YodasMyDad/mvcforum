@@ -2,9 +2,6 @@
 {
     public static class AppConstants
     {
-        //Mobile Check Name
-        public const string IsMobileDevice = "IsMobileDevice";
-
         // Cookie names
         public const string LanguageIdCookieName = "LanguageCulture";
         public const string MemberEmailConfirmationCookieName = "MVCForumEmailConfirmation";
@@ -12,19 +9,7 @@
         // Cache names
         public const string SettingsCacheName = "MainSettings";
         public const string LocalizationCacheName = "Localization";
-        public const string MemberCacheName = "#member#-{0}";
-        
-        //Querystring names
-        public const string PostOrderBy = "order";
-        public const string AllPosts = "all";
-
-        // Themes
-        public const string ThemeRootFolderName = "Themes";
-
-        // Editor
-        //public const string EditorType = "bbeditor";
-        //public const string EditorType = "tinymceeditor";
-        public const string EditorType = "markdowneditor";   
+        public const string MemberCacheName = "#member#-{0}";       
 
         // Url names
         public const string CategoryUrlIdentifier = "cat";
@@ -63,44 +48,17 @@
         public const string PermissionAttachFiles = "Attach Files";
 
         // Paging options
-        public const int AdminListPageSize = 30;
-        public const int PagingGroupSize = 10;
-        public const int ActiveTopicsListSize = 50;
-        public const int PrivateMessageListSize = 30;
         public const string PagingUrlFormat = "{0}?p={1}";
-        public const int SimilarTopicsListSize = 20;
 
         // Last Activity Time Check
-        public const int TimeSpanInMinutesToDoCheck = 10;
-        public const int TimeSpanInMinutesToShowMembers = 20;
+        public const int TimeSpanInMinutesToShowMembers = 10;
 
-        // Social
-        public const int GravatarPostSize = 50;
-        public const int GravatarTopicSize = 35;
-        public const int GravatarProfileSize = 85;
-        public const int GravatarLeaderboardSize = 25;
-
-        // System and default folder
-        public const string ThemeRootFolder = "~/Themes/";
-	
-        /// <summary>
-        /// A short cache time to help with speeding up the site
-        /// </summary>
-        public const int DefaultCacheLengthInSeconds = 600;
-
+        // Installer Stuff
         public const string InstallerName = "YesImAnInstallerSpankMe";
         public const string InstallerUrl = "/install/";
         public const string InMobileView = "InMobileView";
         public const string GoToInstaller = "GoToInstaller";
         public const string SuccessDbFile = "SuccessDbFile.txt";
-
-
-        //Uploads
-        public const string UploadFolderPath = "~/content/uploads/";
-
-        //Social login Attributes
-        public const string LoginGoogleFirstName = "http://axschema.org/namePerson/first";
-        public const string LoginGoogleLastName = "http://axschema.org/namePerson/last";
 
         // Database Connection Key
         public const string MvcForumContext = "MVCForumContext";

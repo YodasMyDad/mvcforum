@@ -198,6 +198,7 @@
     <Compile Include="App_Start\Badges\PostMentionsUmbraco.cs" />
     <Compile Include="App_Start\Badges\UserVoteUpBadge.cs" />
     <Compile Include="App_Start\RegisterClientValidationExtensions.cs" />
+    <Compile Include="App_Start\SiteConstants.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
@@ -1963,7 +1964,6 @@
     <Content Include="Themes\Metro\Views\PrivateMessage\View.cshtml" />
     <Content Include="Themes\Metro\Views\Search\Index.cshtml" />
     <Content Include="Themes\Metro\Views\Search\SideSearch.cshtml" />
-    <Content Include="Themes\Metro\Views\Search\Testing.cshtml" />
     <Content Include="Themes\Metro\Views\Snippets\GetThisWeeksTopEarners.cshtml" />
     <Content Include="Themes\Metro\Views\Snippets\GetThisYearsTopEarners.cshtml" />
     <Content Include="Themes\Metro\Views\Stats\GetMainStats.cshtml" />
@@ -2009,7 +2009,6 @@
     <Content Include="Themes\n3o\Views\PrivateMessage\View.cshtml" />
     <Content Include="Themes\n3o\Views\Search\Index.cshtml" />
     <Content Include="Themes\n3o\Views\Search\SideSearch.cshtml" />
-    <Content Include="Themes\n3o\Views\Search\Testing.cshtml" />
     <Content Include="Themes\n3o\Views\Shared\_CreateNewPost.cshtml" />
     <Content Include="Themes\n3o\Views\Shared\_DocumentationBlock.cshtml" />
     <Content Include="Themes\n3o\Views\Shared\_EmailConfirmationNotice.cshtml" />
@@ -2075,7 +2074,6 @@
     <Content Include="Themes\Jungle\Views\PrivateMessage\View.cshtml" />
     <Content Include="Themes\Jungle\Views\Search\Index.cshtml" />
     <Content Include="Themes\Jungle\Views\Search\SideSearch.cshtml" />
-    <Content Include="Themes\Jungle\Views\Search\Testing.cshtml" />
     <Content Include="Themes\Jungle\Views\Shared\_CreateNewPost.cshtml" />
     <Content Include="Themes\Jungle\Views\Shared\_DocumentationBlock.cshtml" />
     <Content Include="Themes\Jungle\Views\Shared\_EmailConfirmationNotice.cshtml" />
@@ -2140,7 +2138,6 @@
     <Content Include="Themes\Dark\Views\PrivateMessage\View.cshtml" />
     <Content Include="Themes\Dark\Views\Search\Index.cshtml" />
     <Content Include="Themes\Dark\Views\Search\SideSearch.cshtml" />
-    <Content Include="Themes\Dark\Views\Search\Testing.cshtml" />
     <Content Include="Themes\Dark\Views\Shared\_CreateNewPost.cshtml" />
     <Content Include="Themes\Dark\Views\Shared\_DocumentationBlock.cshtml" />
     <Content Include="Themes\Dark\Views\Shared\_EmailConfirmationNotice.cshtml" />

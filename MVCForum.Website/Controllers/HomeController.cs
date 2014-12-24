@@ -56,7 +56,7 @@ namespace MVCForum.Website.Controllers
                 // Get the topics
                 var topics = _topicService.GetRecentTopics(pageIndex,
                                                            SettingsService.GetSettings().TopicsPerPage,
-                                                           AppConstants.ActiveTopicsListSize);
+                                                           SiteConstants.ActiveTopicsListSize);
 
                 // Get all the categories for this topic collection
                 var categories = topics.Select(x => x.Category).Distinct();
@@ -103,7 +103,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.DefaultCacheLengthInSeconds)]
+        [OutputCache(Duration = SiteConstants.DefaultCacheLengthInSeconds)]
         public ActionResult LatestRss()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -112,7 +112,7 @@ namespace MVCForum.Website.Controllers
                 var rssTopics = new List<RssItem>();
 
                 // Get the latest topics
-                var topics = _topicService.GetRecentRssTopics(AppConstants.ActiveTopicsListSize);
+                var topics = _topicService.GetRecentRssTopics(SiteConstants.ActiveTopicsListSize);
 
                 // Get all the categories for this topic collection
                 var categories = topics.Select(x => x.Category).Distinct();
@@ -149,7 +149,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.DefaultCacheLengthInSeconds)]
+        [OutputCache(Duration = SiteConstants.DefaultCacheLengthInSeconds)]
         public ActionResult ActivityRss()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -184,7 +184,7 @@ namespace MVCForum.Website.Controllers
                             Description = string.Empty,
                             Title = LocalizationService.GetResourceString("Activity.UserJoined"),
                             PublishedDate = memberJoinedActivity.ActivityMapped.Timestamp,
-                            RssImage = memberJoinedActivity.User.MemberImage(AppConstants.GravatarPostSize),
+                            RssImage = memberJoinedActivity.User.MemberImage(SiteConstants.GravatarPostSize),
                             Link = activityLink
                         });
                     }
@@ -196,7 +196,7 @@ namespace MVCForum.Website.Controllers
                             Description = string.Empty,
                             Title = LocalizationService.GetResourceString("Activity.ProfileUpdated"),
                             PublishedDate = profileUpdatedActivity.ActivityMapped.Timestamp,
-                            RssImage = profileUpdatedActivity.User.MemberImage(AppConstants.GravatarPostSize),
+                            RssImage = profileUpdatedActivity.User.MemberImage(SiteConstants.GravatarPostSize),
                             Link = activityLink
                         });
                     }
@@ -207,7 +207,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.DefaultCacheLengthInSeconds)]
+        [OutputCache(Duration = SiteConstants.DefaultCacheLengthInSeconds)]
         public ActionResult GoogleSitemap()
         {
             using (UnitOfWorkManager.NewUnitOfWork())

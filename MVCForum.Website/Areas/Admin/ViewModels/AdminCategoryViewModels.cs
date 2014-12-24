@@ -27,7 +27,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [DisplayName("Category Description")]
         [DataType(DataType.MultilineText)]
-        [UIHint(AppConstants.EditorType), AllowHtml]
+        [UIHint(SiteConstants.EditorType), AllowHtml]
         public string Description { get; set; }
 
         [DisplayName("Lock The Category")]
@@ -66,7 +66,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [DisplayName("Category Description")]
         [DataType(DataType.MultilineText)]
-        [UIHint(AppConstants.EditorType), AllowHtml]
+        [UIHint(SiteConstants.EditorType), AllowHtml]
         public string Description { get; set; }
 
         [DisplayName("Lock The Category")]

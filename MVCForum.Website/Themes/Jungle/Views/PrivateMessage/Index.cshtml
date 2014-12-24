@@ -1,4 +1,5 @@
-﻿@model MVCForum.Website.ViewModels.ListPrivateMessageViewModel
+﻿@using MVCForum.Website
+@model MVCForum.Website.ViewModels.ListPrivateMessageViewModel
 
 @{
     ViewBag.Title = Html.LanguageString("PM.ReceivedPrivateMessages");
@@ -45,7 +46,7 @@
     </tbody>
 </table>
 
-@Html.Pager(Convert.ToInt32(Model.PageIndex), MVCForum.Domain.Constants.AppConstants.PrivateMessageListSize, Convert.ToInt32(Model.TotalCount), new {})    
+@Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.PrivateMessageListSize, Convert.ToInt32(Model.TotalCount), new {})    
 }
 else
 {

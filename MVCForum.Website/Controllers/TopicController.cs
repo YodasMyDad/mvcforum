@@ -358,14 +358,14 @@ namespace MVCForum.Website.Controllers
                     // Use the post service to get them as it includes other used entities in one
                     // statement rather than loads of sql selects
 
-                    var sortQuerystring = Request.QueryString[AppConstants.PostOrderBy];
+                    var sortQuerystring = Request.QueryString[SiteConstants.PostOrderBy];
                     var orderBy = !string.IsNullOrEmpty(sortQuerystring) ? 
                                               EnumUtils.ReturnEnumValueFromString<PostOrderBy>(sortQuerystring) : PostOrderBy.Standard;
 
                     // Store the amount per page
                     var amountPerPage = SettingsService.GetSettings().PostsPerPage;
 
-                    if (sortQuerystring == AppConstants.AllPosts)
+                    if (sortQuerystring == SiteConstants.AllPosts)
                     {
                         // Overide to show all posts
                         amountPerPage = int.MaxValue;
@@ -502,7 +502,7 @@ namespace MVCForum.Website.Controllers
                 // Get the topics
                 var topics = _topicService.GetPagedTopicsByTag(pageIndex,
                                                            SettingsService.GetSettings().TopicsPerPage,
-                                                           AppConstants.ActiveTopicsListSize,
+                                                           SiteConstants.ActiveTopicsListSize,
                                                            tag);
 
                 // Get all the categories for this topic collection
@@ -535,12 +535,10 @@ namespace MVCForum.Website.Controllers
             // Returns the formatted string to search on
             var formattedSearchTerm = StringUtils.ReturnSearchString(searchTerm);
 
-            // Get lucene to search, we are just searching on the topic name at the moment
-            // Really need a more powerful lucene search for similar questions
             List<Topic> topics = null;
             try
             {
-                var searchResults = _topicService.SearchTopics(0, AppConstants.SimilarTopicsListSize, AppConstants.SimilarTopicsListSize, formattedSearchTerm);
+                var searchResults = _topicService.SearchTopics(0, SiteConstants.SimilarTopicsListSize, SiteConstants.SimilarTopicsListSize, formattedSearchTerm);
                 if (searchResults != null)
                 {
                     topics = searchResults.ToList();

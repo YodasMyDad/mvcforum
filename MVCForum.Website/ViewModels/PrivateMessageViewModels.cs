@@ -26,7 +26,7 @@ namespace MVCForum.Website.ViewModels
         [Required]
         public string Subject { get; set; }
 
-        [UIHint(AppConstants.EditorType), AllowHtml]
+        [UIHint(SiteConstants.EditorType), AllowHtml]
         public string Message { get; set; }
 
         public string PreviousMessage { get; set; }

@@ -559,7 +559,7 @@ namespace MVCForum.Website.Controllers
                 var span = rightNow.Subtract(usersDate);
                 var totalMins = span.TotalMinutes;
 
-                if (totalMins > AppConstants.TimeSpanInMinutesToDoCheck)
+                if (totalMins > SiteConstants.TimeSpanInMinutesToDoCheck)
                 {
                     using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                     {
@@ -1090,7 +1090,7 @@ namespace MVCForum.Website.Controllers
                 if (userModel.Files != null)
                 {
                     // Before we save anything, check the user already has an upload folder and if not create one
-                    var uploadFolderPath = Server.MapPath(string.Concat(AppConstants.UploadFolderPath, LoggedOnUser.Id));
+                    var uploadFolderPath = Server.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnUser.Id));
                     if (!Directory.Exists(uploadFolderPath))
                     {
                         Directory.CreateDirectory(uploadFolderPath);
@@ -1339,8 +1339,8 @@ namespace MVCForum.Website.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = p ?? 1;
-                var allUsers = string.IsNullOrEmpty(search) ? MembershipService.GetAll(pageIndex, AppConstants.AdminListPageSize) :
-                                    MembershipService.SearchMembers(search, pageIndex, AppConstants.AdminListPageSize);
+                var allUsers = string.IsNullOrEmpty(search) ? MembershipService.GetAll(pageIndex, SiteConstants.AdminListPageSize) :
+                                    MembershipService.SearchMembers(search, pageIndex, SiteConstants.AdminListPageSize);
 
                 // Redisplay list of users
                 var allViewModelUsers = allUsers.Select(user => new PublicSingleMemberListViewModel

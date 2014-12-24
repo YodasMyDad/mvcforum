@@ -67,7 +67,7 @@ namespace MVCForum.Website.Controllers
 
                             // woot! User has permission and all seems ok
                             // Before we save anything, check the user already has an upload folder and if not create one
-                            var uploadFolderPath = Server.MapPath(string.Concat(AppConstants.UploadFolderPath, LoggedOnUser.Id));
+                            var uploadFolderPath = Server.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnUser.Id));
                             if (!Directory.Exists(uploadFolderPath))
                             {
                                 Directory.CreateDirectory(uploadFolderPath);

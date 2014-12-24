@@ -164,7 +164,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.DefaultCacheLengthInSeconds)]
+        [OutputCache(Duration = SiteConstants.DefaultCacheLengthInSeconds)]
         public ActionResult CategoryRss(string slug)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -182,7 +182,7 @@ namespace MVCForum.Website.Controllers
 
                 if (!permissions[AppConstants.PermissionDenyAccess].IsTicked)
                 {
-                    var topics = _topicService.GetRssTopicsByCategory(AppConstants.ActiveTopicsListSize, category.Id);
+                    var topics = _topicService.GetRssTopicsByCategory(SiteConstants.ActiveTopicsListSize, category.Id);
 
                     rssTopics.AddRange(topics.Select(x =>
                                                          {

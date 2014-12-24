@@ -1,9 +1,8 @@
-﻿@using MVCForum.Domain.Constants
-@using SquishIt.Framework
+﻿@using MVCForum.Website
 @{
     var theme = Html.Settings().Theme;
-    var themePath = string.Concat(AppConstants.ThemeRootFolder, theme);
-    var globalClass = Convert.ToBoolean(PageData[AppConstants.IsMobileDevice]) ? "mobile" : "desktop";
+    var themePath = string.Concat(SiteConstants.ThemeRootFolder, theme);
+    var globalClass = Convert.ToBoolean(PageData[SiteConstants.IsMobileDevice]) ? "mobile" : "desktop";
 }
 <!DOCTYPE html>
 <html lang="en">

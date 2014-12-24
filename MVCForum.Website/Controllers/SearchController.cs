@@ -47,7 +47,7 @@ namespace MVCForum.Website.Controllers
                     // Get all the topics based on the search value
                     var topics = _topicsService.SearchTopics(pageIndex,
                                                          SettingsService.GetSettings().TopicsPerPage,
-                                                         AppConstants.ActiveTopicsListSize,
+                                                         SiteConstants.ActiveTopicsListSize,
                                                          term);
 
                     // Get all the categories for this topic collection

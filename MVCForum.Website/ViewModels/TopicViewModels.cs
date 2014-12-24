@@ -45,7 +45,7 @@ namespace MVCForum.Website.ViewModels
         [ForumMvcResourceDisplayName("Topic.Label.TopicTitle")]
         public string Name { get; set; }
 
-        [UIHint(AppConstants.EditorType), AllowHtml]
+        [UIHint(SiteConstants.EditorType), AllowHtml]
         [StringLength(6000)]
         public string Content { get; set; }
 

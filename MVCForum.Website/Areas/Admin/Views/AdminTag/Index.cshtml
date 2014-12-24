@@ -1,4 +1,5 @@
 ﻿@using MVCForum.Domain.Constants
+@using MVCForum.Website
 @model MVCForum.Website.Areas.Admin.ViewModels.ListTagsViewModel
 
 @{
@@ -68,4 +69,4 @@
     </tbody>
 </table>
 
-    @Html.Pager(Convert.ToInt32(Model.PageIndex), AppConstants.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
+    @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })

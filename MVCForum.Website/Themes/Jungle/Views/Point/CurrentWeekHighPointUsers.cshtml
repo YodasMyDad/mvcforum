@@ -1,6 +1,7 @@
 ﻿@using MVCForum.Domain.Constants
 @using System.Linq;
 @using MVCForum.Utilities
+@using MVCForum.Website
 @model MVCForum.Website.ViewModels.HighEarnersPointViewModel
 
 @if (Html.Settings().EnablePoints)
@@ -13,7 +14,7 @@
         {    
             <li>
                 <span class="earnername">
-                    <img src="@dict.Key.MemberImage(AppConstants.GravatarLeaderboardSize)" alt="@dict.Key.UserName">
+                    <img src="@dict.Key.MemberImage(SiteConstants.GravatarLeaderboardSize)" alt="@dict.Key.UserName">
                     <a href="@dict.Key.NiceUrl">@dict.Key.UserName</a>
                 </span>
                 <span class="earneramount">@dict.Value</span>

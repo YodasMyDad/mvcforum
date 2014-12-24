@@ -17,7 +17,7 @@ namespace MVCForum.Website.Controllers
         }
 
         [ChildActionOnly]
-        [OutputCache(Duration = AppConstants.DefaultCacheLengthInSeconds)]
+        [OutputCache(Duration = SiteConstants.DefaultCacheLengthInSeconds)]
         public PartialViewResult PopularTags()
         {
             using (UnitOfWorkManager.NewUnitOfWork())

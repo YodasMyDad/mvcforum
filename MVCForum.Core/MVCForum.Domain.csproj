@@ -95,7 +95,6 @@
     <Compile Include="DomainModel\CategoryWithSubCategories.cs" />
     <Compile Include="DomainModel\BannedWord.cs" />
     <Compile Include="DomainModel\InstallerResult.cs" />
-    <Compile Include="DomainModel\LuceneSearchModel.cs" />
     <Compile Include="DomainModel\Poll.cs" />
     <Compile Include="DomainModel\PrivateMessage.cs" />
     <Compile Include="DomainModel\Report.cs" />

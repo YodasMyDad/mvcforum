@@ -1,6 +1,7 @@
 ﻿@using MVCForum.Domain.DomainModel.Activity;
 @using MVCForum.Domain.Constants;
 @using MVCForum.Utilities
+@using MVCForum.Website
 @using MVCForum.Website.Application
 @using MVCForum.Website.ViewModels
 @model AllRecentActivitiesViewModel
@@ -64,7 +65,7 @@
                 var memberJoinedActivity = activity as MemberJoinedActivity;
 
                 <div class="activitybadge span1">
-                    <img src="@memberJoinedActivity.User.MemberImage(AppConstants.GravatarPostSize)" alt="@memberJoinedActivity.User.UserName" />
+                    <img src="@memberJoinedActivity.User.MemberImage(SiteConstants.GravatarPostSize)" alt="@memberJoinedActivity.User.UserName" />
                 </div>
 
                 <div class="activityinfo span11">
@@ -79,7 +80,7 @@
                 var profileUpdatedActivity = activity as ProfileUpdatedActivity;
 
                 <div class="activitybadge span1">
-                    <img src="@profileUpdatedActivity.User.MemberImage(AppConstants.GravatarPostSize)" alt="@profileUpdatedActivity.User.UserName" />
+                    <img src="@profileUpdatedActivity.User.MemberImage(SiteConstants.GravatarPostSize)" alt="@profileUpdatedActivity.User.UserName" />
                 </div>
 
                 <div class="activityinfo span11">
