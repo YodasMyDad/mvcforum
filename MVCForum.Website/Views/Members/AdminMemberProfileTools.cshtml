@@ -1,0 +1,21 @@
+﻿@using MVCForum.Domain.Constants
+@model MVCForum.Website.ViewModels.ViewMemberViewModel
+<div class="adminprofiletools">
+    
+    <p><a href="@Url.Action("DeleteUsersPosts", "Account", new { area = "Admin", id = Model.User.Id, profileClick = true }, null)" class="btn" onclick="return confirm('@Html.LanguageString("Confirmation.DeleteMembersPosts")')">@Html.LanguageString("Members.DeleteAllPosts")</a></p>
+
+    @if(!Model.User.IsLockedOut)
+    {
+        <p><a href="@Url.Action("BanMember", "Account", new { area = "Admin", id = Model.User.Id }, null)" class="btn">@Html.LanguageString("Members.BanUser")</a></p>
+    }
+    else
+    {
+        <p><a href="@Url.Action("UnBanMember", "Account", new { area = "Admin", id = Model.User.Id }, null)" class="btn">@Html.LanguageString("Members.UnBanUser")</a></p>
+    }
+
+    @if (User.IsInRole(AppConstants.AdminRoleName))
+    {
+        <p><a href="@Url.Action("Edit", "Account", new { area = "Admin", Model.User.Id }, null)" class="btn">@Html.LanguageString("Members.EditMember")</a></p>       
+    }
+
+</div>

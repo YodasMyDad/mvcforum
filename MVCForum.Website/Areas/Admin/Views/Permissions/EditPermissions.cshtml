@@ -7,21 +7,21 @@
     var allPermission = Model.MembershipRole.GetFullPermissionTable();
 }
 
-<div class="container-fluid fluidheader">
-    <div class="row-fluid">
-        <div class="span1">
+<div class="container fluidheader">
+    <div class="row">
+        <div class="col-md-1">
             <a href="@Url.Action("Index")" class="btn btn-large btn-success">Back</a>
         </div>
-            <div class="span10">
+            <div class="col-md-10">
                 <h2>Edit @Model.MembershipRole.RoleName Permissions <img src="@Url.Content("~/Content/admin/Images/ajax-loader.gif")" alt="Please Wait" style="display: none;" class="editpermissionsspinner" /> <span class="label label-success ajaxsuccessshow" style="display: none;">Success</span></h2>
                 <p>All permissions relate to all posts, topics i.e. If you enable edit and delete posts, any member in this role will be able edit and delete posts by any other member</p>
             </div>
     </div>
 </div>
 
-<div class="container-fluid">
+<div class="container">
     
-    <div class="row-fluid">
+    <div class="row">
         @Html.AntiForgeryToken()
         <table class="table table-bordered table-striped permissiontable">
     

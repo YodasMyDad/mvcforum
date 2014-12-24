@@ -1,4 +1,7 @@
-﻿/*--- Bootstrap Overides ---*/
+﻿@font-face { font-family: 'MVCforumLight'; src: url('../fonts/mvcforumli.eot'); src: url('../fonts/mvcforumli.eot?#iefix') format('embedded-opentype'), url('../fonts/mvcforumli.woff') format('woff'), url('../fonts/mvcforumli.ttf') format('truetype'),url('../fonts/mvcforumli.svg#MVCforumLight') format('svg'); font-weight: normal; font-style: normal; }
+@font-face { font-family: 'MVCforumSemiBold'; src: url('../fonts/mvcforumsb.eot'); src: url('../fonts/mvcforumsb.eot?#iefix') format('embedded-opentype'), url('../fonts/mvcforumsb.woff') format('woff'), url('../fonts/mvcforumsb.ttf') format('truetype'),url('../fonts/mvcforumsb.svg#MVCforumSemiBold') format('svg'); font-weight: normal; font-style: normal; }
+
+/*--- Bootstrap Overides ---*/
 .container-fluid { max-width: 1000px; margin-left: auto; margin-right: auto; }
 .navbar .brand { padding-top: 5px; padding-bottom: 3px; }
 input.btn, button.btn { font-weight: normal; }

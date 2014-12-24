@@ -1,0 +1,23 @@
+﻿@using MVCForum.Domain.Constants
+<nav class="navbar navbar-inverse">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#mvcforum-nav">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="@Url.Action("Index", "Admin", new { area = "Admin" }, null)">
+                <img src="@Url.Content("~/Content/admin/Images/admin-n3o-logo.png")" alt="Admin Logo" />
+            </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="mvcforum-nav">
+            <ul class="nav navbar-nav">
+                <li><a href="/">Main Site</a></li>
+                <li>@Html.AdminActionLink("Admin Home", "Index", "Admin")</li>
+            </ul>
+        </div>
+    </div>
+</nav>

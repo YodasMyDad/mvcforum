@@ -11,14 +11,14 @@
 <p>&nbsp;</p>
 <div class="clearer"></div>
 
-<div class="row-fluid">
+<div class="row">
 
     @using (Html.BeginForm("BatchMoveTopics", "Batch", FormMethod.Post, new { @class = "form-horizontal" }))
     {
         @Html.ValidationSummary(false)
         @Html.AntiForgeryToken()
 
-        <div class="span5">
+        <div class="col-md-5">
             <div class="editor-label">
                 @Html.LabelFor(m => m.FromCategory)
             </div>
@@ -27,7 +27,7 @@
                 @Html.ValidationMessageFor(m => m.FromCategory)
             </div>
         </div>
-        <div class="span5">
+        <div class="col-md-5">
             <div class="editor-label">
                 @Html.LabelFor(m => m.ToCategory)
             </div>
@@ -39,7 +39,7 @@
         
         <div class="clearer"></div>        
 
-        <div class="span10">
+        <div class="col-md-10">
             <div class="submit-holder">
                 <p>&nbsp;</p>
                 <input type="submit" class="btn btn-large btn-success" value="Move Topics" />

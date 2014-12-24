@@ -1,0 +1,16 @@
+﻿@using MVCForum.Domain.Constants
+@using MVCForum.Domain;
+@using MVCForum.Utilities
+@model MVCForum.Website.ViewModels.PopularTagViewModel
+<div class="side-box popular-tags-box">
+<h5>@Html.LanguageString("Tags.PopularTags")</h5>
+    <ul class="tagCloud">
+        @foreach(var tag in Model.PopularTags)
+        {
+            <li>
+                <span class="tagName"><a href="@UrlTypes.GenerateUrl(UrlType.Tag, StringUtils.RemoveAccents(tag.Key))">@Html.Raw(tag.Key)</a></span>
+                <span class="tagCount">@tag.Value</span>
+            </li>
+        }
+    </ul>
+</div>
