@@ -37,7 +37,7 @@ namespace MVCForum.Website.Controllers
                 ConstantMessage = true
             };
 
-            // Fall back telling user they need a manual upgrade
+            // Fall back telling user they need a manual upgrade 
             return RedirectToAction("CreateDb", "Install");
         }
     }
