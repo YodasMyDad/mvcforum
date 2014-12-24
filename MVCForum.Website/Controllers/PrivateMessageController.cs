@@ -17,7 +17,7 @@ namespace MVCForum.Website.Controllers
         private readonly IPrivateMessageService _privateMessageService;
         private readonly IEmailService _emailService;
 
-        private MembershipUser LoggedOnUser;
+        private MembershipUser LoggedOnUser; 
 
         public PrivateMessageController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IPrivateMessageService privateMessageService,

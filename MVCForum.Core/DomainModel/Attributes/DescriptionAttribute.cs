@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Web.Mvc;
+using MVCForum.Domain.Interfaces.Services;
 
 namespace MVCForum.Domain.DomainModel.Attributes
 {
@@ -9,7 +11,8 @@ namespace MVCForum.Domain.DomainModel.Attributes
 
         public DescriptionAttribute(string desc)
         {
-            Description = desc;
+            var localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
+            Description = localizationService.GetResourceString(desc.Trim());
         }
     }
 }

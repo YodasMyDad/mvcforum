@@ -8,8 +8,8 @@ namespace MVCForum.Website.Badges
 {
     [Id("a54ec5d1-111d-4698-b2d0-78fbdaa52d1b")]
     [Name("OneThousandPoints")]
-    [DisplayName("Thousand Pointer")]
-    [Description("This badge is awarded to users who have received 1000 points.")]
+    [DisplayName("Badge.OneThousandPoints.Name")]
+    [Description("Badge.OneThousandPoints.Desc")]
     [Image("OneThousandPoints.png")]
     [AwardsPoints(10)]
     public class OneThousandPoints : IPostBadge

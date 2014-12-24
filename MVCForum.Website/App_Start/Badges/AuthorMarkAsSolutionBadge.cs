@@ -7,8 +7,8 @@ namespace MVCForum.Website.Badges
 {
     [Id("d68c289a-e3f7-4f55-ae4f-fc7ac2147781")]
     [Name("AuthorMarkAsSolution")]
-    [DisplayName("Your Question Solved")]
-    [Description("This badge is awarded to topic authors the first time they have a post marked as the answer.")]
+    [DisplayName("Badge.AuthorMarkAsSolutionBadge.Name")]
+    [Description("Badge.AuthorMarkAsSolutionBadge.Desc")]
     [Image("UserMarkAsSolutionBadge.png")]
     [AwardsPoints(2)]
     public class AuthorMarkAsSolutionBadge : IMarkAsSolutionBadge

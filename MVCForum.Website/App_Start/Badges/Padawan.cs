@@ -7,8 +7,8 @@ namespace MVCForum.Website.Badges
 {
     [Id("A88C62B2-394F-4D89-B61E-04A7B546416B")]
     [Name("PadawanBadge")]
-    [DisplayName("Padawan")]
-    [Description("Had 10 or more posts successfully marked as an answer.")]
+    [DisplayName("Badge.PadawanBadge.Name")]
+    [Description("Badge.PadawanBadge.Desc")]
     [Image("padawan.png")]
     [AwardsPoints(10)]
     public class PadawanBadge : IMarkAsSolutionBadge

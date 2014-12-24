@@ -8,8 +8,8 @@ namespace MVCForum.Website.Badges
 {
     [Id("9a247d50-35b5-4cd2-adaa-a0cf013325ac")]
     [Name("PostContainsUmbraco")]
-    [DisplayName("Umbraco Fan")]
-    [Description("This badge is awarded to a user who mentions Umbraco in their latest post.")]
+    [DisplayName("Badge.PostMentionsUmbraco.Name")]
+    [Description("Badge.PostMentionsUmbraco.Desc")]
     [Image("MentionsUmbracoBadge.png")]
     [AwardsPoints(1)]
     public class PostMentionsUmbraco : IPostBadge
