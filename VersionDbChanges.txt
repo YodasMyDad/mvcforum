@@ -415,3 +415,5 @@ Post.Quote = Quote
 Members.Label.UploadNewAvatar = Upload a new profile image
 Member.HasNewPrivateMessages = You have new unread Private messages
 
+---- STOPPED - NO LONGER NEEDED AS UPGRADE FILE TAKES CARE OF IT ------
+
