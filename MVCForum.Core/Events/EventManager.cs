@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Events;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Utilities;
@@ -284,7 +283,5 @@ namespace MVCForum.Domain.Events
 
 
         #endregion
-
-        public IMVCForumAPI API { get; set; }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Attributes;
-using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Badges;
 
 namespace MVCForum.Website.Badges
@@ -14,7 +13,7 @@ namespace MVCForum.Website.Badges
     [AwardsPoints(10)]
     public class OneThousandPoints : IPostBadge
     {
-        public bool Rule(MembershipUser user, IMVCForumAPI api)
+        public bool Rule(MembershipUser user)
         {
             var points = user.Points.Sum(x => x.Points);
             return points >= 1000;

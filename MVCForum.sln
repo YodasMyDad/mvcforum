@@ -35,8 +35,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.IOC", "MVCForum.IO
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Utilities", "MVCForum.Utilities\MVCForum.Utilities.csproj", "{D0CE5E27-041D-4F1E-8C8C-5F4888C72155}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.API", "MVCForum.API\MVCForum.API.csproj", "{061F9C74-01C1-49B6-995E-0D552BD6B1D1}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -107,16 +105,6 @@ Global
 		{D0CE5E27-041D-4F1E-8C8C-5F4888C72155}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{D0CE5E27-041D-4F1E-8C8C-5F4888C72155}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{D0CE5E27-041D-4F1E-8C8C-5F4888C72155}.Release|x86.ActiveCfg = Release|Any CPU
-		{061F9C74-01C1-49B6-995E-0D552BD6B1D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{061F9C74-01C1-49B6-995E-0D552BD6B1D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{061F9C74-01C1-49B6-995E-0D552BD6B1D1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{061F9C74-01C1-49B6-995E-0D552BD6B1D1}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{061F9C74-01C1-49B6-995E-0D552BD6B1D1}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{061F9C74-01C1-49B6-995E-0D552BD6B1D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{061F9C74-01C1-49B6-995E-0D552BD6B1D1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{061F9C74-01C1-49B6-995E-0D552BD6B1D1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{061F9C74-01C1-49B6-995E-0D552BD6B1D1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{061F9C74-01C1-49B6-995E-0D552BD6B1D1}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

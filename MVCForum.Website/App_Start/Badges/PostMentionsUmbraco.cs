@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Attributes;
-using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Badges;
 
 namespace MVCForum.Website.Badges
@@ -14,7 +13,7 @@ namespace MVCForum.Website.Badges
     [AwardsPoints(1)]
     public class PostMentionsUmbraco : IPostBadge
     {
-        public bool Rule(MembershipUser user, IMVCForumAPI api)
+        public bool Rule(MembershipUser user)
         {
             var lastPost = user.Posts.OrderByDescending(x => x.DateCreated).FirstOrDefault();
             if (lastPost != null && lastPost.PostContent.ToLower().Contains("umbraco"))

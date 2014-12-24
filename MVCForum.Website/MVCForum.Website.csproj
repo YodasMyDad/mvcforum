@@ -186,6 +186,7 @@
     <Compile Include="Application\Extensions.cs" />
     <Compile Include="Application\ForumViewEngine.cs" />
     <Compile Include="Application\Localization\Localizer.cs" />
+    <Compile Include="Application\ServiceFactory.cs" />
     <Compile Include="Application\WrappedJSonResult.cs" />
     <Compile Include="App_Start\AppStartUp.cs" />
     <Compile Include="App_Start\Badges\AuthorMarkAsSolutionBadge.cs" />

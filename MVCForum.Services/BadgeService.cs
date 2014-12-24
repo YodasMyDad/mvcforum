@@ -6,7 +6,6 @@ using System.Reflection;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Attributes;
 using MVCForum.Domain.Events;
-using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Badges;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
@@ -47,7 +46,6 @@ namespace MVCForum.Services
         }
 
         private readonly IBadgeRepository _badgeRepository;
-        private readonly IMVCForumAPI _mvcForumAPI;
         private readonly ILoggingService _loggingService;
         private readonly IActivityService _activityService;
 
@@ -59,11 +57,10 @@ namespace MVCForum.Services
         /// <param name="loggingService"> </param>
         /// <param name="localizationService"> </param>
         /// <param name="activityService"> </param>
-        public BadgeService(IBadgeRepository badgeRepository, IMVCForumAPI api, 
+        public BadgeService(IBadgeRepository badgeRepository,
             ILoggingService loggingService, ILocalizationService localizationService, IActivityService activityService)
         {
             _badgeRepository = badgeRepository;
-            _mvcForumAPI = api;
             _loggingService = loggingService;
             _localizationService = localizationService;
             _activityService = activityService;
@@ -456,7 +453,7 @@ namespace MVCForum.Services
         {
             var databaseUpdateNeeded = false;
 
-            var e = new BadgeEventArgs {User = user, BadgeType = badgeType, Api = _mvcForumAPI};
+            var e = new BadgeEventArgs {User = user, BadgeType = badgeType};
             EventManager.Instance.FireBeforeBadgeAwarded(this, e);
 
             if (!e.Cancel)
@@ -480,7 +477,7 @@ namespace MVCForum.Services
                             var badge = GetInstance<IBadge>(badgeMapping);
 
                             // Award badge?
-                            if (badge != null && badge.Rule(user, _mvcForumAPI))
+                            if (badge != null && badge.Rule(user))
                             {
                                 // Re-fetch the badge otherwise system will try and create new badges!
                                 var dbBadge = _badgeRepository.Get(badgeMapping.DbBadge.Id);
@@ -500,8 +497,7 @@ namespace MVCForum.Services
                                                                             new BadgeEventArgs
                                                                                 {
                                                                                     User = user,
-                                                                                    BadgeType = badgeType,
-                                                                                    Api = _mvcForumAPI
+                                                                                    BadgeType = badgeType
                                                                                 });
                             }
                         }

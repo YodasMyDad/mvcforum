@@ -40,12 +40,10 @@
 **/
 
 using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.API;
-
 namespace MVCForum.Domain.Interfaces.Badges
 {
     public interface IBadge
     {
-        bool Rule(MembershipUser user, IMVCForumAPI api);
+        bool Rule(MembershipUser user);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Attributes;
-using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Badges;
 
 namespace MVCForum.Website.Badges
@@ -13,7 +12,7 @@ namespace MVCForum.Website.Badges
     [AwardsPoints(20)]
     public class Photogenic : IProfileBadge
     {
-        public bool Rule(MembershipUser user, IMVCForumAPI api)
+        public bool Rule(MembershipUser user)
         {           
             return (!string.IsNullOrEmpty(user.Avatar));
         }

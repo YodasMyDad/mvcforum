@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Events;
-using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
 
@@ -11,12 +10,10 @@ namespace MVCForum.Services
     public partial class VoteService : IVoteService
     {
         private readonly IVoteRepository _voteRepository;
-        private readonly IMVCForumAPI _api;
 
-        public VoteService(IVoteRepository voteRepository, IMVCForumAPI api)
+        public VoteService(IVoteRepository voteRepository)
         {
             _voteRepository = voteRepository;
-            _api = api;
         }
 
         public void Delete(Vote vote)
@@ -37,14 +34,14 @@ namespace MVCForum.Services
         public Vote Add(Vote vote)
         {
 
-            var e = new VoteEventArgs {Vote = vote, Api = _api};
+            var e = new VoteEventArgs {Vote = vote};
             EventManager.Instance.FireBeforeVoteMade(this, e);
 
             if (!e.Cancel)
             {
                 _voteRepository.Add(vote); 
 
-                EventManager.Instance.FireAfterVoteMade(this, new VoteEventArgs {Vote = vote, Api = _api});
+                EventManager.Instance.FireAfterVoteMade(this, new VoteEventArgs {Vote = vote});
             }
 
             return vote;

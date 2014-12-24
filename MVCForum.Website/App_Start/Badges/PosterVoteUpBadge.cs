@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Attributes;
-using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Badges;
 
 namespace MVCForum.Website.Badges
@@ -14,7 +13,7 @@ namespace MVCForum.Website.Badges
     [AwardsPoints(2)]
     public class PosterVoteUpBadge : IVoteUpBadge
     {
-        public bool Rule(MembershipUser user, IMVCForumAPI api)
+        public bool Rule(MembershipUser user)
         {
             return user.Posts != null && user.Posts.Any(post => post.Votes.Count > 0);
         }

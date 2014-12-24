@@ -1,7 +1,8 @@
 ﻿using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Attributes;
-using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Badges;
+using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Services;
 
 namespace MVCForum.Website.Badges
 {
@@ -13,10 +14,11 @@ namespace MVCForum.Website.Badges
     [AwardsPoints(50)]
     public class JediMasterBadge : IMarkAsSolutionBadge
     {
-        public bool Rule(MembershipUser user, IMVCForumAPI api)
+        public bool Rule(MembershipUser user)
         {
             //Post is marked as the answer to a topic - give the post author a badge
-            var usersSolutions = api.Post.GetSolutionsWrittenByMember(user.Id);
+            var postService = ServiceFactory.Get<IPostService>();
+            var usersSolutions = postService.GetSolutionsByMember(user.Id);
 
             return (usersSolutions.Count >= 50);
         }

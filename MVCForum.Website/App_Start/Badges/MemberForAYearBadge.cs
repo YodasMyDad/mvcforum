@@ -1,7 +1,6 @@
 ﻿using System;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Attributes;
-using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Badges;
 
 namespace MVCForum.Website.Badges
@@ -14,7 +13,7 @@ namespace MVCForum.Website.Badges
     [AwardsPoints(2)]
     public class MemberForAYearBadge : ITimeBadge
     {
-        public bool Rule(MembershipUser user, IMVCForumAPI api)
+        public bool Rule(MembershipUser user)
         {
             var anniversary = new DateTime(user.CreateDate.Year + 1, user.CreateDate.Month, user.CreateDate.Day);
             return DateTime.UtcNow >= anniversary;

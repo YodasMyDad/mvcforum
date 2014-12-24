@@ -1,8 +1,9 @@
 ﻿using System.Linq;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Attributes;
-using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Badges;
+using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Services;
 
 namespace MVCForum.Website.Badges
 {
@@ -14,10 +15,11 @@ namespace MVCForum.Website.Badges
     [AwardsPoints(0)]
     public class GrouchBadge : IVoteDownBadge
     {
-        public bool Rule(MembershipUser user, IMVCForumAPI api)
+        public bool Rule(MembershipUser user)
         {
             // Get all down votes
-            var downVotes = api.Vote.GetAllVotesGiven(user.Id).Where(x => x.Amount < 1).ToList();
+            var voteService = ServiceFactory.Get<IVoteService>();
+            var downVotes = voteService.GetAllVotesByUser(user.Id).Where(x => x.Amount < 1).ToList();
             return downVotes.Count() >= 10;
         }
     }

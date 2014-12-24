@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Events;
-using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
 using System.Linq;
@@ -19,11 +18,10 @@ namespace MVCForum.Services
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ISettingsService _settingsService;
         private readonly ILocalizationService _localizationService;
-        private readonly IMVCForumAPI _api;
 
         public PostService(IMembershipUserPointsService membershipUserPointsService,
             ISettingsService settingsService, IRoleService roleService, IPostRepository postRepository, ITopicRepository topicRepository,
-            ILocalizationService localizationService, IMVCForumAPI api)
+            ILocalizationService localizationService)
         {
             _postRepository = postRepository;
             _topicRepository = topicRepository;
@@ -31,7 +29,6 @@ namespace MVCForum.Services
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
             _localizationService = localizationService;
-            _api = api;
         }
 
 
@@ -132,7 +129,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<Post> GetSolutionsByMember(Guid memberId)
         {
-            return _api.Post.GetSolutionsWrittenByMember(memberId);
+            return _postRepository.GetSolutionsByMember(memberId);
         }
 
         /// <summary>
@@ -152,7 +149,7 @@ namespace MVCForum.Services
         public Post Add(Post post)
         {
             post = SanitizePost(post);
-            return _api.Post.Create(post);
+            return _postRepository.Add(post);
         }
 
         /// <summary>
@@ -248,7 +245,9 @@ namespace MVCForum.Services
                                    PostContent = postContent,
                                    User = user,
                                    Topic = topic,
-                                   IpAddress = StringUtils.GetUsersIpAddress()
+                                   IpAddress = StringUtils.GetUsersIpAddress(),
+                                   DateCreated = DateTime.Now,
+                                   DateEdited = DateTime.Now
                                };
 
             newPost = SanitizePost(newPost);
@@ -259,7 +258,7 @@ namespace MVCForum.Services
                 newPost.Pending = true;
             }
 
-            var e = new PostMadeEventArgs { Post = newPost, Api = _api };
+            var e = new PostMadeEventArgs { Post = newPost};
             EventManager.Instance.FireBeforePostMade(this, e);
 
             if (!e.Cancel)
@@ -277,7 +276,7 @@ namespace MVCForum.Services
                 // add the last post to the topic
                 topic.LastPost = newPost;
 
-                EventManager.Instance.FireAfterPostMade(this, new PostMadeEventArgs { Post = newPost, Api = _api });
+                EventManager.Instance.FireAfterPostMade(this, new PostMadeEventArgs { Post = newPost});
 
                 return newPost;
             }

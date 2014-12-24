@@ -1,7 +1,8 @@
 ﻿using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Attributes;
-using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Badges;
+using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Services;
 
 namespace MVCForum.Website.Badges
 {
@@ -17,11 +18,11 @@ namespace MVCForum.Website.Badges
         /// Post is marked as the answer to a topic - give the topic author a badge
         /// </summary>
         /// <returns></returns>
-        public bool Rule(MembershipUser user, IMVCForumAPI api)
+        public bool Rule(MembershipUser user)
         {
-            return api.Topic.GetSolvedTopicsByMember(user.Id).Count >= 1;
+            var topicService = ServiceFactory.Get<ITopicService>();
+            return topicService.GetSolvedTopicsByMember(user.Id).Count >= 1;
 
         }
-
     }
 }

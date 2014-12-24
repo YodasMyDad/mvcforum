@@ -1,10 +1,8 @@
 using System.Web.Mvc;
-using MVCForum.API;
 using MVCForum.Data.Context;
 using MVCForum.Data.Repositories;
 using MVCForum.Data.UnitOfWork;
 using MVCForum.Domain.Interfaces;
-using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
@@ -119,13 +117,6 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IBannedEmailRepository, BannedEmailRepository>();
             container.BindInRequestScope<IBannedWordRepository, BannedWordRepository>();
             container.BindInRequestScope<IUploadedFileRepository, UploadedFileRepository>();
-
-            container.BindInRequestScope<IMVCForumAPI, MVCForumAPI>();
-            container.BindInRequestScope<IPostAPI, PostAPI>();
-            container.BindInRequestScope<ITopicAPI, TopicAPI>();
-            container.BindInRequestScope<IMemberAPI, MemberAPI>();
-            container.BindInRequestScope<ICategoryAPI, CategoryAPI>();
-            container.BindInRequestScope<IVoteAPI, VoteAPI>();
 
             //container.BindInRequestScope<ISessionHelper, SessionHelper>();
 

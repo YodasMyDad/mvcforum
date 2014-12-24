@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Events;
-using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Utilities;
@@ -16,16 +15,14 @@ namespace MVCForum.Services
         private readonly IPostRepository _postRepository;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ISettingsService _settingsService;
-        private readonly IMVCForumAPI _api;
 
         public TopicService(IMembershipUserPointsService membershipUserPointsService,
-            ISettingsService settingsService, ITopicRepository topicRepository, IPostRepository postRepository, IMVCForumAPI api, ITopicNotificationService topicNotificationService)
+            ISettingsService settingsService, ITopicRepository topicRepository, IPostRepository postRepository, ITopicNotificationService topicNotificationService)
         {
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
             _topicRepository = topicRepository;
             _postRepository = postRepository;
-            _api = api;
             _topicNotificationService = topicNotificationService;
         }
 
@@ -287,7 +284,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<Topic> GetSolvedTopicsByMember(Guid memberId)
         {
-            return _api.Topic.GetSolvedTopicsByMember(memberId);
+            return _topicRepository.GetSolvedTopicsByMember(memberId);
         }
 
         /// <summary>
@@ -307,8 +304,7 @@ namespace MVCForum.Services
                             Topic = topic,
                             Post = post,
                             Marker = marker,
-                            SolutionWriter = solutionWriter,
-                            Api = _api
+                            SolutionWriter = solutionWriter
                         };
             EventManager.Instance.FireBeforeMarkedAsSolution(this, e);
 
@@ -341,8 +337,7 @@ namespace MVCForum.Services
                                                                                   Topic = topic,
                                                                                   Post = post,
                                                                                   Marker = marker,
-                                                                                  SolutionWriter = solutionWriter,
-                                                                                  Api = _api
+                                                                                  SolutionWriter = solutionWriter
                                                                               });
                     solved = true;
                 }

@@ -8,7 +8,6 @@ using System.Web;
 using System.Web.Security;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Events;
-using MVCForum.Domain.Interfaces.API;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Utilities;
@@ -32,7 +31,6 @@ namespace MVCForum.Services
         private readonly ILoggingService _loggingService;
 
         private LoginAttemptStatus _lastLoginStatus = LoginAttemptStatus.LoginSuccessful;
-        private readonly IMVCForumAPI _api;
 
         /// <summary>
         /// Constructor
@@ -54,7 +52,7 @@ namespace MVCForum.Services
             IEmailService emailService, ILocalizationService localizationService, IActivityService activityService, 
             IPrivateMessageService privateMessageService, IMembershipUserPointsService membershipUserPointsService, 
             ITopicNotificationService topicNotificationService, IVoteService voteService, IBadgeService badgeService,
-            ICategoryNotificationService categoryNotificationService, IMVCForumAPI api, ILoggingService loggingService)
+            ICategoryNotificationService categoryNotificationService, ILoggingService loggingService)
         {
             _membershipRepository = membershipRepository;
             _settingsRepository = settingsRepository;
@@ -67,7 +65,6 @@ namespace MVCForum.Services
             _voteService = voteService;
             _badgeService = badgeService;
             _categoryNotificationService = categoryNotificationService;
-            _api = api;
             _loggingService = loggingService;
         }
 
@@ -277,7 +274,7 @@ namespace MVCForum.Services
 
             var status = MembershipCreateStatus.Success;
 
-            var e = new RegisterUserEventArgs { User = newUser, Api = _api };
+            var e = new RegisterUserEventArgs { User = newUser};
             EventManager.Instance.FireBeforeRegisterUser(this, e);
 
             if (e.Cancel)
@@ -351,7 +348,7 @@ namespace MVCForum.Services
 
                         _activityService.MemberJoined(newUser);
                         EventManager.Instance.FireAfterRegisterUser(this,
-                                                                    new RegisterUserEventArgs { User = newUser, Api = _api });
+                                                                    new RegisterUserEventArgs { User = newUser});
                     }
                     catch (Exception)
                     {
@@ -687,12 +684,12 @@ namespace MVCForum.Services
         /// <param name="user"></param>
         public void ProfileUpdated(MembershipUser user)
         {
-            var e = new UpdateProfileEventArgs { User = user, Api = _api };
+            var e = new UpdateProfileEventArgs { User = user};
             EventManager.Instance.FireBeforeProfileUpdated(this, e);
 
             if (!e.Cancel)
             {
-                EventManager.Instance.FireAfterProfileUpdated(this, new UpdateProfileEventArgs { User = user, Api = _api });
+                EventManager.Instance.FireAfterProfileUpdated(this, new UpdateProfileEventArgs { User = user });
                 _activityService.ProfileUpdated(user);
             }
         }
