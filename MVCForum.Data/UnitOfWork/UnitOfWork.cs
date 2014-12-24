@@ -60,13 +60,13 @@ namespace MVCForum.Data.UnitOfWork
             {
                 switch (entry.State)
                 {
-                    case EntityState.Modified:
-                        entry.State = EntityState.Unchanged;
+                    case System.Data.Entity.EntityState.Modified:
+                        entry.State = System.Data.Entity.EntityState.Unchanged;
                         break;
-                    case EntityState.Added:
-                        entry.State = EntityState.Detached;
+                    case System.Data.Entity.EntityState.Added:
+                        entry.State = System.Data.Entity.EntityState.Detached;
                         break;
-                    case EntityState.Deleted:
+                    case System.Data.Entity.EntityState.Deleted:
                         // Note - problem with deleted entities:
                         // When an entity is deleted its relationships to other entities are severed. 
                         // This includes setting FKs to null for nullable FKs or marking the FKs as conceptually null (don’t ask!) 
@@ -75,7 +75,7 @@ namespace MVCForum.Data.UnitOfWork
                         // This may include FK properties in other entities for relationships where the 
                         // deleted entity is the principal of the relationship–e.g. has the PK 
                         // rather than the FK. I know this is a pain–it would be great if it could be made easier in the future, but for now it is what it is.
-                        entry.State = EntityState.Unchanged;
+                        entry.State = System.Data.Entity.EntityState.Unchanged;
                         break;
                 }
             }
