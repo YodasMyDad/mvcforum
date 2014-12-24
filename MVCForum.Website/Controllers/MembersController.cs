@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Security.Principal;
 using System.Text;
 using System.Web;
@@ -31,7 +30,7 @@ namespace MVCForum.Website.Controllers
         private readonly IBannedWordService _bannedWordService;
 
         private MembershipUser LoggedOnUser;
-        private MembershipRole UsersRole;
+        private MembershipRole UsersRole; 
 
         public MembersController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService,
             IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService, IBannedWordService bannedWordService)
