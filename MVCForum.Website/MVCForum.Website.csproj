@@ -193,6 +193,7 @@
     <Compile Include="App_Start\Badges\MemberForAYearBadge.cs" />
     <Compile Include="App_Start\Badges\OneThousandPoints.cs" />
     <Compile Include="App_Start\Badges\JediMaster.cs" />
+    <Compile Include="App_Start\Badges\Photogenic.cs" />
     <Compile Include="App_Start\Badges\Padawan.cs" />
     <Compile Include="App_Start\Badges\PosterMarkAsSolutionBadge.cs" />
     <Compile Include="App_Start\Badges\PosterVoteUpBadge.cs" />
@@ -548,6 +549,7 @@
     <Content Include="Content\badges\MentionsUmbracoBadge.png" />
     <Content Include="Content\badges\OneThousandPoints.png" />
     <Content Include="Content\badges\padawan.png" />
+    <Content Include="Content\badges\photogenic.png" />
     <Content Include="Content\badges\PosterMarkAsSolutionBadge.png" />
     <Content Include="Content\badges\PosterVoteUpBadge.png" />
     <Content Include="Content\badges\TheGrouch.png" />
