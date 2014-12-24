@@ -188,6 +188,15 @@
     <Compile Include="Application\Localization\Localizer.cs" />
     <Compile Include="Application\WrappedJSonResult.cs" />
     <Compile Include="App_Start\AppStartUp.cs" />
+    <Compile Include="App_Start\Badges\AuthorMarkAsSolutionBadge.cs" />
+    <Compile Include="App_Start\Badges\GrouchBadge.cs" />
+    <Compile Include="App_Start\Badges\MemberForAYearBadge.cs" />
+    <Compile Include="App_Start\Badges\OneThousandPoints.cs" />
+    <Compile Include="App_Start\Badges\Padawan.cs" />
+    <Compile Include="App_Start\Badges\PosterMarkAsSolutionBadge.cs" />
+    <Compile Include="App_Start\Badges\PosterVoteUpBadge.cs" />
+    <Compile Include="App_Start\Badges\PostMentionsUmbraco.cs" />
+    <Compile Include="App_Start\Badges\UserVoteUpBadge.cs" />
     <Compile Include="App_Start\RegisterClientValidationExtensions.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
@@ -2195,42 +2204,6 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Badges\AuthorMarkAsSolution\Badge.AuthorMarkAsSolution.csproj">
-      <Project>{49448f62-01cd-4e2a-8880-a98bb66c4afd}</Project>
-      <Name>Badge.AuthorMarkAsSolution</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Badges\Badge.OneThousandPoints\Badge.OneThousandPoints.csproj">
-      <Project>{43875caf-fcbb-4e7b-b732-ba5e3f0212c9}</Project>
-      <Name>Badge.OneThousandPoints</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Badges\Badge.Padawan\Badge.Padawan.csproj">
-      <Project>{36959215-ded3-4d37-bfcc-33a454e51f4d}</Project>
-      <Name>Badge.Padawan</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Badges\Badge.VoteTheGrouch\Badge.VoteTheGrouch.csproj">
-      <Project>{a4e05fda-ebaf-4f3e-b9c5-8ae4d8d6ec6e}</Project>
-      <Name>Badge.VoteTheGrouch</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Badges\MemberForAYearBadge\Badge.MemberForAYearBadge.csproj">
-      <Project>{7a15b80d-5167-4181-a7e7-9121b9856526}</Project>
-      <Name>Badge.MemberForAYearBadge</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Badges\PosterMarkAsSolution\Badge.PosterMarkAsSolution.csproj">
-      <Project>{10bd34f8-9347-4471-9470-a00b143bd50b}</Project>
-      <Name>Badge.PosterMarkAsSolution</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Badges\PosterVoteUpBadge\Badge.PosterVoteUpBadge.csproj">
-      <Project>{21769e8e-b8ee-4c8f-9eb0-48d7ba6b7873}</Project>
-      <Name>Badge.PosterVoteUpBadge</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Badges\PostMentionUmbraco\Badge.PostMentionUmbraco.csproj">
-      <Project>{acf6b8fe-4422-4950-802d-5133991741f7}</Project>
-      <Name>Badge.PostMentionUmbraco</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Badges\UserVoteUpBadge\Badge.UserVoteUpBadge.csproj">
-      <Project>{3bbbfe42-e642-4337-bd42-a8b15ea1fa01}</Project>
-      <Name>Badge.UserVoteUpBadge</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MVCForum.Core\MVCForum.Domain.csproj">
       <Project>{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}</Project>
       <Name>MVCForum.Domain</Name>

@@ -2,17 +2,6 @@
 {
     public static class AppConstants
     {
-        // Lucene String NAmes
-        public const string LucId = "Id";
-        public const string LucPostContent = "PostContent";
-        public const string LucDateCreated = "DateCreated";
-        public const string LucTopicName = "TopicName";
-        public const string LucTopicId = "TopicId";
-        public const string LucTopicUrl = "TopicUrl";
-        public const string LucUsername = "Username";
-        public const string LucUserId = "UserId";
-        //private const string LucTopicTags = "TopicTags";
-
         //Mobile Check Name
         public const string IsMobileDevice = "IsMobileDevice";
 
@@ -69,7 +58,6 @@
         public const string PermissionDenyAccess = "Deny Access";
         public const string PermissionLockTopics = "Lock Topics";
         public const string PermissionVoteInPolls = "Vote In Polls";
-        //Added in v1.3
         public const string PermissionCreatePolls = "Create Polls";
         public const string PermissionCreateTopics = "Create Topics";
         public const string PermissionAttachFiles = "Attach Files";
