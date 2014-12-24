@@ -192,6 +192,7 @@
     <Compile Include="App_Start\Badges\GrouchBadge.cs" />
     <Compile Include="App_Start\Badges\MemberForAYearBadge.cs" />
     <Compile Include="App_Start\Badges\OneThousandPoints.cs" />
+    <Compile Include="App_Start\Badges\JediMaster.cs" />
     <Compile Include="App_Start\Badges\Padawan.cs" />
     <Compile Include="App_Start\Badges\PosterMarkAsSolutionBadge.cs" />
     <Compile Include="App_Start\Badges\PosterVoteUpBadge.cs" />
@@ -542,6 +543,7 @@
     <Content Include="Content\admin\Images\icons\wooden-box.png" />
     <Content Include="Content\admin\Images\icons\yin-yang.png" />
     <Content Include="Content\admin\Images\icons\zone.png" />
+    <Content Include="Content\badges\jedi.png" />
     <Content Include="Content\badges\MemberForAYearBadge.png" />
     <Content Include="Content\badges\MentionsUmbracoBadge.png" />
     <Content Include="Content\badges\OneThousandPoints.png" />

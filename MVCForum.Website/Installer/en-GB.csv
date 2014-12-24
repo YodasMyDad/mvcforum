@@ -286,3 +286,5 @@ Badge.MemberForAYearBadge.Name,First Anniversary
 Badge.MemberForAYearBadge.Desc,This badge is awarded to a user after their first year anniversary
 Badge.GrouchBadge.Name,The Grouch
 Badge.GrouchBadge.Desc,This badge is awarded to users who have voted down other users posts 10 or more times
+Badge.JediMasterBadge.Name,Jedi Master
+Badge.JediMasterBadge.Desc,Had 50 or more posts successfully marked as an answer
