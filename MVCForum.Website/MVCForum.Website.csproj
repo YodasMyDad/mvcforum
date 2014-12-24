@@ -702,6 +702,8 @@
     <Content Include="Installer\Db\1.2\database.sql" />
     <Content Include="Installer\Db\1.2\Upgrade\upgrade.sql" />
     <Content Include="Installer\Db\1.3\database.sql" />
+    <Content Include="Installer\Db\1.6\database.sql" />
+    <Content Include="Installer\Db\1.6\Upgrade\upgrade.sql" />
     <Content Include="Installer\Db\1.5\database.sql" />
     <Content Include="Installer\Db\1.5\Upgrade\upgrade.sql" />
     <Content Include="Installer\Db\1.4\database.sql" />
