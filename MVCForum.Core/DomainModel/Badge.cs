@@ -10,7 +10,8 @@ namespace MVCForum.Domain.DomainModel
         VoteDown,
         MarkAsSolution,
         Time,
-        Post
+        Post,
+        Profile
     }
 
     public partial class Badge : Entity
@@ -29,7 +30,8 @@ namespace MVCForum.Domain.DomainModel
                                                                 {BadgeType.MarkAsSolution, "MVCForum.Domain.Interfaces.Badges.IMarkAsSolutionBadge"},
                                                                 {BadgeType.Time, "MVCForum.Domain.Interfaces.Badges.ITimeBadge"},
                                                                 {BadgeType.Post, "MVCForum.Domain.Interfaces.Badges.IPostBadge"},
-                                                                {BadgeType.VoteDown, "MVCForum.Domain.Interfaces.Badges.IVoteDownBadge"}
+                                                                {BadgeType.VoteDown, "MVCForum.Domain.Interfaces.Badges.IVoteDownBadge"},
+                                                                {BadgeType.Profile, "MVCForum.Domain.Interfaces.Badges.IProfileBadge"},
                                                             };
 
         public Guid Id { get; set; }

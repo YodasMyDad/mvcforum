@@ -161,6 +161,32 @@ namespace MVCForum.Website.Controllers
         }
 
         [HttpPost]
+        [Authorize]
+        public void ProfileBadgeCheck()
+        {
+            using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                try
+                {
+                    if (LoggedOnUser != null)
+                    {
+                        var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Profile, LoggedOnUser);
+
+                        if (databaseUpdateNeeded)
+                        {
+                            unitOfwork.Commit();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    unitOfwork.Rollback();
+                    LoggingService.Error(ex);
+                }
+            }
+        }
+
+        [HttpPost]
         public void Time(TimeBadgeViewModel timeBadgeViewModel)
         {
             using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())

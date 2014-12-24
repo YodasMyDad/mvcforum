@@ -139,6 +139,7 @@
     <Compile Include="Interfaces\API\IVoteApi.cs" />
     <Compile Include="Interfaces\Badges\IPostBadge.cs" />
     <Compile Include="Interfaces\Badges\IMarkAsSolutionBadge.cs" />
+    <Compile Include="Interfaces\Badges\IProfileBadge.cs" />
     <Compile Include="Interfaces\Badges\ITimeBadge.cs" />
     <Compile Include="Interfaces\Badges\IBadge.cs" />
     <Compile Include="Interfaces\Badges\IVoteDownBadge.cs" />
