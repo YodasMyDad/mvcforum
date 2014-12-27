@@ -69,10 +69,7 @@ namespace MVCForum.Website.Controllers
                 }
             }
 
-            return PartialView(new IndexCategoryViewModel
-            {
-                Categories = catViewModel
-            });
+            return PartialView(catViewModel);
         }
 
         [ChildActionOnly]
@@ -83,7 +80,7 @@ namespace MVCForum.Website.Controllers
 
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                foreach (var category in _categoryService.GetAllMainCategories())
+                foreach (var category in _categoryService.GetAll())
                 {
                     var permissionSet = RoleService.GetPermissions(category, UsersRole);
                     catViewModel.AllPermissionSets.Add(category, permissionSet);

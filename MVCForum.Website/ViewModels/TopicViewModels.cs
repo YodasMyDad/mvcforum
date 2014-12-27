@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
-using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Website.Application;
 
@@ -14,28 +13,34 @@ namespace MVCForum.Website.ViewModels
         public bool UserCanPostTopics { get; set; }
     }
 
+    public class TopicViewModel
+    {
+        public Topic Topic { get; set; }
+        public PermissionSet Permissions { get; set; }
+        public Post StarterPost { get; set; }
+        public List<Post> Posts { get; set; }
+        public bool ShowCategoryName { get; set; }
+        public int VotesUp { get; set; }
+        public int VotesDown { get; set; }
+        public int Answers { get; set; }
+        public int Views { get; set; }
+    }
+
     public class ActiveTopicsViewModel
     {
-        public PagedList<Topic> Topics { get; set; }
-        public Dictionary<Category, PermissionSet> AllPermissionSets { get; set; }
-
+        public List<TopicViewModel> Topics { get; set; }
         public int? PageIndex { get; set; }
         public int? TotalCount { get; set; }
-
-        public MembershipUser User { get; set; }
+        public int? TotalPages { get; set; }
     }
 
     public class TagTopicsViewModel
     {
-        public PagedList<Topic> Topics { get; set; }
-        public Dictionary<Category, PermissionSet> AllPermissionSets { get; set; }
-
+        public List<TopicViewModel> Topics { get; set; }
         public int? PageIndex { get; set; }
         public int? TotalCount { get; set; }
-
+        public int? TotalPages { get; set; }
         public string Tag { get; set; }
-
-        public MembershipUser User { get; set; }
     }
 
     public class CreateTopicViewModel
@@ -72,6 +77,7 @@ namespace MVCForum.Website.ViewModels
     {
         public Post TopicStarterPost { get; set; }
         public Topic Topic { get; set; }
+        public Category Category { get; set; }
         public PagedList<Post> Posts { get; set; }
         public PermissionSet Permissions { get; set; }
         public int? PageIndex { get; set; }
@@ -90,14 +96,6 @@ namespace MVCForum.Website.ViewModels
         public string Order { get; set; }
     }
 
-    public class ShowMorePostsViewModel
-    {
-        public PagedList<Post> Posts { get; set; }
-        public PermissionSet Permissions { get; set; }
-        public MembershipUser User { get; set; }
-        public Topic Topic { get; set; }
-    }
-
     public class ShowPollViewModel
     {
         public Poll Poll { get; set; }
@@ -110,14 +108,6 @@ namespace MVCForum.Website.ViewModels
     {
         public Guid PollId { get; set; }
         public Guid AnswerId { get; set; }
-    }
-
-    public class ViewTopicViewModel
-    {
-        public Topic Topic { get; set; }
-        public PermissionSet Permissions { get; set; }
-        public MembershipUser User { get; set; }
-        public bool ShowCategoryName { get; set; }
     }
 
     public class MoveTopicViewModel

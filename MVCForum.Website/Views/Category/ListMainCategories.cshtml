@@ -1,4 +1,4 @@
-﻿@model MVCForum.Website.ViewModels.IndexCategoryViewModel
+﻿@model MVCForum.Website.ViewModels.CategoryListViewModel
 @{
     Layout = null;
 }
@@ -10,9 +10,9 @@
 
 <div class="categoryindex">
 
-    @foreach (var cat in Model.Categories.AllPermissionSets.Keys)
+    @foreach (var cat in Model.AllPermissionSets.Keys)
     {
-        var permissions = Model.Categories.AllPermissionSets[cat];
+        var permissions = Model.AllPermissionSets[cat];
         if (!permissions[AppConstants.PermissionDenyAccess].IsTicked)
         {
 

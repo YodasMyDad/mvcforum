@@ -181,7 +181,6 @@
     <Compile Include="Application\ForumMVCResourceDisplayName.cs" />
     <Compile Include="Application\GoogleSitemapResult.cs" />
     <Compile Include="Application\MobileExtensions.cs" />
-    <Compile Include="Application\OpenID.cs" />
     <Compile Include="Application\RssResult.cs" />
     <Compile Include="Application\CsvFileResult.cs" />
     <Compile Include="Application\Extensions.cs" />
@@ -621,6 +620,23 @@
     <Content Include="Content\Prettify\Themes\doxy.css" />
     <Content Include="Content\Prettify\Themes\sons-of-obsidian.css" />
     <Content Include="Content\Prettify\Themes\sunburst.css" />
+    <Content Include="Content\spectrum\i18n\jquery.spectrum-de.js" />
+    <Content Include="Content\spectrum\i18n\jquery.spectrum-dk.js" />
+    <Content Include="Content\spectrum\i18n\jquery.spectrum-es.js" />
+    <Content Include="Content\spectrum\i18n\jquery.spectrum-fa.js" />
+    <Content Include="Content\spectrum\i18n\jquery.spectrum-fi.js" />
+    <Content Include="Content\spectrum\i18n\jquery.spectrum-fr.js" />
+    <Content Include="Content\spectrum\i18n\jquery.spectrum-he.js" />
+    <Content Include="Content\spectrum\i18n\jquery.spectrum-it.js" />
+    <Content Include="Content\spectrum\i18n\jquery.spectrum-ja.js" />
+    <Content Include="Content\spectrum\i18n\jquery.spectrum-nl.js" />
+    <Content Include="Content\spectrum\i18n\jquery.spectrum-pt-br.js" />
+    <Content Include="Content\spectrum\i18n\jquery.spectrum-ru.js" />
+    <Content Include="Content\spectrum\i18n\jquery.spectrum-sv.js" />
+    <Content Include="Content\spectrum\i18n\jquery.spectrum-tr.js" />
+    <Content Include="Content\spectrum\i18n\jquery.spectrum-zh-cn.js" />
+    <Content Include="Content\spectrum\spectrum.css" />
+    <Content Include="Content\spectrum\spectrum.js" />
     <Content Include="Content\themes\base\images\animated-overlay.gif" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
@@ -1548,6 +1564,7 @@
     <Content Include="Scripts\i18n\angular-locale_zu.js" />
     <Content Include="Areas\Admin\Views\Shared\_AdminScripts.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_AdminTopNav.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminCategory\_CategoryFields.cshtml" />
     <None Include="Scripts\jquery-1.11.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.11.1.js" />
     <Content Include="Scripts\jquery-1.11.1.min.js" />
@@ -1867,7 +1884,7 @@
     <Content Include="Views\Closed\Index.cshtml" />
     <Content Include="Views\Home\Activity.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\LatestTopics.cshtml" />
+    <Content Include="Views\Topic\LatestTopics.cshtml" />
     <Content Include="Views\Home\Leaderboard.cshtml" />
     <Content Include="Views\Home\UploadFiles.cshtml" />
     <Content Include="Views\Members\AdminMemberProfileTools.cshtml" />
@@ -1910,6 +1927,7 @@
     <Content Include="Views\Shared\_TopicSlim.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\GetCategoryBreadcrumb.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\colourpicker.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Extensions\" />

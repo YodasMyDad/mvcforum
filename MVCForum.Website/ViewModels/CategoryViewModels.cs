@@ -34,8 +34,4 @@ namespace MVCForum.Website.ViewModels
         public Category ParentCategory { get; set; }
     }
 
-    public class IndexCategoryViewModel
-    {
-        public CategoryListViewModel Categories { get; set; }
-    }
 }

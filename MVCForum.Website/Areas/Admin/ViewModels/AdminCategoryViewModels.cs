@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
-using System.Web.Mvc.Routing.Constraints;
 using DataAnnotationsExtensions;
-using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Website.Areas.Admin.ViewModels
@@ -15,7 +13,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public IEnumerable<Category> Categories { get; set; }
     }
 
-    public class CreateCategoryViewModel
+    public class CategoryViewModel
     {
         [HiddenInput]
         public Guid Id { get; set; }
@@ -30,44 +28,9 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [UIHint(SiteConstants.EditorType), AllowHtml]
         public string Description { get; set; }
 
-        [DisplayName("Lock The Category")]
-        public bool IsLocked { get; set; }
-
-        [DisplayName("Moderate all topics in this Category")]
-        public bool ModerateTopics { get; set; }
-
-        [DisplayName("Moderate all posts in this Category")]
-        public bool ModeratePosts { get; set; }
-
-        [DisplayName("Sort Order")]
-        [Numeric]
-        public int SortOrder { get; set; }
-
-        [DisplayName("Parent Category")]
-        public Guid? ParentCategory { get; set; }
-
-        public List<Category> AllCategories { get; set; }
-
-        [DisplayName("Page Title")]
-        [MaxLength(80)]
-        public string PageTitle { get; set; }
-
-        [DisplayName("Meta Desc")]
-        [MaxLength(200)]
-        public string MetaDesc { get; set; }
-    }
-
-    public class EditCategoryViewModel
-    {
-        [DisplayName("Category Name")]
-        [Required]
-        [StringLength(200)]
-        public string Name { get; set; }
-
-        [DisplayName("Category Description")]
-        [DataType(DataType.MultilineText)]
-        [UIHint(SiteConstants.EditorType), AllowHtml]
-        public string Description { get; set; }
+        [DisplayName("Category Colour")]
+        [UIHint(SiteConstants.EditorTemplateColourPicker), AllowHtml]
+        public string CategoryColour { get; set; }
 
         [DisplayName("Lock The Category")]
         public bool IsLocked { get; set; }
@@ -81,9 +44,6 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Sort Order")]
         [Numeric]
         public int SortOrder { get; set; }
-
-        [HiddenInput]
-        public Guid Id { get; set; }
 
         [DisplayName("Parent Category")]
         public Guid? ParentCategory { get; set; }

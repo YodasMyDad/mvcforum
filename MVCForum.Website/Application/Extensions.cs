@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using System.Web.Routing;
-using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Utilities;
+using MVCForum.Services;
 
 namespace MVCForum.Website.Application
 {
@@ -59,9 +57,16 @@ namespace MVCForum.Website.Application
         /// <param name="helper"></param>
         /// <param name="key"></param>
         /// <returns></returns>
+        //[Obsolete]
         public static string LanguageString(this HtmlHelper helper, string key)
         {
-            var locService = DependencyResolver.Current.GetService<ILocalizationService>();
+            var locService = ServiceFactory.Get<ILocalizationService>();
+            return locService.GetResourceString(key);
+        }
+
+        public static string Lang(this HtmlHelper helper, string key)
+        {
+            var locService = ServiceFactory.Get<ILocalizationService>();
             return locService.GetResourceString(key);
         }
 

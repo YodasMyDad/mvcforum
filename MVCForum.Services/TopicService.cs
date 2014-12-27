@@ -229,17 +229,6 @@ namespace MVCForum.Services
         }
 
         /// <summary>
-        /// Save a topic
-        /// </summary>
-        /// <param name="topic"></param>
-        public void SaveOrUpdate(Topic topic)
-        {
-            topic = SanitizeTopic(topic);
-
-            _topicRepository.Update(topic);
-        }
-
-        /// <summary>
         /// Delete a topic
         /// </summary>
         /// <param name="topic"></param>

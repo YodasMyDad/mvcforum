@@ -1,4 +1,4 @@
-﻿@model MVCForum.Website.Areas.Admin.ViewModels.EditCategoryViewModel
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.CategoryViewModel
 
 @{
     ViewBag.Title = "Edit Category";    
@@ -22,72 +22,7 @@
         
         @Html.HiddenFor(model => model.Id)
 
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Name)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Name)
-            @Html.ValidationMessageFor(model => model.Name)
-        </div>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Description)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Description)
-            @Html.ValidationMessageFor(model => model.Description)
-        </div>
-
-        <div class="editor-field n3ocheckboxfield">
-            @Html.EditorFor(model => model.IsLocked)
-            @Html.LabelFor(model => model.IsLocked)
-            @Html.ValidationMessageFor(model => model.IsLocked)
-        </div>
-        
-        <div class="editor-field n3ocheckboxfield">
-            @Html.EditorFor(model => model.ModerateTopics)
-            @Html.LabelFor(model => model.ModerateTopics)
-            @Html.ValidationMessageFor(model => model.ModerateTopics)
-        </div>
-        
-        <div class="editor-field n3ocheckboxfield">
-            @Html.EditorFor(model => model.ModeratePosts)
-            @Html.LabelFor(model => model.ModeratePosts)
-            @Html.ValidationMessageFor(model => model.ModeratePosts)
-        </div>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.SortOrder)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.SortOrder)
-            @Html.ValidationMessageFor(model => model.SortOrder)
-        </div>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.ParentCategory)
-        </div>
-        <div class="editor-field">
-            @Html.DropDownListFor(model => model.ParentCategory, new SelectList(Model.AllCategories, "id", "Name"), string.Empty)
-            @Html.ValidationMessageFor(model => model.ParentCategory)
-        </div>
-        
-        <div class="well well-small">
-            <div class="editor-label">
-                @Html.LabelFor(model => model.PageTitle)
-            </div>
-            <div class="editor-field">
-                @Html.EditorFor(model => model.PageTitle)
-                @Html.ValidationMessageFor(model => model.PageTitle)
-            </div>
-            <div class="editor-label">
-                @Html.LabelFor(model => model.MetaDesc)
-            </div>
-            <div class="editor-field">
-                @Html.TextAreaFor(model => model.MetaDesc)
-                @Html.ValidationMessageFor(model => model.MetaDesc)
-            </div>
-        </div>
+        @Html.Partial("_CategoryFields", Model)
 
         <div class="submit-holder">
             <input type="submit" class="btn btn-large btn-success" value="Update" />

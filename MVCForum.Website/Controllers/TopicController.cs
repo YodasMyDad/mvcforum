@@ -398,6 +398,7 @@ namespace MVCForum.Website.Controllers
                     var viewModel = new ShowTopicViewModel
                     {
                         Topic = topic,
+                        Category = topic.Category,
                         Posts = posts,
                         PageIndex = posts.PageIndex,
                         TotalCount = posts.TotalCount,
@@ -505,26 +506,19 @@ namespace MVCForum.Website.Controllers
                                                            SiteConstants.ActiveTopicsListSize,
                                                            tag);
 
-                // Get all the categories for this topic collection
-                var categories = topics.Select(x => x.Category).Distinct();
+                // Get the Topic View Models
+                var topicViewModels = CreateTopicViewModels(topics);
 
                 // create the view model
                 var viewModel = new TagTopicsViewModel
                 {
-                    Topics = topics,
-                    AllPermissionSets = new Dictionary<Category, PermissionSet>(),
+                    Topics = topicViewModels,
                     PageIndex = pageIndex,
                     TotalCount = topics.TotalCount,
-                    User = LoggedOnUser,
+                    TotalPages = topics.TotalPages,
                     Tag = tag
                 };
-
-                // loop through the categories and get the permissions
-                foreach (var category in categories)
-                {
-                    var permissionSet = RoleService.GetPermissions(category, UsersRole);
-                    viewModel.AllPermissionSets.Add(category, permissionSet);
-                }
+                
                 return View(viewModel);
             }
         }
@@ -552,6 +546,77 @@ namespace MVCForum.Website.Controllers
             // Pass the list to the partial view
             return PartialView(topics);
         }
+
+        [ChildActionOnly]
+        public ActionResult LatestTopics(int? p)
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                // Set the page index
+                var pageIndex = p ?? 1;
+
+                // Get the topics
+                var topics = _topicService.GetRecentTopics(pageIndex,
+                                                           SettingsService.GetSettings().TopicsPerPage,
+                                                           SiteConstants.ActiveTopicsListSize);
+
+                // Get the Topic View Models
+                var topicViewModels = CreateTopicViewModels(topics);
+
+                // create the view model
+                var viewModel = new ActiveTopicsViewModel
+                {
+                    Topics = topicViewModels,
+                    PageIndex = pageIndex,
+                    TotalCount = topics.TotalCount,
+                    TotalPages = topics.TotalPages
+                };
+                
+                return PartialView(viewModel);
+            }
+        }
+
+        private Dictionary<Category, PermissionSet> GetPermissionsForTopics(List<Topic> topics)
+        {
+            // Get all the categories for this topic collection
+                var categories = topics.Select(x => x.Category).Distinct();
+
+                // Permissions
+                // loop through the categories and get the permissions
+            var permissions = new Dictionary<Category, PermissionSet>();
+                foreach (var category in categories)
+                {
+                    var permissionSet = RoleService.GetPermissions(category, UsersRole);
+                    permissions.Add(category, permissionSet);
+                }
+            return permissions;
+        }
+
+        private List<TopicViewModel> CreateTopicViewModels(List<Topic> topics, bool showCategoryName = true)
+        {
+            // Get Permissions
+            var permissions = GetPermissionsForTopics(topics);
+            var viewModels = new List<TopicViewModel>();
+            foreach (var topic in topics)
+            {
+                var permission = permissions[topic.Category];
+                var posts = topic.Posts.ToList();
+                var starterPost = posts.FirstOrDefault(x => x.IsTopicStarter);
+                viewModels.Add(new TopicViewModel
+                {
+                    Permissions = permission, 
+                    Topic = topic, 
+                    ShowCategoryName = showCategoryName,
+                    StarterPost = starterPost,
+                    VotesUp = starterPost.Votes.Count(x => x.Amount > 0),
+                    VotesDown = starterPost.Votes.Count(x => x.Amount < 0),
+                    Views = topic.Views,
+                    Answers = (posts.Count() - 1),
+                    Posts = posts
+                });   
+            }
+            return viewModels;
+        } 
 
         private void NotifyNewTopics(Category cat)
         {

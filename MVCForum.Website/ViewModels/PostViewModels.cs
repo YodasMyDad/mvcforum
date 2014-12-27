@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
-using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Website.Application;
 
@@ -13,10 +12,16 @@ namespace MVCForum.Website.ViewModels
         [UIHint(SiteConstants.EditorType), AllowHtml]
         [StringLength(6000)]
         public string PostContent { get; set; }
-
         public Guid Topic { get; set; }
-
         public bool DisablePosting { get; set; }
+    }
+
+    public class ShowMorePostsViewModel
+    {
+        public PagedList<Post> Posts { get; set; }
+        public PermissionSet Permissions { get; set; }
+        public MembershipUser User { get; set; }
+        public Topic Topic { get; set; }
     }
 
     public class ViewPostViewModel

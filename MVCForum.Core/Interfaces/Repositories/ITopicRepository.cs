@@ -28,6 +28,5 @@ namespace MVCForum.Domain.Interfaces.Repositories
         Topic Add(Topic item);
         Topic Get(Guid id);
         void Delete(Topic item);
-        void Update(Topic item);
     }
 }

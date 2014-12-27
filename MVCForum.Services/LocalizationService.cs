@@ -197,10 +197,9 @@ namespace MVCForum.Services
             catch (Exception ex)
             {
                 // Could be there is no resource
-                _loggingService.Error(string.Format("Unable to retrieve resource key '{0}' for language id {1}. Error: '{2}'.", key, languageId.ToString(), ex.Message));
+                _loggingService.Error(string.Format("Unable to retrieve resource key '{0}' for language id {1}. Error: '{2}'.", key, languageId, ex.Message));
                 return null;
             }
-
         }
 
         /// <summary>
@@ -237,14 +236,20 @@ namespace MVCForum.Services
         /// <returns></returns>
         public string GetResourceString(string key)
         {
-            try
+            if (!string.IsNullOrEmpty(key))
             {
-                return _perRequestLanguageStrings[key.Trim()];
+                var trimmedKey = key;
+                try
+                {
+                    return _perRequestLanguageStrings[trimmedKey];
+                }
+                catch
+                {
+                    _loggingService.Error(string.Format("Unable to retrieve resource key '{0}' for language id {1}.", trimmedKey, CurrentLanguage.Id));
+                    return trimmedKey;
+                }
             }
-            catch
-            {
-                return key.Trim();
-            }
+            return string.Empty;
         }
 
         #endregion

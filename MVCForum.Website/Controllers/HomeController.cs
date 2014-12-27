@@ -45,42 +45,6 @@ namespace MVCForum.Website.Controllers
             return View();
         }
 
-        [ChildActionOnly]
-        public ActionResult LatestTopics(int? p)
-        {
-            using (UnitOfWorkManager.NewUnitOfWork())
-            {
-                // Set the page index
-                var pageIndex = p ?? 1;
-
-                // Get the topics
-                var topics = _topicService.GetRecentTopics(pageIndex,
-                                                           SettingsService.GetSettings().TopicsPerPage,
-                                                           SiteConstants.ActiveTopicsListSize);
-
-                // Get all the categories for this topic collection
-                var categories = topics.Select(x => x.Category).Distinct();
-
-                // create the view model
-                var viewModel = new ActiveTopicsViewModel
-                {
-                    Topics = topics,
-                    AllPermissionSets = new Dictionary<Category, PermissionSet>(),
-                    PageIndex = pageIndex,
-                    TotalCount = topics.TotalCount,
-                    User = LoggedOnUser
-                };
-
-                // loop through the categories and get the permissions
-                foreach (var category in categories)
-                {
-                    var permissionSet = RoleService.GetPermissions(category, UsersRole);
-                    viewModel.AllPermissionSets.Add(category, permissionSet);
-                }
-                return PartialView(viewModel);
-            }
-        }
-
         public ActionResult Activity(int? p)
         {
             using (UnitOfWorkManager.NewUnitOfWork())

@@ -24,7 +24,6 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<Topic> GetSolvedTopicsByMember(Guid memberId);
         Topic GetTopicBySlug(string slug);
         Topic Get(Guid topicId);
-        void SaveOrUpdate(Topic topic);
         void Delete(Topic topic);
         int TopicCount();
         Topic AddLastPost(Topic topic, string postContent);

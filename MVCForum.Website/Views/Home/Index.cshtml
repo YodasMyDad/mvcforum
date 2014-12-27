@@ -2,7 +2,7 @@
 
 @{    
     ViewBag.Title = Html.Settings().PageTitle ?? Html.Settings().ForumName;
-    ViewBag.MetaDesc = Html.Settings().MetaDesc;
+    ViewBag.MetaDesc = Html.Settings().MetaDesc;    
 }
 
 @section side
@@ -14,8 +14,7 @@
     @Html.Action("CurrentWeekHighPointUsers", "Point")
 }
 
-
-@Html.Action("LatestTopics", "Home")
+@Html.Action("LatestTopics", "Topic")
 @*
     If you want to show categories on the home page instead of topics
     Just uncomment this action out and delete this text (And comment out the above action)

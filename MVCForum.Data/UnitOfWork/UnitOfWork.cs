@@ -1,6 +1,4 @@
-﻿using System;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data;
 using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using MVCForum.Data.Context;

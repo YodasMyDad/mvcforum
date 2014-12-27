@@ -13,6 +13,29 @@ namespace MVCForum.Data.Repositories
     {
         private readonly MVCForumContext _context;
 
+        private void PopulateTopicsPosts(IEnumerable<Category> results)
+        {
+            var posts = _context.Post.AsNoTracking().ToLookup(x => x.Topic.Id);
+            var topics = _context.Topic.Include(x => x.LastPost).AsNoTracking().ToLookup(x => x.Category.Id);
+
+            foreach (var category in results)
+            {
+                category.Topics = topics.Contains(category.Id) ? topics[category.Id].ToList() : new List<Topic>();
+                if (category.Topics.Any())
+                {
+                    PopulatePosts(category.Topics, posts);
+                }
+            }
+        }
+
+        private void PopulatePosts(IList<Topic> topics, ILookup<Guid, Post> posts)
+        {
+            foreach (var topic in topics)
+            {
+                topic.Posts = posts.Contains(topic.Id) ? posts[topic.Id].ToList() : new List<Post>();
+            }
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -25,6 +48,8 @@ namespace MVCForum.Data.Repositories
         public IList<Category> GetAll()
         {
             return _context.Category
+                    .Include(x => x.ParentCategory)
+                    .AsNoTracking()
                     .OrderBy(x => x.SortOrder)
                     .ToList();
 
@@ -75,13 +100,12 @@ namespace MVCForum.Data.Repositories
         public IList<Category> GetMainCategories(bool getWithExtendedData)
         {
             var categories = _context.Category
+                                .Include(x => x.ParentCategory)
                                 .Where(cat => cat.ParentCategory == null);
 
             if (getWithExtendedData)
             {
-                categories = categories
-                    .Include(x => x.Topics.Select(p => p.Posts))
-                    .Include(x => x.Topics.Select(p => p.LastPost));
+                PopulateTopicsPosts(categories);
             }
 
             return categories.Where(cat => cat.ParentCategory == null)

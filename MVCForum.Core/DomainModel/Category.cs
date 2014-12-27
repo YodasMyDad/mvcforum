@@ -22,6 +22,7 @@ namespace MVCForum.Domain.DomainModel
         public string PageTitle { get; set; }
         public string Path { get; set; }
         public string MetaDescription { get; set; }
+        public string Colour { get; set; }
         public virtual Category ParentCategory { get; set; }
         public virtual IList<Topic> Topics { get; set; }
         public virtual IList<CategoryNotification> CategoryNotifications { get; set; }

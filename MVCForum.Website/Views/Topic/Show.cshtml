@@ -29,7 +29,7 @@
     }
 
     // Set a ViewBag for the category
-    TempData[AppConstants.DefaultCategoryViewBagName] = Model.Topic.Category.Id;
+    TempData[AppConstants.DefaultCategoryViewBagName] = Model.Category.Id;
     var qs = Request.QueryString[SiteConstants.PostOrderBy] ?? string.Empty;
     var disablePosting = Model.User != null && (Model.User.DisablePosting == true);
 }
@@ -47,7 +47,6 @@
     @(Bundle.Css()
               .Add("~/Scripts/fancybox/jquery.fancybox.css")
               .MvcRender("~/content/cache/fancybox_#.css"))
-    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
     @(Bundle.JavaScript()
         .Add("~/Scripts/fancybox/jquery.fancybox.js")
         .Add("~/Scripts/topic.js")
@@ -79,18 +78,6 @@
                 </a>
             </div>
         }
-
-        <div class="postsocialbuttons clearfix">
-            <div class="addthis_toolbox addthis_default_style">
-                <a class="addthis_button_preferred_1"></a>
-                <a class="addthis_button_preferred_2"></a>
-                <a class="addthis_button_preferred_3"></a>
-                <a class="addthis_button_preferred_4"></a>
-                <a class="addthis_button_compact"></a>
-                <a class="addthis_counter addthis_bubble_style"></a>
-            </div>
-        </div>
-
     </div>
 
 </div>

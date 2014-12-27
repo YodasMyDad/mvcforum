@@ -17,17 +17,13 @@
 }
 
 <h2>@ViewBag.Title</h2>
+
 @foreach (var topic in Model.Topics)
 {
-    // Get the permissions for this topic via its parent category
-    var permissions = Model.AllPermissionSets[topic.Category];
-    
-
-    var viewModel = new ViewTopicViewModel {Permissions = permissions, Topic = topic, User = Model.User, ShowCategoryName = true};
-    Html.RenderPartial("_Topic", viewModel);
+    Html.RenderPartial("_Topic", topic);
 }
 
-@if (Model.Topics.TotalPages > 1)
+@if (Model.TotalPages > 1)
 {
     @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null)
 }

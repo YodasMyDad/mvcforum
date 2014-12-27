@@ -62,14 +62,14 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var categoryViewModel = new CreateCategoryViewModel { AllCategories = _categoryService.GetAll().ToList() };
+                var categoryViewModel = new CategoryViewModel { AllCategories = _categoryService.GetAll().ToList() };
                 return PartialView(categoryViewModel);
             }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateCategory(CreateCategoryViewModel categoryViewModel)
+        public ActionResult CreateCategory(CategoryViewModel categoryViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                                                ModerateTopics = categoryViewModel.ModerateTopics,
                                                SortOrder = categoryViewModel.SortOrder,
                                                PageTitle = categoryViewModel.PageTitle,
-                                               MetaDescription = categoryViewModel.MetaDesc
+                                               MetaDescription = categoryViewModel.MetaDesc,
+                                               Colour = categoryViewModel.CategoryColour
                                            };
 
                         
@@ -124,9 +125,9 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         }
 
 
-        private EditCategoryViewModel CreateEditCategoryViewModel(Category category)
+        private CategoryViewModel CreateEditCategoryViewModel(Category category)
         {
-            var categoryViewModel = new EditCategoryViewModel
+            var categoryViewModel = new CategoryViewModel
             {
                 Name = category.Name,
                 Description = category.Description,
@@ -137,6 +138,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 Id = category.Id,
                 PageTitle = category.PageTitle,
                 MetaDesc = category.MetaDescription,
+                CategoryColour = category.Colour,
                 ParentCategory = category.ParentCategory == null ? Guid.Empty : category.ParentCategory.Id,
                 AllCategories = _categoryService.GetAll()
                     .Where(x => x.Id != category.Id)
@@ -157,7 +159,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult EditCategory(EditCategoryViewModel categoryViewModel)
+        public ActionResult EditCategory(CategoryViewModel categoryViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -175,6 +177,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         category.SortOrder = categoryViewModel.SortOrder;
                         category.PageTitle = categoryViewModel.PageTitle;
                         category.MetaDescription = categoryViewModel.MetaDesc;
+                        category.Colour = categoryViewModel.CategoryColour;
 
                         if (categoryViewModel.ParentCategory != null)
                         {
@@ -358,7 +361,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             }
         }
 
-        private List<Category> GetAllCategorySubCategories(Category parent, List<Category> allSubCategories, List<Category> subCats)
+        private static List<Category> GetAllCategorySubCategories(Category parent, List<Category> allSubCategories, List<Category> subCats)
         {
             foreach (var cat in allSubCategories)
             {

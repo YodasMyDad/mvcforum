@@ -14,7 +14,7 @@
 
         // Social
         public const int GravatarPostSize = 50;
-        public const int GravatarTopicSize = 35;
+        public const int GravatarTopicSize = 50;
         public const int GravatarProfileSize = 85;
         public const int GravatarLeaderboardSize = 25;
 
@@ -36,6 +36,8 @@
         //public const string EditorType = "bbeditor";
         //public const string EditorType = "tinymceeditor";
         public const string EditorType = "markdowneditor";
+
+        public const string EditorTemplateColourPicker = "colourpicker";
 
         //Querystring names
         public const string PostOrderBy = "order";

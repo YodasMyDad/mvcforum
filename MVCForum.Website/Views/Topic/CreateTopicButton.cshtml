@@ -1,9 +1,7 @@
 ﻿@model MVCForum.Website.ViewModels.CreateTopicButtonViewModel
 @if (Model.LoggedOnUser.DisablePosting != true && Model.UserCanPostTopics)
 {
-    <p>
-        <a href="@Url.Action("Create", "Topic")" class="btn btn-large btn-success new-discussion-button">
+        <a href="@Url.Action("Create", "Topic")" class="btn-mvc btn-mvc-green btn-mvc-large btn-mvc-fullwidth createtopicbutton">
             @Html.LanguageString("Layout.CreateButton")
         </a>
-    </p>
 }
