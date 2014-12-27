@@ -15,8 +15,8 @@
             var subCats = allCats.Where(x => x.ParentCategory != null && x.ParentCategory.Id == currentcatId).ToList();
             if (!permissions[AppConstants.PermissionDenyAccess].IsTicked)
             {
-                <li class="catitem" style="border-color: @(category.Colour)">
-                    <a href="@Html.Raw(category.NiceUrl)">@Html.Raw(@category.Name)</a>
+                <li class="catitem">
+                    <a style="border-color: @(category.Colour)" href="@Html.Raw(category.NiceUrl)">@Html.Raw(@category.Name)</a>
                     @if (subCats.Any())
                     {
                         <ul>
@@ -25,8 +25,8 @@
                                 var subPermissions = Model.AllPermissionSets[subCat];
                                 if (!subPermissions[AppConstants.PermissionDenyAccess].IsTicked)
                                 {
-                                    <li class="catitem" style="border-color: @(category.Colour)">
-                                        <a href="@Html.Raw(subCat.NiceUrl)">@Html.Raw(@subCat.Name)</a>
+                                    <li class="catitem">
+                                        <a style="border-color: @(subCat.Colour)" href="@Html.Raw(subCat.NiceUrl)">@Html.Raw(@subCat.Name)</a>
                                     </li>
                                 }
                             }

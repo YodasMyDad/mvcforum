@@ -9,6 +9,7 @@ namespace MVCForum.Domain.Interfaces.Services
         Topic SanitizeTopic(Topic topic);
         IList<Topic> GetAll();
         IList<Topic> GetHighestViewedTopics(int amountToTake);
+        IList<Topic> GetPopularTopics(DateTime? from, DateTime? to, int amountToShow = 20);
         Topic Add(Topic topic);
         IList<Topic> GetTodaysTopics(int amountToTake);
         PagedList<Topic> GetRecentTopics(int pageIndex, int pageSize, int amountToTake);        

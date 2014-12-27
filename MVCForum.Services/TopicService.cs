@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.Repositories;
@@ -44,6 +45,21 @@ namespace MVCForum.Services
         public IList<Topic> GetHighestViewedTopics(int amountToTake)
         {
             return _topicRepository.GetHighestViewedTopics(amountToTake);
+        }
+
+        public IList<Topic> GetPopularTopics(DateTime? from, DateTime? to, int amountToShow = 20)
+        {
+            if (from == null)
+            {
+                from = DateTime.Now.AddDays(-30);
+            }
+
+            if (to == null)
+            {
+                to = DateTime.Now;
+            }
+
+            return _topicRepository.GetPopularTopics((DateTime)from, (DateTime)to, amountToShow);
         }
 
         /// <summary>

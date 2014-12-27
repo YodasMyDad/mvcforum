@@ -80,6 +80,36 @@ namespace MVCForum.Data.Repositories
                             .ToList();
         }
 
+        public IList<Topic> GetPopularTopics(DateTime from, DateTime to, int amountToShow)
+        {
+            var topics = _context.Post
+                .Include(x => x.Topic)
+                .Include(x => x.User)
+                .AsNoTracking()
+                .Where(x => x.IsTopicStarter)
+                .Where(x => x.DateCreated >= from)
+                .Where(x => x.DateCreated <= to)
+                .OrderBy(x => x.VoteCount)
+                .Take(amountToShow)
+                .Select(x => x.Topic);
+
+            if (!topics.Any())
+            {
+                topics = _context.Topic
+                                .Include(x => x.Category)
+                                .Include(x => x.LastPost.User)
+                                .Include(x => x.User)
+                                .Include(x => x.Poll)
+                            .AsNoTracking()
+                            .Where(x => x.CreateDate >= from)
+                            .Where(x => x.CreateDate <= to)
+                            .OrderBy(x => x.Views)
+                            .Take(amountToShow);
+            }
+                     
+            return topics.ToList();
+        }
+
         public IList<Topic> GetTodaysTopics(int amountToTake)
         {
             return _context.Topic
@@ -109,7 +139,7 @@ namespace MVCForum.Data.Repositories
                                 .Include(x => x.Poll)
                             .FirstOrDefault(x => x.Id == id);
 
-            PopulatePostsVotes(new List<Topic>{topic});
+            PopulatePostsVotes(new List<Topic> { topic });
 
             return topic;
         }

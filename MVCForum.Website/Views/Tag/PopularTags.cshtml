@@ -8,8 +8,7 @@
         @foreach(var tag in Model.PopularTags)
         {
             <li>
-                <span class="tagName"><a href="@UrlTypes.GenerateUrl(UrlType.Tag, StringUtils.RemoveAccents(tag.Key))">@Html.Raw(tag.Key)</a></span>
-                <span class="tagCount">@tag.Value</span>
+                <span class="tag"><a href="@UrlTypes.GenerateUrl(UrlType.Tag, StringUtils.RemoveAccents(tag.Key))">@Html.Raw(tag.Key) <span class="badge">@tag.Value</span></a></span>
             </li>
         }
     </ul>

@@ -16,7 +16,7 @@
         public const int GravatarPostSize = 50;
         public const int GravatarTopicSize = 50;
         public const int GravatarProfileSize = 85;
-        public const int GravatarLeaderboardSize = 25;
+        public const int GravatarLeaderboardSize = 20;
 
         //Uploads
         public const string UploadFolderPath = "~/content/uploads/";

@@ -56,44 +56,69 @@ section.content-strip ul li a, section.content-strip ul li a:visited { display: 
 section.content-strip ul li a:hover, section.content-strip ul li a:focus, section.content-strip ul li a.active { background-color: #fff; border-color: #2abda0; }
 
 /*--- Side Boxes ---*/
-.side-box { padding: 0 0 12px 0;}
+.side-box { padding: 0 0 12px 0; }
 .side-box h5 { font-size: 12px; color: #636267; text-transform: uppercase; border-bottom: 1px solid #e6e6e6; padding-bottom: 8px; margin-bottom: 12px; }
 
 /*--- Side Boxes - Category ---*/
-.categories-box {}
-.categories-box ul {}
-.categories-box ul li {}
-.categories-box ul li ul {}
-.categories-box ul li ul li {}
+.categories-box { }
+.categories-box ul { padding: 0; margin: 0; }
+.categories-box ul li { margin: 2px 0; list-style: none; }
+.categories-box ul li a, .categories-box ul li a:visited { border-left: 5px #90c153 solid; padding-left: 8px; }
+.categories-box ul li a:hover, .categories-box ul li a:focus { }
+.categories-box ul li ul { padding-left: 15px; }
+.categories-box ul li ul li { }
+.categories-box ul li ul li a { font-size: 12px; }
+
+/*--- Side Boxes - Tags ---*/
+.popular-tags-box {}
+.popular-tags-box ul { padding: 0 0 0 6px;margin: 0 0 0 0;}
+.popular-tags-box ul li { list-style: none;padding: 0;margin: 0 0 3px 0;display: inline;}
+
+/*--- Side Box ---*/
+.highearners-box {}
+.highearners-box ul { padding: 0;margin: 0;}
+.highearners-box ul li { padding: 0;margin: 0;list-style: none;}
+.highearners-box ul li span.earnername {}
+.highearners-box ul li span.earneramount {display: block; float: right;color: #a1a0a0;}
 
 /*--- Create Topic Button ---*/
 .createtopicbutton { margin-bottom: 20px; }
 
 /*--- Topic Rows ---*/
-.topicrow {padding: 15px;}
-.topicrow.topicsticky-true {background-color: #f0f0f0;}
-.topicrow.topiclocked-true {} 
-.topicrow.topicsolved-true {}
+.topicrow { padding: 15px; }
+.topicrow.topicsticky-true { background-color: #f5f4f4; }
+.topicrow.topiclocked-true { }
+.topicrow.topicsolved-true { }
 .topicrow p.category { line-height: 16px; font-size: 12px; color: #b3b3b3; padding: 0 0 0 10px; margin: 0; border-left: 3px solid #e74c3c; }
 .topicrow p.category a, .topicrow p.category a:visited { color: #727272; }
 .topicrow p.category a:hover, .topicrow p.category a:focus { color: #636262; }
 .topicrow .topicby { }
-.topicrowfooterinfo { line-height: 16px; font-size: 12px; color: #b3b3b3;font-weight: 300; }
-.topicrowfooterinfo a, .topicrowfooterinfo a:visited { color: #727272;font-weight: 400; }
+.topicrowfooterinfo { line-height: 16px; font-size: 12px; color: #b3b3b3; font-weight: 300; }
+.topicrowfooterinfo a, .topicrowfooterinfo a:visited { color: #727272; font-weight: 400; }
 .topicrowfooterinfo a:hover, .topicrowfooterinfo a:focus { color: #000; }
-.topicrow .topicrowcreater img { -ms-border-radius: 50%; border-radius: 50%;max-width: 50px;}
-.topicrow .topicrowcreater {float: left; width:60px;}
-.topicrow .topicrowdetails { margin-left: 70px;}
+.topicrow .topicrowcreater img { -ms-border-radius: 50%; border-radius: 50%; max-width: 50px; }
+.topicrow .topicrowcreater { float: left; width: 60px; }
+.topicrow .topicrowdetails { margin-left: 70px; }
 .topicrow .topicrowdetails h3 { margin: 6px 0; padding: 0; }
 .topicrow .topicrowdetails h3 a, .topicrow .topicrowdetails h3 a:visited { font-size: 22px; color: #3b3b3b; font-weight: 600; margin-top: 7px; line-height: 26px; text-decoration: none; }
-.topicrow .topicrowdetails h3 a:hover, .topicrow .topicrowdetails h3 a:focus {color: #2c2c2c;text-decoration: underline;}
-.topicrow .stats {color: #a1a0a0;margin: 0 0 0 5px;}
-.topicrow .topicsolved { color: #90c153;}
+.topicrow .topicrowdetails h3 a:hover, .topicrow .topicrowdetails h3 a:focus { color: #2c2c2c; text-decoration: underline; }
+.topicrow .stats { color: #a1a0a0; margin: 0 0 0 5px; }
+.topicrow .topicsolved { color: #90c153; }
 
 /*--- Topic Widgets - Next To Headings ---*/
-.widgetright { float: right;margin: 5px 0 10px 10px;}
-.widgetleft { float: left;margin: 5px 10px 10px 0;}
-.widgetright .glyphicon, .widgetleft .glyphicon { font-size: 18px;}
+.widgetright { float: right; margin: 5px 0 10px 10px; }
+.widgetleft { float: left; margin: 5px 10px 10px 0; }
+.widgetright .glyphicon, .widgetleft .glyphicon { font-size: 18px; }
+
+/*--- Tags ---*/
+.tagsinput { padding: 0 0 8px 0;}
+span.tag { display: inline-block;line-height: 18px;height: 18px;position: relative; -ms-border-radius: 0 3px 3px 0; border-radius: 0 3px 3px 0; background-color: #2abda0; color: #fff; font-size: 8px;margin-right: 6px;padding: 0 4px 0 2px;text-transform: uppercase;}
+span.tag .badge { background-color: #23a68c;font-size: 10px;margin-top: 1px;}
+span.tag:before { content: ""; float: left; position: absolute; top: 0; left: -6px; width: 0; height: 0; border-color: transparent #2abda0 transparent transparent; border-style: solid; border-width: 9px 6px 9px 0; }
+span.tag a, span.tag a:visited { color: #fff; text-decoration: none;display: block;line-height: 18px;height: 18px; }
+span.tag a:visited, span.tag a:focus { }
+span.tag:hover {background-color: #25ad92;}
+span.tag:hover:before {border-color: transparent #25ad92 transparent transparent;}
 
 /*============== MEDIA QUERIES OVERIDES ==============*/
 

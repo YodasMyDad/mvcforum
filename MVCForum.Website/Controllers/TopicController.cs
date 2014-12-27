@@ -576,6 +576,32 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+        [ChildActionOnly]
+        public ActionResult HotTopics(DateTime? from, DateTime? to, int? amountToShow)
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                if (amountToShow == null)
+                {
+                    amountToShow = 20;
+                }
+
+                // Get the topics
+                var topics = _topicService.GetPopularTopics(from, to, (int)amountToShow);
+
+                // Get the Topic View Models
+                var topicViewModels = CreateTopicViewModels(topics.ToList());
+
+                // create the view model
+                var viewModel = new HotTopicsViewModel
+                {
+                    Topics = topicViewModels
+                };
+
+                return PartialView(viewModel);
+            }
+        }
+
         private Dictionary<Category, PermissionSet> GetPermissionsForTopics(List<Topic> topics)
         {
             // Get all the categories for this topic collection

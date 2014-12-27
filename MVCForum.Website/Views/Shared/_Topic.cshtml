@@ -24,18 +24,18 @@
                         <a title="@postToolTip" href="@Html.Raw(Model.Topic.NiceUrl)">
                             @if (Model.Topic.IsSticky)
                             {
-                                <img src="@Url.Content("~/Content/Images/icon-sticky.png")" class="topicicon" alt="" />
+                                <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span>
                             }
                             @if (Model.Topic.Poll != null)
                             {
-                                <img src="@Url.Content("~/Content/Images/icon-poll.png")" class="topicicon" alt="" />
+                                <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span>
                             }
                             @Html.Raw(Model.Topic.Name)
                         </a>
                     </h3>
                     @if (Model.Topic.Tags.Any())
                     {
-                        <div class="tagsinput">
+                        <div class="tagsinput clearfix">
                             @foreach (var tag in Model.Topic.Tags)
                             {
                                 <span class="tag"><span><a href="@Html.Raw(tag.NiceUrl)">@Html.Raw(tag.Tag)</a></span></span>

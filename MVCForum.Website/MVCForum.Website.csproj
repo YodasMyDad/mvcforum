@@ -1928,6 +1928,7 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\GetCategoryBreadcrumb.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\colourpicker.cshtml" />
+    <Content Include="Views\Topic\HotTopics.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Extensions\" />
