@@ -6,8 +6,15 @@
 
 @if (Html.Settings().EnablePrivateMessages && Model.CurrentUser.DisablePrivateMessages != true)
 {
-    var count = Model.NewPrivateMessageCount <= 0 ? null : string.Format("({0})", Model.NewPrivateMessageCount);
-    <li><a href="@Url.Action("Index", "PrivateMessage")">@Html.LanguageString("PM.PrivateMessages") @count</a></li>
+    <li>
+        <a href="@Url.Action("Index", "PrivateMessage")">
+            @Html.LanguageString("PM.PrivateMessages") 
+            @if (Model.NewPrivateMessageCount > 0)
+            {
+                <span class="badge">@Model.NewPrivateMessageCount</span>
+            }
+        </a>
+    </li>
 }
 
 <li>@Html.ActionLink(Html.LanguageString("LogOn.LogOff"), "LogOff", "Members")</li>

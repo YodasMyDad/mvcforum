@@ -17,6 +17,7 @@
         public const int GravatarTopicSize = 50;
         public const int GravatarProfileSize = 85;
         public const int GravatarLeaderboardSize = 20;
+        public const int GravatarFooterSize = 30;
 
         //Uploads
         public const string UploadFolderPath = "~/content/uploads/";
@@ -24,7 +25,7 @@
         /// <summary>
         /// A short cache time to help with speeding up the site
         /// </summary>
-        public const int DefaultCacheLengthInSeconds = 600;
+        public const int DefaultCacheLengthInSeconds = 1200;
 
         // System and default folder
         public const string ThemeRootFolder = "~/Themes/";

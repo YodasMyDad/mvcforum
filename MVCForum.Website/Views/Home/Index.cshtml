@@ -1,8 +1,8 @@
 ﻿@using MVCForum.Website.Application
 
-@{    
+@{
     ViewBag.Title = Html.Settings().PageTitle ?? Html.Settings().ForumName;
-    ViewBag.MetaDesc = Html.Settings().MetaDesc;    
+    ViewBag.MetaDesc = Html.Settings().MetaDesc;
 }
 
 @section side
@@ -13,6 +13,23 @@
     @Html.Action("PopularTags", "Tag")
     @Html.Action("CurrentWeekHighPointUsers", "Point")
     @Html.Action("HotTopics", "Topic")
+}
+
+@section UnUnderHeaderStripder {
+    <section class="content-strip">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ul>
+                        <li><a href="@Url.Action("Index", "Home")" class="@(ViewBag.CurrentController == "home" && ViewBag.CurrentAction == "index" ? "active" : "")">Latest</a></li>
+                        <li><a href="#">Following</a></li>
+                        <li><a href="#">Posted In</a></li>
+                        <li><a href="#">Favourites</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
 }
 
 @Html.Action("LatestTopics", "Topic")

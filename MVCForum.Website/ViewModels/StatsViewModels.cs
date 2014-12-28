@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
+using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Website.ViewModels
 {
@@ -10,6 +8,6 @@ namespace MVCForum.Website.ViewModels
         public int PostCount { get; set; }
         public int TopicCount { get; set; }
         public int MemberCount { get; set; }
-        public Dictionary<string, string> LatestMembers { get; set; }
+        public IList<MembershipUser> LatestMembers { get; set; }
     }
 }

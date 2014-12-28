@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
+﻿using System.Web.Mvc;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Website.ViewModels;
@@ -26,8 +24,7 @@ namespace MVCForum.Website.Controllers
         {
             var viewModel = new MainStatsViewModel
                                 {
-                                    LatestMembers = MembershipService.GetLatestUsers(10).ToDictionary(o => o.UserName,
-                                                                                                      o => o.NiceUrl),
+                                    LatestMembers = MembershipService.GetLatestUsers(10),
                                     MemberCount = MembershipService.MemberCount(),
                                     TopicCount = _topicService.TopicCount(),
                                     PostCount = _postService.PostCount()

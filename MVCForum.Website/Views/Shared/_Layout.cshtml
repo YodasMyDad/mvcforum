@@ -116,22 +116,9 @@
         </nav>
     </header>
     
-    <section class="content-strip">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12">
-                    <ul>
-                        <li><a href="#" class="@(ViewBag.CurrentController == "home" && ViewBag.CurrentAction == "index" ? "active" : "")">Latest</a></li>
-                        <li><a href="#">Following</a></li>
-                        <li><a href="#">Posted In</a></li>
-                        <li><a href="#">Favourites</a></li>
-                    </ul>      
-                </div>
-            </div>
-        </div>        
-    </section>
+    @RenderSection("UnderHeaderStrip", false)
 
-    <div class="container">
+    <section class="container">
         @Html.Partial("_GenericMessage")
         @Html.Partial("_EmailConfirmationNotice")
         @Html.Partial("_NoScript")
@@ -155,24 +142,40 @@
                 </div>
             </div>
 
-        </div>
-        <hr>
-        @Html.Action("GetMainStats", "Stats")
-        @Html.Action("GetCurrentActiveMembers", "Members")
-        @RenderSection("Footer", false)
-        <hr>
-        <footer>
+        </div>        
+    </section>
+    
+    
+    <footer>
+        <div class="container">
+            
+            @RenderSection("Footer", false)
+
             <div class="row">
-                <div class="col-md-12">
-                    <!-- ########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ###########################
-                            If you would like to remove the powered by notice, then please vist http://www.mvcforum.com/license -->
-
-                    <p>&copy; @DateTime.UtcNow.Year - @Html.LanguageString("Layout.PoweredBy") <a rel="nofollow" href="http://www.mvcforum.com">MVCForum.com</a></p>
-
-                    <!--########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ########################### -->
+                <div class="col-sm-6">
+                    @Html.Action("GetMainStats", "Stats")
+                </div>
+                <div class="col-sm-6">
+                    @Html.Action("GetCurrentActiveMembers", "Members")
                 </div>
             </div>
-        </footer>
-    </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="licenceblock">
+                        <!-- ########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ###########################
+
+                            If you would like to remove the powered by notice, then please vist http://www.mvcforum.com/license -->
+
+                            <p>&copy; @DateTime.UtcNow.Year - @Html.LanguageString("Layout.PoweredBy") <a rel="nofollow" href="http://www.mvcforum.com">MVCForum.com</a></p>
+
+                        <!--########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ########################### -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
 </body>
 </html>

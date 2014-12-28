@@ -74,12 +74,17 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 .popular-tags-box ul { padding: 0 0 0 6px;margin: 0 0 0 0;}
 .popular-tags-box ul li { list-style: none;padding: 0;margin: 0 0 3px 0;display: inline;}
 
-/*--- Side Box ---*/
+/*--- Side Box - High Earners ---*/
 .highearners-box {}
 .highearners-box ul { padding: 0;margin: 0;}
 .highearners-box ul li { padding: 0;margin: 0;list-style: none;}
 .highearners-box ul li span.earnername {}
 .highearners-box ul li span.earneramount {display: block; float: right;color: #a1a0a0;}
+
+/*--- Side Box - Hot Topics ---*/
+.hottopics-box {}
+.hottopics-box ul { padding: 0;margin: 0;}
+.hottopics-box ul li { padding: 0;margin: 0;list-style: none;}
 
 /*--- Create Topic Button ---*/
 .createtopicbutton { margin-bottom: 20px; }
@@ -119,6 +124,19 @@ span.tag a, span.tag a:visited { color: #fff; text-decoration: none;display: blo
 span.tag a:visited, span.tag a:focus { }
 span.tag:hover {background-color: #25ad92;}
 span.tag:hover:before {border-color: transparent #25ad92 transparent transparent;}
+
+/*--- Footer ---*/
+footer {background: #ecf0f1;padding:20px 0;margin: 20px 0 0 0;}
+footer .licenceblock { font-weight: 400;font-size: 14px;padding:14px 0 0 0;margin:14px 0 0 0; text-align: center;border-top: 1px #e3e6e6 solid;}
+
+/*--- Stats Block ---*/
+.latest-members ul { padding: 0;margin: 0;}
+.latest-members ul li {padding: 0 6px 4px 0;margin: 0;list-style: none;}
+
+/*--- Members Online ---*/
+.active-members {}
+.active-members ul { padding: 0;margin: 0;}
+.active-members ul li {padding: 0 6px 4px 0;margin: 0;list-style: none;}
 
 /*============== MEDIA QUERIES OVERIDES ==============*/
 
