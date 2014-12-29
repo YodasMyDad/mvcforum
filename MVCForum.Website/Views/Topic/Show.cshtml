@@ -8,8 +8,7 @@
     // SEO Stuff
     ViewBag.Title = Html.Raw(AppHelpers.CreatePageTitle(Model.Topic, Html.LanguageString("Topic.TitleFallBack")));
     ViewBag.MetaDesc = StringUtils.ReturnAmountWordsFromString(string.Concat(StringUtils.StripHtmlFromString(Model.StarterPost.Post.PostContent), "..."), 20);
-    var totalCount = Convert.ToInt32(Model.TotalCount);
-    //ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
+
     if (Request.QueryString.AllKeys.Any())
     {
         ViewBag.Canonical = Html.Raw(string.Format("<link rel=\"canonical\" href=\"{0}\"/>", Model.Topic.NiceUrl));
@@ -30,8 +29,7 @@
 
     // Set a ViewBag for the category
     TempData[AppConstants.DefaultCategoryViewBagName] = Model.Topic.Category.Id;
-    var qs = Request.QueryString[SiteConstants.PostOrderBy] ?? string.Empty;
-    var disablePosting = Html.CurrentMember() != null && (Html.CurrentMember().DisablePosting == true);
+    var qs = Request.QueryString[SiteConstants.PostOrderBy] ?? string.Empty;    
 }
 @section SocialMeta {
     <meta property="og:title" content="@ViewBag.Title" />
@@ -96,11 +94,10 @@
 @if (Html.Settings().EnablePolls == true)
 {
     <div class="pollcontainer">
-        @if (Model.Topic.Poll != null)
+        @if (Model.Poll != null)
         {
             // Show the poll if there is one
-            var viewModel = new PollViewModel { Poll = Model.Topic.Poll, TotalVotesInPoll = Model.TotalVotesInPoll, UserHasAlreadyVoted = Model.UserHasAlreadyVotedInPoll, UserAllowedToVote = Model.Permissions[AppConstants.PermissionVoteInPolls].IsTicked };
-            Html.RenderPartial("_Poll", viewModel);
+            Html.RenderPartial("_Poll", Model.Poll);
         }
     </div>
 }
@@ -111,10 +108,10 @@
     }
     <div class="row topicstarterpostbeginpostsheading">
         <div class="col-md-8 topicstarterpostcomments">
-            @(totalCount - 1) @Html.LanguageString("Topic.CommentsDetails")
+            @(Model.TotalCount - 1) @Html.LanguageString("Topic.CommentsDetails")
         </div>
         <div class="col-md-4 topicpostorderfilter">
-            @if ((totalCount - 1) > 0)
+            @if ((Model.TotalCount - 1) > 0)
             {
                 <text> @Html.LanguageString("PostFilter.OrderBy")
                 <a class="orderfilerlink @(string.IsNullOrEmpty(qs) ? "orderfilerlinkactive" : "")" href="@Model.Topic.NiceUrl">@Html.LanguageString("PostFilter.Standard")</a> |
@@ -143,7 +140,7 @@
 
     if (!Model.Permissions[AppConstants.PermissionDenyAccess].IsTicked && !Model.Permissions[AppConstants.PermissionReadOnly].IsTicked)
     {
-        @Html.Partial("_CreateNewPost", new CreateAjaxPostViewModel { Topic = Model.Topic.Id, DisablePosting = disablePosting, PostContent = Model.QuotedPost})
+        @Html.Partial("_CreateNewPost", new CreateAjaxPostViewModel { Topic = Model.Topic.Id, DisablePosting = Model.DisablePosting, PostContent = Model.QuotedPost})
     }
     <a id="createpost"></a>
 }
@@ -152,10 +149,12 @@ else
     <p class="topiclockedmessage">@Html.LanguageString("Topic.IsLocked")</p>
 }
 
-@*@if (Model.Posts.TotalPages > 1)
+@*
+    @if (Model.Posts.TotalPages > 1)
     {
         @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().PostsPerPage, totalCount, null)
-    }*@
+    }
+*@
 
 <input type="hidden" id="pageIndex" value="@(Model.PageIndex + 1)" />
 <input type="hidden" id="topicId" value="@Model.Topic.Id" />

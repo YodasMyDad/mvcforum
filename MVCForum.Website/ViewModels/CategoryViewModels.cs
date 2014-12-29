@@ -17,7 +17,7 @@ namespace MVCForum.Website.ViewModels
 
     public class ViewCategoryViewModel
     {
-        public PagedList<Topic> Topics { get; set; }
+        public List<TopicViewModel> Topics { get; set; }
         public PermissionSet Permissions { get; set; }
         public Category Category { get; set; }
         public CategoryListViewModel SubCategories { get; set; }
@@ -26,6 +26,7 @@ namespace MVCForum.Website.ViewModels
 
         public int? PageIndex { get; set; }
         public int? TotalCount { get; set; }
+        public int? TotalPages { get; set; }
     }
 
     public class SubCategoryViewModel

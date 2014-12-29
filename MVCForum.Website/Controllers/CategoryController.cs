@@ -7,6 +7,7 @@ using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Website.Application;
 using MVCForum.Website.ViewModels;
 using System.Linq;
+using MVCForum.Website.ViewModels.Mapping;
 
 namespace MVCForum.Website.Controllers
 {
@@ -15,6 +16,8 @@ namespace MVCForum.Website.Controllers
         private readonly ICategoryService _categoryService;
         private readonly ICategoryNotificationService _categoryNotificationService;
         private readonly ITopicService _topicService;
+        private readonly IPollAnswerService _pollAnswerService;
+        private readonly ITopicNotificationService _topicNotificationService;
 
         private MembershipUser LoggedOnUser;
         private MembershipRole UsersRole;
@@ -36,12 +39,14 @@ namespace MVCForum.Website.Controllers
             ILocalizationService localizationService,
             IRoleService roleService,
             ICategoryService categoryService,
-            ISettingsService settingsService, ITopicService topicService, ICategoryNotificationService categoryNotificationService)
+            ISettingsService settingsService, ITopicService topicService, ICategoryNotificationService categoryNotificationService, IPollAnswerService pollAnswerService, ITopicNotificationService topicNotificationService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _categoryService = categoryService;
             _topicService = topicService;
             _categoryNotificationService = categoryNotificationService;
+            _pollAnswerService = pollAnswerService;
+            _topicNotificationService = topicNotificationService;
 
             LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
@@ -125,18 +130,19 @@ namespace MVCForum.Website.Controllers
                                                                         SettingsService.GetSettings().TopicsPerPage,
                                                                         int.MaxValue, category.Category.Id);
 
-                    var isSubscribed = UserIsAuthenticated && (_categoryNotificationService.GetByUserAndCategory(LoggedOnUser, category.Category).Any());
+                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService);
 
                     // Create the main view model for the category
                     var viewModel = new ViewCategoryViewModel
                         {
                             Permissions = permissions,
-                            Topics = topics,
+                            Topics = topicViewModels,
                             Category = category.Category,
                             PageIndex = pageIndex,
                             TotalCount = topics.TotalCount,
+                            TotalPages = topics.TotalPages,
                             User = LoggedOnUser,
-                            IsSubscribed = isSubscribed
+                            IsSubscribed = UserIsAuthenticated && (_categoryNotificationService.GetByUserAndCategory(LoggedOnUser, category.Category).Any())
                         };
 
                     // If there are subcategories then add then with their permissions

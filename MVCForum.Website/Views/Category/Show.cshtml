@@ -36,7 +36,19 @@
     @Html.Action("PopularTags", "Tag")
     @Html.Action("CurrentWeekHighPointUsers", "Point")
 }
-@Html.Action("GetCategoryBreadcrumb", "Category", new { category = Model.Category })
+
+@section UnderHeaderStrip {
+    <section class="content-strip">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    @Html.Action("GetCategoryBreadcrumb", "Category", new { category = Model.Category })
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
 @if (Model.SubCategories != null)
 {
     Html.RenderPartial("_SubCategories", new SubCategoryViewModel
@@ -45,8 +57,7 @@
             ParentCategory = Model.Category
         });
 }
-<div class="row categoryheader">
-   
+<div class="row categoryheader">   
     <div class="col-md-8 categoryheading">
         <h2>@Html.Raw(@Model.Category.Name)</h2>
     </div>
@@ -65,20 +76,18 @@
             </a>
         }
     </div>
-
 </div>
 
 <p>@Html.Raw(AppHelpers.ConvertPostContent(Model.Category.Description))</p>
 
-@if (Model.Topics.TotalCount > 0)
+@if (Model.TotalCount > 0)
 {
     foreach (var topic in Model.Topics)
     {
-        var viewModel = new TopicViewModel { Permissions = Model.Permissions, Topic = topic, ShowCategoryName = false };
-        Html.RenderPartial("_Topic", viewModel);
+        Html.RenderPartial("_Topic", topic);
     }
 
-    if (Model.Topics.TotalPages > 1)
+    if (Model.TotalPages > 1)
     {
         @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null)
     }

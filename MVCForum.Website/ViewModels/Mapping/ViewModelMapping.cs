@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 
@@ -8,16 +11,18 @@ namespace MVCForum.Website.ViewModels.Mapping
 {
     public static class ViewModelMapping
     {
+        #region Membership
+
         public static SingleMemberListViewModel UserToSingleMemberListViewModel(MembershipUser user)
         {
             var viewModel = new SingleMemberListViewModel
-                                {
-                                    IsApproved = user.IsApproved,
-                                    Id = user.Id,
-                                    IsLockedOut = user.IsLockedOut,
-                                    Roles = user.Roles.Select(x => x.RoleName).ToArray(),
-                                    UserName = user.UserName
-                                };
+            {
+                IsApproved = user.IsApproved,
+                Id = user.Id,
+                IsLockedOut = user.IsLockedOut,
+                Roles = user.Roles.Select(x => x.RoleName).ToArray(),
+                UserName = user.UserName
+            };
             return viewModel;
         }
 
@@ -68,6 +73,9 @@ namespace MVCForum.Website.ViewModels.Mapping
             return viewModel;
         }
 
+        #endregion
+
+        #region Settings
         public static Settings SettingsViewModelToSettings(EditSettingsViewModel settingsViewModel, Settings existingSettings)
         {
             existingSettings.Id = settingsViewModel.Id;
@@ -167,7 +175,138 @@ namespace MVCForum.Website.ViewModels.Mapping
             };
 
             return settingViewModel;
+        }        
+        #endregion
+
+        #region Topics
+        public static Dictionary<Category, PermissionSet> GetPermissionsForTopics(IEnumerable<Topic> topics, IRoleService roleService, MembershipRole usersRole)
+        {
+            // Get all the categories for this topic collection
+            var categories = topics.Select(x => x.Category).Distinct();
+
+            // Permissions
+            // loop through the categories and get the permissions
+            var permissions = new Dictionary<Category, PermissionSet>();
+            foreach (var category in categories)
+            {
+                var permissionSet = roleService.GetPermissions(category, usersRole);
+                permissions.Add(category, permissionSet);
+            }
+            return permissions;
         }
 
+        public static List<TopicViewModel> CreateTopicViewModels(List<Topic> topics, 
+                                                                IRoleService roleService, 
+                                                                MembershipRole usersRole,
+                                                                MembershipUser loggedOnUser,
+                                                                ITopicNotificationService topicNotificationService,
+                                                                IPollAnswerService pollAnswerService)
+        {
+            // Get Permissions
+            var permissions = GetPermissionsForTopics(topics, roleService, usersRole);
+            var viewModels = new List<TopicViewModel>();
+            foreach (var topic in topics)
+            {
+                var permission = permissions[topic.Category];
+                viewModels.Add(CreateTopicViewModel(topic, permission, topic.Posts.ToList(), null, null, null, null, loggedOnUser, topicNotificationService, pollAnswerService));
+            }
+            return viewModels;
+        }
+
+        public static TopicViewModel CreateTopicViewModel(Topic topic,
+                                                    PermissionSet permission,
+                                                    List<Post> posts,
+                                                    Post starterPost,
+                                                    int? pageIndex,
+                                                    int? totalCount,
+                                                    int? totalPages,
+                                                    MembershipUser loggedOnUser,
+                                                    ITopicNotificationService topicNotificationService,
+                                                    IPollAnswerService pollAnswerService,
+                                                    bool getExtendedData = false)
+        {
+            var userIsAuthenticated = loggedOnUser != null;
+            var viewModel = new TopicViewModel
+            {
+                Permissions = permission,
+                Topic = topic,
+                Views = topic.Views,
+                DisablePosting = loggedOnUser != null && (loggedOnUser.DisablePosting == true),
+                PageIndex = pageIndex,
+                TotalCount = totalCount,
+                TotalPages = totalPages
+            };
+
+            if (starterPost == null)
+            {
+                starterPost = posts.FirstOrDefault(x => x.IsTopicStarter);
+            }
+            viewModel.StarterPost = CreatePostViewModel(starterPost, permission, topic);
+            viewModel.VotesUp = starterPost.Votes.Count(x => x.Amount > 0);
+            viewModel.VotesDown = starterPost.Votes.Count(x => x.Amount < 0);
+            viewModel.Answers = totalCount != null ? (int)totalCount : posts.Count() - 1;
+            viewModel.Posts = CreatePostViewModels(posts, permission, topic);
+
+            // ########### Full topic need everything   
+
+            if (getExtendedData)
+            {
+                // See if the user has subscribed to this topic or not
+                var isSubscribed = userIsAuthenticated && (topicNotificationService.GetByUserAndTopic(loggedOnUser, topic).Any());
+                viewModel.IsSubscribed = isSubscribed;
+
+                // See if the topic has a poll, and if so see if this user viewing has already voted
+                if (topic.Poll != null)
+                {
+                    // There is a poll and a user
+                    // see if the user has voted or not
+
+                    viewModel.Poll = new PollViewModel
+                    {
+                        Poll = topic.Poll,
+                        UserAllowedToVote = permission[AppConstants.PermissionVoteInPolls].IsTicked
+                    };
+
+                    var answers = pollAnswerService.GetAllPollAnswersByPoll(topic.Poll);
+                    if (answers.Any())
+                    {
+                        var votes = answers.SelectMany(x => x.PollVotes).ToList();
+                        if (userIsAuthenticated)
+                        {
+                            viewModel.Poll.UserHasAlreadyVoted = (votes.Count(x => x.User.Id == loggedOnUser.Id) > 0);
+                        }
+                        viewModel.Poll.TotalVotesInPoll = votes.Count();
+                    }
+                }
+            }
+
+            return viewModel;
+        }
+        #endregion
+
+        #region Post
+        public static PostViewModel CreatePostViewModel(Post post, PermissionSet permission, Topic topic)
+        {
+            return new PostViewModel
+            {
+                Permissions = permission,
+                Post = post,
+                ParentTopic = topic
+            };
+        }
+        public static List<PostViewModel> CreatePostViewModels(IEnumerable<Post> posts, PermissionSet permission, Topic topic)
+        {
+            var viewModels = new List<PostViewModel>();
+            foreach (var post in posts)
+            {
+                viewModels.Add(CreatePostViewModel(post, permission, topic));
+            }
+            return viewModels;
+        }
+        #endregion
+
+        #region Category
+
+        #endregion
     }
 }

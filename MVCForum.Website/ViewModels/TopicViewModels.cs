@@ -18,6 +18,9 @@ namespace MVCForum.Website.ViewModels
         public Topic Topic { get; set; }
         public PermissionSet Permissions { get; set; }
 
+        // Poll
+        public PollViewModel Poll { get; set; }
+
         // Post Stuff
         public PostViewModel StarterPost { get; set; }
         public List<PostViewModel> Posts { get; set; }
@@ -25,12 +28,11 @@ namespace MVCForum.Website.ViewModels
         public int? TotalCount { get; set; }
         public int? TotalPages { get; set; }
 
+        // Permissions
+        public bool DisablePosting { get; set; }
+
         // Subscription
         public bool IsSubscribed { get; set; }
-
-        // Polls
-        public bool UserHasAlreadyVotedInPoll { get; set; }
-        public int TotalVotesInPoll { get; set; }
 
         // Votes
         public int VotesUp { get; set; }

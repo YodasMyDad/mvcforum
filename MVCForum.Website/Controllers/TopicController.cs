@@ -12,6 +12,7 @@ using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
+using MVCForum.Website.ViewModels.Mapping;
 using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
 
 namespace MVCForum.Website.Controllers
@@ -393,7 +394,7 @@ namespace MVCForum.Website.Controllers
                         return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
                     }
 
-                    var viewModel = CreateTopicViewModel(topic, permissions, posts, starterPost);
+                    var viewModel = ViewModelMapping.CreateTopicViewModel(topic, permissions, posts.ToList(), starterPost, posts.PageIndex, posts.TotalCount, posts.TotalPages, LoggedOnUser, _topicNotificationService, _pollAnswerService, true);
 
                     // If there is a quote querystring
                     var quote = Request["quote"];
@@ -458,7 +459,7 @@ namespace MVCForum.Website.Controllers
 
             var viewModel = new ShowMorePostsViewModel
                 {
-                    Posts = CreatePostViewModels(posts, permissions, topic),
+                    Posts = ViewModelMapping.CreatePostViewModels(posts, permissions, topic),
                     Topic = topic,
                     Permissions = permissions
                 };
@@ -480,7 +481,7 @@ namespace MVCForum.Website.Controllers
                                                            tag);
 
                 // Get the Topic View Models
-                var topicViewModels = CreateTopicViewModels(topics);
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService);
 
                 // create the view model
                 var viewModel = new TagTopicsViewModel
@@ -534,7 +535,7 @@ namespace MVCForum.Website.Controllers
                                                            SiteConstants.ActiveTopicsListSize);
 
                 // Get the Topic View Models
-                var topicViewModels = CreateTopicViewModels(topics);
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService);
 
                 // create the view model
                 var viewModel = new ActiveTopicsViewModel
@@ -563,7 +564,7 @@ namespace MVCForum.Website.Controllers
                 var topics = _topicService.GetPopularTopics(from, to, (int)amountToShow);
 
                 // Get the Topic View Models
-                var topicViewModels = CreateTopicViewModels(topics.ToList());
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService);
 
                 // create the view model
                 var viewModel = new HotTopicsViewModel
@@ -575,117 +576,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        private Dictionary<Category, PermissionSet> GetPermissionsForTopics(List<Topic> topics)
-        {
-            // Get all the categories for this topic collection
-            var categories = topics.Select(x => x.Category).Distinct();
 
-            // Permissions
-            // loop through the categories and get the permissions
-            var permissions = new Dictionary<Category, PermissionSet>();
-            foreach (var category in categories)
-            {
-                var permissionSet = RoleService.GetPermissions(category, UsersRole);
-                permissions.Add(category, permissionSet);
-            }
-            return permissions;
-        }
-
-        private List<TopicViewModel> CreateTopicViewModels(List<Topic> topics)
-        {
-            // Get Permissions
-            var permissions = GetPermissionsForTopics(topics);
-            var viewModels = new List<TopicViewModel>();
-            foreach (var topic in topics)
-            {
-                var permission = permissions[topic.Category];
-                viewModels.Add(CreateTopicViewModel(topic, permission, null, null));
-            }
-            return viewModels;
-        }
-
-        private List<PostViewModel> CreatePostViewModels(List<Post> posts, PermissionSet permission, Topic topic)
-        {
-            var viewModels = new List<PostViewModel>();
-            foreach (var post in posts)
-            {
-                viewModels.Add(CreatePostViewModel(post, permission, topic));
-            }
-            return viewModels;
-        }
-
-        private static PostViewModel CreatePostViewModel(Post post, PermissionSet permission, Topic topic)
-        {
-            return new PostViewModel
-            {
-                Permissions = permission, 
-                Post = post, 
-                ParentTopic = topic
-            };
-        }
-
-        private TopicViewModel CreateTopicViewModel(Topic topic, PermissionSet permission, PagedList<Post> posts, Post starterPost)
-        {
-
-            var viewModel = new TopicViewModel
-            {
-                Permissions = permission,
-                Topic = topic,
-                Views = topic.Views
-            };
-
-            if (posts == null)
-            {
-                // ########### Not a full topic model - Only create necessary stuff
-
-                var postList = topic.Posts.Where(x => x.Pending != true).ToList();
-                if (starterPost == null)
-                {
-                    starterPost = postList.FirstOrDefault(x => x.IsTopicStarter);
-                }
-                viewModel.StarterPost = CreatePostViewModel(starterPost, permission, topic);
-                viewModel.VotesUp = starterPost.Votes.Count(x => x.Amount > 0);
-                viewModel.VotesDown = starterPost.Votes.Count(x => x.Amount < 0);
-                viewModel.Answers = (postList.Count() - 1);
-                viewModel.Posts = CreatePostViewModels(postList, permission, topic);
-            }
-            else
-            {
-                // ########### Full topic need everything   
-
-                // See if the user has subscribed to this topic or not
-                var isSubscribed = UserIsAuthenticated && (_topicNotificationService.GetByUserAndTopic(LoggedOnUser, topic).Any());
-
-                viewModel.StarterPost = CreatePostViewModel(starterPost, permission, topic);
-                viewModel.VotesUp = starterPost.Votes.Count(x => x.Amount > 0);
-                viewModel.VotesDown = starterPost.Votes.Count(x => x.Amount < 0);
-                viewModel.Answers = posts.TotalCount;
-                viewModel.Posts = CreatePostViewModels(posts, permission, topic);
-                viewModel.PageIndex = posts.PageIndex;
-                viewModel.TotalCount = posts.TotalCount;
-                viewModel.TotalPages = posts.TotalPages;
-                viewModel.IsSubscribed = isSubscribed;
-
-                // See if the topic has a poll, and if so see if this user viewing has already voted
-                if (topic.Poll != null)
-                {
-                    // There is a poll and a user
-                    // see if the user has voted or not
-                    var answers = _pollAnswerService.GetAllPollAnswersByPoll(topic.Poll);
-                    if (answers.Any())
-                    {
-                        var votes = answers.SelectMany(x => x.PollVotes).ToList();
-                        if (UserIsAuthenticated)
-                        {
-                            viewModel.UserHasAlreadyVotedInPoll = (votes.Count(x => x.User.Id == LoggedOnUser.Id) > 0);
-                        }
-                        viewModel.TotalVotesInPoll = votes.Count();
-                    }
-                }
-            }
-
-            return viewModel;
-        }
 
         private void NotifyNewTopics(Category cat)
         {
