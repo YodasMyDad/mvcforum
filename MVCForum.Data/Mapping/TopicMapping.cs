@@ -15,6 +15,7 @@ namespace MVCForum.Data.Mapping
             HasOptional(t => t.Poll).WithOptionalDependent().Map(m => m.MapKey("Poll_Id"));
             
             HasRequired(t => t.Category).WithMany(t => t.Topics).Map(m => m.MapKey("Category_Id"));
+
             HasRequired(t => t.User).WithMany(t => t.Topics).Map(m => m.MapKey("MembershipUser_Id"));
 
             HasMany(x => x.Posts).WithRequired(x => x.Topic).Map(x => x.MapKey("Topic_Id"))

@@ -6,6 +6,6 @@
     // Get the permissions for this topic via its parent category
     var permissions = Model.AllPermissionSets[topic.Category];
 
-    var viewModel = new ViewTopicViewModel { Permissions = permissions, Topic = topic, User = Model.CurrentUser, ShowCategoryName = false };
+    var viewModel = new TopicViewModel { Permissions = permissions, Topic = topic ShowCategoryName = false };
     Html.RenderPartial("_TopicSlim", viewModel);    
 }

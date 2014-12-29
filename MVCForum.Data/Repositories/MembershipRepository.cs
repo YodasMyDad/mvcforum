@@ -91,12 +91,6 @@ namespace MVCForum.Data.Repositories
             var registerEnd = DateTime.UtcNow;
             var registerStart = registerEnd.AddDays(-amoutOfDaysSinceRegistered);
             return _context.MembershipUser
-                .Include(x => x.Posts)
-                .Include(x => x.Points)
-                .Include(x => x.PrivateMessagesReceived)
-                .Include(x => x.PrivateMessagesSent)
-                .Include(x => x.Votes)
-                .Include(x => x.PollVotes)
                 .Where(x =>
                         x.Posts.Count <= amoutOfPosts &&
                         x.CreateDate > registerStart && 

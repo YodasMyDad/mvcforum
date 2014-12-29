@@ -27,6 +27,11 @@ namespace MVCForum.Services
             return _pollAnswerRepository.Add(pollAnswer);
         }
 
+        public List<PollAnswer> GetAllPollAnswersByPoll(Poll poll)
+        {
+            return _pollAnswerRepository.GetAllPollAnswersByPoll(poll);
+        }
+
         public PollAnswer Get(Guid id)
         {
             return _pollAnswerRepository.Get(id);

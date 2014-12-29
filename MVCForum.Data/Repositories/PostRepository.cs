@@ -24,8 +24,18 @@ namespace MVCForum.Data.Repositories
 
         public Post GetTopicStarterPost(Guid topicId)
         {
-            return _context.Post.Include(x => x.Topic)                
-                .FirstOrDefault(x => x.Topic.Id == topicId && x.IsTopicStarter);
+            
+            var post = _context.Post
+                        .Include(x => x.Topic)
+                        .Include(x => x.User)
+                        .FirstOrDefault(x => x.Topic.Id == topicId && x.IsTopicStarter);
+
+            if (post != null)
+            {
+                post.Votes = _context.Vote.AsNoTracking().Where(x => x.Post.Id == post.Id).ToList();   
+            }
+
+            return post;
         }
 
         public IEnumerable<Post> GetAllWithTopics()
@@ -115,8 +125,6 @@ namespace MVCForum.Data.Repositories
             var results = _context.Post
                                   .Include(x => x.User)
                                   .Include(x => x.Topic)
-                                  .Include(x => x.Votes)
-                                  .Include(x => x.Files)
                                   .Where(x => x.Topic.Id == topicId && !x.IsTopicStarter && x.Pending != true);
 
             // Sort what order the posts are sorted in
@@ -136,10 +144,10 @@ namespace MVCForum.Data.Repositories
             }
 
             // sort the paging out
-            results = results.Skip((pageIndex - 1)*pageSize).Take(pageSize);
+            var posts = results.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
                                                                 
             // Return a paged list
-            return new PagedList<Post>(results.ToList(), pageIndex, pageSize, total);
+            return new PagedList<Post>(posts, pageIndex, pageSize, total);
         }
 
         public IList<Post> GetPostsByMember(Guid memberId)

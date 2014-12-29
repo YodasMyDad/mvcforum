@@ -117,7 +117,7 @@ namespace MVCForum.Website.Controllers
                 {
 
                     // Create the view model
-                    var viewModel = new ViewPostViewModel
+                    var viewModel = new PostViewModel
                     {
                         Permissions = permissions,
                         Post = newPost,

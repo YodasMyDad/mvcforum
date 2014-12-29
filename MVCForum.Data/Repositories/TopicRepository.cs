@@ -15,28 +15,39 @@ namespace MVCForum.Data.Repositories
 
         #region Populate Collections
 
-        private void PopulatePostsVotes(List<Topic> results)
-        {
-            var posts = _context.Post.AsNoTracking().ToLookup(x => x.Topic.Id);
-            var votes = _context.Vote.AsNoTracking().ToLookup(x => x.Post.Id);
+        //private void PopulatePostsVotes(List<Topic> results)
+        //{
+        //    // Get Topics Ids
+        //    var topicIds = results.Select(x => x.Id);
 
-            foreach (var topic in results)
-            {
-                topic.Posts = posts.Contains(topic.Id) ? posts[topic.Id].ToList() : new List<Post>();
-                if (topic.Posts.Any())
-                {
-                    PopulateVotes(topic.Posts, votes);
-                }
-            }
-        }
+        //    // Get all posts for these topics in one hit
+        //    var posts = _context.Post.Include(x => x.Topic).AsNoTracking().Where(x => topicIds.Contains(x.Topic.Id)).ToList();
 
-        private void PopulateVotes(IList<Post> posts, ILookup<Guid, Vote> votes)
-        {
-            foreach (var post in posts)
-            {
-                post.Votes = votes.Contains(post.Id) ? votes[post.Id].ToList() : new List<Vote>();
-            }
-        }
+        //    // Get the ids of the posts
+        //    var postIds = posts.Select(x => x.Id);
+
+        //    // Use the ids to get all the post votes
+        //    var votes = _context.Vote.Include(x => x.Post).AsNoTracking().Where(x => postIds.Contains(x.Post.Id)).ToList();
+
+        //    foreach (var topic in results)
+        //    {
+        //        var topicPosts = posts.Where(x => x.Topic.Id == topic.Id).ToList();
+        //        topic.Posts = topicPosts;
+        //        if (topic.Posts.Any())
+        //        {
+        //            PopulateVotes(topic.Posts, voteGroups);
+        //        }
+        //    }
+        //}
+
+        //private void PopulateVotes(IList<Post> posts, List<IGrouping<Guid, Vote>> votes)
+        //{
+        //    foreach (var post in posts)
+        //    {
+        //        var voteGroup = votes.FirstOrDefault(x => x.Key == post.Id);
+        //        post.Votes = voteGroup == null ? new List<Vote>() : voteGroup.ToList();
+        //    }
+        //}
 
         #endregion
 
@@ -139,8 +150,6 @@ namespace MVCForum.Data.Repositories
                                 .Include(x => x.Poll)
                             .FirstOrDefault(x => x.Id == id);
 
-            PopulatePostsVotes(new List<Topic> { topic });
-
             return topic;
         }
 
@@ -148,16 +157,6 @@ namespace MVCForum.Data.Repositories
         {
             _context.Topic.Remove(item);
         }
-
-        //public void Update(Topic item)
-        //{
-        //    // Check there's not an object with same identifier already in context
-        //    if (_context.Topic.Local.Select(x => x.Id == item.Id).Any())
-        //    {
-        //        throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
-        //    }
-        //    _context.Entry(item).State = EntityState.Modified;
-        //}
 
         public PagedList<Topic> GetRecentTopics(int pageIndex, int pageSize, int amountToTake)
         {
@@ -183,9 +182,6 @@ namespace MVCForum.Data.Repositories
                                 .Take(pageSize)
                                 .ToList();
 
-            // Populate
-            PopulatePostsVotes(results);
-
             // Return a paged list
             return new PagedList<Topic>(results, pageIndex, pageSize, total);
         }
@@ -203,9 +199,6 @@ namespace MVCForum.Data.Repositories
                                 .OrderByDescending(s => s.CreateDate)
                                 .Take(amountToTake)
                                 .ToList();
-
-            // Populate
-            PopulatePostsVotes(results);
 
             return results;
         }
@@ -236,8 +229,6 @@ namespace MVCForum.Data.Repositories
                                 .Where(x => x.Category.Id == categoryId)
                                 .Where(x => x.Pending != true)
                                 .ToList();
-            // Populate
-            PopulatePostsVotes(results);
 
             return results;
         }
@@ -291,9 +282,6 @@ namespace MVCForum.Data.Repositories
                                 .Take(pageSize)
                                 .ToList();
 
-            // Populate
-            PopulatePostsVotes(results);
-
             // Return a paged list
             return new PagedList<Topic>(results, pageIndex, pageSize, total);
         }
@@ -321,8 +309,6 @@ namespace MVCForum.Data.Repositories
                                 .Take(pageSize)
                                 .Skip((pageIndex - 1) * pageSize)
                                 .ToList();
-            // Populate
-            PopulatePostsVotes(results);
 
             // Return a paged list
             return new PagedList<Topic>(results, pageIndex, pageSize, total);
@@ -351,9 +337,6 @@ namespace MVCForum.Data.Repositories
                             .Skip((pageIndex - 1) * pageSize)
                             .Take(pageSize)
                             .ToList();
-
-            var votes = _context.Vote.AsNoTracking().ToLookup(x => x.Post.Id);
-            PopulateVotes(results, votes);
 
             // Return a paged list
             return new PagedList<Topic>(results.Select(x => x.Topic), pageIndex, pageSize, total);
@@ -394,7 +377,6 @@ namespace MVCForum.Data.Repositories
 
         public IList<Topic> GetTopicsByCsv(int amountToTake, List<Guid> topicIds)
         {
-
             var topics = _context.Topic
                                 .Include(x => x.Category)
                                 .Include(x => x.LastPost.User)
@@ -405,8 +387,6 @@ namespace MVCForum.Data.Repositories
                             .OrderByDescending(x => x.LastPost.DateCreated)
                             .Take(amountToTake)
                             .ToList();
-
-            PopulatePostsVotes(topics);
 
             return topics;
         }
@@ -423,8 +403,6 @@ namespace MVCForum.Data.Repositories
                             .OrderByDescending(x => x.LastPost.DateCreated)
                             .Take(amountToTake)
                             .ToList();
-
-            PopulatePostsVotes(topics);
 
             return topics;
         }
@@ -453,8 +431,6 @@ namespace MVCForum.Data.Repositories
                                 .Take(pageSize)
                                 .Skip((pageIndex - 1) * pageSize)
                                 .ToList();
-
-            PopulatePostsVotes(results);
 
             // Return a paged list
             return new PagedList<Topic>(results, pageIndex, pageSize, total);
@@ -502,8 +478,6 @@ namespace MVCForum.Data.Repositories
                             .Where(x => x.User.Id == memberId)
                             .Where(x => x.Pending != true)
                             .ToList();
-
-            PopulatePostsVotes(results);
 
             return results.Where(x => x.Posts.Select(p => p.IsSolution).Contains(true)).ToList();
         }

@@ -24,7 +24,7 @@ namespace MVCForum.Website.ViewModels
         public Topic Topic { get; set; }
     }
 
-    public class ViewPostViewModel
+    public class PostViewModel
     {
         public Post Post { get; set; }
         public Topic ParentTopic { get; set; }

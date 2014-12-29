@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using System.Web.Routing;
+using System.Web.Services.Description;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Services;
@@ -34,7 +35,16 @@ namespace MVCForum.Website.Application
         /// <returns></returns>
         public static Settings Settings(this HtmlHelper helper)
         {
-            return DependencyResolver.Current.GetService<ISettingsService>().GetSettings();
+            return ServiceFactory.Get<ISettingsService>().GetSettings();
+        }
+
+        public static MembershipUser CurrentMember(this HtmlHelper helper)
+        {
+            if (System.Web.HttpContext.Current.User.Identity.IsAuthenticated)
+            {
+                return ServiceFactory.Get<IMembershipService>().GetUser(System.Web.HttpContext.Current.User.Identity.Name);
+            }
+            return null;
         }
 
         public static string KiloFormat(this int num)

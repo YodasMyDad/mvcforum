@@ -28,6 +28,7 @@ namespace MVCForum.Website.Controllers
         private readonly IEmailService _emailService;
         private readonly IPollService _pollService;
         private readonly IPollAnswerService _pollAnswerService;
+        private readonly IPollVoteService _pollVoteService;
         private readonly IBannedWordService _bannedWordService;
 
         private readonly MembershipUser LoggedOnUser;
@@ -36,7 +37,7 @@ namespace MVCForum.Website.Controllers
         public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
             ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, IPollService pollService,
-            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService)
+            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IPollVoteService pollVoteService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
@@ -50,6 +51,7 @@ namespace MVCForum.Website.Controllers
             _pollService = pollService;
             _pollAnswerService = pollAnswerService;
             _bannedWordService = bannedWordService;
+            _pollVoteService = pollVoteService;
 
             LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
@@ -94,7 +96,7 @@ namespace MVCForum.Website.Controllers
                         viewModel.UserCanPostTopics = false;
                         var permissionSet = RoleService.GetPermissions(category, UsersRole);
                         if (permissionSet[AppConstants.PermissionCreateTopics].IsTicked)
-                        {                            
+                        {
                             viewModel.UserCanPostTopics = true;
                             break;
                         }
@@ -109,19 +111,19 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                    var allowedCategories = _categoryService.GetAllowedCategories(UsersRole).ToList();
-                    if (allowedCategories.Any() && LoggedOnUser.DisablePosting != true)
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole).ToList();
+                if (allowedCategories.Any() && LoggedOnUser.DisablePosting != true)
+                {
+                    var viewModel = new CreateTopicViewModel
                     {
-                        var viewModel = new CreateTopicViewModel
-                        {
-                            Categories = allowedCategories,
-                            LoggedOnUser = LoggedOnUser
-                        };
+                        Categories = allowedCategories,
+                        LoggedOnUser = LoggedOnUser
+                    };
 
-                        return View(viewModel);
-                    }
-                    return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
-            }            
+                    return View(viewModel);
+                }
+                return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
+            }
         }
 
         [HttpPost]
@@ -173,8 +175,8 @@ namespace MVCForum.Website.Controllers
                             Name = _bannedWordService.SanitiseBannedWords(topicViewModel.Name, bannedWords),
                             Category = category,
                             User = LoggedOnUser
-                        };                       
-                        
+                        };
+
                         // See if the user has actually added some content to the topic
                         if (!string.IsNullOrEmpty(topicViewModel.Content))
                         {
@@ -215,11 +217,11 @@ namespace MVCForum.Website.Controllers
                                     unitOfWork.SaveChanges();
 
                                     // Add the poll to the topic
-                                    topic.Poll = newPoll;   
+                                    topic.Poll = newPoll;
                                 }
                                 else
                                 {
-                                   //No permission to create a Poll so show a message but create the topic
+                                    //No permission to create a Poll so show a message but create the topic
                                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                                     {
                                         Message = LocalizationService.GetResourceString("Errors.NoPermissionPolls"),
@@ -253,7 +255,7 @@ namespace MVCForum.Website.Controllers
 
                             // Now check its not spam
                             var akismetHelper = new AkismetHelper(SettingsService);
-                            if(!akismetHelper.IsSpam(topic))
+                            if (!akismetHelper.IsSpam(topic))
                             {
                                 // Add the tags if any too
                                 if (!string.IsNullOrEmpty(topicViewModel.Tags))
@@ -282,8 +284,8 @@ namespace MVCForum.Website.Controllers
                                 {
                                     unitOfWork.Commit();
                                     if (!moderate)
-                                    {                                    
-                                        successfullyCreated = true; 
+                                    {
+                                        successfullyCreated = true;
                                     }
                                 }
                                 catch (Exception ex)
@@ -359,7 +361,7 @@ namespace MVCForum.Website.Controllers
                     // statement rather than loads of sql selects
 
                     var sortQuerystring = Request.QueryString[SiteConstants.PostOrderBy];
-                    var orderBy = !string.IsNullOrEmpty(sortQuerystring) ? 
+                    var orderBy = !string.IsNullOrEmpty(sortQuerystring) ?
                                               EnumUtils.ReturnEnumValueFromString<PostOrderBy>(sortQuerystring) : PostOrderBy.Standard;
 
                     // Store the amount per page
@@ -374,12 +376,12 @@ namespace MVCForum.Website.Controllers
                     // Get the posts
                     var posts = _postService.GetPagedPostsByTopic(pageIndex,
                                                                   amountPerPage,
-                                                                  int.MaxValue, 
+                                                                  int.MaxValue,
                                                                   topic.Id,
                                                                   orderBy);
 
                     // Get the topic starter post
-                    var topicStarter = _postService.GetTopicStarterPost(topic.Id);
+                    var starterPost = _postService.GetTopicStarterPost(topic.Id);
 
                     // Get the permissions for the category that this topic is in
                     var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
@@ -390,24 +392,8 @@ namespace MVCForum.Website.Controllers
                     {
                         return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
                     }
-                    
-                    // See if the user has subscribed to this topic or not
-                    var isSubscribed = UserIsAuthenticated && (_topicNotificationService.GetByUserAndTopic(LoggedOnUser, topic).Any());
 
-                    // Populate the view model for this page
-                    var viewModel = new ShowTopicViewModel
-                    {
-                        Topic = topic,
-                        Category = topic.Category,
-                        Posts = posts,
-                        PageIndex = posts.PageIndex,
-                        TotalCount = posts.TotalCount,
-                        Permissions = permissions,
-                        User = LoggedOnUser,
-                        IsSubscribed = isSubscribed,
-                        UserHasAlreadyVotedInPoll = false,
-                        TopicStarterPost = topicStarter
-                    };
+                    var viewModel = CreateTopicViewModel(topic, permissions, posts, starterPost);
 
                     // If there is a quote querystring
                     var quote = Request["quote"];
@@ -417,25 +403,12 @@ namespace MVCForum.Website.Controllers
                         {
                             // Got a quote
                             var postToQuote = _postService.Get(new Guid(quote));
-                            viewModel.PostContent = postToQuote.PostContent;
+                            viewModel.QuotedPost = postToQuote.PostContent;
                         }
                         catch (Exception ex)
                         {
                             LoggingService.Error(ex);
                         }
-                    }
-
-                    // See if the topic has a poll, and if so see if this user viewing has already voted
-                    if (topic.Poll != null)
-                    {
-                        // There is a poll and a user
-                        // see if the user has voted or not
-                        var votes = topic.Poll.PollAnswers.SelectMany(x => x.PollVotes).ToList();
-                        if (UserIsAuthenticated)
-                        {
-                            viewModel.UserHasAlreadyVotedInPoll = (votes.Count(x => x.User.Id == LoggedOnUser.Id) > 0);                            
-                        }
-                        viewModel.TotalVotesInPoll = votes.Count();
                     }
 
                     // User has permission lets update the topic view count
@@ -489,7 +462,7 @@ namespace MVCForum.Website.Controllers
                     Permissions = permissions,
                     User = LoggedOnUser
                 };
-                        
+
             return PartialView(viewModel);
         }
 
@@ -518,7 +491,7 @@ namespace MVCForum.Website.Controllers
                     TotalPages = topics.TotalPages,
                     Tag = tag
                 };
-                
+
                 return View(viewModel);
             }
         }
@@ -571,7 +544,7 @@ namespace MVCForum.Website.Controllers
                     TotalCount = topics.TotalCount,
                     TotalPages = topics.TotalPages
                 };
-                
+
                 return PartialView(viewModel);
             }
         }
@@ -605,20 +578,20 @@ namespace MVCForum.Website.Controllers
         private Dictionary<Category, PermissionSet> GetPermissionsForTopics(List<Topic> topics)
         {
             // Get all the categories for this topic collection
-                var categories = topics.Select(x => x.Category).Distinct();
+            var categories = topics.Select(x => x.Category).Distinct();
 
-                // Permissions
-                // loop through the categories and get the permissions
+            // Permissions
+            // loop through the categories and get the permissions
             var permissions = new Dictionary<Category, PermissionSet>();
-                foreach (var category in categories)
-                {
-                    var permissionSet = RoleService.GetPermissions(category, UsersRole);
-                    permissions.Add(category, permissionSet);
-                }
+            foreach (var category in categories)
+            {
+                var permissionSet = RoleService.GetPermissions(category, UsersRole);
+                permissions.Add(category, permissionSet);
+            }
             return permissions;
         }
 
-        private List<TopicViewModel> CreateTopicViewModels(List<Topic> topics, bool showCategoryName = true)
+        private List<TopicViewModel> CreateTopicViewModels(List<Topic> topics)
         {
             // Get Permissions
             var permissions = GetPermissionsForTopics(topics);
@@ -626,63 +599,113 @@ namespace MVCForum.Website.Controllers
             foreach (var topic in topics)
             {
                 var permission = permissions[topic.Category];
-                var posts = topic.Posts.ToList();
-                var starterPost = posts.FirstOrDefault(x => x.IsTopicStarter);
-                viewModels.Add(new TopicViewModel
-                {
-                    Permissions = permission, 
-                    Topic = topic, 
-                    ShowCategoryName = showCategoryName,
-                    StarterPost = starterPost,
-                    VotesUp = starterPost.Votes.Count(x => x.Amount > 0),
-                    VotesDown = starterPost.Votes.Count(x => x.Amount < 0),
-                    Views = topic.Views,
-                    Answers = (posts.Count() - 1),
-                    Posts = posts
-                });   
+                viewModels.Add(CreateTopicViewModel(topic, permission, null, null));
             }
             return viewModels;
-        } 
+        }
+
+        private TopicViewModel CreateTopicViewModel(Topic topic, PermissionSet permission, PagedList<Post> posts, Post starterPost)
+        {
+
+            var viewModel = new TopicViewModel
+            {
+                Permissions = permission,
+                Topic = topic,
+                Views = topic.Views
+            };
+
+            if (posts == null)
+            {
+                // ########### Not a full topic model - Only create necessary stuff
+
+                var postList = topic.Posts.Where(x => x.Pending != true).ToList();
+                if (starterPost == null)
+                {
+                    starterPost = postList.FirstOrDefault(x => x.IsTopicStarter);
+                }
+                viewModel.StarterPost = starterPost;
+                viewModel.VotesUp = starterPost.Votes.Count(x => x.Amount > 0);
+                viewModel.VotesDown = starterPost.Votes.Count(x => x.Amount < 0);
+                viewModel.Answers = (postList.Count() - 1);
+                viewModel.Posts = postList;
+            }
+            else
+            {
+                // ########### Full topic need everything   
+
+                // See if the user has subscribed to this topic or not
+                var isSubscribed = UserIsAuthenticated && (_topicNotificationService.GetByUserAndTopic(LoggedOnUser, topic).Any());
+
+                viewModel.StarterPost = starterPost;
+                viewModel.VotesUp = starterPost.Votes.Count(x => x.Amount > 0);
+                viewModel.VotesDown = starterPost.Votes.Count(x => x.Amount < 0);
+                viewModel.Answers = posts.TotalCount;
+                viewModel.Posts = posts;
+                viewModel.PageIndex = posts.PageIndex;
+                viewModel.TotalCount = posts.TotalCount;
+                viewModel.TotalPages = posts.TotalPages;
+                viewModel.IsSubscribed = isSubscribed;
+
+                // See if the topic has a poll, and if so see if this user viewing has already voted
+                if (topic.Poll != null)
+                {
+                    // There is a poll and a user
+                    // see if the user has voted or not
+                    var answers = _pollAnswerService.GetAllPollAnswersByPoll(topic.Poll);
+                    if (answers.Any())
+                    {
+                        var votes = answers.SelectMany(x => x.PollVotes).ToList();
+                        if (UserIsAuthenticated)
+                        {
+                            viewModel.UserHasAlreadyVotedInPoll = (votes.Count(x => x.User.Id == LoggedOnUser.Id) > 0);
+                        }
+                        viewModel.TotalVotesInPoll = votes.Count();
+                    }
+                }
+            }
+
+            return viewModel;
+        }
 
         private void NotifyNewTopics(Category cat)
         {
-                // *CHANGE THIS TO BE CALLED LIKE THE BADGES VIA AN AJAX Method* 
-                // TODO: This really needs to be an async call so it doesn't hang when a user creates  
-                // TODO: a topic if there are 1000's of users
+            // *CHANGE THIS TO BE CALLED LIKE THE BADGES VIA AN AJAX Method* 
+            // TODO: This really needs to be an async call so it doesn't hang when a user creates  
+            // TODO: a topic if there are 1000's of users
 
-                // Get all notifications for this category
-                var notifications = _categoryNotificationService.GetByCategory(cat).Select(x => x.User.Id).ToList();
+            // Get all notifications for this category
+            var notifications = _categoryNotificationService.GetByCategory(cat).Select(x => x.User.Id).ToList();
 
-                if(notifications.Any())
+            if (notifications.Any())
+            {
+                // remove the current user from the notification, don't want to notify yourself that you 
+                // have just made a topic!
+                notifications.Remove(LoggedOnUser.Id);
+
+                if (notifications.Count > 0)
                 {
-                    // remove the current user from the notification, don't want to notify yourself that you 
-                    // have just made a topic!
-                    notifications.Remove(LoggedOnUser.Id);
+                    // Now get all the users that need notifying
+                    var usersToNotify = MembershipService.GetUsersById(notifications);
 
-                    if(notifications.Count > 0)
+                    // Create the email
+                    var sb = new StringBuilder();
+                    sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Topic.Notification.NewTopics"), cat.Name));
+                    sb.AppendFormat("<p>{0}</p>", string.Concat(SettingsService.GetSettings().ForumUrl, cat.NiceUrl));
+
+                    // create the emails and only send them to people who have not had notifications disabled
+                    var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true).Select(user => new Email
                     {
-                        // Now get all the users that need notifying
-                        var usersToNotify = MembershipService.GetUsersById(notifications);
+                        Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
+                        EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
+                        EmailTo = user.Email,
+                        NameTo = user.UserName,
+                        Subject = string.Concat(LocalizationService.GetResourceString("Topic.Notification.Subject"), SettingsService.GetSettings().ForumName)
+                    }).ToList();
 
-                        // Create the email
-                        var sb = new StringBuilder();
-                        sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Topic.Notification.NewTopics"), cat.Name));
-                        sb.AppendFormat("<p>{0}</p>", string.Concat(SettingsService.GetSettings().ForumUrl, cat.NiceUrl));
-
-                        // create the emails and only send them to people who have not had notifications disabled
-                        var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true).Select(user => new Email
-                        {
-                            Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
-                            EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
-                            EmailTo = user.Email,
-                            NameTo = user.UserName,
-                            Subject = string.Concat(LocalizationService.GetResourceString("Topic.Notification.Subject"), SettingsService.GetSettings().ForumName)
-                        }).ToList();
-
-                        // and now pass the emails in to be sent
-                        _emailService.SendMail(emails); 
-                    }
+                    // and now pass the emails in to be sent
+                    _emailService.SendMail(emails);
                 }
+            }
         }
 
     }

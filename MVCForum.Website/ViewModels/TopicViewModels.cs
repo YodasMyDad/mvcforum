@@ -17,11 +17,29 @@ namespace MVCForum.Website.ViewModels
     {
         public Topic Topic { get; set; }
         public PermissionSet Permissions { get; set; }
+
+        // Post Stuff
         public Post StarterPost { get; set; }
         public List<Post> Posts { get; set; }
-        public bool ShowCategoryName { get; set; }
+        public int? PageIndex { get; set; }
+        public int? TotalCount { get; set; }
+        public int? TotalPages { get; set; }
+
+        // Subscription
+        public bool IsSubscribed { get; set; }
+
+        // Polls
+        public bool UserHasAlreadyVotedInPoll { get; set; }
+        public int TotalVotesInPoll { get; set; }
+
+        // Votes
         public int VotesUp { get; set; }
         public int VotesDown { get; set; }
+
+        // Quote
+        public string QuotedPost { get; set; }
+
+        // Stats
         public int Answers { get; set; }
         public int Views { get; set; }
     }
@@ -78,22 +96,6 @@ namespace MVCForum.Website.ViewModels
         public MembershipUser LoggedOnUser { get; set; }
     }
 
-    public class ShowTopicViewModel
-    {
-        public Post TopicStarterPost { get; set; }
-        public Topic Topic { get; set; }
-        public Category Category { get; set; }
-        public PagedList<Post> Posts { get; set; }
-        public PermissionSet Permissions { get; set; }
-        public int? PageIndex { get; set; }
-        public int? TotalCount { get; set; }
-        public MembershipUser User { get; set; }
-        public bool IsSubscribed { get; set; }
-        public bool UserHasAlreadyVotedInPoll { get; set; }
-        public int TotalVotesInPoll { get; set; }
-        public string PostContent { get; set; }
-    }
-
     public class GetMorePostsViewModel
     {
         public Guid TopicId { get; set; }
@@ -101,7 +103,7 @@ namespace MVCForum.Website.ViewModels
         public string Order { get; set; }
     }
 
-    public class ShowPollViewModel
+    public class PollViewModel
     {
         public Poll Poll { get; set; }
         public bool UserHasAlreadyVoted { get; set; }

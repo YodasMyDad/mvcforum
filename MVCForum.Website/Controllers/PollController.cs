@@ -57,7 +57,7 @@ namespace MVCForum.Website.Controllers
                     var poll = _pollService.Get(updatePollViewModel.PollId);
                     var votes = poll.PollAnswers.SelectMany(x => x.PollVotes).ToList();
                     var alreadyVoted = (votes.Count(x => x.User.Id == LoggedOnUser.Id) > 0);
-                    var viewModel = new ShowPollViewModel { Poll = poll, TotalVotesInPoll = votes.Count(), UserHasAlreadyVoted = alreadyVoted };
+                    var viewModel = new PollViewModel { Poll = poll, TotalVotesInPoll = votes.Count(), UserHasAlreadyVoted = alreadyVoted };
 
                     // Commit the transaction
                     unitOfWork.Commit();

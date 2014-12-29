@@ -138,6 +138,11 @@ footer .licenceblock { font-weight: 400;font-size: 14px;padding:14px 0 0 0;margi
 .active-members ul { padding: 0;margin: 0;}
 .active-members ul li {padding: 0 6px 4px 0;margin: 0;list-style: none;}
 
+/*--- Breadcrumb ---*/
+.breadcrumb { background: none;}
+section.content-strip ul.breadcrumb li {font-size: 12px;color: #95a5a6;}
+section.content-strip ul.breadcrumb li a, section.content-strip ul.breadcrumb li a:visited {padding: 9px 6px 11px 6px;font-size: 12px;color: #95a5a6;}
+
 /*============== MEDIA QUERIES OVERIDES ==============*/
 
 @media (max-width: 1105px) {

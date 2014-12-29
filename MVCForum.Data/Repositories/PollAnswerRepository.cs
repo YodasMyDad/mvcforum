@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Entity;
 using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
@@ -18,12 +19,17 @@ namespace MVCForum.Data.Repositories
 
         public List<PollAnswer> GetAllPollAnswers()
         {
-            return _context.PollAnswer.ToList();
+            return _context.PollAnswer
+                    .Include(x => x.Poll).ToList();
         }
 
         public List<PollAnswer> GetAllPollAnswersByPoll(Poll poll)
         {
-            return _context.PollAnswer.Where(x => x.Poll.Id == poll.Id).ToList();
+            var answers = _context.PollAnswer
+                    .Include(x => x.Poll)
+                    .AsNoTracking()
+                    .Where(x => x.Poll.Id == poll.Id).ToList();
+            return answers;
         }
 
         public PollAnswer Add(PollAnswer pollAnswer)
