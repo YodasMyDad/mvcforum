@@ -121,7 +121,6 @@ namespace MVCForum.Website.Controllers
                     {
                         Permissions = permissions,
                         Post = newPost,
-                        User = LoggedOnUser,
                         ParentTopic = topic
                     };
 

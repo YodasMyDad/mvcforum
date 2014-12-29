@@ -7,7 +7,7 @@
 @{
     // SEO Stuff
     ViewBag.Title = Html.Raw(AppHelpers.CreatePageTitle(Model.Topic, Html.LanguageString("Topic.TitleFallBack")));
-    ViewBag.MetaDesc = StringUtils.ReturnAmountWordsFromString(string.Concat(StringUtils.StripHtmlFromString(Model.StarterPost.PostContent), "..."), 20);
+    ViewBag.MetaDesc = StringUtils.ReturnAmountWordsFromString(string.Concat(StringUtils.StripHtmlFromString(Model.StarterPost.Post.PostContent), "..."), 20);
     var totalCount = Convert.ToInt32(Model.TotalCount);
     //ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
     if (Request.QueryString.AllKeys.Any())
@@ -107,8 +107,7 @@
 
 <div class="topicstarterpost">
     @{
-        var topicStarterPostModel = new PostViewModel { Permissions = Model.Permissions, Post = Model.StarterPost, User = Html.CurrentMember(), ParentTopic = Model.Topic };
-        Html.RenderPartial("_Post", topicStarterPostModel);
+        Html.RenderPartial("_Post", Model.StarterPost);
     }
     <div class="row topicstarterpostbeginpostsheading">
         <div class="col-md-8 topicstarterpostcomments">
@@ -130,8 +129,7 @@
 
 @foreach (var post in Model.Posts)
 {
-    var viewModel = new PostViewModel { Permissions = Model.Permissions, Post = post, User = Html.CurrentMember(), ParentTopic = Model.Topic };
-    Html.RenderPartial("_Post", viewModel);
+    Html.RenderPartial("_Post", post);
 }
 
 @if (Model.TotalPages > 1)

@@ -2,10 +2,10 @@
 @model MVCForum.Website.ViewModels.PostViewModel
 @{
     var postId = Model.Post.Id;
-    var loggedOnUserId = Model.User != null ? Model.User.Id : Guid.Empty;
-    var allowedToVote = (Model.User != null && loggedOnUserId != Model.Post.User.Id &&
-                         Model.User.TotalPoints > Html.Settings().PointsAllowedToVoteAmount &&
-                         Model.Post.Votes.All(x => x.User.Id != Model.User.Id));
+    var loggedOnUserId = Html.CurrentMember() != null ? Html.CurrentMember().Id : Guid.Empty;
+    var allowedToVote = (Html.CurrentMember() != null && loggedOnUserId != Model.Post.User.Id &&
+                         Html.CurrentMember().TotalPoints > Html.Settings().PointsAllowedToVoteAmount &&
+                         Model.Post.Votes.All(x => x.User.Id != Html.CurrentMember().Id));
     var showExtendedVotes = (Model.Post.Votes != null && Model.Post.Votes.Any()) ? "expandvotes" : "";
     var postCount = Model.Post.User.Posts.Count;
     var isAdminOrMod = User.IsInRole(AppConstants.AdminRoleName) || User.IsInRole(AppConstants.ModeratorRoleName);
@@ -125,7 +125,7 @@
                 }*@
         </div>
         <div class="postadminui">
-            @if (Model.User != null)
+            @if (Html.CurrentMember() != null)
             {
                 <div class="userpostadmin">
                     @if (Model.Post.User.Id != loggedOnUserId && loggedOnUserId != Guid.Empty && Html.Settings().EnableSpamReporting)

@@ -19,8 +19,8 @@ namespace MVCForum.Website.ViewModels
         public PermissionSet Permissions { get; set; }
 
         // Post Stuff
-        public Post StarterPost { get; set; }
-        public List<Post> Posts { get; set; }
+        public PostViewModel StarterPost { get; set; }
+        public List<PostViewModel> Posts { get; set; }
         public int? PageIndex { get; set; }
         public int? TotalCount { get; set; }
         public int? TotalPages { get; set; }

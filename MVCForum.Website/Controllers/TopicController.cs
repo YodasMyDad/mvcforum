@@ -454,13 +454,13 @@ namespace MVCForum.Website.Controllers
             var orderBy = !string.IsNullOrEmpty(getMorePostsViewModel.Order) ?
                                       EnumUtils.ReturnEnumValueFromString<PostOrderBy>(getMorePostsViewModel.Order) : PostOrderBy.Standard;
 
+            var posts = _postService.GetPagedPostsByTopic(getMorePostsViewModel.PageIndex, SettingsService.GetSettings().PostsPerPage, int.MaxValue, topic.Id, orderBy);
 
             var viewModel = new ShowMorePostsViewModel
                 {
-                    Posts = _postService.GetPagedPostsByTopic(getMorePostsViewModel.PageIndex, SettingsService.GetSettings().PostsPerPage, int.MaxValue, topic.Id, orderBy),
+                    Posts = CreatePostViewModels(posts, permissions, topic),
                     Topic = topic,
-                    Permissions = permissions,
-                    User = LoggedOnUser
+                    Permissions = permissions
                 };
 
             return PartialView(viewModel);
@@ -604,6 +604,26 @@ namespace MVCForum.Website.Controllers
             return viewModels;
         }
 
+        private List<PostViewModel> CreatePostViewModels(List<Post> posts, PermissionSet permission, Topic topic)
+        {
+            var viewModels = new List<PostViewModel>();
+            foreach (var post in posts)
+            {
+                viewModels.Add(CreatePostViewModel(post, permission, topic));
+            }
+            return viewModels;
+        }
+
+        private static PostViewModel CreatePostViewModel(Post post, PermissionSet permission, Topic topic)
+        {
+            return new PostViewModel
+            {
+                Permissions = permission, 
+                Post = post, 
+                ParentTopic = topic
+            };
+        }
+
         private TopicViewModel CreateTopicViewModel(Topic topic, PermissionSet permission, PagedList<Post> posts, Post starterPost)
         {
 
@@ -623,11 +643,11 @@ namespace MVCForum.Website.Controllers
                 {
                     starterPost = postList.FirstOrDefault(x => x.IsTopicStarter);
                 }
-                viewModel.StarterPost = starterPost;
+                viewModel.StarterPost = CreatePostViewModel(starterPost, permission, topic);
                 viewModel.VotesUp = starterPost.Votes.Count(x => x.Amount > 0);
                 viewModel.VotesDown = starterPost.Votes.Count(x => x.Amount < 0);
                 viewModel.Answers = (postList.Count() - 1);
-                viewModel.Posts = postList;
+                viewModel.Posts = CreatePostViewModels(postList, permission, topic);
             }
             else
             {
@@ -636,11 +656,11 @@ namespace MVCForum.Website.Controllers
                 // See if the user has subscribed to this topic or not
                 var isSubscribed = UserIsAuthenticated && (_topicNotificationService.GetByUserAndTopic(LoggedOnUser, topic).Any());
 
-                viewModel.StarterPost = starterPost;
+                viewModel.StarterPost = CreatePostViewModel(starterPost, permission, topic);
                 viewModel.VotesUp = starterPost.Votes.Count(x => x.Amount > 0);
                 viewModel.VotesDown = starterPost.Votes.Count(x => x.Amount < 0);
                 viewModel.Answers = posts.TotalCount;
-                viewModel.Posts = posts;
+                viewModel.Posts = CreatePostViewModels(posts, permission, topic);
                 viewModel.PageIndex = posts.PageIndex;
                 viewModel.TotalCount = posts.TotalCount;
                 viewModel.TotalPages = posts.TotalPages;

@@ -18,9 +18,11 @@ namespace MVCForum.Website.ViewModels
 
     public class ShowMorePostsViewModel
     {
-        public PagedList<Post> Posts { get; set; }
+        public List<PostViewModel> Posts { get; set; }
+        public int? PageIndex { get; set; }
+        public int? TotalCount { get; set; }
+        public int? TotalPages { get; set; }
         public PermissionSet Permissions { get; set; }
-        public MembershipUser User { get; set; }
         public Topic Topic { get; set; }
     }
 
@@ -29,7 +31,6 @@ namespace MVCForum.Website.ViewModels
         public Post Post { get; set; }
         public Topic ParentTopic { get; set; }
         public PermissionSet Permissions { get; set; }
-        public MembershipUser User { get; set; }
     }
 
     public class EditPostViewModel

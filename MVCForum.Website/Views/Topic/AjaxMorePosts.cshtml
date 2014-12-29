@@ -3,6 +3,5 @@
 
 @foreach (var post in Model.Posts)
 {
-    var viewModel = new ViewPostViewModel { Permissions = Model.Permissions, Post = post, User = Model.User, ParentTopic = Model.Topic };
-    Html.RenderPartial("_Post", viewModel);
+    Html.RenderPartial("_Post", post);
 }
