@@ -37,7 +37,7 @@ namespace MVCForum.Website.Controllers
                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = LocalizationService.GetResourceString("Errors.NoPermission"),
-                    MessageType = GenericMessages.error
+                    MessageType = GenericMessages.danger
                 };                
                 return RedirectToAction("Index", "Home");
             }
@@ -288,7 +288,7 @@ namespace MVCForum.Website.Controllers
             TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
             {
                 Message = errorMessage,
-                MessageType = GenericMessages.error
+                MessageType = GenericMessages.danger
             };
             // Not allowed in here so
             return RedirectToAction("Index", "PrivateMessage");

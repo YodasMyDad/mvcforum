@@ -81,7 +81,7 @@ namespace MVCForum.Website.Controllers
             TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
             {
                 Message = errorMessage,
-                MessageType = GenericMessages.error
+                MessageType = GenericMessages.danger
             };
             // Not allowed in here so
             return RedirectToAction("Index", "Home");

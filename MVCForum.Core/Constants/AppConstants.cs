@@ -20,6 +20,9 @@
         // View Bag Constants
         public const string MessageViewBagName = "Message";
         public const string DefaultCategoryViewBagName = "DefaultCategory";
+        public const string GlobalClass = "GlobalClass";
+        public const string CurrentAction = "CurrentAction";
+        public const string CurrentController = "CurrentController";
         
         // Main admin role [This should never be changed]
         public const string AdminRoleName = "Admin";

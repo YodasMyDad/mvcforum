@@ -56,7 +56,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
             {
                 Message = message,
-                MessageType = GenericMessages.error
+                MessageType = GenericMessages.danger
             };
         }
 

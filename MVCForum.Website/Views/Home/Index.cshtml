@@ -21,7 +21,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <ul>
-                        <li><a href="@Url.Action("Index", "Home")" class="@(ViewBag.CurrentController == "home" && ViewBag.CurrentAction == "index" ? "active" : "")">Latest</a></li>
+                        <li><a href="@Url.Action("Index", "Home")" class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "index" ? "active" : "")">Latest</a></li>
                         <li><a href="#">Following</a></li>
                         <li><a href="#">Posted In</a></li>
                         <li><a href="#">Favourites</a></li>

@@ -72,7 +72,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = string.Format("Delete failed: {0}", ex.Message),
-                        MessageType = GenericMessages.error
+                        MessageType = GenericMessages.danger
                     };
                 }
 

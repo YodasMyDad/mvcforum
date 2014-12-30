@@ -32,7 +32,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = err,
-                    MessageType = GenericMessages.error
+                    MessageType = GenericMessages.danger
                 };
 
                 LoggingService.Error(err);

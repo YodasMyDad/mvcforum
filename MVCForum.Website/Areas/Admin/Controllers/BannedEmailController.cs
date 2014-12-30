@@ -86,7 +86,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                         {
                             Message = "Please add an email address",
-                            MessageType = GenericMessages.error
+                            MessageType = GenericMessages.danger
                         };
                     }
 
@@ -98,7 +98,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
-                        MessageType = GenericMessages.error
+                        MessageType = GenericMessages.danger
                     }; 
                 }
             }
@@ -134,7 +134,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     ViewBag.Message = new GenericMessageViewModel
                     {
                         Message = string.Format("Delete failed: {0}", ex.Message),
-                        MessageType = GenericMessages.error
+                        MessageType = GenericMessages.danger
                     };
                 }
 

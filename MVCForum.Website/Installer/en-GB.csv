@@ -292,5 +292,14 @@ Badge.Photogenic.Name,Photogenic
 Badge.Photogenic.Desc,Little things like uploading a profile picture make the community a better place. Thanks!
 Site.MvcForum,MvcForum
 Layout.Nav.Utilities,Utilities
-Side.Search.SearchFor,Search for...,
+Side.Search.SearchFor,Search for...
 Side.Search.Go,Go
+Topic.IsSticky,Topic Is Sticky
+Topic.IsSolved,Topic Is Solved
+Topic.Category,Category
+Topic.IsPoll,Poll
+Topic.LastPost,Last Post
+Topics.HotTopics,Hot Topics
+Notifications.NoActiveMembers,No one online at the moment
+Post.LikedBy,Liked by
+Post.Browse,Browse...

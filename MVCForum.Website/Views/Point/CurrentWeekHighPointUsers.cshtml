@@ -1,6 +1,4 @@
-﻿@using MVCForum.Domain.Constants
-@using System.Linq;
-@using MVCForum.Utilities
+﻿@using System.Linq;
 @using MVCForum.Website
 @model MVCForum.Website.ViewModels.HighEarnersPointViewModel
 
@@ -18,7 +16,7 @@
                     <a href="@dict.Key.NiceUrl">@dict.Key.UserName</a>
                 </span>
                 <span class="earneramount">
-                    <span class="glyphicon glyphicon-heart-empty" aria-hidden="true"></span> @dict.Value
+                     @dict.Value <span class="glyphicon glyphicon-sort" aria-hidden="true"></span>
                 </span>
             </li>
         }

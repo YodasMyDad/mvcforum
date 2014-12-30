@@ -1,7 +1,6 @@
 ﻿@using MVCForum.Utilities
 @using MVCForum.Website.ViewModels
 @model ViewCategoryViewModel
-           
 @{
     ViewBag.Title = Html.Raw(Model.Category.PageTitle ?? Model.Category.Name);
     ViewBag.MetaDesc = Model.Category.MetaDescription ?? StringUtils.StripHtmlFromString(Model.Category.Description);

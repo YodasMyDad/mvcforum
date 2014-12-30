@@ -115,7 +115,7 @@ namespace MVCForum.Data.Repositories
         {
             // We might only want to display the top 100
             // but there might not be 100 topics
-            var total = _context.Post.Count(x => x.Topic.Id == topicId && x.Pending != true);
+            var total = _context.Post.Count(x => x.Topic.Id == topicId && !x.IsTopicStarter && x.Pending != true);
             if (amountToTake < total)
             {
                 total = amountToTake;

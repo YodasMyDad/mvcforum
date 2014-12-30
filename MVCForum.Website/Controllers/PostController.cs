@@ -12,6 +12,7 @@ using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
+using MVCForum.Website.ViewModels.Mapping;
 using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
 
 namespace MVCForum.Website.Controllers
@@ -34,10 +35,10 @@ namespace MVCForum.Website.Controllers
         private MembershipUser LoggedOnUser;
         private MembershipRole UsersRole;
 
-        public PostController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
-            ILocalizationService localizationService, IRoleService roleService, ITopicService topicService, IPostService postService, 
-            ISettingsService settingsService, ICategoryService categoryService, ITopicTagService topicTagService, 
-            ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, IPollAnswerService pollAnswerService, 
+        public PostController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
+            ILocalizationService localizationService, IRoleService roleService, ITopicService topicService, IPostService postService,
+            ISettingsService settingsService, ICategoryService categoryService, ITopicTagService topicTagService,
+            ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, IPollAnswerService pollAnswerService,
             IPollService pollService, IBannedWordService bannedWordService, IMembershipUserPointsService membershipUserPointsService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
@@ -66,7 +67,7 @@ namespace MVCForum.Website.Controllers
             Topic topic;
 
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-            {   
+            {
                 // Quick check to see if user is locked out, when logged in
                 if (LoggedOnUser.IsLockedOut | !LoggedOnUser.IsApproved)
                 {
@@ -82,7 +83,7 @@ namespace MVCForum.Website.Controllers
 
                 newPost = _postService.AddNewPost(postContent, topic, LoggedOnUser, out permissions);
 
-                if(!akismetHelper.IsSpam(newPost))
+                if (!akismetHelper.IsSpam(newPost))
                 {
                     try
                     {
@@ -93,7 +94,7 @@ namespace MVCForum.Website.Controllers
                         unitOfWork.Rollback();
                         LoggingService.Error(ex);
                         throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
-                    } 
+                    }
                 }
                 else
                 {
@@ -109,28 +110,23 @@ namespace MVCForum.Website.Controllers
             {
                 return PartialView("_PostModeration");
             }
-            else
+
+
+            // All good send the notifications and send the post back
+            using (UnitOfWorkManager.NewUnitOfWork())
             {
 
-                // All good send the notifications and send the post back
-                using (UnitOfWorkManager.NewUnitOfWork())
-                {
+                // Create the view model
+                var viewModel = ViewModelMapping.CreatePostViewModel(newPost, new List<Vote>(), permissions, topic, LoggedOnUser, SettingsService.GetSettings());
 
-                    // Create the view model
-                    var viewModel = new PostViewModel
-                    {
-                        Permissions = permissions,
-                        Post = newPost,
-                        ParentTopic = topic
-                    };
+                // Success send any notifications
+                NotifyNewTopics(topic);
 
-                    // Success send any notifications
-                    NotifyNewTopics(topic);
-
-                    return PartialView("_Post", viewModel);
-                }   
+                // Return view
+                return PartialView("_Post", viewModel);
             }
         }
+
 
         public ActionResult EditPost(Guid id)
         {
@@ -164,7 +160,7 @@ namespace MVCForum.Website.Controllers
                         }
                         viewModel.Name = topic.Name;
                         viewModel.Categories = _categoryService.GetAllowedCategories(UsersRole).ToList();
-                        if(topic.Poll != null && topic.Poll.PollAnswers.Any())
+                        if (topic.Poll != null && topic.Poll.PollAnswers.Any())
                         {
                             // Has a poll so add it to the view model
                             viewModel.PollAnswers = topic.Poll.PollAnswers;
@@ -259,7 +255,7 @@ namespace MVCForum.Website.Controllers
                                 };
                                 _pollAnswerService.Add(npa);
                                 topic.Poll.PollAnswers.Add(npa);
-                            } 
+                            }
                         }
                         else
                         {
@@ -293,7 +289,7 @@ namespace MVCForum.Website.Controllers
 
                         // Tags
                         topic.Tags.Clear();
-                        if(!string.IsNullOrEmpty(editPostViewModel.Tags))
+                        if (!string.IsNullOrEmpty(editPostViewModel.Tags))
                         {
                             _topicTagService.Add(editPostViewModel.Tags.ToLower(), topic);
                         }
@@ -318,7 +314,7 @@ namespace MVCForum.Website.Controllers
                     }
                 }
 
-                return NoPermission(topic); 
+                return NoPermission(topic);
             }
         }
 
@@ -369,7 +365,7 @@ namespace MVCForum.Website.Controllers
                         LoggingService.Error(ex);
                         throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }
-                }            
+                }
             }
 
             // Deleted successfully
@@ -400,7 +396,7 @@ namespace MVCForum.Website.Controllers
             TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
             {
                 Message = LocalizationService.GetResourceString("Errors.NoPermission"),
-                MessageType = GenericMessages.error
+                MessageType = GenericMessages.danger
             };
             return Redirect(topic.NiceUrl);
         }
@@ -450,7 +446,7 @@ namespace MVCForum.Website.Controllers
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
                     var post = _postService.Get(id);
-                    return View(new ReportPostViewModel { PostId = post.Id, PostCreatorUsername = post.User.UserName});
+                    return View(new ReportPostViewModel { PostId = post.Id, PostCreatorUsername = post.User.UserName });
                 }
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));

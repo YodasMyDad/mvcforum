@@ -29,8 +29,8 @@ namespace MVCForum.Website.Controllers
         private readonly IEmailService _emailService;
         private readonly IPollService _pollService;
         private readonly IPollAnswerService _pollAnswerService;
-        private readonly IPollVoteService _pollVoteService;
         private readonly IBannedWordService _bannedWordService;
+        private readonly IVoteService _voteService;
 
         private readonly MembershipUser LoggedOnUser;
         private readonly MembershipRole UsersRole;
@@ -38,7 +38,7 @@ namespace MVCForum.Website.Controllers
         public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
             ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, IPollService pollService,
-            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IPollVoteService pollVoteService)
+            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
@@ -52,7 +52,7 @@ namespace MVCForum.Website.Controllers
             _pollService = pollService;
             _pollAnswerService = pollAnswerService;
             _bannedWordService = bannedWordService;
-            _pollVoteService = pollVoteService;
+            _voteService = voteService;
 
             LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
@@ -309,7 +309,7 @@ namespace MVCForum.Website.Controllers
                         }
                     }
                 }
-
+                
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
                     if (successfullyCreated)
@@ -394,7 +394,7 @@ namespace MVCForum.Website.Controllers
                         return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
                     }
 
-                    var viewModel = ViewModelMapping.CreateTopicViewModel(topic, permissions, posts.ToList(), starterPost, posts.PageIndex, posts.TotalCount, posts.TotalPages, LoggedOnUser, _topicNotificationService, _pollAnswerService, true);
+                    var viewModel = ViewModelMapping.CreateTopicViewModel(topic, permissions, posts.ToList(), starterPost, posts.PageIndex, posts.TotalCount, posts.TotalPages, LoggedOnUser, _topicNotificationService, _pollAnswerService, _voteService, SettingsService.GetSettings(), true);
 
                     // If there is a quote querystring
                     var quote = Request["quote"];
@@ -456,10 +456,10 @@ namespace MVCForum.Website.Controllers
                                       EnumUtils.ReturnEnumValueFromString<PostOrderBy>(getMorePostsViewModel.Order) : PostOrderBy.Standard;
 
             var posts = _postService.GetPagedPostsByTopic(getMorePostsViewModel.PageIndex, SettingsService.GetSettings().PostsPerPage, int.MaxValue, topic.Id, orderBy);
-
+            var votes = _voteService.GetVotesByPosts(posts.Select(x => x.Id).ToList());
             var viewModel = new ShowMorePostsViewModel
                 {
-                    Posts = ViewModelMapping.CreatePostViewModels(posts, permissions, topic),
+                    Posts = ViewModelMapping.CreatePostViewModels(posts, votes, permissions, topic, LoggedOnUser, SettingsService.GetSettings()),
                     Topic = topic,
                     Permissions = permissions
                 };
@@ -481,7 +481,7 @@ namespace MVCForum.Website.Controllers
                                                            tag);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService);
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService, _voteService, SettingsService.GetSettings());
 
                 // create the view model
                 var viewModel = new TagTopicsViewModel
@@ -535,7 +535,7 @@ namespace MVCForum.Website.Controllers
                                                            SiteConstants.ActiveTopicsListSize);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService);
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService, _voteService, SettingsService.GetSettings());
 
                 // create the view model
                 var viewModel = new ActiveTopicsViewModel
@@ -564,7 +564,7 @@ namespace MVCForum.Website.Controllers
                 var topics = _topicService.GetPopularTopics(from, to, (int)amountToShow);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService);
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService, _voteService, SettingsService.GetSettings());
 
                 // create the view model
                 var viewModel = new HotTopicsViewModel

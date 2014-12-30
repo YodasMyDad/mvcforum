@@ -100,13 +100,13 @@ namespace MVCForum.Website.Controllers
                 if (!installerResult.Successful)
                 {
                     // There was an error creating the database
-                    return RedirectToCreateDb(installerResult, GenericMessages.error);
+                    return RedirectToCreateDb(installerResult, GenericMessages.danger);
                 }
             }
             else
             {
                 // There was an error creating the database
-                return RedirectToCreateDb(installerResult, GenericMessages.error);
+                return RedirectToCreateDb(installerResult, GenericMessages.danger);
             }
 
 
@@ -130,7 +130,7 @@ namespace MVCForum.Website.Controllers
             }
 
             // Add to temp data and show
-            return RedirectToCreateDb(installerResult, GenericMessages.error);
+            return RedirectToCreateDb(installerResult, GenericMessages.danger);
         }
 
         public ActionResult UpgradeDb()
@@ -161,7 +161,7 @@ namespace MVCForum.Website.Controllers
                 if (!installerResult.Successful)
                 {
                     // Was an error creating the tables
-                    return RedirectToCreateDb(installerResult, GenericMessages.error);
+                    return RedirectToCreateDb(installerResult, GenericMessages.danger);
                 }
             }
 
@@ -183,7 +183,7 @@ namespace MVCForum.Website.Controllers
                 return RedirectToAction("Complete");
             }
 
-            return RedirectToCreateDb(installerResult, GenericMessages.error);
+            return RedirectToCreateDb(installerResult, GenericMessages.danger);
         }
 
         /// <summary>
@@ -522,7 +522,7 @@ namespace MVCForum.Website.Controllers
                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = installerResult.OnScreenMessage,
-                    MessageType = GenericMessages.error
+                    MessageType = GenericMessages.danger
                 };
             }
         } 

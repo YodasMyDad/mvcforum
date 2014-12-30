@@ -52,5 +52,13 @@ namespace MVCForum.Data.Repositories
         {
             return _context.Vote.Where(x => x.VotedByMembershipUser.Id == membershipId).ToList();
         }
+
+        public List<Vote> GetVotesByPosts(List<Guid> postIds)
+        {
+            return _context.Vote
+                        .Include(x => x.User)
+                        .Include(x => x.Post)
+                        .Where(x => postIds.Contains(x.Post.Id)).ToList();
+        }
     }
 }

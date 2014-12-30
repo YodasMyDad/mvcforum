@@ -26,6 +26,11 @@ namespace MVCForum.Services
             return _voteRepository.GetAllVotesByUser(membershipId);
         }
 
+        public List<Vote> GetVotesByPosts(List<Guid> postIds)
+        {
+            return _voteRepository.GetVotesByPosts(postIds);
+        }
+
         /// <summary>
         /// Add a new vote
         /// </summary>

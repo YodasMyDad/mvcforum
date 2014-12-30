@@ -200,7 +200,9 @@ namespace MVCForum.Website.ViewModels.Mapping
                                                                 MembershipRole usersRole,
                                                                 MembershipUser loggedOnUser,
                                                                 ITopicNotificationService topicNotificationService,
-                                                                IPollAnswerService pollAnswerService)
+                                                                IPollAnswerService pollAnswerService,
+                                                                IVoteService voteService,
+                                                                Settings settings)
         {
             // Get Permissions
             var permissions = GetPermissionsForTopics(topics, roleService, usersRole);
@@ -208,7 +210,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             foreach (var topic in topics)
             {
                 var permission = permissions[topic.Category];
-                viewModels.Add(CreateTopicViewModel(topic, permission, topic.Posts.ToList(), null, null, null, null, loggedOnUser, topicNotificationService, pollAnswerService));
+                viewModels.Add(CreateTopicViewModel(topic, permission, topic.Posts.ToList(), null, null, null, null, loggedOnUser, topicNotificationService, pollAnswerService, voteService, settings));
             }
             return viewModels;
         }
@@ -223,6 +225,8 @@ namespace MVCForum.Website.ViewModels.Mapping
                                                     MembershipUser loggedOnUser,
                                                     ITopicNotificationService topicNotificationService,
                                                     IPollAnswerService pollAnswerService,
+                                                    IVoteService voteService,
+                                                    Settings settings,
                                                     bool getExtendedData = false)
         {
             var userIsAuthenticated = loggedOnUser != null;
@@ -236,16 +240,24 @@ namespace MVCForum.Website.ViewModels.Mapping
                 TotalCount = totalCount,
                 TotalPages = totalPages
             };
-
+          
             if (starterPost == null)
             {
                 starterPost = posts.FirstOrDefault(x => x.IsTopicStarter);
             }
-            viewModel.StarterPost = CreatePostViewModel(starterPost, permission, topic);
-            viewModel.VotesUp = starterPost.Votes.Count(x => x.Amount > 0);
-            viewModel.VotesDown = starterPost.Votes.Count(x => x.Amount < 0);
+
+            // Get votes for all posts
+            var postIds = posts.Select(x => x.Id).ToList();
+            postIds.Add(starterPost.Id);
+            var votes = voteService.GetVotesByPosts(postIds);  
+
+            // Map the votes
+            var startPostVotes = votes.Where(x => x.Post.Id == starterPost.Id).ToList();
+            viewModel.StarterPost = CreatePostViewModel(starterPost, startPostVotes, permission, topic, loggedOnUser, settings);
+            viewModel.VotesUp = startPostVotes.Count(x => x.Amount > 0);
+            viewModel.VotesDown = startPostVotes.Count(x => x.Amount < 0);
             viewModel.Answers = totalCount != null ? (int)totalCount : posts.Count() - 1;
-            viewModel.Posts = CreatePostViewModels(posts, permission, topic);
+            viewModel.Posts = CreatePostViewModels(posts, votes, permission, topic, loggedOnUser, settings);
 
             // ########### Full topic need everything   
 
@@ -270,12 +282,12 @@ namespace MVCForum.Website.ViewModels.Mapping
                     var answers = pollAnswerService.GetAllPollAnswersByPoll(topic.Poll);
                     if (answers.Any())
                     {
-                        var votes = answers.SelectMany(x => x.PollVotes).ToList();
+                        var pollvotes = answers.SelectMany(x => x.PollVotes).ToList();
                         if (userIsAuthenticated)
                         {
-                            viewModel.Poll.UserHasAlreadyVoted = (votes.Count(x => x.User.Id == loggedOnUser.Id) > 0);
+                            viewModel.Poll.UserHasAlreadyVoted = (pollvotes.Count(x => x.User.Id == loggedOnUser.Id) > 0);
                         }
-                        viewModel.Poll.TotalVotesInPoll = votes.Count();
+                        viewModel.Poll.TotalVotesInPoll = pollvotes.Count();
                     }
                 }
             }
@@ -285,21 +297,31 @@ namespace MVCForum.Website.ViewModels.Mapping
         #endregion
 
         #region Post
-        public static PostViewModel CreatePostViewModel(Post post, PermissionSet permission, Topic topic)
+        public static PostViewModel CreatePostViewModel(Post post, List<Vote> votes, PermissionSet permission, Topic topic, MembershipUser loggedOnUser, Settings settings)
         {
+
+            var allowedToVote = (loggedOnUser != null && loggedOnUser.Id != post.User.Id &&
+                                 loggedOnUser.TotalPoints > settings.PointsAllowedToVoteAmount && 
+                                 votes.All(x => x.User.Id != loggedOnUser.Id));
+
             return new PostViewModel
             {
                 Permissions = permission,
+                Votes = votes,
                 Post = post,
-                ParentTopic = topic
+                ParentTopic = topic,
+                AllowedToVote = allowedToVote
             };
         }
-        public static List<PostViewModel> CreatePostViewModels(IEnumerable<Post> posts, PermissionSet permission, Topic topic)
+        public static List<PostViewModel> CreatePostViewModels(IEnumerable<Post> posts, List<Vote> votes, PermissionSet permission, Topic topic, MembershipUser loggedOnUser, Settings settings)
         {
             var viewModels = new List<PostViewModel>();
+            var groupedVotes = votes.ToLookup(x => x.Post.Id);
             foreach (var post in posts)
             {
-                viewModels.Add(CreatePostViewModel(post, permission, topic));
+                var id = post.Id;
+                var postVotes = (groupedVotes.Contains(id) ? groupedVotes[id].ToList() : new List<Vote>());
+                viewModels.Add(CreatePostViewModel(post, postVotes, permission, topic, loggedOnUser, settings));
             }
             return viewModels;
         }

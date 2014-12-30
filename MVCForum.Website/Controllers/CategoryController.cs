@@ -18,6 +18,7 @@ namespace MVCForum.Website.Controllers
         private readonly ITopicService _topicService;
         private readonly IPollAnswerService _pollAnswerService;
         private readonly ITopicNotificationService _topicNotificationService;
+        private readonly IVoteService _voteService;
 
         private MembershipUser LoggedOnUser;
         private MembershipRole UsersRole;
@@ -39,7 +40,7 @@ namespace MVCForum.Website.Controllers
             ILocalizationService localizationService,
             IRoleService roleService,
             ICategoryService categoryService,
-            ISettingsService settingsService, ITopicService topicService, ICategoryNotificationService categoryNotificationService, IPollAnswerService pollAnswerService, ITopicNotificationService topicNotificationService)
+            ISettingsService settingsService, ITopicService topicService, ICategoryNotificationService categoryNotificationService, IPollAnswerService pollAnswerService, ITopicNotificationService topicNotificationService, IVoteService voteService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _categoryService = categoryService;
@@ -47,6 +48,7 @@ namespace MVCForum.Website.Controllers
             _categoryNotificationService = categoryNotificationService;
             _pollAnswerService = pollAnswerService;
             _topicNotificationService = topicNotificationService;
+            _voteService = voteService;
 
             LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
@@ -130,7 +132,7 @@ namespace MVCForum.Website.Controllers
                                                                         SettingsService.GetSettings().TopicsPerPage,
                                                                         int.MaxValue, category.Category.Id);
 
-                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService);
+                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService, _voteService, SettingsService.GetSettings());
 
                     // Create the main view model for the category
                     var viewModel = new ViewCategoryViewModel

@@ -1107,7 +1107,7 @@ namespace MVCForum.Website.Controllers
                             TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                             {
                                 Message = uploadResult.ErrorMessage,
-                                MessageType = GenericMessages.error
+                                MessageType = GenericMessages.danger
                             };
                             return View(userModel);
                         }

@@ -218,7 +218,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                         {
                             Message = "Category Update Failed",
-                            MessageType = GenericMessages.error
+                            MessageType = GenericMessages.danger
                         };
                     }
                 }
@@ -353,7 +353,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = "Error syncing paths",
-                        MessageType = GenericMessages.error
+                        MessageType = GenericMessages.danger
                     };                    
                 }
 

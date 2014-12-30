@@ -261,7 +261,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     ViewBag.Message = new GenericMessageViewModel
                     {
                         Message = string.Format("Delete failed: {0}", ex.Message),
-                        MessageType = GenericMessages.error
+                        MessageType = GenericMessages.danger
                     };
                 }
                 return RedirectToAction("Manage", new {p, search});
@@ -417,7 +417,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                         {
                             Message = "Error trying to delete posts and topics",
-                            MessageType = GenericMessages.error
+                            MessageType = GenericMessages.danger
                         };
                     }
                 }
@@ -462,7 +462,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                         {
                             Message = "Error trying to ban user",
-                            MessageType = GenericMessages.error
+                            MessageType = GenericMessages.danger
                         };
                     }   
                 }
@@ -496,7 +496,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                         {
                             Message = "Error trying to un ban user",
-                            MessageType = GenericMessages.error
+                            MessageType = GenericMessages.danger
                         };
                     }
                 }

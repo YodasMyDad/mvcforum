@@ -85,7 +85,7 @@ namespace MVCForum.Website.Controllers
                                         TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                                         {
                                             Message = uploadResult.ErrorMessage,
-                                            MessageType = GenericMessages.error
+                                            MessageType = GenericMessages.danger
                                         };
                                         return Redirect(topic.NiceUrl);
                                     }
@@ -121,7 +121,7 @@ namespace MVCForum.Website.Controllers
                             TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                             {
                                 Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
-                                MessageType = GenericMessages.error
+                                MessageType = GenericMessages.danger
                             };
                             return topic != null ? Redirect(topic.NiceUrl) : ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
                         }
@@ -170,7 +170,7 @@ namespace MVCForum.Website.Controllers
                             TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                             {
                                 Message = LocalizationService.GetResourceString("Errors.NoPermission"),
-                                MessageType = GenericMessages.error
+                                MessageType = GenericMessages.danger
                             };
                             Redirect(topic.NiceUrl);
                         }
@@ -192,7 +192,7 @@ namespace MVCForum.Website.Controllers
                         TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                         {
                             Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
-                            MessageType = GenericMessages.error
+                            MessageType = GenericMessages.danger
                         };
                         return topic != null ? Redirect(topic.NiceUrl) : ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }

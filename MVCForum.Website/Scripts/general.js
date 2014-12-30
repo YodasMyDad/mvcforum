@@ -140,9 +140,10 @@ $(function () {
     });
 
     $(".emailsubscription").click(function (e) {
-        var entityId = $(this).attr('rel');
+        var entityId = $(this).data('id');
+        var subscriptionType = $(this).data('type');
+
         $(this).hide();
-        var subscriptionType = $(this).find('span').attr('rel');
 
         var subscribeEmailViewModel = new Object();
         subscribeEmailViewModel.Id = entityId;
@@ -169,9 +170,10 @@ $(function () {
     });
 
     $(".emailunsubscription").click(function (e) {
-        var entityId = $(this).attr('rel');
+        var entityId = $(this).data('id');
+        var subscriptionType = $(this).data('type');
+
         $(this).hide();
-        var subscriptionType = $(this).find('span').attr('rel');
 
         var unSubscribeEmailViewModel = new Object();
         unSubscribeEmailViewModel.Id = entityId;
@@ -296,9 +298,28 @@ $(function () {
 
     });
 
+    $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
 
+        var input = $(this).parents('.input-group').find(':text'),
+            log = numFiles > 1 ? numFiles + ' files selected' : label;
+
+        if (input.length) {
+            input.val(log);
+        } else {
+            if (log) alert(log);
+        }
+
+    });
 
 });
+
+$(document).on('change', '.btn-file :file', function () {
+    var input = $(this),
+        numFiles = input.get(0).files ? input.get(0).files.length : 1,
+        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+    input.trigger('fileselect', [numFiles, label]);
+});
+
 
 function ChangeLanguage() {
     var languageSelect = $(".languageselector select");
@@ -327,7 +348,7 @@ function DisplayWaitForPostUploadClickHandler() {
             var uploadHolder = $(this).closest("div.postuploadholder");
             var ajaxSpinner = uploadHolder.find("span.ajaxspinner");
             ajaxSpinner.show();
-            $(this).hide();
+            $(this).fadeOut("fast");
         });
     }
 }
@@ -352,15 +373,15 @@ function AddPostClickEvents() {
 
     ShowExpandedVotes();
 
-    $(".issolution").click(function (e) {
+    $(".solutionlink").click(function (e) {
         var solutionHolder = $(this);
-        var postId = solutionHolder.attr('rel');
+        var postId = solutionHolder.data('id');
 
-        var MarkAsSolutionViewModel = new Object();
-        MarkAsSolutionViewModel.Post = postId;
+        var markAsSolutionViewModel = new Object();
+        markAsSolutionViewModel.Post = postId;
 
         // Ajax call to post the view model to the controller
-        var strung = JSON.stringify(MarkAsSolutionViewModel);
+        var strung = JSON.stringify(markAsSolutionViewModel);
 
         $.ajax({
             url: app_base + 'Vote/MarkAsSolution',
@@ -379,62 +400,49 @@ function AddPostClickEvents() {
         e.stopImmediatePropagation();
     });
 
-    $(".thumbuplink").click(function (e) {
-        var postId = $(this).attr('rel');
-        var karmascore = ".karmascore-" + postId;
-        var karmathumbholder = ".postkarmathumbs-" + postId;
-        $(karmathumbholder).remove();
+    $(".votelink").click(function (e) {
+        e.preventDefault();
+        var postId = $(this).data('id');
+        var voteType = $(this).data('votetype');
+        var holdingLi = $(this).closest("li");
+        var holdingUl = holdingLi.closest("ul");
+        var votePoints = holdingLi.find(".count");
 
-        var VoteUpViewModel = new Object();
-        VoteUpViewModel.Post = postId;
+        // Remove all vote links
+        holdingUl.find(".votelink").fadeOut("fast");
+
+        var voteUpViewModel = new Object();
+        voteUpViewModel.Post = postId;
+
+        var voteUrl = "Vote/VoteDownPost";
+        if (voteType == "up") {
+            voteUrl = "Vote/VoteUpPost";
+        }
 
         // Ajax call to post the view model to the controller
-        var strung = JSON.stringify(VoteUpViewModel);
+        var strung = JSON.stringify(voteUpViewModel);
+
 
         $.ajax({
-            url: app_base + 'Vote/VoteUpPost',
+            url: app_base + voteUrl,
             type: 'POST',
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
-                SuccessfulThumbUp(karmascore);
-                BadgeVoteUp(postId);
+
+                var currentPoints = parseInt($(votePoints).text());
+                votePoints.text((currentPoints + 1));
+
+                if (voteType == "up") {
+                    BadgeVoteUp(postId);
+                } else {
+                    BadgeVoteDown(postId);
+                }
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 ShowUserMessage("Error: " + xhr.status + " " + thrownError);
             }
         });
-        e.preventDefault();
-        e.stopImmediatePropagation();
-    });
-
-    $(".thumbdownlink").click(function (e) {
-        var postId = $(this).attr('rel');
-        var karmascore = ".karmascore-" + postId;
-        var karmathumbholder = ".postkarmathumbs-" + postId;
-        $(karmathumbholder).remove();
-
-        var VoteDownViewModel = new Object();
-        VoteDownViewModel.Post = postId;
-
-        // Ajax call to post the view model to the controller
-        var strung = JSON.stringify(VoteDownViewModel);
-
-        $.ajax({
-            url: app_base + 'Vote/VoteDownPost',
-            type: 'POST',
-            data: strung,
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
-                SuccessfulThumbDown(karmascore);
-                BadgeVoteDown(postId);
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-            }
-        });
-        e.preventDefault();
-        e.stopImmediatePropagation();
     });
 }
 
@@ -625,16 +633,13 @@ function UserPost() {
 }
 
 function MarkAsSolution(solutionHolder) {
-    $(solutionHolder).removeClass("issolution")
-    .addClass("issolution-solved")
-    .attr('title', '')
-    .unbind("click");
-    $('.issolution').hide();   
-}
-
-function SuccessfulThumbUp(karmascore) {
-    var currentKarma = parseInt($(karmascore).text());
-    $(karmascore).text((currentKarma + 1));
+    var solvedClass = "glyphicon-ok green-colour";
+    var notSolvedClass = "glyphicon-question-sign";
+    solutionHolder.unbind("click");
+    var icon = solutionHolder.closest("li").find("." + notSolvedClass);
+    icon.removeClass(notSolvedClass).addClass(solvedClass);
+    $('.solutionlink').hide();
+    $('.' + notSolvedClass).hide();
 }
 
 function SuccessfulThumbDown(karmascore) {
@@ -645,7 +650,7 @@ function SuccessfulThumbDown(karmascore) {
 function ShowUserMessage(message) {
     if (message != null) {
         var jsMessage = $('#jsquickmessage');
-        var toInject = "<div class=\"alert alert-block alert-info fade in\"><a href=\"#\" data-dismiss=\"alert\" class=\"close\">&times;<\/a>" + message + "<\/div>";
+        var toInject = "<div class=\"alert alert-info fade in\" role=\"alert\"><button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;<\/span><\/button>" + message + "<\/div>";
         jsMessage.html(toInject);
         jsMessage.show();
         $('div.alert').delay(2200).fadeOut();

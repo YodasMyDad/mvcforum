@@ -17,6 +17,7 @@
         public const int GravatarTopicSize = 50;
         public const int GravatarProfileSize = 85;
         public const int GravatarLeaderboardSize = 20;
+        public const int GravatarLikedBySize = 20;
         public const int GravatarFooterSize = 30;
 
         //Uploads
@@ -35,8 +36,8 @@
 
         // Editor
         //public const string EditorType = "bbeditor";
-        //public const string EditorType = "tinymceeditor";
-        public const string EditorType = "markdowneditor";
+        public const string EditorType = "tinymceeditor";
+        //public const string EditorType = "markdowneditor";
 
         public const string EditorTemplateColourPicker = "colourpicker";
 

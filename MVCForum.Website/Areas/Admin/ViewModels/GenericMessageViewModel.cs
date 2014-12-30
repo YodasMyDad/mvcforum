@@ -13,8 +13,8 @@
 
     public enum GenericMessages
     {
-        block,
-        error,
+        warning,
+        danger,
         success,
         info
     }
