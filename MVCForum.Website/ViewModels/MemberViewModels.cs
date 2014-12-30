@@ -162,9 +162,7 @@ namespace MVCForum.Website.ViewModels
 
     public class ViewMemberDiscussionsViewModel
     {
-        public IList<Topic> Topics { get; set; }
-        public Dictionary<Category, PermissionSet> AllPermissionSets { get; set; }
-        public MembershipUser CurrentUser { get; set; }
+        public IList<TopicViewModel> Topics { get; set; }
     }
 
     public class ViewAdminSidePanelViewModel

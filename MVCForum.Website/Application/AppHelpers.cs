@@ -301,6 +301,15 @@ namespace MVCForum.Website.Application
 
         #region Files
 
+        public static bool FileIsImage(string file)
+        {
+            var imageFileTypes = new List<string>
+            {
+                ".jpg", ".jpeg",".gif",".bmp",".png"
+            };
+            return imageFileTypes.Any(file.Contains);
+        }
+
         public static string MemberImage(string avatar, string email, Guid userId, int size)
         {
             if (!string.IsNullOrEmpty(avatar))

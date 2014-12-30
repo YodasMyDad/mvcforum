@@ -138,6 +138,9 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 .subscribebuttons a:hover, .subscribebuttons a:focus { }
 .subscribebuttons a .glyphicon { font-size: 12px; }
 
+/*--- Main Heading ---*/
+.mainheading { padding-bottom: 20px;}
+
 /*--- Topic  ---*/
 .topicshow { }
 .topicshow .showmoreposts { margin-top: 10px;margin-bottom: 25px; }
@@ -148,6 +151,7 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 
 /*--- Post ---*/
 .post { border-top: 1px #f2f2f2 solid; padding: 15px 0 15px 0; }
+.postcontent, .postcontent p { font-size: 15px;}
 .postbodytop { color: #B3B3B3; font-size: 13px; font-weight: 300; padding-bottom: 10px; }
 .postbodytop a, .postbodytop a:visited { color: #2c2c2c; font-weight: 600; }
 .post.solution-true .postbodytop a, .post.solution-true .postbodytop a:visited { color: #90c153; }
@@ -169,8 +173,11 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 .postlikedby ul li img { -ms-border-radius: 50%; border-radius: 50%; }
 
 .postuploadedfilesholder { padding: 0 0 4px 0;}
+.postuploadedfilesholder p { padding: 0;margin: 0;color: #B3B3B3;font-weight: 300;font-size: 12px;}
 .postuploadedfilesholder ul { padding: 0;margin: 0;}
 .postuploadedfilesholder ul li { padding: 0 10px 4px 0;margin: 0;list-style: none;display: inline-block;}
+.postuploadedfilesholder ul li a.fileupload .glyphicon, .postuploadedfilesholder ul li a.fileupload:visited .glyphicon {color: #B3B3B3;font-size: 28px;}
+
 
 /*--- Tags ---*/
 .tagsinput { padding: 0 0 8px 0; }

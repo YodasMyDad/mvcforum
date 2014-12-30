@@ -154,12 +154,23 @@
 
             @if (Model.Post.Files != null && Model.Post.Files.Any())
             {
+                
                 <div class="postuploadedfilesholder clearfix">
+                    <p>@Html.Lang("Post.AttachedFiles")</p>
                     <ul>
                         @foreach (var file in Model.Post.Files.OrderByDescending(o => o.DateCreated))
                         {
-                            <li class="fileupload">
-                                <a href="@Html.Raw(Url.Content(file.FilePath))">@Html.Raw(file.FriendlyFilename)</a> 
+                            <li>
+                                <a class="fileupload" href="@Html.Raw(Url.Content(file.FilePath))">
+                                    @if (AppHelpers.FileIsImage(file.FilePath))
+                                    {
+                                        <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+                                    }
+                                    else
+                                    {
+                                        <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+                                    }
+                                </a> 
                                 @if (Model.Post.User.Id == loggedOnUserId || User.IsInRole(AppConstants.AdminRoleName))
                                 {
                                     <a href="@Url.Action("DeleteUploadedFile", "Upload", new { file.Id })" class="deleteupload" title="@Html.LanguageString("Post.Delete")">

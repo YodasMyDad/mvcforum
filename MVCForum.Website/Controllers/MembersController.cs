@@ -15,6 +15,7 @@ using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
+using MVCForum.Website.ViewModels.Mapping;
 using MembershipCreateStatus = MVCForum.Domain.DomainModel.MembershipCreateStatus;
 using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
 
@@ -28,12 +29,15 @@ namespace MVCForum.Website.Controllers
         private readonly IPrivateMessageService _privateMessageService;
         private readonly IBannedEmailService _bannedEmailService;
         private readonly IBannedWordService _bannedWordService;
+        private readonly ITopicNotificationService _topicNotificationService;
+        private readonly IPollAnswerService _pollAnswerService;
+        private readonly IVoteService _voteService;
 
         private MembershipUser LoggedOnUser;
         private MembershipRole UsersRole; 
 
         public MembersController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService,
-            IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService, IBannedWordService bannedWordService)
+            IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService, IBannedWordService bannedWordService, ITopicNotificationService topicNotificationService, IPollAnswerService pollAnswerService, IVoteService voteService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _postService = postService;
@@ -42,6 +46,9 @@ namespace MVCForum.Website.Controllers
             _privateMessageService = privateMessageService;
             _bannedEmailService = bannedEmailService;
             _bannedWordService = bannedWordService;
+            _topicNotificationService = topicNotificationService;
+            _pollAnswerService = pollAnswerService;
+            _voteService = voteService;
 
             LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
@@ -1027,23 +1034,15 @@ namespace MVCForum.Website.Controllers
                     // Get the distinct topics
                     var topics = posts.Select(x => x.Topic).Distinct().Take(6).OrderByDescending(x => x.LastPost.DateCreated).ToList();
 
-                    // Get all the categories for this topic collection
-                    var categories = topics.Select(x => x.Category).Distinct();
+                    // Get the Topic View Models
+                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService, _voteService, SettingsService.GetSettings());
 
                     // create the view model
                     var viewModel = new ViewMemberDiscussionsViewModel
                     {
-                        Topics = topics,
-                        AllPermissionSets = new Dictionary<Category, PermissionSet>(),
-                        CurrentUser = LoggedOnUser
+                        Topics = topicViewModels
                     };
 
-                    // loop through the categories and get the permissions
-                    foreach (var category in categories)
-                    {
-                        var permissionSet = RoleService.GetPermissions(category, UsersRole);
-                        viewModel.AllPermissionSets.Add(category, permissionSet);
-                    }
 
                     return PartialView(viewModel);
                 }

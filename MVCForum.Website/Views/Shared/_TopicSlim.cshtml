@@ -1,14 +1,11 @@
-﻿@using MVCForum.Domain.Constants
-@model MVCForum.Website.ViewModels.TopicViewModel
+﻿@model MVCForum.Website.ViewModels.TopicViewModel
 @{
     var topic = Model.Topic;
 }
 
-    @if (!Model.Permissions[AppConstants.PermissionDenyAccess].IsTicked)
-    {        
-        <div class="topicrowslim topicslimsticky-@topic.IsSticky topicslimlocked-@topic.IsLocked">
-            
-            <a href="@Html.Raw(topic.NiceUrl)">@Html.Raw(topic.Name)</a>
-
-        </div>        
-    }
+@if (!Model.Permissions[AppConstants.PermissionDenyAccess].IsTicked)
+{
+    <div class="topicrowslim topicslimsticky-@topic.IsSticky topicslimlocked-@topic.IsLocked">
+        <a href="@Html.Raw(topic.NiceUrl)">@Html.Raw(topic.Name)</a>
+    </div>
+}

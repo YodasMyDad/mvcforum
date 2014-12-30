@@ -2,8 +2,10 @@
 
 $(function () {
 
-
-    //$('a[href$=".gif"], a[href$=".jpg"], a[href$=".png"], a[href$=".bmp"], a[href$=".jpeg"]')
+    $('a.fileupload[href$=".gif"], a.fileupload[href$=".jpg"], a.fileupload[href$=".png"], a.fileupload[href$=".bmp"], a.fileupload[href$=".jpeg"]').fancybox({
+        openEffect: 'elastic',
+        closeEffect: 'elastic'
+    });
 
     ChangeLanguage();
 
