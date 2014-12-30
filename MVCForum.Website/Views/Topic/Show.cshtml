@@ -161,7 +161,10 @@
 
     @if (Model.TotalPages > 1)
     {
-        <a href="#" class="showmoreposts btn"><span class="smpactive">@Html.LanguageString("Topic.ShowMorePosts")</span><span class="smploading" style="display: none;">@Html.LanguageString("Topic.ShowMorePostsLoading")</span></a>
+        <a href="#" class="showmoreposts btn-mvc btn-mvc-red btn-mvc-large btn-mvc-fullwidth">
+            <span class="smpactive">@Html.LanguageString("Topic.ShowMorePosts")</span>
+            <span class="smploading" style="display: none;">@Html.LanguageString("Topic.ShowMorePostsLoading")</span>
+        </a>
     }
 
     @if (!Model.Topic.IsLocked)

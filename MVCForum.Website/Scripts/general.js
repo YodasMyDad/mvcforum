@@ -100,6 +100,7 @@ $(function () {
 
                 // Lastly reattch the click events
                 AddPostClickEvents();
+                ShowFileUploadClickHandler();
                 activeText.show();
                 loadingText.hide();
             },

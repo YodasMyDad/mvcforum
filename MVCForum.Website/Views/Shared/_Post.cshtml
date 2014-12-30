@@ -76,16 +76,16 @@
                 {
                     <text> - @Model.Post.IpAddress</text>
                 }
+                @if (Html.Settings().DisplayEditedBy && Model.Post.DateEdited > Model.Post.DateCreated)
+                {
+
+                    <text> - @Html.LanguageString("Post.LastEdited")  @DatesUI.GetPrettyDate(Model.Post.DateEdited.ToString())</text>
+                }
             </div>
 
             <div id="postcontent-@postId" class="postcontent">
                 <p>@Html.Raw(AppHelpers.ConvertPostContent(Model.Post.PostContent))</p>
-                @if (Html.Settings().DisplayEditedBy && Model.Post.DateEdited > Model.Post.DateCreated)
-                {
-                    <p class="postlastedited">
-                        @Html.LanguageString("Post.LastEdited")  @DatesUI.GetPrettyDate(Model.Post.DateEdited.ToString())
-                    </p>
-                }
+
                 @if (Html.Settings().EnableSignatures && !string.IsNullOrEmpty(Model.Post.User.Signature))
                 {
                     <div class="userpostsignature">@Html.Raw(AppHelpers.ConvertPostContent(Model.Post.User.Signature))</div>
@@ -155,18 +155,20 @@
             @if (Model.Post.Files != null && Model.Post.Files.Any())
             {
                 <div class="postuploadedfilesholder clearfix">
-                    @foreach (var file in Model.Post.Files.OrderByDescending(o => o.DateCreated))
-                    {
-                        <div class="fileupload">
-                            <a href="@Html.Raw(Url.Content(file.FilePath))">@Html.Raw(file.FriendlyFilename)</a>
-                            @if (Model.Post.User.Id == loggedOnUserId || User.IsInRole(AppConstants.AdminRoleName))
-                            {
-                                <span class="deleteupload" title="@Html.LanguageString("Post.Delete")">
-                                    <a href="@Url.Action("DeleteUploadedFile", "Upload", new { file.Id })">x</a>
-                                </span>
-                            }
-                        </div>
-                    }
+                    <ul>
+                        @foreach (var file in Model.Post.Files.OrderByDescending(o => o.DateCreated))
+                        {
+                            <li class="fileupload">
+                                <a href="@Html.Raw(Url.Content(file.FilePath))">@Html.Raw(file.FriendlyFilename)</a> 
+                                @if (Model.Post.User.Id == loggedOnUserId || User.IsInRole(AppConstants.AdminRoleName))
+                                {
+                                    <a href="@Url.Action("DeleteUploadedFile", "Upload", new { file.Id })" class="deleteupload" title="@Html.LanguageString("Post.Delete")">
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    </a>
+                                }
+                            </li>
+                        }
+                    </ul>
                 </div>
             }
 
@@ -176,7 +178,7 @@
                     @using (Html.BeginForm("UploadPostFiles", "Upload", FormMethod.Post, new { enctype = "multipart/form-data" }))
                     {
                         <div class="input-group input-group-sm">
-                            
+
                             <span class="input-group-btn">
                                 <span class="btn btn-default btn-file">
                                     @Html.LanguageString("Post.Browse") <input type="file" name="files" id="files" value="" multiple="multiple">
