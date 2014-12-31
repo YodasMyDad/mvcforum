@@ -28,7 +28,7 @@
 
     @if (Model.TotalPages > 1)
     {
-        @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null, "Index")
+        @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null, "Index", "Home")
     }
 
 </div>

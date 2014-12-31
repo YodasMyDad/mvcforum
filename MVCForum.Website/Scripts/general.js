@@ -2,10 +2,7 @@
 
 $(function () {
 
-    $('a.fileupload[href$=".gif"], a.fileupload[href$=".jpg"], a.fileupload[href$=".png"], a.fileupload[href$=".bmp"], a.fileupload[href$=".jpeg"]').fancybox({
-        openEffect: 'elastic',
-        closeEffect: 'elastic'
-    });
+    PostattachmentFancybox();
 
     ChangeLanguage();
 
@@ -323,6 +320,15 @@ $(document).on('change', '.btn-file :file', function () {
     input.trigger('fileselect', [numFiles, label]);
 });
 
+function PostattachmentFancybox() {
+    var uploadImages = $('a.fileupload[href$=".gif"], a.fileupload[href$=".jpg"], a.fileupload[href$=".png"], a.fileupload[href$=".bmp"], a.fileupload[href$=".jpeg"]');
+    if (uploadImages.length > 0) {
+        uploadImages.fancybox({
+            openEffect: 'elastic',
+            closeEffect: 'elastic'
+        });
+    }    
+}
 
 function ChangeLanguage() {
     var languageSelect = $(".languageselector select");

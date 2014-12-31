@@ -68,6 +68,14 @@ section.content-strip ul li { margin: 0; padding: 0; list-style: none; display: 
 section.content-strip ul li a, section.content-strip ul li a:visited { display: block; color: #3b3b3b; padding: 9px 18px 11px 18px; border-top: 5px transparent solid; }
 section.content-strip ul li a:hover, section.content-strip ul li a:focus, section.content-strip ul li a.active { background-color: #fff; border-color: #2abda0; }
 
+/*--- Breadcrumb ---*/
+.breadcrumb { background: none; }
+section.content-strip ul.breadcrumb li { font-size: 12px; color: #95a5a6; position: relative; }
+section.content-strip ul.breadcrumb li.active { padding: 9px 6px 11px 6px; border-top: 5px transparent solid; }
+section.content-strip ul.breadcrumb li a, section.content-strip ul.breadcrumb li a:visited { padding: 9px 6px 11px 6px; font-size: 12px; color: #95a5a6; }
+section.content-strip ul.breadcrumb > li:before { position: absolute; height: 17px; top: 0; bottom: -2px; left: -10px; margin: auto; }
+section.content-strip ul.breadcrumb > li + li.active:before { bottom: 0; }
+
 /*--- Side Boxes ---*/
 .side-box { padding: 0 0 20px 0; }
 .side-box a, .side-box a:visited { color: #3b3b3b; }
@@ -82,6 +90,40 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 .categories-box ul li ul { padding-left: 15px; }
 .categories-box ul li ul li { }
 .categories-box ul li ul li a { font-size: 12px; }
+
+/*--- Sub Categories ---*/
+.subcategoryholder { }
+.subcategoryholder ul { padding: 3px 0; margin: 0; }
+.subcategoryholder ul li { list-style: none; display: inline-block; padding: 0 7px 7px 0; }
+.subcategoryholder ul li a, .subcategoryholder ul li a:visited { border-left: 5px #90c153 solid; padding-left: 8px; }
+.subcategoryholder ul li a:hover, .subcategoryholder ul li a:focus { }
+
+/*--- Leaderboard ---*/
+.leaderboard { }
+.leaderboard h2 { }
+.leaderboard .leaderboardholders { padding: 20px; }
+.leaderboard .thisyearsstars { border-left: 1px #efefef dotted; }
+
+/*--- Activities ---*/
+.activityholder { }
+.activityentry { padding: 12px 0;}
+.activityentry p { margin: 0;padding: 0;}
+.activityentry .activityinfotext { }
+.activityentry .activitybadgedescription { font-weight: 300;}
+.activityentry .activitysubdate { color: #636267;font-weight: 300;font-style: italic;font-size: 13px;}
+.activityentry .activitybadge { }
+.activityentry .activitybadge img { -ms-border-radius: 50%; border-radius: 50%;max-width: 40px; }
+.activityentry .activityinfo { }
+
+/*--- Badges ---*/
+.badgeholder {}
+.publicbadgeline { padding: 12px 0;}
+.publicbadgeline p { margin: 0;padding: 0;}
+.publicbadgeline .publicbadge {}
+.publicbadgeline .publicbadgedetails {}
+.publicbadgeline .publicbadgename {}
+.publicbadgeline .publicbadgenamedesc {font-weight: 300;}
+.publicbadgeline .publicbadgeawards {color: #636267;font-weight: 300;font-style: italic;font-size: 13px;}
 
 /*--- Side Boxes - Tags ---*/
 .popular-tags-box { }
@@ -126,24 +168,28 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 .topicrow .rowdetails h3 a span.glyphicon { font-size: 17px; }
 .topicrow .stats { color: #a1a0a0; margin: 0 0 0 5px; }
 .topicstarterpostbeginpostsheading { padding-bottom: 3px; }
+.topicstarterpost { border-bottom: 2px #f2f2f2 solid; }
 
 /*--- Topic Widgets - Next To Headings ---*/
 .widgetright { float: right; margin: 2px 0 10px 10px; }
 .widgetleft { float: left; margin: 2px 10px 10px 0; }
 .widgetright .glyphicon, .widgetleft .glyphicon { font-size: 18px; }
+.widgetright a, .widgetright a:visited { margin-left: 8px; color: #2c2c2c; font-size: 13px; }
+.widgetright a .glyphicon, .widgetright a:visited .glyphicon { color: #2c2c2c; font-size: 13px; }
 
-/*--- Subscribe Buttons ---*/
-.subscribebuttons { }
-.subscribebuttons a, .subscribebuttons a:visited { color: #2c2c2c; font-size: 12px; }
-.subscribebuttons a:hover, .subscribebuttons a:focus { }
-.subscribebuttons a .glyphicon { font-size: 12px; }
 
 /*--- Main Heading ---*/
-.mainheading { padding-bottom: 20px;}
+.mainheading { padding-bottom: 20px; }
+
+/*--- Pagination ---*/
+.pagination > li > a, .pagination > li > span { color: #2c2c2c; }
+.pagination > li:last-child > a, .pagination > li:last-child > span { -ms-border-radius: 0; border-radius: 0; }
+.pagination > li:first-child > a, .pagination > li:first-child > span { -ms-border-radius: 0; border-radius: 0; }
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus { background-color: #a1a0a0; border-color: #a1a0a0; }
 
 /*--- Topic  ---*/
 .topicshow { }
-.topicshow .showmoreposts { margin-top: 10px;margin-bottom: 25px; }
+.topicshow .showmoreposts { margin-top: 10px; margin-bottom: 25px; }
 .topicshow .topicheading { margin-bottom: 20px; }
 .topicshow .topicheading h1 { font-size: 21px; font-weight: 600; }
 .topicshow .topicheading .topicinfo { display: block; clear: both; padding: 0; margin: 0; color: #B3B3B3; font-size: 12px; font-weight: 300; }
@@ -151,7 +197,9 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 
 /*--- Post ---*/
 .post { border-top: 1px #f2f2f2 solid; padding: 15px 0 15px 0; }
-.postcontent, .postcontent p { font-size: 15px;}
+.postcontent, .postcontent p { font-size: 15px; }
+.postcontent table { width: 100% !important; margin: 10px 0; }
+.postcontent table td { border-bottom: 1px #efefef solid; padding: 4px; font-size: 12px; }
 .postbodytop { color: #B3B3B3; font-size: 13px; font-weight: 300; padding-bottom: 10px; }
 .postbodytop a, .postbodytop a:visited { color: #2c2c2c; font-weight: 600; }
 .post.solution-true .postbodytop a, .post.solution-true .postbodytop a:visited { color: #90c153; }
@@ -159,9 +207,9 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 .postsocial ul { padding: 0; margin: 0; }
 .postsocial ul li { list-style: none; display: inline; padding: 0 4px 0 0; font-size: 13px; }
 .postsocial ul li a, .postsocial ul li a:visited { font-weight: 400; cursor: pointer; }
-.postuploadholder { display: none;margin-bottom: 7px;}
-.postuploadholder p { text-align: right;}
-.postuploadholder .input-group { padding-bottom: 4px;}
+.postuploadholder { display: none; margin-bottom: 7px; }
+.postuploadholder p { text-align: right; }
+.postuploadholder .input-group { padding-bottom: 4px; }
 .postdetails { margin-right: 80px; }
 .postadmin { float: right; width: 70px; }
 .postadmin ul { padding: 0; margin: 0; }
@@ -172,11 +220,13 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 .postlikedby li.text { color: #B3B3B3; font-size: 12px; line-height: 12px; font-weight: 300; }
 .postlikedby ul li img { -ms-border-radius: 50%; border-radius: 50%; }
 
-.postuploadedfilesholder { padding: 0 0 4px 0;}
-.postuploadedfilesholder p { padding: 0;margin: 0;color: #B3B3B3;font-weight: 300;font-size: 12px;}
-.postuploadedfilesholder ul { padding: 0;margin: 0;}
-.postuploadedfilesholder ul li { padding: 0 10px 4px 0;margin: 0;list-style: none;display: inline-block;}
-.postuploadedfilesholder ul li a.fileupload .glyphicon, .postuploadedfilesholder ul li a.fileupload:visited .glyphicon {color: #B3B3B3;font-size: 28px;}
+.postuploadedfilesholder { padding: 0 0 4px 0; }
+.postuploadedfilesholder p { padding: 0; margin: 0; color: #B3B3B3; font-weight: 300; font-size: 12px; }
+.postuploadedfilesholder ul { padding: 0; margin: 0; }
+.postuploadedfilesholder ul li { padding: 0 10px 4px 0; margin: 0; list-style: none; display: inline-block; }
+.postuploadedfilesholder ul li a.fileupload, .postuploadedfilesholder ul li a.fileupload:visited { text-decoration: none; }
+.postuploadedfilesholder ul li a.fileupload .glyphicon, .postuploadedfilesholder ul li a.fileupload:visited .glyphicon { color: #B3B3B3; font-size: 28px; }
+.postuploadedfilesholder ul li a.fileupload:hover .glyphicon, .postuploadedfilesholder ul li a.fileupload:focus .glyphicon { color: #9c9b9b; }
 
 
 /*--- Tags ---*/
@@ -203,10 +253,6 @@ footer h6 { margin-bottom: 12px; }
 .active-members ul { padding: 0; margin: 0; }
 .active-members ul li { padding: 0 6px 4px 0; margin: 0; list-style: none; display: inline; }
 
-/*--- Breadcrumb ---*/
-.breadcrumb { background: none; }
-section.content-strip ul.breadcrumb li { font-size: 12px; color: #95a5a6; }
-section.content-strip ul.breadcrumb li a, section.content-strip ul.breadcrumb li a:visited { padding: 9px 6px 11px 6px; font-size: 12px; color: #95a5a6; }
 
 /*--- tinyMCE overides ---*/
 .mce-container, .mce-container *,

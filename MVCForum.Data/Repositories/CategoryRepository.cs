@@ -160,6 +160,10 @@ namespace MVCForum.Data.Repositories
             if (!string.IsNullOrEmpty(path))
             {
                 var catGuids = path.Trim().Split(',').Select(x => new Guid(x)).ToList();
+                if (!catGuids.Contains(category.Id))
+                {
+                    catGuids.Add(category.Id);
+                }
                 cats = Get(catGuids).ToList();
             }            
             return cats;

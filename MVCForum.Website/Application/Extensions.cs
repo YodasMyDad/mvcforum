@@ -85,7 +85,20 @@ namespace MVCForum.Website.Application
             return list.Distinct(new StructEqualityComparer<T, TKey>(lookup));
         }
 
-        public static MvcHtmlString Pager(this HtmlHelper helper, int currentPage, int pageSize, int totalItemCount, object routeValues, string actionOveride = null)
+
+   //     <nav>
+   //   <ul class="pagination">
+   //     <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+   //     <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+   //     <li><a href="#">2</a></li>
+   //     <li><a href="#">3</a></li>
+   //     <li><a href="#">4</a></li>
+   //     <li><a href="#">5</a></li>
+   //     <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+   //  </ul>
+   //</nav>
+
+        public static MvcHtmlString Pager(this HtmlHelper helper, int currentPage, int pageSize, int totalItemCount, object routeValues, string actionOveride = null, string controllerOveride = null)
         {
             // how many pages to display in each page group const  	
             const int cGroupSize = SiteConstants.PagingGroupSize;
@@ -101,10 +114,11 @@ namespace MVCForum.Website.Application
             currentPage = Math.Min(currentPage, pageCount);
 
             var urlHelper = new UrlHelper(helper.ViewContext.RequestContext, helper.RouteCollection);
-            var containerdiv = new TagBuilder("div");
-            containerdiv.AddCssClass("pagination");
+            var containerdiv = new TagBuilder("nav");
             var container = new TagBuilder("ul");
-            var actionName = !string.IsNullOrEmpty(actionOveride) ? actionOveride : helper.ViewContext.RouteData.GetRequiredString("Action");
+            container.AddCssClass("pagination");
+            var actionName = !string.IsNullOrEmpty(actionOveride) ? actionOveride : helper.ViewContext.RouteData.GetRequiredString("action");
+            var controllerName = !string.IsNullOrEmpty(controllerOveride) ? controllerOveride : helper.ViewContext.RouteData.GetRequiredString("controller");
 
             // calculate the last page group number starting from the current page  	
             // until we hit the next whole divisible number  	
@@ -124,10 +138,10 @@ namespace MVCForum.Website.Application
             {
                 var previousli = new TagBuilder("li");
                 var previous = new TagBuilder("a");
-                previous.SetInnerText("<");
+                previous.SetInnerText("«");
                 previous.AddCssClass("previous");
                 var routingValues = new RouteValueDictionary(routeValues) {{"p", currentPage - 1}};
-                previous.MergeAttribute("href", urlHelper.Action(actionName, routingValues));
+                previous.MergeAttribute("href", urlHelper.Action(actionName, controllerName, routingValues));
                 previousli.InnerHtml = previous.ToString();
                 container.InnerHtml += previousli;
             }
@@ -140,7 +154,7 @@ namespace MVCForum.Website.Application
                 previousDots.SetInnerText("...");
                 previousDots.AddCssClass("previous-dots");
                 var routingValues = new RouteValueDictionary(routeValues) {{"p", groupStart - cGroupSize}};
-                previousDots.MergeAttribute("href", urlHelper.Action(actionName, routingValues));
+                previousDots.MergeAttribute("href", urlHelper.Action(actionName, controllerName, routingValues));
                 previousDotsli.InnerHtml = previousDots.ToString();
                 container.InnerHtml += previousDotsli.ToString();
             }
@@ -152,7 +166,7 @@ namespace MVCForum.Website.Application
                 var pageNumber = new TagBuilder("a");                
                 pageNumber.SetInnerText((i).ToString());
                 var routingValues = new RouteValueDictionary(routeValues) {{"p", i}};
-                pageNumber.MergeAttribute("href", urlHelper.Action(actionName, routingValues));
+                pageNumber.MergeAttribute("href", urlHelper.Action(actionName, controllerName, routingValues));
                 pageNumberli.InnerHtml = pageNumber.ToString();
                 container.InnerHtml += pageNumberli.ToString();
             }
@@ -165,7 +179,7 @@ namespace MVCForum.Website.Application
                 nextDots.SetInnerText("...");
                 nextDots.AddCssClass("next-dots");
                 var routingValues = new RouteValueDictionary(routeValues) {{"p", groupEnd + 1}};
-                nextDots.MergeAttribute("href", urlHelper.Action(actionName, routingValues));
+                nextDots.MergeAttribute("href", urlHelper.Action(actionName, controllerName, routingValues));
                 nextDotsli.InnerHtml = nextDots.ToString();
                 container.InnerHtml += nextDotsli.ToString();
             }
@@ -175,10 +189,10 @@ namespace MVCForum.Website.Application
             {
                 var nextli = new TagBuilder("li");
                 var next = new TagBuilder("a");
-                next.SetInnerText(">");
+                next.SetInnerText("»");
                 next.AddCssClass("next");
                 var routingValues = new RouteValueDictionary(routeValues) {{"p", currentPage + 1}};
-                next.MergeAttribute("href", urlHelper.Action(actionName, routingValues));
+                next.MergeAttribute("href", urlHelper.Action(actionName, controllerName, routingValues));
                 nextli.InnerHtml = next.ToString();
                 container.InnerHtml += nextli.ToString();
             }

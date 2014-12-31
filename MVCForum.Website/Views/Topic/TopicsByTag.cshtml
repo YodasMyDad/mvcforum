@@ -16,7 +16,9 @@
     @Html.Action("CurrentWeekHighPointUsers", "Point")
 }
 
-<h2>@ViewBag.Title</h2>
+<div class="mainheading">
+    <h1>@ViewBag.Title</h1>
+</div>
 
 @foreach (var topic in Model.Topics)
 {

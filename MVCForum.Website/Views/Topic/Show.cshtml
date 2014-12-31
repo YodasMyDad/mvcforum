@@ -75,7 +75,7 @@
 
     <div class="topicheading">
 
-        <div class="widgetright subscribebuttons">
+        <div class="widgetright">
             @if (Html.CurrentMember() != null && Html.Settings().EnableEmailSubscriptions)
             {
                 <a @Html.Raw(subScribe) href="#" class="emailsubscription" data-id="@Model.Topic.Id" data-type="topic">
@@ -90,6 +90,7 @@
         </div>
 
         <h1>@Html.Raw(Model.Topic.Name)</h1>
+
         @if (Model.Topic.Solved || Model.Topic.IsSticky || Model.Topic.IsLocked || Model.Poll != null)
         {
             <ul class="topicinfo">
@@ -138,7 +139,7 @@
         }
         <div class="row topicstarterpostbeginpostsheading">
             <div class="col-md-8 topicstarterpostcomments">
-                @(Model.TotalCount - 1) @Html.LanguageString("Topic.CommentsDetails")
+                @(Model.TotalCount) @Html.LanguageString("Topic.CommentsDetails")
             </div>
             <div class="col-md-4 topicpostorderfilter">
                 @if ((Model.TotalCount - 1) > 0)
