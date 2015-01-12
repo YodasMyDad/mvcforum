@@ -1,8 +1,7 @@
-﻿@using MVCForum.Domain.Constants
-@using MVCForum.Utilities
-@using MVCForum.Website
+﻿@using MVCForum.Website
 @model MVCForum.Website.ViewModels.ViewMemberViewModel
 @{
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = string.Concat(Model.User.UserName, Html.LanguageString("Members.ProfileTitle"));
 }
 

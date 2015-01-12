@@ -1,13 +1,15 @@
 ﻿@using MVCForum.Utilities
+@using MVCForum.Website.Application.ExtensionMethods
 @model MVCForum.Website.ViewModels.LogOnViewModel
 @{
+    Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
     ViewBag.Title = Html.LanguageString("LogOn.LogOn");
 }
 
 @section Header
 {
     @(
-        Bundle.JavaScript()
+ Bundle.JavaScript()
         .Add("~/Scripts/jquery.validate.min.js")
         .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
         .MvcRender("~/scripts/cache/validate-combined_#.js")
@@ -16,50 +18,56 @@
 
 <div class="row">
 
+    <div class="col-md-6 col-md-offset-3">
 
-    <div class="col-md-5 mainlogonform">
+        @Html.Partial("_SocialLoginButtons")
 
-        @Html.ValidationSummary(false)
 
-        <h3>@ViewBag.Title</h3>
+        <div class="mainlogonform">
 
-        @using (Html.BeginForm("LogOn", "Members", FormMethod.Post, new { @class = "form-horizontal" }))
-        {            
-            <p>@Html.Raw(string.Format(Html.LanguageString("Members.LogOnMessage"), Html.ActionLink("Register", "Register")))</p>
+            <h3>@ViewBag.Title</h3>
 
-            <div class="editor-label">
-                @Html.LabelFor(m => m.UserName)
-            </div>
-            <div class="editor-field">
-                @Html.TextBoxFor(m => m.UserName)
-                @Html.ValidationMessageFor(m => m.UserName)
-            </div>
+            @using (Html.BeginForm("LogOn", "Members", FormMethod.Post, new { @class = "form-login" }))
+            {
+                @Html.ValidationSummary(false)
+                @Html.AntiForgeryToken()
 
-            <div class="editor-label">
-                @Html.LabelFor(m => m.Password)
-            </div>
-            <div class="editor-field">
-                @Html.PasswordFor(m => m.Password)
-                @Html.ValidationMessageFor(m => m.Password)
-            </div>
+                <p class="help-block">@Html.Raw(string.Format(Html.LanguageString("Members.LogOnMessage"), Html.ActionLink("Register", "Register")))</p>
 
-            <div class="editor-label">
-                <label class="checkbox inline">
-                    @Html.CheckBoxFor(m => m.RememberMe)
-                    @Html.LabelFor(m => m.RememberMe)
-                </label>
-            </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.UserName)
+                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.UserName)
+                </div>
 
-            <div class="submit-holder">
-                <input type="submit" class="btn btn-success btn-large" value="@Html.LanguageString("Buttons.LogOn")" />
-            </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Password)
+                </div>
 
-            @Html.HiddenFor(x => x.ReturnUrl)
-        }
-        <p class="forgotpasswordtext"><a href="@Url.Action("ForgotPassword")">@Html.LanguageString("Members.ForgotPassword.Link")</a></p>
+                <div class="checkbox">
+                    @using (Html.BeginLabelFor(m => m.RememberMe, new { @class = "checkbox" }))
+                    {
+                        @Html.CheckBoxFor(m => m.RememberMe)
+                    }
+                    @Html.ValidationMessageFor(m => m.RememberMe)
+                </div>
+
+                <div class="submit-holder">
+                    <button type="submit" class="btn-mvc btn-mvc-green btn-mvc-large">@Html.LanguageString("Buttons.LogOn")</button>
+                </div>
+
+                @Html.HiddenFor(x => x.ReturnUrl)
+            }
+        </div>
+
+        <p class="forgotpasswordtext">
+            <a href="@Url.Action("ForgotPassword")">
+                @Html.LanguageString("Members.ForgotPassword.Link")
+            </a>
+        </p>
+
     </div>
-    
-    @Html.Partial("_SocialLoginButtons")
-
 
 </div>

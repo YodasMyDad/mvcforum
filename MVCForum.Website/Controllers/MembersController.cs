@@ -642,6 +642,7 @@ namespace MVCForum.Website.Controllers
         /// <param name="userModel"></param>
         /// <returns></returns>
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Register(MemberAddViewModel userModel)
         {
             if (SettingsService.GetSettings().SuspendRegistration != true)
@@ -898,6 +899,7 @@ namespace MVCForum.Website.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult LogOn(LogOnViewModel model)
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())

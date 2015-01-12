@@ -53,8 +53,8 @@
         // Paging options
         public const string PagingUrlFormat = "{0}?p={1}";
 
-        // Last Activity Time Check
-        public const int TimeSpanInMinutesToShowMembers = 10;
+        // How long 
+        public const int TimeSpanInMinutesToShowMembers = 5;
 
         // Installer Stuff
         public const string InstallerName = "YesImAnInstallerSpankMe";
@@ -65,6 +65,22 @@
 
         // Database Connection Key
         public const string MvcForumContext = "MVCForumContext";
+
+
+        // Default Theme folder
+        public const string ThemeRootFolder = "~/Themes/";
+
+        // Themes
+        public const string ThemeRootFolderName = "Themes";
+
+        public const string EditorTemplateColourPicker = "colourpicker";
+
+        //Querystring names
+        public const string PostOrderBy = "order";
+        public const string AllPosts = "all";
+
+        //Mobile Check Name
+        public const string IsMobileDevice = "IsMobileDevice";
 
     }
 }

@@ -58,6 +58,60 @@ namespace MVCForum.Website.Controllers
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
+
+        [ChildActionOnly]
+        [Authorize]
+        public PartialViewResult TopicsMemberHasPostedIn(int? p)
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                // Set the page index
+                var pageIndex = p ?? 1;
+
+                // Get the topics
+                var topics = _topicService.GetMembersActivity(pageIndex,
+                                                           SettingsService.GetSettings().TopicsPerPage,
+                                                           SiteConstants.MembersActivityListSize,
+                                                           LoggedOnUser.Id);
+
+                // Get the Topic View Models
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService, _voteService, SettingsService.GetSettings());
+
+                // create the view model
+                var viewModel = new PostedInViewModel
+                {
+                    Topics = topicViewModels,
+                    PageIndex = pageIndex,
+                    TotalCount = topics.TotalCount,
+                    TotalPages = topics.TotalPages
+                };
+
+                return PartialView("TopicsMemberHasPostedIn", viewModel);
+            }
+
+        }
+
+
+
+        [ChildActionOnly]
+        [Authorize]
+        public PartialViewResult GetSubscribedTopics()
+        {
+            var viewModel = new List<TopicViewModel>();
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var topicIds = LoggedOnUser.TopicNotifications.Select(x => x.Topic.Id).ToList();
+                if (topicIds.Any())
+                {
+                    var topics = _topicService.Get(topicIds);
+
+                    // Get the Topic View Models
+                    viewModel = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService, _voteService, SettingsService.GetSettings());
+                }
+            }
+            return PartialView("GetSubscribedTopics", viewModel);
+        }
+
         [ChildActionOnly]
         public PartialViewResult GetTopicBreadcrumb(Topic topic)
         {
@@ -309,7 +363,7 @@ namespace MVCForum.Website.Controllers
                         }
                     }
                 }
-                
+
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
                     if (successfullyCreated)
@@ -361,14 +415,14 @@ namespace MVCForum.Website.Controllers
                     // Use the post service to get them as it includes other used entities in one
                     // statement rather than loads of sql selects
 
-                    var sortQuerystring = Request.QueryString[SiteConstants.PostOrderBy];
+                    var sortQuerystring = Request.QueryString[AppConstants.PostOrderBy];
                     var orderBy = !string.IsNullOrEmpty(sortQuerystring) ?
                                               EnumUtils.ReturnEnumValueFromString<PostOrderBy>(sortQuerystring) : PostOrderBy.Standard;
 
                     // Store the amount per page
                     var amountPerPage = SettingsService.GetSettings().PostsPerPage;
 
-                    if (sortQuerystring == SiteConstants.AllPosts)
+                    if (sortQuerystring == AppConstants.AllPosts)
                     {
                         // Overide to show all posts
                         amountPerPage = int.MaxValue;

@@ -82,16 +82,14 @@ namespace MVCForum.Domain.DomainModel
         public virtual IList<Vote> Votes { get; set; }
         public virtual IList<Badge> Badges { get; set; }
         public virtual IList<BadgeTypeTimeLastChecked> BadgeTypesTimeLastChecked { get; set; }
-
         public virtual IList<CategoryNotification> CategoryNotifications { get; set; }
         public virtual IList<TopicNotification> TopicNotifications { get; set; }
         public virtual IList<MembershipUserPoints> Points { get; set; }
-
         public virtual IList<PrivateMessage> PrivateMessagesReceived { get; set; }
         public virtual IList<PrivateMessage> PrivateMessagesSent { get; set; }
-
         public virtual IList<Poll> Polls { get; set; }
-        public virtual IList<PollVote> PollVotes { get; set; } 
+        public virtual IList<PollVote> PollVotes { get; set; }
+        public virtual IList<Favourite> Favourites { get; set; }
 
         public int TotalPoints 
         { 

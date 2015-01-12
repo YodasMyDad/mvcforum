@@ -4,6 +4,7 @@
 @using MVCForum.Website.ViewModels
 @model AllRecentActivitiesViewModel
 @{
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = @Html.LanguageString("Activity.ActivityTitle");
     var totalCount = Convert.ToInt32(Model.TotalCount);
 }

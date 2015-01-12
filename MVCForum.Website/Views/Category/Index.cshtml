@@ -1,5 +1,6 @@
 ﻿@using MVCForum.Domain.Constants
 @{
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = Html.Raw(Html.LanguageString("Category.AllCategories"));
 }
 @section side
@@ -8,5 +9,6 @@
     @Html.Action("PopularTags", "Tag")
     @Html.Action("CurrentWeekHighPointUsers", "Point")
 }
+
 
 @Html.Action("ListMainCategories", "Category")

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using DataAnnotationsExtensions;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Website.Areas.Admin.ViewModels
@@ -29,7 +30,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public string Description { get; set; }
 
         [DisplayName("Category Colour")]
-        [UIHint(SiteConstants.EditorTemplateColourPicker), AllowHtml]
+        [UIHint(AppConstants.EditorTemplateColourPicker), AllowHtml]
         public string CategoryColour { get; set; }
 
         [DisplayName("Lock The Category")]

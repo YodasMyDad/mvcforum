@@ -178,6 +178,7 @@
     <Compile Include="Akismet.NET\Validator.cs" />
     <Compile Include="Application\AppHelpers.cs" />
     <Compile Include="Application\DatesUI.cs" />
+    <Compile Include="Application\ExtensionMethods\HtmlLabelExtensions.cs" />
     <Compile Include="Application\ForumMVCResourceDisplayName.cs" />
     <Compile Include="Application\GoogleSitemapResult.cs" />
     <Compile Include="Application\MobileExtensions.cs" />
@@ -1887,7 +1888,6 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Topic\LatestTopics.cshtml" />
     <Content Include="Views\Home\Leaderboard.cshtml" />
-    <Content Include="Views\Home\UploadFiles.cshtml" />
     <Content Include="Views\Members\AdminMemberProfileTools.cshtml" />
     <Content Include="Views\Members\ChangePassword.cshtml" />
     <Content Include="Views\Members\Edit.cshtml" />
@@ -1930,6 +1930,15 @@
     <Content Include="Views\Shared\GetCategoryBreadcrumb.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\colourpicker.cshtml" />
     <Content Include="Views\Topic\HotTopics.cshtml" />
+    <Content Include="Views\Shared\_LayoutRightSideBar.cshtml" />
+    <Content Include="Views\Shared\_LayoutFullWidth.cshtml" />
+    <Content Include="Views\Category\GetSubscribedCategories.cshtml" />
+    <Content Include="Views\Shared\_Category.cshtml" />
+    <Content Include="Views\Topic\GetSubscribedTopics.cshtml" />
+    <Content Include="Views\Home\Following.cshtml" />
+    <Content Include="Views\Home\PostedIn.cshtml" />
+    <Content Include="Views\Shared\SubNavigation.cshtml" />
+    <Content Include="Views\Topic\TopicsMemberHasPostedIn.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Extensions\" />

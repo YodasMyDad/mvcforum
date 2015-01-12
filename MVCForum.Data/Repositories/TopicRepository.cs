@@ -6,6 +6,7 @@ using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Utilities;
 
 namespace MVCForum.Data.Repositories
 {
@@ -151,6 +152,16 @@ namespace MVCForum.Data.Repositories
                             .FirstOrDefault(x => x.Id == id);
 
             return topic;
+        }
+
+        public List<Topic> Get(List<Guid> ids)
+        {
+            return _context.Topic
+                .Include(x => x.Category)
+                .Include(x => x.LastPost.User)
+                .Include(x => x.User)
+                .Include(x => x.Poll)
+                .Where(x => ids.Contains(x.Id)).OrderByDescending(x => x.LastPost.DateCreated).ToList();
         }
 
         public void Delete(Topic item)
@@ -330,9 +341,35 @@ namespace MVCForum.Data.Repositories
             var results = _context.Post
                             .Include(x => x.Topic)
                             .Include(x => x.User)
-                            .AsNoTracking()
                             .Where(x => x.PostContent.Contains(searchTerm) | x.Topic.Name.Contains(searchTerm))
                             .Where(x => x.Pending != true)
+                            .OrderByDescending(x => x.DateCreated)
+                            .Skip((pageIndex - 1) * pageSize)
+                            .Take(pageSize)
+                            .ToList();
+
+            // Return a paged list
+            return new PagedList<Topic>(results.Select(x => x.Topic), pageIndex, pageSize, total);
+        }
+
+        public PagedList<Topic> GetMembersActivity(int pageIndex, int pageSize, int amountToTake, Guid memberGuid)
+        {
+            // We might only want to display the top 100
+            // but there might not be 100 topics
+            var total = _context.Post.Where(x => x.User.Id == memberGuid && x.Pending != true).DistinctBy(x => x.Topic.Id).Count();
+            if (amountToTake < total)
+            {
+                total = amountToTake;
+            }
+
+            // Get the Posts and then get the topics from the post
+            // This is an interim solution, as its flawed due to multiple posts in one topic so the paging might
+            // be incorrect if all posts are from one topic.
+            var results = _context.Post
+                            .Include(x => x.Topic)
+                            .Include(x => x.User)
+                            .Where(x => x.User.Id == memberGuid && x.Pending != true)
+                            .DistinctBy(x => x.Topic.Id)
                             .OrderByDescending(x => x.DateCreated)
                             .Skip((pageIndex - 1) * pageSize)
                             .Take(pageSize)

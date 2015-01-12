@@ -1,0 +1,11 @@
+﻿@{
+    ViewBag.Title = Html.Lang("PostedIn.PageTitle");
+}
+
+<div class="postedin">
+
+    <h1>@ViewBag.Title</h1>
+
+    @Html.Action("TopicsMemberHasPostedIn", "Topic")
+
+</div>

@@ -31,5 +31,6 @@ namespace MVCForum.Domain.DomainModel
         public virtual MembershipUser User { get; set; }
         public virtual IList<Vote> Votes { get; set; }
         public virtual IList<UploadedFile> Files { get; set; }
+        public virtual IList<Favourite> Favourites { get; set; }
     }
 }

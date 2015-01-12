@@ -2,8 +2,8 @@
 @{
     // Global Stuff
     var theme = Html.Settings().Theme;
-    var themePath = string.Concat(SiteConstants.ThemeRootFolder, theme);
-    TempData[AppConstants.GlobalClass] = Convert.ToBoolean(PageData[SiteConstants.IsMobileDevice]) ? "mobile" : "desktop";
+    var themePath = string.Concat(AppConstants.ThemeRootFolder, theme);
+    TempData[AppConstants.GlobalClass] = Convert.ToBoolean(PageData[AppConstants.IsMobileDevice]) ? "mobile" : "desktop";
     TempData[AppConstants.CurrentAction] = ViewContext.RouteData.GetRequiredString("action").ToLower();
     TempData[AppConstants.CurrentController] = ViewContext.RouteData.GetRequiredString("controller").ToLower();
 }
@@ -17,7 +17,7 @@
     @RenderSection("SocialMeta", false)
     @ViewBag.Canonical
     @(
- Bundle.Css()
+            Bundle.Css()
                 .Add("~/Content/bootstrap/css/bootstrap.css")
                 .Add(themePath + "/Content/Styles/theme.css")
                 .MvcRender("~/content/cache/combined_" + theme + "_#.css")
@@ -90,7 +90,7 @@
                             <li><a href="@Url.Action("Index", "Admin", new { area = "Admin" }, null)">@Html.LanguageString("Layout.Nav.Admin")</a></li>
                         }
                         @*<li><a href="http://www.mvcforum.com">Main Website</a></li>*@
-                    </ul>
+    </ul>
 
 
                     @if (User.Identity.IsAuthenticated)
@@ -110,32 +110,18 @@
         </nav>
     </header>
 
-    @RenderSection("UnderHeaderStrip", false)
+    <section class="content-strip content-strip-@(User.Identity.IsAuthenticated.ToString().ToLower())">
+            @Html.Partial("SubNavigation")
+    </section>
 
     <section class="container">
         @Html.Partial("_GenericMessage")
         @Html.Partial("_EmailConfirmationNotice")
         @Html.Partial("_NoScript")
-        <div id="main" class="row mainbody">
-
-            <div class="col-md-9">
-
-                @* ### Remove ME - Not needed, just for our forum ### *@
-                @Html.Partial("_DocumentationBlock")
-                @* ### Remove ME - Not needed, just for our forum ### *@
-
-                @RenderBody()
-            </div>
-            <div class="col-md-3 sidelayoutsection">
-                <div class="main-side-box">
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        @Html.Action("CreateTopicButton", "Topic")
-                    }
-                    @RenderSection("side", false)
-                </div>
-            </div>
-
+        <div id="main" class="mainbody">
+                        
+            @RenderBody()
+           
         </div>
     </section>
 

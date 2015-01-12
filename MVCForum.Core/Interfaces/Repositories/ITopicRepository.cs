@@ -23,11 +23,13 @@ namespace MVCForum.Domain.Interfaces.Repositories
         IList<Topic> GetTopicsByCsv(int amountToTake, List<Guid> topicIds);
         IList<Topic> GetRssTopicsByCategory(int amountToTake, Guid categoryId);
         PagedList<Topic> GetPagedTopicsByTag(int pageIndex, int pageSize, int amountToTake, string tag);
+        PagedList<Topic> GetMembersActivity(int pageIndex, int pageSize, int amountToTake, Guid memberGuid);
         Topic GetTopicBySlug(string slug);
         IList<Topic> GetTopicBySlugLike(string slug);
         int TopicCount();
         Topic Add(Topic item);
         Topic Get(Guid id);
+        List<Topic> Get(List<Guid> ids);
         void Delete(Topic item);
     }
 }

@@ -1,0 +1,35 @@
+﻿@{
+    Layout = "_Layout.cshtml";
+}
+
+@section SocialMeta{
+    @RenderSection("SocialMeta", false)
+}
+
+@section Header {
+    @RenderSection("Header", false)
+}
+<div class="row">
+    <div class="col-md-9">
+
+        @* ### Remove ME - Not needed, just for our forum ### *@
+        @Html.Partial("_DocumentationBlock")
+        @* ### Remove ME - Not needed, just for our forum ### *@
+
+        @RenderBody()
+
+    </div>
+    <div class="col-md-3 sidelayoutsection">
+        <div class="main-side-box">
+            @if (User.Identity.IsAuthenticated)
+            {
+                @Html.Action("CreateTopicButton", "Topic")
+            }
+            @RenderSection("side", false)
+        </div>
+    </div>
+</div>
+
+@section Footer {
+    @RenderSection("Footer", false)
+}    

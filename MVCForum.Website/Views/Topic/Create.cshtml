@@ -1,6 +1,7 @@
 ﻿@using MVCForum.Domain.Constants
 @model MVCForum.Website.ViewModels.CreateTopicViewModel
 @{
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = Html.LanguageString("Topic.CreateDiscussion");
     Model.Category = TempData[AppConstants.DefaultCategoryViewBagName] != null ?
                     Guid.Parse(TempData[AppConstants.DefaultCategoryViewBagName].ToString()) : Model.Categories.FirstOrDefault().Id;

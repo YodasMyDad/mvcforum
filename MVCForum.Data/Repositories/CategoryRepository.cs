@@ -13,29 +13,6 @@ namespace MVCForum.Data.Repositories
     {
         private readonly MVCForumContext _context;
 
-        private void PopulateTopicsPosts(IEnumerable<Category> results)
-        {
-            var posts = _context.Post.AsNoTracking().ToLookup(x => x.Topic.Id);
-            var topics = _context.Topic.Include(x => x.LastPost).AsNoTracking().ToLookup(x => x.Category.Id);
-
-            foreach (var category in results)
-            {
-                category.Topics = topics.Contains(category.Id) ? topics[category.Id].ToList() : new List<Topic>();
-                if (category.Topics.Any())
-                {
-                    PopulatePosts(category.Topics, posts);
-                }
-            }
-        }
-
-        private void PopulatePosts(IList<Topic> topics, ILookup<Guid, Post> posts)
-        {
-            foreach (var topic in topics)
-            {
-                topic.Posts = posts.Contains(topic.Id) ? posts[topic.Id].ToList() : new List<Post>();
-            }
-        }
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -97,20 +74,15 @@ namespace MVCForum.Data.Repositories
                     .ToList();
         }
 
-        public IList<Category> GetMainCategories(bool getWithExtendedData)
+        public IList<Category> GetMainCategories()
         {
             var categories = _context.Category
                                 .Include(x => x.ParentCategory)
-                                .Where(cat => cat.ParentCategory == null);
+                                .Where(cat => cat.ParentCategory == null)
+                                .OrderBy(x => x.SortOrder)
+                                .ToList();
 
-            if (getWithExtendedData)
-            {
-                PopulateTopicsPosts(categories);
-            }
-
-            return categories.Where(cat => cat.ParentCategory == null)
-                     .OrderBy(x => x.SortOrder)
-                     .ToList();
+            return categories;
         }
 
 

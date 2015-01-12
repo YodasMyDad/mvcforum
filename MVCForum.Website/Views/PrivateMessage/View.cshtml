@@ -2,6 +2,7 @@
 @model MVCForum.Website.ViewModels.ViewPrivateMessageViewModel
 
 @{
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = string.Concat(Html.LanguageString("PM.Title"), Model.Message.Subject);
 }
 

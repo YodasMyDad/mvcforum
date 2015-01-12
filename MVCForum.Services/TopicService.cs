@@ -219,6 +219,11 @@ namespace MVCForum.Services
             return _topicRepository.GetTopicsByCsv(pageIndex, pageSize, amountToTake, topicIds);
         }
 
+        public PagedList<Topic> GetMembersActivity(int pageIndex, int pageSize, int amountToTake, Guid memberGuid)
+        {
+            return _topicRepository.GetMembersActivity(pageIndex, pageSize, amountToTake, memberGuid);
+        }
+
         public IList<Topic> GetTopicsByCsv(int amountToTake, List<Guid> topicIds)
         {
             return _topicRepository.GetTopicsByCsv(amountToTake, topicIds);
@@ -242,6 +247,11 @@ namespace MVCForum.Services
         public Topic Get(Guid topicId)
         {
             return _topicRepository.Get(topicId);
+        }
+
+        public List<Topic> Get(List<Guid> topicIds)
+        {
+            return _topicRepository.Get(topicIds);
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
 @using MVCForum.Website.ViewModels
 @model ViewCategoryViewModel
 @{
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = Html.Raw(Model.Category.PageTitle ?? Model.Category.Name);
     ViewBag.MetaDesc = Model.Category.MetaDescription ?? StringUtils.StripHtmlFromString(Model.Category.Description);
     var totalCount = Convert.ToInt32(Model.TotalCount);
@@ -36,17 +37,8 @@
     @Html.Action("CurrentWeekHighPointUsers", "Point")
 }
 
-@section UnderHeaderStrip {
-    <section class="content-strip">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12">
-                    @Html.Action("GetCategoryBreadcrumb", "Category", new { category = Model.Category })
-                </div>
-            </div>
-        </div>
-    </section>
-}
+
+@Html.Action("GetCategoryBreadcrumb", "Category", new { category = Model.Category })
 
 <div class="mainheading">
     <div class="widgetright">

@@ -2,6 +2,7 @@
 @model SearchViewModel
 
 @{
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = Html.Settings().ForumName;
     var totalCount = Convert.ToInt32(Model.TotalCount);
     var topics = Model.Topics.Distinct(x => x.Id).ToList();
@@ -23,7 +24,7 @@
         // Get the permissions for this topic via its parent category
         var permissions = Model.AllPermissionSets[topic.Category];
 
-        var viewModel = new TopicViewModel {Permissions = permissions, Topic = topic, ShowCategoryName = false};
+        var viewModel = new TopicViewModel {Permissions = permissions, Topic = topic};
         Html.RenderPartial("_Topic", viewModel);
     }
 

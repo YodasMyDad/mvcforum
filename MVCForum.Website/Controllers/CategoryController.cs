@@ -69,7 +69,7 @@ namespace MVCForum.Website.Controllers
 
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                foreach (var category in _categoryService.GetAllMainCategories(true))
+                foreach (var category in _categoryService.GetAllMainCategories())
                 {
                     var permissionSet = RoleService.GetPermissions(category, UsersRole);
                     catViewModel.AllPermissionSets.Add(category, permissionSet);
@@ -82,8 +82,10 @@ namespace MVCForum.Website.Controllers
         [ChildActionOnly]
         public PartialViewResult ListCategorySideMenu()
         {
-            var catViewModel = new CategoryListViewModel { 
-                AllPermissionSets = new Dictionary<Category, PermissionSet>()};
+            var catViewModel = new CategoryListViewModel
+            {
+                AllPermissionSets = new Dictionary<Category, PermissionSet>()
+            };
 
             using (UnitOfWorkManager.NewUnitOfWork())
             {
@@ -95,6 +97,35 @@ namespace MVCForum.Website.Controllers
             }
 
             return PartialView(catViewModel);
+        }
+
+        [Authorize]
+        [ChildActionOnly]
+        public PartialViewResult GetSubscribedCategories()
+        {
+            var viewModel = new List<CategoryRowViewModel>();
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var categories = LoggedOnUser.CategoryNotifications.Select(x => x.Category);
+                foreach (var category in categories)
+                {
+                    var permissionSet = RoleService.GetPermissions(category, UsersRole);
+                    var topicCount = category.Topics.Count;
+                    var latestTopicInCategory = category.Topics.OrderByDescending(x => x.LastPost.DateCreated).FirstOrDefault();
+                    var postCount = (category.Topics.SelectMany(x => x.Posts).Count() - 1);
+                    var model = new CategoryRowViewModel
+                    {
+                        Category = category,
+                        LatestTopic = latestTopicInCategory,
+                        Permissions = permissionSet,
+                        PostCount = postCount,
+                        TopicCount = topicCount
+                    };
+                    viewModel.Add(model);
+                }
+            }
+
+            return PartialView(viewModel);
         }
 
 

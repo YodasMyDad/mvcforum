@@ -98,6 +98,7 @@
     <Compile Include="Mapping\CategoryMapping.cs" />
     <Compile Include="Mapping\CategoryNotificationMapping.cs" />
     <Compile Include="Mapping\CategoryPermissionForRoleMapping.cs" />
+    <Compile Include="Mapping\FavouriteMapping.cs" />
     <Compile Include="Mapping\PollAnswerMapping.cs" />
     <Compile Include="Mapping\PollMapping.cs" />
     <Compile Include="Mapping\PollVoteMapping.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="Repositories\CategoryRepository.cs" />
     <Compile Include="Repositories\ActivityRepository.cs" />
     <Compile Include="Repositories\BannedWordRepository.cs" />
+    <Compile Include="Repositories\FavouriteRepository.cs" />
     <Compile Include="Repositories\InstallerRepository.cs" />
     <Compile Include="Repositories\PollAnswerRepository.cs" />
     <Compile Include="Repositories\PollVoteRepository.cs" />

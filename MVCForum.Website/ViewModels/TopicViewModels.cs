@@ -54,6 +54,14 @@ namespace MVCForum.Website.ViewModels
         public int? TotalPages { get; set; }
     }
 
+    public class PostedInViewModel
+    {
+        public List<TopicViewModel> Topics { get; set; }
+        public int? PageIndex { get; set; }
+        public int? TotalCount { get; set; }
+        public int? TotalPages { get; set; }
+    }
+
     public class HotTopicsViewModel
     {
         public List<TopicViewModel> Topics { get; set; }

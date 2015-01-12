@@ -15,6 +15,15 @@ namespace MVCForum.Website.ViewModels
         public Dictionary<Category, PermissionSet> AllPermissionSets { get; set; }
     }
 
+    public class CategoryRowViewModel
+    {
+        public Category Category { get; set; }
+        public int TopicCount { get; set; }
+        public Topic LatestTopic { get; set; }
+        public int PostCount { get; set; }
+        public PermissionSet Permissions { get; set; }
+    }
+
     public class ViewCategoryViewModel
     {
         public List<TopicViewModel> Topics { get; set; }

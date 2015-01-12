@@ -45,6 +45,17 @@ namespace MVCForum.Website.Controllers
             return View();
         }
 
+        public ActionResult Following()
+        {
+
+            return View();
+        }
+
+        public ActionResult PostedIn()
+        {
+            return View();
+        }
+
         public ActionResult Activity(int? p)
         {
             using (UnitOfWorkManager.NewUnitOfWork())

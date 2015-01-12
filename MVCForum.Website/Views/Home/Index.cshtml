@@ -1,6 +1,6 @@
 ﻿@using MVCForum.Website.Application
-
 @{
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = Html.Settings().PageTitle ?? Html.Settings().ForumName;
     ViewBag.MetaDesc = Html.Settings().MetaDesc;
 }
@@ -13,23 +13,6 @@
     @Html.Action("PopularTags", "Tag")
     @Html.Action("CurrentWeekHighPointUsers", "Point")
     @Html.Action("HotTopics", "Topic")
-}
-
-@section UnderHeaderStrip {
-    <section class="content-strip">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12">
-                    <ul>
-                        <li><a href="@Url.Action("Index", "Home")" class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "index" ? "active" : "")">Latest</a></li>
-                        <li><a href="#">Following</a></li>
-                        <li><a href="#">Posted In</a></li>
-                        <li><a href="#">Favourites</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
 }
 
 @Html.Action("LatestTopics", "Topic")

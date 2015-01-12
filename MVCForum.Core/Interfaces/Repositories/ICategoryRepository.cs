@@ -9,7 +9,7 @@ namespace MVCForum.Domain.Interfaces.Repositories
         IList<Category> GetAll();
         IList<Category> GetAllSubCategories(Guid parentId);
         IList<Category> GetAllDeepSubCategories(Category category);
-        IList<Category> GetMainCategories(bool getWithExtendedData);
+        IList<Category> GetMainCategories();
         Category Add(Category newsItem);
         CategoryWithSubCategories GetBySlugWithSubCategories(string slug);
         Category GetBySlug(string slug);

@@ -57,9 +57,9 @@ namespace MVCForum.Services
         /// Get all main categories (Categories with no parent category)
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Category> GetAllMainCategories(bool getWithExtendedData = false)
+        public IEnumerable<Category> GetAllMainCategories()
         {
-            return _categoryRepository.GetMainCategories(getWithExtendedData);
+            return _categoryRepository.GetMainCategories();
         }
 
         /// <summary>
