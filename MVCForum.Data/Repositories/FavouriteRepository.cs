@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Entity;
 using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
@@ -27,18 +28,47 @@ namespace MVCForum.Data.Repositories
 
         public List<Favourite> GetAll()
         {
-            return _context.Favourite.ToList();
+            return _context.Favourite
+                            .Include(x => x.Post)
+                            .Include(x => x.Topic.Category)
+                            .Include(x => x.Member)
+                .ToList();
+        }
+
+        public List<Favourite> GetAllPostFavourites(List<Guid> postIds)
+        {
+            return _context.Favourite
+                            .Include(x => x.Post)
+                            .Include(x => x.Topic.Category)
+                            .Include(x => x.Member)
+                            .Where(x => postIds.Contains(x.Post.Id)).ToList();
         }
 
         public List<Favourite> GetAllByMember(Guid memberId)
         {
-            return _context.Favourite.Where(x => x.Member.Id == memberId).ToList();
+            return _context.Favourite
+                            .Include(x => x.Post)
+                            .Include(x => x.Topic.Category)
+                            .Include(x => x.Member)
+                .Where(x => x.Member.Id == memberId).ToList();
         }
 
         public Favourite GetByMemberAndPost(Guid memberId, Guid postId)
         {
             return _context.Favourite
+                            .Include(x => x.Post)
+                            .Include(x => x.Topic.Category)
+                            .Include(x => x.Member)
                             .FirstOrDefault(x => x.Member.Id == memberId && x.Post.Id == postId);
+        }
+
+        public List<Favourite> GetByTopic(Guid topicId)
+        {
+            return _context.Favourite
+                            .Include(x => x.Post)
+                            .Include(x => x.Topic.Category)
+                            .Include(x => x.Member)
+                            .Where(x => x.Topic.Id == topicId).ToList();
         }
     }
 }

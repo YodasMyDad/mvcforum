@@ -119,6 +119,18 @@
 
                         </li>
                     }
+                    
+                    <li>
+                        <span class="glyphicon @(Model.MemberHasFavourited ? "glyphicon glyphicon-star" : "glyphicon-star-empty")" aria-hidden="true"></span>
+                        <span class="count">@Model.Favourites.Count()</span>
+                        @if (Html.CurrentMember() != null && Model.Post.User.Id != loggedOnUserId)
+                        {
+                            <a class="favourite" data-id="@postId" data-addremove="@(Model.MemberHasFavourited ? "remove" : "add")">
+                                @(Model.MemberHasFavourited ? Html.Lang("Post.Favourited") : Html.Lang("Post.Favourite"))
+                            </a>
+                        }
+                    </li>
+
                     @if (Html.Settings().EnableMarkAsSolution)
                     {
                         if (Model.ParentTopic.Solved && Model.Post.IsSolution)
@@ -154,7 +166,7 @@
 
             @if (Model.Post.Files != null && Model.Post.Files.Any())
             {
-                
+
                 <div class="postuploadedfilesholder clearfix">
                     <p>@Html.Lang("Post.AttachedFiles")</p>
                     <ul>
@@ -170,7 +182,7 @@
                                     {
                                         <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
                                     }
-                                </a> 
+                                </a>
                                 @if (Model.Post.User.Id == loggedOnUserId || User.IsInRole(AppConstants.AdminRoleName))
                                 {
                                     <a href="@Url.Action("DeleteUploadedFile", "Upload", new { file.Id })" class="deleteupload" title="@Html.LanguageString("Post.Delete")">

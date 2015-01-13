@@ -39,5 +39,15 @@ namespace MVCForum.Services
         {
             return _favouriteRepository.GetByMemberAndPost(memberId, postId);
         }
+
+        public List<Favourite> GetByTopic(Guid topicId)
+        {
+            return _favouriteRepository.GetByTopic(topicId);
+        }
+
+        public List<Favourite> GetAllPostFavourites(List<Guid> postIds)
+        {
+            return _favouriteRepository.GetAllPostFavourites(postIds);
+        }
     }
 }

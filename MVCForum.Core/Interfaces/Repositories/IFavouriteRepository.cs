@@ -9,7 +9,9 @@ namespace MVCForum.Domain.Interfaces.Repositories
         Favourite Add(Favourite dialogueFavourite);
         Favourite Delete(Favourite dialogueFavourite);
         List<Favourite> GetAll();
+        List<Favourite> GetAllPostFavourites(List<Guid> postIds);
         List<Favourite> GetAllByMember(Guid memberId);
         Favourite GetByMemberAndPost(Guid memberId, Guid postId);
+        List<Favourite> GetByTopic(Guid topicId);
     }
 }

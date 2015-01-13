@@ -30,9 +30,11 @@ namespace MVCForum.Website.ViewModels
     {
         public Post Post { get; set; }
         public List<Vote> Votes { get; set; } 
+        public List<Favourite> Favourites { get; set; } 
         public Topic ParentTopic { get; set; }
         public PermissionSet Permissions { get; set; }
         public bool AllowedToVote { get; set; }
+        public bool MemberHasFavourited { get; set; }
     }
 
     public class EditPostViewModel

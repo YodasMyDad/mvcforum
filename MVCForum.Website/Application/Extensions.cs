@@ -5,10 +5,8 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using System.Web.Routing;
-using System.Web.Services.Description;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Services;
 
 namespace MVCForum.Website.Application
 {

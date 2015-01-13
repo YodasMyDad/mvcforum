@@ -19,6 +19,7 @@ namespace MVCForum.Website.Controllers
 {
     public partial class TopicController : BaseController
     {
+        private readonly IFavouriteService _favouriteService;
         private readonly ITopicService _topicService;
         private readonly IPostService _postService;
         private readonly ITopicTagService _topicTagService;
@@ -38,7 +39,7 @@ namespace MVCForum.Website.Controllers
         public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
             ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, IPollService pollService,
-            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService)
+            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
@@ -53,6 +54,7 @@ namespace MVCForum.Website.Controllers
             _pollAnswerService = pollAnswerService;
             _bannedWordService = bannedWordService;
             _voteService = voteService;
+            _favouriteService = favouriteService;
 
             LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
@@ -448,7 +450,7 @@ namespace MVCForum.Website.Controllers
                         return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
                     }
 
-                    var viewModel = ViewModelMapping.CreateTopicViewModel(topic, permissions, posts.ToList(), starterPost, posts.PageIndex, posts.TotalCount, posts.TotalPages, LoggedOnUser, _topicNotificationService, _pollAnswerService, _voteService, SettingsService.GetSettings(), true);
+                    var viewModel = ViewModelMapping.CreateTopicViewModel(topic, permissions, posts.ToList(), starterPost, posts.PageIndex, posts.TotalCount, posts.TotalPages, LoggedOnUser, SettingsService.GetSettings(), true);
 
                     // If there is a quote querystring
                     var quote = Request["quote"];
@@ -510,10 +512,12 @@ namespace MVCForum.Website.Controllers
                                       EnumUtils.ReturnEnumValueFromString<PostOrderBy>(getMorePostsViewModel.Order) : PostOrderBy.Standard;
 
             var posts = _postService.GetPagedPostsByTopic(getMorePostsViewModel.PageIndex, SettingsService.GetSettings().PostsPerPage, int.MaxValue, topic.Id, orderBy);
-            var votes = _voteService.GetVotesByPosts(posts.Select(x => x.Id).ToList());
+            var postIds = posts.Select(x => x.Id).ToList();
+            var votes = _voteService.GetVotesByPosts(postIds);
+            var favs = _favouriteService.GetAllPostFavourites(postIds);
             var viewModel = new ShowMorePostsViewModel
                 {
-                    Posts = ViewModelMapping.CreatePostViewModels(posts, votes, permissions, topic, LoggedOnUser, SettingsService.GetSettings()),
+                    Posts = ViewModelMapping.CreatePostViewModels(posts, votes, permissions, topic, LoggedOnUser, SettingsService.GetSettings(), favs),
                     Topic = topic,
                     Permissions = permissions
                 };

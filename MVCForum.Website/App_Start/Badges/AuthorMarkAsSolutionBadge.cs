@@ -2,7 +2,7 @@
 using MVCForum.Domain.DomainModel.Attributes;
 using MVCForum.Domain.Interfaces.Badges;
 using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Services;
+using MVCForum.Website.Application;
 
 namespace MVCForum.Website.Badges
 {

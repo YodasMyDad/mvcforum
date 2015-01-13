@@ -11,5 +11,7 @@ namespace MVCForum.Domain.Interfaces.Services
         List<Favourite> GetAll();
         List<Favourite> GetAllByMember(Guid memberId);
         Favourite GetByMemberAndPost(Guid memberId, Guid postId);
+        List<Favourite> GetByTopic(Guid topicId);
+        List<Favourite> GetAllPostFavourites(List<Guid> postIds);
     }
 }

@@ -453,6 +453,94 @@ function AddPostClickEvents() {
             }
         });
     });
+
+    $(".post a.favourite").click(function (e) {
+        e.preventDefault();
+        var favLink = $(this);
+
+        // Data attributes
+        var postId = favLink.data('id');
+        var addremove = favLink.data('addremove');
+
+        // Holding li
+        var holdingLi = favLink.closest('.postsocial li');
+
+        // count and star
+        var amountOfFavsHolder = holdingLi.find('span.count');
+        var currentFavCount = parseInt(amountOfFavsHolder.text());
+        var favStar = holdingLi.find('.glyphicon');
+
+        // Are we on the my favourites page
+        var myFavsHolder = $('div.myfavourites');
+
+        var voteViewModel = new Object();
+        voteViewModel.PostId = postId;
+
+        // Ajax call to post the view model to the controller
+        var strung = JSON.stringify(voteViewModel);
+
+        var ajaxUrl = "Favourite/FavouritePost";
+
+        $.ajax({
+            url: app_base + ajaxUrl,
+            type: 'POST',
+            data: strung,
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'html',
+            success: function (data) {
+
+                // Update the text
+                favLink.text(data);
+
+                // Update the count and change the link type
+                if (addremove == "add") {
+                    amountOfFavsHolder.text(currentFavCount + 1);
+                    favStar.removeClass("glyphicon-star-empty").addClass("glyphicon-star");
+                    favLink.data('addremove', 'remove');
+                } else {
+                    amountOfFavsHolder.text(currentFavCount - 1);
+                    favStar.removeClass("glyphicon-star").addClass("glyphicon-star-empty");
+                    favLink.data('addremove', 'add');
+                    if (myFavsHolder.length > 0) {
+                        // We are on the member my favourites page - So find and remove the post
+                        var postHolder = favLink.closest("div.post");
+                        postHolder.fadeOut("fast");
+                    }
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+            }
+        });
+    });
+
+    //$(".post a.favourite").click(function (e) {
+    //    e.preventDefault();
+    //    var favLink = $(this);
+    //    var postId = favLink.data('postid');
+
+    //    var ajaxUrl = "Favourite/FavouritePost";
+
+    //    var viewModel = new Object();
+    //    viewModel.PostId = postId;
+
+    //    // Ajax call to post the view model to the controller
+    //    var strung = JSON.stringify(viewModel);
+
+    //    $.ajax({
+    //        url: app_base + ajaxUrl,
+    //        type: 'POST',
+    //        data: strung,
+    //        contentType: 'application/json; charset=utf-8',
+    //        dataType: 'html',
+    //        success: function (data) {
+    //            favLink.closest('.post').remove();
+    //        },
+    //        error: function (xhr, ajaxOptions, thrownError) {
+    //            ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+    //        }
+    //    });
+    //});
 }
 
 function AddNewPosts(showMoreLink, posts) {

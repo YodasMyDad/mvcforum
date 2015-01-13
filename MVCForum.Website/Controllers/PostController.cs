@@ -111,13 +111,12 @@ namespace MVCForum.Website.Controllers
                 return PartialView("_PostModeration");
             }
 
-
             // All good send the notifications and send the post back
             using (UnitOfWorkManager.NewUnitOfWork())
             {
 
                 // Create the view model
-                var viewModel = ViewModelMapping.CreatePostViewModel(newPost, new List<Vote>(), permissions, topic, LoggedOnUser, SettingsService.GetSettings());
+                var viewModel = ViewModelMapping.CreatePostViewModel(newPost, new List<Vote>(), permissions, topic, LoggedOnUser, SettingsService.GetSettings(), new List<Favourite>());
 
                 // Success send any notifications
                 NotifyNewTopics(topic);
@@ -215,10 +214,11 @@ namespace MVCForum.Website.Controllers
                         {
                             // Now sort the poll answers, what to add and what to remove
                             // Poll answers already in this poll.
-                            var postedIds = editPostViewModel.PollAnswers.Select(x => x.Id);
                             //var existingAnswers = topic.Poll.PollAnswers.Where(x => postedIds.Contains(x.Id)).ToList();
-                            var existingAnswers = editPostViewModel.PollAnswers.Where(x => topic.Poll.PollAnswers.Select(p => p.Id).Contains(x.Id)).ToList();
-                            var newPollAnswers = editPostViewModel.PollAnswers.Where(x => !topic.Poll.PollAnswers.Select(p => p.Id).Contains(x.Id)).ToList();
+                            var postedIds = editPostViewModel.PollAnswers.Select(x => x.Id);
+                            var topicPollAnswerIds = topic.Poll.PollAnswers.Select(p => p.Id).ToList();
+                            var existingAnswers = editPostViewModel.PollAnswers.Where(x => topicPollAnswerIds.Contains(x.Id)).ToList();
+                            var newPollAnswers = editPostViewModel.PollAnswers.Where(x => !topicPollAnswerIds.Contains(x.Id)).ToList();
                             var pollAnswersToRemove = topic.Poll.PollAnswers.Where(x => !postedIds.Contains(x.Id)).ToList();
 
                             // Loop through existing and update names if need be

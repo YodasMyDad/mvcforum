@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace MVCForum.Services
+namespace MVCForum.Website.Application
 {
     /// <summary>
     /// ServiceFactory is to replace the API, and an efficient way to get access to any interfaced service

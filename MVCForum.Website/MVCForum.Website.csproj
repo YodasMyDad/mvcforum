@@ -237,6 +237,7 @@
     <Compile Include="Areas\Admin\ViewModels\AdminTagViewModel.cs" />
     <Compile Include="Controllers\ClosedController.cs" />
     <Compile Include="Controllers\EmailController.cs" />
+    <Compile Include="Controllers\FavouriteController.cs" />
     <Compile Include="Controllers\InstallController.cs" />
     <Compile Include="Controllers\PollController.cs" />
     <Compile Include="Controllers\PrivateMessageController.cs" />
@@ -262,6 +263,7 @@
     <Compile Include="Areas\Admin\ViewModels\AccountViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Areas\Admin\ViewModels\ModerateViewModels.cs" />
+    <Compile Include="ViewModels\FavouriteViewModels.cs" />
     <Compile Include="ViewModels\UploadViewModels.cs" />
     <Compile Include="ViewModels\BadgeViewModels.cs" />
     <Compile Include="ViewModels\CategoryViewModels.cs" />
@@ -1939,6 +1941,7 @@
     <Content Include="Views\Home\PostedIn.cshtml" />
     <Content Include="Views\Shared\SubNavigation.cshtml" />
     <Content Include="Views\Topic\TopicsMemberHasPostedIn.cshtml" />
+    <Content Include="Views\Favourite\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Extensions\" />

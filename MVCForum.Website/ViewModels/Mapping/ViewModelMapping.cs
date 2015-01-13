@@ -210,7 +210,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             foreach (var topic in topics)
             {
                 var permission = permissions[topic.Category];
-                viewModels.Add(CreateTopicViewModel(topic, permission, topic.Posts.ToList(), null, null, null, null, loggedOnUser, topicNotificationService, pollAnswerService, voteService, settings));
+                viewModels.Add(CreateTopicViewModel(topic, permission, topic.Posts.ToList(), null, null, null, null, loggedOnUser, settings));
             }
             return viewModels;
         }
@@ -223,12 +223,15 @@ namespace MVCForum.Website.ViewModels.Mapping
                                                     int? totalCount,
                                                     int? totalPages,
                                                     MembershipUser loggedOnUser,
-                                                    ITopicNotificationService topicNotificationService,
-                                                    IPollAnswerService pollAnswerService,
-                                                    IVoteService voteService,
                                                     Settings settings,
                                                     bool getExtendedData = false)
         {
+
+            var topicNotificationService = ServiceFactory.Get<ITopicNotificationService>();
+            var pollAnswerService = ServiceFactory.Get<IPollAnswerService>();
+            var voteService = ServiceFactory.Get<IVoteService>();
+            var favouriteService = ServiceFactory.Get<IFavouriteService>();
+
             var userIsAuthenticated = loggedOnUser != null;
             var viewModel = new TopicViewModel
             {
@@ -249,15 +252,26 @@ namespace MVCForum.Website.ViewModels.Mapping
             // Get votes for all posts
             var postIds = posts.Select(x => x.Id).ToList();
             postIds.Add(starterPost.Id);
-            var votes = voteService.GetVotesByPosts(postIds);  
+
+            var votes = voteService.GetVotesByPosts(postIds);
+
+            // Get all favourites for this user
+            var allFavourites = favouriteService.GetByTopic(topic.Id);
 
             // Map the votes
             var startPostVotes = votes.Where(x => x.Post.Id == starterPost.Id).ToList();
-            viewModel.StarterPost = CreatePostViewModel(starterPost, startPostVotes, permission, topic, loggedOnUser, settings);
+            var startPostFavs = allFavourites.Where(x => x.Post.Id == starterPost.Id).ToList();
+
+            // Create the starter post viewmodel
+            viewModel.StarterPost = CreatePostViewModel(starterPost, startPostVotes, permission, topic, loggedOnUser, settings, startPostFavs);
+
+            // Map data from the starter post viewmodel
             viewModel.VotesUp = startPostVotes.Count(x => x.Amount > 0);
             viewModel.VotesDown = startPostVotes.Count(x => x.Amount < 0);
             viewModel.Answers = totalCount != null ? (int)totalCount : posts.Count() - 1;
-            viewModel.Posts = CreatePostViewModels(posts, votes, permission, topic, loggedOnUser, settings);
+
+            // Create the ALL POSTS view models
+            viewModel.Posts = CreatePostViewModels(posts, votes, permission, topic, loggedOnUser, settings, allFavourites);
 
             // ########### Full topic need everything   
 
@@ -297,12 +311,17 @@ namespace MVCForum.Website.ViewModels.Mapping
         #endregion
 
         #region Post
-        public static PostViewModel CreatePostViewModel(Post post, List<Vote> votes, PermissionSet permission, Topic topic, MembershipUser loggedOnUser, Settings settings)
+        public static PostViewModel CreatePostViewModel(Post post, List<Vote> votes, PermissionSet permission, Topic topic, MembershipUser loggedOnUser, Settings settings, List<Favourite> favourites)
         {
-
             var allowedToVote = (loggedOnUser != null && loggedOnUser.Id != post.User.Id &&
                                  loggedOnUser.TotalPoints > settings.PointsAllowedToVoteAmount && 
                                  votes.All(x => x.User.Id != loggedOnUser.Id));
+
+            var hasFavourited = false;
+            if (loggedOnUser != null && loggedOnUser.Id != post.User.Id)
+            {
+                hasFavourited = favourites.Any(x => x.Member.Id == loggedOnUser.Id);   
+            }
 
             return new PostViewModel
             {
@@ -310,24 +329,30 @@ namespace MVCForum.Website.ViewModels.Mapping
                 Votes = votes,
                 Post = post,
                 ParentTopic = topic,
-                AllowedToVote = allowedToVote
+                AllowedToVote = allowedToVote,
+                MemberHasFavourited = hasFavourited,
+                Favourites = favourites
             };
         }
-        public static List<PostViewModel> CreatePostViewModels(IEnumerable<Post> posts, List<Vote> votes, PermissionSet permission, Topic topic, MembershipUser loggedOnUser, Settings settings)
+        public static List<PostViewModel> CreatePostViewModels(IEnumerable<Post> posts, List<Vote> votes, PermissionSet permission, Topic topic, MembershipUser loggedOnUser, Settings settings, List<Favourite> favourites)
         {
             var viewModels = new List<PostViewModel>();
             var groupedVotes = votes.ToLookup(x => x.Post.Id);
+            var groupedFavourites = favourites.ToLookup(x => x.Post.Id);
             foreach (var post in posts)
             {
                 var id = post.Id;
                 var postVotes = (groupedVotes.Contains(id) ? groupedVotes[id].ToList() : new List<Vote>());
-                viewModels.Add(CreatePostViewModel(post, postVotes, permission, topic, loggedOnUser, settings));
+                var postFavs = (groupedFavourites.Contains(id) ? groupedFavourites[id].ToList() : new List<Favourite>());
+                viewModels.Add(CreatePostViewModel(post, postVotes, permission, topic, loggedOnUser, settings, postFavs));
             }
             return viewModels;
         }
         #endregion
 
         #region Category
+
+        //TODO - Create generic category mapping
 
         #endregion
     }
