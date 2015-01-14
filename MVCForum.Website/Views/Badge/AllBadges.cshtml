@@ -19,20 +19,6 @@
 <div class="badgeholder">
     @foreach (var badge in Model.AllBadges)
     {
-        <div class="publicbadgeline">
-            <div class="row">
-                <div class="publicbadge col-md-1">
-                    <img src="@Url.Content(AppHelpers.ReturnBadgeUrl(badge.Image))" alt="@badge.Name" />
-                </div>
-                <div class="publicbadgedetails col-md-11">
-                    <p class="publicbadgename">@Html.Raw(badge.DisplayName)</p>
-                    <p class="publicbadgenamedesc">@badge.Description</p>
-                    @if (badge.AwardsPoints != null && badge.AwardsPoints > 0)
-                    {
-                        <p class="publicbadgeawards">@string.Format(Html.LanguageString("Badges.AwardsPoints"), badge.AwardsPoints)</p>
-                    }
-                </div>
-            </div>
-        </div>
+        @Html.Partial("_Badge", badge)
     }
 </div>

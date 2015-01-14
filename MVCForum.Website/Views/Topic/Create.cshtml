@@ -1,11 +1,10 @@
-﻿@using MVCForum.Domain.Constants
+﻿@using MVCForum.Website.Application.ExtensionMethods
 @model MVCForum.Website.ViewModels.CreateTopicViewModel
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = Html.LanguageString("Topic.CreateDiscussion");
-    Model.Category = TempData[AppConstants.DefaultCategoryViewBagName] != null ?
-                    Guid.Parse(TempData[AppConstants.DefaultCategoryViewBagName].ToString()) : Model.Categories.FirstOrDefault().Id;
-                                                  
+    //Model.Category = TempData[AppConstants.DefaultCategoryViewBagName] != null ? Guid.Parse(TempData[AppConstants.DefaultCategoryViewBagName].ToString()) : Guid.Empty;
+
 }
 
 @section Header
@@ -18,7 +17,7 @@
             .Add("~/Scripts/tags.js")
 
             .MvcRender("~/scripts/cache/topic-combined_#.js")
-          )
+    )
     <script type="text/javascript">
         counter = 0;
     </script>
@@ -32,11 +31,11 @@
 
 <div class="createtopicholder">
 
-    @using (Html.BeginForm("Create", "Topic", FormMethod.Post, new { @class = "form-horizontal" }))
+    @using (Html.BeginForm("Create", "Topic", FormMethod.Post))
     {
         @Html.ValidationSummary(false)
         @Html.AntiForgeryToken()
-        
+
         <div class="row paddedrow">
             <div class="col-md-8 topictitleholder">
                 <h2>@ViewBag.Title</h2>
@@ -44,44 +43,42 @@
             @if (Html.Settings().EnablePolls == true)
             {
                 <div class="col-md-4 pollcreatebuttonholder">
-                    <a href="#" class="btn createpollbutton">@Html.LanguageString("Poll.Button.Create")</a>
-                    <a href="#" style="display: none;" class="btn removepollbutton">@Html.LanguageString("Poll.Button.Remove")</a>
+                    <a href="#" class="btn-mvc btn-mvc-fullwidth createpollbutton">@Html.LanguageString("Poll.Button.Create")</a>
+                    <a href="#" style="display: none;" class="btn-mvc btn-mvc-fullwidth removepollbutton">@Html.LanguageString("Poll.Button.Remove")</a>
                 </div>
             }
-        </div>    
-    
-        <div class="row paddedrow">
-            <div class="col-md-12 topicname">
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.Name)
+        </div>
+
+        <div class="paddedrow topicname">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name)
+                @Html.TextBoxFor(model => model.Name, new { @class = "createtopicname form-control" })
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+        </div>
+
+        <div class="paddedrow relatedtopicsholder">
+            <h5>@Html.LanguageString("Topic.AlreadyAnswered")</h5>
+            <div class="relatedtopicskey"></div>
+        </div>
+
+        if (Html.Settings().EnablePolls == true)
+        {
+            <div class="row paddedrow pollanswerholder" style="display: none;">
+                <div class="col-md-9">
+                    <ul class="pollanswerlist"></ul>
+                    <input type="hidden" id="pollanswerplaceholder" value="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")" />
                 </div>
-                <div class="editor-field">
-                    @Html.TextBoxFor(model => model.Name, new { @class = "createtopicname" })
-                    @Html.ValidationMessageFor(model => model.Name)
+                <div class="col-md-3 polladdremovenewanswers">
+                    <a href="#" class="btn-mvc addanswer">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </a> 
+                    <a href="#" class="btn-mvc removeanswer">
+                        <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                    </a>
                 </div>
             </div>
-        </div>
-        
-        <div class="row paddedrow relatedtopicsholder">
-            <div class="col-md-12 relatedtopics">
-                <h5>@Html.LanguageString("Topic.AlreadyAnswered")</h5>
-                <div class="relatedtopicskey"></div>
-            </div>
-        </div>
-        
-            if (Html.Settings().EnablePolls == true)
-            {
-        <div class="row paddedrow pollanswerholder" style="display: none;">
-            <div class="col-md-10">
-                <ul class="pollanswerlist">
-                </ul>
-                <input type="hidden" id="pollanswerplaceholder" value="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")"/>
-            </div>
-            <div class="col-md-2 polladdremovenewanswers">
-                <a href="#" class="btn addanswer"><i class="icon-plus-sign"></i></a><a href="#" class="btn removeanswer"><i class="icon-minus-sign"></i></a>
-            </div>
-        </div>
-            }
+        }
 
         <div class="row">
             <div class="col-md-12 topiccontent">
@@ -90,47 +87,34 @@
                     @Html.ValidationMessageFor(model => model.Content)
                 </div>
             </div>
-        </div>      
+        </div>
 
         <div class="row">
-            <div class="col-md-6 createtopicbuttonholder">
+            <div class="col-md-7 createtopicbuttonholder">
                 <div class="submit-holder">
-                    <input type="submit" class="btn btn-large btn-success" value="@Html.LanguageString("Topic.CreateDiscussion")" />
+                    <input type="submit" class="btn-mvc btn-mvc-large btn-mvc-green" value="@Html.LanguageString("Topic.CreateDiscussion")" />
+                </div>
+                <div class="checkbox">
+                    @using (Html.BeginLabelFor(m => m.SubscribeToTopic, new { @class = "checkbox" }))
+                    {
+                        @Html.CheckBoxFor(m => m.SubscribeToTopic)
+                    }
+                    @Html.ValidationMessageFor(m => m.SubscribeToTopic)
                 </div>
             </div>
-            <div class="col-md-6 topiccategory">
-                <div class="editor-label">
+            <div class="col-md-5 topiccategory">
+                <div class="form-group">
                     @Html.LabelFor(model => model.Category)
-                </div>
-                <div class="editor-field">
-                    @Html.DropDownListFor(model => model.Category, new SelectList(Model.Categories, "id", "Name"))
+                    @Html.DropDownListFor(model => model.Category, Model.Categories,  new {@class="form-control"})
                     @Html.ValidationMessageFor(model => model.Category)
                 </div>
-            </div>
-        </div>
-        
-        
-        <div class="topicoptionsholder">
-
-            <h3>@Html.LanguageString("Topic.OptionsHeading")</h3>
-
-            <div class="row">
-                <div class="col-md-12 topicreplynotify">
-                    <div class="editor-field n3ocheckboxfield">
-                        @Html.CheckBoxFor(x => x.SubscribeToTopic)
-                        @Html.LabelFor(model => model.SubscribeToTopic)
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12 topictagholder">
+                <div class="topictagholder">
                     <div class="editor-field">
                         @Html.TextAreaFor(model => model.Tags, new { @class = "tagstextarea tags", title = Html.LanguageString("Topic.TagThisTopic") })
                     </div>
                 </div>
             </div>
         </div>
-
     }
 
 </div>

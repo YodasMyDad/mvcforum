@@ -628,7 +628,7 @@ function AddShowVoters() {
 function AddNewPollAnswer(counter) {
     var placeHolder = $('#pollanswerplaceholder').val();
     var liHolder = $(document.createElement('li')).attr("id", 'answer' + counter);
-    liHolder.html('<input type="text" name="PollAnswers[' + counter + '].Answer" id="PollAnswers_' + counter + '_Answer" value="" placeholder="' + placeHolder + '" />');
+    liHolder.html('<input type="text" name="PollAnswers[' + counter + '].Answer" id="PollAnswers_' + counter + '_Answer" class="form-control" value="" placeholder="' + placeHolder + '" />');
     liHolder.appendTo(".pollanswerlist");
 }
 

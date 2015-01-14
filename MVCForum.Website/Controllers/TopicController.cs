@@ -171,10 +171,16 @@ namespace MVCForum.Website.Controllers
                 var allowedCategories = _categoryService.GetAllowedCategories(UsersRole).ToList();
                 if (allowedCategories.Any() && LoggedOnUser.DisablePosting != true)
                 {
+                    var cats = new List<SelectListItem> {new SelectListItem {Text = "", Value = ""}};
+                    foreach (var cat in allowedCategories)
+                    {
+                        cats.Add(new SelectListItem{Text = cat.Name, Value = cat.Id.ToString()});
+                    }
                     var viewModel = new CreateTopicViewModel
                     {
-                        Categories = allowedCategories,
-                        LoggedOnUser = LoggedOnUser
+                        LoggedOnUser = LoggedOnUser,
+                        SubscribeToTopic = true,
+                        Categories = cats
                     };
 
                     return View(viewModel);
@@ -392,7 +398,13 @@ namespace MVCForum.Website.Controllers
                     var allowedCategories = _categoryService.GetAllowedCategories(UsersRole).ToList();
                     if (allowedCategories.Any())
                     {
-                        topicViewModel.Categories = allowedCategories;
+                        var cats = new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
+                        foreach (var cat in allowedCategories)
+                        {
+                            var selected = topicViewModel.Category == cat.Id;
+                            cats.Add(new SelectListItem { Text = cat.Name, Value = cat.Id.ToString(), Selected = selected });
+                        }
+                        topicViewModel.Categories = cats;
                     }
                 }
                 return View(topicViewModel);

@@ -96,7 +96,7 @@ namespace MVCForum.Website.ViewModels
 
         public string Tags { get; set; }
 
-        public IEnumerable<Category> Categories { get; set; }
+        public List<SelectListItem> Categories { get; set; }
 
         public List<PollAnswer> PollAnswers { get; set; }
             

@@ -30,8 +30,8 @@ a:hover, a:focus { color: #1d929a; }
 .turquise-colour { color: #2ab4bd; }
 
 /*---  Validation Errors---*/
-.validation-summary-errors ul { padding: 0; margin: 0; }
-.validation-summary-errors ul li { padding: 3px 0; background-color: #bd2a38; color: #97342a; }
+.validation-summary-errors ul { padding: 0; margin: 0 0 5px 0; }
+.validation-summary-errors ul li { padding: 4px; background-color: #bd2a38; color: #97342a;list-style: none;color: #fff; }
 .field-validation-error { color: #bd2a38; font-size: 12px; }
 
 /*--- Buttons ---*/
@@ -59,7 +59,7 @@ a:hover, a:focus { color: #1d929a; }
 .btn-file { position: relative; overflow: hidden; }
 .btn-file input[type=file] { position: absolute; top: 0; right: 0; min-width: 100%; min-height: 100%; font-size: 100px; text-align: right; filter: alpha(opacity=0); opacity: 0; outline: none; background: white; cursor: inherit; display: block; }
 
-/*--- Bootstrap verides ---*/
+/*--- Bootstrap overides ---*/
 .navbar-default { background: #37393a; border: none; -ms-border-radius: 0; border-radius: 0; color: #fff; }
 .navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a:visited { color: #fff; }
 .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus { color: #fff; background-color: #444648; }
@@ -67,6 +67,9 @@ a:hover, a:focus { color: #1d929a; }
 .dropdown-menu { -ms-border-radius: 0; border-radius: 0; }
 .navbar-default .navbar-brand, .navbar-default .navbar-brand:visited { color: #fff; font-weight: bold; }
 .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus { color: #efefef; }
+
+/*--- Padded Row ---*/
+.paddedrow { padding-top: 10px;padding-bottom: 10px;}
 
 .panel { }
 .panel-mvc { border: 1px #ecf0f1 solid; -ms-border-radius: 0; border-radius: 0; -webkit-box-shadow: none; -ms-box-shadow: none; box-shadow: none; }
@@ -180,6 +183,10 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 .topicstarterpostbeginpostsheading { padding-bottom: 3px; }
 .topicstarterpost { border-bottom: 2px #f2f2f2 solid; }
 
+/*--- Topic Row Slim ---*/
+.topicrow-slim {padding: 8px; }
+.topicrow-slim .rowdetails{ margin: 0;}
+
 /*--- Topic Widgets - Next To Headings ---*/
 .widgetright { float: right; margin: 2px 0 10px 10px; }
 .widgetleft { float: left; margin: 2px 10px 10px 0; }
@@ -283,6 +290,29 @@ footer h6 { margin-bottom: 12px; }
 .mainlogonform { }
 .forgotpasswordtext { padding-top: 20px; }
 
+/*--- Member Profile Public ---*/
+.memberprofilepublic {}
+.memberprofilepublic h3 { padding: 0 0 15px 0;margin: 0 0 15px 0;border-bottom: 1px #f2f2f2 solid;}
+.membersection { padding-bottom: 12px;}
+.memberprofilepublic .memberdiscussions h3 { border: none;}
+
+/*--- Edit Member ---*/
+.editmemberform {}
+.editmemberform .membereditavatar { padding-bottom: 12px;}
+
+/*--- Private Messages ---*/
+.privatemessages {}
+.privatemessages .top-pm-nav { padding-top: 8px;padding-bottom: 12px;}
+.previousmessageholder { padding-top: 20px;font-weight: 600;text-transform: uppercase;margin-bottom: 20px;}
+
+/*--- Create Topic ---*/
+.createtopicholder {}
+.relatedtopicsholder { display: none;}
+
+.pollanswerlist { margin: 0;padding: 0;}
+.pollanswerlist li { list-style: none;padding-bottom: 8px;}
+.polladdremovenewanswers {}
+
 /*--- tinyMCE overides ---*/
 .mce-container, .mce-container *,
 .mce-widget, .mce-widget * { color: inherit; font-family: inherit; }
@@ -297,8 +327,6 @@ footer h6 { margin-bottom: 12px; }
 .mce-window .mce-window-head .mce-close:hover:before { color: #2ea2cc; }
 .mce-window .mce-window-head .mce-dragh { width: -webkit-calc(100% - 36px); width: calc(100% - 36px); }
 .mce-wp-help .mce-window-head { border-bottom: none; }
-#wp-link .query-results, .mce-checkbox i.mce-i-checkbox, .mce-textbox { border: 1px solid #ddd; -webkit-border-radius: 0; border-radius: 0; -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.07); box-shadow: inset 0 1px 2px rgba(0,0,0,.07); -webkit-transition: .05s all ease-in-out; transition: .05s all ease-in-out; }
-#wp-link .query-results:focus, .mce-checkbox:focus i.mce-i-checkbox, .mce-textbox.mce-focus, .mce-textbox:focus { border-color: #5b9dd9; -webkit-box-shadow: 0 0 2px rgba(30,140,190,.8); box-shadow: 0 0 2px rgba(30,140,190,.8); }
 .mce-floatpanel.mce-popover, .mce-menu { border-color: rgba(0,0,0,.15); -webkit-border-radius: 0; border-radius: 0; -webkit-box-shadow: 0 3px 5px rgba(0,0,0,.2); box-shadow: 0 3px 5px rgba(0,0,0,.2); }
 .mce-floatpanel.mce-popover.mce-bottom { margin-top: 2px; }
 .mce-floatpanel .mce-arrow { display: none; }
@@ -316,12 +344,8 @@ div.mce-statusbar { border-top: 1px solid #e5e5e5; }
 div.mce-path { padding: 2px 10px; margin: 0; }
 .mce-path, .mce-path .mce-divider, .mce-path-item { font-size: 12px; line-height: 18px; }
 .mce-toolbar .mce-btn, .qt-fullscreen { border-color: transparent; background: 0 0; -webkit-box-shadow: none; box-shadow: none; text-shadow: none; cursor: pointer; }
-#wp-fullscreen-buttons .mce-btn, .mce-toolbar .mce-btn-group .mce-btn, .qt-fullscreen { border: 1px solid transparent; margin: 2px; background-image: none; -webkit-border-radius: 2px; border-radius: 2px; -webkit-filter: none; filter: none; }
-#wp-fullscreen-buttons .mce-btn:focus, #wp-fullscreen-buttons .mce-btn:hover, .mce-toolbar .mce-btn-group .mce-btn:focus, .mce-toolbar .mce-btn-group .mce-btn:hover, .qt-fullscreen:focus, .qt-fullscreen:hover { background: #fafafa; border-color: #999; color: #222; -webkit-box-shadow: inset 0 1px 0 #fff,0 1px 0 rgba(0,0,0,.08); box-shadow: inset 0 1px 0 #fff,0 1px 0 rgba(0,0,0,.08); }
-#wp-fullscreen-buttons .mce-btn.mce-active, #wp-fullscreen-buttons .mce-btn:active, .mce-toolbar .mce-btn-group .mce-btn.mce-active, .mce-toolbar .mce-btn-group .mce-btn:active { background: #ebebeb; border-color: #999; -webkit-box-shadow: inset 0 2px 5px -3px rgba(0,0,0,.3); box-shadow: inset 0 2px 5px -3px rgba(0,0,0,.3); }
 .mce-toolbar .mce-btn-group .mce-btn.mce-active:hover { border-color: #555; }
 .mce-toolbar .mce-btn-group .mce-btn.mce-active:hover i.mce-ico { color: #555; }
-#wp-fullscreen-buttons .mce-btn.mce-disabled:focus, #wp-fullscreen-buttons .mce-btn.mce-disabled:hover, .mce-toolbar .mce-btn-group .mce-btn.mce-disabled:focus, .mce-toolbar .mce-btn-group .mce-btn.mce-disabled:hover { color: #aaa; background: 0 0; border-color: #ddd; text-shadow: 0 1px 0 #fff; -webkit-box-shadow: none; box-shadow: none; }
 .mce-toolbar .mce-btn-group .mce-first, .mce-toolbar .mce-btn-group .mce-last { border-color: transparent; }
 .mce-toolbar .mce-btn button, .qt-fullscreen { padding: 2px 3px; line-height: normal; }
 .mce-toolbar .mce-btn i { text-shadow: none; }

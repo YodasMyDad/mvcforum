@@ -7,64 +7,69 @@
 @section Header
 {
     @(
-        Bundle.JavaScript()
+ Bundle.JavaScript()
             .Add("~/Scripts/jquery.validate.min.js")
             .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
-            
+
             .MvcRender("~/scripts/cache/validate-combined_#.js")
     )
-    <script src="@Url.Content("~/Scripts/jquery-ui-1.10.3.min.js")" type="text/javascript"></script>
+    @*<script src="@Url.Content("~/Scripts/jquery-ui-1.10.3.min.js")" type="text/javascript"></script>
     <script type="text/javascript">
         $(function () {
             $("input#UserToUsername").autocomplete({
                 source: app_base + "Members/Autocomplete"
             });
         });
-    </script>
+    </script>*@
 }
 @section side
 {
     @Html.Action("ListCategorySideMenu", "Category")
     @Html.Action("PopularTags", "Tag")
 }
-@using (Html.BeginForm("Create", "PrivateMessage", FormMethod.Post, new { @class = "form-horizontal" }))
-{
-    @Html.ValidationSummary(false)
-    @Html.AntiForgeryToken()
 
-    <fieldset>
-        <legend>@ViewBag.Title</legend>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.UserToUsername)
+<div class="privatemessages">
+    
+    <div class="btn-group top-pm-nav">
+        @Html.ActionLink(Html.LanguageString("PM.BackToInbox"), "Index", new { }, new { @class = "btn btn-mvc btn-mvc-green" })
+        @Html.ActionLink(Html.LanguageString("PM.SentPrivateMessages"), "SentMessages", new { }, new { @class = "btn btn-mvc btn-mvc-green" })
+    </div>
+
+    @using (Html.BeginForm("Create", "PrivateMessage", FormMethod.Post, new { @class = "form-createpm" }))
+    {
+        @Html.ValidationSummary(false)
+        @Html.AntiForgeryToken()
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.UserToUsername)
+            @Html.TextBoxFor(m => m.UserToUsername, new { @class = "form-control usertotextbox" })
+            @Html.ValidationMessageFor(m => m.UserToUsername)
         </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.UserToUsername, new { @class = "usertotextbox"})
-            @Html.ValidationMessageFor(model => model.UserToUsername)
-        </div>
-        <div class="editor-label">
+
+        <div class="form-group">
             @Html.LabelFor(model => model.Subject)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Subject)
+            @Html.TextBoxFor(model => model.Subject, new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.Subject)
         </div>
-        <div class="editor-label">
+
+        <div class="form-group">
             @Html.LabelFor(model => model.Message)
-        </div>
-        <div class="editor-field">
             @Html.EditorFor(model => model.Message)
             @Html.ValidationMessageFor(model => model.Message)
         </div>
-        <div class="submit-holder">
-            <input type="submit" class="btn btn-large btn-success" value="@Html.LanguageString("PM.Send")" />
-        </div>
-    </fieldset>
-}
 
-@if (!string.IsNullOrEmpty(Model.PreviousMessage))
-{
-    <p class="previousmessageholder">
-        <span class="originalmessage">@Html.LanguageString("PM.OriginalMessage")</span>
-        @Html.Raw(AppHelpers.ConvertPostContent(Model.PreviousMessage))
-    </p>
-}
+        <div class="submit-holder">
+            <button type="submit" class="btn-mvc btn-mvc-green btn-mvc-large">@Html.LanguageString("PM.Send")</button>
+        </div>
+
+    }
+
+    @if (!string.IsNullOrEmpty(Model.PreviousMessage))
+    {
+        <p class="previousmessageholder">
+            <span class="originalmessage">@Html.LanguageString("PM.OriginalMessage")</span>
+            @Html.Raw(AppHelpers.ConvertPostContent(Model.PreviousMessage))
+        </p>
+    }
+    
+</div>

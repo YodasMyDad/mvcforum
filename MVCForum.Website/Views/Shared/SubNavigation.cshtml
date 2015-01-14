@@ -12,10 +12,10 @@
                 }
                 @if (Html.Settings().EnablePoints)
                 {
-                    <li><a href="@Url.Action("Leaderboard", "Home")">@Html.LanguageString("Layout.Nav.Leaderboard")</a></li>
+                    <li><a href="@Url.Action("Leaderboard", "Home")" class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "leaderboard" ? "active" : "")">@Html.LanguageString("Layout.Nav.Leaderboard")</a></li>
                 }
-                <li><a href="@Url.Action("Activity", "Home")">@Html.LanguageString("Layout.Nav.Activity")</a></li>
-                <li><a href="@Url.Action("AllBadges", "Badge")">@Html.LanguageString("Layout.Nav.Badges")</a></li>
+                <li><a href="@Url.Action("Activity", "Home")" class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "activity" ? "active" : "")">@Html.LanguageString("Layout.Nav.Activity")</a></li>
+                <li><a href="@Url.Action("AllBadges", "Badge")" class="@(TempData[AppConstants.CurrentController].ToString() == "badge" && TempData[AppConstants.CurrentAction].ToString() == "allbadges" ? "active" : "")">@Html.LanguageString("Layout.Nav.Badges")</a></li>
             </ul>
         </div>
     </div>

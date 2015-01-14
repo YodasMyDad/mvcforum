@@ -1942,6 +1942,7 @@
     <Content Include="Views\Shared\SubNavigation.cshtml" />
     <Content Include="Views\Topic\TopicsMemberHasPostedIn.cshtml" />
     <Content Include="Views\Favourite\Index.cshtml" />
+    <Content Include="Views\Shared\_Badge.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Extensions\" />
