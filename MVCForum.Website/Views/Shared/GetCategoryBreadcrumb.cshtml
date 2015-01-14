@@ -24,7 +24,7 @@
                     var i = 1;
                     foreach (var cat in Model.Categories)
                     {
-                        if (i != catCount)
+                        if (i < catCount)
                         {
                             <li><a href="@cat.NiceUrl">@cat.Name</a></li>
                         }
@@ -37,7 +37,6 @@
                             }
                             else
                             {
-                                <li><a href="@cat.NiceUrl">@cat.Name</a></li>
                                 <li class="active">@Model.Category.Name</li>
                             }
                         }

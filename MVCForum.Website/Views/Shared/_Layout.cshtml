@@ -17,7 +17,7 @@
     @RenderSection("SocialMeta", false)
     @ViewBag.Canonical
     @(
-            Bundle.Css()
+ Bundle.Css()
                 .Add("~/Content/bootstrap/css/bootstrap.css")
                 .Add(themePath + "/Content/Styles/theme.css")
                 .MvcRender("~/content/cache/combined_" + theme + "_#.css")
@@ -60,22 +60,22 @@
                 </div>
 
                 <div class="collapse navbar-collapse" id="mvcforum-nav">
-                    <ul class="nav navbar-nav">
-                        <li><a href="@Url.Action("Index", "Home")">@Html.Lang("Layout.Nav.Home")</a></li>
+                    @*<ul class="nav navbar-nav">
+                            <li><a href="@Url.Action("Index", "Home")">@Html.Lang("Layout.Nav.Home")</a></li>
 
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">@Html.LanguageString("Layout.Nav.Utilities")<span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                @if (Html.Settings().EnablePoints)
-                                {
-                                    <li><a href="@Url.Action("Leaderboard", "Home")">@Html.LanguageString("Layout.Nav.Leaderboard")</a></li>
-                                }
 
-                                <li><a href="@Url.Action("Activity", "Home")">@Html.LanguageString("Layout.Nav.Activity")</a></li>
-                                <li><a href="@Url.Action("AllBadges", "Badge")">@Html.LanguageString("Layout.Nav.Badges")</a></li>
-                                <li>@Html.ActionLink(Html.LanguageString("Members.SearchMembers"), "Search", "Members")</li>
-                            </ul>
-                        </li>
+                        </ul>*@
+
+
+
+                    <ul class="nav navbar-nav navbar-right">
+                        @*<li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">@Html.LanguageString("Layout.Nav.Utilities")<span class="caret"></span></a>
+                                <ul class="dropdown-menu" role="menu">
+
+
+                                </ul>
+                            </li>*@
 
                         @if (!User.Identity.IsAuthenticated)
                         {
@@ -85,25 +85,23 @@
                             }
                             <li><a href="@Url.Action("LogOn", "Members")">@Html.LanguageString("Layout.Nav.Logon")</a></li>
                         }
-                        @if (User.IsInRole(AppConstants.AdminRoleName))
-                        {
-                            <li><a href="@Url.Action("Index", "Admin", new { area = "Admin" }, null)">@Html.LanguageString("Layout.Nav.Admin")</a></li>
-                        }
                         @*<li><a href="http://www.mvcforum.com">Main Website</a></li>*@
-    </ul>
-
-
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <ul class="nav navbar-nav navbar-right">
+                        @if (User.Identity.IsAuthenticated)
+                        {
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">@Html.LanguageString("SideBox.MyTools")<span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
+                                    @if (User.IsInRole(AppConstants.AdminRoleName))
+                                    {
+                                        <li><a href="@Url.Action("Index", "Admin", new {area = "Admin"}, null)">@Html.LanguageString("Layout.Nav.Admin")</a></li>
+                                    }
+                                    <li>@Html.ActionLink(Html.LanguageString("Members.SearchMembers"), "Search", "Members")</li>
                                     @Html.Action("SideAdminPanel", "Members")
                                 </ul>
                             </li>
-                        </ul>
-                    }
+                        }
+                    </ul>
+
 
                 </div>
             </div>
@@ -111,7 +109,7 @@
     </header>
 
     <section class="content-strip content-strip-@(User.Identity.IsAuthenticated.ToString().ToLower())">
-            @Html.Partial("SubNavigation")
+        @Html.Partial("SubNavigation")
     </section>
 
     <section class="container">
@@ -119,9 +117,9 @@
         @Html.Partial("_EmailConfirmationNotice")
         @Html.Partial("_NoScript")
         <div id="main" class="mainbody">
-                        
+
             @RenderBody()
-           
+
         </div>
     </section>
 

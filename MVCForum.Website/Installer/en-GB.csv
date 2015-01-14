@@ -304,3 +304,15 @@ Notifications.NoActiveMembers,No one online at the moment
 Post.LikedBy,Liked by
 Post.Browse,Browse...
 Post.AttachedFiles,Attached Files
+SubNav.Latest,Latest
+SubNav.Following,Following
+SubNav.PostedIn,Posted In
+SubNav.Favourites,My Favourites
+Favourites.PageTitle,My Favourites
+Favourites.NoMemberFavourites,You have not starred any posts
+Following.PageTitle,Topics & Categories
+Following.Categories,Categories you are following
+SubscribedCats.NothingToShow,You are not subscribed to any Categories
+Following.Topics,Topics your are following
+SubscribedTopics.NothingToShow,You are not subscribed to any Topics
+PostedIn.PageTitle,Topics & Posts you have posted in
