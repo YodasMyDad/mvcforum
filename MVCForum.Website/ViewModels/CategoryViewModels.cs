@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Web.Mvc;
 using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Website.ViewModels

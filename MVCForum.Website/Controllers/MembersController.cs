@@ -1037,7 +1037,7 @@ namespace MVCForum.Website.Controllers
                     var topics = posts.Select(x => x.Topic).Distinct().Take(6).OrderByDescending(x => x.LastPost.DateCreated).ToList();
 
                     // Get the Topic View Models
-                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService, _voteService, SettingsService.GetSettings());
+                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, SettingsService.GetSettings());
 
                     // create the view model
                     var viewModel = new ViewMemberDiscussionsViewModel

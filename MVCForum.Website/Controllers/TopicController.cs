@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
@@ -32,6 +33,7 @@ namespace MVCForum.Website.Controllers
         private readonly IPollAnswerService _pollAnswerService;
         private readonly IBannedWordService _bannedWordService;
         private readonly IVoteService _voteService;
+        private readonly IUploadedFileService _uploadedFileService;
 
         private readonly MembershipUser LoggedOnUser;
         private readonly MembershipRole UsersRole;
@@ -39,7 +41,7 @@ namespace MVCForum.Website.Controllers
         public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
             ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, IPollService pollService,
-            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService)
+            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService, IUploadedFileService uploadedFileService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
@@ -55,6 +57,7 @@ namespace MVCForum.Website.Controllers
             _bannedWordService = bannedWordService;
             _voteService = voteService;
             _favouriteService = favouriteService;
+            _uploadedFileService = uploadedFileService;
 
             LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
@@ -77,7 +80,7 @@ namespace MVCForum.Website.Controllers
                                                            LoggedOnUser.Id);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService, _voteService, SettingsService.GetSettings());
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, SettingsService.GetSettings());
 
                 // create the view model
                 var viewModel = new PostedInViewModel
@@ -108,7 +111,7 @@ namespace MVCForum.Website.Controllers
                     var topics = _topicService.Get(topicIds);
 
                     // Get the Topic View Models
-                    viewModel = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService, _voteService, SettingsService.GetSettings());
+                    viewModel = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, SettingsService.GetSettings());
                 }
             }
             return PartialView("GetSubscribedTopics", viewModel);
@@ -163,24 +166,84 @@ namespace MVCForum.Website.Controllers
             return PartialView(viewModel);
         }
 
+        [HttpPost]
+        [Authorize]
+        public JsonResult CheckTopicCreatePermissions(Guid catId)
+        {
+            if (Request.IsAjaxRequest())
+            {
+                var category = _categoryService.Get(catId);
+                var permissionSet = RoleService.GetPermissions(category, UsersRole);
+                var model = GetCheckCreateTopicPermissions(permissionSet);
+                return Json(model);
+            }
+            return null;
+        }
+
+        private static CheckCreateTopicPermissions GetCheckCreateTopicPermissions(PermissionSet permissionSet)
+        {
+            var model = new CheckCreateTopicPermissions();
+
+            if (permissionSet[AppConstants.PermissionCreateStickyTopics].IsTicked)
+            {
+                model.CanStickyTopic = true;
+            }
+
+            if (permissionSet[AppConstants.PermissionLockTopics].IsTicked)
+            {
+                model.CanLockTopic = true;
+            }
+
+            if (permissionSet[AppConstants.PermissionAttachFiles].IsTicked)
+            {
+                model.CanUploadFiles = true;
+            }
+            return model;
+        }
+
+        private List<Category> GetBaseAllowedCategories()
+        {
+            // Get the categories
+            var allowedCategories = new List<Category>();
+            var allCats = _categoryService.GetAll().ToList();
+
+            foreach (var category in allCats)
+            {
+                // Add the allowed categories
+                var permissionSet = RoleService.GetPermissions(category, UsersRole);
+                if (!permissionSet[AppConstants.PermissionDenyAccess].IsTicked)
+                {
+                    allowedCategories.Add(category);
+                }
+            }
+            return allowedCategories;
+        }
+
+        private List<SelectListItem> GetBaseSelectListCategories(List<Category> allowedCategories)
+        {
+            var cats = new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
+            foreach (var cat in allowedCategories)
+            {
+                cats.Add(new SelectListItem { Text = cat.Name, Value = cat.Id.ToString() });
+            }
+            return cats;
+        }
+
         [Authorize]
         public ActionResult Create()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole).ToList();
+                var allowedCategories = GetBaseAllowedCategories();
+
                 if (allowedCategories.Any() && LoggedOnUser.DisablePosting != true)
                 {
-                    var cats = new List<SelectListItem> {new SelectListItem {Text = "", Value = ""}};
-                    foreach (var cat in allowedCategories)
-                    {
-                        cats.Add(new SelectListItem{Text = cat.Name, Value = cat.Id.ToString()});
-                    }
                     var viewModel = new CreateTopicViewModel
                     {
                         LoggedOnUser = LoggedOnUser,
                         SubscribeToTopic = true,
-                        Categories = cats
+                        Categories = GetBaseSelectListCategories(allowedCategories),
+                        OptionalPermissions = new CheckCreateTopicPermissions{CanLockTopic = false, CanStickyTopic = false, CanUploadFiles = false}
                     };
 
                     return View(viewModel);
@@ -216,10 +279,18 @@ namespace MVCForum.Website.Controllers
                     // First check this user is allowed to create topics in this category
                     var permissions = RoleService.GetPermissions(category, UsersRole);
 
+                    // Now we have the category and permissionSet - Populate the optional permissions 
+                    // This is just in case the viewModel is return back to the view also sort the allowedCategories
+                    var allowedCategories = GetBaseAllowedCategories();
+                    topicViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
+                    topicViewModel.Categories = GetBaseSelectListCategories(allowedCategories);
+                    topicViewModel.LoggedOnUser = LoggedOnUser;
+                    /*---- End Re-populate ViewModel ----*/
+
                     // Check this users role has permission to create a post
                     if (permissions[AppConstants.PermissionDenyAccess].IsTicked || permissions[AppConstants.PermissionReadOnly].IsTicked || !permissions[AppConstants.PermissionCreateTopics].IsTicked)
                     {
-                        // Throw exception so Ajax caller picks it up
+                        // Add a model error that the user has no permissions
                         ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.NoPermission"));
                     }
                     else
@@ -233,12 +304,23 @@ namespace MVCForum.Website.Controllers
                             bannedWords = bannedWordsList.Select(x => x.Word).ToList();
                         }
 
+                        // Create the topic model
                         topic = new Topic
                         {
                             Name = _bannedWordService.SanitiseBannedWords(topicViewModel.Name, bannedWords),
                             Category = category,
                             User = LoggedOnUser
                         };
+
+                        // Check Permissions for topic topions
+                        if (permissions[AppConstants.PermissionLockTopics].IsTicked)
+                        {
+                            topic.IsLocked = topicViewModel.IsLocked;
+                        }
+                        if (permissions[AppConstants.PermissionCreateStickyTopics].IsTicked)
+                        {
+                            topic.IsSticky = topicViewModel.IsSticky;
+                        }
 
                         // See if the user has actually added some content to the topic
                         if (!string.IsNullOrEmpty(topicViewModel.Content))
@@ -314,12 +396,57 @@ namespace MVCForum.Website.Controllers
                             unitOfWork.SaveChanges();
 
                             // Now create and add the post to the topic
-                            _topicService.AddLastPost(topic, topicViewModel.Content);
+                            var topicPost = _topicService.AddLastPost(topic, topicViewModel.Content);
 
                             // Now check its not spam
                             var akismetHelper = new AkismetHelper(SettingsService);
                             if (!akismetHelper.IsSpam(topic))
                             {
+                                if (topicViewModel.Files != null)
+                                {
+                                    // Get the permissions for this category, and check they are allowed to update
+                                    if (permissions[AppConstants.PermissionAttachFiles].IsTicked && LoggedOnUser.DisableFileUploads != true)
+                                    {
+                                        // woot! User has permission and all seems ok
+                                        // Before we save anything, check the user already has an upload folder and if not create one
+                                        var uploadFolderPath = Server.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnUser.Id));
+                                        if (!Directory.Exists(uploadFolderPath))
+                                        {
+                                            Directory.CreateDirectory(uploadFolderPath);
+                                        }
+
+                                        // Loop through each file and get the file info and save to the users folder and Db
+                                        foreach (var file in topicViewModel.Files)
+                                        {
+                                            if (file != null)
+                                            {
+                                                // If successful then upload the file
+                                                var uploadResult = AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService);
+                                                if (!uploadResult.UploadSuccessful)
+                                                {
+                                                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                                    {
+                                                        Message = uploadResult.ErrorMessage,
+                                                        MessageType = GenericMessages.danger
+                                                    };
+                                                    unitOfWork.Rollback();
+                                                    return View(topicViewModel);
+                                                }
+
+                                                // Add the filename to the database
+                                                var uploadedFile = new UploadedFile
+                                                {
+                                                    Filename = uploadResult.UploadedFileName,
+                                                    Post = topicPost,
+                                                    MembershipUser = LoggedOnUser
+                                                };
+                                                _uploadedFileService.Add(uploadedFile);
+                                            }
+                                        }
+                                    }
+
+                                }
+
                                 // Add the tags if any too
                                 if (!string.IsNullOrEmpty(topicViewModel.Tags))
                                 {
@@ -363,7 +490,6 @@ namespace MVCForum.Website.Controllers
                                 unitOfWork.Rollback();
                                 ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.PossibleSpam"));
                             }
-
                         }
                         else
                         {
@@ -551,7 +677,7 @@ namespace MVCForum.Website.Controllers
                                                            tag);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService, _voteService, SettingsService.GetSettings());
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, SettingsService.GetSettings());
 
                 // create the view model
                 var viewModel = new TagTopicsViewModel
@@ -605,7 +731,7 @@ namespace MVCForum.Website.Controllers
                                                            SiteConstants.ActiveTopicsListSize);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService, _voteService, SettingsService.GetSettings());
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, SettingsService.GetSettings());
 
                 // create the view model
                 var viewModel = new ActiveTopicsViewModel
@@ -634,7 +760,7 @@ namespace MVCForum.Website.Controllers
                 var topics = _topicService.GetPopularTopics(from, to, (int)amountToShow);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService, _voteService, SettingsService.GetSettings());
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, SettingsService.GetSettings());
 
                 // create the view model
                 var viewModel = new HotTopicsViewModel

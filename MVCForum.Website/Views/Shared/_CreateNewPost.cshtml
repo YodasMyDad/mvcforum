@@ -36,7 +36,7 @@
             @Html.EditorFor(x => x.PostContent, new { @class = "createpost required rte" })
             @Html.ValidationMessageFor(x => x.PostContent)
         </div>
-        <input type="submit" id="createpostbutton" class="btn btn-success btn-large" value="@Html.LanguageString("Buttons.CreatePost")"/> 
+        <input type="submit" id="createpostbutton" class="btn-mvc btn-mvc-green btn-mvc-large" value="@Html.LanguageString("Buttons.CreatePost")"/> 
         <span style="display: none;" id="createpostwait" class="ajaxspinner" title="@Html.LanguageString("Post.PleaseWait")">@Html.LanguageString("Post.PleaseWait")</span>
         @Html.HiddenFor(x => x.Topic)
     }    

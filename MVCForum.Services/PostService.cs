@@ -162,6 +162,11 @@ namespace MVCForum.Services
             return _postRepository.Get(postId);
         }
 
+        public IList<Post> GetPostsByTopics(List<Guid> topicIds)
+        {
+            return _postRepository.GetPostsByTopics(topicIds);
+        }
+
         /// <summary>
         /// Save / Update a post
         /// </summary>

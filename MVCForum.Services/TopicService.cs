@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Events;
@@ -96,7 +97,7 @@ namespace MVCForum.Services
         /// <param name="topic"></param>
         /// <param name="postContent"></param>
         /// <returns></returns>
-        public Topic AddLastPost(Topic topic, string postContent)
+        public Post AddLastPost(Topic topic, string postContent)
         {
 
             topic = SanitizeTopic(topic);
@@ -117,7 +118,7 @@ namespace MVCForum.Services
 
             topic.LastPost = post;
 
-            return topic;
+            return post;
         }
 
         /// <summary>
@@ -210,8 +211,14 @@ namespace MVCForum.Services
         /// <returns></returns>
         public PagedList<Topic> SearchTopics(int pageIndex, int pageSize, int amountToTake, string searchTerm)
         {
-            var search = StringUtils.SafePlainText(searchTerm);
-            return _topicRepository.SearchTopics(pageIndex, pageSize, amountToTake, search);
+            // Create search term
+            var search = StringUtils.ReturnSearchString(searchTerm);
+
+            // Now split the words
+            var splitSearch = search.Split(' ').ToList();
+
+            // Pass the sanitised split words to the repo
+            return _topicRepository.SearchTopics(pageIndex, pageSize, amountToTake, splitSearch);
         }
 
         public PagedList<Topic> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> topicIds)

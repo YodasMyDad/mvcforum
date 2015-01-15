@@ -199,18 +199,27 @@ namespace MVCForum.Website.ViewModels.Mapping
                                                                 IRoleService roleService, 
                                                                 MembershipRole usersRole,
                                                                 MembershipUser loggedOnUser,
-                                                                ITopicNotificationService topicNotificationService,
-                                                                IPollAnswerService pollAnswerService,
-                                                                IVoteService voteService,
                                                                 Settings settings)
         {
-            // Get Permissions
+            // Get all topic Ids
+            var topicIds = topics.Select(x => x.Id).ToList();
+
+            // Gets posts for topics
+            var postService = ServiceFactory.Get<IPostService>();
+            var posts = postService.GetPostsByTopics(topicIds);
+            var groupedPosts = posts.ToLookup(x => x.Topic.Id);
+
+            // Get all permissions
             var permissions = GetPermissionsForTopics(topics, roleService, usersRole);
+
+            // Create the view models
             var viewModels = new List<TopicViewModel>();
             foreach (var topic in topics)
             {
+                var id = topic.Id;
                 var permission = permissions[topic.Category];
-                viewModels.Add(CreateTopicViewModel(topic, permission, topic.Posts.ToList(), null, null, null, null, loggedOnUser, settings));
+                var topicPosts = (groupedPosts.Contains(id) ? groupedPosts[id].ToList() : new List<Post>());
+                viewModels.Add(CreateTopicViewModel(topic, permission, topicPosts, null, null, null, null, loggedOnUser, settings));
             }
             return viewModels;
         }
@@ -253,6 +262,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             var postIds = posts.Select(x => x.Id).ToList();
             postIds.Add(starterPost.Id);
 
+            // Get all votes by post
             var votes = voteService.GetVotesByPosts(postIds);
 
             // Get all favourites for this user

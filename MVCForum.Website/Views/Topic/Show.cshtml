@@ -79,38 +79,37 @@
 
         <h1>@Html.Raw(Model.Topic.Name)</h1>
 
-        @if (Model.Topic.Solved || Model.Topic.IsSticky || Model.Topic.IsLocked || Model.Poll != null)
+
+    <ul class="topicinfo">
+
+        @if (Model.Topic.IsSticky)
         {
-            <ul class="topicinfo">
-
-                @if (Model.Topic.IsSticky)
-                {
-                    <li><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> @Html.Lang("Topic.IsSticky")</li>
-                }
-                @if (Model.Topic.IsLocked)
-                {
-                    <li><span class="glyphicon glyphicon-lock" aria-hidden="true"></span> @Html.Lang("Topic.IsLocked")</li>
-                }
-
-                @if (Model.Topic.Poll != null)
-                {
-                    <li>
-                        <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> @Html.Lang("Topic.IsPoll")
-                    </li>
-                }
-                <li>
-                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Model.Views.KiloFormat() @Html.Lang("Topic.Views")
-                </li>
-
-                <li><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Html.Lang("Topic.LastPost") @DatesUI.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())</li>
-                
-                @if (Model.Topic.Solved)
-                {
-                    <li><span class="glyphicon glyphicon glyphicon-ok green-colour" aria-hidden="true"></span> @Html.Lang("Topic.IsSolved")</li>
-                }
-
-            </ul>
+            <li><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> @Html.Lang("Topic.IsSticky")</li>
         }
+        @if (Model.Topic.IsLocked)
+        {
+            <li><span class="glyphicon glyphicon-lock" aria-hidden="true"></span> @Html.Lang("Topic.IsLocked")</li>
+        }
+
+        @if (Model.Topic.Poll != null)
+        {
+            <li>
+                <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> @Html.Lang("Topic.IsPoll")
+            </li>
+        }
+        <li>
+            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Model.Views.KiloFormat() @Html.Lang("Topic.Views")
+        </li>
+
+        <li><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Html.Lang("Topic.LastPost") @DatesUI.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())</li>
+                
+        @if (Model.Topic.Solved)
+        {
+            <li><span class="glyphicon glyphicon glyphicon-ok green-colour" aria-hidden="true"></span> @Html.Lang("Topic.IsSolved")</li>
+        }
+
+    </ul>
+    
     </div>
 
     @if (Html.Settings().EnablePolls == true)

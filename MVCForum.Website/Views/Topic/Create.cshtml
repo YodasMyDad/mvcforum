@@ -3,8 +3,7 @@
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = Html.LanguageString("Topic.CreateDiscussion");
-    //Model.Category = TempData[AppConstants.DefaultCategoryViewBagName] != null ? Guid.Parse(TempData[AppConstants.DefaultCategoryViewBagName].ToString()) : Guid.Empty;
-
+    var displayNone = "style=\"display: none;\"";
 }
 
 @section Header
@@ -31,7 +30,7 @@
 
 <div class="createtopicholder">
 
-    @using (Html.BeginForm("Create", "Topic", FormMethod.Post))
+    @using (Html.BeginForm("Create", "Topic", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.ValidationSummary(false)
         @Html.AntiForgeryToken()
@@ -57,7 +56,7 @@
             </div>
         </div>
 
-        <div class="paddedrow relatedtopicsholder">
+        <div class="relatedtopicsholder">
             <h5>@Html.LanguageString("Topic.AlreadyAnswered")</h5>
             <div class="relatedtopicskey"></div>
         </div>
@@ -72,7 +71,7 @@
                 <div class="col-md-3 polladdremovenewanswers">
                     <a href="#" class="btn-mvc addanswer">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                    </a> 
+                    </a>
                     <a href="#" class="btn-mvc removeanswer">
                         <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
                     </a>
@@ -90,32 +89,58 @@
         </div>
 
         <div class="row">
-            <div class="col-md-7 createtopicbuttonholder">
+            <div class="col-md-6 createtopicbuttonholder">
                 <div class="submit-holder">
-                    <input type="submit" class="btn-mvc btn-mvc-large btn-mvc-green" value="@Html.LanguageString("Topic.CreateDiscussion")" />
+                    <input type="submit" class="btn-mvc btn-mvc-large btn-mvc-green btn-mvc-fullwidth" value="@Html.LanguageString("Topic.CreateDiscussion")" />
                 </div>
-                <div class="checkbox">
+                <div class="checkbox createsubscribe">
                     @using (Html.BeginLabelFor(m => m.SubscribeToTopic, new { @class = "checkbox" }))
                     {
                         @Html.CheckBoxFor(m => m.SubscribeToTopic)
                     }
                     @Html.ValidationMessageFor(m => m.SubscribeToTopic)
                 </div>
+                <div class="checkbox createsticky" @Html.Raw(Model.OptionalPermissions.CanStickyTopic ? "" : displayNone)>
+                    @using (Html.BeginLabelFor(m => m.IsSticky, new { @class = "checkbox" }))
+                    {
+                        @Html.CheckBoxFor(m => m.IsSticky)
+                    }
+                    @Html.ValidationMessageFor(m => m.IsSticky)
+                </div>
+                <div class="checkbox createlocked" @Html.Raw(Model.OptionalPermissions.CanLockTopic ? "" : displayNone)>
+                    @using (Html.BeginLabelFor(m => m.IsLocked, new { @class = "checkbox" }))
+                    {
+                        @Html.CheckBoxFor(m => m.IsLocked)
+                    }
+                    @Html.ValidationMessageFor(m => m.IsLocked)
+                </div>
             </div>
-            <div class="col-md-5 topiccategory">
+            <div class="col-md-5 col-md-offset-1 topiccategory">
                 <div class="form-group">
                     @Html.LabelFor(model => model.Category)
-                    @Html.DropDownListFor(model => model.Category, Model.Categories,  new {@class="form-control"})
+                    @Html.DropDownListFor(model => model.Category, Model.Categories, new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.Category)
                 </div>
-                <div class="topictagholder">
-                    <div class="editor-field">
+                <div class="form-group">
+                    <label>@Html.Lang("Topic.Label.Tags")</label>
+                    <div class="topictagholder">
                         @Html.TextAreaFor(model => model.Tags, new { @class = "tagstextarea tags", title = Html.LanguageString("Topic.TagThisTopic") })
                     </div>
+                </div>
+                <div class="form-group createuploadfiles" @Html.Raw(Model.OptionalPermissions.CanUploadFiles ? "" : displayNone)>
+                    @Html.LabelFor(x => x.Files)
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <span class="btn btn-default btn-file">
+                                @Html.LanguageString("Post.Browse") <input type="file" name="files" id="files" value="">
+                            </span>
+                        </span>
+                        <input type="text" class="form-control" readonly="">
+                    </div>
+                    @Html.ValidationMessageFor(x => x.Files)
                 </div>
             </div>
         </div>
     }
 
 </div>
-

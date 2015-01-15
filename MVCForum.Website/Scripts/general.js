@@ -59,7 +59,60 @@ $(function () {
         });
     }
 
+    var createTopicCategoryDropdown = $('.createtopicholder #Category');
+    if (createTopicCategoryDropdown.length > 0) {
+        // This is purely for the UI - All the below permissions are 
+        // checked server side so it doesn't matter if they submit
+        // something they are not allowed to do. It won't get through
+
+        // Divs to show and hide
+        var stickyholder = $('.createtopicholder .createsticky');
+        var lockedholder = $('.createtopicholder .createlocked');
+        var uploadholder = $('.createtopicholder .createuploadfiles');
+
+        // Fire when the dropdown changes
+        createTopicCategoryDropdown.change(function (e) {
+            e.preventDefault();
+            var catId = $(this).val();
+            if (catId != "") {
+
+                // Go and get the ajax model
+                $.ajax({
+                    url: app_base + 'Topic/CheckTopicCreatePermissions',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { catId: catId },
+                    success: function (data) {
+                        if (data.CanStickyTopic) {
+                            stickyholder.show();
+                        } else {
+                            stickyholder.hide();
+                        }
+
+                        if (data.CanStickyTopic) {
+                            lockedholder.show();
+                        } else {
+                            lockedholder.hide();
+                        }
+
+                        if (data.CanStickyTopic) {
+                            uploadholder.show();
+                        } else {
+                            uploadholder.hide();
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                    }
+                });
+
+            }
+        });
+    }
+
     $(".showmoreposts").click(function (e) {
+        e.preventDefault();
+
         var topicId = $('#topicId').val();
         var pageIndex = $('#pageIndex');
         var totalPages = parseInt($('#totalPages').val());
@@ -109,8 +162,7 @@ $(function () {
                 loadingText.hide();
             }
         });
-        e.preventDefault();
-        e.stopImmediatePropagation();
+
     });
 
     $(".privatemessagedelete").click(function (e) {
@@ -327,7 +379,7 @@ function PostattachmentFancybox() {
             openEffect: 'elastic',
             closeEffect: 'elastic'
         });
-    }    
+    }
 }
 
 function ChangeLanguage() {
@@ -553,7 +605,7 @@ function ShowExpandedVotes() {
         expandVotes.click(function (e) {
             e.preventDefault();
 
-            var votesSpan = $(this).find("span.votenumber");            
+            var votesSpan = $(this).find("span.votenumber");
 
             var expandVotesViewModel = new Object();
             expandVotesViewModel.Post = votesSpan.attr("id");
@@ -783,7 +835,7 @@ function AjaxPostSuccess() {
 
     // Finally do an async badge check
     UserPost();
-    
+
     // Attached the upload click events
     ShowFileUploadClickHandler();
     DisplayWaitForPostUploadClickHandler();

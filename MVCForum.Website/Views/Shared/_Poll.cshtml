@@ -7,9 +7,10 @@
         @foreach (var pollAnswer in poll.PollAnswers.OrderBy(x => x.Answer))
         {
             var answerVotes = pollAnswer.PollVotes.Count;
-            var widthPercentage = answerVotes > 0 ? ((((float)answerVotes / (float)Model.TotalVotesInPoll) * 100)) : 1;
+            var widthPercentage = answerVotes > 0 ? ((((float)answerVotes / (float)Model.TotalVotesInPoll) * 100)) : 0;
+            var convertedPercentage = Convert.ToInt32(widthPercentage);
             var color = "success";
-            if (widthPercentage > 0 & widthPercentage <= 25)
+            if (widthPercentage >= 0 & widthPercentage <= 25)
             {
                 color = "danger";
             }
@@ -21,7 +22,7 @@
             {
                 color = "info";
             }                                   
-                
+                            
             <div class="row">
                 <div class="pollanswerrow col-md-12">
                     <div class="pollanswerrowholder clearfix">
@@ -35,14 +36,14 @@
                     </div>
 
                     <div class="pollbarrowholder clearfix">                        
-                        <div class="progress progress-striped" style="width: 100%;">
-                            <div class="bar bar-@color" style="width: @(Convert.ToInt32(widthPercentage))%;">
-                                @answerVotes vote
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-@color" role="progressbar" aria-valuenow="@(convertedPercentage)" aria-valuemin="0" aria-valuemax="100" style="width: @(convertedPercentage)%">
+                                <span class="sr-only">
+                                    @answerVotes vote
+                                </span>
                             </div>
                         </div>
-
-@*                        <div class="pollbar" style="width: @(Convert.ToInt32(widthPercentage))%;"></div>
-                        @answerVotes*@
+                       
                     </div>
                 </div>
             </div>

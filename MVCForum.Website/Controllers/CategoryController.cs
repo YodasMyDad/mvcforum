@@ -163,7 +163,7 @@ namespace MVCForum.Website.Controllers
                                                                         SettingsService.GetSettings().TopicsPerPage,
                                                                         int.MaxValue, category.Category.Id);
 
-                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, _topicNotificationService, _pollAnswerService, _voteService, SettingsService.GetSettings());
+                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, SettingsService.GetSettings());
 
                     // Create the main view model for the category
                     var viewModel = new ViewCategoryViewModel

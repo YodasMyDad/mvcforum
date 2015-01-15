@@ -5,7 +5,6 @@
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = Html.Settings().ForumName;
     var totalCount = Convert.ToInt32(Model.TotalCount);
-    var topics = Model.Topics.Distinct(x => x.Id).ToList();
 }
 
 @section side
@@ -16,21 +15,19 @@
     @Html.Action("CurrentWeekHighPointUsers", "Point")
 }
 
+<h1>@Html.LanguageString("Search.Searching"): @Model.Term</h1>
 
-@if (topics.Any())
+@if (Model.Topics.Any())
 {
-    foreach (var topic in topics)
-    {
-        // Get the permissions for this topic via its parent category
-        var permissions = Model.AllPermissionSets[topic.Category];
 
-        var viewModel = new TopicViewModel {Permissions = permissions, Topic = topic};
-        Html.RenderPartial("_Topic", viewModel);
+    foreach (var topic in Model.Topics)
+    {
+        Html.RenderPartial("_Topic", topic);
     }
 
-    if (Model.Topics.TotalPages > 1)
+    if (Model.TotalPages > 1)
     {
-        @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, new{term = Model.Term})
+        @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null)
     }
 }
 else

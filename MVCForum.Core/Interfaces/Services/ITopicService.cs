@@ -29,7 +29,7 @@ namespace MVCForum.Domain.Interfaces.Services
         List<Topic> Get(List<Guid> topicIds);
         void Delete(Topic topic);
         int TopicCount();
-        Topic AddLastPost(Topic topic, string postContent);
+        Post AddLastPost(Topic topic, string postContent);
         
         /// <summary>
         /// Mark a topic as solved

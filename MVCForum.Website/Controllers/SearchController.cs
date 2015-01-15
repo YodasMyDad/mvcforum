@@ -7,6 +7,7 @@ using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Utilities;
 using MVCForum.Website.ViewModels;
+using MVCForum.Website.ViewModels.Mapping;
 
 namespace MVCForum.Website.Controllers
 {
@@ -38,37 +39,29 @@ namespace MVCForum.Website.Controllers
             {
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
+                    var settings = SettingsService.GetSettings();
+
                     // Set the page index
                     var pageIndex = p ?? 1;
 
-                    // Returns the formatted string to search on
-                    var formattedSearchTerm = StringUtils.ReturnSearchString(term);
-
                     // Get all the topics based on the search value
                     var topics = _topicsService.SearchTopics(pageIndex,
-                                                         SettingsService.GetSettings().TopicsPerPage,
+                                                         settings.TopicsPerPage,
                                                          SiteConstants.ActiveTopicsListSize,
                                                          term);
 
-                    // Get all the categories for this topic collection
-                    var categories = topics.Select(x => x.Category).Distinct();
+                    // Get the Topic View Models
+                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, settings);
 
                     // create the view model
                     var viewModel = new SearchViewModel
                     {
-                        Topics = topics,
-                        AllPermissionSets = new Dictionary<Category, PermissionSet>(),
+                        Topics = topicViewModels,
                         PageIndex = pageIndex,
                         TotalCount = topics.TotalCount,
-                        Term = formattedSearchTerm
+                        TotalPages = topics.TotalPages,
+                        Term = term
                     };
-
-                    // loop through the categories and get the permissions
-                    foreach (var category in categories)
-                    {
-                        var permissionSet = RoleService.GetPermissions(category, UsersRole);
-                        viewModel.AllPermissionSets.Add(category, permissionSet);
-                    }
 
                     return View(viewModel);
                 } 

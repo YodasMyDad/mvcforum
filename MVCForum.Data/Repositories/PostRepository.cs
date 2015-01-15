@@ -24,7 +24,7 @@ namespace MVCForum.Data.Repositories
 
         public Post GetTopicStarterPost(Guid topicId)
         {
-            
+
             var post = _context.Post
                         .Include(x => x.Topic)
                         .Include(x => x.User)
@@ -32,7 +32,7 @@ namespace MVCForum.Data.Repositories
 
             if (post != null)
             {
-                post.Votes = _context.Vote.AsNoTracking().Where(x => x.Post.Id == post.Id).ToList();   
+                post.Votes = _context.Vote.AsNoTracking().Where(x => x.Post.Id == post.Id).ToList();
             }
 
             return post;
@@ -40,13 +40,15 @@ namespace MVCForum.Data.Repositories
 
         public IEnumerable<Post> GetAllWithTopics()
         {
-            return _context.Post.Include(x => x.Topic).Where(x => x.Pending != true);
+            return _context.Post.Include(x => x.Topic)
+                .Include(x => x.User).Where(x => x.Pending != true);
         }
 
         public IList<Post> GetLowestVotedPost(int amountToTake)
         {
             return _context.Post
-                .Include(x => x.Votes)
+                .Include(x => x.Topic)
+                .Include(x => x.User)
                 .Where(x => x.VoteCount < 0 && x.Pending != true)
                 .OrderBy(x => x.VoteCount)
                 .Take(amountToTake)
@@ -56,7 +58,8 @@ namespace MVCForum.Data.Repositories
         public IList<Post> GetHighestVotedPost(int amountToTake)
         {
             return _context.Post
-                .Include(x => x.Votes)
+                .Include(x => x.Topic)
+                .Include(x => x.User)
                 .Where(x => x.VoteCount > 0 && x.Pending != true)
                 .OrderByDescending(x => x.VoteCount)
                 .Take(amountToTake)
@@ -66,11 +69,12 @@ namespace MVCForum.Data.Repositories
         public IList<Post> GetByMember(Guid memberId, int amountToTake)
         {
             return _context.Post
-                .Include(x => x.Votes)
-                .Where(x => x.User.Id == memberId && x.Pending != true)
-                .OrderByDescending(x => x.DateCreated)
-                .Take(amountToTake)
-                .ToList();
+                    .Include(x => x.Topic)
+                    .Include(x => x.User)
+                    .Where(x => x.User.Id == memberId && x.Pending != true)
+                    .OrderByDescending(x => x.DateCreated)
+                    .Take(amountToTake)
+                    .ToList();
         }
 
         /// <summary>
@@ -81,7 +85,8 @@ namespace MVCForum.Data.Repositories
         public IList<Post> GetSolutionsByMember(Guid memberId)
         {
             return _context.Post
-                .Include(x => x.Votes)
+                .Include(x => x.Topic)
+                .Include(x => x.User)
                 .Where(x => x.User.Id == memberId)
                 .Where(x => x.IsSolution && x.Pending != true)
                 .OrderByDescending(x => x.DateCreated)
@@ -91,8 +96,19 @@ namespace MVCForum.Data.Repositories
         public IList<Post> GetPostsByTopic(Guid topicId)
         {
             return _context.Post
-                .Include(x => x.Votes)
+                .Include(x => x.Topic)
+                .Include(x => x.User)
                 .Where(x => x.Topic.Id == topicId && x.Pending != true)
+                .OrderByDescending(x => x.DateCreated)
+                .ToList();
+        }
+
+        public IList<Post> GetPostsByTopics(List<Guid> topicIds)
+        {
+            return _context.Post
+                .Include(x => x.Topic)
+                .Include(x => x.User)
+                .Where(x => topicIds.Contains(x.Topic.Id) && x.Pending != true)
                 .OrderByDescending(x => x.DateCreated)
                 .ToList();
         }
@@ -103,7 +119,6 @@ namespace MVCForum.Data.Repositories
             var results = _context.Post
                 .Include(x => x.Topic)
                 .Include(x => x.User)
-                .Include(x => x.Files)
                 .Where(x => x.Pending == true)
                 .OrderBy(x => x.DateCreated)
                 .Skip((pageIndex - 1) * pageSize).Take(pageSize);
@@ -145,7 +160,7 @@ namespace MVCForum.Data.Repositories
 
             // sort the paging out
             var posts = results.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
-                                                                
+
             // Return a paged list
             return new PagedList<Post>(posts, pageIndex, pageSize, total);
         }
@@ -153,7 +168,8 @@ namespace MVCForum.Data.Repositories
         public IList<Post> GetPostsByMember(Guid memberId)
         {
             return _context.Post
-                .Include(x => x.Votes)
+                .Include(x => x.Topic)
+                .Include(x => x.User)
                 .Where(x => x.User.Id == memberId && x.Pending != true)
                 .OrderByDescending(x => x.DateCreated)
                 .ToList();
@@ -162,7 +178,8 @@ namespace MVCForum.Data.Repositories
         public IList<Post> GetAllSolutionPosts()
         {
             return _context.Post
-                .Include(x => x.Votes)
+                .Include(x => x.Topic)
+                .Include(x => x.User)
                 .Where(x => x.IsSolution && x.Pending != true)
                 .OrderByDescending(x => x.DateCreated)
                 .ToList();
@@ -180,7 +197,8 @@ namespace MVCForum.Data.Repositories
 
             // Get the Posts
             var results = _context.Post
-                            .Include(x => x.Votes)
+                            .Include(x => x.Topic)
+                            .Include(x => x.User)
                             .Where(x => x.PostContent.Contains(searchTerm) | x.Topic.Name.Contains(searchTerm))
                             .Where(x => x.Pending != true)
                             .OrderByDescending(x => x.DateCreated)
@@ -200,7 +218,8 @@ namespace MVCForum.Data.Repositories
 
         public Post Get(Guid id)
         {
-            return _context.Post.FirstOrDefault(x => x.Id == id);
+            return _context.Post.Include(x => x.Topic)
+                .Include(x => x.User).FirstOrDefault(x => x.Id == id);
         }
 
         public void Delete(Post item)
@@ -215,12 +234,12 @@ namespace MVCForum.Data.Repositories
             {
                 throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
             }
-            _context.Entry(item).State = EntityState.Modified;  
+            _context.Entry(item).State = EntityState.Modified;
         }
 
         public int PostCount()
         {
-            return GetAll().Count();
+            return _context.Post.Count();
         }
     }
 }

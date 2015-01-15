@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web;
 using System.Web.Mvc;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Website.Application;
@@ -76,6 +77,13 @@ namespace MVCForum.Website.ViewModels
         public string Tag { get; set; }
     }
 
+    public class CheckCreateTopicPermissions
+    {
+        public bool CanUploadFiles { get; set; }
+        public bool CanStickyTopic { get; set; }
+        public bool CanLockTopic { get; set; }
+    }
+
     public class CreateTopicViewModel
     {
         [Required]
@@ -87,7 +95,10 @@ namespace MVCForum.Website.ViewModels
         [StringLength(6000)]
         public string Content { get; set; }
 
+        [ForumMvcResourceDisplayName("Post.Label.IsStickyTopic")]
         public bool IsSticky { get; set; }
+
+        [ForumMvcResourceDisplayName("Post.Label.LockTopic")]
         public bool IsLocked { get; set; }
 
         [Required]
@@ -104,6 +115,12 @@ namespace MVCForum.Website.ViewModels
         public bool SubscribeToTopic { get; set; }
 
         public MembershipUser LoggedOnUser { get; set; }
+
+        [ForumMvcResourceDisplayName("Topic.Label.UploadFiles")]
+        public HttpPostedFileBase[] Files { get; set; }
+
+        // Permissions stuff
+        public CheckCreateTopicPermissions OptionalPermissions { get; set; }
     }
 
     public class GetMorePostsViewModel
