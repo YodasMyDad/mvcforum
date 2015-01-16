@@ -3,7 +3,7 @@
 @model MVCForum.Website.ViewModels.MemberFrontEndEditViewModel
 
 @{
-    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
+    Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
     ViewBag.Title = @Html.LanguageString("Members.EditProfile");
 }
 @section Header
@@ -25,13 +25,6 @@
         });
     </script>
 
-}
-@section side
-{
-    @Html.Action("ListCategorySideMenu", "Category")
-    @Html.Action("SideSearch", "Search")
-    @Html.Action("PopularTags", "Tag")
-    @Html.Action("CurrentWeekHighPointUsers", "Point")
 }
 
 @using (Html.BeginForm("Edit", "Members", FormMethod.Post, new { enctype = "multipart/form-data", @class = "editmemberform" }))

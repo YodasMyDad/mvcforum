@@ -2,7 +2,7 @@
 @model MVCForum.Website.ViewModels.ListPrivateMessageViewModel
 
 @{
-    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
+    Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
     ViewBag.Title = Html.LanguageString("PM.ReceivedPrivateMessages");
 }
 <div class="privatemessages">
@@ -16,7 +16,7 @@
 
     @if (Model.Messages.Any())
     {
-        <table class="table table-bordered table-striped">
+        <table class="table table-bordered table-striped table-adaptive">
             <thead>
                 <tr>
                     <th>@Html.LanguageString("PM.Subject")</th>

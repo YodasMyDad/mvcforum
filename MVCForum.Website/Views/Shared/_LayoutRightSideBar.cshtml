@@ -12,15 +12,11 @@
 <div class="row">
     <div class="col-md-9">
 
-        @* ### Remove ME - Not needed, just for our forum ### *@
-        @Html.Partial("_DocumentationBlock")
-        @* ### Remove ME - Not needed, just for our forum ### *@
-
         @RenderBody()
 
     </div>
     <div class="col-md-3 sidelayoutsection">
-        <div class="main-side-box">
+        <div class="main-side-box clearfix">
             @if (User.Identity.IsAuthenticated)
             {
                 @Html.Action("CreateTopicButton", "Topic")

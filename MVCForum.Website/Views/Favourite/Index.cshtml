@@ -7,12 +7,7 @@
 
 @section side
 {
-    @Html.Action("Index", "Language")
-    @Html.Action("ListCategorySideMenu", "Category")
-    @Html.Action("SideSearch", "Search")
-    @Html.Action("PopularTags", "Tag")
-    @Html.Action("CurrentWeekHighPointUsers", "Point")
-    @Html.Action("HotTopics", "Topic")
+    @Html.Partial("_CommonSideNav")
 }
 
 <div class="myfavourites">

@@ -7,15 +7,15 @@
 
 @section side
 {
-    @Html.Action("Index", "Language")
-    @Html.Action("ListCategorySideMenu", "Category")
-    @Html.Action("SideSearch", "Search")
-    @Html.Action("PopularTags", "Tag")
-    @Html.Action("CurrentWeekHighPointUsers", "Point")
-    @Html.Action("HotTopics", "Topic")
+    @Html.Partial("_CommonSideNav")
 }
 
+@* ### Remove ME - Not needed, just for our forum ### *@
+@Html.Partial("_DocumentationBlock")
+@* ### Remove ME - Not needed, just for our forum ### *@
+
 @Html.Action("LatestTopics", "Topic")
+
 @*
     If you want to show categories on the home page instead of topics
     Just uncomment this action out and delete this text (And comment out the above action)

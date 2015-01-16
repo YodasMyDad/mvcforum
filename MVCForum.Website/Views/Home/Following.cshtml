@@ -1,7 +1,12 @@
 ﻿@{
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = Html.Lang("Following.PageTitle");
 }
 
+@section side
+{
+    @Html.Partial("_CommonSideNav")
+}
 
 <div class="following">
 

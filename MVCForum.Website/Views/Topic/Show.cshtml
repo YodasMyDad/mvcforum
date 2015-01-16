@@ -52,10 +52,7 @@
 
 @section side
 {
-    @Html.Action("ListCategorySideMenu", "Category")
-    @Html.Action("SideSearch", "Search")
-    @Html.Action("PopularTags", "Tag")
-    @Html.Action("CurrentWeekHighPointUsers", "Point")
+    @Html.Partial("_CommonSideNav")
 }
 
 @Html.Action("GetTopicBreadcrumb", "Topic", new { topic = Model.Topic })
@@ -147,7 +144,7 @@
 
     @if (Model.TotalPages > 1)
     {
-        <a href="#" class="showmoreposts btn-mvc btn-mvc-red btn-mvc-large btn-mvc-fullwidth">
+        <a href="#" class="showmoreposts btn-mvc btn-mvc-large btn-mvc-fullwidth">
             <span class="smpactive">@Html.LanguageString("Topic.ShowMorePosts")</span>
             <span class="smploading" style="display: none;">@Html.LanguageString("Topic.ShowMorePostsLoading")</span>
         </a>

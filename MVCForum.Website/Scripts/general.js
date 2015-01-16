@@ -19,6 +19,8 @@ $(function () {
     // Sort the date of the member
     SortWhosOnline();
 
+    ResponsiveTable();
+
     //---------------- On Click------------------------
 
     // We add the post click events like this, so we can reattach when we do the show more posts
@@ -371,6 +373,28 @@ $(document).on('change', '.btn-file :file', function () {
         label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
     input.trigger('fileselect', [numFiles, label]);
 });
+
+function ResponsiveTable() {
+    var adaptiveTable = $('.table-adaptive');
+    if (adaptiveTable.length > 0) {
+        var headertext = [],
+        headers = document.querySelectorAll(".table-adaptive th"),
+        tablerows = document.querySelectorAll(".table-adaptive th"),
+        tablebody = document.querySelector(".table-adaptive tbody");
+
+        for (var i = 0; i < headers.length; i++) {
+            var current = headers[i];
+            headertext.push(current.textContent.replace(/\r?\n|\r/, ""));
+        }
+        if (tablebody.rows != null) {
+            for (var i = 0, row; row = tablebody.rows[i]; i++) {
+                for (var j = 0, col; col = row.cells[j]; j++) {
+                    col.setAttribute("data-th", headertext[j]);
+                }
+            }
+        }
+    }
+}
 
 function PostattachmentFancybox() {
     var uploadImages = $('a.fileupload[href$=".gif"], a.fileupload[href$=".jpg"], a.fileupload[href$=".png"], a.fileupload[href$=".bmp"], a.fileupload[href$=".jpeg"]');

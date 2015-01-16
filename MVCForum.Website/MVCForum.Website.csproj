@@ -1585,6 +1585,8 @@
     <Content Include="Scripts\json2.js" />
     <Content Include="Scripts\json3.js" />
     <Content Include="Scripts\markdown\node-pagedown.js" />
+    <Content Include="Scripts\pushy\pushy.css" />
+    <Content Include="Scripts\pushy\pushy.js" />
     <Content Include="Scripts\tinymce\license.txt" />
     <Content Include="Scripts\tinymce\plugins\advlist\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\advlist\plugin.min.js" />
@@ -1933,6 +1935,7 @@
     <Content Include="Views\Shared\_Badge.cshtml" />
     <Content Include="Views\Shared\_PostSearch.cshtml" />
     <Content Include="Views\Shared\_CreateEdit_TopicPost.cshtml" />
+    <Content Include="Views\Shared\_CommonSideNav.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Extensions\" />

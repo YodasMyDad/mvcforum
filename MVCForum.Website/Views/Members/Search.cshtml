@@ -8,11 +8,9 @@
 
 @section side
 {
-    @Html.Action("ListCategorySideMenu", "Category")
-    @Html.Action("SideSearch", "Search")
-    @Html.Action("PopularTags", "Tag")
-    @Html.Action("CurrentWeekHighPointUsers", "Point")
+    @Html.Partial("_CommonSideNav")
 }
+
 
 <div class="searchmembers">
     
@@ -37,7 +35,7 @@
     </div>
 
 
-    <table class="table table-bordered table-striped">
+    <table class="table table-bordered table-striped table-adaptive">
         <thead>
             <tr>
                 <th>@Html.LanguageString("Members.Users")</th>

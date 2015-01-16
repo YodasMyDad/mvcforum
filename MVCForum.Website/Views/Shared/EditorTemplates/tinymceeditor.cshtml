@@ -1,8 +1,8 @@
-﻿@if (!Context.IsMobileDevice())
-{
+﻿@*@if (!Context.IsMobileDevice())
+        //fontsizeselect
+    {*@
 <script src="@Url.Content("~/scripts/tinymce/tinymce.min.js")" type="text/javascript"></script>
-    <script type="text/javascript">
-        
+    <script type="text/javascript">        
         tinymce.init({
             selector: "textarea.rte",
             plugins: [
@@ -10,32 +10,16 @@
                 "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
                 "table contextmenu directionality emoticons template textcolor paste textcolor"
             ],
-            toolbar1: "bold italic underline strikethrough | link unlink image code blockquote pre | formatselect fontsizeselect",
-            //toolbar2: "cut copy paste | searchreplace | bullist numlist | outdent indent blockquote | undo redo | link unlink anchor image media code | inserttime preview | forecolor backcolor",
-            //toolbar3: "table | hr removeformat | subscript superscript | charmap emoticons | print fullscreen | ltr rtl | spellchecker | visualchars visualblocks nonbreaking template pagebreak restoredraft",
+            toolbar1: "bold italic underline strikethrough | link unlink image code blockquote pre | formatselect",
             remove_linebreaks: false,
             relative_urls: false,
             menubar: false,
             toolbar_items_size: 'small',
             content_css: "/content/tinymce.css",
-            height: 175,
-            //style_formats: [
-            //        { title: 'Bold text', inline: 'b' },
-            //        { title: 'Red text', inline: 'span', styles: { color: '#ff0000' } },
-            //        { title: 'Red header', block: 'h1', styles: { color: '#ff0000' } },
-            //        { title: 'Example 1', inline: 'span', classes: 'example1' },
-            //        { title: 'Example 2', inline: 'span', classes: 'example2' },
-            //        { title: 'Table styles' },
-            //        { title: 'Table row 1', selector: 'tr', classes: 'tablerow1' }
-            //],
-
-            //templates: [
-            //        { title: 'Test template 1', content: 'Test 1' },
-            //        { title: 'Test template 2', content: 'Test 2' }
-            //]
+            height: 175
         });
     </script>
-}
+@*}*@
 <div class="tinymceholder">    
     @Html.TextArea(string.Empty, new {@class = "rte"})     
 </div>

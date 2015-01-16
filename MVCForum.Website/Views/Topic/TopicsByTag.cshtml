@@ -11,11 +11,9 @@
 
 @section side
 {
-    @Html.Action("ListCategorySideMenu", "Category")
-    @Html.Action("SideSearch", "Search")
-    @Html.Action("PopularTags", "Tag")
-    @Html.Action("CurrentWeekHighPointUsers", "Point")
+    @Html.Partial("_CommonSideNav")
 }
+
 
 <div class="mainheading">
     <h1>@ViewBag.Title</h1>

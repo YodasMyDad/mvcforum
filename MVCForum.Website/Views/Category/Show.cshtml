@@ -31,12 +31,8 @@
 }
 @section side
 {
-    @Html.Action("ListCategorySideMenu", "Category")
-    @Html.Action("SideSearch", "Search")
-    @Html.Action("PopularTags", "Tag")
-    @Html.Action("CurrentWeekHighPointUsers", "Point")
+    @Html.Partial("_CommonSideNav")
 }
-
 
 @Html.Action("GetCategoryBreadcrumb", "Category", new { category = Model.Category })
 

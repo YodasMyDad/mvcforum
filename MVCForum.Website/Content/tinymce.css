@@ -1,3 +1,5 @@
 ﻿body#tinymce {font-family: Arial, Helvetica, sans-serif;font-size: 14px;color: #3b3b3b;}
 blockquote { padding: 8px 0 8px 18px;margin: 0 0 0 18px;border-left: 5px #efefef solid;}
+blockquote p { margin: 0 0 12px 0;padding: 0;}
+blockquote p:last-child { margin: 0;padding: 0;}
 pre { padding: 8px;background-color: #efefef;} 

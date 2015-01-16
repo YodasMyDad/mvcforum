@@ -977,7 +977,7 @@ namespace MVCForum.Website.Controllers
             {
                 if (amountToShow == null)
                 {
-                    amountToShow = 20;
+                    amountToShow = 5;
                 }
 
                 // Get the topics

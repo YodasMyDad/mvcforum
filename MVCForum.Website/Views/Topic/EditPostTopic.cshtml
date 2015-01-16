@@ -1,6 +1,6 @@
 ﻿@model MVCForum.Website.ViewModels.CreateEditTopicViewModel
 @{
-    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
+    Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
     ViewBag.Title = Html.LanguageString("Post.Edit");
 }
 
@@ -20,11 +20,6 @@
     </script>
 }
 
-@section side
-{
-    @Html.Action("ListCategorySideMenu", "Category")
-    @Html.Action("PopularTags", "Tag")
-}
 
 <div class="editpostholder">
 
