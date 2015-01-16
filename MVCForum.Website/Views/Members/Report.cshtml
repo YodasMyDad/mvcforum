@@ -7,33 +7,31 @@
 
 @section Header
 {
-        @(
-        Bundle.JavaScript()
+    @(
+ Bundle.JavaScript()
             .Add("~/Scripts/jquery.validate.min.js")
             .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
-            
+
             .MvcRender("~/scripts/cache/validate-combined_#.js")
-    )  
+    )
 }
 
-@using (Html.BeginForm("Report", "Members", FormMethod.Post, new { @class = "form-horizontal" }))
+@using (Html.BeginForm("Report", "Members", FormMethod.Post, new { @class = "form-report" }))
 {
     @Html.HiddenFor(x => Model.Id)
     @Html.ValidationSummary(false)
 
-    <fieldset>
-        <legend>@ViewBag.Title</legend>
+    <h2>@ViewBag.Title</h2>
 
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Reason)
-        </div>
-        <div class="editor-field">
-            @Html.TextAreaFor(model => model.Reason)
-            @Html.ValidationMessageFor(model => model.Reason)
-        </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Reason)
+        @Html.TextAreaFor(model => model.Reason, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Reason)
+    </div>
 
-        <div class="submit-holder">
-            <input type="submit" class="btn btn-large btn-success" value="@Html.LanguageString("Buttons.Send")" />
-        </div>
-    </fieldset>
+    <div class="submit-holder">
+        <button type="submit" class="btn-mvc btn-mvc-green btn-mvc-large">
+            @Html.LanguageString("Buttons.Send")
+        </button>
+    </div>
 }

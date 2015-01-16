@@ -180,6 +180,7 @@ namespace MVCForum.Website.Controllers
             return null;
         }
 
+        #region Create / Edit Helper Methods
         private static CheckCreateTopicPermissions GetCheckCreateTopicPermissions(PermissionSet permissionSet)
         {
             var model = new CheckCreateTopicPermissions();
@@ -201,25 +202,7 @@ namespace MVCForum.Website.Controllers
             return model;
         }
 
-        private List<Category> GetBaseAllowedCategories()
-        {
-            // Get the categories
-            var allowedCategories = new List<Category>();
-            var allCats = _categoryService.GetAll().ToList();
-
-            foreach (var category in allCats)
-            {
-                // Add the allowed categories
-                var permissionSet = RoleService.GetPermissions(category, UsersRole);
-                if (!permissionSet[AppConstants.PermissionDenyAccess].IsTicked)
-                {
-                    allowedCategories.Add(category);
-                }
-            }
-            return allowedCategories;
-        }
-
-        private List<SelectListItem> GetBaseSelectListCategories(List<Category> allowedCategories)
+        private static List<SelectListItem> GetBaseSelectListCategories(List<Category> allowedCategories)
         {
             var cats = new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
             foreach (var cat in allowedCategories)
@@ -227,6 +210,254 @@ namespace MVCForum.Website.Controllers
                 cats.Add(new SelectListItem { Text = cat.Name, Value = cat.Id.ToString() });
             }
             return cats;
+        } 
+        #endregion
+
+        [Authorize]
+        public ActionResult EditPostTopic(Guid id)
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                // Get the post
+                var post = _postService.Get(id);
+
+                // Get the topic
+                var topic = post.Topic;
+
+                // get the users permissions
+                var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
+
+                // Is the user allowed to edit this post
+                if (post.User.Id == LoggedOnUser.Id || permissions[AppConstants.PermissionEditPosts].IsTicked)
+                {
+                    // Get the allowed categories for this user
+                    var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+
+                    // If this user hasn't got any allowed cats OR they are not allowed to post then abandon
+                    if (allowedCategories.Any() && LoggedOnUser.DisablePosting != true)
+                    {
+                        // Create the model for just the post
+                        var viewModel = new CreateEditTopicViewModel
+                        {
+                            Content = Server.HtmlDecode(post.PostContent), 
+                            Id = post.Id,
+                            Category = topic.Category.Id,
+                            Name = topic.Name
+                        };
+
+                        // Now check if this is a topic starter, if so add the rest of the field
+                        if (post.IsTopicStarter)
+                        {
+                            // See if this user is subscribed to this topic
+                            var subscribedToTopic = LoggedOnUser.TopicNotifications.Any(x => x.Topic.Id == topic.Id);
+
+                            // Populate the properties we can
+                            viewModel.IsLocked = topic.IsLocked;
+                            viewModel.IsSticky = topic.IsSticky;
+                            viewModel.IsTopicStarter = post.IsTopicStarter;
+                            viewModel.SubscribeToTopic = subscribedToTopic;
+                            viewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
+                            viewModel.Categories = GetBaseSelectListCategories(allowedCategories);
+
+                            // Tags - Populate from the topic
+                            if (topic.Tags.Any())
+                            {
+                                viewModel.Tags = string.Join<string>(",", topic.Tags.Select(x => x.Tag));
+                            }
+                            
+                            // Populate the poll answers
+                            if (topic.Poll != null && topic.Poll.PollAnswers.Any())
+                            {
+                                // Has a poll so add it to the view model
+                                viewModel.PollAnswers = topic.Poll.PollAnswers;
+                            }
+                        }
+                        
+                        // Return the edit view
+                        return View(viewModel);
+                    }
+
+                }
+
+                // If we get here the user has no permission to try and edit the post
+                return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditPostTopic(CreateEditTopicViewModel editPostViewModel)
+        {
+
+            // Get the category
+            var category = _categoryService.Get(editPostViewModel.Category);
+
+            // First check this user is allowed to create topics in this category
+            var permissions = RoleService.GetPermissions(category, UsersRole);
+
+            // Now we have the category and permissionSet - Populate the optional permissions 
+            // This is just in case the viewModel is return back to the view also sort the allowedCategories
+            var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+            editPostViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
+            editPostViewModel.Categories = GetBaseSelectListCategories(allowedCategories);
+            editPostViewModel.IsTopicStarter = editPostViewModel.Id == Guid.Empty;
+            if (editPostViewModel.PollAnswers == null)
+            {
+                editPostViewModel.PollAnswers = new List<PollAnswer>();
+            }
+            /*---- End Re-populate ViewModel ----*/
+
+            if (ModelState.IsValid)
+            {
+                // Quick check to see if user is locked out, when logged in
+                if (LoggedOnUser.IsLockedOut || LoggedOnUser.DisablePosting == true || !LoggedOnUser.IsApproved)
+                {
+                    FormsAuthentication.SignOut();
+                    return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoAccess"));
+                }
+
+                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                {
+                    // Got to get a lot of things here as we have to check permissions
+                    // Get the post
+                    var post = _postService.Get(editPostViewModel.Id);
+
+                    // Get the topic
+                    var topic = post.Topic;
+
+                    if (post.User.Id == LoggedOnUser.Id || permissions[AppConstants.PermissionEditPosts].IsTicked)
+                    {
+                        // User has permission so update the post
+                        post.PostContent = StringUtils.GetSafeHtml(_bannedWordService.SanitiseBannedWords(editPostViewModel.Content));
+                        post.DateEdited = DateTime.UtcNow;
+
+                        // if topic starter update the topic
+                        if (post.IsTopicStarter)
+                        {
+                            // if category has changed then update it
+                            if (topic.Category.Id != editPostViewModel.Category)
+                            {
+                                var cat = _categoryService.Get(editPostViewModel.Category);
+                                topic.Category = cat;
+                            }
+
+                            topic.IsLocked = editPostViewModel.IsLocked;
+                            topic.IsSticky = editPostViewModel.IsSticky;
+                            topic.Name = StringUtils.GetSafeHtml(_bannedWordService.SanitiseBannedWords(editPostViewModel.Name));
+
+                            // See if there is a poll
+                            if (editPostViewModel.PollAnswers != null && editPostViewModel.PollAnswers.Count > 0)
+                            {
+                                // Now sort the poll answers, what to add and what to remove
+                                // Poll answers already in this poll.
+                                //var existingAnswers = topic.Poll.PollAnswers.Where(x => postedIds.Contains(x.Id)).ToList();
+                                var postedIds = editPostViewModel.PollAnswers.Select(x => x.Id);
+                                var topicPollAnswerIds = topic.Poll.PollAnswers.Select(p => p.Id).ToList();
+                                var existingAnswers = editPostViewModel.PollAnswers.Where(x => topicPollAnswerIds.Contains(x.Id)).ToList();
+                                var newPollAnswers = editPostViewModel.PollAnswers.Where(x => !topicPollAnswerIds.Contains(x.Id)).ToList();
+                                var pollAnswersToRemove = topic.Poll.PollAnswers.Where(x => !postedIds.Contains(x.Id)).ToList();
+
+                                // Loop through existing and update names if need be
+                                //TODO: Need to think about this in future versions if they change the name
+                                //TODO: As they could game the system by getting votes and changing name?
+                                foreach (var existPollAnswer in existingAnswers)
+                                {
+                                    // Get the existing answer from the current topic
+                                    var pa = topic.Poll.PollAnswers.FirstOrDefault(x => x.Id == existPollAnswer.Id);
+                                    if (pa != null && pa.Answer != existPollAnswer.Answer)
+                                    {
+                                        // If the answer has changed then update it
+                                        pa.Answer = existPollAnswer.Answer;
+                                    }
+                                }
+
+                                // Loop through and remove the old poll answers and delete
+                                foreach (var oldPollAnswer in pollAnswersToRemove)
+                                {
+                                    // Delete
+                                    _pollAnswerService.Delete(oldPollAnswer);
+
+                                    // Remove from Poll
+                                    topic.Poll.PollAnswers.Remove(oldPollAnswer);
+                                }
+
+                                // Poll answers to add
+                                foreach (var newPollAnswer in newPollAnswers)
+                                {
+                                    var npa = new PollAnswer
+                                    {
+                                        Poll = topic.Poll,
+                                        Answer = newPollAnswer.Answer
+                                    };
+                                    _pollAnswerService.Add(npa);
+                                    topic.Poll.PollAnswers.Add(npa);
+                                }
+                            }
+                            else
+                            {
+                                // Need to check if this topic has a poll, because if it does
+                                // All the answers have now been removed so remove the poll.
+                                if (topic.Poll != null)
+                                {
+                                    //Firstly remove the answers if there are any
+                                    if (topic.Poll.PollAnswers != null && topic.Poll.PollAnswers.Any())
+                                    {
+                                        var answersToDelete = new List<PollAnswer>();
+                                        answersToDelete.AddRange(topic.Poll.PollAnswers);
+                                        foreach (var answer in answersToDelete)
+                                        {
+                                            // Delete
+                                            _pollAnswerService.Delete(answer);
+
+                                            // Remove from Poll
+                                            topic.Poll.PollAnswers.Remove(answer);
+                                        }
+                                    }
+
+                                    // Now delete the poll
+                                    var pollToDelete = topic.Poll;
+                                    _pollService.Delete(pollToDelete);
+
+                                    // Remove from topic.
+                                    topic.Poll = null;
+                                }
+                            }
+
+                            // Tags
+                            topic.Tags.Clear();
+                            if (!string.IsNullOrEmpty(editPostViewModel.Tags))
+                            {
+                                _topicTagService.Add(editPostViewModel.Tags.ToLower(), topic);
+                            }
+                        }
+
+                        // redirect back to topic
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = LocalizationService.GetResourceString("Post.Updated"),
+                            MessageType = GenericMessages.success
+                        };
+                        try
+                        {
+                            unitOfWork.Commit();
+                            return Redirect(string.Format("{0}?postbadges=true", topic.NiceUrl));
+                        }
+                        catch (Exception ex)
+                        {
+                            unitOfWork.Rollback();
+                            LoggingService.Error(ex); 
+                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                            {
+                                Message = LocalizationService.GetResourceString("Errors.GenericError"),
+                                MessageType = GenericMessages.danger
+                            };
+                        }
+                    }
+
+                    return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
+                }
+            }
+            return View(editPostViewModel);
         }
 
         [Authorize]
@@ -234,16 +465,17 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var allowedCategories = GetBaseAllowedCategories();
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
 
                 if (allowedCategories.Any() && LoggedOnUser.DisablePosting != true)
                 {
-                    var viewModel = new CreateTopicViewModel
+                    var viewModel = new CreateEditTopicViewModel
                     {
-                        LoggedOnUser = LoggedOnUser,
                         SubscribeToTopic = true,
                         Categories = GetBaseSelectListCategories(allowedCategories),
-                        OptionalPermissions = new CheckCreateTopicPermissions{CanLockTopic = false, CanStickyTopic = false, CanUploadFiles = false}
+                        OptionalPermissions = new CheckCreateTopicPermissions{CanLockTopic = false, CanStickyTopic = false, CanUploadFiles = false},
+                        PollAnswers = new List<PollAnswer>(),
+                        IsTopicStarter = true
                     };
 
                     return View(viewModel);
@@ -255,8 +487,27 @@ namespace MVCForum.Website.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(CreateTopicViewModel topicViewModel)
+        public ActionResult Create(CreateEditTopicViewModel topicViewModel)
         {
+
+            // Get the category
+            var category = _categoryService.Get(topicViewModel.Category);
+
+            // First check this user is allowed to create topics in this category
+            var permissions = RoleService.GetPermissions(category, UsersRole);
+
+            // Now we have the category and permissionSet - Populate the optional permissions 
+            // This is just in case the viewModel is return back to the view also sort the allowedCategories
+            var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+            topicViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
+            topicViewModel.Categories = GetBaseSelectListCategories(allowedCategories);
+            topicViewModel.IsTopicStarter = true;
+            if (topicViewModel.PollAnswers == null)
+            {
+                topicViewModel.PollAnswers = new List<PollAnswer>();
+            }
+            /*---- End Re-populate ViewModel ----*/
+
             if (ModelState.IsValid)
             {
                 // Quick check to see if user is locked out, when logged in
@@ -268,24 +519,10 @@ namespace MVCForum.Website.Controllers
 
                 var successfullyCreated = false;
                 var moderate = false;
-                Category category;
                 var topic = new Topic();
 
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
-                    // Not using automapper for this one only, as a topic is a post and topic in one
-                    category = _categoryService.Get(topicViewModel.Category);
-
-                    // First check this user is allowed to create topics in this category
-                    var permissions = RoleService.GetPermissions(category, UsersRole);
-
-                    // Now we have the category and permissionSet - Populate the optional permissions 
-                    // This is just in case the viewModel is return back to the view also sort the allowedCategories
-                    var allowedCategories = GetBaseAllowedCategories();
-                    topicViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
-                    topicViewModel.Categories = GetBaseSelectListCategories(allowedCategories);
-                    topicViewModel.LoggedOnUser = LoggedOnUser;
-                    /*---- End Re-populate ViewModel ----*/
 
                     // Check this users role has permission to create a post
                     if (permissions[AppConstants.PermissionDenyAccess].IsTicked || permissions[AppConstants.PermissionReadOnly].IsTicked || !permissions[AppConstants.PermissionCreateTopics].IsTicked)
@@ -329,7 +566,7 @@ namespace MVCForum.Website.Controllers
                             topicViewModel.Content = _bannedWordService.SanitiseBannedWords(topicViewModel.Content, bannedWords);
 
                             // See if this is a poll and add it to the topic
-                            if (topicViewModel.PollAnswers != null && topicViewModel.PollAnswers.Count > 0)
+                            if (topicViewModel.PollAnswers.Count > 0)
                             {
                                 // Do they have permission to create a new poll
                                 if (permissions[AppConstants.PermissionCreatePolls].IsTicked)
@@ -520,23 +757,10 @@ namespace MVCForum.Website.Controllers
 
                         return RedirectToAction("Index", "Home");
                     }
-
-                    var allowedCategories = _categoryService.GetAllowedCategories(UsersRole).ToList();
-                    if (allowedCategories.Any())
-                    {
-                        var cats = new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
-                        foreach (var cat in allowedCategories)
-                        {
-                            var selected = topicViewModel.Category == cat.Id;
-                            cats.Add(new SelectListItem { Text = cat.Name, Value = cat.Id.ToString(), Selected = selected });
-                        }
-                        topicViewModel.Categories = cats;
-                    }
                 }
-                return View(topicViewModel);
             }
 
-            return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
+            return View(topicViewModel);
         }
 
         public ActionResult Show(string slug, int? p)

@@ -1,13 +1,13 @@
 ﻿@model MVCForum.Website.ViewModels.CreateEditTopicViewModel
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
-    ViewBag.Title = Html.LanguageString("Topic.CreateDiscussion");
+    ViewBag.Title = Html.LanguageString("Post.Edit");
 }
 
 @section Header
 {
     @(
-    Bundle.JavaScript()
+ Bundle.JavaScript()
             .Add("~/Scripts/jquery.validate.min.js")
             .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
             .Add("~/Scripts/jquery.tagsinput.min.js")
@@ -26,13 +26,14 @@
     @Html.Action("PopularTags", "Tag")
 }
 
-<div class="createtopicholder">
+<div class="editpostholder">
 
-    @using (Html.BeginForm("Create", "Topic", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    @using (Html.BeginForm())
     {
         @Html.ValidationSummary(false)
         @Html.AntiForgeryToken()
         @Html.Partial("_CreateEdit_TopicPost", Model)
+        @Html.HiddenFor(x => x.Id)
     }
 
 </div>

@@ -84,7 +84,7 @@ namespace MVCForum.Website.ViewModels
         public bool CanLockTopic { get; set; }
     }
 
-    public class CreateTopicViewModel
+    public class CreateEditTopicViewModel
     {
         [Required]
         [StringLength(600)]
@@ -109,18 +109,22 @@ namespace MVCForum.Website.ViewModels
 
         public List<SelectListItem> Categories { get; set; }
 
-        public List<PollAnswer> PollAnswers { get; set; }
+        public IList<PollAnswer> PollAnswers { get; set; }
             
         [ForumMvcResourceDisplayName("Topic.Label.SubscribeToTopic")]
         public bool SubscribeToTopic { get; set; }
-
-        public MembershipUser LoggedOnUser { get; set; }
 
         [ForumMvcResourceDisplayName("Topic.Label.UploadFiles")]
         public HttpPostedFileBase[] Files { get; set; }
 
         // Permissions stuff
         public CheckCreateTopicPermissions OptionalPermissions { get; set; }
+
+        // Edit Properties
+        [HiddenInput]
+        public Guid Id { get; set; }
+
+        public bool IsTopicStarter { get; set; }
     }
 
     public class GetMorePostsViewModel

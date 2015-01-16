@@ -49,7 +49,7 @@
                     @if (Model.Post.User.Id == loggedOnUserId || Model.Permissions[AppConstants.PermissionEditPosts].IsTicked)
                     {
                         <li>
-                            <a class="btn-mvc btn-mvc-small btn-mvc-fullwidth" href="@Url.Action("EditPost", "Post", new { id = Model.Post.Id })">
+                            <a class="btn-mvc btn-mvc-small btn-mvc-fullwidth" href="@Url.Action("EditPostTopic", "Topic", new { id = Model.Post.Id })">
                                 @Html.LanguageString("Post.Edit")
                             </a>
                         </li>
