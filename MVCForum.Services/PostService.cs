@@ -95,12 +95,17 @@ namespace MVCForum.Services
         /// <param name="pageSize"></param>
         /// <param name="amountToTake"></param>
         /// <param name="searchTerm"></param>
+        /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm)
+        public PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm, List<Category> allowedCategories)
         {
-            var search = StringUtils.SafePlainText(searchTerm);
+            // Create search term
+            var search = StringUtils.ReturnSearchString(searchTerm);
 
-            return _postRepository.SearchPosts(pageIndex, pageSize, amountToTake, search);
+            // Now split the words
+            var splitSearch = search.Split(' ').ToList();
+
+            return _postRepository.SearchPosts(pageIndex, pageSize, amountToTake, splitSearch, allowedCategories);
         }
 
         /// <summary>

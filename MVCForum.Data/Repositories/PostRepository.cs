@@ -6,6 +6,7 @@ using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Utilities;
 
 namespace MVCForum.Data.Repositories
 {
@@ -185,27 +186,42 @@ namespace MVCForum.Data.Repositories
                 .ToList();
         }
 
-        public PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm)
+        public PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, List<string> searchTerms, List<Category> allowedCategories)
         {
+            // get the category ids
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+
             // We might only want to display the top 100
             // but there might not be 100 topics
-            var total = _context.Post.Count(x => x.PostContent.Contains(searchTerm) | x.Topic.Name.Contains(searchTerm));
+            var query = _context.Post
+                            .Include(x => x.Topic.Category)
+                            .Include(x => x.User)
+                            .Where(x => x.Pending != true)
+                            .Where(x => allowedCatIds.Contains(x.Topic.Category.Id));
+
+            // Loop through each word and see if it's in the post
+            foreach (var term in searchTerms)
+            {
+                var sTerm = term.Trim();
+                query = query.Where(x => x.PostContent.ToLower().Contains(sTerm) || x.Topic.Name.ToLower().Contains(sTerm));
+            }
+
+            // Get the count
+            var total = query.Count();
+
             if (amountToTake < total)
             {
                 total = amountToTake;
             }
 
-            // Get the Posts
-            var results = _context.Post
-                            .Include(x => x.Topic)
-                            .Include(x => x.User)
-                            .Where(x => x.PostContent.Contains(searchTerm) | x.Topic.Name.Contains(searchTerm))
-                            .Where(x => x.Pending != true)
-                            .OrderByDescending(x => x.DateCreated)
-                            .Skip((pageIndex - 1) * pageSize)
-                            .Take(pageSize)
-                            .ToList();
-
+            // Get the Posts and then get the topics from the post
+            // This is an interim solution, as its flawed due to multiple posts in one topic so the paging might
+            // be incorrect if all posts are from one topic.
+            var results = query
+                        .OrderByDescending(x => x.DateCreated)
+                        .Skip((pageIndex - 1) * pageSize)
+                        .Take(pageSize)
+                        .ToList();
 
             // Return a paged list
             return new PagedList<Post>(results, pageIndex, pageSize, total);

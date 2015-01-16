@@ -17,17 +17,16 @@
 
 <h1>@Html.LanguageString("Search.Searching"): @Model.Term</h1>
 
-@if (Model.Topics.Any())
+@if (Model.Posts.Any())
 {
-
-    foreach (var topic in Model.Topics)
+    foreach (var post in Model.Posts)
     {
-        Html.RenderPartial("_Topic", topic);
+        Html.RenderPartial("_PostSearch", post);
     }
 
     if (Model.TotalPages > 1)
     {
-        @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null)
+        @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().PostsPerPage, totalCount, null)
     }
 }
 else

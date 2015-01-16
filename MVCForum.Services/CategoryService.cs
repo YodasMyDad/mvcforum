@@ -67,7 +67,7 @@ namespace MVCForum.Services
         /// </summary>
         /// <param name="role"></param>
         /// <returns></returns>
-        public IEnumerable<Category> GetAllowedCategories(MembershipRole role)
+        public List<Category> GetAllowedCategories(MembershipRole role)
         {
             var filteredCats = new List<Category>();
             var allCats = _categoryRepository.GetAll().ToList();

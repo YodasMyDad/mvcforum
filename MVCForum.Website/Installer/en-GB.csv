@@ -316,3 +316,7 @@ SubscribedCats.NothingToShow,You are not subscribed to any Categories
 Following.Topics,Topics your are following
 SubscribedTopics.NothingToShow,You are not subscribed to any Topics
 PostedIn.PageTitle,Topics & Posts you have posted in
+Topic.Label.Tags,Add Tag
+Topic.Label.UploadFiles,Upload Files
+Search.Searching,Searching
+Search.InTopic,In Topic

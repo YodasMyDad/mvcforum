@@ -2,8 +2,8 @@
 @{
     var poll = Model.Poll;
     var displayVote = !Model.UserHasAlreadyVoted;
-    
-    <div class="showpollholder">
+
+    <div class="pollcontainer">
         @foreach (var pollAnswer in poll.PollAnswers.OrderBy(x => x.Answer))
         {
             var answerVotes = pollAnswer.PollVotes.Count;
@@ -21,38 +21,38 @@
             if (widthPercentage > 50 & widthPercentage <= 75)
             {
                 color = "info";
-            }                                   
-                            
-            <div class="row">
-                <div class="pollanswerrow col-md-12">
-                    <div class="pollanswerrowholder clearfix">
-                        @if (Model.UserAllowedToVote && displayVote)
-                        {
-                            <div class="pollradiobuttonholder">
-                                <input type="radio" class="pollanswerselect" name="pollanswers" data-answerid="@pollAnswer.Id" />
-                            </div>
-                        }
-                        @pollAnswer.Answer
+            }
+
+
+            <div class="pollanswerrow">
+                <div class="pollanswerrowholder clearfix">
+                    @if (Model.UserAllowedToVote && displayVote)
+                    {
+                        <div class="pollradiobuttonholder">
+                            <input type="radio" class="pollanswerselect" name="pollanswers" data-answerid="@pollAnswer.Id" />
+                        </div>
+                    }
+                    @pollAnswer.Answer
+                </div>
+
+                <div class="pollbarrowholder clearfix">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-@color" role="progressbar" aria-valuenow="@(convertedPercentage)" aria-valuemin="0" aria-valuemax="100" style="width: @(convertedPercentage)%">
+                            <span class="sr-only">
+                                @answerVotes vote
+                            </span>
+                        </div>
                     </div>
 
-                    <div class="pollbarrowholder clearfix">                        
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-@color" role="progressbar" aria-valuenow="@(convertedPercentage)" aria-valuemin="0" aria-valuemax="100" style="width: @(convertedPercentage)%">
-                                <span class="sr-only">
-                                    @answerVotes vote
-                                </span>
-                            </div>
-                        </div>
-                       
-                    </div>
                 </div>
             </div>
+
         }
 
         @if (Model.UserAllowedToVote && displayVote)
         {
-            <div class="pollvotebuttonholder col-md-12" style="display: none;">
-                <a href="#" class="pollvotebutton btn">@Html.LanguageString("Poll.Button.Vote")</a>
+            <div class="pollvotebuttonholder" style="display: none;">
+                <a href="#" class="btn-mvc pollvotebutton">@Html.LanguageString("Poll.Button.Vote")</a>
                 <input type="hidden" class="selectedpollanswer" value="" />
                 @Html.HiddenFor(x => x.Poll.Id)
             </div>

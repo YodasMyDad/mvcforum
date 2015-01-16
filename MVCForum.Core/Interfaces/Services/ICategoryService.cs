@@ -8,7 +8,7 @@ namespace MVCForum.Domain.Interfaces.Services
     {
         IEnumerable<Category> GetAll();
         IEnumerable<Category> GetAllMainCategories();
-        IEnumerable<Category> GetAllowedCategories(MembershipRole role);
+        List<Category> GetAllowedCategories(MembershipRole role);
         IEnumerable<Category> GetAllSubCategories(Guid parentId);
         Category Get(Guid id);
         IList<Category> Get(IList<Guid> ids);

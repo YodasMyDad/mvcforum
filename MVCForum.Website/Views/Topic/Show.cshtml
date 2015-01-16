@@ -80,47 +80,42 @@
         <h1>@Html.Raw(Model.Topic.Name)</h1>
 
 
-    <ul class="topicinfo">
+        <ul class="topicinfo">
 
-        @if (Model.Topic.IsSticky)
-        {
-            <li><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> @Html.Lang("Topic.IsSticky")</li>
-        }
-        @if (Model.Topic.IsLocked)
-        {
-            <li><span class="glyphicon glyphicon-lock" aria-hidden="true"></span> @Html.Lang("Topic.IsLocked")</li>
-        }
+            @if (Model.Topic.IsSticky)
+            {
+                <li><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span> @Html.Lang("Topic.IsSticky")</li>
+            }
+            @if (Model.Topic.IsLocked)
+            {
+                <li><span class="glyphicon glyphicon-lock" aria-hidden="true"></span> @Html.Lang("Topic.IsLocked")</li>
+            }
 
-        @if (Model.Topic.Poll != null)
-        {
+            @if (Model.Topic.Poll != null)
+            {
+                <li>
+                    <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> @Html.Lang("Topic.IsPoll")
+                </li>
+            }
             <li>
-                <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> @Html.Lang("Topic.IsPoll")
+                <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Model.Views.KiloFormat() @Html.Lang("Topic.Views")
             </li>
-        }
-        <li>
-            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Model.Views.KiloFormat() @Html.Lang("Topic.Views")
-        </li>
 
-        <li><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Html.Lang("Topic.LastPost") @DatesUI.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())</li>
-                
-        @if (Model.Topic.Solved)
-        {
-            <li><span class="glyphicon glyphicon glyphicon-ok green-colour" aria-hidden="true"></span> @Html.Lang("Topic.IsSolved")</li>
-        }
+            <li><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Html.Lang("Topic.LastPost") @DatesUI.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())</li>
 
-    </ul>
-    
+            @if (Model.Topic.Solved)
+            {
+                <li><span class="glyphicon glyphicon glyphicon-ok green-colour" aria-hidden="true"></span> @Html.Lang("Topic.IsSolved")</li>
+            }
+
+        </ul>
+
     </div>
 
-    @if (Html.Settings().EnablePolls == true)
+    @if (Html.Settings().EnablePolls == true && Model.Poll != null)
     {
-        <div class="pollcontainer">
-            @if (Model.Poll != null)
-            {
-                // Show the poll if there is one
-                Html.RenderPartial("_Poll", Model.Poll);
-            }
-        </div>
+        // Show the poll if there is one
+        Html.RenderPartial("_Poll", Model.Poll);
     }
 
     <div class="topicstarterpost">
@@ -135,9 +130,9 @@
                 @if ((Model.TotalCount - 1) > 0)
                 {
                     <text> @Html.LanguageString("PostFilter.OrderBy")
-                        <a class="orderfilerlink @(string.IsNullOrEmpty(qs) ? "orderfilerlinkactive" : "")" href="@Model.Topic.NiceUrl">@Html.LanguageString("PostFilter.Standard")</a> |
-                        <a class="orderfilerlink @(qs.Contains(PostOrderBy.Newest.ToString()) ? "orderfilerlinkactive" : "")" href="?@AppConstants.PostOrderBy=@PostOrderBy.Newest.ToString()">@Html.LanguageString("PostFilter.Newest")</a> |
-                        <a class="orderfilerlink @(qs.Contains(PostOrderBy.Votes.ToString()) ? "orderfilerlinkactive" : "")" href="?@AppConstants.PostOrderBy=@PostOrderBy.Votes.ToString()">@Html.LanguageString("PostFilter.Votes")</a>
+                    <a class="orderfilerlink @(string.IsNullOrEmpty(qs) ? "orderfilerlinkactive" : "")" href="@Model.Topic.NiceUrl">@Html.LanguageString("PostFilter.Standard")</a> |
+                    <a class="orderfilerlink @(qs.Contains(PostOrderBy.Newest.ToString()) ? "orderfilerlinkactive" : "")" href="?@AppConstants.PostOrderBy=@PostOrderBy.Newest.ToString()">@Html.LanguageString("PostFilter.Newest")</a> |
+                    <a class="orderfilerlink @(qs.Contains(PostOrderBy.Votes.ToString()) ? "orderfilerlinkactive" : "")" href="?@AppConstants.PostOrderBy=@PostOrderBy.Votes.ToString()">@Html.LanguageString("PostFilter.Votes")</a>
                     </text>
                 }
             </div>

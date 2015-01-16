@@ -27,6 +27,7 @@
         public const int AdminListPageSize = 30;
         public const int PagingGroupSize = 10;
         public const int ActiveTopicsListSize = 100;
+        public const int SearchListSize = 30;
         public const int MembersActivityListSize = 100;
         public const int PrivateMessageListSize = 30;
         public const int SimilarTopicsListSize = 20;

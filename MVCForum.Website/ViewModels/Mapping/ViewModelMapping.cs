@@ -344,6 +344,18 @@ namespace MVCForum.Website.ViewModels.Mapping
                 Favourites = favourites
             };
         }
+
+        /// <summary>
+        /// Maps the posts for a specific topic
+        /// </summary>
+        /// <param name="posts"></param>
+        /// <param name="votes"></param>
+        /// <param name="permission"></param>
+        /// <param name="topic"></param>
+        /// <param name="loggedOnUser"></param>
+        /// <param name="settings"></param>
+        /// <param name="favourites"></param>
+        /// <returns></returns>
         public static List<PostViewModel> CreatePostViewModels(IEnumerable<Post> posts, List<Vote> votes, PermissionSet permission, Topic topic, MembershipUser loggedOnUser, Settings settings, List<Favourite> favourites)
         {
             var viewModels = new List<PostViewModel>();
@@ -352,6 +364,33 @@ namespace MVCForum.Website.ViewModels.Mapping
             foreach (var post in posts)
             {
                 var id = post.Id;
+                var postVotes = (groupedVotes.Contains(id) ? groupedVotes[id].ToList() : new List<Vote>());
+                var postFavs = (groupedFavourites.Contains(id) ? groupedFavourites[id].ToList() : new List<Favourite>());
+                viewModels.Add(CreatePostViewModel(post, postVotes, permission, topic, loggedOnUser, settings, postFavs));
+            }
+            return viewModels;
+        }
+
+        /// <summary>
+        /// Maps posts from any topic must be pre filtered by checked the user has access to them
+        /// </summary>
+        /// <param name="posts"></param>
+        /// <param name="votes"></param>
+        /// <param name="permissions"></param>
+        /// <param name="loggedOnUser"></param>
+        /// <param name="settings"></param>
+        /// <param name="favourites"></param>
+        /// <returns></returns>
+        public static List<PostViewModel> CreatePostViewModels(IEnumerable<Post> posts, List<Vote> votes, Dictionary<Category, PermissionSet> permissions, MembershipUser loggedOnUser, Settings settings, List<Favourite> favourites)
+        {
+            var viewModels = new List<PostViewModel>();
+            var groupedVotes = votes.ToLookup(x => x.Post.Id);
+            var groupedFavourites = favourites.ToLookup(x => x.Post.Id);
+            foreach (var post in posts)
+            {
+                var id = post.Id;
+                var topic = post.Topic;
+                var permission = permissions[topic.Category];
                 var postVotes = (groupedVotes.Contains(id) ? groupedVotes[id].ToList() : new List<Vote>());
                 var postFavs = (groupedFavourites.Contains(id) ? groupedFavourites[id].ToList() : new List<Favourite>());
                 viewModels.Add(CreatePostViewModel(post, postVotes, permission, topic, loggedOnUser, settings, postFavs));

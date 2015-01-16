@@ -19,7 +19,7 @@ namespace MVCForum.Domain.Interfaces.Repositories
         PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId, PostOrderBy order);
         IList<Post> GetPostsByMember(Guid memberId);
         IList<Post> GetAllSolutionPosts();
-        PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm); 
+        PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, List<string> searchTerms, List<Category> allowedCategories); 
 
         int PostCount();
 
