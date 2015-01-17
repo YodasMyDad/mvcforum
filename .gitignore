@@ -36,7 +36,7 @@ _ReSharper*/
 *.orig
 *Backup/*
 UpgradeLog2.htm
-*MVCForum.Website/Content/uploads/*
+MVCForum.Website/Content/uploads/*
 Badges/AuthorMarkAsSolution/*.dll
 MVCForum.Website/Content/cache/*.css
 MVCForum.Website/Scripts/cache/*.js
