@@ -16,10 +16,12 @@ namespace MVCForum.Domain.DomainModel
         public virtual IList<MembershipUser> Users { get; set; }
         public virtual Settings Settings { get; set; }
 
-        // Permissions
+        // Category Permissions
         public virtual IList<CategoryPermissionForRole> CategoryPermissionForRole { get; set; }
+        // Global Permissions
+        public virtual IList<GlobalPermissionForRole> GlobalPermissionForRole { get; set; }
 
-        public virtual Dictionary<Guid, Dictionary<Permission, bool>> GetFullPermissionTable()
+        public virtual Dictionary<Guid, Dictionary<Permission, bool>> GetCategoryPermissionTable()
         {
             var permissionRows = new Dictionary<Guid, Dictionary<Permission, bool>>();
 

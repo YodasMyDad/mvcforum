@@ -4,10 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Web;
 using System.Web.Mvc;
 using DataAnnotationsExtensions;
-using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Website.Application;
-using MVCForum.Website.Areas.Admin.ViewModels;
 
 namespace MVCForum.Website.ViewModels
 {
@@ -52,10 +50,11 @@ namespace MVCForum.Website.ViewModels
         public string[] Roles { get; set; }
 
         public IList<MembershipRole> AllRoles { get; set; }
-
         public string SpamAnswer { get; set; }
-
         public string ReturnUrl { get; set; }
+        public string SocialProfileImageUrl { get; set; }
+        public string UserAccessToken { get; set; }
+        public LoginType LoginType { get; set; }
     }
 
     public class MemberFrontEndEditViewModel
@@ -108,34 +107,34 @@ namespace MVCForum.Website.ViewModels
         public bool DisableFileUploads { get; set; }
     }
 
-    public class RegisterViewModel
-    {
-        [Required]
-        [ForumMvcResourceDisplayName("Members.Label.Username")]
-        public string UserName { get; set; }
+    //public class RegisterViewModel
+    //{
+    //    [Required]
+    //    [ForumMvcResourceDisplayName("Members.Label.Username")]
+    //    public string UserName { get; set; }
 
-        [Required]
-        [DataType(DataType.EmailAddress)]
-        [ForumMvcResourceDisplayName("Members.Label.EmailAddress")]
-        public string Email { get; set; }
+    //    [Required]
+    //    [DataType(DataType.EmailAddress)]
+    //    [ForumMvcResourceDisplayName("Members.Label.EmailAddress")]
+    //    public string Email { get; set; }
 
-        [Required]
-        [StringLength(100, MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        [ForumMvcResourceDisplayName("Members.Label.Password ")]
-        public string Password { get; set; }
+    //    [Required]
+    //    [StringLength(100, MinimumLength = 6)]
+    //    [DataType(DataType.Password)]
+    //    [ForumMvcResourceDisplayName("Members.Label.Password ")]
+    //    public string Password { get; set; }
 
-        [DataType(DataType.Password)]
-        [System.ComponentModel.DataAnnotations.Compare("Password")]
-        [ForumMvcResourceDisplayName("Members.Label.ConfirmPassword")]
-        public string ConfirmPassword { get; set; }
+    //    [DataType(DataType.Password)]
+    //    [System.ComponentModel.DataAnnotations.Compare("Password")]
+    //    [ForumMvcResourceDisplayName("Members.Label.ConfirmPassword")]
+    //    public string ConfirmPassword { get; set; }
 
-        [Required]
-        public bool LogInNow { get; set; }
+    //    [Required]
+    //    public bool LogInNow { get; set; }
 
-        [Required]
-        public int MinPasswordLength { get; set; }
-    }
+    //    [Required]
+    //    public int MinPasswordLength { get; set; }
+    //}
 
     public class LogOnViewModel
     {

@@ -65,14 +65,6 @@ namespace MVCForum.Services
             }
         }
 
-        /// <summary>
-        /// Saves/Updates CPFR
-        /// </summary>
-        /// <param name="categoryPermissionForRole"></param>
-        public void Save(CategoryPermissionForRole categoryPermissionForRole)
-        {
-            _categoryPermissionForRoleService.Update(categoryPermissionForRole); 
-        }
 
         /// <summary>
         /// Returns a row with the permission and CPFR

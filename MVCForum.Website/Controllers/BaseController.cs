@@ -67,6 +67,11 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+        protected void ShowMessage(GenericMessageViewModel messageViewModel)
+        {
+            //ViewData[AppConstants.MessageViewBagName] = messageViewModel;
+            TempData[AppConstants.MessageViewBagName] = messageViewModel;
+        }
         protected string Username
         {
             get

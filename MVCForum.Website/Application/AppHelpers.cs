@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Web;
 using System.Web.Hosting;
@@ -310,6 +312,20 @@ namespace MVCForum.Website.Application
             return imageFileTypes.Any(file.Contains);
         }
 
+        public static Image GetImageFromExternalUrl(string url)
+        {
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+
+            using (var httpWebReponse = (HttpWebResponse)httpWebRequest.GetResponse())
+            {
+                using (var stream = httpWebReponse.GetResponseStream())
+                {
+                    if (stream != null) return Image.FromStream(stream);
+                }
+            }
+            return null;
+        }
+
         public static string MemberImage(string avatar, string email, Guid userId, int size)
         {
             if (!string.IsNullOrEmpty(avatar))
@@ -328,7 +344,7 @@ namespace MVCForum.Website.Application
             if (fileName != null)
             {
                 //Before we do anything, check file size
-                if (file.ContentLength > Convert.ToInt32(ConfigUtils.GetAppSetting("FileUploadMaximumFileSizeInBytes")))
+                if (file.ContentLength > Convert.ToInt32(SiteConstants.FileUploadMaximumFileSizeInBytes))
                 {
                     //File is too big
                     upResult.UploadSuccessful = false;
@@ -337,7 +353,7 @@ namespace MVCForum.Website.Application
                 }
 
                 // now check allowed extensions
-                var allowedFileExtensions = ConfigUtils.GetAppSetting("FileUploadAllowedExtensions");
+                var allowedFileExtensions = SiteConstants.FileUploadAllowedExtensions;
 
                 if (onlyImages)
                 {

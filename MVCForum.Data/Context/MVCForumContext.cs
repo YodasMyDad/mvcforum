@@ -37,6 +37,7 @@ namespace MVCForum.Data.Context
         public DbSet<BannedWord> BannedWord { get; set; }
         public DbSet<UploadedFile> UploadedFile { get; set; }
         public DbSet<Favourite> Favourite { get; set; }
+        public DbSet<GlobalPermissionForRole> GlobalPermissionForRole { get; set; }
 
         /// <summary>
         /// Constructor
@@ -78,6 +79,7 @@ namespace MVCForum.Data.Context
             modelBuilder.Configurations.Add(new BannedWordMapping());
             modelBuilder.Configurations.Add(new UploadedFileMapping());
             modelBuilder.Configurations.Add(new FavouriteMapping());
+            modelBuilder.Configurations.Add(new GlobalPermissionForRoleMapping());
 
             base.OnModelCreating(modelBuilder);
         }

@@ -97,6 +97,7 @@
     <Compile Include="Mapping\BannedEmailMapping.cs" />
     <Compile Include="Mapping\CategoryMapping.cs" />
     <Compile Include="Mapping\CategoryNotificationMapping.cs" />
+    <Compile Include="Mapping\GlobalPermissionForRoleMapping.cs" />
     <Compile Include="Mapping\CategoryPermissionForRoleMapping.cs" />
     <Compile Include="Mapping\FavouriteMapping.cs" />
     <Compile Include="Mapping\PollAnswerMapping.cs" />
@@ -121,6 +122,7 @@
     <Compile Include="Repositories\BadgeRepository.cs" />
     <Compile Include="Repositories\BannedEmailRepository.cs" />
     <Compile Include="Repositories\CategoryNotificationRepository.cs" />
+    <Compile Include="Repositories\GlobalPermissionForRoleRepository.cs" />
     <Compile Include="Repositories\CategoryPermissionForRoleRepository.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />
     <Compile Include="Repositories\ActivityRepository.cs" />

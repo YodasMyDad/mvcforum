@@ -15,11 +15,4 @@ namespace MVCForum.Domain.DomainModel
         public virtual Category Category { get; set; }
         public bool IsTicked { get; set; }
     }
-
-    public class CategoryLevelPermission
-    {
-        public bool HasPointsToAccess { get; set; }
-        public bool HasPointsToCreateTopic { get; set; }
-        public bool HasPointsToCreatePost { get; set; }
-    }
 }

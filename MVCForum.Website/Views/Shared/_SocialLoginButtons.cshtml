@@ -1,16 +1,12 @@
-﻿@using MVCForum.Utilities
+﻿@using MVCForum.Website
 @if (Html.Settings().EnableSocialLogins == true)
 {
-    <div class="loginortext">
-        @Html.LanguageString("Members.LoginOrText")
-    </div>
-
     <div class="oauthbuttons">
 
-        @if (!string.IsNullOrEmpty(ConfigUtils.GetAppSetting("FacebookAppId")) && !string.IsNullOrEmpty(ConfigUtils.GetAppSetting("FacebookAppSecret")))
+        @if (!string.IsNullOrEmpty(SiteConstants.FacebookAppId) && !string.IsNullOrEmpty(SiteConstants.FacebookAppSecret))
         {
             <p>
-                <a class="btn-mvc btn-mvc-large facebookloginbutton" href="@Url.Action("LogonFacebook", "Members")">
+                <a class="btn-mvc btn-mvc-large facebookloginbutton" href="@Url.Action("FacebookLogin", "FacebookOAuth")">
                     <img src="@Url.Content("~/Content/Images/social-icons/facebook.png")" class="socialicon" alt="@Html.LanguageString("Members.LogonFacebookButton")" />
                     @Html.LanguageString("Members.LogonFacebookButton")
                 </a>
@@ -20,17 +16,23 @@
         {
             @Html.LanguageString("Facebook.Error.EnabledButNotAddedKeys")
         }
-        <p>
-            <a class="btn-mvc btn-mvc-large googleloginbutton" href="@Url.Action("LogonGoogle", "Members")">
-                <img src="@Url.Content("~/Content/Images/social-icons/google.png")" class="socialicon" alt="@Html.LanguageString("Members.LogonGoogleButton")" />
-                @Html.LanguageString("Members.LogonGoogleButton")
-            </a>
-        </p>
-        <p>
-            <a class="btn-mvc btn-mvc-large yahoologinbutton" href="@Url.Action("LogonYahoo", "Members")">
-                <img src="@Url.Content("~/Content/Images/social-icons/yahoo.png")" class="socialicon" alt="@Html.LanguageString("Members.LogonYahooButton")" />
-                @Html.LanguageString("Members.LogonYahooButton")
-            </a>
-        </p>
+        
+        @if (!string.IsNullOrEmpty(SiteConstants.GooglePlusAppId) && !string.IsNullOrEmpty(SiteConstants.GooglePlusAppSecret))
+        {
+            <p>
+                <a class="btn-mvc btn-mvc-large googleloginbutton" href="@Url.Action("GoogleLogin", "GoogleOAuth")">
+                    <img src="@Url.Content("~/Content/Images/social-icons/google.png")" class="socialicon" alt="@Html.LanguageString("Members.LogonGoogleButton")" />
+                    @Html.LanguageString("Members.LogonGoogleButton")
+                </a>
+            </p>
+        }
+        else
+        {
+            @Html.LanguageString("Google.Error.EnabledButNotAddedKeys")
+        }
+    </div>
+
+    <div class="loginortext">
+        @Html.LanguageString("Members.LoginOrText")
     </div>
 }

@@ -50,6 +50,8 @@
         public const string PermissionCreateTopics = "Create Topics";
         public const string PermissionAttachFiles = "Attach Files";
 
+        public const string PermissionEditMembers = "Edit Members";
+
         // Paging options
         public const string PagingUrlFormat = "{0}?p={1}";
 

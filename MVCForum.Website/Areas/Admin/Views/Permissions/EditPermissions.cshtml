@@ -4,7 +4,7 @@
 @{
     Layout = "~/Areas/Admin/Views/shared/_AdminFullWidthLayout.cshtml";
     ViewBag.Title = "Edit Permissions";
-    var allPermission = Model.MembershipRole.GetFullPermissionTable();
+    var allPermission = Model.MembershipRole.GetCategoryPermissionTable();
 }
 
 <div class="container fluidheader">
@@ -53,8 +53,7 @@
                                     isChecked = allPermission[cat.Id][permission] ? " checked" : "";                                    
                                 }
                                 <span class="permissioncheckbox">
-                                    <input data-permisssion="@permission.Id" data-category="@cat.Id" data-role="@Model.MembershipRole.Id" 
-                                    type="checkbox" id="@permission.Id-@cat.Id" @isChecked @isDisabled />
+                                    <input data-permisssion="@permission.Id" data-category="@cat.Id" data-role="@Model.MembershipRole.Id" type="checkbox" id="@permission.Id-@cat.Id" @isChecked @isDisabled />
                                 </span>
                             </td>
                         }

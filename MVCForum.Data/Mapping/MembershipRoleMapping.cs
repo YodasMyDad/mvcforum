@@ -12,7 +12,12 @@ namespace MVCForum.Data.Mapping
             HasMany(x => x.CategoryPermissionForRole)
                 .WithRequired(x => x.MembershipRole)
                 .Map(x => x.MapKey("MembershipRole_Id"))
-                .WillCascadeOnDelete();           
+                .WillCascadeOnDelete();
+
+            HasMany(x => x.GlobalPermissionForRole)
+                .WithRequired(x => x.MembershipRole)
+                .Map(x => x.MapKey("MembershipRole_Id"))
+                .WillCascadeOnDelete();
         }
     }
 }

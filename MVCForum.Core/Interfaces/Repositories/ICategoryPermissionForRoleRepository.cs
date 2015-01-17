@@ -14,6 +14,5 @@ namespace MVCForum.Domain.Interfaces.Repositories
         IEnumerable<CategoryPermissionForRole> GetByPermission(Guid permId);
         CategoryPermissionForRole Get(Guid id);
         void Delete(CategoryPermissionForRole entity);
-        void Update(CategoryPermissionForRole item);
     }
 }

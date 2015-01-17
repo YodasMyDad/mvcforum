@@ -81,6 +81,7 @@
     <Compile Include="CategoryNotificationService.cs" />
     <Compile Include="ActivityService.cs" />
     <Compile Include="BannedWordService.cs" />
+    <Compile Include="GlobalPermissionForRoleService.cs" />
     <Compile Include="FavouriteService.cs" />
     <Compile Include="InstallerService.cs" />
     <Compile Include="UploadedFileService.cs" />

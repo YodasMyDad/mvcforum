@@ -13,13 +13,8 @@
         /// <summary>
         /// File Upload Settings
         /// </summary>
-        public const string FileUploadAllowedExtensions = "";
-        public const string FileUploadMaximumFileSizeInBytes = "";
-
-        /// <summary>
-        /// Banned work replacement character
-        /// </summary>
-        public const string BannedWordReplaceCharactor = "";
+        public const string FileUploadAllowedExtensions = "jpg,jpeg,png,gif";
+        public const string FileUploadMaximumFileSizeInBytes = "5242880";
 
         /// <summary>
         /// Paging options - Amount per page on different pages.
@@ -63,5 +58,12 @@
         public const string EditorType = "tinymceeditor";
         //public const string EditorType = "bbeditor";
         //public const string EditorType = "markdowneditor";
+    }
+
+    public enum LoginType
+    {
+        Facebook,
+        Google,
+        Standard
     }
 }

@@ -181,6 +181,7 @@
     <Compile Include="Application\ExtensionMethods\HtmlLabelExtensions.cs" />
     <Compile Include="Application\ForumMVCResourceDisplayName.cs" />
     <Compile Include="Application\GoogleSitemapResult.cs" />
+    <Compile Include="Application\MemoryFile.cs" />
     <Compile Include="Application\MobileExtensions.cs" />
     <Compile Include="Application\RssResult.cs" />
     <Compile Include="Application\CsvFileResult.cs" />
@@ -239,6 +240,8 @@
     <Compile Include="Controllers\EmailController.cs" />
     <Compile Include="Controllers\FavouriteController.cs" />
     <Compile Include="Controllers\InstallController.cs" />
+    <Compile Include="Controllers\OAuthControllers\FacebookOAuthController.cs" />
+    <Compile Include="Controllers\OAuthControllers\GoogleOAuthController.cs" />
     <Compile Include="Controllers\PollController.cs" />
     <Compile Include="Controllers\PrivateMessageController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
@@ -264,6 +267,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Areas\Admin\ViewModels\ModerateViewModels.cs" />
     <Compile Include="ViewModels\FavouriteViewModels.cs" />
+    <Compile Include="ViewModels\OAuth\FacebookOAuthData.cs" />
+    <Compile Include="ViewModels\OAuth\GoogleOAuthData.cs" />
     <Compile Include="ViewModels\UploadViewModels.cs" />
     <Compile Include="ViewModels\BadgeViewModels.cs" />
     <Compile Include="ViewModels\CategoryViewModels.cs" />
@@ -286,7 +291,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\LogFile.txt" />
-    <Content Include="App_Data\lucene_index\NotHere.txt" />
     <Content Include="Content\admin\Admin.css" />
     <Content Include="Content\admin\Images\apple-touch-icon-57-precomposed.png" />
     <Content Include="Content\admin\Images\favicon.ico" />
@@ -1569,6 +1573,7 @@
     <Content Include="Areas\Admin\Views\Shared\_AdminScripts.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_AdminTopNav.cshtml" />
     <Content Include="Areas\Admin\Views\AdminCategory\_CategoryFields.cshtml" />
+    <None Include="Properties\PublishProfiles\Local Deployment.pubxml" />
     <None Include="Scripts\jquery-1.11.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.11.1.js" />
     <Content Include="Scripts\jquery-1.11.1.min.js" />
@@ -1799,14 +1804,6 @@
     <Content Include="Themes\Metro\Content\Images\apple-touch-icon-57-precomposed.png" />
     <Content Include="Themes\Metro\Content\Images\arrow-spinner-blue.gif" />
     <Content Include="Themes\Metro\Content\Images\favicon.ico" />
-    <Content Include="Themes\Metro\Content\Images\glyphicons\glyphicons_009_magic.png" />
-    <Content Include="Themes\Metro\Content\Images\glyphicons\glyphicons_042_group.png" />
-    <Content Include="Themes\Metro\Content\Images\glyphicons\glyphicons_079_podium.png" />
-    <Content Include="Themes\Metro\Content\Images\glyphicons\glyphicons_082_roundabout.png" />
-    <Content Include="Themes\Metro\Content\Images\glyphicons\glyphicons_155_show_thumbnails.png" />
-    <Content Include="Themes\Metro\Content\Images\glyphicons\glyphicons_163_iphone.png" />
-    <Content Include="Themes\Metro\Content\Images\glyphicons\glyphicons_214_resize_small.png" />
-    <Content Include="Themes\Metro\Content\Images\glyphicons\glyphicons_266_book_open.png" />
     <Content Include="Themes\Metro\Content\Images\logo.png" />
     <Content Include="Themes\Metro\Content\Scripts\general.js" />
     <Content Include="Themes\Metro\Content\Styles\Theme.css" />
@@ -1939,6 +1936,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Extensions\" />
+    <Folder Include="Views\FacebookOAuth\" />
+    <Folder Include="Views\GoogleOAuth\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -2089,7 +2088,6 @@
     <Content Include="Areas\Admin\Views\Dashboard\MvcForumLatestNews.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Properties\PublishProfiles\Profile1.pubxml" />
     <Content Include="Themes\Metro\Content\Fonts\mvcforumli.eot" />
     <Content Include="Themes\Metro\Content\Fonts\mvcforumli.ttf" />
     <Content Include="Themes\Metro\Content\Fonts\mvcforumli.woff" />

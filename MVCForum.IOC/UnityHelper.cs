@@ -93,6 +93,7 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IBannedWordService, BannedWordService>();
             container.BindInRequestScope<IUploadedFileService, UploadedFileService>();
             container.BindInRequestScope<IFavouriteService, FavouriteService>();
+            container.BindInRequestScope<IGlobalPermissionForRoleService, GlobalPermissionForRoleService>();
 
             container.BindInRequestScope<IRoleRepository, RoleRepository>();
             container.BindInRequestScope<ICategoryRepository, CategoryRepository>();
@@ -119,6 +120,7 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IBannedWordRepository, BannedWordRepository>();
             container.BindInRequestScope<IUploadedFileRepository, UploadedFileRepository>();
             container.BindInRequestScope<IFavouriteRepository, FavouriteRepository>();
+            container.BindInRequestScope<IGlobalPermissionForRoleRepository, GlobalPermissionForRoleRepository>();
 
             //container.BindInRequestScope<ISessionHelper, SessionHelper>();
 

@@ -103,4 +103,5 @@ namespace MVCForum.Domain.DomainModel
             get { return UrlTypes.GenerateUrl(UrlType.Member, Slug); }
         }
     }
+
 }

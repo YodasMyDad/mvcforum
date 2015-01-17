@@ -95,6 +95,7 @@
     <Compile Include="DomainModel\CategoryWithSubCategories.cs" />
     <Compile Include="DomainModel\BannedWord.cs" />
     <Compile Include="DomainModel\Favourite.cs" />
+    <Compile Include="DomainModel\GlobalPermission.cs" />
     <Compile Include="DomainModel\InstallerResult.cs" />
     <Compile Include="DomainModel\Poll.cs" />
     <Compile Include="DomainModel\PrivateMessage.cs" />
@@ -144,6 +145,7 @@
     <Compile Include="Interfaces\IModelAttribute.cs" />
     <Compile Include="Interfaces\IMVCForumContext.cs" />
     <Compile Include="Interfaces\IPagedList.cs" />
+    <Compile Include="Interfaces\Repositories\IGlobalPermissionForRoleRepository.cs" />
     <Compile Include="Interfaces\Repositories\IFavouriteRepository.cs" />
     <Compile Include="Interfaces\Repositories\IUploadedFileRepository.cs" />
     <Compile Include="Interfaces\Repositories\IBannedWordRepository.cs" />
@@ -171,6 +173,7 @@
     <Compile Include="Interfaces\Repositories\IVoteRepository.cs" />
     <Compile Include="Interfaces\Services\IBannedEmailService.cs" />
     <Compile Include="Interfaces\Services\IBannedWordService.cs" />
+    <Compile Include="Interfaces\Services\IGlobalPermissionForRoleService.cs" />
     <Compile Include="Interfaces\Services\IFavouriteService.cs" />
     <Compile Include="Interfaces\Services\IInstallerService.cs" />
     <Compile Include="Interfaces\Services\IPollAnswerService.cs" />

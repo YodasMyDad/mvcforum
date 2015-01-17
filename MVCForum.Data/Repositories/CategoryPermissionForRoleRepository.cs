@@ -29,14 +29,19 @@ namespace MVCForum.Data.Repositories
 
         public CategoryPermissionForRole GetByPermissionRoleCategoryId(Guid permId, Guid roleId, Guid catId)
         {
-                return _context.CategoryPermissionForRole.FirstOrDefault(x => x.Category.Id == catId && 
-                                                                               x.Permission.Id == permId && 
-                                                                               x.MembershipRole.Id == roleId);
+            return _context.CategoryPermissionForRole
+                .Include(x => x.MembershipRole)
+                .Include(x => x.Category)
+                .FirstOrDefault(x => x.Category.Id == catId && 
+                                     x.Permission.Id == permId && 
+                                     x.MembershipRole.Id == roleId);
         }
 
         public IList<CategoryPermissionForRole> GetCategoryRow(MembershipRole role, Category cat)
         {
             return _context.CategoryPermissionForRole
+                .Include(x => x.MembershipRole)
+                .Include(x => x.Category)
                 .Where(x => x.Category.Id == cat.Id &&
                             x.MembershipRole.Id == role.Id)
                             .ToList();
@@ -45,6 +50,8 @@ namespace MVCForum.Data.Repositories
         public IEnumerable<CategoryPermissionForRole> GetByCategory(Guid catgoryId)
         {
             return _context.CategoryPermissionForRole
+                .Include(x => x.MembershipRole)
+                .Include(x => x.Category)
                 .Where(x => x.Category.Id == catgoryId)
                 .ToList();
         }
@@ -52,6 +59,8 @@ namespace MVCForum.Data.Repositories
         public IEnumerable<CategoryPermissionForRole> GetByRole(Guid roleId)
         {
             return _context.CategoryPermissionForRole
+                .Include(x => x.MembershipRole)
+                .Include(x => x.Category)
                 .Where(x => x.MembershipRole.Id == roleId)
                 .ToList();
         }
@@ -59,29 +68,23 @@ namespace MVCForum.Data.Repositories
         public IEnumerable<CategoryPermissionForRole> GetByPermission(Guid permId)
         {
             return _context.CategoryPermissionForRole
+                .Include(x => x.MembershipRole)
+                .Include(x => x.Category)
                 .Where(x => x.Permission.Id == permId)
                 .ToList();
         }
 
         public CategoryPermissionForRole Get(Guid id)
         {
-            return _context.CategoryPermissionForRole.FirstOrDefault(cat => cat.Id == id);
+            return _context.CategoryPermissionForRole
+                    .Include(x => x.MembershipRole)
+                    .Include(x => x.Category)
+                    .FirstOrDefault(cat => cat.Id == id);
         }
 
         public void Delete(CategoryPermissionForRole categoryPermissionForRole)
         {
             _context.CategoryPermissionForRole.Remove(categoryPermissionForRole);
-        }
-
-        public void Update(CategoryPermissionForRole item)
-        {
-            // Check there's not an object with same identifier already in context
-            if (_context.CategoryPermissionForRole.Local.Select(x => x.Id == item.Id).Any())
-            {
-                throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
-            }
-            _context.Entry(item).State = EntityState.Modified;  
-
         }
     }
 }
