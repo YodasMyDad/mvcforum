@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Externals", "Externals", "{
 		Externals\Microsoft.SqlServer.SmoExtended.dll = Externals\Microsoft.SqlServer.SmoExtended.dll
 		Externals\Microsoft.SqlServer.SqlEnum.dll = Externals\Microsoft.SqlServer.SqlEnum.dll
 		Externals\Microsoft.Web.Services3.dll = Externals\Microsoft.Web.Services3.dll
+		Externals\Skybrud.Social.dll = Externals\Skybrud.Social.dll
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{4425AF88-0237-48A1-AEA0-F3C4AE397C36}"

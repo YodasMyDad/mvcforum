@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web.Mvc;
 using System.Web.Security;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Utilities;
@@ -13,6 +14,10 @@ using Skybrud.Social.Json;
 
 namespace MVCForum.Website.Controllers.OAuthControllers
 {
+    // Facebook uses OAuth 2.0 for authentication and communication. In order for users to authenticate with the Facebook API, 
+    // you must specify the ID, secret and redirect URI of your Facebook app. 
+    // You can create a new app at the following URL: https://developers.facebook.com/
+
     public partial class FacebookOAuthController : BaseController
     {
         public FacebookOAuthController(ILoggingService loggingService, 
@@ -189,7 +194,7 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                         }
 
                         // First see if this user has registered already - Use email address
-                        using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                        using (UnitOfWorkManager.NewUnitOfWork())
                         {
                             // TODO - Ignore if no email - Have to check PropMemberFacebookAccessToken has a value
                             // TODO - and the me.UserName is there to match existing logged in accounts
@@ -230,7 +235,10 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                                 //Small size photo https://graph.facebook.com/{facebookId}/picture?type=small
                                 //Square photo https://graph.facebook.com/{facebookId}/picture?type=square
 
-                                return RedirectToAction("MemberRegisterLogic", "Members", new { userModel = viewModel, unitOfWork });
+                                // Store the viewModel in TempData - Which we'll use in the register logic
+                                TempData[AppConstants.MemberRegisterViewModel] = viewModel;
+
+                                return RedirectToAction("SocialLoginValidator", "Members");
                             }
                         }
                     }

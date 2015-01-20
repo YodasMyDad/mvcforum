@@ -2,6 +2,7 @@
 using System.Collections.Specialized;
 using System.Web.Mvc;
 using System.Web.Security;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Utilities;
@@ -12,6 +13,10 @@ using Skybrud.Social.Google.OAuth;
 
 namespace MVCForum.Website.Controllers.OAuthControllers
 {
+    // Google uses OAuth 2.0 for authentication and communication. In order for users to authenticate with the Google API, 
+    // you must specify the ID, secret and redirect URI of your Google app. 
+    // You can create a new app at the following URL: https://console.developers.google.com/project
+
     public partial class GoogleOAuthController : BaseController
     {
         public GoogleOAuthController(ILoggingService loggingService,
@@ -170,7 +175,7 @@ namespace MVCForum.Website.Controllers.OAuthControllers
 
                     // Get information about the authenticated user
                     var user = service.GetUserInfo();
-                    using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                    using (UnitOfWorkManager.NewUnitOfWork())
                     {
                         var userExists = MembershipService.GetUserByEmail(user.Email);
 
@@ -194,7 +199,10 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                                 UserAccessToken = info.RefreshToken
                             };
 
-                            return RedirectToAction("MemberRegisterLogic", "Members", new { userModel = viewModel, unitOfWork });
+                            // Store the viewModel in TempData - Which we'll use in the register logic
+                            TempData[AppConstants.MemberRegisterViewModel] = viewModel;
+
+                            return RedirectToAction("SocialLoginValidator", "Members");
                         }
                     }
 

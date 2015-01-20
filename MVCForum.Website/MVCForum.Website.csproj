@@ -97,8 +97,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.7\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Skybrud.Social">
-      <HintPath>..\packages\Skybrud.Social.0.1.2\lib\Skybrud.Social.dll</HintPath>
+    <Reference Include="Skybrud.Social, Version=0.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Externals\Skybrud.Social.dll</HintPath>
     </Reference>
     <Reference Include="SquishIt.Framework, Version=0.9.7.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

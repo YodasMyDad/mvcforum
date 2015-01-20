@@ -17,12 +17,13 @@
         public const string TagsUrlIdentifier = "tagged";
         public const string MemberUrlIdentifier = "profile";
 
-        // View Bag Constants
+        // View Bag / Temp Data Constants
         public const string MessageViewBagName = "Message";
         public const string DefaultCategoryViewBagName = "DefaultCategory";
         public const string GlobalClass = "GlobalClass";
         public const string CurrentAction = "CurrentAction";
         public const string CurrentController = "CurrentController";
+        public const string MemberRegisterViewModel = "MemberRegisterViewModel";
         
         // Main admin role [This should never be changed]
         public const string AdminRoleName = "Admin";
@@ -75,6 +76,7 @@
         // Themes
         public const string ThemeRootFolderName = "Themes";
 
+        
         public const string EditorTemplateColourPicker = "colourpicker";
 
         //Querystring names

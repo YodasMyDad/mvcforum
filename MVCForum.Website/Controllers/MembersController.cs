@@ -34,7 +34,7 @@ namespace MVCForum.Website.Controllers
         private readonly IVoteService _voteService;
 
         private MembershipUser LoggedOnUser;
-        private MembershipRole UsersRole; 
+        private MembershipRole UsersRole;
 
         public MembersController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService,
             IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService, IBannedWordService bannedWordService, ITopicNotificationService topicNotificationService, IPollAnswerService pollAnswerService, IVoteService voteService)
@@ -159,7 +159,7 @@ namespace MVCForum.Website.Controllers
         {
             if (SettingsService.GetSettings().SuspendRegistration != true)
             {
-                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                using (UnitOfWorkManager.NewUnitOfWork())
                 {
                     // First see if there is a spam question and if so, the answer matches
                     if (!string.IsNullOrEmpty(SettingsService.GetSettings().SpamQuestion))
@@ -179,122 +179,141 @@ namespace MVCForum.Website.Controllers
                         ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Error.EmailIsBanned"));
                         return View();
                     }
-
-                    // Standard Login
-                    userModel.LoginType = LoginType.Standard;
-
-                    // Do the register logic
-                    return MemberRegisterLogic(userModel, unitOfWork);
                 }
+
+                // Standard Login
+                userModel.LoginType = LoginType.Standard;
+
+                // Do the register logic
+                return MemberRegisterLogic(userModel);
+
             }
             return RedirectToAction("Index", "Home");
         }
 
-        public ActionResult MemberRegisterLogic(MemberAddViewModel userModel, IUnitOfWork unitOfWork)
+        public ActionResult SocialLoginValidator()
         {
-            var userToSave = new MembershipUser
+            // Store the viewModel in TempData - Which we'll use in the register logic
+            if (TempData[AppConstants.MemberRegisterViewModel] != null)
             {
-                UserName = _bannedWordService.SanitiseBannedWords(userModel.UserName),
-                Email = userModel.Email,
-                Password = userModel.Password,
-                IsApproved = userModel.IsApproved,
-                Comment = userModel.Comment,
-            };
+                var userModel = (TempData[AppConstants.MemberRegisterViewModel] as MemberAddViewModel);
 
-            var homeRedirect = false;
-
-            // Now check settings, see if users need to be manually authorised
-            // OR Does the user need to confirm their email
-            var manuallyAuthoriseMembers = SettingsService.GetSettings().ManuallyAuthoriseNewMembers;
-            var memberEmailAuthorisationNeeded = SettingsService.GetSettings().NewMemberEmailConfirmation ?? false;
-            if (manuallyAuthoriseMembers || memberEmailAuthorisationNeeded)
-            {
-                userToSave.IsApproved = false;
+                // Do the register logic
+                return MemberRegisterLogic(userModel);
             }
 
-            var createStatus = MembershipService.CreateUser(userToSave);
-            if (createStatus != MembershipCreateStatus.Success)
+            ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+            return View("Register");
+        }
+
+        public ActionResult MemberRegisterLogic(MemberAddViewModel userModel)
+        {
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-                ModelState.AddModelError(string.Empty, MembershipService.ErrorCodeToString(createStatus));
-            }
-            else
-            {
-                // See if this is a social login and we have their profile pic
-                if (!string.IsNullOrEmpty(userModel.SocialProfileImageUrl))
+                var userToSave = new MembershipUser
                 {
-                    // We have an image url - Need to save it to their profile
-                    var image = AppHelpers.GetImageFromExternalUrl(userModel.SocialProfileImageUrl);
+                    UserName = _bannedWordService.SanitiseBannedWords(userModel.UserName),
+                    Email = userModel.Email,
+                    Password = userModel.Password,
+                    IsApproved = userModel.IsApproved,
+                    Comment = userModel.Comment,
+                };
 
-                    // Set upload directory - Create if it doesn't exist
-                    var uploadFolderPath = Server.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnUser.Id));
-                    if (!Directory.Exists(uploadFolderPath))
-                    {
-                        Directory.CreateDirectory(uploadFolderPath);
-                    }
+                var homeRedirect = false;
 
-                    // Get the file name
-                    var fileName = Path.GetFileName(userModel.SocialProfileImageUrl);
-
-                    // Create a HttpPostedFileBase image from the C# Image
-                    HttpPostedFileBase formattedImage;
-                    using (var stream = new MemoryStream())
-                    {
-                        image.Save(stream, ImageFormat.Jpeg);
-                        stream.Position = 0;
-                        formattedImage = new MemoryFile(stream, "image/jpeg", fileName);
-                    }
-
-                    // Upload the file
-                    var uploadResult = AppHelpers.UploadFile(formattedImage, uploadFolderPath, LocalizationService);
-
-                    // Don't throw error if problem saving avatar, just don't save it.
-                    if (uploadResult.UploadSuccessful)
-                    {
-                        userToSave.Avatar = uploadResult.UploadedFileName;
-                    }
+                // Now check settings, see if users need to be manually authorised
+                // OR Does the user need to confirm their email
+                var manuallyAuthoriseMembers = SettingsService.GetSettings().ManuallyAuthoriseNewMembers;
+                var memberEmailAuthorisationNeeded = SettingsService.GetSettings().NewMemberEmailConfirmation ?? false;
+                if (manuallyAuthoriseMembers || memberEmailAuthorisationNeeded)
+                {
+                    userToSave.IsApproved = false;
                 }
 
-                // Store access token for social media account in case we want to do anything with it
-                if (userModel.LoginType == LoginType.Facebook)
+                var createStatus = MembershipService.CreateUser(userToSave);
+                if (createStatus != MembershipCreateStatus.Success)
                 {
-                    userToSave.FacebookAccessToken = userModel.UserAccessToken;
+                    ModelState.AddModelError(string.Empty, MembershipService.ErrorCodeToString(createStatus));
                 }
-                if (userModel.LoginType == LoginType.Google)
+                else
                 {
-                    userToSave.GoogleAccessToken = userModel.UserAccessToken;
-                }
-
-                // Set the view bag message here
-                SetRegisterViewBagMessage(manuallyAuthoriseMembers, memberEmailAuthorisationNeeded, userToSave);
-
-                if (!manuallyAuthoriseMembers && !memberEmailAuthorisationNeeded)
-                {
-                    homeRedirect = true;
-                }
-
-                try
-                {
-                    unitOfWork.Commit();
-
-                    // Only send the email if the admin is not manually authorising emails or it's pointless
-                    SendEmailConfirmationEmail(userToSave);
-
-                    if (homeRedirect)
+                    // See if this is a social login and we have their profile pic
+                    if (!string.IsNullOrEmpty(userModel.SocialProfileImageUrl))
                     {
-                        if (Url.IsLocalUrl(userModel.ReturnUrl) && userModel.ReturnUrl.Length > 1 && userModel.ReturnUrl.StartsWith("/")
-                        && !userModel.ReturnUrl.StartsWith("//") && !userModel.ReturnUrl.StartsWith("/\\"))
+                        // We have an image url - Need to save it to their profile
+                        var image = AppHelpers.GetImageFromExternalUrl(userModel.SocialProfileImageUrl);
+
+                        // Set upload directory - Create if it doesn't exist
+                        var uploadFolderPath = Server.MapPath(string.Concat(SiteConstants.UploadFolderPath, userToSave.Id));
+                        if (!Directory.Exists(uploadFolderPath))
                         {
-                            return Redirect(userModel.ReturnUrl);
+                            Directory.CreateDirectory(uploadFolderPath);
                         }
-                        return RedirectToAction("Index", "Home", new { area = string.Empty });
+
+                        // Get the file name
+                        var fileName = Path.GetFileName(userModel.SocialProfileImageUrl);
+
+                        // Create a HttpPostedFileBase image from the C# Image
+                        using (var stream = new MemoryStream())
+                        {
+                            image.Save(stream, ImageFormat.Jpeg);
+                            stream.Position = 0;
+                            HttpPostedFileBase formattedImage = new MemoryFile(stream, "image/jpeg", fileName);
+
+                            // Upload the file
+                            var uploadResult = AppHelpers.UploadFile(formattedImage, uploadFolderPath, LocalizationService);
+
+                            // Don't throw error if problem saving avatar, just don't save it.
+                            if (uploadResult.UploadSuccessful)
+                            {
+                                userToSave.Avatar = uploadResult.UploadedFileName;
+                            }
+                        }
+
                     }
-                }
-                catch (Exception ex)
-                {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                    FormsAuthentication.SignOut();
-                    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+
+                    // Store access token for social media account in case we want to do anything with it
+                    if (userModel.LoginType == LoginType.Facebook)
+                    {
+                        userToSave.FacebookAccessToken = userModel.UserAccessToken;
+                    }
+                    if (userModel.LoginType == LoginType.Google)
+                    {
+                        userToSave.GoogleAccessToken = userModel.UserAccessToken;
+                    }
+
+                    // Set the view bag message here
+                    SetRegisterViewBagMessage(manuallyAuthoriseMembers, memberEmailAuthorisationNeeded, userToSave);
+
+                    if (!manuallyAuthoriseMembers && !memberEmailAuthorisationNeeded)
+                    {
+                        homeRedirect = true;
+                    }
+
+                    try
+                    {
+                        unitOfWork.Commit();
+
+                        // Only send the email if the admin is not manually authorising emails or it's pointless
+                        SendEmailConfirmationEmail(userToSave);
+
+                        if (homeRedirect)
+                        {
+                            if (Url.IsLocalUrl(userModel.ReturnUrl) && userModel.ReturnUrl.Length > 1 && userModel.ReturnUrl.StartsWith("/")
+                            && !userModel.ReturnUrl.StartsWith("//") && !userModel.ReturnUrl.StartsWith("/\\"))
+                            {
+                                return Redirect(userModel.ReturnUrl);
+                            }
+                            return RedirectToAction("Index", "Home", new { area = string.Empty });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                        FormsAuthentication.SignOut();
+                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+                    }
                 }
             }
 
@@ -666,7 +685,7 @@ namespace MVCForum.Website.Controllers
                     if (file != null)
                     {
                         // If successful then upload the file
-                        var uploadResult = AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService, true);                        
+                        var uploadResult = AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService, true);
 
                         if (!uploadResult.UploadSuccessful)
                         {
@@ -680,7 +699,7 @@ namespace MVCForum.Website.Controllers
 
 
                         // Save avatar to user
-                        user.Avatar = uploadResult.UploadedFileName;   
+                        user.Avatar = uploadResult.UploadedFileName;
 
                     }
 

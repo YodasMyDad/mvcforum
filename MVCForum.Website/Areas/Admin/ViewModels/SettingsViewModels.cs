@@ -21,7 +21,6 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Forum Url")]
         [Required]
         [StringLength(200)]
-        [System.ComponentModel.DataAnnotations.Url]
         public string ForumUrl { get; set; }
 
         [DisplayName("Close Forum")]
