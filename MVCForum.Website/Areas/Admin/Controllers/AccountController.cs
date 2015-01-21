@@ -243,9 +243,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         throw new ApplicationException("Cannot delete user - user does not exist");
                     }
 
-                    DeleteUsersPostsPollsVotesAndPoints(user, unitOfWork);
-
-                    MembershipService.Delete(user);
+                    MembershipService.Delete(user, unitOfWork);
 
                     ViewBag.Message = new GenericMessageViewModel
                     {
@@ -391,7 +389,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             return View(role);
         }
 
-        [Authorize(Roles = AppConstants.AdminRoleName + "," + AppConstants.ModeratorRoleName)]
+        [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult DeleteUsersPosts(Guid id, bool profileClick = false)
         {
             var user = MembershipService.GetUser(id);
@@ -400,7 +398,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             {
                 if (!user.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
                 {
-                    DeleteUsersPostsPollsVotesAndPoints(user, unitOfWork);
+                    MembershipService.ScrubUsers(user, unitOfWork);
+
                     try
                     {
                         unitOfWork.Commit();
@@ -436,74 +435,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
         }
 
-        [Authorize(Roles = AppConstants.AdminRoleName + "," + AppConstants.ModeratorRoleName)]
-        public ActionResult BanMember(Guid id)
-        {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-            {
-                var user = MembershipService.GetUser(id);
-                if (!user.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
-                {
-                    user.IsLockedOut = true;
-
-                    try
-                    {
-                        unitOfWork.Commit();
-                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                        {
-                            Message = "User is now banned",
-                            MessageType = GenericMessages.success
-                        };
-                    }
-                    catch (Exception ex)
-                    {
-                        unitOfWork.Rollback();
-                        LoggingService.Error(ex);
-                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                        {
-                            Message = "Error trying to ban user",
-                            MessageType = GenericMessages.danger
-                        };
-                    }   
-                }
-                return Redirect(user.NiceUrl);
-            }
-        }
-
-        [Authorize(Roles = AppConstants.AdminRoleName + "," + AppConstants.ModeratorRoleName)]
-        public ActionResult UnBanMember(Guid id)
-        {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-            {
-                var user = MembershipService.GetUser(id);
-                if (!user.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
-                {
-                    user.IsLockedOut = false;
-
-                    try
-                    {
-                        unitOfWork.Commit();
-                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                        {
-                            Message = "User is now unbanned",
-                            MessageType = GenericMessages.success
-                        };
-                    }
-                    catch (Exception ex)
-                    {
-                        unitOfWork.Rollback();
-                        LoggingService.Error(ex);
-                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                        {
-                            Message = "Error trying to un ban user",
-                            MessageType = GenericMessages.danger
-                        };
-                    }
-                }
-                return Redirect(user.NiceUrl);
-            }
-        }
-
         [HttpPost]
         [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult AddRole(RoleViewModel role)
@@ -536,113 +467,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         }
 
         #endregion
-
-        private void DeleteUsersPostsPollsVotesAndPoints(MembershipUser user, IUnitOfWork unitOfWork)
-        {
-            // Delete all file uploads
-            var files = _uploadedFileService.GetAllByUser(user.Id);
-            var filesList = new List<UploadedFile>();
-            filesList.AddRange(files);
-            foreach (var file in filesList)
-            {
-                // store the file path as we'll need it to delete on the file system
-                var filePath = file.FilePath;
-
-                // Now delete it
-                _uploadedFileService.Delete(file);
-
-                // And finally delete from the file system
-                System.IO.File.Delete(Server.MapPath(filePath));
-            }
-
-            // Delete all posts
-            var posts = user.Posts;
-            var postList = new List<Post>();
-            postList.AddRange(posts);
-            foreach (var post in postList)
-            {
-                post.Files.Clear();
-                _postService.Delete(post);
-            }
-
-            unitOfWork.SaveChanges();
-
-            // Also clear their poll votes
-            var userPollVotes = user.PollVotes;
-            if (userPollVotes.Any())
-            {
-                var pollList = new List<PollVote>();
-                pollList.AddRange(userPollVotes);
-                foreach (var vote in pollList)
-                {
-                    vote.User = null;
-                    _pollVoteService.Delete(vote);
-                }
-                user.PollVotes.Clear();
-            }
-
-            unitOfWork.SaveChanges();
-
-
-            // Also clear their polls
-            var userPolls = user.Polls;
-            if (userPolls.Any())
-            {
-                var polls = new List<Poll>();
-                polls.AddRange(userPolls);
-                foreach (var poll in polls)
-                {
-                    //Delete the poll answers
-                    var pollAnswers = poll.PollAnswers;
-                    if (pollAnswers.Any())
-                    {
-                        var pollAnswersList = new List<PollAnswer>();
-                        pollAnswersList.AddRange(pollAnswers);
-                        foreach (var answer in pollAnswersList)
-                        {
-                            answer.Poll = null;
-                            _pollAnswerService.Delete(answer);
-                        }
-                    }
-
-                    poll.PollAnswers.Clear();
-                    poll.User = null;
-                    _pollService.Delete(poll);
-                }
-                user.Polls.Clear();
-            }
-
-            unitOfWork.SaveChanges();
-
-            // Delete all topics
-            var topics = user.Topics;
-            var topicList = new List<Topic>();
-            topicList.AddRange(topics);
-            foreach (var topic in topicList)
-            {
-                _topicService.Delete(topic);
-            }
-
-            // Also clear their points
-            var userPoints = user.Points;
-            if (userPoints.Any())
-            {
-                var pointsList = new List<MembershipUserPoints>();
-                pointsList.AddRange(userPoints);
-                foreach (var point in pointsList)
-                {
-                    point.User = null;
-                    _membershipUserPointsService.Delete(point);
-                }
-                user.Points.Clear();
-            }
-
-            unitOfWork.SaveChanges();
-
-            // Now clear all activities for this user
-            var usersActivities = _activityService.GetDataFieldByGuid(user.Id);
-            _activityService.Delete(usersActivities.ToList());
-        }
 
     }
 }

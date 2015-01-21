@@ -241,7 +241,6 @@ namespace MVCForum.Website.Controllers
                     installerResult.Message = string.Format("Error updating from {0} to {1}", previousVersion, currentVersion);
                     installerResult.Exception = ex;
                 }
-
             }
             
             return installerResult;
@@ -274,13 +273,11 @@ namespace MVCForum.Website.Controllers
                         _categoryService.Add(exampleCat);
 
                         // Add the default roles
-                        var standardRole = new MembershipRole { RoleName = "Standard Members" };
-                        var guestRole = new MembershipRole { RoleName = "Guest" };
-                        var moderatorRole = new MembershipRole { RoleName = "Moderator" };
-                        var adminRole = new MembershipRole { RoleName = "Admin" };
+                        var standardRole = new MembershipRole { RoleName = AppConstants.StandardMembers };
+                        var guestRole = new MembershipRole { RoleName = AppConstants.GuestRoleName };
+                        var adminRole = new MembershipRole { RoleName = AppConstants.AdminRoleName };
                         _roleService.CreateRole(standardRole);
                         _roleService.CreateRole(guestRole);
-                        _roleService.CreateRole(moderatorRole);
                         _roleService.CreateRole(adminRole);
 
                         unitOfWork.Commit();
@@ -316,7 +313,7 @@ namespace MVCForum.Website.Controllers
                         var startingLanguage = _localizationService.GetLanguageByName("en-GB");
 
                         // Get the Standard Members role
-                        var startingRole = _roleService.GetRole("Standard Members");
+                        var startingRole = _roleService.GetRole(AppConstants.StandardMembers);
 
                         // create the settings
                         var settings = new Settings
@@ -379,17 +376,17 @@ namespace MVCForum.Website.Controllers
                     // If the admin user exists then don't do anything else
                     if (_membershipService.GetUser("admin") == null)
                     {
-                        // Set up the initial permissions
-                        var readOnly = new Permission { Name = "Read Only" };
-                        var deletePosts = new Permission { Name = "Delete Posts" };
-                        var editPosts = new Permission { Name = "Edit Posts" };
-                        var stickyTopics = new Permission { Name = "Sticky Topics" };
-                        var lockTopics = new Permission { Name = "Lock Topics" };
-                        var voteInPolls = new Permission { Name = "Vote In Polls" };
-                        var createPolls = new Permission { Name = "Create Polls" };
-                        var createTopics = new Permission { Name = "Create Topics" };
-                        var attachFiles = new Permission { Name = "Attach Files" };
-                        var denyAccess = new Permission { Name = "Deny Access" };
+                        // Set up the initial category permissions
+                        var readOnly = new Permission { Name = AppConstants.PermissionReadOnly };
+                        var deletePosts = new Permission { Name = AppConstants.PermissionDeletePosts };
+                        var editPosts = new Permission { Name = AppConstants.PermissionEditPosts };
+                        var stickyTopics = new Permission { Name = AppConstants.PermissionCreateStickyTopics };
+                        var lockTopics = new Permission { Name = AppConstants.PermissionLockTopics };
+                        var voteInPolls = new Permission { Name = AppConstants.PermissionVoteInPolls };
+                        var createPolls = new Permission { Name = AppConstants.PermissionCreatePolls };
+                        var createTopics = new Permission { Name = AppConstants.PermissionCreateTopics };
+                        var attachFiles = new Permission { Name = AppConstants.PermissionAttachFiles };
+                        var denyAccess = new Permission { Name = AppConstants.PermissionDenyAccess };
 
                         _permissionService.Add(readOnly);
                         _permissionService.Add(deletePosts);
@@ -401,6 +398,11 @@ namespace MVCForum.Website.Controllers
                         _permissionService.Add(createTopics);
                         _permissionService.Add(attachFiles);
                         _permissionService.Add(denyAccess);
+
+                        // Set up global permissions
+                        var editMembers = new Permission { Name = AppConstants.PermissionEditMembers, IsGlobal = true};
+
+                        _permissionService.Add(editMembers);
 
                         // create the admin user and put him in the admin role
                         var admin = new MembershipUser
@@ -419,7 +421,7 @@ namespace MVCForum.Website.Controllers
                         unitOfWork.SaveChanges();
 
                         // Put the admin in the admin role
-                        var adminRole = _roleService.GetRole("Admin");
+                        var adminRole = _roleService.GetRole(AppConstants.AdminRoleName);
                         admin.Roles = new List<MembershipRole> { adminRole };
 
                         unitOfWork.Commit();
@@ -455,7 +457,7 @@ namespace MVCForum.Website.Controllers
                         {
                             // Unpack the data
                             var allLines = new List<string>();
-                            using (var streamReader = new StreamReader(file, System.Text.Encoding.UTF8, true))
+                            using (var streamReader = new StreamReader(file, Encoding.UTF8, true))
                             {
                                 while (streamReader.Peek() >= 0)
                                 {

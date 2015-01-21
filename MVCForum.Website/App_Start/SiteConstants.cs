@@ -5,10 +5,10 @@
         /// <summary>
         /// Social Login Keys
         /// </summary>
-        public const string FacebookAppId = "";
-        public const string FacebookAppSecret = "";
-        public const string GooglePlusAppId = "";
-        public const string GooglePlusAppSecret = "";
+        public const string FacebookAppId = "sd";
+        public const string FacebookAppSecret = "f";
+        public const string GooglePlusAppId = "f";
+        public const string GooglePlusAppSecret = "f";
 
         /// <summary>
         /// File Upload Settings

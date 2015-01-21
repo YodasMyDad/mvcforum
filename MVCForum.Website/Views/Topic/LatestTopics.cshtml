@@ -8,12 +8,14 @@
 }
 
 <div class="latesttopics">
-    
+
     <div class="mainheading clearfix">
         <div class="widgetright">
             @if (Html.Settings().EnableRSSFeeds)
             {
-                <a href="@Url.Action("LatestRss", "Home")" class="rsssubscribe" title="@Html.LanguageString("Home.Rss")"><span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span></a>
+                <a href="@Url.Action("LatestRss", "Home")" class="rsssubscribe" title="@Html.LanguageString("Home.Rss")">
+                    <i class="fa fa-rss"></i>
+                </a>
             }
         </div>
         <h2>@Html.LanguageString("Home.LatestDiscussions")</h2>

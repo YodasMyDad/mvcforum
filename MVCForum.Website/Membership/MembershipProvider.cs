@@ -3,8 +3,6 @@ using System.Collections.Specialized;
 using System.Web.Mvc;
 using System.Web.Security;
 using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
 
 namespace MVCForum.Website.Membership
 {
@@ -13,6 +11,8 @@ namespace MVCForum.Website.Membership
         // MSDN how to implement a custom provider: http://msdn.microsoft.com/en-us/library/6tc47t75.aspx
 
         // ALL THE METHODS MUST BE USED WITHIN A UNIT OF WORK IN THE CONTROLLERS
+
+        // TODO - Need to implement this properly
 
         private string _applicationName;
         private bool _enablePasswordReset;
@@ -145,16 +145,6 @@ namespace MVCForum.Website.Membership
             return false;
         }
 
-        public override bool DeleteUser(string username, bool deleteAllRelatedData)
-        {
-            var user = MembershipService.GetUser(username);
-            if (user != null)
-            {
-                return MembershipService.Delete(user);
-            }
-            return false;
-        }
-
         public override bool EnablePasswordReset
         {
             get { return _enablePasswordReset; }
@@ -173,6 +163,11 @@ namespace MVCForum.Website.Membership
         public override int PasswordAttemptWindow
         {
             get { return _passwordAttemptWindow; }
+        }
+
+        public override bool DeleteUser(string username, bool deleteAllRelatedData)
+        {
+            throw new System.NotImplementedException();
         }
 
         public override MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize, out int totalRecords)

@@ -153,6 +153,11 @@ namespace MVCForum.Services
             return _topicRepository.GetTopicsByUser(memberId);
         }
 
+        public IList<Topic> GetTopicsByLastPost(List<Guid> postIds)
+        {
+            return _topicRepository.GetTopicsByLastPost(postIds);
+        }
+
         /// <summary>
         /// Returns a paged list of topics from a specified category
         /// </summary>

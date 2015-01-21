@@ -244,6 +244,16 @@ namespace MVCForum.Data.Repositories
             return results;
         }
 
+        public IList<Topic> GetTopicsByLastPost(List<Guid> postIds)
+        {
+            return _context.Topic
+                    .Include(x => x.LastPost.User)
+                    .AsNoTracking()
+                    .Where(x => postIds.Contains(x.LastPost.Id))
+                    .Where(x => x.Pending != true)
+                    .ToList();
+        }
+
         public PagedList<Topic> GetPagedPendingTopics(int pageIndex, int pageSize)
         {
             // We might only want to display the top 100

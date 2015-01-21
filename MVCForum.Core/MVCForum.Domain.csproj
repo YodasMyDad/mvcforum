@@ -97,6 +97,7 @@
     <Compile Include="DomainModel\Favourite.cs" />
     <Compile Include="DomainModel\GlobalPermission.cs" />
     <Compile Include="DomainModel\InstallerResult.cs" />
+    <Compile Include="DomainModel\PermissionForRole.cs" />
     <Compile Include="DomainModel\Poll.cs" />
     <Compile Include="DomainModel\PrivateMessage.cs" />
     <Compile Include="DomainModel\Report.cs" />

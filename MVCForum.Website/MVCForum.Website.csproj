@@ -1935,11 +1935,7 @@
     <Content Include="Views\Shared\_CreateEdit_TopicPost.cshtml" />
     <Content Include="Views\Shared\_CommonSideNav.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Extensions\" />
-    <Folder Include="Views\FacebookOAuth\" />
-    <Folder Include="Views\GoogleOAuth\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>

@@ -3,7 +3,7 @@
 @{
     var postId = Model.Post.Id;
     var loggedOnUserId = Html.CurrentMember() != null ? Html.CurrentMember().Id : Guid.Empty;
-    var isAdminOrMod = User.IsInRole(AppConstants.AdminRoleName) || User.IsInRole(AppConstants.ModeratorRoleName);
+    var isAdmin = User.IsInRole(AppConstants.AdminRoleName);
     var downVotes = Model.Votes.Where(x => x.Amount < 0).ToList();
     var upVotes = Model.Votes.Where(x => x.Amount > 0).ToList();
 }
@@ -24,7 +24,7 @@
                 <a class="postmember-@postId" href="@Html.Raw(Model.Post.User.NiceUrl)">@Html.Raw(Model.Post.User.UserName)</a>
                 @Html.LanguageString("Post.PostedThis")
                 @DatesUI.GetPrettyDate(Model.Post.DateCreated.ToString())
-                @if (isAdminOrMod && !string.IsNullOrEmpty(Model.Post.IpAddress))
+                @if (isAdmin && !string.IsNullOrEmpty(Model.Post.IpAddress))
                 {
                     <text> - @Model.Post.IpAddress</text>
                 }

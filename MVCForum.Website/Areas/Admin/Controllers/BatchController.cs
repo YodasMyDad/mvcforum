@@ -45,7 +45,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     var count = membersToDelete.Count;
                     foreach (var membershipUser in membersToDelete)
                     {
-                        MembershipService.Delete(membershipUser);
+                        MembershipService.Delete(membershipUser, unitOfWork);
                     }
                     unitOfWork.Commit();
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel

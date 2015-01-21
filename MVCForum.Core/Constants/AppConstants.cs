@@ -32,14 +32,15 @@
         // This is the role a non logged in user defaults to
         public const string GuestRoleName = "Guest";
 
-        // Main moderator Role [This should never be changed]
-        public const string ModeratorRoleName = "Moderator";
+        // This is just the initial standard role
+        public const string StandardMembers = "Standard Members";
 
         /// <summary>
         ///  These are the permission names used as keys to return them
         ///  So they must be the same as the database value 
         /// </summary>
-
+        
+        // Category Permissions
         public const string PermissionReadOnly = "Read Only";
         public const string PermissionDeletePosts = "Delete Posts";
         public const string PermissionEditPosts = "Edit Posts";
@@ -51,7 +52,10 @@
         public const string PermissionCreateTopics = "Create Topics";
         public const string PermissionAttachFiles = "Attach Files";
 
+        // Global Permissions
         public const string PermissionEditMembers = "Edit Members";
+
+        //------------ End Permissions ----------
 
         // Paging options
         public const string PagingUrlFormat = "{0}?p={1}";

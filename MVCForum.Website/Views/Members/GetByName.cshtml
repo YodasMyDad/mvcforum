@@ -60,7 +60,7 @@
                 <p><a href="@Url.Action("Report", "Members", new { id = Model.User.Id }, null)" class="btn-mvc">@Html.LanguageString("Buttons.Report")</a></p>
             }
 
-            @if (User.IsInRole(AppConstants.AdminRoleName) || User.IsInRole(AppConstants.ModeratorRoleName))
+            @if (Model.Permissions[AppConstants.PermissionEditMembers].IsTicked)
             {
 
                 // If this is an admins profile then do not show
@@ -116,9 +116,8 @@
                 </div>
             }
 
-            @if (User.IsInRole(AppConstants.AdminRoleName) || User.IsInRole(AppConstants.ModeratorRoleName))
+            @if (User.IsInRole(AppConstants.AdminRoleName))
             {
-                // Show the admin/mod notes on this user in case they are a spammer etc...
                 <div class="membersection adminpublicomments">
                     @Html.Raw(Model.User.Comment)
                 </div>

@@ -6,9 +6,8 @@
         @if (!string.IsNullOrEmpty(SiteConstants.FacebookAppId) && !string.IsNullOrEmpty(SiteConstants.FacebookAppSecret))
         {
             <p>
-                <a class="btn-mvc btn-mvc-large facebookloginbutton" href="@Url.Action("FacebookLogin", "FacebookOAuth")">
-                    <img src="@Url.Content("~/Content/Images/social-icons/facebook.png")" class="socialicon" alt="@Html.LanguageString("Members.LogonFacebookButton")" />
-                    @Html.LanguageString("Members.LogonFacebookButton")
+                <a class="btn-mvc btn-mvc-large btn-mvc-fullwidth facebookloginbutton" href="@Url.Action("FacebookLogin", "FacebookOAuth")">
+                    <i class="fa fa-facebook"></i> @Html.LanguageString("Members.LogonFacebookButton")
                 </a>
             </p>
         }
@@ -20,9 +19,8 @@
         @if (!string.IsNullOrEmpty(SiteConstants.GooglePlusAppId) && !string.IsNullOrEmpty(SiteConstants.GooglePlusAppSecret))
         {
             <p>
-                <a class="btn-mvc btn-mvc-large googleloginbutton" href="@Url.Action("GoogleLogin", "GoogleOAuth")">
-                    <img src="@Url.Content("~/Content/Images/social-icons/google.png")" class="socialicon" alt="@Html.LanguageString("Members.LogonGoogleButton")" />
-                    @Html.LanguageString("Members.LogonGoogleButton")
+                <a class="btn-mvc btn-mvc-large btn-mvc-fullwidth googleloginbutton" href="@Url.Action("GoogleLogin", "GoogleOAuth")">
+                    <i class="fa fa-google-plus"></i> @Html.LanguageString("Members.LogonGoogleButton")
                 </a>
             </p>
         }

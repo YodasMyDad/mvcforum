@@ -157,6 +157,7 @@ namespace MVCForum.Website.ViewModels
     {
         public MembershipUser User { get; set; }
         public Guid LoggedOnUserId { get; set; }
+        public PermissionSet Permissions { get; set; }
     }
 
     public class ViewMemberDiscussionsViewModel

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.Interfaces.UnitOfWork;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
@@ -43,11 +44,18 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<MembershipUser> GetActiveMembers();
         void Save(MembershipUser user);
         void ProfileUpdated(MembershipUser user);
-        bool Delete(MembershipUser user);
+        bool Delete(MembershipUser user, IUnitOfWork unitOfWork);
         IList<MembershipUser> GetLatestUsers(int amountToTake);
         IList<MembershipUser> GetLowestPointUsers(int amountToTake);
         int MemberCount();
         string ToCsv();
         CsvReport FromCsv(List<string> allLines);
+        /// <summary>
+        /// Completed scrubs a users account clean
+        /// Clears everything - Posts, polls, votes, favourites, profile etc...
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="unitOfWork"></param>
+        void ScrubUsers(MembershipUser user, IUnitOfWork unitOfWork);
     }
 }
