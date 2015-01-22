@@ -172,8 +172,9 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 .createtopicbutton { margin-bottom: 20px; }
 
 /*--- Global Rows --*/
-.rowcreater { float: left; width: 60px; }
-.rowcreater img { -ms-border-radius: 50%; border-radius: 50%; max-width: 50px; }
+.rowcreater { float: left; width: 60px;text-align: center;}
+.rowcreater img { -ms-border-radius: 50%; border-radius: 50%; max-width: 50px;}
+.rowcreater span.label { font-weight: normal;padding: .2em .4em .2em;margin:2px 6px 0 6px;display: block;z-index: 5;background-color: #bebebe;}
 .rowdetails { margin-left: 70px; }
 
 /*--- Topic Rows ---*/

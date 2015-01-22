@@ -44,3 +44,5 @@ MVCForum.Website/Scripts/cache/*.js
 packages/*
 !packages/repositories.config
 MVCForum.Website/Properties/PublishProfiles/Profile1.pubxml
+MVCForum.Website/Properties/PublishProfiles/Local Deployment.pubxml
+MVCForum.Website/Properties/PublishProfiles/Profile1.pubxml

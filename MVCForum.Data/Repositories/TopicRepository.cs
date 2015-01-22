@@ -248,7 +248,6 @@ namespace MVCForum.Data.Repositories
         {
             return _context.Topic
                     .Include(x => x.LastPost.User)
-                    .AsNoTracking()
                     .Where(x => postIds.Contains(x.LastPost.Id))
                     .Where(x => x.Pending != true)
                     .ToList();

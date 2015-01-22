@@ -86,7 +86,7 @@ namespace MVCForum.Domain.Events
             var di = new DirectoryInfo(path);
             foreach (var file in di.GetFiles("*.dll"))
             {
-                if (file.Name.ToLower().StartsWith("ecmascript"))
+                if (file.Name.ToLower().StartsWith("ecmascript") || file.Name.ToLower().StartsWith("unity."))
                 {
                     continue;
                 }
@@ -102,7 +102,7 @@ namespace MVCForum.Domain.Events
                     continue;
                 }
 
-                if (nextAssembly.FullName.StartsWith("System") || nextAssembly.FullName.StartsWith("Microsoft"))
+                if (nextAssembly.FullName.StartsWith("System") || nextAssembly.FullName.StartsWith("Microsoft") || nextAssembly.FullName.StartsWith("DotNetOpenAuth") || nextAssembly.FullName.StartsWith("Unity"))
                 {
                     // Skip microsoft assemblies
                     continue;

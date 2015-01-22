@@ -320,3 +320,9 @@ Topic.Label.Tags,Add Tag
 Topic.Label.UploadFiles,Upload Files
 Search.Searching,Searching
 Search.InTopic,In Topic
+Members.SrubAndBan,Scrub & Ban
+Confirmation.SrubAndBan,Are you sure you want to do this? It will delete all their posts and then ban them
+Admin,Admin
+Members.SuccessfulSrub,All done
+Post.Favourite,Favourite
+Post.Favourited,Favourited

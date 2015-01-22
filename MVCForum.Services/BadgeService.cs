@@ -272,7 +272,7 @@ namespace MVCForum.Services
             {
                 try
                 {
-                    if (file.Name == "EcmaScript.NET.dll")
+                    if (file.Name == "EcmaScript.NET.dll" || file.Name == "Unity.WebApi.dll")
                     {
                         continue;
                     }
@@ -288,7 +288,7 @@ namespace MVCForum.Services
                         continue;
                     }
 
-                    if (nextAssembly.FullName.StartsWith("System") || nextAssembly.FullName.StartsWith("Microsoft") || nextAssembly.FullName.StartsWith("DotNetOpenAuth"))
+                    if (nextAssembly.FullName.StartsWith("System") || nextAssembly.FullName.StartsWith("Microsoft") || nextAssembly.FullName.StartsWith("DotNetOpenAuth") || nextAssembly.FullName.StartsWith("Unity"))
                     {
                         // Skip microsoft and dotnetauth assemblies
                         continue;
