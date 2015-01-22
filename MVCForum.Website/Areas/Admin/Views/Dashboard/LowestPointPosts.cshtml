@@ -1,15 +1,27 @@
 ﻿@model MVCForum.Website.Areas.Admin.ViewModels.LowestPointPostsViewModels
 
-@if(Model.Posts.Any())
-{
- <ul>
- @foreach (var post in Model.Posts)
- {
-    <li><a href="@post.Topic.NiceUrl">@post.Topic.Name By @post.User.UserName <strong>(@post.VoteCount)</strong></a></li>
- }
- </ul>
-}
-else
-{
-    <p>No data</p>
-}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Lowest Point Posts
+    </div>
+    @if (Model.Posts.Any())
+    {
+        <ul class="list-group">
+            @foreach (var post in Model.Posts)
+            {
+                <li class="list-group-item">
+                    <span class="badge">@post.VoteCount</span>
+                    <a href="@post.Topic.NiceUrl">@post.Topic.Name</a> By <a href="@post.User.NiceUrl">@post.User.UserName</a>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <div class="panel-body">
+            Nothing to show
+        </div>
+    }
+
+</div>

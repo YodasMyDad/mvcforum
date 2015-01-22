@@ -1,15 +1,26 @@
 ﻿@model MVCForum.Website.Areas.Admin.ViewModels.TodaysTopics
 
-@if(Model.Topics.Any())
-{
- <ul>
- @foreach (var topic in Model.Topics)
- {
-    <li><a href="@topic.NiceUrl">@Html.Raw(topic.Name)</a> By <a href="@topic.User.NiceUrl">@topic.User.UserName</a></li>
- }
- </ul>
-}
-else
-{
-    <p>No data</p>
-}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Todays Topics
+    </div>
+    @if (Model.Topics.Any())
+    {
+        <ul class="list-group">
+            @foreach (var topic in Model.Topics)
+            {
+                <li class="list-group-item">
+                    <a href="@topic.NiceUrl">@Html.Raw(topic.Name)</a> By <a href="@topic.User.NiceUrl">@topic.User.UserName</a>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <div class="panel-body">
+            Nothing to show
+        </div>
+    }
+
+</div>

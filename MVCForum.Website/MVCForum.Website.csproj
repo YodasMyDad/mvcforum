@@ -1574,6 +1574,7 @@
     <Content Include="Areas\Admin\Views\Shared\_AdminScripts.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_AdminTopNav.cshtml" />
     <Content Include="Areas\Admin\Views\AdminCategory\_CategoryFields.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_AdminSideNav.cshtml" />
     <None Include="Properties\PublishProfiles\Local Deployment.pubxml" />
     <None Include="Scripts\jquery-1.11.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.11.1.js" />

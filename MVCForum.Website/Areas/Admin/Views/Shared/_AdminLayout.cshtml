@@ -24,95 +24,13 @@
         <div class="row">
 
             <div class="col-md-3">
-                <div id="logindisplay">
+                <p id="logindisplay">
                     @Html.Partial("_LogOnPartial")
-                </div>
+                </p>
 
-                <a href="#" class="btn btn-show-admin-nav">Show Admin Options</a>
-                <div class="admin-options">
-                    <h6>Settings</h6>
-                    <ul class="nav nav-tabs nav-stacked">
-                        <li>
-                            <a href="@Url.Action("Index", "Settings", new { area = "Admin" }, null)">
-                                <i class='icon-cog'></i>Configuration
-                            </a>
-                        </li>
-                        <li>
-                            <a href="@Url.Action("Index", "AdminCategory", new { area = "Admin" }, null)">
-                                <i class='icon-list-alt'></i>Categories
-                            </a>
-                        </li>
-                        <li>
-                            <a href="@Url.Action("Index", "Permissions", new { area = "Admin" }, null)">
-                                <i class='icon-lock'></i>Permissions
-                            </a>
-                        </li>
-                        <li>
-                            <a href="@Url.Action("Index", "AdminLanguage", new { area = "Admin" })">
-                                <i class='icon-volume-up'></i>Language
-                            </a>
-                        </li>
-                        <li>
-                            <a href="@Url.Action("Index", "AdminTag", new { area = "Admin" })">
-                                <i class='icon-tags'></i>Tags
-                            </a>
-                        </li>
-                        <li>
-                            <a href="@Url.Action("Index", "AdminBadge", new { area = "Admin" })">
-                                <i class='icon-bookmark'></i>Badges
-                            </a>
-                        </li>
-                    </ul>
-                    <h6>Membership</h6>
-                    <ul class="nav nav-tabs nav-stacked">
-                        <li>
-                            <a href="@Url.Action("Manage", "Account", new { area = "Admin" }, null)">
-                                <i class='icon-user'></i>Manage Users
-                            </a>
-                        </li>
-                        <li>
-                            <a href="@Url.Action("ListAllRoles", "Account", new { area = "Admin" }, null)"><i class="icon-flag"></i>Manage Roles</a>
-                        </li>
-                        <li>
-                            <a href="@Url.Action("AddRole", "Account", new { area = "Admin" }, null)"><i class="icon-plus"></i>Add Roles</a>
-                        </li>
-
-                    </ul>
-                    <h6>Tools</h6>
-                    <ul class="nav nav-tabs nav-stacked">
-                        <li>
-                            <a href="@Url.Action("Index", "Moderate", new { area = "Admin" })">
-                                <i class='icon-warning-sign'></i>Moderate
-                            </a>
-                        </li>
-                        <li>
-                            <a href="@Url.Action("Index", "ImportExport", new { area = "Admin" })">
-                                <i class='icon-random'></i>Import / Export
-                            </a>
-                        </li>
-                        <li>
-                            <a href="@Url.Action("Index", "Batch", new { area = "Admin" })">
-                                <i class='icon-tasks'></i>Batch Tools
-                            </a>
-                        </li>
-                        <li>
-                            <a href="@Url.Action("Index", "BannedEmail", new { area = "Admin" })">
-                                <i class='icon-ban-circle'></i>Ban Emails
-                            </a>
-                        </li>
-                        <li>
-                            <a href="@Url.Action("Index", "BannedWord", new { area = "Admin" })">
-                                <i class='icon-text-width'></i>Ban Words
-                            </a>
-                        </li>
-                        <li>
-                            <a href="@Url.Action("Index", "Log", new { area = "Admin" })">
-                                <i class='icon-exclamation-sign'></i>Log
-                            </a>
-                        </li>
-                    </ul>
-                    @Html.Partial("_GetCurrentVersion")
-                </div>
+                @Html.Partial("_AdminSideNav")
+                
+                @Html.Partial("_GetCurrentVersion")
 
             </div>
 

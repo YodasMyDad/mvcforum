@@ -47,13 +47,6 @@ select {  }
 .input-validation-error {border-color: #B94A48; color: #B94A48;}
 .field-validation-error span {color: #B94A48;display: block;}
 
-/*checkboxes/radiobuttons*/
-.editor-checkboxes {padding: 0 0 6px;}
-.editor-checkboxes span { padding: 0 15px 0 0;}
-.n3ocheckboxfield { overflow: hidden; padding: 4px 0 10px 0;}
-.n3ocheckboxfield label {display: block; padding: 0 0 0 10px;float: left;}
-.n3ocheckboxfield input { float: left;}
-
 /*--- Ajax Spinner ---*/
 .ajaxspinner { display: block;width:16px;height:16px;background: transparent url(../../../Content/Images/arrow-spinner-blue.gif) no-repeat;text-transform: capitalize;text-indent: -9999px;}
 

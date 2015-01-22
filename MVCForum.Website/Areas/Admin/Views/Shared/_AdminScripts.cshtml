@@ -1,8 +1,8 @@
 ﻿@(
  Bundle.Css()
             .Add("~/Content/bootstrap/css/bootstrap.css")
-            .Add("~/Content/admin/Admin.css")
             .Add("~/Scripts/fancybox/jquery.fancybox.css")
+            .Add("~/Content/admin/Admin.css")
             .MvcRender("~/content/cache/combinedadmin_#.css")
 )
 
@@ -11,9 +11,6 @@
 <!--[if lt IE 9]>
   <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 <![endif]-->
-
-<link rel="shortcut icon" href="@Url.Content("~/content/admin/images/favicon.ico")">
-<link rel="apple-touch-icon-precomposed" href="@Url.Content("~/content/admin/images/apple-touch-icon-57-precomposed.png")">
 
 <script type="text/javascript">
         var app_base = '@Url.Content("~/")';
@@ -24,7 +21,7 @@
         .Add("~/Scripts/jquery-ui-1.10.3.min.js")
         .Add("~/Content/bootstrap/js/bootstrap.min.js")
         .Add("~/Scripts/fancybox/jquery.fancybox.js")
+        .Add("~/scripts/pushy/pushy.js")
         .Add("~/Scripts/admin/admin.js")
-
         .MvcRender("~/scripts/cache/combinedadmin_#.js")
-)
+      )

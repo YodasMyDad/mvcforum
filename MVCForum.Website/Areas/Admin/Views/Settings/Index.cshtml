@@ -1,4 +1,5 @@
-﻿@model MVCForum.Website.Areas.Admin.ViewModels.EditSettingsViewModel
+﻿@using MVCForum.Website.Application.ExtensionMethods
+@model MVCForum.Website.Areas.Admin.ViewModels.EditSettingsViewModel
 @{
     ViewBag.Title = "Settings";
 }
@@ -13,381 +14,476 @@
     )
 }
 
-@using (Html.BeginForm("Index", "Settings", FormMethod.Post, new { @class = "form-horizontal" }))
+@using (Html.BeginForm("Index", "Settings", FormMethod.Post))
 {
     @Html.HiddenFor(model => model.Id)
-
-
     @Html.ValidationSummary(false)
+    @Html.AntiForgeryToken()
 
-    <div class="tabbable">
 
-        <ul class="nav nav-tabs" id="myTab">
-            <li class="active"><a data-toggle="tab" href="#general">General</a></li>
-            <li><a data-toggle="tab" href="#points">Points</a></li>
-            <li><a data-toggle="tab" href="#email">Email</a></li>
-            <li><a data-toggle="tab" href="#theme">Theme</a></li>
-            <li><a data-toggle="tab" href="#role">Starting Role</a></li>
-            <li><a data-toggle="tab" href="#language">Default Language</a></li>
-            <li><a data-toggle="tab" href="#spam">Spam</a></li>
-            <li><a data-toggle="tab" href="#social">Social</a></li>
-        </ul>
 
-        <div class="tab-content">
-            <div class="tab-pane active" id="general">
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingGeneral">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseGeneral" aria-expanded="true" aria-controls="collapseGeneral">
+                        General
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseGeneral" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingGeneral">
+                <div class="panel-body">
 
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.ForumName)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.ForumName)
-                    @Html.ValidationMessageFor(model => model.ForumName)
-                </div>
 
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.ForumUrl)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.ForumUrl)
-                    @Html.ValidationMessageFor(model => model.ForumUrl)
-                </div>
-                
-                <div class="well well-small">
-                    <div class="editor-label">
-                        @Html.LabelFor(model => model.PageTitle)
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ForumName)
+                        @Html.TextBoxFor(model => model.ForumName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ForumName)
                     </div>
-                    <div class="editor-field">
-                        @Html.EditorFor(model => model.PageTitle)
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ForumUrl)
+                        @Html.TextBoxFor(model => model.ForumUrl, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ForumUrl)
+                    </div>
+
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PageTitle)
+                        @Html.TextBoxFor(model => model.PageTitle, new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.PageTitle)
                     </div>
-                    <div class="editor-label">
+                    <div class="form-group">
                         @Html.LabelFor(model => model.MetaDesc)
-                    </div>
-                    <div class="editor-field">
-                        @Html.TextAreaFor(model => model.MetaDesc)
+                        @Html.TextAreaFor(model => model.MetaDesc, new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.MetaDesc)
                     </div>
-                </div>
 
-                <div class="editor-field n3ocheckboxfield">
-                    @Html.EditorFor(model => model.IsClosed)
-                    @Html.LabelFor(model => model.IsClosed)
-                    @Html.ValidationMessageFor(model => model.IsClosed)
-                </div>
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.IsClosed, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.IsClosed)
+                        }
+                        @Html.ValidationMessageFor(m => m.IsClosed)
+                    </div>
 
-                <div class="editor-field n3ocheckboxfield">
-                    @Html.EditorFor(model => model.EnableRSSFeeds)
-                    @Html.LabelFor(model => model.EnableRSSFeeds)
-                    @Html.ValidationMessageFor(model => model.EnableRSSFeeds)
-                </div>
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.EnableRSSFeeds, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.EnableRSSFeeds)
+                        }
+                        @Html.ValidationMessageFor(m => m.EnableRSSFeeds)
+                    </div>
 
-                <div class="editor-field n3ocheckboxfield">
-                    @Html.EditorFor(model => model.DisplayEditedBy)
-                    @Html.LabelFor(model => model.DisplayEditedBy)
-                    @Html.ValidationMessageFor(model => model.DisplayEditedBy)
-                </div>
-                
-                <div class="editor-field n3ocheckboxfield">
-                    @Html.CheckBoxFor(model => model.SuspendRegistration)
-                    @Html.LabelFor(model => model.SuspendRegistration)
-                    @Html.ValidationMessageFor(model => model.SuspendRegistration)
-                </div>
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.DisplayEditedBy, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.DisplayEditedBy)
+                        }
+                        @Html.ValidationMessageFor(m => m.DisplayEditedBy)
+                    </div>
 
-                <div class="editor-field n3ocheckboxfield">
-                    @Html.EditorFor(model => model.EnableMarkAsSolution)
-                    @Html.LabelFor(model => model.EnableMarkAsSolution)
-                    @Html.ValidationMessageFor(model => model.EnableMarkAsSolution)
-                </div>
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.SuspendRegistration, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.SuspendRegistration)
+                        }
+                        @Html.ValidationMessageFor(m => m.SuspendRegistration)
+                    </div>
 
-                <div class="editor-field n3ocheckboxfield">
-                    @Html.EditorFor(model => model.EnablePolls)
-                    @Html.LabelFor(model => model.EnablePolls)
-                    @Html.ValidationMessageFor(model => model.EnablePolls)
-                </div>
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.EnableMarkAsSolution, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.EnableMarkAsSolution)
+                        }
+                        @Html.ValidationMessageFor(m => m.EnableMarkAsSolution)
+                    </div>
 
-                <div class="editor-field n3ocheckboxfield">
-                    @Html.EditorFor(model => model.EnableSpamReporting)
-                    @Html.LabelFor(model => model.EnableSpamReporting)
-                    @Html.ValidationMessageFor(model => model.EnableSpamReporting)
-                </div>
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.EnablePolls, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.EnablePolls)
+                        }
+                        @Html.ValidationMessageFor(m => m.EnablePolls)
+                    </div>
 
-                <div class="editor-field n3ocheckboxfield">
-                    @Html.EditorFor(model => model.EnableMemberReporting)
-                    @Html.LabelFor(model => model.EnableMemberReporting)
-                    @Html.ValidationMessageFor(model => model.EnableMemberReporting)
-                </div>
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.EnableSpamReporting, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.EnableSpamReporting)
+                        }
+                        @Html.ValidationMessageFor(m => m.EnableSpamReporting)
+                    </div>
 
-                <div class="editor-field n3ocheckboxfield">
-                    @Html.EditorFor(model => model.EnableEmailSubscriptions)
-                    @Html.LabelFor(model => model.EnableEmailSubscriptions)
-                    @Html.ValidationMessageFor(model => model.EnableEmailSubscriptions)
-                </div>
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.EnableMemberReporting, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.EnableMemberReporting)
+                        }
+                        @Html.ValidationMessageFor(m => m.EnableMemberReporting)
+                    </div>
 
-                <div class="editor-field n3ocheckboxfield">
-                    @Html.EditorFor(model => model.ManuallyAuthoriseNewMembers)
-                    @Html.LabelFor(model => model.ManuallyAuthoriseNewMembers)
-                    @Html.ValidationMessageFor(model => model.ManuallyAuthoriseNewMembers)
-                </div>
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.EnableEmailSubscriptions, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.EnableEmailSubscriptions)
+                        }
+                        @Html.ValidationMessageFor(m => m.EnableEmailSubscriptions)
+                    </div>
 
-                <div class="editor-field n3ocheckboxfield">
-                    @Html.EditorFor(model => model.EmailAdminOnNewMemberSignUp)
-                    @Html.LabelFor(model => model.EmailAdminOnNewMemberSignUp)
-                    @Html.ValidationMessageFor(model => model.EmailAdminOnNewMemberSignUp)
-                </div>
-                
-                <div class="editor-field n3ocheckboxfield">
-                    @Html.EditorFor(model => model.NewMemberEmailConfirmation)
-                    @Html.LabelFor(model => model.NewMemberEmailConfirmation)
-                    @Html.ValidationMessageFor(model => model.NewMemberEmailConfirmation)
-                </div>
-                
-                <div class="editor-field n3ocheckboxfield">
-                    @Html.EditorFor(model => model.EnableSignatures)
-                    @Html.LabelFor(model => model.EnableSignatures)
-                    @Html.ValidationMessageFor(model => model.EnableSignatures)
-                </div>
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.ManuallyAuthoriseNewMembers, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.ManuallyAuthoriseNewMembers)
+                        }
+                        @Html.ValidationMessageFor(m => m.ManuallyAuthoriseNewMembers)
+                    </div>
 
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.TopicsPerPage)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.TopicsPerPage)
-                    @Html.ValidationMessageFor(model => model.TopicsPerPage)
-                </div>
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.EmailAdminOnNewMemberSignUp, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.EmailAdminOnNewMemberSignUp)
+                        }
+                        @Html.ValidationMessageFor(m => m.EmailAdminOnNewMemberSignUp)
+                    </div>
 
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.PostsPerPage)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.PostsPerPage)
-                    @Html.ValidationMessageFor(model => model.PostsPerPage)
-                </div>
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.NewMemberEmailConfirmation, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.NewMemberEmailConfirmation)
+                        }
+                        @Html.ValidationMessageFor(m => m.NewMemberEmailConfirmation)
+                    </div>
+
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.EnableSignatures, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.EnableSignatures)
+                        }
+                        @Html.ValidationMessageFor(m => m.EnableSignatures)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.TopicsPerPage)
+                        @Html.TextBoxFor(model => model.TopicsPerPage, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.TopicsPerPage)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PostsPerPage)
+                        @Html.TextBoxFor(model => model.PostsPerPage, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PostsPerPage)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ActivitiesPerPage)
+                        @Html.TextBoxFor(model => model.ActivitiesPerPage, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ActivitiesPerPage)
+                    </div>
+
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.EnablePrivateMessages, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.EnablePrivateMessages)
+                        }
+                        @Html.ValidationMessageFor(m => m.EnablePrivateMessages)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.MaxPrivateMessagesPerMember)
+                        @Html.TextBoxFor(model => model.MaxPrivateMessagesPerMember, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.MaxPrivateMessagesPerMember)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PrivateMessageFloodControl)
+                        @Html.TextBoxFor(model => model.PrivateMessageFloodControl, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PrivateMessageFloodControl)
+                    </div>
 
 
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.ActivitiesPerPage)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.ActivitiesPerPage)
-                    @Html.ValidationMessageFor(model => model.ActivitiesPerPage)
-                </div>
-
-                <div class="editor-field n3ocheckboxfield">
-                    @Html.EditorFor(model => model.EnablePrivateMessages)
-                    @Html.LabelFor(model => model.EnablePrivateMessages)
-                    @Html.ValidationMessageFor(model => model.EnablePrivateMessages)
-                </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.MaxPrivateMessagesPerMember)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.MaxPrivateMessagesPerMember)
-                    @Html.ValidationMessageFor(model => model.MaxPrivateMessagesPerMember)
-                </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.PrivateMessageFloodControl)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.PrivateMessageFloodControl)
-                    @Html.ValidationMessageFor(model => model.PrivateMessageFloodControl)
-                </div>
-
-            </div>
-            <div class="tab-pane" id="points">
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.EnablePoints)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.EnablePoints)
-                    @Html.ValidationMessageFor(model => model.EnablePoints)
-                </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.PointsAllowedToVoteAmount)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.PointsAllowedToVoteAmount)
-                    @Html.ValidationMessageFor(model => model.PointsAllowedToVoteAmount)
-                </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.PointsAddedPerPost)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.PointsAddedPerPost)
-                    @Html.ValidationMessageFor(model => model.PointsAddedPerPost)
-                </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.PointsAddedPostiveVote)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.PointsAddedPostiveVote)
-                    @Html.ValidationMessageFor(model => model.PointsAddedPostiveVote)
-                </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.PointsDeductedNagativeVote)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.PointsDeductedNagativeVote)
-                    @Html.ValidationMessageFor(model => model.PointsDeductedNagativeVote)
-                </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.PointsAddedForSolution)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.PointsAddedForSolution)
-                    @Html.ValidationMessageFor(model => model.PointsAddedForSolution)
-                </div>
-
-            </div>
-            <div class="tab-pane" id="email">
-
-                <div class="submit-holder">
-                    <p>Complete the settings below and save, then send a test email using the button below</p>
-                    <p><a href="@Url.Action("TestEmail")" class="btn btn-large btn-success">Test Email Settings</a></p>
-                </div>
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.AdminEmailAddress)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.AdminEmailAddress)
-                    @Html.ValidationMessageFor(model => model.AdminEmailAddress)
-                </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.NotificationReplyEmail)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.NotificationReplyEmail)
-                    @Html.ValidationMessageFor(model => model.NotificationReplyEmail)
-                </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.SMTP)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.SMTP)
-                    @Html.ValidationMessageFor(model => model.SMTP)
-                </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.SMTPUsername)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.SMTPUsername)
-                    @Html.ValidationMessageFor(model => model.SMTPUsername)
-                </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.SMTPPassword)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.SMTPPassword)
-                    @Html.ValidationMessageFor(model => model.SMTPPassword)
-                </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.SMTPPort)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.SMTPPort)
-                    @Html.ValidationMessageFor(model => model.SMTPPort)
-                </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.SMTPEnableSSL)
-                </div>
-                <div class="editor-field">
-                    @Html.CheckBoxFor(model => model.SMTPEnableSSL)
-                    @Html.ValidationMessageFor(model => model.SMTPEnableSSL)
-                </div>
-                <p><i><strong>IMPORTANT:</strong> Only port 25 works in medium trust environments. You will need to comment out the medium trust entry in the web.config if you want to 
-                        use any other port number.</i></p>
-            </div>
-
-            <div class="tab-pane" id="theme">
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.Theme)
-                </div>
-                <div class="editor-field">
-                    @Html.DropDownListFor(model => model.Theme, new SelectList(Model.Themes), string.Empty)
-                    @Html.ValidationMessageFor(model => model.Theme)
-                </div>
-            </div>
-
-            <div class="tab-pane" id="role">
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.NewMemberStartingRole)
-                </div>
-                <div class="editor-field">
-                    @Html.DropDownListFor(model => model.NewMemberStartingRole, new SelectList(Model.Roles, "Id", "RoleName"), string.Empty)
-                    @Html.ValidationMessageFor(model => model.NewMemberStartingRole)
-                </div>
-            </div>
-
-            <div class="tab-pane" id="language">
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.DefaultLanguage)
-                </div>
-                <div class="editor-field">
-                    @Html.DropDownListFor(model => model.DefaultLanguage, new SelectList(Model.Languages, "Id", "Name"), string.Empty)
-                    @Html.ValidationMessageFor(model => model.DefaultLanguage)
-                </div>
-            </div>
-
-            <div class="tab-pane" id="spam">
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.EnableAkisment)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.EnableAkisment)
-                    @Html.ValidationMessageFor(model => model.EnableAkisment)
-                </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.AkismentKey)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.AkismentKey)
-                    @Html.ValidationMessageFor(model => model.AkismentKey)
-                </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.SpamQuestion)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.SpamQuestion)
-                    @Html.ValidationMessageFor(model => model.SpamQuestion)
-                </div>
-
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.SpamAnswer)
-                </div>
-                <div class="editor-field">
-                    @Html.EditorFor(model => model.SpamAnswer)
-                    @Html.ValidationMessageFor(model => model.SpamAnswer)
-                </div>
-            </div>
-
-            <div class="tab-pane" id="social">
-                <div class="editor-label">
-                    @Html.LabelFor(model => model.EnableSocialLogins)
-                </div>
-                <div class="editor-field">
-                    @Html.CheckBoxFor(model => model.EnableSocialLogins)
-                    @Html.ValidationMessageFor(model => model.EnableSocialLogins)
                 </div>
             </div>
 
         </div>
 
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingPoints">
+                <h4 class="panel-title">
+                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapsePoints" aria-expanded="false" aria-controls="collapsePoints">
+                        Points
+                    </a>
+                </h4>
+            </div>
+            <div id="collapsePoints" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingPoints">
+                <div class="panel-body">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.EnablePoints)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.EnablePoints)
+                        @Html.ValidationMessageFor(model => model.EnablePoints)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PointsAllowedToVoteAmount)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.PointsAllowedToVoteAmount)
+                        @Html.ValidationMessageFor(model => model.PointsAllowedToVoteAmount)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PointsAddedPerPost)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.PointsAddedPerPost)
+                        @Html.ValidationMessageFor(model => model.PointsAddedPerPost)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PointsAddedPostiveVote)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.PointsAddedPostiveVote)
+                        @Html.ValidationMessageFor(model => model.PointsAddedPostiveVote)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PointsDeductedNagativeVote)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.PointsDeductedNagativeVote)
+                        @Html.ValidationMessageFor(model => model.PointsDeductedNagativeVote)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PointsAddedForSolution)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.PointsAddedForSolution)
+                        @Html.ValidationMessageFor(model => model.PointsAddedForSolution)
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingEmail">
+                <h4 class="panel-title">
+                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseEmail" aria-expanded="false" aria-controls="collapseEmail">
+                        Email
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseEmail" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEmail">
+                <div class="panel-body">
+                    <div class="submit-holder">
+                        <p>Complete the settings below and save, then send a test email using the button below</p>
+                        <p><a href="@Url.Action("TestEmail")" class="btn btn-large btn-success">Test Email Settings</a></p>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.AdminEmailAddress)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.AdminEmailAddress)
+                        @Html.ValidationMessageFor(model => model.AdminEmailAddress)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.NotificationReplyEmail)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.NotificationReplyEmail)
+                        @Html.ValidationMessageFor(model => model.NotificationReplyEmail)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.SMTP)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.SMTP)
+                        @Html.ValidationMessageFor(model => model.SMTP)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.SMTPUsername)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.SMTPUsername)
+                        @Html.ValidationMessageFor(model => model.SMTPUsername)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.SMTPPassword)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.SMTPPassword)
+                        @Html.ValidationMessageFor(model => model.SMTPPassword)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.SMTPPort)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.SMTPPort)
+                        @Html.ValidationMessageFor(model => model.SMTPPort)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.SMTPEnableSSL)
+                    </div>
+                    <div class="editor-field">
+                        @Html.CheckBoxFor(model => model.SMTPEnableSSL)
+                        @Html.ValidationMessageFor(model => model.SMTPEnableSSL)
+                    </div>
+                    <p>
+                        <i>
+                            <strong>IMPORTANT:</strong> Only port 25 works in medium trust environments. You will need to comment out the medium trust entry in the web.config if you want to
+                            use any other port number.
+                        </i>
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingTheme">
+                <h4 class="panel-title">
+                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTheme" aria-expanded="false" aria-controls="collapseTheme">
+                        Theme
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseTheme" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTheme">
+                <div class="panel-body">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Theme)
+                    </div>
+                    <div class="editor-field">
+                        @Html.DropDownListFor(model => model.Theme, new SelectList(Model.Themes), string.Empty)
+                        @Html.ValidationMessageFor(model => model.Theme)
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingStartingRole">
+                <h4 class="panel-title">
+                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseStartingRole" aria-expanded="false" aria-controls="collapseStartingRole">
+                        Starting Role
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseStartingRole" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingStartingRole">
+                <div class="panel-body">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.NewMemberStartingRole)
+                    </div>
+                    <div class="editor-field">
+                        @Html.DropDownListFor(model => model.NewMemberStartingRole, new SelectList(Model.Roles, "Id", "RoleName"), string.Empty)
+                        @Html.ValidationMessageFor(model => model.NewMemberStartingRole)
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingDefaultLanguage">
+                <h4 class="panel-title">
+                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseDefaultLanguage" aria-expanded="false" aria-controls="collapseDefaultLanguage">
+                        Default Language
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseDefaultLanguage" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingDefaultLanguage">
+                <div class="panel-body">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.DefaultLanguage)
+                    </div>
+                    <div class="editor-field">
+                        @Html.DropDownListFor(model => model.DefaultLanguage, new SelectList(Model.Languages, "Id", "Name"), string.Empty)
+                        @Html.ValidationMessageFor(model => model.DefaultLanguage)
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingSpam">
+                <h4 class="panel-title">
+                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseSpam" aria-expanded="false" aria-controls="collapseSpam">
+                        Spam
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseSpam" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSpam">
+                <div class="panel-body">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.EnableAkisment)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.EnableAkisment)
+                        @Html.ValidationMessageFor(model => model.EnableAkisment)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.AkismentKey)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.AkismentKey)
+                        @Html.ValidationMessageFor(model => model.AkismentKey)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.SpamQuestion)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.SpamQuestion)
+                        @Html.ValidationMessageFor(model => model.SpamQuestion)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.SpamAnswer)
+                    </div>
+                    <div class="editor-field">
+                        @Html.EditorFor(model => model.SpamAnswer)
+                        @Html.ValidationMessageFor(model => model.SpamAnswer)
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingSocial">
+                <h4 class="panel-title">
+                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseSocial" aria-expanded="false" aria-controls="collapseSocial">
+                        Social
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseSocial" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSocial">
+                <div class="panel-body">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.EnableSocialLogins)
+                    </div>
+                    <div class="editor-field">
+                        @Html.CheckBoxFor(model => model.EnableSocialLogins)
+                        @Html.ValidationMessageFor(model => model.EnableSocialLogins)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </div>
+
+
+
+
+
 
     <div class="submit-holder">
         <input type="submit" class="btn btn-large btn-success" value="Save Settings" />

@@ -44,6 +44,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Index(EditSettingsViewModel settingsViewModel)
         {
             if (ModelState.IsValid)

@@ -1,0 +1,138 @@
+﻿<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="settingsHeading">
+            <h4 class="panel-title">
+                <a class="collapsed" data-parent="#accordion" data-toggle="collapse" href="#settingsGroup" aria-expanded="false" aria-controls="settingsGroup">
+                    Settings
+                </a>
+            </h4>
+        </div>
+        <div id="settingsGroup" class="panel-collapse collapse" role="tabpanel" aria-labelledby="settingsHeading" aria-expanded="false">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="@Url.Action("Index", "Settings", new { area = "Admin" }, null)">
+                        <i class='icon-cog'></i> Configuration
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="@Url.Action("Index", "AdminCategory", new { area = "Admin" }, null)">
+                        <i class='icon-list-alt'></i> Categories
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="@Url.Action("Index", "Permissions", new { area = "Admin" }, null)">
+                        <i class='icon-lock'></i> Permissions
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="@Url.Action("Index", "AdminTag", new { area = "Admin" })">
+                        <i class='icon-tags'></i> Tags
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="@Url.Action("Index", "AdminBadge", new { area = "Admin" })">
+                        <i class='icon-bookmark'></i> Badges
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="MembershipHeading">
+            <h4 class="panel-title">
+                <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#MembershipGroup" aria-expanded="false" aria-controls="MembershipGroup">
+                    Membership
+                </a>
+            </h4>
+        </div>
+        <div id="MembershipGroup" class="panel-collapse collapse" role="tabpanel" aria-labelledby="MembershipHeading" aria-expanded="false">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="@Url.Action("Manage", "Account", new { area = "Admin" }, null)">
+                        <i class='icon-user'></i> Manage Users
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="@Url.Action("ListAllRoles", "Account", new { area = "Admin" }, null)">
+                        <i class="icon-flag"></i>Manage Roles
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="@Url.Action("AddRole", "Account", new { area = "Admin" }, null)">
+                        <i class="icon-plus"></i>Add Roles
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="@Url.Action("Members", "ImportExport", new { area = "Admin" }, null)">
+                        <i class="icon-plus"></i>Import / Export
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="LanguagesHeading">
+            <h4 class="panel-title">
+                <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#LanguagesGroup" aria-expanded="false" aria-controls="LanguagesGroup">
+                    Languages
+                </a>
+            </h4>
+        </div>
+        <div id="LanguagesGroup" class="panel-collapse collapse" role="tabpanel" aria-labelledby="LanguagesHeading" aria-expanded="false">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="@Url.Action("Index", "AdminLanguage", new { area = "Admin" })">
+                        <i class='icon-volume-up'></i>Edit / Add Languages
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="@Url.Action("Languages", "ImportExport", new { area = "Admin" })">
+                        <i class='icon-volume-up'></i>Import / Export
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="ToolsHeading">
+            <h4 class="panel-title">
+                <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#ToolsGroup" aria-expanded="false" aria-controls="ToolsGroup">
+                    Tools
+                </a>
+            </h4>
+        </div>
+        <div id="ToolsGroup" class="panel-collapse collapse" role="tabpanel" aria-labelledby="ToolsHeading" aria-expanded="false">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="@Url.Action("Index", "Moderate", new { area = "Admin" })">
+                        <i class='icon-warning-sign'></i>Moderate
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="@Url.Action("Index", "Batch", new { area = "Admin" })">
+                        <i class='icon-tasks'></i>Batch Tools
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="@Url.Action("Index", "BannedEmail", new { area = "Admin" })">
+                        <i class='icon-ban-circle'></i>Ban Emails
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="@Url.Action("Index", "BannedWord", new { area = "Admin" })">
+                        <i class='icon-text-width'></i>Ban Words
+                    </a>
+                </li>
+                <li class="list-group-item">
+                    <a href="@Url.Action("Index", "Log", new { area = "Admin" })">
+                        <i class='icon-exclamation-sign'></i>Log
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

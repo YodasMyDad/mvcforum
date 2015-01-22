@@ -1,15 +1,25 @@
 ﻿@model MVCForum.Website.Areas.Admin.ViewModels.LatestUsersViewModels
 
-@if(Model.Users.Any())
-{
- <ul>
- @foreach (var user in Model.Users)
- {
-    <li><a href="@user.NiceUrl">@Html.Raw(user.UserName)</a> On @user.CreateDate.ToShortDateString()</li>
- }
- </ul>
-}
-else
-{
-    <p>No data</p>
-}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        Latest Users
+    </div>
+    @if (Model.Users.Any())
+    {
+        <ul class="list-group">
+            @foreach (var user in Model.Users)
+            {
+                <li class="list-group-item">
+                    <a href="@user.NiceUrl">@Html.Raw(user.UserName)</a> On @user.CreateDate.ToShortDateString()
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <div class="panel-body">
+            Nothing to show
+        </div>
+    }
+
+</div>
