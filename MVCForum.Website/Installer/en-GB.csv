@@ -299,7 +299,7 @@ Topic.IsSolved,Topic Is Solved
 Topic.Category,Category
 Topic.IsPoll,Poll
 Topic.LastPost,Last Post
-Topics.HotTopics,Hot Topics
+Topic.HotTopics,Hot Topics
 Notifications.NoActiveMembers,No one online at the moment
 Post.LikedBy,Liked by
 Post.Browse,Browse...

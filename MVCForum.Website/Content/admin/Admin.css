@@ -73,6 +73,8 @@ h6 { font-size: 16px; }
 /*--- Padded Row ---*/
 .paddedrow { padding-top: 10px; padding-bottom: 3px; }
 
+/*--- Top Admin Sub Nav ---*/
+.topadminsubnav { padding: 0 0 25px 0;}
 
 /*--- Validation ----*/
 .validation-summary-errors { color:#B94A48;}

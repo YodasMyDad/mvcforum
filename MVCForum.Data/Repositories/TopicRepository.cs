@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Data.Entity;
+using System.Web.Caching;
 using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
@@ -92,18 +93,19 @@ namespace MVCForum.Data.Repositories
                             .ToList();
         }
 
+        
         public IList<Topic> GetPopularTopics(DateTime from, DateTime to, int amountToShow)
         {
             var topics = _context.Post
                 .Include(x => x.Topic)
                 .Include(x => x.User)
-                .AsNoTracking()
-                .Where(x => x.IsTopicStarter)
-                .Where(x => x.DateCreated >= from)
-                .Where(x => x.DateCreated <= to)
-                .OrderBy(x => x.VoteCount)
+                .DistinctBy(x => x.Topic.Id)
+                .OrderByDescending(x => x.Topic.Posts.Count(c => c.DateCreated >= from && c.DateCreated <= to))
+                .ThenByDescending(x => x.VoteCount)
+                .ThenByDescending(x => x.Topic.Views)
                 .Take(amountToShow)
-                .Select(x => x.Topic);
+                .Select(x => x.Topic)
+                .ToList();
 
             if (!topics.Any())
             {
@@ -112,14 +114,15 @@ namespace MVCForum.Data.Repositories
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.User)
                                 .Include(x => x.Poll)
-                            .AsNoTracking()
                             .Where(x => x.CreateDate >= from)
                             .Where(x => x.CreateDate <= to)
-                            .OrderBy(x => x.Views)
-                            .Take(amountToShow);
+                            .OrderByDescending(x => x.VoteCount)
+                            .ThenByDescending(x => x.Views)
+                            .Take(amountToShow)
+                            .ToList();
             }
                      
-            return topics.ToList();
+            return topics;
         }
 
         public IList<Topic> GetTodaysTopics(int amountToTake)

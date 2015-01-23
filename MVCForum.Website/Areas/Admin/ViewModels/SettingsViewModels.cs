@@ -151,7 +151,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Enter the answer to your Spam question")]
         public string SpamAnswer { get; set; }
 
-        [DisplayName("Enable social logins (Facebook etc...) - You must have correct AppId/Keys too in web.config")]
+        [DisplayName("Enable social logins (Facebook etc...)")]
         public bool EnableSocialLogins { get; set; }
 
         [DisplayName("Suspend the registration (Don't allow any new members to register)")]

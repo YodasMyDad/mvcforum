@@ -14,7 +14,7 @@
         <a href="@Model.Post.User.NiceUrl">
             <img src="@Model.Post.User.MemberImage(SiteConstants.GravatarPostSize)" alt="@Model.Post.User.UserName">
         </a>
-        @if (User.IsInRole(AppConstants.AdminRoleName))
+        @if (Model.Post.User.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
         {
             <span class="label label-default">
                 @Html.Lang("Admin")

@@ -110,15 +110,19 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.1.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    <Reference Include="System.Net.Http">
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -133,10 +137,12 @@
     <Reference Include="System.Web.Http">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.1.2\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.Http.WebHost">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.1.2\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.Mvc">
       <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.2\lib\net45\System.Web.Mvc.dll</HintPath>
@@ -162,7 +168,9 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
-    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.EnterpriseServices">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="WebActivator, Version=1.5.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -191,20 +199,48 @@
     <Compile Include="Application\Localization\Localizer.cs" />
     <Compile Include="Application\ServiceFactory.cs" />
     <Compile Include="Application\WrappedJSonResult.cs" />
-    <Compile Include="App_Start\AppStartUp.cs" />
-    <Compile Include="App_Start\Badges\AuthorMarkAsSolutionBadge.cs" />
-    <Compile Include="App_Start\Badges\GrouchBadge.cs" />
-    <Compile Include="App_Start\Badges\MemberForAYearBadge.cs" />
-    <Compile Include="App_Start\Badges\OneThousandPoints.cs" />
-    <Compile Include="App_Start\Badges\JediMaster.cs" />
-    <Compile Include="App_Start\Badges\Photogenic.cs" />
-    <Compile Include="App_Start\Badges\Padawan.cs" />
-    <Compile Include="App_Start\Badges\PosterMarkAsSolutionBadge.cs" />
-    <Compile Include="App_Start\Badges\PosterVoteUpBadge.cs" />
-    <Compile Include="App_Start\Badges\PostMentionsUmbraco.cs" />
-    <Compile Include="App_Start\Badges\UserVoteUpBadge.cs" />
-    <Compile Include="App_Start\RegisterClientValidationExtensions.cs" />
-    <Compile Include="App_Start\SiteConstants.cs" />
+    <Compile Include="App_Start\AppStartUp.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="App_Start\Badges\AuthorMarkAsSolutionBadge.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="App_Start\Badges\GrouchBadge.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="App_Start\Badges\MemberForAYearBadge.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="App_Start\Badges\OneThousandPoints.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="App_Start\Badges\JediMaster.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="App_Start\Badges\Photogenic.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="App_Start\Badges\Padawan.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="App_Start\Badges\PosterMarkAsSolutionBadge.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="App_Start\Badges\PosterVoteUpBadge.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="App_Start\Badges\PostMentionsUmbraco.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="App_Start\Badges\UserVoteUpBadge.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="App_Start\RegisterClientValidationExtensions.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="App_Start\SiteConstants.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
@@ -291,7 +327,7 @@
     <Compile Include="Areas\Admin\ViewModels\SettingsViewModels.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\LogFile.txt" />
+    <Content Include="App_Data\Hello.txt" />
     <Content Include="Content\admin\Admin.css" />
     <Content Include="Content\admin\Images\apple-touch-icon-57-precomposed.png" />
     <Content Include="Content\admin\Images\favicon.ico" />
@@ -623,6 +659,22 @@
     <Content Include="Content\Images\social-icons\xanga.png" />
     <Content Include="Content\Images\social-icons\yahoo.png" />
     <Content Include="Content\Images\social-icons\youtube.png" />
+    <Content Include="Content\jstree\jstree.js" />
+    <Content Include="Content\jstree\jstree.min.js" />
+    <Content Include="Content\jstree\themes\default\30px.png" />
+    <Content Include="Content\jstree\themes\default\32px.png" />
+    <Content Include="Content\jstree\themes\default\40px.png" />
+    <Content Include="Content\jstree\themes\default\style.css" />
+    <Content Include="Content\jstree\themes\default\style.min.css" />
+    <Content Include="Content\jstree\themes\default\throbber.gif" />
+    <Content Include="Content\jstree\themes\proton\30px.png" />
+    <Content Include="Content\jstree\themes\proton\32px.png" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-bold-webfont.svg" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-extralight-webfont.svg" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.svg" />
+    <Content Include="Content\jstree\themes\proton\style.css" />
+    <Content Include="Content\jstree\themes\proton\style.min.css" />
+    <Content Include="Content\jstree\themes\proton\throbber.gif" />
     <Content Include="Content\Prettify\prettify.css" />
     <Content Include="Content\Prettify\Themes\desert.css" />
     <Content Include="Content\Prettify\Themes\doxy.css" />
@@ -1575,6 +1627,15 @@
     <Content Include="Areas\Admin\Views\Shared\_AdminTopNav.cshtml" />
     <Content Include="Areas\Admin\Views\AdminCategory\_CategoryFields.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_AdminSideNav.cshtml" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-bold-webfont.eot" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-bold-webfont.ttf" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-bold-webfont.woff" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-extralight-webfont.eot" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-extralight-webfont.ttf" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-extralight-webfont.woff" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.eot" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.ttf" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.woff" />
     <None Include="Properties\PublishProfiles\Local Deployment.pubxml" />
     <None Include="Scripts\jquery-1.11.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.11.1.js" />

@@ -1,11 +1,45 @@
 ﻿@using System.Net.Mime
+@using MVCForum.Domain.DomainModel
 @model MVCForum.Website.Areas.Admin.ViewModels.ListCategoriesViewModel
 @{
     var mainCategories = Model.Categories.Where(x => x.ParentCategory == null).ToList();
 }
 
+<div id="container">
+    <ul>
+        @foreach (var cat in mainCategories)
+        {
+            <li class="maincategory">
+                <a href="@Url.Action("EditCategory", new { id = cat.Id })">
+                    @Html.Raw(cat.Name)
+                </a>
+                @GetSubCategories(cat)
+            </li>
+        }
 
-@if (mainCategories.Any())
+    </ul>
+</div>
+
+@helper GetSubCategories(Category cat)
+{
+    var subCategories = Model.Categories.Where(x => x.ParentCategory != null && x.ParentCategory.Id == cat.Id).ToList();
+    if (subCategories.Any())
+    {
+        <ul>
+            @foreach (var subCat in subCategories)
+            {
+                <li>
+                    <a href="@Url.Action("EditCategory", new { id = subCat.Id })">
+                        @Html.Raw(subCat.Name)
+                    </a>
+                    @GetSubCategories(subCat)
+                </li>
+            }
+        </ul>
+    }
+}
+
+@*@if (mainCategories.Any())
 {
     <table class="table table-bordered table-striped">
         <thead>
@@ -43,8 +77,8 @@
             }
         </tbody>
     </table>
-}
+}*@
 
-<p><strong>What is this?</strong></p>
+@*<p><strong>What is this?</strong></p>
 <p>If you upgraded to v1.5, then you will need to sync all the category paths for the new breadcrumb feature to work.</p>
-<p><a href="@Url.Action("SyncCategoryPaths", "AdminCategory")" class="btn">Sync All Category Paths</a></p>
+<p><a href="@Url.Action("SyncCategoryPaths", "AdminCategory")" class="btn">Sync All Category Paths</a></p>*@

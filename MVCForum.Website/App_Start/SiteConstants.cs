@@ -5,10 +5,10 @@
         /// <summary>
         /// Social Login Keys
         /// </summary>
-        public const string FacebookAppId = "sd";
-        public const string FacebookAppSecret = "f";
-        public const string GooglePlusAppId = "f";
-        public const string GooglePlusAppSecret = "f";
+        public const string FacebookAppId = "";
+        public const string FacebookAppSecret = "";
+        public const string GooglePlusAppId = "";
+        public const string GooglePlusAppSecret = "";
 
         /// <summary>
         /// File Upload Settings
@@ -48,9 +48,10 @@
         public const string UploadFolderPath = "~/content/uploads/";
 
         /// <summary>
-        /// A short cache time to help with speeding up the site
+        /// The default cache length time
         /// </summary>
-        public const int DefaultCacheLengthInSeconds = 1200;
+        public const int ShortCacheTime = 900;
+        public const int LongCacheTime = 10800;
         
         /// <summary>
         /// Which Editor the site should use

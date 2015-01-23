@@ -27,7 +27,7 @@ h4 { font-size: 19px; }
 h5 { font-size: 17px; }
 h6 { font-size: 16px; }
 
-.green-colour { color: #2abd54;}
+.green-colour { color: #2abd54; }
 
 a, a:visited { color: #2470bb; }
 a:hover, a:focus { color: #2368ac; }
@@ -70,8 +70,8 @@ a:hover, a:focus { color: #2368ac; }
 .dropdown-menu { -ms-border-radius: 0; border-radius: 0; }
 .navbar-default .navbar-brand, .navbar-default .navbar-brand:visited { color: #fff; font-weight: bold; }
 .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus { color: #efefef; }
-.navbar-toggle {padding: 7px 8px; background-color: #ddd;}
-.navbar-toggle:hover, .navbar-toggle:focus {background-color: #d3d3d3 !Important;}
+.navbar-toggle { padding: 7px 8px; background-color: #ddd; }
+.navbar-toggle:hover, .navbar-toggle:focus { background-color: #d3d3d3 !Important; }
 
 /*--- Padded Row ---*/
 .paddedrow { padding-top: 10px; padding-bottom: 3px; }
@@ -160,7 +160,7 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 .highearners-box ul li { padding: 2px 0; margin: 0; list-style: none; }
 .highearners-box ul li span.earnername img { border-radius: 50%; }
 .highearners-box ul li span.earneramount { display: block; float: right; color: #a1a0a0; }
-.highearners-box ul li a, .highearners-box ul li a:visited {color: #3b3b3b;}
+.highearners-box ul li a, .highearners-box ul li a:visited { color: #3b3b3b; }
 
 /*--- Side Box - Hot Topics ---*/
 .hottopics-box { }
@@ -172,9 +172,9 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 .createtopicbutton { margin-bottom: 20px; }
 
 /*--- Global Rows --*/
-.rowcreater { float: left; width: 60px;text-align: center;}
-.rowcreater img { -ms-border-radius: 50%; border-radius: 50%; max-width: 50px;}
-.rowcreater span.label { font-weight: normal;padding: .2em .4em .2em;margin:2px 6px 0 6px;display: block;z-index: 5;background-color: #bebebe;}
+.rowcreater { float: left; width: 60px; text-align: center; }
+.rowcreater img { -ms-border-radius: 50%; border-radius: 50%; max-width: 50px; }
+.rowcreater span.label { font-weight: normal; padding: .2em .4em .2em; margin: 2px 6px 0 6px; display: block; z-index: 5; background-color: #bebebe; }
 .rowdetails { margin-left: 70px; }
 
 /*--- Topic Rows ---*/
@@ -190,8 +190,8 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 .topicrowfooterinfo a, .topicrowfooterinfo a:visited { color: #727272; font-weight: 400; }
 .topicrowfooterinfo a:hover, .topicrowfooterinfo a:focus { color: #000; }
 .topicrow .rowdetails h3 { margin: 6px 0; padding: 0; }
-.topicrow .rowdetails h3 a, .topicrow .topicrowdetails h3 a:visited { font-size: 22px; color: #3b3b3b; font-weight: 600; margin-top: 7px; line-height: 26px; text-decoration: none; }
-.topicrow .rowdetails h3 a:hover, .topicrow .topicrowdetails h3 a:focus { color: #2c2c2c; text-decoration: underline; }
+.topicrow .rowdetails h3 a, .topicrow .topicrowdetails h3 a:visited { font-size: 22px; color: #494848; font-weight: 600; margin-top: 7px; line-height: 26px; text-decoration: none; }
+.topicrow .rowdetails h3 a:hover, .topicrow .topicrowdetails h3 a:focus { color: #373737; text-decoration: underline; }
 .topicrow .rowdetails h3 a span.glyphicon { font-size: 17px; }
 .topicrow .stats { color: #a1a0a0; margin: 0 0 0 5px; }
 .topicstarterpostbeginpostsheading { padding-bottom: 3px; }
@@ -252,6 +252,7 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 .postcontent, .postcontent p { font-size: 15px; }
 .postcontent table { width: 100% !important; margin: 10px 0; }
 .postcontent table td { border-bottom: 1px #efefef solid; padding: 4px; font-size: 12px; }
+.postcontent img { max-width: 100%; }
 .postbodytop { color: #B3B3B3; font-size: 13px; font-weight: 300; padding-bottom: 10px; }
 .postbodytop a, .postbodytop a:visited { color: #2c2c2c; font-weight: 600; }
 .post.solution-true .postbodytop a, .post.solution-true .postbodytop a:visited { color: #2abd54; }
@@ -300,28 +301,29 @@ footer h6 { margin-bottom: 12px; }
 /*--- Stats Block ---*/
 .latest-members ul { padding: 0; margin: 0; }
 .latest-members ul li { padding: 0 6px 4px 0; margin: 0; list-style: none; display: inline; }
-.latest-members ul li img { border-radius: 50%;}
+.latest-members ul li img { border-radius: 50%; }
 
 /*--- Members Online ---*/
 .active-members { }
 .active-members ul { padding: 0; margin: 0; }
 .active-members ul li { padding: 0 6px 4px 0; margin: 0; list-style: none; display: inline; }
-.active-members ul li img { border-radius: 50%;}
+.active-members ul li img { border-radius: 50%; }
 
 /*--- Login and Register Forms ---*/
 .mainlogonform { }
 .forgotpasswordtext { padding-top: 20px; }
 
 /*--- OAuth Buttons ---*/
-.oauthbuttons p { margin-bottom: 22px;}
-.oauthbuttons .btn-mvc .fa { font-size: 24px;margin-right: 15px;}
-.loginortext { font-size: 32px;text-align: center;padding: 11px 0;}
+.oauthbuttons p { margin-bottom: 22px; }
+.oauthbuttons .btn-mvc .fa { font-size: 24px; margin-right: 15px; }
+.loginortext { font-size: 32px; text-align: center; padding: 11px 0; }
 
 /*--- Member Profile Public ---*/
 .memberprofilepublic { }
 .memberprofilepublic h3 { padding: 0 0 15px 0; margin: 0 0 15px 0; border-bottom: 1px #f2f2f2 solid; }
 .membersection { padding-bottom: 12px; }
 .memberprofilepublic .memberdiscussions h3 { border: none; }
+.memberavatardetails img { -ms-border-radius: 50%; border-radius: 50%; }
 
 /*--- Edit Member ---*/
 .editmemberform { }
@@ -476,8 +478,8 @@ div.mce-path { padding: 2px 10px; margin: 0; }
 }
 
 /* Pushy Custom */
-.pushy ul { margin: 0;padding: 0;}
-.pushy ul li { list-style: none;}
+.pushy ul { margin: 0; padding: 0; }
+.pushy ul li { list-style: none; }
 
 
 
@@ -502,14 +504,14 @@ div.mce-path { padding: 2px 10px; margin: 0; }
 
 @media (max-width: 767px) {
     /*--- Sub Navigation ---*/
-    .content-strip { height: 8px;}
-    .sub-nav-container { display: none;}
+    .content-strip { height: 8px; }
+    .sub-nav-container { display: none; }
 
     /*--- Topic Rows ---*/
-    .rowdetails { margin: 0;}
+    .rowdetails { margin: 0; }
 
     /*--- Main Side --*/
-    .main-side-box { padding:15px 0 0 0;}
+    .main-side-box { padding: 15px 0 0 0; }
 }
 
 @media (max-width: 600px) {
@@ -525,8 +527,8 @@ div.mce-path { padding: 2px 10px; margin: 0; }
     /*--- All MVC Buttons ---*/
     body .btn-mvc-large { padding-left: 0; padding-right: 0; width: 100%; display: block; }
 
-        /*--- Side Boxes ---*/
-    .side-box { float: none; width: auto;padding: 0 0 25px 0;}
+    /*--- Side Boxes ---*/
+    .side-box { float: none; width: auto; padding: 0 0 25px 0; }
 }
 
 @media (max-width: 480px) {

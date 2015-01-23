@@ -52,7 +52,7 @@ namespace MVCForum.Services
         {
             if (from == null)
             {
-                from = DateTime.Now.AddDays(-30);
+                from = DateTime.Now.AddDays(-14);
             }
 
             if (to == null)

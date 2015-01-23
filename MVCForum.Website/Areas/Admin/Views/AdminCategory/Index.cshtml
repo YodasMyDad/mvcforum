@@ -4,43 +4,36 @@
 
 @section AdminHeader
 {
-    <script type="text/javascript">
-        // Can also use beforeClose ?
-        $('.catfancybox').fancybox({
-            type: 'iframe',
-            padding: 15,
-            afterClose: function () {
-                parent.location.reload(true);
-            }
+    <link href="@Url.Content("~/Content/jstree/themes/proton/style.css")" rel="stylesheet" />
+    <script src="@Url.Content("~/Content/jstree/jstree.min.js")"></script>
+    <script>
+        $(function () {
+            $('#container').jstree({
+                'core': {
+                    'themes': {
+                        'name': 'proton',
+                        'responsive': true
+                    }
+                }
+            }).bind("select_node.jstree", function (e, data) {
+                var href = data.node.a_attr.href;
+                document.location.href = href;
+            });
         });
     </script>
+
 }
 
-
-<div class="tabbable">
-    <ul class="nav nav-tabs" id="myTab">
-        <li class="active"><a data-toggle="tab" href="#maincats">Categories</a></li>
-        <li><a data-toggle="tab" href="#createnew">Create New</a></li>
-    </ul>
-
-
-    <div class="tab-content">
-        <div class="tab-pane active" id="maincats">
-            <div class="row">
-                <div class="col-md-12">
-                    @Html.Action("GetMainCategories")
-                </div>
-            </div>
-        </div>
-        <div class="tab-pane" id="createnew">
-            <div class="row">
-                <div class="col-md-12">
-                    @Html.Action("CreateCategory")
-                </div>
-            </div>
-        </div>
+<div class="topadminsubnav">
+    <div class="btn-group" role="group">
+        <a href="@Url.Action("Index")" role="button" class="btn btn-primary">Manage Categories</a>
+        <a href="@Url.Action("CreateCategory")" role="button" class="btn btn-primary">Create New</a>
     </div>
 </div>
+
+
+@Html.Action("GetMainCategories")
+
 
 
 

@@ -16,7 +16,7 @@
         </div>
 
         <div class="rowdetails">
-            <p class="category" style="border-color: @(Model.Topic.Category.Colour)">@Html.LanguageString("Topic.Category"): <a href="@Model.Topic.Category.NiceUrl">@Model.Topic.Category.Name</a></p>
+            <p class="category" style="border-color: @(string.IsNullOrEmpty(Model.Topic.Category.Colour) ? "#ced1d1" : Model.Topic.Category.Colour)">@Html.LanguageString("Topic.Category"): <a href="@Model.Topic.Category.NiceUrl">@Model.Topic.Category.Name</a></p>
             <h3>
                 <a title="@postToolTip" href="@Html.Raw(Model.Topic.NiceUrl)">
                     @if (Model.Topic.IsSticky)

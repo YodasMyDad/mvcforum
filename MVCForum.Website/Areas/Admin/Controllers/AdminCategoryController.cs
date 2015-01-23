@@ -57,13 +57,12 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             }
         }
 
-        [ChildActionOnly]
-        public PartialViewResult CreateCategory()
+        public ActionResult CreateCategory()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var categoryViewModel = new CategoryViewModel { AllCategories = _categoryService.GetAll().ToList() };
-                return PartialView(categoryViewModel);
+                return View(categoryViewModel);
             }
         }
 

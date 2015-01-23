@@ -5,21 +5,27 @@
     Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
     ViewBag.Title = string.Concat(Html.LanguageString("PM.Title"), Model.Message.Subject);
 }
-<div class="privatemessages">
 
-    <div class="btn-group top-pm-nav">
-        @Html.ActionLink(Html.LanguageString("PM.BackToInbox"), "Index", new { }, new { @class = "btn btn-mvc btn-mvc-green" })
-        @Html.ActionLink(Html.LanguageString("PM.Reply"), "Create", "PrivateMessage", new { id = Model.Message.Id }, new { @class = "btn btn-mvc btn-mvc-green" })
+<div class="row">
+
+    <div class="col-md-8 col-md-offset-2">
+        <div class="privatemessages">
+
+            <div class="btn-group top-pm-nav">
+                @Html.ActionLink(Html.LanguageString("PM.BackToInbox"), "Index", new { }, new { @class = "btn btn-mvc btn-mvc-green" })
+                @Html.ActionLink(Html.LanguageString("PM.Reply"), "Create", "PrivateMessage", new { id = Model.Message.Id }, new { @class = "btn btn-mvc btn-mvc-green" })
+            </div>
+
+            <h2>@Model.Message.Subject</h2>
+
+            <p class="privatemessagefrom"><strong>@Html.LanguageString("PM.From")</strong> <a href="@Model.Message.UserFrom.NiceUrl">@Model.Message.UserFrom.UserName</a></p>
+
+            <p class="privatemessagesent"><strong>@Html.LanguageString("PM.Sent")</strong> @Model.Message.DateSent.ToShortDateString()</p>
+
+            <p class="privatemessagecontent">
+                @Html.Raw(AppHelpers.ConvertPostContent(Model.Message.Message))
+            </p>
+
+        </div>
     </div>
-
-    <h2>@Model.Message.Subject</h2>
-
-    <p class="privatemessagefrom"><strong>@Html.LanguageString("PM.From")</strong> <a href="@Model.Message.UserFrom.NiceUrl">@Model.Message.UserFrom.UserName</a></p>
-
-    <p class="privatemessagesent"><strong>@Html.LanguageString("PM.Sent")</strong> @Model.Message.DateSent.ToShortDateString()</p>
-
-    <p class="privatemessagecontent">
-        @Html.Raw(AppHelpers.ConvertPostContent(Model.Message.Message))
-    </p>
-
 </div>

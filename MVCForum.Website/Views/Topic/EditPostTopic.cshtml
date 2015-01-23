@@ -21,14 +21,19 @@
 }
 
 
-<div class="editpostholder">
+<div class="row">
 
-    @using (Html.BeginForm())
-    {
-        @Html.ValidationSummary(false)
-        @Html.AntiForgeryToken()
-        @Html.Partial("_CreateEdit_TopicPost", Model)
-        @Html.HiddenFor(x => x.Id)
-    }
+    <div class="col-md-8 col-md-offset-2">
+        <div class="editpostholder">
 
+            @using (Html.BeginForm())
+            {
+                @Html.ValidationSummary(false)
+                @Html.AntiForgeryToken()
+                @Html.Partial("_CreateEdit_TopicPost", Model)
+                @Html.HiddenFor(x => x.Id)
+            }
+
+        </div>
+    </div>
 </div>

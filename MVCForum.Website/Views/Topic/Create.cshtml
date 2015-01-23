@@ -7,7 +7,7 @@
 @section Header
 {
     @(
-    Bundle.JavaScript()
+ Bundle.JavaScript()
             .Add("~/Scripts/jquery.validate.min.js")
             .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
             .Add("~/Scripts/jquery.tagsinput.min.js")
@@ -20,13 +20,18 @@
     </script>
 }
 
-<div class="createtopicholder">
+<div class="row">
 
-    @using (Html.BeginForm("Create", "Topic", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-        @Html.ValidationSummary(false)
-        @Html.AntiForgeryToken()
-        @Html.Partial("_CreateEdit_TopicPost", Model)
-    }
+    <div class="col-md-8 col-md-offset-2">
+        <div class="createtopicholder">
 
+            @using (Html.BeginForm("Create", "Topic", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.ValidationSummary(false)
+                @Html.AntiForgeryToken()
+                @Html.Partial("_CreateEdit_TopicPost", Model)
+            }
+
+        </div>
+    </div>
 </div>

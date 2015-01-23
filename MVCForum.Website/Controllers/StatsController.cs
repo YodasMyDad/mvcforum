@@ -19,7 +19,7 @@ namespace MVCForum.Website.Controllers
         }
 
         [ChildActionOnly]
-        [OutputCache(Duration = SiteConstants.DefaultCacheLengthInSeconds)]
+        [OutputCache(Duration = SiteConstants.ShortCacheTime)]
         public PartialViewResult GetMainStats()
         {
             var viewModel = new MainStatsViewModel
