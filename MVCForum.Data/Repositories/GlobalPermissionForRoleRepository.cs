@@ -33,7 +33,7 @@ namespace MVCForum.Data.Repositories
 
         public GlobalPermissionForRole Get(Guid permId, Guid roleId)
         {
-            return _context.GlobalPermissionForRole.Include(x => x.MembershipRole).FirstOrDefault(x => x.Id == permId && x.MembershipRole.Id == roleId);
+            return _context.GlobalPermissionForRole.Include(x => x.MembershipRole).FirstOrDefault(x => x.Permission.Id == permId && x.MembershipRole.Id == roleId);
         }
 
         public GlobalPermissionForRole Get(Guid permId)

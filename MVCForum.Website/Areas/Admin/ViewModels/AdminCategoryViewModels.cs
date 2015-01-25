@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using DataAnnotationsExtensions;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Website.Application;
 
 namespace MVCForum.Website.Areas.Admin.ViewModels
 {

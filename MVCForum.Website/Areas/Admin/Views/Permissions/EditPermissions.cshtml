@@ -2,70 +2,98 @@
 @model MVCForum.Website.Areas.Admin.ViewModels.EditPermissionsViewModel
 
 @{
-    Layout = "~/Areas/Admin/Views/shared/_AdminFullWidthLayout.cshtml";
     ViewBag.Title = "Edit Permissions";
     var allPermission = Model.MembershipRole.GetCategoryPermissionTable();
 }
 
-<div class="container fluidheader">
-    <div class="row">
-        <div class="col-md-1">
-            <a href="@Url.Action("Index")" class="btn btn-large btn-success">Back</a>
-        </div>
-            <div class="col-md-10">
-                <h2>Edit @Model.MembershipRole.RoleName Permissions <img src="@Url.Content("~/Content/admin/Images/ajax-loader.gif")" alt="Please Wait" style="display: none;" class="editpermissionsspinner" /> <span class="label label-success ajaxsuccessshow" style="display: none;">Success</span></h2>
-                <p>All permissions relate to all posts, topics i.e. If you enable edit and delete posts, any member in this role will be able edit and delete posts by any other member</p>
-            </div>
-    </div>
-</div>
 
-<div class="container">
-    
-    <div class="row">
-        @Html.AntiForgeryToken()
-        <table class="table table-bordered table-striped permissiontable">
-    
-            <thead>
-                <tr>
-                <th></th>
-                @foreach(var permissionType in Model.Permissions)
+<h2>Edit @Model.MembershipRole.RoleName Permissions <img src="@Url.Content("~/Content/admin/Images/ajax-loader.gif")" alt="Please Wait" style="display: none;" class="editpermissionsspinner" /></h2>
+<p>All permissions relate to all posts, topics i.e. If you enable edit and delete posts, any member in this role will be able edit and delete posts by any other member</p>
+<span class="label label-success ajaxsuccessshow" style="display: none;">Success</span>
+<h3>Category Permissions</h3>
+
+<div class="tablescroll">
+
+    <table class="table table-bordered table-striped permissiontable">
+
+        <thead>
+            <tr>
+                <th>Category</th>
+                @foreach (var permissionType in Model.Permissions.Where(x => !x.IsGlobal))
                 {
                     <th>@permissionType.Name</th>
                 }
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var cat in Model.Categories)
+            {
+
+                <tr>
+                    <td style="width:160px;">
+                        @cat.Name
+                    </td>
+                    @foreach (var permission in Model.Permissions.Where(x => !x.IsGlobal))
+                    {
+                        var isChecked = "";
+                        var isDisabled = DisableCheckBox(permission.Name);
+                        <td>
+
+                            @if (allPermission.ContainsKey(cat.Id) && allPermission[cat.Id].ContainsKey(permission))
+                            {
+                                // bingo we have this permission
+                                isChecked = allPermission[cat.Id][permission] ? " checked" : "";
+                            }
+                            <span class="permissioncheckbox">
+                                <input data-permisssion="@permission.Id" data-category="@cat.Id" data-role="@Model.MembershipRole.Id" type="checkbox" id="@permission.Id-@cat.Id" @isChecked @isDisabled />
+                            </span>
+                        </td>
+                    }
                 </tr>
-            </thead>
-    
-            <tbody>
-                @foreach(var cat in Model.Categories)
-                {
-            
-                    <tr>
-                        <td>@cat.Name</td>
-                        @foreach (var permission in Model.Permissions)
-                        {
-                            var isChecked = "";
-                            var isDisabled = DisableCheckBox(permission.Name);                             
-                            <td>
-                        
-                                @if (allPermission.ContainsKey(cat.Id) && allPermission[cat.Id].ContainsKey(permission))
-                                {
-                                    // bingo we have this permission
-                                    isChecked = allPermission[cat.Id][permission] ? " checked" : "";                                    
-                                }
-                                <span class="permissioncheckbox">
-                                    <input data-permisssion="@permission.Id" data-category="@cat.Id" data-role="@Model.MembershipRole.Id" type="checkbox" id="@permission.Id-@cat.Id" @isChecked @isDisabled />
-                                </span>
-                            </td>
-                        }
-                    </tr>
-                }
-            </tbody>
+            }
+        </tbody>
 
-        </table>
-
-    </div>
+    </table>
 
 </div>
+
+<h3>Global Permissions</h3>
+
+<table class="table table-bordered table-striped globalpermissiontable">
+    <thead>
+        <tr>
+            <th>Permission</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var permission in Model.Permissions.Where(x => x.IsGlobal))
+        {
+            var isChecked = "";
+            var isDisabled = DisableCheckBox(permission.Name);
+            <tr>
+                <td style="width:160px;">
+                    @permission.Name
+                </td>
+                <td>
+                    @if (Model.CurrentGlobalPermissions.ContainsKey(permission.Name))
+                    {
+                        // bingo we have this permission
+                        isChecked = Model.CurrentGlobalPermissions[permission.Name].IsTicked ? " checked" : "";
+                    }
+                    <span class="permissioncheckbox">
+                        <input data-permisssion="@permission.Id" data-role="@Model.MembershipRole.Id" data-category="@(Guid.Empty)" type="checkbox" id="@permission.Id" @isChecked @isDisabled />
+                    </span>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+
+
 
 @helper DisableCheckBox(string permissionName)
 {

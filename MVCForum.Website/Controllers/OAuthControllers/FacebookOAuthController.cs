@@ -2,9 +2,11 @@
 using System.Web.Mvc;
 using System.Web.Security;
 using MVCForum.Domain.Constants;
+using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Utilities;
+using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
 using MVCForum.Website.ViewModels.OAuth;

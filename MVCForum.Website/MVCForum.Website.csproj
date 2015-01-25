@@ -27,6 +27,8 @@
     <IISExpressUseClassicPipelineMode />
     <MvcProjectUpgradeChecked>true</MvcProjectUpgradeChecked>
     <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -134,10 +136,9 @@
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.Helpers.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Web.Http">
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.1.2\lib\net45\System.Web.Http.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.2\lib\net45\System.Web.Http.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Http.WebHost">
       <SpecificVersion>False</SpecificVersion>
@@ -199,48 +200,9 @@
     <Compile Include="Application\Localization\Localizer.cs" />
     <Compile Include="Application\ServiceFactory.cs" />
     <Compile Include="Application\WrappedJSonResult.cs" />
-    <Compile Include="App_Start\AppStartUp.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="App_Start\Badges\AuthorMarkAsSolutionBadge.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="App_Start\Badges\GrouchBadge.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="App_Start\Badges\MemberForAYearBadge.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="App_Start\Badges\OneThousandPoints.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="App_Start\Badges\JediMaster.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="App_Start\Badges\Photogenic.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="App_Start\Badges\Padawan.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="App_Start\Badges\PosterMarkAsSolutionBadge.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="App_Start\Badges\PosterVoteUpBadge.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="App_Start\Badges\PostMentionsUmbraco.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="App_Start\Badges\UserVoteUpBadge.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="App_Start\RegisterClientValidationExtensions.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-    <Compile Include="App_Start\SiteConstants.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
+    <Compile Include="App_Start\AppStartUp.cs" />
+    <Compile Include="App_Start\RegisterClientValidationExtensions.cs" />
+    <Compile Include="Application\SiteConstants.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
@@ -1636,6 +1598,8 @@
     <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.eot" />
     <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.ttf" />
     <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.woff" />
+    <Content Include="mvcforum.config" />
+    <Content Include="Areas\Admin\Views\AdminCategory\_CategoryNavButtons.cshtml" />
     <None Include="Properties\PublishProfiles\Local Deployment.pubxml" />
     <None Include="Scripts\jquery-1.11.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.11.1.js" />
@@ -1996,12 +1960,58 @@
     <Content Include="Views\Shared\_PostSearch.cshtml" />
     <Content Include="Views\Shared\_CreateEdit_TopicPost.cshtml" />
     <Content Include="Views\Shared\_CommonSideNav.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\forumeditor.cshtml" />
+    <Content Include="Views\Shared\customeditors\tinymceeditor.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.AuthorMarkAsSolution\Badge.AuthorMarkAsSolution.csproj">
+      <Project>{c90e299c-58d3-4afa-90b8-cb39aa4a1e99}</Project>
+      <Name>Badge.AuthorMarkAsSolution</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.Grouch\Badge.Grouch.csproj">
+      <Project>{83f9f278-d2be-479a-a398-b36779be3348}</Project>
+      <Name>Badge.Grouch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.JediMaster\Badge.JediMaster.csproj">
+      <Project>{7dff8353-e247-4840-a9a5-9e81114276b5}</Project>
+      <Name>Badge.JediMaster</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.MemberForAYear\Badge.MemberForAYear.csproj">
+      <Project>{168911c2-86d0-4e12-a675-7a035bab9dd0}</Project>
+      <Name>Badge.MemberForAYear</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.Padawan\Badge.Padawan.csproj">
+      <Project>{a891ff9c-83ae-40db-9fec-552c209f953b}</Project>
+      <Name>Badge.Padawan</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.Photogenic\Badge.Photogenic.csproj">
+      <Project>{23f1a8bc-856a-4f67-ae6b-1a79230c5c3c}</Project>
+      <Name>Badge.Photogenic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.PosterMarkAsSolution\Badge.PosterMarkAsSolution.csproj">
+      <Project>{9ca6fd3e-67b3-456b-b6f5-38c04e18259f}</Project>
+      <Name>Badge.PosterMarkAsSolution</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.PosterVoteUp\Badge.PosterVoteUp.csproj">
+      <Project>{327a7feb-aefe-47d9-aa0f-c08835e26a3a}</Project>
+      <Name>Badge.PosterVoteUp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.PostMentionsUmbraco\Badge.PostMentionsUmbraco.csproj">
+      <Project>{330a777b-fe88-4cf5-9583-6693547a8f1c}</Project>
+      <Name>Badge.PostMentionsUmbraco</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.ThousandPoints\Badge.ThousandPoints.csproj">
+      <Project>{ba3ac605-745e-4de4-a1bd-08f6d63757db}</Project>
+      <Name>Badge.ThousandPoints</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.UserVoteUp\Badge.UserVoteUp.csproj">
+      <Project>{abe6051b-56d8-4867-84df-43b6ad04a562}</Project>
+      <Name>Badge.UserVoteUp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MVCForum.Core\MVCForum.Domain.csproj">
       <Project>{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}</Project>
       <Name>MVCForum.Domain</Name>
@@ -2063,9 +2073,6 @@
     <Content Include="Areas\Admin\Views\Shared\_AdminBlankLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\AdminCategory\PopupConfirm.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Areas\Admin\Views\AdminCategory\DeleteCategoryConfirmation.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -2123,7 +2130,7 @@
     <Content Include="Areas\Admin\Views\Log\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Shared\EditorTemplates\bbeditor.cshtml" />
+    <Content Include="Views\Shared\customeditors\bbeditor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Dashboard\LatestUsers.cshtml" />
@@ -2153,8 +2160,7 @@
     <Content Include="Themes\Metro\Content\Fonts\mvcforumsb.eot" />
     <Content Include="Themes\Metro\Content\Fonts\mvcforumsb.ttf" />
     <Content Include="Themes\Metro\Content\Fonts\mvcforumsb.woff" />
-    <Content Include="Views\Shared\EditorTemplates\markdowneditor.cshtml" />
-    <Content Include="Views\Shared\EditorTemplates\tinymceeditor.cshtml" />
+    <Content Include="Views\Shared\customeditors\markdowneditor.cshtml" />
     <Content Include="Views\Install\Index.cshtml" />
     <Content Include="Views\Install\CreateDb.cshtml" />
     <Content Include="Views\Install\Complete.cshtml" />
@@ -2193,4 +2199,11 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
 </Project>

@@ -13,5 +13,6 @@ namespace MVCForum.Domain.Interfaces.Services
         Dictionary<Permission, GlobalPermissionForRole> GetAll();
         GlobalPermissionForRole Get(Guid permId, Guid roleId);
         GlobalPermissionForRole Get(Guid permId);
+        void UpdateOrCreateNew(GlobalPermissionForRole globalPermissionForRole);
     }
 }

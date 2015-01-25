@@ -58,5 +58,21 @@ namespace MVCForum.Services
         {
             return _globalPermissionForRoleRepository.Get(permId);
         }
+
+        public void UpdateOrCreateNew(GlobalPermissionForRole globalPermissionForRole)
+        {
+            // Firstly see if this exists already
+            var permission = CheckExists(globalPermissionForRole);
+
+            // if it exists then just update it
+            if (permission != null)
+            {
+                permission.IsTicked = globalPermissionForRole.IsTicked;
+            }
+            else
+            {
+                Add(globalPermissionForRole);
+            }
+        }
     }
 }

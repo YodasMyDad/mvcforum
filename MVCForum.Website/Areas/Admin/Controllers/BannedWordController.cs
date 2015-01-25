@@ -4,6 +4,7 @@ using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
+using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 
 namespace MVCForum.Website.Areas.Admin.Controllers

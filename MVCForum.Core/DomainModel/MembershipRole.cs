@@ -18,6 +18,7 @@ namespace MVCForum.Domain.DomainModel
 
         // Category Permissions
         public virtual IList<CategoryPermissionForRole> CategoryPermissionForRole { get; set; }
+
         // Global Permissions
         public virtual IList<GlobalPermissionForRole> GlobalPermissionForRole { get; set; }
 
@@ -47,5 +48,6 @@ namespace MVCForum.Domain.DomainModel
             }
             return permissionRows;
         }
+
     }
 }

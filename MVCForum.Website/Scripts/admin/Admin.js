@@ -83,7 +83,6 @@
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
                 ResetTableAfterAjaxCall();
-                ShowSuccessNotification();
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 ShowUserMessage("Error: " + xhr.status + " " + thrownError);

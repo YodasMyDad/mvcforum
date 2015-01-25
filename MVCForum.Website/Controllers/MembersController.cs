@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Utilities;
@@ -201,7 +202,7 @@ namespace MVCForum.Website.Controllers
                 var span = rightNow.Subtract(usersDate);
                 var totalMins = span.TotalMinutes;
 
-                if (totalMins > SiteConstants.TimeSpanInMinutesToDoCheck)
+                if (totalMins > AppConstants.TimeSpanInMinutesToDoCheck)
                 {
                     using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                     {

@@ -1,0 +1,31 @@
+﻿@if (!Context.IsMobileDevice())
+{
+    <link href="@Url.Content("~/scripts/markdown/markdown.css")" rel="stylesheet" />
+    <script src="@Url.Content("~/scripts/markdown/Markdown.Converter.js")"></script>
+    <script src="@Url.Content("~/scripts/markdown/Markdown.Sanitizer.js")"></script>
+    <script src="@Url.Content("~/scripts/markdown/Markdown.Editor.js")"></script>
+    <script type="text/javascript">
+    $(function () {
+        //Bit of a hack but won't work without
+        var wdinput = $('.wmd-input');
+        wdinput.attr('id', "wmd-input");
+        
+        var converter = new Markdown.Converter();
+        //var converter = Markdown.getSanitizingConverter();
+        var editor = new Markdown.Editor(converter);
+        editor.run();
+    });
+    </script>
+}
+
+<div class="markdownholder">
+    
+    <div class="wmd-panel">
+        <div id="wmd-button-bar"></div>
+        @*<textarea class="wmd-input" id="wmd-input"></textarea>*@
+        @Html.TextArea(string.Empty, new {@class = "wmd-input"})
+    </div>
+    <p><a target="_blank" href="http://stackoverflow.com/editing-help">@Html.LanguageString("Editor.NeedHelp")</a></p>
+    <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+         
+</div>

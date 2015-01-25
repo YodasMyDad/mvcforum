@@ -14,7 +14,9 @@
     )  
 }
 
-@using (Html.BeginForm("EditCategory", "AdminCategory", FormMethod.Post, new { @class = "form-horizontal" }))
+@Html.Partial("_CategoryNavButtons")
+
+@using (Html.BeginForm("EditCategory", "AdminCategory", FormMethod.Post))
 {
         @Html.ValidationSummary(false)
     <fieldset>
@@ -25,7 +27,8 @@
         @Html.Partial("_CategoryFields", Model)
 
         <div class="submit-holder">
-            <input type="submit" class="btn btn-large btn-success" value="Update" />
+            <input type="submit" class="btn btn-mvc btn-mvc-green btn-mvc-large" value="Update" /> 
+            <a href="@Url.Action("DeleteCategoryConfirmation", new { id = Model.Id })" class="btn btn-mvc btn-mvc-large" role="button">Delete</a>
         </div>
     </fieldset>
 }

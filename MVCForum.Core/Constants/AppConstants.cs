@@ -61,7 +61,12 @@
         public const string PagingUrlFormat = "{0}?p={1}";
 
         // How long 
-        public const int TimeSpanInMinutesToShowMembers = 5;
+        public const int TimeSpanInMinutesToShowMembers = 10;
+
+        /// <summary>
+        /// Last Activity Time Check. 
+        /// </summary>
+        public const int TimeSpanInMinutesToDoCheck = 5;
 
         // Installer Stuff
         public const string InstallerName = "YesImAnInstallerSpankMe";
@@ -90,5 +95,11 @@
         //Mobile Check Name
         public const string IsMobileDevice = "IsMobileDevice";
 
+        /// <summary>
+        /// The default cache length time
+        /// </summary>
+        public const int ShortCacheTime = 900;
+
+        public const int LongCacheTime = 10800;
     }
 }

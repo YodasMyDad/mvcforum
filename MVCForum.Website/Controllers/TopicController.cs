@@ -970,7 +970,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = SiteConstants.LongCacheTime)]
+        [OutputCache(Duration = AppConstants.LongCacheTime)]
         [ChildActionOnly]
         public ActionResult HotTopics(DateTime? from, DateTime? to, int? amountToShow)
         {

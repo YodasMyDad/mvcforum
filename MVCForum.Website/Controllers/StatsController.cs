@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Website.ViewModels;
@@ -19,7 +20,7 @@ namespace MVCForum.Website.Controllers
         }
 
         [ChildActionOnly]
-        [OutputCache(Duration = SiteConstants.ShortCacheTime)]
+        [OutputCache(Duration = AppConstants.ShortCacheTime)]
         public PartialViewResult GetMainStats()
         {
             var viewModel = new MainStatsViewModel

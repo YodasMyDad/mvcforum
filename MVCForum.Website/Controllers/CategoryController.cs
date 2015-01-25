@@ -60,7 +60,7 @@ namespace MVCForum.Website.Controllers
         }
 
         [ChildActionOnly]
-        [OutputCache(Duration = SiteConstants.LongCacheTime)]
+        [OutputCache(Duration = AppConstants.LongCacheTime)]
         public PartialViewResult ListMainCategories()
         {
             var catViewModel = new CategoryListViewModel
@@ -81,7 +81,7 @@ namespace MVCForum.Website.Controllers
         }
 
         [ChildActionOnly]
-        [OutputCache(Duration = SiteConstants.LongCacheTime)]
+        [OutputCache(Duration = AppConstants.LongCacheTime)]
         public PartialViewResult ListCategorySideMenu()
         {
             var catViewModel = new CategoryListViewModel
@@ -202,7 +202,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = SiteConstants.ShortCacheTime)]
+        [OutputCache(Duration = AppConstants.ShortCacheTime)]
         public ActionResult CategoryRss(string slug)
         {
             using (UnitOfWorkManager.NewUnitOfWork())

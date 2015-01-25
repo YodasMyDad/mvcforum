@@ -17,7 +17,8 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
     {
         public MembershipRole MembershipRole { get; set; }
         public List<Permission> Permissions { get; set; }
-        public List<Category> Categories { get; set; } 
+        public List<Category> Categories { get; set; }
+        public PermissionSet CurrentGlobalPermissions { get; set; }
     }
 
     public class AddTypeViewModel

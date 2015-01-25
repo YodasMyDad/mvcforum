@@ -70,6 +70,10 @@ h6 { font-size: 16px; }
 .navbar-toggle {padding: 7px 8px; background-color: #ddd;}
 .navbar-toggle:hover, .navbar-toggle:focus {background-color: #d3d3d3 !Important;}
 
+/*--- Table scrol ---*/
+.tablescroll {overflow-x: scroll;overflow-y: auto;margin: 0 0 20px 0;}
+.tablescroll td { min-width: 65px;}
+
 /*--- Padded Row ---*/
 .paddedrow { padding-top: 10px; padding-bottom: 3px; }
 
