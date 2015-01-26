@@ -1600,6 +1600,8 @@
     <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.woff" />
     <Content Include="mvcforum.config" />
     <Content Include="Areas\Admin\Views\AdminCategory\_CategoryNavButtons.cshtml" />
+    <Content Include="Areas\Admin\Views\Permissions\PermissionTypes.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminLanguage\Create.cshtml" />
     <None Include="Properties\PublishProfiles\Local Deployment.pubxml" />
     <None Include="Scripts\jquery-1.11.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.11.1.js" />

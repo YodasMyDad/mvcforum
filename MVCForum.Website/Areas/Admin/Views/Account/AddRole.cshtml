@@ -15,22 +15,20 @@
 }
 
 
-@using (Html.BeginForm("AddRole", "Account", FormMethod.Post, new { @class = "form-horizontal" }))
+@using (Html.BeginForm("AddRole", "Account", FormMethod.Post))
 {
     @Html.ValidationSummary(false)
     <fieldset>
         <legend>Add New Role</legend>
 
-        <div class="editor-label">
+        <div class="form-group">
             @Html.LabelFor(model => model.RoleName)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.RoleName)
+            @Html.TextBoxFor(model => model.RoleName, new{@class="form-control"})
             @Html.ValidationMessageFor(model => model.RoleName)
         </div>
 
     <div class="submit-holder">
-        <input type="submit" class="btn btn-large btn-success" value="Create" />
+        <input type="submit" class="btn-mvc btn-mvc-green" value="Create" />
     </div>
     </fieldset>
 }

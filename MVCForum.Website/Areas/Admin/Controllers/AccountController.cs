@@ -130,7 +130,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     Id = MembershipService.GetUser(User.Identity.Name).Id,
                     PageIndex = pageIndex,
                     TotalCount = allUsers.TotalCount,
-                    Search = search
+                    Search = search,
+                    TotalPages = allUsers.TotalPages
                 };
 
                 return View("List", memberListModel);

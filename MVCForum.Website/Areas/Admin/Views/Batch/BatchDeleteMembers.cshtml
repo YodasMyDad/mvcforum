@@ -14,46 +14,30 @@
     <br />
     <strong>Amount Of Posts = 0</strong>
 </p>
-<p><span class="label label-important">Warning</span> As soon as you click the button members will be deleted. This action cannot be undone.</p>
-<p>&nbsp;</p>
-<div class="clearer"></div>
+<p>As soon as you click the button members will be deleted. This action cannot be undone.</p>
 
-<div class="row">
 
-    @using (Html.BeginForm("BatchDeleteMembers", "Batch", FormMethod.Post, new { @class = "form-horizontal" }))
-    {
-        @Html.ValidationSummary(false)
-        @Html.AntiForgeryToken()
+@using (Html.BeginForm("BatchDeleteMembers", "Batch", FormMethod.Post))
+{
+    @Html.ValidationSummary(false)
+    @Html.AntiForgeryToken()
 
-        <div class="col-md-12">
-            <div class="editor-label">
-                @Html.LabelFor(m => m.AmoutOfDaysSinceRegistered)
-            </div>
-            <div class="editor-field">
-                @Html.TextBoxFor(m => m.AmoutOfDaysSinceRegistered)
-                @Html.ValidationMessageFor(m => m.AmoutOfDaysSinceRegistered)
-            </div>
-        </div>
-        <div class="col-md-12">
-            <div class="editor-label">
-                @Html.LabelFor(m => m.AmoutOfPosts)
-            </div>
-            <div class="editor-field">
-                @Html.TextBoxFor(m => m.AmoutOfPosts)
-                @Html.ValidationMessageFor(m => m.AmoutOfPosts)
-            </div>
-        </div>
-        
-        <div class="clearer"></div>        
+    <div class="form-group">
+        @Html.LabelFor(m => m.AmoutOfDaysSinceRegistered)
+        @Html.TextBoxFor(m => m.AmoutOfDaysSinceRegistered, new { @class = "form-control", type="number" })
+        @Html.ValidationMessageFor(m => m.AmoutOfDaysSinceRegistered)
+    </div>
 
-        <div class="col-md-10">
-            <div class="submit-holder">
-                <p>&nbsp;</p>
-                <input type="submit" class="btn btn-large btn-success" value="Delete Members" />
-            </div>
-        </div>
-        
-    }
+    <div class="form-group">
+        @Html.LabelFor(m => m.AmoutOfPosts)
+        @Html.TextBoxFor(m => m.AmoutOfPosts, new { @class = "form-control", type = "number" })
+        @Html.ValidationMessageFor(m => m.AmoutOfPosts)
+    </div>
 
-</div>
+    <div class="submit-holder">
+        <input type="submit" class="btn-mvc btn-mvc-green" value="Delete Members" />
+    </div>
+
+
+}
 

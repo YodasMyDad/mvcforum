@@ -6,41 +6,36 @@
 
 @section AdminHeader
 {
-        @(
-        Bundle.JavaScript()
+    @(
+ Bundle.JavaScript()
             .Add("~/Scripts/jquery.validate.min.js")
-            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")            
+            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
             .MvcRender("~/scripts/cache/validate-combined_#.js")
-    )  
+    )
 }
+@Html.Partial("_LanguageOptions")
 
-@using (Html.BeginForm("AddResourceKey", "AdminLanguage", FormMethod.Post, new { @class = "form-horizontal" }))
+@using (Html.BeginForm("AddResourceKey", "AdminLanguage", FormMethod.Post))
 {
     @Html.ValidationSummary(false)
     @Html.AntiForgeryToken()
     <fieldset>
         <legend>Create New Resource</legend>
 
-        <div class="editor-label">
+        <div class="form-group">
             @Html.LabelFor(model => model.Name)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Name)
+            @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.Name)
         </div>
 
-        <div class="editor-label">
+        <div class="form-group">
             @Html.LabelFor(model => model.Notes)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Notes)
+            @Html.TextAreaFor(model => model.Notes, new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.Notes)
-        </div>               
-        
-       <div class="submit-holder">
-            <input type="submit" class="btn btn-large btn-success" value="Create" />
+        </div>
+
+        <div class="submit-holder">
+            <input type="submit" class="btn-mvc btn-mvc-green" value="Create" />
         </div>
     </fieldset>
 }
-
-@Html.Partial("_LanguageOptions")

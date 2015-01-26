@@ -4,38 +4,45 @@
 
 @section AdminHeader
 {
-        @(
-        Bundle.JavaScript()
+    @(
+ Bundle.JavaScript()
             .Add("~/Scripts/jquery.validate.min.js")
-            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")            
+            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
             .MvcRender("~/scripts/cache/validate-combined_#.js")
-    )  
+    )
 }
 
-<div class="adminsection clearfix">
-    <h2>Export Members</h2>
-     @using (Html.BeginForm("ExportUsers", "ImportExport"))
-     {
-         <div class="submit-holder">
-             <button type="submit" class = "btn btn-success" >Export</button>
-         </div>
-     }
+<div class="panel panel-default">
+    <div class="panel-body">
+        <h2>Export Members</h2>
+        <p>Export all members into a CSV.</p>
+        @using (Html.BeginForm("ExportUsers", "ImportExport"))
+        {
+            <div class="submit-holder">
+                <button type="submit" class="btn-mvc btn-mvc-green">Export</button>
+            </div>
+        }
+    </div>
 </div>
 
-<div class="adminsection clearfix">
-    <h2>Import Members</h2>
-     @using (Html.BeginForm("ImportUsers", "ImportExport", FormMethod.Post, new { enctype = "multipart/form-data", id = "ImportForm", name = "ImportForm", target = "UploadTarget" }))
-    {
-        <div class="submit-holder">
-            <input type="file" id="file" name="file" />
-            <input type="submit"  class="btn btn-large btn-success" value="Import"/>
-        </div>  
-    }
-    
-       @*Results of any import are displayed here:*@
-    <div id="ImportResults"></div>
 
-    @*This frame is displayed off the page and gets the results of the import (ie the success or fail messages) *@
-    <iframe id="UploadTarget" name="UploadTarget" onload="Import_Complete();" style="position: absolute; left: -999em; top: -999em;"></iframe>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <h2>Import Members</h2>
+        <p>The easiest way to find out what format the CSV file to import should be in, is to click the export button above and use that as a template.</p>
+        @using (Html.BeginForm("ImportUsers", "ImportExport", FormMethod.Post, new { enctype = "multipart/form-data", id = "ImportForm", name = "ImportForm", target = "UploadTarget" }))
+        {
+            <div class="submit-holder">
+                <p><input type="file" id="file" name="file" /></p>
+                <p><input type="submit" class="btn-mvc btn-mvc-green" value="Import" /></p>
+            </div>
+        }
 
+        @*Results of any import are displayed here:*@
+        <div id="ImportResults"></div>
+
+        @*This frame is displayed off the page and gets the results of the import (ie the success or fail messages) *@
+        <iframe id="UploadTarget" name="UploadTarget" onload="Import_Complete();" style="position: absolute; left: -999em; top: -999em;"></iframe>
+
+    </div>
 </div>

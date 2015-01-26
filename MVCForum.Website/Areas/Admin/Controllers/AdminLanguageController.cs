@@ -169,7 +169,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                                                         LocaleResources = models,
                                                         PageIndex = pageIndex,
                                                         TotalCount = allResources.TotalCount,
-                                                        Search = search
+                                                        Search = search,
+                                                        TotalPages = allResources.TotalPages
                                                     };
 
                         return View("ListValues", resourceListModel);
@@ -196,6 +197,11 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         public ActionResult Index()
+        {
+            return View();
+        }
+
+        public ActionResult Create()
         {
             return View();
         }

@@ -13,12 +13,22 @@
                     'themes': {
                         'name': 'proton',
                         'responsive': true
-                    }
+                    },
+                    'check_callback': true
                 }
             }).bind("select_node.jstree", function (e, data) {
                 var href = data.node.a_attr.href;
                 document.location.href = href;
             });
+            //,
+            //'plugins': ["dnd"]
+            //$(document).on('dnd_start.vakata', function (e, data) {
+            //    console.log('Started');
+            //});
+            //$(document).on('dnd_stop.vakata', function (e, data) {
+            //    var eValue = e;
+            //    var dataValue = data;
+            //});
         });
     </script>
 

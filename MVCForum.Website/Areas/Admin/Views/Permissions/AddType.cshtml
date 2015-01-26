@@ -1,4 +1,5 @@
-﻿@model MVCForum.Website.Areas.Admin.ViewModels.AddTypeViewModel
+﻿@using MVCForum.Website.Application.ExtensionMethods
+@model MVCForum.Website.Areas.Admin.ViewModels.AddTypeViewModel
 
 @{
     ViewBag.Title = "Add Permission Type";
@@ -13,18 +14,26 @@
     )  
 }
 
-@using (Html.BeginForm("AddType", "Permissions", FormMethod.Post, new { @class = "form-horizontal" })) 
+<p><a href="@Url.Action("PermissionTypes")" class="btn-mvc">&lt;&lt; Back</a></p>
+
+@using (Html.BeginForm("AddType", "Permissions", FormMethod.Post)) 
 {
     @Html.ValidationSummary(false)
     <fieldset>
         <legend>@ViewBag.Title</legend>
 
-        <div class="editor-label">
+        <div class="form-group">
             @Html.LabelFor(model => model.Name)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Name)
+            @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.Name)
+        </div>
+        
+        <div class="checkbox">
+            @using (Html.BeginLabelFor(m => m.IsGlobal, new { @class = "checkbox" }))
+            {
+                @Html.CheckBoxFor(m => m.IsGlobal)
+            }
+            @Html.ValidationMessageFor(m => m.IsGlobal)
         </div>
 
         <div class="submit-holder">

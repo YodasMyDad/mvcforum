@@ -5,21 +5,23 @@
     ViewBag.Title = "Create Language";
 }
 
-@using (Html.BeginForm("CreateLanguage", "AdminLanguage", FormMethod.Post, new { @class = "form-horizontal" }))
+@Html.Partial("_LanguageOptions")
+
+@using (Html.BeginForm("CreateLanguage", "AdminLanguage", FormMethod.Post))
 {
     @Html.ValidationSummary(false)
     @Html.AntiForgeryToken()
     <fieldset>
         <legend>Select a New Language</legend>
-        <div class="editor-label">
+
+        <div class="form-group">
             @Html.LabelFor(model => model.Name)
-        </div>
-        <div class="editor-field">
-            @Html.DropDownListFor(model => model.Name, new SelectList(LanguageUtils.AllCultures, "Name", "EnglishName"), string.Empty)
+            @Html.DropDownListFor(model => model.Name, new SelectList(LanguageUtils.AllCultures, "Name", "EnglishName"), new {@class="form-control"})
             @Html.ValidationMessageFor(model => model.Name)
         </div>
+
         <div class="submit-holder">
-            <input type="submit" class="btn btn-large btn-success" value="Create" />
+            <input type="submit" class="btn-mvc btn-mvc-green" value="Create" />
         </div>
     </fieldset>
 }

@@ -30,6 +30,9 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Permission Type Name")]
         [StringLength(200)]
         public string Name { get; set; }
+
+        [DisplayName("Is Global Permission")]
+        public bool IsGlobal { get; set; }
     }
 
     public class EditTypeViewModel

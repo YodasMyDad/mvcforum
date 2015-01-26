@@ -56,6 +56,11 @@ h6 { font-size: 16px; }
 .btn-mvc-fullwidth, .btn-mvc-fullwidth:visited { padding-left: 0; padding-right: 0; width: 100%; display: block; }
 .btn-mvc-fullwidth:hover, .btn-mvc-fullwidth:focus, .btn-mvc-fullwidth:active { }
 
+.btn-mvc .glyphicon { color: #333;}
+.btn-mvc-red .glyphicon, .btn-mvc-blue .glyphicon, .btn-mvc-green .glyphicon { color: #fff;}
+
+.glyphicon-large { font-size: 18px;}
+
 .btn-file { position: relative; overflow: hidden; }
 .btn-file input[type=file] { position: absolute; top: 0; right: 0; min-width: 100%; min-height: 100%; font-size: 100px; text-align: right; filter: alpha(opacity=0); opacity: 0; outline: none; background: white; cursor: inherit; display: block; }
 
@@ -107,6 +112,9 @@ h6 { font-size: 16px; }
 /*--- Little fix to the bootstrap append button ---*/
 .input-append .add-on, .input-append .btn {margin-left: -4px;}
 
+/*--- Members Admin Search ---*/
+.membersadminsearch,.tablesearch { padding-bottom: 25px;}
+
 /*--- Language Tables ---*/
 .resourcevalue { width: 200px;}
 .resourcevalueinput { width: 190px;}
@@ -115,6 +123,10 @@ h6 { font-size: 16px; }
 .sidebar-nav { padding: 5px;}
 .sidebar-nav ul { padding: 0;}
 .sidebar-nav ul li {}
+
+/*--- Permission Types ---*/
+.permissiontypes {}
+.permissiontypes a .glyphicon-remove { color: #fff;}
 
 /*--- Log ---*/
 .logentry { padding: 5px 0;border-bottom: 1px dotted #efefef;}
@@ -125,7 +137,7 @@ h6 { font-size: 16px; }
 
 /*--- Role permission list --*/
 .rolepermissionlist { padding: 0;margin: 0;}
-.rolepermissionlist li { list-style: none;float: left;display: inline;padding: 0 5px 5px 0;}
+.rolepermissionlist li { list-style: none;padding: 5px 0;}
 
 /*--- Admin section holders ---*/
 .adminsection { border: 1px #efefef solid;-moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px;padding: 10px;clear: both;margin: 0 0 20px 0;}
@@ -137,6 +149,7 @@ h6 { font-size: 16px; }
 .btn-show-admin-nav {padding: 10px 0; width: 100%;text-align: center;font-size: 16px;line-height: normal;height: auto;display: none;}
 
 /*--- Moderate Topics and Posts ---*/
+.moderatepanel { padding: 20px 0;}
 .moderatetopicholder .topicsnippet { padding: 0 0 12px 0;margin: 0 0 12px 0;border-bottom: 3px dotted #efefef;}
 .moderatetopicholder .topicsnippet h2 { font-size: 17px;padding: 0 0 0 0;margin: 0 0 0 0;}
 .moderatepostholder .postsnippet { padding: 0 0 12px 0;margin: 0 0 12px 0;border-bottom: 3px dotted #efefef;}

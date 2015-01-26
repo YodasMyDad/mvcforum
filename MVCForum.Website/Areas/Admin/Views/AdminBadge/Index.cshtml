@@ -5,7 +5,7 @@
     ViewBag.Title = "Badges";    
 }
 <h2>@ViewBag.Title</h2>
-@using (Html.BeginForm("Manage", "AdminBadge", FormMethod.Post, new { @class = "form-horizontal" }))
+@using (Html.BeginForm("Manage", "AdminBadge", FormMethod.Post))
 {
     <div class="search large-search input-append">
         @Html.TextBoxFor(x => @Model.Search)

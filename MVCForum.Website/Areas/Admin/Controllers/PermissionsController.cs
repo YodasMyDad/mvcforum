@@ -76,6 +76,14 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             }
         }
 
+        public ActionResult PermissionTypes()
+        {
+            var permViewModel = new ChoosePermissionsViewModel{
+                Permissions = _permissionService.GetAll().ToList()
+            };
+            return View(permViewModel);
+        }
+
         /// <summary>
         /// Add a new permission type into the permission table
         /// </summary>
@@ -95,6 +103,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     var permission = new Permission
                                          {
                                              Name = permissionViewModel.Name,
+                                             IsGlobal = permissionViewModel.IsGlobal
                                          };
                         
                     _permissionService.Add(permission);

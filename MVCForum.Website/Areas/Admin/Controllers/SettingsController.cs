@@ -121,7 +121,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 Message = "Test Email Sent",
                 MessageType = GenericMessages.success
             };
-            return RedirectToAction("TestEmail");
+            return RedirectToAction("Index");
         }
     }
 }

@@ -20,7 +20,7 @@
                 <h1>@ViewBag.Title</h1>
             </div>
             <div class="col-md-6">
-                @using (Html.BeginForm("Search", "Members", FormMethod.Get, new { @class = "form-horizontal" }))
+                @using (Html.BeginForm("Search", "Members", FormMethod.Get))
                 {
                     <div class="input-group">
                         @Html.TextBoxFor(x => Model.Search, new { @class = "form-control" })
