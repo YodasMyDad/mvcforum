@@ -326,3 +326,6 @@ Admin,Admin
 Members.SuccessfulSrub,All done
 Post.Favourite,Favourite
 Post.Favourited,Favourited
+Members.NowBanned,Member is now banned
+PM.AboutToExceedInboxSizeBody,You are about to exceed your private message inbox allowance
+PM.AboutToExceedInboxSizeSubject,Private Message Inbox Allowance

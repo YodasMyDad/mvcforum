@@ -61,6 +61,14 @@ namespace MVCForum.Website.Application
                 return ConfigurationManager.AppSettings["UploadFolderPath"];
             }
         }
+        public static int PrivateMessageWarningAmountLessThanAllowedSize
+        {
+            get
+            {
+                return Convert.ToInt32(ConfigurationManager.AppSettings["PrivateMessageWarningAmountLessThanAllowedSize"]);
+            }
+        }
+
 
         /// <summary>
         /// Paging options - Amount per page on different pages.

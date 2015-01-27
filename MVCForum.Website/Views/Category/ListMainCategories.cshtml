@@ -16,7 +16,8 @@
         var permissions = Model.AllPermissionSets[cat];
         var topicCount = cat.Topics.Count;
         var latestTopicInCategory = cat.Topics.OrderByDescending(x => x.LastPost.DateCreated).FirstOrDefault();
-        var postCount = (cat.Topics.SelectMany(x => x.Posts).Count() - 1);
+        var actualPostCount = cat.Topics.SelectMany(x => x.Posts).Count();
+        var postCount = (actualPostCount < 1 ? actualPostCount : actualPostCount - 1);
 
         @Html.Partial("_Category", new CategoryRowViewModel
                                        {

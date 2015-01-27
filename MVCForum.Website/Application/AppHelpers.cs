@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -336,6 +337,18 @@ namespace MVCForum.Website.Application
             return StringUtils.GetGravatarImage(email, size);
         }
 
+        public static string CategoryImage(string image, Guid categoryId, int size)
+        {
+            var sizeFormat = string.Format("?width={0}&crop=0,0,{0},{0}", size);
+            if (!string.IsNullOrEmpty(image))
+            {
+                // Has an avatar image
+                return VirtualPathUtility.ToAbsolute(string.Concat(SiteConstants.UploadFolderPath, categoryId, "/", image, sizeFormat));
+            }
+            //TODO - Return default image for category
+            return null;
+        }
+
         public static UploadFileResult UploadFile(HttpPostedFileBase file, string uploadFolderPath, ILocalizationService localizationService, bool onlyImages = false)
         {
             var upResult = new UploadFileResult { UploadSuccessful = true };
@@ -343,6 +356,9 @@ namespace MVCForum.Website.Application
             var fileName = Path.GetFileName(file.FileName);
             if (fileName != null)
             {
+                // Get the file extension
+                var fileExtension = Path.GetExtension(fileName.ToLower());
+
                 //Before we do anything, check file size
                 if (file.ContentLength > Convert.ToInt32(SiteConstants.FileUploadMaximumFileSizeInBytes))
                 {
@@ -366,8 +382,6 @@ namespace MVCForum.Website.Application
                     var allowedFileExtensionsList = allowedFileExtensions.ToLower().Trim()
                                                      .TrimStart(',').TrimEnd(',').Split(',').ToList();
 
-                    // Get the file extension
-                    var fileExtension = Path.GetExtension(fileName.ToLower());
 
                     // If can't work out extension then just error
                     if (string.IsNullOrEmpty(fileExtension))
@@ -387,18 +401,57 @@ namespace MVCForum.Website.Application
                     }
                 }
 
-                // Sort the file name
-                var newFileName = string.Format("{0}_{1}", GuidComb.GenerateComb(), fileName.Trim(' ').Replace("_", "-").Replace(" ", "-").ToLower());
-                var path = Path.Combine(uploadFolderPath, newFileName);
+                // Rotate image if wrong want around
+                using (var sourceimage = Image.FromStream(file.InputStream))
+                {
+                    if (sourceimage.PropertyIdList.Contains(0x0112))
+                    {
+                        int rotationValue = sourceimage.GetPropertyItem(0x0112).Value[0];
+                        switch (rotationValue)
+                        {
+                            case 1: // landscape, do nothing
+                                break;
 
-                // Save the file to disk
-                file.SaveAs(path);
+                            case 8: // rotated 90 right
+                                // de-rotate:
+                                sourceimage.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                                break;
 
-                var hostingRoot = HostingEnvironment.MapPath("~/") ?? "";
-                var fileUrl = path.Substring(hostingRoot.Length).Replace('\\', '/').Insert(0, "/");
+                            case 3: // bottoms up
+                                sourceimage.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                                break;
 
-                upResult.UploadedFileName = newFileName;
-                upResult.UploadedFileUrl = fileUrl;                
+                            case 6: // rotated 90 left
+                                sourceimage.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                                break;
+                        }
+                    }
+
+                    using (var stream = new MemoryStream())
+                    {
+                        // Save the image as a Jpeg only
+                        sourceimage.Save(stream, ImageFormat.Jpeg);
+                        stream.Position = 0;
+
+                        // Change the extension to jpg as that's what we are saving it as
+                        fileName = fileName.Replace(fileExtension, "");
+                        fileName = string.Concat(fileName, "jpg");
+                        file = new MemoryFile(stream, "image/jpeg", fileName);
+
+                        // Sort the file name
+                        var newFileName = string.Format("{0}_{1}", GuidComb.GenerateComb(), fileName.Trim(' ').Replace("_", "-").Replace(" ", "-").ToLower());
+                        var path = Path.Combine(uploadFolderPath, newFileName);
+
+                        // Save the file to disk
+                        file.SaveAs(path);
+
+                        var hostingRoot = HostingEnvironment.MapPath("~/") ?? "";
+                        var fileUrl = path.Substring(hostingRoot.Length).Replace('\\', '/').Insert(0, "/");
+
+                        upResult.UploadedFileName = newFileName;
+                        upResult.UploadedFileUrl = fileUrl;   
+                    }
+                }             
             }
 
             return upResult;

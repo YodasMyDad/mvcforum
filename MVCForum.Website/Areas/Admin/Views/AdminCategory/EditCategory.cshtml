@@ -16,7 +16,7 @@
 
 @Html.Partial("_CategoryNavButtons")
 
-@using (Html.BeginForm("EditCategory", "AdminCategory", FormMethod.Post))
+@using (Html.BeginForm("EditCategory", "AdminCategory", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
         @Html.ValidationSummary(false)
     <fieldset>

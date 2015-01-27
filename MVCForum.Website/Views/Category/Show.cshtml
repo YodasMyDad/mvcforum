@@ -11,7 +11,7 @@
     var subScribe = string.Empty;
     var unSubscribe = string.Empty;
     const string displayNone = "style='display:none;'";
-    if(Model.IsSubscribed)
+    if (Model.IsSubscribed)
     {
         subScribe = displayNone;
     }
@@ -38,7 +38,8 @@
 
 <div class="category">
 
-    <div class="mainheading">
+    <div class="mainheading clearfix">
+
         <div class="widgetright">
             @if (Html.Settings().EnableRSSFeeds)
             {
@@ -58,10 +59,13 @@
                 </a>
             }
         </div>
+        @if (!string.IsNullOrEmpty(Model.Category.Image))
+        {
+            <img src="@AppHelpers.CategoryImage(Model.Category.Image, Model.Category.Id,110)" alt="@Model.Category" class="categoryimage" />
+        }
         <h1>@Html.Raw(Model.Category.Name)</h1>
+        <p>@Html.Raw(AppHelpers.ConvertPostContent(Model.Category.Description))</p>
     </div>
-    <p>@Html.Raw(AppHelpers.ConvertPostContent(Model.Category.Description))</p>
-
 
     @if (Model.SubCategories != null)
     {

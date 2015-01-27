@@ -2,7 +2,7 @@
 
     AddModerateClickEvents();
     AddModerateAjaxCalls();
-
+    ResponsiveTable();
 
     var showNavButton = $(".btn-show-admin-nav");
     var mainNavHolder = $(".admin-options");
@@ -386,6 +386,26 @@
         tableInfo.Row.find(".savetag").hide();
     });
 
+    $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
+
+        var input = $(this).parents('.input-group').find(':text'),
+            log = numFiles > 1 ? numFiles + ' files selected' : label;
+
+        if (input.length) {
+            input.val(log);
+        } else {
+            if (log) alert(log);
+        }
+
+    });
+
+});
+
+$(document).on('change', '.btn-file :file', function () {
+    var input = $(this),
+        numFiles = input.get(0).files ? input.get(0).files.length : 1,
+        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+    input.trigger('fileselect', [numFiles, label]);
 });
 
 function AddModerateAjaxCalls() {
@@ -645,4 +665,26 @@ function formatImportResults(jsonErrorsWarnings) {
         results += "<div>" + errorsWarnings[i] + "</div>";
     }
     return results;
+}
+
+function ResponsiveTable() {
+    var adaptiveTable = $('.table-adaptive');
+    if (adaptiveTable.length > 0) {
+        var headertext = [],
+        headers = document.querySelectorAll(".table-adaptive th"),
+        tablerows = document.querySelectorAll(".table-adaptive th"),
+        tablebody = document.querySelector(".table-adaptive tbody");
+
+        for (var i = 0; i < headers.length; i++) {
+            var current = headers[i];
+            headertext.push(current.textContent.replace(/\r?\n|\r/, ""));
+        }
+        if (tablebody.rows != null) {
+            for (var i = 0, row; row = tablebody.rows[i]; i++) {
+                for (var j = 0, col; col = row.cells[j]; j++) {
+                    col.setAttribute("data-th", headertext[j]);
+                }
+            }
+        }
+    }
 }

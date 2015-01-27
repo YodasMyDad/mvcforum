@@ -6,7 +6,6 @@ using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
-using MVCForum.Utilities;
 
 namespace MVCForum.Data.Repositories
 {
@@ -30,19 +29,15 @@ namespace MVCForum.Data.Repositories
                         .Include(x => x.Topic)
                         .Include(x => x.User)
                         .FirstOrDefault(x => x.Topic.Id == topicId && x.IsTopicStarter);
-
-            if (post != null)
-            {
-                post.Votes = _context.Vote.AsNoTracking().Where(x => x.Post.Id == post.Id).ToList();
-            }
-
             return post;
         }
 
         public IEnumerable<Post> GetAllWithTopics()
         {
-            return _context.Post.Include(x => x.Topic)
-                .Include(x => x.User).Where(x => x.Pending != true);
+            return _context.Post
+                .Include(x => x.Topic)
+                .Include(x => x.User)
+                .Where(x => x.Pending != true);
         }
 
         public IList<Post> GetLowestVotedPost(int amountToTake)

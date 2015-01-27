@@ -87,7 +87,7 @@ namespace MVCForum.Website.ViewModels
     public class CreateEditTopicViewModel
     {
         [Required]
-        [StringLength(600)]
+        [StringLength(100)]
         [ForumMvcResourceDisplayName("Topic.Label.TopicTitle")]
         public string Name { get; set; }
 

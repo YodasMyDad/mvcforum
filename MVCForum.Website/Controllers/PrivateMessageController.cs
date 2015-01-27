@@ -85,13 +85,28 @@ namespace MVCForum.Website.Controllers
                 return ErrorToInbox(LocalizationService.GetResourceString("PM.SendingToQuickly"));
             }
 
-            // Check outbox size
+            // Check outbox size of logged in user
             var senderCount = _privateMessageService.GetAllSentByUser(LoggedOnUser.Id).Count;
             if (senderCount > SettingsService.GetSettings().MaxPrivateMessagesPerMember)
             {
                 return ErrorToInbox(LocalizationService.GetResourceString("PM.SentItemsOverCapcity"));
             }
-                        
+            if (senderCount > (SettingsService.GetSettings().MaxPrivateMessagesPerMember - SiteConstants.PrivateMessageWarningAmountLessThanAllowedSize))
+            {
+                // Send user a warning they are about to exceed 
+                var sb = new StringBuilder();
+                sb.AppendFormat("<p>{0}</p>", LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeBody"));
+                var email = new Email
+                {
+                    EmailFrom = SettingsService.GetSettings().AdminEmailAddress,
+                    EmailTo = LoggedOnUser.Email,
+                    NameTo = LoggedOnUser.UserName,
+                    Subject = LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeSubject")
+                };
+                email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+                _emailService.SendMail(email);
+            }
+
             var viewModel = new CreatePrivateMessageViewModel();
 
             // add the username to the to box if available
@@ -144,15 +159,32 @@ namespace MVCForum.Website.Controllers
                         if (memberTo != null)
                         {
 
-                            // Check in box size
-                            // First check sender
+                            // Check in box size for both
+   
                             var receiverCount = _privateMessageService.GetAllReceivedByUser(memberTo.Id).Count;
                             if (receiverCount > SettingsService.GetSettings().MaxPrivateMessagesPerMember)
                             {
                                 ModelState.AddModelError(string.Empty, string.Format(LocalizationService.GetResourceString("PM.ReceivedItemsOverCapcity"), memberTo.UserName));
-                            }
+                            }                            
                             else
                             {
+                                // If the receiver is about to go over the allowance them let then know too
+                                if (receiverCount > (SettingsService.GetSettings().MaxPrivateMessagesPerMember - SiteConstants.PrivateMessageWarningAmountLessThanAllowedSize))
+                                {
+                                    // Send user a warning they are about to exceed 
+                                    var sb = new StringBuilder();
+                                    sb.AppendFormat("<p>{0}</p>", LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeBody"));
+                                    var email = new Email
+                                    {
+                                        EmailFrom = SettingsService.GetSettings().AdminEmailAddress,
+                                        EmailTo = memberTo.Email,
+                                        NameTo = memberTo.UserName,
+                                        Subject = LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeSubject")
+                                    };
+                                    email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+                                    _emailService.SendMail(email);
+                                }
+
                                 // Good to go send the message!
                                 privateMessage.UserTo = memberTo;
                                 _privateMessageService.Add(privateMessage);

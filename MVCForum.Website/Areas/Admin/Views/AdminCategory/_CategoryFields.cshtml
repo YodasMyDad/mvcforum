@@ -2,6 +2,12 @@
 @model MVCForum.Website.Areas.Admin.ViewModels.CategoryViewModel
 
 <div class="form-group">
+    @Html.LabelFor(model => model.CategoryColour)
+    @Html.EditorFor(model => model.CategoryColour)
+    @Html.ValidationMessageFor(model => model.CategoryColour)
+</div>
+
+<div class="form-group">
     @Html.LabelFor(model => model.Name)
     @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
     @Html.ValidationMessageFor(model => model.Name)
@@ -13,10 +19,27 @@
     @Html.ValidationMessageFor(model => model.Description)
 </div>
 
-<div class="form-group">
-    @Html.LabelFor(model => model.CategoryColour)
-    @Html.EditorFor(model => model.CategoryColour)
-    @Html.ValidationMessageFor(model => model.CategoryColour)
+<div class="row categoryimage">
+
+    @if (!string.IsNullOrEmpty(Model.Image))
+    {
+        <div class="col-md-2">
+            <img src="@AppHelpers.CategoryImage(Model.Image, Model.Id,110)" alt="@Model.Name" />
+        </div>
+    }
+
+    <div class="col-md-10">
+        @Html.LabelFor(x => x.Files)
+        <div class="input-group">
+            <span class="input-group-btn">
+                <span class="btn btn-default btn-file">
+                    @Html.LanguageString("Post.Browse") <input type="file" name="files" id="files" value="">
+                </span>
+            </span>
+            <input type="text" class="form-control" readonly="">
+        </div>
+        @Html.ValidationMessageFor(x => x.Files)
+    </div>
 </div>
 
 <div class="checkbox">
@@ -51,7 +74,7 @@
 
 <div class="form-group">
     @Html.LabelFor(model => model.ParentCategory)
-    @Html.DropDownListFor(model => model.ParentCategory, new SelectList(Model.AllCategories, "id", "Name"), new {@class="form-control"})
+    @Html.DropDownListFor(model => model.ParentCategory, new SelectList(Model.AllCategories, "id", "Name"), string.Empty, new { @class = "form-control" })
     @Html.ValidationMessageFor(model => model.ParentCategory)
 </div>
 

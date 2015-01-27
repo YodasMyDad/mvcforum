@@ -44,7 +44,7 @@
     @RenderSection("Header", false)
 </head>
 
-<body class="@TempData[AppConstants.GlobalClass].ToString()">
+<body class="@TempData[AppConstants.GlobalClass].ToString() loggedin-@(User.Identity.IsAuthenticated.ToString().ToLower())">
     
     <nav class="pushy pushy-left">
         <ul>

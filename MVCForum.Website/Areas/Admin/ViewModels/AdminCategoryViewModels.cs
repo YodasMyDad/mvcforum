@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Web;
 using System.Web.Mvc;
 using DataAnnotationsExtensions;
 using MVCForum.Domain.Constants;
@@ -59,6 +60,10 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Meta Desc")]
         [MaxLength(200)]
         public string MetaDesc { get; set; }
+
+        [ForumMvcResourceDisplayName("Category Image")]
+        public HttpPostedFileBase[] Files { get; set; }
+        public string Image { get; set; }
     }
 
     public class DeleteCategoryViewModel

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
+using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 
 namespace MVCForum.Website.Areas.Admin.Controllers
@@ -89,7 +91,38 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                                                Colour = categoryViewModel.CategoryColour
                                            };
 
-                        
+                        // Sort image out first
+                        if (categoryViewModel.Files != null)
+                        {
+                            // Before we save anything, check the user already has an upload folder and if not create one
+                            var uploadFolderPath = Server.MapPath(string.Concat(SiteConstants.UploadFolderPath, category.Id));
+                            if (!Directory.Exists(uploadFolderPath))
+                            {
+                                Directory.CreateDirectory(uploadFolderPath);
+                            }
+
+                            // Loop through each file and get the file info and save to the users folder and Db
+                            var file = categoryViewModel.Files[0];
+                            if (file != null)
+                            {
+                                // If successful then upload the file
+                                var uploadResult = AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService, true);
+
+                                if (!uploadResult.UploadSuccessful)
+                                {
+                                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                    {
+                                        Message = uploadResult.ErrorMessage,
+                                        MessageType = GenericMessages.danger
+                                    };
+                                    return View(categoryViewModel);
+                                }
+
+                                // Save avatar to user
+                                category.Image = uploadResult.UploadedFileName;
+                            }
+
+                        }
 
                         if (categoryViewModel.ParentCategory != null)
                         {
@@ -137,6 +170,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 Id = category.Id,
                 PageTitle = category.PageTitle,
                 MetaDesc = category.MetaDescription,
+                Image = category.Image,
                 CategoryColour = category.Colour,
                 ParentCategory = category.ParentCategory == null ? Guid.Empty : category.ParentCategory.Id,
                 AllCategories = _categoryService.GetAll()
@@ -166,7 +200,43 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 {
                     try
                     {
+
                         var category = _categoryService.Get(categoryViewModel.Id);
+
+
+                        // Sort image out first
+                        if (categoryViewModel.Files != null)
+                        {
+                            // Before we save anything, check the user already has an upload folder and if not create one
+                            var uploadFolderPath = Server.MapPath(string.Concat(SiteConstants.UploadFolderPath, categoryViewModel.Id));
+                            if (!Directory.Exists(uploadFolderPath))
+                            {
+                                Directory.CreateDirectory(uploadFolderPath);
+                            }
+
+                            // Loop through each file and get the file info and save to the users folder and Db
+                            var file = categoryViewModel.Files[0];
+                            if (file != null)
+                            {
+                                // If successful then upload the file
+                                var uploadResult = AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService, true);
+
+                                if (!uploadResult.UploadSuccessful)
+                                {
+                                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                    {
+                                        Message = uploadResult.ErrorMessage,
+                                        MessageType = GenericMessages.danger
+                                    };
+                                    return View(categoryViewModel);
+                                }
+
+                                // Save avatar to user
+                                category.Image = uploadResult.UploadedFileName;
+                            }
+
+                        }
+
 
                         category.Description = categoryViewModel.Description;
                         category.IsLocked = categoryViewModel.IsLocked;
