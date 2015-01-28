@@ -1924,7 +1924,6 @@
     <Content Include="Views\Post\Report.cshtml" />
     <Content Include="Views\PrivateMessage\Create.cshtml" />
     <Content Include="Views\PrivateMessage\Index.cshtml" />
-    <Content Include="Views\PrivateMessage\SentMessages.cshtml" />
     <Content Include="Views\PrivateMessage\View.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\Search\SideSearch.cshtml" />
@@ -1964,6 +1963,7 @@
     <Content Include="Views\Shared\_CommonSideNav.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\forumeditor.cshtml" />
     <Content Include="Views\Shared\customeditors\tinymceeditor.cshtml" />
+    <Content Include="Views\Shared\_PrivateMessage.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

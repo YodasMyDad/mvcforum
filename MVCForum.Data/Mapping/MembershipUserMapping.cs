@@ -42,12 +42,12 @@ namespace MVCForum.Data.Mapping
                .Map(x => x.MapKey("MembershipUser_Id"))
                 .WillCascadeOnDelete();
 
-            HasMany(x => x.PrivateMessagesReceived).WithRequired(x => x.UserFrom)
+            HasMany(x => x.PrivateMessagesReceived).WithRequired(x => x.UserTo)
                 .WillCascadeOnDelete();
 
             HasMany(x => x.PrivateMessagesSent)
-                .WithRequired(x => x.UserTo)
-                .WillCascadeOnDelete();
+                        .WithRequired(x => x.UserFrom)
+                        .WillCascadeOnDelete();
 
             HasMany(x => x.BadgeTypesTimeLastChecked).WithRequired(x => x.User)
                 .Map(x => x.MapKey("MembershipUser_Id"))

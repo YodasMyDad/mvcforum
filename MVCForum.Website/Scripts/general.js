@@ -168,8 +168,9 @@ $(function () {
     });
 
     $(".privatemessagedelete").click(function (e) {
+        e.preventDefault();
         var linkClicked = $(this);
-        var messageId = linkClicked.attr('rel');
+        var messageId = linkClicked.data('id');
         var deletePrivateMessageViewModel = new Object();
         deletePrivateMessageViewModel.Id = messageId;
 
@@ -182,15 +183,14 @@ $(function () {
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
-                // deleted, remove table row
-                RemovePrivateMessageTableRow(linkClicked);
+                var pmHolder = linkClicked.closest(".pmblock");
+                pmHolder.fadeOut("fast");
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 ShowUserMessage("Error: " + xhr.status + " " + thrownError);
             }
         });
-        e.preventDefault();
-        e.stopImmediatePropagation();
+
     });
 
     $(".emailsubscription").click(function (e) {
@@ -718,9 +718,6 @@ function AddNewPollAnswer(counter) {
 //}
 
 //---------------- Functions------------------------
-function RemovePrivateMessageTableRow(linkClicked) {
-    linkClicked.parents('tr').first().fadeOut();
-}
 
 function BadgeMarkAsSolution(postId) {
 
@@ -865,13 +862,51 @@ function AjaxPostSuccess() {
     DisplayWaitForPostUploadClickHandler();
 }
 
+function AjaxPrivateMessageSuccess() {
+    // Grab the span the newly added post is in
+    var postHolder = $('#newpmmarker');
+
+    // Now add a new span after with the key class
+    // In case the user wants to add another ajax post straight after
+    postHolder.before('<span id="newpmmarker"></span>');
+
+    // Finally chnage the name of this element so it doesn't insert it into the same one again
+    postHolder.attr('id', 'imtonystark');
+
+    // And more finally clear the post box
+    $('.createpm').val('');
+    if ($(".bbeditorholder textarea").length > 0) {
+        $(".bbeditorholder textarea").data("sceditor").val('');
+    }
+    if ($('.wmd-input').length > 0) {
+        $(".wmd-input").val('');
+        $(".wmd-preview").html('');
+    }
+    if (typeof tinyMCE != "undefined") {
+        tinyMCE.activeEditor.setContent('');
+    }
+
+    // Re-enable the button
+    $('#createpmbutton').attr("disabled", false);
+
+    // Finally do an async badge check
+    UserPost();
+}
+
 function AjaxPostBegin() {
-    $('#createpostbutton').attr("disabled", true);
+    var createButton = $('#createpostbutton');
+    if (createButton.length > 0) {
+        createButton.attr("disabled", false);
+    }
+    var pmButton = $('#createpmbutton');
+    if (pmButton.length > 0) {
+        pmButton.attr("disabled", false);
+    }
 }
 
 function AjaxPostError(message) {
     ShowUserMessage(message);
-    $('#createpostbutton').attr("disabled", false);
+    AjaxPostBegin();
 }
 
 (function ($) {

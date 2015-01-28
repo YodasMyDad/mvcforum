@@ -6,6 +6,7 @@ using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Utilities;
 
 namespace MVCForum.Data.Repositories
 {
@@ -24,12 +25,19 @@ namespace MVCForum.Data.Repositories
 
         public IPagedList<PrivateMessage> GetPagedSentMessagesByUser(int pageIndex, int pageSize, MembershipUser user)
         {
-            var totalCount = _context.PrivateMessage.Count(x => x.UserFrom.Id == user.Id);
+            var totalCount = _context.PrivateMessage
+                                .Include(x => x.UserTo)
+                                .Include(x => x.UserFrom)
+                                .DistinctBy(x => x.UserFrom.Id)
+                                .Count(x => x.UserFrom.Id == user.Id && x.IsSentMessage == true);
 
             // Get the topics using an efficient
             var results = _context.PrivateMessage
+                                .Include(x => x.UserTo)
+                                .Include(x => x.UserFrom)
                                 .Where(x => x.UserFrom.Id == user.Id)
                                 .Where(x => x.IsSentMessage == true)
+                                .DistinctBy(x => x.UserFrom.Id)
                                 .OrderByDescending(x => x.DateSent)
                                 .Skip((pageIndex - 1) * pageSize)
                                 .Take(pageSize)
@@ -41,13 +49,21 @@ namespace MVCForum.Data.Repositories
 
         public IPagedList<PrivateMessage> GetPagedReceivedMessagesByUser(int pageIndex, int pageSize, MembershipUser user)
         {
-            var totalCount = _context.PrivateMessage.Count(x => x.UserTo.Id == user.Id);
+            var totalCount = _context.PrivateMessage
+                                .Include(x => x.UserTo)
+                                .Include(x => x.UserFrom)
+                                .OrderByDescending(x => x.DateSent)
+                                .DistinctBy(x => x.UserTo.Id)
+                                .Count(x => x.UserTo.Id == user.Id && x.IsSentMessage != true);
 
             // Get the topics using an efficient
             var results = _context.PrivateMessage
+                                .Include(x => x.UserTo)
+                                .Include(x => x.UserFrom)
                                 .Where(x => x.UserTo.Id == user.Id)
                                 .Where(x => x.IsSentMessage != true)
                                 .OrderByDescending(x => x.DateSent)
+                                .DistinctBy(x => x.UserTo.Id)
                                 .Skip((pageIndex - 1) * pageSize)
                                 .Take(pageSize)
                                 .ToList();
@@ -59,18 +75,25 @@ namespace MVCForum.Data.Repositories
 
         public PrivateMessage GetLastSentPrivateMessage(Guid id)
         {
-            return _context.PrivateMessage.FirstOrDefault(x => x.UserFrom.Id == id);
+            return _context.PrivateMessage
+                                .Include(x => x.UserTo)
+                                .Include(x => x.UserFrom)
+                                .FirstOrDefault(x => x.UserFrom.Id == id);
         }
 
-        public PrivateMessage GetMatchingSentPrivateMessage(string title, DateTime date, Guid senderId, Guid receiverId)
+        public PrivateMessage GetMatchingSentPrivateMessage(DateTime date, Guid senderId, Guid receiverId)
         {
             return _context.PrivateMessage
-                .FirstOrDefault(x => x.Subject == title && x.DateSent == date && x.UserFrom.Id == senderId && x.UserTo.Id == receiverId && x.IsSentMessage == true);
+                                .Include(x => x.UserTo)
+                                .Include(x => x.UserFrom)
+                                .FirstOrDefault(x => x.DateSent == date && x.UserFrom.Id == senderId && x.UserTo.Id == receiverId && x.IsSentMessage == true);
         }
 
         public IList<PrivateMessage> GetAllSentByUser(Guid id)
         {
             return _context.PrivateMessage
+                                .Include(x => x.UserTo)
+                                .Include(x => x.UserFrom)
                                 .Where(x => x.UserFrom.Id == id)
                                 .OrderByDescending(x => x.DateSent)
                                 .ToList();
@@ -87,6 +110,8 @@ namespace MVCForum.Data.Repositories
         public IList<PrivateMessage> GetAllByUserToAnotherUser(Guid senderId, Guid receiverId)
         {
             return _context.PrivateMessage
+                                .Include(x => x.UserTo)
+                                .Include(x => x.UserFrom)
                                 .Where(x => x.UserFrom.Id == senderId && x.UserTo.Id == receiverId)
                                 .OrderByDescending(x => x.DateSent)
                                 .ToList();
@@ -94,7 +119,10 @@ namespace MVCForum.Data.Repositories
 
         public int NewPrivateMessageCount(Guid userId)
         {
-            return _context.PrivateMessage.Count(x => x.UserTo.Id == userId && !x.IsRead && x.IsSentMessage != true);
+            return _context.PrivateMessage
+                            .Include(x => x.UserTo)
+                            .Include(x => x.UserFrom)
+                            .Count(x => x.UserTo.Id == userId && !x.IsRead && x.IsSentMessage != true);
         }
 
         public PrivateMessage Add(PrivateMessage item)
@@ -104,7 +132,10 @@ namespace MVCForum.Data.Repositories
 
         public PrivateMessage Get(Guid id)
         {
-            return _context.PrivateMessage.FirstOrDefault(x => x.Id == id);
+            return _context.PrivateMessage
+                            .Include(x => x.UserTo)
+                            .Include(x => x.UserFrom)
+                            .FirstOrDefault(x => x.Id == id);
         }
 
         public void Delete(PrivateMessage item)
@@ -119,7 +150,7 @@ namespace MVCForum.Data.Repositories
             {
                 throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
             }
-            _context.Entry(item).State = EntityState.Modified; 
+            _context.Entry(item).State = EntityState.Modified;
         }
     }
 }

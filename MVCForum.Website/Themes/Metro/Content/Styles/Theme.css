@@ -217,7 +217,7 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 /*--- Category Show Page ---*/
 .category { }
 .category .mainheading { padding: 0; }
-.category .categoryimage { float: left;margin: 0 12px 12px 0; }
+.category .categoryimage { float: left; margin: 0 12px 12px 0; }
 
 /*--- Category Rows ---*/
 .categoryrow { border-bottom: 1px #f2f2f2 solid; padding: 15px 0 15px 0; }
@@ -331,9 +331,24 @@ footer h6 { margin-bottom: 12px; }
 .editmemberform .membereditavatar { padding-bottom: 12px; }
 
 /*--- Private Messages ---*/
-.privatemessages { }
+.privatemessages { clear: both; padding: 30px 0 0 0; }
 .privatemessages .top-pm-nav { padding-top: 8px; padding-bottom: 12px; }
 .previousmessageholder { padding-top: 20px; font-weight: 600; text-transform: uppercase; margin-bottom: 20px; }
+.pmview h1 { margin: 20px 0 0 0; }
+.pmview h1 a, .pmview h1 a:visited { }
+.pmview h1 a:hover, .pmview h1 a:focus { }
+.pmview h1 .pmavatar { float: left; margin: 0 15px 0 0; -ms-border-radius: 50%; border-radius: 50%; margin-top: -8px; }
+.pmview .pmblock { margin-bottom: 25px; padding: 12px 12px 8px 12px; }
+.pmview .pmblock .pmsmallavatar { -ms-border-radius: 50%; border-radius: 50%;z-index: 10;}
+.pmview .pmmessagetools { padding: 8px 0 0 0; margin: 0; text-align: right; font-size: 12px; }
+.pmview .pmmessagetools a { cursor: pointer; }
+.pmview .pmmessagetools li { list-style: none; display: inline-block; text-align: left; padding: 0 0 0 4px; }
+.pmview .pmmessagetools li .glyphicon-ok { color: #2abd54; }
+.pmview .pmblockfrom { margin-right: 20%; background-color: #f2f2f2; position: relative; }
+.pmview .pmblockfrom:after { top: -14px; left: 14px; border: solid transparent; content: ""; height: 0; width: 0; position: absolute; pointer-events: none; border-top: 14px solid transparent; border-bottom: 14px solid transparent; border-left: 20px solid #f2f2f2;  z-index: 5;}
+.pmview .pmblockto { margin-left: 20%; background-color: #dedede; position: relative; }
+.pmview .pmblockto:after { bottom: -14px; right: 14px; border: solid transparent; content: ""; height: 0; width: 0; position: absolute; pointer-events: none; border-top: 4px solid transparent; border-bottom: 14px solid transparent; border-right: 20px solid #dedede;  z-index: 5;}
+.form-createpm { padding: 10px 0; clear: both; }
 
 /*--- Create new post  ---*/
 #createpostholder { padding: 20px 0 0 0; }
@@ -351,8 +366,6 @@ footer h6 { margin-bottom: 12px; }
 .pollanswerlist { margin: 0; padding: 0; }
 .pollanswerlist li { list-style: none; padding-bottom: 8px; }
 .polladdremovenewanswers { }
-
-
 
 /*--- tinyMCE overides ---*/
 .mce-container, .mce-container *,
@@ -486,28 +499,17 @@ div.mce-path { padding: 2px 10px; margin: 0; }
 
 /*============== MEDIA QUERIES OVERIDES ==============*/
 
-@media (max-width: 1105px) {
-}
-
-@media (max-width: 1045px) {
-}
-
 @media (max-width: 991px) {
 
     /*--- Side Boxes ---*/
     .side-box { float: left; width: 50%; }
 
     /*--- Sort the create button ---*/
-    body.loggedin-true .main-section { position: relative;padding-top: 50px;}
-    body.loggedin-true .main-section .createtopicbutton { position: absolute;top: 0;left: 0;right: 0;}
-    body.loggedin-true .main-section .createtopicbutton .btn-mvc { margin-left: 15px;margin-right: 15px;width: auto;}
-    body.loggedin-true .sidelayoutsection { position: inherit;}
-    body.loggedin-true .fullwidthlayout { margin-top: -50px;}
-
-
-}
-
-@media (max-width: 860px) {
+    body.loggedin-true .main-section { position: relative; padding-top: 50px; }
+    body.loggedin-true .main-section .createtopicbutton { position: absolute; top: 0; left: 0; right: 0; }
+    body.loggedin-true .main-section .createtopicbutton .btn-mvc { margin-left: 15px; margin-right: 15px; width: auto; }
+    body.loggedin-true .sidelayoutsection { position: inherit; }
+    body.loggedin-true .fullwidthlayout { margin-top: -50px; }
 }
 
 @media (max-width: 767px) {
@@ -522,7 +524,7 @@ div.mce-path { padding: 2px 10px; margin: 0; }
     .main-side-box { padding: 15px 0 0 0; }
 
     /*--- Footer ---*/
-    .latest-members {}
+    .latest-members { }
 }
 
 @media (max-width: 600px) {
@@ -542,8 +544,5 @@ div.mce-path { padding: 2px 10px; margin: 0; }
     .side-box { float: none; width: auto; padding: 0 0 25px 0; }
 
     /*--- Category ---*/
-    .widgetright { float: none;margin: 0;padding: 15px 0;}
-}
-
-@media (max-width: 480px) {
+    .widgetright { float: none; margin: 0; padding: 15px 0; }
 }

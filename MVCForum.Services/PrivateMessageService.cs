@@ -22,7 +22,6 @@ namespace MVCForum.Services
         public PrivateMessage SanitizeMessage(PrivateMessage privateMessage)
         {
             privateMessage.Message = StringUtils.GetSafeHtml(privateMessage.Message);
-            privateMessage.Subject = StringUtils.SafePlainText(privateMessage.Subject);
             return privateMessage;
         }
 
@@ -46,7 +45,6 @@ namespace MVCForum.Services
                 IsSentMessage = true,
                 DateSent = message.DateSent,
                 Message = message.Message,
-                Subject = message.Subject,
                 UserFrom = message.UserFrom,
                 UserTo = message.UserTo
             };
@@ -103,26 +101,26 @@ namespace MVCForum.Services
         /// <summary>
         /// Gets the last sent private message from a specific user
         /// </summary>
-        /// <param name="Id"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public PrivateMessage GetLastSentPrivateMessage(Guid Id)
+        public PrivateMessage GetLastSentPrivateMessage(Guid id)
         {
-            return _privateMessageRepository.GetLastSentPrivateMessage(Id);
+            return _privateMessageRepository.GetLastSentPrivateMessage(id);
         }
 
-        public PrivateMessage GetMatchingSentPrivateMessage(string title, DateTime date, Guid senderId, Guid receiverId)
+        public PrivateMessage GetMatchingSentPrivateMessage(DateTime date, Guid senderId, Guid receiverId)
         {
-            return _privateMessageRepository.GetMatchingSentPrivateMessage(title, date, senderId, receiverId);
+            return _privateMessageRepository.GetMatchingSentPrivateMessage(date, senderId, receiverId);
         }
 
         /// <summary>
         /// Gets all private messages sent by a user
         /// </summary>
-        /// <param name="Id"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public IList<PrivateMessage> GetAllSentByUser(Guid Id)
+        public IList<PrivateMessage> GetAllSentByUser(Guid id)
         {
-            return _privateMessageRepository.GetAllSentByUser(Id);
+            return _privateMessageRepository.GetAllSentByUser(id);
         }
 
         /// <summary>
@@ -138,11 +136,11 @@ namespace MVCForum.Services
         /// <summary>
         /// Gets all private messages received by a user
         /// </summary>
-        /// <param name="Id"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
-        public IList<PrivateMessage> GetAllReceivedByUser(Guid Id)
+        public IList<PrivateMessage> GetAllReceivedByUser(Guid id)
         {
-            return _privateMessageRepository.GetAllReceivedByUser(Id);
+            return _privateMessageRepository.GetAllReceivedByUser(id);
         }
 
 

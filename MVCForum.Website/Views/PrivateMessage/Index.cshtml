@@ -1,5 +1,4 @@
-﻿@using MVCForum.Website
-@model MVCForum.Website.ViewModels.ListPrivateMessageViewModel
+﻿@model MVCForum.Website.ViewModels.ListPrivateMessageViewModel
 
 @{
     Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
@@ -9,11 +8,6 @@
 
     <div class="col-md-8 col-md-offset-2">
         <div class="privatemessages">
-            <div class="btn-group top-pm-nav">
-                @Html.ActionLink(Html.LanguageString("PM.SentPrivateMessages"), "SentMessages", new { }, new { @class = "btn btn-mvc btn-mvc-green" })
-                @Html.ActionLink(Html.LanguageString("PM.Create"), "Create", "PrivateMessage", new { }, new { @class = "btn btn-mvc btn-mvc-green" })
-            </div>
-
 
             <h2>@ViewBag.Title</h2>
 
@@ -22,11 +16,8 @@
                 <table class="table table-bordered table-striped table-adaptive">
                     <thead>
                         <tr>
-                            <th>@Html.LanguageString("PM.Subject")</th>
-                            <th>@Html.LanguageString("PM.Date")</th>
                             <th>@Html.LanguageString("PM.From")</th>
-                            <th>@Html.LanguageString("PM.Read")</th>
-                            <th>@Html.LanguageString("PM.Delete")</th>
+                            <th>@Html.LanguageString("PM.LastActivity")</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -34,24 +25,23 @@
                         {
                             <tr>
                                 <td>
-                                    @Html.ActionLink(message.Subject, "View", new { id = message.Id })
-                                </td>
-                                <td>@message.DateSent.ToShortDateString()</td>
-                                <td>
-                                    <strong><a href="@Html.Raw(message.UserFrom.NiceUrl)">@Html.Raw(message.UserFrom.UserName)</a></strong>
-                                </td>
-                                <td>@Html.DisplayFor(modelItem => message.IsRead)</td>
-                                <td>
-                                    <a class="privatemessagedelete" rel="@message.Id" class="btn-mvc">
-                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                    <a href="@Url.Action("View", new { from = message.UserFrom.Id })">
+                                        <strong>
+                                            @message.UserFrom.UserName
+                                        </strong>
                                     </a>
                                 </td>
+                                <td>@message.DateSent.ToShortDateString()</td>
                             </tr>
                         }
                     </tbody>
                 </table>
 
-                @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.PrivateMessageListSize, Convert.ToInt32(Model.TotalCount), new { })
+                if (Model.TotalPages > 1)
+                {
+                    @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.PrivateMessageListSize, Convert.ToInt32(Model.TotalCount), new { })
+                }
+
             }
             else
             {

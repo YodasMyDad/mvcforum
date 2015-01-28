@@ -9,7 +9,7 @@ namespace MVCForum.Domain.Interfaces.Repositories
         IPagedList<PrivateMessage> GetPagedSentMessagesByUser(int pageIndex, int pageSize, MembershipUser user);
         IPagedList<PrivateMessage> GetPagedReceivedMessagesByUser(int pageIndex, int pageSize, MembershipUser user);
         PrivateMessage GetLastSentPrivateMessage(Guid id);
-        PrivateMessage GetMatchingSentPrivateMessage(string title, DateTime date, Guid senderId, Guid receiverId);
+        PrivateMessage GetMatchingSentPrivateMessage(DateTime date, Guid senderId, Guid receiverId);
         IList<PrivateMessage> GetAllSentByUser(Guid id);
         IList<PrivateMessage> GetAllReceivedByUser(Guid id);
         IList<PrivateMessage> GetAllByUserToAnotherUser(Guid senderId, Guid receiverId);

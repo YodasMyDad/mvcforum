@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
@@ -18,7 +19,7 @@ namespace MVCForum.Website.Controllers
         private readonly IPrivateMessageService _privateMessageService;
         private readonly IEmailService _emailService;
 
-        private MembershipUser LoggedOnUser; 
+        private MembershipUser LoggedOnUser;
 
         public PrivateMessageController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IPrivateMessageService privateMessageService,
@@ -39,7 +40,7 @@ namespace MVCForum.Website.Controllers
                 {
                     Message = LocalizationService.GetResourceString("Errors.NoPermission"),
                     MessageType = GenericMessages.danger
-                };                
+                };
                 return RedirectToAction("Index", "Home");
             }
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -50,46 +51,28 @@ namespace MVCForum.Website.Controllers
                 {
                     Messages = pagedMessages,
                     PageIndex = pageIndex,
-                    TotalCount = pagedMessages.TotalCount
+                    TotalCount = pagedMessages.TotalCount,
+                    TotalPages = pagedMessages.TotalPages
                 };
                 return View(viewModel);
             }
         }
 
-        public ActionResult SentMessages(int? p)
+        [ChildActionOnly]
+        public ActionResult Create(Guid to)
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
-            {
-                var pageIndex = p ?? 1;
-                var pagedMessages = _privateMessageService.GetPagedSentMessagesByUser(pageIndex, SiteConstants.PrivateMessageListSize, LoggedOnUser);
-                var viewModel = new ListPrivateMessageViewModel
-                {
-                    Messages = pagedMessages
-                };
-                return View(viewModel);
-            }
-        }
 
-        public ActionResult Create(Guid? id, Guid? to)
-        {
             // Check if private messages are enabled
             if (!SettingsService.GetSettings().EnablePrivateMessages || LoggedOnUser.DisablePrivateMessages == true)
             {
-                return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
-            }
-
-            // Check flood control
-            var lastMessage = _privateMessageService.GetLastSentPrivateMessage(LoggedOnUser.Id);
-            if (lastMessage != null && DateUtils.TimeDifferenceInMinutes(DateTime.UtcNow, lastMessage.DateSent) < SettingsService.GetSettings().PrivateMessageFloodControl)
-            {
-                return ErrorToInbox(LocalizationService.GetResourceString("PM.SendingToQuickly"));
+                return Content(LocalizationService.GetResourceString("Errors.GenericMessage"));
             }
 
             // Check outbox size of logged in user
             var senderCount = _privateMessageService.GetAllSentByUser(LoggedOnUser.Id).Count;
             if (senderCount > SettingsService.GetSettings().MaxPrivateMessagesPerMember)
             {
-                return ErrorToInbox(LocalizationService.GetResourceString("PM.SentItemsOverCapcity"));
+                return Content(LocalizationService.GetResourceString("PM.SentItemsOverCapcity"));
             }
             if (senderCount > (SettingsService.GetSettings().MaxPrivateMessagesPerMember - SiteConstants.PrivateMessageWarningAmountLessThanAllowedSize))
             {
@@ -107,175 +90,171 @@ namespace MVCForum.Website.Controllers
                 _emailService.SendMail(email);
             }
 
-            var viewModel = new CreatePrivateMessageViewModel();
-
-            // add the username to the to box if available
-            if (to != null)
+            var viewModel = new CreatePrivateMessageViewModel
             {
-                var userTo = MembershipService.GetUser((Guid)to);
-                viewModel.UserToUsername = userTo.UserName;
-            }
+                To = to
+            };
 
-            // See if this is a reply or not
-            if (id != null)
-            {
-                var previousMessage = _privateMessageService.Get((Guid)id);
-                // Its a reply, get the details
-                viewModel.UserToUsername = previousMessage.UserFrom.UserName;
-                viewModel.Subject = previousMessage.Subject;
-                viewModel.PreviousMessage = previousMessage.Message;
-            }
-            return View(viewModel);
+            return PartialView(viewModel);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public ActionResult Create(CreatePrivateMessageViewModel createPrivateMessageViewModel)
         {
             if (!SettingsService.GetSettings().EnablePrivateMessages || LoggedOnUser.DisablePrivateMessages == true)
             {
-                return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
+                throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
             }
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 if (ModelState.IsValid)
                 {
-                    var userTo = createPrivateMessageViewModel.UserToUsername;
+                    // Check flood control
+                    var lastMessage = _privateMessageService.GetLastSentPrivateMessage(LoggedOnUser.Id);
+                    if (lastMessage != null && DateUtils.TimeDifferenceInMinutes(DateTime.UtcNow, lastMessage.DateSent) < SettingsService.GetSettings().PrivateMessageFloodControl)
+                    {
+                        throw new Exception(LocalizationService.GetResourceString("PM.SendingToQuickly"));
+                    }
+
+                    var memberTo = MembershipService.GetUser(createPrivateMessageViewModel.To);
 
                     // first check they are not trying to message themself!
-                    if (userTo.ToLower() != LoggedOnUser.UserName.ToLower())
+                    if (memberTo != null)
                     {
                         // Map the view model to message
                         var privateMessage = new PrivateMessage
-                                                 {
-                                                     UserFrom = LoggedOnUser,
-                                                     Subject = createPrivateMessageViewModel.Subject,
-                                                     Message = createPrivateMessageViewModel.Message,
-                                                 };
-                        // now get the user its being sent to
-                        var memberTo = MembershipService.GetUser(userTo);
+                        {
+                            UserFrom = LoggedOnUser,
+                            Message = createPrivateMessageViewModel.Message,
+                        };
 
                         // check the member
-                        if (memberTo != null)
+                        if (!String.Equals(memberTo.UserName, LoggedOnUser.UserName, StringComparison.CurrentCultureIgnoreCase))
                         {
-
                             // Check in box size for both
-   
                             var receiverCount = _privateMessageService.GetAllReceivedByUser(memberTo.Id).Count;
                             if (receiverCount > SettingsService.GetSettings().MaxPrivateMessagesPerMember)
                             {
-                                ModelState.AddModelError(string.Empty, string.Format(LocalizationService.GetResourceString("PM.ReceivedItemsOverCapcity"), memberTo.UserName));
-                            }                            
-                            else
+                                throw new Exception(string.Format(LocalizationService.GetResourceString("PM.ReceivedItemsOverCapcity"), memberTo.UserName));
+                            }
+
+                            // If the receiver is about to go over the allowance them let then know too
+                            if (receiverCount > (SettingsService.GetSettings().MaxPrivateMessagesPerMember - SiteConstants.PrivateMessageWarningAmountLessThanAllowedSize))
                             {
-                                // If the receiver is about to go over the allowance them let then know too
-                                if (receiverCount > (SettingsService.GetSettings().MaxPrivateMessagesPerMember - SiteConstants.PrivateMessageWarningAmountLessThanAllowedSize))
+                                // Send user a warning they are about to exceed 
+                                var sb = new StringBuilder();
+                                sb.AppendFormat("<p>{0}</p>", LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeBody"));
+                                var email = new Email
                                 {
-                                    // Send user a warning they are about to exceed 
-                                    var sb = new StringBuilder();
-                                    sb.AppendFormat("<p>{0}</p>", LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeBody"));
+                                    EmailFrom = SettingsService.GetSettings().AdminEmailAddress,
+                                    EmailTo = memberTo.Email,
+                                    NameTo = memberTo.UserName,
+                                    Subject = LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeSubject")
+                                };
+                                email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+                                _emailService.SendMail(email);
+                            }
+
+                            // Good to go send the message!
+                            privateMessage.UserTo = memberTo;
+                            _privateMessageService.Add(privateMessage);
+
+                            try
+                            {
+                                unitOfWork.Commit();
+
+                                // Finally send an email to the user so they know they have a new private message
+                                // As long as they have not had notifications disabled
+                                if (memberTo.DisableEmailNotifications != true)
+                                {
                                     var email = new Email
                                     {
-                                        EmailFrom = SettingsService.GetSettings().AdminEmailAddress,
+                                        EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
                                         EmailTo = memberTo.Email,
-                                        NameTo = memberTo.UserName,
-                                        Subject = LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeSubject")
+                                        Subject = LocalizationService.GetResourceString("PM.NewPrivateMessageSubject"),
+                                        NameTo = memberTo.UserName
                                     };
+
+                                    var sb = new StringBuilder();
+                                    sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("PM.NewPrivateMessageBody"), LoggedOnUser.UserName));
                                     email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
                                     _emailService.SendMail(email);
                                 }
 
-                                // Good to go send the message!
-                                privateMessage.UserTo = memberTo;
-                                _privateMessageService.Add(privateMessage);
-
-                                try
-                                {
-                                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                                    {
-                                        Message = LocalizationService.GetResourceString("PM.MessageSent"),
-                                        MessageType = GenericMessages.success
-                                    };
-
-                                    unitOfWork.Commit();
-
-                                    // Finally send an email to the user so they know they have a new private message
-                                    // As long as they have not had notifications disabled
-                                    if (memberTo.DisableEmailNotifications != true)
-                                    {
-                                        var email = new Email
-                                        {
-                                            EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
-                                            EmailTo = memberTo.Email,
-                                            Subject = LocalizationService.GetResourceString("PM.NewPrivateMessageSubject"),
-                                            NameTo = memberTo.UserName
-                                        };
-
-                                        var sb = new StringBuilder();
-                                        sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("PM.NewPrivateMessageBody"), LoggedOnUser.UserName));
-                                        email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
-                                        _emailService.SendMail(email);
-                                    }
-
-                                    return RedirectToAction("Index");
-                                }
-                                catch (Exception ex)
-                                {
-                                    unitOfWork.Rollback();
-                                    LoggingService.Error(ex);
-                                    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
-                                }
+                                return PartialView("_PrivateMessage", privateMessage);
+                            }
+                            catch (Exception ex)
+                            {
+                                unitOfWork.Rollback();
+                                LoggingService.Error(ex);
+                                throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
                             }
                         }
                         else
                         {
-                            // Error send back to user
-                            ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("PM.UnableFindMember"));
+                            throw new Exception(LocalizationService.GetResourceString("PM.TalkToSelf"));
                         }
                     }
                     else
                     {
-                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("PM.TalkToSelf"));
+                        // Error send back to user
+                        throw new Exception(LocalizationService.GetResourceString("PM.UnableFindMember"));
                     }
                 }
-                TempData[AppConstants.MessageViewBagName] = null;
-                return View(createPrivateMessageViewModel);
+                throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
             }
         }
 
-        public ActionResult View(Guid id)
+        public ActionResult View(Guid from)
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-                var message = _privateMessageService.Get(id);
+                var userFrom = MembershipService.GetUser(from);
 
-                if (message.UserTo == LoggedOnUser | message.UserFrom == LoggedOnUser)
+                if (userFrom != LoggedOnUser)
                 {
-                    //Mark as read if this is the receiver of the message
-                    if (message.UserTo == LoggedOnUser)
+                    // Mark all messages read sent to this user from the userFrom
+                    var unreadMessages = LoggedOnUser.PrivateMessagesReceived.Where(x => x.UserFrom.Id == from && !x.IsRead);
+
+                    foreach (var message in unreadMessages)
                     {
                         // Update message as read
                         message.IsRead = true;
 
                         // Get the sent version and update that too
-                        var sentMessage = _privateMessageService.GetMatchingSentPrivateMessage(message.Subject, message.DateSent,message.UserFrom.Id, message.UserTo.Id);
+                        var sentMessage = _privateMessageService.GetMatchingSentPrivateMessage(message.DateSent, message.UserFrom.Id, message.UserTo.Id);
                         if (sentMessage != null)
                         {
-                            sentMessage.IsRead = true;   
-                        }
-
-                        try
-                        {
-                            unitOfWork.Commit();
-                        }
-                        catch (Exception ex)
-                        {
-                            unitOfWork.Rollback();
-                            LoggingService.Error(ex);
+                            sentMessage.IsRead = true;
                         }
                     }
 
-                    return View(new ViewPrivateMessageViewModel { Message = message });
+                    // Commit all changes
+                    try
+                    {
+                        unitOfWork.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                    }
+
+                    // Get all the received messages from userFrom
+                    // and then get all the sent messages to userFrom
+
+                    var allMessages = LoggedOnUser.PrivateMessagesReceived.Where(x => x.UserFrom.Id == from && x.IsSentMessage == false).ToList();
+                    allMessages.AddRange(LoggedOnUser.PrivateMessagesSent.Where(x => x.UserTo.Id == from && x.IsSentMessage == true).ToList());
+
+                    // Now order them into an order of messages
+
+                    var viewModel = new ViewPrivateMessageViewModel
+                    {
+                        From = userFrom,
+                        PrivateMessages = allMessages.OrderByDescending(x => x.DateSent).ToList()
+                    };
+
+                    return View(viewModel);
                 }
 
                 return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
