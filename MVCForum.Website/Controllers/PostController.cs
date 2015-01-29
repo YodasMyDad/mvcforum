@@ -67,6 +67,16 @@ namespace MVCForum.Website.Controllers
 
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
+                // Check stop words
+                var stopWords = _bannedWordService.GetAll(true);
+                foreach (var stopWord in stopWords)
+                {
+                    if (post.PostContent.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                    {
+                        throw new Exception(LocalizationService.GetResourceString("StopWord.Error"));
+                    }
+                }
+
                 // Quick check to see if user is locked out, when logged in
                 if (LoggedOnUser.IsLockedOut | !LoggedOnUser.IsApproved)
                 {

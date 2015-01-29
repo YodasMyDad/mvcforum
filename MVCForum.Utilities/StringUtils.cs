@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
@@ -805,19 +806,80 @@ namespace MVCForum.Utilities
 
         public static string EmbedVideosInPosts(string str)
         {
-            // YouTube Insert Video, just add the video ID and it inserts video into post
-            var exp = new Regex(@"\[youtube\]([^\]]+)\[/youtube\]");
-            str = exp.Replace(str, "<div class=\"video-container\"><iframe title=\"YouTube video player\" width=\"500\" height=\"281\" src=\"http://www.youtube.com/embed/$1\" frameborder=\"0\" allowfullscreen></iframe></div>");
+            #region OLD PARSING BB TAGS
+            //// YouTube Insert Video, just add the video ID and it inserts video into post
+            //var exp = new Regex(@"\[youtube\]([^\]]+)\[/youtube\]");
+            //str = exp.Replace(str, "<div class=\"video-container\"><iframe title=\"YouTube video player\" width=\"500\" height=\"281\" src=\"http://www.youtube.com/embed/$1\" frameborder=\"0\" allowfullscreen></iframe></div>");
 
-            // YouTube Insert Video, just add the video ID and it inserts video into post
-            exp = new Regex(@"\[vimeo\]([^\]]+)\[/vimeo\]");
-            str = exp.Replace(str, "<div class=\"video-container\"><iframe src=\"http://player.vimeo.com/video/$1?portrait=0\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>");
+            //// YouTube Insert Video, just add the video ID and it inserts video into post
+            //exp = new Regex(@"\[vimeo\]([^\]]+)\[/vimeo\]");
+            //str = exp.Replace(str, "<div class=\"video-container\"><iframe src=\"http://player.vimeo.com/video/$1?portrait=0\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>");
 
-            // YouTube Screenr Video, just add the video ID and it inserts video into post
-            exp = new Regex(@"\[screenr\]([^\]]+)\[/screenr\]");
-            str = exp.Replace(str, "<div class=\"video-container\"><iframe src=\"http://www.screenr.com/embed/$1\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>");
+            //// YouTube Screenr Video, just add the video ID and it inserts video into post
+            //exp = new Regex(@"\[screenr\]([^\]]+)\[/screenr\]");
+            //str = exp.Replace(str, "<div class=\"video-container\"><iframe src=\"http://www.screenr.com/embed/$1\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>");
 
-            // Add tweets
+            //// Add tweets
+
+            //return str; 
+            #endregion
+
+
+            if (str.IndexOf("youtube.com", StringComparison.CurrentCultureIgnoreCase) >= 0 || str.IndexOf("youtu.be", StringComparison.CurrentCultureIgnoreCase) >= 0)
+            {
+                const string pattern = @"(?:https?:\/\/)?(?:www\.)?(?:(?:(?:youtube.com\/watch\?[^?]*v=|youtu.be\/)([\w\-]+))(?:[^\s?]+)?)";
+                const string replacement = "<div class=\"video-container\" itemscope itemtype=\"http://schema.org/VideoObject\"><meta itemprop=\"embedURL\" content=\"http://www.youtube.com/embed/$1\"><iframe title='YouTube video player' width='500' height='281' src='http://www.youtube.com/embed/$1' frameborder='0' allowfullscreen='1'></iframe></div>";
+
+                var rgx = new Regex(pattern);
+                str = rgx.Replace(str, replacement);
+            }
+
+            if (str.IndexOf("vimeo.com", StringComparison.CurrentCultureIgnoreCase) >= 0)
+            {
+                const string pattern = @"(?:https?:\/\/)?vimeo\.com/(?:.*#|.*/videos/)?([0-9]+)";
+                const string replacement = "<div class=\"video-container\" itemscope itemtype=\"http://schema.org/VideoObject\"><meta itemprop=\"embedURL\" content=\"http://player.vimeo.com/video/$1?portrait=0\"><iframe src=\"http://player.vimeo.com/video/$1?portrait=0\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>";
+
+                var rgx = new Regex(pattern);
+                str = rgx.Replace(str, replacement);
+            }
+
+            if (str.IndexOf("screenr", StringComparison.CurrentCultureIgnoreCase) >= 0)
+            {
+                const string pattern = @"(?:https?:\/\/)?(?:www\.)screenr\.com/([a-zA-Z0-9]+)";
+                const string replacement = "<div class=\"video-container\" itemscope itemtype=\"http://schema.org/VideoObject\"><meta itemprop=\"embedURL\" content=\"http://www.screenr.com/embed/$1\"><iframe src=\"http://www.screenr.com/embed/$1\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>";
+
+                var rgx = new Regex(pattern);
+                str = rgx.Replace(str, replacement);
+            }
+
+            if (str.IndexOf("instagr", StringComparison.CurrentCultureIgnoreCase) >= 0)
+            {
+                var reg = new Regex(@"http://instagr\.?am(?:\.com)?/\S*", RegexOptions.Compiled);
+                var idRegex = new Regex(@"(?<=p/).*?(?=/)", RegexOptions.Compiled);
+                var result = new StringBuilder();
+                using (var reader = new StringReader(str))
+                {
+                    while (reader.Peek() > 0)
+                    {
+                        var line = reader.ReadLine();
+                        if (line != null && reg.IsMatch(line))
+                        {
+                            var url = reg.Match(line).ToString();
+
+                            // Find links 
+
+                            result.AppendLine(reg.Replace(line, string.Format("<p><img src=\"http://instagram.com/p/{0}/media/?size=l\" class=\"img-responsive\" /></p>", idRegex.Match(url))));
+                        }
+                        else
+                        {
+                            result.AppendLine(line);
+                        }
+
+                    }
+                }
+
+                str = result.ToString();
+            }
 
             return str;
         }

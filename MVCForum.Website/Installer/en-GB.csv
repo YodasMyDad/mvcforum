@@ -331,3 +331,4 @@ PM.AboutToExceedInboxSizeBody,You are about to exceed your private message inbox
 PM.AboutToExceedInboxSizeSubject,Private Message Inbox Allowance
 PM.NewPrivateMessage,New Private Message
 PM.LastActivity,Last Activity
+StopWord.Error,You have tried to enter a word or url that is not allowed on this site

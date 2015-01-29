@@ -1,16 +1,18 @@
 ﻿@model MVCForum.Website.Areas.Admin.ViewModels.BannedWordListViewModel
 @{
-    ViewBag.Title = "Banned Word";
+    ViewBag.Title = "Banned & Stop Words";
 }
 
 <h2>@ViewBag.Title</h2>
 
-<p>Banned words that are matched will be replaced with a charactor that you can define in a web.config app setting called BannedWordReplaceCharactor</p>
+<p><strong>Banned words!</strong> Are words that are matched and are replaced with a charactor that you can define in a web.config app setting called BannedWordReplaceCharactor</p>
 <p>By default its set to '?' (i.e. if you had <strong>feck</strong> in the list, it would become <strong>????</strong>). You can add a single word, or you can add wildcards at the end of your word.</p>
 <p>For example, if you wanted to ban feck, fecking, feckers etc... You can add <strong>feck*</strong> which will match feck AND anything after.</p>
+<p><strong>Stop Words!</strong> If you select a word to be a stop word. Then instead of replacing charactors is just abandons the current action. So for example you could put a stop word as sex.com which would stop link spammers.</p>
+<p>Or you could just use normal words like Viagra, which would stop anyone trying to post with that in.</p>
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-5">
         @using (Html.BeginForm("Index", "BannedWord", FormMethod.Get))
         {
             <div class="input-group tablesearch">
@@ -22,15 +24,20 @@
             @Html.Hidden("p", Model.PageIndex)
         }
     </div>
-    <div class="col-md-6">
-        @using (Html.BeginForm("Add", "BannedWord", FormMethod.Post))
+    <div class="col-md-7">
+        @using (Html.BeginForm("Add", "BannedWord", FormMethod.Post, new { @class = "form-inline" }))
         {
-            <div class="input-group tablesearch">
+            <div class="form-group">
+                <label class="sr-only" for="Word">Word</label>
                 @Html.TextBox("Word", null, new { @class = "form-control" })
-                <span class="input-group-btn">
-                    <button class="btn btn-default" type="submit">Add</button>
-                </span>
             </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="IsStopWord" id="IsStopWord" value="true"> Is Stop Word?
+                    <input type="hidden" value="false" name="IsStopWord" />
+                </label>
+            </div>
+            <button type="submit" class="btn btn-default">Add</button>
         }
     </div>
 </div>
@@ -42,10 +49,12 @@
             <tr>
                 <th>Edit</th>
                 <th>Word</th>
+                <th>Is Stop Word</th>
                 <th>Delete</th>
             </tr>
         </thead>
         <tbody>
+            
             @foreach (var word in Model.Words)
             {
                 <tr>
@@ -70,12 +79,16 @@
                         </span>
                     </td>
                     <td>
+                        <input type="checkbox" @(word.IsStopWord == true ? "checked=\"checked\"" : "") disabled="disabled"/>
+                    </td>
+                    <td>
                         <a href="@Url.Action("Delete", new { word.Id, p = Model.PageIndex, search = Model.Search })" class="btn-mvc">
                             <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                         </a>
                     </td>
                 </tr>
             }
+            
         </tbody>
     </table>
 

@@ -8,7 +8,7 @@ namespace MVCForum.Website.Application
     {
         public static bool UserAgentContains(this HttpContextBase c, string agentToFind)
         {
-            return (c.Request.UserAgent != null && c.Request.UserAgent.IndexOf(agentToFind, StringComparison.OrdinalIgnoreCase) > 0);
+            return (c.Request.UserAgent != null && c.Request.UserAgent.IndexOf(agentToFind, StringComparison.OrdinalIgnoreCase) >= 0);
         }
 
         public static bool IsMobileDevice(this HttpContextBase c)

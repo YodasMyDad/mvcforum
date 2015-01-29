@@ -17,6 +17,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
     {
         [Required]
         public string Word { get; set; }
+        public bool IsStopWord { get; set; }
     }
 
     public class AjaxEditWordViewModel

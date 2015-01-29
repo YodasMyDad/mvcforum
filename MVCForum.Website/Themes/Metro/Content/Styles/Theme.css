@@ -308,7 +308,7 @@ footer h6 { margin-bottom: 12px; }
 .active-members { }
 .active-members ul { padding: 0; margin: 0; }
 .active-members ul li { padding: 0 6px 4px 0; margin: 0; list-style: none; display: inline; }
-.active-members ul li img { border-radius: 50%; }
+.active-members ul li img { -ms-border-radius: 50%; border-radius: 50%; }
 
 /*--- Login and Register Forms ---*/
 .mainlogonform { }
@@ -339,16 +339,20 @@ footer h6 { margin-bottom: 12px; }
 .pmview h1 a:hover, .pmview h1 a:focus { }
 .pmview h1 .pmavatar { float: left; margin: 0 15px 0 0; -ms-border-radius: 50%; border-radius: 50%; margin-top: -8px; }
 .pmview .pmblock { margin-bottom: 25px; padding: 12px 12px 8px 12px; }
-.pmview .pmblock .pmsmallavatar { -ms-border-radius: 50%; border-radius: 50%;z-index: 10;}
+.pmview .pmblock .pmsmallavatar { -ms-border-radius: 50%; border-radius: 50%; z-index: 10; }
 .pmview .pmmessagetools { padding: 8px 0 0 0; margin: 0; text-align: right; font-size: 12px; }
 .pmview .pmmessagetools a { cursor: pointer; }
 .pmview .pmmessagetools li { list-style: none; display: inline-block; text-align: left; padding: 0 0 0 4px; }
 .pmview .pmmessagetools li .glyphicon-ok { color: #2abd54; }
 .pmview .pmblockfrom { margin-right: 20%; background-color: #f2f2f2; position: relative; }
-.pmview .pmblockfrom:after { top: -14px; left: 14px; border: solid transparent; content: ""; height: 0; width: 0; position: absolute; pointer-events: none; border-top: 14px solid transparent; border-bottom: 14px solid transparent; border-left: 20px solid #f2f2f2;  z-index: 5;}
+.pmview .pmblockfrom:after { top: -14px; left: 14px; border: solid transparent; content: ""; height: 0; width: 0; position: absolute; pointer-events: none; border-top: 14px solid transparent; border-bottom: 14px solid transparent; border-left: 20px solid #f2f2f2; z-index: 5; }
 .pmview .pmblockto { margin-left: 20%; background-color: #dedede; position: relative; }
-.pmview .pmblockto:after { bottom: -14px; right: 14px; border: solid transparent; content: ""; height: 0; width: 0; position: absolute; pointer-events: none; border-top: 4px solid transparent; border-bottom: 14px solid transparent; border-right: 20px solid #dedede;  z-index: 5;}
+.pmview .pmblockto:after { bottom: -14px; right: 14px; border: solid transparent; content: ""; height: 0; width: 0; position: absolute; pointer-events: none; border-top: 4px solid transparent; border-bottom: 14px solid transparent; border-right: 20px solid #dedede; z-index: 5; }
 .form-createpm { padding: 10px 0; clear: both; }
+
+/*--- Responsive Videos ---*/
+.video-container { position: relative; padding-bottom: 56.25%; padding-top: 30px; height: 0; overflow: hidden; }
+.video-container iframe, .video-container object, .video-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
 /*--- Create new post  ---*/
 #createpostholder { padding: 20px 0 0 0; }

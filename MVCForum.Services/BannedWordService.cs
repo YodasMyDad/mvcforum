@@ -27,9 +27,13 @@ namespace MVCForum.Services
             _bannedWordRepository.Delete(bannedWord);
         }
 
-        public IList<BannedWord> GetAll()
+        public IList<BannedWord> GetAll(bool onlyStopWords = false)
         {
-            return _bannedWordRepository.GetAll();
+            if (onlyStopWords)
+            {
+                return _bannedWordRepository.GetAll().Where(x => x.IsStopWord == true).ToList();   
+            }
+            return _bannedWordRepository.GetAll().Where(x => x.IsStopWord != true).ToList();
         }
 
         public BannedWord Get(Guid id)
@@ -49,7 +53,7 @@ namespace MVCForum.Services
 
         public string SanitiseBannedWords(string content)
         {
-            var bannedWords = GetAll();
+            var bannedWords = GetAll().ToList();
             if (bannedWords.Any())
             {
                 return SanitiseBannedWords(content, bannedWords.Select(x => x.Word).ToList());

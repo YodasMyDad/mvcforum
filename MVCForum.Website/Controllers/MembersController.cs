@@ -236,8 +236,8 @@ namespace MVCForum.Website.Controllers
                 var permissions = RoleService.GetPermissions(null, UsersRole);
                 return View(new ViewMemberViewModel
                 {
-                    User = member, 
-                    LoggedOnUserId = loggedonId, 
+                    User = member,
+                    LoggedOnUserId = loggedonId,
                     Permissions = permissions
                 });
             }
@@ -767,6 +767,25 @@ namespace MVCForum.Website.Controllers
             return null;
         }
 
+        private MemberFrontEndEditViewModel PopulateMemberViewModel(MembershipUser user)
+        {
+            var viewModel = new MemberFrontEndEditViewModel
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                Signature = user.Signature,
+                Age = user.Age,
+                Location = user.Location,
+                Website = user.Website,
+                Twitter = user.Twitter,
+                Facebook = user.Facebook,
+                DisableFileUploads = user.DisableFileUploads == true,
+                Avatar = user.Avatar
+            };
+            return viewModel;
+        }
+
         [Authorize]
         public ActionResult Edit(Guid id)
         {
@@ -780,20 +799,7 @@ namespace MVCForum.Website.Controllers
                 if (User.IsInRole(AppConstants.AdminRoleName) || loggedOnUserId == id || permissions[AppConstants.PermissionEditMembers].IsTicked)
                 {
                     var user = MembershipService.GetUser(id);
-                    var viewModel = new MemberFrontEndEditViewModel
-                    {
-                        Id = user.Id,
-                        UserName = user.UserName,
-                        Email = user.Email,
-                        Signature = user.Signature,
-                        Age = user.Age,
-                        Location = user.Location,
-                        Website = user.Website,
-                        Twitter = user.Twitter,
-                        Facebook = user.Facebook,
-                        DisableFileUploads = user.DisableFileUploads == true,
-                        Avatar = user.Avatar
-                    };
+                    var viewModel = PopulateMemberViewModel(user);
 
                     return View(viewModel);
                 }
@@ -814,7 +820,34 @@ namespace MVCForum.Website.Controllers
                 // Check is has permissions
                 if (User.IsInRole(AppConstants.AdminRoleName) || loggedOnUserId == userModel.Id || permissions[AppConstants.PermissionEditMembers].IsTicked)
                 {
+                    // Get the user from DB
                     var user = MembershipService.GetUser(userModel.Id);
+
+                    // Before we do anything - Check stop words
+                    var stopWords = _bannedWordService.GetAll(true);
+                    var bannedWords = _bannedWordService.GetAll().Select(x => x.Word).ToList();
+
+                    // Check the fields for bad words
+                    foreach (var stopWord in stopWords)
+                    {
+                        if ((userModel.Facebook != null && userModel.Facebook.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
+                            (userModel.Location != null && userModel.Location.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
+                            (userModel.Signature != null && userModel.Signature.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
+                            (userModel.Twitter != null && userModel.Twitter.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
+                            (userModel.Website != null && userModel.Website.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0))
+                        {
+
+                            ShowMessage(new GenericMessageViewModel
+                            {
+                                Message = LocalizationService.GetResourceString("StopWord.Error"),
+                                MessageType = GenericMessages.danger
+                            });
+
+                            // Ahhh found a stop word. Abandon operation captain.
+                            return View(userModel);
+
+                        }
+                    }
 
                     // Sort image out first
                     if (userModel.Files != null)
@@ -843,20 +876,18 @@ namespace MVCForum.Website.Controllers
                                 return View(userModel);
                             }
 
-
                             // Save avatar to user
                             user.Avatar = uploadResult.UploadedFileName;
-
                         }
 
                     }
 
                     user.Age = userModel.Age;
-                    user.Facebook = _bannedWordService.SanitiseBannedWords(userModel.Facebook);
-                    user.Location = _bannedWordService.SanitiseBannedWords(userModel.Location);
-                    user.Signature = _bannedWordService.SanitiseBannedWords(StringUtils.ScrubHtml(userModel.Signature));
-                    user.Twitter = _bannedWordService.SanitiseBannedWords(userModel.Twitter);
-                    user.Website = _bannedWordService.SanitiseBannedWords(userModel.Website);
+                    user.Facebook = _bannedWordService.SanitiseBannedWords(userModel.Facebook, bannedWords);
+                    user.Location = _bannedWordService.SanitiseBannedWords(userModel.Location, bannedWords);
+                    user.Signature = _bannedWordService.SanitiseBannedWords(StringUtils.ScrubHtml(userModel.Signature), bannedWords);
+                    user.Twitter = _bannedWordService.SanitiseBannedWords(userModel.Twitter, bannedWords);
+                    user.Website = _bannedWordService.SanitiseBannedWords(userModel.Website, bannedWords);
 
                     // If there is a location try and save the longitude and latitude
                     if (!string.IsNullOrEmpty(user.Location))
@@ -880,7 +911,7 @@ namespace MVCForum.Website.Controllers
                     // User is trying to change username, need to check if a user already exists
                     // with the username they are trying to change to
                     var changedUsername = false;
-                    var sanitisedUsername = _bannedWordService.SanitiseBannedWords(userModel.UserName);
+                    var sanitisedUsername = _bannedWordService.SanitiseBannedWords(userModel.UserName, bannedWords);
                     if (sanitisedUsername != user.UserName)
                     {
                         if (MembershipService.GetUser(sanitisedUsername) != null)
@@ -910,25 +941,11 @@ namespace MVCForum.Website.Controllers
 
                     MembershipService.ProfileUpdated(user);
 
-                    ViewBag.Message = new GenericMessageViewModel
+                    ShowMessage(new GenericMessageViewModel
                     {
                         Message = LocalizationService.GetResourceString("Member.ProfileUpdated"),
                         MessageType = GenericMessages.success
-                    };
-
-                    var viewModel = new MemberFrontEndEditViewModel
-                    {
-                        Id = user.Id,
-                        UserName = user.UserName,
-                        Email = user.Email,
-                        Signature = user.Signature,
-                        Age = user.Age,
-                        Location = user.Location,
-                        Website = user.Website,
-                        Twitter = user.Twitter,
-                        Facebook = user.Facebook,
-                        Avatar = user.Avatar
-                    };
+                    });
 
                     try
                     {
@@ -973,7 +990,7 @@ namespace MVCForum.Website.Controllers
                         ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }
 
-                    return View(viewModel);
+                    return View(userModel);
                 }
 
 

@@ -288,6 +288,27 @@ namespace MVCForum.Website.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditPostTopic(CreateEditTopicViewModel editPostViewModel)
         {
+            // Check stop words
+            var stopWords = _bannedWordService.GetAll(true);
+            foreach (var stopWord in stopWords)
+            {
+                if (editPostViewModel.Content.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
+                    editPostViewModel.Name.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                {
+
+                    ShowMessage(new GenericMessageViewModel
+                    {
+                        Message = LocalizationService.GetResourceString("StopWord.Error"),
+                        MessageType = GenericMessages.danger
+                    });
+
+                    var post = _postService.Get(editPostViewModel.Id);
+                    var topic = post.Topic;
+
+                    // Ahhh found a stop word. Abandon operation captain.
+                    return Redirect(topic.NiceUrl);
+                }
+            }
 
             // Get the category
             var category = _categoryService.Get(editPostViewModel.Category);
@@ -460,24 +481,27 @@ namespace MVCForum.Website.Controllers
             return View(editPostViewModel);
         }
 
+        private CreateEditTopicViewModel PrePareCreateEditTopicViewModel(List<Category> allowedCategories)
+        {
+            return new CreateEditTopicViewModel
+            {
+                SubscribeToTopic = true,
+                Categories = GetBaseSelectListCategories(allowedCategories),
+                OptionalPermissions = new CheckCreateTopicPermissions { CanLockTopic = false, CanStickyTopic = false, CanUploadFiles = false },
+                PollAnswers = new List<PollAnswer>(),
+                IsTopicStarter = true
+            };
+        }
+
         [Authorize]
         public ActionResult Create()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
-
                 if (allowedCategories.Any() && LoggedOnUser.DisablePosting != true)
                 {
-                    var viewModel = new CreateEditTopicViewModel
-                    {
-                        SubscribeToTopic = true,
-                        Categories = GetBaseSelectListCategories(allowedCategories),
-                        OptionalPermissions = new CheckCreateTopicPermissions{CanLockTopic = false, CanStickyTopic = false, CanUploadFiles = false},
-                        PollAnswers = new List<PollAnswer>(),
-                        IsTopicStarter = true
-                    };
-
+                    var viewModel = PrePareCreateEditTopicViewModel(allowedCategories);
                     return View(viewModel);
                 }
                 return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
@@ -489,7 +513,6 @@ namespace MVCForum.Website.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(CreateEditTopicViewModel topicViewModel)
         {
-
             // Get the category
             var category = _categoryService.Get(topicViewModel.Category);
 
@@ -507,6 +530,24 @@ namespace MVCForum.Website.Controllers
                 topicViewModel.PollAnswers = new List<PollAnswer>();
             }
             /*---- End Re-populate ViewModel ----*/
+
+            // Check stop words
+            var stopWords = _bannedWordService.GetAll(true);
+            foreach (var stopWord in stopWords)
+            {
+                if (topicViewModel.Content.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
+                    topicViewModel.Name.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                {
+                    ShowMessage(new GenericMessageViewModel
+                    {
+                        Message = LocalizationService.GetResourceString("StopWord.Error"),
+                        MessageType = GenericMessages.danger
+                    });
+
+                    // Ahhh found a stop word. Abandon operation captain.
+                    return View(topicViewModel);
+                }
+            }
 
             if (ModelState.IsValid)
             {
