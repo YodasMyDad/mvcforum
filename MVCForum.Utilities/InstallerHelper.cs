@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using System.Web;
+using System.Web.Hosting;
 using System.Xml;
 
 namespace MVCForum.Utilities
@@ -9,7 +10,7 @@ namespace MVCForum.Utilities
     {
         public static void TouchWebConfig()
         {
-            var webConfigPath = HttpContext.Current.Server.MapPath("~/web.config");
+            var webConfigPath = HostingEnvironment.MapPath("~/web.config");
             var xDoc = new XmlDocument();
             xDoc.Load(webConfigPath);
             xDoc.Save(webConfigPath);

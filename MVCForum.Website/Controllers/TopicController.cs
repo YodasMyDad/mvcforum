@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Security;
 using MVCForum.Domain.Constants;
@@ -687,7 +688,7 @@ namespace MVCForum.Website.Controllers
                                     {
                                         // woot! User has permission and all seems ok
                                         // Before we save anything, check the user already has an upload folder and if not create one
-                                        var uploadFolderPath = Server.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnUser.Id));
+                                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnUser.Id));
                                         if (!Directory.Exists(uploadFolderPath))
                                         {
                                             Directory.CreateDirectory(uploadFolderPath);
@@ -1042,43 +1043,53 @@ namespace MVCForum.Website.Controllers
 
         private void NotifyNewTopics(Category cat)
         {
-            // *CHANGE THIS TO BE CALLED LIKE THE BADGES VIA AN AJAX Method* 
-            // TODO: This really needs to be an async call so it doesn't hang when a user creates  
-            // TODO: a topic if there are 1000's of users
-
-            // Get all notifications for this category
-            var notifications = _categoryNotificationService.GetByCategory(cat).Select(x => x.User.Id).ToList();
-
-            if (notifications.Any())
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-                // remove the current user from the notification, don't want to notify yourself that you 
-                // have just made a topic!
-                notifications.Remove(LoggedOnUser.Id);
+                // Get all notifications for this category
+                var notifications = _categoryNotificationService.GetByCategory(cat).Select(x => x.User.Id).ToList();
 
-                if (notifications.Count > 0)
+                if (notifications.Any())
                 {
-                    // Now get all the users that need notifying
-                    var usersToNotify = MembershipService.GetUsersById(notifications);
+                    // remove the current user from the notification, don't want to notify yourself that you 
+                    // have just made a topic!
+                    notifications.Remove(LoggedOnUser.Id);
 
-                    // Create the email
-                    var sb = new StringBuilder();
-                    sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Topic.Notification.NewTopics"), cat.Name));
-                    sb.AppendFormat("<p>{0}</p>", string.Concat(SettingsService.GetSettings().ForumUrl, cat.NiceUrl));
-
-                    // create the emails and only send them to people who have not had notifications disabled
-                    var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true).Select(user => new Email
+                    if (notifications.Count > 0)
                     {
-                        Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
-                        EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
-                        EmailTo = user.Email,
-                        NameTo = user.UserName,
-                        Subject = string.Concat(LocalizationService.GetResourceString("Topic.Notification.Subject"), SettingsService.GetSettings().ForumName)
-                    }).ToList();
+                        // Now get all the users that need notifying
+                        var usersToNotify = MembershipService.GetUsersById(notifications);
 
-                    // and now pass the emails in to be sent
-                    _emailService.SendMail(emails);
+                        // Create the email
+                        var sb = new StringBuilder();
+                        sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Topic.Notification.NewTopics"), cat.Name));
+                        sb.AppendFormat("<p>{0}</p>", string.Concat(SettingsService.GetSettings().ForumUrl, cat.NiceUrl));
+
+                        // create the emails and only send them to people who have not had notifications disabled
+                        var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true).Select(user => new Email
+                        {
+                            Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
+                            EmailTo = user.Email,
+                            NameTo = user.UserName,
+                            Subject = string.Concat(LocalizationService.GetResourceString("Topic.Notification.Subject"), SettingsService.GetSettings().ForumName)
+                        }).ToList();
+
+                        // and now pass the emails in to be sent
+                        _emailService.SendMail(emails);
+
+                        try
+                        {
+                            unitOfWork.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            unitOfWork.Rollback();
+                            LoggingService.Error(ex);
+                        }
+                    }
                 }
             }
+
+
         }
 
     }

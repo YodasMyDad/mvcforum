@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Web;
+using System.Web.Hosting;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
 
 namespace MVCForum.Services
@@ -14,10 +14,89 @@ namespace MVCForum.Services
     {
         private readonly ILoggingService _loggingService;
         private readonly ISettingsService _settingsService;
-        public EmailService(ILoggingService loggingService, ISettingsService settingsService)
+        private readonly IEmailRepository _emailRepository;
+
+        public EmailService(ILoggingService loggingService, ISettingsService settingsService, IEmailRepository emailRepository)
         {
             _loggingService = loggingService;
             _settingsService = settingsService;
+            _emailRepository = emailRepository;
+        }
+
+        public void ProcessMail(int amountToSend)
+        {
+            try
+            {
+                // Get the amount of emails to send in this batch
+                var emails = _emailRepository.GetAll(amountToSend);
+
+                // See if there are any
+                if (emails != null && emails.Count > 0)
+                {
+                    // Get the mails settings
+                    var settings = _settingsService.GetSettings(false);
+                    var smtp = settings.SMTP;
+                    var smtpUsername = settings.SMTPUsername;
+                    var smtpPassword = settings.SMTPPassword;
+                    var smtpPort = settings.SMTPPort;
+                    var smtpEnableSsl = settings.SMTPEnableSSL;
+                    var fromEmail = settings.NotificationReplyEmail;
+
+                    // If no SMTP settings then log it
+                    if (string.IsNullOrEmpty(smtp))
+                    {
+                        _loggingService.Error("There are no SMTP details in the settings, unable to send emails");
+                        return;
+                    }
+
+                    // Set up the SMTP Client object and settings
+                    var mySmtpClient = new SmtpClient(smtp);
+                    if (!string.IsNullOrEmpty(smtpUsername) && !string.IsNullOrEmpty(smtpPassword))
+                    {
+                        mySmtpClient.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
+                    }
+
+                    if (smtpEnableSsl != null)
+                    {
+                        mySmtpClient.EnableSsl = (bool)smtpEnableSsl;
+                    }
+
+                    if (!string.IsNullOrEmpty(smtpPort))
+                    {
+                        mySmtpClient.Port = Convert.ToInt32(smtpPort);
+                    }
+
+                    // List to store the emails to delete after they are sent
+                    var emailsToDelete = new List<Email>();
+
+                    // Loop through email email create a mailmessage and send it
+                    foreach (var message in emails)
+                    {
+                        var msg = new MailMessage
+                        {
+                            IsBodyHtml = true,
+                            Body = message.Body,
+                            From = new MailAddress(fromEmail),
+                            Subject = message.Subject
+                        };
+                        msg.To.Add(message.EmailTo);
+                        mySmtpClient.Send(msg);
+
+                        emailsToDelete.Add(message);
+                    }
+
+                    // Loop through the sent emails and delete them
+                    foreach (var sentEmail in emailsToDelete)
+                    {
+                        _emailRepository.Delete(sentEmail);
+                    }
+                   
+                }
+            }
+            catch (Exception ex)
+            {
+                _loggingService.Error(ex);
+            }
         }
 
         /// <summary>
@@ -28,7 +107,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public string EmailTemplate(string to, string content)
         {
-            using (var sr = File.OpenText(HttpContext.Current.Server.MapPath(@"~/Content/Emails/EmailNotification.htm")))
+            using (var sr = File.OpenText(HostingEnvironment.MapPath(@"~/Content/Emails/EmailNotification.htm")))
             {
                 var sb = sr.ReadToEnd();
                 sr.Close();
@@ -57,87 +136,14 @@ namespace MVCForum.Services
         /// <summary>
         /// Send multiple emails
         /// </summary>
-        /// <param name="email"></param>
-        /// NOTE: This implementation has a max send of 100 to stop mail server black listing
-        public void SendMail(List<Email> email)
+        /// <param name="emails"></param>
+        public void SendMail(List<Email> emails)
         {
-            try
+            // Add all the emails to the email table
+            // They are sent every X seconds by the email sending task
+            foreach (var email in emails)
             {
-                if (email != null && email.Count > 0)
-                {
-
-                    var smtp = _settingsService.GetSettings().SMTP;
-                    var smtpUsername = _settingsService.GetSettings().SMTPUsername;
-                    var smtpPassword = _settingsService.GetSettings().SMTPPassword;
-                    var smtpPort = _settingsService.GetSettings().SMTPPort;
-                    var smtpEnableSsl = _settingsService.GetSettings().SMTPEnableSSL;
-
-                    if (string.IsNullOrEmpty(smtp)) return;
-
-                    var mySmtpClient = new SmtpClient(smtp);
-                    if (!string.IsNullOrEmpty(smtpUsername) && !string.IsNullOrEmpty(smtpPassword))
-                    {
-                        mySmtpClient.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
-                    }
-
-                    if (smtpEnableSsl != null)
-                    {
-                        mySmtpClient.EnableSsl = (bool)smtpEnableSsl;
-                    }
-
-                    if (!string.IsNullOrEmpty(smtpPort))
-                    {
-                        mySmtpClient.Port = Convert.ToInt32(smtpPort);
-                    }
-
-                    if (email.Count == 1)
-                    {
-                        var defaultEmail = email.FirstOrDefault();
-                        if (defaultEmail != null)
-                        {
-                            var msg = new MailMessage
-                            {
-                                IsBodyHtml = true,
-                                Body = defaultEmail.Body,
-                                From = new MailAddress(defaultEmail.EmailFrom),
-                                Subject = defaultEmail.Subject
-                            };
-                            msg.To.Add(defaultEmail.EmailTo);
-                            mySmtpClient.Send(msg);
-                        }
-                    }
-                    else
-                    {
-                        var count = 1;
-                        foreach (var message in email)
-                        {
-                            // Throw exception if over 100, they need to use custom
-                            // mail provider such as campaign monitor
-                            if(count > 100)
-                            {
-                                _loggingService.Error(@"Unable to send more emails, over 100 limit - 
-                                If you need to send more in one go, create a new email service with a dedicated provider");
-                                break;
-                            }
-
-                            var msg = new MailMessage
-                                          {
-                                              IsBodyHtml = true,
-                                              Body = message.Body,
-                                              From = new MailAddress(message.EmailFrom),
-                                              Subject = message.Subject
-                                          };
-                            msg.To.Add(message.EmailTo);
-                            mySmtpClient.Send(msg);
-
-                            count++;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _loggingService.Error(ex);
+                _emailRepository.Add(email);
             }
         }
     }

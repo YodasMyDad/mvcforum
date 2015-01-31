@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
+using System.Web.Services.Description;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
@@ -104,24 +105,41 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult SendTestEmail()
         {
-            var sb = new StringBuilder();
-            sb.AppendFormat("<p>{0}</p>", string.Concat("This is a test email from ", SettingsService.GetSettings().ForumName));
-            var email = new Email
+            using (var uow = UnitOfWorkManager.NewUnitOfWork())
+            {
+                var sb = new StringBuilder();
+                sb.AppendFormat("<p>{0}</p>",
+                    string.Concat("This is a test email from ", SettingsService.GetSettings().ForumName));
+                var email = new Email
                 {
-                    EmailFrom = SettingsService.GetSettings().AdminEmailAddress,
                     EmailTo = SettingsService.GetSettings().AdminEmailAddress,
                     NameTo = "Email Test Admin",
                     Subject = string.Concat("Email Test From ", SettingsService.GetSettings().ForumName)
                 };
-            email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
-            _emailService.SendMail(email);
+                email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+                _emailService.SendMail(email);
 
-            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-            {
-                Message = "Test Email Sent",
-                MessageType = GenericMessages.success
-            };
-            return RedirectToAction("Index");
+                var message = new GenericMessageViewModel
+                {
+                    Message = "Test Email Sent",
+                    MessageType = GenericMessages.success
+                };
+
+                try
+                {
+                    uow.Commit();
+                }
+                catch (Exception ex)
+                {
+                    uow.Rollback();
+                    LoggingService.Error(ex);
+                    message.Message = "Error sending email";
+                    message.MessageType = GenericMessages.danger;
+                }
+                TempData[AppConstants.MessageViewBagName] = message;
+
+                return RedirectToAction("Index");
+            }
         }
     }
 }

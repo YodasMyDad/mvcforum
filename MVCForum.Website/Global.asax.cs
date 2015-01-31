@@ -4,13 +4,16 @@ using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using DataAnnotationsExtensions.ClientValidation;
 using LowercaseRoutesMVC;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
+using MVCForum.IOC;
 using MVCForum.Utilities;
 using MVCForum.Website.Application;
+using MVCForum.Website.ScheduledJobs;
 
 namespace MVCForum.Website
 {
@@ -96,6 +99,15 @@ namespace MVCForum.Website
             AreaRegistration.RegisterAllAreas();
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
+
+            // Start unity
+            var unityContainer = UnityHelper.Start();
+            
+            // Run scheduled tasks
+            ScheduledRunner.Run(unityContainer);
+
+            // Register Data annotations
+            DataAnnotationsModelValidatorProviderExtensions.RegisterValidationExtensions();  
 
             // Store the value for use in the app
             Application["Version"] = AppHelpers.GetCurrentVersionNo();

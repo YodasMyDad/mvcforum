@@ -32,7 +32,8 @@ namespace MVCForum.Services
         public LoggingService()
         {
             // If we have no http context current then assume testing mode i.e. log file in run folder
-            _logFileFolder = HttpContext.Current != null ? HttpContext.Current.Server.MapPath(LogFileDirectory) : @".";
+            //_logFileFolder = HttpContext.Current != null ? HttpContext.Current.Server.MapPath(LogFileDirectory) : @".";
+            _logFileFolder = System.Web.Hosting.HostingEnvironment.MapPath(LogFileDirectory);            
             _logFileName = MakeLogFileName(false);
         }
 
@@ -90,8 +91,9 @@ namespace MVCForum.Services
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    var testing = ex;
                     // Not much to do if logging failed...
                 } 
             }
@@ -162,7 +164,7 @@ namespace MVCForum.Services
             var logs = new List<LogEntry>();
 
             // Read the file and display it line by line.
-            using (var file = new StreamReader(_logFileName, System.Text.Encoding.UTF8, true))
+            using (var file = new StreamReader(_logFileName, Encoding.UTF8, true))
             {
                 string line;
                 while ((line = file.ReadLine()) != null)

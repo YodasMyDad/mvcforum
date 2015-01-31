@@ -39,7 +39,6 @@ namespace MVCForum.Services
             sb.AppendFormat("<p>{0}:</p>", _localizationService.GetResourceString("Report.Reason"));
             sb.AppendFormat("<p>{0}</p>", report.Reason);
 
-            email.EmailFrom = _settingsService.GetSettings().NotificationReplyEmail;
             email.EmailTo = _settingsService.GetSettings().AdminEmailAddress;
             email.Subject = _localizationService.GetResourceString("Report.MemberReport");
             email.NameTo = _localizationService.GetResourceString("Report.Admin");
@@ -68,7 +67,6 @@ namespace MVCForum.Services
             sb.AppendFormat("<p>{0}:</p>", _localizationService.GetResourceString("Report.Reason"));
             sb.AppendFormat("<p>{0}</p>", report.Reason);
 
-            email.EmailFrom = _settingsService.GetSettings().NotificationReplyEmail;
             email.EmailTo = _settingsService.GetSettings().AdminEmailAddress;
             email.Subject = _localizationService.GetResourceString("Report.PostReport");
             email.NameTo = _localizationService.GetResourceString("Report.Admin");

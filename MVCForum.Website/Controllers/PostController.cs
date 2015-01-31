@@ -220,39 +220,55 @@ namespace MVCForum.Website.Controllers
 
         private void NotifyNewTopics(Topic topic)
         {
-            // Get all notifications for this category
-            var notifications = _topicNotificationService.GetByTopic(topic).Select(x => x.User.Id).ToList();
 
-            if (notifications.Any())
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-                // remove the current user from the notification, don't want to notify yourself that you 
-                // have just made a topic!
-                notifications.Remove(LoggedOnUser.Id);
-
-                if (notifications.Count > 0)
+                try
                 {
-                    // Now get all the users that need notifying
-                    var usersToNotify = MembershipService.GetUsersById(notifications);
+                    // Get all notifications for this category
+                    var notifications = _topicNotificationService.GetByTopic(topic).Select(x => x.User.Id).ToList();
 
-                    // Create the email
-                    var sb = new StringBuilder();
-                    sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Post.Notification.NewPosts"), topic.Name));
-                    sb.AppendFormat("<p>{0}</p>", string.Concat(SettingsService.GetSettings().ForumUrl, topic.NiceUrl));
-
-                    // create the emails only to people who haven't had notifications disabled
-                    var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true).Select(user => new Email
+                    if (notifications.Any())
                     {
-                        Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
-                        EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
-                        EmailTo = user.Email,
-                        NameTo = user.UserName,
-                        Subject = string.Concat(LocalizationService.GetResourceString("Post.Notification.Subject"), SettingsService.GetSettings().ForumName)
-                    }).ToList();
+                        // remove the current user from the notification, don't want to notify yourself that you 
+                        // have just made a topic!
+                        notifications.Remove(LoggedOnUser.Id);
 
-                    // and now pass the emails in to be sent
-                    _emailService.SendMail(emails);
+                        if (notifications.Count > 0)
+                        {
+                            // Now get all the users that need notifying
+                            var usersToNotify = MembershipService.GetUsersById(notifications);
+
+                            // Create the email
+                            var sb = new StringBuilder();
+                            sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Post.Notification.NewPosts"), topic.Name));
+                            sb.AppendFormat("<p>{0}</p>", string.Concat(SettingsService.GetSettings().ForumUrl, topic.NiceUrl));
+
+                            // create the emails only to people who haven't had notifications disabled
+                            var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true).Select(user => new Email
+                            {
+                                Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
+                                EmailTo = user.Email,
+                                NameTo = user.UserName,
+                                Subject = string.Concat(LocalizationService.GetResourceString("Post.Notification.Subject"), SettingsService.GetSettings().ForumName)
+                            }).ToList();
+
+                            // and now pass the emails in to be sent
+                            _emailService.SendMail(emails);
+
+                            unitOfWork.Commit();
+                        }
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
                 }
             }
+
         }
 
         [Authorize]
@@ -275,7 +291,7 @@ namespace MVCForum.Website.Controllers
         {
             if (SettingsService.GetSettings().EnableSpamReporting)
             {
-                using (UnitOfWorkManager.NewUnitOfWork())
+                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
                     var post = _postService.Get(viewModel.PostId);
                     var report = new Report
@@ -285,6 +301,16 @@ namespace MVCForum.Website.Controllers
                         Reporter = LoggedOnUser
                     };
                     _reportService.PostReport(report);
+
+                    try
+                    {
+                        unitOfWork.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                    }
 
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                     {

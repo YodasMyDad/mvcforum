@@ -61,41 +61,55 @@ namespace MVCForum.Website.Controllers
         [ChildActionOnly]
         public ActionResult Create(Guid to)
         {
-
-            // Check if private messages are enabled
-            if (!SettingsService.GetSettings().EnablePrivateMessages || LoggedOnUser.DisablePrivateMessages == true)
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-                return Content(LocalizationService.GetResourceString("Errors.GenericMessage"));
-            }
-
-            // Check outbox size of logged in user
-            var senderCount = _privateMessageService.GetAllSentByUser(LoggedOnUser.Id).Count;
-            if (senderCount > SettingsService.GetSettings().MaxPrivateMessagesPerMember)
-            {
-                return Content(LocalizationService.GetResourceString("PM.SentItemsOverCapcity"));
-            }
-            if (senderCount > (SettingsService.GetSettings().MaxPrivateMessagesPerMember - SiteConstants.PrivateMessageWarningAmountLessThanAllowedSize))
-            {
-                // Send user a warning they are about to exceed 
-                var sb = new StringBuilder();
-                sb.AppendFormat("<p>{0}</p>", LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeBody"));
-                var email = new Email
+                var viewModel = new CreatePrivateMessageViewModel
                 {
-                    EmailFrom = SettingsService.GetSettings().AdminEmailAddress,
-                    EmailTo = LoggedOnUser.Email,
-                    NameTo = LoggedOnUser.UserName,
-                    Subject = LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeSubject")
+                    To = to
                 };
-                email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
-                _emailService.SendMail(email);
+
+                try
+                {
+
+                    // Check if private messages are enabled
+                    if (!SettingsService.GetSettings().EnablePrivateMessages || LoggedOnUser.DisablePrivateMessages == true)
+                    {
+                        return Content(LocalizationService.GetResourceString("Errors.GenericMessage"));
+                    }
+
+                    // Check outbox size of logged in user
+                    var senderCount = _privateMessageService.GetAllSentByUser(LoggedOnUser.Id).Count;
+                    if (senderCount > SettingsService.GetSettings().MaxPrivateMessagesPerMember)
+                    {
+                        return Content(LocalizationService.GetResourceString("PM.SentItemsOverCapcity"));
+                    }
+                    if (senderCount > (SettingsService.GetSettings().MaxPrivateMessagesPerMember - SiteConstants.PrivateMessageWarningAmountLessThanAllowedSize))
+                    {
+                        // Send user a warning they are about to exceed 
+                        var sb = new StringBuilder();
+                        sb.AppendFormat("<p>{0}</p>", LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeBody"));
+                        var email = new Email
+                        {
+                            EmailTo = LoggedOnUser.Email,
+                            NameTo = LoggedOnUser.UserName,
+                            Subject = LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeSubject")
+                        };
+                        email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+                        _emailService.SendMail(email);
+                    }
+
+                    unitOfWork.Commit();
+
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
+                }
+
+                return PartialView(viewModel);
             }
 
-            var viewModel = new CreatePrivateMessageViewModel
-            {
-                To = to
-            };
-
-            return PartialView(viewModel);
         }
 
         [HttpPost]
@@ -146,7 +160,6 @@ namespace MVCForum.Website.Controllers
                                 sb.AppendFormat("<p>{0}</p>", LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeBody"));
                                 var email = new Email
                                 {
-                                    EmailFrom = SettingsService.GetSettings().AdminEmailAddress,
                                     EmailTo = memberTo.Email,
                                     NameTo = memberTo.UserName,
                                     Subject = LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeSubject")
@@ -161,15 +174,12 @@ namespace MVCForum.Website.Controllers
 
                             try
                             {
-                                unitOfWork.Commit();
-
                                 // Finally send an email to the user so they know they have a new private message
                                 // As long as they have not had notifications disabled
                                 if (memberTo.DisableEmailNotifications != true)
                                 {
                                     var email = new Email
                                     {
-                                        EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
                                         EmailTo = memberTo.Email,
                                         Subject = LocalizationService.GetResourceString("PM.NewPrivateMessageSubject"),
                                         NameTo = memberTo.UserName
@@ -180,6 +190,8 @@ namespace MVCForum.Website.Controllers
                                     email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
                                     _emailService.SendMail(email);
                                 }
+
+                                unitOfWork.Commit();
 
                                 return PartialView("_PrivateMessage", privateMessage);
                             }

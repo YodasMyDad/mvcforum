@@ -93,6 +93,7 @@
   <ItemGroup>
     <Compile Include="Caching\CachingConfiguration.cs" />
     <Compile Include="Context\MVCForumContext.cs" />
+    <Compile Include="Mapping\EmailMapping.cs" />
     <Compile Include="Mapping\BadgeMapping.cs" />
     <Compile Include="Mapping\BadgeTypeTimeLastCheckedMapping.cs" />
     <Compile Include="Mapping\BannedWordMapping.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="Repositories\BadgeRepository.cs" />
     <Compile Include="Repositories\BannedEmailRepository.cs" />
     <Compile Include="Repositories\CategoryNotificationRepository.cs" />
+    <Compile Include="Repositories\EmailRepository.cs" />
     <Compile Include="Repositories\GlobalPermissionForRoleRepository.cs" />
     <Compile Include="Repositories\CategoryPermissionForRoleRepository.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />

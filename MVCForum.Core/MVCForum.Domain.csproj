@@ -149,6 +149,7 @@
     <Compile Include="Interfaces\IModelAttribute.cs" />
     <Compile Include="Interfaces\IMVCForumContext.cs" />
     <Compile Include="Interfaces\IPagedList.cs" />
+    <Compile Include="Interfaces\Repositories\IEmailRepository.cs" />
     <Compile Include="Interfaces\Repositories\IGlobalPermissionForRoleRepository.cs" />
     <Compile Include="Interfaces\Repositories\IFavouriteRepository.cs" />
     <Compile Include="Interfaces\Repositories\IUploadedFileRepository.cs" />

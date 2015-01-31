@@ -8,6 +8,7 @@ using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Services;
 using Microsoft.Practices.Unity;
+using Quartz.Unity;
 using Unity.Mvc4;
 
 namespace MVCForum.IOC
@@ -37,14 +38,13 @@ namespace MVCForum.IOC
     public static class UnityHelper
     {
 
-        public static void Start()
+        public static IUnityContainer Start()
         {
             var container = BuildUnityContainer();
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
 
-            // TODO - Not working?
-            //GlobalConfiguration.Configuration.DependencyResolver = new Unity.WebApi.UnityDependencyResolver(container);
+            return container;
         }
 
         /// <summary>
@@ -61,6 +61,9 @@ namespace MVCForum.IOC
             // Database context, one per request, ensure it is disposed
             container.BindInRequestScope<IMVCForumContext, MVCForumContext>();
             container.BindInRequestScope<IUnitOfWorkManager, UnitOfWorkManager>();
+
+            // Quartz
+            container.AddNewExtension<QuartzUnityExtension>();
 
             //Bind the various domain model services and repositories that e.g. our controllers require         
             container.BindInRequestScope<IUnitOfWorkManager, UnitOfWorkManager>();
@@ -121,6 +124,7 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IUploadedFileRepository, UploadedFileRepository>();
             container.BindInRequestScope<IFavouriteRepository, FavouriteRepository>();
             container.BindInRequestScope<IGlobalPermissionForRoleRepository, GlobalPermissionForRoleRepository>();
+            container.BindInRequestScope<IEmailRepository, EmailRepository>();
 
             //container.BindInRequestScope<ISessionHelper, SessionHelper>();
 

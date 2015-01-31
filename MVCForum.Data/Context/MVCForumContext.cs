@@ -38,6 +38,7 @@ namespace MVCForum.Data.Context
         public DbSet<UploadedFile> UploadedFile { get; set; }
         public DbSet<Favourite> Favourite { get; set; }
         public DbSet<GlobalPermissionForRole> GlobalPermissionForRole { get; set; }
+        public DbSet<Email> Email { get; set; }
 
         /// <summary>
         /// Constructor
@@ -80,6 +81,7 @@ namespace MVCForum.Data.Context
             modelBuilder.Configurations.Add(new UploadedFileMapping());
             modelBuilder.Configurations.Add(new FavouriteMapping());
             modelBuilder.Configurations.Add(new GlobalPermissionForRoleMapping());
+            modelBuilder.Configurations.Add(new EmailMapping());
 
             base.OnModelCreating(modelBuilder);
         }

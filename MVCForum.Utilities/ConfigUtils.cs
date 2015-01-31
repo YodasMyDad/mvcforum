@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Web;
 using System.Web.Configuration;
+using System.Web.Hosting;
 using System.Xml;
 
 namespace MVCForum.Utilities
@@ -11,7 +12,7 @@ namespace MVCForum.Utilities
     {
         private static string WebConfigPath
         {
-            get { return HttpContext.Current.Server.MapPath("~/web.config"); }
+            get { return HostingEnvironment.MapPath("~/web.config"); }
         }
 
         /// <summary>

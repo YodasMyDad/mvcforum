@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Text;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Security;
 using MVCForum.Domain.Constants;
@@ -375,7 +376,7 @@ namespace MVCForum.Website.Controllers
                         var image = AppHelpers.GetImageFromExternalUrl(userModel.SocialProfileImageUrl);
 
                         // Set upload directory - Create if it doesn't exist
-                        var uploadFolderPath = Server.MapPath(string.Concat(SiteConstants.UploadFolderPath, userToSave.Id));
+                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, userToSave.Id));
                         if (!Directory.Exists(uploadFolderPath))
                         {
                             Directory.CreateDirectory(uploadFolderPath);
@@ -423,10 +424,10 @@ namespace MVCForum.Website.Controllers
 
                     try
                     {
-                        unitOfWork.Commit();
-
                         // Only send the email if the admin is not manually authorising emails or it's pointless
                         SendEmailConfirmationEmail(userToSave);
+
+                        unitOfWork.Commit();
 
                         if (homeRedirect)
                         {
@@ -497,7 +498,6 @@ namespace MVCForum.Website.Controllers
                                                 string.Format("<p><a href=\"{0}\">{0}</a></p>", confirmationLink)));
                     var email = new Email
                     {
-                        EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
                         EmailTo = userToSave.Email,
                         NameTo = userToSave.UserName,
                         Subject = LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.Subject")
@@ -521,7 +521,7 @@ namespace MVCForum.Website.Controllers
 
         public ActionResult ResendEmailConfirmation(string username)
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 var user = MembershipService.GetUser(username);
                 if (user != null)
@@ -532,6 +532,16 @@ namespace MVCForum.Website.Controllers
                         Message = LocalizationService.GetResourceString("Members.MemberEmailAuthorisationNeeded"),
                         MessageType = GenericMessages.success
                     };
+                }
+
+                try
+                {
+                    unitOfWork.Commit();
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
                 }
             }
             return RedirectToAction("Index", "Home");
@@ -853,7 +863,7 @@ namespace MVCForum.Website.Controllers
                     if (userModel.Files != null)
                     {
                         // Before we save anything, check the user already has an upload folder and if not create one
-                        var uploadFolderPath = Server.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnUser.Id));
+                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnUser.Id));
                         if (!Directory.Exists(uploadFolderPath))
                         {
                             Directory.CreateDirectory(uploadFolderPath);
@@ -1064,7 +1074,7 @@ namespace MVCForum.Website.Controllers
         {
             if (SettingsService.GetSettings().EnableMemberReporting)
             {
-                using (UnitOfWorkManager.NewUnitOfWork())
+                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
                     var user = MembershipService.GetUser(viewModel.Id);
                     var report = new Report
@@ -1074,6 +1084,17 @@ namespace MVCForum.Website.Controllers
                                          Reporter = LoggedOnUser
                                      };
                     _reportService.MemberReport(report);
+
+                    try
+                    {
+                        unitOfWork.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                    }
+
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = LocalizationService.GetResourceString("Report.ReportSent"),
@@ -1216,7 +1237,7 @@ namespace MVCForum.Website.Controllers
             }
 
             // Success send newpassword to the user telling them password has been changed
-            using (UnitOfWorkManager.NewUnitOfWork())
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
 
                 if (changePasswordSucceeded)
@@ -1226,13 +1247,22 @@ namespace MVCForum.Website.Controllers
                     sb.AppendFormat("<p><b>{0}</b></p>", newPassword);
                     var email = new Email
                                     {
-                                        EmailFrom = SettingsService.GetSettings().NotificationReplyEmail,
                                         EmailTo = currentUser.Email,
                                         NameTo = currentUser.UserName,
                                         Subject = LocalizationService.GetResourceString("Members.ForgotPassword.Subject")
                                     };
                     email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
                     _emailService.SendMail(email);
+
+                    try
+                    {
+                        unitOfWork.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                    }
 
                     // We use temp data because we are doing a redirect
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel

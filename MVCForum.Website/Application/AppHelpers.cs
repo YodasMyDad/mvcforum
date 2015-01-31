@@ -116,7 +116,7 @@ namespace MVCForum.Website.Application
         public static List<string> GetThemeFolders()
         {
             var folders = new List<string>();
-            var themeRootFolder = HttpContext.Current.Server.MapPath(String.Format("~/{0}", AppConstants.ThemeRootFolderName));
+            var themeRootFolder = HostingEnvironment.MapPath(String.Format("~/{0}", AppConstants.ThemeRootFolderName));
             if (Directory.Exists(themeRootFolder))
             {
                 folders.AddRange(Directory.GetDirectories(themeRootFolder)
@@ -207,6 +207,26 @@ namespace MVCForum.Website.Application
         #endregion
 
         #region Urls
+
+        public static bool Ping(string url)
+        {
+            try
+            {
+                var request = (HttpWebRequest)WebRequest.Create(url);
+                request.Timeout = 3000;
+                request.AllowAutoRedirect = false; // find out if this site is up and don't follow a redirector
+                request.Method = "HEAD";
+
+                using (var response = request.GetResponse())
+                {
+                    return true;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         public static string CategoryRssUrls(string slug)
         {

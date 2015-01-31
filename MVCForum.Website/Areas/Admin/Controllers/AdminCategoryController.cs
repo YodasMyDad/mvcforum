@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
@@ -95,7 +96,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         if (categoryViewModel.Files != null)
                         {
                             // Before we save anything, check the user already has an upload folder and if not create one
-                            var uploadFolderPath = Server.MapPath(string.Concat(SiteConstants.UploadFolderPath, category.Id));
+                            var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, category.Id));
                             if (!Directory.Exists(uploadFolderPath))
                             {
                                 Directory.CreateDirectory(uploadFolderPath);
@@ -208,7 +209,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         if (categoryViewModel.Files != null)
                         {
                             // Before we save anything, check the user already has an upload folder and if not create one
-                            var uploadFolderPath = Server.MapPath(string.Concat(SiteConstants.UploadFolderPath, categoryViewModel.Id));
+                            var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, categoryViewModel.Id));
                             if (!Directory.Exists(uploadFolderPath))
                             {
                                 Directory.CreateDirectory(uploadFolderPath);

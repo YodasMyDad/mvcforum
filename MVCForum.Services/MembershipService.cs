@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Linq;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Security;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Events;
@@ -361,7 +362,6 @@ namespace MVCForum.Services
                             var email = new Email
                                             {
                                                 EmailTo = _settingsRepository.GetSettings().AdminEmailAddress,
-                                                EmailFrom = _settingsRepository.GetSettings().NotificationReplyEmail,
                                                 NameTo = _localizationService.GetResourceString("Members.Admin"),
                                                 Subject = _localizationService.GetResourceString("Members.NewMemberSubject")
                                             };
@@ -960,7 +960,7 @@ namespace MVCForum.Services
                 _uploadedFileService.Delete(file);
 
                 // And finally delete from the file system
-                System.IO.File.Delete(HttpContext.Current.Server.MapPath(filePath));
+                System.IO.File.Delete(HostingEnvironment.MapPath(filePath));
             }
 
             // Delete all posts

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
@@ -10,6 +7,7 @@ namespace MVCForum.Domain.Interfaces.Services
     {
         void SendMail(Email email);
         void SendMail(List<Email> email);
+        void ProcessMail(int amountToSend);
         string EmailTemplate(string to, string content);
     }
 }

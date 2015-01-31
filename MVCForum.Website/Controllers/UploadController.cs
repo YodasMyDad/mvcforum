@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
@@ -73,7 +74,7 @@ namespace MVCForum.Website.Controllers
 
                             // woot! User has permission and all seems ok
                             // Before we save anything, check the user already has an upload folder and if not create one
-                            var uploadFolderPath = Server.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnUser.Id));
+                            var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnUser.Id));
                             if (!Directory.Exists(uploadFolderPath))
                             {
                                 Directory.CreateDirectory(uploadFolderPath);
@@ -169,7 +170,7 @@ namespace MVCForum.Website.Controllers
 
 
                             // And finally delete from the file system
-                            System.IO.File.Delete(Server.MapPath(filePath));
+                            System.IO.File.Delete(HostingEnvironment.MapPath(filePath));
                         }
                         else
                         {

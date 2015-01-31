@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web.Configuration;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
@@ -151,7 +152,7 @@ namespace MVCForum.Website.Controllers
 
             // Firstly add any new tables needed via the SQL
             // Get the SQL file and if it exists then run it
-            var dbFilePath = Server.MapPath(InstallerHelper.GetUpdateDatabaseFilePath(currentVersionNo));
+            var dbFilePath = HostingEnvironment.MapPath(InstallerHelper.GetUpdateDatabaseFilePath(currentVersionNo));
 
             // See whether this version needs a table update
             if (System.IO.File.Exists(dbFilePath))
@@ -450,7 +451,7 @@ namespace MVCForum.Website.Controllers
                 try
                 {
                         // Get the base language file
-                        var file = System.Web.HttpContext.Current.Server.MapPath(@"~/Installer/en-GB.csv");
+                    var file = HostingEnvironment.MapPath(@"~/Installer/en-GB.csv");
 
                         // Verify that the user selected a file
                         if (file != null)

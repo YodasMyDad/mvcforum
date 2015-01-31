@@ -190,5 +190,14 @@ namespace MVCForum.Website.Application
         }
 
         public const string EditorType = "forumeditor";
+
+        // Misc
+        public static int EmailsToSendPerJob
+        {
+            get
+            {
+                return Convert.ToInt32(ConfigurationManager.AppSettings["EmailsToSendPerJob"]);
+            }
+        }
     }
 }

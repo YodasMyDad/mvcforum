@@ -5,6 +5,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Configuration;
+using System.Web.Hosting;
 using MVCForum.Data.Context;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
@@ -54,7 +55,7 @@ namespace MVCForum.Data.Repositories
             var filePath = string.Empty;
             try
             {
-                filePath = string.IsNullOrEmpty(sqlFilePath) ? HttpContext.Current.Server.MapPath(InstallerHelper.GetMainDatabaseFilePath(currentVersion)) : sqlFilePath;
+                filePath = string.IsNullOrEmpty(sqlFilePath) ? HostingEnvironment.MapPath(InstallerHelper.GetMainDatabaseFilePath(currentVersion)) : sqlFilePath;
                 var file = new FileInfo(filePath);
                 script = file.OpenText().ReadToEnd();
             }
