@@ -341,7 +341,8 @@ namespace MVCForum.Website.ViewModels.Mapping
                 ParentTopic = topic,
                 AllowedToVote = allowedToVote,
                 MemberHasFavourited = hasFavourited,
-                Favourites = favourites
+                Favourites = favourites,
+                PermaLink = string.Concat(topic.NiceUrl, "?", AppConstants.PostOrderBy, "=", AppConstants.AllPosts, "#comment-", post.Id)
             };
         }
 

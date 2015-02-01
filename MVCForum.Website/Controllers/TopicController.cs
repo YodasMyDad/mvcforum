@@ -211,7 +211,7 @@ namespace MVCForum.Website.Controllers
                 cats.Add(new SelectListItem { Text = cat.Name, Value = cat.Id.ToString() });
             }
             return cats;
-        } 
+        }
         #endregion
 
         [Authorize]
@@ -240,7 +240,7 @@ namespace MVCForum.Website.Controllers
                         // Create the model for just the post
                         var viewModel = new CreateEditTopicViewModel
                         {
-                            Content = Server.HtmlDecode(post.PostContent), 
+                            Content = Server.HtmlDecode(post.PostContent),
                             Id = post.Id,
                             Category = topic.Category.Id,
                             Name = topic.Name
@@ -265,7 +265,7 @@ namespace MVCForum.Website.Controllers
                             {
                                 viewModel.Tags = string.Join<string>(",", topic.Tags.Select(x => x.Tag));
                             }
-                            
+
                             // Populate the poll answers
                             if (topic.Poll != null && topic.Poll.PollAnswers.Any())
                             {
@@ -273,7 +273,7 @@ namespace MVCForum.Website.Controllers
                                 viewModel.PollAnswers = topic.Poll.PollAnswers;
                             }
                         }
-                        
+
                         // Return the edit view
                         return View(viewModel);
                     }
@@ -368,15 +368,15 @@ namespace MVCForum.Website.Controllers
                             topic.Name = StringUtils.GetSafeHtml(_bannedWordService.SanitiseBannedWords(editPostViewModel.Name));
 
                             // See if there is a poll
-                            if (editPostViewModel.PollAnswers != null && editPostViewModel.PollAnswers.Count > 0)
+                            if (editPostViewModel.PollAnswers != null && editPostViewModel.PollAnswers.Count(x => x != null) > 0)
                             {
                                 // Now sort the poll answers, what to add and what to remove
                                 // Poll answers already in this poll.
                                 //var existingAnswers = topic.Poll.PollAnswers.Where(x => postedIds.Contains(x.Id)).ToList();
                                 var postedIds = editPostViewModel.PollAnswers.Select(x => x.Id);
                                 var topicPollAnswerIds = topic.Poll.PollAnswers.Select(p => p.Id).ToList();
-                                var existingAnswers = editPostViewModel.PollAnswers.Where(x => topicPollAnswerIds.Contains(x.Id)).ToList();
-                                var newPollAnswers = editPostViewModel.PollAnswers.Where(x => !topicPollAnswerIds.Contains(x.Id)).ToList();
+                                var existingAnswers = editPostViewModel.PollAnswers.Where(x => x != null && topicPollAnswerIds.Contains(x.Id)).ToList();
+                                var newPollAnswers = editPostViewModel.PollAnswers.Where(x => x != null && !topicPollAnswerIds.Contains(x.Id)).ToList();
                                 var pollAnswersToRemove = topic.Poll.PollAnswers.Where(x => !postedIds.Contains(x.Id)).ToList();
 
                                 // Loop through existing and update names if need be
@@ -406,13 +406,16 @@ namespace MVCForum.Website.Controllers
                                 // Poll answers to add
                                 foreach (var newPollAnswer in newPollAnswers)
                                 {
-                                    var npa = new PollAnswer
+                                    if (newPollAnswer != null)
                                     {
-                                        Poll = topic.Poll,
-                                        Answer = newPollAnswer.Answer
-                                    };
-                                    _pollAnswerService.Add(npa);
-                                    topic.Poll.PollAnswers.Add(npa);
+                                        var npa = new PollAnswer
+                                        {
+                                            Poll = topic.Poll,
+                                            Answer = newPollAnswer.Answer
+                                        };
+                                        _pollAnswerService.Add(npa);
+                                        topic.Poll.PollAnswers.Add(npa);
+                                    }
                                 }
                             }
                             else
@@ -467,7 +470,7 @@ namespace MVCForum.Website.Controllers
                         catch (Exception ex)
                         {
                             unitOfWork.Rollback();
-                            LoggingService.Error(ex); 
+                            LoggingService.Error(ex);
                             TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                             {
                                 Message = LocalizationService.GetResourceString("Errors.GenericError"),
@@ -608,7 +611,7 @@ namespace MVCForum.Website.Controllers
                             topicViewModel.Content = _bannedWordService.SanitiseBannedWords(topicViewModel.Content, bannedWords);
 
                             // See if this is a poll and add it to the topic
-                            if (topicViewModel.PollAnswers.Count > 0)
+                            if (topicViewModel.PollAnswers.Count(x => x != null) > 0)
                             {
                                 // Do they have permission to create a new poll
                                 if (permissions[AppConstants.PermissionCreatePolls].IsTicked)
@@ -629,10 +632,13 @@ namespace MVCForum.Website.Controllers
                                     var newPollAnswers = new List<PollAnswer>();
                                     foreach (var pollAnswer in topicViewModel.PollAnswers)
                                     {
-                                        // Attach newly created poll to each answer
-                                        pollAnswer.Poll = newPoll;
-                                        _pollAnswerService.Add(pollAnswer);
-                                        newPollAnswers.Add(pollAnswer);
+                                        if (pollAnswer.Answer != null)
+                                        {
+                                            // Attach newly created poll to each answer
+                                            pollAnswer.Poll = newPoll;
+                                            _pollAnswerService.Add(pollAnswer);
+                                            newPollAnswers.Add(pollAnswer);
+                                        }
                                     }
                                     // Attach answers to poll
                                     newPoll.PollAnswers = newPollAnswers;
@@ -777,12 +783,12 @@ namespace MVCForum.Website.Controllers
                     }
                 }
 
-                using (UnitOfWorkManager.NewUnitOfWork())
+                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
                     if (successfullyCreated)
                     {
                         // Success so now send the emails
-                        NotifyNewTopics(category);
+                        NotifyNewTopics(category, unitOfWork);
 
                         // Redirect to the newly created topic
                         return Redirect(string.Format("{0}?postbadges=true", topic.NiceUrl));
@@ -1041,55 +1047,50 @@ namespace MVCForum.Website.Controllers
 
 
 
-        private void NotifyNewTopics(Category cat)
+        private void NotifyNewTopics(Category cat, IUnitOfWork unitOfWork)
         {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            // Get all notifications for this category
+            var notifications = _categoryNotificationService.GetByCategory(cat).Select(x => x.User.Id).ToList();
+
+            if (notifications.Any())
             {
-                // Get all notifications for this category
-                var notifications = _categoryNotificationService.GetByCategory(cat).Select(x => x.User.Id).ToList();
+                // remove the current user from the notification, don't want to notify yourself that you 
+                // have just made a topic!
+                notifications.Remove(LoggedOnUser.Id);
 
-                if (notifications.Any())
+                if (notifications.Count > 0)
                 {
-                    // remove the current user from the notification, don't want to notify yourself that you 
-                    // have just made a topic!
-                    notifications.Remove(LoggedOnUser.Id);
+                    // Now get all the users that need notifying
+                    var usersToNotify = MembershipService.GetUsersById(notifications);
 
-                    if (notifications.Count > 0)
+                    // Create the email
+                    var sb = new StringBuilder();
+                    sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Topic.Notification.NewTopics"), cat.Name));
+                    sb.AppendFormat("<p>{0}</p>", string.Concat(SettingsService.GetSettings().ForumUrl, cat.NiceUrl));
+
+                    // create the emails and only send them to people who have not had notifications disabled
+                    var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true).Select(user => new Email
                     {
-                        // Now get all the users that need notifying
-                        var usersToNotify = MembershipService.GetUsersById(notifications);
+                        Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
+                        EmailTo = user.Email,
+                        NameTo = user.UserName,
+                        Subject = string.Concat(LocalizationService.GetResourceString("Topic.Notification.Subject"), SettingsService.GetSettings().ForumName)
+                    }).ToList();
 
-                        // Create the email
-                        var sb = new StringBuilder();
-                        sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Topic.Notification.NewTopics"), cat.Name));
-                        sb.AppendFormat("<p>{0}</p>", string.Concat(SettingsService.GetSettings().ForumUrl, cat.NiceUrl));
+                    // and now pass the emails in to be sent
+                    _emailService.SendMail(emails);
 
-                        // create the emails and only send them to people who have not had notifications disabled
-                        var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true).Select(user => new Email
-                        {
-                            Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
-                            EmailTo = user.Email,
-                            NameTo = user.UserName,
-                            Subject = string.Concat(LocalizationService.GetResourceString("Topic.Notification.Subject"), SettingsService.GetSettings().ForumName)
-                        }).ToList();
-
-                        // and now pass the emails in to be sent
-                        _emailService.SendMail(emails);
-
-                        try
-                        {
-                            unitOfWork.Commit();
-                        }
-                        catch (Exception ex)
-                        {
-                            unitOfWork.Rollback();
-                            LoggingService.Error(ex);
-                        }
+                    try
+                    {
+                        unitOfWork.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
                     }
                 }
             }
-
-
         }
 
     }

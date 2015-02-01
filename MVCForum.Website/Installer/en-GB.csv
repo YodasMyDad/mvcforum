@@ -320,7 +320,7 @@ Topic.Label.Tags,Add Tag
 Topic.Label.UploadFiles,Upload Files
 Search.Searching,Searching
 Search.InTopic,In Topic
-Members.SrubAndBan,Scrub & Ban
+Members.SrubAndBan,Scrub Member
 Confirmation.SrubAndBan,Are you sure you want to do this? It will delete all their posts and then ban them
 Admin,Admin
 Members.SuccessfulSrub,All done
@@ -332,3 +332,4 @@ PM.AboutToExceedInboxSizeSubject,Private Message Inbox Allowance
 PM.NewPrivateMessage,New Private Message
 PM.LastActivity,Last Activity
 StopWord.Error,You have tried to enter a word or url that is not allowed on this site
+Post.Permalink,Permalink

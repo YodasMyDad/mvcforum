@@ -45,7 +45,7 @@ namespace MVCForum.Data.Repositories
         {
             var totalCount = _context.LocaleStringResource
                 .Join(_context.LocaleResourceKey, strRes => strRes.LocaleResourceKey.Id, resKey => resKey.Id,
-                      (strRes, resKey) => new {LocaleStringResource = strRes, LocaleResourceKey = resKey})
+                      (strRes, resKey) => new { LocaleStringResource = strRes, LocaleResourceKey = resKey })
                 .Count(joinResult => joinResult.LocaleStringResource.Language.Id == languageId);
 
             var results = _context.LocaleStringResource
@@ -66,12 +66,14 @@ namespace MVCForum.Data.Repositories
         public Dictionary<string, string> GetAllLanguageStringsByLangauge(Guid languageId)
         {
             var results = _context.LocaleStringResource
+                                .Include(x => x.Language)
+                                .Include(x => x.LocaleResourceKey)
                                 .Where(x => x.Language.Id == languageId)
                                   .Join(_context.LocaleResourceKey,
                                         strRes => strRes.LocaleResourceKey.Id,
                                         resKey => resKey.Id,
                                         (strRes, resKey) =>
-                                        new {LocaleStringResource = strRes, LocaleResourceKey = resKey})                                        
+                                        new { LocaleStringResource = strRes, LocaleResourceKey = resKey })
                                   .ToDictionary(arg => arg.LocaleResourceKey.Name.Trim(), arg => arg.LocaleStringResource.ResourceValue);
 
             return results;
@@ -85,8 +87,10 @@ namespace MVCForum.Data.Repositories
         public IList<LocaleStringResource> GetAllValuesForKey(Guid resourceKeyId)
         {
             return _context.LocaleStringResource
-                .Where(strRes => strRes.LocaleResourceKey.Id == resourceKeyId)
-                .Select(strRes => strRes).ToList();          
+                        .Include(x => x.Language)
+                        .Include(x => x.LocaleResourceKey)
+                        .Where(strRes => strRes.LocaleResourceKey.Id == resourceKeyId)
+                        .Select(strRes => strRes).ToList();
         }
 
         /// <summary>
@@ -97,14 +101,14 @@ namespace MVCForum.Data.Repositories
         {
             var totalCount = _context.LocaleResourceKey.Count();
 
-            var results = _context.LocaleResourceKey               
+            var results = _context.LocaleResourceKey
                 .OrderBy(x => x.Name)
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize)
                 .Select(item => item)
                 .ToList();
 
-            return new PagedList<LocaleResourceKey>(results, pageIndex, pageSize, totalCount);                   
+            return new PagedList<LocaleResourceKey>(results, pageIndex, pageSize, totalCount);
         }
 
         /// <summary>
@@ -134,7 +138,7 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public IList<LocaleStringResource> AllLanguageResources(Guid languageId)
         {
-            return  _context.LocaleStringResource
+            return _context.LocaleStringResource
                 .Where(x => x.Language.Id == languageId)
                 .ToList();
         }
@@ -150,8 +154,8 @@ namespace MVCForum.Data.Repositories
         public PagedList<LocaleStringResource> SearchResourceValuesForKey(Guid languageId, string search, int pageIndex, int pageSize)
         {
             var totalCount = _context.LocaleStringResource
-                .Join(_context.LocaleResourceKey, strRes => strRes.LocaleResourceKey.Id,resKey => resKey.Id,(strRes, resKey) => 
-                    new {LocaleStringResource = strRes, LocaleResourceKey = resKey}).Count(joinResult => joinResult.LocaleStringResource.Language.Id == languageId &&
+                .Join(_context.LocaleResourceKey, strRes => strRes.LocaleResourceKey.Id, resKey => resKey.Id, (strRes, resKey) =>
+                    new { LocaleStringResource = strRes, LocaleResourceKey = resKey }).Count(joinResult => joinResult.LocaleStringResource.Language.Id == languageId &&
                                                                                                                                                                                                                      joinResult.LocaleResourceKey.Name.ToUpper().Contains(search.ToUpper()));
 
             var results = _context.LocaleStringResource
@@ -160,14 +164,14 @@ namespace MVCForum.Data.Repositories
                         resKey => resKey.Id, // A function to extract the join key from each element of the second sequence
                         (strRes, resKey) => new { LocaleStringResource = strRes, LocaleResourceKey = resKey } // A function to create a result element from two matching elements.
                     )
-                .Where(joinResult => joinResult.LocaleStringResource.Language.Id == languageId && 
+                .Where(joinResult => joinResult.LocaleStringResource.Language.Id == languageId &&
                     joinResult.LocaleResourceKey.Name.ToUpper().Contains(search.ToUpper()))
                 .OrderBy(joinResult => joinResult.LocaleResourceKey.Name)
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize)
                 .Select(item => item.LocaleStringResource).ToList();
 
-            return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, totalCount);           
+            return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, totalCount);
         }
 
         /// <summary>
@@ -182,6 +186,8 @@ namespace MVCForum.Data.Repositories
         {
             var totalCount = _context.LocaleStringResource.Count();
             var results = _context.LocaleStringResource
+                .Include(x => x.Language)
+                .Include(x => x.LocaleResourceKey)
                 .Where(x => x.Language.Id == languageId)
                 .Where(x => x.ResourceValue.ToUpper().Contains(search.ToUpper()))
                 .OrderBy(x => x.ResourceValue)
@@ -189,7 +195,7 @@ namespace MVCForum.Data.Repositories
                 .Take(pageSize)
                 .Select(item => item).ToList();
 
-            return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, totalCount);  
+            return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, totalCount);
         }
 
         /// <summary>
@@ -207,8 +213,8 @@ namespace MVCForum.Data.Repositories
                 .Join(_context.LocaleResourceKey,
                       strRes => strRes.LocaleResourceKey.Id,
                       resKey => resKey.Id,
-                      (strRes, resKey) => new {LocaleStringResource = strRes, LocaleResourceKey = resKey})
-                      .Count(joinResult => joinResult.LocaleStringResource.Language.Id == languageId 
+                      (strRes, resKey) => new { LocaleStringResource = strRes, LocaleResourceKey = resKey })
+                      .Count(joinResult => joinResult.LocaleStringResource.Language.Id == languageId
                           && joinResult.LocaleResourceKey.Name.ToUpper().Contains(search.ToUpper()));
 
             var results = _context.LocaleStringResource
@@ -309,14 +315,14 @@ namespace MVCForum.Data.Repositories
             return _context.LocaleResourceKey.FirstOrDefault(x => x.Id == id);
         }
 
-                /// <summary>
+        /// <summary>
         /// Get a resource key by name
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
         public LocaleResourceKey GetResourceKey(string name)
         {
-            return _context.LocaleResourceKey.FirstOrDefault(x => x.Name.Trim() == name);       
+            return _context.LocaleResourceKey.FirstOrDefault(x => x.Name.Trim() == name);
         }
 
         /// <summary>
@@ -346,7 +352,8 @@ namespace MVCForum.Data.Repositories
         /// <returns></returns>
         public Language Get(Guid id)
         {
-            return _context.Language.FirstOrDefault(lang => lang.Id == id);
+            return _context.Language
+                        .FirstOrDefault(lang => lang.Id == id);
         }
 
         public void Delete(LocaleStringResource item)
@@ -366,7 +373,7 @@ namespace MVCForum.Data.Repositories
             {
                 throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
             }
-            _context.Entry(item).State = EntityState.Modified; 
+            _context.Entry(item).State = EntityState.Modified;
         }
 
         public void Update(LocaleResourceKey item)
@@ -376,7 +383,7 @@ namespace MVCForum.Data.Repositories
             {
                 throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
             }
-            _context.Entry(item).State = EntityState.Modified; 
+            _context.Entry(item).State = EntityState.Modified;
         }
 
         public void Update(Language item)
@@ -386,7 +393,7 @@ namespace MVCForum.Data.Repositories
             {
                 throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
             }
-            _context.Entry(item).State = EntityState.Modified; 
+            _context.Entry(item).State = EntityState.Modified;
         }
 
         /// <summary>
@@ -397,11 +404,11 @@ namespace MVCForum.Data.Repositories
         {
             var strResToDelete = new List<LocaleStringResource>();
 
-            foreach(var localeStringRes in language.LocaleStringResources)
+            foreach (var localeStringRes in language.LocaleStringResources)
             {
-                strResToDelete.Add(localeStringRes);                
+                strResToDelete.Add(localeStringRes);
             }
-            foreach(var strToDelete in strResToDelete)
+            foreach (var strToDelete in strResToDelete)
             {
                 _context.LocaleStringResource.Remove(strToDelete);
             }

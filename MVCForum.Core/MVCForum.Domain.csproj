@@ -146,6 +146,7 @@
     <Compile Include="Interfaces\Badges\IVoteUpBadge.cs" />
     <Compile Include="Interfaces\Events\IEventHandler.cs" />
     <Compile Include="Interfaces\Events\IEventManager.cs" />
+    <Compile Include="Interfaces\Services\ICacheService.cs" />
     <Compile Include="Interfaces\IModelAttribute.cs" />
     <Compile Include="Interfaces\IMVCForumContext.cs" />
     <Compile Include="Interfaces\IPagedList.cs" />

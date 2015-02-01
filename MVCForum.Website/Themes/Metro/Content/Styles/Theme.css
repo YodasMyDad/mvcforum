@@ -187,6 +187,7 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 .topicrow p.category a:hover, .topicrow p.category a:focus { color: #636262; }
 .topicrow .topicby { }
 .topicrowfooterinfo { line-height: 16px; font-size: 12px; color: #b3b3b3; font-weight: 300; padding: 4px 0 0 0; }
+.topicrowfooterinfo .latestby { -ms-border-radius: 50%; border-radius: 50%; }
 .topicrowfooterinfo a, .topicrowfooterinfo a:visited { color: #727272; font-weight: 400; }
 .topicrowfooterinfo a:hover, .topicrowfooterinfo a:focus { color: #000; }
 .topicrow .rowdetails h3 { margin: 6px 0; padding: 0; }
@@ -260,6 +261,8 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 .postsocial { padding-bottom: 10px; color: #b3b3b3; }
 .postsocial ul { padding: 0; margin: 0; }
 .postsocial ul li { list-style: none; display: inline; padding: 0 4px 0 0; font-size: 13px; }
+.postsocial ul li.permalink a, .postsocial ul li.permalink a:visited { color: #B3B3B3; font-size: 12px; font-weight: 300; text-decoration: none;margin: 0 5px 0 0;}
+.postsocial ul li.permalink a:hover, .postsocial ul li.permalink a:focus { text-decoration: underline; }
 .postsocial ul li a, .postsocial ul li a:visited { font-weight: 400; cursor: pointer; }
 .postuploadholder { display: none; margin-bottom: 7px; }
 .postuploadholder p { text-align: right; }

@@ -29,6 +29,7 @@ namespace MVCForum.Website.ViewModels
     public class PostViewModel
     {
         public Post Post { get; set; }
+        public string PermaLink { get; set; }
         public List<Vote> Votes { get; set; } 
         public List<Favourite> Favourites { get; set; } 
         public Topic ParentTopic { get; set; }

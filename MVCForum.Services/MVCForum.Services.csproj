@@ -43,6 +43,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.2\lib\net45\System.Web.Helpers.dll</HintPath>
@@ -83,6 +84,7 @@
     <Compile Include="CategoryNotificationService.cs" />
     <Compile Include="ActivityService.cs" />
     <Compile Include="BannedWordService.cs" />
+    <Compile Include="CacheService.cs" />
     <Compile Include="GlobalPermissionForRoleService.cs" />
     <Compile Include="FavouriteService.cs" />
     <Compile Include="InstallerService.cs" />

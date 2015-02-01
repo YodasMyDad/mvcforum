@@ -45,6 +45,9 @@
             }
 
             <p class="topicrowfooterinfo">
+                <a href="@Html.Raw(Model.Topic.NiceUrl)">
+                    <img src="@Model.Topic.LastPost.User.MemberImage(SiteConstants.GravatarLatestBySize)" class="latestby" alt="@Model.Topic.LastPost.User.UserName">
+                </a>
                 <a href="@Html.Raw(Model.Topic.NiceUrl)">@Html.LanguageString("Topic.LatestBy")</a>
                 <a href="@Model.Topic.LastPost.User.NiceUrl">@Model.Topic.LastPost.User.UserName</a>
                 @DatesUI.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString()).

@@ -78,7 +78,7 @@ namespace MVCForum.Website.Controllers
                 }
 
                 // Quick check to see if user is locked out, when logged in
-                if (LoggedOnUser.IsLockedOut | !LoggedOnUser.IsApproved)
+                if (LoggedOnUser.IsLockedOut || !LoggedOnUser.IsApproved)
                 {
                     FormsAuthentication.SignOut();
                     throw new Exception(LocalizationService.GetResourceString("Errors.NoAccess"));
@@ -121,14 +121,14 @@ namespace MVCForum.Website.Controllers
             }
 
             // All good send the notifications and send the post back
-            using (UnitOfWorkManager.NewUnitOfWork())
-            {
 
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
                 // Create the view model
                 var viewModel = ViewModelMapping.CreatePostViewModel(newPost, new List<Vote>(), permissions, topic, LoggedOnUser, SettingsService.GetSettings(), new List<Favourite>());
 
                 // Success send any notifications
-                NotifyNewTopics(topic);
+                NotifyNewTopics(topic, unitOfWork);
 
                 // Return view
                 return PartialView("_Post", viewModel);
@@ -218,11 +218,9 @@ namespace MVCForum.Website.Controllers
             return Redirect(topic.NiceUrl);
         }
 
-        private void NotifyNewTopics(Topic topic)
+        private void NotifyNewTopics(Topic topic, IUnitOfWork unitOfWork)
         {
 
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-            {
                 try
                 {
                     // Get all notifications for this category
@@ -245,7 +243,7 @@ namespace MVCForum.Website.Controllers
                             sb.AppendFormat("<p>{0}</p>", string.Concat(SettingsService.GetSettings().ForumUrl, topic.NiceUrl));
 
                             // create the emails only to people who haven't had notifications disabled
-                            var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true).Select(user => new Email
+                            var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true && !x.IsLockedOut).Select(user => new Email
                             {
                                 Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
                                 EmailTo = user.Email,
@@ -267,7 +265,7 @@ namespace MVCForum.Website.Controllers
                     unitOfWork.Rollback();
                     LoggingService.Error(ex);
                 }
-            }
+            
 
         }
 

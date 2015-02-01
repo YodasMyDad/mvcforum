@@ -169,6 +169,14 @@ namespace MVCForum.Website.Application
             }
         }
 
+        public static int GravatarLatestBySize
+        {
+            get
+            {
+                return Convert.ToInt32(ConfigurationManager.AppSettings["GravatarLatestBySize"]);
+            }
+        }
+
         public static int GravatarFooterSize
         {
             get

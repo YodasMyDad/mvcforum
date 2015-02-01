@@ -19,7 +19,7 @@
     <div class="rowdetails clearfix">
 
         <div class="postdetails">
-            <h4>@Html.Lang("Search.InTopic"): <a href="@Model.ParentTopic.NiceUrl">@Model.ParentTopic.Name</a></h4>
+            <h4>@Html.Lang("Search.InTopic"): <a href="@Html.Raw(Model.PermaLink)">@Model.ParentTopic.Name</a></h4>
             <div class="postbodytop">
                 <a class="postmember-@postId" href="@Html.Raw(Model.Post.User.NiceUrl)">@Html.Raw(Model.Post.User.UserName)</a>
                 @Html.LanguageString("Post.PostedThis")
@@ -46,6 +46,11 @@
 
             <div class="postsocial">
                 <ul>
+                    @*<li class="permalink">
+                        <a href="@Html.Raw(Model.PermaLink)">
+                            #@Html.Lang("Post.Permalink")
+                        </a>
+                    </li>*@
                     @if (Html.Settings().EnablePoints)
                     {
                         <li>
