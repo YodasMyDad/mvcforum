@@ -250,7 +250,8 @@ namespace MVCForum.Website.ViewModels.Mapping
                 DisablePosting = loggedOnUser != null && (loggedOnUser.DisablePosting == true),
                 PageIndex = pageIndex,
                 TotalCount = totalCount,
-                TotalPages = totalPages
+                TotalPages = totalPages,
+                LastPostPermaLink = string.Concat(topic.NiceUrl, "?", AppConstants.PostOrderBy, "=", AppConstants.AllPosts, "#comment-", topic.LastPost.Id)
             };
           
             if (starterPost == null)

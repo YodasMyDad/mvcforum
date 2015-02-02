@@ -52,12 +52,12 @@ namespace MVCForum.Services
         {
             if (from == null)
             {
-                from = DateTime.Now.AddDays(-14);
+                from = DateTime.UtcNow.AddDays(-14);
             }
 
             if (to == null)
             {
-                to = DateTime.Now;
+                to = DateTime.UtcNow;
             }
 
             return _topicRepository.GetPopularTopics((DateTime)from, (DateTime)to, amountToShow);

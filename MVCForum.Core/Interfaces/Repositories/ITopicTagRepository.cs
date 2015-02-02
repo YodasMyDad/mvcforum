@@ -7,7 +7,7 @@ namespace MVCForum.Domain.Interfaces.Repositories
     public partial interface ITopicTagRepository
     {
         IEnumerable<TopicTag> GetAll();
-        Dictionary<string, int> GetPopularTags(int? amountToTake);
+        Dictionary<TopicTag, int> GetPopularTags(int? amountToTake);
         TopicTag GetTagName(string tag);
         PagedList<TopicTag> GetPagedGroupedTags(int pageIndex, int pageSize);
         PagedList<TopicTag> SearchPagedGroupedTags(string search, int pageIndex, int pageSize);

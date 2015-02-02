@@ -9,7 +9,7 @@ namespace MVCForum.Website.ViewModels
 {
     public class ListPrivateMessageViewModel
     {
-        public IList<PrivateMessage> Messages { get; set; }
+        public IList<PrivateMessageListItem> Messages { get; set; }
         public int? PageIndex { get; set; }
         public int? TotalCount { get; set; }
         public int TotalPages { get; set; }

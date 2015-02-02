@@ -256,8 +256,8 @@ namespace MVCForum.Services
                                    User = user,
                                    Topic = topic,
                                    IpAddress = StringUtils.GetUsersIpAddress(),
-                                   DateCreated = DateTime.Now,
-                                   DateEdited = DateTime.Now
+                                   DateCreated = DateTime.UtcNow,
+                                   DateEdited = DateTime.UtcNow
                                };
 
             newPost = SanitizePost(newPost);

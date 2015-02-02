@@ -17,4 +17,10 @@ namespace MVCForum.Domain.DomainModel
         public virtual MembershipUser UserTo { get; set; }
         public virtual MembershipUser UserFrom { get; set; }
     }
+
+    public partial class PrivateMessageListItem
+    {
+        public MembershipUser User { get; set; }
+        public DateTime Date { get; set; }
+    }
 }

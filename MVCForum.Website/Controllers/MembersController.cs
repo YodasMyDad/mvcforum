@@ -198,7 +198,7 @@ namespace MVCForum.Website.Controllers
             if (UserIsAuthenticated)
             {
                 var rightNow = DateTime.UtcNow;
-                var usersDate = LoggedOnUser.LastActivityDate ?? DateTime.Now.AddDays(-1);
+                var usersDate = LoggedOnUser.LastActivityDate ?? DateTime.UtcNow.AddDays(-1);
 
                 var span = rightNow.Subtract(usersDate);
                 var totalMins = span.TotalMinutes;
@@ -511,7 +511,7 @@ namespace MVCForum.Website.Controllers
                     var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
                     {
                         Value = string.Format("{0}#{1}", userToSave.Email, userToSave.UserName),
-                        Expires = DateTime.Now.AddDays(7)
+                        Expires = DateTime.UtcNow.AddDays(7)
                     };
                     // Add the cookie.
                     Response.Cookies.Add(myCookie);
@@ -568,7 +568,7 @@ namespace MVCForum.Website.Controllers
                     {
                         var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
                         {
-                            Expires = DateTime.Now.AddDays(-1)
+                            Expires = DateTime.UtcNow.AddDays(-1)
                         };
                         Response.Cookies.Add(myCookie);
 

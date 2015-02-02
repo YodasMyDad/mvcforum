@@ -1,6 +1,4 @@
-﻿@using MVCForum.Domain;
-@using MVCForum.Utilities
-@model MVCForum.Website.ViewModels.PopularTagViewModel
+﻿@model MVCForum.Website.ViewModels.PopularTagViewModel
            
 @if (Model.PopularTags.Any())
 {
@@ -10,7 +8,9 @@
             @foreach (var tag in Model.PopularTags)
             {
                 <li>
-                    <span class="tag"><a href="@UrlTypes.GenerateUrl(UrlType.Tag, StringUtils.RemoveAccents(tag.Key))">@Html.Raw(tag.Key) <span class="badge">@tag.Value</span></a></span>
+                    <span class="tag">
+                        <a href="@Html.Raw(tag.Key.NiceUrl)">@Html.Raw(tag.Key.Tag) <span class="badge">@tag.Value</span></a>
+                    </span>
                 </li>
             }
         </ul>

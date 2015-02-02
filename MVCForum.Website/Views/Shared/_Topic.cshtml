@@ -45,11 +45,15 @@
             }
 
             <p class="topicrowfooterinfo">
-                <a href="@Html.Raw(Model.Topic.NiceUrl)">
+                <a href="@Html.Raw(Model.LastPostPermaLink)">
                     <img src="@Model.Topic.LastPost.User.MemberImage(SiteConstants.GravatarLatestBySize)" class="latestby" alt="@Model.Topic.LastPost.User.UserName">
-                </a>
-                <a href="@Html.Raw(Model.Topic.NiceUrl)">@Html.LanguageString("Topic.LatestBy")</a>
-                <a href="@Model.Topic.LastPost.User.NiceUrl">@Model.Topic.LastPost.User.UserName</a>
+                </a> 
+                <a href="@Html.Raw(Model.LastPostPermaLink)">
+                    @Html.LanguageString("Topic.LatestBy")
+                </a> 
+                <a href="@Model.Topic.LastPost.User.NiceUrl">
+                    @Model.Topic.LastPost.User.UserName
+                </a> 
                 @DatesUI.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString()).
                 <span class="stats topicanswers"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Model.Answers.KiloFormat()</span>
                 <span class="stats topicviews"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Model.Views.KiloFormat()</span>

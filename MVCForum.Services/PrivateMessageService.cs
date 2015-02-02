@@ -74,29 +74,11 @@ namespace MVCForum.Services
             _privateMessageRepository.Update(message); 
         }
 
-        /// <summary>
-        /// Return list of paged private messages by sent user
-        /// </summary>
-        /// <param name="pageIndex"></param>
-        /// <param name="pageSize"></param>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        public IPagedList<PrivateMessage> GetPagedSentMessagesByUser(int pageIndex, int pageSize, MembershipUser user)
+        public IPagedList<PrivateMessageListItem> GetUsersPrivateMessages(int pageIndex, int pageSize, MembershipUser user)
         {
-            return _privateMessageRepository.GetPagedSentMessagesByUser(pageIndex, pageSize, user);
+            return _privateMessageRepository.GetUsersPrivateMessages(pageIndex, pageSize, user);
         }
 
-        /// <summary>
-        /// Return list of paged private messages by received user
-        /// </summary>
-        /// <param name="pageIndex"></param>
-        /// <param name="pageSize"></param>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        public IPagedList<PrivateMessage> GetPagedReceivedMessagesByUser(int pageIndex, int pageSize, MembershipUser user)
-        {
-            return _privateMessageRepository.GetPagedReceivedMessagesByUser(pageIndex, pageSize, user);
-        }
 
         /// <summary>
         /// Gets the last sent private message from a specific user

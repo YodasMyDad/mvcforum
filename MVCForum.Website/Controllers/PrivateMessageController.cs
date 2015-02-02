@@ -46,7 +46,7 @@ namespace MVCForum.Website.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = p ?? 1;
-                var pagedMessages = _privateMessageService.GetPagedReceivedMessagesByUser(pageIndex, SiteConstants.PrivateMessageListSize, LoggedOnUser);
+                var pagedMessages = _privateMessageService.GetUsersPrivateMessages(pageIndex, SiteConstants.PrivateMessageListSize, LoggedOnUser);
                 var viewModel = new ListPrivateMessageViewModel
                 {
                     Messages = pagedMessages,

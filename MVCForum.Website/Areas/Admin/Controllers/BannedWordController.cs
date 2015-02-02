@@ -69,7 +69,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         var bannedWord = new BannedWord
                         {
                             Word = addBannedEmailViewModel.Word,
-                            DateAdded = DateTime.Now,
+                            DateAdded = DateTime.UtcNow,
                             IsStopWord = addBannedEmailViewModel.IsStopWord
                         };
 

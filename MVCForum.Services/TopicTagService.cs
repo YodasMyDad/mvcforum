@@ -190,7 +190,7 @@ namespace MVCForum.Services
         /// </summary>
         /// <param name="amount"></param>
         /// <returns></returns>
-        public Dictionary<string, int> GetPopularTags(int? amount)
+        public Dictionary<TopicTag, int> GetPopularTags(int? amount)
         {
                 return _tagRepository.GetPopularTags(amount);
         }

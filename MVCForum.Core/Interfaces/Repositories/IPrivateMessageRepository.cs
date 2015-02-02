@@ -6,8 +6,7 @@ namespace MVCForum.Domain.Interfaces.Repositories
 {
     public partial interface IPrivateMessageRepository
     {
-        IPagedList<PrivateMessage> GetPagedSentMessagesByUser(int pageIndex, int pageSize, MembershipUser user);
-        IPagedList<PrivateMessage> GetPagedReceivedMessagesByUser(int pageIndex, int pageSize, MembershipUser user);
+        IPagedList<PrivateMessageListItem> GetUsersPrivateMessages(int pageIndex, int pageSize, MembershipUser user);
         PrivateMessage GetLastSentPrivateMessage(Guid id);
         PrivateMessage GetMatchingSentPrivateMessage(DateTime date, Guid senderId, Guid receiverId);
         IList<PrivateMessage> GetAllSentByUser(Guid id);

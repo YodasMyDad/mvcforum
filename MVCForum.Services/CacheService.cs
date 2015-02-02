@@ -17,7 +17,7 @@ namespace MVCForum.Services
         {
             var policy = new CacheItemPolicy
             {
-                AbsoluteExpiration = DateTime.Now + TimeSpan.FromMinutes(cacheTime)
+                AbsoluteExpiration = DateTime.UtcNow + TimeSpan.FromMinutes(cacheTime)
             };
 
             Cache.Add(new CacheItem(key, data), policy);

@@ -150,7 +150,7 @@ namespace MVCForum.Website.Controllers
                         User = voter,
                         Amount = (postType == PostType.Negative) ? (-1) : (1),
                         VotedByMembershipUser = LoggedOnUser,
-                        DateVoted = DateTime.Now
+                        DateVoted = DateTime.UtcNow
                     };
                     _voteService.Add(vote);
 

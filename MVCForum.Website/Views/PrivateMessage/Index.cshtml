@@ -25,13 +25,15 @@
                         {
                             <tr>
                                 <td>
-                                    <a href="@Url.Action("View", new { from = message.UserFrom.Id })">
+                                    <a href="@Url.Action("View", new { from = message.User.Id })">
                                         <strong>
-                                            @message.UserFrom.UserName
+                                            @message.User.UserName
                                         </strong>
                                     </a>
                                 </td>
-                                <td>@message.DateSent.ToShortDateString()</td>
+                                <td>
+                                    @DatesUI.GetPrettyDate(message.Date.ToString())
+                                </td>
                             </tr>
                         }
                     </tbody>
@@ -41,7 +43,6 @@
                 {
                     @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.PrivateMessageListSize, Convert.ToInt32(Model.TotalCount), new { })
                 }
-
             }
             else
             {

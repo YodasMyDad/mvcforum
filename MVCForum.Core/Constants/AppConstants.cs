@@ -61,12 +61,12 @@
         public const string PagingUrlFormat = "{0}?p={1}";
 
         // How long 
-        public const int TimeSpanInMinutesToShowMembers = 10;
+        public const int TimeSpanInMinutesToShowMembers = 12;
 
         /// <summary>
         /// Last Activity Time Check. 
         /// </summary>
-        public const int TimeSpanInMinutesToDoCheck = 5;
+        public const int TimeSpanInMinutesToDoCheck = 3;
 
         // Installer Stuff
         public const string InstallerName = "YesImAnInstallerSpankMe";

@@ -28,6 +28,7 @@ namespace MVCForum.Website.ViewModels
         public int? PageIndex { get; set; }
         public int? TotalCount { get; set; }
         public int? TotalPages { get; set; }
+        public string LastPostPermaLink { get; set; }
 
         // Permissions
         public bool DisablePosting { get; set; }

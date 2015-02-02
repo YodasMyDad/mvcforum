@@ -61,7 +61,7 @@ namespace MVCForum.Website.ViewModels.OAuth
         [JsonIgnore]
         public bool IsValid
         {
-            get { return !string.IsNullOrWhiteSpace(AccessToken) && ExpiresAt > DateTime.Now; }
+            get { return !string.IsNullOrWhiteSpace(AccessToken) && ExpiresAt > DateTime.UtcNow; }
         }
 
         #endregion

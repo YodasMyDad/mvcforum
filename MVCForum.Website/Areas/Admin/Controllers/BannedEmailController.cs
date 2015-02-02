@@ -69,7 +69,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         var bannedEmail = new BannedEmail
                         {
                             Email = addBannedEmailViewModel.Email,
-                            DateAdded = DateTime.Now
+                            DateAdded = DateTime.UtcNow
                         };
 
                         _bannedEmailService.Add(bannedEmail);
