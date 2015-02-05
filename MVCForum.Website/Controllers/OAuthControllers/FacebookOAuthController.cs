@@ -194,12 +194,17 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                         {
                             data.Email = email;
                         }
+                        else
+                        {
+                            resultMessage.Message = LocalizationService.GetResourceString("Members.UnableToGetEmailAddress");
+                            resultMessage.MessageType = GenericMessages.danger;
+                            ShowMessage(resultMessage);
+                            return RedirectToAction("LogOn", "Members");
+                        }
 
                         // First see if this user has registered already - Use email address
                         using (UnitOfWorkManager.NewUnitOfWork())
                         {
-                            // TODO - Ignore if no email - Have to check PropMemberFacebookAccessToken has a value
-                            // TODO - and the me.UserName is there to match existing logged in accounts
                             var userExists = MembershipService.GetUserByEmail(data.Email);
 
                             if (userExists != null)

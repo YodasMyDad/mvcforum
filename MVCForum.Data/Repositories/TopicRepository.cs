@@ -106,21 +106,6 @@ namespace MVCForum.Data.Repositories
                 .Take(amountToShow)
                 .Select(x => x.Topic)
                 .ToList();
-
-            if (!topics.Any())
-            {
-                topics = _context.Topic
-                                .Include(x => x.Category)
-                                .Include(x => x.LastPost.User)
-                                .Include(x => x.User)
-                                .Include(x => x.Poll)
-                            .Where(x => x.CreateDate >= from)
-                            .Where(x => x.CreateDate <= to)
-                            .OrderByDescending(x => x.VoteCount)
-                            .ThenByDescending(x => x.Views)
-                            .Take(amountToShow)
-                            .ToList();
-            }
                      
             return topics;
         }

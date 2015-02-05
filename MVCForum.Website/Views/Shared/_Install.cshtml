@@ -8,9 +8,7 @@
         <title>@ViewBag.Title</title>
 
         @(Bundle.Css()
-              .Add("~/Content/Styles/bootstrap.css")
-              .Add("~/Content/Styles/bootstrap-responsive.css")
-              .Add("~/Content/Styles/bootstrap-prettify.css")
+              .Add("~/Content/bootstrap/css/bootstrap.css")
               .Add("~/installer/Content/Styles/install.css")
               .MvcRender("~/content/cache/combined_installer_#.css"))
            
@@ -22,9 +20,11 @@
         <![endif]-->
 
         @(Bundle.JavaScript()
-              .Add("~/Scripts/jquery-2.0.1.min.js")
-              .Add("~/Scripts/jquery.unobtrusive-ajax.js")
-              .Add("~/Scripts/bootstrap.min.js")
+                .Add("~/Scripts/jquery-1.11.1.min.js")
+                .Add("~/Scripts/jquery.unobtrusive-ajax.js")
+                .Add("~/Content/bootstrap/js/bootstrap.min.js")
+                .Add("~/Scripts/jquery.placeholder.min.js")
+                .Add("~/Content/bootstrap/js/bootstrap-prettify.js")
               .Add("~/installer/Content/Scripts/general.js")
               .MvcRender("~/scripts/cache/combined_installer_#.js")
               )
@@ -39,9 +39,9 @@
 
         <section id="main">
             <div class="row">
-                <div class="offset2 col-md-8">
+                <div class="col-md-offset-2 col-md-8">
                     @Html.Partial("_GenericMessage")
-                    <a class="brand" href="http://www.mvcforum.com" target="_blank">MVC Forum</a>
+                    <a class="brand" href="http://www.mvcforum.com" target="_blank">MVCForum</a>
                     @RenderBody()
                 </div>
             </div>
@@ -52,7 +52,7 @@
         <hr>
 
         <footer>
-            <p>&copy; @DateTime.UtcNow.Year - <a href="http://www.mvcforum.com">MVC Forum</a></p>
+            <p>&copy; @DateTime.UtcNow.Year - <a href="http://www.mvcforum.com">MVCForum</a></p>
         </footer>
 
     </div>

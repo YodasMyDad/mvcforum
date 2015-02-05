@@ -26,7 +26,7 @@ namespace MVCForum.Website.Controllers
         private IRoleService _roleService;
         private ILocalizationService _localizationService;
         private ISettingsService _settingsService;
-        private IUnitOfWorkManager _UnitOfWorkManager;
+        private IUnitOfWorkManager _unitOfWorkManager;
         private IPermissionService _permissionService;
 
         public InstallController(IInstallerService installerService)
@@ -40,12 +40,11 @@ namespace MVCForum.Website.Controllers
             // Quick check of connection string, see if it's close to the original
             // and if so, put a message up asking if they have updated it
             var currentConnectionString = WebConfigurationManager.ConnectionStrings[AppConstants.MvcForumContext].ConnectionString.ToLower();
-            if (currentConnectionString.Contains("user id=user;password=user"))
+            if (string.IsNullOrEmpty(currentConnectionString))
             {
                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
-                    Message = @"<strong>Just Checking:</strong> Have you updated the connection string in the web.config to point to a new blank database? 
-                                If you have, please ignore this message and continue with the installer.",
+                    Message = @"<p><strong>No Connection String:</strong> You need to update the connection string in the web.config to point to a new blank database</p>",
                     MessageType = GenericMessages.info,
                     ConstantMessage = true
                 };
@@ -259,7 +258,7 @@ namespace MVCForum.Website.Controllers
             InitialiseServices();
 
             // First UOW to create the data needed for other saves
-            using (var unitOfWork = _UnitOfWorkManager.NewUnitOfWork())
+            using (var unitOfWork = _unitOfWorkManager.NewUnitOfWork())
             {
                 try
                 {
@@ -303,7 +302,7 @@ namespace MVCForum.Website.Controllers
             }   
 
             // Now we have saved the above we can create the rest of the data
-            using (var unitOfWork = _UnitOfWorkManager.NewUnitOfWork())
+            using (var unitOfWork = _unitOfWorkManager.NewUnitOfWork())
             {
                 try
                 {
@@ -370,7 +369,7 @@ namespace MVCForum.Website.Controllers
 
 
             // Now we have saved the above we can create the rest of the data
-            using (var unitOfWork = _UnitOfWorkManager.NewUnitOfWork())
+            using (var unitOfWork = _unitOfWorkManager.NewUnitOfWork())
             {
                 try
                 {
@@ -444,7 +443,7 @@ namespace MVCForum.Website.Controllers
         private InstallerResult AddOrUpdateTheDefaultLanguageStrings(InstallerResult installerResult)
         {            
             // Read in CSV and import like it does normally in the admin section
-            using (var unitOfWork = _UnitOfWorkManager.NewUnitOfWork())
+            using (var unitOfWork = _unitOfWorkManager.NewUnitOfWork())
             {
                 var report = new CsvReport();
 
@@ -506,7 +505,7 @@ namespace MVCForum.Website.Controllers
             _roleService = DependencyResolver.Current.GetService<IRoleService>();
             _localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
             _settingsService = DependencyResolver.Current.GetService<ISettingsService>();
-            _UnitOfWorkManager = DependencyResolver.Current.GetService<IUnitOfWorkManager>();
+            _unitOfWorkManager = DependencyResolver.Current.GetService<IUnitOfWorkManager>();
             _permissionService = DependencyResolver.Current.GetService<IPermissionService>();
         }
 

@@ -334,3 +334,4 @@ PM.LastActivity,Last Activity
 StopWord.Error,You have tried to enter a word or url that is not allowed on this site
 Post.Permalink,Permalink
 Members.Profile.LastOnline,Last Online
+Members.UnableToGetEmailAddress,Unable to gain access to your email address - please check your permissions

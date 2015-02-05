@@ -1011,7 +1011,12 @@ namespace MVCForum.Website.Controllers
         [Authorize]
         public PartialViewResult SideAdminPanel()
         {
-            var count = _privateMessageService.NewPrivateMessageCount(LoggedOnUser.Id);
+            var count = 0;
+            if (LoggedOnUser != null)
+            {
+                count = _privateMessageService.NewPrivateMessageCount(LoggedOnUser.Id);
+            }
+
             if (count > 0)
             {
                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel

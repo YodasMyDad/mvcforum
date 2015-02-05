@@ -4,14 +4,14 @@
     ViewBag.Title = "MVCForum Installer";   
 }
 
-<div class="well well-large">
+<div class="well well-lg">
     <h3>All Going Well So Far...</h3>
 
     @if (Model.IsUpgrade)
     {
         <p>We are going to attempt to update your version @Model.PreviousVersion database to version @Model.CurrentVersion.</p>        
         <p class="submit-holder">
-            <a href="@Url.Action("UpgradeDb", "Install")" class="btn btn-large dbcreatebutton">Continue...</a>
+            <a href="@Url.Action("UpgradeDb", "Install")" class="btn btn-default btn-lg btn-block dbcreatebutton">Continue...</a>
         </p>   
     }
     else
@@ -21,7 +21,7 @@
         <p>Password: <strong>password</strong></p>
         <p>Be sure to update the admin username and password once you have logged in!</p>
         <p class="submit-holder">
-            <a href="@Url.Action("CreateDbTables", "Install")" class="btn btn-large dbcreatebutton">Continue...</a>
+            <a href="@Url.Action("CreateDbTables", "Install")" class="btn btn-default btn-lg btn-block dbcreatebutton">Continue...</a>
         </p>   
     }
     <img src="@Url.Content("~/Installer/Content/arrow-spinner-blue.gif")" alt="Please Wait..." class="dbinstallwait" style="display: none;" />

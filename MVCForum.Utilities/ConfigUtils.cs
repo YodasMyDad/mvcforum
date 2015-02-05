@@ -79,26 +79,9 @@ namespace MVCForum.Utilities
         {
             try
             {
-                //var xDoc = GetWebConfig();
-                //var xpathToSetting = string.Format("//add[@key='{0}']", name);
-                //var settingNodes = xDoc.GetElementsByTagName("appSettings");
-                //var appSettingNode = settingNodes[0].SelectSingleNode(xpathToSetting);
-                //if (appSettingNode != null && appSettingNode.Attributes != null)
-                //{
-                //    var idAttribute = appSettingNode.Attributes["value"];
-                //    if(idAttribute != null)
-                //    {
-                //        idAttribute.Value = value;
-                //        xDoc.Save(WebConfigPath);
-                //        return true;
-                //    }
-                //}
-                //return false;
                 var config = WebConfigurationManager.OpenWebConfiguration("~/");
                 config.AppSettings.Settings[name].Value = value;
-                config.Save(ConfigurationSaveMode.Modified);
-                //config.AppSettings.Settings.Remove(key);
-                //config.AppSettings.Settings.Add(key, value);
+                config.Save(ConfigurationSaveMode.Modified, false);
                 return true;
             }
             catch (Exception)

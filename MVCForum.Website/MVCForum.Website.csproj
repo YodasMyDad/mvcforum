@@ -752,17 +752,8 @@
     <Content Include="Content\tinymce.css" />
     <Content Include="Content\uploads\readme.txt" />
     <Content Include="Installer\Content\arrow-spinner-blue.gif" />
-    <Content Include="Installer\Content\Images\glyphicons\glyphicons_009_magic.png" />
-    <Content Include="Installer\Content\Images\glyphicons\glyphicons_042_group.png" />
-    <Content Include="Installer\Content\Images\glyphicons\glyphicons_079_podium.png" />
-    <Content Include="Installer\Content\Images\glyphicons\glyphicons_082_roundabout.png" />
-    <Content Include="Installer\Content\Images\glyphicons\glyphicons_155_show_thumbnails.png" />
-    <Content Include="Installer\Content\Images\glyphicons\glyphicons_163_iphone.png" />
-    <Content Include="Installer\Content\Images\glyphicons\glyphicons_214_resize_small.png" />
-    <Content Include="Installer\Content\Images\glyphicons\glyphicons_266_book_open.png" />
     <Content Include="Installer\Content\Images\logo.png" />
     <Content Include="Installer\Content\Scripts\general.js" />
-    <Content Include="Installer\Content\Styles\bootstrap.css" />
     <Content Include="Installer\Content\Styles\install.css" />
     <Content Include="Installer\Db\1.0\database.sql" />
     <Content Include="Installer\Db\1.1\database.sql" />
@@ -1626,7 +1617,6 @@
     <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.eot" />
     <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.ttf" />
     <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.woff" />
-    <Content Include="mvcforum.config" />
     <Content Include="Areas\Admin\Views\AdminCategory\_CategoryNavButtons.cshtml" />
     <Content Include="Areas\Admin\Views\Permissions\PermissionTypes.cshtml" />
     <Content Include="Areas\Admin\Views\AdminLanguage\Create.cshtml" />
