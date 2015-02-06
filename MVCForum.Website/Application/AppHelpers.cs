@@ -456,7 +456,7 @@ namespace MVCForum.Website.Application
 
                         // Change the extension to jpg as that's what we are saving it as
                         fileName = fileName.Replace(fileExtension, "");
-                        fileName = string.Concat(fileName, "jpg");
+                        fileName = string.Concat(fileName, ".jpg");
                         file = new MemoryFile(stream, "image/jpeg", fileName);
 
                         // Sort the file name
