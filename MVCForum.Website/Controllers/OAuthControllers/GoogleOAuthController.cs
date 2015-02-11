@@ -187,6 +187,8 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                             FormsAuthentication.SetAuthCookie(userExists.UserName, true);
                             resultMessage.Message = LocalizationService.GetResourceString("Members.NowLoggedIn");
                             resultMessage.MessageType = GenericMessages.success;
+                            ShowMessage(resultMessage);
+                            RedirectToAction("Index", "Home");
                         }
                         else
                         {

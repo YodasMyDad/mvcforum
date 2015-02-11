@@ -9,10 +9,8 @@ using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
-using MVCForum.Website.ViewModels.OAuth;
 using Skybrud.Social.Facebook;
 using Skybrud.Social.Facebook.OAuth;
-using Skybrud.Social.Json;
 
 namespace MVCForum.Website.Controllers.OAuthControllers
 {
@@ -166,35 +164,12 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                         // Initialize the Facebook service (no calls are made here)
                         var service = FacebookService.CreateFromAccessToken(userAccessToken);
 
-                        // Hack to get email
-                        // Get the raw string and parse it
-                        // we use this to get items manually including the email
-                        var response = service.Methods.Raw.Me();
-                        var obj = JsonObject.ParseJson(response);
 
-                        // Make a call to the Facebook API to get information about the user
-                        var me = service.Methods.Me();
-
-                        // Get debug information about the access token
-                        //var debug = service.Methods.DebugToken(userAccessToken);
-
-                        // Set the callback data
-                        var data = new FacebookOAuthData
-                        {
-                            Id = me.Id,
-                            Name = me.Name ?? me.UserName,
-                            AccessToken = userAccessToken,
-                            //ExpiresAt = debug.ExpiresAt == null ? default(DateTime) : debug.ExpiresAt.Value,
-                            //Scope = debug.Scopes
-                        };
+                        var user = service.Users.GetUser();
 
                         // Try to get the email - Some FB accounts have protected passwords
-                        var email = obj.GetString("email");
-                        if (!string.IsNullOrEmpty(email))
-                        {
-                            data.Email = email;
-                        }
-                        else
+                        var email = user.Body.Email;
+                        if (string.IsNullOrEmpty(email))
                         {
                             resultMessage.Message = LocalizationService.GetResourceString("Members.UnableToGetEmailAddress");
                             resultMessage.MessageType = GenericMessages.danger;
@@ -205,7 +180,7 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                         // First see if this user has registered already - Use email address
                         using (UnitOfWorkManager.NewUnitOfWork())
                         {
-                            var userExists = MembershipService.GetUserByEmail(data.Email);
+                            var userExists = MembershipService.GetUserByEmail(email);
 
                             if (userExists != null)
                             {
@@ -215,6 +190,8 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                                     FormsAuthentication.SetAuthCookie(userExists.UserName, true);
                                     resultMessage.Message = LocalizationService.GetResourceString("Members.NowLoggedIn");
                                     resultMessage.MessageType = GenericMessages.success;
+                                    ShowMessage(resultMessage);
+                                    RedirectToAction("Index", "Home");
                                 }
                                 catch (Exception ex)
                                 {
@@ -226,15 +203,15 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                                 // Not registered already so register them
                                 var viewModel = new MemberAddViewModel
                                 {
-                                    Email = data.Email,
+                                    Email = email,
                                     LoginType = LoginType.Facebook,
                                     Password = StringUtils.RandomString(8),
-                                    UserName = data.Name,
+                                    UserName = user.Body.Name,
                                     UserAccessToken = userAccessToken
                                 };
 
                                 // Get the image and save it
-                                var getImageUrl = string.Format("http://graph.facebook.com/{0}/picture?type=square", me.Id);
+                                var getImageUrl = string.Format("http://graph.facebook.com/{0}/picture?type=square", user.Body.Id);
                                 viewModel.SocialProfileImageUrl = getImageUrl;
 
                                 //Large size photo https://graph.facebook.com/{facebookId}/picture?type=large

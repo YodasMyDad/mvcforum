@@ -131,7 +131,7 @@
     </Reference>
     <Reference Include="Skybrud.Social, Version=0.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Externals\Skybrud.Social.dll</HintPath>
+      <HintPath>..\packages\Skybrud.Social.0.9.0-alpha1\lib\Skybrud.Social.dll</HintPath>
     </Reference>
     <Reference Include="SquishIt.Framework, Version=0.9.7.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
