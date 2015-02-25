@@ -9,7 +9,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using HtmlAgilityPack;
-using Microsoft.Security.Application;
 
 namespace MVCForum.Utilities
 {
@@ -88,7 +87,7 @@ namespace MVCForum.Utilities
         }
         #endregion
 
-
+        #region Validation
 
         public static string md5HashString(string toHash)
         {
@@ -130,6 +129,50 @@ namespace MVCForum.Utilities
                    @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,6}))$");
         }
 
+        #endregion
+
+        #region Misc
+
+        public static string PostForm(string url, string poststring)
+        {
+            var httpRequest = (HttpWebRequest)WebRequest.Create(url);
+
+            httpRequest.Method = "POST";
+            httpRequest.ContentType = "application/x-www-form-urlencoded";
+
+            var bytedata = Encoding.UTF8.GetBytes(poststring);
+            httpRequest.ContentLength = bytedata.Length;
+
+            var requestStream = httpRequest.GetRequestStream();
+            requestStream.Write(bytedata, 0, bytedata.Length);
+            requestStream.Close();
+
+            var httpWebResponse = (HttpWebResponse)httpRequest.GetResponse();
+            var responseStream = httpWebResponse.GetResponseStream();
+
+            var sb = new StringBuilder();
+
+            if (responseStream != null)
+            {
+                using (var reader = new StreamReader(responseStream, Encoding.UTF8))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        sb.Append(line);
+                    }
+                }
+            }
+
+            return sb.ToString();
+
+        }
+
+
+        #endregion
+
+        #region Conversion
+
         /// <summary>
         /// Converts a csv list of string guids into a real list of guids
         /// </summary>
@@ -141,18 +184,7 @@ namespace MVCForum.Utilities
         }
 
 
-        /// <summary>
-        /// Downloads a web page and returns the HTML as a string
-        /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        public static HttpWebResponse DownloadWebPage(string url)
-        {
-            var ub = new UriBuilder(url);
-            var request = (HttpWebRequest)WebRequest.Create(ub.Uri);
-            request.Proxy = null;
-            return (HttpWebResponse)request.GetResponse();
-        }
+        #endregion
 
         #region Numeric Helpers
         /// <summary>
@@ -262,7 +294,7 @@ namespace MVCForum.Utilities
         {
             if (string.IsNullOrEmpty(text))
             {
-                return 0;                 
+                return 0;
             }
             var tmpStr = text.Replace("\t", " ").Trim();
             tmpStr = tmpStr.Replace("\n", " ");
@@ -648,7 +680,7 @@ namespace MVCForum.Utilities
         {
             if (!string.IsNullOrEmpty(input))
             {
-                return HttpUtility.UrlDecode(input);  
+                return HttpUtility.UrlDecode(input);
             }
             return input;
         }
@@ -728,7 +760,19 @@ namespace MVCForum.Utilities
         }
         #endregion
 
-
+        #region Urls / Webpages
+        /// <summary>
+        /// Downloads a web page and returns the HTML as a string
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public static HttpWebResponse DownloadWebPage(string url)
+        {
+            var ub = new UriBuilder(url);
+            var request = (HttpWebRequest)WebRequest.Create(ub.Uri);
+            request.Proxy = null;
+            return (HttpWebResponse)request.GetResponse();
+        }
         /// <summary>
         /// Creates a URL freindly string, good for SEO
         /// </summary>
@@ -782,6 +826,10 @@ namespace MVCForum.Utilities
 
         }
 
+        #endregion
+
+        #region Rich Text Formatting
+
         /// <summary>
         /// Returns UK formatted amount from int
         /// </summary>
@@ -792,7 +840,6 @@ namespace MVCForum.Utilities
             return amount != null ? string.Format("{0:C}", amount) : "n/a";
         }
 
-        #region Rich Text Formatting
         /// <summary>
         /// Converts markdown into HTML
         /// </summary>
@@ -800,7 +847,7 @@ namespace MVCForum.Utilities
         /// <returns></returns>
         public static string ConvertMarkDown(string str)
         {
-            var md = new MarkdownSharp.Markdown{AutoHyperlink = true, LinkEmails = false};
+            var md = new MarkdownSharp.Markdown { AutoHyperlink = true, LinkEmails = false };
             return md.Transform(str);
         }
 

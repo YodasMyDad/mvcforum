@@ -61,7 +61,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [MaxLength(200)]
         public string MetaDesc { get; set; }
 
-        [ForumMvcResourceDisplayName("Category Image")]
+        [DisplayName("Category Image")]
         public HttpPostedFileBase[] Files { get; set; }
         public string Image { get; set; }
     }
