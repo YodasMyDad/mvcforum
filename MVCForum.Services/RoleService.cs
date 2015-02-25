@@ -195,9 +195,9 @@ namespace MVCForum.Services
 
                 // Deny Access may have been set (or left null) for guest for the category, so need to read for it
                 var denyAccessPermission = role.CategoryPermissionForRole
-                                   .FirstOrDefault(x => x.Category == category &&
+                                   .FirstOrDefault(x => x.Category.Id == category.Id &&
                                                         x.Permission.Name == AppConstants.PermissionDenyAccess &&
-                                                        x.MembershipRole == role);
+                                                        x.MembershipRole.Id == role.Id);
 
                 // Set the Deny Access value in the results. If it's null for this role/category, record it as false in the results
                 var categoryPermissionForRole = categoryPermissions.FirstOrDefault(x => x.Permission.Name == AppConstants.PermissionDenyAccess);
