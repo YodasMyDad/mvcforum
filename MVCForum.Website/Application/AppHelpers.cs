@@ -129,7 +129,7 @@ namespace MVCForum.Website.Application
             }
             return folders;
         }
-   
+
 
         #endregion
 
@@ -373,10 +373,14 @@ namespace MVCForum.Website.Application
         public static UploadFileResult UploadFile(HttpPostedFileBase file, string uploadFolderPath, ILocalizationService localizationService, bool onlyImages = false)
         {
             var upResult = new UploadFileResult { UploadSuccessful = true };
-
+            const string imageExtensions = "jpg,jpeg,png,gif";
             var fileName = Path.GetFileName(file.FileName);
+
             if (fileName != null)
             {
+                // Lower case
+                fileName = fileName.ToLower();
+
                 // Get the file extension
                 var fileExtension = Path.GetExtension(fileName.ToLower());
 
@@ -394,7 +398,7 @@ namespace MVCForum.Website.Application
 
                 if (onlyImages)
                 {
-                    allowedFileExtensions = "jpg,jpeg,png,gif";
+                    allowedFileExtensions = imageExtensions;
                 }
 
                 if (!string.IsNullOrEmpty(allowedFileExtensions))
@@ -422,60 +426,85 @@ namespace MVCForum.Website.Application
                     }
                 }
 
-                // Rotate image if wrong want around
-                using (var sourceimage = Image.FromStream(file.InputStream))
+                // Store these here as we may change the values within the image manipulation
+                var newFileName = string.Empty;
+                var path = string.Empty;
+
+                if (imageExtensions.Split(',').ToList().Contains(fileExtension))
                 {
-                    if (sourceimage.PropertyIdList.Contains(0x0112))
+                    // Rotate image if wrong want around
+                    using (var sourceimage = Image.FromStream(file.InputStream))
                     {
-                        int rotationValue = sourceimage.GetPropertyItem(0x0112).Value[0];
-                        switch (rotationValue)
+                        if (sourceimage.PropertyIdList.Contains(0x0112))
                         {
-                            case 1: // landscape, do nothing
-                                break;
+                            int rotationValue = sourceimage.GetPropertyItem(0x0112).Value[0];
+                            switch (rotationValue)
+                            {
+                                case 1: // landscape, do nothing
+                                    break;
 
-                            case 8: // rotated 90 right
-                                // de-rotate:
-                                sourceimage.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                                break;
+                                case 8: // rotated 90 right
+                                    // de-rotate:
+                                    sourceimage.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                                    break;
 
-                            case 3: // bottoms up
-                                sourceimage.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                                break;
+                                case 3: // bottoms up
+                                    sourceimage.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                                    break;
 
-                            case 6: // rotated 90 left
-                                sourceimage.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                                break;
+                                case 6: // rotated 90 left
+                                    sourceimage.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                                    break;
+                            }
+                        }
+
+                        using (var stream = new MemoryStream())
+                        {
+                            // Save the image as a Jpeg only
+                            sourceimage.Save(stream, ImageFormat.Jpeg);
+                            stream.Position = 0;
+
+                            // Change the extension to jpg as that's what we are saving it as
+                            fileName = fileName.Replace(fileExtension, "");
+                            fileName = string.Concat(fileName, "jpg");
+                            file = new MemoryFile(stream, "image/jpeg", fileName);
+
+                            // Sort the file name
+                            newFileName = CreateNewFileName(fileName);
+                            path = Path.Combine(uploadFolderPath, newFileName);
+
+                            // Save the file to disk
+                            file.SaveAs(path);
                         }
                     }
 
-                    using (var stream = new MemoryStream())
-                    {
-                        // Save the image as a Jpeg only
-                        sourceimage.Save(stream, ImageFormat.Jpeg);
-                        stream.Position = 0;
+                }
+                else
+                {
+                    // Sort the file name
+                    newFileName = CreateNewFileName(fileName);
+                    path = Path.Combine(uploadFolderPath, newFileName);
 
-                        // Change the extension to jpg as that's what we are saving it as
-                        fileName = fileName.Replace(fileExtension, "");
-                        fileName = string.Concat(fileName, ".jpg");
-                        file = new MemoryFile(stream, "image/jpeg", fileName);
+                    // Save the file to disk
+                    file.SaveAs(path);
+                }
 
-                        // Sort the file name
-                        var newFileName = string.Format("{0}_{1}", GuidComb.GenerateComb(), fileName.Trim(' ').Replace("_", "-").Replace(" ", "-").ToLower());
-                        var path = Path.Combine(uploadFolderPath, newFileName);
 
-                        // Save the file to disk
-                        file.SaveAs(path);
 
-                        var hostingRoot = HostingEnvironment.MapPath("~/") ?? "";
-                        var fileUrl = path.Substring(hostingRoot.Length).Replace('\\', '/').Insert(0, "/");
+                var hostingRoot = HostingEnvironment.MapPath("~/") ?? "";
+                var fileUrl = path.Substring(hostingRoot.Length).Replace('\\', '/').Insert(0, "/");
 
-                        upResult.UploadedFileName = newFileName;
-                        upResult.UploadedFileUrl = fileUrl;   
-                    }
-                }             
+                upResult.UploadedFileName = newFileName;
+                upResult.UploadedFileUrl = fileUrl;
+
             }
 
             return upResult;
+        }
+
+        private static string CreateNewFileName(string fileName)
+        {
+            return string.Format("{0}_{1}", GuidComb.GenerateComb(), fileName.Trim(' ').Replace("_", "-").Replace(" ", "-").ToLower());
         }
 
         #endregion
