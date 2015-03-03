@@ -261,14 +261,14 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 .postsocial { padding-bottom: 10px; color: #b3b3b3; }
 .postsocial ul { padding: 0; margin: 0; }
 .postsocial ul li { list-style: none; display: inline; padding: 0 4px 0 0; font-size: 13px; }
-.postsocial ul li.permalink a, .postsocial ul li.permalink a:visited { color: #B3B3B3; font-size: 12px; font-weight: 300; text-decoration: none;margin: 0 5px 0 0;}
+.postsocial ul li.permalink a, .postsocial ul li.permalink a:visited { color: #B3B3B3; font-size: 12px; font-weight: 300; text-decoration: none; margin: 0 5px 0 0; }
 .postsocial ul li.permalink a:hover, .postsocial ul li.permalink a:focus { text-decoration: underline; }
 .postsocial ul li a, .postsocial ul li a:visited { font-weight: 400; cursor: pointer; }
 .postuploadholder { display: none; margin-bottom: 7px; }
 .postuploadholder p { text-align: right; }
 .postuploadholder .input-group { padding-bottom: 4px; }
 .postdetails { margin-right: 80px; }
-.postdetails-guest { margin-right: 0;}
+.postdetails-guest { margin-right: 0; }
 .postadmin { float: right; width: 70px; }
 .postadmin ul { padding: 0; margin: 0; }
 .postadmin ul li { list-style: none; text-align: right; padding: 0 0 2px 0; }
@@ -297,6 +297,11 @@ span.tag a, span.tag a:visited { color: #fff; text-decoration: none; display: bl
 span.tag a:visited, span.tag a:focus { }
 span.tag:hover { background-color: #468bd1; }
 span.tag:hover:before { border-color: transparent #468bd1 transparent transparent; }
+
+/*-- Stop code snippets being transforms --*/
+pre span.tag { display: inline; line-height: normal; height: auto; -ms-border-radius: 0; border-radius: 0;background: none;color: inherit;font-size: inherit;margin: 0;padding: 0;text-transform: none;}
+pre span.tag:before { display: none;}
+pre span.tag:hover { background: none;}
 
 /*--- Footer ---*/
 footer { background: #ecf0f1; padding: 20px 0; margin: 30px 0 0 0; }
