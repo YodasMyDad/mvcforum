@@ -44,6 +44,7 @@ namespace MVCForum.Data.Repositories
         public void Delete(int amount, MembershipUser user)
         {
             var points = _context.MembershipUserPoints.FirstOrDefault(x => x.Points == amount && x.User.Id == user.Id);
+            if (points == null) return;
             Delete(points);
         }
 
