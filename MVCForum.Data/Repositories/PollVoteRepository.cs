@@ -27,10 +27,17 @@ namespace MVCForum.Data.Repositories
             return _context.PollVote.Add(pollVote);
         }
 
-        public bool HasUserVotedAlready(Guid answerId, Guid userId)
+        public bool HasUserVotedAlready(List<Guid> answerIds, Guid userId)
         {
-            var vote = _context.PollVote.FirstOrDefault(x => x.PollAnswer.Id == answerId && x.User.Id == userId);
-            return (vote != null);
+            //Checks each potential answer/userid combination to see if user has already voted
+            foreach(var answerId in answerIds)
+            {
+                if(_context.PollVote.Any(x => x.PollAnswer.Id == answerId && x.User.Id == userId))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public PollVote Get(Guid id)

@@ -180,6 +180,7 @@ Report.MemberReported,Gemeldetes Mitglied
 Members.Label.NewPassword,Neues Passwort
 Notification.UnSubscribeByEmail,E-Mail-Abonnement kündigen
 Members.Profile.DiscussionActivity,Aktivität in Diskussionen
+Topic.Label.PollMultipleChoice,Sind mehrere Antworten möglich?
 Topic.Label.SubscribeToTopic,Über Antworten benachrichtigt werden?
 Members.Profile.Facebook,Facebook:
 Date.OneMinuteAgo,vor 1 Minute

@@ -63,6 +63,14 @@
                     <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
                 </a>
             </div>
+            <div class="col-md-12">
+                <div class="checkbox multiplechoice">
+                    @using (Html.BeginLabelFor(m => m.PollMultipleChoice, new { @class = "checkbox" }))
+                    {
+                        @Html.CheckBoxFor(m => m.PollMultipleChoice)
+                    }
+                </div>
+            </div>
         </div>
     }
 

@@ -37,24 +37,31 @@ namespace MVCForum.Website.Controllers
             {
                 try
                 {
+                    var poll = _pollService.Get(updatePollViewModel.PollId);
                     // Fist need to check this user hasn't voted already and is trying to fudge the system
-                    if(!_pollVoteService.HasUserVotedAlready(updatePollViewModel.AnswerId, LoggedOnUser.Id))
+                    if(!_pollVoteService.HasUserVotedAlready(updatePollViewModel.AnswerIds, LoggedOnUser.Id))
                     {
-                        // Get the answer
-                        var pollAnswer = _pollAnswerService.Get(updatePollViewModel.AnswerId);
-                        
-                        // create a new vote
-                        var pollVote = new PollVote {PollAnswer = pollAnswer,User = LoggedOnUser};
+                        if (updatePollViewModel.AnswerIds.Count > 1 && !poll.IsMultipleChoice)
+                        {
+                            throw new InvalidOperationException("Can only select multiple answers if poll creator allows for it.");
+                        }
+                        foreach(Guid answerID in updatePollViewModel.AnswerIds)
+                        {
+                            // Get the answer
+                            var pollAnswer = _pollAnswerService.Get(answerID);
 
-                        // Add it
-                        _pollVoteService.Add(pollVote);
+                            // create a new vote
+                            var pollVote = new PollVote { PollAnswer = pollAnswer, User = LoggedOnUser };
+
+                            // Add it
+                            _pollVoteService.Add(pollVote);
+                        }
 
                         // Update the context so the changes are reflected in the viewmodel below
                         unitOfWork.SaveChanges();
                     }
 
                     // Create the view model and get ready return the poll partial view
-                    var poll = _pollService.Get(updatePollViewModel.PollId);
                     var votes = poll.PollAnswers.SelectMany(x => x.PollVotes).ToList();
                     var alreadyVoted = (votes.Count(x => x.User.Id == LoggedOnUser.Id) > 0);
                     var viewModel = new PollViewModel { Poll = poll, TotalVotesInPoll = votes.Count(), UserHasAlreadyVoted = alreadyVoted };

@@ -196,6 +196,7 @@ Activity.Badge,badge
 Activity.UserAwardedBadge,has been awarded the
 Activity.UserJoined,is a new member in the forum
 Activity.ProfileUpdated,has an updated profile
+Topic.Label.PollMultipleChoice,Allow multiple choices?
 Topic.Label.SubscribeToTopic,Get notified of replies?
 Badges.PageTitle,Badges
 Layout.Nav.Badges,Badges

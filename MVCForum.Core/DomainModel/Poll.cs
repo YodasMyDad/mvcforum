@@ -13,6 +13,7 @@ namespace MVCForum.Domain.DomainModel
         public Guid Id { get; set; }
         public bool IsClosed { get; set; }
         public DateTime DateCreated { get; set; }
+        public bool IsMultipleChoice { get; set; }
 
         public virtual MembershipUser User { get; set; }
         public virtual IList<PollAnswer> PollAnswers { get; set; } 
