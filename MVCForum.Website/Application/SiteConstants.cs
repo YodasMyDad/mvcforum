@@ -239,20 +239,5 @@ namespace MVCForum.Website.Application
                 return _WIFAdminUser;
             }
         }
-
-        private static Uri _WIFFederatedSignOutUrl = null;
-        public static Uri WIFFederatedSignOutUrl
-        {
-            get
-            {
-                if (_WIFFederatedSignOutUrl == null)
-                {
-                    var strUrl = ConfigurationManager.AppSettings["WIFFederatedSignOutUrl"];
-                    if (!Uri.TryCreate(strUrl, UriKind.Absolute, out _WIFFederatedSignOutUrl))                    
-                        throw new InvalidOperationException("Unable to convert appSetting WIFFederatedSignOutUrl to an Absolute Uri.  THe value must not be null or empty and must be an absolute url");                    
-                }
-                return _WIFFederatedSignOutUrl;
-            }
-        }
     }
 }
