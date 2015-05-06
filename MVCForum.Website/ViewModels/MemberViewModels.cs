@@ -7,6 +7,7 @@ using DataAnnotationsExtensions;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Website.Application;
+using System.Security.Claims;
 
 namespace MVCForum.Website.ViewModels
 {
@@ -56,6 +57,7 @@ namespace MVCForum.Website.ViewModels
         public string SocialProfileImageUrl { get; set; }
         public string UserAccessToken { get; set; }
         public LoginType LoginType { get; set; }
+        public ClaimsPrincipal ClaimsPrincipal { get; set; }
     }
 
     public class MemberFrontEndEditViewModel
