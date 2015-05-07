@@ -71,10 +71,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SSO Tests", "SSO Tests", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.SSOLogin", "MVCForum.SSOLogin\MVCForum.SSOLogin.csproj", "{CBAC3314-F5A3-4894-A410-CEBED5F2D62F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dev Documentation", "Dev Documentation", "{A77BDAE4-35D4-412F-93AA-1AC217738F93}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{A77BDAE4-35D4-412F-93AA-1AC217738F93}"
 	ProjectSection(SolutionItems) = preProject
-		Dev Documentation\SSO Federated Authentication Setup.docx = Dev Documentation\SSO Federated Authentication Setup.docx
+		Documents\ReadMe.txt = Documents\ReadMe.txt
+		Documents\SSO Federated Authentication Setup.docx = Documents\SSO Federated Authentication Setup.docx
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Nuget Packaging", "Nuget Packaging", "{7A2D71E6-3ED6-457B-A44F-20BD7E0E7162}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nuget.TheMVCForum", "Nuget.TheMVCForum\Nuget.TheMVCForum.csproj", "{0451BAEF-DF2E-4B98-8644-94EE9415E389}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -266,6 +271,16 @@ Global
 		{CBAC3314-F5A3-4894-A410-CEBED5F2D62F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{CBAC3314-F5A3-4894-A410-CEBED5F2D62F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{CBAC3314-F5A3-4894-A410-CEBED5F2D62F}.Release|x86.ActiveCfg = Release|Any CPU
+		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -283,6 +298,7 @@ Global
 		{330A777B-FE88-4CF5-9583-6693547A8F1C} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
 		{ABE6051B-56D8-4867-84DF-43B6AD04A562} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
 		{CBAC3314-F5A3-4894-A410-CEBED5F2D62F} = {BD8C92FF-6A8F-4219-9D00-B8F4A37B53C6}
+		{0451BAEF-DF2E-4B98-8644-94EE9415E389} = {7A2D71E6-3ED6-457B-A44F-20BD7E0E7162}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.2.1.505.2\lib\NET35

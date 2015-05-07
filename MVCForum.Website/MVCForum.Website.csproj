@@ -238,6 +238,8 @@
     <Compile Include="Application\ServiceFactory.cs" />
     <Compile Include="Application\WrappedJSonResult.cs" />
     <Compile Include="Application\SiteConstants.cs" />
+    <Compile Include="App_Start\AppStartUp.cs" />
+    <Compile Include="App_Start\RegisterClientValidationExtensions.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
