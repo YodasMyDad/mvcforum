@@ -575,7 +575,7 @@ namespace MVCForum.Utilities
             }
 
             //remove on<Event> handlers from all tags
-            nc = doc.DocumentNode.SelectNodes("//*[@onclick or @onmouseover or @onfocus or @onblur or @onmouseout or @ondoubleclick or @onload or @onunload or @onerror]");
+            nc = doc.DocumentNode.SelectNodes("//*[@onclick or @onmouseover or @onfocus or @onblur or @onmouseout or @ondblclick or @onload or @onunload or @onerror]");
             if (nc != null)
             {
                 foreach (var node in nc)
@@ -585,7 +585,7 @@ namespace MVCForum.Utilities
                     node.Attributes.Remove("onClick");
                     node.Attributes.Remove("onMouseOver");
                     node.Attributes.Remove("onMouseOut");
-                    node.Attributes.Remove("onDoubleClick");
+                    node.Attributes.Remove("onDblClick");
                     node.Attributes.Remove("onLoad");
                     node.Attributes.Remove("onUnload");
                     node.Attributes.Remove("onError");
