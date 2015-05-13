@@ -243,7 +243,8 @@ namespace MVCForum.Website.Controllers
                             Content = Server.HtmlDecode(post.PostContent),
                             Id = post.Id,
                             Category = topic.Category.Id,
-                            Name = topic.Name
+                            Name = topic.Name,
+                            PollMultipleChoice = topic.Poll.IsMultipleChoice
                         };
 
                         // Now check if this is a topic starter, if so add the rest of the field
@@ -417,6 +418,9 @@ namespace MVCForum.Website.Controllers
                                         topic.Poll.PollAnswers.Add(npa);
                                     }
                                 }
+
+                                // Set whether or not the poll is multiple choice
+                                topic.Poll.IsMultipleChoice = editPostViewModel.PollMultipleChoice;
                             }
                             else
                             {
@@ -642,6 +646,9 @@ namespace MVCForum.Website.Controllers
                                     }
                                     // Attach answers to poll
                                     newPoll.PollAnswers = newPollAnswers;
+
+                                    // Set whether or not the poll is multiple choice
+                                    newPoll.IsMultipleChoice = topicViewModel.PollMultipleChoice;
 
                                     // Save the new answers in the context
                                     unitOfWork.SaveChanges();

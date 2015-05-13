@@ -26,7 +26,13 @@
 
             <div class="pollanswerrow">
                 <div class="pollanswerrowholder clearfix">
-                    @if (Model.UserAllowedToVote && displayVote)
+                    @if (Model.UserAllowedToVote && displayVote && Model.Poll.IsMultipleChoice)
+                    {
+                        <div class="pollradiobuttonholder">
+                            <input type="checkbox" class="pollanswerselect" name="pollanswers" data-answerid="@pollAnswer.Id" />
+                        </div>
+                    }
+                    else if (Model.UserAllowedToVote && displayVote)
                     {
                         <div class="pollradiobuttonholder">
                             <input type="radio" class="pollanswerselect" name="pollanswers" data-answerid="@pollAnswer.Id" />
@@ -55,6 +61,15 @@
                 <a href="#" class="btn-mvc pollvotebutton">@Html.LanguageString("Poll.Button.Vote")</a>
                 <input type="hidden" class="selectedpollanswer" value="" />
                 @Html.HiddenFor(x => x.Poll.Id)
+                @if (poll.IsMultipleChoice)
+                {
+                    <input type="hidden" class="ismultipleChoice" value="true" />
+                }
+                else
+                {
+                    <input type="hidden" class="ismultipleChoice" value="false" />
+                }
+                
             </div>
         }
     </div>

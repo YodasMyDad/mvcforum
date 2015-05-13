@@ -25,9 +25,9 @@ namespace MVCForum.Services
             return _pollVoteRepository.Add(pollVote);
         }
 
-        public bool HasUserVotedAlready(Guid answerId, Guid userId)
+        public bool HasUserVotedAlready(List<Guid> answerIds, Guid userId)
         {
-            return _pollVoteRepository.HasUserVotedAlready(answerId, userId);
+            return _pollVoteRepository.HasUserVotedAlready(answerIds, userId);
         }
 
         public PollVote Get(Guid id)

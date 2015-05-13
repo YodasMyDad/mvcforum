@@ -111,6 +111,9 @@ namespace MVCForum.Website.ViewModels
         public List<SelectListItem> Categories { get; set; }
 
         public IList<PollAnswer> PollAnswers { get; set; }
+
+        [ForumMvcResourceDisplayName("Topic.Label.PollMultipleChoice")]
+        public bool PollMultipleChoice { get; set; }
             
         [ForumMvcResourceDisplayName("Topic.Label.SubscribeToTopic")]
         public bool SubscribeToTopic { get; set; }
@@ -146,7 +149,8 @@ namespace MVCForum.Website.ViewModels
     public class UpdatePollViewModel
     {
         public Guid PollId { get; set; }
-        public Guid AnswerId { get; set; }
+        public List<Guid> AnswerIds { get; set; }
+        public bool IsMultipleChoice { get; set; }
     }
 
     public class MoveTopicViewModel

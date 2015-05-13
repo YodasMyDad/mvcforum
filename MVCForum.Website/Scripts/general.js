@@ -327,11 +327,23 @@ $(function () {
         e.preventDefault();
 
         var pollId = $('#Poll_Id').val();
-        var answerId = $('.selectedpollanswer').val();
 
         var UpdatePollViewModel = new Object();
         UpdatePollViewModel.PollId = pollId;
-        UpdatePollViewModel.AnswerId = answerId;
+        var answerIDs = [];
+
+        var isMulipleChoice = $('.ismultipleChoice').val();
+
+        if (isMulipleChoice) {
+            $('.pollcontainer input:checked').each(function () {
+                answerIDs.push($(this).data("answerid"));
+            });
+        }
+        else {
+            $('.selectedpollanswer').val();
+        }
+
+        UpdatePollViewModel.AnswerIds = answerIDs;
 
         // Ajax call to post the view model to the controller
         var strung = JSON.stringify(UpdatePollViewModel);
