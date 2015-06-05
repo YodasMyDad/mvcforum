@@ -382,7 +382,7 @@ namespace MVCForum.Website.Application
                 fileName = fileName.ToLower();
 
                 // Get the file extension
-                var fileExtension = Path.GetExtension(fileName.ToLower());
+                var fileExtension = Path.GetExtension(fileName);
 
                 //Before we do anything, check file size
                 if (file.ContentLength > Convert.ToInt32(SiteConstants.FileUploadMaximumFileSizeInBytes))
