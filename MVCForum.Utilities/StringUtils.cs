@@ -507,7 +507,7 @@ namespace MVCForum.Utilities
                 return serverName;
             }
             var ipList = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-            return !string.IsNullOrEmpty(ipList) ? ipList.Split(',')[0] : HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
+            return !string.IsNullOrEmpty(ipList) ? ipList.Split(',')[0] : context.Request.ServerVariables["REMOTE_ADDR"];
         }
 
         /// <summary>
@@ -615,8 +615,8 @@ namespace MVCForum.Utilities
 
             var unwantedTagNames = new List<string>
             {
-                "span",
-                "div"
+                "div",
+                "font"
             };
 
             var htmlDoc = new HtmlDocument();
