@@ -766,8 +766,6 @@
     <Content Include="Areas\Admin\Views\Moderate\GetMorePosts.cshtml" />
     <Content Include="Scripts\bbeditor\themes\monocons\monocons.eot" />
     <Content Include="Scripts\bbeditor\themes\monocons\monocons.ttf" />
-    <Content Include="Content\languagepacks\de-DE.csv" />
-    <Content Include="Content\languagepacks\fa-IR.csv" />
     <Content Include="Content\bootstrap\css\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap\css\bootstrap.css.map" />
     <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.eot" />
@@ -1149,7 +1147,9 @@
     <Content Include="Views\Shared\customeditors\tinymceeditor.cshtml" />
     <Content Include="Views\Shared\_PrivateMessage.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Content\languagepacks\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
       <SubType>Designer</SubType>
