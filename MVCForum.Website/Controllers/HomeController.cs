@@ -83,11 +83,15 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                // Allowed Categories for a guest - As that's all we want latest RSS to show
+                var guestRole = RoleService.GetRole(AppConstants.GuestRoleName);
+                var allowedCategories = _categoryService.GetAllowedCategories(guestRole);
+
                 // get an rss lit ready
                 var rssTopics = new List<RssItem>();
 
                 // Get the latest topics
-                var topics = _topicService.GetRecentRssTopics(SiteConstants.ActiveTopicsListSize);
+                var topics = _topicService.GetRecentRssTopics(SiteConstants.ActiveTopicsListSize, allowedCategories);
 
                 // Get all the categories for this topic collection
                 var categories = topics.Select(x => x.Category).Distinct();
@@ -190,8 +194,12 @@ namespace MVCForum.Website.Controllers
                 // Get all categoryes
                 var allCategories = _categoryService.GetAll().ToList();
 
-                // Get all topics
-                var allTopics = _topicService.GetAll();
+                // Allowed Categories for a guest
+                var guestRole = RoleService.GetRole(AppConstants.GuestRoleName);
+                var allowedCatergories = _categoryService.GetAllowedCategories(guestRole);
+
+                // Get all topics that a guest has access to
+                var allTopics = _topicService.GetAll(allowedCatergories);
 
                 // get all members profiles
                 var members = MembershipService.GetAll();

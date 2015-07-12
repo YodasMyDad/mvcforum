@@ -199,6 +199,7 @@ namespace MVCForum.Website.ViewModels.Mapping
                                                                 IRoleService roleService, 
                                                                 MembershipRole usersRole,
                                                                 MembershipUser loggedOnUser,
+                                                                List<Category> allowedCategories, 
                                                                 Settings settings)
         {
             // Get all topic Ids
@@ -206,7 +207,7 @@ namespace MVCForum.Website.ViewModels.Mapping
 
             // Gets posts for topics
             var postService = ServiceFactory.Get<IPostService>();
-            var posts = postService.GetPostsByTopics(topicIds);
+            var posts = postService.GetPostsByTopics(topicIds, allowedCategories);
             var groupedPosts = posts.ToLookup(x => x.Topic.Id);
 
             // Get all permissions

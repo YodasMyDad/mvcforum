@@ -34,12 +34,13 @@ namespace MVCForum.Website.Controllers
         private readonly ITopicNotificationService _topicNotificationService;
         private readonly IPollAnswerService _pollAnswerService;
         private readonly IVoteService _voteService;
+        private readonly ICategoryService _categoryService;
 
         private MembershipUser LoggedOnUser;
         private MembershipRole UsersRole;
 
         public MembersController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService,
-            IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService, IBannedWordService bannedWordService, ITopicNotificationService topicNotificationService, IPollAnswerService pollAnswerService, IVoteService voteService)
+            IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService, IBannedWordService bannedWordService, ITopicNotificationService topicNotificationService, IPollAnswerService pollAnswerService, IVoteService voteService, ICategoryService categoryService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _postService = postService;
@@ -51,6 +52,7 @@ namespace MVCForum.Website.Controllers
             _topicNotificationService = topicNotificationService;
             _pollAnswerService = pollAnswerService;
             _voteService = voteService;
+            _categoryService = categoryService;
 
             LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
             UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
@@ -749,20 +751,22 @@ namespace MVCForum.Website.Controllers
         }
 
         [HttpPost]
-        public PartialViewResult GetMemberDiscussions(Guid Id)
+        public PartialViewResult GetMemberDiscussions(Guid id)
         {
             if (Request.IsAjaxRequest())
             {
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
+                    var allowedCategories = _categoryService.GetAllowedCategories(UsersRole).ToList();
+
                     // Get the user discussions, only grab 100 posts
-                    var posts = _postService.GetByMember(Id, 100);
+                    var posts = _postService.GetByMember(id, 100, allowedCategories);
 
                     // Get the distinct topics
                     var topics = posts.Select(x => x.Topic).Distinct().Take(6).OrderByDescending(x => x.LastPost.DateCreated).ToList();
 
                     // Get the Topic View Models
-                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, SettingsService.GetSettings());
+                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
 
                     // create the view model
                     var viewModel = new ViewMemberDiscussionsViewModel

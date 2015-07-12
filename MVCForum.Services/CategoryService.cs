@@ -42,7 +42,6 @@ namespace MVCForum.Services
             return _categoryRepository.GetAll();
         }
 
-
         /// <summary>
         /// Return all sub categories from a parent category id
         /// </summary>

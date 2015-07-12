@@ -152,6 +152,9 @@ namespace MVCForum.Website.Controllers
                 // Get the category
                 var category = _categoryService.GetBySlugWithSubCategories(slug);
 
+                // Allowed Categories for this user
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+
                 // Set the page index
                 var pageIndex = p ?? 1;
 
@@ -165,7 +168,7 @@ namespace MVCForum.Website.Controllers
                                                                         SettingsService.GetSettings().TopicsPerPage,
                                                                         int.MaxValue, category.Category.Id);
 
-                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, SettingsService.GetSettings());
+                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
 
                     // Create the main view model for the category
                     var viewModel = new ViewCategoryViewModel

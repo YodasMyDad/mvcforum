@@ -71,6 +71,8 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+
                 // Set the page index
                 var pageIndex = p ?? 1;
 
@@ -78,10 +80,11 @@ namespace MVCForum.Website.Controllers
                 var topics = _topicService.GetMembersActivity(pageIndex,
                                                            SettingsService.GetSettings().TopicsPerPage,
                                                            SiteConstants.MembersActivityListSize,
-                                                           LoggedOnUser.Id);
+                                                           LoggedOnUser.Id, 
+                                                           allowedCategories);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, SettingsService.GetSettings());
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
 
                 // create the view model
                 var viewModel = new PostedInViewModel
@@ -106,13 +109,14 @@ namespace MVCForum.Website.Controllers
             var viewModel = new List<TopicViewModel>();
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
                 var topicIds = LoggedOnUser.TopicNotifications.Select(x => x.Topic.Id).ToList();
                 if (topicIds.Any())
                 {
-                    var topics = _topicService.Get(topicIds);
+                    var topics = _topicService.Get(topicIds, allowedCategories);
 
                     // Get the Topic View Models
-                    viewModel = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, SettingsService.GetSettings());
+                    viewModel = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
                 }
             }
             return PartialView("GetSubscribedTopics", viewModel);
@@ -939,6 +943,8 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+
                 // Set the page index
                 var pageIndex = p ?? 1;
 
@@ -946,10 +952,10 @@ namespace MVCForum.Website.Controllers
                 var topics = _topicService.GetPagedTopicsByTag(pageIndex,
                                                            SettingsService.GetSettings().TopicsPerPage,
                                                            SiteConstants.ActiveTopicsListSize,
-                                                           tag);
+                                                           tag, allowedCategories);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, SettingsService.GetSettings());
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
 
                 // create the view model
                 var viewModel = new TagTopicsViewModel
@@ -968,25 +974,28 @@ namespace MVCForum.Website.Controllers
         [HttpPost]
         public PartialViewResult GetSimilarTopics(string searchTerm)
         {
-            // Returns the formatted string to search on
-            var formattedSearchTerm = StringUtils.ReturnSearchString(searchTerm);
-
-            List<Topic> topics = null;
-            try
+            using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var searchResults = _topicService.SearchTopics(0, SiteConstants.SimilarTopicsListSize, SiteConstants.SimilarTopicsListSize, formattedSearchTerm);
-                if (searchResults != null)
+                // Returns the formatted string to search on
+                var formattedSearchTerm = StringUtils.ReturnSearchString(searchTerm);
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                List<Topic> topics = null;
+                try
                 {
-                    topics = searchResults.ToList();
+                    var searchResults = _topicService.SearchTopics(0, SiteConstants.SimilarTopicsListSize, SiteConstants.SimilarTopicsListSize, formattedSearchTerm, allowedCategories);
+                    if (searchResults != null)
+                    {
+                        topics = searchResults.ToList();
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                LoggingService.Error(ex);
-            }
+                catch (Exception ex)
+                {
+                    LoggingService.Error(ex);
+                }
 
-            // Pass the list to the partial view
-            return PartialView(topics);
+                // Pass the list to the partial view
+                return PartialView(topics); 
+            }
         }
 
         [ChildActionOnly]
@@ -994,16 +1003,19 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+
                 // Set the page index
                 var pageIndex = p ?? 1;
 
                 // Get the topics
                 var topics = _topicService.GetRecentTopics(pageIndex,
                                                            SettingsService.GetSettings().TopicsPerPage,
-                                                           SiteConstants.ActiveTopicsListSize);
+                                                           SiteConstants.ActiveTopicsListSize, 
+                                                           allowedCategories);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, SettingsService.GetSettings());
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
 
                 // create the view model
                 var viewModel = new ActiveTopicsViewModel
@@ -1024,16 +1036,18 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+
                 if (amountToShow == null)
                 {
                     amountToShow = 5;
                 }
 
                 // Get the topics
-                var topics = _topicService.GetPopularTopics(from, to, (int)amountToShow);
+                var topics = _topicService.GetPopularTopics(from, to, allowedCategories, (int)amountToShow);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, SettingsService.GetSettings());
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
 
                 // create the view model
                 var viewModel = new HotTopicsViewModel

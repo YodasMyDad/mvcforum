@@ -38,6 +38,7 @@ namespace MVCForum.Services
         private readonly IBadgeService _badgeService;
         private readonly ICategoryNotificationService _categoryNotificationService;
         private readonly ILoggingService _loggingService;
+        private readonly ICategoryService _categoryService;
 
         private LoginAttemptStatus _lastLoginStatus = LoginAttemptStatus.LoginSuccessful;
 
@@ -63,13 +64,15 @@ namespace MVCForum.Services
         /// <param name="pollRepository"></param>
         /// <param name="topicRepository"></param>
         /// <param name="favouriteRepository"></param>
+        /// <param name="categoryService"></param>
         public MembershipService(IMembershipRepository membershipRepository, ISettingsRepository settingsRepository,
             IEmailService emailService, ILocalizationService localizationService, IActivityService activityService,
             IPrivateMessageService privateMessageService, IMembershipUserPointsService membershipUserPointsService,
             ITopicNotificationService topicNotificationService, IVoteService voteService, IBadgeService badgeService,
             ICategoryNotificationService categoryNotificationService, ILoggingService loggingService, IUploadedFileService uploadedFileService,
             IPostRepository postRepository, IPollVoteRepository pollVoteRepository, IPollAnswerRepository pollAnswerRepository,
-            IPollRepository pollRepository, ITopicRepository topicRepository, IFavouriteRepository favouriteRepository)
+            IPollRepository pollRepository, ITopicRepository topicRepository, IFavouriteRepository favouriteRepository, 
+            ICategoryService categoryService)
         {
             _membershipRepository = membershipRepository;
             _settingsRepository = settingsRepository;
@@ -90,6 +93,7 @@ namespace MVCForum.Services
             _pollRepository = pollRepository;
             _topicRepository = topicRepository;
             _favouriteRepository = favouriteRepository;
+            _categoryService = categoryService;
         }
 
 
@@ -974,9 +978,12 @@ namespace MVCForum.Services
                 _postRepository.Delete(post);
             }
 
+            // Get all categories
+            var allCategories = _categoryService.GetAll();
+
             // Need to see if any of these are last posts on Topics
             // If so, need to swap out last post
-            var lastPostTopics = _topicRepository.GetTopicsByLastPost(postIds);
+            var lastPostTopics = _topicRepository.GetTopicsByLastPost(postIds, allCategories.ToList());
             foreach (var topic in lastPostTopics)
             {
                 var lastPost = topic.Posts.Where(x => !postIds.Contains(x.Id)).OrderByDescending(x => x.DateCreated).FirstOrDefault();
