@@ -42,7 +42,6 @@ namespace MVCForum.Domain.Interfaces.Services
         PagedList<MembershipUser> SearchMembers(string search, int pageIndex, int pageSize);
         IList<MembershipUser> SearchMembers(string username, int amount);
         IList<MembershipUser> GetActiveMembers();
-        void Save(MembershipUser user);
         void ProfileUpdated(MembershipUser user);
         bool Delete(MembershipUser user, IUnitOfWork unitOfWork);
         IList<MembershipUser> GetLatestUsers(int amountToTake);

@@ -639,18 +639,6 @@ namespace MVCForum.Services
         /// Save user (does NOT update password data)
         /// </summary>
         /// <param name="user"></param>
-        public void Save(MembershipUser user)
-        {
-
-            user = SanitizeUser(user);
-
-            _membershipRepository.Update(user);
-        }
-
-        /// <summary>
-        /// Save user (does NOT update password data)
-        /// </summary>
-        /// <param name="user"></param>
         public void ProfileUpdated(MembershipUser user)
         {
             var e = new UpdateProfileEventArgs { User = user };
@@ -690,8 +678,6 @@ namespace MVCForum.Services
                 {
                     user.FailedPasswordAnswerAttempt = 0;
                 }
-
-                _membershipRepository.Update(user);
             }
         }
 

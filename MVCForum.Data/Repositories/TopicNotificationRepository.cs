@@ -32,6 +32,7 @@ namespace MVCForum.Data.Repositories
         {
             return _context.TopicNotification
                 .Where(x => x.Topic.Id == topic.Id)
+                .AsNoTracking()
                 .ToList();
         }
 
@@ -46,6 +47,7 @@ namespace MVCForum.Data.Repositories
         {
             return _context.TopicNotification
                 .Where(x => x.User.Id == user.Id && x.Topic.Id == topic.Id)
+                .AsNoTracking()
                 .ToList();
         }
 

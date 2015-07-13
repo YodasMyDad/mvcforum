@@ -28,6 +28,5 @@ namespace MVCForum.Domain.Interfaces.Repositories
         MembershipUser Add(MembershipUser item);
         MembershipUser Get(Guid id);
         void Delete(MembershipUser item);
-        void Update(MembershipUser item);
     }
 }

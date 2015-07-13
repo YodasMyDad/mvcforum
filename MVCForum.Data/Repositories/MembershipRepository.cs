@@ -83,6 +83,7 @@ namespace MVCForum.Data.Repositories
             var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
             return _context.MembershipUser
                 .Where(x => x.LastActivityDate > date)
+                .AsNoTracking()
                 .ToList();
         }
 
@@ -126,6 +127,7 @@ namespace MVCForum.Data.Repositories
         {
             return _context.MembershipUser
               .Where(x => guids.Contains(x.Id))
+              .AsNoTracking()
               .ToList();
         }
 
@@ -138,7 +140,7 @@ namespace MVCForum.Data.Repositories
 
         public IList<MembershipUser> GetLatestUsers(int amountToTake)
         {
-            return _context.MembershipUser
+            return _context.MembershipUser.Include(x => x.Roles).AsNoTracking()
               .OrderByDescending(x => x.CreateDate)
               .Take(amountToTake)
               .ToList();
@@ -152,6 +154,7 @@ namespace MVCForum.Data.Repositories
                         userPoints => userPoints.User.Id, // A function to extract the join key from each element of the second sequence
                         (user, userPoints) => new { MembershipUser = user, UserPoints = userPoints } // A function to create a result element from two matching elements.
                     )
+                 .AsNoTracking()
                 .OrderBy(x => x.UserPoints)
                 .Take(amountToTake)
                 .Select(t => t.MembershipUser)
@@ -214,16 +217,6 @@ namespace MVCForum.Data.Repositories
         public void Delete(MembershipUser user)
         {
             _context.MembershipUser.Remove(user);
-        }
-
-        public void Update(MembershipUser item)
-        {
-            // Check there's not an object with same identifier already in context
-            if (_context.MembershipUser.Local.Select(x => x.Id == item.Id).Any())
-            {
-                throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
-            }
-            _context.Entry(item).State = EntityState.Modified; 
         }
     }
 }

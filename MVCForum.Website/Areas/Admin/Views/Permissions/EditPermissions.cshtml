@@ -40,10 +40,10 @@
                         var isDisabled = DisableCheckBox(permission.Name);
                         <td>
 
-                            @if (allPermission.ContainsKey(cat.Id) && allPermission[cat.Id].ContainsKey(permission))
+                            @if (allPermission.ContainsKey(cat.Id) && allPermission[cat.Id].ContainsKey(permission.Id))
                             {
                                 // bingo we have this permission
-                                isChecked = allPermission[cat.Id][permission] ? " checked" : "";
+                                isChecked = allPermission[cat.Id][permission.Id] ? " checked" : "";
                             }
                             <span class="permissioncheckbox">
                                 <input data-permisssion="@permission.Id" data-category="@cat.Id" data-role="@Model.MembershipRole.Id" type="checkbox" id="@permission.Id-@cat.Id" @isChecked @isDisabled />

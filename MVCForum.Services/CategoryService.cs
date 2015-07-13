@@ -200,18 +200,6 @@ namespace MVCForum.Services
                 throw new InUseUnableToDeleteException(inUseBy);
             }
         }
-
-        /// <summary>
-        /// Save / Update a category
-        /// </summary>
-        /// <param name="category"></param>
-        public void Save(Category category)
-        {
-            // Sanitize
-            category = SanitizeCategory(category);
-
-            _categoryRepository.Update(category);
-        }
     }
 }
 

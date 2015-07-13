@@ -17,7 +17,6 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<Category> GetCategoryParents(Category category);
         void Delete(Category category);
         void Add(Category category);
-        void Save(Category category);
         void UpdateSlugFromName(Category category);
         Category SanitizeCategory(Category category);
     }

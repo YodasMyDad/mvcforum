@@ -39,17 +39,7 @@ namespace MVCForum.Data.Repositories
 
         public IList<Category> Get(IList<Guid> ids)
         {
-            return _context.Category.Where(x => ids.Contains(x.Id)).ToList();
-        }
-
-        public void Update(Category item)
-        {
-            // Check there's not an object with same identifier already in context
-            if (_context.Category.Local.Select(x => x.Id == item.Id).Any())
-            {
-                throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
-            }
-            _context.Entry(item).State = EntityState.Modified; 
+            return _context.Category.AsNoTracking().Where(x => ids.Contains(x.Id)).ToList();
         }
 
         public IList<Category> GetAllSubCategories(Guid parentId)
