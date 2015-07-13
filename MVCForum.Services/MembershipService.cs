@@ -391,8 +391,9 @@ namespace MVCForum.Services
         /// Get a user by username
         /// </summary>
         /// <param name="username"></param>
+        /// <param name="removeTracking"></param>
         /// <returns></returns>
-        public MembershipUser GetUser(string username)
+        public MembershipUser GetUser(string username, bool removeTracking = false)
         {
             var member = _membershipRepository.GetUser(username);
 

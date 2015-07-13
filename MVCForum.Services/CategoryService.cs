@@ -160,9 +160,15 @@ namespace MVCForum.Services
             return _categoryRepository.GetBySlug(StringUtils.GetSafeHtml(slug));
         }
 
-        public IList<Category> GetCategoryParents(Category category)
+        public List<Category> GetCategoryParents(Category category, List<Category> allowedCategories)
         {
-            return _categoryRepository.GetCategoryParents(category);
+            var cats = _categoryRepository.GetCategoryParents(category);
+            var allowedCatIds = new List<Guid>();
+            if (allowedCategories != null && allowedCategories.Any())
+            {
+                allowedCatIds.AddRange(allowedCategories.Select(x => x.Id));
+            }
+            return cats.Where(x => allowedCatIds.Contains(x.Id)).ToList();
         }
 
         /// <summary>

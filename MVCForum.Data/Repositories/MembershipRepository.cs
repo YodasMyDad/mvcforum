@@ -27,12 +27,21 @@ namespace MVCForum.Data.Repositories
         /// Get a user by username
         /// </summary>
         /// <param name="username"></param>
+        /// <param name="removeTracking"></param>
         /// <returns></returns>
-        public MembershipUser GetUser(string username)
+        public MembershipUser GetUser(string username, bool removeTracking = false)
         {
+            if (removeTracking)
+            {
+                return _context.MembershipUser
+                    .Include(x => x.Roles)
+                    .AsNoTracking()
+                    .FirstOrDefault(name => name.UserName.Equals(username, StringComparison.CurrentCultureIgnoreCase));                
+            }
             return _context.MembershipUser
                 .Include(x => x.Roles)
-                .FirstOrDefault(name => name.UserName.ToLower() == username.ToLower());
+                .FirstOrDefault(name => name.UserName.Equals(username, StringComparison.CurrentCultureIgnoreCase));
+                //.FirstOrDefault(name => String.Equals(name.UserName, username, StringComparison.CurrentCultureIgnoreCase));
         }
 
         /// <summary>

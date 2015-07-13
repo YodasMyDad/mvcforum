@@ -41,10 +41,11 @@ namespace MVCForum.Services
         /// Get role by name
         /// </summary>
         /// <param name="rolename"></param>
+        /// <param name="removeTracking">If true, adds AsNoTracking()</param>
         /// <returns></returns>
-        public MembershipRole GetRole(string rolename)
+        public MembershipRole GetRole(string rolename, bool removeTracking = false)
         {
-            return _roleRepository.GetRole(rolename);
+            return _roleRepository.GetRole(rolename, removeTracking);
         }
 
         /// <summary>
@@ -65,7 +66,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<MembershipUser> GetUsersForRole(string roleName)
         {
-            return _roleRepository.GetRole(roleName).Users;
+            return _roleRepository.GetRole(roleName, false).Users;
 
         }
 

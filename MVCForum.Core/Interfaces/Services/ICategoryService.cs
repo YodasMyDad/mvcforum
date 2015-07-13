@@ -14,7 +14,7 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<Category> Get(IList<Guid> ids);
         CategoryWithSubCategories GetBySlugWithSubCategories(string slug);
         Category Get(string slug);
-        IList<Category> GetCategoryParents(Category category);
+        List<Category> GetCategoryParents(Category category, List<Category> allowedCategories);
         void Delete(Category category);
         void Add(Category category);
         void UpdateSlugFromName(Category category);

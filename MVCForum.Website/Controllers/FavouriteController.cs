@@ -27,9 +27,6 @@ namespace MVCForum.Website.Controllers
         private readonly IVoteService _voteService;
         private readonly IFavouriteService _favouriteService;
 
-        private readonly MembershipUser LoggedOnUser;
-        private readonly MembershipRole UsersRole;
-
         public FavouriteController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
             ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, IPollService pollService,
@@ -49,9 +46,6 @@ namespace MVCForum.Website.Controllers
             _bannedWordService = bannedWordService;
             _voteService = voteService;
             _favouriteService = favouriteService;
-
-            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
-            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
         [Authorize]

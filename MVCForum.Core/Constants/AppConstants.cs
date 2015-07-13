@@ -13,7 +13,7 @@
 
         // Url names
         public const string CategoryUrlIdentifier = "cat";
-        public const string TopicUrlIdentifier = "chat";
+        public const string TopicUrlIdentifier = "topic";
         public const string TagsUrlIdentifier = "tagged";
         public const string MemberUrlIdentifier = "profile";
 

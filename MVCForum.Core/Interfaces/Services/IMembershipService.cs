@@ -21,7 +21,7 @@ namespace MVCForum.Domain.Interfaces.Services
         bool ValidateUser(string userName, string password, int maxInvalidPasswordAttempts);
         LoginAttemptStatus LastLoginStatus { get; }
         string[] GetRolesForUser(string username);
-        MembershipUser GetUser(string username);
+        MembershipUser GetUser(string username, bool removeTracking = false);
         MembershipUser GetUserByEmail(string email);
         MembershipUser GetUserBySlug(string slug);
         MembershipUser GetUserByFacebookId(long facebookId);

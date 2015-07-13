@@ -36,9 +36,6 @@ namespace MVCForum.Website.Controllers
         private readonly IVoteService _voteService;
         private readonly ICategoryService _categoryService;
 
-        private MembershipUser LoggedOnUser;
-        private MembershipRole UsersRole;
-
         public MembersController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService,
             IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService, IBannedWordService bannedWordService, ITopicNotificationService topicNotificationService, IPollAnswerService pollAnswerService, IVoteService voteService, ICategoryService categoryService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
@@ -53,9 +50,6 @@ namespace MVCForum.Website.Controllers
             _pollAnswerService = pollAnswerService;
             _voteService = voteService;
             _categoryService = categoryService;
-
-            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
-            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
         [Authorize(Roles = AppConstants.AdminRoleName)]

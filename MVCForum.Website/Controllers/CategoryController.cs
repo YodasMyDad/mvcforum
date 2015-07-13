@@ -20,9 +20,6 @@ namespace MVCForum.Website.Controllers
         private readonly ITopicNotificationService _topicNotificationService;
         private readonly IVoteService _voteService;
 
-        private MembershipUser LoggedOnUser;
-        private MembershipRole UsersRole;
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -49,9 +46,6 @@ namespace MVCForum.Website.Controllers
             _pollAnswerService = pollAnswerService;
             _topicNotificationService = topicNotificationService;
             _voteService = voteService;
-
-            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
-            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
         public ActionResult Index()
@@ -134,11 +128,13 @@ namespace MVCForum.Website.Controllers
         [ChildActionOnly]
         public PartialViewResult GetCategoryBreadcrumb(Category category)
         {
+            var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var viewModel = new BreadcrumbViewModel
                 {
-                    Categories = _categoryService.GetCategoryParents(category).ToList(),
+                    Categories = _categoryService.GetCategoryParents(category,allowedCategories),
                     Category = category
                 };
                 return PartialView("GetCategoryBreadcrumb", viewModel);

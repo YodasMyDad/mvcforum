@@ -15,8 +15,6 @@ namespace MVCForum.Website.Controllers
         private readonly IPollVoteService _pollVoteService;
         private readonly IPollAnswerService _pollAnswerService;
 
-        private MembershipUser LoggedOnUser;
-
         public PollController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IPollService pollService, IPollVoteService pollVoteService, 
             IPollAnswerService pollAnswerService)
@@ -25,9 +23,6 @@ namespace MVCForum.Website.Controllers
             _pollService = pollService;
             _pollAnswerService = pollAnswerService;
             _pollVoteService = pollVoteService;
-
-
-            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
         }
 
         [HttpPost]

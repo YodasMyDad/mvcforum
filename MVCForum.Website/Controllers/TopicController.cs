@@ -36,9 +36,6 @@ namespace MVCForum.Website.Controllers
         private readonly IVoteService _voteService;
         private readonly IUploadedFileService _uploadedFileService;
 
-        private readonly MembershipUser LoggedOnUser;
-        private readonly MembershipRole UsersRole;
-
         public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
             ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, IPollService pollService,
@@ -59,9 +56,6 @@ namespace MVCForum.Website.Controllers
             _voteService = voteService;
             _favouriteService = favouriteService;
             _uploadedFileService = uploadedFileService;
-
-            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
-            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
 
@@ -126,11 +120,12 @@ namespace MVCForum.Website.Controllers
         public PartialViewResult GetTopicBreadcrumb(Topic topic)
         {
             var category = topic.Category;
+            var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var viewModel = new BreadcrumbViewModel
                 {
-                    Categories = _categoryService.GetCategoryParents(category).ToList(),
+                    Categories = _categoryService.GetCategoryParents(category, allowedCategories),
                     Topic = topic
                 };
                 if (!viewModel.Categories.Any())
