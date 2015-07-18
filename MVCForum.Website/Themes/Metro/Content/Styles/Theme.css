@@ -251,7 +251,7 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 
 /*--- Post ---*/
 .post { border-top: 1px #f2f2f2 solid; padding: 15px 0 15px 0; }
-.postcontent, .postcontent p { font-size: 15px; }
+.postcontent, .postcontent p { font-size: 15px;overflow-x: hidden;}
 .postcontent table { width: 100% !important; margin: 10px 0; }
 .postcontent table td { border-bottom: 1px #efefef solid; padding: 4px; font-size: 12px; }
 .postcontent img { max-width: 100%; }

@@ -68,18 +68,17 @@ namespace MVCForum.Data.Repositories
         {
             // get the category ids
             var allowedCatIds = allowedCategories.Select(x => x.Id);
-            var topics = _context.Post
-                .Include(x => x.Topic)
-                .Include(x => x.Topic.Category)
+
+            var topics = _context.Topic
+                .Include(x => x.Category)
+                .Include(x => x.LastPost)
+                .Include(x => x.Posts)
                 .Include(x => x.User)
-                .Include(x => x.Topic.Posts)
-                .Where(x => allowedCatIds.Contains(x.Topic.Category.Id))
-                .DistinctBy(x => x.Topic.Id)
-                .OrderByDescending(x => x.Topic.Posts.Count(c => c.DateCreated >= from && c.DateCreated <= to))
-                .ThenByDescending(x => x.VoteCount)
-                .ThenByDescending(x => x.Topic.Views)
+                .Where(x => allowedCatIds.Contains(x.Category.Id))
+                .OrderByDescending(x => x.Posts.Count(c => c.DateCreated >= from && c.DateCreated <= to))
+                .ThenByDescending(x => x.Posts.Select(v => v.VoteCount).Sum())
+                .ThenByDescending(x => x.Views)
                 .Take(amountToShow)
-                .Select(x => x.Topic)
                 .ToList();
 
             return topics;

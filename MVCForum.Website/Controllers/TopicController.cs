@@ -15,7 +15,6 @@ using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
 using MVCForum.Website.ViewModels.Mapping;
-using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
 
 namespace MVCForum.Website.Controllers
 {
@@ -35,11 +34,12 @@ namespace MVCForum.Website.Controllers
         private readonly IBannedWordService _bannedWordService;
         private readonly IVoteService _voteService;
         private readonly IUploadedFileService _uploadedFileService;
+        private readonly ICacheService _cacheService;
 
         public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
             ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, IPollService pollService,
-            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService, IUploadedFileService uploadedFileService)
+            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService, IUploadedFileService uploadedFileService, ICacheService cacheService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
@@ -56,6 +56,7 @@ namespace MVCForum.Website.Controllers
             _voteService = voteService;
             _favouriteService = favouriteService;
             _uploadedFileService = uploadedFileService;
+            _cacheService = cacheService;
         }
 
 
@@ -93,8 +94,6 @@ namespace MVCForum.Website.Controllers
             }
 
         }
-
-
 
         [ChildActionOnly]
         [Authorize]
@@ -1025,30 +1024,45 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.LongCacheTime)]
         [ChildActionOnly]
         public ActionResult HotTopics(DateTime? from, DateTime? to, int? amountToShow)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                HotTopicsViewModel viewModel;
 
                 if (amountToShow == null)
                 {
                     amountToShow = 5;
                 }
 
-                // Get the topics
-                var topics = _topicService.GetPopularTopics(from, to, allowedCategories, (int)amountToShow);
+                var fromString = from != null ? Convert.ToDateTime(from).ToShortDateString() : null;
+                var toString = to != null ? Convert.ToDateTime(to).ToShortDateString() : null;
 
-                // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
-
-                // create the view model
-                var viewModel = new HotTopicsViewModel
+                var cacheKey = string.Concat("HotTopics", UsersRole.Id, fromString, toString, amountToShow);
+                var cachedItem = _cacheService.Get(cacheKey);
+                if (cachedItem == null)
                 {
-                    Topics = topicViewModels
-                };
+                    // Allowed Categories
+                    var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+
+                    // Get the topics
+                    var topics = _topicService.GetPopularTopics(from, to, allowedCategories, (int)amountToShow);
+
+                    // Get the Topic View Models
+                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
+
+                    // create the view model
+                    viewModel = new HotTopicsViewModel
+                    {
+                        Topics = topicViewModels
+                    };
+                    _cacheService.Set(cacheKey, viewModel, AppConstants.LongCacheTime);
+                }
+                else
+                {
+                    viewModel = (HotTopicsViewModel)cachedItem;
+                }                
 
                 return PartialView(viewModel);
             }

@@ -97,6 +97,7 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IUploadedFileService, UploadedFileService>();
             container.BindInRequestScope<IFavouriteService, FavouriteService>();
             container.BindInRequestScope<IGlobalPermissionForRoleService, GlobalPermissionForRoleService>();
+            container.BindInRequestScope<ICacheService, CacheService>();
 
             container.BindInRequestScope<IRoleRepository, RoleRepository>();
             container.BindInRequestScope<ICategoryRepository, CategoryRepository>();

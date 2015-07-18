@@ -68,6 +68,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public List<Category> GetAllowedCategories(MembershipRole role)
         {
+            //TODO - Cache?
             var filteredCats = new List<Category>();
             var allCats = _categoryRepository.GetAll().ToList();
             foreach (var category in allCats)

@@ -68,6 +68,8 @@ namespace MVCForum.Data.Repositories
         {
             var categories = _context.Category
                                 .Include(x => x.ParentCategory)
+                                .Include(x => x.Topics.Select(l => l.LastPost))
+                                .Include(x => x.Topics.Select(l => l.Posts))
                                 .Where(cat => cat.ParentCategory == null)
                                 .OrderBy(x => x.SortOrder)
                                 .ToList();

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Data.Entity;
+using System.Security.Cryptography.X509Certificates;
 using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Domain.Interfaces.Services;
 
 namespace MVCForum.Data.Repositories
 {
@@ -27,18 +29,27 @@ namespace MVCForum.Data.Repositories
             return _context.TopicTag.ToList();
         }
 
-        public Dictionary<TopicTag, int> GetPopularTags(int? amountToTake)
+        public Dictionary<TopicTag, int> GetPopularTags(int? amountToTake, List<Category> allowedCategories)
         {
+            var categoryIds = allowedCategories.Select(x => x.Id);
             amountToTake = amountToTake ?? int.MaxValue;
-            var tags = _context.TopicTag
-                .Include(x => x.Topics.Count)
-                .OrderByDescending(x => x.Topics.Count())
-                .Take((int)amountToTake)
-                .Select(s => new { TopicCount = s.Topics.Count(), Tag = s })
-                .Where(x => x.TopicCount > 0)
-                .OrderByDescending(s => s.TopicCount).ToList();
 
-            return tags.ToDictionary(tag => tag.Tag, tag => tag.TopicCount);
+            //var test = _context.TopicTag.SqlQuery("").ToList<TopicTag>();
+
+            var tags = _context.TopicTag
+                .Include(x => x.Topics.Select(s => s.Category))
+                .AsNoTracking()
+                .Select(x => new
+                {
+                    topics = x.Topics.Where(c => categoryIds.Contains(c.Category.Id)),
+                    topictag = x,
+                    topiccount = x.Topics.Count(c => categoryIds.Contains(c.Category.Id))
+                })
+                .Where(x => x.topiccount > 0)
+                .OrderByDescending(x => x.topiccount)
+                .Take((int) amountToTake);
+
+            return tags.ToDictionary(tag => tag.topictag, tag => tag.topiccount);
         }
 
         public TopicTag GetTagName(string tag)

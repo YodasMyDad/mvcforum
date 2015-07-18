@@ -858,6 +858,7 @@ namespace MVCForum.Services
                 {
                     _voteService.Delete(d);
                 }
+                user.Votes.Clear();
             }
 
             // User Badges
@@ -869,6 +870,7 @@ namespace MVCForum.Services
                 {
                     _badgeService.Delete(obj);
                 }
+                user.Badges.Clear();
             }
 
             // User badge time checks
@@ -880,6 +882,7 @@ namespace MVCForum.Services
                 {
                     _badgeService.DeleteTimeLastChecked(obj);
                 }
+                user.BadgeTypesTimeLastChecked.Clear();
             }
 
             // User category notifications
@@ -891,28 +894,39 @@ namespace MVCForum.Services
                 {
                     _categoryNotificationService.Delete(obj);
                 }
+                user.CategoryNotifications.Clear();
             }
 
             // User PM Received
+            var pmUpdate = false;
             if (user.PrivateMessagesReceived != null)
             {
+                pmUpdate = true;
                 var toDelete = new List<PrivateMessage>();
                 toDelete.AddRange(user.PrivateMessagesReceived);
                 foreach (var obj in toDelete)
                 {
                     _privateMessageService.DeleteMessage(obj);
                 }
+                user.PrivateMessagesReceived.Clear();
             }
 
             // User PM Sent
             if (user.PrivateMessagesSent != null)
             {
+                pmUpdate = true;
                 var toDelete = new List<PrivateMessage>();
                 toDelete.AddRange(user.PrivateMessagesSent);
                 foreach (var obj in toDelete)
                 {
                     _privateMessageService.DeleteMessage(obj);
                 }
+                user.PrivateMessagesSent.Clear();
+            }
+
+            if (pmUpdate)
+            {
+                unitOfWork.SaveChanges();
             }
 
             // User Favourites
@@ -924,6 +938,7 @@ namespace MVCForum.Services
                 {
                     _favouriteRepository.Delete(obj);
                 }
+                user.Favourites.Clear();
             }
 
             if (user.TopicNotifications != null)
@@ -934,50 +949,26 @@ namespace MVCForum.Services
                 {
                     _topicNotificationService.Delete(topicNotification);
                 }
+                user.TopicNotifications.Clear();
             }
 
-            unitOfWork.SaveChanges();
-
-            // Delete all file uploads
-            var files = _uploadedFileService.GetAllByUser(user.Id);
-            var filesList = new List<UploadedFile>();
-            filesList.AddRange(files);
-            foreach (var file in filesList)
+            // Also clear their points
+            var userPoints = user.Points;
+            if (userPoints.Any())
             {
-                // store the file path as we'll need it to delete on the file system
-                var filePath = file.FilePath;
-
-                // Now delete it
-                _uploadedFileService.Delete(file);
-
-                // And finally delete from the file system
-                System.IO.File.Delete(HostingEnvironment.MapPath(filePath));
+                var pointsList = new List<MembershipUserPoints>();
+                pointsList.AddRange(userPoints);
+                foreach (var point in pointsList)
+                {
+                    point.User = null;
+                    _membershipUserPointsService.Delete(point);
+                }
+                user.Points.Clear();
             }
 
-            // Delete all posts
-            var posts = user.Posts;
-            var postIds = posts.Select(x => x.Id).ToList();
-            var postList = new List<Post>();
-            postList.AddRange(posts);
-            foreach (var post in postList)
-            {
-                post.Files.Clear();
-                _postRepository.Delete(post);
-            }
-
-            // Get all categories
-            var allCategories = _categoryService.GetAll();
-
-            // Need to see if any of these are last posts on Topics
-            // If so, need to swap out last post
-            var lastPostTopics = _topicRepository.GetTopicsByLastPost(postIds, allCategories.ToList());
-            foreach (var topic in lastPostTopics)
-            {
-                var lastPost = topic.Posts.Where(x => !postIds.Contains(x.Id)).OrderByDescending(x => x.DateCreated).FirstOrDefault();
-                topic.LastPost = lastPost;
-            }
-
-            unitOfWork.SaveChanges();
+            // Now clear all activities for this user
+            var usersActivities = _activityService.GetDataFieldByGuid(user.Id);
+            _activityService.Delete(usersActivities.ToList());
 
             // Also clear their poll votes
             var userPollVotes = user.PollVotes;
@@ -1026,37 +1017,75 @@ namespace MVCForum.Services
 
             unitOfWork.SaveChanges();
 
-            // Delete all topics
+            // ######### POSTS TOPICS ########
+
+            // Delete all topics first
             var topics = user.Topics;
-            var topicList = new List<Topic>();
-            topicList.AddRange(topics);
-            foreach (var topic in topicList)
+            if (topics != null && topics.Any())
             {
-                topic.LastPost = null;
-                topic.Tags.Clear();
-                _topicRepository.Delete(topic);
-            }
-
-            // Also clear their points
-            var userPoints = user.Points;
-            if (userPoints.Any())
-            {
-                var pointsList = new List<MembershipUserPoints>();
-                pointsList.AddRange(userPoints);
-                foreach (var point in pointsList)
+                var topicList = new List<Topic>();
+                topicList.AddRange(topics);
+                foreach (var topic in topicList)
                 {
-                    point.User = null;
-                    _membershipUserPointsService.Delete(point);
+                    topic.LastPost = null;
+                    topic.Posts.Clear();
+                    topic.Tags.Clear();
+                    _topicRepository.Delete(topic);
                 }
-                user.Points.Clear();
+                user.Topics.Clear();
+                unitOfWork.SaveChanges();
             }
 
-            unitOfWork.SaveChanges();
+            // Now sorts Last Posts on topics and delete all the users posts
+            var posts = user.Posts;
+            if (posts != null && posts.Any())
+            {
+                var postIds = posts.Select(x => x.Id).ToList();
 
-            // Now clear all activities for this user
-            var usersActivities = _activityService.GetDataFieldByGuid(user.Id);
-            _activityService.Delete(usersActivities.ToList());
+                // Get all categories
+                var allCategories = _categoryService.GetAll();
 
+                // Need to see if any of these are last posts on Topics
+                // If so, need to swap out last post
+                var lastPostTopics = _topicRepository.GetTopicsByLastPost(postIds, allCategories.ToList());
+                foreach (var topic in lastPostTopics.Where(x => x.User.Id != user.Id))
+                {
+                    var lastPost = topic.Posts.Where(x => !postIds.Contains(x.Id)).OrderByDescending(x => x.DateCreated).FirstOrDefault();
+                    topic.LastPost = lastPost;
+                }
+
+                unitOfWork.SaveChanges();
+
+                // Delete all posts
+
+                var postList = new List<Post>();
+                postList.AddRange(posts);
+                foreach (var post in postList)
+                {
+                    if (post.Files != null)
+                    {
+                        var files = post.Files;
+                        var filesList = new List<UploadedFile>();
+                        filesList.AddRange(files);
+                        foreach (var file in filesList)
+                        {
+                            // store the file path as we'll need it to delete on the file system
+                            var filePath = file.FilePath;
+
+                            // Now delete it
+                            _uploadedFileService.Delete(file);
+
+                            // And finally delete from the file system
+                            System.IO.File.Delete(HostingEnvironment.MapPath(filePath));
+                        }
+                        post.Files.Clear();
+                    }
+                    _postRepository.Delete(post);
+                }
+                user.Posts.Clear();
+
+                unitOfWork.SaveChanges();
+            }
         }
     }
 }

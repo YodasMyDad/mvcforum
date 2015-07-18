@@ -54,7 +54,6 @@ namespace MVCForum.Website.Controllers
         }
 
         [ChildActionOnly]
-        [OutputCache(Duration = AppConstants.LongCacheTime)]
         public PartialViewResult ListMainCategories()
         {
             var catViewModel = new CategoryListViewModel
@@ -75,14 +74,12 @@ namespace MVCForum.Website.Controllers
         }
 
         [ChildActionOnly]
-        [OutputCache(Duration = AppConstants.LongCacheTime)]
         public PartialViewResult ListCategorySideMenu()
         {
             var catViewModel = new CategoryListViewModel
             {
                 AllPermissionSets = new Dictionary<Category, PermissionSet>()
             };
-
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 foreach (var category in _categoryService.GetAll())
