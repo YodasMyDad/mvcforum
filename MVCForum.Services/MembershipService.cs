@@ -105,7 +105,7 @@ namespace MVCForum.Services
             membershipUser.Password = StringUtils.SafePlainText(membershipUser.Password);
             membershipUser.PasswordAnswer = StringUtils.SafePlainText(membershipUser.PasswordAnswer);
             membershipUser.PasswordQuestion = StringUtils.SafePlainText(membershipUser.PasswordQuestion);
-            membershipUser.Signature = StringUtils.GetSafeHtml(membershipUser.Signature);
+            membershipUser.Signature = StringUtils.GetSafeHtml(membershipUser.Signature, true);
             membershipUser.Twitter = StringUtils.SafePlainText(membershipUser.Twitter);
             membershipUser.UserName = StringUtils.SafePlainText(membershipUser.UserName);
             membershipUser.Website = StringUtils.SafePlainText(membershipUser.Website);

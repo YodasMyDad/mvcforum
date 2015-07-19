@@ -9,7 +9,6 @@ namespace MVCForum.Data.Context
 {
     public class MVCForumContext : DbContext, IMVCForumContext
     {
-        // http://blogs.msdn.com/b/adonet/archive/2010/12/06/ef-feature-ctp5-fluent-api-samples.aspx
         public DbSet<Activity> Activity { get; set; }
         public DbSet<Badge> Badge { get; set; }
         public DbSet<BadgeTypeTimeLastChecked> BadgeTypeTimeLastChecked { get; set; }

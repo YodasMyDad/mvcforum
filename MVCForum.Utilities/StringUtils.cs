@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using HtmlAgilityPack;
+using Microsoft.Security.Application;
 
 namespace MVCForum.Utilities
 {
@@ -514,11 +515,12 @@ namespace MVCForum.Utilities
         /// Used to pass all string input in the system  - Strips all nasties from a string/html
         /// </summary>
         /// <param name="html"></param>
+        /// <param name="useXssSantiser"></param>
         /// <returns></returns>
-        public static string GetSafeHtml(string html)
+        public static string GetSafeHtml(string html, bool useXssSantiser = false)
         {
             // Scrub html
-            html = ScrubHtml(html);
+            html = ScrubHtml(html, useXssSantiser);
 
             // remove unwanted html
             html = RemoveUnwantedTags(html);
@@ -531,12 +533,20 @@ namespace MVCForum.Utilities
         /// Takes in HTML and returns santized Html/string
         /// </summary>
         /// <param name="html"></param>
+        /// <param name="useXssSantiser"></param>
         /// <returns></returns>
-        public static string ScrubHtml(string html)
+        public static string ScrubHtml(string html, bool useXssSantiser = false)
         {
             if (string.IsNullOrEmpty(html))
             {
                 return html;
+            }
+
+            // The reason we have this option, is using the santiser with the MarkDown editor 
+            // causes problems with line breaks.
+            if (useXssSantiser)
+            {
+                return Sanitizer.GetSafeHtmlFragment(html);
             }
 
             var doc = new HtmlDocument();
@@ -724,7 +734,7 @@ namespace MVCForum.Utilities
             if (!string.IsNullOrEmpty(input))
             {
                 input = StripHtmlFromString(input);
-                input = GetSafeHtml(input);
+                input = GetSafeHtml(input, true);
             }
             return input;
         }
