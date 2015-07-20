@@ -1056,6 +1056,8 @@ namespace MVCForum.Services
 
                 unitOfWork.SaveChanges();
 
+                user.UploadedFiles.Clear();
+
                 // Delete all posts
 
                 var postList = new List<Post>();

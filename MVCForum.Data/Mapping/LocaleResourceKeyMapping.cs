@@ -8,9 +8,14 @@ namespace MVCForum.Data.Mapping
         public LocaleResourceKeyMapping()
         {
             HasKey(x => x.Id);
+            Property(x => x.Id).IsRequired();
+            Property(x => x.Name).IsRequired().HasMaxLength(200);
+            Property(x => x.Notes).IsOptional();
+            Property(x => x.DateAdded).IsRequired();
 
-            HasMany(x => x.LocaleStringResources).WithRequired(x => x.LocaleResourceKey)                
-                .WillCascadeOnDelete();
+            HasMany(x => x.LocaleStringResources).WithRequired(x => x.LocaleResourceKey)
+                .Map(x => x.MapKey("LocaleResourceKey_Id"))
+                .WillCascadeOnDelete(true);
         }
     }
 }

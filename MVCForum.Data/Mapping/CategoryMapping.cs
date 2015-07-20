@@ -8,19 +8,36 @@ namespace MVCForum.Data.Mapping
         public CategoryMapping()
         {
             HasKey(x => x.Id);
+            Property(x => x.Id).IsRequired();
+            Property(x => x.Name).IsRequired().HasMaxLength(450);
+            Property(x => x.Description).IsOptional();
+            Property(x => x.DateCreated).IsRequired();
+            Property(x => x.Slug).IsRequired().HasMaxLength(450);
+            Property(x => x.SortOrder).IsRequired();
+            Property(x => x.IsLocked).IsRequired();
+            Property(x => x.ModerateTopics).IsRequired();
+            Property(x => x.ModeratePosts).IsRequired();
+            Property(x => x.PageTitle).IsOptional().HasMaxLength(80);
+            Property(x => x.MetaDescription).IsOptional().HasMaxLength(200);
+            Property(x => x.Path).IsOptional().HasMaxLength(2500);
+            Property(x => x.Colour).IsOptional().HasMaxLength(50);
+            Property(x => x.Image).IsOptional().HasMaxLength(200);
 
             HasOptional(x => x.ParentCategory)
                 .WithMany()
                 .Map(x => x.MapKey("Category_Id"));
 
             HasMany(x => x.Topics)
-                .WithRequired(x => x.Category);
+                .WithRequired(x => x.Category)
+                .Map(x => x.MapKey("Category_Id"));
 
             HasMany(x => x.CategoryNotifications)
                 .WithRequired(x => x.Category)
                 .Map(x => x.MapKey("Category_Id"))
                 .WillCascadeOnDelete();
-               
+
+            // Ignores
+            Ignore(x => x.NiceUrl);
         }
     }
 }

@@ -8,9 +8,7 @@ namespace MVCForum.Data.Mapping
         public TopicNotificationMapping()
         {
             HasKey(x => x.Id);
-
-            HasRequired(x => x.Topic).WithMany(x => x.TopicNotifications).Map(x => x.MapKey("Topic_Id"));
-            HasRequired(x => x.User).WithMany(x => x.TopicNotifications).Map(x => x.MapKey("MembershipUser_Id"));
+            Property(x => x.Id).IsRequired();
         }
     }
 }

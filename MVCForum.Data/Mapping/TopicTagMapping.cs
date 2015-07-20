@@ -8,6 +8,9 @@ namespace MVCForum.Data.Mapping
         public TopicTagMapping()
         {
             HasKey(x => x.Id);
+            Property(x => x.Id).IsRequired();
+            Property(x => x.Tag).IsRequired().HasMaxLength(100);
+            Property(x => x.Slug).IsRequired().HasMaxLength(100);
         }
     }
 }

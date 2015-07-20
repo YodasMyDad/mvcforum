@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using MVCForum.Domain.EqualityComparers;
 using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
@@ -18,7 +17,7 @@ namespace MVCForum.Domain.DomainModel
         public virtual Settings Settings { get; set; }
 
         // Category Permissions
-        public virtual IList<CategoryPermissionForRole> CategoryPermissionForRole { get; set; }
+        public virtual IList<CategoryPermissionForRole> CategoryPermissionForRoles { get; set; }
 
         // Global Permissions
         public virtual IList<GlobalPermissionForRole> GlobalPermissionForRole { get; set; }
@@ -27,7 +26,7 @@ namespace MVCForum.Domain.DomainModel
         {
             var permissionRows = new Dictionary<Guid, Dictionary<Guid, bool>>();
 
-            foreach (var catPermissionForRole in CategoryPermissionForRole)
+            foreach (var catPermissionForRole in CategoryPermissionForRoles)
             {
                 if (!permissionRows.ContainsKey(catPermissionForRole.Category.Id))
                 {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.ModelConfiguration;
-using System.Linq;
-using System.Text;
+﻿using System.Data.Entity.ModelConfiguration;
 using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Data.Mapping
@@ -12,8 +8,9 @@ namespace MVCForum.Data.Mapping
         public MembershipUserPointsMapping()
         {
             HasKey(x => x.Id);
-
-            HasRequired(x => x.User).WithMany(x => x.Points).Map(x => x.MapKey("MembershipUser_Id"));
+            Property(x => x.Id).IsRequired();
+            Property(x => x.Points).IsRequired();
+            Property(x => x.DateAdded).IsRequired();            
         }
     }
 }

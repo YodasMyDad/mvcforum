@@ -8,8 +8,10 @@ namespace MVCForum.Data.Mapping
         public GlobalPermissionForRoleMapping()
         {
             HasKey(x => x.Id);
-            HasRequired(x => x.Permission);
-            HasRequired(x => x.MembershipRole);
+            Property(x => x.Id).IsRequired();
+            Property(x => x.IsTicked).IsRequired();
+            HasRequired(x => x.Permission).WithMany(x => x.GlobalPermissionForRoles).Map(x => x.MapKey("Permission_Id")).WillCascadeOnDelete(true);
+            HasRequired(x => x.MembershipRole).WithMany(x => x.GlobalPermissionForRole).Map(x => x.MapKey("MembershipRole_Id")).WillCascadeOnDelete(true);
         }
     }
 }
