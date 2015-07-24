@@ -36,7 +36,7 @@ namespace MVCForum.Website.Application
                 return ConfigurationManager.AppSettings["GooglePlusAppSecret"];
             }
         }
-
+        
         /// <summary>
         /// File Upload Settings
         /// </summary>
@@ -205,6 +205,38 @@ namespace MVCForum.Website.Application
             get
             {
                 return Convert.ToInt32(ConfigurationManager.AppSettings["EmailsToSendPerJob"]);
+            }
+        }
+
+        private static bool? _IsWIFRelyingParty = null;
+        /// <summary>
+        /// Whether the site will use wsFederation through Windows Identity Foundation to redirect to the wsFederation issuer (website) for authentication, bypassing MVCForum's forms authentication
+        /// as well as gmail and facebook authentication.  (When using WIF on an SSO Site, authentication is handled by the issuer, if facebook/gmail is desired it should be implemented on the issuer.
+        /// </summary>
+        public static bool IsWIFRelyingParty
+        {
+            get
+            {
+                if (_IsWIFRelyingParty == null)
+                {
+                    bool ret = false;
+                    bool.TryParse(ConfigurationManager.AppSettings["IsWIFRelyingParty"], out ret);
+                    _IsWIFRelyingParty = ret;
+                }
+                return _IsWIFRelyingParty.Value;
+            }
+        }
+
+        private static string _WIFAdminUser = null;
+        public static string WIFAdminUser
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_WIFAdminUser))
+                {
+                    _WIFAdminUser = ConfigurationManager.AppSettings["WIFAdminUser"];
+                }
+                return _WIFAdminUser;
             }
         }
     }

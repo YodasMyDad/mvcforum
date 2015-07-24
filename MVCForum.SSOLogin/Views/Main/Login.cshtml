@@ -1,0 +1,45 @@
+﻿@model MVCForum.SSOLogin.Models.Forms.Login
+@{
+    Layout = "~/Views/Master.cshtml";
+}
+<!-- Maintaining Redirects with traditional RedirectToAction MVC Logic was a nightmare, so I designed it to get/post to the same controller method and use Request.Method to determine if it's a post etc. -->
+<form id="loginForm" action="@Request.Url.PathAndQuery" method="POST">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Login</h3>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        User Name:
+                    </span>
+                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.UserName, "The UserName field is required.", new { @class = "alert alert-danger" }, "div")
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        Password:
+                    </span>
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Password, "The Password field is required.", new { @class = "alert alert-danger" }, "div")
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        @Html.CheckBoxFor(m => m.RememberMe)
+                    </span>
+                    <label class="form-control">Remember Me?</label>
+                </div>
+                @if (Model != null && !string.IsNullOrEmpty(Model.LoginError))
+                {
+                    <div class="alert alert-danger">@Model.LoginError</div>
+                }
+                <div class="text-center well">
+                    <input type="submit" class="btn btn-default btn-primary" value="Cancel" id="btnCancel" />
+                    <input type="submit" class="btn btn-default btn-primary" value="Login" id="btnLogin" />
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>

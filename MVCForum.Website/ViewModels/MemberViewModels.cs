@@ -7,6 +7,7 @@ using DataAnnotationsExtensions;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Website.Application;
+using System.Security.Claims;
 
 namespace MVCForum.Website.ViewModels
 {

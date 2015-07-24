@@ -198,7 +198,11 @@ namespace MVCForum.Data.Repositories
             foreach (var term in searchTerms)
             {
                 var sTerm = term.Trim();
-                query = query.Where(x => x.PostContent.ToLower().Contains(sTerm) || x.Topic.Name.ToLower().Contains(sTerm));
+
+                query = query.Where(x => x.PostContent.ToLower().Contains(sTerm) || x.Topic.Name.ToLower().Contains(sTerm) || x.Topic.Tags.Any(c => c.Tag == sTerm) ||
+                    x.Topic.Category.Name.ToLower().Contains(sTerm.ToLower()) || (x.Topic.Category.ParentCategory != null && x.Topic.Category.ParentCategory.Name.ToLower().Contains(sTerm.ToLower())
+                    || x.User.UserName.ToLower().Contains(sTerm.ToLower())));
+
             }
 
             // Get the count

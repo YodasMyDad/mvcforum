@@ -4,6 +4,7 @@
     {
         Facebook,
         Google,
-        Standard
+        Standard,
+        WindowsIdentityFoundation
     }
 }

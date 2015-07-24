@@ -20,6 +20,8 @@ using MVCForum.Website.ViewModels;
 using MVCForum.Website.ViewModels.Mapping;
 using MembershipCreateStatus = MVCForum.Domain.DomainModel.MembershipCreateStatus;
 using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
+using System.Web.Routing;
+using System.IdentityModel.Services;
 
 namespace MVCForum.Website.Controllers
 {
@@ -413,6 +415,15 @@ namespace MVCForum.Website.Controllers
                     {
                         userToSave.GoogleAccessToken = userModel.UserAccessToken;
                     }
+                    //Check if the user being created is from WIF SSO, and if so add them to the admin role if their role matches the WIFUserAdmin setting.
+                    if (userModel.LoginType == LoginType.WindowsIdentityFoundation)
+                    {
+                        if (userModel.UserName.Equals(SiteConstants.WIFAdminUser, StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            var adminRole = RoleService.GetRole("admin");
+                            userToSave.Roles.Add(adminRole);
+                        }
+                    }
 
                     // Set the view bag message here
                     SetRegisterViewBagMessage(manuallyAuthoriseMembers, memberEmailAuthorisationNeeded, userToSave);
@@ -605,17 +616,23 @@ namespace MVCForum.Website.Controllers
         /// <returns></returns>
         public ActionResult LogOn()
         {
-            // Create the empty view model
-            var viewModel = new LogOnViewModel();
-
-            // See if a return url is present or not and add it
-            var returnUrl = Request["ReturnUrl"];
-            if (!string.IsNullOrEmpty(returnUrl))
+            if (SiteConstants.IsWIFRelyingParty)
             {
-                viewModel.ReturnUrl = returnUrl;
+                //bypass forms login and go to WIFSSOController
+                return RedirectToAction("WIFSSOLogon", "WIFSSO", Request.Url.GetQueryStringRouteValues());
             }
-
-            return View(viewModel);
+            else
+            {
+                // Create the empty view model
+                var viewModel = new LogOnViewModel();
+                // See if a return url is present or not and add it
+                var returnUrl = Request["ReturnUrl"];
+                if (!string.IsNullOrEmpty(returnUrl))
+                {
+                    viewModel.ReturnUrl = returnUrl;
+                }
+                return View(viewModel);
+            }
         }
 
         /// <summary>
@@ -736,16 +753,35 @@ namespace MVCForum.Website.Controllers
         /// <returns></returns>
         public ActionResult LogOff()
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
+            //Added By: Ryan, this will sign out of Federated Authentication if the site is using WIF SSO and passive redirect            
+            if (SiteConstants.IsWIFRelyingParty)
             {
-                FormsAuthentication.SignOut();
-                ViewBag.Message = new GenericMessageViewModel
+                //check if authenticated because the issuer will redirect back here to this controller method when log out is complete.
+                if (Request.IsAuthenticated)
                 {
-                    Message = LocalizationService.GetResourceString("Members.NowLoggedOut"),
-                    MessageType = GenericMessages.success
-                };
-                return RedirectToAction("Index", "Home", new { area = string.Empty });
+                    //get the url of the STS Issuer
+                    var issuer = FederatedAuthentication.FederationConfiguration.WsFederationConfiguration.Issuer;
+                    //compute the signout url
+                    var signOutUrl = WSFederationAuthenticationModule.GetFederationPassiveSignOutUrl(issuer, Request.Url.ToString(), null);
+                    //signout locally
+                    FederatedAuthentication.WSFederationAuthenticationModule.SignOut();
+                    //redirect to issuer with signout request, it will redirect back
+                    return Redirect(signOutUrl);
+                }
             }
+            else
+            {
+                using (UnitOfWorkManager.NewUnitOfWork())
+                {
+                    FormsAuthentication.SignOut();
+                }
+            }
+            ViewBag.Message = new GenericMessageViewModel
+            {
+                Message = LocalizationService.GetResourceString("Members.NowLoggedOut"),
+                MessageType = GenericMessages.success
+            };
+            return RedirectToAction("Index", "Home", new { area = string.Empty });
         }
 
         [HttpPost]

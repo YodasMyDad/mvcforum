@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using HtmlAgilityPack;
+using System.Web.Routing;
 
 namespace MVCForum.Utilities
 {
@@ -761,6 +762,20 @@ namespace MVCForum.Utilities
         #endregion
 
         #region Urls / Webpages
+        public static RouteValueDictionary GetQueryStringRouteValues(this Uri urlWithQueryString)
+        {
+            var queryValues = HttpUtility.ParseQueryString(urlWithQueryString.Query);
+            RouteValueDictionary routeValues = new RouteValueDictionary();
+            foreach (var key in queryValues.AllKeys)
+            {
+                string queryValue = queryValues[key];
+                if (!routeValues.ContainsKey(key))
+                    routeValues.Add(key, queryValue);
+                else
+                    routeValues[key] = queryValues[key];
+            }
+            return routeValues;
+        }
         /// <summary>
         /// Downloads a web page and returns the HTML as a string
         /// </summary>
