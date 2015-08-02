@@ -2,6 +2,8 @@
 {
     public static class AppConstants
     {
+        public const int SaltSize = 24;
+
         // Cookie names
         public const string LanguageIdCookieName = "LanguageCulture";
         public const string MemberEmailConfirmationCookieName = "MVCForumEmailConfirmation";

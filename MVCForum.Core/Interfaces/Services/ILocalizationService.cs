@@ -107,6 +107,7 @@ namespace MVCForum.Domain.Interfaces.Services
         /// <param name="allLines"></param>
         /// <returns>A report on the import</returns>
         CsvReport FromCsv(string langKey, List<string> allLines);
+        CsvReport FromCsv(Language lang, List<string> allLines);
 
         #endregion
 

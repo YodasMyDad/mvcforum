@@ -48,6 +48,7 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
@@ -164,6 +165,10 @@
     <ProjectReference Include="..\MVCForum.Core\MVCForum.Domain.csproj">
       <Project>{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}</Project>
       <Name>MVCForum.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Services\MVCForum.Services.csproj">
+      <Project>{14A002FB-9CCC-452A-A780-B322908CD45A}</Project>
+      <Name>MVCForum.Services</Name>
     </ProjectReference>
     <ProjectReference Include="..\MVCForum.Utilities\MVCForum.Utilities.csproj">
       <Project>{D0CE5E27-041D-4F1E-8C8C-5F4888C72155}</Project>

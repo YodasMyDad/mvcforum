@@ -55,58 +55,57 @@ namespace MVCForum.Data.Mapping
 
             HasMany(x => x.Topics).WithRequired(x => x.User)
                 .Map(x => x.MapKey("MembershipUser_Id"))
-                .WillCascadeOnDelete(true);
+                .WillCascadeOnDelete(false);
 
             HasMany(x => x.UploadedFiles).WithRequired(x => x.MembershipUser)
                 .Map(x => x.MapKey("MembershipUser_Id"))
-                .WillCascadeOnDelete(true);
+                .WillCascadeOnDelete(false);
 
             // Has Many, as a user has many posts
             HasMany(x => x.Posts).WithRequired(x => x.User)
                .Map(x => x.MapKey("MembershipUser_Id"))
-                .WillCascadeOnDelete(true);
+                .WillCascadeOnDelete(false);
 
             HasMany(x => x.Votes).WithRequired(x => x.User)
                .Map(x => x.MapKey("MembershipUser_Id"))
-                .WillCascadeOnDelete(true);
+                .WillCascadeOnDelete(false);
 
             HasMany(x => x.VotesGiven).WithOptional(x => x.VotedByMembershipUser)
-               .Map(x => x.MapKey("VotedByMembershipUser_Id"))
-                .WillCascadeOnDelete(true);
+                .Map(x => x.MapKey("VotedByMembershipUser_Id"));
 
             HasMany(x => x.TopicNotifications).WithRequired(x => x.User)
                .Map(x => x.MapKey("MembershipUser_Id"))
-                .WillCascadeOnDelete(true);
+                .WillCascadeOnDelete(false);
 
             HasMany(x => x.Polls).WithRequired(x => x.User)
                .Map(x => x.MapKey("MembershipUser_Id"))
-                .WillCascadeOnDelete(true);
+                .WillCascadeOnDelete(false);
 
             HasMany(x => x.PollVotes).WithRequired(x => x.User)
                .Map(x => x.MapKey("MembershipUser_Id"))
-                .WillCascadeOnDelete(true);
+                .WillCascadeOnDelete(false);
 
             HasMany(x => x.CategoryNotifications).WithRequired(x => x.User)
                .Map(x => x.MapKey("MembershipUser_Id"))
-                .WillCascadeOnDelete(true);
+                .WillCascadeOnDelete(false);
 
             HasMany(x => x.Points).WithRequired(x => x.User)
                .Map(x => x.MapKey("MembershipUser_Id"))
-                .WillCascadeOnDelete(true);
+                .WillCascadeOnDelete(false);
 
             HasMany(x => x.PrivateMessagesReceived)
                     .WithRequired(x => x.UserTo)
                     .Map(x => x.MapKey("UserTo_Id"))
-                    .WillCascadeOnDelete(true);
+                    .WillCascadeOnDelete(false);
 
             HasMany(x => x.PrivateMessagesSent)
                         .WithRequired(x => x.UserFrom)
                         .Map(x => x.MapKey("UserFrom_Id"))
-                        .WillCascadeOnDelete(true);
+                        .WillCascadeOnDelete(false);
 
             HasMany(x => x.BadgeTypesTimeLastChecked).WithRequired(x => x.User)
                 .Map(x => x.MapKey("MembershipUser_Id"))
-                .WillCascadeOnDelete(true);
+                .WillCascadeOnDelete(false);
 
             // Many-to-many join table - a user may belong to many roles
             HasMany(t => t.Roles)

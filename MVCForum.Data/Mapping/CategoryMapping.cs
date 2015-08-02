@@ -27,14 +27,11 @@ namespace MVCForum.Data.Mapping
                 .WithMany()
                 .Map(x => x.MapKey("Category_Id"));
 
-            HasMany(x => x.Topics)
-                .WithRequired(x => x.Category)
-                .Map(x => x.MapKey("Category_Id"));
 
             HasMany(x => x.CategoryNotifications)
                 .WithRequired(x => x.Category)
                 .Map(x => x.MapKey("Category_Id"))
-                .WillCascadeOnDelete();
+                .WillCascadeOnDelete(false);
 
             // Ignores
             Ignore(x => x.NiceUrl);

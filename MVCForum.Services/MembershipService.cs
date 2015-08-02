@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Security;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.Repositories;
@@ -18,7 +19,6 @@ namespace MVCForum.Services
 {
     public partial class MembershipService : IMembershipService
     {
-        private const int SaltSize = 24;
         private readonly IEmailService _emailService;
         private readonly IMembershipRepository _membershipRepository;
         private readonly IPostRepository _postRepository;
@@ -112,49 +112,6 @@ namespace MVCForum.Services
             return membershipUser;
         }
 
-
-        /// <summary>
-        /// Create a salt for the password hash (just makes it a bit more complex)
-        /// </summary>
-        /// <param name="size"></param>
-        /// <returns></returns>
-        private static string CreateSalt(int size)
-        {
-            // Generate a cryptographic random number.
-            var rng = new RNGCryptoServiceProvider();
-            var buff = new byte[size];
-            rng.GetBytes(buff);
-
-            // Return a Base64 string representation of the random number.
-            return Convert.ToBase64String(buff);
-        }
-
-        /// <summary>
-        /// Generate a hash for a password, adding a salt value
-        /// </summary>
-        /// <param name="plainText"></param>
-        /// <param name="salt"></param>
-        /// <returns></returns>
-        private static string GenerateSaltedHash(string plainText, string salt)
-        {
-            // http://stackoverflow.com/questions/2138429/hash-and-salt-passwords-in-c-sharp
-
-            var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
-            var saltBytes = Encoding.UTF8.GetBytes(salt);
-
-            // Combine the two lists
-            var plainTextWithSaltBytes = new List<byte>(plainTextBytes.Length + saltBytes.Length);
-            plainTextWithSaltBytes.AddRange(plainTextBytes);
-            plainTextWithSaltBytes.AddRange(saltBytes);
-
-            // Produce 256-bit hashed value i.e. 32 bytes
-            HashAlgorithm algorithm = new SHA256Managed();
-            var byteHash = algorithm.ComputeHash(plainTextWithSaltBytes.ToArray());
-            return Convert.ToBase64String(byteHash);
-        }
-
-
-
         #region Status Codes
         public string ErrorCodeToString(MembershipCreateStatus createStatus)
         {
@@ -245,7 +202,7 @@ namespace MVCForum.Services
             }
 
             var salt = user.PasswordSalt;
-            var hash = GenerateSaltedHash(password, salt);
+            var hash = StringUtils.GenerateSaltedHash(password, salt);
             var passwordMatches = hash == user.Password;
 
             user.FailedPasswordAttemptCount = passwordMatches ? 0 : user.FailedPasswordAttemptCount + 1;
@@ -336,8 +293,8 @@ namespace MVCForum.Services
                 if (status == MembershipCreateStatus.Success)
                 {
                     // Hash the password
-                    var salt = CreateSalt(SaltSize);
-                    var hash = GenerateSaltedHash(newUser.Password, salt);
+                    var salt = StringUtils.CreateSalt(AppConstants.SaltSize);
+                    var hash = StringUtils.GenerateSaltedHash(newUser.Password, salt);
                     newUser.Password = hash;
                     newUser.PasswordSalt = salt;
 
@@ -516,7 +473,7 @@ namespace MVCForum.Services
             //n3oCacheHelper.Clear(user.UserName);
             var existingUser = _membershipRepository.Get(user.Id);
             var salt = existingUser.PasswordSalt;
-            var oldHash = GenerateSaltedHash(oldPassword, salt);
+            var oldHash = StringUtils.GenerateSaltedHash(oldPassword, salt);
 
             if (oldHash != existingUser.Password)
             {
@@ -525,8 +482,8 @@ namespace MVCForum.Services
             }
 
             // Cleared to go ahead with new password
-            salt = CreateSalt(SaltSize);
-            var newHash = GenerateSaltedHash(newPassword, salt);
+            salt = StringUtils.CreateSalt(AppConstants.SaltSize);
+            var newHash = StringUtils.GenerateSaltedHash(newPassword, salt);
 
             existingUser.Password = newHash;
             existingUser.PasswordSalt = salt;
@@ -545,8 +502,8 @@ namespace MVCForum.Services
         {
             var existingUser = _membershipRepository.Get(user.Id);
 
-            var salt = CreateSalt(SaltSize);
-            var newHash = GenerateSaltedHash(newPassword, salt);
+            var salt = StringUtils.CreateSalt(AppConstants.SaltSize);
+            var newHash = StringUtils.GenerateSaltedHash(newPassword, salt);
 
             existingUser.Password = newHash;
             existingUser.PasswordSalt = salt;
@@ -799,7 +756,7 @@ namespace MVCForum.Services
                     userToImport.Slug = ServiceHelpers.GenerateSlug(userToImport.UserName, _membershipRepository.GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)), userToImport.Slug);
                     userToImport.Email = email;
                     userToImport.IsApproved = true;
-                    userToImport.PasswordSalt = CreateSalt(SaltSize);
+                    userToImport.PasswordSalt = StringUtils.CreateSalt(AppConstants.SaltSize);
 
                     string createDateStr = null;
                     if (values.Length >= 3)

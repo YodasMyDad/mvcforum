@@ -15,7 +15,7 @@ namespace MVCForum.Data.Mapping
             HasMany(x => x.PollAnswers)
                 .WithRequired(t => t.Poll)
                 .Map(x => x.MapKey("Poll_Id"))
-                .WillCascadeOnDelete(true);
+                .WillCascadeOnDelete(false);
         }
     }
 }

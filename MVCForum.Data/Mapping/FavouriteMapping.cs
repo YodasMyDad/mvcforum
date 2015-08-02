@@ -10,9 +10,9 @@ namespace MVCForum.Data.Mapping
             HasKey(x => x.Id);
             Property(x => x.Id).IsRequired();
             Property(x => x.DateCreated).IsRequired();
-            HasRequired(x => x.Post).WithMany(x => x.Favourites).Map(x => x.MapKey("PostId"));
-            HasRequired(x => x.Member).WithMany(x => x.Favourites).Map(x => x.MapKey("MemberId"));
-            HasRequired(x => x.Topic).WithMany(x => x.Favourites).Map(x => x.MapKey("TopicId"));
+            HasRequired(x => x.Post).WithMany(x => x.Favourites).Map(x => x.MapKey("PostId")).WillCascadeOnDelete(false);
+            HasRequired(x => x.Member).WithMany(x => x.Favourites).Map(x => x.MapKey("MemberId")).WillCascadeOnDelete(false);
+            HasRequired(x => x.Topic).WithMany(x => x.Favourites).Map(x => x.MapKey("TopicId")).WillCascadeOnDelete(false);
         }
     }
 }

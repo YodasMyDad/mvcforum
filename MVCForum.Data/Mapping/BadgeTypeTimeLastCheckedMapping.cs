@@ -14,7 +14,7 @@ namespace MVCForum.Data.Mapping
             HasRequired(t => t.User)
                 .WithMany(t => t.BadgeTypesTimeLastChecked)
                 .Map(m => m.MapKey("MembershipUser_Id"))
-                .WillCascadeOnDelete(true);
+                .WillCascadeOnDelete(false);
         }
     }
 }

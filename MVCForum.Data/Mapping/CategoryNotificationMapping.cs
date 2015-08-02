@@ -12,11 +12,8 @@ namespace MVCForum.Data.Mapping
 
             HasRequired(x => x.Category)
                 .WithMany(x => x.CategoryNotifications)
-                .Map(x => x.MapKey("Category_Id"));
-
-            HasRequired(x => x.User)
-                .WithMany(x => x.CategoryNotifications)
-                .Map(x => x.MapKey("MembershipUser_Id"));
+                .Map(x => x.MapKey("Category_Id"))
+                .WillCascadeOnDelete(false);
 
         }
     }
