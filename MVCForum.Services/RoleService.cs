@@ -239,14 +239,14 @@ namespace MVCForum.Services
             {
                 // Get the known permissions for this role and category
                 var categoryRow = _categoryPermissionForRoleRepository.GetCategoryRow(role, category);
-                var categoryRowPermissions = categoryRow.ToDictionary(catRow => catRow.Permission);
+                var categoryRowPermissions = categoryRow.ToDictionary(catRow => catRow.Permission.Id);
 
                 // Load up the results with the permisions for this role / cartegory. A null entry for a permissions results in a new
                 // record with a false value
                 foreach (var permission in permissionList.Where(x => !x.IsGlobal))
                 {
-                    categoryPermissions.Add(categoryRowPermissions.ContainsKey(permission)
-                                        ? categoryRowPermissions[permission]
+                    categoryPermissions.Add(categoryRowPermissions.ContainsKey(permission.Id)
+                                        ? categoryRowPermissions[permission.Id]
                                         : new CategoryPermissionForRole { Category = category, MembershipRole = role, IsTicked = false, Permission = permission });
                 }
             }
@@ -256,14 +256,14 @@ namespace MVCForum.Services
 
             // Get the known global permissions for this role
             var globalRow = _globalPermissionForRoleRepository.GetAll(role);
-            var globalRowPermissions = globalRow.ToDictionary(row => row.Permission);
+            var globalRowPermissions = globalRow.ToDictionary(row => row.Permission.Id);
 
             // Load up the results with the permisions for this role. A null entry for a permissions results in a new
             // record with a false value
             foreach (var permission in permissionList.Where(x => x.IsGlobal))
             {
-                globalPermissions.Add(globalRowPermissions.ContainsKey(permission)
-                                    ? globalRowPermissions[permission]
+                globalPermissions.Add(globalRowPermissions.ContainsKey(permission.Id)
+                                    ? globalRowPermissions[permission.Id]
                                     : new GlobalPermissionForRole { MembershipRole = role, IsTicked = false, Permission = permission });
             }
 

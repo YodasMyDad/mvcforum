@@ -43,12 +43,15 @@ namespace MVCForum.Data.Repositories
                 .ToList();
         }
 
-        public IList<TopicNotification> GetByUserAndTopic(MembershipUser user, Topic topic)
+        public IList<TopicNotification> GetByUserAndTopic(MembershipUser user, Topic topic, bool addTracking = false)
         {
-            return _context.TopicNotification
-                .Where(x => x.User.Id == user.Id && x.Topic.Id == topic.Id)
-                .AsNoTracking()
-                .ToList();
+            var notifications = _context.TopicNotification
+                .Where(x => x.User.Id == user.Id && x.Topic.Id == topic.Id);
+            if (addTracking)
+            {
+                return notifications.ToList();
+            }
+            return notifications.AsNoTracking().ToList();
         }
 
         public TopicNotification Add(TopicNotification topicNotification)

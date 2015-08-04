@@ -56,10 +56,11 @@ namespace MVCForum.Services
         /// </summary>
         /// <param name="user"></param>
         /// <param name="topic"></param>
+        /// <param name="addTracking">If you need to delete these notifications then pass true into addtracking</param>
         /// <returns></returns>
-        public IList<TopicNotification> GetByUserAndTopic(MembershipUser user, Topic topic)
+        public IList<TopicNotification> GetByUserAndTopic(MembershipUser user, Topic topic, bool addTracking = false)
         {
-            return _topicNotificationRepository.GetByUserAndTopic(user, topic);
+            return _topicNotificationRepository.GetByUserAndTopic(user, topic, addTracking);
         }
 
         /// <summary>

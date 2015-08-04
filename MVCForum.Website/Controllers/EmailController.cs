@@ -140,7 +140,7 @@ namespace MVCForum.Website.Controllers
                             if (topic != null)
                             {
                                 // get the notifications by user
-                                var notifications = _topicNotificationService.GetByUserAndTopic(LoggedOnUser, topic);
+                                var notifications = _topicNotificationService.GetByUserAndTopic(LoggedOnUser, topic, true);
 
                                 if (notifications.Any())
                                 {
