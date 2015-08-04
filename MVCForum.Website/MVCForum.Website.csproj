@@ -229,6 +229,7 @@
     <Compile Include="Application\GoogleSitemapResult.cs" />
     <Compile Include="Application\MemoryFile.cs" />
     <Compile Include="Application\MobileExtensions.cs" />
+    <Compile Include="Application\RouteHandlers\SlugRouteHandler.cs" />
     <Compile Include="Application\RssResult.cs" />
     <Compile Include="Application\CsvFileResult.cs" />
     <Compile Include="Application\Extensions.cs" />

@@ -1,5 +1,7 @@
-﻿using System.Data.Entity.ModelConfiguration;
+﻿using System.Data.Entity.Infrastructure.Annotations;
+using System.Data.Entity.ModelConfiguration;
 using MVCForum.Domain.DomainModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MVCForum.Data.Mapping
 {
@@ -9,7 +11,9 @@ namespace MVCForum.Data.Mapping
         {
             HasKey(x => x.Id);
             Property(x => x.Id).IsRequired();
-            Property(x => x.UserName).IsRequired().HasMaxLength(150);
+            Property(x => x.UserName).IsRequired().HasMaxLength(150)
+                                    .HasColumnAnnotation("Index",
+                                    new IndexAnnotation(new IndexAttribute("IX_MembershipUser_UserName", 1) { IsUnique = true }));
             Property(x => x.Password).IsRequired().HasMaxLength(128);
             Property(x => x.PasswordSalt).IsOptional().HasMaxLength(128);
             Property(x => x.Email).IsOptional().HasMaxLength(256);
@@ -23,7 +27,9 @@ namespace MVCForum.Data.Mapping
             Property(x => x.LastLockoutDate).IsRequired();
             Property(x => x.FailedPasswordAttemptCount).IsRequired();
             Property(x => x.FailedPasswordAnswerAttempt).IsRequired();
-            Property(x => x.Slug).IsRequired().HasMaxLength(150);
+            Property(x => x.Slug).IsRequired().HasMaxLength(150)
+                                    .HasColumnAnnotation("Index",
+                                    new IndexAnnotation(new IndexAttribute("IX_MembershipUser_Slug", 1) { IsUnique = true }));
             Property(x => x.Comment).IsOptional();
             Property(x => x.Signature).IsOptional().HasMaxLength(1000);
             Property(x => x.Age).IsOptional();

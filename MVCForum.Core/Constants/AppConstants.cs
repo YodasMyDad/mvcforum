@@ -15,7 +15,7 @@
 
         // Url names
         public const string CategoryUrlIdentifier = "cat";
-        public const string TopicUrlIdentifier = "topic";
+        public const string TopicUrlIdentifier = "thread";
         public const string TagsUrlIdentifier = "tagged";
         public const string MemberUrlIdentifier = "profile";
 

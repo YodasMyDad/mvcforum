@@ -15,6 +15,7 @@ using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.IOC;
 using MVCForum.Utilities;
 using MVCForum.Website.Application;
+using MVCForum.Website.Application.RouteHandlers;
 using MVCForum.Website.ScheduledJobs;
 
 namespace MVCForum.Website
@@ -92,7 +93,7 @@ namespace MVCForum.Website
                 "{controller}/{action}/{id}", // URL with parameters
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
-
+            //.RouteHandler = new SlugRouteHandler()
         }
 
         protected void Application_Start()

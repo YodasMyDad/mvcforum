@@ -1,4 +1,6 @@
-﻿using System.Data.Entity.ModelConfiguration;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.Infrastructure.Annotations;
+using System.Data.Entity.ModelConfiguration;
 using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Data.Mapping
@@ -12,7 +14,9 @@ namespace MVCForum.Data.Mapping
             Property(x => x.Name).IsRequired().HasMaxLength(450);
             Property(x => x.Description).IsOptional();
             Property(x => x.DateCreated).IsRequired();
-            Property(x => x.Slug).IsRequired().HasMaxLength(450);
+            Property(x => x.Slug).IsRequired().HasMaxLength(450)
+                                .HasColumnAnnotation("Index",
+                                new IndexAnnotation(new IndexAttribute("IX_Category_Slug", 1) { IsUnique = true }));
             Property(x => x.SortOrder).IsRequired();
             Property(x => x.IsLocked).IsRequired();
             Property(x => x.ModerateTopics).IsRequired();
