@@ -83,6 +83,7 @@ namespace MVCForum.Website.ViewModels
         public bool CanUploadFiles { get; set; }
         public bool CanStickyTopic { get; set; }
         public bool CanLockTopic { get; set; }
+        public bool CanCreatePolls { get; set; }
     }
 
     public class CreateEditTopicViewModel

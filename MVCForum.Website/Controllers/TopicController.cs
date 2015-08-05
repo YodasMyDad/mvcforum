@@ -198,6 +198,11 @@ namespace MVCForum.Website.Controllers
             {
                 model.CanUploadFiles = true;
             }
+
+            if (permissionSet[AppConstants.PermissionCreatePolls].IsTicked)
+            {
+                model.CanCreatePolls = true;
+            }
             return model;
         }
 
@@ -485,11 +490,18 @@ namespace MVCForum.Website.Controllers
 
         private CreateEditTopicViewModel PrePareCreateEditTopicViewModel(List<Category> allowedCategories)
         {
+            var userIsAdmin = UserIsAdmin;
             return new CreateEditTopicViewModel
             {
                 SubscribeToTopic = true,
                 Categories = GetBaseSelectListCategories(allowedCategories),
-                OptionalPermissions = new CheckCreateTopicPermissions { CanLockTopic = false, CanStickyTopic = false, CanUploadFiles = false },
+                OptionalPermissions = new CheckCreateTopicPermissions
+                {
+                    CanLockTopic = userIsAdmin,
+                    CanStickyTopic = userIsAdmin,
+                    CanUploadFiles = userIsAdmin,
+                    CanCreatePolls = userIsAdmin
+                },
                 PollAnswers = new List<PollAnswer>(),
                 IsTopicStarter = true
             };

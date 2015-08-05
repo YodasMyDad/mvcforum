@@ -71,6 +71,7 @@ $(function () {
         var stickyholder = $('.createtopicholder .createsticky');
         var lockedholder = $('.createtopicholder .createlocked');
         var uploadholder = $('.createtopicholder .createuploadfiles');
+        var pollButtonholder = $('.createtopicholder .pollcreatebuttonholder');
 
         // Fire when the dropdown changes
         createTopicCategoryDropdown.change(function (e) {
@@ -101,6 +102,12 @@ $(function () {
                             uploadholder.show();
                         } else {
                             uploadholder.hide();
+                        }
+
+                        if (data.CanCreatePolls) {
+                            pollButtonholder.show();
+                        } else {
+                            pollButtonholder.hide();
                         }
                     },
                     error: function (xhr, ajaxOptions, thrownError) {

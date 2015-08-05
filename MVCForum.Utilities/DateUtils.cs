@@ -102,6 +102,18 @@ namespace MVCForum.Utilities
             return duration.TotalMinutes;
         }
 
+        /// <summary>
+        /// Returns the time difference in seconds
+        /// </summary>
+        /// <param name="dateone"></param>
+        /// <param name="datetwo"></param>
+        /// <returns></returns>
+        public static double TimeDifferenceInSeconds(DateTime dateone, DateTime datetwo)
+        {
+            var duration = dateone - datetwo;
+            return duration.TotalSeconds;
+        }
+
 
         /// <summary>
         /// Gets a specific day of the weeks date and the next consectuive Nth days dates, example would be every Fridays date for the current month

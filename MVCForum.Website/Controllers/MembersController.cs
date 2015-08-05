@@ -804,7 +804,7 @@ namespace MVCForum.Website.Controllers
                 var permissions = RoleService.GetPermissions(null, UsersRole);
 
                 // Check is has permissions
-                if (User.IsInRole(AppConstants.AdminRoleName) || loggedOnUserId == id || permissions[AppConstants.PermissionEditMembers].IsTicked)
+                if (UserIsAdmin || loggedOnUserId == id || permissions[AppConstants.PermissionEditMembers].IsTicked)
                 {
                     var user = MembershipService.GetUser(id);
                     var viewModel = PopulateMemberViewModel(user);
@@ -826,7 +826,7 @@ namespace MVCForum.Website.Controllers
                 var permissions = RoleService.GetPermissions(null, UsersRole);
 
                 // Check is has permissions
-                if (User.IsInRole(AppConstants.AdminRoleName) || loggedOnUserId == userModel.Id || permissions[AppConstants.PermissionEditMembers].IsTicked)
+                if (UserIsAdmin || loggedOnUserId == userModel.Id || permissions[AppConstants.PermissionEditMembers].IsTicked)
                 {
                     // Get the user from DB
                     var user = MembershipService.GetUser(userModel.Id);

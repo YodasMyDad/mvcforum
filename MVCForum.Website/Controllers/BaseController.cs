@@ -75,6 +75,11 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+        protected bool UserIsAdmin
+        {
+            get { return User.IsInRole(AppConstants.AdminRoleName); }
+        }
+
         protected void ShowMessage(GenericMessageViewModel messageViewModel)
         {
             //ViewData[AppConstants.MessageViewBagName] = messageViewModel;

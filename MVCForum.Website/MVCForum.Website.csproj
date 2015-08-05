@@ -232,7 +232,7 @@
     <Compile Include="Application\RouteHandlers\SlugRouteHandler.cs" />
     <Compile Include="Application\RssResult.cs" />
     <Compile Include="Application\CsvFileResult.cs" />
-    <Compile Include="Application\Extensions.cs" />
+    <Compile Include="Application\ExtensionMethods\Extensions.cs" />
     <Compile Include="Application\ForumViewEngine.cs" />
     <Compile Include="Application\Localization\Localizer.cs" />
     <Compile Include="Application\ServiceFactory.cs" />

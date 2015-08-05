@@ -73,7 +73,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Private Message Inbox Max Size")]
         public int MaxPrivateMessagesPerMember { get; set; }
 
-        [DisplayName("Private Message Flood Control Time In Minutes")]
+        [DisplayName("Private Message Flood Control - Time In Seconds a user must wait before being allowed to message another user")]
         public int PrivateMessageFloodControl { get; set; }
 
         [DisplayName("Allow Member Signatures")]

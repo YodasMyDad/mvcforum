@@ -121,9 +121,13 @@ namespace MVCForum.Website.Controllers
                 {
                     // Check flood control
                     var lastMessage = _privateMessageService.GetLastSentPrivateMessage(LoggedOnUser.Id);
-                    if (lastMessage != null && DateUtils.TimeDifferenceInMinutes(DateTime.UtcNow, lastMessage.DateSent) < SettingsService.GetSettings().PrivateMessageFloodControl)
+                    // If this message they are sending now, is to the same person then ignore flood control
+                    if (lastMessage != null && createPrivateMessageViewModel.To != lastMessage.UserTo.Id)
                     {
-                        throw new Exception(LocalizationService.GetResourceString("PM.SendingToQuickly"));
+                        if (DateUtils.TimeDifferenceInSeconds(DateTime.UtcNow, lastMessage.DateSent) < SettingsService.GetSettings().PrivateMessageFloodControl)
+                        {
+                            throw new Exception(LocalizationService.GetResourceString("PM.SendingToQuickly"));
+                        }
                     }
 
                     var memberTo = MembershipService.GetUser(createPrivateMessageViewModel.To);
