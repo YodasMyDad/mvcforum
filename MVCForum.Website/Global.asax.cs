@@ -12,6 +12,7 @@ using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.IOC;
 using MVCForum.Utilities;
 using MVCForum.Website.Application;
+using MVCForum.Website.Application.ViewEngine;
 using MVCForum.Website.ScheduledJobs;
 
 namespace MVCForum.Website
@@ -119,28 +120,20 @@ namespace MVCForum.Website
             LoggingService.Error("START APP");
 
             // Set default theme
-            var defaultTheme = "Metro";
+            var defaultTheme = SettingsService.GetSettings().Theme;
 
-            // Only load these IF the versions are the same
-            if (AppHelpers.SameVersionNumbers())
+            // Do the badge processing
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-                // Get the theme from the database.
-                defaultTheme = SettingsService.GetSettings().Theme;
-
-                // Do the badge processing
-                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                try
                 {
-                    try
-                    {
-                        BadgeService.SyncBadges();
-                        unitOfWork.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        LoggingService.Error(string.Format("Error processing badge classes: {0}", ex.Message));
-                    }
+                    BadgeService.SyncBadges();
+                    unitOfWork.Commit();
                 }
-
+                catch (Exception ex)
+                {
+                    LoggingService.Error(string.Format("Error processing badge classes: {0}", ex.Message));
+                }
             }
 
             // Set the view engine
@@ -151,35 +144,25 @@ namespace MVCForum.Website
             EventManager.Instance.Initialize(LoggingService);
         }
 
-        protected void Application_BeginRequest(object sender, EventArgs e)
-        {
-            if (!AppHelpers.IsStaticResource(this.Request) && !AppHelpers.SameVersionNumbers() && !AppHelpers.InInstaller())
-            {
-                Response.Redirect(string.Concat("~", AppConstants.InstallerUrl));
-            }
-        }
+        //protected void Application_BeginRequest(object sender, EventArgs e)
+        //{
+        //    if (!AppHelpers.IsStaticResource(this.Request) && !AppHelpers.SameVersionNumbers() && !AppHelpers.InInstaller())
+        //    {
+        //        Response.Redirect(string.Concat("~", AppConstants.InstallerUrl));
+        //    }
+        //}
 
         protected void Application_AcquireRequestState(object sender, EventArgs e)
         {
-
             //It's important to check whether session object is ready
-            if (!AppHelpers.InInstaller())
+            if (HttpContext.Current.Session != null)
             {
-                if (HttpContext.Current.Session != null)
-                {
-                    // Set the culture per request
-                    var ci = new CultureInfo(LocalizationService.CurrentLanguage.LanguageCulture);
-                    Thread.CurrentThread.CurrentUICulture = ci;
-                    Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(ci.Name);
-                }
+                // Set the culture per request
+                var ci = new CultureInfo(LocalizationService.CurrentLanguage.LanguageCulture);
+                Thread.CurrentThread.CurrentUICulture = ci;
+                Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(ci.Name);
             }
-
         }
-
-        //protected void Application_EndRequest(object sender, EventArgs e)
-        //{
-
-        //}
 
         protected void Application_Error(object sender, EventArgs e)
         {

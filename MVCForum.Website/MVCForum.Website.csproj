@@ -55,12 +55,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\AjaxMin.4.48.4489.28432\lib\net20\AjaxMin.dll</HintPath>
     </Reference>
-    <Reference Include="Common.Logging">
-      <HintPath>..\packages\Common.Logging.3.0.0\lib\net40\Common.Logging.dll</HintPath>
+    <Reference Include="Common.Logging, Version=3.2.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.3.2.0\lib\net40\Common.Logging.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Common.Logging.Core">
-      <HintPath>..\packages\Common.Logging.Core.3.0.0\lib\net40\Common.Logging.Core.dll</HintPath>
+    <Reference Include="Common.Logging.Core, Version=3.2.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.Core.3.2.0\lib\net40\Common.Logging.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="DataAnnotationsExtensions, Version=1.1.0.0, Culture=neutral, PublicKeyToken=358a5681c50fd84c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -215,25 +216,25 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Akismet.NET\Comment.cs" />
-    <Compile Include="Akismet.NET\IValidator.cs" />
-    <Compile Include="Akismet.NET\Validator.cs" />
+    <Compile Include="Application\Akismet\Comment.cs" />
+    <Compile Include="Application\Akismet\IValidator.cs" />
+    <Compile Include="Application\Akismet\Validator.cs" />
     <Compile Include="Application\ActionFilterAttributes\NoSlash.cs" />
     <Compile Include="Application\AppHelpers.cs" />
     <Compile Include="Application\DatesUI.cs" />
     <Compile Include="Application\ExtensionMethods\HtmlLabelExtensions.cs" />
     <Compile Include="Application\ForumMVCResourceDisplayName.cs" />
-    <Compile Include="Application\GoogleSitemapResult.cs" />
+    <Compile Include="Application\CustomActionResults\GoogleSitemapResult.cs" />
     <Compile Include="Application\MemoryFile.cs" />
     <Compile Include="Application\MobileExtensions.cs" />
     <Compile Include="Application\RouteHandlers\SlugRouteHandler.cs" />
-    <Compile Include="Application\RssResult.cs" />
-    <Compile Include="Application\CsvFileResult.cs" />
+    <Compile Include="Application\CustomActionResults\RssResult.cs" />
+    <Compile Include="Application\CustomActionResults\CsvFileResult.cs" />
     <Compile Include="Application\ExtensionMethods\Extensions.cs" />
-    <Compile Include="Application\ForumViewEngine.cs" />
+    <Compile Include="Application\ViewEngine\ForumViewEngine.cs" />
     <Compile Include="Application\Localization\Localizer.cs" />
     <Compile Include="Application\ServiceFactory.cs" />
-    <Compile Include="Application\WrappedJSonResult.cs" />
+    <Compile Include="Application\CustomActionResults\WrappedJSonResult.cs" />
     <Compile Include="Application\SiteConstants.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
@@ -293,14 +294,14 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Membership\MembershipProvider.cs" />
-    <Compile Include="Membership\RoleProvider.cs" />
+    <Compile Include="Application\Providers\MembershipProvider.cs" />
+    <Compile Include="Application\Providers\RoleProvider.cs" />
     <Compile Include="Areas\Admin\ViewModels\AccountViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Areas\Admin\ViewModels\ModerateViewModels.cs" />
-    <Compile Include="ScheduledJobs\KepAliveJob.cs" />
-    <Compile Include="ScheduledJobs\ScheduledRunner.cs" />
-    <Compile Include="ScheduledJobs\EmailJob.cs" />
+    <Compile Include="Application\ScheduledJobs\KepAliveJob.cs" />
+    <Compile Include="Application\ScheduledJobs\ScheduledRunner.cs" />
+    <Compile Include="Application\ScheduledJobs\EmailJob.cs" />
     <Compile Include="ViewModels\FavouriteViewModels.cs" />
     <Compile Include="ViewModels\OAuth\FacebookOAuthData.cs" />
     <Compile Include="ViewModels\OAuth\GoogleOAuthData.cs" />
@@ -311,7 +312,7 @@
     <Compile Include="ViewModels\HomeViewModels.cs" />
     <Compile Include="ViewModels\InstallViewModels.cs" />
     <Compile Include="ViewModels\LanguageViewModels.cs" />
-    <Compile Include="Application\AkismetHelper.cs" />
+    <Compile Include="Application\Akismet\AkismetHelper.cs" />
     <Compile Include="ViewModels\Mapping\ViewModelMapping.cs" />
     <Compile Include="ViewModels\MemberViewModels.cs" />
     <Compile Include="ViewModels\PointViewModels.cs" />
