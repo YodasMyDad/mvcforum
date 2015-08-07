@@ -28,7 +28,7 @@ namespace MVCForum.Data.Repositories
 
         public IList<BannedWord> GetAll()
         {
-            return _context.BannedWord.OrderByDescending(x => x.DateAdded).ToList();
+            return _context.BannedWord.AsNoTracking().OrderByDescending(x => x.DateAdded).ToList();
         }
 
         public BannedWord Get(Guid id)
@@ -41,6 +41,7 @@ namespace MVCForum.Data.Repositories
             var total = _context.BannedWord.Count();
 
             var results = _context.BannedWord
+                                .AsNoTracking()
                                 .OrderBy(x => x.Word)
                                 .Skip((pageIndex - 1) * pageSize)
                                 .Take(pageSize)

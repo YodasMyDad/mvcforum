@@ -256,6 +256,7 @@ namespace MVCForum.Services
         public MembershipCreateStatus CreateUser(MembershipUser newUser)
         {
             newUser = SanitizeUser(newUser);
+            var settings = _settingsRepository.GetSettings(true);
 
             var status = MembershipCreateStatus.Success;
 
@@ -298,14 +299,14 @@ namespace MVCForum.Services
                     newUser.Password = hash;
                     newUser.PasswordSalt = salt;
 
-                    newUser.Roles = new List<MembershipRole> { _settingsRepository.GetSettings().NewMemberStartingRole };
+                    newUser.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
 
                     // Set dates
                     newUser.CreateDate = newUser.LastPasswordChangedDate = DateTime.UtcNow;
                     newUser.LastLockoutDate = (DateTime)SqlDateTime.MinValue;
                     newUser.LastLoginDate = DateTime.UtcNow;
 
-                    newUser.IsApproved = !_settingsRepository.GetSettings().ManuallyAuthoriseNewMembers;
+                    newUser.IsApproved = !settings.ManuallyAuthoriseNewMembers;
                     newUser.IsLockedOut = false;
 
                     // url generator
@@ -315,14 +316,14 @@ namespace MVCForum.Services
                     {
                         _membershipRepository.Add(newUser);
 
-                        if (_settingsRepository.GetSettings().EmailAdminOnNewMemberSignUp)
+                        if (settings.EmailAdminOnNewMemberSignUp)
                         {
                             var sb = new StringBuilder();
-                            sb.AppendFormat("<p>{0}</p>", string.Format(_localizationService.GetResourceString("Members.NewMemberRegistered"), _settingsRepository.GetSettings().ForumName, _settingsRepository.GetSettings().ForumUrl));
+                            sb.AppendFormat("<p>{0}</p>", string.Format(_localizationService.GetResourceString("Members.NewMemberRegistered"), settings.ForumName, settings.ForumUrl));
                             sb.AppendFormat("<p>{0} - {1}</p>", newUser.UserName, newUser.Email);
                             var email = new Email
                                             {
-                                                EmailTo = _settingsRepository.GetSettings().AdminEmailAddress,
+                                                EmailTo = settings.AdminEmailAddress,
                                                 NameTo = _localizationService.GetResourceString("Members.Admin"),
                                                 Subject = _localizationService.GetResourceString("Members.NewMemberSubject")
                                             };

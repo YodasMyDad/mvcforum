@@ -297,7 +297,7 @@ namespace MVCForum.Services
                         }
 
                         // User might have a language set
-                        var changedLanguage = Get(languageGuid);
+                        var changedLanguage = Get(languageGuid, true);
                         if (changedLanguage != null)
                         {
                             // User has set the language so overide it here
@@ -323,7 +323,7 @@ namespace MVCForum.Services
         {
             get
             {
-                var settings = _settingsRepository.GetSettings();
+                var settings = _settingsRepository.GetSettings(false);
 
                 if (settings == null)
                 {
@@ -490,10 +490,11 @@ namespace MVCForum.Services
         /// Get an individual language
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="removeTracking"></param>
         /// <returns></returns>
-        public Language Get(Guid id)
+        public Language Get(Guid id, bool removeTracking = false)
         {
-            return _localizationRepository.Get(id);
+            return _localizationRepository.Get(id, removeTracking);
         }
 
 

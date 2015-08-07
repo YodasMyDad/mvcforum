@@ -94,10 +94,6 @@
       <HintPath>..\packages\ImageProcessor.Web.4.3.6.0\lib\net45\ImageProcessor.Web.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="LowercaseRoutesMVC, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\LowercaseRoutesMVC.1.0.3\lib\LowercaseRoutesMVC.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
@@ -222,6 +218,7 @@
     <Compile Include="Akismet.NET\Comment.cs" />
     <Compile Include="Akismet.NET\IValidator.cs" />
     <Compile Include="Akismet.NET\Validator.cs" />
+    <Compile Include="Application\ActionFilterAttributes\NoSlash.cs" />
     <Compile Include="Application\AppHelpers.cs" />
     <Compile Include="Application\DatesUI.cs" />
     <Compile Include="Application\ExtensionMethods\HtmlLabelExtensions.cs" />
