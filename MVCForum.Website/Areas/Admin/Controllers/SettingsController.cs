@@ -55,7 +55,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     try
                     {
                         
-                        var existingSettings = SettingsService.GetSettings();
+                        var existingSettings = SettingsService.GetSettings(false);
                         var updatedSettings = ViewModelMapping.SettingsViewModelToSettings(settingsViewModel, existingSettings);
 
                         // Map over viewModel from 
