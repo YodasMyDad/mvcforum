@@ -153,8 +153,9 @@ namespace MVCForum.Domain.Interfaces.Repositories
         /// Get a language by Id
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="removeTracking"></param>
         /// <returns></returns>
-        Language Get(Guid id);
+        Language Get(Guid id, bool removeTracking = false);
 
         void Delete(LocaleStringResource item);
         void Delete(LocaleResourceKey item);

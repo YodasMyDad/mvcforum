@@ -28,13 +28,14 @@ namespace MVCForum.Domain.Interfaces.Services
         /// Returns all languages and returns them as culture info objects
         /// </summary>
         IList<CultureInfo> LanguagesAll { get; }
-        
-            /// <summary>
+
+        /// <summary>
         /// Get a language by id
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="removeTracking"></param>
         /// <returns></returns>
-        Language Get(Guid id);
+        Language Get(Guid id, bool removeTracking = false);
 
         /// <summary>
         /// Get all languages
@@ -107,6 +108,7 @@ namespace MVCForum.Domain.Interfaces.Services
         /// <param name="allLines"></param>
         /// <returns>A report on the import</returns>
         CsvReport FromCsv(string langKey, List<string> allLines);
+        CsvReport FromCsv(Language lang, List<string> allLines);
 
         #endregion
 

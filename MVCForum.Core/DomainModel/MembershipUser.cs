@@ -80,6 +80,7 @@ namespace MVCForum.Domain.DomainModel
         public virtual IList<Post> Posts { get; set; }
         public virtual IList<Topic> Topics { get; set; }
         public virtual IList<Vote> Votes { get; set; }
+        public virtual IList<Vote> VotesGiven { get; set; }
         public virtual IList<Badge> Badges { get; set; }
         public virtual IList<BadgeTypeTimeLastChecked> BadgeTypesTimeLastChecked { get; set; }
         public virtual IList<CategoryNotification> CategoryNotifications { get; set; }
@@ -90,6 +91,7 @@ namespace MVCForum.Domain.DomainModel
         public virtual IList<Poll> Polls { get; set; }
         public virtual IList<PollVote> PollVotes { get; set; }
         public virtual IList<Favourite> Favourites { get; set; }
+        public virtual IList<UploadedFile> UploadedFiles { get; set; }
 
         public int TotalPoints 
         { 

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web;
 using System.Web.Mvc;
-using DataAnnotationsExtensions;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Website.Application;
@@ -23,7 +22,7 @@ namespace MVCForum.Website.ViewModels
         public string UserName { get; set; }
 
         [Required]
-        [Email]
+        [EmailAddress]
         [ForumMvcResourceDisplayName("Members.Label.EmailAddress")]
         public string Email { get; set; }
 
@@ -69,7 +68,7 @@ namespace MVCForum.Website.ViewModels
         public string UserName { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.EmailAddress")]
-        [Email]
+        [EmailAddress]
         [Required]
         public string Email { get; set; }
 
@@ -79,7 +78,7 @@ namespace MVCForum.Website.ViewModels
         public string Signature { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Age")]
-        [Numeric]
+        [Range(0, int.MaxValue)]
         public int? Age { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Location")]
@@ -87,12 +86,12 @@ namespace MVCForum.Website.ViewModels
         public string Location { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Website")]
-        [System.ComponentModel.DataAnnotations.Url]
+        [Url]
         [StringLength(100)]
         public string Website { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Twitter")]
-        [System.ComponentModel.DataAnnotations.Url]
+        [Url]
         [StringLength(60)]
         public string Twitter { get; set; }
 
@@ -100,7 +99,7 @@ namespace MVCForum.Website.ViewModels
         public HttpPostedFileBase[] Files { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Facebook")]
-        [System.ComponentModel.DataAnnotations.Url]
+        [Url]
         [StringLength(60)]
         public string Facebook { get; set; }
 
@@ -192,7 +191,7 @@ namespace MVCForum.Website.ViewModels
     public class ForgotPasswordViewModel
     {
         [ForumMvcResourceDisplayName("Members.Label.EmailAddressBlank")]
-        [Email]
+        [EmailAddress]
         [Required]
         public string EmailAddress { get; set; }
     }

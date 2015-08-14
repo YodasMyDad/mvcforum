@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using MVCForum.Domain.DomainModel;
-using DataAnnotationsExtensions;
 
 namespace MVCForum.Website.Areas.Admin.ViewModels
 {
@@ -73,7 +72,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Private Message Inbox Max Size")]
         public int MaxPrivateMessagesPerMember { get; set; }
 
-        [DisplayName("Private Message Flood Control Time In Minutes")]
+        [DisplayName("Private Message Flood Control - Time In Seconds a user must wait before being allowed to message another user")]
         public int PrivateMessageFloodControl { get; set; }
 
         [DisplayName("Allow Member Signatures")]
@@ -100,11 +99,11 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Points Added For A Solution")]
         public int PointsAddedForSolution { get; set; }
 
-        [Email]
+        [EmailAddress]
         [DisplayName("Admin Email Address")]
         public string AdminEmailAddress { get; set; }
 
-        [Email]
+        [EmailAddress]
         [DisplayName("Notification Reply Email Address")]
         public string NotificationReplyEmail { get; set; }
 

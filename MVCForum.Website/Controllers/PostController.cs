@@ -31,9 +31,6 @@ namespace MVCForum.Website.Controllers
         private readonly IBannedWordService _bannedWordService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
 
-        private MembershipUser LoggedOnUser;
-        private MembershipRole UsersRole;
-
         public PostController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ISettingsService settingsService, ICategoryService categoryService, ITopicTagService topicTagService,
@@ -52,9 +49,6 @@ namespace MVCForum.Website.Controllers
             _pollService = pollService;
             _bannedWordService = bannedWordService;
             _membershipUserPointsService = membershipUserPointsService;
-
-            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
-            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
 

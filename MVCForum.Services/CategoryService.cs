@@ -42,7 +42,6 @@ namespace MVCForum.Services
             return _categoryRepository.GetAll();
         }
 
-
         /// <summary>
         /// Return all sub categories from a parent category id
         /// </summary>
@@ -69,6 +68,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public List<Category> GetAllowedCategories(MembershipRole role)
         {
+            //TODO - Cache?
             var filteredCats = new List<Category>();
             var allCats = _categoryRepository.GetAll().ToList();
             foreach (var category in allCats)
@@ -161,9 +161,15 @@ namespace MVCForum.Services
             return _categoryRepository.GetBySlug(StringUtils.GetSafeHtml(slug));
         }
 
-        public IList<Category> GetCategoryParents(Category category)
+        public List<Category> GetCategoryParents(Category category, List<Category> allowedCategories)
         {
-            return _categoryRepository.GetCategoryParents(category);
+            var cats = _categoryRepository.GetCategoryParents(category);
+            var allowedCatIds = new List<Guid>();
+            if (allowedCategories != null && allowedCategories.Any())
+            {
+                allowedCatIds.AddRange(allowedCategories.Select(x => x.Id));
+            }
+            return cats.Where(x => allowedCatIds.Contains(x.Id)).ToList();
         }
 
         /// <summary>
@@ -200,18 +206,6 @@ namespace MVCForum.Services
                 inUseBy.AddRange(category.Topics);
                 throw new InUseUnableToDeleteException(inUseBy);
             }
-        }
-
-        /// <summary>
-        /// Save / Update a category
-        /// </summary>
-        /// <param name="category"></param>
-        public void Save(Category category)
-        {
-            // Sanitize
-            category = SanitizeCategory(category);
-
-            _categoryRepository.Update(category);
         }
     }
 }

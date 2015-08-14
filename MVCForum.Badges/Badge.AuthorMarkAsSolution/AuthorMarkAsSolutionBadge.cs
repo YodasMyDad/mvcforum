@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Linq;
+using System.Web.Mvc;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Attributes;
 using MVCForum.Domain.Interfaces.Badges;
@@ -21,7 +22,9 @@ namespace Badge.AuthorMarkAsSolution
         public bool Rule(MembershipUser user)
         {
             var topicService = DependencyResolver.Current.GetService<ITopicService>();
-            return topicService.GetSolvedTopicsByMember(user.Id).Count >= 1;
+            var categoryService = DependencyResolver.Current.GetService<ICategoryService>();
+            var allCats = categoryService.GetAll();
+            return topicService.GetSolvedTopicsByMember(user.Id, allCats.ToList()).Count >= 1;
 
         }
     }

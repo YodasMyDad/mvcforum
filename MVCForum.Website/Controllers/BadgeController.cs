@@ -12,8 +12,6 @@ namespace MVCForum.Website.Controllers
         private readonly IBadgeService _badgeService;
         private readonly IPostService _postService;
 
-        private MembershipUser LoggedOnUser;
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -36,8 +34,6 @@ namespace MVCForum.Website.Controllers
         {
             _badgeService = badgeService;
             _postService = postService;
-
-            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
         }
 
 

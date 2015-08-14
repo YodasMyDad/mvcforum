@@ -18,9 +18,6 @@ namespace MVCForum.Website.Controllers
         private readonly ICategoryService _categoryService;
         private readonly IActivityService _activityService;
 
-        private MembershipUser LoggedOnUser;
-        private MembershipRole UsersRole;
-
         public HomeController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IActivityService activityService, IMembershipService membershipService,
             ITopicService topicService, ILocalizationService localizationService, IRoleService roleService,
             ISettingsService settingsService, ICategoryService categoryService)
@@ -29,9 +26,6 @@ namespace MVCForum.Website.Controllers
             _topicService = topicService;
             _categoryService = categoryService;
             _activityService = activityService;
-
-            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
-            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
         //[OutputCache(Duration = 10, VaryByParam = "p")]
@@ -83,11 +77,15 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                // Allowed Categories for a guest - As that's all we want latest RSS to show
+                var guestRole = RoleService.GetRole(AppConstants.GuestRoleName);
+                var allowedCategories = _categoryService.GetAllowedCategories(guestRole);
+
                 // get an rss lit ready
                 var rssTopics = new List<RssItem>();
 
                 // Get the latest topics
-                var topics = _topicService.GetRecentRssTopics(SiteConstants.ActiveTopicsListSize);
+                var topics = _topicService.GetRecentRssTopics(SiteConstants.ActiveTopicsListSize, allowedCategories);
 
                 // Get all the categories for this topic collection
                 var categories = topics.Select(x => x.Category).Distinct();
@@ -190,8 +188,12 @@ namespace MVCForum.Website.Controllers
                 // Get all categoryes
                 var allCategories = _categoryService.GetAll().ToList();
 
-                // Get all topics
-                var allTopics = _topicService.GetAll();
+                // Allowed Categories for a guest
+                var guestRole = RoleService.GetRole(AppConstants.GuestRoleName);
+                var allowedCatergories = _categoryService.GetAllowedCategories(guestRole);
+
+                // Get all topics that a guest has access to
+                var allTopics = _topicService.GetAll(allowedCatergories);
 
                 // get all members profiles
                 var members = MembershipService.GetAll();

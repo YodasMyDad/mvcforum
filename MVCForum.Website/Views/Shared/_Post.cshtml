@@ -186,7 +186,7 @@
                         @foreach (var file in Model.Post.Files.OrderByDescending(o => o.DateCreated))
                         {
                             <li>
-                                <a class="fileupload" href="@Html.Raw(Url.Content(file.FilePath))">
+                                <a class="fileupload" href="@Url.Action("Download", "File", new { id = file.Id})">
                                     @if (AppHelpers.FileIsImage(file.FilePath))
                                     {
                                         <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>

@@ -2,6 +2,8 @@
 {
     public static class AppConstants
     {
+        public const int SaltSize = 24;
+
         // Cookie names
         public const string LanguageIdCookieName = "LanguageCulture";
         public const string MemberEmailConfirmationCookieName = "MVCForumEmailConfirmation";
@@ -13,7 +15,7 @@
 
         // Url names
         public const string CategoryUrlIdentifier = "cat";
-        public const string TopicUrlIdentifier = "chat";
+        public const string TopicUrlIdentifier = "thread";
         public const string TagsUrlIdentifier = "tagged";
         public const string MemberUrlIdentifier = "profile";
 

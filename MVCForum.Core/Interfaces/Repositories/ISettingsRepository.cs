@@ -5,9 +5,8 @@ namespace MVCForum.Domain.Interfaces.Repositories
 {
     public partial interface ISettingsRepository
     {
-        Settings GetSettings();
+        Settings GetSettings(bool addTracking);
         Settings Add(Settings item);
         Settings Get(Guid id);
-        void Update(Settings item);
     }
 }

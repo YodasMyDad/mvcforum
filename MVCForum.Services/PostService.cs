@@ -52,9 +52,9 @@ namespace MVCForum.Services
         /// Return all posts
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Post> GetAll()
+        public IEnumerable<Post> GetAll(List<Category> allowedCategories)
         {
-            return _postRepository.GetAll();
+            return _postRepository.GetAll(allowedCategories);
         }
 
         /// <summary>
@@ -82,10 +82,11 @@ namespace MVCForum.Services
         /// </summary>
         /// <param name="memberId"></param>
         /// <param name="amountToTake"></param>
+        /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public IList<Post> GetByMember(Guid memberId, int amountToTake)
+        public IList<Post> GetByMember(Guid memberId, int amountToTake, List<Category> allowedCategories)
         {
-            return _postRepository.GetByMember(memberId, amountToTake);
+            return _postRepository.GetByMember(memberId, amountToTake, allowedCategories);
         }
 
         /// <summary>
@@ -131,19 +132,20 @@ namespace MVCForum.Services
         /// Return all posts by a specified member that are marked as solution
         /// </summary>
         /// <param name="memberId"></param>
+        /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public IList<Post> GetSolutionsByMember(Guid memberId)
+        public IList<Post> GetSolutionsByMember(Guid memberId, List<Category> allowedCategories)
         {
-            return _postRepository.GetSolutionsByMember(memberId);
+            return _postRepository.GetSolutionsByMember(memberId, allowedCategories);
         }
 
         /// <summary>
         /// Returns a count of all posts
         /// </summary>
         /// <returns></returns>
-        public int PostCount()
+        public int PostCount(List<Category> allowedCategories)
         {
-            return _postRepository.PostCount();
+            return _postRepository.PostCount(allowedCategories);
         }
 
         /// <summary>
@@ -167,9 +169,9 @@ namespace MVCForum.Services
             return _postRepository.Get(postId);
         }
 
-        public IList<Post> GetPostsByTopics(List<Guid> topicIds)
+        public IList<Post> GetPostsByTopics(List<Guid> topicIds, List<Category> allowedCategories)
         {
-            return _postRepository.GetPostsByTopics(topicIds);
+            return _postRepository.GetPostsByTopics(topicIds, allowedCategories);
         }
 
         /// <summary>

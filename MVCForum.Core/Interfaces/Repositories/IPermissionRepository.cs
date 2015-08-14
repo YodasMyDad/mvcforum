@@ -10,6 +10,5 @@ namespace MVCForum.Domain.Interfaces.Repositories
         Permission Add(Permission item);
         Permission Get(Guid id);
         void Delete(Permission item);
-        void Update(Permission item);
     }
 }

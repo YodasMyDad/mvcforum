@@ -17,31 +17,31 @@ namespace MVCForum.Domain.DomainModel
         public virtual Settings Settings { get; set; }
 
         // Category Permissions
-        public virtual IList<CategoryPermissionForRole> CategoryPermissionForRole { get; set; }
+        public virtual IList<CategoryPermissionForRole> CategoryPermissionForRoles { get; set; }
 
         // Global Permissions
         public virtual IList<GlobalPermissionForRole> GlobalPermissionForRole { get; set; }
 
-        public virtual Dictionary<Guid, Dictionary<Permission, bool>> GetCategoryPermissionTable()
+        public virtual Dictionary<Guid, Dictionary<Guid, bool>> GetCategoryPermissionTable()
         {
-            var permissionRows = new Dictionary<Guid, Dictionary<Permission, bool>>();
+            var permissionRows = new Dictionary<Guid, Dictionary<Guid, bool>>();
 
-            foreach (var catPermissionForRole in CategoryPermissionForRole)
+            foreach (var catPermissionForRole in CategoryPermissionForRoles)
             {
                 if (!permissionRows.ContainsKey(catPermissionForRole.Category.Id))
                 {
-                    var permissionList = new Dictionary<Permission, bool>();
+                    var permissionList = new Dictionary<Guid, bool>();
 
                     permissionRows.Add(catPermissionForRole.Category.Id, permissionList);
                 }
 
-                if (!permissionRows[catPermissionForRole.Category.Id].ContainsKey(catPermissionForRole.Permission))
+                if (!permissionRows[catPermissionForRole.Category.Id].ContainsKey(catPermissionForRole.Permission.Id))
                 {
-                    permissionRows[catPermissionForRole.Category.Id].Add(catPermissionForRole.Permission, catPermissionForRole.IsTicked);
+                    permissionRows[catPermissionForRole.Category.Id].Add(catPermissionForRole.Permission.Id, catPermissionForRole.IsTicked);
                 }
                 else
                 {
-                    permissionRows[catPermissionForRole.Category.Id][catPermissionForRole.Permission] = catPermissionForRole.IsTicked;
+                    permissionRows[catPermissionForRole.Category.Id][catPermissionForRole.Permission.Id] = catPermissionForRole.IsTicked;
                 }
                 
 

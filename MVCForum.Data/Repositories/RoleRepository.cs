@@ -37,15 +37,24 @@ namespace MVCForum.Data.Repositories
         /// Get a role by name
         /// </summary>
         /// <param name="rolename"></param>
+        /// <param name="removeTracking"></param>
         /// <returns></returns>
-        public MembershipRole GetRole(string rolename)
+        public MembershipRole GetRole(string rolename, bool removeTracking)
         {
+            if (removeTracking)
+            {
+                return _context.MembershipRole
+                    .Include(x => x.CategoryPermissionForRoles)
+                    .Include(x => x.GlobalPermissionForRole)
+                    .AsNoTracking()
+                    .FirstOrDefault(y => y.RoleName.Contains(rolename));    
+            }
             return _context.MembershipRole.FirstOrDefault(y => y.RoleName.Contains(rolename));
         }
 
         public MembershipRole Add(MembershipRole item)
         {
-            var role = GetRole(item.RoleName);
+            var role = GetRole(item.RoleName, false);
             return role ?? _context.MembershipRole.Add(item);
         }
 

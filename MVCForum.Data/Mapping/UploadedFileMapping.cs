@@ -8,8 +8,9 @@ namespace MVCForum.Data.Mapping
         public UploadedFileMapping()
         {
             HasKey(x => x.Id);
-            HasRequired(x => x.Post).WithMany(x => x.Files).Map(x => x.MapKey("Post_Id"));
-            HasRequired(x => x.MembershipUser);
+            Property(x => x.Id).IsRequired();
+            Property(x => x.Filename).IsRequired().HasMaxLength(200);
+            Property(x => x.DateCreated).IsRequired();
         }
     }
 }

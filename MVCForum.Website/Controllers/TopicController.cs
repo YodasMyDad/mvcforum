@@ -15,7 +15,6 @@ using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
 using MVCForum.Website.ViewModels.Mapping;
-using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
 
 namespace MVCForum.Website.Controllers
 {
@@ -35,14 +34,12 @@ namespace MVCForum.Website.Controllers
         private readonly IBannedWordService _bannedWordService;
         private readonly IVoteService _voteService;
         private readonly IUploadedFileService _uploadedFileService;
-
-        private readonly MembershipUser LoggedOnUser;
-        private readonly MembershipRole UsersRole;
+        private readonly ICacheService _cacheService;
 
         public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
             ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, IPollService pollService,
-            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService, IUploadedFileService uploadedFileService)
+            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService, IUploadedFileService uploadedFileService, ICacheService cacheService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
@@ -59,9 +56,7 @@ namespace MVCForum.Website.Controllers
             _voteService = voteService;
             _favouriteService = favouriteService;
             _uploadedFileService = uploadedFileService;
-
-            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
-            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
+            _cacheService = cacheService;
         }
 
 
@@ -71,6 +66,8 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+
                 // Set the page index
                 var pageIndex = p ?? 1;
 
@@ -78,10 +75,11 @@ namespace MVCForum.Website.Controllers
                 var topics = _topicService.GetMembersActivity(pageIndex,
                                                            SettingsService.GetSettings().TopicsPerPage,
                                                            SiteConstants.MembersActivityListSize,
-                                                           LoggedOnUser.Id);
+                                                           LoggedOnUser.Id, 
+                                                           allowedCategories);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, SettingsService.GetSettings());
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
 
                 // create the view model
                 var viewModel = new PostedInViewModel
@@ -97,8 +95,6 @@ namespace MVCForum.Website.Controllers
 
         }
 
-
-
         [ChildActionOnly]
         [Authorize]
         public PartialViewResult GetSubscribedTopics()
@@ -106,13 +102,14 @@ namespace MVCForum.Website.Controllers
             var viewModel = new List<TopicViewModel>();
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
                 var topicIds = LoggedOnUser.TopicNotifications.Select(x => x.Topic.Id).ToList();
                 if (topicIds.Any())
                 {
-                    var topics = _topicService.Get(topicIds);
+                    var topics = _topicService.Get(topicIds, allowedCategories);
 
                     // Get the Topic View Models
-                    viewModel = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, SettingsService.GetSettings());
+                    viewModel = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
                 }
             }
             return PartialView("GetSubscribedTopics", viewModel);
@@ -122,11 +119,12 @@ namespace MVCForum.Website.Controllers
         public PartialViewResult GetTopicBreadcrumb(Topic topic)
         {
             var category = topic.Category;
+            var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var viewModel = new BreadcrumbViewModel
                 {
-                    Categories = _categoryService.GetCategoryParents(category).ToList(),
+                    Categories = _categoryService.GetCategoryParents(category, allowedCategories),
                     Topic = topic
                 };
                 if (!viewModel.Categories.Any())
@@ -199,6 +197,11 @@ namespace MVCForum.Website.Controllers
             if (permissionSet[AppConstants.PermissionAttachFiles].IsTicked)
             {
                 model.CanUploadFiles = true;
+            }
+
+            if (permissionSet[AppConstants.PermissionCreatePolls].IsTicked)
+            {
+                model.CanCreatePolls = true;
             }
             return model;
         }
@@ -487,11 +490,18 @@ namespace MVCForum.Website.Controllers
 
         private CreateEditTopicViewModel PrePareCreateEditTopicViewModel(List<Category> allowedCategories)
         {
+            var userIsAdmin = UserIsAdmin;
             return new CreateEditTopicViewModel
             {
                 SubscribeToTopic = true,
                 Categories = GetBaseSelectListCategories(allowedCategories),
-                OptionalPermissions = new CheckCreateTopicPermissions { CanLockTopic = false, CanStickyTopic = false, CanUploadFiles = false },
+                OptionalPermissions = new CheckCreateTopicPermissions
+                {
+                    CanLockTopic = userIsAdmin,
+                    CanStickyTopic = userIsAdmin,
+                    CanUploadFiles = userIsAdmin,
+                    CanCreatePolls = userIsAdmin
+                },
                 PollAnswers = new List<PollAnswer>(),
                 IsTopicStarter = true
             };
@@ -939,6 +949,8 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+
                 // Set the page index
                 var pageIndex = p ?? 1;
 
@@ -946,10 +958,10 @@ namespace MVCForum.Website.Controllers
                 var topics = _topicService.GetPagedTopicsByTag(pageIndex,
                                                            SettingsService.GetSettings().TopicsPerPage,
                                                            SiteConstants.ActiveTopicsListSize,
-                                                           tag);
+                                                           tag, allowedCategories);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, SettingsService.GetSettings());
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
 
                 // create the view model
                 var viewModel = new TagTopicsViewModel
@@ -968,25 +980,28 @@ namespace MVCForum.Website.Controllers
         [HttpPost]
         public PartialViewResult GetSimilarTopics(string searchTerm)
         {
-            // Returns the formatted string to search on
-            var formattedSearchTerm = StringUtils.ReturnSearchString(searchTerm);
-
-            List<Topic> topics = null;
-            try
+            using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var searchResults = _topicService.SearchTopics(0, SiteConstants.SimilarTopicsListSize, SiteConstants.SimilarTopicsListSize, formattedSearchTerm);
-                if (searchResults != null)
+                // Returns the formatted string to search on
+                var formattedSearchTerm = StringUtils.ReturnSearchString(searchTerm);
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                List<Topic> topics = null;
+                try
                 {
-                    topics = searchResults.ToList();
+                    var searchResults = _topicService.SearchTopics(0, SiteConstants.SimilarTopicsListSize, SiteConstants.SimilarTopicsListSize, formattedSearchTerm, allowedCategories);
+                    if (searchResults != null)
+                    {
+                        topics = searchResults.ToList();
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                LoggingService.Error(ex);
-            }
+                catch (Exception ex)
+                {
+                    LoggingService.Error(ex);
+                }
 
-            // Pass the list to the partial view
-            return PartialView(topics);
+                // Pass the list to the partial view
+                return PartialView(topics); 
+            }
         }
 
         [ChildActionOnly]
@@ -994,16 +1009,19 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+
                 // Set the page index
                 var pageIndex = p ?? 1;
 
                 // Get the topics
                 var topics = _topicService.GetRecentTopics(pageIndex,
                                                            SettingsService.GetSettings().TopicsPerPage,
-                                                           SiteConstants.ActiveTopicsListSize);
+                                                           SiteConstants.ActiveTopicsListSize, 
+                                                           allowedCategories);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, SettingsService.GetSettings());
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
 
                 // create the view model
                 var viewModel = new ActiveTopicsViewModel
@@ -1018,28 +1036,45 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.LongCacheTime)]
         [ChildActionOnly]
         public ActionResult HotTopics(DateTime? from, DateTime? to, int? amountToShow)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                HotTopicsViewModel viewModel;
+
                 if (amountToShow == null)
                 {
                     amountToShow = 5;
                 }
 
-                // Get the topics
-                var topics = _topicService.GetPopularTopics(from, to, (int)amountToShow);
+                var fromString = from != null ? Convert.ToDateTime(from).ToShortDateString() : null;
+                var toString = to != null ? Convert.ToDateTime(to).ToShortDateString() : null;
 
-                // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, SettingsService.GetSettings());
-
-                // create the view model
-                var viewModel = new HotTopicsViewModel
+                var cacheKey = string.Concat("HotTopics", UsersRole.Id, fromString, toString, amountToShow);
+                var cachedItem = _cacheService.Get(cacheKey);
+                if (cachedItem == null)
                 {
-                    Topics = topicViewModels
-                };
+                    // Allowed Categories
+                    var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+
+                    // Get the topics
+                    var topics = _topicService.GetPopularTopics(from, to, allowedCategories, (int)amountToShow);
+
+                    // Get the Topic View Models
+                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
+
+                    // create the view model
+                    viewModel = new HotTopicsViewModel
+                    {
+                        Topics = topicViewModels
+                    };
+                    _cacheService.Set(cacheKey, viewModel, AppConstants.LongCacheTime);
+                }
+                else
+                {
+                    viewModel = (HotTopicsViewModel)cachedItem;
+                }                
 
                 return PartialView(viewModel);
             }

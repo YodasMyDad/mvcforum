@@ -13,7 +13,7 @@
         </div>
         @if (Html.Settings().EnablePolls == true)
         {
-            <div class="col-md-4 pollcreatebuttonholder">
+            <div class="col-md-4 pollcreatebuttonholder" @Html.Raw(Model.OptionalPermissions.CanCreatePolls ? "" : displayNone)>
                 <a href="#" class="btn-mvc btn-mvc-fullwidth createpollbutton">@Html.LanguageString("Poll.Button.Create")</a>
                 <a href="#" style="display: none;" class="btn-mvc btn-mvc-fullwidth removepollbutton">@Html.LanguageString("Poll.Button.Remove")</a>
             </div>

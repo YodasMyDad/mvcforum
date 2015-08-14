@@ -18,6 +18,7 @@
     <UseIISExpress>true</UseIISExpress>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
+    <!--<BuildPackage>true</BuildPackage>-->
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
@@ -55,48 +56,37 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\AjaxMin.4.48.4489.28432\lib\net20\AjaxMin.dll</HintPath>
     </Reference>
-    <Reference Include="Common.Logging">
-      <HintPath>..\packages\Common.Logging.3.0.0\lib\net40\Common.Logging.dll</HintPath>
+    <Reference Include="Common.Logging, Version=3.2.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.3.2.0\lib\net40\Common.Logging.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Common.Logging.Core">
-      <HintPath>..\packages\Common.Logging.Core.3.0.0\lib\net40\Common.Logging.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="DataAnnotationsExtensions, Version=1.1.0.0, Culture=neutral, PublicKeyToken=358a5681c50fd84c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DataAnnotationsExtensions.1.1.0.0\lib\NETFramework40\DataAnnotationsExtensions.dll</HintPath>
-    </Reference>
-    <Reference Include="DataAnnotationsExtensions.ClientValidation, Version=1.1.0.0, Culture=neutral, PublicKeyToken=358a5681c50fd84c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\DataAnnotationsExtensions.MVC3.1.1.0.0\lib\NETFramework40\DataAnnotationsExtensions.ClientValidation.dll</HintPath>
+    <Reference Include="Common.Logging.Core, Version=3.2.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.Core.3.2.0\lib\net40\Common.Logging.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="EcmaScript.NET, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\YUICompressor.NET.2.0.0.0\lib\NET20\EcmaScript.NET.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\YUICompressor.NET.2.0.0.0\lib\NET20\Iesi.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="ImageProcessor">
-      <HintPath>..\packages\ImageProcessor.2.1.0.0\lib\net45\ImageProcessor.dll</HintPath>
+    <Reference Include="ImageProcessor, Version=2.2.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ImageProcessor.2.2.8.0\lib\net45\ImageProcessor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ImageProcessor.Web, Version=4.1.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\ImageProcessor.Web.4.1.5.0\lib\net45\ImageProcessor.Web.dll</HintPath>
-    </Reference>
-    <Reference Include="LowercaseRoutesMVC, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\LowercaseRoutesMVC.1.0.3\lib\LowercaseRoutesMVC.dll</HintPath>
+    <Reference Include="ImageProcessor.Web, Version=4.3.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ImageProcessor.Web.4.3.6.0\lib\net45\ImageProcessor.Web.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.ServiceLocation">
@@ -119,26 +109,27 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.7\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Quartz">
-      <HintPath>..\packages\Quartz.2.3.1\lib\net40\Quartz.dll</HintPath>
+    <Reference Include="Quartz, Version=2.3.3.0, Culture=neutral, PublicKeyToken=f6b8c98a402cc8a4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Quartz.2.3.3\lib\net40\Quartz.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Quartz.Unity.45">
       <HintPath>..\packages\Quartz.Unity.1.3.1\lib\net45\Quartz.Unity.45.dll</HintPath>
     </Reference>
-    <Reference Include="Skybrud.Social, Version=0.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Skybrud.Social.0.9.0-alpha1\lib\Skybrud.Social.dll</HintPath>
+    <Reference Include="Skybrud.Social, Version=0.9.4.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skybrud.Social.0.9.4.1\lib\net40\Skybrud.Social.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="SquishIt.Framework, Version=0.9.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SquishIt.0.9.7\lib\SquishIt.Framework.dll</HintPath>
+    <Reference Include="SquishIt.Framework, Version=0.9.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SquishIt.0.9.8\lib\SquishIt.Framework.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="SquishIt.Mvc">
-      <HintPath>..\packages\SquishIt.Mvc.0.9.6.1\lib\SquishIt.Mvc.dll</HintPath>
+    <Reference Include="SquishIt.Mvc, Version=0.9.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SquishIt.Mvc.0.9.8\lib\SquishIt.Mvc.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
@@ -218,23 +209,25 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Akismet.NET\Comment.cs" />
-    <Compile Include="Akismet.NET\IValidator.cs" />
-    <Compile Include="Akismet.NET\Validator.cs" />
+    <Compile Include="Application\Akismet\Comment.cs" />
+    <Compile Include="Application\Akismet\IValidator.cs" />
+    <Compile Include="Application\Akismet\Validator.cs" />
+    <Compile Include="Application\ActionFilterAttributes\NoSlash.cs" />
     <Compile Include="Application\AppHelpers.cs" />
     <Compile Include="Application\DatesUI.cs" />
     <Compile Include="Application\ExtensionMethods\HtmlLabelExtensions.cs" />
     <Compile Include="Application\ForumMVCResourceDisplayName.cs" />
-    <Compile Include="Application\GoogleSitemapResult.cs" />
+    <Compile Include="Application\CustomActionResults\GoogleSitemapResult.cs" />
     <Compile Include="Application\MemoryFile.cs" />
     <Compile Include="Application\MobileExtensions.cs" />
-    <Compile Include="Application\RssResult.cs" />
-    <Compile Include="Application\CsvFileResult.cs" />
-    <Compile Include="Application\Extensions.cs" />
-    <Compile Include="Application\ForumViewEngine.cs" />
+    <Compile Include="Application\RouteHandlers\SlugRouteHandler.cs" />
+    <Compile Include="Application\CustomActionResults\RssResult.cs" />
+    <Compile Include="Application\CustomActionResults\CsvFileResult.cs" />
+    <Compile Include="Application\ExtensionMethods\Extensions.cs" />
+    <Compile Include="Application\ViewEngine\ForumViewEngine.cs" />
     <Compile Include="Application\Localization\Localizer.cs" />
     <Compile Include="Application\ServiceFactory.cs" />
-    <Compile Include="Application\WrappedJSonResult.cs" />
+    <Compile Include="Application\CustomActionResults\WrappedJSonResult.cs" />
     <Compile Include="Application\SiteConstants.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
@@ -271,6 +264,7 @@
     <Compile Include="Controllers\ClosedController.cs" />
     <Compile Include="Controllers\EmailController.cs" />
     <Compile Include="Controllers\FavouriteController.cs" />
+    <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\InstallController.cs" />
     <Compile Include="Controllers\OAuthControllers\FacebookOAuthController.cs" />
     <Compile Include="Controllers\OAuthControllers\GoogleOAuthController.cs" />
@@ -293,14 +287,14 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Membership\MembershipProvider.cs" />
-    <Compile Include="Membership\RoleProvider.cs" />
+    <Compile Include="Application\Providers\MembershipProvider.cs" />
+    <Compile Include="Application\Providers\RoleProvider.cs" />
     <Compile Include="Areas\Admin\ViewModels\AccountViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Areas\Admin\ViewModels\ModerateViewModels.cs" />
-    <Compile Include="ScheduledJobs\KepAliveJob.cs" />
-    <Compile Include="ScheduledJobs\ScheduledRunner.cs" />
-    <Compile Include="ScheduledJobs\EmailJob.cs" />
+    <Compile Include="Application\ScheduledJobs\KepAliveJob.cs" />
+    <Compile Include="Application\ScheduledJobs\ScheduledRunner.cs" />
+    <Compile Include="Application\ScheduledJobs\EmailJob.cs" />
     <Compile Include="ViewModels\FavouriteViewModels.cs" />
     <Compile Include="ViewModels\OAuth\FacebookOAuthData.cs" />
     <Compile Include="ViewModels\OAuth\GoogleOAuthData.cs" />
@@ -311,7 +305,7 @@
     <Compile Include="ViewModels\HomeViewModels.cs" />
     <Compile Include="ViewModels\InstallViewModels.cs" />
     <Compile Include="ViewModels\LanguageViewModels.cs" />
-    <Compile Include="Application\AkismetHelper.cs" />
+    <Compile Include="Application\Akismet\AkismetHelper.cs" />
     <Compile Include="ViewModels\Mapping\ViewModelMapping.cs" />
     <Compile Include="ViewModels\MemberViewModels.cs" />
     <Compile Include="ViewModels\PointViewModels.cs" />
@@ -326,6 +320,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\Hello.txt" />
+    <Content Include="App_Data\NuGetBackup\Hello.txt" />
     <Content Include="Content\admin\Admin.css" />
     <Content Include="Content\admin\Images\apple-touch-icon-57-precomposed.png" />
     <Content Include="Content\admin\Images\favicon.ico" />
@@ -706,6 +701,8 @@
     <Content Include="Installer\Db\1.2\database.sql" />
     <Content Include="Installer\Db\1.2\Upgrade\upgrade.sql" />
     <Content Include="Installer\Db\1.3\database.sql" />
+    <Content Include="Installer\Db\1.7\database.sql" />
+    <Content Include="Installer\Db\1.7\Upgrade\upgrade.sql" />
     <Content Include="Installer\Db\1.6\database.sql" />
     <Content Include="Installer\Db\1.6\Upgrade\upgrade.sql" />
     <Content Include="Installer\Db\1.5\database.sql" />
@@ -766,8 +763,6 @@
     <Content Include="Areas\Admin\Views\Moderate\GetMorePosts.cshtml" />
     <Content Include="Scripts\bbeditor\themes\monocons\monocons.eot" />
     <Content Include="Scripts\bbeditor\themes\monocons\monocons.ttf" />
-    <Content Include="Content\languagepacks\de-DE.csv" />
-    <Content Include="Content\languagepacks\fa-IR.csv" />
     <Content Include="Content\bootstrap\css\bootstrap-theme.css.map" />
     <Content Include="Content\bootstrap\css\bootstrap.css.map" />
     <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.eot" />
@@ -789,6 +784,9 @@
     <Content Include="Areas\Admin\Views\AdminCategory\_CategoryNavButtons.cshtml" />
     <Content Include="Areas\Admin\Views\Permissions\PermissionTypes.cshtml" />
     <Content Include="Areas\Admin\Views\AdminLanguage\Create.cshtml" />
+    <None Include="job_scheduling_data_2_0.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\PublishProfiles\Local Deployment.pubxml" />
     <None Include="Scripts\jquery-1.11.1.intellisense.js" />
     <Content Include="Scripts\jquery-1.11.1.js" />
@@ -873,6 +871,8 @@
     <Content Include="Scripts\tinymce\plugins\fullscreen\plugin.min.js" />
     <Content Include="Scripts\tinymce\plugins\hr\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\hr\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\imagetools\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\imagetools\plugin.min.js" />
     <Content Include="Scripts\tinymce\plugins\image\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\image\plugin.min.js" />
     <Content Include="Scripts\tinymce\plugins\importcss\plugin.js" />
@@ -1070,16 +1070,6 @@
     <Content Include="Views\Shared\_Install.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_GenericMessage.cshtml" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.woff" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.ttf" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.json" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.eot" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.woff" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.ttf" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.json" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.eot" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\readme.md" />
-    <Content Include="Scripts\tinymce\langs\readme.md" />
     <Content Include="Views\Badge\AllBadges.cshtml" />
     <Content Include="Views\Category\Index.cshtml" />
     <Content Include="Views\Category\ListCategorySideMenu.cshtml" />
@@ -1148,8 +1138,21 @@
     <Content Include="Views\Shared\EditorTemplates\forumeditor.cshtml" />
     <Content Include="Views\Shared\customeditors\tinymceeditor.cshtml" />
     <Content Include="Views\Shared\_PrivateMessage.cshtml" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.woff" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.ttf" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.json" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.eot" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.woff" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.ttf" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.json" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.eot" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\readme.md" />
+    <Content Include="Scripts\tinymce\langs\readme.md" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Content\languagepacks\" />
+    <Folder Include="Views\File\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
       <SubType>Designer</SubType>

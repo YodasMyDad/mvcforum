@@ -14,15 +14,17 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
         private readonly ITopicTagService _topicTagService;
+        private readonly ICategoryService _categoryService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         const int AmountToShow = 7;
 
         public DashboardController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
             ILocalizationService localizationService, ISettingsService settingsService, IPostService postService, 
-            ITopicService topicService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService)
+            ITopicService topicService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService, ICategoryService categoryService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
             _membershipUserPointsService = membershipUserPointsService;
+            _categoryService = categoryService;
             _postService = postService;
             _topicService = topicService;
             _topicTagService = topicTagService;
@@ -31,11 +33,14 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         [HttpPost]
         public PartialViewResult TodaysTopics()
         {
+            // Get all cats as only admins can view this page
+            var allCats = _categoryService.GetAll().ToList();
+
             if (Request.IsAjaxRequest())
             {
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
-                    return PartialView(new TodaysTopics { Topics = _topicService.GetTodaysTopics(AmountToShow) });
+                    return PartialView(new TodaysTopics { Topics = _topicService.GetTodaysTopics(AmountToShow, allCats) });
                 }
             }
             return null;
@@ -85,9 +90,11 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             if (Request.IsAjaxRequest())
             {
+                // Get all cats as only admins can view this page
+                var allCats = _categoryService.GetAll().ToList();
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
-                    return PartialView(new HighestViewedTopics { Topics = _topicService.GetHighestViewedTopics(AmountToShow) });
+                    return PartialView(new HighestViewedTopics { Topics = _topicService.GetHighestViewedTopics(AmountToShow, allCats) });
                 }
             }
             return null;

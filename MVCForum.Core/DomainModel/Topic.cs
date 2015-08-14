@@ -32,6 +32,7 @@ namespace MVCForum.Domain.DomainModel
         public string NiceUrl
         {
             get { return UrlTypes.GenerateUrl(UrlType.Topic, Slug); }
+            //get { return Slug; }
         }
         public int VoteCount
         {

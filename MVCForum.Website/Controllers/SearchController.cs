@@ -20,9 +20,6 @@ namespace MVCForum.Website.Controllers
         private readonly IVoteService _voteService;
         private readonly IFavouriteService _favouriteService;
 
-        private MembershipUser LoggedOnUser;
-        private MembershipRole UsersRole;
-
         public SearchController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService, ILocalizationService localizationService,
             IRoleService roleService, ISettingsService settingsService,
@@ -34,9 +31,6 @@ namespace MVCForum.Website.Controllers
             _voteService = voteService;
             _favouriteService = favouriteService;
             _categoryService = categoryService;
-
-            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
-            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
         [HttpGet]

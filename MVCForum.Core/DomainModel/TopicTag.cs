@@ -19,12 +19,6 @@ namespace MVCForum.Domain.DomainModel
             get
             {
                 var url = UrlTypes.GenerateUrl(UrlType.Tag, StringUtils.RemoveAccents(Slug));
-                if (url.Contains(".") && !url.EndsWith("/"))
-                {
-                    // We do this for tags that have a full stop in the name
-                    // or you just get a 404 error
-                    url = string.Concat(url, "/");
-                }
                 return url;
             }
         }

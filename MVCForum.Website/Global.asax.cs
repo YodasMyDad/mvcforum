@@ -4,8 +4,6 @@ using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
-using DataAnnotationsExtensions.ClientValidation;
-using LowercaseRoutesMVC;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.Services;
@@ -13,6 +11,7 @@ using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.IOC;
 using MVCForum.Utilities;
 using MVCForum.Website.Application;
+using MVCForum.Website.Application.ViewEngine;
 using MVCForum.Website.ScheduledJobs;
 
 namespace MVCForum.Website
@@ -52,45 +51,48 @@ namespace MVCForum.Website
 
         public static void RegisterRoutes(RouteCollection routes)
         {
+            RouteTable.Routes.LowercaseUrls = true;
+            RouteTable.Routes.AppendTrailingSlash = true;
+
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
             routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
 
-            routes.MapRouteLowercase(
+            routes.MapRoute(
                 "categoryUrls", // Route name
                 string.Concat(AppConstants.CategoryUrlIdentifier, "/{slug}"), // URL with parameters
                 new { controller = "Category", action = "Show", slug = UrlParameter.Optional } // Parameter defaults
             );
 
-            routes.MapRouteLowercase(
+            routes.MapRoute(
                 "categoryRssUrls", // Route name
                 string.Concat(AppConstants.CategoryUrlIdentifier, "/rss/{slug}"), // URL with parameters
                 new { controller = "Category", action = "CategoryRss", slug = UrlParameter.Optional } // Parameter defaults
             );
 
-            routes.MapRouteLowercase(
+            routes.MapRoute(
                 "topicUrls", // Route name
                 string.Concat(AppConstants.TopicUrlIdentifier, "/{slug}"), // URL with parameters
                 new { controller = "Topic", action = "Show", slug = UrlParameter.Optional } // Parameter defaults
             );
 
-            routes.MapRouteLowercase(
+            routes.MapRoute(
                 "memberUrls", // Route name
                 string.Concat(AppConstants.MemberUrlIdentifier, "/{slug}"), // URL with parameters
                 new { controller = "Members", action = "GetByName", slug = UrlParameter.Optional } // Parameter defaults
             );
 
-            routes.MapRouteLowercase(
+            routes.MapRoute(
                 "tagUrls", // Route name
                 string.Concat(AppConstants.TagsUrlIdentifier, "/{tag}"), // URL with parameters
                 new { controller = "Topic", action = "TopicsByTag", tag = UrlParameter.Optional } // Parameter defaults
             );
 
-            routes.MapRouteLowercase(
+            routes.MapRoute(
                 "Default", // Route name
                 "{controller}/{action}/{id}", // URL with parameters
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
-
+            //.RouteHandler = new SlugRouteHandler()
         }
 
         protected void Application_Start()
@@ -107,7 +109,7 @@ namespace MVCForum.Website
             ScheduledRunner.Run(unityContainer);
 
             // Register Data annotations
-            DataAnnotationsModelValidatorProviderExtensions.RegisterValidationExtensions();  
+            //DataAnnotationsModelValidatorProviderExtensions.RegisterValidationExtensions();  
 
             // Store the value for use in the app
             Application["Version"] = AppHelpers.GetCurrentVersionNo();
@@ -117,28 +119,20 @@ namespace MVCForum.Website
             LoggingService.Error("START APP");
 
             // Set default theme
-            var defaultTheme = "Metro";
+            var defaultTheme = SettingsService.GetSettings().Theme;
 
-            // Only load these IF the versions are the same
-            if (AppHelpers.SameVersionNumbers())
+            // Do the badge processing
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-                // Get the theme from the database.
-                defaultTheme = SettingsService.GetSettings().Theme;
-
-                // Do the badge processing
-                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                try
                 {
-                    try
-                    {
-                        BadgeService.SyncBadges();
-                        unitOfWork.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        LoggingService.Error(string.Format("Error processing badge classes: {0}", ex.Message));
-                    }
+                    BadgeService.SyncBadges();
+                    unitOfWork.Commit();
                 }
-
+                catch (Exception ex)
+                {
+                    LoggingService.Error(string.Format("Error processing badge classes: {0}", ex.Message));
+                }
             }
 
             // Set the view engine
@@ -149,35 +143,25 @@ namespace MVCForum.Website
             EventManager.Instance.Initialize(LoggingService);
         }
 
-        protected void Application_BeginRequest(object sender, EventArgs e)
-        {
-            if (!AppHelpers.IsStaticResource(this.Request) && !AppHelpers.SameVersionNumbers() && !AppHelpers.InInstaller())
-            {
-                Response.Redirect(string.Concat("~", AppConstants.InstallerUrl));
-            }
-        }
+        //protected void Application_BeginRequest(object sender, EventArgs e)
+        //{
+        //    if (!AppHelpers.IsStaticResource(this.Request) && !AppHelpers.SameVersionNumbers() && !AppHelpers.InInstaller())
+        //    {
+        //        Response.Redirect(string.Concat("~", AppConstants.InstallerUrl));
+        //    }
+        //}
 
         protected void Application_AcquireRequestState(object sender, EventArgs e)
         {
-
             //It's important to check whether session object is ready
-            if (!AppHelpers.InInstaller())
+            if (HttpContext.Current.Session != null)
             {
-                if (HttpContext.Current.Session != null)
-                {
-                    // Set the culture per request
-                    var ci = new CultureInfo(LocalizationService.CurrentLanguage.LanguageCulture);
-                    Thread.CurrentThread.CurrentUICulture = ci;
-                    Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(ci.Name);
-                }
+                // Set the culture per request
+                var ci = new CultureInfo(LocalizationService.CurrentLanguage.LanguageCulture);
+                Thread.CurrentThread.CurrentUICulture = ci;
+                Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(ci.Name);
             }
-
         }
-
-        //protected void Application_EndRequest(object sender, EventArgs e)
-        //{
-
-        //}
 
         protected void Application_Error(object sender, EventArgs e)
         {

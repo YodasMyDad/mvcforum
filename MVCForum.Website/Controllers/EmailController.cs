@@ -15,8 +15,6 @@ namespace MVCForum.Website.Controllers
         private readonly ICategoryService _categoryService;
         private readonly ITopicService _topicService;
 
-        private MembershipUser LoggedOnUser;
-
         public EmailController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
             ITopicNotificationService topicNotificationService, ICategoryNotificationService categoryNotificationService, ICategoryService categoryService,
@@ -27,8 +25,6 @@ namespace MVCForum.Website.Controllers
             _categoryNotificationService = categoryNotificationService;
             _categoryService = categoryService;
             _topicService = topicService;
-
-            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
         }
 
         [HttpPost]
@@ -144,7 +140,7 @@ namespace MVCForum.Website.Controllers
                             if (topic != null)
                             {
                                 // get the notifications by user
-                                var notifications = _topicNotificationService.GetByUserAndTopic(LoggedOnUser, topic);
+                                var notifications = _topicNotificationService.GetByUserAndTopic(LoggedOnUser, topic, true);
 
                                 if (notifications.Any())
                                 {

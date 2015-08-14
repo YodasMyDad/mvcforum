@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using HtmlAgilityPack;
+using Microsoft.Security.Application;
 
 namespace MVCForum.Utilities
 {
@@ -132,6 +133,46 @@ namespace MVCForum.Utilities
         #endregion
 
         #region Misc
+
+        /// <summary>
+        /// Create a salt for the password hash (just makes it a bit more complex)
+        /// </summary>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public static string CreateSalt(int size)
+        {
+            // Generate a cryptographic random number.
+            var rng = new RNGCryptoServiceProvider();
+            var buff = new byte[size];
+            rng.GetBytes(buff);
+
+            // Return a Base64 string representation of the random number.
+            return Convert.ToBase64String(buff);
+        }
+
+        /// <summary>
+        /// Generate a hash for a password, adding a salt value
+        /// </summary>
+        /// <param name="plainText"></param>
+        /// <param name="salt"></param>
+        /// <returns></returns>
+        public static string GenerateSaltedHash(string plainText, string salt)
+        {
+            // http://stackoverflow.com/questions/2138429/hash-and-salt-passwords-in-c-sharp
+
+            var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+            var saltBytes = Encoding.UTF8.GetBytes(salt);
+
+            // Combine the two lists
+            var plainTextWithSaltBytes = new List<byte>(plainTextBytes.Length + saltBytes.Length);
+            plainTextWithSaltBytes.AddRange(plainTextBytes);
+            plainTextWithSaltBytes.AddRange(saltBytes);
+
+            // Produce 256-bit hashed value i.e. 32 bytes
+            HashAlgorithm algorithm = new SHA256Managed();
+            var byteHash = algorithm.ComputeHash(plainTextWithSaltBytes.ToArray());
+            return Convert.ToBase64String(byteHash);
+        }
 
         public static string PostForm(string url, string poststring)
         {
@@ -507,18 +548,19 @@ namespace MVCForum.Utilities
                 return serverName;
             }
             var ipList = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-            return !string.IsNullOrEmpty(ipList) ? ipList.Split(',')[0] : HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
+            return !string.IsNullOrEmpty(ipList) ? ipList.Split(',')[0] : context.Request.ServerVariables["REMOTE_ADDR"];
         }
 
         /// <summary>
         /// Used to pass all string input in the system  - Strips all nasties from a string/html
         /// </summary>
         /// <param name="html"></param>
+        /// <param name="useXssSantiser"></param>
         /// <returns></returns>
-        public static string GetSafeHtml(string html)
+        public static string GetSafeHtml(string html, bool useXssSantiser = false)
         {
             // Scrub html
-            html = ScrubHtml(html);
+            html = ScrubHtml(html, useXssSantiser);
 
             // remove unwanted html
             html = RemoveUnwantedTags(html);
@@ -531,12 +573,20 @@ namespace MVCForum.Utilities
         /// Takes in HTML and returns santized Html/string
         /// </summary>
         /// <param name="html"></param>
+        /// <param name="useXssSantiser"></param>
         /// <returns></returns>
-        public static string ScrubHtml(string html)
+        public static string ScrubHtml(string html, bool useXssSantiser = false)
         {
             if (string.IsNullOrEmpty(html))
             {
                 return html;
+            }
+
+            // The reason we have this option, is using the santiser with the MarkDown editor 
+            // causes problems with line breaks.
+            if (useXssSantiser)
+            {
+                return Sanitizer.GetSafeHtmlFragment(html);
             }
 
             var doc = new HtmlDocument();
@@ -615,8 +665,8 @@ namespace MVCForum.Utilities
 
             var unwantedTagNames = new List<string>
             {
-                "span",
-                "div"
+                "div",
+                "font"
             };
 
             var htmlDoc = new HtmlDocument();
@@ -724,7 +774,7 @@ namespace MVCForum.Utilities
             if (!string.IsNullOrEmpty(input))
             {
                 input = StripHtmlFromString(input);
-                input = GetSafeHtml(input);
+                input = GetSafeHtml(input, true);
             }
             return input;
         }
@@ -773,58 +823,78 @@ namespace MVCForum.Utilities
             request.Proxy = null;
             return (HttpWebResponse)request.GetResponse();
         }
-        /// <summary>
-        /// Creates a URL freindly string, good for SEO
-        /// </summary>
-        /// <param name="strInput"></param>
-        /// <param name="replaceWith"></param>
-        /// <returns></returns>
+
         public static string CreateUrl(string strInput, string replaceWith)
         {
-            // Doing this to stop the urls getting encoded
-            var url = RemoveAccents(strInput);
-            return StripNonAlphaNumeric(url, replaceWith).ToLower();
+            var str = RemoveAccents(strInput).ToLower();
+            // invalid chars           
+            str = Regex.Replace(str, @"[^a-z0-9\s-]", "");
+            // convert multiple spaces into one space   
+            str = Regex.Replace(str, @"\s+", " ").Trim();
+            // cut and trim 
+            str = str.Substring(0, str.Length <= 50 ? str.Length : 50).Trim();
+            str = Regex.Replace(str, @"\s", replaceWith); // hyphens or whatever
+            return str;
         }
 
-        public static string RemoveAccents(string input)
+        public static string RemoveAccents(string text)
         {
-            // Replace accented characters for the closest ones:
-            //var from = "ÂÃÄÀÁÅÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïðñòóôõöøùúûüýÿ".ToCharArray();
-            //var to = "AAAAAACEEEEIIIIDNOOOOOOUUUUYaaaaaaceeeeiiiidnoooooouuuuyy".ToCharArray();
-            //for (var i = 0; i < from.Length; i++)
-            //{
-            //    input = input.Replace(from[i], to[i]);
-            //}
-
-            //// Thorn http://en.wikipedia.org/wiki/%C3%9E
-            //input = input.Replace("Þ", "TH");
-            //input = input.Replace("þ", "th");
-
-            //// Eszett http://en.wikipedia.org/wiki/%C3%9F
-            //input = input.Replace("ß", "ss");
-
-            //// AE http://en.wikipedia.org/wiki/%C3%86
-            //input = input.Replace("Æ", "AE");
-            //input = input.Replace("æ", "ae");
-
-            //return input;
-
-
-            var stFormD = input.Normalize(NormalizationForm.FormD);
-            var sb = new StringBuilder();
-
-            foreach (var t in stFormD)
-            {
-                var uc = CharUnicodeInfo.GetUnicodeCategory(t);
-                if (uc != UnicodeCategory.NonSpacingMark)
-                {
-                    sb.Append(t);
-                }
-            }
-
-            return (sb.ToString().Normalize(NormalizationForm.FormC));
-
+            var bytes = Encoding.GetEncoding("Cyrillic").GetBytes(text);
+            return Encoding.ASCII.GetString(bytes);
         }
+
+        ///// <summary>
+        ///// Creates a URL freindly string, good for SEO
+        ///// </summary>
+        ///// <param name="strInput"></param>
+        ///// <param name="replaceWith"></param>
+        ///// <returns></returns>
+        //public static string CreateUrl(string strInput, string replaceWith)
+        //{
+        //    // Doing this to stop the urls getting encoded
+        //    var url = RemoveAccents(strInput);
+        //    return StripNonAlphaNumeric(url, replaceWith).ToLower();
+        //}
+
+        //public static string RemoveAccents(string input)
+        //{
+        //    // Replace accented characters for the closest ones:
+        //    //var from = "ÂÃÄÀÁÅÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïðñòóôõöøùúûüýÿ".ToCharArray();
+        //    //var to = "AAAAAACEEEEIIIIDNOOOOOOUUUUYaaaaaaceeeeiiiidnoooooouuuuyy".ToCharArray();
+        //    //for (var i = 0; i < from.Length; i++)
+        //    //{
+        //    //    input = input.Replace(from[i], to[i]);
+        //    //}
+
+        //    //// Thorn http://en.wikipedia.org/wiki/%C3%9E
+        //    //input = input.Replace("Þ", "TH");
+        //    //input = input.Replace("þ", "th");
+
+        //    //// Eszett http://en.wikipedia.org/wiki/%C3%9F
+        //    //input = input.Replace("ß", "ss");
+
+        //    //// AE http://en.wikipedia.org/wiki/%C3%86
+        //    //input = input.Replace("Æ", "AE");
+        //    //input = input.Replace("æ", "ae");
+
+        //    //return input;
+
+
+        //    var stFormD = input.Normalize(NormalizationForm.FormD);
+        //    var sb = new StringBuilder();
+
+        //    foreach (var t in stFormD)
+        //    {
+        //        var uc = CharUnicodeInfo.GetUnicodeCategory(t);
+        //        if (uc != UnicodeCategory.NonSpacingMark)
+        //        {
+        //            sb.Append(t);
+        //        }
+        //    }
+
+        //    return (sb.ToString().Normalize(NormalizationForm.FormC));
+
+        //}
 
         #endregion
 

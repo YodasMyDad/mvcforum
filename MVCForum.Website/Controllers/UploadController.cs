@@ -20,9 +20,6 @@ namespace MVCForum.Website.Controllers
         private readonly IPostService _postService;
         private readonly IUploadedFileService _uploadedFileService;
 
-        private readonly MembershipUser LoggedOnUser;
-        private readonly MembershipRole UsersRole;
-
         public UploadController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
             IPostService postService, IUploadedFileService uploadedFileService)
@@ -30,9 +27,6 @@ namespace MVCForum.Website.Controllers
         {
             _postService = postService;
             _uploadedFileService = uploadedFileService;
-
-            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
-            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
         [HttpPost]

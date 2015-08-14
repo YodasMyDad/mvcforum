@@ -334,7 +334,7 @@ namespace MVCForum.Website.Controllers
                             PostsPerPage = 20,
                             EnablePrivateMessages = true,
                             MaxPrivateMessagesPerMember = 50,
-                            PrivateMessageFloodControl = 1,
+                            PrivateMessageFloodControl = 30,
                             EnableSignatures = false,
                             EnablePoints = true,
                             PointsAllowedToVoteAmount = 1,

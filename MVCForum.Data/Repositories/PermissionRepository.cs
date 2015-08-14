@@ -21,6 +21,7 @@ namespace MVCForum.Data.Repositories
         public IEnumerable<Permission> GetAll()
         {
             return _context.Permission
+                .AsNoTracking()
                 .OrderBy(x => x.Name)
                 .ToList();
         }
@@ -38,16 +39,6 @@ namespace MVCForum.Data.Repositories
         public void Delete(Permission item)
         {
             _context.Permission.Remove(item);
-        }
-
-        public void Update(Permission item)
-        {
-            // Check there's not an object with same identifier already in context
-            if (_context.Permission.Local.Select(x => x.Id == item.Id).Any())
-            {
-                throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
-            }
-            _context.Entry(item).State = EntityState.Modified;  
         }
     }
 }

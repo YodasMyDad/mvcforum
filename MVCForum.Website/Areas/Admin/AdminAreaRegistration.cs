@@ -1,5 +1,5 @@
 ﻿using System.Web.Mvc;
-using LowercaseRoutesMVC;
+using System.Web.Routing;
 
 namespace MVCForum.Website.Areas.Admin
 {
@@ -15,22 +15,25 @@ namespace MVCForum.Website.Areas.Admin
 
         public override void RegisterArea(AreaRegistrationContext context)
         {
-            context.MapRouteLowercase(
-                "Admin_editcategoryroute",
-                "Admin/{controller}/{action}/{id}",
-                new { controller = "AdminCategory", action = "Index", id = UrlParameter.Optional }
-            );
-            context.MapRouteLowercase(
-                "Admin_edituserroute",
-                "Admin/{controller}/{action}/{userId}",
-                new { controller = "Admin", action = "Index", userId = UrlParameter.Optional }
-            );
-            context.MapRouteLowercase(
-                "Admin_pagingroute",
-                "Admin/{controller}/{action}/{page}",
-                new { controller = "Account", action = "Index", page = UrlParameter.Optional }
-            );
-            context.MapRouteLowercase(
+            RouteTable.Routes.LowercaseUrls = true;
+            RouteTable.Routes.AppendTrailingSlash = true;
+
+            //context.MapRoute(
+            //    "Admin_editcategoryroute",
+            //    "Admin/{controller}/{action}/{id}",
+            //    new { controller = "AdminCategory", action = "Index", id = UrlParameter.Optional }
+            //);
+            //context.MapRoute(
+            //    "Admin_edituserroute",
+            //    "Admin/{controller}/{action}/{userId}",
+            //    new { controller = "Admin", action = "Index", userId = UrlParameter.Optional }
+            //);
+            //context.MapRoute(
+            //    "Admin_pagingroute",
+            //    "Admin/{controller}/{action}/{page}",
+            //    new { controller = "Account", action = "Index", page = UrlParameter.Optional }
+            //);
+            context.MapRoute(
                 "Admin_defaultroute",
                 "Admin/{controller}/{action}/{id}",
                 new { controller = "Admin", action = "Index", id = UrlParameter.Optional }

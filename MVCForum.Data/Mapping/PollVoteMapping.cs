@@ -8,8 +8,7 @@ namespace MVCForum.Data.Mapping
         public PollVoteMapping()
         {
             HasKey(x => x.Id);
-            HasRequired(x => x.User).WithMany(t => t.PollVotes).Map(m => m.MapKey("MembershipUser_Id"));
-            HasRequired(x => x.PollAnswer).WithMany(t => t.PollVotes).Map(m => m.MapKey("PollAnswer_Id"));
+            Property(x => x.Id).IsRequired();
         }
     }
 }

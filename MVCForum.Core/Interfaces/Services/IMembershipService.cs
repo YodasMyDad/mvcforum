@@ -21,7 +21,7 @@ namespace MVCForum.Domain.Interfaces.Services
         bool ValidateUser(string userName, string password, int maxInvalidPasswordAttempts);
         LoginAttemptStatus LastLoginStatus { get; }
         string[] GetRolesForUser(string username);
-        MembershipUser GetUser(string username);
+        MembershipUser GetUser(string username, bool removeTracking = false);
         MembershipUser GetUserByEmail(string email);
         MembershipUser GetUserBySlug(string slug);
         MembershipUser GetUserByFacebookId(long facebookId);
@@ -42,7 +42,6 @@ namespace MVCForum.Domain.Interfaces.Services
         PagedList<MembershipUser> SearchMembers(string search, int pageIndex, int pageSize);
         IList<MembershipUser> SearchMembers(string username, int amount);
         IList<MembershipUser> GetActiveMembers();
-        void Save(MembershipUser user);
         void ProfileUpdated(MembershipUser user);
         bool Delete(MembershipUser user, IUnitOfWork unitOfWork);
         IList<MembershipUser> GetLatestUsers(int amountToTake);

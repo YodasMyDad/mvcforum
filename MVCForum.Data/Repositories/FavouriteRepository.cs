@@ -68,6 +68,7 @@ namespace MVCForum.Data.Repositories
                             .Include(x => x.Post)
                             .Include(x => x.Topic.Category)
                             .Include(x => x.Member)
+                            .AsNoTracking()
                             .Where(x => x.Topic.Id == topicId).ToList();
         }
     }

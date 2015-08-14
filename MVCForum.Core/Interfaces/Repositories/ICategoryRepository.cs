@@ -18,6 +18,5 @@ namespace MVCForum.Domain.Interfaces.Repositories
         void Delete(Category category);
         Category Get(Guid id);
         IList<Category> Get(IList<Guid> ids);
-        void Update(Category item);
     }
 }

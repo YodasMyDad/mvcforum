@@ -19,8 +19,6 @@ namespace MVCForum.Website.Controllers
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly IBadgeService _badgeService;
 
-        private MembershipUser LoggedOnUser;
-
         public VoteController(ILoggingService loggingService,
             IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService,
@@ -39,8 +37,6 @@ namespace MVCForum.Website.Controllers
             _topicService = topicService;
             _membershipUserPointsService = membershipUserPointsService;
             _badgeService = badgeService;
-
-            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
         }
 
         [HttpPost]

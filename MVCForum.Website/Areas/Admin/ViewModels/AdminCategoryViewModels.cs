@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web;
 using System.Web.Mvc;
-using DataAnnotationsExtensions;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Website.Application;
@@ -45,7 +44,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public bool ModeratePosts { get; set; }
 
         [DisplayName("Sort Order")]
-        [Numeric]
+        [Range(0, int.MaxValue)]
         public int SortOrder { get; set; }
 
         [DisplayName("Parent Category")]
@@ -70,9 +69,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
     {
         [HiddenInput]
         public Guid Id { get; set; }
-
         public Category Category { get; set; }
-
         public List<Category> SubCategories { get; set; }
     }
 }

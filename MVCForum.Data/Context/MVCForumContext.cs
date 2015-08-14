@@ -1,6 +1,10 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration;
 using System.Data.Entity.ModelConfiguration.Conventions;
-using MVCForum.Data.Mapping;
+using System.Data.Entity.Validation;
+using System.Linq;
+using System.Reflection;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Activity;
 using MVCForum.Domain.Interfaces;
@@ -9,7 +13,6 @@ namespace MVCForum.Data.Context
 {
     public class MVCForumContext : DbContext, IMVCForumContext
     {
-        // http://blogs.msdn.com/b/adonet/archive/2010/12/06/ef-feature-ctp5-fluent-api-samples.aspx
         public DbSet<Activity> Activity { get; set; }
         public DbSet<Badge> Badge { get; set; }
         public DbSet<BadgeTypeTimeLastChecked> BadgeTypeTimeLastChecked { get; set; }
@@ -48,46 +51,45 @@ namespace MVCForum.Data.Context
             Configuration.LazyLoadingEnabled = true;
         }
 
+        public override int SaveChanges()
+        {
+            try
+            {
+                return base.SaveChanges();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                // Retrieve the error messages as a list of strings.
+                var errorMessages = ex.EntityValidationErrors
+                        .SelectMany(x => x.ValidationErrors)
+                        .Select(x => x.ErrorMessage);
+
+                // Join the list to a single string.
+                var fullErrorMessage = string.Join("; ", errorMessages);
+
+                // Combine the original exception message with the new one.
+                var exceptionMessage = string.Concat(ex.Message, " The validation errors are: ", fullErrorMessage);
+
+                // Throw a new DbEntityValidationException with the improved exception message.
+                throw new DbEntityValidationException(exceptionMessage, ex.EntityValidationErrors);
+            }
+        }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             // http://stackoverflow.com/questions/7924758/entity-framework-creates-a-plural-table-name-but-the-view-expects-a-singular-ta
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 
-            // Mappings
-            modelBuilder.Configurations.Add(new BadgeMapping());
-            modelBuilder.Configurations.Add(new BadgeTypeTimeLastCheckedMapping());
-            modelBuilder.Configurations.Add(new CategoryMapping());
-            modelBuilder.Configurations.Add(new CategoryNotificationMapping());
-            modelBuilder.Configurations.Add(new CategoryPermissionForRoleMapping());
-            modelBuilder.Configurations.Add(new LanguageMapping());
-            modelBuilder.Configurations.Add(new LocaleResourceKeyMapping());
-            modelBuilder.Configurations.Add(new LocaleStringResourceMapping());
-            modelBuilder.Configurations.Add(new MembershipRoleMapping());
-            modelBuilder.Configurations.Add(new MembershipUserMapping());
-            modelBuilder.Configurations.Add(new MembershipUserPointsMapping());
-            modelBuilder.Configurations.Add(new PermissionMapping());
-            modelBuilder.Configurations.Add(new PollAnswerMapping());
-            modelBuilder.Configurations.Add(new PollMapping());
-            modelBuilder.Configurations.Add(new PollVoteMapping());
-            modelBuilder.Configurations.Add(new PostMapping());         
-            modelBuilder.Configurations.Add(new PrivateMessageMapping());         
-            modelBuilder.Configurations.Add(new SettingsMapping());         
-            modelBuilder.Configurations.Add(new TopicMapping());         
-            modelBuilder.Configurations.Add(new TopicNotificationMapping());         
-            modelBuilder.Configurations.Add(new TopicTagMapping());
-            modelBuilder.Configurations.Add(new VoteMapping());
-            modelBuilder.Configurations.Add(new BannedEmailMapping());
-            modelBuilder.Configurations.Add(new BannedWordMapping());
-            modelBuilder.Configurations.Add(new UploadedFileMapping());
-            modelBuilder.Configurations.Add(new FavouriteMapping());
-            modelBuilder.Configurations.Add(new GlobalPermissionForRoleMapping());
-            modelBuilder.Configurations.Add(new EmailMapping());
-
-            base.OnModelCreating(modelBuilder);
-        }
-
-        public new void Dispose()
-        {
+            var typesToRegister = Assembly.GetExecutingAssembly().GetTypes()
+                                    .Where(type => !String.IsNullOrEmpty(type.Namespace))
+                                    .Where(type => type.BaseType != null && type.BaseType.IsGenericType
+                                    && type.BaseType.GetGenericTypeDefinition() == typeof(EntityTypeConfiguration<>));
+            foreach (var type in typesToRegister)
+            {
+                dynamic configurationInstance = Activator.CreateInstance(type);
+                modelBuilder.Configurations.Add(configurationInstance);
+            }
+            base.OnModelCreating(modelBuilder);  
 
         }
     }
