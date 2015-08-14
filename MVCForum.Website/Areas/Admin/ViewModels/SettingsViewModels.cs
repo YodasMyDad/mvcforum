@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using MVCForum.Domain.DomainModel;
-using DataAnnotationsExtensions;
 
 namespace MVCForum.Website.Areas.Admin.ViewModels
 {
@@ -100,11 +99,11 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Points Added For A Solution")]
         public int PointsAddedForSolution { get; set; }
 
-        [Email]
+        [EmailAddress]
         [DisplayName("Admin Email Address")]
         public string AdminEmailAddress { get; set; }
 
-        [Email]
+        [EmailAddress]
         [DisplayName("Notification Reply Email Address")]
         public string NotificationReplyEmail { get; set; }
 

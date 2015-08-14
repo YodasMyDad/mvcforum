@@ -4,7 +4,6 @@ using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
-using DataAnnotationsExtensions.ClientValidation;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.Services;
@@ -110,7 +109,7 @@ namespace MVCForum.Website
             ScheduledRunner.Run(unityContainer);
 
             // Register Data annotations
-            DataAnnotationsModelValidatorProviderExtensions.RegisterValidationExtensions();  
+            //DataAnnotationsModelValidatorProviderExtensions.RegisterValidationExtensions();  
 
             // Store the value for use in the app
             Application["Version"] = AppHelpers.GetCurrentVersionNo();
