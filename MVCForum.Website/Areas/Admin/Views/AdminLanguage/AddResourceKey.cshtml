@@ -4,15 +4,6 @@
     ViewBag.Title = "Add Resource Key";
 }
 
-@section AdminHeader
-{
-    @(
- Bundle.JavaScript()
-            .Add("~/Scripts/jquery.validate.min.js")
-            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
-            .MvcRender("~/scripts/cache/validate-combined_#.js")
-    )
-}
 @Html.Partial("_LanguageOptions")
 
 @using (Html.BeginForm("AddResourceKey", "AdminLanguage", FormMethod.Post))

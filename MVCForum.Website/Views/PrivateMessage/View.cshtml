@@ -4,17 +4,6 @@
     ViewBag.Title = string.Concat(Html.LanguageString("PM.Title"), Model.From.UserName);
 }
 
-@section Header
-{
-    @(
- Bundle.JavaScript()
-            .Add("~/Scripts/jquery.validate.min.js")
-            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
-
-            .MvcRender("~/scripts/cache/validate-combined_#.js")
-    )
-}
-
 <div class="pmview">
     <div class="row">
 

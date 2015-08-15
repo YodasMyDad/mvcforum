@@ -4,15 +4,6 @@
 @{
     ViewBag.Title = "Add Permission Type";
 }
-@section AdminHeader
-{
-        @(
-        Bundle.JavaScript()
-            .Add("~/Scripts/jquery.validate.min.js")
-            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")            
-            .MvcRender("~/scripts/cache/validate-combined_#.js")
-    )  
-}
 
 <p><a href="@Url.Action("PermissionTypes")" class="btn-mvc">&lt;&lt; Back</a></p>
 

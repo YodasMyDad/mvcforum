@@ -5,17 +5,6 @@
     ViewBag.Title = string.Concat(Html.LanguageString("Report.ReportPostBy"), Model.PostCreatorUsername);
 }
 
-@section Header
-{
-    @(
- Bundle.JavaScript()
-            .Add("~/Scripts/jquery.validate.min.js")
-            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
-
-            .MvcRender("~/scripts/cache/validate-combined_#.js")
-    )
-}
-
 <div class="row">
 
     <div class="col-md-6 col-md-offset-3">

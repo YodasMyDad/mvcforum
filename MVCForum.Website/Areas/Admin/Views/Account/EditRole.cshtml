@@ -4,17 +4,6 @@
     ViewBag.Title = "Edit Role: " + Model.RoleName;    
 }
 
-@section AdminHeader
-{
-        @(
-        Bundle.JavaScript()
-            .Add("~/Scripts/jquery.validate.min.js")
-            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")            
-            .MvcRender("~/scripts/cache/validate-combined_#.js")
-    )  
-}
-
-
 @using (Html.BeginForm("EditRole", "Account", FormMethod.Post))
 {
     @Html.ValidationSummary(false)

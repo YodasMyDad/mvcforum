@@ -3,16 +3,6 @@
     ViewBag.Title = "Create Category";
 }
 
-@section AdminHeader
-{
-    @(
- Bundle.JavaScript()
-            .Add("~/Scripts/jquery.validate.min.js")
-            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
-            .MvcRender("~/scripts/cache/validate-combined_#.js")
-    )
-}
-
 @Html.Partial("_CategoryNavButtons")
 
 @using (Html.BeginForm("CreateCategory", "AdminCategory", FormMethod.Post, new { enctype = "multipart/form-data" }))

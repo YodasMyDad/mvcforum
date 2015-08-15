@@ -18,7 +18,6 @@
       <group targetFramework=".NETFramework4.0">
         <dependency id="AjaxMin" version="4.48.4489.28432" />
         <dependency id="Akismet.NET" version="1.0" />
-        <dependency id="Prettify" version="3.3.04.2013" />
         <dependency id="WebActivator" version="1.5.2" />
         <dependency id="YUICompressor.NET" version="2.0.0.0" />
         <dependency id="MarkdownSharp" version="1.13.0.0" />    
@@ -42,12 +41,15 @@
         <dependency id="Microsoft.jQuery.Unobtrusive.Ajax" version="3.2.3" />
         <dependency id="Microsoft.jQuery.Unobtrusive.Validation" version="3.2.3" />
         <dependency id="Microsoft.Web.Infrastructure" version="1.0.0.0" />
+        <dependency id="Microsoft.AspNet.Web.Optimization" version="1.1.3" />
+        <dependency id="Antlr" version="3.4.1.9004" />
+        <dependency id="WebGrease" version="1.5.2" />
         <dependency id="Newtonsoft.Json" version="6.0.7" />
-        <dependency id="Quartz" version="2.3.1" />
+        <dependency id="Quartz" version="2.3.3" />
         <dependency id="Quartz.Unity" version="1.3.1" />
         <dependency id="SquishIt" version="0.9.8" />
         <dependency id="SquishIt.Mvc" version="0.9.8" />
-        <dependency id="TinyMCE" version="4.2.1" />
+        <dependency id="TinyMCE" version="4.2.3" />
         <dependency id="Unity" version="3.5.1404.0" />
         <dependency id="Unity.Mvc4" version="1.4.0.0" />
         <dependency id="HtmlAgilityPack" version="1.4.9" />
@@ -67,7 +69,7 @@
     <file src="..\MVCForum.WebSite\Content\**" target="content\Content" exclude="..\MVCForum.WebSite\Content\uploads\**" />
     <file src="..\MVCForum.WebSite\Content\uploads\readme.txt" target="content\Content\uploads" />
     <file src="..\MVCForum.WebSite\Installer\**" target="content\Installer" />
-    <file src="..\MVCForum.WebSite\Scripts\**" target="content\Scripts" />
+    <file src="..\MVCForum.WebSite\Scripts\**" target="content\Scripts" exclude="..\MVCForum.WebSite\Scripts\tinymce\**"/>
     <file src="..\MVCForum.WebSite\Themes\**" target="content\Themes" />
     <file src="..\MVCForum.WebSite\Views\**" target="content\Views" />
     <file src="..\MVCForum.WebSite\web.config" target="content\web.config" />

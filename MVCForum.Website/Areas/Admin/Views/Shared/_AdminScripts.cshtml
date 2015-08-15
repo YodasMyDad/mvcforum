@@ -13,7 +13,7 @@
 <![endif]-->
 
 <script type="text/javascript">
-        var app_base = '@Url.Content("~/")';
+    var app_base = '@Url.Content("~/")';
 </script>
 @(Bundle.JavaScript()
         .Add("~/Scripts/jquery-1.11.1.min.js")
@@ -21,6 +21,8 @@
         .Add("~/Content/bootstrap/js/bootstrap.min.js")
         .Add("~/Scripts/fancybox/jquery.fancybox.js")
         .Add("~/scripts/pushy/pushy.js")
+        .Add("~/Scripts/jquery.validate.min.js")
+        .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
         .Add("~/Scripts/admin/admin.js")
         .MvcRender("~/scripts/cache/combinedadmin_#.js")
-      )
+)

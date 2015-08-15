@@ -5,17 +5,6 @@
     ViewBag.Title = Html.LanguageString("Members.Register");
 }
 
-@section Header
-{
-    @(
- Bundle.JavaScript()
-            .Add("~/Scripts/jquery.validate.min.js")
-            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
-            .MvcRender("~/scripts/cache/validate-combined_#.js")
-    )
-}
-
-
 @if (!User.Identity.IsAuthenticated)
 {
 

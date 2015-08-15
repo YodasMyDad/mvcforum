@@ -4,15 +4,7 @@
     ViewBag.Title = "Edit";
     var titleText = (Model.Id == Guid.Empty) ? "Add User" : "Edit User";
 }
-@section AdminHeader
-{
-    @(
- Bundle.JavaScript()
-            .Add("~/Scripts/jquery.validate.min.js")
-            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
-            .MvcRender("~/scripts/cache/validate-combined_#.js")
-     )
-}
+
 <p><a href="@Url.Action("Manage")" class="btn-mvc">&lt;&lt; Back</a></p>
 
 @using (Html.BeginForm("Edit", "Account", FormMethod.Post))
