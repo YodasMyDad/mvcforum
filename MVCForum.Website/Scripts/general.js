@@ -92,13 +92,13 @@ $(function () {
                             stickyholder.hide();
                         }
 
-                        if (data.CanStickyTopic) {
+                        if (data.CanLockTopic) {
                             lockedholder.show();
                         } else {
                             lockedholder.hide();
                         }
 
-                        if (data.CanStickyTopic) {
+                        if (data.CanUploadFiles) {
                             uploadholder.show();
                         } else {
                             uploadholder.hide();
