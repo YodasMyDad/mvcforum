@@ -3,7 +3,7 @@
 @if (!Model.Permissions[AppConstants.PermissionDenyAccess].IsTicked)
 {
     <div class="categoryrow">
-        <h2 tyle="border-color: @(Model.Category.Colour)"><a href="@Model.Category.NiceUrl">@Html.Raw(Model.Category.Name)</a></h2>
+        <h2 style="border-color: @(Model.Category.Colour)"><a href="@Model.Category.NiceUrl">@Html.Raw(Model.Category.Name)</a></h2>
         <p>@Html.Raw(AppHelpers.ConvertPostContent(Model.Category.Description))</p>
         <div class="row categoryrowfooter">
             <div class="col-md-1 catrss">
