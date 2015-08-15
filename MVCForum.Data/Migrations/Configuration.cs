@@ -359,6 +359,42 @@ namespace MVCForum.Data.Migrations
 
                     context.MembershipUser.Add(admin);
                     context.SaveChanges();
+
+                    // Now add read me
+                    const string name = "Read Me";
+                    var category = context.Category.FirstOrDefault();
+                    var topic = new Topic
+                    {
+                        Category = category,
+                        CreateDate = DateTime.UtcNow,
+                        User = admin,
+                        IsSticky = true,
+                        Name = name,
+                        Slug = ServiceHelpers.CreateUrl(name)
+                    };
+
+                    context.Topic.Add(topic);
+                    context.SaveChanges();
+
+                    const string readMeText = @"<p>We have auto created an admin user for you to manage the site</p>
+<p>Username: admin<br />Password: password</p>
+<p><strong>Important: </strong>Please update the password and username before putting this site live.</p>
+<p>Most of the docs are on the <a href=""http://www.mvcforum.com"">website</a> and <a href=""https://github.com/leen3o/mvcforum/wiki"">github</a></p>";
+
+                    var post = new Post
+                    {
+                        DateCreated = DateTime.UtcNow,
+                        DateEdited = DateTime.UtcNow,
+                        Topic = topic,
+                        IsTopicStarter = true,
+                        User = admin,
+                        PostContent = readMeText
+                    };
+
+                    topic.LastPost = post;
+
+                    context.Post.Add(post);
+                    context.SaveChanges();
                 }
 
             }
