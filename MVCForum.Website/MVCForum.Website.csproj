@@ -1126,6 +1126,9 @@
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.eot" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\readme.md" />
     <Content Include="Scripts\tinymce\langs\readme.md" />
+    <Content Include="Views\Members\PasswordResetSent.cshtml" />
+    <Content Include="Views\Members\ResetPassword.cshtml" />
+    <Content Include="Views\Members\PasswordChanged.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\languagepacks\" />

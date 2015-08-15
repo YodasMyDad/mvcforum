@@ -371,16 +371,40 @@ namespace MVCForum.Website.Controllers
                             topic.Name = StringUtils.GetSafeHtml(_bannedWordService.SanitiseBannedWords(editPostViewModel.Name));
 
                             // See if there is a poll
-                            if (editPostViewModel.PollAnswers != null && editPostViewModel.PollAnswers.Count(x => x != null) > 0)
+                            if (editPostViewModel.PollAnswers != null && editPostViewModel.PollAnswers.Count(x => x != null && !string.IsNullOrEmpty(x.Answer)) > 0 && permissions[AppConstants.PermissionCreatePolls].IsTicked)
                             {
                                 // Now sort the poll answers, what to add and what to remove
                                 // Poll answers already in this poll.
                                 //var existingAnswers = topic.Poll.PollAnswers.Where(x => postedIds.Contains(x.Id)).ToList();
-                                var postedIds = editPostViewModel.PollAnswers.Select(x => x.Id);
-                                var topicPollAnswerIds = topic.Poll.PollAnswers.Select(p => p.Id).ToList();
-                                var existingAnswers = editPostViewModel.PollAnswers.Where(x => x != null && topicPollAnswerIds.Contains(x.Id)).ToList();
-                                var newPollAnswers = editPostViewModel.PollAnswers.Where(x => x != null && !topicPollAnswerIds.Contains(x.Id)).ToList();
-                                var pollAnswersToRemove = topic.Poll.PollAnswers.Where(x => !postedIds.Contains(x.Id)).ToList();
+                                var postedIds = editPostViewModel.PollAnswers.Where(x => x != null && !string.IsNullOrEmpty(x.Answer)).Select(x => x.Id);
+
+                                // This post might not have a poll on it, if not they are creating a poll for the first time
+                                var topicPollAnswerIds = new List<Guid>();
+                                var pollAnswersToRemove = new List<PollAnswer>();
+                                if (topic.Poll == null)
+                                {
+                                    // Create a new Poll
+                                    var newPoll = new Poll
+                                    {
+                                        User = LoggedOnUser
+                                    };
+
+                                    // Create the poll
+                                    _pollService.Add(newPoll);
+
+                                    // Save the poll in the context so we can add answers
+                                    unitOfWork.SaveChanges();
+
+                                    // Add the poll to the topic
+                                    topic.Poll = newPoll;
+                                }
+                                else
+                                {
+                                    topicPollAnswerIds = topic.Poll.PollAnswers.Select(p => p.Id).ToList();
+                                    pollAnswersToRemove = topic.Poll.PollAnswers.Where(x => !postedIds.Contains(x.Id)).ToList();
+                                }
+                                var existingAnswers = editPostViewModel.PollAnswers.Where(x => !string.IsNullOrEmpty(x.Answer) && topicPollAnswerIds.Contains(x.Id)).ToList();
+                                var newPollAnswers = editPostViewModel.PollAnswers.Where(x => !string.IsNullOrEmpty(x.Answer) && !topicPollAnswerIds.Contains(x.Id)).ToList();
 
                                 // Loop through existing and update names if need be
                                 //TODO: Need to think about this in future versions if they change the name

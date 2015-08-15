@@ -70,8 +70,7 @@ namespace MVCForum.Website.Application
         //[Obsolete]
         public static string LanguageString(this HtmlHelper helper, string key)
         {
-            var locService = ServiceFactory.Get<ILocalizationService>();
-            return locService.GetResourceString(key);
+            return Lang(helper, key);
         }
 
         public static string Lang(this HtmlHelper helper, string key)

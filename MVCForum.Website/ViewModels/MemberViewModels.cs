@@ -11,7 +11,7 @@ namespace MVCForum.Website.ViewModels
 {
     public class ActiveMembersViewModel
     {
-        public IList<MembershipUser> ActiveMembers { get; set; } 
+        public IList<MembershipUser> ActiveMembers { get; set; }
     }
 
     public class MemberAddViewModel
@@ -213,5 +213,26 @@ namespace MVCForum.Website.ViewModels
         [ForumMvcResourceDisplayName("Members.Label.ConfirmNewPassword")]
         [System.ComponentModel.DataAnnotations.Compare("NewPassword")]
         public string ConfirmPassword { get; set; }
+    }
+
+    public class ResetPasswordViewModel
+    {
+        [Required]
+        public Guid? Id { get; set; }
+
+        [Required]
+        public string Token { get; set; }
+
+        [Required]
+        [StringLength(100, MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [ForumMvcResourceDisplayName("Members.Label.NewPassword")]
+        public string NewPassword { get; set; }
+
+        [DataType(DataType.Password)]
+        [ForumMvcResourceDisplayName("Members.Label.ConfirmNewPassword")]
+        [System.ComponentModel.DataAnnotations.Compare("NewPassword")]
+        public string ConfirmPassword { get; set; }
+
     }
 }

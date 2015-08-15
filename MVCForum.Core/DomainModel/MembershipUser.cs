@@ -47,6 +47,8 @@ namespace MVCForum.Domain.DomainModel
         public DateTime? LastActivityDate { get; set; }
         public int FailedPasswordAttemptCount { get; set; }
         public int FailedPasswordAnswerAttempt { get; set; }
+        public string PasswordResetToken { get; set; }
+        public DateTime? PasswordResetTokenCreatedAt { get; set; }
         public string Comment { get; set; }
         public string Slug { get; set; }
         public string Signature { get; set; }

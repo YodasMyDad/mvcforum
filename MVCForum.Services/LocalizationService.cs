@@ -238,16 +238,28 @@ namespace MVCForum.Services
         {
             if (!string.IsNullOrEmpty(key))
             {
-                var trimmedKey = key;
+                var trimmedKey = key.Trim();
                 try
                 {
-                    return _perRequestLanguageStrings[trimmedKey];
+                    if (_perRequestLanguageStrings.ContainsKey(trimmedKey))
+                    {
+                        var langValue = _perRequestLanguageStrings[trimmedKey];
+                        if (!string.IsNullOrEmpty(langValue))
+                        {
+                            return langValue;
+                        }
+                        _loggingService.Error(string.Format("No value is set for resource key '{0}' for language {1}.", trimmedKey, CurrentLanguage.Name));
+                    }
+                    else
+                    {
+                        _loggingService.Error(string.Format("This resource key '{0}' was not found for the language {1}.", trimmedKey, CurrentLanguage.Name));
+                    }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    _loggingService.Error(string.Format("Unable to retrieve resource key '{0}' for language id {1}.", trimmedKey, CurrentLanguage.Id));
-                    return trimmedKey;
+                    _loggingService.Error(ex);
                 }
+                return trimmedKey;
             }
             return string.Empty;
         }

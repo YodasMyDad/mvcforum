@@ -56,5 +56,9 @@ namespace MVCForum.Domain.Interfaces.Services
         /// <param name="user"></param>
         /// <param name="unitOfWork"></param>
         void ScrubUsers(MembershipUser user, IUnitOfWork unitOfWork);
+
+        bool UpdatePasswordResetToken(MembershipUser user);
+        bool ClearPasswordResetToken(MembershipUser user);
+        bool IsPasswordResetTokenValid(MembershipUser user, string token);
     }
 }

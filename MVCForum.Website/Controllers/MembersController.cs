@@ -885,36 +885,20 @@ namespace MVCForum.Website.Controllers
                             }
 
                             // Save avatar to user
-                            user.Avatar = uploadResult.UploadedFileName;
+                            user.Avatar = uploadResult.UploadedFileName;                            
                         }
-
                     }
 
+                    // Set the users Avatar for the confirmation page
+                    userModel.Avatar = user.Avatar;
+
+                    // Update other users properties
                     user.Age = userModel.Age;
                     user.Facebook = _bannedWordService.SanitiseBannedWords(userModel.Facebook, bannedWords);
                     user.Location = _bannedWordService.SanitiseBannedWords(userModel.Location, bannedWords);
                     user.Signature = _bannedWordService.SanitiseBannedWords(StringUtils.ScrubHtml(userModel.Signature), bannedWords);
                     user.Twitter = _bannedWordService.SanitiseBannedWords(userModel.Twitter, bannedWords);
                     user.Website = _bannedWordService.SanitiseBannedWords(userModel.Website, bannedWords);
-
-                    // If there is a location try and save the longitude and latitude
-                    if (!string.IsNullOrEmpty(user.Location))
-                    {
-                        try
-                        {
-                            var longLat = LocalisationUtils.GeocodeGoogle(user.Location);
-                            if (longLat != null && longLat[0] != "0")
-                            {
-                                // Got the long lat and save them to the user
-                                user.Latitude = longLat[0];
-                                user.Longitude = longLat[1];
-                            }
-                        }
-                        catch
-                        {
-                            LoggingService.Error("Error getting longitude and latitude from location");
-                        }
-                    }
 
                     // User is trying to change username, need to check if a user already exists
                     // with the username they are trying to change to
@@ -1208,77 +1192,147 @@ namespace MVCForum.Website.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ForgotPassword(ForgotPasswordViewModel forgotPasswordViewModel)
         {
-            var changePasswordSucceeded = true;
-            var currentUser = new MembershipUser();
-            var newPassword = StringUtils.RandomString(8);
+            if (!ModelState.IsValid)
+            {
+                return View(forgotPasswordViewModel);   
+            }
 
+            MembershipUser user;
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-                if (ModelState.IsValid)
-                {
-                    currentUser = MembershipService.GetUserByEmail(forgotPasswordViewModel.EmailAddress);
-                    if (currentUser != null)
-                    {
-                        changePasswordSucceeded = MembershipService.ResetPassword(currentUser, newPassword);
+                user = MembershipService.GetUserByEmail(forgotPasswordViewModel.EmailAddress);
 
-                        try
-                        {
-                            unitOfWork.Commit();
-                        }
-                        catch (Exception ex)
-                        {
-                            unitOfWork.Rollback();
-                            LoggingService.Error(ex);
-                            changePasswordSucceeded = false;
-                        }
-                    }
-                    else
-                    {
-                        changePasswordSucceeded = false;
-                    }
+                // If the email address is not registered then display the 'email sent' confirmation the same as if 
+                // the email address was registered. There is no harm in doing this and it avoids exposing registered 
+                // email addresses which could be a privacy issue if the forum is of a sensitive nature. */
+                if (user == null)
+                {
+                    return RedirectToAction("PasswordResetSent", "Members");   
+                }
+
+                try
+                {
+                    // If the user is registered then create a security token and a timestamp that will allow a change of password
+                    MembershipService.UpdatePasswordResetToken(user);
+                    unitOfWork.Commit();
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
+                    ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.Error"));
+                    return View(forgotPasswordViewModel);
                 }
             }
 
-            // Success send newpassword to the user telling them password has been changed
+
+            // At this point the email address is registered and a security token has been created
+            // so send an email with instructions on how to change the password
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
+                var settings = SettingsService.GetSettings();
+                var url = new Uri(settings.ForumUrl + Url.Action("ResetPassword", "Members", new { user.Id, token = user.PasswordResetToken }));
 
-                if (changePasswordSucceeded)
+                var sb = new StringBuilder();
+                sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.ResetPassword.EmailText"), settings.ForumName));
+                sb.AppendFormat("<p><a href=\"{0}\">{0}</a></p>", url);
+
+                var email = new Email
                 {
-                    var sb = new StringBuilder();
-                    sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.ForgotPassword.Email"), SettingsService.GetSettings().ForumName));
-                    sb.AppendFormat("<p><b>{0}</b></p>", newPassword);
-                    var email = new Email
-                                    {
-                                        EmailTo = currentUser.Email,
-                                        NameTo = currentUser.UserName,
-                                        Subject = LocalizationService.GetResourceString("Members.ForgotPassword.Subject")
-                                    };
-                    email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
-                    _emailService.SendMail(email);
+                    EmailTo = user.Email,
+                    NameTo = user.UserName,
+                    Subject = LocalizationService.GetResourceString("Members.ForgotPassword.Subject")
+                };
+                email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+                _emailService.SendMail(email);
+
+                try
+                {
+                    unitOfWork.Commit();
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
+                    ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.Error"));
+                    return View(forgotPasswordViewModel);
+                }
+            }
+
+            return RedirectToAction("PasswordResetSent", "Members");
+        }
+
+        [HttpGet]
+        public ViewResult PasswordResetSent()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ViewResult ResetPassword(Guid? id, string token)
+        {
+            var model = new ResetPasswordViewModel
+            {
+                Id = id,
+                Token = token
+            };
+
+            if (id == null || String.IsNullOrEmpty(token))
+            {
+                ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.InvalidToken"));   
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ResetPassword(ResetPasswordViewModel postedModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(postedModel);   
+            }
+
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                if (postedModel.Id != null)
+                {
+                    var user = MembershipService.GetUser(postedModel.Id.Value);
+
+                    // if the user id wasn't found then we can't proceed
+                    // if the token submitted is not valid then do not proceed
+                    if (user == null || user.PasswordResetToken == null || !MembershipService.IsPasswordResetTokenValid(user, postedModel.Token))
+                    {
+                        ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.InvalidToken"));
+                        return View(postedModel);
+                    }
 
                     try
                     {
+                        // The security token is valid so change the password
+                        MembershipService.ResetPassword(user, postedModel.NewPassword);
+                        // Clear the token and the timestamp so that the URL cannot be used again
+                        MembershipService.ClearPasswordResetToken(user);
                         unitOfWork.Commit();
                     }
                     catch (Exception ex)
                     {
                         unitOfWork.Rollback();
                         LoggingService.Error(ex);
+                        ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.InvalidToken"));
+                        return View(postedModel);
                     }
-
-                    // We use temp data because we are doing a redirect
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = LocalizationService.GetResourceString("Members.ForgotPassword.SuccessMessage"),
-                        MessageType = GenericMessages.success
-                    };
-                    return View();
                 }
-
-                ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ForgotPassword.ErrorMessage"));
-                return View(forgotPasswordViewModel);
             }
+
+            return RedirectToAction("PasswordChanged", "Members");
+        }
+
+        [HttpGet]
+        public ViewResult PasswordChanged()
+        {
+            return View();
         }
 
     }

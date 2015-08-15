@@ -335,3 +335,9 @@ StopWord.Error,You have tried to enter a word or url that is not allowed on this
 Post.Permalink,Permalink
 Members.Profile.LastOnline,Last Online
 Members.UnableToGetEmailAddress,Unable to gain access to your email address - please check your permissions
+Members.ResetPassword.Title,Password reset request sent
+Members.ResetPassword.Text,An email has been sent with details on how to reset your password. 
+Members.ResetPassword.EmailText,A request has been made to reset your password on {0}. To reset your password follow the link below. If you did not make this request then please ignore this email. No further action is required and your password will not be changed.
+Members.ResetPassword.SuccessText,Your password has been changed.
+Members.ResetPassword.InvalidToken,This request is either invalid or has expired. Please make a password reset request again.
+Members.ResetPassword.Error,There was an error resetting your password. Please try again.

@@ -28,31 +28,16 @@ namespace MVCForum.Data.Migrations
         {
 
             #region Initial Installer Code
-            //  This method will be called after migrating to the latest version.
-
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-
-            // Do everything in a unitofwork transaction
-            //var unitOfWorkManager = new UnitOfWorkManager(context);
-            //using (var uow = unitOfWorkManager.NewUnitOfWork())
-            //{
-            // Get services
-            // var localisationService = DependencyResolver.Current.GetService<ILocalizationService>();
             var loggingService = DependencyResolver.Current.GetService<ILoggingService>();
+
+            var isFirstInstall = false;
 
             // Add the language - If it's not already there
             const string langCulture = "en-GB";
             var language = context.Language.FirstOrDefault(x => x.LanguageCulture == langCulture);
             if (language == null)
             {
+                isFirstInstall = true;
                 var cultureInfo = LanguageUtils.GetCulture(langCulture);
                 language = new Language
                 {

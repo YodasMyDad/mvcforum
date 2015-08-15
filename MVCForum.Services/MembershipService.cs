@@ -19,6 +19,8 @@ namespace MVCForum.Services
 {
     public partial class MembershipService : IMembershipService
     {
+        private const int MaxHoursToResetPassword = 48;
+
         private readonly IEmailService _emailService;
         private readonly IMembershipRepository _membershipRepository;
         private readonly IPostRepository _postRepository;
@@ -1046,6 +1048,70 @@ namespace MVCForum.Services
 
                 unitOfWork.SaveChanges();
             }
+        }
+
+        /// <summary>
+        /// Update the user record with a newly generated password reset security token and timestamp
+        /// </summary>
+        public bool UpdatePasswordResetToken(MembershipUser user)
+        {
+            var existingUser = GetUser(user.Id);
+            if (existingUser == null)
+            {
+                return false;   
+            }
+            existingUser.PasswordResetToken = CreatePasswordResetToken();
+            existingUser.PasswordResetTokenCreatedAt = DateTime.UtcNow;
+            return true;
+        }
+
+        /// <summary>
+        /// Remove the password reset security token and timestamp from the user record
+        /// </summary>
+        public bool ClearPasswordResetToken(MembershipUser user)
+        {
+            var existingUser = GetUser(user.Id);
+            if (existingUser == null)
+            {
+                return false;   
+            }
+            existingUser.PasswordResetToken = null;
+            existingUser.PasswordResetTokenCreatedAt = null;
+            return true;
+        }
+
+        /// <summary>
+        /// To be valid:
+        /// - The user record must contain a password reset token
+        /// - The given token must match the token in the user record
+        /// - The token timestamp must be less than 24 hours ago
+        /// </summary>
+        public bool IsPasswordResetTokenValid(MembershipUser user, string token)
+        {
+            var existingUser = GetUser(user.Id);
+            if (existingUser == null || string.IsNullOrEmpty(existingUser.PasswordResetToken))
+            {
+                return false;
+            }
+            // A security token must have an expiry date
+            if (existingUser.PasswordResetTokenCreatedAt == null)
+            {
+                return false;   
+            }
+            // The security token is only valid for 48 hours
+            if ((DateTime.UtcNow - existingUser.PasswordResetTokenCreatedAt.Value).TotalHours >= MaxHoursToResetPassword)
+            {
+                return false;   
+            }
+            return existingUser.PasswordResetToken == token;
+        }
+
+        /// <summary>
+        /// Generate a password reset token, a guid is sufficient
+        /// </summary>
+        private static string CreatePasswordResetToken()
+        {
+            return Guid.NewGuid().ToString().ToLower().Replace("-", "");
         }
     }
 }

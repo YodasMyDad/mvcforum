@@ -27,6 +27,8 @@ namespace MVCForum.Data.Mapping
             Property(x => x.LastLockoutDate).IsRequired();
             Property(x => x.FailedPasswordAttemptCount).IsRequired();
             Property(x => x.FailedPasswordAnswerAttempt).IsRequired();
+            Property(x => x.PasswordResetToken).HasMaxLength(150).IsOptional();
+            Property(x => x.PasswordResetTokenCreatedAt).IsOptional();
             Property(x => x.Slug).IsRequired().HasMaxLength(150)
                                     .HasColumnAnnotation("Index",
                                     new IndexAnnotation(new IndexAttribute("IX_MembershipUser_Slug", 1) { IsUnique = true }));

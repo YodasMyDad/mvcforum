@@ -110,7 +110,6 @@
     <Compile Include="GuidComb.cs" />
     <Compile Include="InstallerHelper.cs" />
     <Compile Include="LanguageUtils.cs" />
-    <Compile Include="LocalisationUtils.cs" />
     <Compile Include="Markdown.cs" />
     <Compile Include="PorterStemmingAlgorithm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
