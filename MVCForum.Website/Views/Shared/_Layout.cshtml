@@ -1,4 +1,5 @@
-﻿@using MVCForum.Website
+﻿@using Microsoft.VisualStudio.Web.PageInspector.Runtime
+@using MVCForum.Website
 @{
     // Global Stuff
     var theme = Html.Settings().Theme;
@@ -9,11 +10,17 @@
 }
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head prefix="og: http://ogp.me/ns#">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
     <meta name="description" content="@ViewBag.MetaDesc" />
+    <meta property="og:url" content="@HttpContext.Current.Request.Url.AbsoluteUri" />
+    <meta property="og:description" content="@ViewBag.MetaDesc" />
+    <meta property="og:title" content="@ViewBag.Title" />
+    <meta property="og:site_name" content="@Html.Settings().ForumName" />
+    <meta property="og:type" content="website" />
+
     @RenderSection("SocialMeta", false)
     @ViewBag.Canonical
     @(
