@@ -687,21 +687,20 @@ namespace MVCForum.Services
                     }
 
                     // In the new language (only) set the value for the resource
-                    var stringResources = language.LocaleStringResources.Where(res => res.LocaleResourceKey.Name == resourceKey.Name).ToList();
-                    if (stringResources.Any())
+                    var stringResource = language.LocaleStringResources.FirstOrDefault(res => res.LocaleResourceKey.Name == resourceKey.Name);
+                    if (stringResource != null)
                     {
-                        foreach (var res in stringResources)
+                        if (!stringResource.ResourceValue.Equals(value))
                         {
-                            res.ResourceValue = value;
-                            break;
-                        }
+                            stringResource.ResourceValue = value;   
+                        }                     
                     }
                     else
                     {
                         // No string resources have been created, so most probably
                         // this is the installer creating the keys so we need to create the 
                         // string resource to go with it and add it
-                        var stringResource = new LocaleStringResource
+                        stringResource = new LocaleStringResource
                         {
                             Language = language,
                             LocaleResourceKey = resourceKey,

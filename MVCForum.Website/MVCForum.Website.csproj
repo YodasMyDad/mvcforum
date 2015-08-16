@@ -998,6 +998,7 @@
     <Content Include="Themes\Metro\Content\Images\favicon.ico" />
     <Content Include="Themes\Metro\Content\Images\logo.png" />
     <Content Include="Themes\Metro\Content\Scripts\general.js" />
+    <Content Include="Themes\Metro\Content\Styles\imports.css" />
     <Content Include="Themes\Metro\Content\Styles\Theme.css" />
     <Content Include="Scripts\general.js" />
     <Content Include="Scripts\MicrosoftAjax.debug.js" />

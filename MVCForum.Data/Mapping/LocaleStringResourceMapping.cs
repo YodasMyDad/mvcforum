@@ -9,7 +9,7 @@ namespace MVCForum.Data.Mapping
         {
             HasKey(x => x.Id);
             Property(x => x.Id).IsRequired();
-            Property(x => x.ResourceValue).IsRequired().HasMaxLength(500);
+            Property(x => x.ResourceValue).IsRequired().HasMaxLength(1000);
         }
     }
 }
