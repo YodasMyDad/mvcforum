@@ -18,6 +18,7 @@
     @ViewBag.Canonical
     @(
  Bundle.Css()
+                .Add(themePath + "/Content/Styles/imports.css")
                 .Add("~/Content/bootstrap/css/bootstrap.css")
                 .Add(themePath + "/Content/Styles/theme.css")
                 .MvcRender("~/content/cache/combined_" + theme + "_#.css")

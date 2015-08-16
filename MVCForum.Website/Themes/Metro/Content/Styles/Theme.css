@@ -8,9 +8,6 @@
     pastel blue: 2ab4bd
 ---*/
 
-@import url(//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700);
-@import url(//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css);
-
 /*--- Bootstrap overides ---*/
 input.form-control, textarea.form-control, select.form-control { -ms-border-radius: 0; border-radius: 0; }
 .navbar-brand { padding-top: 5px; padding-bottom: 5px; height: auto; }
