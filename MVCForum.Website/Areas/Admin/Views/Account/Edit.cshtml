@@ -141,8 +141,8 @@
         </div>
 
         <div class="submit-holder">
-            <input type="submit" class="btn-mvc btn-mvc-green" value="Save" />
-            <a href="@Url.Action("Delete", new{Model.Id})" onclick="return confirm('Are you sure you want to delete @Model.UserName?')" class="btn-mvc btn-mvc-red" role="button">Delete</a>
+            <input type="submit" class="btn-mvc-green" value="Save" />
+            <a href="@Url.Action("Delete", new{Model.Id})" onclick="return confirm('Are you sure you want to delete @Model.UserName?')" class="btn-mvc-red" role="button">Delete</a>
         </div>
     </fieldset>
 }

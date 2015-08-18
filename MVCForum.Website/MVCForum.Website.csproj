@@ -998,8 +998,8 @@
     <Content Include="Themes\Metro\Content\Images\favicon.ico" />
     <Content Include="Themes\Metro\Content\Images\logo.png" />
     <Content Include="Themes\Metro\Content\Scripts\general.js" />
+    <Content Include="Themes\Metro\Content\Styles\archive.css" />
     <Content Include="Themes\Metro\Content\Styles\imports.css" />
-    <Content Include="Themes\Metro\Content\Styles\Theme.css" />
     <Content Include="Scripts\general.js" />
     <Content Include="Scripts\MicrosoftAjax.debug.js" />
     <Content Include="Scripts\MicrosoftAjax.js" />
@@ -1022,6 +1022,12 @@
     <Content Include="Global.asax" />
     <Content Include="Scripts\admin\Admin.js" />
     <Content Include="Scripts\admin\FadeOutMessage.js" />
+    <Content Include="Themes\Metro\Content\Styles\Theme.css">
+      <DependentUpon>Theme.scss</DependentUpon>
+    </Content>
+    <Content Include="Themes\Metro\Content\Styles\Theme.min.css">
+      <DependentUpon>Theme.css</DependentUpon>
+    </Content>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1130,6 +1136,10 @@
     <Content Include="Views\Members\PasswordResetSent.cshtml" />
     <Content Include="Views\Members\ResetPassword.cshtml" />
     <Content Include="Views\Members\PasswordChanged.cshtml" />
+    <Content Include="Themes\Metro\Content\Styles\Theme.scss" />
+    <Content Include="Themes\Metro\Content\Styles\Theme.css.map">
+      <DependentUpon>Theme.css</DependentUpon>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\languagepacks\" />
