@@ -1,209 +1,197 @@
-﻿/*--- Colours 
-    black: 3b3b3b
-    Red: bd2a38
-    Green: 2abd54
-    Blue: 2980b9
-    Grey: efefef
-    Darker Grey: b3b3b3
-    pastel blue: 2ab4bd
----*/
-
-@import url(//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700);
-@import url(//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css);
-
-/*--- Bootstrap overides ---*/
-input.form-control, textarea.form-control, select.form-control,.panel-group .panel,.panel { -ms-border-radius: 0; border-radius: 0; }
-.navbar-brand { padding-top: 5px; padding-bottom: 5px; height: auto; }
-.navbar-nav > li > a { padding-top: 10px; padding-bottom: 10px; height: auto; }
-.navbar { min-height: 40px; }
-
-/*--- Body ---*/
-body { font-family: 'Open Sans', Arial, Helvetica, sans-serif; color: #3b3b3b; }
-h1, h2, h3, h4, h5, h6 { padding: 0; margin: 0 0 12px 0; font-weight: 300; }
-h1 { font-size: 29px; }
-h2 { font-size: 26px; }
-h3 { font-size: 22px; }
-h4 { font-size: 19px; }
-h5 { font-size: 17px; }
-h6 { font-size: 16px; }
-
-.green-colour { color: #2abd54;}
-
-/*---  Validation Errors---*/
-.validation-summary-errors ul { padding: 0; margin: 0 0 5px 0; }
-.validation-summary-errors ul li { padding: 4px; background-color: #bd2a38; color: #97342a; list-style: none; color: #fff; }
-.field-validation-error { color: #bd2a38; font-size: 12px; }
-
-/*--- Buttons ---*/
-.btn-mvc, .btn-mvc:visited { display: inline-block; padding: 7px 20px; margin-bottom: 0; font-size: 14px; font-weight: normal; line-height: 14px; text-align: center; white-space: nowrap; vertical-align: middle; -ms-touch-action: manipulation; touch-action: manipulation; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none; user-select: none; background-image: none; border: 1px solid transparent; -ms-border-radius: 3px; border-radius: 3px; text-decoration: none; background-color: #efefef; color: #333; }
-.btn-mvc:hover, .btn-mvc:focus, .btn-mvc:active { text-decoration: none; background-color: #e0e0e0; color: #333; }
-
-.btn-mvc-red, .btn-mvc-red:visited { background-color: #bd2a38; color: #fff; }
-.btn-mvc-red:hover, .btn-mvc-red:focus, .btn-mvc-red:active { background-color: #d83f2f; color: #fff; }
-
-.btn-mvc-blue, .btn-mvc-blue:visited { background-color: #2980b9; color: #fff; }
-.btn-mvc-blue:hover, .btn-mvc-blue:focus, .btn-mvc-blue:active { background-color: #2074aa; color: #fff; }
-
-.btn-mvc-green, .btn-mvc-green:visited { background-color: #2abd54; color: #fff; }
-.btn-mvc-green:hover, .btn-mvc-green:focus, .btn-mvc-green:active { background-color: #229a44; color: #fff; }
-
-.btn-mvc-small, .btn-mvc-small:visited { padding: 5px 12px; font-size: 12px; line-height: 12px; }
-.btn-mvc-small:hover, .btn-mvc-small:focus, .btn-mvc-small:active { }
-
-.btn-mvc-large, .btn-mvc-large:visited { padding: 9px 25px; font-size: 19px; line-height: 19px; }
-.btn-mvc-large:hover, .btn-mvc-large:focus, .btn-mvc-large:active { }
-
-.btn-mvc-fullwidth, .btn-mvc-fullwidth:visited { padding-left: 0; padding-right: 0; width: 100%; display: block; }
-.btn-mvc-fullwidth:hover, .btn-mvc-fullwidth:focus, .btn-mvc-fullwidth:active { }
-
-.btn-mvc .glyphicon { color: #333;}
-.btn-mvc-red .glyphicon, .btn-mvc-blue .glyphicon, .btn-mvc-green .glyphicon { color: #fff;}
-
-.glyphicon-large { font-size: 18px;}
-
-.btn-file { position: relative; overflow: hidden; }
-.btn-file input[type=file] { position: absolute; top: 0; right: 0; min-width: 100%; min-height: 100%; font-size: 100px; text-align: right; filter: alpha(opacity=0); opacity: 0; outline: none; background: white; cursor: inherit; display: block; }
-
-/*--- Bootstrap overides ---*/
-.navbar-default { background: #3b3b3b; border: none; -ms-border-radius: 0; border-radius: 0; color: #fff; }
-.navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a:visited { color: #fff; }
-.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus { color: #fff; background-color: #333; }
-.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus { background-color: #333; color: #fff; }
-.dropdown-menu { -ms-border-radius: 0; border-radius: 0; }
-.navbar-default .navbar-brand, .navbar-default .navbar-brand:visited { color: #fff; font-weight: bold; }
-.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus { color: #efefef; }
-.navbar-toggle {padding: 7px 8px; background-color: #ddd;}
-.navbar-toggle:hover, .navbar-toggle:focus {background-color: #d3d3d3 !Important;}
-
-/*--- Table scrol ---*/
-.tablescroll {overflow-x: scroll;overflow-y: auto;margin: 0 0 20px 0;}
-.tablescroll td { min-width: 65px;}
-
-/*--- Padded Row ---*/
-.paddedrow { padding-top: 10px; padding-bottom: 3px; }
-
-/*--- Top Admin Sub Nav ---*/
-.topadminsubnav { padding: 0 0 25px 0;}
-
-/*--- Validation ----*/
-.validation-summary-errors { color:#B94A48;}
-.field-validation-error { display: block;}
-
-/*--- Main Admin Body ---*/
-.mainadminbody { padding-top: 29px;}
-
-/*--- Category List ---*/
-.mainadmincategorylist { margin: 0;padding: 15px 0;}
-.mainadmincategorylist li { font-size: 1.4em;list-style: none;margin: 0 0 10px 0;padding: 10px 0;border-bottom: 1px dotted #eee;}
-.mainadmincategorylist {}
-.mainadmincategorylist ul.subcategorylist {font-size: 11px; padding:0 0 0 5px; margin:0 0 10px 10px; border-left: 2px #eeeeee solid;}
-.mainadmincategorylist li.subcategoryitem {padding: 3px 0;border: 0;}
-
-/*--- Blank Pop Up Holder ---*/
-.blankcontainer { width: 720px; min-height:400px; height:auto !important; height:400px;}
-
-/*--- Fancybox overide ---*/
-.fancybox-skin { background-color: #fff !Important;}
-
-/*--- Permissions Styles ---*/
-.editpermissionsspinner { margin: 0 0 0 15px;}
-.fluidheader { padding: 0 0 15px 0;}
-
-/*--- Little fix to the bootstrap append button ---*/
-.input-append .add-on, .input-append .btn {margin-left: -4px;}
-
-/*--- Members Admin Search ---*/
-.membersadminsearch,.tablesearch { padding-bottom: 25px;}
-
-/*--- Language Tables ---*/
-.resourcevalue { width: 200px;}
-.resourcevalueinput { width: 190px;}
-
-/*--- Side bar nav ---*/
-.sidebar-nav { padding: 5px;}
-.sidebar-nav ul { padding: 0;}
-.sidebar-nav ul li {}
-
-/*--- Permission Types ---*/
-.permissiontypes {}
-.permissiontypes a .glyphicon-remove { color: #fff;}
-
-/*--- Log ---*/
-.logentry { padding: 5px 0;border-bottom: 1px dotted #efefef;}
-.logentry .logentrydate {}
-.logentry .logentrythreadid {}
-.logentry .logentryerrorlevel {}
-.logentry .logentrymessage {}
-
-/*--- Role permission list --*/
-.rolepermissionlist { padding: 0;margin: 0;}
-.rolepermissionlist li { list-style: none;padding: 5px 0;}
-
-/*--- Admin section holders ---*/
-.adminsection { border: 1px #efefef solid;-moz-border-radius:4px; -webkit-border-radius:4px; -khtml-border-radius:4px; border-radius:4px;padding: 10px;clear: both;margin: 0 0 20px 0;}
-
-/*--- Label / Badge overide ---*/
-.label, .badge { font-size: 14px;}
-
-/*--- Admin options button ---*/
-.btn-show-admin-nav {padding: 10px 0; width: 100%;text-align: center;font-size: 16px;line-height: normal;height: auto;display: none;}
-
-/*--- Moderate Topics and Posts ---*/
-.moderatepanel { padding: 20px 0;}
-.moderatetopicholder .topicsnippet { padding: 0 0 12px 0;margin: 0 0 12px 0;border-bottom: 3px dotted #efefef;}
-.moderatetopicholder .topicsnippet h2 { font-size: 17px;padding: 0 0 0 0;margin: 0 0 0 0;}
-.moderatepostholder .postsnippet { padding: 0 0 12px 0;margin: 0 0 12px 0;border-bottom: 3px dotted #efefef;}
-.moderatepostholder .postsnippet h2 { font-size: 17px;padding: 0;margin: 0;}
-
-/*============== MEDIA QUERIES OVERIDES ==============*/
-
-@media (max-width: 1105px) {
-
+﻿input.form-control, textarea.form-control, select.form-control, .panel-group .panel, .panel {
+  -ms-border-radius: 0;
+  border-radius: 0;
 }
 
-@media (max-width: 1045px) {
-
+.navbar-brand {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  height: auto;
 }
 
-@media (max-width: 979px) {
-        body { padding:0 !Important;}
+.navbar-nav > li > a {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  height: auto;
 }
 
-@media (max-width: 925px) {
+.navbar {
+  min-height: 40px;
 }
 
-@media screen and (max-width: 860px) {
+.btn-mvc, .btn-mvc:visited {
+  display: inline-block;
+  padding: 7px 20px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 14px;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  -ms-border-radius: 3px;
+  border-radius: 3px;
+  text-decoration: none;
+  background-color: #efefef;
+  color: #333;
 }
 
-@media (max-width: 767px) {
-
-    /*-- Stop gap produced by bootstrap*/
-    body { padding:0;}
-    .container-fluid { padding-left: 10px;padding-right: 10px;}
-    h1 { font-size: 28.5px;}
-
-    /*--- Nav Bar ---*/
-    .navbar-fixed-top, .navbar-fixed-bottom, .navbar-static-top { margin-left: 0;margin-right: 0;}
-    #logindisplay { text-align: center;font-size: 14px;}
-
-    /*-- Dashboard --*/
-    .dashboardrow  { padding: 0;}
-    .dashboardrow .span6 { padding-bottom: 10px;}
-
-    /*-- Admin Options --*/
-    .btn-show-admin-nav { display: block;}
-    .admin-options { display: none;}
-
-    /*--- Tabs ---*/
-    .tabs-below > .nav-tabs { border: none;}
-    .tabs-below > .nav-tabs > li { width: 49%;}
-    .tabs-below > .nav-tabs > .active > a { border-color: #ddd;}
+.btn-mvc:hover, .btn-mvc:focus, .btn-mvc:active, .btn-mvc:visited:hover, .btn-mvc:visited:focus, .btn-mvc:visited:active {
+  text-decoration: none;
+  background-color: #e0e0e0;
+  color: #333;
 }
 
-@media (max-width: 600px) {
-
+.btn-mvc-red, .btn-mvc-red:visited {
+  display: inline-block;
+  padding: 7px 20px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 14px;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  -ms-border-radius: 3px;
+  border-radius: 3px;
+  text-decoration: none;
+  background-color: #efefef;
+  color: #333;
+  background-color: #bd2a38;
+  color: #fff;
 }
 
-@media (max-width: 480px) {
-
+.btn-mvc-red:hover, .btn-mvc-red:focus, .btn-mvc-red:active, .btn-mvc-red:visited:hover, .btn-mvc-red:visited:focus, .btn-mvc-red:visited:active {
+  background-color: #d33847;
+  color: #fff;
 }
+
+.btn-mvc-blue, .btn-mvc-blue:visited {
+  display: inline-block;
+  padding: 7px 20px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 14px;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  -ms-border-radius: 3px;
+  border-radius: 3px;
+  text-decoration: none;
+  background-color: #efefef;
+  color: #333;
+  background-color: #4891dc;
+  color: #fff;
+}
+
+.btn-mvc-blue:hover, .btn-mvc-blue:focus, .btn-mvc-blue:active, .btn-mvc-blue:visited:hover, .btn-mvc-blue:visited:focus, .btn-mvc-blue:visited:active {
+  background-color: #287acf;
+  color: #fff;
+}
+
+.btn-mvc-green, .btn-mvc-green:visited {
+  display: inline-block;
+  padding: 7px 20px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 14px;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  -ms-border-radius: 3px;
+  border-radius: 3px;
+  text-decoration: none;
+  background-color: #efefef;
+  color: #333;
+  background-color: #2abd54;
+  color: #fff;
+}
+
+.btn-mvc-green:hover, .btn-mvc-green:focus, .btn-mvc-green:active, .btn-mvc-green:visited:hover, .btn-mvc-green:visited:focus, .btn-mvc-green:visited:active {
+  background-color: #229743;
+  color: #fff;
+}
+
+.btn-mvc-small, .btn-mvc-small:visited {
+  padding: 5px 12px;
+  font-size: 12px;
+  line-height: 12px;
+}
+
+.btn-mvc-large, .btn-mvc-large:visited {
+  padding: 9px 25px;
+  font-size: 19px;
+  line-height: 19px;
+}
+
+.btn-mvc-fullwidth, .btn-mvc-fullwidth:visited {
+  padding-left: 0;
+  padding-right: 0;
+  width: 100%;
+  display: block;
+}
+
+.btn-file {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-file input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 100px;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: inherit;
+  display: block;
+}
+
+/*# sourceMappingURL=Admin.css.map */

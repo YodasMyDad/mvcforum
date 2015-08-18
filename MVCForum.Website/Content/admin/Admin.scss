@@ -1,0 +1,276 @@
+﻿$color-global-green: #2abd54;
+$color-global-red: #bd2a38;
+$color-global-blue: #4891dc;
+$color-global-yellow: #f2f226;
+$color-global-grey-blue: #ecf0f1;
+
+$link-color: #2470bb;
+
+$border-color: $color-global-grey-blue;
+
+$heading-base-color: #3b3b3b;
+$heading-font-weight: 300;
+$heading-one-font-size: 29px;
+$heading-two-font-size: 26px;
+$heading-three-font-size: 22px;
+
+$font-base-color: #3b3b3b;
+$font-lighter-base-color: #636267;
+$font-base-family: 'Open Sans', Arial, Helvetica, sans-serif;
+$font-light-weight: 300;
+
+$media-query-medium: 991px;
+$media-query-small: 767px;
+$media-query-mobile: 600px;
+
+// Mixins
+
+@mixin standard-button() { display: inline-block; padding: 7px 20px; margin-bottom: 0; font-size: 14px; font-weight: normal; line-height: 14px; text-align: center; white-space: nowrap; vertical-align: middle; -ms-touch-action: manipulation; touch-action: manipulation; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none; user-select: none; background-image: none; border: 1px solid transparent; -ms-border-radius: 3px; border-radius: 3px; text-decoration: none; background-color: #efefef; color: #333; }
+
+//  Bootstrap overides
+
+input.form-control, textarea.form-control, select.form-control, .panel-group .panel, .panel { -ms-border-radius: 0; border-radius: 0; }
+.navbar-brand { padding-top: 5px; padding-bottom: 5px; height: auto; }
+.navbar-nav > li > a { padding-top: 10px; padding-bottom: 10px; height: auto; }
+.navbar { min-height: 40px; }
+.navbar-default { background: #3b3b3b; border: none; -ms-border-radius: 0; border-radius: 0; color: #fff; }
+.navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a:visited { color: #fff; }
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus { color: #fff; background-color: #333; }
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus { background-color: #333; color: #fff; }
+.dropdown-menu { -ms-border-radius: 0; border-radius: 0; }
+.navbar-default .navbar-brand, .navbar-default .navbar-brand:visited { color: #fff; font-weight: bold; }
+.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus { color: #efefef; }
+.navbar-toggle { padding: 7px 8px; background-color: #ddd; }
+.navbar-toggle:hover, .navbar-toggle:focus { background-color: #d3d3d3 !Important; }
+
+
+// Main
+
+body {
+    font-family: $font-base-family;
+    color: $font-base-color;
+    @media (max-width: 979px) {
+        body { padding: 0 !Important; }
+    }
+    @media (max-width: $media-query-mobile) {
+        .btn-mvc-large { padding-left: 0; padding-right: 0; width: 100%; display: block; }
+    }
+}
+
+// Heading Styles
+
+h1, h2, h3, h4, h5, h6 { padding: 0; margin: 0 0 12px 0; color: $heading-base-color; font-weight: $heading-font-weight; }
+h1 { font-size: $heading-one-font-size; }
+h2 { font-size: $heading-two-font-size; }
+h3 { font-size: $heading-three-font-size; }
+h4 { font-size: 19px; }
+h5 { font-size: 17px; }
+h6 { font-size: 16px; }
+
+// General Table Styles
+
+table {
+    @media (max-width: $media-query-mobile) {
+        .table-adaptive {
+            caption { background-image: none; }
+            thead { display: none; }
+            tbody {
+                td { display: block;
+                    &:before { content: attr(data-th); font-weight: bold; display: inline-block; width: 6rem; }
+                }
+                tr {
+                    td {
+                        &:first-child { background: #e4e4e4; }
+                    }
+                }
+            }
+            > tbody > tr > td { border: none; border-top: 1px solid #ddd; }
+            > tbody > tr > td:first-child { border: none; }
+        }
+    }
+}
+
+.tablescroll { overflow-x: scroll; overflow-y: auto; margin: 0 0 20px 0;
+    td { min-width: 65px; }
+}
+
+// Colour Classes
+
+.green-colour { color: $color-global-green; }
+.red-colour { color: $color-global-red; }
+.blue-colour { color: $color-global-blue; }
+
+// Link Styles
+
+a, a:visited { color: $link-color;
+    &:hover, &:focus { color: darken($link-color, 8%); }
+}
+
+// Validation Errors
+
+.validation-summary-errors {
+    ul { padding: 0; margin: 0 0 5px 0;
+        li { padding: 4px; background-color: $color-global-red; color: darken($color-global-red, 9%); list-style: none; }
+    }
+}
+.field-validation-error { color: $color-global-red; font-size: 12px; }
+
+// Buttons
+
+.btn-mvc, .btn-mvc:visited {
+    @include standard-button;
+    &:hover, &:focus, &:active { text-decoration: none; background-color: #e0e0e0; color: #333; }
+}
+
+.btn-mvc-red, .btn-mvc-red:visited {
+    @include standard-button;
+    background-color: $color-global-red;
+    color: #fff;
+    &:hover, &:focus, &:active { background-color: lighten( $color-global-red, 7%); color: #fff; }
+}
+
+.btn-mvc-blue, .btn-mvc-blue:visited {
+    @include standard-button;
+    background-color: $color-global-blue;
+    color: #fff;
+    &:hover, &:focus, &:active { background-color: darken($color-global-blue, 9%); color: #fff; }
+}
+
+.btn-mvc-green, .btn-mvc-green:visited {
+    @include standard-button;
+    background-color: $color-global-green;
+    color: #fff;
+    &:hover, &:focus, &:active { background-color: darken($color-global-green, 9%); color: #fff; }
+}
+
+.btn-mvc-small, .btn-mvc-small:visited { padding: 5px 12px; font-size: 12px; line-height: 12px; }
+.btn-mvc-large, .btn-mvc-large:visited { padding: 9px 25px; font-size: 19px; line-height: 19px; }
+.btn-mvc-fullwidth, .btn-mvc-fullwidth:visited { padding-left: 0; padding-right: 0; width: 100%; display: block; }
+
+.btn-file { position: relative; overflow: hidden;
+    input[type=file] { position: absolute; top: 0; right: 0; min-width: 100%; min-height: 100%; font-size: 100px; text-align: right; filter: alpha(opacity=0); opacity: 0; outline: none; background: white; cursor: inherit; display: block; }
+}
+
+// Padded Row
+
+.paddedrow { padding-top: 10px; padding-bottom: 3px; }
+
+// Top Admin Sub Nav
+
+.topadminsubnav { padding: 0 0 25px 0; }
+
+// Main Admin Body
+
+.mainadminbody { padding-top: 29px; }
+
+// Category List
+
+.mainadmincategorylist { margin: 0; padding: 15px 0;
+    li { font-size: 1.4em; list-style: none; margin: 0 0 10px 0; padding: 10px 0; border-bottom: 1px dotted #eee;
+        &.subcategoryitem { padding: 3px 0; border: 0; }
+    }
+    ul {
+        &.subcategorylist { font-size: 11px; padding: 0 0 0 5px; margin: 0 0 10px 10px; border-left: 2px #eeeeee solid; }
+    }
+}
+
+// Blank Pop Up Holder
+
+.blankcontainer { width: 720px; min-height: 400px; height: auto !important; height: 400px; }
+
+// Fancybox overide
+
+.fancybox-skin { background-color: #fff !Important; }
+
+// Permissions Styles
+
+.editpermissionsspinner { margin: 0 0 0 15px; }
+.fluidheader { padding: 0 0 15px 0; }
+
+// Little fix to the bootstrap append button
+
+.input-append .add-on, .input-append .btn { margin-left: -4px; }
+
+// Members Admin Search
+
+.membersadminsearch, .tablesearch { padding-bottom: 25px; }
+
+// Language Tables
+
+.resourcevalue { width: 200px; }
+.resourcevalueinput { width: 190px; }
+
+// Side bar nav
+
+.sidebar-nav { padding: 5px;
+    ul { padding: 0; }
+}
+
+// Permission Types
+
+.permissiontypes {
+    a, a:visited {
+        .glyphicon-remove { color: #fff; }
+    }
+}
+
+// Log
+
+.logentry { padding: 5px 0; border-bottom: 1px dotted #efefef; }
+
+// Role permission list
+
+.rolepermissionlist { padding: 0; margin: 0;
+    li { list-style: none; padding: 5px 0; }
+}
+
+// Admin section holders
+
+.adminsection { border: 1px #efefef solid; -moz-border-radius: 4px; -webkit-border-radius: 4px; -khtml-border-radius: 4px; border-radius: 4px; padding: 10px; clear: both; margin: 0 0 20px 0; }
+
+// Label / Badge overide
+
+.label, .badge { font-size: 14px; }
+
+// Admin options button
+
+.btn-show-admin-nav { padding: 10px 0; width: 100%; text-align: center; font-size: 16px; line-height: normal; height: auto; display: none; }
+
+// Moderate Topics and Posts
+
+.moderatepanel { padding: 20px 0; }
+.moderatetopicholder {
+    .topicsnippet { padding: 0 0 12px 0; margin: 0 0 12px 0; border-bottom: 3px dotted #efefef;
+        h2 { font-size: 17px; padding: 0 0 0 0; margin: 0 0 0 0; }
+    }
+}
+.moderatepostholder {
+    .postsnippet { padding: 0 0 12px 0; margin: 0 0 12px 0; border-bottom: 3px dotted #efefef;
+        h2 { font-size: 17px; padding: 0; margin: 0; }
+    }
+}
+
+
+
+@media (max-width: $media-query-small) {
+
+    h1 { font-size: 28.5px; }
+
+    /*--- Nav Bar ---*/
+    .navbar-fixed-top, .navbar-fixed-bottom, .navbar-static-top { margin-left: 0; margin-right: 0; }
+    #logindisplay { text-align: center; font-size: 14px; }
+
+    /*-- Dashboard --*/
+    .dashboardrow { padding: 0; }
+    .dashboardrow .span6 { padding-bottom: 10px; }
+
+    /*-- Admin Options --*/
+    .btn-show-admin-nav { display: block; }
+    .admin-options { display: none; }
+
+    /*--- Tabs ---*/
+    .tabs-below > .nav-tabs { border: none; }
+    .tabs-below > .nav-tabs > li { width: 49%; }
+    .tabs-below > .nav-tabs > .active > a { border-color: #ddd; }
+}
+

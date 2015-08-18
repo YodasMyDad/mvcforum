@@ -333,7 +333,13 @@
   <ItemGroup>
     <Content Include="App_Data\Hello.txt" />
     <Content Include="App_Data\NuGetBackup\Hello.txt" />
-    <Content Include="Content\admin\Admin.css" />
+    <Content Include="Content\admin\Admin.css">
+      <DependentUpon>Admin.scss</DependentUpon>
+    </Content>
+    <Content Include="Content\admin\Admin.min.css">
+      <DependentUpon>Admin.css</DependentUpon>
+    </Content>
+    <Content Include="Content\admin\OLDAdmin.css" />
     <Content Include="Content\admin\Images\apple-touch-icon-57-precomposed.png" />
     <Content Include="Content\admin\Images\favicon.ico" />
     <Content Include="Content\admin\Images\ajax-loader.gif" />
@@ -594,6 +600,7 @@
     <Content Include="Content\admin\Images\icons\wooden-box.png" />
     <Content Include="Content\admin\Images\icons\yin-yang.png" />
     <Content Include="Content\admin\Images\icons\zone.png" />
+    <Content Include="Content\admin\Imports.css" />
     <Content Include="Content\badges\jedi.png" />
     <Content Include="Content\badges\MemberForAYearBadge.png" />
     <Content Include="Content\badges\MentionsUmbracoBadge.png" />
@@ -792,6 +799,10 @@
     <Content Include="Areas\Admin\Views\Permissions\PermissionTypes.cshtml" />
     <Content Include="Areas\Admin\Views\AdminLanguage\Create.cshtml" />
     <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Content\admin\Admin.scss" />
+    <Content Include="Content\admin\Admin.css.map">
+      <DependentUpon>Admin.css</DependentUpon>
+    </Content>
     <None Include="job_scheduling_data_2_0.xsd">
       <SubType>Designer</SubType>
     </None>
