@@ -73,7 +73,7 @@ body {
     left: 0;
     right: 0;
   }
-  body.loggedin-true .main-section .createtopicbutton btn-mvc {
+  body.loggedin-true .main-section .createtopicbutton .btn-mvc-green {
     margin-left: 15px;
     margin-right: 15px;
     width: auto;
@@ -1003,6 +1003,12 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
   font-weight: 600;
 }
 
+@media (max-width: 600px) {
+  .postbodytop {
+    display: none;
+  }
+}
+
 .post.solution-true .postbodytop a, .post.solution-true .postbodytop a:visited {
   color: #2abd54;
 }
@@ -1029,7 +1035,7 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
   cursor: pointer;
 }
 
-.postsocial ul li .permalink a, .postsocial ul li .permalink a:visited {
+.postsocial ul li.permalink a, .postsocial ul li.permalink a:visited {
   color: #B3B3B3;
   font-size: 12px;
   font-weight: 300;
@@ -1037,8 +1043,27 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
   margin: 0 5px 0 0;
 }
 
-.postsocial ul li .permalink a:hover, .postsocial ul li .permalink a:focus, .postsocial ul li .permalink a:visited:hover, .postsocial ul li .permalink a:visited:focus {
+.postsocial ul li.permalink a:hover, .postsocial ul li.permalink a:focus, .postsocial ul li.permalink a:visited:hover, .postsocial ul li.permalink a:visited:focus {
   text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .postsocial ul li.permalink {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .postsocial ul li {
+    display: block;
+    padding: 4px 0 0 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .postsocial ul {
+    padding: 10px 0 0 0;
+  }
 }
 
 .postuploadholder {
@@ -1272,6 +1297,12 @@ footer h6 {
 .active-members ul li img {
   -ms-border-radius: 50%;
   border-radius: 50%;
+}
+
+@media (max-width: 767px) {
+  .active-members {
+    margin-top: 20px;
+  }
 }
 
 .forgotpasswordtext {
