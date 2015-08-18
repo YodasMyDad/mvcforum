@@ -355,7 +355,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public MembershipUser GetUser(string username, bool removeTracking = false)
         {
-            var member = _membershipRepository.GetUser(username);
+            var member = _membershipRepository.GetUser(username, removeTracking);
 
             // Do a check to log out the user if they are logged in and have been deleted
             if (member == null && HttpContext.Current.User.Identity.Name == username)

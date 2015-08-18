@@ -21,7 +21,7 @@ namespace MVCForum.Website.Controllers
         protected readonly ISettingsService SettingsService;
         protected readonly ILoggingService LoggingService;
 
-        protected MembershipUser LoggedOnUser;
+        protected MembershipUser LoggedOnReadOnlyUser;
         protected MembershipRole UsersRole;
 
         //private readonly MembershipUser _loggedInUser;
@@ -44,8 +44,8 @@ namespace MVCForum.Website.Controllers
             SettingsService = settingsService;
             LoggingService = loggingService;
 
-            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username, true) : null;
-            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName, true) : LoggedOnUser.Roles.FirstOrDefault();
+            LoggedOnReadOnlyUser = UserIsAuthenticated ? MembershipService.GetUser(Username, true) : null;
+            UsersRole = LoggedOnReadOnlyUser == null ? RoleService.GetRole(AppConstants.GuestRoleName, true) : LoggedOnReadOnlyUser.Roles.FirstOrDefault();
         }
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)

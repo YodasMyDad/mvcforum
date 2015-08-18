@@ -99,7 +99,7 @@ namespace MVCForum.Website.Controllers
             var viewModel = new List<CategoryRowViewModel>();
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var categories = LoggedOnUser.CategoryNotifications.Select(x => x.Category);
+                var categories = LoggedOnReadOnlyUser.CategoryNotifications.Select(x => x.Category);
                 foreach (var category in categories)
                 {
                     var permissionSet = RoleService.GetPermissions(category, UsersRole);
@@ -161,7 +161,7 @@ namespace MVCForum.Website.Controllers
                                                                         SettingsService.GetSettings().TopicsPerPage,
                                                                         int.MaxValue, category.Category.Id);
 
-                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
+                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
 
                     // Create the main view model for the category
                     var viewModel = new ViewCategoryViewModel
@@ -172,8 +172,8 @@ namespace MVCForum.Website.Controllers
                             PageIndex = pageIndex,
                             TotalCount = topics.TotalCount,
                             TotalPages = topics.TotalPages,
-                            User = LoggedOnUser,
-                            IsSubscribed = UserIsAuthenticated && (_categoryNotificationService.GetByUserAndCategory(LoggedOnUser, category.Category).Any())
+                            User = LoggedOnReadOnlyUser,
+                            IsSubscribed = UserIsAuthenticated && (_categoryNotificationService.GetByUserAndCategory(LoggedOnReadOnlyUser, category.Category).Any())
                         };
 
                     // If there are subcategories then add then with their permissions

@@ -61,6 +61,8 @@ namespace MVCForum.Website.Controllers
 
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
+                var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+
                 // Check stop words
                 var stopWords = _bannedWordService.GetAll(true);
                 foreach (var stopWord in stopWords)
@@ -72,7 +74,7 @@ namespace MVCForum.Website.Controllers
                 }
 
                 // Quick check to see if user is locked out, when logged in
-                if (LoggedOnUser.IsLockedOut || !LoggedOnUser.IsApproved)
+                if (loggedOnUser.IsLockedOut || !loggedOnUser.IsApproved)
                 {
                     FormsAuthentication.SignOut();
                     throw new Exception(LocalizationService.GetResourceString("Errors.NoAccess"));
@@ -84,7 +86,7 @@ namespace MVCForum.Website.Controllers
 
                 var akismetHelper = new AkismetHelper(SettingsService);
 
-                newPost = _postService.AddNewPost(postContent, topic, LoggedOnUser, out permissions);
+                newPost = _postService.AddNewPost(postContent, topic, loggedOnUser, out permissions);
 
                 if (!akismetHelper.IsSpam(newPost))
                 {
@@ -119,7 +121,7 @@ namespace MVCForum.Website.Controllers
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 // Create the view model
-                var viewModel = ViewModelMapping.CreatePostViewModel(newPost, new List<Vote>(), permissions, topic, LoggedOnUser, SettingsService.GetSettings(), new List<Favourite>());
+                var viewModel = ViewModelMapping.CreatePostViewModel(newPost, new List<Vote>(), permissions, topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
 
                 // Success send any notifications
                 NotifyNewTopics(topic, unitOfWork);
@@ -149,7 +151,7 @@ namespace MVCForum.Website.Controllers
                 // get the users permissions
                 var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
 
-                if (post.User.Id == LoggedOnUser.Id || permissions[AppConstants.PermissionDeletePosts].IsTicked)
+                if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[AppConstants.PermissionDeletePosts].IsTicked)
                 {
                     var postUser = post.User;
 
@@ -224,7 +226,7 @@ namespace MVCForum.Website.Controllers
                     {
                         // remove the current user from the notification, don't want to notify yourself that you 
                         // have just made a topic!
-                        notifications.Remove(LoggedOnUser.Id);
+                        notifications.Remove(LoggedOnReadOnlyUser.Id);
 
                         if (notifications.Count > 0)
                         {
@@ -290,7 +292,7 @@ namespace MVCForum.Website.Controllers
                     {
                         Reason = viewModel.Reason,
                         ReportedPost = post,
-                        Reporter = LoggedOnUser
+                        Reporter = LoggedOnReadOnlyUser
                     };
                     _reportService.PostReport(report);
 

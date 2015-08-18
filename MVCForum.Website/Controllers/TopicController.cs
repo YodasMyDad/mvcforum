@@ -75,11 +75,11 @@ namespace MVCForum.Website.Controllers
                 var topics = _topicService.GetMembersActivity(pageIndex,
                                                            SettingsService.GetSettings().TopicsPerPage,
                                                            SiteConstants.MembersActivityListSize,
-                                                           LoggedOnUser.Id, 
+                                                           LoggedOnReadOnlyUser.Id, 
                                                            allowedCategories);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
 
                 // create the view model
                 var viewModel = new PostedInViewModel
@@ -103,13 +103,13 @@ namespace MVCForum.Website.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
-                var topicIds = LoggedOnUser.TopicNotifications.Select(x => x.Topic.Id).ToList();
+                var topicIds = LoggedOnReadOnlyUser.TopicNotifications.Select(x => x.Topic.Id).ToList();
                 if (topicIds.Any())
                 {
                     var topics = _topicService.Get(topicIds, allowedCategories);
 
                     // Get the Topic View Models
-                    viewModel = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
+                    viewModel = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
                 }
             }
             return PartialView("GetSubscribedTopics", viewModel);
@@ -139,10 +139,10 @@ namespace MVCForum.Website.Controllers
         {
             var viewModel = new CreateTopicButtonViewModel
                 {
-                    LoggedOnUser = LoggedOnUser
+                    LoggedOnUser = LoggedOnReadOnlyUser
                 };
 
-            if (LoggedOnUser != null)
+            if (LoggedOnReadOnlyUser != null)
             {
                 // Add all categories to a permission set
                 var allCategories = _categoryService.GetAll();
@@ -232,13 +232,13 @@ namespace MVCForum.Website.Controllers
                 var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
 
                 // Is the user allowed to edit this post
-                if (post.User.Id == LoggedOnUser.Id || permissions[AppConstants.PermissionEditPosts].IsTicked)
+                if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[AppConstants.PermissionEditPosts].IsTicked)
                 {
                     // Get the allowed categories for this user
                     var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
 
                     // If this user hasn't got any allowed cats OR they are not allowed to post then abandon
-                    if (allowedCategories.Any() && LoggedOnUser.DisablePosting != true)
+                    if (allowedCategories.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
                     {
                         // Create the model for just the post
                         var viewModel = new CreateEditTopicViewModel
@@ -253,13 +253,13 @@ namespace MVCForum.Website.Controllers
                         if (post.IsTopicStarter)
                         {
                             // See if this user is subscribed to this topic
-                            var subscribedToTopic = LoggedOnUser.TopicNotifications.Any(x => x.Topic.Id == topic.Id);
+                            var topicNotifications = _topicNotificationService.GetByUserAndTopic(LoggedOnReadOnlyUser, topic);
 
                             // Populate the properties we can
                             viewModel.IsLocked = topic.IsLocked;
                             viewModel.IsSticky = topic.IsSticky;
                             viewModel.IsTopicStarter = post.IsTopicStarter;
-                            viewModel.SubscribeToTopic = subscribedToTopic;
+                            viewModel.SubscribeToTopic = topicNotifications.Any();
                             viewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
                             viewModel.Categories = GetBaseSelectListCategories(allowedCategories);
 
@@ -335,7 +335,7 @@ namespace MVCForum.Website.Controllers
             if (ModelState.IsValid)
             {
                 // Quick check to see if user is locked out, when logged in
-                if (LoggedOnUser.IsLockedOut || LoggedOnUser.DisablePosting == true || !LoggedOnUser.IsApproved)
+                if (LoggedOnReadOnlyUser.IsLockedOut || LoggedOnReadOnlyUser.DisablePosting == true || !LoggedOnReadOnlyUser.IsApproved)
                 {
                     FormsAuthentication.SignOut();
                     return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoAccess"));
@@ -350,7 +350,7 @@ namespace MVCForum.Website.Controllers
                     // Get the topic
                     var topic = post.Topic;
 
-                    if (post.User.Id == LoggedOnUser.Id || permissions[AppConstants.PermissionEditPosts].IsTicked)
+                    if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[AppConstants.PermissionEditPosts].IsTicked)
                     {
                         // User has permission so update the post
                         post.PostContent = StringUtils.GetSafeHtml(_bannedWordService.SanitiseBannedWords(editPostViewModel.Content));
@@ -383,10 +383,12 @@ namespace MVCForum.Website.Controllers
                                 var pollAnswersToRemove = new List<PollAnswer>();
                                 if (topic.Poll == null)
                                 {
+                                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+
                                     // Create a new Poll
                                     var newPoll = new Poll
                                     {
-                                        User = LoggedOnUser
+                                        User = loggedOnUser
                                     };
 
                                     // Create the poll
@@ -537,7 +539,7 @@ namespace MVCForum.Website.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
-                if (allowedCategories.Any() && LoggedOnUser.DisablePosting != true)
+                if (allowedCategories.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
                 {
                     var viewModel = PrePareCreateEditTopicViewModel(allowedCategories);
                     return View(viewModel);
@@ -590,7 +592,7 @@ namespace MVCForum.Website.Controllers
             if (ModelState.IsValid)
             {
                 // Quick check to see if user is locked out, when logged in
-                if (LoggedOnUser.IsLockedOut || LoggedOnUser.DisablePosting == true || !LoggedOnUser.IsApproved)
+                if (LoggedOnReadOnlyUser.IsLockedOut || LoggedOnReadOnlyUser.DisablePosting == true || !LoggedOnReadOnlyUser.IsApproved)
                 {
                     FormsAuthentication.SignOut();
                     return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoAccess"));
@@ -621,11 +623,12 @@ namespace MVCForum.Website.Controllers
                         }
 
                         // Create the topic model
+                        var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
                         topic = new Topic
                         {
                             Name = _bannedWordService.SanitiseBannedWords(topicViewModel.Name, bannedWords),
                             Category = category,
-                            User = LoggedOnUser
+                            User = loggedOnUser
                         };
 
                         // Check Permissions for topic topions
@@ -653,7 +656,7 @@ namespace MVCForum.Website.Controllers
                                     // Create a new Poll
                                     var newPoll = new Poll
                                     {
-                                        User = LoggedOnUser
+                                        User = loggedOnUser
                                     };
 
                                     // Create the poll
@@ -698,7 +701,7 @@ namespace MVCForum.Website.Controllers
                             _membershipUserPointsService.Add(new MembershipUserPoints
                             {
                                 Points = SettingsService.GetSettings().PointsAddedPerPost,
-                                User = LoggedOnUser
+                                User = loggedOnUser
                             });
 
                             // Check for moderation
@@ -724,11 +727,11 @@ namespace MVCForum.Website.Controllers
                                 if (topicViewModel.Files != null)
                                 {
                                     // Get the permissions for this category, and check they are allowed to update
-                                    if (permissions[AppConstants.PermissionAttachFiles].IsTicked && LoggedOnUser.DisableFileUploads != true)
+                                    if (permissions[AppConstants.PermissionAttachFiles].IsTicked && LoggedOnReadOnlyUser.DisableFileUploads != true)
                                     {
                                         // woot! User has permission and all seems ok
                                         // Before we save anything, check the user already has an upload folder and if not create one
-                                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnUser.Id));
+                                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnReadOnlyUser.Id));
                                         if (!Directory.Exists(uploadFolderPath))
                                         {
                                             Directory.CreateDirectory(uploadFolderPath);
@@ -757,7 +760,7 @@ namespace MVCForum.Website.Controllers
                                                 {
                                                     Filename = uploadResult.UploadedFileName,
                                                     Post = topicPost,
-                                                    MembershipUser = LoggedOnUser
+                                                    MembershipUser = loggedOnUser
                                                 };
                                                 _uploadedFileService.Add(uploadedFile);
                                             }
@@ -783,7 +786,7 @@ namespace MVCForum.Website.Controllers
                                     var topicNotification = new TopicNotification
                                     {
                                         Topic = topic,
-                                        User = LoggedOnUser
+                                        User = loggedOnUser
                                     };
                                     //save
                                     _topicNotificationService.Add(topicNotification);
@@ -894,7 +897,7 @@ namespace MVCForum.Website.Controllers
                         return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
                     }
 
-                    var viewModel = ViewModelMapping.CreateTopicViewModel(topic, permissions, posts.ToList(), starterPost, posts.PageIndex, posts.TotalCount, posts.TotalPages, LoggedOnUser, SettingsService.GetSettings(), true);
+                    var viewModel = ViewModelMapping.CreateTopicViewModel(topic, permissions, posts.ToList(), starterPost, posts.PageIndex, posts.TotalCount, posts.TotalPages, LoggedOnReadOnlyUser, SettingsService.GetSettings(), true);
 
                     // If there is a quote querystring
                     var quote = Request["quote"];
@@ -914,7 +917,7 @@ namespace MVCForum.Website.Controllers
 
                     // User has permission lets update the topic view count
                     // but only if this topic doesn't belong to the user looking at it
-                    var addView = !(UserIsAuthenticated && LoggedOnUser.Id == topic.User.Id);
+                    var addView = !(UserIsAuthenticated && LoggedOnReadOnlyUser.Id == topic.User.Id);
 
                     if (!BotUtils.UserIsBot() && addView)
                     {
@@ -940,33 +943,36 @@ namespace MVCForum.Website.Controllers
         [HttpPost]
         public PartialViewResult AjaxMorePosts(GetMorePostsViewModel getMorePostsViewModel)
         {
-            // Get the topic
-            var topic = _topicService.Get(getMorePostsViewModel.TopicId);
-
-            // Get the permissions for the category that this topic is in
-            var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
-
-            // If this user doesn't have access to this topic then just return nothing
-            if (permissions[AppConstants.PermissionDenyAccess].IsTicked)
+            using (UnitOfWorkManager.NewUnitOfWork())
             {
-                return null;
-            }
+                // Get the topic
+                var topic = _topicService.Get(getMorePostsViewModel.TopicId);
 
-            var orderBy = !string.IsNullOrEmpty(getMorePostsViewModel.Order) ?
-                                      EnumUtils.ReturnEnumValueFromString<PostOrderBy>(getMorePostsViewModel.Order) : PostOrderBy.Standard;
+                // Get the permissions for the category that this topic is in
+                var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
 
-            var posts = _postService.GetPagedPostsByTopic(getMorePostsViewModel.PageIndex, SettingsService.GetSettings().PostsPerPage, int.MaxValue, topic.Id, orderBy);
-            var postIds = posts.Select(x => x.Id).ToList();
-            var votes = _voteService.GetVotesByPosts(postIds);
-            var favs = _favouriteService.GetAllPostFavourites(postIds);
-            var viewModel = new ShowMorePostsViewModel
+                // If this user doesn't have access to this topic then just return nothing
+                if (permissions[AppConstants.PermissionDenyAccess].IsTicked)
                 {
-                    Posts = ViewModelMapping.CreatePostViewModels(posts, votes, permissions, topic, LoggedOnUser, SettingsService.GetSettings(), favs),
+                    return null;
+                }
+
+                var orderBy = !string.IsNullOrEmpty(getMorePostsViewModel.Order) ?
+                                          EnumUtils.ReturnEnumValueFromString<PostOrderBy>(getMorePostsViewModel.Order) : PostOrderBy.Standard;
+
+                var posts = _postService.GetPagedPostsByTopic(getMorePostsViewModel.PageIndex, SettingsService.GetSettings().PostsPerPage, int.MaxValue, topic.Id, orderBy);
+                var postIds = posts.Select(x => x.Id).ToList();
+                var votes = _voteService.GetVotesByPosts(postIds);
+                var favs = _favouriteService.GetAllPostFavourites(postIds);
+                var viewModel = new ShowMorePostsViewModel
+                {
+                    Posts = ViewModelMapping.CreatePostViewModels(posts, votes, permissions, topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), favs),
                     Topic = topic,
                     Permissions = permissions
                 };
 
-            return PartialView(viewModel);
+                return PartialView(viewModel);
+            }
         }
 
         public ActionResult TopicsByTag(string tag, int? p)
@@ -985,7 +991,7 @@ namespace MVCForum.Website.Controllers
                                                            tag, allowedCategories);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
 
                 // create the view model
                 var viewModel = new TagTopicsViewModel
@@ -1009,13 +1015,13 @@ namespace MVCForum.Website.Controllers
                 // Returns the formatted string to search on
                 var formattedSearchTerm = StringUtils.ReturnSearchString(searchTerm);
                 var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
-                List<Topic> topics = null;
+                IList<Topic> topics = null;
                 try
                 {
-                    var searchResults = _topicService.SearchTopics(0, SiteConstants.SimilarTopicsListSize, SiteConstants.SimilarTopicsListSize, formattedSearchTerm, allowedCategories);
+                    var searchResults = _topicService.SearchTopics(SiteConstants.SimilarTopicsListSize, formattedSearchTerm, allowedCategories);
                     if (searchResults != null)
                     {
-                        topics = searchResults.ToList();
+                        topics = searchResults;
                     }
                 }
                 catch (Exception ex)
@@ -1045,7 +1051,7 @@ namespace MVCForum.Website.Controllers
                                                            allowedCategories);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
 
                 // create the view model
                 var viewModel = new ActiveTopicsViewModel
@@ -1086,7 +1092,7 @@ namespace MVCForum.Website.Controllers
                     var topics = _topicService.GetPopularTopics(from, to, allowedCategories, (int)amountToShow);
 
                     // Get the Topic View Models
-                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
+                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
 
                     // create the view model
                     viewModel = new HotTopicsViewModel
@@ -1115,7 +1121,7 @@ namespace MVCForum.Website.Controllers
             {
                 // remove the current user from the notification, don't want to notify yourself that you 
                 // have just made a topic!
-                notifications.Remove(LoggedOnUser.Id);
+                notifications.Remove(LoggedOnReadOnlyUser.Id);
 
                 if (notifications.Count > 0)
                 {

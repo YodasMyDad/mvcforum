@@ -45,7 +45,8 @@ namespace MVCForum.Website.Controllers
             {
                 try
                 {
-                    var databaseUpdateNeededOne = _badgeService.ProcessBadge(BadgeType.VoteUp, LoggedOnUser);
+                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.UserName);
+                    var databaseUpdateNeededOne = _badgeService.ProcessBadge(BadgeType.VoteUp, loggedOnUser);
                     if (databaseUpdateNeededOne)
                     {
                         unitOfwork.SaveChanges();
@@ -79,7 +80,8 @@ namespace MVCForum.Website.Controllers
             {
                 try
                 {
-                    var databaseUpdateNeededOne = _badgeService.ProcessBadge(BadgeType.VoteDown, LoggedOnUser);
+                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.UserName);
+                    var databaseUpdateNeededOne = _badgeService.ProcessBadge(BadgeType.VoteDown, loggedOnUser);
                     if (databaseUpdateNeededOne)
                     {
                         unitOfwork.SaveChanges();
@@ -116,7 +118,8 @@ namespace MVCForum.Website.Controllers
                 {
                     try
                     {
-                        var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Post, LoggedOnUser);
+                        var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.UserName);
+                        var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Post, loggedOnUser);
 
                         if (databaseUpdateNeeded)
                         {
@@ -164,9 +167,10 @@ namespace MVCForum.Website.Controllers
             {
                 try
                 {
-                    if (LoggedOnUser != null)
+                    if (LoggedOnReadOnlyUser != null)
                     {
-                        var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Profile, LoggedOnUser);
+                        var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.UserName);
+                        var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Profile, loggedOnUser);
 
                         if (databaseUpdateNeeded)
                         {

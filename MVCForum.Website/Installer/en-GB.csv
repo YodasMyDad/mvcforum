@@ -269,7 +269,7 @@ Post.Quote,Quote
 Members.Label.UploadNewAvatar,Upload a new profile image
 Member.HasNewPrivateMessages,You have new unread Private messages
 Badge.AuthorMarkAsSolutionBadge.Name,Your Question Solved
-Badge.AuthorMarkAsSolutionBadge.Desc,This badge is awarded to topic authors the first time they have a post marked as the answer
+Badge.AuthorMarkAsSolutionBadge.Desc,This badge is awarded to a user when they mark another users post as the solution to their topic
 Badge.UserVoteUpBadge.Name,You've Given Your First Vote Up
 Badge.UserVoteUpBadge.Desc,This badge is awarded to users after they make their first vote up
 Badge.PostMentionsUmbraco.Name,Umbraco Fan
@@ -277,7 +277,7 @@ Badge.PostMentionsUmbraco.Desc,This badge is awarded to a user who mentions Umbr
 Badge.PosterVoteUpBadge.Name,First Vote Up Received
 Badge.PosterVoteUpBadge.Desc,This badge is awarded to users after they receive their first vote up from another user
 Badge.PosterMarkAsSolutionBadge.Name,Post Selected As Answer
-Badge.PosterMarkAsSolutionBadge.Desc,This badge is awarded to the poster of a post marked as the topic answer - The first time they author an answer
+Badge.PosterMarkAsSolutionBadge.Desc,This badge is awarded to a user when their post is marked as the solution to a topic
 Badge.PadawanBadge.Name,Padawan
 Badge.PadawanBadge.Desc,Had 10 or more posts successfully marked as an answer
 Badge.OneThousandPoints.Name,Thousand Pointer

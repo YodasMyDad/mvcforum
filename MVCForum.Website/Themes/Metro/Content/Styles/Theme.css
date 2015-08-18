@@ -26,8 +26,8 @@
   background-color: #6aa6e3;
 }
 
-.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-default .navbar-nav > .open > a:focus {
-  background-color: #287cd3;
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:visited, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+  background-color: #287cd3 !important;
   color: #fff;
 }
 
@@ -403,24 +403,24 @@ a:hover, a:focus, a:visited:hover, a:visited:focus {
   margin: 0;
 }
 
-.relatedtopicsholder .relatedtopicskey ul ul li {
+.relatedtopicsholder .relatedtopicskey ul li {
   padding: 1px 0;
   display: block;
   margin: 0;
   list-style: none;
 }
 
-.relatedtopicsholder .relatedtopicskey ul ul li span.topicvotessmall {
+.relatedtopicsholder .relatedtopicskey ul li span.topicvotessmall {
   margin: 2px 0 0 5px;
   display: inline-block;
-  padding: 0 4px;
+  padding: 0 7px;
   border-bottom: none;
   background-color: #efefef;
   -ms-border-radius: 50%;
   border-radius: 50%;
 }
 
-.relatedtopicsholder .relatedtopicskey ul ul li a, .relatedtopicsholder .relatedtopicskey ul ul li a:visited {
+.relatedtopicsholder .relatedtopicskey ul li a, .relatedtopicsholder .relatedtopicskey ul li a:visited {
   font-size: 16px;
   line-height: 25px;
 }
@@ -591,6 +591,10 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
   max-width: 40px;
 }
 
+.activityentry .activityinfotext {
+  font-size: 18px;
+}
+
 .activityentry:last-child {
   border: none;
 }
@@ -603,6 +607,15 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 .publicbadgeline p {
   margin: 0;
   padding: 0;
+}
+
+.publicbadgeline .publicbadge {
+  text-align: center;
+}
+
+.publicbadgeline .publicbadgename {
+  font-size: 18px;
+  margin-bottom: 4px;
 }
 
 .publicbadgeline .publicbadgenamedesc {
@@ -1496,7 +1509,7 @@ footer h6 {
   margin: 0 0 0 5px;
 }
 
-.topictagholder span.tag #Tags_addTag #Tags_tag {
+.topictagholder #Tags_addTag #Tags_tag {
   display: block;
   width: 100% !important;
   height: 34px;

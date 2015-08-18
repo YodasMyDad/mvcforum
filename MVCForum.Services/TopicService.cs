@@ -214,13 +214,11 @@ namespace MVCForum.Services
         /// <summary>
         /// Returns a paged amount of searched topics by a string search value
         /// </summary>
-        /// <param name="pageIndex"></param>
-        /// <param name="pageSize"></param>
         /// <param name="amountToTake"></param>
         /// <param name="searchTerm"></param>
         /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public PagedList<Topic> SearchTopics(int pageIndex, int pageSize, int amountToTake, string searchTerm, List<Category> allowedCategories)
+        public IList<Topic> SearchTopics(int amountToTake, string searchTerm, List<Category> allowedCategories)
         {
             // Create search term
             var search = StringUtils.ReturnSearchString(searchTerm);
@@ -229,7 +227,7 @@ namespace MVCForum.Services
             var splitSearch = search.Split(' ').ToList();
 
             // Pass the sanitised split words to the repo
-            return _topicRepository.SearchTopics(pageIndex, pageSize, amountToTake, splitSearch, allowedCategories);
+            return _topicRepository.SearchTopics(amountToTake, splitSearch, allowedCategories);
         }
 
         public PagedList<Topic> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> topicIds, List<Category> allowedCategories)

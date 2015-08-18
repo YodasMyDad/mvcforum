@@ -24,7 +24,7 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var highEarners = _membershipUserPointsService.GetCurrentWeeksPoints(20);
+                var highEarners = _membershipUserPointsService.GetCurrentWeeksPoints(10);
                 var viewModel = new HighEarnersPointViewModel { HighEarners = highEarners };
                 return PartialView(viewModel);
             }

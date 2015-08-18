@@ -46,18 +46,21 @@ namespace MVCForum.Website.Controllers
             if (Request.IsAjaxRequest())
             {
                 // Quick check to see if user is locked out, when logged in
-                if (LoggedOnUser.IsLockedOut | !LoggedOnUser.IsApproved)
+                if (LoggedOnReadOnlyUser.IsLockedOut | !LoggedOnReadOnlyUser.IsApproved)
                 {
                     FormsAuthentication.SignOut();
                     throw new Exception(LocalizationService.GetResourceString("Errors.NoAccess"));
                 }
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
+                    // Get a db user
+                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+
                     // Firstly get the post
                     var post = _postService.Get(voteUpViewModel.Post);
 
                     // Now get the current user
-                    var voter = LoggedOnUser;
+                    var voter = loggedOnUser;
 
                     // Also get the user that wrote the post
                     var postWriter = MembershipService.GetUser(post.User.Id);
@@ -87,17 +90,20 @@ namespace MVCForum.Website.Controllers
             if (Request.IsAjaxRequest())
             {
                 // Quick check to see if user is locked out, when logged in
-                if (LoggedOnUser.IsLockedOut | !LoggedOnUser.IsApproved)
+                if (LoggedOnReadOnlyUser.IsLockedOut | !LoggedOnReadOnlyUser.IsApproved)
                 {
                     FormsAuthentication.SignOut();
                     throw new Exception(LocalizationService.GetResourceString("Errors.NoAccess"));
                 }
 
+                // Get a db user
+                var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+
                 // Firstly get the post
                 var post = _postService.Get(voteDownViewModel.Post);
 
                 // Now get the current user
-                var voter = LoggedOnUser;
+                var voter = loggedOnUser;
 
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
@@ -129,8 +135,11 @@ namespace MVCForum.Website.Controllers
             if (voter.Id != postWriter.Id)
             {
                 // Not the same person, now check they haven't voted on this post before
-                if (post.Votes.All(x => x.User.Id != LoggedOnUser.Id))
+                if (post.Votes.All(x => x.User.Id != LoggedOnReadOnlyUser.Id))
                 {
+
+                    // Get a db user
+                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
 
                     // Points to add or subtract to a user
                     var usersPoints = (postType == PostType.Negative) ?
@@ -145,7 +154,7 @@ namespace MVCForum.Website.Controllers
                         Post = post,
                         User = voter,
                         Amount = (postType == PostType.Negative) ? (-1) : (1),
-                        VotedByMembershipUser = LoggedOnUser,
+                        VotedByMembershipUser = loggedOnUser,
                         DateVoted = DateTime.UtcNow
                     };
                     _voteService.Add(vote);
@@ -170,7 +179,7 @@ namespace MVCForum.Website.Controllers
             if (Request.IsAjaxRequest())
             {
                 // Quick check to see if user is locked out, when logged in
-                if (LoggedOnUser.IsLockedOut | !LoggedOnUser.IsApproved)
+                if (LoggedOnReadOnlyUser.IsLockedOut | !LoggedOnReadOnlyUser.IsApproved)
                 {
                     FormsAuthentication.SignOut();
                     throw new Exception(LocalizationService.GetResourceString("Errors.NoAccess"));
@@ -178,6 +187,10 @@ namespace MVCForum.Website.Controllers
 
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
+
+                    // Get a db user
+                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+
                     // Firstly get the post
                     var post = _postService.Get(markAsSolutionViewModel.Post);
 
@@ -188,7 +201,7 @@ namespace MVCForum.Website.Controllers
                     var topic = post.Topic;
 
                     // Now get the current user
-                    var marker = LoggedOnUser;
+                    var marker = loggedOnUser;
                     try
                     {
                         var solved = _topicService.SolveTopic(topic, post, marker, solutionWriter);

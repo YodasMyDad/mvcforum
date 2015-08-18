@@ -55,7 +55,7 @@ namespace MVCForum.Website.Controllers
                             // Get the permissions for this category, and check they are allowed to update and 
                             // not trying to be a sneaky mofo
                             var permissions = RoleService.GetPermissions(category, UsersRole);
-                            if (permissions[AppConstants.PermissionAttachFiles].IsTicked == false || LoggedOnUser.DisableFileUploads == true)
+                            if (permissions[AppConstants.PermissionAttachFiles].IsTicked == false || LoggedOnReadOnlyUser.DisableFileUploads == true)
                             {
                                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                                 {
@@ -68,7 +68,7 @@ namespace MVCForum.Website.Controllers
 
                             // woot! User has permission and all seems ok
                             // Before we save anything, check the user already has an upload folder and if not create one
-                            var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnUser.Id));
+                            var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnReadOnlyUser.Id));
                             if (!Directory.Exists(uploadFolderPath))
                             {
                                 Directory.CreateDirectory(uploadFolderPath);
@@ -92,11 +92,12 @@ namespace MVCForum.Website.Controllers
                                     }
 
                                     // Add the filename to the database
+                                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
                                     var uploadedFile = new UploadedFile
                                         {
                                             Filename = uploadResult.UploadedFileName,
                                             Post = post,
-                                            MembershipUser = LoggedOnUser
+                                            MembershipUser = loggedOnUser
                                         };
                                     _uploadedFileService.Add(uploadedFile);
 
@@ -150,7 +151,7 @@ namespace MVCForum.Website.Controllers
                         var post = uploadedFile.Post;
                         topic = post.Topic;
 
-                        if (UsersRole.RoleName == AppConstants.AdminRoleName || uploadedFile.MembershipUser.Id == LoggedOnUser.Id)
+                        if (UsersRole.RoleName == AppConstants.AdminRoleName || uploadedFile.MembershipUser.Id == LoggedOnReadOnlyUser.Id)
                         {
                             // Ok to delete file
                             // Remove it from the post

@@ -1,5 +1,4 @@
-﻿@using MVCForum.Domain.Constants
-<nav class="navbar navbar-inverse">
+﻿<nav class="navbar navbar-inverse">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#mvcforum-nav">
@@ -12,10 +11,9 @@
                 <img src="@Url.Content("~/themes/metro/content/images/logo.png")" alt="@Html.Lang("Site.MvcForum")" class="logoimg" />  
             </a>
         </div>
-
         <div class="collapse navbar-collapse" id="mvcforum-nav">
             <ul class="nav navbar-nav">
-                <li><a href="/">Main Site</a></li>
+                <li><a href="@Url.Content("~/")">Main Site</a></li>
                 <li>@Html.AdminActionLink("Admin Home", "Index", "Admin")</li>
             </ul>
         </div>

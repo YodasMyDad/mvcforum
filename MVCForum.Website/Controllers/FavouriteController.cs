@@ -11,7 +11,7 @@ using MVCForum.Website.ViewModels.Mapping;
 
 namespace MVCForum.Website.Controllers
 {
-    public partial class FavouriteController :  BaseController
+    public partial class FavouriteController : BaseController
     {
         private readonly ITopicService _topicService;
         private readonly IPostService _postService;
@@ -51,24 +51,27 @@ namespace MVCForum.Website.Controllers
         [Authorize]
         public ActionResult Index()
         {
-            // Get the favourites
-            var favourites = _favouriteService.GetAllByMember(LoggedOnUser.Id);
-
-            // Pull out the posts
-            var posts = favourites.Select(x => x.Post);
-
-            // Create the view Model
-            var viewModel = new MyFavouritesViewModel();
-
-            // Map the view models
-            // TODO - Need to improve performance of this
-            foreach (var post in posts)
+            using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
-                viewModel.Posts.Add(ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions, post.Topic, LoggedOnUser, SettingsService.GetSettings(), post.Favourites.ToList()));
+                // Get the favourites
+                var favourites = _favouriteService.GetAllByMember(LoggedOnReadOnlyUser.Id);
+
+                // Pull out the posts
+                var posts = favourites.Select(x => x.Post);
+
+                // Create the view Model
+                var viewModel = new MyFavouritesViewModel();
+
+                // Map the view models
+                // TODO - Need to improve performance of this
+                foreach (var post in posts)
+                {
+                    var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
+                    viewModel.Posts.Add(ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions, post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList()));
+                }
+
+                return View(viewModel);
             }
-           
-            return View(viewModel);
         }
 
 
@@ -76,7 +79,7 @@ namespace MVCForum.Website.Controllers
         [Authorize]
         public ActionResult FavouritePost(FavouritePostViewModel viewModel)
         {
-            if (Request.IsAjaxRequest() && LoggedOnUser != null)
+            if (Request.IsAjaxRequest() && LoggedOnReadOnlyUser != null)
             {
                 using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
                 {
@@ -87,7 +90,8 @@ namespace MVCForum.Website.Controllers
                         string returnValue;
 
                         // See if this is a user adding or removing the favourite
-                        var existingFavourite = _favouriteService.GetByMemberAndPost(LoggedOnUser.Id, post.Id);
+                        var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                        var existingFavourite = _favouriteService.GetByMemberAndPost(loggedOnUser.Id, post.Id);
                         if (existingFavourite != null)
                         {
                             _favouriteService.Delete(existingFavourite);
@@ -98,7 +102,7 @@ namespace MVCForum.Website.Controllers
                             var favourite = new Favourite
                             {
                                 DateCreated = DateTime.UtcNow,
-                                Member = LoggedOnUser,
+                                Member = loggedOnUser,
                                 Post = post,
                                 Topic = topic
                             };

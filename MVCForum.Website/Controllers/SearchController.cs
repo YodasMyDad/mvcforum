@@ -70,7 +70,7 @@ namespace MVCForum.Website.Controllers
                     var favs = _favouriteService.GetAllPostFavourites(postIds);
 
                     // Create the post view models
-                    var viewModels = ViewModelMapping.CreatePostViewModels(posts.ToList(), votes, topicPermissions, LoggedOnUser, settings, favs);
+                    var viewModels = ViewModelMapping.CreatePostViewModels(posts.ToList(), votes, topicPermissions, LoggedOnReadOnlyUser, settings, favs);
 
                     // create the view model
                     var viewModel = new SearchViewModel

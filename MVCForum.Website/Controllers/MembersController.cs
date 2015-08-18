@@ -194,7 +194,7 @@ namespace MVCForum.Website.Controllers
             if (UserIsAuthenticated)
             {
                 var rightNow = DateTime.UtcNow;
-                var usersDate = LoggedOnUser.LastActivityDate ?? DateTime.UtcNow.AddDays(-1);
+                var usersDate = LoggedOnReadOnlyUser.LastActivityDate ?? DateTime.UtcNow.AddDays(-1);
 
                 var span = rightNow.Subtract(usersDate);
                 var totalMins = span.TotalMinutes;
@@ -203,8 +203,11 @@ namespace MVCForum.Website.Controllers
                 {
                     using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                     {
+                        // Actually get the user, LoggedOnUser has no tracking
+                        var loggedOnUser = MembershipService.GetUser(Username);
+
                         // Update users last activity date so we can show the latest users online
-                        LoggedOnUser.LastActivityDate = DateTime.UtcNow;
+                        loggedOnUser.LastActivityDate = DateTime.UtcNow;
 
                         // Update
                         try
@@ -229,7 +232,7 @@ namespace MVCForum.Website.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var member = MembershipService.GetUserBySlug(slug);
-                var loggedonId = UserIsAuthenticated ? LoggedOnUser.Id : Guid.Empty;
+                var loggedonId = UserIsAuthenticated ? LoggedOnReadOnlyUser.Id : Guid.Empty;
                 var permissions = RoleService.GetPermissions(null, UsersRole);
                 return View(new ViewMemberViewModel
                 {
@@ -760,7 +763,7 @@ namespace MVCForum.Website.Controllers
                     var topics = posts.Select(x => x.Topic).Distinct().Take(6).OrderByDescending(x => x.LastPost.DateCreated).ToList();
 
                     // Get the Topic View Models
-                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnUser, allowedCategories, SettingsService.GetSettings());
+                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
 
                     // create the view model
                     var viewModel = new ViewMemberDiscussionsViewModel
@@ -799,7 +802,7 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var loggedOnUserId = (LoggedOnUser != null ? LoggedOnUser.Id : Guid.Empty);
+                var loggedOnUserId = (LoggedOnReadOnlyUser != null ? LoggedOnReadOnlyUser.Id : Guid.Empty);
 
                 var permissions = RoleService.GetPermissions(null, UsersRole);
 
@@ -822,7 +825,7 @@ namespace MVCForum.Website.Controllers
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-                var loggedOnUserId = (LoggedOnUser != null ? LoggedOnUser.Id : Guid.Empty);
+                var loggedOnUserId = (LoggedOnReadOnlyUser != null ? LoggedOnReadOnlyUser.Id : Guid.Empty);
                 var permissions = RoleService.GetPermissions(null, UsersRole);
 
                 // Check is has permissions
@@ -861,7 +864,7 @@ namespace MVCForum.Website.Controllers
                     if (userModel.Files != null)
                     {
                         // Before we save anything, check the user already has an upload folder and if not create one
-                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnUser.Id));
+                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnReadOnlyUser.Id));
                         if (!Directory.Exists(uploadFolderPath))
                         {
                             Directory.CreateDirectory(uploadFolderPath);
@@ -994,9 +997,9 @@ namespace MVCForum.Website.Controllers
         public PartialViewResult SideAdminPanel()
         {
             var count = 0;
-            if (LoggedOnUser != null)
+            if (LoggedOnReadOnlyUser != null)
             {
-                count = _privateMessageService.NewPrivateMessageCount(LoggedOnUser.Id);
+                count = _privateMessageService.NewPrivateMessageCount(LoggedOnReadOnlyUser.Id);
             }
 
             if (count > 0)
@@ -1007,7 +1010,7 @@ namespace MVCForum.Website.Controllers
                     MessageType = GenericMessages.info
                 };
             }
-            return PartialView(new ViewAdminSidePanelViewModel { CurrentUser = LoggedOnUser, NewPrivateMessageCount = count });
+            return PartialView(new ViewAdminSidePanelViewModel { CurrentUser = LoggedOnReadOnlyUser, NewPrivateMessageCount = count });
         }
 
         public PartialViewResult AdminMemberProfileTools()
@@ -1068,7 +1071,7 @@ namespace MVCForum.Website.Controllers
                                      {
                                          Reason = viewModel.Reason,
                                          ReportedMember = user,
-                                         Reporter = LoggedOnUser
+                                         Reporter = LoggedOnReadOnlyUser
                                      };
                     _reportService.MemberReport(report);
 
@@ -1148,7 +1151,8 @@ namespace MVCForum.Website.Controllers
                 if (ModelState.IsValid)
                 {
                     // ChangePassword will throw an exception rather than return false in certain failure scenarios.
-                    changePasswordSucceeded = MembershipService.ChangePassword(LoggedOnUser, model.OldPassword, model.NewPassword);
+                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                    changePasswordSucceeded = MembershipService.ChangePassword(loggedOnUser, model.OldPassword, model.NewPassword);
 
                     try
                     {

@@ -19,7 +19,7 @@ namespace MVCForum.Domain.Interfaces.Repositories
         PagedList<Topic> GetPagedPendingTopics(int pageIndex, int pageSize, List<Category> allowedCategories);
         PagedList<Topic> GetPagedTopicsByCategory(int pageIndex, int pageSize, int amountToTake, Guid categoryId);
         PagedList<Topic> GetPagedTopicsAll(int pageIndex, int pageSize, int amountToTake, List<Category> allowedCategories);
-        PagedList<Topic> SearchTopics(int pageIndex, int pageSize, int amountToTake, List<string> searchTerm, List<Category> allowedCategories);
+        IList<Topic> SearchTopics(int amountToTake, List<string> searchTerm, List<Category> allowedCategories);
         PagedList<Topic> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> topicIds, List<Category> allowedCategories);
         IList<Topic> GetTopicsByCsv(int amountToTake, List<Guid> topicIds, List<Category> allowedCategories);
         IList<Topic> GetRssTopicsByCategory(int amountToTake, Guid categoryId);

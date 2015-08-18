@@ -53,7 +53,7 @@ namespace MVCForum.Website.Controllers
                                 var categoryNotification = new CategoryNotification
                                 {
                                     Category = cat,
-                                    User = LoggedOnUser
+                                    User = LoggedOnReadOnlyUser
                                 };
                                 //save
 
@@ -73,7 +73,7 @@ namespace MVCForum.Website.Controllers
                                 var topicNotification = new TopicNotification
                                 {
                                     Topic = topic,
-                                    User = LoggedOnUser
+                                    User = LoggedOnReadOnlyUser
                                 };
                                 //save
 
@@ -119,7 +119,7 @@ namespace MVCForum.Website.Controllers
                             if (cat != null)
                             {        
                                 // get the notifications by user
-                                var notifications = _categoryNotificationService.GetByUserAndCategory(LoggedOnUser, cat);
+                                var notifications = _categoryNotificationService.GetByUserAndCategory(LoggedOnReadOnlyUser, cat);
 
                                 if(notifications.Any())
                                 {
@@ -140,7 +140,7 @@ namespace MVCForum.Website.Controllers
                             if (topic != null)
                             {
                                 // get the notifications by user
-                                var notifications = _topicNotificationService.GetByUserAndTopic(LoggedOnUser, topic, true);
+                                var notifications = _topicNotificationService.GetByUserAndTopic(LoggedOnReadOnlyUser, topic, true);
 
                                 if (notifications.Any())
                                 {

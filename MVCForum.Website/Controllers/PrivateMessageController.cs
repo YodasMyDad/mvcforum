@@ -30,7 +30,7 @@ namespace MVCForum.Website.Controllers
 
         public ActionResult Index(int? p)
         {
-            if (LoggedOnUser.DisablePrivateMessages == true)
+            if (LoggedOnReadOnlyUser.DisablePrivateMessages == true)
             {
                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
@@ -42,7 +42,7 @@ namespace MVCForum.Website.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = p ?? 1;
-                var pagedMessages = _privateMessageService.GetUsersPrivateMessages(pageIndex, SiteConstants.PrivateMessageListSize, LoggedOnUser);
+                var pagedMessages = _privateMessageService.GetUsersPrivateMessages(pageIndex, SiteConstants.PrivateMessageListSize, LoggedOnReadOnlyUser);
                 var viewModel = new ListPrivateMessageViewModel
                 {
                     Messages = pagedMessages,
@@ -68,13 +68,13 @@ namespace MVCForum.Website.Controllers
                 {
 
                     // Check if private messages are enabled
-                    if (!SettingsService.GetSettings().EnablePrivateMessages || LoggedOnUser.DisablePrivateMessages == true)
+                    if (!SettingsService.GetSettings().EnablePrivateMessages || LoggedOnReadOnlyUser.DisablePrivateMessages == true)
                     {
                         return Content(LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }
 
                     // Check outbox size of logged in user
-                    var senderCount = _privateMessageService.GetAllSentByUser(LoggedOnUser.Id).Count;
+                    var senderCount = _privateMessageService.GetAllSentByUser(LoggedOnReadOnlyUser.Id).Count;
                     if (senderCount > SettingsService.GetSettings().MaxPrivateMessagesPerMember)
                     {
                         return Content(LocalizationService.GetResourceString("PM.SentItemsOverCapcity"));
@@ -86,8 +86,8 @@ namespace MVCForum.Website.Controllers
                         sb.AppendFormat("<p>{0}</p>", LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeBody"));
                         var email = new Email
                         {
-                            EmailTo = LoggedOnUser.Email,
-                            NameTo = LoggedOnUser.UserName,
+                            EmailTo = LoggedOnReadOnlyUser.Email,
+                            NameTo = LoggedOnReadOnlyUser.UserName,
                             Subject = LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeSubject")
                         };
                         email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
@@ -111,7 +111,7 @@ namespace MVCForum.Website.Controllers
         [HttpPost]
         public ActionResult Create(CreatePrivateMessageViewModel createPrivateMessageViewModel)
         {
-            if (!SettingsService.GetSettings().EnablePrivateMessages || LoggedOnUser.DisablePrivateMessages == true)
+            if (!SettingsService.GetSettings().EnablePrivateMessages || LoggedOnReadOnlyUser.DisablePrivateMessages == true)
             {
                 throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
             }
@@ -119,8 +119,10 @@ namespace MVCForum.Website.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+
                     // Check flood control
-                    var lastMessage = _privateMessageService.GetLastSentPrivateMessage(LoggedOnUser.Id);
+                    var lastMessage = _privateMessageService.GetLastSentPrivateMessage(LoggedOnReadOnlyUser.Id);
                     // If this message they are sending now, is to the same person then ignore flood control
                     if (lastMessage != null && createPrivateMessageViewModel.To != lastMessage.UserTo.Id)
                     {
@@ -138,12 +140,12 @@ namespace MVCForum.Website.Controllers
                         // Map the view model to message
                         var privateMessage = new PrivateMessage
                         {
-                            UserFrom = LoggedOnUser,
+                            UserFrom = loggedOnUser,
                             Message = createPrivateMessageViewModel.Message,
                         };
 
                         // check the member
-                        if (!String.Equals(memberTo.UserName, LoggedOnUser.UserName, StringComparison.CurrentCultureIgnoreCase))
+                        if (!String.Equals(memberTo.UserName, LoggedOnReadOnlyUser.UserName, StringComparison.CurrentCultureIgnoreCase))
                         {
                             // Check in box size for both
                             var receiverCount = _privateMessageService.GetAllReceivedByUser(memberTo.Id).Count;
@@ -186,7 +188,7 @@ namespace MVCForum.Website.Controllers
                                     };
 
                                     var sb = new StringBuilder();
-                                    sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("PM.NewPrivateMessageBody"), LoggedOnUser.UserName));
+                                    sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("PM.NewPrivateMessageBody"), LoggedOnReadOnlyUser.UserName));
                                     email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
                                     _emailService.SendMail(email);
                                 }
@@ -223,10 +225,10 @@ namespace MVCForum.Website.Controllers
             {
                 var userFrom = MembershipService.GetUser(from);
 
-                if (userFrom != LoggedOnUser)
+                if (userFrom != LoggedOnReadOnlyUser)
                 {
                     // Mark all messages read sent to this user from the userFrom
-                    var unreadMessages = LoggedOnUser.PrivateMessagesReceived.Where(x => x.UserFrom.Id == from && !x.IsRead);
+                    var unreadMessages = LoggedOnReadOnlyUser.PrivateMessagesReceived.Where(x => x.UserFrom.Id == from && !x.IsRead);
 
                     foreach (var message in unreadMessages)
                     {
@@ -254,9 +256,9 @@ namespace MVCForum.Website.Controllers
 
                     // Get all the received messages from userFrom
                     // and then get all the sent messages to userFrom
-
-                    var allMessages = LoggedOnUser.PrivateMessagesReceived.Where(x => x.UserFrom.Id == from && x.IsSentMessage == false).ToList();
-                    allMessages.AddRange(LoggedOnUser.PrivateMessagesSent.Where(x => x.UserTo.Id == from && x.IsSentMessage == true).ToList());
+                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                    var allMessages = loggedOnUser.PrivateMessagesReceived.Where(x => x.UserFrom.Id == from && x.IsSentMessage == false).ToList();
+                    allMessages.AddRange(loggedOnUser.PrivateMessagesSent.Where(x => x.UserTo.Id == from && x.IsSentMessage == true).ToList());
 
                     // Now order them into an order of messages
 
@@ -281,7 +283,7 @@ namespace MVCForum.Website.Controllers
                 if (Request.IsAjaxRequest())
                 {
                     var privateMessage = _privateMessageService.Get(deletePrivateMessageViewModel.Id);
-                    if (privateMessage.UserTo == LoggedOnUser | privateMessage.UserFrom == LoggedOnUser)
+                    if (privateMessage.UserTo == LoggedOnReadOnlyUser | privateMessage.UserFrom == LoggedOnReadOnlyUser)
                     {
                         _privateMessageService.DeleteMessage(privateMessage);
                     }

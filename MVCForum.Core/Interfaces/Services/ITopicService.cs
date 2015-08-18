@@ -20,7 +20,7 @@ namespace MVCForum.Domain.Interfaces.Services
         PagedList<Topic> GetPagedPendingTopics(int pageIndex, int pageSize, List<Category> allowedCategories);
         IList<Topic> GetRssTopicsByCategory(int amountToTake, Guid categoryId);
         PagedList<Topic> GetPagedTopicsByTag(int pageIndex, int pageSize, int amountToTake, string tag, List<Category> allowedCategories);
-        PagedList<Topic> SearchTopics(int pageIndex, int pageSize, int amountToTake, string searchTerm, List<Category> allowedCategories);
+        IList<Topic> SearchTopics(int amountToTake, string searchTerm, List<Category> allowedCategories);
         PagedList<Topic> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> topicIds, List<Category> allowedCategories);
         PagedList<Topic> GetMembersActivity(int pageIndex, int pageSize, int amountToTake, Guid memberGuid, List<Category> allowedCategories);
         IList<Topic> GetTopicsByCsv(int amountToTake, List<Guid> topicIds, List<Category> allowedCategories);

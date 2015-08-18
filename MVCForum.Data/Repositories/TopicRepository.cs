@@ -320,51 +320,32 @@ namespace MVCForum.Data.Repositories
             return new PagedList<Topic>(results, pageIndex, pageSize, total);
         }
 
-        public PagedList<Topic> SearchTopics(int pageIndex, int pageSize, int amountToTake, List<string> searchTerms, List<Category> allowedCategories)
+        public IList<Topic> SearchTopics(int amountToTake, List<string> searchTerms, List<Category> allowedCategories)
         {
             // get the category ids
             var allowedCatIds = allowedCategories.Select(x => x.Id);
 
             // We might only want to display the top 100
             // but there might not be 100 topics
-            var query = _context.Post
-                            .Include(x => x.Topic.Category)
-                            .Include(x => x.Topic.LastPost.User)
-                            .Include(x => x.Topic.Poll)
+
+            var topics = _context.Topic
+                            .Include(x => x.Posts)
+                            .Include(x => x.Category)
+                            .Include(x => x.LastPost.User)
                             .Include(x => x.User)
                             .AsNoTracking()
-                            .Where(x => x.Pending != true && allowedCatIds.Contains(x.Topic.Category.Id));
+                            .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
+                            .Where(x => x.Posts.Any(p => p.Pending != true));
 
             // Loop through each word and see if it's in the post
             foreach (var term in searchTerms)
             {
-                var sTerm = term.Trim();
-                query = query.Where(x => x.PostContent.ToUpper().Contains(sTerm) || x.Topic.Name.ToUpper().Contains(sTerm));
+                var sTerm = term.Trim().ToUpper();
+                topics = topics.Where(x => x.Posts.Any(p => p.PostContent.ToUpper().Contains(sTerm)) || x.Name.ToUpper().Contains(sTerm));
             }
 
-            // Distinct by the topic id
-            var result = query.DistinctBy(x => x.Topic.Id);
-
-            // Get the count
-            var total = result.Count();
-
-            if (amountToTake < total)
-            {
-                total = amountToTake;
-            }
-
-            // Get the Posts and then get the topics from the post
-            // This is an interim solution, as its flawed due to multiple posts in one topic so the paging might
-            // be incorrect if all posts are from one topic.
-            var results = result
-                        .OrderByDescending(x => x.DateCreated)
-                        .Skip((pageIndex - 1) * pageSize)
-                        .Take(pageSize)
-                        .Select(x => x.Topic)
-                        .ToList();
-
-            // Return a paged list
-            return new PagedList<Topic>(results, pageIndex, pageSize, total);
+            //// Return a paged list
+            return topics.Take(amountToTake).ToList();
         }
 
         public PagedList<Topic> GetMembersActivity(int pageIndex, int pageSize, int amountToTake, Guid memberGuid, List<Category> allowedCategories)

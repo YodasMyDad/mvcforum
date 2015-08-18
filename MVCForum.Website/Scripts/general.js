@@ -39,7 +39,7 @@ $(function () {
         topicName.focusout(function () {
             var tbValue = $.trim(topicName.val());
             var length = tbValue.length;
-            if (length > 5) {
+            if (length >= 4) {
                 // Someone has entered some text more than 5 charactors and now clicked
                 // out of the textbox, so search
                 $.ajax({
