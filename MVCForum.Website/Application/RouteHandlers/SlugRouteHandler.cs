@@ -11,7 +11,7 @@ namespace MVCForum.Website.Application.RouteHandlers
         private readonly ITopicService _topicService;
         public SlugRouteHandler()
         {
-            _topicService = DependencyResolver.Current.GetService<ITopicService>();
+            _topicService = ServiceFactory.Get<ITopicService>();
         }
 
         protected override IHttpHandler GetHttpHandler(RequestContext requestContext)

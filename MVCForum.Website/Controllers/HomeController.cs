@@ -186,7 +186,7 @@ namespace MVCForum.Website.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 // Get all categoryes
-                var allCategories = _categoryService.GetAll().ToList();
+                var allCategories = _categoryService.GetAll();
 
                 // Allowed Categories for a guest
                 var guestRole = RoleService.GetRole(AppConstants.GuestRoleName);

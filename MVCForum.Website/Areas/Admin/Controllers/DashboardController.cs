@@ -34,7 +34,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         public PartialViewResult TodaysTopics()
         {
             // Get all cats as only admins can view this page
-            var allCats = _categoryService.GetAll().ToList();
+            var allCats = _categoryService.GetAll();
 
             if (Request.IsAjaxRequest())
             {
@@ -91,7 +91,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             if (Request.IsAjaxRequest())
             {
                 // Get all cats as only admins can view this page
-                var allCats = _categoryService.GetAll().ToList();
+                var allCats = _categoryService.GetAll();
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
                     return PartialView(new HighestViewedTopics { Topics = _topicService.GetHighestViewedTopics(AmountToShow, allCats) });

@@ -235,15 +235,17 @@ namespace MVCForum.Website.Controllers
                 if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[AppConstants.PermissionEditPosts].IsTicked)
                 {
                     // Get the allowed categories for this user
-                    var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                    var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
+                    var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, AppConstants.PermissionCreateTopics);
+                    var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
 
                     // If this user hasn't got any allowed cats OR they are not allowed to post then abandon
-                    if (allowedCategories.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
+                    if (allowedAccessCategories.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
                     {
                         // Create the model for just the post
                         var viewModel = new CreateEditTopicViewModel
                         {
-                            Content = Server.HtmlDecode(post.PostContent),
+                            Content = post.PostContent,
                             Id = post.Id,
                             Category = topic.Category.Id,
                             Name = topic.Name
@@ -252,6 +254,9 @@ namespace MVCForum.Website.Controllers
                         // Now check if this is a topic starter, if so add the rest of the field
                         if (post.IsTopicStarter)
                         {
+                            // Remove all Categories that don't have create topic permission
+                            allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
+
                             // See if this user is subscribed to this topic
                             var topicNotifications = _topicNotificationService.GetByUserAndTopic(LoggedOnReadOnlyUser, topic);
 
@@ -261,7 +266,7 @@ namespace MVCForum.Website.Controllers
                             viewModel.IsTopicStarter = post.IsTopicStarter;
                             viewModel.SubscribeToTopic = topicNotifications.Any();
                             viewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
-                            viewModel.Categories = GetBaseSelectListCategories(allowedCategories);
+                            viewModel.Categories = GetBaseSelectListCategories(allowedAccessCategories);
 
                             // Tags - Populate from the topic
                             if (topic.Tags.Any())
@@ -322,9 +327,13 @@ namespace MVCForum.Website.Controllers
 
             // Now we have the category and permissionSet - Populate the optional permissions 
             // This is just in case the viewModel is return back to the view also sort the allowedCategories
-            var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+            // Get the allowed categories for this user
+            var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
+            var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, AppConstants.PermissionCreateTopics);
+            var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
+            allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
             editPostViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
-            editPostViewModel.Categories = GetBaseSelectListCategories(allowedCategories);
+            editPostViewModel.Categories = GetBaseSelectListCategories(allowedAccessCategories);
             editPostViewModel.IsTopicStarter = editPostViewModel.Id == Guid.Empty;
             if (editPostViewModel.PollAnswers == null)
             {
@@ -538,10 +547,15 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
-                if (allowedCategories.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
+                var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
+                var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, AppConstants.PermissionCreateTopics);
+                var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
+                if (allowedAccessCategories.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
                 {
-                    var viewModel = PrePareCreateEditTopicViewModel(allowedCategories);
+                    // Remove all Categories that don't have create topic permission
+                    allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
+
+                    var viewModel = PrePareCreateEditTopicViewModel(allowedAccessCategories);
                     return View(viewModel);
                 }
                 return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
@@ -561,9 +575,13 @@ namespace MVCForum.Website.Controllers
 
             // Now we have the category and permissionSet - Populate the optional permissions 
             // This is just in case the viewModel is return back to the view also sort the allowedCategories
-            var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+            var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
+            var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, AppConstants.PermissionCreateTopics);
+            var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
+            allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
+
             topicViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
-            topicViewModel.Categories = GetBaseSelectListCategories(allowedCategories);
+            topicViewModel.Categories = GetBaseSelectListCategories(allowedAccessCategories);
             topicViewModel.IsTopicStarter = true;
             if (topicViewModel.PollAnswers == null)
             {

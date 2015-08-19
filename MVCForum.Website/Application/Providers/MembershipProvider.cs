@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Specialized;
-using System.Web.Mvc;
 using System.Web.Security;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Website.Application;
 
 namespace MVCForum.Website.Membership
 {
@@ -31,7 +31,7 @@ namespace MVCForum.Website.Membership
         //}
         public IMembershipService MembershipService
         {
-            get { return DependencyResolver.Current.GetService<IMembershipService>(); }
+            get { return ServiceFactory.Get<IMembershipService>(); }
         }
 
         /// <summary>

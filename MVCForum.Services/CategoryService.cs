@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
+using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Exceptions;
@@ -37,9 +39,19 @@ namespace MVCForum.Services
         /// Return all categories
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Category> GetAll()
+        public List<Category> GetAll()
         {
-            return _categoryRepository.GetAll();
+            // Cache per request for speed - As this is hit constantly for permissions
+            if (HttpContext.Current != null)
+            {
+                const string key = "get-all-categories";
+                if (!HttpContext.Current.Items.Contains(key))
+                {
+                    HttpContext.Current.Items.Add(key, _categoryRepository.GetAll().ToList());
+                }
+                return (List<Category>)HttpContext.Current.Items[key];
+            }
+            return _categoryRepository.GetAll().ToList();
         }
 
         /// <summary>
@@ -68,13 +80,17 @@ namespace MVCForum.Services
         /// <returns></returns>
         public List<Category> GetAllowedCategories(MembershipRole role)
         {
-            //TODO - Cache?
+            return GetAllowedCategories(role, AppConstants.PermissionDenyAccess);
+        }
+
+        public List<Category> GetAllowedCategories(MembershipRole role, string actionType)
+        {            
             var filteredCats = new List<Category>();
-            var allCats = _categoryRepository.GetAll().ToList();
+            var allCats = GetAll();
             foreach (var category in allCats)
             {
                 var permissionSet = _roleService.GetPermissions(category, role);
-                if (!permissionSet[AppConstants.PermissionDenyAccess].IsTicked)
+                if (!permissionSet[actionType].IsTicked)
                 {
                     filteredCats.Add(category);
                 }
@@ -207,6 +223,9 @@ namespace MVCForum.Services
                 throw new InUseUnableToDeleteException(inUseBy);
             }
         }
+
+
+
     }
 }
 

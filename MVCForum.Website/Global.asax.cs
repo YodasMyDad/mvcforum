@@ -21,27 +21,27 @@ namespace MVCForum.Website
 
         public IUnitOfWorkManager UnitOfWorkManager
         {
-            get { return DependencyResolver.Current.GetService<IUnitOfWorkManager>(); }
+            get { return ServiceFactory.Get<IUnitOfWorkManager>(); }
         }
 
         public IBadgeService BadgeService
         {
-            get { return DependencyResolver.Current.GetService<IBadgeService>(); }
+            get { return ServiceFactory.Get<IBadgeService>(); }
         }
 
         public ISettingsService SettingsService
         {
-            get { return DependencyResolver.Current.GetService<ISettingsService>(); }
+            get { return ServiceFactory.Get<ISettingsService>(); }
         }
 
         public ILoggingService LoggingService
         {
-            get { return DependencyResolver.Current.GetService<ILoggingService>(); }
+            get { return ServiceFactory.Get<ILoggingService>(); }
         }
 
         public ILocalizationService LocalizationService
         {
-            get { return DependencyResolver.Current.GetService<ILocalizationService>(); }
+            get { return ServiceFactory.Get<ILocalizationService>(); }
         }
 
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)

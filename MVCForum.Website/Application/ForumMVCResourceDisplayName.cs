@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Web.Mvc;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Services;
 
@@ -8,11 +7,13 @@ namespace MVCForum.Website.Application
     public class ForumMvcResourceDisplayName: DisplayNameAttribute, IModelAttribute
     {
             private string _resourceValue = string.Empty;
+            private readonly ILocalizationService _localizationService;
 
             public ForumMvcResourceDisplayName(string resourceKey)
                 : base(resourceKey)
             {
                 ResourceKey = resourceKey;
+                _localizationService = ServiceFactory.Get<ILocalizationService>();
             }
 
             public string ResourceKey { get; set; }
@@ -21,8 +22,7 @@ namespace MVCForum.Website.Application
             {
                 get
                 {
-                    var localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
-                    _resourceValue = localizationService.GetResourceString(ResourceKey.Trim());
+                    _resourceValue = _localizationService.GetResourceString(ResourceKey.Trim());
                     return _resourceValue;
                 }
             }

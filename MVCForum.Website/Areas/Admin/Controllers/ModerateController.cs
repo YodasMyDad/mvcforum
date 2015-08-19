@@ -34,7 +34,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             _postService = postService;
             _roleService = roleService;
 
-            _allCategories = _categoryService.GetAll().ToList();
+            _allCategories = _categoryService.GetAll();
         }
 
         public ActionResult Index()

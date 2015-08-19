@@ -15,17 +15,25 @@ namespace Badge.Padawan
     [AwardsPoints(10)]
     public class PadawanBadge : IMarkAsSolutionBadge
     {
+        private readonly IPostService _postService;
+        private readonly ICategoryService _categoryService;
+
+        public PadawanBadge()
+        {
+            _postService = DependencyResolver.Current.GetService<IPostService>();
+            _categoryService = DependencyResolver.Current.GetService<ICategoryService>();
+        }
+
+
         public bool Rule(MembershipUser user)
         {
             //Post is marked as the answer to a topic - give the post author a badge
-            var postService = DependencyResolver.Current.GetService<IPostService>();            
-            var categoryService = DependencyResolver.Current.GetService<ICategoryService>();
 
             // Get all categories as we want to check all the members solutions, even across
             // categories that he no longer is allowed to access
-            var cats = categoryService.GetAll();
+            var cats = _categoryService.GetAll();
 
-            var usersSolutions = postService.GetSolutionsByMember(user.Id, cats.ToList());
+            var usersSolutions = _postService.GetSolutionsByMember(user.Id, cats);
 
             return (usersSolutions.Count >= 10);
         }

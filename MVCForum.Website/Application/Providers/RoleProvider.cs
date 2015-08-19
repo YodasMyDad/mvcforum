@@ -1,5 +1,5 @@
-﻿using System.Web.Mvc;
-using MVCForum.Domain.Interfaces.Services;
+﻿using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Website.Application;
 
 namespace MVCForum.Website.Membership
 {
@@ -9,7 +9,7 @@ namespace MVCForum.Website.Membership
         {
             get
             {
-                return DependencyResolver.Current.GetService<IMembershipService>();
+                return ServiceFactory.Get<IMembershipService>();
             }
         }
 

@@ -261,8 +261,10 @@ namespace MVCForum.Data.Repositories
 
         public Post Get(Guid id)
         {
-            return _context.Post.Include(x => x.Topic)
-                .Include(x => x.User).FirstOrDefault(x => x.Id == id);
+            return _context.Post
+                .Include(x => x.Topic.LastPost.User)
+                .Include(x => x.User)
+                .FirstOrDefault(x => x.Id == id);
         }
 
         public void Delete(Post item)

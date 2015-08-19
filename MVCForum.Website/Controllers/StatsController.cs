@@ -27,7 +27,7 @@ namespace MVCForum.Website.Controllers
         [OutputCache(Duration = AppConstants.ShortCacheTime)]
         public PartialViewResult GetMainStats()
         {
-            var allCats = _categoryService.GetAll().ToList();
+            var allCats = _categoryService.GetAll();
             var viewModel = new MainStatsViewModel
                                 {
                                     LatestMembers = MembershipService.GetLatestUsers(10),
