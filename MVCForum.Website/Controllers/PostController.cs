@@ -88,26 +88,21 @@ namespace MVCForum.Website.Controllers
 
                 newPost = _postService.AddNewPost(postContent, topic, loggedOnUser, out permissions);
 
-                if (!akismetHelper.IsSpam(newPost))
+                if (akismetHelper.IsSpam(newPost))
                 {
-                    try
-                    {
-                        unitOfWork.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        unitOfWork.Rollback();
-                        LoggingService.Error(ex);
-                        throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
-                    }
+                    newPost.Pending = true;
                 }
-                else
+
+                try
+                {
+                    unitOfWork.Commit();
+                }
+                catch (Exception ex)
                 {
                     unitOfWork.Rollback();
-                    throw new Exception(LocalizationService.GetResourceString("Errors.PossibleSpam"));
+                    LoggingService.Error(ex);
+                    throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
                 }
-
-
             }
 
             //Check for moderation
@@ -217,51 +212,51 @@ namespace MVCForum.Website.Controllers
         private void NotifyNewTopics(Topic topic, IUnitOfWork unitOfWork)
         {
 
-                try
-                {
-                    // Get all notifications for this category
-                    var notifications = _topicNotificationService.GetByTopic(topic).Select(x => x.User.Id).ToList();
+            try
+            {
+                // Get all notifications for this category
+                var notifications = _topicNotificationService.GetByTopic(topic).Select(x => x.User.Id).ToList();
 
-                    if (notifications.Any())
+                if (notifications.Any())
+                {
+                    // remove the current user from the notification, don't want to notify yourself that you 
+                    // have just made a topic!
+                    notifications.Remove(LoggedOnReadOnlyUser.Id);
+
+                    if (notifications.Count > 0)
                     {
-                        // remove the current user from the notification, don't want to notify yourself that you 
-                        // have just made a topic!
-                        notifications.Remove(LoggedOnReadOnlyUser.Id);
+                        // Now get all the users that need notifying
+                        var usersToNotify = MembershipService.GetUsersById(notifications);
 
-                        if (notifications.Count > 0)
+                        // Create the email
+                        var sb = new StringBuilder();
+                        sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Post.Notification.NewPosts"), topic.Name));
+                        sb.AppendFormat("<p>{0}</p>", string.Concat(SettingsService.GetSettings().ForumUrl, topic.NiceUrl));
+
+                        // create the emails only to people who haven't had notifications disabled
+                        var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true && !x.IsLockedOut).Select(user => new Email
                         {
-                            // Now get all the users that need notifying
-                            var usersToNotify = MembershipService.GetUsersById(notifications);
+                            Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
+                            EmailTo = user.Email,
+                            NameTo = user.UserName,
+                            Subject = string.Concat(LocalizationService.GetResourceString("Post.Notification.Subject"), SettingsService.GetSettings().ForumName)
+                        }).ToList();
 
-                            // Create the email
-                            var sb = new StringBuilder();
-                            sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Post.Notification.NewPosts"), topic.Name));
-                            sb.AppendFormat("<p>{0}</p>", string.Concat(SettingsService.GetSettings().ForumUrl, topic.NiceUrl));
+                        // and now pass the emails in to be sent
+                        _emailService.SendMail(emails);
 
-                            // create the emails only to people who haven't had notifications disabled
-                            var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true && !x.IsLockedOut).Select(user => new Email
-                            {
-                                Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
-                                EmailTo = user.Email,
-                                NameTo = user.UserName,
-                                Subject = string.Concat(LocalizationService.GetResourceString("Post.Notification.Subject"), SettingsService.GetSettings().ForumName)
-                            }).ToList();
-
-                            // and now pass the emails in to be sent
-                            _emailService.SendMail(emails);
-
-                            unitOfWork.Commit();
-                        }
+                        unitOfWork.Commit();
                     }
+                }
 
 
-                }
-                catch (Exception ex)
-                {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                }
-            
+            }
+            catch (Exception ex)
+            {
+                unitOfWork.Rollback();
+                LoggingService.Error(ex);
+            }
+
 
         }
 

@@ -1,0 +1,40 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.RegistrationQuestionViewModel
+@{
+    ViewBag.Title = "Spam Registration Question";
+}
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5>@ViewBag.Title</h5>
+    </div>
+    <div class="panel-content">
+        <p>
+            Add a custom question and answer to the registration form, something that relates to your forum niche and makes it hard for spammers to guess.
+        </p>
+        <p>
+            Users must enter the correct answer before being allowed to register.
+        </p>
+
+        @using (Html.BeginForm("RegistrationQuestion", "AdminSpam", FormMethod.Post))
+        {
+            @Html.ValidationSummary(false)
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.SpamQuestion)
+                @Html.TextBoxFor(m => m.SpamQuestion, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.SpamQuestion)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.SpamAnswer)
+                @Html.TextBoxFor(m => m.SpamAnswer, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.SpamAnswer)
+            </div>
+
+            <div class="submit-holder">
+                <input type="submit" class="btn-mvc-green btn-mvc-large" value="Update" />
+            </div>
+        }
+
+    </div>
+</div>

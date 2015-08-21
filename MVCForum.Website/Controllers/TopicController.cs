@@ -75,7 +75,7 @@ namespace MVCForum.Website.Controllers
                 var topics = _topicService.GetMembersActivity(pageIndex,
                                                            SettingsService.GetSettings().TopicsPerPage,
                                                            SiteConstants.MembersActivityListSize,
-                                                           LoggedOnReadOnlyUser.Id, 
+                                                           LoggedOnReadOnlyUser.Id,
                                                            allowedCategories);
 
                 // Get the Topic View Models
@@ -740,96 +740,95 @@ namespace MVCForum.Website.Controllers
 
                             // Now check its not spam
                             var akismetHelper = new AkismetHelper(SettingsService);
-                            if (!akismetHelper.IsSpam(topic))
+                            if (akismetHelper.IsSpam(topic))
                             {
-                                if (topicViewModel.Files != null)
-                                {
-                                    // Get the permissions for this category, and check they are allowed to update
-                                    if (permissions[AppConstants.PermissionAttachFiles].IsTicked && LoggedOnReadOnlyUser.DisableFileUploads != true)
-                                    {
-                                        // woot! User has permission and all seems ok
-                                        // Before we save anything, check the user already has an upload folder and if not create one
-                                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnReadOnlyUser.Id));
-                                        if (!Directory.Exists(uploadFolderPath))
-                                        {
-                                            Directory.CreateDirectory(uploadFolderPath);
-                                        }
+                                topic.Pending = true;
+                                moderate = true;
+                            }
 
-                                        // Loop through each file and get the file info and save to the users folder and Db
-                                        foreach (var file in topicViewModel.Files)
+                            if (topicViewModel.Files != null)
+                            {
+                                // Get the permissions for this category, and check they are allowed to update
+                                if (permissions[AppConstants.PermissionAttachFiles].IsTicked && LoggedOnReadOnlyUser.DisableFileUploads != true)
+                                {
+                                    // woot! User has permission and all seems ok
+                                    // Before we save anything, check the user already has an upload folder and if not create one
+                                    var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnReadOnlyUser.Id));
+                                    if (!Directory.Exists(uploadFolderPath))
+                                    {
+                                        Directory.CreateDirectory(uploadFolderPath);
+                                    }
+
+                                    // Loop through each file and get the file info and save to the users folder and Db
+                                    foreach (var file in topicViewModel.Files)
+                                    {
+                                        if (file != null)
                                         {
-                                            if (file != null)
+                                            // If successful then upload the file
+                                            var uploadResult = AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService);
+                                            if (!uploadResult.UploadSuccessful)
                                             {
-                                                // If successful then upload the file
-                                                var uploadResult = AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService);
-                                                if (!uploadResult.UploadSuccessful)
+                                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                                                 {
-                                                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                                                    {
-                                                        Message = uploadResult.ErrorMessage,
-                                                        MessageType = GenericMessages.danger
-                                                    };
-                                                    unitOfWork.Rollback();
-                                                    return View(topicViewModel);
-                                                }
-
-                                                // Add the filename to the database
-                                                var uploadedFile = new UploadedFile
-                                                {
-                                                    Filename = uploadResult.UploadedFileName,
-                                                    Post = topicPost,
-                                                    MembershipUser = loggedOnUser
+                                                    Message = uploadResult.ErrorMessage,
+                                                    MessageType = GenericMessages.danger
                                                 };
-                                                _uploadedFileService.Add(uploadedFile);
+                                                unitOfWork.Rollback();
+                                                return View(topicViewModel);
                                             }
+
+                                            // Add the filename to the database
+                                            var uploadedFile = new UploadedFile
+                                            {
+                                                Filename = uploadResult.UploadedFileName,
+                                                Post = topicPost,
+                                                MembershipUser = loggedOnUser
+                                            };
+                                            _uploadedFileService.Add(uploadedFile);
                                         }
                                     }
-
                                 }
 
-                                // Add the tags if any too
-                                if (!string.IsNullOrEmpty(topicViewModel.Tags))
-                                {
-                                    // Sanitise the tags
-                                    topicViewModel.Tags = _bannedWordService.SanitiseBannedWords(topicViewModel.Tags, bannedWords);
+                            }
 
-                                    // Now add the tags
-                                    _topicTagService.Add(topicViewModel.Tags.ToLower(), topic);
-                                }
+                            // Add the tags if any too
+                            if (!string.IsNullOrEmpty(topicViewModel.Tags))
+                            {
+                                // Sanitise the tags
+                                topicViewModel.Tags = _bannedWordService.SanitiseBannedWords(topicViewModel.Tags, bannedWords);
 
-                                // Subscribe the user to the topic as they have checked the checkbox
-                                if (topicViewModel.SubscribeToTopic)
-                                {
-                                    // Create the notification
-                                    var topicNotification = new TopicNotification
-                                    {
-                                        Topic = topic,
-                                        User = loggedOnUser
-                                    };
-                                    //save
-                                    _topicNotificationService.Add(topicNotification);
-                                }
+                                // Now add the tags
+                                _topicTagService.Add(topicViewModel.Tags.ToLower(), topic);
+                            }
 
-                                try
+                            // Subscribe the user to the topic as they have checked the checkbox
+                            if (topicViewModel.SubscribeToTopic)
+                            {
+                                // Create the notification
+                                var topicNotification = new TopicNotification
                                 {
-                                    unitOfWork.Commit();
-                                    if (!moderate)
-                                    {
-                                        successfullyCreated = true;
-                                    }
-                                }
-                                catch (Exception ex)
+                                    Topic = topic,
+                                    User = loggedOnUser
+                                };
+                                //save
+                                _topicNotificationService.Add(topicNotification);
+                            }
+
+                            try
+                            {
+                                unitOfWork.Commit();
+                                if (!moderate)
                                 {
-                                    unitOfWork.Rollback();
-                                    LoggingService.Error(ex);
-                                    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+                                    successfullyCreated = true;
                                 }
                             }
-                            else
+                            catch (Exception ex)
                             {
                                 unitOfWork.Rollback();
-                                ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.PossibleSpam"));
+                                LoggingService.Error(ex);
+                                ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
                             }
+
                         }
                         else
                         {
@@ -1048,7 +1047,7 @@ namespace MVCForum.Website.Controllers
                 }
 
                 // Pass the list to the partial view
-                return PartialView(topics); 
+                return PartialView(topics);
             }
         }
 
@@ -1065,7 +1064,7 @@ namespace MVCForum.Website.Controllers
                 // Get the topics
                 var topics = _topicService.GetRecentTopics(pageIndex,
                                                            SettingsService.GetSettings().TopicsPerPage,
-                                                           SiteConstants.ActiveTopicsListSize, 
+                                                           SiteConstants.ActiveTopicsListSize,
                                                            allowedCategories);
 
                 // Get the Topic View Models
@@ -1122,7 +1121,7 @@ namespace MVCForum.Website.Controllers
                 else
                 {
                     viewModel = (HotTopicsViewModel)cachedItem;
-                }                
+                }
 
                 return PartialView(viewModel);
             }

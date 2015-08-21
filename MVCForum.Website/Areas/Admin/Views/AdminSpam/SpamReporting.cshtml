@@ -1,0 +1,41 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.SpamReportingViewModel
+@{
+    ViewBag.Title = "Spam Reporting";
+}
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5>@ViewBag.Title</h5>
+    </div>
+    <div class="panel-content">
+        <p>
+            Enable your community to help you fight Spam! Member reporting allows other users to report specific members, and Spam reporting allows users to report posts for being potential spam.
+        </p>
+
+        @using (Html.BeginForm("SpamReporting", "AdminSpam", FormMethod.Post))
+        {
+            @Html.ValidationSummary(false)
+
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.EnableMemberReporting, new { @class = "checkbox" }))
+                {
+                    @Html.CheckBoxFor(m => m.EnableMemberReporting)
+                }
+                @Html.ValidationMessageFor(m => m.EnableMemberReporting)
+            </div>
+
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.EnableSpamReporting, new { @class = "checkbox" }))
+                {
+                    @Html.CheckBoxFor(m => m.EnableSpamReporting)
+                }
+                @Html.ValidationMessageFor(m => m.EnableSpamReporting)
+            </div>
+
+            <div class="submit-holder">
+                <input type="submit" class="btn-mvc-green btn-mvc-large" value="Update" />
+            </div>
+        }
+
+    </div>
+</div>

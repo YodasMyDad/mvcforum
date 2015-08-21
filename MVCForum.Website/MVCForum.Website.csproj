@@ -260,6 +260,7 @@
     <Compile Include="Areas\Admin\ViewModels\BannedWordViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\DashboardViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\SocialViewModels.cs" />
+    <Compile Include="Areas\Admin\ViewModels\SpamViewModels.cs" />
     <Compile Include="Controllers\BaseInstallController.cs" />
     <Compile Include="Controllers\BadgeController.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseAdminController.cs" />
@@ -807,6 +808,9 @@
     </Content>
     <Content Include="Areas\Admin\Views\Dashboard\MainAdminNav.cshtml" />
     <Content Include="Areas\Admin\Views\AdminSocial\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminSpam\Akismet.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminSpam\RegistrationQuestion.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminSpam\SpamReporting.cshtml" />
     <None Include="job_scheduling_data_2_0.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -1156,7 +1160,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Areas\Admin\Views\AdminSpam\" />
     <Folder Include="Content\languagepacks\" />
     <Folder Include="Views\File\" />
   </ItemGroup>
