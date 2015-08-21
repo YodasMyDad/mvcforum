@@ -247,6 +247,7 @@
     <Compile Include="Areas\Admin\Controllers\AdminLanguageController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminBadgeController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminSocialController.cs" />
+    <Compile Include="Areas\Admin\Controllers\AdminSpamController.cs" />
     <Compile Include="Areas\Admin\Controllers\BannedEmailController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchController.cs" />
     <Compile Include="Areas\Admin\Controllers\BannedWordController.cs" />
@@ -1155,6 +1156,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Areas\Admin\Views\AdminSpam\" />
     <Folder Include="Content\languagepacks\" />
     <Folder Include="Views\File\" />
   </ItemGroup>
@@ -1252,9 +1254,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\AdminCategory\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Areas\Admin\Views\AdminCategory\ListAllCategories.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\AdminCategory\GetMainCategories.cshtml" />

@@ -5,15 +5,15 @@ $color-global-yellow: #f2f226;
 $color-global-grey-blue: #e7eaec;
 $color-admin-grey-bg: #f3f3f4;
 
-$link-color: #1ab394;
+$link-color: $color-global-blue;
 
 $border-color: $color-global-grey-blue;
 
 $heading-base-color: #5a5a5a;
 $heading-font-weight: 300;
-$heading-one-font-size: 29px;
-$heading-two-font-size: 26px;
-$heading-three-font-size: 22px;
+$heading-one-font-size: 26px;
+$heading-two-font-size: 22px;
+$heading-three-font-size: 20px;
 
 $font-base-color: #3b3b3b;
 $font-lighter-base-color: #636267;
@@ -45,6 +45,8 @@ $media-query-mobile: 600px;
 .top-nav > li > a:hover, .top-nav > li > a:focus, .top-nav > .open > a, .top-nav > .open > a:hover, .top-nav > .open > a:focus {background:$font-lighter-base-color;}
 .navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus {color:$font-lighter-base-color;}
 .panel-group .panel-heading + .panel-collapse > .panel-body, .panel-group .panel-heading + .panel-collapse > .list-group {border-top:none;}
+.form-control {border-radius:0;}
+.input-group-btn:last-child > .btn {    padding: 7px 12px 6px 12px;}
 
 // Panels
 
@@ -70,9 +72,9 @@ $media-query-mobile: 600px;
 
 .mvcforum-nav { background-color: #fff; border-bottom: 1px $border-color solid !important; padding: 0; margin: 0; }
 
-// Side Nav
+// Back button
 
-.side-nav { }
+.backbutton {margin-top:-8px; margin-bottom:10px;}
 
 // Main
 
@@ -101,6 +103,7 @@ h6 { font-size: 16px; }
 // General Table Styles
 
 table {
+
     @media (max-width: $media-query-mobile) {
         .table-adaptive {
             caption { background-image: none; }
@@ -192,7 +195,7 @@ a, a:visited { color: $link-color;
 
 // Main Admin Body
 
-.mainadminbody { padding-top: 15px; }
+.mainadminbody { padding-top: 8px; }
 
 // Category List
 

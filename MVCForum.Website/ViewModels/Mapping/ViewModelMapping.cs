@@ -78,6 +78,9 @@ namespace MVCForum.Website.ViewModels.Mapping
         #region Settings
         public static Settings SettingsViewModelToSettings(EditSettingsViewModel settingsViewModel, Settings existingSettings)
         {
+            //NOTE: The only reason some properties are commented out, are because those items were
+            //      moved to their own page when the admin was refactored.
+
             existingSettings.Id = settingsViewModel.Id;
             existingSettings.ForumName = settingsViewModel.ForumName;
             existingSettings.ForumUrl = settingsViewModel.ForumUrl;
@@ -85,8 +88,8 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.EnableRSSFeeds = settingsViewModel.EnableRSSFeeds;
             existingSettings.DisplayEditedBy = settingsViewModel.DisplayEditedBy;
             existingSettings.EnableMarkAsSolution = settingsViewModel.EnableMarkAsSolution;
-            existingSettings.EnableSpamReporting = settingsViewModel.EnableSpamReporting;
-            existingSettings.EnableMemberReporting = settingsViewModel.EnableMemberReporting;
+            //existingSettings.EnableSpamReporting = settingsViewModel.EnableSpamReporting;
+            //existingSettings.EnableMemberReporting = settingsViewModel.EnableMemberReporting;
             existingSettings.EnableEmailSubscriptions = settingsViewModel.EnableEmailSubscriptions;
             existingSettings.ManuallyAuthoriseNewMembers = settingsViewModel.ManuallyAuthoriseNewMembers;
             existingSettings.EmailAdminOnNewMemberSignUp = settingsViewModel.EmailAdminOnNewMemberSignUp;
@@ -109,13 +112,13 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.SMTPUsername = settingsViewModel.SMTPUsername;
             existingSettings.SMTPPassword = settingsViewModel.SMTPPassword;
             existingSettings.Theme = settingsViewModel.Theme;
-            existingSettings.AkismentKey = settingsViewModel.AkismentKey;
-            existingSettings.EnableAkisment = settingsViewModel.EnableAkisment;
+            //existingSettings.AkismentKey = settingsViewModel.AkismentKey;
+            //existingSettings.EnableAkisment = settingsViewModel.EnableAkisment;
             existingSettings.SMTPPort = settingsViewModel.SMTPPort.ToString();
-            existingSettings.SpamQuestion = settingsViewModel.SpamQuestion;
-            existingSettings.SpamAnswer = settingsViewModel.SpamAnswer;
+            //existingSettings.SpamQuestion = settingsViewModel.SpamQuestion;
+            //existingSettings.SpamAnswer = settingsViewModel.SpamAnswer;
             existingSettings.SMTPEnableSSL = settingsViewModel.SMTPEnableSSL;
-            existingSettings.EnableSocialLogins = settingsViewModel.EnableSocialLogins;
+            //existingSettings.EnableSocialLogins = settingsViewModel.EnableSocialLogins;
             existingSettings.EnablePolls = settingsViewModel.EnablePolls;
             existingSettings.SuspendRegistration = settingsViewModel.SuspendRegistration;
             existingSettings.NewMemberEmailConfirmation = settingsViewModel.NewMemberEmailConfirmation;

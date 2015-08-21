@@ -1,24 +1,29 @@
 ﻿@model MVCForum.Website.Areas.Admin.ViewModels.CategoryViewModel
 
 @{
-    ViewBag.Title = "Edit Category";    
+    ViewBag.Title = "Edit Category";
 }
 
 @Html.Partial("_CategoryNavButtons")
 
-@using (Html.BeginForm("EditCategory", "AdminCategory", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-        @Html.ValidationSummary(false)
-    <fieldset>
-        <legend>Edit Category</legend>
-        
-        @Html.HiddenFor(model => model.Id)
+<div class="panel">
+    <div class="panel-heading">
+        <h5>@ViewBag.Title</h5>
+    </div>
+    <div class="panel-content">
+        @using (Html.BeginForm("EditCategory", "AdminCategory", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.ValidationSummary(false)
+            @Html.HiddenFor(model => model.Id)
 
-        @Html.Partial("_CategoryFields", Model)
+            @Html.Partial("_CategoryFields", Model)
 
-        <div class="submit-holder">
-            <input type="submit" class="btn-mvc-green btn-mvc-large" value="Update" /> 
-            <a href="@Url.Action("DeleteCategoryConfirmation", new { id = Model.Id })" class="btn-mvc btn-mvc-large" role="button">Delete</a>
-        </div>
-    </fieldset>
-}
+            <div class="submit-holder">
+                <input type="submit" class="btn-mvc-green btn-mvc-large" value="Update" />
+                <a href="@Url.Action("DeleteCategoryConfirmation", new { id = Model.Id })" class="btn-mvc btn-mvc-large" role="button">Delete</a>
+            </div>
+        }
+
+    </div>
+</div>
+

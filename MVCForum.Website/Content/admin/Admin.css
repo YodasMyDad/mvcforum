@@ -43,6 +43,14 @@
   border-top: none;
 }
 
+.form-control {
+  border-radius: 0;
+}
+
+.input-group-btn:last-child > .btn {
+  padding: 7px 12px 6px 12px;
+}
+
 .panel {
   margin-bottom: 25px;
   margin-top: 0;
@@ -118,6 +126,11 @@
   margin: 0;
 }
 
+.backbutton {
+  margin-top: -8px;
+  margin-bottom: 10px;
+}
+
 /*body {
     font-family: $font-base-family;
     color: $font-base-color;
@@ -136,15 +149,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 29px;
-}
-
-h2 {
   font-size: 26px;
 }
 
-h3 {
+h2 {
   font-size: 22px;
+}
+
+h3 {
+  font-size: 20px;
 }
 
 h4 {
@@ -210,11 +223,11 @@ h6 {
 }
 
 a, a:visited {
-  color: #1ab394;
+  color: #1c84c6;
 }
 
 a:hover, a:focus, a:visited:hover, a:visited:focus {
-  color: #158f77;
+  color: #176ca2;
 }
 
 .validation-summary-errors ul {
@@ -419,7 +432,7 @@ a:hover, a:focus, a:visited:hover, a:visited:focus {
 }
 
 .mainadminbody {
-  padding-top: 15px;
+  padding-top: 8px;
 }
 
 .mainadmincategorylist {

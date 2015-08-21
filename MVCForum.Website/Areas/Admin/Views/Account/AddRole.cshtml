@@ -1,24 +1,29 @@
 ﻿@model MVCForum.Website.Areas.Admin.ViewModels.RoleViewModel
 
 @{
-    ViewBag.Title = "AddRole";    
+    ViewBag.Title = "Add New Role";
 }
 
-
-@using (Html.BeginForm("AddRole", "Account", FormMethod.Post))
-{
-    @Html.ValidationSummary(false)
-    <fieldset>
-        <legend>Add New Role</legend>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.RoleName)
-            @Html.TextBoxFor(model => model.RoleName, new{@class="form-control"})
-            @Html.ValidationMessageFor(model => model.RoleName)
-        </div>
-
-    <div class="submit-holder">
-        <input type="submit" class="btn-mvc-green" value="Create" />
+<div class="panel">
+    <div class="panel-heading">
+        <h5>@ViewBag.Title</h5>
     </div>
-    </fieldset>
-}
+    <div class="panel-content">
+        @using (Html.BeginForm("AddRole", "Account", FormMethod.Post))
+        {
+            @Html.ValidationSummary(false)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.RoleName)
+                @Html.TextBoxFor(model => model.RoleName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.RoleName)
+            </div>
+
+            <div class="submit-holder">
+                <input type="submit" class="btn-mvc-green btn-mvc-large" value="Create" />
+            </div>
+        }
+    </div>
+</div>
+
+

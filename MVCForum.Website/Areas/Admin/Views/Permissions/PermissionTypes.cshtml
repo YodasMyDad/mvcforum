@@ -1,18 +1,32 @@
-﻿@using MVCForum.Domain.Constants
-@model MVCForum.Website.Areas.Admin.ViewModels.ChoosePermissionsViewModel
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.ChoosePermissionsViewModel
 @{
     ViewBag.Title = "Permission Types";
 }
 <div class="permissiontypes">
-    
+
     <div class="row">
 
         <div class="col-md-6">
-            <h3>Add Permissions</h3>
-            <p>If you want to add your own custom permission, add it into the database using the button below.</p>
-            <p>Then you can set the permission based on the role. Once that is done, you just pull out the permission from the PermissionSet using the name as the key</p>
-
-            <p><a href="@Url.Action("AddType")" class="btn-mvc-green">Add New Permission Type</a></p>
+            <div class="panel">
+                <div class="panel-heading">
+                    <h5>Add Permissions</h5>
+                </div>
+                <div class="panel-content">
+                    <p>It's super simple to add your own custom permissions to the forum, you firstly need to add it into the database using the button below.</p>
+                    <p>
+                        Then you after you have done that, you can check the permission based on the role (And Category). You just pull out the permission
+                        from a PermissionSet using the name of the permission you just added to the database. We put all permission names into constants to make it easier. Example below.
+                    </p>
+                    <pre>
+var permissions = RoleService.GetPermissions(category, UsersRole);
+permissions["YourCustomPermissionName"].IsTicked</pre>
+                    <p>Global permissions are returned with the call above, but if you just want to get global permissions you call the same method, but pass in null for the category.</p>
+                    <pre>
+var permissions = RoleService.GetPermissions(null, UsersRole);</pre>
+                    <p>&nbsp;</p>
+                    <p><a href="@Url.Action("AddType")" class="btn-mvc-green btn-mvc-large">Add New Permission Type</a></p>
+                </div>
+            </div>
         </div>
 
         <div class="col-md-6">

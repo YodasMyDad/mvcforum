@@ -1,23 +1,28 @@
 ﻿@using MVCForum.Domain.Constants
 @model MVCForum.Website.Areas.Admin.ViewModels.ChoosePermissionsViewModel
 @{
-    ViewBag.Title = "Permissions";
+    ViewBag.Title = "Update Permissions";
 }
 
+<div class="panel">
+    <div class="panel-heading">
+        <h5>@ViewBag.Title</h5>
+    </div>
+    <div class="panel-content">
+        <p>This section allows you to update and edit permissions, firstly select the role you want to edit the permissions for</p>
+        <div class="row">
+            <div class="col-md-4">
+                @foreach (var role in Model.MembershipRoles)
+                {
+                    <ul class="rolepermissionlist">
+                        @if (role.RoleName != AppConstants.AdminRoleName)
+                        {
+                            <li><a href="@Url.Action("EditPermissions", new { role.Id })" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">@role.RoleName</a></li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
 
-<h2>Permissions</h2>
-<p>This section allows you to update and edit permissions</p>
-
-
-
-@foreach (var role in Model.MembershipRoles)
-{
-    <ul class="rolepermissionlist">
-        @if (role.RoleName != AppConstants.AdminRoleName)
-        {
-            <li><a href="@Url.Action("EditPermissions", new { role.Id })" class="btn-mvc">@role.RoleName</a></li>
-        }
-    </ul>
-}
-
-
+    </div>
+</div>

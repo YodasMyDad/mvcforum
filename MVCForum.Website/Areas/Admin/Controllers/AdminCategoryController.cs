@@ -35,19 +35,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         }
 
         [ChildActionOnly]
-        public PartialViewResult ListAllCategories(Guid id)
-        {
-            using (UnitOfWorkManager.NewUnitOfWork())
-            {
-                var viewModel = new ListCategoriesViewModel
-                                    {
-                                        Categories = _categoryService.GetAllSubCategories(id)
-                                    };
-                return PartialView(viewModel);
-            }
-        }
-
-        [ChildActionOnly]
         public PartialViewResult GetMainCategories()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
