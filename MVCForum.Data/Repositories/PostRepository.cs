@@ -144,6 +144,11 @@ namespace MVCForum.Data.Repositories
             return new PagedList<Post>(results.ToList(), pageIndex, pageSize, total);
         }
 
+        public int GetPendingPostsCount()
+        {
+            return _context.Post.Count(x => x.Pending == true);
+        }
+
         public PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId, PostOrderBy order)
         {
             // We might only want to display the top 100

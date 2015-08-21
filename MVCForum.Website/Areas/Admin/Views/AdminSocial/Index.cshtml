@@ -1,0 +1,39 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.SocialSettingsViewModel
+@{
+    ViewBag.Title = "Social Settings";
+}
+
+<div class="panel">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            @ViewBag.Title
+        </h4>
+    </div>
+    <div class="panel-body">
+        <p>Enable Social logins using the checkbox below, we use <a href="https://github.com/abjerner/Skybrud.Social" target="_blank">SkyBrud.Social</a> as the library for Social logins.</p>
+        
+        <p>Form TODO</p>
+
+        <hr/>
+        @if (string.IsNullOrEmpty(Model.FacebookAppId))
+        {
+            <p><span class="label label-warning">Note</span> Facebook login will not work until the Facebook App Id and Secret Key are added to the web.config (appSettings)</p>
+        }
+        else
+        {
+            <p>Facebook App Id: @Model.FacebookAppId</p>
+            <p>Facebook Secret: @Model.FacebookAppSecret</p>
+        }
+        
+        @if (string.IsNullOrEmpty(Model.GooglePlusAppId))
+        {
+            <p><span class="label label-warning">Note</span> Google login will not work until the Google App Id and Secret Key are added to the web.config (appSettings)</p>
+        }
+        else
+        {
+            <p>Google App Id: @Model.GooglePlusAppId</p>
+            <p>Google Secret: @Model.GooglePlusAppSecret</p>
+        }
+
+    </div>
+</div>

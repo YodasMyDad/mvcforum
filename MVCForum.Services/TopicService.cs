@@ -186,6 +186,11 @@ namespace MVCForum.Services
             return _topicRepository.GetPagedPendingTopics(pageIndex, pageSize, allowedCategories);
         }
 
+        public int GetPendingTopicsCount(List<Category> allowedCategories)
+        {
+            return _topicRepository.GetPendingTopicsCount(allowedCategories);
+        }
+
         /// <summary>
         /// Returns a specified amount of most recent topics in a category used for RSS feeds
         /// </summary>

@@ -128,6 +128,11 @@ namespace MVCForum.Services
             return _postRepository.GetPagedPendingPosts(pageIndex, pageSize);
         }
 
+        public int GetPendingPostsCount()
+        {
+            return _postRepository.GetPendingPostsCount();
+        }
+
         /// <summary>
         /// Return all posts by a specified member that are marked as solution
         /// </summary>

@@ -1,14 +1,15 @@
-﻿$color-global-green: #2abd54;
-$color-global-red: #bd2a38;
-$color-global-blue: #4891dc;
+﻿$color-global-green: #1ab394;
+$color-global-red: #ed5565;
+$color-global-blue: #1c84c6;
 $color-global-yellow: #f2f226;
-$color-global-grey-blue: #ecf0f1;
+$color-global-grey-blue: #e7eaec;
+$color-admin-grey-bg: #f3f3f4;
 
-$link-color: #2470bb;
+$link-color: #1ab394;
 
 $border-color: $color-global-grey-blue;
 
-$heading-base-color: #3b3b3b;
+$heading-base-color: #5a5a5a;
 $heading-font-weight: 300;
 $heading-one-font-size: 29px;
 $heading-two-font-size: 26px;
@@ -25,37 +26,66 @@ $media-query-mobile: 600px;
 
 // Mixins
 
-@mixin standard-button() { display: inline-block; padding: 7px 20px; margin-bottom: 0; font-size: 14px; font-weight: normal; line-height: 14px; text-align: center; white-space: nowrap; vertical-align: middle; -ms-touch-action: manipulation; touch-action: manipulation; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none; user-select: none; background-image: none; border: 1px solid transparent; -ms-border-radius: 3px; border-radius: 3px; text-decoration: none; background-color: #efefef; color: #333; }
+@mixin standard-button() { display: inline-block; padding: 6px 16px; margin-bottom: 0; font-size: 14px; font-weight: normal; line-height: 14px; text-align: center; white-space: nowrap; vertical-align: middle; -ms-touch-action: manipulation; touch-action: manipulation; cursor: pointer; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none; user-select: none; background-image: none; border: 1px solid transparent; -ms-border-radius: 3px; border-radius: 3px; text-decoration: none; background-color: #efefef; color: #333; }
 
 //  Bootstrap overides
 
-input.form-control, textarea.form-control, select.form-control, .panel-group .panel, .panel { -ms-border-radius: 0; border-radius: 0; }
-.navbar-brand { padding-top: 5px; padding-bottom: 5px; height: auto; }
-.navbar-nav > li > a { padding-top: 10px; padding-bottom: 10px; height: auto; }
-.navbar { min-height: 40px; }
-.navbar-default { background: #3b3b3b; border: none; -ms-border-radius: 0; border-radius: 0; color: #fff; }
-.navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a:visited { color: #fff; }
-.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus { color: #fff; background-color: #333; }
-.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus { background-color: #333; color: #fff; }
-.dropdown-menu { -ms-border-radius: 0; border-radius: 0; }
-.navbar-default .navbar-brand, .navbar-default .navbar-brand:visited { color: #fff; font-weight: bold; }
-.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus { color: #efefef; }
-.navbar-toggle { padding: 7px 8px; background-color: #ddd; }
-.navbar-toggle:hover, .navbar-toggle:focus { background-color: #d3d3d3 !Important; }
+.page-header { padding-bottom: 15px; margin: 0 0 15px; border-bottom: 1px solid #eee; }
+.dropdown-menu { min-width: 210px; }
+.navbar-brand { padding: 12px 0 0 14px; }
+.navbar { min-height: 1px; padding: 0; margin: 0; }
+.navbar-inverse { border: none; background: none;
+    .navbar-nav { border-radius: 0;
+        > li {
+            > a, > a:visited { }
+        }
+    }
+}
+.navbar-right { margin-right: 0; }
+.top-nav > li > a:hover, .top-nav > li > a:focus, .top-nav > .open > a, .top-nav > .open > a:hover, .top-nav > .open > a:focus {background:$font-lighter-base-color;}
+.navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus {color:$font-lighter-base-color;}
+.panel-group .panel-heading + .panel-collapse > .panel-body, .panel-group .panel-heading + .panel-collapse > .list-group {border-top:none;}
 
+// Panels
+
+.panel { margin-bottom: 25px; margin-top: 0; padding: 0; border-radius: 0; border: none; border-top: 4px $border-color solid; -webkit-box-shadow: none; box-shadow: none;
+    .panel-heading { background-color: #ffffff; border: none; border-bottom: 1px $border-color solid; color: inherit; margin-bottom: 0; padding: 14px 15px 7px; min-height: 44px;
+        h5 { display: inline-block; font-size: 14px; line-height: 14px; margin: 0; padding: 0; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; float: left; font-weight: bold; }
+        .label { float: left; margin-left: 4px; }
+        .tools { display: inline-block; float: right; margin-top: 0; position: relative; padding: 0;
+            a, a:visited { cursor: pointer; margin-left: 5px; color: #c4c4c4; }
+        }
+    }
+    .panel-content,.panel-body { background-color: #ffffff; color: inherit; padding: 15px 20px 20px 20px; }
+}
+.panel-group {
+    .panel {margin-bottom: 15px;}
+}
+
+// Page Wrapper
+
+#page-wrapper { background-color: $color-admin-grey-bg; border-bottom: 1px $border-color solid; }
+
+// Top Nav
+
+.mvcforum-nav { background-color: #fff; border-bottom: 1px $border-color solid !important; padding: 0; margin: 0; }
+
+// Side Nav
+
+.side-nav { }
 
 // Main
 
-body {
+/*body {
     font-family: $font-base-family;
     color: $font-base-color;
     @media (max-width: 979px) {
-        body { padding: 0 !Important; }
+        body { padding: 0 !important; }
     }
     @media (max-width: $media-query-mobile) {
         .btn-mvc-large { padding-left: 0; padding-right: 0; width: 100%; display: block; }
     }
-}
+}*/
 
 // Heading Styles
 
@@ -66,6 +96,7 @@ h3 { font-size: $heading-three-font-size; }
 h4 { font-size: 19px; }
 h5 { font-size: 17px; }
 h6 { font-size: 16px; }
+
 
 // General Table Styles
 
@@ -161,7 +192,7 @@ a, a:visited { color: $link-color;
 
 // Main Admin Body
 
-.mainadminbody { padding-top: 29px; }
+.mainadminbody { padding-top: 15px; }
 
 // Category List
 
@@ -180,7 +211,7 @@ a, a:visited { color: $link-color;
 
 // Fancybox overide
 
-.fancybox-skin { background-color: #fff !Important; }
+.fancybox-skin { background-color: #fff !important; }
 
 // Permissions Styles
 
@@ -213,6 +244,10 @@ a, a:visited { color: $link-color;
         .glyphicon-remove { color: #fff; }
     }
 }
+
+// Footer
+
+footer {padding:40px 0 0 0;}
 
 // Log
 
@@ -273,4 +308,3 @@ a, a:visited { color: $link-color;
     .tabs-below > .nav-tabs > li { width: 49%; }
     .tabs-below > .nav-tabs > .active > a { border-color: #ddd; }
 }
-

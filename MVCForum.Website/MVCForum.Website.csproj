@@ -246,6 +246,7 @@
     <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminLanguageController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminBadgeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\AdminSocialController.cs" />
     <Compile Include="Areas\Admin\Controllers\BannedEmailController.cs" />
     <Compile Include="Areas\Admin\Controllers\BatchController.cs" />
     <Compile Include="Areas\Admin\Controllers\BannedWordController.cs" />
@@ -257,6 +258,7 @@
     <Compile Include="Areas\Admin\ViewModels\BatchViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\BannedWordViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\DashboardViewModels.cs" />
+    <Compile Include="Areas\Admin\ViewModels\SocialViewModels.cs" />
     <Compile Include="Controllers\BaseInstallController.cs" />
     <Compile Include="Controllers\BadgeController.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseAdminController.cs" />
@@ -600,6 +602,7 @@
     <Content Include="Content\admin\Images\icons\yin-yang.png" />
     <Content Include="Content\admin\Images\icons\zone.png" />
     <Content Include="Content\admin\Imports.css" />
+    <Content Include="Content\admin\sb-admin.css" />
     <Content Include="Content\badges\jedi.png" />
     <Content Include="Content\badges\MemberForAYearBadge.png" />
     <Content Include="Content\badges\MentionsUmbracoBadge.png" />
@@ -784,7 +787,6 @@
     <Content Include="Areas\Admin\Views\Shared\_AdminScripts.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_AdminTopNav.cshtml" />
     <Content Include="Areas\Admin\Views\AdminCategory\_CategoryFields.cshtml" />
-    <Content Include="Areas\Admin\Views\Shared\_AdminSideNav.cshtml" />
     <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-bold-webfont.eot" />
     <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-bold-webfont.ttf" />
     <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-bold-webfont.woff" />
@@ -802,6 +804,8 @@
     <Content Include="Content\admin\Admin.css.map">
       <DependentUpon>Admin.css</DependentUpon>
     </Content>
+    <Content Include="Areas\Admin\Views\Dashboard\MainAdminNav.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminSocial\Index.cshtml" />
     <None Include="job_scheduling_data_2_0.xsd">
       <SubType>Designer</SubType>
     </None>

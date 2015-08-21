@@ -1,0 +1,168 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.MainDashboardNavViewModel
+<ul class="nav navbar-right top-nav">
+    @*<li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell"></i> <b class="caret"></b></a>
+            <ul class="dropdown-menu alert-dropdown">
+                <li>
+                    <a href="#">Alert Name <span class="label label-default">Alert Badge</span></a>
+                </li>
+                <li>
+                    <a href="#">Alert Name <span class="label label-primary">Alert Badge</span></a>
+                </li>
+                <li>
+                    <a href="#">Alert Name <span class="label label-success">Alert Badge</span></a>
+                </li>
+                <li>
+                    <a href="#">Alert Name <span class="label label-info">Alert Badge</span></a>
+                </li>
+                <li>
+                    <a href="#">Alert Name <span class="label label-warning">Alert Badge</span></a>
+                </li>
+                <li>
+                    <a href="#">Alert Name <span class="label label-danger">Alert Badge</span></a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                    <a href="#">View All</a>
+                </li>
+            </ul>
+        </li>*@
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> @User.Identity.Name <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            <li>
+                <a href="@Url.Action("Index", "PrivateMessage", new { area = "" })">
+                    <i class="fa fa-fw fa-envelope"></i> Private Messages
+                    @if (Model.PrivateMessageCount > 0)
+                    {
+                        <span class="badge">@Model.PrivateMessageCount</span>
+                    }
+                </a>
+            </li>
+            <li class="divider"></li>
+            <li>
+                <a href="@Url.Action("LogOff", "Members", new { area = "" })"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+            </li>
+        </ul>
+    </li>
+</ul>
+<div class="collapse navbar-collapse mvcforum-nav">
+    <ul class="nav navbar-nav side-nav">
+        <li>
+            <a href="@Url.Content("~/")"><i class="fa fa-fw fa-arrow-left"></i> Main Site</a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "Admin", new { area = "Admin" })"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "Settings", new { area = "Admin" }, null)"><i class="fa fa-fw fa-cogs"></i> Main Settings</a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "AdminCategory", new { area = "Admin" }, null)"><i class="fa fa-fw fa-folder-open-o"></i> Categories</a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "AdminTag", new { area = "Admin" })"><i class="fa fa-fw fa-tags"></i> Tags</a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "AdminBadge", new { area = "Admin" })"><i class="fa fa-fw fa-trophy"></i> Badges</a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "Moderate", new { area = "Admin" })">
+                <i class="fa fa-fw fa-comments-o"></i> Moderate
+                @if (Model.ModerateCount > 0)
+                {
+                    <span class="badge">@Model.ModerateCount</span>
+                }
+            </a>
+        </li>
+        <li>
+            <a href="#" data-toggle="collapse" data-target="#permissions">
+                <i class="fa fa-fw fa-check-square-o"></i> Permissions <i class="fa fa-fw fa-caret-down"></i>
+            </a>
+            <ul id="permissions" class="collapse">
+                <li>
+                    <a href="@Url.Action("Index", "Permissions", new { area = "Admin" }, null)">Manage Permissions</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("PermissionTypes", "Permissions", new { area = "Admin" }, null)">Add/Remove Permission Types</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#" data-toggle="collapse" data-target="#membership">
+                <i class="fa fa-fw fa-users"></i> Membership <i class="fa fa-fw fa-caret-down"></i>
+            </a>
+            <ul id="membership" class="collapse">
+                <li>
+                    <a href="@Url.Action("Manage", "Account", new { area = "Admin" }, null)">Manage Users</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ListAllRoles", "Account", new { area = "Admin" }, null)">Manage Roles</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("AddRole", "Account", new { area = "Admin" }, null)">Add Roles</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Index", "AdminSocial", new { area = "Admin" }, null)">Social Logins</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Members", "ImportExport", new { area = "Admin" }, null)">Import / Export</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#" data-toggle="collapse" data-target="#spam">
+                <i class="fa fa-fw fa-frown-o"></i> Spam Prevention <i class="fa fa-fw fa-caret-down"></i>
+            </a>
+            <ul id="spam" class="collapse">
+                <li>
+                    <a href="@Url.Action("Index", "BannedEmail", new { area = "Admin" })">Ban Emails</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Index", "BannedWord", new { area = "Admin" })">Banned &amp; Stop Words</a>
+                </li>
+                <li>
+                    <a href="#">Akismet</a>
+                </li>
+                <li>
+                    <a href="#">Registration Question</a>
+                </li>
+                <li>
+                    <a href="#">Spam Reporting</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#" data-toggle="collapse" data-target="#language">
+                <i class="fa fa-fw fa-language"></i> Languages <i class="fa fa-fw fa-caret-down"></i>
+            </a>
+            <ul id="language" class="collapse">
+                <li>
+                    <a href="@Url.Action("Create", "AdminLanguage", new { area = "Admin" })">Add Language</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Index", "AdminLanguage", new { area = "Admin" })">Edit Language</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Languages", "ImportExport", new { area = "Admin" })">Import / Export</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="#" data-toggle="collapse" data-target="#language">
+                <i class="fa fa-fw fa-bolt"></i> Batch Tools <i class="fa fa-fw fa-caret-down"></i>
+            </a>
+            <ul id="language" class="collapse">
+                <li>
+                    <a href="@Url.Action("BatchDeleteMembers", "Batch", new { area = "Admin" }, null)">Batch Delete Members</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("BatchMoveTopics", "Batch", new { area = "Admin" }, null)">Batch Move Topics</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "Log", new { area = "Admin" })"><i class="fa fa-fw fa-file-text-o"></i> Log</a>
+        </li>
+    </ul>
+</div>

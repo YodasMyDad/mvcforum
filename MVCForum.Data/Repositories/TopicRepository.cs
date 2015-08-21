@@ -259,6 +259,12 @@ namespace MVCForum.Data.Repositories
             return new PagedList<Topic>(results, pageIndex, pageSize, total);
         }
 
+        public int GetPendingTopicsCount(List<Category> allowedCategories)
+        {
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            return _context.Topic.AsNoTracking().Count(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id));
+        }
+
         public PagedList<Topic> GetPagedTopicsByCategory(int pageIndex, int pageSize, int amountToTake, Guid categoryId)
         {
 

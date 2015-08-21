@@ -15,6 +15,7 @@ namespace MVCForum.Domain.Interfaces.Services
         PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm, List<Category> allowedCategories);
         PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId, PostOrderBy order);
         PagedList<Post> GetPagedPendingPosts(int pageIndex, int pageSize);
+        int GetPendingPostsCount();
         Post Add(Post post);
         Post Get(Guid postId);
         IList<Post> GetPostsByTopics(List<Guid> topicIds, List<Category> allowedCategories);

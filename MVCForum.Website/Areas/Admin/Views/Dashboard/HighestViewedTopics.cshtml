@@ -1,12 +1,11 @@
 ﻿@model MVCForum.Website.Areas.Admin.ViewModels.HighestViewedTopics
 
-
-@if (Model.Topics.Any())
-{
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            Highest Viewed Topics
-        </div>
+<div class="panel">
+    <div class="panel-heading">
+        <h5>Highest Viewed Topics</h5>
+    </div>
+    @if (Model.Topics.Any())
+    {
         <ul class="list-group">
             @foreach (var topic in Model.Topics)
             {
@@ -16,9 +15,13 @@
                 </li>
             }
         </ul>
-    </div>
-}
-else
-{
-    <p>No data</p>
-}
+    }
+    else
+    {
+        <div class="panel-content">No data</div>
+    }
+
+</div>
+
+
+

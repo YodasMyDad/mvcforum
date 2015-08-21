@@ -16,6 +16,7 @@ namespace MVCForum.Domain.Interfaces.Repositories
         IList<Post> GetPostsByTopic(Guid topicId);
         IList<Post> GetPostsByTopics(List<Guid> topicId, List<Category> allowedCategories);
         PagedList<Post> GetPagedPendingPosts(int pageIndex, int pageSize);
+        int GetPendingPostsCount();
         PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId, PostOrderBy order);
         IList<Post> GetPostsByMember(Guid memberId, List<Category> allowedCategories);
         IList<Post> GetAllSolutionPosts(List<Category> allowedCategories);

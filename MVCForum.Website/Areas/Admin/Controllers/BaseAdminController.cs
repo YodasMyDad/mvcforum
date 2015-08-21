@@ -1,7 +1,9 @@
 ﻿using System.Web.Mvc;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
+using MVCForum.Website.Areas.Admin.ViewModels;
 
 namespace MVCForum.Website.Areas.Admin.Controllers
 {
@@ -15,6 +17,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         protected readonly ISettingsService SettingsService;
         protected readonly IUnitOfWorkManager UnitOfWorkManager;
         protected readonly ILoggingService LoggingService;
+
+        protected MembershipUser LoggedOnReadOnlyUser;
 
         /// <summary>
         /// Constructor
@@ -32,24 +36,16 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             LocalizationService.CurrentLanguage = LocalizationService.DefaultLanguage;
             SettingsService = settingsService;
             LoggingService = loggingService;
+
+            LoggedOnReadOnlyUser = MembershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
         }
 
-        /// <summary>
-        /// Return the currently logged on user
-        /// </summary>
-        protected MembershipUser LoggedOnUser
+        protected void ShowMessage(GenericMessageViewModel messageViewModel)
         {
-            get
-            {
-                if (User == null)
-                {
-                    throw new UserNotLoggedOnException();
-                }
-
-                var currentUser = MembershipService.GetUser(User.Identity.Name);
-                return currentUser;
-            }
+            //ViewData[AppConstants.MessageViewBagName] = messageViewModel;
+            TempData[AppConstants.MessageViewBagName] = messageViewModel;
         }
+
     }
 
     public class UserNotLoggedOnException : System.Exception

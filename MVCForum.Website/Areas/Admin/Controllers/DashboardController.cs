@@ -14,20 +14,46 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
         private readonly ITopicTagService _topicTagService;
+        private readonly IPrivateMessageService _privateMessageService;
         private readonly ICategoryService _categoryService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         const int AmountToShow = 7;
 
         public DashboardController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
             ILocalizationService localizationService, ISettingsService settingsService, IPostService postService, 
-            ITopicService topicService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService, ICategoryService categoryService)
+            ITopicService topicService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService, ICategoryService categoryService, IPrivateMessageService privateMessageService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
             _membershipUserPointsService = membershipUserPointsService;
             _categoryService = categoryService;
+            _privateMessageService = privateMessageService;
             _postService = postService;
             _topicService = topicService;
             _topicTagService = topicTagService;
+        }
+
+        public PartialViewResult MainAdminNav()
+        {
+            var pmCount = 0;
+            if (LoggedOnReadOnlyUser != null)
+            {
+                pmCount = _privateMessageService.NewPrivateMessageCount(LoggedOnReadOnlyUser.Id);
+            }
+
+            var moderateCount = 0;
+            var topicsToModerate = _topicService.GetPendingTopicsCount(_categoryService.GetAll());
+            var postsToModerate = _postService.GetPendingPostsCount();
+            if (topicsToModerate > 0 || postsToModerate > 0)
+            {
+                moderateCount = (topicsToModerate + postsToModerate);
+            }
+
+            var viewModel = new MainDashboardNavViewModel
+            {
+                PrivateMessageCount = pmCount,
+                ModerateCount = moderateCount
+            };
+            return PartialView(viewModel);
         }
 
         [HttpPost]
