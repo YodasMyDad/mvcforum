@@ -42,11 +42,11 @@ $media-query-mobile: 600px;
     }
 }
 .navbar-right { margin-right: 0; }
-.top-nav > li > a:hover, .top-nav > li > a:focus, .top-nav > .open > a, .top-nav > .open > a:hover, .top-nav > .open > a:focus {background:$font-lighter-base-color;}
-.navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus {color:$font-lighter-base-color;}
-.panel-group .panel-heading + .panel-collapse > .panel-body, .panel-group .panel-heading + .panel-collapse > .list-group {border-top:none;}
-.form-control {border-radius:0;}
-.input-group-btn:last-child > .btn {    padding: 7px 12px 6px 12px;}
+.top-nav > li > a:hover, .top-nav > li > a:focus, .top-nav > .open > a, .top-nav > .open > a:hover, .top-nav > .open > a:focus { background: $font-lighter-base-color; }
+.navbar-inverse .navbar-brand:hover, .navbar-inverse .navbar-brand:focus { color: $font-lighter-base-color; }
+.panel-group .panel-heading + .panel-collapse > .panel-body, .panel-group .panel-heading + .panel-collapse > .list-group { border-top: none; }
+.form-control { border-radius: 0; }
+.input-group-btn:last-child > .btn { padding: 7px 12px 6px 12px; }
 
 // Panels
 
@@ -55,13 +55,15 @@ $media-query-mobile: 600px;
         h5 { display: inline-block; font-size: 14px; line-height: 14px; margin: 0; padding: 0; -ms-text-overflow: ellipsis; -o-text-overflow: ellipsis; text-overflow: ellipsis; float: left; font-weight: bold; }
         .label { float: left; margin-left: 4px; }
         .tools { display: inline-block; float: right; margin-top: 0; position: relative; padding: 0;
-            a, a:visited { cursor: pointer; margin-left: 5px; color: #c4c4c4; }
+            a, a:visited { cursor: pointer;
+                &.btn-mvc-green { margin-top: -6px; }
+            }
         }
     }
-    .panel-content,.panel-body { background-color: #ffffff; color: inherit; padding: 15px 20px 20px 20px; }
+    .panel-content, .panel-body { background-color: #ffffff; color: inherit; padding: 15px 20px 20px 20px; }
 }
 .panel-group {
-    .panel {margin-bottom: 15px;}
+    .panel { margin-bottom: 15px; }
 }
 
 // Page Wrapper
@@ -74,7 +76,7 @@ $media-query-mobile: 600px;
 
 // Back button
 
-.backbutton {margin-top:-8px; margin-bottom:10px;}
+.backbutton { margin-top: -8px; margin-bottom: 10px; }
 
 // Main
 
@@ -250,7 +252,7 @@ a, a:visited { color: $link-color;
 
 // Footer
 
-footer {padding:40px 0 0 0;}
+footer { padding: 40px 0 0 0; }
 
 // Log
 

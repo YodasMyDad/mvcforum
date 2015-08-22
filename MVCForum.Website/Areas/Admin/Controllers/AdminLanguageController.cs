@@ -103,7 +103,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                                                 ResourceKeys = allViewModelResourceKeys,
                                                 PageIndex = pageIndex,
                                                 TotalCount = allResources.TotalCount,
-                                                Search = search
+                                                Search = search,
+                                                TotalPages = allResources.TotalPages
                                             };
 
                 return View("ListKeys", resourceListModel);

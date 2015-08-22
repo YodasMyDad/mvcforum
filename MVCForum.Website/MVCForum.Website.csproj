@@ -995,7 +995,6 @@
     <Content Include="Areas\Admin\Views\Shared\_GetCurrentVersion.cshtml" />
     <Content Include="Areas\Admin\Views\Dashboard\TodaysTopics.cshtml" />
     <Content Include="Installer\en-GB.csv" />
-    <Content Include="Areas\Admin\Views\Batch\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Batch\BatchDeleteMembers.cshtml" />
     <Content Include="Areas\Admin\Views\Batch\BatchMoveTopics.cshtml" />
     <Content Include="Areas\Admin\Views\BannedEmail\Index.cshtml" />

@@ -22,11 +22,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             _topicService = topicService;
         }
 
-        public ActionResult Index()
-        {
-            return View();
-        }
-
         public ActionResult BatchDeleteMembers()
         {
             return View(new BatchDeleteMembersViewModel{AmoutOfDaysSinceRegistered = 0, AmoutOfPosts = 0});

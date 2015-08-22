@@ -146,9 +146,9 @@ namespace MVCForum.Website.Controllers.OAuthControllers
 
                     // Declare the scope
                     var scope = new[] {
-                    GoogleScope.OpenId,
-                    GoogleScope.Email,
-                    GoogleScope.Profile
+                    GoogleScopes.OpenId,
+                    GoogleScopes.Email,
+                    GoogleScopes.Profile
                 };
 
                     // Construct the authorization URL

@@ -45,7 +45,8 @@ namespace MVCForum.Services
                     // If no SMTP settings then log it
                     if (string.IsNullOrEmpty(smtp))
                     {
-                        _loggingService.Error("There are no SMTP details in the settings, unable to send emails");
+                        // Not logging as it makes the log file massive
+                        //_loggingService.Error("There are no SMTP details in the settings, unable to send emails");
                         return;
                     }
 

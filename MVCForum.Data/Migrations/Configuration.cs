@@ -30,14 +30,14 @@ namespace MVCForum.Data.Migrations
             #region Initial Installer Code
             var loggingService = DependencyResolver.Current.GetService<ILoggingService>();
 
-            var isFirstInstall = false;
+            //var isFirstInstall = false;
 
             // Add the language - If it's not already there
             const string langCulture = "en-GB";
             var language = context.Language.FirstOrDefault(x => x.LanguageCulture == langCulture);
             if (language == null)
             {
-                isFirstInstall = true;
+                //isFirstInstall = true;
                 var cultureInfo = LanguageUtils.GetCulture(langCulture);
                 language = new Language
                 {

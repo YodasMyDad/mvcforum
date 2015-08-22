@@ -100,8 +100,10 @@
 
 .panel .panel-heading .tools a, .panel .panel-heading .tools a:visited {
   cursor: pointer;
-  margin-left: 5px;
-  color: #c4c4c4;
+}
+
+.panel .panel-heading .tools a.btn-mvc-green, .panel .panel-heading .tools a:visited.btn-mvc-green {
+  margin-top: -6px;
 }
 
 .panel .panel-content, .panel .panel-body {
