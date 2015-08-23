@@ -188,7 +188,7 @@ a:hover, a:focus, a:visited:hover, a:visited:focus {
 .validation-summary-errors ul li {
   padding: 4px;
   background-color: #bd2a38;
-  color: #97222d;
+  color: #fbebed;
   list-style: none;
 }
 
@@ -1511,9 +1511,10 @@ footer h6 {
 
 .topictagholder #Tags_addTag #Tags_tag {
   display: block;
-  width: 100% !important;
+  width: 101% !important;
   height: 34px;
   padding: 6px 12px;
+  margin-left: -10px;
   font-size: 14px;
   line-height: 1.42857143;
   color: #555;
@@ -1528,14 +1529,20 @@ footer h6 {
   transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 }
 
-.pollanswerlist {
+.pollanswerholder .pollanswerlist {
   margin: 0;
   padding: 0;
 }
 
-.pollanswerlist li {
+.pollanswerholder .pollanswerlist li {
   list-style: none;
   padding-bottom: 8px;
+}
+
+@media (max-width: 991px) {
+  .pollanswerholder {
+    padding-bottom: 12px;
+  }
 }
 
 .mce-container, .mce-container *,

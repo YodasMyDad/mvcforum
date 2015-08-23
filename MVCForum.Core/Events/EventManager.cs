@@ -18,6 +18,7 @@ namespace MVCForum.Domain.Events
         public EventHandler<PostMadeEventArgs> BeforePostMade;
         public EventHandler<RegisterUserEventArgs> BeforeRegisterUser;
         public EventHandler<UpdateProfileEventArgs> BeforeUpdateProfile;
+        public EventHandler<LoginEventArgs> BeforeLogin;
 
         public EventHandler<BadgeEventArgs> AfterBadgeAwarded;
         public EventHandler<VoteEventArgs> AfterVoteMade;
@@ -274,6 +275,16 @@ namespace MVCForum.Domain.Events
         public void FireAfterProfileUpdated(object sender, UpdateProfileEventArgs eventArgs)
         {
             var handler = AfterUpdateProfile;
+
+            if (handler != null)
+            {
+                handler(this, eventArgs);
+            }
+        }
+
+        public void FireBeforeLogin(object sender, LoginEventArgs eventArgs)
+        {
+            var handler = BeforeLogin;
 
             if (handler != null)
             {

@@ -141,5 +141,59 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 return RedirectToAction("Index");
             }
         }
+
+        public ActionResult CustomCode()
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var settings = SettingsService.GetSettings();
+                var viewModel = new CustomCodeViewModels
+                {
+                    CustomFooterCode = settings.CustomFooterCode,
+                    CustomHeaderCode = settings.CustomHeaderCode
+                };
+                return View(viewModel);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult CustomCode(CustomCodeViewModels viewModel)
+        {
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+
+                var settings = SettingsService.GetSettings(false);
+
+                settings.CustomFooterCode = viewModel.CustomFooterCode;
+                settings.CustomHeaderCode = viewModel.CustomHeaderCode;
+
+                try
+                {
+                    unitOfWork.Commit();
+
+                    // Show a message
+                    ShowMessage(new GenericMessageViewModel
+                    {
+                        Message = "Updated",
+                        MessageType = GenericMessages.success
+                    });
+
+                }
+                catch (Exception ex)
+                {
+                    LoggingService.Error(ex);
+                    unitOfWork.Rollback();
+
+                    // Show a message
+                    ShowMessage(new GenericMessageViewModel
+                    {
+                        Message = "Error, please check log",
+                        MessageType = GenericMessages.danger
+                    });
+                }
+
+                return View(viewModel);
+            }
+        }
     }
 }

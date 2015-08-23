@@ -300,6 +300,7 @@
     <Compile Include="Controllers\TopicController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="Controllers\VoteController.cs" />
+    <Compile Include="Events\ExampleBeforeLogin.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -811,6 +812,7 @@
     <Content Include="Areas\Admin\Views\AdminSpam\Akismet.cshtml" />
     <Content Include="Areas\Admin\Views\AdminSpam\RegistrationQuestion.cshtml" />
     <Content Include="Areas\Admin\Views\AdminSpam\SpamReporting.cshtml" />
+    <Content Include="Areas\Admin\Views\Settings\CustomCode.cshtml" />
     <None Include="job_scheduling_data_2_0.xsd">
       <SubType>Designer</SubType>
     </None>

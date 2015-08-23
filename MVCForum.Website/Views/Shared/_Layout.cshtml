@@ -51,6 +51,10 @@
                     .MvcRender("~/scripts/cache/combined_" + theme + "_#.js")
     )
     @RenderSection("Header", false)
+    @if (!string.IsNullOrEmpty(Html.Settings().CustomHeaderCode))
+    {
+        @Html.Raw(Html.Settings().CustomHeaderCode)
+    }
 </head>
 
 <body class="@TempData[AppConstants.GlobalClass].ToString() loggedin-@(User.Identity.IsAuthenticated.ToString().ToLower())">
@@ -183,6 +187,9 @@
 
         </div>
     </footer>
-
+    @if (!string.IsNullOrEmpty(Html.Settings().CustomFooterCode))
+    {
+        @Html.Raw(Html.Settings().CustomFooterCode)
+    }
 </body>
 </html>

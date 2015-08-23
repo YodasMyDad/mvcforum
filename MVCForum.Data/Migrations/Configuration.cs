@@ -21,14 +21,14 @@ namespace MVCForum.Data.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
-            AutomaticMigrationDataLossAllowed = false;
+            AutomaticMigrationDataLossAllowed = true;
         }
 
         protected override void Seed(MVCForumContext context)
         {
 
             #region Initial Installer Code
-            var loggingService = DependencyResolver.Current.GetService<ILoggingService>();
+
 
             //var isFirstInstall = false;
 
@@ -37,6 +37,8 @@ namespace MVCForum.Data.Migrations
             var language = context.Language.FirstOrDefault(x => x.LanguageCulture == langCulture);
             if (language == null)
             {
+                var loggingService = DependencyResolver.Current.GetService<ILoggingService>();
+
                 //isFirstInstall = true;
                 var cultureInfo = LanguageUtils.GetCulture(langCulture);
                 language = new Language

@@ -66,11 +66,26 @@
         </div>
     }
 
+    <div class="form-group">
+        @Html.LabelFor(model => model.Category)
+        @Html.DropDownListFor(model => model.Category, Model.Categories, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Category)
+    </div>
+    <div class="form-group">
+        <label>@Html.Lang("Topic.Label.Tags")</label>
+        <div class="topictagholder">
+            @Html.TextAreaFor(model => model.Tags, new { @class = "tagstextarea tags", title = Html.LanguageString("Topic.TagThisTopic") })
+        </div>
+    </div>
 }
 else
 {
     <h2>@ViewBag.Title</h2>
+    @Html.HiddenFor(x => x.Category)
+    @Html.HiddenFor(x => x.Name)
 }
+
+
 
 <div class="row">
     <div class="col-md-12 topiccontent">
@@ -124,17 +139,6 @@ else
     @if (Model.IsTopicStarter)
     {
         <div class="col-md-5 col-md-offset-1 topiccategory">
-            <div class="form-group">
-                @Html.LabelFor(model => model.Category)
-                @Html.DropDownListFor(model => model.Category, Model.Categories, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Category)
-            </div>
-            <div class="form-group">
-                <label>@Html.Lang("Topic.Label.Tags")</label>
-                <div class="topictagholder">
-                    @Html.TextAreaFor(model => model.Tags, new { @class = "tagstextarea tags", title = Html.LanguageString("Topic.TagThisTopic") })
-                </div>
-            </div>
 
             @if (Model.Id == Guid.Empty)
             {
@@ -152,11 +156,6 @@ else
                 </div>
             }
         </div>
-    }
-    else
-    {
-        @Html.HiddenFor(x => x.Category)
-        @Html.HiddenFor(x => x.Name)
     }
 
 </div>

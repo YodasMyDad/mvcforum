@@ -7,6 +7,18 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Website.Areas.Admin.ViewModels
 {
+
+    public class CustomCodeViewModels
+    {
+        [AllowHtml]
+        [DisplayName("Custom Header Code")]
+        public string CustomHeaderCode { get; set; }
+
+        [AllowHtml]
+        [DisplayName("Custom Footer Code")]
+        public string CustomFooterCode { get; set; }
+    }
+
     public class EditSettingsViewModel
     {
         [HiddenInput]

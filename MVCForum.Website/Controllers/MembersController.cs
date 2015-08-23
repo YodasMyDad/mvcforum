@@ -11,6 +11,7 @@ using System.Web.Security;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Enums;
+using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Utilities;
@@ -635,77 +636,95 @@ namespace MVCForum.Website.Controllers
                 {
                     if (ModelState.IsValid)
                     {
-                        var message = new GenericMessageViewModel();
-                        var user = new MembershipUser();
-                        if (MembershipService.ValidateUser(username, password, System.Web.Security.Membership.MaxInvalidPasswordAttempts))
-                        {
-                            // Set last login date
-                            user = MembershipService.GetUser(username);
-                            if (user.IsApproved && !user.IsLockedOut)
-                            {
-                                FormsAuthentication.SetAuthCookie(username, model.RememberMe);
-                                user.LastLoginDate = DateTime.UtcNow;
+                        // We have an event here to help with Single Sign Ons
+                        // You can do manual lookups to check users based on a webservice and validate a user
+                        // Then log them in if they exist or create them and log them in - Have passed in a UnitOfWork
+                        // To allow database changes.
 
-                                if (Url.IsLocalUrl(model.ReturnUrl) && model.ReturnUrl.Length > 1 && model.ReturnUrl.StartsWith("/")
-                                    && !model.ReturnUrl.StartsWith("//") && !model.ReturnUrl.StartsWith("/\\"))
+                        var e = new LoginEventArgs
+                        {
+                            UserName = model.UserName,
+                            Password = model.Password,
+                            RememberMe = model.RememberMe,
+                            ReturnUrl = model.ReturnUrl, 
+                            UnitOfWork = unitOfWork
+                        };
+                        EventManager.Instance.FireBeforeLogin(this, e);
+
+                        if (!e.Cancel)
+                        {
+                            var message = new GenericMessageViewModel();
+                            var user = new MembershipUser();
+                            if (MembershipService.ValidateUser(username, password, System.Web.Security.Membership.MaxInvalidPasswordAttempts))
+                            {
+                                // Set last login date
+                                user = MembershipService.GetUser(username);
+                                if (user.IsApproved && !user.IsLockedOut)
                                 {
-                                    return Redirect(model.ReturnUrl);
+                                    FormsAuthentication.SetAuthCookie(username, model.RememberMe);
+                                    user.LastLoginDate = DateTime.UtcNow;
+
+                                    if (Url.IsLocalUrl(model.ReturnUrl) && model.ReturnUrl.Length > 1 && model.ReturnUrl.StartsWith("/")
+                                        && !model.ReturnUrl.StartsWith("//") && !model.ReturnUrl.StartsWith("/\\"))
+                                    {
+                                        return Redirect(model.ReturnUrl);
+                                    }
+
+                                    message.Message = LocalizationService.GetResourceString("Members.NowLoggedIn");
+                                    message.MessageType = GenericMessages.success;
+
+                                    return RedirectToAction("Index", "Home", new { area = string.Empty });
                                 }
+                                //else if (!user.IsApproved && SettingsService.GetSettings().ManuallyAuthoriseNewMembers)
+                                //{
 
-                                message.Message = LocalizationService.GetResourceString("Members.NowLoggedIn");
-                                message.MessageType = GenericMessages.success;
+                                //    message.Message = LocalizationService.GetResourceString("Members.NowRegisteredNeedApproval");
+                                //    message.MessageType = GenericMessages.success;
 
-                                return RedirectToAction("Index", "Home", new { area = string.Empty });
+                                //}
+                                //else if (!user.IsApproved && SettingsService.GetSettings().NewMemberEmailConfirmation == true)
+                                //{
+
+                                //    message.Message = LocalizationService.GetResourceString("Members.MemberEmailAuthorisationNeeded");
+                                //    message.MessageType = GenericMessages.success;
+                                //}
                             }
-                            //else if (!user.IsApproved && SettingsService.GetSettings().ManuallyAuthoriseNewMembers)
-                            //{
 
-                            //    message.Message = LocalizationService.GetResourceString("Members.NowRegisteredNeedApproval");
-                            //    message.MessageType = GenericMessages.success;
-
-                            //}
-                            //else if (!user.IsApproved && SettingsService.GetSettings().NewMemberEmailConfirmation == true)
-                            //{
-
-                            //    message.Message = LocalizationService.GetResourceString("Members.MemberEmailAuthorisationNeeded");
-                            //    message.MessageType = GenericMessages.success;
-                            //}
-                        }
-
-                        // Only show if we have something to actually show to the user
-                        if (!string.IsNullOrEmpty(message.Message))
-                        {
-                            TempData[AppConstants.MessageViewBagName] = message;
-                        }
-                        else
-                        {
-                            // get here Login failed, check the login status
-                            var loginStatus = MembershipService.LastLoginStatus;
-
-                            switch (loginStatus)
+                            // Only show if we have something to actually show to the user
+                            if (!string.IsNullOrEmpty(message.Message))
                             {
-                                case LoginAttemptStatus.UserNotFound:
-                                case LoginAttemptStatus.PasswordIncorrect:
-                                    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.PasswordIncorrect"));
-                                    break;
+                                TempData[AppConstants.MessageViewBagName] = message;
+                            }
+                            else
+                            {
+                                // get here Login failed, check the login status
+                                var loginStatus = MembershipService.LastLoginStatus;
 
-                                case LoginAttemptStatus.PasswordAttemptsExceeded:
-                                    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.PasswordAttemptsExceeded"));
-                                    break;
+                                switch (loginStatus)
+                                {
+                                    case LoginAttemptStatus.UserNotFound:
+                                    case LoginAttemptStatus.PasswordIncorrect:
+                                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.PasswordIncorrect"));
+                                        break;
 
-                                case LoginAttemptStatus.UserLockedOut:
-                                    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.UserLockedOut"));
-                                    break;
+                                    case LoginAttemptStatus.PasswordAttemptsExceeded:
+                                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.PasswordAttemptsExceeded"));
+                                        break;
 
-                                case LoginAttemptStatus.UserNotApproved:
-                                    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.UserNotApproved"));
-                                    user = MembershipService.GetUser(username);
-                                    SendEmailConfirmationEmail(user);
-                                    break;
+                                    case LoginAttemptStatus.UserLockedOut:
+                                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.UserLockedOut"));
+                                        break;
 
-                                default:
-                                    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.LogonGeneric"));
-                                    break;
+                                    case LoginAttemptStatus.UserNotApproved:
+                                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.UserNotApproved"));
+                                        user = MembershipService.GetUser(username);
+                                        SendEmailConfirmationEmail(user);
+                                        break;
+
+                                    default:
+                                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.LogonGeneric"));
+                                        break;
+                                }
                             }
                         }
                     }
@@ -888,7 +907,7 @@ namespace MVCForum.Website.Controllers
                             }
 
                             // Save avatar to user
-                            user.Avatar = uploadResult.UploadedFileName;                            
+                            user.Avatar = uploadResult.UploadedFileName;
                         }
                     }
 
@@ -1198,7 +1217,7 @@ namespace MVCForum.Website.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(forgotPasswordViewModel);   
+                return View(forgotPasswordViewModel);
             }
 
             MembershipUser user;
@@ -1211,7 +1230,7 @@ namespace MVCForum.Website.Controllers
                 // email addresses which could be a privacy issue if the forum is of a sensitive nature. */
                 if (user == null)
                 {
-                    return RedirectToAction("PasswordResetSent", "Members");   
+                    return RedirectToAction("PasswordResetSent", "Members");
                 }
 
                 try
@@ -1283,7 +1302,7 @@ namespace MVCForum.Website.Controllers
 
             if (id == null || String.IsNullOrEmpty(token))
             {
-                ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.InvalidToken"));   
+                ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.InvalidToken"));
             }
 
             return View(model);
@@ -1295,7 +1314,7 @@ namespace MVCForum.Website.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(postedModel);   
+                return View(postedModel);
             }
 
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
