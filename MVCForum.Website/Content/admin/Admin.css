@@ -27,6 +27,10 @@
   border-radius: 0;
 }
 
+.navbar-inverse .navbar-toggle {
+  background-color: #636267;
+}
+
 .navbar-right {
   margin-right: 0;
 }
@@ -49,6 +53,13 @@
 
 .input-group-btn:last-child > .btn {
   padding: 7px 12px 6px 12px;
+}
+
+@media (max-width: 767px) {
+  .navbar-nav {
+    margin: 0;
+    background-color: #222;
+  }
 }
 
 .panel {
@@ -119,6 +130,12 @@
 #page-wrapper {
   background-color: #f3f3f4;
   border-bottom: 1px #e7eaec solid;
+}
+
+@media (max-width: 767px) {
+  #page-wrapper {
+    padding-top: 15px;
+  }
 }
 
 .mvcforum-nav {
