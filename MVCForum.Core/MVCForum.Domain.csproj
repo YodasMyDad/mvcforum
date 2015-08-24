@@ -133,10 +133,12 @@
     <Compile Include="EqualityComparers\PermissionEqualityComparers.cs" />
     <Compile Include="Events\BadgeEventArgs.cs" />
     <Compile Include="Events\EventManager.cs" />
+    <Compile Include="Events\FavouriteEventArgs.cs" />
     <Compile Include="Events\LoginEventArgs.cs" />
     <Compile Include="Events\MarkedAsSolutionEventArgs.cs" />
     <Compile Include="Events\MVCForumEventArgs.cs" />
     <Compile Include="Events\PostMadeEventArgs.cs" />
+    <Compile Include="Events\PrivateMessageEventArgs.cs" />
     <Compile Include="Events\RegisterUserEventArgs.cs" />
     <Compile Include="Events\UpdateProfileEventArgs.cs" />
     <Compile Include="Events\VoteEventArgs.cs" />

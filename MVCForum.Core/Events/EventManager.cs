@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.Interfaces.Events;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Utilities;
@@ -13,19 +14,32 @@ namespace MVCForum.Domain.Events
         private const string InterfaceTargetName =@"MVCForum.Domain.Interfaces.Events.IEventHandler";
 
         public EventHandler<BadgeEventArgs> BeforeBadgeAwarded;
-        public EventHandler<VoteEventArgs> BeforeVoteMade;
-        public EventHandler<MarkedAsSolutionEventArgs> BeforeMarkedAsSolution;
-        public EventHandler<PostMadeEventArgs> BeforePostMade;
-        public EventHandler<RegisterUserEventArgs> BeforeRegisterUser;
-        public EventHandler<UpdateProfileEventArgs> BeforeUpdateProfile;
-        public EventHandler<LoginEventArgs> BeforeLogin;
-
         public EventHandler<BadgeEventArgs> AfterBadgeAwarded;
+
+        public EventHandler<VoteEventArgs> BeforeVoteMade;
         public EventHandler<VoteEventArgs> AfterVoteMade;
+
+        public EventHandler<MarkedAsSolutionEventArgs> BeforeMarkedAsSolution;
         public EventHandler<MarkedAsSolutionEventArgs> AfterMarkedAsSolution;
+
+        public EventHandler<PostMadeEventArgs> BeforePostMade;
         public EventHandler<PostMadeEventArgs> AfterPostMade;
+
+        public EventHandler<RegisterUserEventArgs> BeforeRegisterUser;
         public EventHandler<RegisterUserEventArgs> AfterRegisterUser;
+
+
+        public EventHandler<UpdateProfileEventArgs> BeforeUpdateProfile;
         public EventHandler<UpdateProfileEventArgs> AfterUpdateProfile;
+
+        public EventHandler<LoginEventArgs> BeforeLogin;
+        public EventHandler<LoginEventArgs> AfterLogin;
+
+        public EventHandler<FavouriteEventArgs> BeforeFavourite;
+        public EventHandler<FavouriteEventArgs> AfterFavourite;
+
+        public EventHandler<PrivateMessageEventArgs> BeforePrivateMessage;
+        public EventHandler<PrivateMessageEventArgs> AfterPrivateMessage;
 
         private static volatile EventManager _instance;
         private static readonly object SyncRoot = new Object();
@@ -73,6 +87,19 @@ namespace MVCForum.Domain.Events
         }
 
         /// <summary>
+        /// Log errors
+        /// </summary>
+        /// <param name="msg"></param>
+        public void LogError(string msg)
+        {
+            if (Logger != null)
+            {
+                Logger.Error(msg);
+            }
+        }
+
+        #region Initialise Code
+        /// <summary>
         /// Use reflection to get all event handling classes. Call this ONCE.
         /// </summary>
         public void Initialize(ILoggingService loggingService)
@@ -87,10 +114,17 @@ namespace MVCForum.Domain.Events
             var di = new DirectoryInfo(path);
             foreach (var file in di.GetFiles("*.dll"))
             {
-                if (file.Name.ToLower().StartsWith("ecmascript") || file.Name.ToLower().StartsWith("unity."))
+
+                var dllsToSkip = AppConstants.ReflectionDllsToAvoid;
+                //if (file.Name == "EcmaScript.NET.dll" || file.Name == "Unity.WebApi.dll")
+                if (dllsToSkip.Contains(file.Name))
                 {
                     continue;
                 }
+                //if (file.Name.ToLower().StartsWith("ecmascript") || file.Name.ToLower().StartsWith("unity."))
+                //{
+                //    continue;
+                //}
 
                 Assembly nextAssembly;
                 try
@@ -147,21 +181,10 @@ namespace MVCForum.Domain.Events
                     LogError(string.Format("Error reflecting over event handlers: {0}", ex.Message));
                 }
             }
-        }
+        } 
+        #endregion
 
-        /// <summary>
-        /// Log errors
-        /// </summary>
-        /// <param name="msg"></param>
-        public void LogError(string msg)
-        {
-            if (Logger != null)
-            {
-                Logger.Error(msg);
-            }
-        }
-        #region Event triggers
-
+        #region Badges
         public void FireAfterBadgeAwarded(object sender, BadgeEventArgs eventArgs)
         {
             var handler = AfterBadgeAwarded;
@@ -180,51 +203,13 @@ namespace MVCForum.Domain.Events
             {
                 handler(this, eventArgs);
             }
-        }
+        } 
+        #endregion
 
+        #region Votes
         public void FireBeforeVoteMade(object sender, VoteEventArgs eventArgs)
         {
             var handler = BeforeVoteMade;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        }
-
-        public void FireBeforeMarkedAsSolution(object sender, MarkedAsSolutionEventArgs eventArgs)
-        {
-            var handler = BeforeMarkedAsSolution;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        }
-
-        public void FireBeforePostMade(object sender, PostMadeEventArgs eventArgs)
-        {
-            var handler = BeforePostMade;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        }
-
-        public void FireBeforeRegisterUser(object sender, RegisterUserEventArgs eventArgs)
-        {
-            var handler = BeforeRegisterUser;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        }
-
-        public void FireBeforeProfileUpdated(object sender, UpdateProfileEventArgs eventArgs)
-        {
-            var handler = BeforeUpdateProfile;
 
             if (handler != null)
             {
@@ -240,6 +225,18 @@ namespace MVCForum.Domain.Events
             {
                 handler(this, eventArgs);
             }
+        } 
+        #endregion
+
+        #region Solutions
+        public void FireBeforeMarkedAsSolution(object sender, MarkedAsSolutionEventArgs eventArgs)
+        {
+            var handler = BeforeMarkedAsSolution;
+
+            if (handler != null)
+            {
+                handler(this, eventArgs);
+            }
         }
 
         public void FireAfterMarkedAsSolution(object sender, MarkedAsSolutionEventArgs eventArgs)
@@ -250,11 +247,55 @@ namespace MVCForum.Domain.Events
             {
                 handler(this, eventArgs);
             }
-        }
+        } 
+        #endregion
 
+        #region Posts
+        public void FireBeforePostMade(object sender, PostMadeEventArgs eventArgs)
+        {
+            var handler = BeforePostMade;
+
+            if (handler != null)
+            {
+                handler(this, eventArgs);
+            }
+        }
         public void FireAfterPostMade(object sender, PostMadeEventArgs eventArgs)
         {
             var handler = AfterPostMade;
+
+            if (handler != null)
+            {
+                handler(this, eventArgs);
+            }
+        } 
+        #endregion
+
+        #region Profile
+        public void FireBeforeProfileUpdated(object sender, UpdateProfileEventArgs eventArgs)
+        {
+            var handler = BeforeUpdateProfile;
+
+            if (handler != null)
+            {
+                handler(this, eventArgs);
+            }
+        }
+        public void FireAfterProfileUpdated(object sender, UpdateProfileEventArgs eventArgs)
+        {
+            var handler = AfterUpdateProfile;
+
+            if (handler != null)
+            {
+                handler(this, eventArgs);
+            }
+        } 
+        #endregion
+
+        #region Register
+        public void FireBeforeRegisterUser(object sender, RegisterUserEventArgs eventArgs)
+        {
+            var handler = BeforeRegisterUser;
 
             if (handler != null)
             {
@@ -270,11 +311,14 @@ namespace MVCForum.Domain.Events
             {
                 handler(this, eventArgs);
             }
-        }
+        } 
+        #endregion
 
-        public void FireAfterProfileUpdated(object sender, UpdateProfileEventArgs eventArgs)
+        #region Favourites
+
+        public void FireAfterFavourite(object sender, FavouriteEventArgs eventArgs)
         {
-            var handler = AfterUpdateProfile;
+            var handler = AfterFavourite;
 
             if (handler != null)
             {
@@ -282,6 +326,43 @@ namespace MVCForum.Domain.Events
             }
         }
 
+        public void FireBeforeFavourite(object sender, FavouriteEventArgs eventArgs)
+        {
+            var handler = BeforeFavourite;
+
+            if (handler != null)
+            {
+                handler(this, eventArgs);
+            }
+        }
+
+        #endregion
+
+        #region Private Messages
+
+        public void FireAfterPrivateMessage(object sender, PrivateMessageEventArgs eventArgs)
+        {
+            var handler = AfterPrivateMessage;
+
+            if (handler != null)
+            {
+                handler(this, eventArgs);
+            }
+        }
+
+        public void FireBeforePrivateMessage(object sender, PrivateMessageEventArgs eventArgs)
+        {
+            var handler = BeforePrivateMessage;
+
+            if (handler != null)
+            {
+                handler(this, eventArgs);
+            }
+        }
+
+        #endregion
+
+        #region Login
         public void FireBeforeLogin(object sender, LoginEventArgs eventArgs)
         {
             var handler = BeforeLogin;
@@ -292,7 +373,15 @@ namespace MVCForum.Domain.Events
             }
         }
 
+        public void FireAfterLogin(object sender, LoginEventArgs eventArgs)
+        {
+            var handler = AfterLogin;
 
+            if (handler != null)
+            {
+                handler(this, eventArgs);
+            }
+        }
         #endregion
     }
 }

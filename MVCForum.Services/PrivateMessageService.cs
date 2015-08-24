@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
@@ -36,22 +37,32 @@ namespace MVCForum.Services
             message = SanitizeMessage(message);
             message.DateSent = DateTime.UtcNow;
             message.IsSentMessage = false;
-            var origMessage = _privateMessageRepository.Add(message);
 
-            // We create a sent message that sits in the users sent folder, this is 
-            // so that if the receiver deletes the message - The sender still has a record of it.
-            var sentMessage = new PrivateMessage
+            var e = new PrivateMessageEventArgs { PrivateMessage = message };
+            EventManager.Instance.FireBeforePrivateMessage(this, e);
+
+            if (!e.Cancel)
             {
-                IsSentMessage = true,
-                DateSent = message.DateSent,
-                Message = message.Message,
-                UserFrom = message.UserFrom,
-                UserTo = message.UserTo
-            };
-            _privateMessageRepository.Add(sentMessage);
+                message = _privateMessageRepository.Add(message);
+
+                // We create a sent message that sits in the users sent folder, this is 
+                // so that if the receiver deletes the message - The sender still has a record of it.
+                var sentMessage = new PrivateMessage
+                {
+                    IsSentMessage = true,
+                    DateSent = message.DateSent,
+                    Message = message.Message,
+                    UserFrom = message.UserFrom,
+                    UserTo = message.UserTo
+                };
+
+                _privateMessageRepository.Add(sentMessage);
+
+                EventManager.Instance.FireAfterPrivateMessage(this, new PrivateMessageEventArgs { PrivateMessage = message });
+            }
 
             // Return the main message
-            return origMessage;
+            return message;
         }
 
         /// <summary>

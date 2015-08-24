@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Attributes;
 using MVCForum.Domain.Events;
@@ -272,7 +273,9 @@ namespace MVCForum.Services
             {
                 try
                 {
-                    if (file.Name == "EcmaScript.NET.dll" || file.Name == "Unity.WebApi.dll")
+                    var dllsToSkip = AppConstants.ReflectionDllsToAvoid;
+                    //if (file.Name == "EcmaScript.NET.dll" || file.Name == "Unity.WebApi.dll")
+                    if(dllsToSkip.Contains(file.Name))
                     {
                         continue;
                     }

@@ -673,6 +673,15 @@ namespace MVCForum.Website.Controllers
                                     message.Message = LocalizationService.GetResourceString("Members.NowLoggedIn");
                                     message.MessageType = GenericMessages.success;
 
+                                    EventManager.Instance.FireAfterLogin(this, new LoginEventArgs
+                                    {
+                                        UserName = model.UserName,
+                                        Password = model.Password,
+                                        RememberMe = model.RememberMe,
+                                        ReturnUrl = model.ReturnUrl,
+                                        UnitOfWork = unitOfWork
+                                    });
+
                                     return RedirectToAction("Index", "Home", new { area = string.Empty });
                                 }
                                 //else if (!user.IsApproved && SettingsService.GetSettings().ManuallyAuthoriseNewMembers)
