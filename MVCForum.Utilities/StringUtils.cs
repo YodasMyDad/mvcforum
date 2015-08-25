@@ -824,77 +824,58 @@ namespace MVCForum.Utilities
             return (HttpWebResponse)request.GetResponse();
         }
 
+        /// <summary>
+        /// Creates a URL freindly string, good for SEO
+        /// </summary>
+        /// <param name="strInput"></param>
+        /// <param name="replaceWith"></param>
+        /// <returns></returns>
         public static string CreateUrl(string strInput, string replaceWith)
         {
-            var str = RemoveAccents(strInput).ToLower();
-            // invalid chars           
-            str = Regex.Replace(str, @"[^a-z0-9\s-]", "");
-            // convert multiple spaces into one space   
-            str = Regex.Replace(str, @"\s+", " ").Trim();
-            // cut and trim 
-            str = str.Substring(0, str.Length <= 50 ? str.Length : 50).Trim();
-            str = Regex.Replace(str, @"\s", replaceWith); // hyphens or whatever
-            return str;
+            // Doing this to stop the urls getting encoded
+            var url = RemoveAccents(strInput);
+            return StripNonAlphaNumeric(url, replaceWith).ToLower();
         }
 
-        public static string RemoveAccents(string text)
+        public static string RemoveAccents(string input)
         {
-            var bytes = Encoding.GetEncoding("Cyrillic").GetBytes(text);
-            return Encoding.ASCII.GetString(bytes);
+            // Replace accented characters for the closest ones:
+            //var from = "ÂÃÄÀÁÅÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïðñòóôõöøùúûüýÿ".ToCharArray();
+            //var to = "AAAAAACEEEEIIIIDNOOOOOOUUUUYaaaaaaceeeeiiiidnoooooouuuuyy".ToCharArray();
+            //for (var i = 0; i < from.Length; i++)
+            //{
+            //    input = input.Replace(from[i], to[i]);
+            //}
+
+            //// Thorn http://en.wikipedia.org/wiki/%C3%9E
+            //input = input.Replace("Þ", "TH");
+            //input = input.Replace("þ", "th");
+
+            //// Eszett http://en.wikipedia.org/wiki/%C3%9F
+            //input = input.Replace("ß", "ss");
+
+            //// AE http://en.wikipedia.org/wiki/%C3%86
+            //input = input.Replace("Æ", "AE");
+            //input = input.Replace("æ", "ae");
+
+            //return input;
+
+
+            var stFormD = input.Normalize(NormalizationForm.FormD);
+            var sb = new StringBuilder();
+
+            foreach (var t in stFormD)
+            {
+                var uc = CharUnicodeInfo.GetUnicodeCategory(t);
+                if (uc != UnicodeCategory.NonSpacingMark)
+                {
+                    sb.Append(t);
+                }
+            }
+
+            return (sb.ToString().Normalize(NormalizationForm.FormC));
+
         }
-
-        ///// <summary>
-        ///// Creates a URL freindly string, good for SEO
-        ///// </summary>
-        ///// <param name="strInput"></param>
-        ///// <param name="replaceWith"></param>
-        ///// <returns></returns>
-        //public static string CreateUrl(string strInput, string replaceWith)
-        //{
-        //    // Doing this to stop the urls getting encoded
-        //    var url = RemoveAccents(strInput);
-        //    return StripNonAlphaNumeric(url, replaceWith).ToLower();
-        //}
-
-        //public static string RemoveAccents(string input)
-        //{
-        //    // Replace accented characters for the closest ones:
-        //    //var from = "ÂÃÄÀÁÅÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝàáâãäåçèéêëìíîïðñòóôõöøùúûüýÿ".ToCharArray();
-        //    //var to = "AAAAAACEEEEIIIIDNOOOOOOUUUUYaaaaaaceeeeiiiidnoooooouuuuyy".ToCharArray();
-        //    //for (var i = 0; i < from.Length; i++)
-        //    //{
-        //    //    input = input.Replace(from[i], to[i]);
-        //    //}
-
-        //    //// Thorn http://en.wikipedia.org/wiki/%C3%9E
-        //    //input = input.Replace("Þ", "TH");
-        //    //input = input.Replace("þ", "th");
-
-        //    //// Eszett http://en.wikipedia.org/wiki/%C3%9F
-        //    //input = input.Replace("ß", "ss");
-
-        //    //// AE http://en.wikipedia.org/wiki/%C3%86
-        //    //input = input.Replace("Æ", "AE");
-        //    //input = input.Replace("æ", "ae");
-
-        //    //return input;
-
-
-        //    var stFormD = input.Normalize(NormalizationForm.FormD);
-        //    var sb = new StringBuilder();
-
-        //    foreach (var t in stFormD)
-        //    {
-        //        var uc = CharUnicodeInfo.GetUnicodeCategory(t);
-        //        if (uc != UnicodeCategory.NonSpacingMark)
-        //        {
-        //            sb.Append(t);
-        //        }
-        //    }
-
-        //    return (sb.ToString().Normalize(NormalizationForm.FormC));
-
-        //}
 
         #endregion
 

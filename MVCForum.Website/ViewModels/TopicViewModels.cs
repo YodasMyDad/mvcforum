@@ -76,6 +76,8 @@ namespace MVCForum.Website.ViewModels
         public int? TotalCount { get; set; }
         public int? TotalPages { get; set; }
         public string Tag { get; set; }
+        public Guid TagId { get; set; }
+        public bool IsSubscribed { get; set; }
     }
 
     public class CheckCreateTopicPermissions

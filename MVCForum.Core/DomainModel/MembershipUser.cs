@@ -87,6 +87,7 @@ namespace MVCForum.Domain.DomainModel
         public virtual IList<BadgeTypeTimeLastChecked> BadgeTypesTimeLastChecked { get; set; }
         public virtual IList<CategoryNotification> CategoryNotifications { get; set; }
         public virtual IList<TopicNotification> TopicNotifications { get; set; }
+        public virtual IList<TagNotification> TagNotifications { get; set; }
         public virtual IList<MembershipUserPoints> Points { get; set; }
         public virtual IList<PrivateMessage> PrivateMessagesReceived { get; set; }
         public virtual IList<PrivateMessage> PrivateMessagesSent { get; set; }

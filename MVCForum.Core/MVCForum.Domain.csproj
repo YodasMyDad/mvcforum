@@ -107,6 +107,7 @@
     <Compile Include="DomainModel\PrivateMessage.cs" />
     <Compile Include="DomainModel\Report.cs" />
     <Compile Include="DomainModel\SitemapEntry.cs" />
+    <Compile Include="DomainModel\TagNotification.cs" />
     <Compile Include="DomainModel\TopicNotification.cs" />
     <Compile Include="DomainModel\Email.cs" />
     <Compile Include="DomainModel\LogEntry.cs" />
@@ -152,6 +153,7 @@
     <Compile Include="Interfaces\Badges\IVoteUpBadge.cs" />
     <Compile Include="Interfaces\Events\IEventHandler.cs" />
     <Compile Include="Interfaces\Events\IEventManager.cs" />
+    <Compile Include="Interfaces\Repositories\ITagNotificationRepository.cs" />
     <Compile Include="Interfaces\Services\ICacheService.cs" />
     <Compile Include="Interfaces\IModelAttribute.cs" />
     <Compile Include="Interfaces\IMVCForumContext.cs" />
@@ -194,6 +196,7 @@
     <Compile Include="Interfaces\Services\IActivityService.cs" />
     <Compile Include="Interfaces\Services\IPrivateMessageService.cs" />
     <Compile Include="Interfaces\Services\IReportService.cs" />
+    <Compile Include="Interfaces\Services\ITagNotificationService.cs" />
     <Compile Include="Interfaces\Services\ITopicNotificationService.cs" />
     <Compile Include="Interfaces\Services\ICategoryNotificationService.cs" />
     <Compile Include="Interfaces\Services\IEmailService.cs" />

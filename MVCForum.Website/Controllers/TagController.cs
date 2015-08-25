@@ -1,7 +1,11 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
+using MVCForum.Utilities;
+using MVCForum.Website.Application;
 using MVCForum.Website.ViewModels;
 
 namespace MVCForum.Website.Controllers
@@ -40,6 +44,31 @@ namespace MVCForum.Website.Controllers
                     viewModel = (PopularTagViewModel) cachedData;
                 }
                 return PartialView(viewModel);
+            }
+        }
+
+        [HttpGet]
+        public JsonResult AutoCompleteTags(string term)
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var toReturn = string.Empty;
+                var returnList = new List<string>();
+                var tags = _topicTagService.GetStartsWith(term);
+
+                if (!tags.Any())
+                {
+                    return Json(returnList, JsonRequestBehavior.AllowGet);
+                }
+
+                foreach (var topicTag in tags)
+                {
+                    toReturn += string.Format("\"{0}\",", topicTag.Tag);
+                    returnList.Add(topicTag.Tag);
+                }
+
+                return Json(returnList, JsonRequestBehavior.AllowGet);
+                
             }
         }
 

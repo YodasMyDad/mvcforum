@@ -110,6 +110,7 @@
     <Compile Include="Mapping\PollAnswerMapping.cs" />
     <Compile Include="Mapping\PollMapping.cs" />
     <Compile Include="Mapping\PollVoteMapping.cs" />
+    <Compile Include="Mapping\TagNotificationMapping.cs" />
     <Compile Include="Mapping\TopicNotificationMapping.cs" />
     <Compile Include="Mapping\TopicTagMapping.cs" />
     <Compile Include="Mapping\UploadedFileMapping.cs" />
@@ -143,6 +144,7 @@
     <Compile Include="Repositories\MembershipUserPointsRepository.cs" />
     <Compile Include="Repositories\PollRepository.cs" />
     <Compile Include="Repositories\PrivateMessageRepository.cs" />
+    <Compile Include="Repositories\TagNotificationRepository.cs" />
     <Compile Include="Repositories\TopicNotificationRepository.cs" />
     <Compile Include="Repositories\TopicTagRepository.cs" />
     <Compile Include="Repositories\LocalizationRepository.cs" />

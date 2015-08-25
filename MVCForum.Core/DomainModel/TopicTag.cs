@@ -24,5 +24,6 @@ namespace MVCForum.Domain.DomainModel
         }
 
         public virtual IList<Topic> Topics { get; set; }
+        public virtual IList<TagNotification> Notifications { get; set; }
     }
 }

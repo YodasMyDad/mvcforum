@@ -46,6 +46,12 @@ namespace MVCForum.Services
             _tagRepository.Delete(tag);
         }
 
+        public IList<TopicTag> GetStartsWith(string term, int amountToTake = 4)
+        {
+            term = StringUtils.SafePlainText(term);
+            return _tagRepository.GetStartsWith(term, amountToTake);
+        }
+
         /// <summary>
         /// Get tags by topic
         /// </summary>

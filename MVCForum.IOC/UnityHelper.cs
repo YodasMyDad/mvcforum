@@ -98,6 +98,7 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IFavouriteService, FavouriteService>();
             container.BindInRequestScope<IGlobalPermissionForRoleService, GlobalPermissionForRoleService>();
             container.BindInRequestScope<ICacheService, CacheService>();
+            container.BindInRequestScope<ITagNotificationService, TagNotificationService>();
 
             container.BindInRequestScope<IRoleRepository, RoleRepository>();
             container.BindInRequestScope<ICategoryRepository, CategoryRepository>();
@@ -126,6 +127,7 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IFavouriteRepository, FavouriteRepository>();
             container.BindInRequestScope<IGlobalPermissionForRoleRepository, GlobalPermissionForRoleRepository>();
             container.BindInRequestScope<IEmailRepository, EmailRepository>();
+            container.BindInRequestScope<ITagNotificationRepository, TagNotificationRepository>();
 
             //container.BindInRequestScope<ISessionHelper, SessionHelper>();
 

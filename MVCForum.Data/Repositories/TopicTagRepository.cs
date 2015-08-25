@@ -97,6 +97,14 @@ namespace MVCForum.Data.Repositories
                 .ToList();
         }
 
+        public IList<TopicTag> GetStartsWith(string term, int amountToTake)
+        {
+            return _context.TopicTag
+                .Where(x => x.Tag.StartsWith(term))
+                .Take(amountToTake)
+                .ToList();
+        }
+
         public TopicTag Add(TopicTag topicTag)
         {
             _context.TopicTag.Add(topicTag);

@@ -549,7 +549,7 @@ section.content-strip {
 
 // Tags
 
-.tagsinput { padding: 0 0 8px 10px; }
+.tagsinput { padding: 0 0 8px 10px; width: auto !important; min-height: 10px !important; height: auto !important; }
 span {
     &.tag { display: inline-block; line-height: 19px; height: 19px; position: relative; -ms-border-radius: 0 3px 3px 0; border-radius: 0 3px 3px 0; background-color: lighten($color-global-blue, 9%); color: #fff; font-size: 10px; margin-right: 6px; padding: 0 4px 0 2px; text-transform: uppercase;
         .badge { background-color: $color-global-blue; font-size: 10px; margin-top: -1px; }
@@ -560,6 +560,30 @@ span {
         a, a:visited { color: #fff; text-decoration: none; display: block; line-height: 18px; height: 18px; }
     }
 }
+.tags_clear { clear: both; width: 100%; height: 0; }
+.not_valid { background: #FBD8DB !important; color: #90111A !important; }
+.ui-helper-hidden { display: none; }
+.ui-helper-hidden-accessible { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
+.ui-helper-reset { margin: 0; padding: 0; border: 0; outline: 0; line-height: 1.3; text-decoration: none; font-size: 100%; list-style: none; }
+.ui-helper-clearfix:before, .ui-helper-clearfix:after { content: ""; display: table; border-collapse: collapse; }
+.ui-helper-clearfix:after { clear: both; }
+.ui-helper-clearfix { min-height: 0; }
+.ui-helper-zfix { width: 100%; height: 100%; top: 0; left: 0; position: absolute; opacity: 0; filter: Alpha(Opacity=0); }
+.ui-front { z-index: 100; }
+.ui-state-disabled { cursor: default !important; }
+.ui-icon { display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat; }
+.ui-widget-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; }
+.ui-autocomplete { position: absolute; top: 0; left: 0; cursor: default; border:1px #ccc solid; border-top:none;background-color:#fff;-webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);box-shadow: 0 1px 1px rgba(0,0,0,.05);}
+.ui-menu { list-style: none; padding: 0; margin: 0; display: block; outline: none; }
+.ui-menu .ui-menu { position: absolute; }
+.ui-menu .ui-menu-item { position: relative; margin: 0; padding: 6px; cursor: pointer; min-height: 0; list-style-image: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"); }
+.ui-menu .ui-menu-divider { margin: 5px 0; height: 0; font-size: 0; line-height: 0; border-width: 1px 0 0 0; }
+.ui-menu .ui-state-focus, .ui-menu .ui-state-active {background-color:$color-global-grey-blue;}
+.ui-menu-icons { position: relative; }
+.ui-menu-icons .ui-menu-item { padding-left: 2em; }
+.ui-menu .ui-icon { position: absolute; top: 0; bottom: 0; left: .2em; margin: auto 0; }
+.ui-menu .ui-menu-icon { left: auto; right: 0; }
+
 
 // Stop code snippets being transforms
 
@@ -669,20 +693,19 @@ footer { background: $color-global-grey-blue; padding: 20px 0; margin: 30px 0 0 
 // Create Topic
 
 .topictagholder {
-    span.tag { margin-right: 12px; margin-bottom: 9px;
-        a, a:visited { display: inline; font-weight: bold; font-size: 14px; margin: 0 0 0 5px; }
+    span.tag { margin-right: 12px; margin-bottom: 9px;font-size: 14px !important;
+        a, a:visited { display: inline; font-weight: bold;  margin: 0 0 0 5px; }
     }
     #Tags_addTag {
         #Tags_tag { display: block; width: 101% !important; height: 34px; padding: 6px 12px; margin-left: -10px; font-size: 14px; line-height: 1.42857143; color: #555; background-color: #fff; background-image: none; border: 1px solid #ccc; -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075); box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075); -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s; -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s; -moz-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s; transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s; }
     }
 }
+
 .pollanswerholder {
     .pollanswerlist { margin: 0; padding: 0;
         li { list-style: none; padding-bottom: 8px; }
     }
-    @media (max-width:$media-query-medium){
-        padding-bottom:12px;
-    }
+    @media (max-width:$media-query-medium) { padding-bottom: 12px; }
 }
 
 

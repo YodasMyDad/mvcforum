@@ -28,7 +28,7 @@ $(function () {
             $('.mobilenavbar-inner ul.nav').slideToggle();
         });
     }
-
+    
     var topicName = $(".createtopicname");
     if (topicName.length > 0) {
         topicName.focusout(function () {

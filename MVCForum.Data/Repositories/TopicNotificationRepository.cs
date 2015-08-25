@@ -69,14 +69,5 @@ namespace MVCForum.Data.Repositories
             _context.TopicNotification.Remove(item);
         }
 
-        public void Update(TopicNotification item)
-        {
-            // Check there's not an object with same identifier already in context
-            if (_context.TopicNotification.Local.Select(x => x.Id == item.Id).Any())
-            {
-                throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
-            }
-            _context.Entry(item).State = EntityState.Modified;  
-        }
     }
 }

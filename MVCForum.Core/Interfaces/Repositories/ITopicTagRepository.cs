@@ -12,6 +12,7 @@ namespace MVCForum.Domain.Interfaces.Repositories
         PagedList<TopicTag> GetPagedGroupedTags(int pageIndex, int pageSize);
         PagedList<TopicTag> SearchPagedGroupedTags(string search, int pageIndex, int pageSize);
         IEnumerable<TopicTag> GetByTopic(Topic topic);
+        IList<TopicTag> GetStartsWith(string term, int amountToTake);
         TopicTag Add(TopicTag item);
         TopicTag Get(Guid id);
         void Delete(TopicTag item);

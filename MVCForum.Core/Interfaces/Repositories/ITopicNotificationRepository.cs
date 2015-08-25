@@ -13,6 +13,5 @@ namespace MVCForum.Domain.Interfaces.Repositories
         TopicNotification Add(TopicNotification item);
         TopicNotification Get(Guid id);
         void Delete(TopicNotification item);
-        void Update(TopicNotification item);
     }
 }

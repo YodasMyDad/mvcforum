@@ -97,6 +97,10 @@ namespace MVCForum.Data.Mapping
                .Map(x => x.MapKey("MembershipUser_Id"))
                 .WillCascadeOnDelete(false);
 
+            HasMany(x => x.TagNotifications).WithRequired(x => x.User)
+            .Map(x => x.MapKey("MembershipUser_Id"))
+            .WillCascadeOnDelete(false);
+
             HasMany(x => x.Points).WithRequired(x => x.User)
                .Map(x => x.MapKey("MembershipUser_Id"))
                 .WillCascadeOnDelete(false);
