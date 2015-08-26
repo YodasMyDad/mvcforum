@@ -988,6 +988,7 @@
     <Content Include="Scripts\tinymce\themes\modern\theme.min.js" />
     <Content Include="Scripts\tinymce\tinymce.js" />
     <Content Include="Scripts\tinymce\tinymce.min.js" />
+    <Content Include="Scripts\createtopic.js" />
     <Content Include="Scripts\topic.js" />
     <Content Include="Scripts\dashboard.js" />
     <Content Include="Scripts\bbeditor\jquery.sceditor.default.min.css" />

@@ -95,6 +95,17 @@ namespace MVCForum.Services
             return _tagRepository.Add(topicTag);
         }
 
+        public TopicTag Get(Guid tag)
+        {
+            return _tagRepository.Get(tag);
+        }
+
+        public TopicTag Get(string tag)
+        {
+            tag = StringUtils.SafePlainText(tag);
+            return _tagRepository.Get(tag);
+        }
+
         /// <summary>
         /// Add new tags to a topic, ignore existing ones
         /// </summary>

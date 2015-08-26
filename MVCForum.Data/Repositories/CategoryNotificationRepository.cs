@@ -26,6 +26,7 @@ namespace MVCForum.Data.Repositories
         public IList<CategoryNotification> GetByCategory(Category category)
         {
             return _context.CategoryNotification
+                .AsNoTracking()
                 .Where(x => x.Category.Id == category.Id)
                 .ToList();
         }
@@ -37,11 +38,15 @@ namespace MVCForum.Data.Repositories
                 .ToList();
         }
 
-        public IList<CategoryNotification> GetByUserAndCategory(MembershipUser user, Category category)
+        public IList<CategoryNotification> GetByUserAndCategory(MembershipUser user, Category category, bool addTracking = false)
         {
-            return _context.CategoryNotification
-                .Where(x => x.Category.Id == category.Id && x.User.Id == user.Id)
-                .ToList();
+            var notifications = _context.CategoryNotification
+                .Where(x => x.Category.Id == category.Id && x.User.Id == user.Id);
+            if (addTracking)
+            {
+                return notifications.ToList();
+            }
+            return notifications.AsNoTracking().ToList();
         }
 
         public CategoryNotification Add(CategoryNotification category)

@@ -31,6 +31,11 @@ namespace MVCForum.Services
             return _notificationRepository.GetByTag(tag);
         }
 
+        public IList<TagNotification> GetByTag(List<TopicTag> tag)
+        {
+            return _notificationRepository.GetByTag(tag);
+        }
+
         public IList<TagNotification> GetByUser(MembershipUser user)
         {
             return _notificationRepository.GetByUser(user);

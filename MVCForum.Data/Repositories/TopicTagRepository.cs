@@ -100,6 +100,7 @@ namespace MVCForum.Data.Repositories
         public IList<TopicTag> GetStartsWith(string term, int amountToTake)
         {
             return _context.TopicTag
+                .AsNoTracking()
                 .Where(x => x.Tag.StartsWith(term))
                 .Take(amountToTake)
                 .ToList();
@@ -114,6 +115,11 @@ namespace MVCForum.Data.Repositories
         public TopicTag Get(Guid id)
         {
             return _context.TopicTag.FirstOrDefault(x => x.Id == id);
+        }
+
+        public TopicTag Get(string tag)
+        {
+            return _context.TopicTag.FirstOrDefault(x => x.Tag.Equals(tag));
         }
 
         public void Delete(TopicTag item)

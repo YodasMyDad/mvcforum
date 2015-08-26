@@ -15,6 +15,7 @@ namespace MVCForum.Domain.Interfaces.Repositories
         IList<TopicTag> GetStartsWith(string term, int amountToTake);
         TopicTag Add(TopicTag item);
         TopicTag Get(Guid id);
+        TopicTag Get(string tag);
         void Delete(TopicTag item);
         void Update(TopicTag item);
     }

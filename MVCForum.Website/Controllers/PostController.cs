@@ -211,7 +211,6 @@ namespace MVCForum.Website.Controllers
 
         private void NotifyNewTopics(Topic topic, IUnitOfWork unitOfWork)
         {
-
             try
             {
                 // Get all notifications for this category

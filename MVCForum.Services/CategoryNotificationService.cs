@@ -57,8 +57,9 @@ namespace MVCForum.Services
         /// </summary>
         /// <param name="user"></param>
         /// <param name="category"></param>
+        /// <param name="addTracking"></param>
         /// <returns></returns>
-        public IList<CategoryNotification> GetByUserAndCategory(MembershipUser user, Category category)
+        public IList<CategoryNotification> GetByUserAndCategory(MembershipUser user, Category category, bool addTracking = false)
         {
             return _categoryNotificationRepository.GetByUserAndCategory(user, category);
         }

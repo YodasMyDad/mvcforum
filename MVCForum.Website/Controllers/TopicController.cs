@@ -27,6 +27,7 @@ namespace MVCForum.Website.Controllers
         private readonly ICategoryService _categoryService;
         private readonly ICategoryNotificationService _categoryNotificationService;
         private readonly ITopicNotificationService _topicNotificationService;
+        private readonly ITagNotificationService _tagNotificationService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly IEmailService _emailService;
         private readonly IPollService _pollService;
@@ -39,7 +40,7 @@ namespace MVCForum.Website.Controllers
         public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
             ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, IPollService pollService,
-            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService, IUploadedFileService uploadedFileService, ICacheService cacheService)
+            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService, IUploadedFileService uploadedFileService, ICacheService cacheService, ITagNotificationService tagNotificationService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
@@ -57,6 +58,7 @@ namespace MVCForum.Website.Controllers
             _favouriteService = favouriteService;
             _uploadedFileService = uploadedFileService;
             _cacheService = cacheService;
+            _tagNotificationService = tagNotificationService;
         }
 
 
@@ -842,7 +844,7 @@ namespace MVCForum.Website.Controllers
                     if (successfullyCreated)
                     {
                         // Success so now send the emails
-                        NotifyNewTopics(category, unitOfWork);
+                        NotifyNewTopics(category, topic, unitOfWork);
 
                         // Redirect to the newly created topic
                         return Redirect(string.Format("{0}?postbadges=true", topic.NiceUrl));
@@ -998,6 +1000,8 @@ namespace MVCForum.Website.Controllers
             {
                 var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
 
+                var tagModel = _topicTagService.Get(tag);
+
                 // Set the page index
                 var pageIndex = p ?? 1;
 
@@ -1006,6 +1010,9 @@ namespace MVCForum.Website.Controllers
                                                            SettingsService.GetSettings().TopicsPerPage,
                                                            SiteConstants.ActiveTopicsListSize,
                                                            tag, allowedCategories);
+
+                // See if the user has subscribed to this topic or not
+                var isSubscribed = UserIsAuthenticated && (_tagNotificationService.GetByUserAndTag(LoggedOnReadOnlyUser, tagModel).Any());
 
                 // Get the Topic View Models
                 var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
@@ -1017,7 +1024,9 @@ namespace MVCForum.Website.Controllers
                     PageIndex = pageIndex,
                     TotalCount = topics.TotalCount,
                     TotalPages = topics.TotalPages,
-                    Tag = tag
+                    Tag = tag,
+                    IsSubscribed = isSubscribed, 
+                    TagId = tagModel.Id
                 };
 
                 return View(viewModel);
@@ -1127,12 +1136,14 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-
-
-        private void NotifyNewTopics(Category cat, IUnitOfWork unitOfWork)
+        private void NotifyNewTopics(Category cat, Topic topic, IUnitOfWork unitOfWork)
         {
-            // Get all notifications for this category
-            var notifications = _categoryNotificationService.GetByCategory(cat).Select(x => x.User.Id).ToList();
+            // Get all notifications for this category and for the tags on the topic
+            var catnotifications = _categoryNotificationService.GetByCategory(cat).Select(x => x.User.Id).ToList();
+            var tagNotifications = _tagNotificationService.GetByTag(topic.Tags.ToList()).Select(x => x.User.Id).ToList();
+
+            // Merge and remove duplicate ids
+            var notifications = catnotifications.Union(tagNotifications).ToList();
 
             if (notifications.Any())
             {

@@ -36,9 +36,20 @@ namespace MVCForum.Data.Repositories
         public IList<TagNotification> GetByTag(TopicTag tag)
         {
             return _context.TagNotification
+                .Include(x => x.User)
                 .Where(x => x.Tag.Id == tag.Id)
                 .AsNoTracking()
                 .ToList();
+        }
+
+        public IList<TagNotification> GetByTag(List<TopicTag> tag)
+        {
+            var tagIds = tag.Select(x => x.Id);
+            return _context.TagNotification
+                    .Include(x => x.User)
+                    .Where(x => tagIds.Contains(x.Tag.Id))
+                    .AsNoTracking()
+                    .ToList();
         }
 
         public IList<TagNotification> GetByUser(MembershipUser user)

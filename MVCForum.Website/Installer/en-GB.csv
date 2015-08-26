@@ -121,7 +121,7 @@ Members.Label.DateJoined,Date Joined
 Errors.NoAccess,No Access
 Errors.GenericMessage,Sorry an error occured
 Errors.NoPermission,You do not have permission to perform this action
-Topic.Notification.NewTopics,A new topic has been created in the {0} category
+Topic.Notification.NewTopics,A new topic or tag has been created in the {0} category
 Topic.Notification.Subject,New Discussion On 
 PM.SendingToQuickly,You are trying to send messages to quickly
 PM.SentItemsOverCapcity,Your sent items is over capacity - delete messages to be able to send

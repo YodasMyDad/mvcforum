@@ -482,7 +482,7 @@ namespace MVCForum.Data.Repositories
                                 .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
                                 .OrderByDescending(x => x.IsSticky)
                                 .ThenByDescending(x => x.LastPost.DateCreated)
-                                .Where(e => e.Tags.Any(t => t.Slug == tag))
+                                .Where(e => e.Tags.Any(t => t.Slug.Equals(tag)))
                                 .Take(pageSize)
                                 .Skip((pageIndex - 1) * pageSize)
                                 .ToList();
