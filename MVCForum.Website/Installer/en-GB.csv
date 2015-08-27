@@ -341,3 +341,5 @@ Members.ResetPassword.EmailText,A request has been made to reset your password o
 Members.ResetPassword.SuccessText,Your password has been changed.
 Members.ResetPassword.InvalidToken,This request is either invalid or has expired. Please make a password reset request again.
 Members.ResetPassword.Error,There was an error resetting your password. Please try again.
+Tasks.MarkAsSolutionReminderJob.EmailBody,Your topic {0} on {1} has {2} replies but has still not been marked as solved. Please check again to see if any answers are appropriate and mark them as the solution if they are.
+Tasks.MarkAsSolutionReminderJob.Subject,Your post on {0}

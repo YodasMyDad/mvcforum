@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.General;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
@@ -32,7 +33,7 @@ namespace MVCForum.Domain.Interfaces.Services
         void Delete(Topic topic);
         int TopicCount(List<Category> allowedCategories);
         Post AddLastPost(Topic topic, string postContent);
-        
+        List<MarkAsSolutionReminder> GetMarkAsSolutionReminderList(int days);
         /// <summary>
         /// Mark a topic as solved
         /// </summary>

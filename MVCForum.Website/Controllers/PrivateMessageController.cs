@@ -224,11 +224,11 @@ namespace MVCForum.Website.Controllers
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 var userFrom = MembershipService.GetUser(from);
-
-                if (userFrom != LoggedOnReadOnlyUser)
+                var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                if (userFrom.Id != LoggedOnReadOnlyUser.Id)
                 {
                     // Mark all messages read sent to this user from the userFrom
-                    var unreadMessages = LoggedOnReadOnlyUser.PrivateMessagesReceived.Where(x => x.UserFrom.Id == from && !x.IsRead);
+                    var unreadMessages = loggedOnUser.PrivateMessagesReceived.Where(x => x.UserFrom.Id == from && !x.IsRead);
 
                     foreach (var message in unreadMessages)
                     {
@@ -256,7 +256,7 @@ namespace MVCForum.Website.Controllers
 
                     // Get all the received messages from userFrom
                     // and then get all the sent messages to userFrom
-                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+
                     var allMessages = loggedOnUser.PrivateMessagesReceived.Where(x => x.UserFrom.Id == from && x.IsSentMessage == false).ToList();
                     allMessages.AddRange(loggedOnUser.PrivateMessagesSent.Where(x => x.UserTo.Id == from && x.IsSentMessage == true).ToList());
 

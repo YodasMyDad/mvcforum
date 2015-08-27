@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.General;
 
 namespace MVCForum.Domain.Interfaces.Repositories
 {
@@ -32,6 +33,7 @@ namespace MVCForum.Domain.Interfaces.Repositories
         Topic Add(Topic item);
         Topic Get(Guid id);
         List<Topic> Get(List<Guid> ids, List<Category> allowedCategories);
+        List<MarkAsSolutionReminder> GetMarkAsSolutionReminderList(int days);
         void Delete(Topic item);
     }
 }

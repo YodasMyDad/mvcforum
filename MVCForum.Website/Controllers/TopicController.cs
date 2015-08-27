@@ -69,19 +69,19 @@ namespace MVCForum.Website.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
-
+                var settings = SettingsService.GetSettings();
                 // Set the page index
                 var pageIndex = p ?? 1;
 
                 // Get the topics
                 var topics = _topicService.GetMembersActivity(pageIndex,
-                                                           SettingsService.GetSettings().TopicsPerPage,
+                                                           settings.TopicsPerPage,
                                                            SiteConstants.MembersActivityListSize,
                                                            LoggedOnReadOnlyUser.Id,
                                                            allowedCategories);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, settings);
 
                 // create the view model
                 var viewModel = new PostedInViewModel
@@ -879,6 +879,8 @@ namespace MVCForum.Website.Controllers
 
                 if (topic != null)
                 {
+                    var settings = SettingsService.GetSettings();
+
                     // Note: Don't use topic.Posts as its not a very efficient SQL statement
                     // Use the post service to get them as it includes other used entities in one
                     // statement rather than loads of sql selects
@@ -888,7 +890,7 @@ namespace MVCForum.Website.Controllers
                                               EnumUtils.ReturnEnumValueFromString<PostOrderBy>(sortQuerystring) : PostOrderBy.Standard;
 
                     // Store the amount per page
-                    var amountPerPage = SettingsService.GetSettings().PostsPerPage;
+                    var amountPerPage = settings.PostsPerPage;
 
                     if (sortQuerystring == AppConstants.AllPosts)
                     {
@@ -916,7 +918,7 @@ namespace MVCForum.Website.Controllers
                         return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
                     }
 
-                    var viewModel = ViewModelMapping.CreateTopicViewModel(topic, permissions, posts.ToList(), starterPost, posts.PageIndex, posts.TotalCount, posts.TotalPages, LoggedOnReadOnlyUser, SettingsService.GetSettings(), true);
+                    var viewModel = ViewModelMapping.CreateTopicViewModel(topic, permissions, posts.ToList(), starterPost, posts.PageIndex, posts.TotalCount, posts.TotalPages, LoggedOnReadOnlyUser, settings, true);
 
                     // If there is a quote querystring
                     var quote = Request["quote"];
@@ -966,6 +968,7 @@ namespace MVCForum.Website.Controllers
             {
                 // Get the topic
                 var topic = _topicService.Get(getMorePostsViewModel.TopicId);
+                var settings = SettingsService.GetSettings();
 
                 // Get the permissions for the category that this topic is in
                 var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
@@ -979,13 +982,13 @@ namespace MVCForum.Website.Controllers
                 var orderBy = !string.IsNullOrEmpty(getMorePostsViewModel.Order) ?
                                           EnumUtils.ReturnEnumValueFromString<PostOrderBy>(getMorePostsViewModel.Order) : PostOrderBy.Standard;
 
-                var posts = _postService.GetPagedPostsByTopic(getMorePostsViewModel.PageIndex, SettingsService.GetSettings().PostsPerPage, int.MaxValue, topic.Id, orderBy);
+                var posts = _postService.GetPagedPostsByTopic(getMorePostsViewModel.PageIndex, settings.PostsPerPage, int.MaxValue, topic.Id, orderBy);
                 var postIds = posts.Select(x => x.Id).ToList();
                 var votes = _voteService.GetVotesByPosts(postIds);
                 var favs = _favouriteService.GetAllPostFavourites(postIds);
                 var viewModel = new ShowMorePostsViewModel
                 {
-                    Posts = ViewModelMapping.CreatePostViewModels(posts, votes, permissions, topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), favs),
+                    Posts = ViewModelMapping.CreatePostViewModels(posts, votes, permissions, topic, LoggedOnReadOnlyUser, settings, favs),
                     Topic = topic,
                     Permissions = permissions
                 };
@@ -999,7 +1002,7 @@ namespace MVCForum.Website.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
-
+                var settings = SettingsService.GetSettings();
                 var tagModel = _topicTagService.Get(tag);
 
                 // Set the page index
@@ -1007,7 +1010,7 @@ namespace MVCForum.Website.Controllers
 
                 // Get the topics
                 var topics = _topicService.GetPagedTopicsByTag(pageIndex,
-                                                           SettingsService.GetSettings().TopicsPerPage,
+                                                           settings.TopicsPerPage,
                                                            SiteConstants.ActiveTopicsListSize,
                                                            tag, allowedCategories);
 
@@ -1015,7 +1018,7 @@ namespace MVCForum.Website.Controllers
                 var isSubscribed = UserIsAuthenticated && (_tagNotificationService.GetByUserAndTag(LoggedOnReadOnlyUser, tagModel).Any());
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, settings);
 
                 // create the view model
                 var viewModel = new TagTopicsViewModel
@@ -1066,18 +1069,19 @@ namespace MVCForum.Website.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                var settings = SettingsService.GetSettings();
 
                 // Set the page index
                 var pageIndex = p ?? 1;
 
                 // Get the topics
                 var topics = _topicService.GetRecentTopics(pageIndex,
-                                                           SettingsService.GetSettings().TopicsPerPage,
+                                                           settings.TopicsPerPage,
                                                            SiteConstants.ActiveTopicsListSize,
                                                            allowedCategories);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, settings);
 
                 // create the view model
                 var viewModel = new ActiveTopicsViewModel
@@ -1141,6 +1145,7 @@ namespace MVCForum.Website.Controllers
             // Get all notifications for this category and for the tags on the topic
             var catnotifications = _categoryNotificationService.GetByCategory(cat).Select(x => x.User.Id).ToList();
             var tagNotifications = _tagNotificationService.GetByTag(topic.Tags.ToList()).Select(x => x.User.Id).ToList();
+            var settings = SettingsService.GetSettings();
 
             // Merge and remove duplicate ids
             var notifications = catnotifications.Union(tagNotifications).ToList();
@@ -1159,7 +1164,7 @@ namespace MVCForum.Website.Controllers
                     // Create the email
                     var sb = new StringBuilder();
                     sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Topic.Notification.NewTopics"), cat.Name));
-                    sb.AppendFormat("<p>{0}</p>", string.Concat(SettingsService.GetSettings().ForumUrl, cat.NiceUrl));
+                    sb.AppendFormat("<p>{0}</p>", string.Concat(settings.ForumUrl, cat.NiceUrl));
 
                     // create the emails and only send them to people who have not had notifications disabled
                     var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true).Select(user => new Email
@@ -1167,7 +1172,7 @@ namespace MVCForum.Website.Controllers
                         Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
                         EmailTo = user.Email,
                         NameTo = user.UserName,
-                        Subject = string.Concat(LocalizationService.GetResourceString("Topic.Notification.Subject"), SettingsService.GetSettings().ForumName)
+                        Subject = string.Concat(LocalizationService.GetResourceString("Topic.Notification.Subject"), settings.ForumName)
                     }).ToList();
 
                     // and now pass the emails in to be sent

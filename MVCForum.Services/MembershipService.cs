@@ -451,7 +451,7 @@ namespace MVCForum.Services
         {
             username = StringUtils.SafePlainText(username);
             var roles = new List<string>();
-            var user = _membershipRepository.GetUser(username);
+            var user = _membershipRepository.GetUser(username, true);
 
             if (user != null)
             {

@@ -172,6 +172,10 @@ h6 {
   color: #4891dc;
 }
 
+.orange-colour {
+  color: #ef9b00 !important;
+}
+
 a, a:visited {
   color: #2470bb;
 }

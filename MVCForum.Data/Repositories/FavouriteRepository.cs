@@ -35,6 +35,15 @@ namespace MVCForum.Data.Repositories
                 .ToList();
         }
 
+        public Favourite Get(Guid id)
+        {
+            return _context.Favourite
+                            .Include(x => x.Post.User)
+                            .Include(x => x.Topic.Category)
+                            .Include(x => x.Member)
+                .FirstOrDefault(x => x.Id == id);
+        }
+
         public List<Favourite> GetAllPostFavourites(List<Guid> postIds)
         {
             return _context.Favourite

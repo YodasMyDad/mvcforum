@@ -236,6 +236,7 @@
     <Compile Include="Application\CustomActionResults\RssResult.cs" />
     <Compile Include="Application\CustomActionResults\CsvFileResult.cs" />
     <Compile Include="Application\ExtensionMethods\Extensions.cs" />
+    <Compile Include="Application\ScheduledJobs\MarkAsSolutionReminderJob.cs" />
     <Compile Include="Application\ViewEngine\ForumViewEngine.cs" />
     <Compile Include="Application\Localization\Localizer.cs" />
     <Compile Include="Application\ServiceFactory.cs" />
@@ -813,6 +814,7 @@
     <Content Include="Areas\Admin\Views\AdminSpam\RegistrationQuestion.cshtml" />
     <Content Include="Areas\Admin\Views\AdminSpam\SpamReporting.cshtml" />
     <Content Include="Areas\Admin\Views\Settings\CustomCode.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminTag\MoveTags.cshtml" />
     <None Include="job_scheduling_data_2_0.xsd">
       <SubType>Designer</SubType>
     </None>

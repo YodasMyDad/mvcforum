@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.General;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
@@ -119,6 +120,11 @@ namespace MVCForum.Services
             topic.LastPost = post;
 
             return post;
+        }
+
+        public List<MarkAsSolutionReminder> GetMarkAsSolutionReminderList(int days)
+        {
+            return _topicRepository.GetMarkAsSolutionReminderList(days);
         }
 
         /// <summary>

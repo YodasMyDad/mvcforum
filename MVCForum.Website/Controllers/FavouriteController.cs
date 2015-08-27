@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
-using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
 using MVCForum.Website.ViewModels;
 using MVCForum.Website.ViewModels.Mapping;
 
@@ -26,11 +24,12 @@ namespace MVCForum.Website.Controllers
         private readonly IBannedWordService _bannedWordService;
         private readonly IVoteService _voteService;
         private readonly IFavouriteService _favouriteService;
+        private readonly IBadgeService _badgeService;
 
         public FavouriteController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
             ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, IPollService pollService,
-            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService)
+            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService, IBadgeService badgeService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
@@ -46,6 +45,7 @@ namespace MVCForum.Website.Controllers
             _bannedWordService = bannedWordService;
             _voteService = voteService;
             _favouriteService = favouriteService;
+            _badgeService = badgeService;
         }
 
         [Authorize]
@@ -77,8 +77,9 @@ namespace MVCForum.Website.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult FavouritePost(FavouritePostViewModel viewModel)
+        public JsonResult FavouritePost(FavouritePostViewModel viewModel)
         {
+            var returnValue = new FavouriteJsonReturnModel();
             if (Request.IsAjaxRequest() && LoggedOnReadOnlyUser != null)
             {
                 using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
@@ -87,7 +88,6 @@ namespace MVCForum.Website.Controllers
                     {
                         var post = _postService.Get(viewModel.PostId);
                         var topic = _topicService.Get(post.Topic.Id);
-                        string returnValue;
 
                         // See if this is a user adding or removing the favourite
                         var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
@@ -95,7 +95,7 @@ namespace MVCForum.Website.Controllers
                         if (existingFavourite != null)
                         {
                             _favouriteService.Delete(existingFavourite);
-                            returnValue = LocalizationService.GetResourceString("Post.Favourite");
+                            returnValue.Message = LocalizationService.GetResourceString("Post.Favourite");
                         }
                         else
                         {
@@ -107,10 +107,12 @@ namespace MVCForum.Website.Controllers
                                 Topic = topic
                             };
                             _favouriteService.Add(favourite);
-                            returnValue = LocalizationService.GetResourceString("Post.Favourited");
+                            returnValue.Message = LocalizationService.GetResourceString("Post.Favourited");
+                            returnValue.Id = favourite.Id;
                         }
+
                         unitOfwork.Commit();
-                        return Content(returnValue);
+                        return Json(returnValue, JsonRequestBehavior.DenyGet);
                     }
                     catch (Exception ex)
                     {
@@ -120,7 +122,7 @@ namespace MVCForum.Website.Controllers
                     }
                 }
             }
-            return Content("error");
+            return Json(returnValue);
         }
     }
 }

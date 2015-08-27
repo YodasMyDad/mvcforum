@@ -88,6 +88,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.EnableRSSFeeds = settingsViewModel.EnableRSSFeeds;
             existingSettings.DisplayEditedBy = settingsViewModel.DisplayEditedBy;
             existingSettings.EnableMarkAsSolution = settingsViewModel.EnableMarkAsSolution;
+            existingSettings.MarkAsSolutionReminderTimeFrame = settingsViewModel.MarkAsSolutionReminderTimeFrame;
             //existingSettings.EnableSpamReporting = settingsViewModel.EnableSpamReporting;
             //existingSettings.EnableMemberReporting = settingsViewModel.EnableMemberReporting;
             existingSettings.EnableEmailSubscriptions = settingsViewModel.EnableEmailSubscriptions;
@@ -138,8 +139,9 @@ namespace MVCForum.Website.ViewModels.Mapping
                 EnableRSSFeeds = currentSettings.EnableRSSFeeds,
                 DisplayEditedBy = currentSettings.DisplayEditedBy,
                 EnableMarkAsSolution = currentSettings.EnableMarkAsSolution,
-                EnableSpamReporting = currentSettings.EnableSpamReporting,
-                EnableMemberReporting = currentSettings.EnableMemberReporting,
+                MarkAsSolutionReminderTimeFrame = currentSettings.MarkAsSolutionReminderTimeFrame ?? 0,
+                //EnableSpamReporting = currentSettings.EnableSpamReporting,
+                //EnableMemberReporting = currentSettings.EnableMemberReporting,
                 EnableEmailSubscriptions = currentSettings.EnableEmailSubscriptions,
                 ManuallyAuthoriseNewMembers = currentSettings.ManuallyAuthoriseNewMembers,
                 EmailAdminOnNewMemberSignUp = currentSettings.EmailAdminOnNewMemberSignUp,
@@ -161,16 +163,16 @@ namespace MVCForum.Website.ViewModels.Mapping
                 SMTP = currentSettings.SMTP,
                 SMTPUsername = currentSettings.SMTPUsername,
                 SMTPPassword = currentSettings.SMTPPassword,
-                AkismentKey = currentSettings.AkismentKey,
-                EnableAkisment = currentSettings.EnableAkisment != null && (bool)currentSettings.EnableAkisment,
+                //AkismentKey = currentSettings.AkismentKey,
+                //EnableAkisment = currentSettings.EnableAkisment != null && (bool)currentSettings.EnableAkisment,
                 NewMemberEmailConfirmation = currentSettings.NewMemberEmailConfirmation != null && (bool)currentSettings.NewMemberEmailConfirmation,
                 Theme = currentSettings.Theme,
                 SMTPPort = string.IsNullOrEmpty(currentSettings.SMTPPort) ? null : (int?)(Convert.ToInt32(currentSettings.SMTPPort)),
-                SpamQuestion = currentSettings.SpamQuestion,
-                SpamAnswer = currentSettings.SpamAnswer,
+                //SpamQuestion = currentSettings.SpamQuestion,
+                //SpamAnswer = currentSettings.SpamAnswer,
                 Themes = AppHelpers.GetThemeFolders(),
                 SMTPEnableSSL = currentSettings.SMTPEnableSSL ?? false,
-                EnableSocialLogins = currentSettings.EnableSocialLogins ?? false,
+                //EnableSocialLogins = currentSettings.EnableSocialLogins ?? false,
                 EnablePolls = currentSettings.EnablePolls ?? false,
                 SuspendRegistration = currentSettings.SuspendRegistration ?? false,
                 PageTitle = currentSettings.PageTitle,

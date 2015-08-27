@@ -11,8 +11,8 @@ using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.IOC;
 using MVCForum.Utilities;
 using MVCForum.Website.Application;
+using MVCForum.Website.Application.ScheduledJobs;
 using MVCForum.Website.Application.ViewEngine;
-using MVCForum.Website.ScheduledJobs;
 
 namespace MVCForum.Website
 {
@@ -108,9 +108,6 @@ namespace MVCForum.Website
             // Run scheduled tasks
             ScheduledRunner.Run(unityContainer);
 
-            // Register Data annotations
-            //DataAnnotationsModelValidatorProviderExtensions.RegisterValidationExtensions();  
-
             // Store the value for use in the app
             Application["Version"] = AppHelpers.GetCurrentVersionNo();
 
@@ -143,14 +140,6 @@ namespace MVCForum.Website
             EventManager.Instance.Initialize(LoggingService);
         }
 
-        //protected void Application_BeginRequest(object sender, EventArgs e)
-        //{
-        //    if (!AppHelpers.IsStaticResource(this.Request) && !AppHelpers.SameVersionNumbers() && !AppHelpers.InInstaller())
-        //    {
-        //        Response.Redirect(string.Concat("~", AppConstants.InstallerUrl));
-        //    }
-        //}
-
         protected void Application_AcquireRequestState(object sender, EventArgs e)
         {
             //It's important to check whether session object is ready
@@ -165,7 +154,12 @@ namespace MVCForum.Website
 
         protected void Application_Error(object sender, EventArgs e)
         {
-            LoggingService.Error(Server.GetLastError());
+            var lastError = Server.GetLastError();
+            // Don't flag missing pages or changed urls, as just clogs up the log
+            if (!lastError.Message.Contains("was not found or does not implement IController"))
+            {
+                LoggingService.Error(lastError);
+            }
         }
 
     }

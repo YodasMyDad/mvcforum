@@ -426,17 +426,19 @@ function AddPostClickEvents() {
             type: 'POST',
             data: strung,
             contentType: 'application/json; charset=utf-8',
-            dataType: 'html',
+            dataType: 'json',
             success: function (data) {
 
                 // Update the text
-                favLink.text(data);
+                favLink.text(data.Message);
 
                 // Update the count and change the link type
                 if (addremove == "add") {
                     amountOfFavsHolder.text(currentFavCount + 1);
                     favStar.removeClass("glyphicon-star-empty").addClass("glyphicon-star");
                     favLink.data('addremove', 'remove');
+
+                    BadgeFavourite(data.Id);
                 } else {
                     amountOfFavsHolder.text(currentFavCount - 1);
                     favStar.removeClass("glyphicon-star").addClass("glyphicon-star-empty");
@@ -571,6 +573,30 @@ function BadgeMarkAsSolution(postId) {
         }
     });
 }
+
+function BadgeFavourite(favouriteId) {
+
+    // Ajax call to post the view model to the controller
+    var favouriteViewModel = new Object();
+    favouriteViewModel.FavouriteId = favouriteId;
+
+    // Ajax call to post the view model to the controller
+    var strung = JSON.stringify(favouriteViewModel);
+
+    $.ajax({
+        url: app_base + 'Badge/Favourite',
+        type: 'POST',
+        data: strung,
+        contentType: 'application/json; charset=utf-8',
+        success: function (data) {
+            // No need to do anything
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+        }
+    });
+}
+
 
 function BadgeVoteUp(postId) {
 

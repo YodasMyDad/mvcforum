@@ -51,6 +51,9 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Allow Posts To Be Marked As Solution")]
         public bool EnableMarkAsSolution { get; set; }
 
+        [DisplayName("Timeframe in days to wait before a reminder email is sent to topic creator, for all topics that have not been marked as solution - Set to 0 to disable")]
+        public int MarkAsSolutionReminderTimeFrame { get; set; }
+
         [DisplayName("Enable Spam Reporting")]
         public bool EnableSpamReporting { get; set; }
 

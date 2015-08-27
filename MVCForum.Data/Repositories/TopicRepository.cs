@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.Web.Caching;
 using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.General;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Utilities;
@@ -129,6 +130,21 @@ namespace MVCForum.Data.Repositories
                 .Include(x => x.Poll)
                 .Where(x => ids.Contains(x.Id) && allowedCatIds.Contains(x.Category.Id))
                 .OrderByDescending(x => x.LastPost.DateCreated)
+                .ToList();
+        }
+
+        public List<MarkAsSolutionReminder> GetMarkAsSolutionReminderList(int days)
+        {
+            var datefrom = DateTime.UtcNow.AddDays(-days);
+            return _context.Topic
+                .Include(x => x.Category)
+                .Include(x => x.User)
+                .Include(x => x.Posts)
+                .Where(x => x.CreateDate <= datefrom && !x.Solved && x.Posts.Count > 1 && x.SolvedReminderSent != true)
+                .Select(x => new MarkAsSolutionReminder
+                {
+                    Topic = x, PostCount = x.Posts.Count
+                })
                 .ToList();
         }
 

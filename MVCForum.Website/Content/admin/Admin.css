@@ -27,8 +27,18 @@
   border-radius: 0;
 }
 
+.navbar-inverse .navbar-nav > li > a.active, .navbar-inverse .navbar-nav > li > a:visited.active {
+  background-color: #000;
+  color: #fff;
+}
+
 .navbar-inverse .navbar-toggle {
   background-color: #636267;
+}
+
+.side-nav > li > ul > li > a.active, .side-nav > li > ul > li > a:visited.active {
+  background-color: #000;
+  color: #fff;
 }
 
 .navbar-right {

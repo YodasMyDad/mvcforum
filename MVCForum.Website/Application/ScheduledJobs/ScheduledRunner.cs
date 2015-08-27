@@ -3,7 +3,7 @@ using Quartz;
 using Quartz.Impl;
 using Quartz.Impl.Triggers;
 
-namespace MVCForum.Website.ScheduledJobs
+namespace MVCForum.Website.Application.ScheduledJobs
 {
     public static class ScheduledRunner
     {
@@ -14,7 +14,7 @@ namespace MVCForum.Website.ScheduledJobs
 
             // Scheduling jobs
 
-            // Send emails every 5 seconds
+            // Send emails every 15 seconds
             scheduler.ScheduleJob(
                 new JobDetailImpl("EmailJob", typeof(EmailJob)),
                 new CalendarIntervalTriggerImpl("EmailJobTrigger", IntervalUnit.Second, 15));
@@ -23,6 +23,11 @@ namespace MVCForum.Website.ScheduledJobs
             scheduler.ScheduleJob(
                 new JobDetailImpl("KeepAliveJob", typeof(KeepAliveJob)),
                 new CalendarIntervalTriggerImpl("KeepAliveTrigger", IntervalUnit.Minute, 5));
+
+            // Send mark as solution reminder emails
+            scheduler.ScheduleJob(
+                new JobDetailImpl("MarkAsSolutionReminderJob", typeof(MarkAsSolutionReminderJob)),
+                new CalendarIntervalTriggerImpl("MarkAsSolutionReminderJobTrigger", IntervalUnit.Hour, 6));
 
             // Starting scheduler
             scheduler.Start();

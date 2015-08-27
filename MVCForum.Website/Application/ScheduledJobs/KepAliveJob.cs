@@ -1,10 +1,9 @@
 ﻿using System;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Application;
 using Quartz;
 
-namespace MVCForum.Website.ScheduledJobs
+namespace MVCForum.Website.Application.ScheduledJobs
 {
     public class KeepAliveJob : IJob
     {

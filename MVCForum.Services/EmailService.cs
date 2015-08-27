@@ -108,14 +108,20 @@ namespace MVCForum.Services
         /// <returns></returns>
         public string EmailTemplate(string to, string content)
         {
+            var settings = _settingsService.GetSettings();
+            return EmailTemplate(to, content, settings);
+        }
+
+        public string EmailTemplate(string to, string content, Settings settings)
+        {
             using (var sr = File.OpenText(HostingEnvironment.MapPath(@"~/Content/Emails/EmailNotification.htm")))
             {
                 var sb = sr.ReadToEnd();
                 sr.Close();
                 sb = sb.Replace("#CONTENT#", content);
-                sb = sb.Replace("#SITENAME#", _settingsService.GetSettings().ForumName);
-                sb = sb.Replace("#SITEURL#", _settingsService.GetSettings().ForumUrl);
-                if(!string.IsNullOrEmpty(to))
+                sb = sb.Replace("#SITENAME#", settings.ForumName);
+                sb = sb.Replace("#SITEURL#", settings.ForumUrl);
+                if (!string.IsNullOrEmpty(to))
                 {
                     to = string.Format("<p>{0},</p>", to);
                     sb = sb.Replace("#TO#", to);

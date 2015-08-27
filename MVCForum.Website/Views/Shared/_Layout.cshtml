@@ -22,11 +22,11 @@
     @RenderSection("SocialMeta", false)
     @ViewBag.Canonical
     @(
- Bundle.Css()
-                .Add(themePath + "/Content/Styles/imports.css")
-                .Add("~/Content/bootstrap/css/bootstrap.css")
-                .Add(themePath + "/Content/Styles/theme.css")
-                .MvcRender("~/content/cache/combined_" + theme + "_#.css")
+     Bundle.Css()
+        .Add(themePath + "/Content/Styles/imports.css")
+        .Add("~/Content/bootstrap/css/bootstrap.css")
+        .Add(themePath + "/Content/Styles/theme.css")
+        .MvcRender("~/content/cache/combined_" + theme + "_#.css")
     )
     <!--[if lt IE 9]>
             <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>

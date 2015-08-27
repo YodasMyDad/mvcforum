@@ -14,6 +14,7 @@ namespace MVCForum.Data.Mapping
             Property(x => x.Name).IsRequired().HasMaxLength(450);
             Property(x => x.CreateDate).IsRequired();
             Property(x => x.Solved).IsRequired();
+            Property(x => x.SolvedReminderSent).IsOptional();
             Property(x => x.Slug).IsRequired().HasMaxLength(450).HasColumnAnnotation("Index",
                                     new IndexAnnotation(new IndexAttribute("IX_Topic_Slug", 1) { IsUnique = true }));
             Property(x => x.Views).IsOptional();

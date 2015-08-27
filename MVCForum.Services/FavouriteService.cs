@@ -41,6 +41,11 @@ namespace MVCForum.Services
             return _favouriteRepository.GetAll();
         }
 
+        public Favourite Get(Guid id)
+        {
+            return _favouriteRepository.Get(id);
+        }
+
         public List<Favourite> GetAllByMember(Guid memberId)
         {
             return _favouriteRepository.GetAllByMember(memberId);

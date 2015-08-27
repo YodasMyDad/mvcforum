@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Data.Entity;
-using System.Security.Cryptography.X509Certificates;
 using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
-using MVCForum.Domain.Interfaces.Services;
 
 namespace MVCForum.Data.Repositories
 {
@@ -26,7 +24,7 @@ namespace MVCForum.Data.Repositories
 
         public IEnumerable<TopicTag> GetAll()
         {
-            return _context.TopicTag.ToList();
+            return _context.TopicTag.AsNoTracking();
         }
 
         public Dictionary<TopicTag, int> GetPopularTags(int? amountToTake, List<Category> allowedCategories)

@@ -1,32 +1,10 @@
-﻿@model MVCForum.Website.Areas.Admin.ViewModels.MainDashboardNavViewModel
+﻿@using MVCForum.Domain.Constants
+@model MVCForum.Website.Areas.Admin.ViewModels.MainDashboardNavViewModel
+@{
+    var currentController = TempData[AppConstants.CurrentController].ToString();
+    var currentAction = TempData[AppConstants.CurrentAction].ToString();
+}
 <ul class="nav navbar-right top-nav">
-    @*<li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bell"></i> <b class="caret"></b></a>
-            <ul class="dropdown-menu alert-dropdown">
-                <li>
-                    <a href="#">Alert Name <span class="label label-default">Alert Badge</span></a>
-                </li>
-                <li>
-                    <a href="#">Alert Name <span class="label label-primary">Alert Badge</span></a>
-                </li>
-                <li>
-                    <a href="#">Alert Name <span class="label label-success">Alert Badge</span></a>
-                </li>
-                <li>
-                    <a href="#">Alert Name <span class="label label-info">Alert Badge</span></a>
-                </li>
-                <li>
-                    <a href="#">Alert Name <span class="label label-warning">Alert Badge</span></a>
-                </li>
-                <li>
-                    <a href="#">Alert Name <span class="label label-danger">Alert Badge</span></a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <a href="#">View All</a>
-                </li>
-            </ul>
-        </li>*@
     <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> @User.Identity.Name <b class="caret"></b></a>
         <ul class="dropdown-menu">
@@ -52,22 +30,45 @@
             <a href="@Url.Content("~/")"><i class="fa fa-fw fa-arrow-left"></i> Main Site</a>
         </li>
         <li>
-            <a href="@Url.Action("Index", "Admin", new { area = "Admin" })"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+            <a href="@Url.Action("Index", "Admin", new { area = "Admin" })" class="@(currentController == "admin" && currentAction == "index" ? "active" : "")">
+                <i class="fa fa-fw fa-dashboard"></i> Dashboard
+            </a>
         </li>
         <li>
-            <a href="@Url.Action("Index", "Settings", new { area = "Admin" }, null)"><i class="fa fa-fw fa-cogs"></i> Main Settings</a>
+            <a href="@Url.Action("Index", "Settings", new { area = "Admin" }, null)" class="@(currentController == "settings" && currentAction == "index" ? "active" : "")">
+                <i class="fa fa-fw fa-cogs"></i> Main Settings
+            </a>
         </li>
         <li>
-            <a href="@Url.Action("Index", "AdminCategory", new { area = "Admin" }, null)"><i class="fa fa-fw fa-folder-open-o"></i> Categories</a>
+            <a href="@Url.Action("Index", "AdminCategory", new { area = "Admin" }, null)" class="@(currentController == "admincategory" && currentAction == "index" ? "active" : "")">
+                <i class="fa fa-fw fa-folder-open-o"></i> Categories
+            </a>
         </li>
         <li>
-            <a href="@Url.Action("Index", "AdminTag", new { area = "Admin" })"><i class="fa fa-fw fa-tags"></i> Tags</a>
+            <a href="#" data-toggle="collapse" data-target="#tags">
+                <i class="fa fa-fw fa-tags"></i> Tags <i class="fa fa-fw fa-caret-down"></i>
+            </a>
+            <ul id="tags" class="collapse">
+                <li>
+                    <a href="@Url.Action("Index", "AdminTag", new { area = "Admin" })" class="@(currentController == "admintag" && currentAction == "index" ? "active" : "")">
+                        Manage Tags
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("MoveTags", "AdminTag", new { area = "Admin" }, null)" class="@(currentController == "admintag" && currentAction == "movetags" ? "active" : "")">
+                        Change Tags On Topics
+                    </a>
+                </li>
+            </ul>
+
         </li>
         <li>
-            <a href="@Url.Action("Index", "AdminBadge", new { area = "Admin" })"><i class="fa fa-fw fa-trophy"></i> Badges</a>
+            <a href="@Url.Action("Index", "AdminBadge", new { area = "Admin" })" class="@(currentController == "adminbadge" && currentAction == "index" ? "active" : "")">
+                <i class="fa fa-fw fa-trophy"></i> Badges
+            </a>
         </li>
         <li>
-            <a href="@Url.Action("Index", "Moderate", new { area = "Admin" })">
+            <a href="@Url.Action("Index", "Moderate", new { area = "Admin" })" class="@(currentController == "moderate" && currentAction == "index" ? "active" : "")">
                 <i class="fa fa-fw fa-comments-o"></i> Moderate
                 @if (Model.ModerateCount > 0)
                 {
@@ -81,10 +82,10 @@
             </a>
             <ul id="permissions" class="collapse">
                 <li>
-                    <a href="@Url.Action("Index", "Permissions", new { area = "Admin" }, null)">Manage Permissions</a>
+                    <a href="@Url.Action("Index", "Permissions", new { area = "Admin" }, null)" class="@(currentController == "permissions" && currentAction == "index" ? "active" : "")">Manage Permissions</a>
                 </li>
                 <li>
-                    <a href="@Url.Action("PermissionTypes", "Permissions", new { area = "Admin" }, null)">Add/Remove Permission Types</a>
+                    <a href="@Url.Action("PermissionTypes", "Permissions", new { area = "Admin" }, null)" class="@(currentController == "permissions" && currentAction == "permissiontypes" ? "active" : "")">Add/Remove Permission Types</a>
                 </li>
             </ul>
         </li>
@@ -94,19 +95,19 @@
             </a>
             <ul id="membership" class="collapse">
                 <li>
-                    <a href="@Url.Action("Manage", "Account", new { area = "Admin" }, null)">Manage Users</a>
+                    <a href="@Url.Action("Manage", "Account", new { area = "Admin" }, null)" class="@(currentController == "account" && currentAction == "manage" ? "active" : "")">Manage Users</a>
                 </li>
                 <li>
-                    <a href="@Url.Action("ListAllRoles", "Account", new { area = "Admin" }, null)">Manage Roles</a>
+                    <a href="@Url.Action("ListAllRoles", "Account", new { area = "Admin" }, null)" class="@(currentController == "account" && currentAction == "listallroles" ? "active" : "")">Manage Roles</a>
                 </li>
                 <li>
-                    <a href="@Url.Action("AddRole", "Account", new { area = "Admin" }, null)">Add Roles</a>
+                    <a href="@Url.Action("AddRole", "Account", new { area = "Admin" }, null)" class="@(currentController == "account" && currentAction == "addrole" ? "active" : "")">Add Roles</a>
                 </li>
                 <li>
-                    <a href="@Url.Action("Index", "AdminSocial", new { area = "Admin" }, null)">Social Logins</a>
+                    <a href="@Url.Action("Index", "AdminSocial", new { area = "Admin" }, null)" class="@(currentController == "adminsocial" && currentAction == "index" ? "active" : "")">Social Logins</a>
                 </li>
                 <li>
-                    <a href="@Url.Action("Members", "ImportExport", new { area = "Admin" }, null)">Import / Export</a>
+                    <a href="@Url.Action("Members", "ImportExport", new { area = "Admin" }, null)" class="@(currentController == "importexport" && currentAction == "members" ? "active" : "")">Import / Export</a>
                 </li>
             </ul>
         </li>
@@ -116,19 +117,19 @@
             </a>
             <ul id="spam" class="collapse">
                 <li>
-                    <a href="@Url.Action("Index", "BannedEmail", new { area = "Admin" })">Ban Emails</a>
+                    <a href="@Url.Action("Index", "BannedEmail", new { area = "Admin" })" class="@(currentController == "bannedemail" && currentAction == "index" ? "active" : "")">Ban Emails</a>
                 </li>
                 <li>
-                    <a href="@Url.Action("Index", "BannedWord", new { area = "Admin" })">Banned &amp; Stop Words</a>
+                    <a href="@Url.Action("Index", "BannedWord", new { area = "Admin" })" class="@(currentController == "bannedword" && currentAction == "index" ? "active" : "")">Banned &amp; Stop Words</a>
                 </li>
                 <li>
-                    <a href="@Url.Action("Akismet", "AdminSpam", new { area = "Admin" })">Akismet</a>
+                    <a href="@Url.Action("Akismet", "AdminSpam", new { area = "Admin" })" class="@(currentController == "adminspam" && currentAction == "akismet" ? "active" : "")">Akismet</a>
                 </li>
                 <li>
-                    <a href="@Url.Action("RegistrationQuestion", "AdminSpam", new { area = "Admin" })">Registration Question</a>
+                    <a href="@Url.Action("RegistrationQuestion", "AdminSpam", new { area = "Admin" })" class="@(currentController == "adminspam" && currentAction == "registrationquestion" ? "active" : "")">Registration Question</a>
                 </li>
                 <li>
-                    <a href="@Url.Action("SpamReporting", "AdminSpam", new { area = "Admin" })">Spam Reporting</a>
+                    <a href="@Url.Action("SpamReporting", "AdminSpam", new { area = "Admin" })" class="@(currentController == "adminspam" && currentAction == "spamreporting" ? "active" : "")">Spam Reporting</a>
                 </li>
             </ul>
         </li>
@@ -138,18 +139,18 @@
             </a>
             <ul id="language" class="collapse">
                 <li>
-                    <a href="@Url.Action("Create", "AdminLanguage", new { area = "Admin" })">Add Language</a>
+                    <a href="@Url.Action("Create", "AdminLanguage", new { area = "Admin" })" class="@(currentController == "adminlanguage" && currentAction == "create" ? "active" : "")">Add Language</a>
                 </li>
                 <li>
-                    <a href="@Url.Action("Index", "AdminLanguage", new { area = "Admin" })">Edit Language</a>
+                    <a href="@Url.Action("Index", "AdminLanguage", new { area = "Admin" })" class="@(currentController == "adminlanguage" && currentAction == "index" ? "active" : "")">Edit Language</a>
                 </li>
                 <li>
-                    <a href="@Url.Action("Languages", "ImportExport", new { area = "Admin" })">Import / Export</a>
+                    <a href="@Url.Action("Languages", "ImportExport", new { area = "Admin" })" class="@(currentController == "importexport" && currentAction == "languages" ? "active" : "")">Import / Export</a>
                 </li>
             </ul>
         </li>
         <li>
-            <a href="@Url.Action("CustomCode", "Settings", new { area = "Admin" }, null)"><i class="fa fa-fw fa-code"></i> Custom Code</a>
+            <a href="@Url.Action("CustomCode", "Settings", new { area = "Admin" }, null)" class="@(currentController == "settings" && currentAction == "customcode" ? "active" : "")"><i class="fa fa-fw fa-code"></i> Custom Code</a>
         </li>
         <li>
             <a href="#" data-toggle="collapse" data-target="#batch">
@@ -157,15 +158,15 @@
             </a>
             <ul id="batch" class="collapse">
                 <li>
-                    <a href="@Url.Action("BatchDeleteMembers", "Batch", new { area = "Admin" }, null)">Batch Delete Members</a>
+                    <a href="@Url.Action("BatchDeleteMembers", "Batch", new { area = "Admin" }, null)" class="@(currentController == "batch" && currentAction == "batchdeletemembers" ? "active" : "")">Batch Delete Members</a>
                 </li>
                 <li>
-                    <a href="@Url.Action("BatchMoveTopics", "Batch", new { area = "Admin" }, null)">Batch Move Topics</a>
+                    <a href="@Url.Action("BatchMoveTopics", "Batch", new { area = "Admin" }, null)" class="@(currentController == "batch" && currentAction == "batchmovetopics" ? "active" : "")">Batch Move Topics</a>
                 </li>
             </ul>
         </li>
         <li>
-            <a href="@Url.Action("Index", "Log", new { area = "Admin" })"><i class="fa fa-fw fa-file-text-o"></i> Log</a>
+            <a href="@Url.Action("Index", "Log", new { area = "Admin" })" class="@(currentController == "log" && currentAction == "index" ? "active" : "")"><i class="fa fa-fw fa-file-text-o"></i> Log</a>
         </li>
     </ul>
 </div>

@@ -152,7 +152,7 @@
                                 <span class="glyphicon glyphicon-ok green-colour" aria-hidden="true"></span>
                             </li>
                         }
-                        else if (!Model.ParentTopic.Solved && !Model.Post.IsTopicStarter && Model.ParentTopic.User.Id == loggedOnUserId)
+                        else if (!Model.ParentTopic.Solved && !Model.Post.IsTopicStarter && Html.CurrentMember() != null && (Model.ParentTopic.User.Id == loggedOnUserId || User.IsInRole(AppConstants.AdminRoleName)))
                         {
                             <li>
                                 <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>

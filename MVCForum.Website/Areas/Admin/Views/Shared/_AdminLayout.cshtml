@@ -1,6 +1,9 @@
-﻿@using MVCForum.Website.Application
+﻿@using MVCForum.Domain.Constants
+@using MVCForum.Website.Application
 @{
-    var globalClass = Context.IsMobileDevice() ? "mobile" : "desktop";
+    TempData[AppConstants.GlobalClass] = Context.IsMobileDevice() ? "mobile" : "desktop";
+    TempData[AppConstants.CurrentAction] = ViewContext.RouteData.GetRequiredString("action").ToLower();
+    TempData[AppConstants.CurrentController] = ViewContext.RouteData.GetRequiredString("controller").ToLower();
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -13,7 +16,7 @@
     @RenderSection("AdminHeader", false)
 </head>
 
-<body class="@globalClass">
+<body class="@TempData[AppConstants.GlobalClass].ToString()">
 
     <div id="wrapper">
         <nav class="navbar navbar-inverse" role="navigation">
