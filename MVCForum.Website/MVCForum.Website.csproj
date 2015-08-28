@@ -615,9 +615,12 @@
     <Content Include="Content\badges\photogenic.png" />
     <Content Include="Content\badges\PosterMarkAsSolutionBadge.png" />
     <Content Include="Content\badges\PosterVoteUpBadge.png" />
+    <Content Include="Content\badges\recognised-post.png" />
     <Content Include="Content\badges\TheGrouch.png" />
     <Content Include="Content\badges\UserMarkAsSolutionBadge.png" />
     <Content Include="Content\badges\UserVoteUpBadge.png" />
+    <Content Include="Content\badges\you-favourited-your-first-post.png" />
+    <Content Include="Content\badges\your-post-got-favourited-by-another-member.png" />
     <Content Include="Content\bootstrap\css\bootstrap-prettify.css" />
     <Content Include="Content\bootstrap\css\bootstrap-theme.css" />
     <Content Include="Content\bootstrap\css\bootstrap-theme.min.css" />
