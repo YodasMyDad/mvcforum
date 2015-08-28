@@ -11,6 +11,7 @@ namespace MVCForum.Data.Mapping
             Property(x => x.Id).IsRequired();
             Property(x => x.IsClosed).IsRequired();
             Property(x => x.DateCreated).IsRequired();
+            Property(x => x.ClosePollAfterDays).IsOptional();
 
             HasMany(x => x.PollAnswers)
                 .WithRequired(t => t.Poll)
