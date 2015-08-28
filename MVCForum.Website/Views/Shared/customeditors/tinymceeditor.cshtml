@@ -9,13 +9,21 @@
                 "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
                 "table contextmenu directionality emoticons template textcolor paste textcolor"
             ],
-            toolbar1: "bold italic underline strikethrough | link unlink image code blockquote pre | formatselect",
+            toolbar1: "bold italic underline strikethrough bullist | link unlink image code blockquote | formatselect",
             remove_linebreaks: false,
             relative_urls: false,
             menubar: false,
             toolbar_items_size: 'small',
             content_css: "/content/tinymce.css",
             height: 175
+            //setup: function(editor) {
+            //    editor.on( 'keydown', function(editor, evt) {
+            //        if (evt.keyCode == 9) {
+            //            editor.execCommand('mceInsertContent', false, '&emsp;&emsp;');
+            //            evt.preventDefault();
+            //        }
+            //    } );
+            //}
         });
     </script>
 }

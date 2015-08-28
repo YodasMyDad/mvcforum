@@ -242,8 +242,6 @@ namespace MVCForum.Data.Repositories
             // get the category ids
             var allowedCatIds = allowedCategories.Select(x => x.Id);
 
-            // We might only want to display the top 100
-            // but there might not be 100 topics
             var query = _context.Post
                             .Include(x => x.Topic.Category)
                             .Include(x => x.User)
@@ -287,6 +285,7 @@ namespace MVCForum.Data.Repositories
         public Post Get(Guid id)
         {
             return _context.Post
+                .Include(x => x.Topic.Category)
                 .Include(x => x.Topic.LastPost.User)
                 .Include(x => x.User)
                 .FirstOrDefault(x => x.Id == id);

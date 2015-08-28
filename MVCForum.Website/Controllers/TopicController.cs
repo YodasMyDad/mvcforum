@@ -300,6 +300,8 @@ namespace MVCForum.Website.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditPostTopic(CreateEditTopicViewModel editPostViewModel)
         {
+            var topicPostInModeration = false;
+
             // Check stop words
             var stopWords = _bannedWordService.GetAll(true);
             foreach (var stopWord in stopWords)
@@ -499,17 +501,50 @@ namespace MVCForum.Website.Controllers
                             {
                                 _topicTagService.Add(editPostViewModel.Tags.ToLower(), topic);
                             }
+
+                            // if the Category has moderation marked then the topic needs to 
+                            // go back into moderation
+                            if (topic.Category.ModerateTopics == true)
+                            {
+                                topic.Pending = true;
+                                topicPostInModeration = true;
+                            }
+                        }
+                        else
+                        {
+                            // if the Category has moderation marked then the post needs to 
+                            // go back into moderation
+                            if (topic.Category.ModeratePosts == true)
+                            {
+                                post.Pending = true;
+                                topicPostInModeration = true;
+                            }
                         }
 
-                        // redirect back to topic
-                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                        {
-                            Message = LocalizationService.GetResourceString("Post.Updated"),
-                            MessageType = GenericMessages.success
-                        };
+
                         try
                         {
                             unitOfWork.Commit();
+
+                            if (topicPostInModeration)
+                            {
+                                // If in moderation then let the user now
+                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                {
+                                    Message = LocalizationService.GetResourceString("Moderate.AwaitingModeration"),
+                                    MessageType = GenericMessages.info
+                                };
+                            }
+                            else
+                            {
+                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                {
+                                    Message = LocalizationService.GetResourceString("Post.Updated"),
+                                    MessageType = GenericMessages.success
+                                };
+                            }
+
+                            // redirect back to topic
                             return Redirect(string.Format("{0}?postbadges=true", topic.NiceUrl));
                         }
                         catch (Exception ex)
