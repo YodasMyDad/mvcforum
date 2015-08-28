@@ -1263,7 +1263,7 @@ namespace MVCForum.Website.Controllers
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 var settings = SettingsService.GetSettings();
-                var url = new Uri(settings.ForumUrl + Url.Action("ResetPassword", "Members", new { user.Id, token = user.PasswordResetToken }));
+                var url = new Uri(string.Concat(settings.ForumUrl.TrimEnd('/'), Url.Action("ResetPassword", "Members", new { user.Id, token = user.PasswordResetToken })));
 
                 var sb = new StringBuilder();
                 sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.ResetPassword.EmailText"), settings.ForumName));

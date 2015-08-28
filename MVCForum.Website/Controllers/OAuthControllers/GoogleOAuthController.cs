@@ -38,7 +38,7 @@ namespace MVCForum.Website.Controllers.OAuthControllers
 
         public string ReturnUrl
         {
-            get { return string.Concat(SettingsService.GetSettings().ForumUrl, Url.Action("GoogleLogin")); }
+            get { return string.Concat(SettingsService.GetSettings().ForumUrl.TrimEnd('/'), Url.Action("GoogleLogin")); }
         }
 
         public string Callback { get; private set; }

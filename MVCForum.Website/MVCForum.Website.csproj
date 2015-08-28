@@ -836,6 +836,7 @@
     <Content Include="Scripts\markdown\node-pagedown.js" />
     <Content Include="Scripts\pushy\pushy.css" />
     <Content Include="Scripts\pushy\pushy.js" />
+    <Content Include="Scripts\createtopic.js" />
     <Content Include="Scripts\tinymce\license.txt" />
     <Content Include="Scripts\tinymce\plugins\advlist\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\advlist\plugin.min.js" />
@@ -990,7 +991,6 @@
     <Content Include="Scripts\tinymce\themes\modern\theme.min.js" />
     <Content Include="Scripts\tinymce\tinymce.js" />
     <Content Include="Scripts\tinymce\tinymce.min.js" />
-    <Content Include="Scripts\createtopic.js" />
     <Content Include="Scripts\topic.js" />
     <Content Include="Scripts\dashboard.js" />
     <Content Include="Scripts\bbeditor\jquery.sceditor.default.min.css" />
@@ -1146,6 +1146,13 @@
     <Content Include="Views\Shared\EditorTemplates\forumeditor.cshtml" />
     <Content Include="Views\Shared\customeditors\tinymceeditor.cshtml" />
     <Content Include="Views\Shared\_PrivateMessage.cshtml" />
+    <Content Include="Views\Members\PasswordResetSent.cshtml" />
+    <Content Include="Views\Members\ResetPassword.cshtml" />
+    <Content Include="Views\Members\PasswordChanged.cshtml" />
+    <Content Include="Themes\Metro\Content\Styles\Theme.scss" />
+    <Content Include="Themes\Metro\Content\Styles\Theme.css.map">
+      <DependentUpon>Theme.css</DependentUpon>
+    </Content>
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.woff" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.ttf" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.json" />
@@ -1156,13 +1163,6 @@
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.eot" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\readme.md" />
     <Content Include="Scripts\tinymce\langs\readme.md" />
-    <Content Include="Views\Members\PasswordResetSent.cshtml" />
-    <Content Include="Views\Members\ResetPassword.cshtml" />
-    <Content Include="Views\Members\PasswordChanged.cshtml" />
-    <Content Include="Themes\Metro\Content\Styles\Theme.scss" />
-    <Content Include="Themes\Metro\Content\Styles\Theme.css.map">
-      <DependentUpon>Theme.css</DependentUpon>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\languagepacks\" />
@@ -1177,6 +1177,10 @@
     <ProjectReference Include="..\MVCForum.Badges\Badge.AuthorMarkAsSolution\Badge.AuthorMarkAsSolution.csproj">
       <Project>{c90e299c-58d3-4afa-90b8-cb39aa4a1e99}</Project>
       <Name>Badge.AuthorMarkAsSolution</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.FavouriteFirstPost\Badge.FavouriteFirstPost.csproj">
+      <Project>{9c923d92-4963-44fe-b75b-0a8aaab9b689}</Project>
+      <Name>Badge.FavouriteFirstPost</Name>
     </ProjectReference>
     <ProjectReference Include="..\MVCForum.Badges\Badge.Grouch\Badge.Grouch.csproj">
       <Project>{83f9f278-d2be-479a-a398-b36779be3348}</Project>
@@ -1217,6 +1221,14 @@
     <ProjectReference Include="..\MVCForum.Badges\Badge.UserVoteUp\Badge.UserVoteUp.csproj">
       <Project>{abe6051b-56d8-4867-84df-43b6ad04a562}</Project>
       <Name>Badge.UserVoteUp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.YourPostFavouritedTenTimes\Badge.YourPostFavouritedTenTimes.csproj">
+      <Project>{097883d7-6c3e-4944-b2d8-a9cc8a9356f4}</Project>
+      <Name>Badge.YourPostFavouritedTenTimes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.YourPostFavourited\Badge.YourPostFavourited.csproj">
+      <Project>{47d979db-08a8-4c44-b21f-4b738e8334a2}</Project>
+      <Name>Badge.YourPostFavourited</Name>
     </ProjectReference>
     <ProjectReference Include="..\MVCForum.Core\MVCForum.Domain.csproj">
       <Project>{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}</Project>

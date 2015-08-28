@@ -27,12 +27,12 @@ namespace MVCForum.Services
             var email = new Email();
 
             sb.AppendFormat("<p>{2}: <a href=\"{0}\">{1}</a></p>", 
-                string.Concat(_settingsService.GetSettings().ForumUrl, report.Reporter.NiceUrl), 
+                string.Concat(_settingsService.GetSettings().ForumUrl.TrimEnd('/'), report.Reporter.NiceUrl), 
                 report.Reporter.UserName,
                 _localizationService.GetResourceString("Report.Reporter"));
 
-            sb.AppendFormat("<p>{2}: <a href=\"{0}\">{1}</a></p>", 
-                string.Concat(_settingsService.GetSettings().ForumUrl, report.ReportedMember.NiceUrl), 
+            sb.AppendFormat("<p>{2}: <a href=\"{0}\">{1}</a></p>",
+                string.Concat(_settingsService.GetSettings().ForumUrl.TrimEnd('/'), report.ReportedMember.NiceUrl), 
                 report.ReportedMember.UserName,
                 _localizationService.GetResourceString("Report.MemberReported"));
 
@@ -56,11 +56,11 @@ namespace MVCForum.Services
             var sb = new StringBuilder();
             var email = new Email();
 
-            sb.AppendFormat("<p>{2}: <a href=\"{0}\">{1}</a></p>", string.Concat(_settingsService.GetSettings().ForumUrl, report.Reporter.NiceUrl), 
+            sb.AppendFormat("<p>{2}: <a href=\"{0}\">{1}</a></p>", string.Concat(_settingsService.GetSettings().ForumUrl.TrimEnd('/'), report.Reporter.NiceUrl), 
                 report.Reporter.UserName,
                 _localizationService.GetResourceString("Report.Reporter"));
 
-            sb.AppendFormat("<p>{2}: <a href=\"{0}\">{1}</a></p>", string.Concat(_settingsService.GetSettings().ForumUrl, 
+            sb.AppendFormat("<p>{2}: <a href=\"{0}\">{1}</a></p>", string.Concat(_settingsService.GetSettings().ForumUrl.TrimEnd('/'), 
                 report.ReportedPost.Topic.NiceUrl), report.ReportedPost.Topic.Name,
                 _localizationService.GetResourceString("Report.PostReported"));
 

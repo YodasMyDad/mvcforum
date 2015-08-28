@@ -343,3 +343,9 @@ Members.ResetPassword.InvalidToken,This request is either invalid or has expired
 Members.ResetPassword.Error,There was an error resetting your password. Please try again.
 Tasks.MarkAsSolutionReminderJob.EmailBody,Your topic {0} on {1} has {2} replies but has still not been marked as solved. Please check again to see if any answers are appropriate and mark them as the solution if they are.
 Tasks.MarkAsSolutionReminderJob.Subject,Your post on {0}
+Badge.FavouriteFirstPost.Name,First Favourite
+Badge.FavouriteFirstPost.Desc,You have Favourited your first post
+Badge.YourPostFavouritedTenTimes.Name,Recognised Post
+Badge.YourPostFavouritedTenTimes.Desc,One or more of your posts have been Favourited by 10 or more people
+Badge.YourPostFavourited.Name,Favourited Post
+Badge.YourPostFavourited.Desc,You have one or more posts that have been Favourited by another member

@@ -84,6 +84,26 @@ namespace MVCForum.Data.Repositories
                     .ToList();
         }
 
+        public IEnumerable<Post> GetPostsByFavouriteCount(Guid postsByMemberId, int minAmountOfFavourites)
+        {
+            return _context.Post
+                   .Include(x => x.Topic.LastPost.User)
+                   .Include(x => x.Topic.Category)
+                   .Include(x => x.User)
+                   .Include(x => x.Favourites.Select(f => f.Member))
+                   .Where(x => x.User.Id == postsByMemberId && x.Favourites.Count(c => c.Member.Id != postsByMemberId) >= minAmountOfFavourites);
+        }
+
+        public IEnumerable<Post> GetPostsFavouritedByOtherMembers(Guid postsByMemberId)
+        {
+            return _context.Post
+                        .Include(x => x.Topic.LastPost.User)
+                        .Include(x => x.Topic.Category)
+                        .Include(x => x.User)
+                        .Include(x => x.Favourites.Select(f => f.Member))
+                        .Where(x => x.User.Id == postsByMemberId && x.Favourites.Any(c => c.Member.Id != postsByMemberId));
+        }
+
         /// <summary>
         /// Get all posts that are solutions, by user
         /// </summary>
@@ -288,7 +308,7 @@ namespace MVCForum.Data.Repositories
         }
 
         public int PostCount(List<Category> allowedCategories)
-        {            
+        {
             // get the category ids
             var allowedCatIds = allowedCategories.Select(x => x.Id);
             return _context.Post

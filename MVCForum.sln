@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Externals", "Externals", "{7859E236-ED49-482B-B325-C5EEFE650C14}"
 	ProjectSection(SolutionItems) = preProject
@@ -52,6 +52,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{162E9B
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.NuGet", "MVCForum.NuGet\MVCForum.NuGet.csproj", "{0451BAEF-DF2E-4B98-8644-94EE9415E389}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.FavouriteFirstPost", "MVCForum.Badges\Badge.FavouriteFirstPost\Badge.FavouriteFirstPost.csproj", "{9C923D92-4963-44FE-B75B-0A8AAAB9B689}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.YourPostFavourited", "MVCForum.Badges\Badge.YourPostFavourited\Badge.YourPostFavourited.csproj", "{47D979DB-08A8-4C44-B21F-4B738E8334A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.YourPostFavouritedTenTimes", "MVCForum.Badges\Badge.YourPostFavouritedTenTimes\Badge.YourPostFavouritedTenTimes.csproj", "{097883D7-6C3E-4944-B2D8-A9CC8A9356F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -241,6 +247,36 @@ Global
 		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Release|x86.ActiveCfg = Release|Any CPU
+		{9C923D92-4963-44FE-B75B-0A8AAAB9B689}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C923D92-4963-44FE-B75B-0A8AAAB9B689}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C923D92-4963-44FE-B75B-0A8AAAB9B689}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9C923D92-4963-44FE-B75B-0A8AAAB9B689}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9C923D92-4963-44FE-B75B-0A8AAAB9B689}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9C923D92-4963-44FE-B75B-0A8AAAB9B689}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C923D92-4963-44FE-B75B-0A8AAAB9B689}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C923D92-4963-44FE-B75B-0A8AAAB9B689}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9C923D92-4963-44FE-B75B-0A8AAAB9B689}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9C923D92-4963-44FE-B75B-0A8AAAB9B689}.Release|x86.ActiveCfg = Release|Any CPU
+		{47D979DB-08A8-4C44-B21F-4B738E8334A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47D979DB-08A8-4C44-B21F-4B738E8334A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47D979DB-08A8-4C44-B21F-4B738E8334A2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{47D979DB-08A8-4C44-B21F-4B738E8334A2}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{47D979DB-08A8-4C44-B21F-4B738E8334A2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{47D979DB-08A8-4C44-B21F-4B738E8334A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47D979DB-08A8-4C44-B21F-4B738E8334A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47D979DB-08A8-4C44-B21F-4B738E8334A2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{47D979DB-08A8-4C44-B21F-4B738E8334A2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{47D979DB-08A8-4C44-B21F-4B738E8334A2}.Release|x86.ActiveCfg = Release|Any CPU
+		{097883D7-6C3E-4944-B2D8-A9CC8A9356F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{097883D7-6C3E-4944-B2D8-A9CC8A9356F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{097883D7-6C3E-4944-B2D8-A9CC8A9356F4}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{097883D7-6C3E-4944-B2D8-A9CC8A9356F4}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{097883D7-6C3E-4944-B2D8-A9CC8A9356F4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{097883D7-6C3E-4944-B2D8-A9CC8A9356F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{097883D7-6C3E-4944-B2D8-A9CC8A9356F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{097883D7-6C3E-4944-B2D8-A9CC8A9356F4}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{097883D7-6C3E-4944-B2D8-A9CC8A9356F4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{097883D7-6C3E-4944-B2D8-A9CC8A9356F4}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -257,6 +293,9 @@ Global
 		{327A7FEB-AEFE-47D9-AA0F-C08835E26A3A} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
 		{330A777B-FE88-4CF5-9583-6693547A8F1C} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
 		{ABE6051B-56D8-4867-84DF-43B6AD04A562} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
+		{9C923D92-4963-44FE-B75B-0A8AAAB9B689} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
+		{47D979DB-08A8-4C44-B21F-4B738E8334A2} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
+		{097883D7-6C3E-4944-B2D8-A9CC8A9356F4} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.2.1.505.2\lib\NET35

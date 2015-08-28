@@ -89,6 +89,16 @@ namespace MVCForum.Services
             return _postRepository.GetByMember(memberId, amountToTake, allowedCategories);
         }
 
+        public IEnumerable<Post> GetPostsByFavouriteCount(Guid postsByMemberId, int minAmountOfFavourites)
+        {
+            return _postRepository.GetPostsByFavouriteCount(postsByMemberId, minAmountOfFavourites);
+        }
+
+        public IEnumerable<Post> GetPostsFavouritedByOtherMembers(Guid postsByMemberId)
+        {
+            return _postRepository.GetPostsFavouritedByOtherMembers(postsByMemberId);
+        }
+
         /// <summary>
         /// Returns a paged list of posts by a search term
         /// </summary>

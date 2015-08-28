@@ -40,7 +40,7 @@ namespace MVCForum.Website.Controllers.OAuthControllers
         {
             get
             {
-                return string.Concat(SettingsService.GetSettings().ForumUrl, Url.Action("FacebookLogin"));
+                return string.Concat(SettingsService.GetSettings().ForumUrl.TrimEnd('/'), Url.Action("FacebookLogin"));
             }
         }
 

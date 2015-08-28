@@ -49,9 +49,17 @@ namespace MVCForum.Website.Application.ScheduledJobs
 
                             foreach (var markAsSolutionReminder in remindersToSend)
                             {
+                                // Topic Link
+                                var topicLink = string.Format("<a href=\"{0}{1}\">{2}</a>",
+                                    settings.ForumUrl.TrimEnd('/'),
+                                    markAsSolutionReminder.Topic.NiceUrl,
+                                    markAsSolutionReminder.Topic.Name);
+
                                 // Create the email
                                 var sb = new StringBuilder();
-                                sb.AppendFormat("<p>{0}</p>", string.Format(_localizationService.GetResourceString("Tasks.MarkAsSolutionReminderJob.EmailBody"), markAsSolutionReminder.Topic.Name, settings.ForumName, markAsSolutionReminder.PostCount));
+                                sb.AppendFormat("<p>{0}</p>", string.Format(_localizationService.GetResourceString("Tasks.MarkAsSolutionReminderJob.EmailBody"),
+                                                                topicLink, 
+                                                                settings.ForumName, markAsSolutionReminder.PostCount));
 
                                 // create the emails and only send them to people who have not had notifications disabled
 

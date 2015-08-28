@@ -12,6 +12,8 @@ namespace MVCForum.Domain.Interfaces.Repositories
         IList<Post> GetLowestVotedPost(int amountToTake);
         IList<Post> GetHighestVotedPost(int amountToTake);
         IList<Post> GetByMember(Guid memberId, int amountToTake, List<Category> allowedCategories);
+        IEnumerable<Post> GetPostsByFavouriteCount(Guid postsByMemberId, int minAmountOfFavourites);
+        IEnumerable<Post> GetPostsFavouritedByOtherMembers(Guid postsByMemberId);
         IList<Post> GetSolutionsByMember(Guid memberId, List<Category> allowedCategories);
         IList<Post> GetPostsByTopic(Guid topicId);
         IList<Post> GetPostsByTopics(List<Guid> topicId, List<Category> allowedCategories);

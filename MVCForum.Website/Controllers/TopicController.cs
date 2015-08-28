@@ -1164,7 +1164,7 @@ namespace MVCForum.Website.Controllers
                     // Create the email
                     var sb = new StringBuilder();
                     sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Topic.Notification.NewTopics"), cat.Name));
-                    sb.AppendFormat("<p>{0}</p>", string.Concat(settings.ForumUrl, cat.NiceUrl));
+                    sb.AppendFormat("<p>{0}</p>", string.Concat(settings.ForumUrl.TrimEnd('/'), cat.NiceUrl));
 
                     // create the emails and only send them to people who have not had notifications disabled
                     var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true).Select(user => new Email
