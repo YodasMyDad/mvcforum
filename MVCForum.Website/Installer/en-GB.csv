@@ -351,3 +351,5 @@ Badge.YourPostFavourited.Name,Favourited Post
 Badge.YourPostFavourited.Desc,You have one or more posts that have been Favourited by another member
 Post.MemberIsOnline,Online
 PM.MemberIsOnline,Online
+Topic.Label.PollCloseAfterDays,Close Poll After Specified Amount Of Days? Leave as 0 to disable
+Topic.PollClosed,Closed

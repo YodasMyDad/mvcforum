@@ -26,7 +26,7 @@
 
             <div class="pollanswerrow">
                 <div class="pollanswerrowholder clearfix">
-                    @if (Model.UserAllowedToVote && displayVote)
+                    @if (Model.UserAllowedToVote && displayVote && !Model.Poll.IsClosed)
                     {
                         <div class="pollradiobuttonholder">
                             <input type="radio" class="pollanswerselect" name="pollanswers" data-answerid="@pollAnswer.Id" />
@@ -49,7 +49,7 @@
 
         }
 
-        @if (Model.UserAllowedToVote && displayVote)
+        @if (Model.UserAllowedToVote && displayVote && !Model.Poll.IsClosed)
         {
             <div class="pollvotebuttonholder" style="display: none;">
                 <a href="#" class="btn-mvc pollvotebutton">@Html.LanguageString("Poll.Button.Vote")</a>

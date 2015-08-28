@@ -281,6 +281,7 @@ namespace MVCForum.Website.Controllers
                             {
                                 // Has a poll so add it to the view model
                                 viewModel.PollAnswers = topic.Poll.PollAnswers;
+                                viewModel.PollCloseAfterDays = topic.Poll.ClosePollAfterDays ?? 0;
                             }
                         }
 
@@ -416,6 +417,10 @@ namespace MVCForum.Website.Controllers
                                     topicPollAnswerIds = topic.Poll.PollAnswers.Select(p => p.Id).ToList();
                                     pollAnswersToRemove = topic.Poll.PollAnswers.Where(x => !postedIds.Contains(x.Id)).ToList();
                                 }
+
+                                // Set the amount of days to close the poll
+                                topic.Poll.ClosePollAfterDays = editPostViewModel.PollCloseAfterDays;
+
                                 var existingAnswers = editPostViewModel.PollAnswers.Where(x => !string.IsNullOrEmpty(x.Answer) && topicPollAnswerIds.Contains(x.Id)).ToList();
                                 var newPollAnswers = editPostViewModel.PollAnswers.Where(x => !string.IsNullOrEmpty(x.Answer) && !topicPollAnswerIds.Contains(x.Id)).ToList();
 
@@ -540,7 +545,8 @@ namespace MVCForum.Website.Controllers
                     CanCreatePolls = userIsAdmin
                 },
                 PollAnswers = new List<PollAnswer>(),
-                IsTopicStarter = true
+                IsTopicStarter = true,
+                PollCloseAfterDays = 0
             };
         }
 
@@ -676,7 +682,8 @@ namespace MVCForum.Website.Controllers
                                     // Create a new Poll
                                     var newPoll = new Poll
                                     {
-                                        User = loggedOnUser
+                                        User = loggedOnUser, 
+                                        ClosePollAfterDays = topicViewModel.PollCloseAfterDays
                                     };
 
                                     // Create the poll
@@ -936,14 +943,42 @@ namespace MVCForum.Website.Controllers
                         }
                     }
 
+                    var updateDatabase = false;
+
                     // User has permission lets update the topic view count
                     // but only if this topic doesn't belong to the user looking at it
                     var addView = !(UserIsAuthenticated && LoggedOnReadOnlyUser.Id == topic.User.Id);
-
-                    if (!BotUtils.UserIsBot() && addView)
+                    if (addView)
                     {
-                        // Cool, user doesn't own this topic
-                        topic.Views = (topic.Views + 1);
+                        updateDatabase = true;
+                    }
+
+                    // Check the poll - To see if it has one, and whether it needs to be closed.
+                    if (viewModel.Poll != null && viewModel.Poll.Poll != null)
+                    {
+                        if (viewModel.Poll.Poll.ClosePollAfterDays != null &&
+                            viewModel.Poll.Poll.ClosePollAfterDays > 0 &&
+                            !viewModel.Poll.Poll.IsClosed)
+                        {
+                            // Check the date the topic was created
+                            var endDate = viewModel.Poll.Poll.DateCreated.AddDays((int)viewModel.Poll.Poll.ClosePollAfterDays);
+                            if (DateTime.UtcNow > endDate)
+                            {
+                                topic.Poll.IsClosed = true;
+                                viewModel.Topic.Poll.IsClosed = true;
+                                updateDatabase = true;
+                            }
+                        }
+                    }
+
+                    if (!BotUtils.UserIsBot() && updateDatabase)
+                    {
+                        if (addView)
+                        {
+                            // Increase the topic views
+                            topic.Views = (topic.Views + 1);
+                        }
+
                         try
                         {
                             unitOfWork.Commit();
@@ -1142,13 +1177,17 @@ namespace MVCForum.Website.Controllers
 
         private void NotifyNewTopics(Category cat, Topic topic, IUnitOfWork unitOfWork)
         {
-            // Get all notifications for this category and for the tags on the topic
-            var catnotifications = _categoryNotificationService.GetByCategory(cat).Select(x => x.User.Id).ToList();
-            var tagNotifications = _tagNotificationService.GetByTag(topic.Tags.ToList()).Select(x => x.User.Id).ToList();
             var settings = SettingsService.GetSettings();
 
+            // Get all notifications for this category and for the tags on the topic
+            var notifications = _categoryNotificationService.GetByCategory(cat).Select(x => x.User.Id).ToList();
+
             // Merge and remove duplicate ids
-            var notifications = catnotifications.Union(tagNotifications).ToList();
+            if (topic.Tags != null && topic.Tags.Any())
+            {
+                var tagNotifications = _tagNotificationService.GetByTag(topic.Tags.ToList()).Select(x => x.User.Id).ToList();
+                notifications = notifications.Union(tagNotifications).ToList();
+            }
 
             if (notifications.Any())
             {

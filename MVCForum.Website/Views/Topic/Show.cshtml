@@ -91,7 +91,11 @@
             @if (Model.Topic.Poll != null)
             {
                 <li>
-                    <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> @Html.Lang("Topic.IsPoll")
+                    <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> @Html.Lang("Topic.IsPoll") 
+                    @if (Model.Topic.Poll.IsClosed)
+                    {
+                        <text>(@Html.Lang("Topic.PollClosed"))</text>
+                    }
                 </li>
             }
             <li>

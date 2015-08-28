@@ -111,6 +111,9 @@ namespace MVCForum.Website.ViewModels
 
         public string Tags { get; set; }
 
+        [ForumMvcResourceDisplayName("Topic.Label.PollCloseAfterDays")]
+        public int PollCloseAfterDays { get; set; }
+
         public List<SelectListItem> Categories { get; set; }
 
         public IList<PollAnswer> PollAnswers { get; set; }
