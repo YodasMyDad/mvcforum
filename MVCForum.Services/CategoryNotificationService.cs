@@ -61,7 +61,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<CategoryNotification> GetByUserAndCategory(MembershipUser user, Category category, bool addTracking = false)
         {
-            return _categoryNotificationRepository.GetByUserAndCategory(user, category);
+            return _categoryNotificationRepository.GetByUserAndCategory(user, category, addTracking);
         }
 
         /// <summary>
