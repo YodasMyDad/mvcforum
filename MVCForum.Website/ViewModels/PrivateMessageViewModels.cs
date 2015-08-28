@@ -30,6 +30,7 @@ namespace MVCForum.Website.ViewModels
     {
         public IList<PrivateMessage> PrivateMessages { get; set; } 
         public MembershipUser From { get; set; }
+        public bool FromUserIsOnline { get; set; }
     }
 
     public class DeletePrivateMessageViewModel

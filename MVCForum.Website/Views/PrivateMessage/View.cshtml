@@ -14,6 +14,10 @@
             <h1>
                 <a href="@Model.From.NiceUrl">
                     <img src="@Model.From.MemberImage(SiteConstants.GravatarPostSize)" alt="@Model.From.UserName" class="pmavatar" /> @Model.From.UserName
+                    @if (Model.FromUserIsOnline)
+                    {
+                        <span class="label label-success">@Html.Lang("PM.MemberIsOnline")</span>
+                    }
                 </a>
             </h1>
             

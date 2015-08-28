@@ -261,11 +261,12 @@ namespace MVCForum.Website.Controllers
                     allMessages.AddRange(loggedOnUser.PrivateMessagesSent.Where(x => x.UserTo.Id == from && x.IsSentMessage == true).ToList());
 
                     // Now order them into an order of messages
-
+                    var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
                     var viewModel = new ViewPrivateMessageViewModel
                     {
                         From = userFrom,
-                        PrivateMessages = allMessages.OrderByDescending(x => x.DateSent).ToList()
+                        PrivateMessages = allMessages.OrderByDescending(x => x.DateSent).ToList(),
+                        FromUserIsOnline = userFrom.LastActivityDate > date
                     };
 
                     return View(viewModel);

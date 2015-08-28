@@ -50,7 +50,7 @@ input.form-control, textarea.form-control, select.form-control { -ms-border-radi
 .dropdown-menu { -ms-border-radius: 0; border-radius: 0; }
 .navbar-toggle { padding: 7px 8px; background-color: #ddd; }
 .navbar-toggle:hover, .navbar-toggle:focus { background-color: #d3d3d3 !important; }
-
+span.label-success {background-color:$color-global-green;}
 
 // Main
 
@@ -660,6 +660,7 @@ footer { background: $color-global-grey-blue; padding: 20px 0; margin: 30px 0 0 
 .pmview {
     h1 { margin: 20px 0 0 0;
         .pmavatar { float: left; margin: 0 15px 0 0; -ms-border-radius: 50%; border-radius: 50%; margin-top: -8px; }
+        span.label {font-size:12px; font-weight:$font-light-weight;}
     }
     .pmblock { margin-bottom: 25px; padding: 12px 12px 8px 12px;
         .pmsmallavatar { -ms-border-radius: 50%; border-radius: 50%; z-index: 10; }

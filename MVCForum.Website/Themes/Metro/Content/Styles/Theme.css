@@ -57,6 +57,10 @@
   background-color: #d3d3d3 !important;
 }
 
+span.label-success {
+  background-color: #2abd54;
+}
+
 body {
   font-family: "Open Sans", Arial, Helvetica, sans-serif;
   color: #3b3b3b;
@@ -1551,6 +1555,11 @@ footer h6 {
   -ms-border-radius: 50%;
   border-radius: 50%;
   margin-top: -8px;
+}
+
+.pmview h1 span.label {
+  font-size: 12px;
+  font-weight: 300;
 }
 
 .pmview .pmblock {
