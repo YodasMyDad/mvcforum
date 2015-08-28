@@ -340,6 +340,9 @@ namespace MVCForum.Website.ViewModels.Mapping
                 hasFavourited = favourites.Any(x => x.Member.Id == loggedOnUser.Id);   
             }
 
+            // Check for online status
+            var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
+
             return new PostViewModel
             {
                 Permissions = permission,
@@ -349,7 +352,8 @@ namespace MVCForum.Website.ViewModels.Mapping
                 AllowedToVote = allowedToVote,
                 MemberHasFavourited = hasFavourited,
                 Favourites = favourites,
-                PermaLink = string.Concat(topic.NiceUrl, "?", AppConstants.PostOrderBy, "=", AppConstants.AllPosts, "#comment-", post.Id)
+                PermaLink = string.Concat(topic.NiceUrl, "?", AppConstants.PostOrderBy, "=", AppConstants.AllPosts, "#comment-", post.Id),
+                MemberIsOnline = post.User.LastActivityDate > date
             };
         }
 

@@ -36,6 +36,7 @@ namespace MVCForum.Website.ViewModels
         public PermissionSet Permissions { get; set; }
         public bool AllowedToVote { get; set; }
         public bool MemberHasFavourited { get; set; }
+        public bool MemberIsOnline { get; set; }
     }
 
     public class ReportPostViewModel

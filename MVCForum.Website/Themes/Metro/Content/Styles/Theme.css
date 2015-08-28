@@ -712,7 +712,14 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
   margin: 2px 6px 0 6px;
   display: block;
   z-index: 5;
+}
+
+.rowcreater span.label-default {
   background-color: #bebebe;
+}
+
+.rowcreater span.label-success {
+  background-color: #2abd54;
 }
 
 .rowdetails {

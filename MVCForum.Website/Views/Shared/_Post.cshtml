@@ -20,6 +20,12 @@
                 @Html.Lang("Admin")
             </span>
         }
+        @if (Model.MemberIsOnline)
+        {
+            <span class="label label-success">
+                @Html.Lang("Post.MemberIsOnline")
+            </span>
+        }
     </div>
 
     <div class="rowdetails clearfix">

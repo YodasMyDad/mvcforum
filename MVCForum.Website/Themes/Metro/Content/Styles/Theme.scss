@@ -326,7 +326,9 @@ section.content-strip {
 .rowcreater { float: left; width: 60px; text-align: center;
     img { -ms-border-radius: 50%; border-radius: 50%; max-width: 50px; }
     span {
-        &.label { font-weight: normal; padding: .2em .4em .2em; margin: 2px 6px 0 6px; display: block; z-index: 5; background-color: #bebebe; }
+        &.label { font-weight: normal; padding: .2em .4em .2em; margin: 2px 6px 0 6px; display: block; z-index: 5; }
+        &.label-default { background-color: #bebebe;}
+        &.label-success { background-color: $color-global-green;}
     }
 }
 
