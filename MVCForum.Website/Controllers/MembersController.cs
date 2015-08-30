@@ -334,6 +334,8 @@ namespace MVCForum.Website.Controllers
                 return MemberRegisterLogic(userModel);
             }
 
+            
+
             ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
             return View("Register");
         }
@@ -820,7 +822,8 @@ namespace MVCForum.Website.Controllers
                 Twitter = user.Twitter,
                 Facebook = user.Facebook,
                 DisableFileUploads = user.DisableFileUploads == true,
-                Avatar = user.Avatar
+                Avatar = user.Avatar,
+                DisableEmailNotifications = user.DisableEmailNotifications == true
             };
             return viewModel;
         }
@@ -930,6 +933,7 @@ namespace MVCForum.Website.Controllers
                     user.Signature = _bannedWordService.SanitiseBannedWords(StringUtils.ScrubHtml(userModel.Signature), bannedWords);
                     user.Twitter = _bannedWordService.SanitiseBannedWords(userModel.Twitter, bannedWords);
                     user.Website = _bannedWordService.SanitiseBannedWords(userModel.Website, bannedWords);
+                    user.DisableEmailNotifications = userModel.DisableEmailNotifications;
 
                     // User is trying to change username, need to check if a user already exists
                     // with the username they are trying to change to

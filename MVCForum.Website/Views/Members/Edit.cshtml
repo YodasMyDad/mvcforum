@@ -1,5 +1,4 @@
-﻿@using MVCForum.Utilities
-@using MVCForum.Website
+﻿@using MVCForum.Website.Application.ExtensionMethods
 @model MVCForum.Website.ViewModels.MemberFrontEndEditViewModel
 
 @{
@@ -102,6 +101,14 @@
                     @Html.LabelFor(x => x.Signature)
                     @Html.TextAreaFor(x => x.Signature, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.Signature)
+                </div>
+                
+                <div class="checkbox">
+                    @using (Html.BeginLabelFor(m => m.DisableEmailNotifications, new { @class = "checkbox" }))
+                    {
+                        @Html.CheckBoxFor(m => m.DisableEmailNotifications)
+                    }
+                    @Html.ValidationMessageFor(m => m.DisableEmailNotifications)
                 </div>
 
                 <div class="submit-holder">

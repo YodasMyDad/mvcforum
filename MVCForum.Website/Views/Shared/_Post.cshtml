@@ -83,6 +83,10 @@
 
         <div class="postdetails@(Html.CurrentMember() == null ? " postdetails-guest" : "")">
             <div class="postbodytop">
+                @if (Model.ShowTopicName)
+                {
+                    <p><a href="@Model.ParentTopic.NiceUrl">@Model.ParentTopic.Name</a></p>
+                }
                 <a class="postmember-@postId" href="@Html.Raw(Model.Post.User.NiceUrl)">@Html.Raw(Model.Post.User.UserName)</a>
                 @Html.LanguageString("Post.PostedThis")
                 @DatesUI.GetPrettyDate(Model.Post.DateCreated.ToString())

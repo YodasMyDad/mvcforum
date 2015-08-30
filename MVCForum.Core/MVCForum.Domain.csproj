@@ -145,7 +145,8 @@
     <Compile Include="Events\UpdateProfileEventArgs.cs" />
     <Compile Include="Events\VoteEventArgs.cs" />
     <Compile Include="Exceptions\InUseUnableToDeleteException.cs" />
-    <Compile Include="Interfaces\Badges\IFavourite.cs" />
+    <Compile Include="Interfaces\Badges\ITagBadge.cs" />
+    <Compile Include="Interfaces\Badges\IFavouriteBadge.cs" />
     <Compile Include="Interfaces\Badges\IPostBadge.cs" />
     <Compile Include="Interfaces\Badges\IMarkAsSolutionBadge.cs" />
     <Compile Include="Interfaces\Badges\IProfileBadge.cs" />

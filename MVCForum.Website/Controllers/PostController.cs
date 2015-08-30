@@ -232,6 +232,7 @@ namespace MVCForum.Website.Controllers
                         // Create the email
                         var sb = new StringBuilder();
                         sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Post.Notification.NewPosts"), topic.Name));
+                        sb.Append(AppHelpers.ConvertPostContent(topic.LastPost.PostContent));
                         sb.AppendFormat("<p>{0}</p>", string.Concat(SettingsService.GetSettings().ForumUrl.TrimEnd('/'), topic.NiceUrl));
 
                         // create the emails only to people who haven't had notifications disabled

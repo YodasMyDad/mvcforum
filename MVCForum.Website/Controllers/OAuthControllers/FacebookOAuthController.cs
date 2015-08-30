@@ -198,7 +198,7 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                                     resultMessage.Message = LocalizationService.GetResourceString("Members.NowLoggedIn");
                                     resultMessage.MessageType = GenericMessages.success;
                                     ShowMessage(resultMessage);
-                                    RedirectToAction("Index", "Home");
+                                    return RedirectToAction("Index", "Home");
                                 }
                                 catch (Exception ex)
                                 {

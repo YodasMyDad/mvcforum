@@ -13,6 +13,7 @@ namespace MVCForum.Services
         private readonly ITopicTagRepository _tagRepository;
         private readonly ITopicRepository _topicRepository;
         private readonly ICategoryService _categoryService;
+        private readonly IBadgeService _badgeService;
 
         /// <summary>
         /// Constructor
@@ -20,11 +21,12 @@ namespace MVCForum.Services
         /// <param name="tagRepository"></param>
         /// <param name="topicRepository"></param>
         /// <param name="categoryService"></param>
-        public TopicTagService(ITopicTagRepository tagRepository, ITopicRepository topicRepository, ICategoryService categoryService)
+        public TopicTagService(ITopicTagRepository tagRepository, ITopicRepository topicRepository, ICategoryService categoryService, IBadgeService badgeService)
         {
             _tagRepository = tagRepository;
             _topicRepository = topicRepository;
             _categoryService = categoryService;
+            _badgeService = badgeService;
         }
 
         /// <summary>
@@ -152,6 +154,9 @@ namespace MVCForum.Services
 
                 newTags.AddRange(existingTags);
                 topic.Tags = newTags;
+
+                // Fire the tag badge check
+                _badgeService.ProcessBadge(BadgeType.Tag, topic.User);
             }
         }
 

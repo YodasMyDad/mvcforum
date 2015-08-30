@@ -12,7 +12,8 @@ namespace MVCForum.Domain.DomainModel
         Time,
         Post,
         Profile,
-        Favourite
+        Favourite,
+        Tag
     }
 
     public partial class Badge : Entity
@@ -33,7 +34,8 @@ namespace MVCForum.Domain.DomainModel
                                                                 {BadgeType.Post, "MVCForum.Domain.Interfaces.Badges.IPostBadge"},
                                                                 {BadgeType.VoteDown, "MVCForum.Domain.Interfaces.Badges.IVoteDownBadge"},
                                                                 {BadgeType.Profile, "MVCForum.Domain.Interfaces.Badges.IProfileBadge"},
-                                                                {BadgeType.Favourite, "MVCForum.Domain.Interfaces.Badges.IFavouriteBadge"}
+                                                                {BadgeType.Favourite, "MVCForum.Domain.Interfaces.Badges.IFavouriteBadge"},
+                                                                {BadgeType.Favourite, "MVCForum.Domain.Interfaces.Badges.ITagBadge"}
                                                             };
 
         public Guid Id { get; set; }

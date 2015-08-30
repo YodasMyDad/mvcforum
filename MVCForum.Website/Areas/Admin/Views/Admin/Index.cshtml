@@ -2,18 +2,12 @@
 @model MVCForum.Website.Areas.Admin.ViewModels.IndexViewModel
 @{
     ViewBag.Title = "MVC Forum Admin";
-   
+
 }
 @section AdminHeader
 {
     <script src="@Url.Content("~/Scripts/dashboard.js")" type="text/javascript"></script>
 }
-
-@section AdminPageHeader
-{
-    Admin overview page
-}
-
 
 <div class="row dashboardrow">
 
@@ -24,7 +18,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-6">
         <div class="admindashboard">
             <div class="dashboardlowestpointposts">
@@ -66,4 +60,10 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="alert alert-success" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <strong>Did you know!</strong> this forum is completely free to use, but if you want to remove the powered by link in the footer you need a
+    <a href="http://www.mvcforum.com/license/" target="_blank" class="alert-link">copyright removal key</a>. By purchasing a removal key you are helping us to continue to develop this software.
 </div>

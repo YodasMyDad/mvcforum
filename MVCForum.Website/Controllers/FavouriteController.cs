@@ -67,7 +67,9 @@ namespace MVCForum.Website.Controllers
                 foreach (var post in posts)
                 {
                     var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
-                    viewModel.Posts.Add(ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions, post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList()));
+                    var postViewModel = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions, post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
+                    postViewModel.ShowTopicName = true;
+                    viewModel.Posts.Add(postViewModel);
                 }
 
                 return View(viewModel);

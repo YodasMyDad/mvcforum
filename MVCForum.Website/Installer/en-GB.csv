@@ -354,3 +354,4 @@ PM.MemberIsOnline,Online
 Topic.Label.PollCloseAfterDays,Close Poll After Specified Amount Of Days? Leave as 0 to disable
 Topic.PollClosed,Closed
 Post.OthersLiked,and {0} others
+Members.Label.DisableEmailNotifications,Disable Email Notifications

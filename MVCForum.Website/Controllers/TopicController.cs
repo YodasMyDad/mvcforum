@@ -665,7 +665,6 @@ namespace MVCForum.Website.Controllers
 
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
-
                     // Check this users role has permission to create a post
                     if (permissions[AppConstants.PermissionDenyAccess].IsTicked || permissions[AppConstants.PermissionReadOnly].IsTicked || !permissions[AppConstants.PermissionCreateTopics].IsTicked)
                     {
@@ -1238,6 +1237,8 @@ namespace MVCForum.Website.Controllers
                     // Create the email
                     var sb = new StringBuilder();
                     sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Topic.Notification.NewTopics"), cat.Name));
+                    sb.AppendFormat("<p>{0}</p>", topic.Name);
+                    sb.Append(AppHelpers.ConvertPostContent(topic.LastPost.PostContent));
                     sb.AppendFormat("<p>{0}</p>", string.Concat(settings.ForumUrl.TrimEnd('/'), cat.NiceUrl));
 
                     // create the emails and only send them to people who have not had notifications disabled
