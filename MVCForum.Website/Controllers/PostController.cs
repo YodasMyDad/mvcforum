@@ -29,13 +29,14 @@ namespace MVCForum.Website.Controllers
         private readonly IPollAnswerService _pollAnswerService;
         private readonly IPollService _pollService;
         private readonly IBannedWordService _bannedWordService;
+        private readonly IVoteService _voteService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
 
         public PostController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ISettingsService settingsService, ICategoryService categoryService, ITopicTagService topicTagService,
             ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, IPollAnswerService pollAnswerService,
-            IPollService pollService, IBannedWordService bannedWordService, IMembershipUserPointsService membershipUserPointsService)
+            IPollService pollService, IBannedWordService bannedWordService, IMembershipUserPointsService membershipUserPointsService, IVoteService voteService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
@@ -49,6 +50,7 @@ namespace MVCForum.Website.Controllers
             _pollService = pollService;
             _bannedWordService = bannedWordService;
             _membershipUserPointsService = membershipUserPointsService;
+            _voteService = voteService;
         }
 
 
@@ -309,6 +311,20 @@ namespace MVCForum.Website.Controllers
                 }
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
+        }
+
+        [HttpPost]
+        public ActionResult GetAllPostLikes(Guid id)
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var post = _postService.Get(id);
+                var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
+                var votes = _voteService.GetVotesByPosts(new List<Guid>{id});
+                var viewModel = ViewModelMapping.CreatePostViewModel(post, votes, permissions, post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
+                var upVotes = viewModel.Votes.Where(x => x.Amount > 0).ToList();
+                return View(upVotes);
+            }         
         }
 
     }

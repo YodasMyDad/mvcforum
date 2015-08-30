@@ -61,6 +61,10 @@ span.label-success {
   background-color: #2abd54;
 }
 
+.input-group {
+  z-index: 0;
+}
+
 body {
   font-family: "Open Sans", Arial, Helvetica, sans-serif;
   color: #3b3b3b;
@@ -378,6 +382,10 @@ a:hover, a:focus, a:visited:hover, a:visited:focus {
   background: white;
   cursor: inherit;
   display: block;
+}
+
+.loaderholder {
+  text-align: center;
 }
 
 .paddedrow {
@@ -1519,9 +1527,17 @@ footer h6 {
   border: none;
 }
 
-.memberavatardetails img {
+.memberavatardetails .memberavatar {
+  text-align: center;
+}
+
+.memberavatardetails .memberavatar img {
   -ms-border-radius: 50%;
   border-radius: 50%;
+}
+
+.memberavatardetails .btn-mvc {
+  width: 100%;
 }
 
 .editmemberform .membereditavatar {
@@ -1637,6 +1653,10 @@ footer h6 {
   z-index: 5;
 }
 
+.pmview #createpostholder {
+  padding: 0;
+}
+
 .form-createpm {
   padding: 10px 0;
   clear: both;
@@ -1733,6 +1753,11 @@ footer h6 {
   margin-bottom: 14px;
   border: 1px solid #e5e5e5;
   width: 99.5%;
+}
+
+.tinymceholder textarea {
+  width: 100%;
+  min-height: 100px;
 }
 
 .mce-window {

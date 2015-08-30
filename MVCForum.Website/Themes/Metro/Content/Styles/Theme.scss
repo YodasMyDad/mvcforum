@@ -51,6 +51,7 @@ input.form-control, textarea.form-control, select.form-control { -ms-border-radi
 .navbar-toggle { padding: 7px 8px; background-color: #ddd; }
 .navbar-toggle:hover, .navbar-toggle:focus { background-color: #d3d3d3 !important; }
 span.label-success {background-color:$color-global-green;}
+.input-group {z-index:0;}
 
 // Main
 
@@ -172,6 +173,10 @@ a, a:visited { color: $link-color;
 .btn-file { position: relative; overflow: hidden;
     input[type=file] { position: absolute; top: 0; right: 0; min-width: 100%; min-height: 100%; font-size: 100px; text-align: right; filter: alpha(opacity=0); opacity: 0; outline: none; background: white; cursor: inherit; display: block; }
 }
+
+// Loader In Panel
+
+.loaderholder {text-align:center;}
 
 // Padded Row
 
@@ -644,7 +649,12 @@ footer { background: $color-global-grey-blue; padding: 20px 0; margin: 30px 0 0 
 }
 .membersection { padding-bottom: 12px; }
 .memberprofilepublic .memberdiscussions h3 { border: none; }
-.memberavatardetails img { -ms-border-radius: 50%; border-radius: 50%; }
+.memberavatardetails {
+    .memberavatar {text-align:center;
+        img {-ms-border-radius: 50%; border-radius: 50%;}
+    }
+    .btn-mvc {width:100%;}
+}
 
 // Edit Member
 .editmemberform {
@@ -677,6 +687,7 @@ footer { background: $color-global-grey-blue; padding: 20px 0; margin: 30px 0 0 
     .pmblockto { margin-left: 20%; background-color: #dedede; position: relative;
         &:after { bottom: -14px; right: 14px; border: solid transparent; content: ""; height: 0; width: 0; position: absolute; pointer-events: none; border-top: 4px solid transparent; border-bottom: 14px solid transparent; border-right: 20px solid #dedede; z-index: 5; }
     }
+    #createpostholder {padding:0;}
 }
 .form-createpm { padding: 10px 0; clear: both; }
 
@@ -718,7 +729,9 @@ footer { background: $color-global-grey-blue; padding: 20px 0; margin: 30px 0 0 
 .mce-container, .mce-container *,
 .mce-widget, .mce-widget * { color: inherit; font-family: inherit; }
 #mce-modal-block.mce-in { opacity: .7; filter: alpha(opacity=70); }
-.tinymceholder { margin-bottom: 14px; border: 1px solid #e5e5e5; width: 99.5%; }
+.tinymceholder { margin-bottom: 14px; border: 1px solid #e5e5e5; width: 99.5%;
+                 textarea {width:100%; min-height:100px;}
+}
 .mce-window { -webkit-border-radius: 0; border-radius: 0; -webkit-box-shadow: 0 3px 6px rgba(0,0,0,.3); box-shadow: 0 3px 6px rgba(0,0,0,.3); -webkit-font-smoothing: subpixel-antialiased; }
 .mce-window .mce-container-body.mce-abs-layout { overflow: visible; }
 .mce-window .mce-window-head { background: #fcfcfc; border-bottom: 1px solid #dfdfdf; padding: 0; min-height: 36px; }

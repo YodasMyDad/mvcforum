@@ -16,8 +16,6 @@ $(function () {
 
     ResponsiveTable();
 
-    //---------------- On Click------------------------
-
     // We add the post click events like this, so we can reattach when we do the show more posts
     AddPostClickEvents();
 
@@ -29,162 +27,37 @@ $(function () {
         });
     }   
 
-    $(".showmoreposts").click(function (e) {
-        e.preventDefault();
+    // Topic Methods
 
-        var topicId = $('#topicId').val();
-        var pageIndex = $('#pageIndex');
-        var totalPages = parseInt($('#totalPages').val());
-        var activeText = $('span.smpactive');
-        var loadingText = $('span.smploading');
-        var showMoreLink = $(this);
+    TopicShowMorePosts();
 
-        activeText.hide();
-        loadingText.show();
+    // Private Message Methods
 
-        var getMorePostsViewModel = new Object();
-        getMorePostsViewModel.TopicId = topicId;
-        getMorePostsViewModel.PageIndex = pageIndex.val();
-        getMorePostsViewModel.Order = $.QueryString["order"];
+    showPrivateMessagesPanel();
+    deletePrivateMessages();
 
-        // Ajax call to post the view model to the controller
-        var strung = JSON.stringify(getMorePostsViewModel);
+    // Subscription Methods
 
-        $.ajax({
-            url: app_base + 'Topic/AjaxMorePosts',
-            type: 'POST',
-            dataType: 'html',
-            data: strung,
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
-                // Now add the new posts
-                AddNewPosts(showMoreLink, data);
-
-                // Update the page index value
-                var newPageIdex = (parseInt(pageIndex.val()) + parseInt(1));
-                pageIndex.val(newPageIdex);
-
-                // If the new pageindex is greater than the total pages, then hide the show more button
-                if (newPageIdex > totalPages) {
-                    showMoreLink.hide();
-                }
-
-                // Lastly reattch the click events
-                AddPostClickEvents();
-                ShowFileUploadClickHandler();
-                activeText.show();
-                loadingText.hide();
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-                activeText.show();
-                loadingText.hide();
-            }
-        });
-
-    });
-
-    $(".privatemessagedelete").click(function (e) {
-        e.preventDefault();
-        var linkClicked = $(this);
-        var messageId = linkClicked.data('id');
-        var deletePrivateMessageViewModel = new Object();
-        deletePrivateMessageViewModel.Id = messageId;
-
-        // Ajax call to post the view model to the controller
-        var strung = JSON.stringify(deletePrivateMessageViewModel);
-
-        $.ajax({
-            url: app_base + 'PrivateMessage/Delete',
-            type: 'POST',
-            data: strung,
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
-                var pmHolder = linkClicked.closest(".pmblock");
-                pmHolder.fadeOut("fast");
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-            }
-        });
-
-    });
-
-    $(".emailsubscription").click(function (e) {
-        var entityId = $(this).data('id');
-        var subscriptionType = $(this).data('type');
-
-        $(this).hide();
-
-        var subscribeEmailViewModel = new Object();
-        subscribeEmailViewModel.Id = entityId;
-        subscribeEmailViewModel.SubscriptionType = subscriptionType;
-
-        // Ajax call to post the view model to the controller
-        var strung = JSON.stringify(subscribeEmailViewModel);
-
-        $.ajax({
-            url: app_base + 'Email/Subscribe',
-            type: 'POST',
-            data: strung,
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
-                $(".emailunsubscription").fadeIn();
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-            }
-        });
-
-        e.preventDefault();
-        e.stopImmediatePropagation();
-    });
-
-    $(".emailunsubscription").click(function (e) {
-        var entityId = $(this).data('id');
-        var subscriptionType = $(this).data('type');
-
-        $(this).hide();
-
-        var unSubscribeEmailViewModel = new Object();
-        unSubscribeEmailViewModel.Id = entityId;
-        unSubscribeEmailViewModel.SubscriptionType = subscriptionType;
-
-        // Ajax call to post the view model to the controller
-        var strung = JSON.stringify(unSubscribeEmailViewModel);
-
-        $.ajax({
-            url: app_base + 'Email/UnSubscribe',
-            type: 'POST',
-            data: strung,
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
-                $(".emailsubscription").fadeIn();
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-            }
-        });
-
-        e.preventDefault();
-        e.stopImmediatePropagation();
-    });
+    emailsubscription();
+    emailunsubscription();
 
     // Some manual ajax badge checks
-    if ($.QueryString["postbadges"] == "true") {
-        // Do a post badge check
-        UserPost();
+    var postBadgeQs = $.QueryString["postbadges"];
+    if (typeof postBadgeQs != 'undefined') {
+        if (postBadgeQs == "true") {
+            // Do a post badge check
+            UserPost();
+        }
     }
 
-    // Poll Answer counter
-    //var counter = 0;
-
-    // This check is for the edit page
-    //if (typeof counter === 'undefined') {
-    //    // variable is undefined
-    //} else {
-    //    ShowHideRemovePollAnswerButton(counter);
-    //}    
+    // Poll vote radio button click
+    $(".pollanswerselect").click(function () {
+        //Firstly Show the submit poll button
+        $('.pollvotebuttonholder').show();
+        // set the value of the hidden input to the answer value
+        var answerId = $(this).data("answerid");
+        $('.selectedpollanswer').val(answerId);
+    });
 
 
     $(".pollvotebutton").click(function (e) {
@@ -229,7 +102,343 @@ $(function () {
 
     });
 
+    hideSlideOutPanel();
+
+    PostGetAllLikes();
+
 });
+
+var TopicShowMorePosts = function() {
+    var smp = $(".showmoreposts");
+    if (smp.length > 0) {
+        smp.click(function (e) {
+            e.preventDefault();
+
+            var topicId = $('#topicId').val();
+            var pageIndex = $('#pageIndex');
+            var totalPages = parseInt($('#totalPages').val());
+            var activeText = $('span.smpactive');
+            var loadingText = $('span.smploading');
+            var showMoreLink = $(this);
+
+            activeText.hide();
+            loadingText.show();
+
+            var getMorePostsViewModel = new Object();
+            getMorePostsViewModel.TopicId = topicId;
+            getMorePostsViewModel.PageIndex = pageIndex.val();
+            getMorePostsViewModel.Order = $.QueryString["order"];
+
+            // Ajax call to post the view model to the controller
+            var strung = JSON.stringify(getMorePostsViewModel);
+
+            $.ajax({
+                url: app_base + 'Topic/AjaxMorePosts',
+                type: 'POST',
+                dataType: 'html',
+                data: strung,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    // Now add the new posts
+                    AddNewPosts(showMoreLink, data);
+
+                    // Update the page index value
+                    var newPageIdex = (parseInt(pageIndex.val()) + parseInt(1));
+                    pageIndex.val(newPageIdex);
+
+                    // If the new pageindex is greater than the total pages, then hide the show more button
+                    if (newPageIdex > totalPages) {
+                        showMoreLink.hide();
+                    }
+
+                    // Lastly reattch the click events
+                    AddPostClickEvents();
+                    ShowFileUploadClickHandler();
+                    activeText.show();
+                    loadingText.hide();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                    activeText.show();
+                    loadingText.hide();
+                }
+            });
+
+        });
+    }
+}
+
+var PostGetAllLikes = function() {
+    var othersliked = $('.othersliked a');
+    if (othersliked.length > 0) {
+        othersliked.click(function (e) {
+            e.preventDefault();
+            var othersLink = $(this).parent();
+            var postId = othersLink.data("postid");
+            var holdingDiv = othersLink.closest(".postlikedby");
+
+            $.ajax({
+                url: app_base + 'Post/GetAllPostLikes',
+                type: 'POST',
+                dataType: 'html',
+                data: { id: postId },
+                success: function (data) {
+                    holdingDiv.html(data);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+
+        });
+    }
+};
+
+//
+
+/*--------------- PANEL SLIDER -----------------*/
+
+//var quickcart = function () {
+//    var quickcartLink = $(".quickcart");
+//    if (quickcartLink.length > 0) {
+//        quickcartLink.click(function (e) {
+//            e.preventDefault();
+//            var thisButton = $(this);
+//            var title = thisButton.data("title");
+//            slideOutPanel(title);
+
+//            // Get the url for the page to call via ajax
+//            var url = "/umbraco/surface/cart/quickcart";
+
+//            $.get(url, function (data) {
+//                slideOutPanel(title, data);
+//            });
+
+//        });
+//    }
+//}
+/*------------------ General Ajax Form Class ----------------------*/
+var submitAjaxForm = function () {
+    var submitFormElement = $(".ajaxform form");
+    submitFormData(submitFormElement);
+};
+
+/*------------------ GENERAL SUBMIT FORMS METHOD -------------------*/
+
+var submitFormData = function (formElement) {
+    formElement.submit(function (e) {
+        e.preventDefault();
+        $(this).validate();
+        if ($(this).valid()) {
+            $.ajax({
+                url: this.action,
+                type: this.method,
+                data: $(this).serialize(),
+                dataType: "json",
+                success: function (result) {
+                    if (result.Success) {
+                        closeSlideOutPanel();
+                        ShowUserMessage(result.ReturnMessage);
+                    } else {
+                        ShowUserMessage(result.ReturnMessage);
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+        }
+        return false;
+    });
+};
+
+/*------------ SUBSCRIPTION METHODS --------------------*/
+
+var emailsubscription = function () {
+    var esub = $(".emailsubscription");
+    if (esub.length > 0) {
+        esub.click(function (e) {
+            e.preventDefault();
+            var entityId = $(this).data('id');
+            var subscriptionType = $(this).data('type');
+
+            $(this).hide();
+
+            var subscribeEmailViewModel = new Object();
+            subscribeEmailViewModel.Id = entityId;
+            subscribeEmailViewModel.SubscriptionType = subscriptionType;
+
+            // Ajax call to post the view model to the controller
+            var strung = JSON.stringify(subscribeEmailViewModel);
+
+            $.ajax({
+                url: app_base + 'Email/Subscribe',
+                type: 'POST',
+                data: strung,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    $(".emailunsubscription").fadeIn();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+        }); 
+    }
+};
+
+var emailunsubscription = function () {
+    var eunsub = $(".emailunsubscription");
+    if (eunsub.length > 0) {
+        eunsub.click(function (e) {
+            e.preventDefault();
+            var entityId = $(this).data('id');
+            var subscriptionType = $(this).data('type');
+
+            $(this).hide();
+
+            var unSubscribeEmailViewModel = new Object();
+            unSubscribeEmailViewModel.Id = entityId;
+            unSubscribeEmailViewModel.SubscriptionType = subscriptionType;
+
+            // Ajax call to post the view model to the controller
+            var strung = JSON.stringify(unSubscribeEmailViewModel);
+
+            $.ajax({
+                url: app_base + 'Email/UnSubscribe',
+                type: 'POST',
+                data: strung,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    $(".emailsubscription").fadeIn();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+        });
+    }
+};
+
+
+/*------------ PRIVATE MESSAGE METHODS --------------------*/
+
+var showPrivateMessagesPanel = function () {
+    var privatemessageButton = $(".pm-panel");
+    if (privatemessageButton.length > 0) {
+        privatemessageButton.unbind("click");
+        privatemessageButton.click(function (e) {
+            e.preventDefault();
+            var thisButton = $(this);
+            var pmUrl = thisButton.attr("href");
+            var title = thisButton.data("name");
+            slideOutPanel(title);
+            $.ajax({
+                url: pmUrl,
+                type: 'GET',
+                async: true,
+                success: function (data) {
+                    // Load the Html into the side panel
+                    slideOutPanel(title, data);
+
+                    // Trigger Validation
+                    $.validator.unobtrusive.parse(document);
+
+                    // Delete private messages
+                    deletePrivateMessages();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+
+        });
+    }
+};
+
+var deletePrivateMessages = function () {
+    var privateMessageDeleteButton = $(".privatemessagedelete");
+    if (privateMessageDeleteButton.length > 0) {
+        privateMessageDeleteButton.click(function (e) {
+            e.preventDefault();
+            var linkClicked = $(this);
+            var messageId = linkClicked.data("id");
+            var deletePrivateMessageViewModel = new Object();
+            deletePrivateMessageViewModel.Id = messageId;
+
+            // Ajax call to post the view model to the controller
+            var strung = JSON.stringify(deletePrivateMessageViewModel);
+
+            // Just fade out anyway
+            var pmHolder = linkClicked.closest(".pmblock");
+            pmHolder.fadeOut("fast");
+
+            $.ajax({
+                url: app_base + "PrivateMessage/Delete",
+                type: "POST",
+                data: strung,
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+        });
+    }
+};
+
+
+var largeSpinnerBlock = "<div class=\"loaderholder\"><img src=\"" + largeSpinnerBlockImage + "\" alt=\"\"/></div>";
+var AddLargeSpinner = function (elementToPlaceInside) {
+    elementToPlaceInside.html(largeSpinnerBlock);
+};
+
+var slideOutPanel = function (title) {
+    slideOutPanel(title, largeSpinnerBlock);
+}
+
+var slideOutPanel = function (title, content) {
+    // Get panel
+    var panel = $(".cd-panel");
+
+    // Get content div and add in content
+    var contentDiv = panel.find(".cd-panel-content");
+    contentDiv.html(content);
+    var titleDiv = panel.find(".cd-panel-header h6");
+    titleDiv.html(title);
+
+    // Show Panel
+    panel.addClass("is-visible");
+
+    // Add overflow hidden to the body tag
+    $("body").css("overflow", "hidden").css("height", "100%");
+    $("html").css("overflow", "hidden").css("height", "100%");
+};
+
+var hideSlideOutPanel = function () {
+    var panel = $(".cd-panel");
+    panel.on("click", function (event) {
+        if ($(event.target).is(".cd-panel") || $(event.target).is(".cd-panel-close")) {
+            event.preventDefault();
+            panel.removeClass("is-visible");
+            //Clear fields
+            var contentDiv = panel.find(".cd-panel-content");
+            contentDiv.html(largeSpinnerBlock);
+            var titleDiv = panel.find(".cd-panel-header h6");
+            titleDiv.html("");
+            $("body").css("overflow", "").css("height", "");
+            $("html").css("overflow", "").css("height", "");
+        }
+    });
+};
+var closeSlideOutPanel = function () {
+    var panel = $(".cd-panel");
+    panel.trigger("click");
+};
+
+/*--------------- END PANEL SLIDER -----------------*/
 
 $(document).on('change', '.btn-file :file', function () {
     var input = $(this),

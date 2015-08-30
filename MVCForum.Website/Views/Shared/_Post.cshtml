@@ -243,11 +243,20 @@
 
                     <ul>
                         <li class="text">@Html.Lang("Post.LikedBy")</li>
-                        @foreach (var vote in upVotes)
+                        @foreach (var vote in upVotes.Take(4))
                         {
                             <li>
                                 <a href="@vote.User.NiceUrl">
                                     <img src="@vote.User.MemberImage(SiteConstants.GravatarLikedBySize)" alt="@vote.User.UserName" title="@vote.User.UserName">
+                                </a>
+                            </li>
+                        }
+
+                        @if (upVotes.Count > 4)
+                        {
+                            <li class="text othersliked" data-postid="@Model.Post.Id">
+                                <a href="#">
+                                    @(string.Format(Html.Lang("Post.OthersLiked"), (upVotes.Count - 4)))
                                 </a>
                             </li>
                         }

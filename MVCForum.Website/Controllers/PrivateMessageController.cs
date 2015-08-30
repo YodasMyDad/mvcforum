@@ -266,13 +266,18 @@ namespace MVCForum.Website.Controllers
                     {
                         From = userFrom,
                         PrivateMessages = allMessages.OrderByDescending(x => x.DateSent).ToList(),
-                        FromUserIsOnline = userFrom.LastActivityDate > date
+                        FromUserIsOnline = userFrom.LastActivityDate > date,
+                        IsAjaxRequest = Request.IsAjaxRequest()
                     };
 
                     return View(viewModel);
                 }
-
-                return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
+                var noPermissionText = LocalizationService.GetResourceString("Errors.NoPermission");
+                if (Request.IsAjaxRequest())
+                {
+                    return Content(noPermissionText);
+                }
+                return ErrorToHomePage(noPermissionText);
             }
         }
 
@@ -284,7 +289,7 @@ namespace MVCForum.Website.Controllers
                 if (Request.IsAjaxRequest())
                 {
                     var privateMessage = _privateMessageService.Get(deletePrivateMessageViewModel.Id);
-                    if (privateMessage.UserTo == LoggedOnReadOnlyUser | privateMessage.UserFrom == LoggedOnReadOnlyUser)
+                    if (privateMessage.UserTo.Id == LoggedOnReadOnlyUser.Id | privateMessage.UserFrom.Id == LoggedOnReadOnlyUser.Id)
                     {
                         _privateMessageService.DeleteMessage(privateMessage);
                     }

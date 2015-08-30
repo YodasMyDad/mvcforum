@@ -24,6 +24,7 @@
     @(
      Bundle.Css()
         .Add(themePath + "/Content/Styles/imports.css")
+        .Add("~/Content/slideoutpanel.css")
         .Add("~/Content/bootstrap/css/bootstrap.css")
         .Add(themePath + "/Content/Styles/theme.css")
         .MvcRender("~/content/cache/combined_" + theme + "_#.css")
@@ -35,6 +36,7 @@
     <link rel="apple-touch-icon-precomposed" href="@Url.Content(themePath + "/content/images/apple-touch-icon-57-precomposed.png")">
     <script type="text/javascript">
         var app_base = '@Url.Content("~/")';
+        var largeSpinnerBlockImage = '@Url.Content("~/content/Images/ajaxloader-large.gif")';
     </script>
     @(Bundle.JavaScript()
                     .Add("~/Scripts/jquery-1.11.1.min.js")
@@ -185,9 +187,10 @@
 
         </div>
     </footer>
+    @Html.Partial("_SlideOutPanel")
     @if (!string.IsNullOrEmpty(Html.Settings().CustomFooterCode))
     {
         @Html.Raw(Html.Settings().CustomFooterCode)
-    }
+    }    
 </body>
 </html>

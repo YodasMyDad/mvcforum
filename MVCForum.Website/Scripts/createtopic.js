@@ -132,15 +132,6 @@ $(function () {
         }
     });
 
-    // Poll vote radio button click
-    $(".pollanswerselect").click(function () {
-        //Firstly Show the submit poll button
-        $('.pollvotebuttonholder').show();
-        // set the value of the hidden input to the answer value
-        var answerId = $(this).data("answerid");
-        $('.selectedpollanswer').val(answerId);
-    });
-
 });
 
 

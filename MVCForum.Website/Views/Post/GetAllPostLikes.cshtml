@@ -1,0 +1,16 @@
+﻿@model List<MVCForum.Domain.DomainModel.Vote>
+@{
+    Layout = null;
+}
+
+<ul>
+    @foreach (var vote in Model)
+    {
+        <li>
+            <a href="@vote.User.NiceUrl">
+                <img src="@vote.User.MemberImage(SiteConstants.GravatarLikedBySize)" alt="@vote.User.UserName" title="@vote.User.UserName">
+            </a>
+        </li>
+    }
+</ul>
+

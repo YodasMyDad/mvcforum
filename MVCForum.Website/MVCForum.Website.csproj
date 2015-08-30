@@ -640,6 +640,8 @@
     <Content Include="Content\bootstrap\js\npm.js" />
     <Content Include="Content\cache\Cache.txt" />
     <Content Include="Content\Emails\EmailNotification.htm" />
+    <Content Include="Content\Images\ajaxloader-large.gif" />
+    <Content Include="Content\Images\ajaxloader.gif" />
     <Content Include="Content\Images\arrow-spinner-blue.gif" />
     <Content Include="Content\Images\icon-poll.png" />
     <Content Include="Content\Images\icon-sticky.png" />
@@ -826,6 +828,8 @@
     <Content Include="Areas\Admin\Views\AdminSpam\SpamReporting.cshtml" />
     <Content Include="Areas\Admin\Views\Settings\CustomCode.cshtml" />
     <Content Include="Areas\Admin\Views\AdminTag\MoveTags.cshtml" />
+    <Content Include="Views\Shared\_SlideOutPanel.cshtml" />
+    <Content Include="Views\Post\GetAllPostLikes.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
@@ -1072,6 +1076,7 @@
     <Content Include="Global.asax" />
     <Content Include="Scripts\admin\Admin.js" />
     <Content Include="Scripts\admin\FadeOutMessage.js" />
+    <Content Include="Content\slideoutpanel.css" />
     <Content Include="Themes\Metro\Content\Styles\Theme.css">
       <DependentUpon>Theme.scss</DependentUpon>
     </Content>

@@ -25,7 +25,7 @@
                         {
                             <tr>
                                 <td>
-                                    <a href="@Url.Action("View", new { from = message.User.Id })">
+                                    <a href="@Url.Action("View", new { from = message.User.Id })" class="pm-panel" data-name="@string.Concat(Html.Lang("PM.Title"), message.User.UserName)">
                                         <strong>
                                             @message.User.UserName
                                         </strong>
