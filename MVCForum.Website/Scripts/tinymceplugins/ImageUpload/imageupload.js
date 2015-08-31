@@ -73,12 +73,13 @@
                                     if (msg != '') {
                                         var imageAlt = imageDesc.value;
                                         var imageSrc = msg;
-                                        var imageTag = '<img src="' + imageSrc + '?width=650&mode=max" alt="' + imageAlt + '" />';
+                                        var imageTag = '<img src="' + imageSrc + '?width=690&upscale=false" alt="' + imageAlt + '" />';
                                         editor.insertContent(imageTag), b.close();
+                                    } else {
+                                        alert('Error uploading file');
+                                        waitNotice.style.display = 'none';
+                                        externalRow.style.display = 'block';
                                     }
-                                    alert('Error uploading file');
-                                    waitNotice.style.display = 'none';
-                                    externalRow.style.display = 'block';
 
                                 }).fail(function (jqXHR, textStatus) {
                                     alert("Request failed: " + jqXHR.responseText + " --- " + textStatus);
