@@ -35,7 +35,7 @@ namespace MVCForum.Domain.DomainModel
                                                                 {BadgeType.VoteDown, "MVCForum.Domain.Interfaces.Badges.IVoteDownBadge"},
                                                                 {BadgeType.Profile, "MVCForum.Domain.Interfaces.Badges.IProfileBadge"},
                                                                 {BadgeType.Favourite, "MVCForum.Domain.Interfaces.Badges.IFavouriteBadge"},
-                                                                {BadgeType.Favourite, "MVCForum.Domain.Interfaces.Badges.ITagBadge"}
+                                                                {BadgeType.Tag, "MVCForum.Domain.Interfaces.Badges.ITagBadge"}
                                                             };
 
         public Guid Id { get; set; }

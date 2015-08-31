@@ -174,9 +174,8 @@
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Web.Http.WebHost">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.1.2\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.Mvc">
@@ -250,6 +249,12 @@
     <Compile Include="Application\ServiceFactory.cs" />
     <Compile Include="Application\CustomActionResults\WrappedJSonResult.cs" />
     <Compile Include="Application\SiteConstants.cs" />
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\IdentityConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
@@ -270,6 +275,7 @@
     <Compile Include="Areas\Admin\ViewModels\DashboardViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\SocialViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\SpamViewModels.cs" />
+    <Compile Include="Controllers\ApiControllers\TinyMcePluginsController.cs" />
     <Compile Include="Controllers\BaseInstallController.cs" />
     <Compile Include="Controllers\BadgeController.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseAdminController.cs" />
@@ -828,6 +834,8 @@
     <Content Include="Areas\Admin\Views\AdminSpam\SpamReporting.cshtml" />
     <Content Include="Areas\Admin\Views\Settings\CustomCode.cshtml" />
     <Content Include="Areas\Admin\Views\AdminTag\MoveTags.cshtml" />
+    <Content Include="Scripts\tinymceplugins\ImageUpload\imageupload.html" />
+    <Content Include="Scripts\tinymceplugins\ImageUpload\imageupload.js" />
     <Content Include="Views\Shared\_SlideOutPanel.cshtml" />
     <Content Include="Views\Post\GetAllPostLikes.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />

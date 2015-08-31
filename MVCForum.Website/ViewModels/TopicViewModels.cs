@@ -131,6 +131,9 @@ namespace MVCForum.Website.ViewModels
         [HiddenInput]
         public Guid Id { get; set; }
 
+        [HiddenInput]
+        public Guid TopicId { get; set; }
+
         public bool IsTopicStarter { get; set; }
     }
 

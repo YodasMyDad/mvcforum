@@ -9,7 +9,6 @@ using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Services;
 using Microsoft.Practices.Unity;
 using Quartz.Unity;
-using Unity.Mvc4;
 
 namespace MVCForum.IOC
 {

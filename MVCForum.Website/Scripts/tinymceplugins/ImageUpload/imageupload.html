@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Image insert</title>
+
+    <link href="/Content/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <script src="/Scripts/jquery-1.11.1.min.js"></script>
+    <script src="/Content/bootstrap/js/bootstrap.min.js"></script>
+    <style>
+        .input-group-sm { position: relative;}
+         .btn-file input[type=file] { position: absolute; top: 0; right: 0; min-width: 100%; min-height: 100%;text-align: right; filter: alpha(opacity=0); opacity: 0; outline: none; background: white; cursor: inherit; display: block; }
+         .alert { padding: 6px;margin-bottom: 5px;}
+    </style>
+    <script>
+        $(document).on('change', '.btn-file :file', function () {
+            var input = $(this),
+            numFiles = input.get(0).files ? input.get(0).files.length : 1,
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [numFiles, label]);
+        });
+
+        $(document).ready(function () {
+            $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
+
+                var input = $(this).parents('.input-group').find(':text'),
+                    log = numFiles > 1 ? numFiles + ' files selected' : label;
+
+                if (input.length) {
+                    input.val(log);
+                } else {
+                    if (log) alert(log);
+                }
+
+            });
+        });
+    </script>
+</head>
+<body>
+    <div style="padding:12px;">
+        <div class="alert alert-info" role="alert" id="waiting" style="display: none;">
+            Please wait...
+        </div>
+        <table style="width: 100%;">
+            <tr id="uploadrow">
+                <td style="width: 141px; vertical-align: middle;"><label style="font-weight: normal;">Upload Image</label></td>
+                <td style="vertical-align: middle;">
+
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-btn">
+                            <span class="btn btn-default btn-file">
+                                Browse&hellip; <input type="file" id="content" name="content">
+                            </span>
+                        </span>
+                        <input type="text" class="form-control" readonly>
+                    </div>
+                </td>
+            </tr>
+            <tr id="externalrow">
+                <td style="width: 141px; vertical-align: middle; padding-top: 20px;"><label style="font-weight: normal;">External Image</label></td>
+                <td style="vertical-align: middle; padding-top: 20px;">
+                    <input id="external" name="external" type="text" class="form-control">
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 141px; vertical-align: middle; padding-top: 20px;"><label style="font-weight: normal;">Image Description</label></td>
+                <td style="vertical-align: middle; padding-top: 20px;">
+                    <input id="desc" name="desc" type="text" class="form-control">
+                </td>
+            </tr>
+        </table>        
+    </div>
+</body>
+</html>

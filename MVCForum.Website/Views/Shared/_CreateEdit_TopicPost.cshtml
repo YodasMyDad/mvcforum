@@ -3,8 +3,13 @@
 @{
     var count = 0;
     const string displayNone = "style=\"display: none;\"";
+    //ViewBag.ImageUploadType = Model.OptionalPermissions.CanUploadFiles ? "forumimageinsert" : "image";    
 }
+@*<script>
+    var topicId = '@(Model.TopicId)';
+</script>*@
 
+@Html.HiddenFor(x => x.TopicId)
 @if (Model.IsTopicStarter)
 {
     <div class="row paddedrow">

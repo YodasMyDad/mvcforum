@@ -29,6 +29,7 @@
     // Set a ViewBag for the category
     //TempData[AppConstants.DefaultCategoryViewBagName] = Model.Topic.Category.Id;
     var qs = Request.QueryString[AppConstants.PostOrderBy] ?? string.Empty;
+    ViewBag.ImageUploadType = Model.Permissions[AppConstants.PermissionAttachFiles].IsTicked ? "forumimageinsert" : "image";
 }
 @section SocialMeta {
     <meta property="og:title" content="@ViewBag.Title" />
@@ -47,7 +48,10 @@
     @(Bundle.JavaScript()
         .Add("~/Scripts/fancybox/jquery.fancybox.js")
         .Add("~/Scripts/topic.js")
-        .MvcRender("~/scripts/cache/topic_#.js"))
+          .MvcRender("~/scripts/cache/topic_#.js"))
+    <script>
+        var topicId = '@(Model.Topic.Id)';
+    </script>
 }
 
 @section side

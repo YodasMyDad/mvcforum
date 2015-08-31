@@ -733,7 +733,7 @@ footer { background: $color-global-grey-blue; padding: 20px 0; margin: 30px 0 0 
                  textarea {width:100%; min-height:100px;}
 }
 .mce-window { -webkit-border-radius: 0; border-radius: 0; -webkit-box-shadow: 0 3px 6px rgba(0,0,0,.3); box-shadow: 0 3px 6px rgba(0,0,0,.3); -webkit-font-smoothing: subpixel-antialiased; }
-.mce-window .mce-container-body.mce-abs-layout { overflow: visible; }
+.mce-window .mce-container-body.mce-abs-layout {  }
 .mce-window .mce-window-head { background: #fcfcfc; border-bottom: 1px solid #dfdfdf; padding: 0; min-height: 36px; }
 .mce-window .mce-window-head .mce-title { color: #444; font-size: 18px; font-weight: 600; line-height: 36px; margin: 0; padding: 0 36px 0 16px; }
 .mce-window .mce-window-head .mce-close { color: transparent; top: 0; right: 0; width: 36px; height: 36px; line-height: 36px; text-align: center; }

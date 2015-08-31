@@ -2,9 +2,10 @@
 using System.Globalization;
 using System.Threading;
 using System.Web;
+using System.Web.Http;
 using System.Web.Mvc;
+using System.Web.Optimization;
 using System.Web.Routing;
-using MVCForum.Domain.Constants;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
@@ -44,63 +45,15 @@ namespace MVCForum.Website
             get { return ServiceFactory.Get<ILocalizationService>(); }
         }
 
-        public static void RegisterGlobalFilters(GlobalFilterCollection filters)
-        {
-            filters.Add(new HandleErrorAttribute());
-        }
 
-        public static void RegisterRoutes(RouteCollection routes)
-        {
-            RouteTable.Routes.LowercaseUrls = true;
-            RouteTable.Routes.AppendTrailingSlash = true;
-
-            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-            routes.IgnoreRoute("{*favicon}", new { favicon = @"(.*/)?favicon.ico(/.*)?" });
-
-            routes.MapRoute(
-                "categoryUrls", // Route name
-                string.Concat(AppConstants.CategoryUrlIdentifier, "/{slug}"), // URL with parameters
-                new { controller = "Category", action = "Show", slug = UrlParameter.Optional } // Parameter defaults
-            );
-
-            routes.MapRoute(
-                "categoryRssUrls", // Route name
-                string.Concat(AppConstants.CategoryUrlIdentifier, "/rss/{slug}"), // URL with parameters
-                new { controller = "Category", action = "CategoryRss", slug = UrlParameter.Optional } // Parameter defaults
-            );
-
-            routes.MapRoute(
-                "topicUrls", // Route name
-                string.Concat(AppConstants.TopicUrlIdentifier, "/{slug}"), // URL with parameters
-                new { controller = "Topic", action = "Show", slug = UrlParameter.Optional } // Parameter defaults
-            );
-
-            routes.MapRoute(
-                "memberUrls", // Route name
-                string.Concat(AppConstants.MemberUrlIdentifier, "/{slug}"), // URL with parameters
-                new { controller = "Members", action = "GetByName", slug = UrlParameter.Optional } // Parameter defaults
-            );
-
-            routes.MapRoute(
-                "tagUrls", // Route name
-                string.Concat(AppConstants.TagsUrlIdentifier, "/{tag}"), // URL with parameters
-                new { controller = "Topic", action = "TopicsByTag", tag = UrlParameter.Optional } // Parameter defaults
-            );
-
-            routes.MapRoute(
-                "Default", // Route name
-                "{controller}/{action}/{id}", // URL with parameters
-                new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
-            );
-            //.RouteHandler = new SlugRouteHandler()
-        }
 
         protected void Application_Start()
         {
-            // Register routes
             AreaRegistration.RegisterAllAreas();
-            RegisterGlobalFilters(GlobalFilters.Filters);
-            RegisterRoutes(RouteTable.Routes);
+            GlobalConfiguration.Configure(WebApiConfig.Register);
+            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             // Start unity
             var unityContainer = UnityHelper.Start();
@@ -114,9 +67,6 @@ namespace MVCForum.Website
             // If the same carry on as normal
             LoggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
             LoggingService.Error("START APP");
-
-            // Set default theme
-            var defaultTheme = SettingsService.GetSettings().Theme;
 
             // Do the badge processing
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
@@ -134,7 +84,7 @@ namespace MVCForum.Website
 
             // Set the view engine
             ViewEngines.Engines.Clear();
-            ViewEngines.Engines.Add(new ForumViewEngine(defaultTheme));
+            ViewEngines.Engines.Add(new ForumViewEngine(SettingsService.GetSettings().Theme));
 
             // Initialise the events
             EventManager.Instance.Initialize(LoggingService);

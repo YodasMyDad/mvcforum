@@ -250,7 +250,8 @@ namespace MVCForum.Website.Controllers
                             Content = post.PostContent,
                             Id = post.Id,
                             Category = topic.Category.Id,
-                            Name = topic.Name
+                            Name = topic.Name,
+                            TopicId = topic.Id
                         };
 
                         // Now check if this is a topic starter, if so add the rest of the field
