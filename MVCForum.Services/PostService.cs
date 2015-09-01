@@ -40,6 +40,7 @@ namespace MVCForum.Services
         public Post SanitizePost(Post post)
         {
             post.PostContent = StringUtils.GetSafeHtml(post.PostContent);
+            post.PostContent = EmoticonUtils.Emotify(post.PostContent);
             return post;
         }
 

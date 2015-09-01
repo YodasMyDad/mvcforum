@@ -917,7 +917,7 @@ function AjaxPostSuccess() {
     }
 
     // Re-enable the button
-    $('#createpostbutton').attr("disabled", false);
+    AjaxPostFinish();
 
     // Finally do an async badge check
     UserPost();
@@ -952,13 +952,24 @@ function AjaxPrivateMessageSuccess() {
     }
 
     // Re-enable the button
-    $('#createpmbutton').attr("disabled", false);
+    AjaxPostFinish();
 
     // Finally do an async badge check
     UserPost();
 }
 
 function AjaxPostBegin() {
+    var createButton = $('#createpostbutton');
+    if (createButton.length > 0) {
+        createButton.attr("disabled", true);
+    }
+    var pmButton = $('#createpmbutton');
+    if (pmButton.length > 0) {
+        pmButton.attr("disabled", true);
+    }
+}
+
+function AjaxPostFinish() {
     var createButton = $('#createpostbutton');
     if (createButton.length > 0) {
         createButton.attr("disabled", false);
@@ -971,7 +982,7 @@ function AjaxPostBegin() {
 
 function AjaxPostError(message) {
     ShowUserMessage(message);
-    AjaxPostBegin();
+    AjaxPostFinish();
 }
 
 (function ($) {

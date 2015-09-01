@@ -832,6 +832,8 @@ namespace MVCForum.Utilities
         /// <returns></returns>
         public static string CreateUrl(string strInput, string replaceWith)
         {
+            // Doing this to stop the urls having amp from &amp;
+            strInput = HttpUtility.HtmlDecode(strInput);
             // Doing this to stop the urls getting encoded
             var url = RemoveAccents(strInput);
             return StripNonAlphaNumeric(url, replaceWith).ToLower();

@@ -13,6 +13,7 @@ namespace MVCForum.Domain.DomainModel
         public Guid Id { get; set; }
         public string Tag { get; set; }
         public string Slug { get; set; }
+        public string Description { get; set; }
 
         public string NiceUrl
         {

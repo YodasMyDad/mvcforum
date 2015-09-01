@@ -1,6 +1,16 @@
 ﻿
 $(function () {
 
+    // Disbale button when form is submitted to stop double posts
+    //var form = $(".createtopicholder form");
+    //var formButton = $(".submit-holder button");
+    //formButton.click(function() {
+    //    var button = $(this);
+    //    if (form.valid()) {
+    //        button.attr("disabled", true);
+    //    }
+    //});
+    
     var topicName = $(".createtopicname");
     if (topicName.length > 0) {
         topicName.focusout(function () {

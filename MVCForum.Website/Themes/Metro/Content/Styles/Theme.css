@@ -65,6 +65,10 @@ span.label-success {
   z-index: 0;
 }
 
+pre {
+  border-radius: 0;
+}
+
 body {
   font-family: "Open Sans", Arial, Helvetica, sans-serif;
   color: #3b3b3b;
