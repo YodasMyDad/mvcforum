@@ -26,13 +26,13 @@
                                 // Check for http
                                 if (!externalUrl.value.startsWith('http') ) {
                                     alert('Please enter a valid url');
+                                    return false;
+                                } else {
+                                    var imageAlt = imageDesc.value;
+                                    var imageSrc = externalUrl.value;
+                                    var imageTag = '<img src="' + imageSrc + '?width=690" alt="' + imageAlt + '" />';
+                                    editor.insertContent(imageTag), b.close();
                                 }
-
-                                var imageAlt = imageDesc.value;
-                                var imageSrc = externalUrl.value;
-                                var imageTag = '<img src="' + imageSrc + '?width=690" alt="' + imageAlt + '" />';
-                                editor.insertContent(imageTag), b.close();
-
                             } else {
 
                                 // No external url
@@ -54,13 +54,11 @@
 
                                 // Show wait notice
                                 waitNotice.style.display = 'block';
-                                externalRow.style.display = 'none';
 
                                 var data;
 
                                 data = new FormData();
                                 data.append('file', uploadFile.files[0]);
-                                data.append('topicId', topicId);
 
                                 $.ajax({
                                     url: app_base + 'api/TinyMce/UploadImage',

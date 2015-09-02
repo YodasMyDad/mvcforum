@@ -59,6 +59,7 @@ namespace MVCForum.Domain.Constants
 
         // Global Permissions
         public const string PermissionEditMembers = "Edit Members";
+        public const string PermissionInsertEditorImages = "Insert Editor Images";
 
         //------------ End Permissions ----------
 

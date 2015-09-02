@@ -7,9 +7,10 @@
     <script src="/Scripts/jquery-1.11.1.min.js"></script>
     <script src="/Content/bootstrap/js/bootstrap.min.js"></script>
     <style>
-        .input-group-sm { position: relative;}
-         .btn-file input[type=file] { position: absolute; top: 0; right: 0; min-width: 100%; min-height: 100%;text-align: right; filter: alpha(opacity=0); opacity: 0; outline: none; background: white; cursor: inherit; display: block; }
-         .alert { padding: 6px;margin-bottom: 5px;}
+        .input-group-sm { position: relative; }
+        .btn-file input[type=file] { position: absolute; top: 0; right: 0; min-width: 100%; min-height: 100%; text-align: right; filter: alpha(opacity=0); opacity: 0; outline: none; background: white; cursor: inherit; display: block; }
+        #waiting { position: absolute; top: 0; left: 0; right: 0; bottom: 0; text-align: center; background-color: #fff; -ms-opacity: 0.8; opacity: 0.8;z-index: 999;}
+        #waiting img { margin-top: 30px;}
     </style>
     <script>
         $(document).on('change', '.btn-file :file', function () {
@@ -37,8 +38,8 @@
 </head>
 <body>
     <div style="padding:12px;">
-        <div class="alert alert-info" role="alert" id="waiting" style="display: none;">
-            Please wait...
+        <div class="fullloader" id="waiting" style="display: none;">
+            <img src="../../../Content/Images/ajaxloader-large.gif" alt="" />
         </div>
         <table style="width: 100%;">
             <tr id="uploadrow">
@@ -67,7 +68,7 @@
                     <input id="desc" name="desc" type="text" class="form-control">
                 </td>
             </tr>
-        </table>        
+        </table>
     </div>
 </body>
 </html>

@@ -53,7 +53,7 @@ namespace MVCForum.Data.Migrations
 
                 // Now add the default language strings
                 var file = HostingEnvironment.MapPath(@"~/Installer/en-GB.csv");
-                var commaSeparator = new[] { ',' };
+                var commaSeparator = new[] {','};
                 if (file != null)
                 {
                     // Unpack the data
@@ -87,14 +87,16 @@ namespace MVCForum.Data.Migrations
 
                         if (string.IsNullOrEmpty(key))
                         {
-                            loggingService.Error(string.Format("Empty Key on line {0} when importing initial data", lineCounter));
+                            loggingService.Error(string.Format("Empty Key on line {0} when importing initial data",
+                                lineCounter));
                             // Ignore empty keys
                             continue;
                         }
 
                         if (string.IsNullOrEmpty(value))
                         {
-                            loggingService.Error(string.Format("Empty Value on line {0} when importing initial data", lineCounter));
+                            loggingService.Error(string.Format("Empty Value on line {0} when importing initial data",
+                                lineCounter));
                             // Ignore empty values
                             continue;
                         }
@@ -132,7 +134,7 @@ namespace MVCForum.Data.Migrations
                 var adminRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == AppConstants.AdminRoleName);
                 if (adminRole == null)
                 {
-                    adminRole = new MembershipRole { RoleName = AppConstants.AdminRoleName };
+                    adminRole = new MembershipRole {RoleName = AppConstants.AdminRoleName};
                     context.MembershipRole.Add(adminRole);
                     saveRoles = true;
                 }
@@ -141,7 +143,7 @@ namespace MVCForum.Data.Migrations
                 var standardRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == AppConstants.StandardMembers);
                 if (standardRole == null)
                 {
-                    standardRole = new MembershipRole { RoleName = AppConstants.StandardMembers };
+                    standardRole = new MembershipRole {RoleName = AppConstants.StandardMembers};
                     context.MembershipRole.Add(standardRole);
                     saveRoles = true;
                 }
@@ -150,7 +152,7 @@ namespace MVCForum.Data.Migrations
                 var guestRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == AppConstants.GuestRoleName);
                 if (guestRole == null)
                 {
-                    guestRole = new MembershipRole { RoleName = AppConstants.GuestRoleName };
+                    guestRole = new MembershipRole {RoleName = AppConstants.GuestRoleName};
                     context.MembershipRole.Add(guestRole);
                     saveRoles = true;
                 }
@@ -231,7 +233,7 @@ namespace MVCForum.Data.Migrations
                 // Edit Posts
                 if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionEditPosts) == null)
                 {
-                    var permission = new Permission { Name = AppConstants.PermissionEditPosts };
+                    var permission = new Permission {Name = AppConstants.PermissionEditPosts};
                     context.Permission.Add(permission);
 
                     // NOTE: Because this is null - We assumed it's a new install so carry on checking and adding the other permissions
@@ -239,63 +241,64 @@ namespace MVCForum.Data.Migrations
                     // Read Only
                     if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionReadOnly) == null)
                     {
-                        var p = new Permission { Name = AppConstants.PermissionReadOnly };
+                        var p = new Permission {Name = AppConstants.PermissionReadOnly};
                         context.Permission.Add(p);
                     }
 
                     // Delete Posts
                     if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionDeletePosts) == null)
                     {
-                        var p = new Permission { Name = AppConstants.PermissionDeletePosts };
+                        var p = new Permission {Name = AppConstants.PermissionDeletePosts};
                         context.Permission.Add(p);
                     }
 
                     // Sticky Topics
-                    if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionCreateStickyTopics) == null)
+                    if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionCreateStickyTopics) ==
+                        null)
                     {
-                        var p = new Permission { Name = AppConstants.PermissionCreateStickyTopics };
+                        var p = new Permission {Name = AppConstants.PermissionCreateStickyTopics};
                         context.Permission.Add(p);
                     }
 
                     // Lock Topics
                     if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionLockTopics) == null)
                     {
-                        var p = new Permission { Name = AppConstants.PermissionLockTopics };
+                        var p = new Permission {Name = AppConstants.PermissionLockTopics};
                         context.Permission.Add(p);
                     }
 
                     // Vote In Polls
                     if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionVoteInPolls) == null)
                     {
-                        var p = new Permission { Name = AppConstants.PermissionVoteInPolls };
+                        var p = new Permission {Name = AppConstants.PermissionVoteInPolls};
                         context.Permission.Add(p);
                     }
 
                     // Create Polls
                     if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionCreatePolls) == null)
                     {
-                        var p = new Permission { Name = AppConstants.PermissionCreatePolls };
+                        var p = new Permission {Name = AppConstants.PermissionCreatePolls};
                         context.Permission.Add(p);
                     }
 
                     // Create Topics
                     if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionCreateTopics) == null)
                     {
-                        var p = new Permission { Name = AppConstants.PermissionCreateTopics };
+                        var p = new Permission {Name = AppConstants.PermissionCreateTopics};
                         context.Permission.Add(p);
                     }
 
                     // Attach Files
                     if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionAttachFiles) == null)
                     {
-                        var p = new Permission { Name = AppConstants.PermissionAttachFiles };
+                        var p = new Permission {Name = AppConstants.PermissionAttachFiles};
                         context.Permission.Add(p);
                     }
 
                     // Deny Access
                     if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionDenyAccess) == null)
                     {
-                        var p = new Permission { Name = AppConstants.PermissionDenyAccess };
+                        var p = new Permission {Name = AppConstants.PermissionDenyAccess};
                         context.Permission.Add(p);
                     }
 
@@ -304,7 +307,15 @@ namespace MVCForum.Data.Migrations
                     // Deny Access
                     if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionEditMembers) == null)
                     {
-                        var p = new Permission { Name = AppConstants.PermissionEditMembers, IsGlobal = true };
+                        var p = new Permission {Name = AppConstants.PermissionEditMembers, IsGlobal = true};
+                        context.Permission.Add(p);
+                    }
+
+                    // Insert Editor Images
+                    if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionInsertEditorImages) ==
+                        null)
+                    {
+                        var p = new Permission {Name = AppConstants.PermissionInsertEditorImages, IsGlobal = true};
                         context.Permission.Add(p);
                     }
 
@@ -327,8 +338,8 @@ namespace MVCForum.Data.Migrations
                         DisablePosting = false,
                         DisablePrivateMessages = false,
                         CreateDate = DateTime.UtcNow,
-                        LastLockoutDate = (DateTime)SqlDateTime.MinValue,
-                        LastPasswordChangedDate = (DateTime)SqlDateTime.MinValue,
+                        LastLockoutDate = (DateTime) SqlDateTime.MinValue,
+                        LastPasswordChangedDate = (DateTime) SqlDateTime.MinValue,
                         LastLoginDate = DateTime.UtcNow,
                         LastActivityDate = null,
                         IsLockedOut = false,
@@ -342,7 +353,7 @@ namespace MVCForum.Data.Migrations
                     admin.PasswordSalt = salt;
 
                     // Put the admin in the admin role
-                    admin.Roles = new List<MembershipRole> { adminRole };
+                    admin.Roles = new List<MembershipRole> {adminRole};
 
                     context.MembershipUser.Add(admin);
                     context.SaveChanges();
@@ -366,7 +377,7 @@ namespace MVCForum.Data.Migrations
                     const string readMeText = @"<p>We have auto created an admin user for you to manage the site</p>
 <p>Username: admin<br />Password: password</p>
 <p><strong>Important: </strong>Please update the password and username before putting this site live.</p>
-<p>Most of the docs are on the <a href=""http://www.mvcforum.com"">website</a> and <a href=""https://github.com/leen3o/mvcforum/wiki"">github</a></p>";
+<p>Most of the docs are on the <a href=""http://www.mvcforum.com"">website</a> and <a href=""https://github.com/leen3o/mvcforum"">github</a></p>";
 
                     var post = new Post
                     {
@@ -384,6 +395,17 @@ namespace MVCForum.Data.Migrations
                     context.SaveChanges();
                 }
 
+            }
+            else
+            {
+                // Data to update on versions v1.7+
+
+                // Insert Editor Images
+                if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionInsertEditorImages) == null)
+                {
+                    var p = new Permission { Name = AppConstants.PermissionInsertEditorImages, IsGlobal = true };
+                    context.Permission.Add(p);
+                }
             }
 
             #endregion

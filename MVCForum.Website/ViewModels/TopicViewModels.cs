@@ -86,6 +86,7 @@ namespace MVCForum.Website.ViewModels
         public bool CanStickyTopic { get; set; }
         public bool CanLockTopic { get; set; }
         public bool CanCreatePolls { get; set; }
+        public bool CanInsertImages { get; set; }
     }
 
     public class CreateEditTopicViewModel

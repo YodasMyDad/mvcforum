@@ -29,12 +29,10 @@ namespace MVCForum.Website.Controllers.ApiControllers
         //GET api/TinyMce/UploadImage
         [Route("UploadImage")]
         [HttpPost]
-        //[ResponseType(typeof(HttpResponseMessage))]
         public string UploadImage()
         {
             var memberService = ServiceFactory.Get<IMembershipService>();
             var roleService = ServiceFactory.Get<IRoleService>();
-            var topicService = ServiceFactory.Get<ITopicService>();
             var localizationService = ServiceFactory.Get<ILocalizationService>();
             var uploadService = ServiceFactory.Get<IUploadedFileService>();
             var unitOfWorkManager = ServiceFactory.Get<IUnitOfWorkManager>();
@@ -52,12 +50,10 @@ namespace MVCForum.Website.Controllers.ApiControllers
                         if (httpPostedFile != null)
                         {
                             HttpPostedFileBase photo = new HttpPostedFileWrapper(httpPostedFile);
-                            var topicId = HttpContext.Current.Request.Form["topicId"];
                             var loggedOnReadOnlyUser = memberService.GetUser(HttpContext.Current.User.Identity.Name);
-                            var topic = topicService.Get(Guid.Parse(topicId));
-                            var permissions = roleService.GetPermissions(topic.Category, loggedOnReadOnlyUser.Roles.FirstOrDefault());
+                            var permissions = roleService.GetPermissions(null, loggedOnReadOnlyUser.Roles.FirstOrDefault());
                             // Get the permissions for this category, and check they are allowed to update
-                            if (permissions[AppConstants.PermissionAttachFiles].IsTicked && loggedOnReadOnlyUser.DisableFileUploads != true)
+                            if (permissions[AppConstants.PermissionInsertEditorImages].IsTicked && loggedOnReadOnlyUser.DisableFileUploads != true)
                             {
                                 // woot! User has permission and all seems ok
                                 // Before we save anything, check the user already has an upload folder and if not create one

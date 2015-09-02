@@ -205,6 +205,11 @@ namespace MVCForum.Website.Controllers
             {
                 model.CanCreatePolls = true;
             }
+
+            if (permissionSet[AppConstants.PermissionInsertEditorImages].IsTicked)
+            {
+                model.CanInsertImages = true;
+            }
             return model;
         }
 
@@ -574,6 +579,12 @@ namespace MVCForum.Website.Controllers
         private CreateEditTopicViewModel PrePareCreateEditTopicViewModel(List<Category> allowedCategories)
         {
             var userIsAdmin = UserIsAdmin;
+            var permissions = RoleService.GetPermissions(null, UsersRole);
+            var canInsertImages = userIsAdmin;
+            if (!canInsertImages)
+            {
+                canInsertImages = permissions[AppConstants.PermissionInsertEditorImages].IsTicked;
+            }
             return new CreateEditTopicViewModel
             {
                 SubscribeToTopic = true,
@@ -583,7 +594,8 @@ namespace MVCForum.Website.Controllers
                     CanLockTopic = userIsAdmin,
                     CanStickyTopic = userIsAdmin,
                     CanUploadFiles = userIsAdmin,
-                    CanCreatePolls = userIsAdmin
+                    CanCreatePolls = userIsAdmin,
+                    CanInsertImages = canInsertImages
                 },
                 PollAnswers = new List<PollAnswer>(),
                 IsTopicStarter = true,
@@ -964,6 +976,9 @@ namespace MVCForum.Website.Controllers
                     {
                         return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
                     }
+
+                    // Set editor permissions
+                    ViewBag.ImageUploadType = permissions[AppConstants.PermissionInsertEditorImages].IsTicked ? "forumimageinsert" : "image";
 
                     var viewModel = ViewModelMapping.CreateTopicViewModel(topic, permissions, posts.ToList(), starterPost, posts.PageIndex, posts.TotalCount, posts.TotalPages, LoggedOnReadOnlyUser, settings, true);
 
