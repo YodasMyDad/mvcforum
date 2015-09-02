@@ -41,5 +41,11 @@ namespace MVCForum.Website.Controllers
             }
             return null;
         }
+
+        public PartialViewResult ImageUploadTinyMce()
+        {
+            // Testing
+            return PartialView();
+        }
     }
 }

@@ -50,9 +50,9 @@ input.form-control, textarea.form-control, select.form-control { -ms-border-radi
 .dropdown-menu { -ms-border-radius: 0; border-radius: 0; }
 .navbar-toggle { padding: 7px 8px; background-color: #ddd; }
 .navbar-toggle:hover, .navbar-toggle:focus { background-color: #d3d3d3 !important; }
-span.label-success {background-color:$color-global-green;}
-.input-group {z-index:0;}
-pre {border-radius:0;}
+span.label-success { background-color: $color-global-green; }
+.input-group { z-index: 0; }
+pre { border-radius: 0; }
 
 // Main
 
@@ -122,7 +122,7 @@ table {
 .green-colour { color: $color-global-green; }
 .red-colour { color: $color-global-red; }
 .blue-colour { color: $color-global-blue; }
-.orange-colour {color:#ef9b00 !important;}
+.orange-colour { color: #ef9b00 !important; }
 
 // Link Styles
 
@@ -177,7 +177,7 @@ a, a:visited { color: $link-color;
 
 // Loader In Panel
 
-.loaderholder {text-align:center;}
+.loaderholder { text-align: center; }
 
 // Padded Row
 
@@ -333,8 +333,8 @@ section.content-strip {
     img { -ms-border-radius: 50%; border-radius: 50%; max-width: 50px; }
     span {
         &.label { font-weight: normal; padding: .2em .4em .2em; margin: 2px 6px 0 6px; display: block; z-index: 5; }
-        &.label-default { background-color: #bebebe;}
-        &.label-success { background-color: $color-global-green;}
+        &.label-default { background-color: #bebebe; }
+        &.label-success { background-color: $color-global-green; }
     }
 }
 
@@ -582,12 +582,12 @@ span {
 .ui-state-disabled { cursor: default !important; }
 .ui-icon { display: block; text-indent: -99999px; overflow: hidden; background-repeat: no-repeat; }
 .ui-widget-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; }
-.ui-autocomplete { position: absolute; top: 0; left: 0; cursor: default; border:1px #ccc solid; border-top:none;background-color:#fff;-webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);box-shadow: 0 1px 1px rgba(0,0,0,.05);}
+.ui-autocomplete { position: absolute; top: 0; left: 0; cursor: default; border: 1px #ccc solid; border-top: none; background-color: #fff; -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05); box-shadow: 0 1px 1px rgba(0,0,0,.05); }
 .ui-menu { list-style: none; padding: 0; margin: 0; display: block; outline: none; }
 .ui-menu .ui-menu { position: absolute; }
 .ui-menu .ui-menu-item { position: relative; margin: 0; padding: 6px; cursor: pointer; min-height: 0; list-style-image: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"); }
 .ui-menu .ui-menu-divider { margin: 5px 0; height: 0; font-size: 0; line-height: 0; border-width: 1px 0 0 0; }
-.ui-menu .ui-state-focus, .ui-menu .ui-state-active {background-color:$color-global-grey-blue;}
+.ui-menu .ui-state-focus, .ui-menu .ui-state-active { background-color: $color-global-grey-blue; }
 .ui-menu-icons { position: relative; }
 .ui-menu-icons .ui-menu-item { padding-left: 2em; }
 .ui-menu .ui-icon { position: absolute; top: 0; bottom: 0; left: .2em; margin: auto 0; }
@@ -651,10 +651,10 @@ footer { background: $color-global-grey-blue; padding: 20px 0; margin: 30px 0 0 
 .membersection { padding-bottom: 12px; }
 .memberprofilepublic .memberdiscussions h3 { border: none; }
 .memberavatardetails {
-    .memberavatar {text-align:center;
-        img {-ms-border-radius: 50%; border-radius: 50%;}
+    .memberavatar { text-align: center;
+        img { -ms-border-radius: 50%; border-radius: 50%; }
     }
-    .btn-mvc {width:100%;}
+    .btn-mvc { width: 100%; }
 }
 
 // Edit Member
@@ -671,7 +671,7 @@ footer { background: $color-global-grey-blue; padding: 20px 0; margin: 30px 0 0 
 .pmview {
     h1 { margin: 20px 0 0 0;
         .pmavatar { float: left; margin: 0 15px 0 0; -ms-border-radius: 50%; border-radius: 50%; margin-top: -8px; }
-        span.label {font-size:12px; font-weight:$font-light-weight;}
+        span.label { font-size: 12px; font-weight: $font-light-weight; }
     }
     .pmblock { margin-bottom: 25px; padding: 12px 12px 8px 12px;
         .pmsmallavatar { -ms-border-radius: 50%; border-radius: 50%; z-index: 10; }
@@ -688,7 +688,7 @@ footer { background: $color-global-grey-blue; padding: 20px 0; margin: 30px 0 0 
     .pmblockto { margin-left: 20%; background-color: #dedede; position: relative;
         &:after { bottom: -14px; right: 14px; border: solid transparent; content: ""; height: 0; width: 0; position: absolute; pointer-events: none; border-top: 4px solid transparent; border-bottom: 14px solid transparent; border-right: 20px solid #dedede; z-index: 5; }
     }
-    #createpostholder {padding:0;}
+    #createpostholder { padding: 0; }
 }
 .form-createpm { padding: 10px 0; clear: both; }
 
@@ -709,8 +709,8 @@ footer { background: $color-global-grey-blue; padding: 20px 0; margin: 30px 0 0 
 // Create Topic
 
 .topictagholder {
-    span.tag { margin-right: 12px; margin-bottom: 9px;font-size: 14px !important;
-        a, a:visited { display: inline; font-weight: bold;  margin: 0 0 0 5px; }
+    span.tag { margin-right: 12px; margin-bottom: 9px; font-size: 14px !important;
+        a, a:visited { display: inline; font-weight: bold; margin: 0 0 0 5px; }
     }
     #Tags_addTag {
         #Tags_tag { display: block; width: 101% !important; height: 34px; padding: 6px 12px; margin-left: -10px; font-size: 14px; line-height: 1.42857143; color: #555; background-color: #fff; background-image: none; border: 1px solid #ccc; -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075); box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075); -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s; -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s; -moz-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s; transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s; }
@@ -731,10 +731,10 @@ footer { background: $color-global-grey-blue; padding: 20px 0; margin: 30px 0 0 
 .mce-widget, .mce-widget * { color: inherit; font-family: inherit; }
 #mce-modal-block.mce-in { opacity: .7; filter: alpha(opacity=70); }
 .tinymceholder { margin-bottom: 14px; border: 1px solid #e5e5e5; width: 99.5%;
-                 textarea {width:100%; min-height:100px;}
+    textarea { width: 100%; min-height: 100px; }
 }
 .mce-window { -webkit-border-radius: 0; border-radius: 0; -webkit-box-shadow: 0 3px 6px rgba(0,0,0,.3); box-shadow: 0 3px 6px rgba(0,0,0,.3); -webkit-font-smoothing: subpixel-antialiased; }
-.mce-window .mce-container-body.mce-abs-layout {  }
+.mce-window .mce-container-body.mce-abs-layout { }
 .mce-window .mce-window-head { background: #fcfcfc; border-bottom: 1px solid #dfdfdf; padding: 0; min-height: 36px; }
 .mce-window .mce-window-head .mce-title { color: #444; font-size: 18px; font-weight: 600; line-height: 36px; margin: 0; padding: 0 36px 0 16px; }
 .mce-window .mce-window-head .mce-close { color: transparent; top: 0; right: 0; width: 36px; height: 36px; line-height: 36px; text-align: center; }
@@ -817,6 +817,18 @@ div.mce-path { padding: 2px 10px; margin: 0; }
 .mce-wordcount { padding: 2px 30px 0 0 !important; }
 
 // ============ end tinyMCE overides
+
+// ============ TinyMCE Plugins
+
+.tinymceinsertimageplugin { padding:12px;
+    label {font-size:12px;}
+    .input-group-sm { position: relative; }
+    .btn-file input[type=file] { position: absolute; top: 0; right: 0; min-width: 100%; min-height: 100%; text-align: right; filter: alpha(opacity=0); opacity: 0; outline: none; background: white; cursor: inherit; display: block; }
+    #waiting { position: absolute; top: 0; left: 0; right: 0; bottom: 0; text-align: center; background-color: #fff; -ms-opacity: 0.8; opacity: 0.8; z-index: 999; }
+    #waiting img { margin-top: 30px; }
+}
+
+// ============ end TinyMCE Plugins
 
 // ============ pushy menu css
 

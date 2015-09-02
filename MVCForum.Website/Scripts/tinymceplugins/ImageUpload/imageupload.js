@@ -1,16 +1,16 @@
 ﻿tinymce.PluginManager.add("forumimageinsert", function (editor, url) {
     editor.addButton("forumimageinsert", {
         icon: "image",
-        tooltip: "Insert image",
+        tooltip: buttonTitle,
         onclick: function () {
             editor.windowManager.open({
-                title: "Insert image",
-                url: app_base + "scripts/tinymceplugins/ImageUpload/imageupload.html",
+                title: buttonTitle,
+                url: app_base + "file/imageuploadtinymce/",
                 width: 500,
                 height: 170,
                 buttons: [
                     {
-                        text: "Ok",
+                        text: buttonOk,
                         classes: 'widget btn btn-default first abs-layout-item',
                         onclick: function () {
                             var b = editor.windowManager.getWindows()[0];
@@ -19,13 +19,12 @@
                             var externalUrl = b.getContentWindow().document.getElementById('external');
                             var externalRow = b.getContentWindow().document.getElementById('externalrow');
                             var uploadrow = b.getContentWindow().document.getElementById('uploadrow');
-                            var waitNotice = b.getContentWindow().document.getElementById('waiting');
-
+                            var waitNotice = b.getContentWindow().document.getElementById('waiting');;
                             if (externalUrl.value != '') {
                                 // We have an external url so use that
                                 // Check for http
                                 if (!externalUrl.value.startsWith('http') ) {
-                                    alert('Please enter a valid url');
+                                    alert(enterValidUrl);
                                     return false;
                                 } else {
                                     var imageAlt = imageDesc.value;
@@ -37,18 +36,18 @@
 
                                 // No external url
                                 if (uploadFile.value == '') {
-                                    alert('Please select a file');
+                                    alert(selectFile);
                                     return false;
                                 }
 
                                 if (uploadFile.files[0].size > 2000 * 1024) {
-                                    alert('Max image file size is 2MB');
+                                    alert(maxImageFileSize);
                                     return false;
                                 }
 
                                 if (uploadFile.files[0].type != "image/jpeg" && uploadFile.files[0].type != "image/jpg" &&
                                     uploadFile.files[0].type != "image/png" && uploadFile.files[0].type != "image/gif") {
-                                    alert('Only image file format can be uploaded');
+                                    alert(onlyImages);
                                     return false;
                                 }
 
@@ -74,7 +73,7 @@
                                         var imageTag = '<img src="' + imageSrc + '?width=690&upscale=false" alt="' + imageAlt + '" />';
                                         editor.insertContent(imageTag), b.close();
                                     } else {
-                                        alert('Error uploading file');
+                                        alert(generalError);
                                         waitNotice.style.display = 'none';
                                         externalRow.style.display = 'block';
                                     }
@@ -87,7 +86,7 @@
                             }
                         }
                     }, {
-                        text: "Close",
+                        text: buttonClose,
                         onclick: "close"
                     }
                 ]

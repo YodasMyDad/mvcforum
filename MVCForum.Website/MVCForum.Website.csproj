@@ -884,10 +884,12 @@
     <Content Include="Areas\Admin\Views\AdminSpam\SpamReporting.cshtml" />
     <Content Include="Areas\Admin\Views\Settings\CustomCode.cshtml" />
     <Content Include="Areas\Admin\Views\AdminTag\MoveTags.cshtml" />
-    <Content Include="Scripts\tinymceplugins\ImageUpload\imageupload.html" />
     <Content Include="Scripts\tinymceplugins\ImageUpload\imageupload.js" />
     <Content Include="Views\Shared\_SlideOutPanel.cshtml" />
     <Content Include="Views\Post\GetAllPostLikes.cshtml" />
+    <Content Include="Views\File\ImageUploadTinyMce.cshtml" />
+    <Content Include="Views\Shared\_StyleSheets.cshtml" />
+    <Content Include="Views\Shared\_JavaScript.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
@@ -1258,7 +1260,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\languagepacks\" />
-    <Folder Include="Views\File\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">

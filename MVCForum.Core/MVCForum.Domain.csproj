@@ -129,6 +129,7 @@
     <Compile Include="DomainModel\Entities\Post.cs" />
     <Compile Include="DomainModel\Entities\Settings.cs" />
     <Compile Include="DomainModel\Entities\Topic.cs" />
+    <Compile Include="DomainModel\General\Theme.cs" />
     <Compile Include="DomainModel\General\UploadedFile.cs" />
     <Compile Include="DomainModel\General\UploadFileResult.cs" />
     <Compile Include="DomainModel\Entities\Vote.cs" />

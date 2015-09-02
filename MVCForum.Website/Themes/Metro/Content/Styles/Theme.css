@@ -2249,6 +2249,50 @@ div.mce-path {
   padding: 2px 30px 0 0 !important;
 }
 
+.tinymceinsertimageplugin {
+  padding: 12px;
+}
+
+.tinymceinsertimageplugin label {
+  font-size: 12px;
+}
+
+.tinymceinsertimageplugin .input-group-sm {
+  position: relative;
+}
+
+.tinymceinsertimageplugin .btn-file input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: inherit;
+  display: block;
+}
+
+.tinymceinsertimageplugin #waiting {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  background-color: #fff;
+  -ms-opacity: 0.8;
+  opacity: 0.8;
+  z-index: 999;
+}
+
+.tinymceinsertimageplugin #waiting img {
+  margin-top: 30px;
+}
+
 .pushy {
   position: fixed;
   width: 200px;

@@ -355,3 +355,14 @@ Topic.Label.PollCloseAfterDays,Close Poll After Specified Amount Of Days? Leave 
 Topic.PollClosed,Closed
 Post.OthersLiked,and {0} others
 Members.Label.DisableEmailNotifications,Disable Email Notifications
+TinyMCE.InsertImage.ButtonTitle,Insert Image
+TinyMCE.InsertImage.ButtonOk,Ok
+TinyMCE.InsertImage.ButtonClose,Close
+TinyMCE.InsertImage.EnterValidUrl,Please enter a valid url
+TinyMCE.InsertImage.SelectFile,Please select a file
+TinyMCE.InsertImage.MaxFileSize,Max image file size is 2mb
+TinyMCE.InsertImage.OnlyImages,Only JPEG, PNG and GIF images can be uploaded
+TinyMCE.InsertImage.LabelUploadImage,Upload Image
+TinyMCE.InsertImage.Browse,Browse
+TinyMCE.InsertImage.ExternalImage,External Image
+TinyMCE.InsertImage.ImageDescription,Image Description
