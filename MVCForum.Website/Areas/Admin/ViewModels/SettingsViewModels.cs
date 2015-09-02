@@ -57,6 +57,9 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Enable Spam Reporting")]
         public bool EnableSpamReporting { get; set; }
 
+        [DisplayName("Enable Emoticons (Smilies)")]
+        public bool EnableEmoticons { get; set; }
+
         [DisplayName("Allow Members To Report Other Members")]
         public bool EnableMemberReporting { get; set; }
 

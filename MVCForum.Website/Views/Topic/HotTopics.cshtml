@@ -13,7 +13,7 @@
             {
                 <li>
                     <span class="badge">@count</span>
-                    <a href="@topicViewModel.Topic.NiceUrl">@topicViewModel.Topic.Name</a>
+                    <a href="@topicViewModel.Topic.NiceUrl">@Html.Raw(topicViewModel.Topic.Name)</a>
                 </li>
                 count++;
             }

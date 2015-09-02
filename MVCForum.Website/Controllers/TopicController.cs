@@ -372,8 +372,10 @@ namespace MVCForum.Website.Controllers
                         {
 
                             // User has permission so update the post
-                            post.PostContent = StringUtils.GetSafeHtml(_bannedWordService.SanitiseBannedWords(editPostViewModel.Content));
+                            post.PostContent = _bannedWordService.SanitiseBannedWords(editPostViewModel.Content);
                             post.DateEdited = DateTime.UtcNow;
+
+                            post = _postService.SanitizePost(post);
 
                             // if topic starter update the topic
                             if (post.IsTopicStarter)

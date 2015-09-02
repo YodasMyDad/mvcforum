@@ -125,6 +125,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.NewMemberEmailConfirmation = settingsViewModel.NewMemberEmailConfirmation;
             existingSettings.PageTitle = settingsViewModel.PageTitle;
             existingSettings.MetaDesc = settingsViewModel.MetaDesc;
+            existingSettings.EnableEmoticons = settingsViewModel.EnableEmoticons;
             return existingSettings;
         }
 
@@ -176,7 +177,8 @@ namespace MVCForum.Website.ViewModels.Mapping
                 EnablePolls = currentSettings.EnablePolls ?? false,
                 SuspendRegistration = currentSettings.SuspendRegistration ?? false,
                 PageTitle = currentSettings.PageTitle,
-                MetaDesc = currentSettings.MetaDesc
+                MetaDesc = currentSettings.MetaDesc,
+                EnableEmoticons = currentSettings.EnableEmoticons == true,
             };
 
             return settingViewModel;

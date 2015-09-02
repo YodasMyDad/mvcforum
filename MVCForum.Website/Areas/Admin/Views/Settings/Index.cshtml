@@ -65,6 +65,14 @@
                         }
                         @Html.ValidationMessageFor(m => m.EnableRSSFeeds)
                     </div>
+                    
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.EnableEmoticons, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.EnableEmoticons)
+                        }
+                        @Html.ValidationMessageFor(m => m.EnableEmoticons)
+                    </div>
 
                     <div class="checkbox">
                         @using (Html.BeginLabelFor(m => m.DisplayEditedBy, new { @class = "checkbox" }))

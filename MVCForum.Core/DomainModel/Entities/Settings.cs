@@ -57,6 +57,7 @@ namespace MVCForum.Domain.DomainModel
         public bool? SuspendRegistration { get; set; }
         public string CustomHeaderCode { get; set; }
         public string CustomFooterCode { get; set; }
+        public bool? EnableEmoticons { get; set; }
         public virtual MembershipRole NewMemberStartingRole { get; set; }
         public virtual Language DefaultLanguage { get; set; }
     }

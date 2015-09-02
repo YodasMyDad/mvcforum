@@ -14,18 +14,18 @@ namespace MVCForum.Services
     {
         private readonly ITopicRepository _topicRepository;
         private readonly ITopicNotificationService _topicNotificationService;
-        private readonly IPostRepository _postRepository;
+        private readonly IPostService _postService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ISettingsService _settingsService;
 
         public TopicService(IMembershipUserPointsService membershipUserPointsService,
-            ISettingsService settingsService, ITopicRepository topicRepository, IPostRepository postRepository, ITopicNotificationService topicNotificationService)
+            ISettingsService settingsService, ITopicRepository topicRepository, ITopicNotificationService topicNotificationService, IPostService postService)
         {
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
             _topicRepository = topicRepository;
-            _postRepository = postRepository;
             _topicNotificationService = topicNotificationService;
+            _postService = postService;
         }
 
         public Topic SanitizeTopic(Topic topic)
@@ -109,13 +109,13 @@ namespace MVCForum.Services
                 DateCreated = DateTime.UtcNow,
                 IsTopicStarter = true,
                 DateEdited = DateTime.UtcNow,
-                PostContent = StringUtils.GetSafeHtml(postContent),
+                PostContent = postContent,
                 User = topic.User,
                 Topic = topic
             };
 
             // Add the post
-            _postRepository.Add(post);
+            _postService.Add(post);
 
             topic.LastPost = post;
 
@@ -297,7 +297,7 @@ namespace MVCForum.Services
                 postsToDelete.AddRange(topic.Posts);
                 foreach (var post in postsToDelete)
                 {
-                    _postRepository.Delete(post);
+                    _postService.Delete(post, true);
                 } 
             }
 

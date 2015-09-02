@@ -22,7 +22,7 @@ namespace MVCForum.Domain.Interfaces.Services
         Post Get(Guid postId);
         IList<Post> GetPostsByTopics(List<Guid> topicIds, List<Category> allowedCategories);
         void SaveOrUpdate(Post post);
-        bool Delete(Post post);
+        bool Delete(Post post, bool isTopicDelete = false);
         IList<Post> GetSolutionsByMember(Guid memberId, List<Category> allowedCategories);
         int PostCount(List<Category> allowedCategories);
         Post AddNewPost(string postContent, Topic topic, MembershipUser user, out PermissionSet permissions);

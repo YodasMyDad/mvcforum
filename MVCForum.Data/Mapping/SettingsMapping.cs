@@ -55,6 +55,7 @@ namespace MVCForum.Data.Mapping
             Property(x => x.MetaDesc).IsOptional().HasMaxLength(200);
             Property(x => x.CustomHeaderCode).IsOptional();
             Property(x => x.CustomFooterCode).IsOptional();
+            Property(x => x.EnableEmoticons).IsOptional();
 
             HasRequired(t => t.NewMemberStartingRole)
                 .WithOptional(x => x.Settings).Map(m => m.MapKey("NewMemberStartingRole"));

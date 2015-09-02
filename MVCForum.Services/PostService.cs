@@ -40,7 +40,13 @@ namespace MVCForum.Services
         public Post SanitizePost(Post post)
         {
             post.PostContent = StringUtils.GetSafeHtml(post.PostContent);
-            post.PostContent = EmoticonUtils.Emotify(post.PostContent);
+
+            // Check settings
+            if (_settingsService.GetSettings().EnableEmoticons == true)
+            {
+                post.PostContent = EmoticonUtils.Emotify(post.PostContent);   
+            }
+
             return post;
         }
 
@@ -196,52 +202,55 @@ namespace MVCForum.Services
         /// <param name="post"></param>
         public void SaveOrUpdate(Post post)
         {
-            _postRepository.Update(post); 
+            _postRepository.Update(post);
         }
 
         /// <summary>
         /// Delete a post
         /// </summary>
         /// <param name="post"></param>
+        /// <param name="isTopicDelete"></param>
         /// <returns> True if parent topic should now be deleted (caller's responsibility)</returns>
-        public bool Delete(Post post)
+        public bool Delete(Post post, bool isTopicDelete = false)
         {
-            // Here is where we can check for reasons not to delete the post
-            // And change the value below if not
-            var okToDelete = true;
-            var deleteTopic = false;
 
-            if (okToDelete)
-            {           
-                // Before we delete the post, we need to check if this is the last post in the topic
-                // and if so update the topic
-                var topic = post.Topic; 
-                var lastPost = topic.Posts.OrderByDescending(x => x.DateCreated).FirstOrDefault();
-
-                if (lastPost != null && lastPost.Id == post.Id)
-                {
-                    // Get the new last post and update the topic
-                    topic.LastPost = topic.Posts.Where(x => x.Id != post.Id).OrderByDescending(x => x.DateCreated).FirstOrDefault();
-                }
-
-                if (topic.Solved && post.IsSolution)
-                {
-                    topic.Solved = false;
-                }
-
-                topic.Posts.Remove(post);
-
-                deleteTopic = post.IsTopicStarter;
-
+            // If this is coming from a call that is deleting the entire topic, then just delete post
+            if (isTopicDelete)
+            {
                 // now delete the post
                 _postRepository.Delete(post);
-
-                // Topic should be deleted, so make sure it has no last post to avoid circular dependency
-                if (deleteTopic)
-                {
-                    topic.LastPost = null;
-                }
+                return true;
             }
+
+            // Before we delete the post, we need to check if this is the last post in the topic
+            // and if so update the topic
+            var topic = post.Topic;
+            var lastPost = topic.Posts.OrderByDescending(x => x.DateCreated).FirstOrDefault();
+
+            if (lastPost != null && lastPost.Id == post.Id)
+            {
+                // Get the new last post and update the topic
+                topic.LastPost = topic.Posts.Where(x => x.Id != post.Id).OrderByDescending(x => x.DateCreated).FirstOrDefault();
+            }
+
+            if (topic.Solved && post.IsSolution)
+            {
+                topic.Solved = false;
+            }
+
+            topic.Posts.Remove(post);
+
+            var deleteTopic = post.IsTopicStarter;
+
+            // now delete the post
+            _postRepository.Delete(post);
+
+            // Topic should be deleted, so make sure it has no last post to avoid circular dependency
+            if (deleteTopic)
+            {
+                topic.LastPost = null;
+            }
+
 
             return deleteTopic;
         }
@@ -286,7 +295,7 @@ namespace MVCForum.Services
                 newPost.Pending = true;
             }
 
-            var e = new PostMadeEventArgs { Post = newPost};
+            var e = new PostMadeEventArgs { Post = newPost };
             EventManager.Instance.FireBeforePostMade(this, e);
 
             if (!e.Cancel)
@@ -304,7 +313,7 @@ namespace MVCForum.Services
                 // add the last post to the topic
                 topic.LastPost = newPost;
 
-                EventManager.Instance.FireAfterPostMade(this, new PostMadeEventArgs { Post = newPost});
+                EventManager.Instance.FireAfterPostMade(this, new PostMadeEventArgs { Post = newPost });
 
                 return newPost;
             }

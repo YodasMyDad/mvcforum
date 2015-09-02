@@ -66,20 +66,20 @@ namespace MVCForum.Website.Controllers
 
                 try
                 {
-
+                    var settings = SettingsService.GetSettings();
                     // Check if private messages are enabled
-                    if (!SettingsService.GetSettings().EnablePrivateMessages || LoggedOnReadOnlyUser.DisablePrivateMessages == true)
+                    if (!settings.EnablePrivateMessages || LoggedOnReadOnlyUser.DisablePrivateMessages == true)
                     {
                         return Content(LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }
 
                     // Check outbox size of logged in user
                     var senderCount = _privateMessageService.GetAllSentByUser(LoggedOnReadOnlyUser.Id).Count;
-                    if (senderCount > SettingsService.GetSettings().MaxPrivateMessagesPerMember)
+                    if (senderCount > settings.MaxPrivateMessagesPerMember)
                     {
                         return Content(LocalizationService.GetResourceString("PM.SentItemsOverCapcity"));
                     }
-                    if (senderCount > (SettingsService.GetSettings().MaxPrivateMessagesPerMember - SiteConstants.PrivateMessageWarningAmountLessThanAllowedSize))
+                    if (senderCount > (settings.MaxPrivateMessagesPerMember - SiteConstants.PrivateMessageWarningAmountLessThanAllowedSize))
                     {
                         // Send user a warning they are about to exceed 
                         var sb = new StringBuilder();
@@ -111,7 +111,8 @@ namespace MVCForum.Website.Controllers
         [HttpPost]
         public ActionResult Create(CreatePrivateMessageViewModel createPrivateMessageViewModel)
         {
-            if (!SettingsService.GetSettings().EnablePrivateMessages || LoggedOnReadOnlyUser.DisablePrivateMessages == true)
+            var settings = SettingsService.GetSettings();
+            if (!settings.EnablePrivateMessages || LoggedOnReadOnlyUser.DisablePrivateMessages == true)
             {
                 throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
             }
@@ -126,7 +127,7 @@ namespace MVCForum.Website.Controllers
                     // If this message they are sending now, is to the same person then ignore flood control
                     if (lastMessage != null && createPrivateMessageViewModel.To != lastMessage.UserTo.Id)
                     {
-                        if (DateUtils.TimeDifferenceInSeconds(DateTime.UtcNow, lastMessage.DateSent) < SettingsService.GetSettings().PrivateMessageFloodControl)
+                        if (DateUtils.TimeDifferenceInSeconds(DateTime.UtcNow, lastMessage.DateSent) < settings.PrivateMessageFloodControl)
                         {
                             throw new Exception(LocalizationService.GetResourceString("PM.SendingToQuickly"));
                         }
@@ -144,18 +145,24 @@ namespace MVCForum.Website.Controllers
                             Message = createPrivateMessageViewModel.Message,
                         };
 
+                        // Check settings
+                        if (settings.EnableEmoticons == true)
+                        {
+                            privateMessage.Message = EmoticonUtils.Emotify(privateMessage.Message);
+                        }
+
                         // check the member
                         if (!String.Equals(memberTo.UserName, LoggedOnReadOnlyUser.UserName, StringComparison.CurrentCultureIgnoreCase))
                         {
                             // Check in box size for both
                             var receiverCount = _privateMessageService.GetAllReceivedByUser(memberTo.Id).Count;
-                            if (receiverCount > SettingsService.GetSettings().MaxPrivateMessagesPerMember)
+                            if (receiverCount > settings.MaxPrivateMessagesPerMember)
                             {
                                 throw new Exception(string.Format(LocalizationService.GetResourceString("PM.ReceivedItemsOverCapcity"), memberTo.UserName));
                             }
 
                             // If the receiver is about to go over the allowance them let then know too
-                            if (receiverCount > (SettingsService.GetSettings().MaxPrivateMessagesPerMember - SiteConstants.PrivateMessageWarningAmountLessThanAllowedSize))
+                            if (receiverCount > (settings.MaxPrivateMessagesPerMember - SiteConstants.PrivateMessageWarningAmountLessThanAllowedSize))
                             {
                                 // Send user a warning they are about to exceed 
                                 var sb = new StringBuilder();
