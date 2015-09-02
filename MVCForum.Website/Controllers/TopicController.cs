@@ -256,7 +256,8 @@ namespace MVCForum.Website.Controllers
                             Id = post.Id,
                             Category = topic.Category.Id,
                             Name = topic.Name,
-                            TopicId = topic.Id
+                            TopicId = topic.Id,
+                            OptionalPermissions = GetCheckCreateTopicPermissions(permissions)
                         };
 
                         // Now check if this is a topic starter, if so add the rest of the field
@@ -273,7 +274,6 @@ namespace MVCForum.Website.Controllers
                             viewModel.IsSticky = topic.IsSticky;
                             viewModel.IsTopicStarter = post.IsTopicStarter;
                             viewModel.SubscribeToTopic = topicNotifications.Any();
-                            viewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
                             viewModel.Categories = GetBaseSelectListCategories(allowedAccessCategories);
 
                             // Tags - Populate from the topic
