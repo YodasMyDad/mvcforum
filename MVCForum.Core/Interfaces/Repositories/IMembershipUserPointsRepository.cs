@@ -19,6 +19,7 @@ namespace MVCForum.Domain.Interfaces.Repositories
         void Delete(MembershipUser user, PointsFor type);
         void Delete(MembershipUserPoints item);
         void Delete(int amount, MembershipUser user);
+        void Delete(PointsFor type, Guid referenceId);
         void Delete(IEnumerable<MembershipUserPoints> points);
     }
 }

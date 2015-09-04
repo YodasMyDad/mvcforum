@@ -56,6 +56,7 @@ namespace MVCForum.Data.Repositories
         public List<Vote> GetVotesByPosts(List<Guid> postIds)
         {
             return _context.Vote
+                        .Include(x => x.VotedByMembershipUser)
                         .Include(x => x.User)
                         .Include(x => x.Post)
                         .AsNoTracking()

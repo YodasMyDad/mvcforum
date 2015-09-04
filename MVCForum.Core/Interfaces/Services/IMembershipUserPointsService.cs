@@ -26,6 +26,13 @@ namespace MVCForum.Domain.Interfaces.Services
         void Delete(MembershipUser user, PointsFor type, Guid referenceId);
 
         /// <summary>
+        /// Delete all points by action/type and the reference ID
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="referenceId"></param>
+        void Delete(PointsFor type, Guid referenceId);
+
+        /// <summary>
         /// Delete all points for a type - So delete all points a user has gained for voting, or for badges
         /// </summary>
         /// <param name="user"></param>

@@ -45,6 +45,11 @@ namespace MVCForum.Website
             get { return ServiceFactory.Get<ILocalizationService>(); }
         }
 
+        public IReflectionService ReflectionService
+        {
+            get { return ServiceFactory.Get<IReflectionService>(); }
+        }
+
 
 
         protected void Application_Start()
@@ -68,12 +73,15 @@ namespace MVCForum.Website
             LoggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
             LoggingService.Error("START APP");
 
+            // Get assemblies for badges, events etc...
+            var loadedAssemblies = ReflectionService.GetAssemblies();
+
             // Do the badge processing
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 try
                 {
-                    BadgeService.SyncBadges();
+                    BadgeService.SyncBadges(loadedAssemblies);
                     unitOfWork.Commit();
                 }
                 catch (Exception ex)
@@ -87,7 +95,7 @@ namespace MVCForum.Website
             ViewEngines.Engines.Add(new ForumViewEngine(SettingsService.GetSettings().Theme));
 
             // Initialise the events
-            EventManager.Instance.Initialize(LoggingService);
+            EventManager.Instance.Initialize(LoggingService, loadedAssemblies);
         }
 
         protected void Application_AcquireRequestState(object sender, EventArgs e)

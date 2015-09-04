@@ -72,6 +72,15 @@ namespace MVCForum.Data.Repositories
             Delete(points);
         }
 
+        public void Delete(PointsFor type, Guid referenceId)
+        {
+            var mp =
+                _context.MembershipUserPoints.Where(x => x.PointsFor == type && x.PointsForId == referenceId);
+            var mpoints = new List<MembershipUserPoints>();
+            mpoints.AddRange(mp);
+            Delete(mpoints);
+        }
+
         public void Delete(IEnumerable<MembershipUserPoints> points)
         {
             foreach (var membershipUserPoint in points)

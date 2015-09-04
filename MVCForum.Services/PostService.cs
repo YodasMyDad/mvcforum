@@ -214,8 +214,21 @@ namespace MVCForum.Services
         public bool Delete(Post post, bool isTopicDelete = false)
         {
 
+            #region Deleting Points
+            
             // Remove the points the user got for this post
             _membershipUserPointsService.Delete(post.User, PointsFor.Post, post.Id);
+
+            // Also get all the votes and delete anything to do with those
+            foreach (var postVote in post.Votes)
+            {
+                _membershipUserPointsService.Delete(PointsFor.Vote, postVote.Id);
+            }
+
+            // Also the mark as solution
+            _membershipUserPointsService.Delete(PointsFor.Solution, post.Id);
+
+            #endregion
 
             // If this is coming from a call that is deleting the entire topic, then just delete post
             if (isTopicDelete)

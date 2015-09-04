@@ -199,6 +199,7 @@
     <Compile Include="Interfaces\Services\IPollService.cs" />
     <Compile Include="Interfaces\Services\IActivityService.cs" />
     <Compile Include="Interfaces\Services\IPrivateMessageService.cs" />
+    <Compile Include="Interfaces\Services\IReflectionService.cs" />
     <Compile Include="Interfaces\Services\IReportService.cs" />
     <Compile Include="Interfaces\Services\ITagNotificationService.cs" />
     <Compile Include="Interfaces\Services\ITopicNotificationService.cs" />

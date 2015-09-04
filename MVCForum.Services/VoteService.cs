@@ -10,14 +10,20 @@ namespace MVCForum.Services
     public partial class VoteService : IVoteService
     {
         private readonly IVoteRepository _voteRepository;
+        private readonly IMembershipUserPointsService _membershipUserPointsService;
 
-        public VoteService(IVoteRepository voteRepository)
+        public VoteService(IVoteRepository voteRepository, IMembershipUserPointsService membershipUserPointsService)
         {
             _voteRepository = voteRepository;
+            _membershipUserPointsService = membershipUserPointsService;
         }
 
         public void Delete(Vote vote)
         {
+            // Delete any points associated with this vote
+            _membershipUserPointsService.Delete(PointsFor.Vote, vote.Id);
+
+            // Delete the vote
             _voteRepository.Delete(vote);
         }
 

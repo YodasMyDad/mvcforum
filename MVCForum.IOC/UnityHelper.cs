@@ -98,6 +98,7 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IGlobalPermissionForRoleService, GlobalPermissionForRoleService>();
             container.BindInRequestScope<ICacheService, CacheService>();
             container.BindInRequestScope<ITagNotificationService, TagNotificationService>();
+            container.BindInRequestScope<IReflectionService, ReflectionService>();
 
             container.BindInRequestScope<IRoleRepository, RoleRepository>();
             container.BindInRequestScope<ICategoryRepository, CategoryRepository>();

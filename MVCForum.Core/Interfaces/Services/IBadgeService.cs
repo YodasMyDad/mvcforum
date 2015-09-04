@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
@@ -10,7 +11,7 @@ namespace MVCForum.Domain.Interfaces.Services
         /// Bring the database into line with the badge classes found at runtime
         /// </summary>
         /// <returns>Set of valid badge classes to use when assigning badges</returns>
-        void SyncBadges();
+        void SyncBadges(List<Assembly> assemblies);
 
         /// <summary>
         /// Processes the user for the specified badge type

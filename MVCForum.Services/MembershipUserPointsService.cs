@@ -31,6 +31,11 @@ namespace MVCForum.Services
             _membershipUserPointsRepository.Delete(user, type, referenceId);
         }
 
+        public void Delete(PointsFor type, Guid referenceId)
+        {
+            _membershipUserPointsRepository.Delete(type, referenceId);
+        }
+
         public void Delete(MembershipUser user, PointsFor type)
         {
             _membershipUserPointsRepository.Delete(user, type);

@@ -122,6 +122,8 @@ namespace MVCForum.Domain.Constants
             "Common.Logging.dll",
             "EntityFramework.dll",
             "EntityFramework.SqlServer.dll",
+            "EntityFramework.SqlServerCompact.dll",
+            "System.Data.SqlServerCe.dll",
             "Newtonsoft.Json.dll",
             "Quartz.dll",
             "SquishIt.Framework.dll",
@@ -131,6 +133,7 @@ namespace MVCForum.Domain.Constants
             "AntiXssLibrary.dll",
             "HtmlSanitizationLibrary.dll",
             "System.Web.Http.dll",
+            "System.Web.Http.WebHost.dll",
             "System.Net.Http.Formatting.dll",
             "System.Web.Helpers.dll",
             "System.Web.Mvc.dll",
@@ -147,7 +150,6 @@ namespace MVCForum.Domain.Constants
             "Microsoft.Practices.ServiceLocation.dll",
             "Unity.WebApi.dll",
             "Unity.Mvc4.dll",
-            "System.Web.Http.WebHost.dll",
             "WebActivator.dll",
             "System.Net.Http.dll",
             "System.Net.Http.WebRequest.dll",
@@ -155,7 +157,9 @@ namespace MVCForum.Domain.Constants
             "Iesi.Collections.dll",
             "Yahoo.Yui.Compressor.dll",
             "Microsoft.Web.Services3.dll",
-            "Microsoft.Web.Infrastructure.dll"
+            "Microsoft.Web.Infrastructure.dll",
+            "DotNetOpenAuth",
+            "Microsoft",
         };
 
     }

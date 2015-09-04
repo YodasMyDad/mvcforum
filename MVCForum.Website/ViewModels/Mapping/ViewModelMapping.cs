@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
@@ -335,14 +336,17 @@ namespace MVCForum.Website.ViewModels.Mapping
             var allowedToVote = (loggedOnUser != null && loggedOnUser.Id != post.User.Id &&
                                  loggedOnUser.TotalPoints > settings.PointsAllowedToVoteAmount);
 
+            // Remove votes where no VotedBy has been recorded
+            votes.RemoveAll(x => x.VotedByMembershipUser == null);
+
             var hasVotedUp = false;
             var hasVotedDown = false;
             var hasFavourited = false;
             if (loggedOnUser != null && loggedOnUser.Id != post.User.Id)
             {
                 hasFavourited = favourites.Any(x => x.Member.Id == loggedOnUser.Id);
-                hasVotedUp = votes.All(x => x.Amount > 0 && x.VotedByMembershipUser.Id == loggedOnUser.Id);
-                hasVotedDown = votes.All(x => x.Amount < 0 && x.VotedByMembershipUser.Id == loggedOnUser.Id);
+                hasVotedUp = votes.Count(x => x.Amount > 0 && x.VotedByMembershipUser.Id == loggedOnUser.Id) > 0;
+                hasVotedDown = votes.Count(x => x.Amount < 0 && x.VotedByMembershipUser.Id == loggedOnUser.Id) > 0;
             }
 
             // Check for online status

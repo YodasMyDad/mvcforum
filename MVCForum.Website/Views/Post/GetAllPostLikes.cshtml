@@ -7,8 +7,8 @@
     @foreach (var vote in Model)
     {
         <li>
-            <a href="@vote.User.NiceUrl">
-                <img src="@vote.User.MemberImage(SiteConstants.GravatarLikedBySize)" alt="@vote.User.UserName" title="@vote.User.UserName">
+            <a href="@vote.VotedByMembershipUser.NiceUrl">
+                <img src="@vote.VotedByMembershipUser.MemberImage(SiteConstants.GravatarLikedBySize)" alt="@vote.VotedByMembershipUser.UserName" title="@vote.VotedByMembershipUser.UserName">
             </a>
         </li>
     }

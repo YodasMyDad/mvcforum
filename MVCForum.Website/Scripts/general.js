@@ -565,6 +565,9 @@ function AddPostClickEvents() {
         var holdingLi = $(this).closest("li");
         var holdingUl = holdingLi.closest("ul");
         var votePoints = holdingLi.find(".count");
+        var voteText = $(this).data('votetext');
+        var votedText = $(this).data('votedtext');
+        var hasVoted = $(this).data('hasvoted');
 
         // Remove all vote links
         holdingUl.find(".votelink").fadeOut("fast");
@@ -575,11 +578,31 @@ function AddPostClickEvents() {
         var voteUrl = "Vote/VoteDownPost";
         if (voteType == "up") {
             voteUrl = "Vote/VoteUpPost";
+
+            // Has the user already voted
+            if (hasVoted) {
+                
+            } else {
+                
+            }
+
+        } else {
+            
         }
 
         // Ajax call to post the view model to the controller
         var strung = JSON.stringify(voteUpViewModel);
 
+        // We do the show hide/change of votes here for speed in the UI
+
+        // No votes
+        // User votes up, vote up is changed to 'voted' amount increased and vote down is hidden
+
+        // Remove vote
+        // Removes vote, 'voted' is changed to vote, amount is decreased and all vote links show
+
+        var currentPoints = parseInt($(votePoints).text());
+        votePoints.text((currentPoints + 1));
 
         $.ajax({
             url: app_base + voteUrl,
@@ -587,9 +610,6 @@ function AddPostClickEvents() {
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
-
-                var currentPoints = parseInt($(votePoints).text());
-                votePoints.text((currentPoints + 1));
 
                 if (voteType == "up") {
                     BadgeVoteUp(postId);
@@ -664,6 +684,10 @@ function AddPostClickEvents() {
             }
         });
     });
+}
+
+function ChangeVoteNumberText(hasVoted, linkObject) {
+    
 }
 
 function AddNewPosts(showMoreLink, posts) {
