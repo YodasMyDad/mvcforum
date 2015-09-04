@@ -334,7 +334,7 @@ namespace MVCForum.Website.ViewModels.Mapping
         public static PostViewModel CreatePostViewModel(Post post, List<Vote> votes, PermissionSet permission, Topic topic, MembershipUser loggedOnUser, Settings settings, List<Favourite> favourites)
         {
             var allowedToVote = (loggedOnUser != null && loggedOnUser.Id != post.User.Id &&
-                                 loggedOnUser.TotalPoints > settings.PointsAllowedToVoteAmount);
+                                 loggedOnUser.TotalPoints >= settings.PointsAllowedToVoteAmount);
 
             // Remove votes where no VotedBy has been recorded
             votes.RemoveAll(x => x.VotedByMembershipUser == null);

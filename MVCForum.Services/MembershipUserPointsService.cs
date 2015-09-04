@@ -59,23 +59,26 @@ namespace MVCForum.Services
         /// <returns></returns>
         public MembershipUserPoints Add(MembershipUserPoints points)
         {
-            // Add Date
-            points.DateAdded = DateTime.UtcNow;
-
-            // Check this point has not already been awarded
-            var canAddPoints = true;
-
-            // Check to see if this has an id
-            if (points.PointsForId != null)
+            if (points.Points != 0)
             {
-                var alreadyHasThisPoint = GetByUser(points.User).Any(x => x.PointsFor == points.PointsFor && x.PointsForId == points.PointsForId);
-                canAddPoints = (alreadyHasThisPoint == false);
-            }
+                // Add Date
+                points.DateAdded = DateTime.UtcNow;
 
-            // If they can ad points let them
-            if (canAddPoints)
-            {
-                return _membershipUserPointsRepository.Add(points);   
+                // Check this point has not already been awarded
+                var canAddPoints = true;
+
+                // Check to see if this has an id
+                if (points.PointsForId != null)
+                {
+                    var alreadyHasThisPoint = GetByUser(points.User).Any(x => x.PointsFor == points.PointsFor && x.PointsForId == points.PointsForId);
+                    canAddPoints = (alreadyHasThisPoint == false);
+                }
+
+                // If they can ad points let them
+                if (canAddPoints)
+                {
+                    return _membershipUserPointsRepository.Add(points);
+                }
             }
 
             // If not just return the same one back

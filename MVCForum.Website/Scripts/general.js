@@ -560,49 +560,56 @@ function AddPostClickEvents() {
 
     $(".votelink").click(function (e) {
         e.preventDefault();
-        var postId = $(this).data('id');
-        var voteType = $(this).data('votetype');
-        var holdingLi = $(this).closest("li");
+        var voteLink = $(this);
+        var postId = voteLink.data('id');
+        var voteType = voteLink.data('votetype');
+        var holdingLi = voteLink.closest("li");
         var holdingUl = holdingLi.closest("ul");
         var votePoints = holdingLi.find(".count");
-        var voteText = $(this).data('votetext');
-        var votedText = $(this).data('votedtext');
-        var hasVoted = $(this).data('hasvoted');
-
+        var voteText = voteLink.data('votetext');
+        var votedText = voteLink.data('votedtext');
+        var hasVoted = voteLink.data('hasvoted');
+       
         // Remove all vote links
-        holdingUl.find(".votelink").fadeOut("fast");
+        //holdingUl.find(".votelink").fadeOut("fast");
 
         var voteUpViewModel = new Object();
         voteUpViewModel.Post = postId;
 
         var voteUrl = "Vote/VoteDownPost";
+        var otherVoteLink = holdingUl.find(".votelink[data-votetype='up']");
         if (voteType == "up") {
             voteUrl = "Vote/VoteUpPost";
+            otherVoteLink = holdingUl.find(".votelink[data-votetype='down']");
+        }
 
-            // Has the user already voted
-            if (hasVoted) {
-                
-            } else {
-                
-            }
+        // We do the show hide/change of votes here for speed in the UI
+        // Change the number up or down
+        var currentPoints = parseInt(votePoints.text());
+        if (hasVoted) {
+            // They are removing their vote
+            votePoints.text((currentPoints - 1));
+            voteLink.text(voteText);
 
+            // So show the other link
+            otherVoteLink.show();
+
+            // Change has voted to false
+            voteLink.data('hasvoted', false);
         } else {
-            
+            // They add adding a vote
+            votePoints.text((currentPoints + 1));
+            voteLink.text(votedText);
+
+            // Hide the other link
+            otherVoteLink.hide();
+
+            // Change has voted to false
+            voteLink.data('hasvoted', true);
         }
 
         // Ajax call to post the view model to the controller
         var strung = JSON.stringify(voteUpViewModel);
-
-        // We do the show hide/change of votes here for speed in the UI
-
-        // No votes
-        // User votes up, vote up is changed to 'voted' amount increased and vote down is hidden
-
-        // Remove vote
-        // Removes vote, 'voted' is changed to vote, amount is decreased and all vote links show
-
-        var currentPoints = parseInt($(votePoints).text());
-        votePoints.text((currentPoints + 1));
 
         $.ajax({
             url: app_base + voteUrl,
@@ -684,10 +691,6 @@ function AddPostClickEvents() {
             }
         });
     });
-}
-
-function ChangeVoteNumberText(hasVoted, linkObject) {
-    
 }
 
 function AddNewPosts(showMoreLink, posts) {

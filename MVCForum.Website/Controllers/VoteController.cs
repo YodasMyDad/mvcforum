@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -63,7 +64,7 @@ namespace MVCForum.Website.Controllers
                     var voter = loggedOnUser;
 
                     // Also get the user that wrote the post
-                    var postWriter = MembershipService.GetUser(post.User.Id);
+                    var postWriter = post.User;
 
                     // Mark the post up or down
                     MarkPostUpOrDown(post, postWriter, voter, PostType.Positive);
@@ -109,7 +110,7 @@ namespace MVCForum.Website.Controllers
                 {
 
                     // Also get the user that wrote the post
-                    var postWriter = MembershipService.GetUser(post.User.Id);
+                    var postWriter = post.User;
 
                     // Mark the post up or down
                     MarkPostUpOrDown(post, postWriter, voter, PostType.Negative);
@@ -131,16 +132,30 @@ namespace MVCForum.Website.Controllers
 
         private void MarkPostUpOrDown(Post post, MembershipUser postWriter, MembershipUser voter, PostType postType)
         {
+            var settings = SettingsService.GetSettings();
             // Check this user is not the post owner
             if (voter.Id != postWriter.Id)
             {
                 // Not the same person, now check they haven't voted on this post before
-                if (post.Votes.All(x => x.User.Id != LoggedOnReadOnlyUser.Id))
+                var votes = post.Votes.Where(x => x.VotedByMembershipUser.Id == LoggedOnReadOnlyUser.Id).ToList();
+                if (votes.Any())
+                {
+                    // Already voted, so delete the vote and remove the points
+                    var votesToDelete = new List<Vote>();
+                    votesToDelete.AddRange(votes);
+                    foreach (var vote in votesToDelete)
+                    {
+                        _voteService.Delete(vote);
+                    }
+
+                    // Update the post with the new points amount
+                    var newPointTotal = (postType == PostType.Negative) ? (post.VoteCount + 1) : (post.VoteCount - 1);
+                    post.VoteCount = newPointTotal;
+                }
+                else
                 {
                     // Points to add or subtract to a user
-                    var usersPoints = (postType == PostType.Negative) ?
-                                        (-SettingsService.GetSettings().PointsDeductedNagativeVote) : (SettingsService.GetSettings().PointsAddedPostiveVote);
-
+                    var usersPoints = (postType == PostType.Negative) ? (-settings.PointsDeductedNagativeVote) : (settings.PointsAddedPostiveVote);
 
                     // Update the post with the new vote of the voter
                     var vote = new Vote

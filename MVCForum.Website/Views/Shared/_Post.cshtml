@@ -123,7 +123,7 @@
                             <span class="count">@upVotes.Count()</span>
                             @if (Model.AllowedToVote)
                             {
-                                <a class="votelink" data-id="@postId" data-votetype="up" data-votetext="@Html.LanguageString("Post.VotedUp")" data-votedtext="@Html.LanguageString("Post.VotedUp")" data-hasvoted="@Model.HasVotedUp.ToString().ToLower()" style="@Html.Raw(Model.HasVotedDown ? "display:none;" : "")">
+                                <a class="votelink" data-id="@postId" data-votetype="up" data-votetext="@Html.LanguageString("Post.VoteUp")" data-votedtext="@Html.LanguageString("Post.VotedUp")" data-hasvoted="@Model.HasVotedUp.ToString().ToLower()" style="@Html.Raw(Model.HasVotedDown ? "display:none;" : "")">
                                     @(Model.HasVotedUp ? Html.LanguageString("Post.VotedUp") : Html.LanguageString("Post.VoteUp"))
                                 </a>
                             }
@@ -134,7 +134,7 @@
                             <span class="count">@downVotes.Count()</span>
                             @if (Model.AllowedToVote)
                             {
-                                <a class="votelink" data-id="@postId" data-votetype="down" data-votetext="@Html.LanguageString("Post.VotedDown")" data-votedtext="@Html.LanguageString("Post.VoteDown")" data-hasvoted="@Model.HasVotedDown.ToString().ToLower()" style="@Html.Raw(Model.HasVotedUp ? "display:none;" : "")">
+                                <a class="votelink" data-id="@postId" data-votetype="down" data-votetext="@Html.LanguageString("Post.VoteDown")" data-votedtext="@Html.LanguageString("Post.VotedDown")" data-hasvoted="@Model.HasVotedDown.ToString().ToLower()" style="@Html.Raw(Model.HasVotedUp ? "display:none;" : "")">
                                     @(Model.HasVotedDown ? Html.LanguageString("Post.VotedDown") : Html.LanguageString("Post.VoteDown"))
                                 </a>
                             }
