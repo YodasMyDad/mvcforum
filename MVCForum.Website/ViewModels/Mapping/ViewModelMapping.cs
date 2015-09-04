@@ -333,13 +333,16 @@ namespace MVCForum.Website.ViewModels.Mapping
         public static PostViewModel CreatePostViewModel(Post post, List<Vote> votes, PermissionSet permission, Topic topic, MembershipUser loggedOnUser, Settings settings, List<Favourite> favourites)
         {
             var allowedToVote = (loggedOnUser != null && loggedOnUser.Id != post.User.Id &&
-                                 loggedOnUser.TotalPoints > settings.PointsAllowedToVoteAmount && 
-                                 votes.All(x => x.User.Id != loggedOnUser.Id));
+                                 loggedOnUser.TotalPoints > settings.PointsAllowedToVoteAmount);
 
+            var hasVotedUp = false;
+            var hasVotedDown = false;
             var hasFavourited = false;
             if (loggedOnUser != null && loggedOnUser.Id != post.User.Id)
             {
-                hasFavourited = favourites.Any(x => x.Member.Id == loggedOnUser.Id);   
+                hasFavourited = favourites.Any(x => x.Member.Id == loggedOnUser.Id);
+                hasVotedUp = votes.All(x => x.Amount > 0 && x.VotedByMembershipUser.Id == loggedOnUser.Id);
+                hasVotedDown = votes.All(x => x.Amount < 0 && x.VotedByMembershipUser.Id == loggedOnUser.Id);
             }
 
             // Check for online status
@@ -355,7 +358,9 @@ namespace MVCForum.Website.ViewModels.Mapping
                 MemberHasFavourited = hasFavourited,
                 Favourites = favourites,
                 PermaLink = string.Concat(topic.NiceUrl, "?", AppConstants.PostOrderBy, "=", AppConstants.AllPosts, "#comment-", post.Id),
-                MemberIsOnline = post.User.LastActivityDate > date
+                MemberIsOnline = post.User.LastActivityDate > date,
+                HasVotedDown = hasVotedDown,
+                HasVotedUp = hasVotedUp
             };
         }
 

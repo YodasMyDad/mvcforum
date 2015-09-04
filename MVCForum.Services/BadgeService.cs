@@ -17,6 +17,10 @@ namespace MVCForum.Services
     public partial class BadgeService : IBadgeService
     {
         private readonly ILocalizationService _localizationService;
+        private readonly IMembershipUserPointsService _membershipUserPointsService;
+        private readonly IBadgeRepository _badgeRepository;
+        private readonly ILoggingService _loggingService;
+        private readonly IActivityService _activityService;
 
         public const int BadgeCheckIntervalMinutes = 10;
 
@@ -46,10 +50,6 @@ namespace MVCForum.Services
             public IBadge BadgeClassInstance { get; set; }
         }
 
-        private readonly IBadgeRepository _badgeRepository;
-        private readonly ILoggingService _loggingService;
-        private readonly IActivityService _activityService;
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -59,12 +59,13 @@ namespace MVCForum.Services
         /// <param name="localizationService"> </param>
         /// <param name="activityService"> </param>
         public BadgeService(IBadgeRepository badgeRepository,
-            ILoggingService loggingService, ILocalizationService localizationService, IActivityService activityService)
+            ILoggingService loggingService, ILocalizationService localizationService, IActivityService activityService, IMembershipUserPointsService membershipUserPointsService)
         {
             _badgeRepository = badgeRepository;
             _loggingService = loggingService;
             _localizationService = localizationService;
             _activityService = activityService;
+            _membershipUserPointsService = membershipUserPointsService;
         }
 
         #region Private static methods
@@ -488,10 +489,12 @@ namespace MVCForum.Services
                                 {
                                     var points = new MembershipUserPoints
                                     {
-                                        DateAdded = DateTime.UtcNow,
-                                        Points = (int)dbBadge.AwardsPoints
+                                        Points = (int)dbBadge.AwardsPoints,
+                                        PointsFor = PointsFor.Badge,
+                                        PointsForId = dbBadge.Id,
+                                        User = user
                                     };
-                                    user.Points.Add(points);
+                                    _membershipUserPointsService.Add(points);
                                 }
                                 user.Badges.Add(dbBadge);
                                 _activityService.BadgeAwarded(badgeMapping.DbBadge, user, DateTime.UtcNow);

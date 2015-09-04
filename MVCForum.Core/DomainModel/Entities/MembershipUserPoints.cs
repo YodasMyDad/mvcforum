@@ -3,6 +3,10 @@ using MVCForum.Utilities;
 
 namespace MVCForum.Domain.DomainModel
 {
+    public enum PointsFor
+    {
+        Post, Vote, Solution, Badge, Tag, Spam, Profile, Manual
+    }
     public partial class MembershipUserPoints : Entity
     {
         public MembershipUserPoints()
@@ -12,7 +16,8 @@ namespace MVCForum.Domain.DomainModel
         public Guid Id { get; set; }
         public int Points { get; set; }
         public DateTime DateAdded { get; set; }
-
+        public PointsFor PointsFor { get; set; }
+        public Guid? PointsForId { get; set; }
         public virtual MembershipUser User { get; set; }
     }
 }

@@ -18,11 +18,15 @@ namespace MVCForum.Data.Repositories
             _context = context as MVCForumContext;
         }
 
-        public IList<MembershipUserPoints> GetByUser(MembershipUser user)
-        {
-            return _context.MembershipUserPoints
-                    .Where(x => x.User.Id == user.Id)
-                    .ToList();
+        public IEnumerable<MembershipUserPoints> GetByUser(MembershipUser user, bool removeTracking = true)
+        {            
+            var users = _context.MembershipUserPoints
+                    .Where(x => x.User.Id == user.Id);
+            if (removeTracking)
+            {
+                return users.AsNoTracking();    
+            }
+            return users;
         }
 
         public MembershipUserPoints Add(MembershipUserPoints points)
@@ -36,16 +40,6 @@ namespace MVCForum.Data.Repositories
             return _context.MembershipUserPoints.FirstOrDefault(x => x.Id == id);
         }
 
-        public void Delete(MembershipUserPoints item)
-        {
-            _context.MembershipUserPoints.Remove(item);
-        }
-
-        public void Delete(int amount, MembershipUser user)
-        {
-            var points = _context.MembershipUserPoints.FirstOrDefault(x => x.Points == amount && x.User.Id == user.Id);
-            Delete(points);
-        }
 
         public void Update(MembershipUserPoints item)
         {
@@ -55,6 +49,50 @@ namespace MVCForum.Data.Repositories
                 throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
             }
             _context.Entry(item).State = EntityState.Modified;
+        }
+
+        public int UserPoints(MembershipUser user)
+        {
+            return _context.MembershipUserPoints.AsNoTracking().Where(x => x.User.Id == user.Id).Sum(x => x.Points);
+        }
+
+        public void Delete(MembershipUser user, PointsFor type, Guid referenceId)
+        {
+            var mp =
+                _context.MembershipUserPoints.Where(
+                    x => x.User.Id == user.Id && x.PointsFor == type && x.PointsForId == referenceId);
+            var mpoints = new List<MembershipUserPoints>();
+            mpoints.AddRange(mp);
+            Delete(mpoints);
+        }
+
+        public void Delete(int amount, MembershipUser user)
+        {
+            var points = _context.MembershipUserPoints.FirstOrDefault(x => x.Points == amount && x.User.Id == user.Id);
+            Delete(points);
+        }
+
+        public void Delete(IEnumerable<MembershipUserPoints> points)
+        {
+            foreach (var membershipUserPoint in points)
+            {
+                _context.MembershipUserPoints.Remove(membershipUserPoint);
+            }
+        }
+
+        public void Delete(MembershipUser user, PointsFor type)
+        {
+            var mp =
+                _context.MembershipUserPoints.Where(
+                    x => x.User.Id == user.Id && x.PointsFor == type);
+            var mpoints = new List<MembershipUserPoints>();
+            mpoints.AddRange(mp);
+            Delete(mpoints);
+        }
+
+        public void Delete(MembershipUserPoints item)
+        {
+            _context.MembershipUserPoints.Remove(item);
         }
 
         public Dictionary<MembershipUser, int> GetCurrentWeeksPoints(int? amountToTake)

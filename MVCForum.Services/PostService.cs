@@ -214,6 +214,9 @@ namespace MVCForum.Services
         public bool Delete(Post post, bool isTopicDelete = false)
         {
 
+            // Remove the points the user got for this post
+            _membershipUserPointsService.Delete(post.User, PointsFor.Post, post.Id);
+
             // If this is coming from a call that is deleting the entire topic, then just delete post
             if (isTopicDelete)
             {
@@ -307,7 +310,9 @@ namespace MVCForum.Services
                 _membershipUserPointsService.Add(new MembershipUserPoints
                                                      {
                                                          Points = _settingsService.GetSettings().PointsAddedPerPost,
-                                                         User = user
+                                                         User = user,
+                                                         PointsFor = PointsFor.Post,
+                                                         PointsForId = newPost.Id
                                                      });
 
                 // add the last post to the topic

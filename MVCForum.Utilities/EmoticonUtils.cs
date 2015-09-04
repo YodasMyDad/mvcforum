@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Specialized;
 using System.Text;
 using System.Web;
 
@@ -7,36 +7,36 @@ namespace MVCForum.Utilities
 {
     public static class EmoticonUtils
     {
-        public static string EmoticonFolder 
+        public static string EmoticonFolder
         {
             get { return VirtualPathUtility.ToAbsolute("~/content/images/emoticons/"); }
         }
-        public static Hashtable GetEmoticonHashTable()
+        public static OrderedDictionary GetEmoticonHashTable()
         {
-            var emoticons = new Hashtable(100)
+            var emoticons = new OrderedDictionary
             {
-                {":)", "facebook-smiley-face-for-comments.png"},
                 {":D", "big-smile-emoticon-for-facebook.png"},
+                {":O", "surprised-emoticon.png"},
+                {":/", "unsure-emoticon.png"},  
+                {":P", "facebook-tongue-out-emoticon.png"},
+                {":)", "facebook-smiley-face-for-comments.png"},                
                 {":(", "facebook-frown-emoticon.png"},
                 {":'(", "facebook-cry-emoticon-crying-symbol.png"},
-                {":P", "facebook-tongue-out-emoticon.png"},
                 {"O:)", "angel-emoticon.png"},
-                {"3:)", "devil-emoticon.png"},
-                {":/", "unsure-emoticon.png"},
-                {">:O", "angry-emoticon.png"},
-                {":O", "surprised-emoticon.png"},
+                {"3:)", "devil-emoticon.png"},              
                 {"-_-", "squinting-emoticon.png"},
                 {":*", "kiss-emoticon.png"},
-                {"^_^", "kiki-emoticon.png"},
-                {">:(", "grumpy-emoticon.png"},
+                {"^_^", "kiki-emoticon.png"},                
                 {":v", "pacman-emoticon.png"},
                 {":3", "curly-lips-emoticon.png"},
                 {"o.O", "confused-emoticon-wtf-symbol-for-facebook.png"},
                 {";)", "wink-emoticon.png"},
                 {"8-)", "glasses-emoticon.png"},
                 {"8| B|", "sunglasses-emoticon.png"}
+                //{">:O", "angry-emoticon.png"},
+                //{">:(", "grumpy-emoticon.png"}
             };
-            
+
             return emoticons;
         }
 
@@ -54,8 +54,17 @@ namespace MVCForum.Utilities
                 {
                     if (inputText.Length - i >= emote.Length && emote.Equals(inputText.Substring(i, emote.Length), StringComparison.InvariantCultureIgnoreCase))
                     {
-                        strEmote = emote;
-                        break;
+                        // Do custom checks in subStringExtraValue to stop emoticons replacing Html
+                        var startIndex = (i >= 3 ? 3 : i);
+                        var length = (startIndex * 2);
+                        var subStringExtraValue = inputText.Substring(i - startIndex, emote.Length + length);
+
+                        // Not brilliant, but for now will stop most cases
+                        if (!subStringExtraValue.Contains("//"))
+                        {
+                            strEmote = emote;
+                            break;
+                        }
                     }
                 }
 

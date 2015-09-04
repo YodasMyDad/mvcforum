@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
@@ -25,14 +26,25 @@ namespace MVCForum.Services
             _membershipUserPointsRepository.Delete(amount, user);
         }
 
+        public void Delete(MembershipUser user, PointsFor type, Guid referenceId)
+        {
+            _membershipUserPointsRepository.Delete(user, type, referenceId);
+        }
+
+        public void Delete(MembershipUser user, PointsFor type)
+        {
+            _membershipUserPointsRepository.Delete(user, type);
+        }
+
         /// <summary>
         /// Return points by user
         /// </summary>
         /// <param name="user"></param>
+        /// <param name="removeTracking">Set this to false if you want to use the results in a database update/insert method</param>
         /// <returns></returns>
-        public IList<MembershipUserPoints> GetByUser(MembershipUser user)
+        public IEnumerable<MembershipUserPoints> GetByUser(MembershipUser user, bool removeTracking = true)
         {
-            return _membershipUserPointsRepository.GetByUser(user);
+            return _membershipUserPointsRepository.GetByUser(user, removeTracking);
         }
 
         /// <summary>
@@ -42,8 +54,27 @@ namespace MVCForum.Services
         /// <returns></returns>
         public MembershipUserPoints Add(MembershipUserPoints points)
         {
+            // Add Date
             points.DateAdded = DateTime.UtcNow;
-            return _membershipUserPointsRepository.Add(points);
+
+            // Check this point has not already been awarded
+            var canAddPoints = true;
+
+            // Check to see if this has an id
+            if (points.PointsForId != null)
+            {
+                var alreadyHasThisPoint = GetByUser(points.User).Any(x => x.PointsFor == points.PointsFor && x.PointsForId == points.PointsForId);
+                canAddPoints = (alreadyHasThisPoint == false);
+            }
+
+            // If they can ad points let them
+            if (canAddPoints)
+            {
+                return _membershipUserPointsRepository.Add(points);   
+            }
+
+            // If not just return the same one back
+            return points;
         }
 
         /// <summary>
@@ -79,6 +110,25 @@ namespace MVCForum.Services
         public Dictionary<MembershipUser, int> GetAllTimePointsNegative(int? amountToTake)
         {
             return _membershipUserPointsRepository.GetAllTimePointsNegative(amountToTake);
+        }
+
+        public bool SyncUserPoints(MembershipUser user)
+        {
+            var needsDbUpdate = false;
+            var currentPoints = user.Points.Sum(x => x.Points);
+            var dbPoints = _membershipUserPointsRepository.UserPoints(user);
+            if (currentPoints != dbPoints)
+            {
+                // TODO - Update member points here
+
+                needsDbUpdate = true;
+            }
+            return needsDbUpdate;
+        }
+
+        public int PointsByType(MembershipUser user, PointsFor type)
+        {
+            return GetByUser(user).Where(x => x.PointsFor == type).Sum(x => x.Points);
         }
     }
 }

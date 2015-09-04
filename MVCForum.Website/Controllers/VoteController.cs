@@ -137,27 +137,30 @@ namespace MVCForum.Website.Controllers
                 // Not the same person, now check they haven't voted on this post before
                 if (post.Votes.All(x => x.User.Id != LoggedOnReadOnlyUser.Id))
                 {
-
-                    // Get a db user
-                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
-
                     // Points to add or subtract to a user
                     var usersPoints = (postType == PostType.Negative) ?
                                         (-SettingsService.GetSettings().PointsDeductedNagativeVote) : (SettingsService.GetSettings().PointsAddedPostiveVote);
 
-                    // Update the users points who wrote the post
-                    _membershipUserPointsService.Add(new MembershipUserPoints { Points = usersPoints, User = postWriter });
 
                     // Update the post with the new vote of the voter
                     var vote = new Vote
                     {
                         Post = post,
-                        User = voter,
+                        User = postWriter,
                         Amount = (postType == PostType.Negative) ? (-1) : (1),
-                        VotedByMembershipUser = loggedOnUser,
+                        VotedByMembershipUser = voter,
                         DateVoted = DateTime.UtcNow
                     };
                     _voteService.Add(vote);
+
+                    // Update the users points who wrote the post
+                    _membershipUserPointsService.Add(new MembershipUserPoints
+                    {
+                        Points = usersPoints,
+                        User = postWriter,
+                        PointsFor = PointsFor.Vote,
+                        PointsForId = vote.Id
+                    });
 
                     // Update the post with the new points amount
                     var newPointTotal = (postType == PostType.Negative) ? (post.VoteCount - 1) : (post.VoteCount + 1);

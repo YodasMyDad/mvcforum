@@ -150,20 +150,14 @@ namespace MVCForum.Website.Controllers
 
                 if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[AppConstants.PermissionDeletePosts].IsTicked)
                 {
-                    var postUser = post.User;
-
                     var deleteTopic = _postService.Delete(post);
-                    unitOfWork.SaveChanges();
 
-                    var postIdList = new List<Guid>();
+                    unitOfWork.SaveChanges();
+                    
                     if (deleteTopic)
                     {
-                        postIdList = topic.Posts.Select(x => x.Id).ToList();
                         _topicService.Delete(topic);
                     }
-
-                    // Remove the points the user got for this post
-                    _membershipUserPointsService.Delete(SettingsService.GetSettings().PointsAddedPerPost, postUser);
 
                     try
                     {

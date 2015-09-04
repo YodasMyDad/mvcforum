@@ -296,9 +296,11 @@ namespace MVCForum.Services
                 var postsToDelete = new List<Post>();
                 postsToDelete.AddRange(topic.Posts);
                 foreach (var post in postsToDelete)
-                {
+                {                    
+                    // Delete the post
                     _postService.Delete(post, true);
                 } 
+                topic.Posts.Clear();
             }
 
             if (topic.TopicNotifications != null)
@@ -371,7 +373,9 @@ namespace MVCForum.Services
                         _membershipUserPointsService.Add(new MembershipUserPoints
                                                              {
                                                                  Points = _settingsService.GetSettings().PointsAddedForSolution,
-                                                                 User = solutionWriter
+                                                                 User = solutionWriter,
+                                                                 PointsFor = PointsFor.Solution,
+                                                                 PointsForId = post.Id
                                                              });
                     }
 

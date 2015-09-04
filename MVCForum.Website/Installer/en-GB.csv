@@ -13,7 +13,9 @@ Topic.InCategory, in
 Topic.LatestBy,Latest By
 Topic.Views,Views
 Post.VoteUp,Vote Up
+Post.VotedUp,Voted
 Post.VoteDown,Vote Down
+Post.VotedDown,Voted
 Post.IsSolution,Is Solution
 Post.PostedThis,posted this
 Post.Posts,Posts
@@ -27,8 +29,8 @@ LogOn.LogOff,Log Off
 Post.PleaseWait,Please Wait...
 Topic.DiscussionTaggedWith,Discussions Tagged With: 
 Topic.TitleFallBack,Discussion Topic
-Topic.Subscribe,Subscribe
-Topic.UnSubscribe,Unsubscribe
+Topic.Subscribe,Follow
+Topic.UnSubscribe,UnFollow
 Topic.IsLocked,Topic Is Locked
 Topic.CreateDiscussion,Create Discussion
 Topic.TagThisTopic,Tag this topic
@@ -90,10 +92,8 @@ Leaderboard.LeaderboardTitle,Global Leaderboard
 Home.LatestDiscussions,Latest Discussions
 Home.Rss,Rss
 Activity.ActivityTitle,Activity
-Notification.SubscribeByEmail,Subscribe Via Email
-Notification.UnSubscribeByEmail,Unsubscribe From Emails
-Notification.Subscribe,Subscribe
-Notification.UnSubscribe,UnSubscribe
+Notification.Subscribe,Follow
+Notification.UnSubscribe,UnFollow
 Category.NoDiscussions,Currently no discussions in this category
 Category.CategoriesSideHeading,Categories
 PM.RecipientUsername,Recipient Username
@@ -212,7 +212,7 @@ Members.Profile.IsSocialAccount,Social Account
 Date.JustNow,Just now
 Date.OneMinuteAgo,1 minute ago
 Date.MinutesAgo,{0} minutes ago
- Date.OneHourAgo,1 hour ago
+Date.OneHourAgo,1 hour ago
 Date.HoursAgo,{0} hours ago
 Date.Yesterday,yesterday
 Date.DaysAgo,{0} days ago
@@ -244,8 +244,6 @@ Category.AllCategories,All Categories
 Category.MostRecent,Most recent:
 Members.LogonFacebookButton,Login with Facebook
 Members.LogonGoogleButton,Login with Google
-Members.LogonYahooButton,Login with Yahoo
-Members.LogonTwitterButton,Login with Twitter
 Twitter.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Twitter id and secret key in the web.config
 Error.EmailIsBanned,The email address or domain you are trying to use is banned
 Post.FilesUploaded,Files uploaded successfully
@@ -312,9 +310,9 @@ Favourites.PageTitle,My Favourites
 Favourites.NoMemberFavourites,You have not starred any posts
 Following.PageTitle,Topics & Categories
 Following.Categories,Categories you are following
-SubscribedCats.NothingToShow,You are not subscribed to any Categories
+SubscribedCats.NothingToShow,You are not following to any Categories
 Following.Topics,Topics your are following
-SubscribedTopics.NothingToShow,You are not subscribed to any Topics
+SubscribedTopics.NothingToShow,You are not following to any Topics
 PostedIn.PageTitle,Topics & Posts you have posted in
 Topic.Label.Tags,Add Tag
 Topic.Label.UploadFiles,Upload Files

@@ -776,12 +776,6 @@ namespace MVCForum.Website.Controllers
                                 }
                             }
 
-                            // Update the users points score for posting
-                            _membershipUserPointsService.Add(new MembershipUserPoints
-                            {
-                                Points = SettingsService.GetSettings().PointsAddedPerPost,
-                                User = loggedOnUser
-                            });
 
                             // Check for moderation
                             if (category.ModerateTopics == true)
@@ -798,6 +792,15 @@ namespace MVCForum.Website.Controllers
 
                             // Now create and add the post to the topic
                             var topicPost = _topicService.AddLastPost(topic, topicViewModel.Content);
+
+                            // Update the users points score for posting
+                            _membershipUserPointsService.Add(new MembershipUserPoints
+                            {
+                                Points = SettingsService.GetSettings().PointsAddedPerPost,
+                                User = loggedOnUser,
+                                PointsFor = PointsFor.Post,
+                                PointsForId = topicPost.Id
+                            });
 
                             // Now check its not spam
                             var akismetHelper = new AkismetHelper(SettingsService);

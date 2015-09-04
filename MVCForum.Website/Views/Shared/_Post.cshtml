@@ -124,8 +124,8 @@
                             <span class="count">@upVotes.Count()</span>
                             @if (Model.AllowedToVote)
                             {
-                                <a class="votelink" data-id="@postId" data-votetype="up">
-                                    @Html.LanguageString("Post.VoteUp")
+                                <a class="votelink" data-id="@postId" data-votetype="up" style="@Html.Raw(Model.HasVotedDown ? "display:none;" : "")">
+                                    @(Model.HasVotedUp ? Html.LanguageString("Post.VotedUp") : Html.LanguageString("Post.VoteUp"))
                                 </a>
                             }
                         </li>
@@ -135,8 +135,8 @@
                             <span class="count">@downVotes.Count()</span>
                             @if (Model.AllowedToVote)
                             {
-                                <a class="votelink" data-id="@postId" data-votetype="down">
-                                    @Html.LanguageString("Post.VoteDown")
+                                <a class="votelink" data-id="@postId" data-votetype="down" style="@Html.Raw(Model.HasVotedUp ? "display:none;" : "")">
+                                    @(Model.HasVotedDown ? Html.LanguageString("Post.VotedDown") : Html.LanguageString("Post.VoteDown"))
                                 </a>
                             }
 

@@ -117,7 +117,7 @@ namespace MVCForum.Data.Repositories
 
         public TopicTag Get(string tag)
         {
-            return _context.TopicTag.FirstOrDefault(x => x.Tag.Equals(tag));
+            return _context.TopicTag.FirstOrDefault(x => x.Slug.Equals(tag));
         }
 
         public void Delete(TopicTag item)
