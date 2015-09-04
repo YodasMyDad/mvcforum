@@ -1,15 +1,8 @@
 ﻿@using MVCForum.Website.Application
-@using Quartz
-@using Quartz.Impl
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = Html.Settings().PageTitle ?? Html.Settings().ForumName;
     ViewBag.MetaDesc = Html.Settings().MetaDesc;
-
-    @*ISchedulerFactory sf = new StdSchedulerFactory();
-    var sched = sf.GetScheduler();
-    var job = JobKey.Create("MarkAsSolutionReminderJob");
-    sched.TriggerJob(job);*@
 }
     
 

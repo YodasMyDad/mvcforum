@@ -781,6 +781,75 @@ namespace MVCForum.Utilities
         #endregion
 
         #region Html Element Helpers
+
+        public static string AppendDomainToImageUrlInHtml(string html, string domain)
+        {
+            var htmlDocument = new HtmlDocument();
+            try
+            {
+                htmlDocument.LoadHtml(html);
+                var nodes = htmlDocument.DocumentNode.SelectNodes("//img");
+                if (nodes != null && nodes.Any())
+                {
+                    foreach (var image in nodes)
+                    {
+                        if (image != null)
+                        {
+                            HtmlAttribute imageUrl = image.Attributes[@"src"];
+                            if (imageUrl != null && !imageUrl.Value.Contains("http"))
+                            {
+                                imageUrl.Value = string.Concat(domain, imageUrl.Value);
+                            }
+                        }
+                    }
+
+                    using (var writer = new StringWriter())
+                    {
+                        htmlDocument.Save(writer);
+                        return writer.ToString();
+
+                    }
+                }
+            }
+            catch
+            {
+                // Do nothing
+            }
+
+            return html;
+        }
+
+        public static IList<string> GetAmountOfImagesUrlFromHtml(this string html, int amount = 1)
+        {
+            var images = new List<string>();
+            try
+            {
+                var htmlDocument = new HtmlDocument();
+                htmlDocument.LoadHtml(html);
+                var nodes = htmlDocument.DocumentNode.SelectNodes("//img");
+                if (nodes != null && nodes.Any())
+                {
+                    foreach (var image in nodes.Take(amount))
+                    {
+                        if (image != null)
+                        {
+                            var imageUrl = image.Attributes[@"src"];
+                            if (imageUrl != null)
+                            {
+                                images.Add(imageUrl.Value);
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Do nothing
+            }
+
+            return images;
+        }
+
         /// <summary>
         /// Returns a HTML link
         /// </summary>

@@ -66,6 +66,7 @@ namespace MVCForum.Website.Controllers
 
                 try
                 {
+                    var permissions = RoleService.GetPermissions(null, UsersRole);
                     var settings = SettingsService.GetSettings();
                     // Check if private messages are enabled
                     if (!settings.EnablePrivateMessages || LoggedOnReadOnlyUser.DisablePrivateMessages == true)
@@ -93,6 +94,9 @@ namespace MVCForum.Website.Controllers
                         email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
                         _emailService.SendMail(email);
                     }
+
+                    // Set editor permissions
+                    ViewBag.ImageUploadType = permissions[AppConstants.PermissionInsertEditorImages].IsTicked ? "forumimageinsert" : "image";
 
                     unitOfWork.Commit();
 
@@ -196,6 +200,7 @@ namespace MVCForum.Website.Controllers
 
                                     var sb = new StringBuilder();
                                     sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("PM.NewPrivateMessageBody"), LoggedOnReadOnlyUser.UserName));
+                                    sb.Append(AppHelpers.ConvertPostContent(createPrivateMessageViewModel.Message));
                                     email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
                                     _emailService.SendMail(email);
                                 }

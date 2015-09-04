@@ -7,6 +7,7 @@ using System.Web.Hosting;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
@@ -146,10 +147,14 @@ namespace MVCForum.Services
         /// <param name="emails"></param>
         public void SendMail(List<Email> emails)
         {
+            var settings = _settingsService.GetSettings();
             // Add all the emails to the email table
             // They are sent every X seconds by the email sending task
             foreach (var email in emails)
             {
+
+                // Sort local images in emails
+                email.Body = StringUtils.AppendDomainToImageUrlInHtml(email.Body, settings.ForumUrl.TrimEnd('/'));
                 _emailRepository.Add(email);
             }
         }
