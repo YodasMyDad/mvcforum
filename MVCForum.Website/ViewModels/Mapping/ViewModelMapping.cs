@@ -251,6 +251,10 @@ namespace MVCForum.Website.ViewModels.Mapping
             var favouriteService = ServiceFactory.Get<IFavouriteService>();
 
             var userIsAuthenticated = loggedOnUser != null;
+
+            // Check for online status
+            var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
+
             var viewModel = new TopicViewModel
             {
                 Permissions = permission,
@@ -260,7 +264,8 @@ namespace MVCForum.Website.ViewModels.Mapping
                 PageIndex = pageIndex,
                 TotalCount = totalCount,
                 TotalPages = totalPages,
-                LastPostPermaLink = string.Concat(topic.NiceUrl, "?", AppConstants.PostOrderBy, "=", AppConstants.AllPosts, "#comment-", topic.LastPost.Id)
+                LastPostPermaLink = string.Concat(topic.NiceUrl, "?", AppConstants.PostOrderBy, "=", AppConstants.AllPosts, "#comment-", topic.LastPost.Id),
+                MemberIsOnline = topic.User.LastActivityDate > date,
             };
           
             if (starterPost == null)

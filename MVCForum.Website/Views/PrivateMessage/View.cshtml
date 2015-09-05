@@ -10,9 +10,10 @@
         <div class="@(Model.IsAjaxRequest ? "col-md-12" : "col-md-8 col-md-offset-2")">
             @if (Model.IsAjaxRequest)
             {
-         
-                   <span class="label label-success">@Html.Lang("PM.MemberIsOnline")</span>
-             
+                if (Model.FromUserIsOnline)
+                {
+                    <span class="label label-success">@Html.Lang("PM.MemberIsOnline")</span>
+                }
             }
             else
             {

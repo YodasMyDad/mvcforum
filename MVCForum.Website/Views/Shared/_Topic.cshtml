@@ -1,5 +1,4 @@
 ﻿@using MVCForum.Utilities
-@using MVCForum.Website
 @model MVCForum.Website.ViewModels.TopicViewModel
 @{
     var postToolTip = string.Concat(StringUtils.ReturnAmountWordsFromString(StringUtils.StripHtmlFromString(Model.StarterPost.Post.PostContent), 50), "....");
@@ -13,6 +12,12 @@
             <a href="@Model.Topic.User.NiceUrl">
                 <img src="@Model.Topic.User.MemberImage(SiteConstants.GravatarTopicSize)" alt="@Model.Topic.User.UserName">
             </a>
+            @if (Model.MemberIsOnline)
+            {
+                <span class="label label-success">
+                    @Html.Lang("Post.MemberIsOnline")
+                </span>
+            }
         </div>
 
         <div class="rowdetails">

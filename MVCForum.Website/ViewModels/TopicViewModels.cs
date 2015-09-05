@@ -18,6 +18,7 @@ namespace MVCForum.Website.ViewModels
     {
         public Topic Topic { get; set; }
         public PermissionSet Permissions { get; set; }
+        public bool MemberIsOnline { get; set; }
 
         // Poll
         public PollViewModel Poll { get; set; }

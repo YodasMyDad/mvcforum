@@ -274,6 +274,7 @@ namespace MVCForum.Website.Controllers
 
                     // Now order them into an order of messages
                     var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
+
                     var viewModel = new ViewPrivateMessageViewModel
                     {
                         From = userFrom,
