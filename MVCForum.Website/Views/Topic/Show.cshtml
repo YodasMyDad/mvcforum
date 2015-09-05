@@ -126,22 +126,24 @@
         @{
             Html.RenderPartial("_Post", Model.StarterPost);
         }
-        <div class="row topicstarterpostbeginpostsheading">
-            <div class="col-md-8 topicstarterpostcomments">
-                @(Model.TotalCount) @Html.LanguageString("Topic.CommentsDetails")
+        @if (Model.TotalCount > 0)
+        {
+            <div class="row topicstarterpostbeginpostsheading">
+                <div class="col-md-8 topicstarterpostcomments">
+                    @(Model.TotalCount) @Html.LanguageString("Topic.CommentsDetails")
+                </div>
+                <div class="col-md-4 topicpostorderfilter">
+                    @if ((Model.TotalCount - 1) > 0)
+                    {
+                        <text> @Html.LanguageString("PostFilter.OrderBy")
+                        <a class="orderfilerlink @(string.IsNullOrEmpty(qs) ? "orderfilerlinkactive" : "")" href="@Model.Topic.NiceUrl">@Html.LanguageString("PostFilter.Standard")</a> |
+                        <a class="orderfilerlink @(qs.Contains(PostOrderBy.Newest.ToString()) ? "orderfilerlinkactive" : "")" href="?@AppConstants.PostOrderBy=@PostOrderBy.Newest.ToString()">@Html.LanguageString("PostFilter.Newest")</a> |
+                        <a class="orderfilerlink @(qs.Contains(PostOrderBy.Votes.ToString()) ? "orderfilerlinkactive" : "")" href="?@AppConstants.PostOrderBy=@PostOrderBy.Votes.ToString()">@Html.LanguageString("PostFilter.Votes")</a>
+                        </text>
+                    }
+                </div>
             </div>
-            <div class="col-md-4 topicpostorderfilter">
-                @if ((Model.TotalCount - 1) > 0)
-                {
-                    <text> @Html.LanguageString("PostFilter.OrderBy")
-                    <a class="orderfilerlink @(string.IsNullOrEmpty(qs) ? "orderfilerlinkactive" : "")" href="@Model.Topic.NiceUrl">@Html.LanguageString("PostFilter.Standard")</a> |
-                    <a class="orderfilerlink @(qs.Contains(PostOrderBy.Newest.ToString()) ? "orderfilerlinkactive" : "")" href="?@AppConstants.PostOrderBy=@PostOrderBy.Newest.ToString()">@Html.LanguageString("PostFilter.Newest")</a> |
-                    <a class="orderfilerlink @(qs.Contains(PostOrderBy.Votes.ToString()) ? "orderfilerlinkactive" : "")" href="?@AppConstants.PostOrderBy=@PostOrderBy.Votes.ToString()">@Html.LanguageString("PostFilter.Votes")</a>
-                    </text>
-                }
-            </div>
-        </div>
-
+        }
     </div>
 
     @foreach (var post in Model.Posts)

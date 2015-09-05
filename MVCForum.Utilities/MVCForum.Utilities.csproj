@@ -112,6 +112,7 @@
     <Compile Include="InstallerHelper.cs" />
     <Compile Include="LanguageUtils.cs" />
     <Compile Include="Markdown.cs" />
+    <Compile Include="NodePositions.cs" />
     <Compile Include="PorterStemmingAlgorithm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CsvReader.cs" />

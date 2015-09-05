@@ -582,12 +582,8 @@ namespace MVCForum.Utilities
                 return html;
             }
 
-            // The reason we have this option, is using the santiser with the MarkDown editor 
-            // causes problems with line breaks.
-            if (useXssSantiser)
-            {
-                return Sanitizer.GetSafeHtmlFragment(html);
-            }
+            // clear the flags on P so unclosed elements in P will be auto closed.
+            HtmlNode.ElementsFlags.Remove("p");
 
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
@@ -652,7 +648,31 @@ namespace MVCForum.Utilities
                 }
             }
 
-            return doc.DocumentNode.WriteTo();
+            // build a list of nodes ordered by stream position
+            var pos = new NodePositions(doc);
+
+            // browse all tags detected as not opened
+            foreach (var error in doc.ParseErrors.Where(e => e.Code == HtmlParseErrorCode.TagNotOpened))
+            {
+                // find the text node just before this error
+                var last = pos.Nodes.OfType<HtmlTextNode>().LastOrDefault(n => n.StreamPosition < error.StreamPosition);
+                if (last != null)
+                {
+                    // fix the text; reintroduce the broken tag
+                    last.Text = error.SourceText.Replace("/", "") + last.Text + error.SourceText;
+                }
+            }
+
+            var finishedHtml = doc.DocumentNode.WriteTo();
+
+            // The reason we have this option, is using the santiser with the MarkDown editor 
+            // causes problems with line breaks.
+            if (useXssSantiser)
+            {
+                return Sanitizer.GetSafeHtmlFragment(finishedHtml);
+            }
+
+            return finishedHtml;
         }
 
         public static string RemoveUnwantedTags(string html)
@@ -803,12 +823,7 @@ namespace MVCForum.Utilities
                         }
                     }
 
-                    using (var writer = new StringWriter())
-                    {
-                        htmlDocument.Save(writer);
-                        return writer.ToString();
-
-                    }
+                    return htmlDocument.DocumentNode.WriteTo();
                 }
             }
             catch
