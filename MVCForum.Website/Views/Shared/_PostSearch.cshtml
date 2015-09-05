@@ -18,7 +18,9 @@
     <div class="rowdetails clearfix">
 
         <div class="postdetails">
-            <h5 class="topiccategory"><a href="@Html.Raw(Model.PermaLink)">@Html.Raw(Model.ParentTopic.Name)</a> <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> <a href="@Model.ParentTopic.Category.NiceUrl">@Html.Raw(Model.ParentTopic.Category.Name)</a></h5>
+            <h5 class="topiccategory">
+                <a href="@Model.ParentTopic.Category.NiceUrl">@Html.Raw(Model.ParentTopic.Category.Name)</a> <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> <a href="@Html.Raw(Model.PermaLink)">@Html.Raw(Model.ParentTopic.Name)</a> 
+            </h5>
             <div class="postbodytop">
                 <a class="postmember-@postId" href="@Html.Raw(Model.Post.User.NiceUrl)">@Html.Raw(Model.Post.User.UserName)</a>
                 @Html.LanguageString("Post.PostedThis")
