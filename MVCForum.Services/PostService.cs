@@ -179,7 +179,6 @@ namespace MVCForum.Services
         public Post Add(Post post)
         {
             post = SanitizePost(post);
-            post.SearchField = SortSearchField(post.IsTopicStarter, post.Topic, post.Topic.Tags);
             return _postRepository.Add(post);
         }
 

@@ -868,6 +868,9 @@ namespace MVCForum.Website.Controllers
                                 _topicTagService.Add(topicViewModel.Tags.ToLower(), topic);
                             }
 
+                            // After tags sort the search field for the post
+                            topicPost.SearchField = _postService.SortSearchField(topicPost.IsTopicStarter, topic, topic.Tags);
+
                             // Subscribe the user to the topic as they have checked the checkbox
                             if (topicViewModel.SubscribeToTopic)
                             {
