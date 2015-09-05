@@ -521,6 +521,9 @@ namespace MVCForum.Website.Controllers
                                     topic.Pending = true;
                                     topicPostInModeration = true;
                                 }
+
+                                // Sort the post search field
+                                post.SearchField = _postService.SortSearchField(post.IsTopicStarter, topic, topic.Tags);
                             }
                             else
                             {

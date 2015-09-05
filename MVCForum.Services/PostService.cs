@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Events;
@@ -178,6 +179,7 @@ namespace MVCForum.Services
         public Post Add(Post post)
         {
             post = SanitizePost(post);
+            post.SearchField = SortSearchField(post.IsTopicStarter, post.Topic, post.Topic.Tags);
             return _postRepository.Add(post);
         }
 
@@ -303,7 +305,7 @@ namespace MVCForum.Services
                                    DateEdited = DateTime.UtcNow
                                };
 
-            newPost = SanitizePost(newPost);
+            // Sort the search field out
 
             var category = topic.Category;
             if (category.ModeratePosts == true)
@@ -337,6 +339,25 @@ namespace MVCForum.Services
             }
 
             return newPost;
+        }
+
+        public string SortSearchField(bool isTopicStarter, Topic topic, IList<TopicTag> tags)
+        {
+            var formattedSearchField = string.Empty;
+            if (isTopicStarter)
+            {
+                formattedSearchField = topic.Name;
+            }
+            if (tags != null && tags.Any())
+            {
+                var sb = new StringBuilder();
+                foreach (var topicTag in tags)
+                {
+                    sb.Append(string.Concat(topicTag.Tag, " "));
+                }
+                formattedSearchField = !string.IsNullOrEmpty(formattedSearchField) ? string.Concat(formattedSearchField, " ", sb.ToString()) : sb.ToString();
+            }
+            return formattedSearchField.Trim();
         }
     }
 }

@@ -221,6 +221,11 @@ section.content-strip {
     }
 }
 
+// My tools button
+.mytoolslink {
+    span.badge {background-color:$color-global-grey-blue; color:#000; font-weight:normal;}
+}
+
 // Breadcrumb
 
 .breadcrumb { background: none; padding: 0 0 15px 0; margin: -12px 0 0 0; font-size: 12px;
@@ -347,10 +352,11 @@ section.content-strip {
 
 .topicrow { padding: 15px;
     p {
-        &.category { line-height: 16px; font-size: 12px; color: #b3b3b3; padding: 0 0 0 10px; margin: 0; border-left: 3px solid #bd2a38;
+        &.category { line-height: 16px; font-size: 12px; color: #b3b3b3; padding: 0 0 0 10px; margin: 0; border-left: 3px solid #ccc;
             a, a:visited { color: #727272;
                 &:hover, &:focus { color: $font-lighter-base-color; }
             }
+            &.categorysolvedtrue{border-left: 3px solid $color-global-green !important;}
         }
     }
     .rowdetails {
@@ -376,6 +382,15 @@ section.content-strip {
 
 .topicrow-slim { padding: 8px;
     .rowdetails { margin: 0; }
+}
+
+// Search Post
+.searchpost {
+    h5 {
+        &.topiccategory {
+            .glyphicon {font-size:13px;}
+        }
+    }
 }
 
 // Topic Poll

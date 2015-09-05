@@ -18,6 +18,7 @@ namespace MVCForum.Data.Mapping
             Property(x => x.FlaggedAsSpam).IsOptional();
             Property(x => x.IpAddress).IsOptional().HasMaxLength(50);
             Property(x => x.Pending).IsOptional();
+            Property(x => x.SearchField).IsOptional();
 
             HasMany(x => x.Votes).WithRequired(x => x.Post)
                 .Map(x => x.MapKey("Post_Id"))

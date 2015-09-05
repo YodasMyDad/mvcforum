@@ -253,7 +253,7 @@ namespace MVCForum.Data.Repositories
             foreach (var term in searchTerms)
             {
                 var sTerm = term.Trim();
-                query = query.Where(x => x.PostContent.ToUpper().Contains(sTerm) || x.Topic.Name.ToUpper().Contains(sTerm));
+                query = query.Where(x => x.PostContent.ToUpper().Contains(sTerm) || x.SearchField.ToUpper().Contains(sTerm));
             }
 
             // Get the count

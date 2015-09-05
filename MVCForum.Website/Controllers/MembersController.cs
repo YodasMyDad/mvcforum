@@ -1029,20 +1029,29 @@ namespace MVCForum.Website.Controllers
         public PartialViewResult SideAdminPanel()
         {
             var count = 0;
+            var settings = SettingsService.GetSettings();
             if (LoggedOnReadOnlyUser != null)
             {
                 count = _privateMessageService.NewPrivateMessageCount(LoggedOnReadOnlyUser.Id);
             }
 
-            if (count > 0)
+            //if (count > 0)
+            //{
+            //    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            //    {
+            //        Message = LocalizationService.GetResourceString("Member.HasNewPrivateMessages"),
+            //        MessageType = GenericMessages.info
+            //    };
+            //}
+
+            var viewModel = new ViewAdminSidePanelViewModel
             {
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                {
-                    Message = LocalizationService.GetResourceString("Member.HasNewPrivateMessages"),
-                    MessageType = GenericMessages.info
-                };
-            }
-            return PartialView(new ViewAdminSidePanelViewModel { CurrentUser = LoggedOnReadOnlyUser, NewPrivateMessageCount = count });
+                CurrentUser = LoggedOnReadOnlyUser,
+                NewPrivateMessageCount = count,
+                CanViewPrivateMessages = settings.EnablePrivateMessages && LoggedOnReadOnlyUser != null &&  LoggedOnReadOnlyUser.DisablePrivateMessages != true
+            };
+            
+            return PartialView(viewModel);
         }
 
         public PartialViewResult AdminMemberProfileTools()

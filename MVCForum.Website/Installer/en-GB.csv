@@ -13,9 +13,9 @@ Topic.InCategory, in
 Topic.LatestBy,Latest By
 Topic.Views,Views
 Post.VoteUp,Vote Up
-Post.VotedUp,Voted
+Post.VotedUp,Voted Up
 Post.VoteDown,Vote Down
-Post.VotedDown,Voted
+Post.VotedDown,Voted Down
 Post.IsSolution,Is Solution
 Post.PostedThis,posted this
 Post.Posts,Posts

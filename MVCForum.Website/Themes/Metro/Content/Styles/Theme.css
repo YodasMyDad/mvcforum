@@ -487,6 +487,12 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
   }
 }
 
+.mytoolslink span.badge {
+  background-color: #ecf0f1;
+  color: #000;
+  font-weight: normal;
+}
+
 .breadcrumb {
   background: none;
   padding: 0 0 15px 0;
@@ -758,7 +764,7 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
   color: #b3b3b3;
   padding: 0 0 0 10px;
   margin: 0;
-  border-left: 3px solid #bd2a38;
+  border-left: 3px solid #ccc;
 }
 
 .topicrow p.category a, .topicrow p.category a:visited {
@@ -767,6 +773,10 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 
 .topicrow p.category a:hover, .topicrow p.category a:focus, .topicrow p.category a:visited:hover, .topicrow p.category a:visited:focus {
   color: #636267;
+}
+
+.topicrow p.category.categorysolvedtrue {
+  border-left: 3px solid #2abd54 !important;
 }
 
 .topicrow .rowdetails h3 {
@@ -833,6 +843,10 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 
 .topicrow-slim .rowdetails {
   margin: 0;
+}
+
+.searchpost h5.topiccategory .glyphicon {
+  font-size: 13px;
 }
 
 .pollcontainer {

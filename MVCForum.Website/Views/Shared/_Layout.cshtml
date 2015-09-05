@@ -91,21 +91,10 @@
                                 <li><a href="@Url.Action("Register", "Members")">@Html.LanguageString("Layout.Nav.Register")</a></li>
                             }
                             <li><a href="@Url.Action("LogOn", "Members")">@Html.LanguageString("Layout.Nav.Logon")</a></li>
-                        }
-                        @*<li><a href="http://www.mvcforum.com">Main Website</a></li>*@
+                        }                        
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">@Html.LanguageString("SideBox.MyTools")<span class="caret"></span></a>
-                                <ul class="dropdown-menu" role="menu">
-                                    @if (User.IsInRole(AppConstants.AdminRoleName))
-                                    {
-                                        <li><a href="@Url.Action("Index", "Admin", new {area = "Admin"}, null)">@Html.LanguageString("Layout.Nav.Admin")</a></li>
-                                    }
-                                    <li>@Html.ActionLink(Html.LanguageString("Members.SearchMembers"), "Search", "Members")</li>
-                                    @Html.Action("SideAdminPanel", "Members")
-                                </ul>
-                            </li>
+                            @Html.Action("SideAdminPanel", "Members")
                         }
                     </ul>
 

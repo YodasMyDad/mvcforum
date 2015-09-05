@@ -26,11 +26,17 @@ namespace MVCForum.Website.ViewModels
         public Topic Topic { get; set; }
     }
 
+    public class PostLikedByViewModel
+    {
+        public List<Vote> Votes { get; set; }
+        public Post Post { get; set; }
+    }
+
     public class PostViewModel
     {
         public Post Post { get; set; }
         public string PermaLink { get; set; }
-        public List<Vote> Votes { get; set; } 
+        public List<Vote> Votes { get; set; }
         public List<Favourite> Favourites { get; set; } 
         public Topic ParentTopic { get; set; }
         public PermissionSet Permissions { get; set; }

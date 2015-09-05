@@ -40,6 +40,11 @@ namespace MVCForum.Website.Controllers
             {
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
+                    if (!string.IsNullOrEmpty(term))
+                    {
+                        term = term.Trim();
+                    }
+
                     // Get the global settings
                     var settings = SettingsService.GetSettings();
 

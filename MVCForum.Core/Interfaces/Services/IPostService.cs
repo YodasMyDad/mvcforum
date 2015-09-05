@@ -26,5 +26,6 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<Post> GetSolutionsByMember(Guid memberId, List<Category> allowedCategories);
         int PostCount(List<Category> allowedCategories);
         Post AddNewPost(string postContent, Topic topic, MembershipUser user, out PermissionSet permissions);
+        string SortSearchField(bool isTopicStarter, Topic topic, IList<TopicTag> tags);
     }
 }
