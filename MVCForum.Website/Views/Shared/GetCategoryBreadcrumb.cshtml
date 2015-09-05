@@ -12,22 +12,22 @@
         {
             <li>
                 <a itemprop="url" href="@Model.Categories[0].NiceUrl">
-                    <span itemprop="title">@Model.Categories[0].Name</span>
+                    <span itemprop="title">@Html.Raw(Model.Categories[0].Name)</span>
                 </a>
             </li>
             <li itemprop="child" class="active">
-                <span itemprop="title">@Model.Topic.Name</span>
+                <span itemprop="title">@Html.Raw(Model.Topic.Name)</span>
             </li>
         }
         else
         {
             <li>
                 <a itemprop="url" href="@Model.Categories[0].NiceUrl">
-                    <span itemprop="title">@Model.Categories[0].Name</span>
+                    <span itemprop="title">@Html.Raw(Model.Categories[0].Name)</span>
                 </a>
             </li>
             <li itemprop="child" class="active">
-                <span itemprop="title">@Model.Category.Name</span>
+                <span itemprop="title">@Html.Raw(Model.Category.Name)</span>
             </li>
         }
     }
@@ -40,7 +40,7 @@
             {
                 <li>
                     <a itemprop="url" href="@cat.NiceUrl">
-                        <span itemprop="title">@cat.Name</span>
+                        <span itemprop="title">@Html.Raw(cat.Name)</span>
                     </a>
                 </li>
             }
@@ -50,17 +50,17 @@
                 {
                     <li itemprop="child">
                         <a itemprop="url" href="@cat.NiceUrl">
-                            <span itemprop="title">@cat.Name</span>
+                            <span itemprop="title">@Html.Raw(cat.Name)</span>
                         </a>
                     </li>
                     <li itemprop="child" class="active">
-                        <span itemprop="title"> @Model.Topic.Name</span>
+                        <span itemprop="title"> @Html.Raw(Model.Topic.Name)</span>
                     </li>
                 }
                 else
                 {
                     <li itemprop="child" class="active">
-                        <span itemprop="title">@Model.Category.Name</span>
+                        <span itemprop="title">@Html.Raw(Model.Category.Name)</span>
                     </li>
                 }
             }

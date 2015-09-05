@@ -80,13 +80,50 @@
 		}
 	}
 
+// Included from: js/tinymce/plugins/table/classes/Utils.js
+
+/**
+ * Utils.js
+ *
+ * Released under LGPL License.
+ * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
+ *
+ * License: http://www.tinymce.com/license
+ * Contributing: http://www.tinymce.com/contributing
+ */
+
+/**
+ * Various utility functions.
+ *
+ * @class tinymce.tableplugin.Utils
+ * @private
+ */
+define("tinymce/tableplugin/Utils", [
+	"tinymce/Env"
+], function(Env) {
+	function getSpanVal(td, name) {
+		return parseInt(td.getAttribute(name) || 1, 10);
+	}
+
+	function paddCell(cell) {
+		if (!Env.ie || Env.ie > 10) {
+			cell.innerHTML = '<br data-mce-bogus="1" />';
+		}
+	}
+
+	return {
+		getSpanVal: getSpanVal,
+		paddCell: paddCell
+	};
+});
+
 // Included from: js/tinymce/plugins/table/classes/TableGrid.js
 
 /**
  * TableGrid.js
  *
- * Copyright, Moxiecode Systems AB
  * Released under LGPL License.
+ * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
  *
  * License: http://www.tinymce.com/license
  * Contributing: http://www.tinymce.com/contributing
@@ -102,13 +139,10 @@
  */
 define("tinymce/tableplugin/TableGrid", [
 	"tinymce/util/Tools",
-	"tinymce/Env"
-], function(Tools, Env) {
-	var each = Tools.each;
-
-	function getSpanVal(td, name) {
-		return parseInt(td.getAttribute(name) || 1, 10);
-	}
+	"tinymce/Env",
+	"tinymce/tableplugin/Utils"
+], function(Tools, Env, Utils) {
+	var each = Tools.each, getSpanVal = Utils.getSpanVal;
 
 	return function(editor, table) {
 		var grid, gridWidth, startPos, endPos, selectedCell, selection = editor.selection, dom = selection.dom;
@@ -269,9 +303,7 @@ define("tinymce/tableplugin/TableGrid", [
 			if (formatNode) {
 				cell.appendChild(formatNode);
 			} else {
-				if (!Env.ie || Env.ie > 10) {
-					cell.innerHTML = '<br data-mce-bogus="1" />';
-				}
+				Utils.paddCell(cell);
 			}
 
 			return cell;
@@ -754,7 +786,7 @@ define("tinymce/tableplugin/TableGrid", [
 			each(grid, function(row, y) {
 				each(row, function(cell, x) {
 					if (cell.elm == target) {
-						pos = {x : x, y : y};
+						pos = {x: x, y: y};
 						return false;
 					}
 				});
@@ -809,7 +841,7 @@ define("tinymce/tableplugin/TableGrid", [
 				});
 			});
 
-			return {x : maxX, y : maxY};
+			return {x: maxX, y: maxY};
 		}
 
 		function setEndCell(cell) {
@@ -952,8 +984,8 @@ define("tinymce/tableplugin/TableGrid", [
 /**
  * Quirks.js
  *
- * Copyright, Moxiecode Systems AB
  * Released under LGPL License.
+ * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
  *
  * License: http://www.tinymce.com/license
  * Contributing: http://www.tinymce.com/contributing
@@ -968,13 +1000,10 @@ define("tinymce/tableplugin/TableGrid", [
 define("tinymce/tableplugin/Quirks", [
 	"tinymce/util/VK",
 	"tinymce/Env",
-	"tinymce/util/Tools"
-], function(VK, Env, Tools) {
-	var each = Tools.each;
-
-	function getSpanVal(td, name) {
-		return parseInt(td.getAttribute(name) || 1, 10);
-	}
+	"tinymce/util/Tools",
+	"tinymce/tableplugin/Utils"
+], function(VK, Env, Tools, Utils) {
+	var each = Tools.each, getSpanVal = Utils.getSpanVal;
 
 	return function(editor) {
 		/**
@@ -993,18 +1022,19 @@ define("tinymce/tableplugin/Quirks", [
 						moveCursorToRow(editor, sourceNode, siblingRow, upBool);
 						e.preventDefault();
 						return true;
-					} else {
-						var tableNode = editor.dom.getParent(currentRow, 'table');
-						var middleNode = currentRow.parentNode;
-						var parentNodeName = middleNode.nodeName.toLowerCase();
-						if (parentNodeName === 'tbody' || parentNodeName === (upBool ? 'tfoot' : 'thead')) {
-							var targetParent = getTargetParent(upBool, tableNode, middleNode, 'tbody');
-							if (targetParent !== null) {
-								return moveToRowInTarget(upBool, targetParent, sourceNode);
-							}
-						}
-						return escapeTable(upBool, currentRow, siblingDirection, tableNode);
 					}
+
+					var tableNode = editor.dom.getParent(currentRow, 'table');
+					var middleNode = currentRow.parentNode;
+					var parentNodeName = middleNode.nodeName.toLowerCase();
+					if (parentNodeName === 'tbody' || parentNodeName === (upBool ? 'tfoot' : 'thead')) {
+						var targetParent = getTargetParent(upBool, tableNode, middleNode, 'tbody');
+						if (targetParent !== null) {
+							return moveToRowInTarget(upBool, targetParent, sourceNode);
+						}
+					}
+
+					return escapeTable(upBool, currentRow, siblingDirection, tableNode);
 				}
 
 				function getTargetParent(upBool, topNode, secondNode, nodeName) {
@@ -1015,9 +1045,9 @@ define("tinymce/tableplugin/Quirks", [
 					} else if (position === -1) {
 						var topOrBottom = secondNode.tagName.toLowerCase() === 'thead' ? 0 : tbodies.length - 1;
 						return tbodies[topOrBottom];
-					} else {
-						return tbodies[position + (upBool ? -1 : 1)];
 					}
+
+					return tbodies[position + (upBool ? -1 : 1)];
 				}
 
 				function getFirstHeadOrFoot(upBool, parent) {
@@ -1043,21 +1073,21 @@ define("tinymce/tableplugin/Quirks", [
 					if (tableSibling) {
 						moveCursorToStartOfElement(tableSibling);
 						return true;
-					} else {
-						var parentCell = editor.dom.getParent(table, 'td,th');
-						if (parentCell) {
-							return handle(upBool, parentCell, e);
-						} else {
-							var backUpSibling = getChildForDirection(currentRow, !upBool);
-							moveCursorToStartOfElement(backUpSibling);
-							e.preventDefault();
-							return false;
-						}
 					}
+
+					var parentCell = editor.dom.getParent(table, 'td,th');
+					if (parentCell) {
+						return handle(upBool, parentCell, e);
+					}
+
+					var backUpSibling = getChildForDirection(currentRow, !upBool);
+					moveCursorToStartOfElement(backUpSibling);
+					e.preventDefault();
+					return false;
 				}
 
 				function getChildForDirection(parent, up) {
-					var child =  parent && parent[up ? 'lastChild' : 'firstChild'];
+					var child = parent && parent[up ? 'lastChild' : 'firstChild'];
 					// BR is not a valid table child to return in this case we return the table cell
 					return child && child.nodeName === 'BR' ? editor.dom.getParent(child, 'td,th') : child;
 				}
@@ -1284,20 +1314,47 @@ define("tinymce/tableplugin/Quirks", [
 		 * Delete table if all cells are selected.
 		 */
 		function deleteTable() {
+			function placeCaretInCell(cell) {
+				editor.selection.select(cell, true);
+				editor.selection.collapse(true);
+			}
+
+			function clearCell(cell) {
+				editor.$(cell).empty();
+				Utils.paddCell(cell);
+			}
+
 			editor.on('keydown', function(e) {
 				if ((e.keyCode == VK.DELETE || e.keyCode == VK.BACKSPACE) && !e.isDefaultPrevented()) {
-					var table = editor.dom.getParent(editor.selection.getStart(), 'table');
+					var table, tableCells, selectedTableCells, cell;
 
+					table = editor.dom.getParent(editor.selection.getStart(), 'table');
 					if (table) {
-						var cells = editor.dom.select('td,th', table), i = cells.length;
-						while (i--) {
-							if (!editor.dom.hasClass(cells[i], 'mce-item-selected')) {
-								return;
+						tableCells = editor.dom.select('td,th', table);
+						selectedTableCells = Tools.grep(tableCells, function(cell) {
+							return editor.dom.hasClass(cell, 'mce-item-selected');
+						});
+
+						if (selectedTableCells.length === 0) {
+							// If caret is within an empty table cell then empty it for real
+							cell = editor.dom.getParent(editor.selection.getStart(), 'td,th');
+							if (editor.selection.isCollapsed() && cell && editor.dom.isEmpty(cell)) {
+								e.preventDefault();
+								clearCell(cell);
+								placeCaretInCell(cell);
 							}
+
+							return;
 						}
 
 						e.preventDefault();
-						editor.execCommand('mceTableDelete');
+
+						if (tableCells.length == selectedTableCells.length) {
+							editor.execCommand('mceTableDelete');
+						} else {
+							Tools.each(selectedTableCells, clearCell);
+							placeCaretInCell(selectedTableCells[0]);
+						}
 					}
 				}
 			});
@@ -1327,8 +1384,8 @@ define("tinymce/tableplugin/Quirks", [
 /**
  * CellSelection.js
  *
- * Copyright, Moxiecode Systems AB
  * Released under LGPL License.
+ * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
  *
  * License: http://www.tinymce.com/license
  * Contributing: http://www.tinymce.com/contributing
@@ -1506,12 +1563,14 @@ define("tinymce/tableplugin/CellSelection", [
 /**
  * Dialogs.js
  *
- * Copyright, Moxiecode Systems AB
  * Released under LGPL License.
+ * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
  *
  * License: http://www.tinymce.com/license
  * Contributing: http://www.tinymce.com/contributing
  */
+
+/*eslint dot-notation:0*/
 
 /**
  * ...
@@ -1671,22 +1730,42 @@ define("tinymce/tableplugin/Dialogs", [
 			data.style = dom.serializeStyle(css);
 		}
 
+		function mergeStyles(dom, elm, styles) {
+			var css = dom.parseStyle(dom.getAttrib(elm, 'style'));
+
+			each(styles, function(style) {
+				css[style.name] = style.value;
+			});
+
+			dom.setAttrib(elm, 'style', dom.serializeStyle(dom.parseStyle(dom.serializeStyle(css))));
+		}
+
 		self.tableProps = function() {
 			self.table(true);
 		};
 
 		self.table = function(isProps) {
-			var dom = editor.dom, tableElm, colsCtrl, rowsCtrl, classListCtrl, data = {}, generalTableForm;
+			var dom = editor.dom, tableElm, colsCtrl, rowsCtrl, classListCtrl, data = {}, generalTableForm, stylesToMerge;
 
 			function onSubmitTableForm() {
+
+				//Explore the layers of the table till we find the first layer of tds or ths
+				function styleTDTH(elm, name, value) {
+					if (elm.tagName === "TD" || elm.tagName === "TH") {
+						dom.setStyle(elm, name, value);
+					} else {
+						if (elm.children) {
+							for (var i = 0; i < elm.children.length; i++) {
+								styleTDTH(elm.children[i], name, value);
+							}
+						}
+					}
+				}
+
 				var captionElm;
 
 				updateStyle(dom, this);
 				data = Tools.extend(data, this.toJSON());
-
-				Tools.each('backgroundColor borderColor'.split(' '), function(name) {
-					delete data[name];
-				});
 
 				if (data["class"] === false) {
 					delete data["class"];
@@ -1698,14 +1777,35 @@ define("tinymce/tableplugin/Dialogs", [
 					}
 
 					editor.dom.setAttribs(tableElm, {
-						cellspacing: data.cellspacing,
-						cellpadding: data.cellpadding,
-						border: data.border,
 						style: data.style,
 						'class': data['class']
 					});
 
-					if (dom.getAttrib(tableElm, 'width')) {
+					if (editor.settings.table_style_by_css) {
+						stylesToMerge = [];
+						stylesToMerge.push({name: 'border', value: data.border});
+						stylesToMerge.push({name: 'border-spacing', value: addSizeSuffix(data.cellspacing)});
+						mergeStyles(dom, tableElm, stylesToMerge);
+						dom.setAttribs(tableElm, {
+							'data-mce-border-color': data.borderColor,
+							'data-mce-cell-padding': data.cellpadding,
+							'data-mce-border': data.border
+						});
+						if (tableElm.children) {
+							for (var i = 0; i < tableElm.children.length; i++) {
+								styleTDTH(tableElm.children[i], 'border', data.border);
+								styleTDTH(tableElm.children[i], 'padding', addSizeSuffix(data.cellpadding));
+							}
+						}
+					} else {
+						editor.dom.setAttribs(tableElm, {
+							border: data.border,
+							cellpadding: data.cellpadding,
+							cellspacing: data.cellspacing
+						});
+					}
+
+					if (dom.getAttrib(tableElm, 'width') && !editor.settings.table_style_by_css) {
 						dom.setAttrib(tableElm, 'width', removePxSuffix(data.width));
 					} else {
 						dom.setStyle(tableElm, 'width', addSizeSuffix(data.width));
@@ -1725,7 +1825,6 @@ define("tinymce/tableplugin/Dialogs", [
 						captionElm.innerHTML = !Env.ie ? '<br data-mce-bogus="1"/>' : '\u00a0';
 						tableElm.insertBefore(captionElm, tableElm.firstChild);
 					}
-
 					unApplyAlign(tableElm);
 					if (data.align) {
 						editor.formatter.apply('align' + data.align, {}, tableElm);
@@ -1736,6 +1835,30 @@ define("tinymce/tableplugin/Dialogs", [
 				});
 			}
 
+			function getTDTHOverallStyle(elm, name) {
+				var cells = editor.dom.select("td,th", elm), firstChildStyle;
+
+				function checkChildren(firstChildStyle, elms) {
+
+					for (var i = 0; i < elms.length; i++) {
+						var currentStyle = dom.getStyle(elms[i], name);
+						if (typeof firstChildStyle === "undefined") {
+							firstChildStyle = currentStyle;
+						}
+						if (firstChildStyle != currentStyle) {
+							return "";
+						}
+					}
+
+					return firstChildStyle;
+
+				}
+
+				firstChildStyle = checkChildren(firstChildStyle, cells);
+
+				return firstChildStyle;
+			}
+
 			if (isProps === true) {
 				tableElm = dom.getParent(editor.selection.getStart(), 'table');
 
@@ -1743,9 +1866,13 @@ define("tinymce/tableplugin/Dialogs", [
 					data = {
 						width: removePxSuffix(dom.getStyle(tableElm, 'width') || dom.getAttrib(tableElm, 'width')),
 						height: removePxSuffix(dom.getStyle(tableElm, 'height') || dom.getAttrib(tableElm, 'height')),
-						cellspacing: tableElm ? dom.getAttrib(tableElm, 'cellspacing') : '',
-						cellpadding: tableElm ? dom.getAttrib(tableElm, 'cellpadding') : '',
-						border: tableElm ? dom.getAttrib(tableElm, 'border') : '',
+						cellspacing: removePxSuffix(dom.getStyle(tableElm, 'border-spacing') ||
+							dom.getAttrib(tableElm, 'cellspacing')),
+						cellpadding: dom.getAttrib(tableElm, 'data-mce-cell-padding') || dom.getAttrib(tableElm, 'cellpadding') ||
+							getTDTHOverallStyle(tableElm, 'padding'),
+						border: dom.getAttrib(tableElm, 'data-mce-border') || dom.getAttrib(tableElm, 'border') ||
+							getTDTHOverallStyle(tableElm, 'border'),
+						borderColor: dom.getAttrib(tableElm, 'data-mce-border-color'),
 						caption: !!dom.select('caption', tableElm)[0],
 						'class': dom.getAttrib(tableElm, 'class')
 					};
@@ -1800,7 +1927,7 @@ define("tinymce/tableplugin/Dialogs", [
 							type: 'textbox',
 							maxWidth: 50
 						},
-						items: [
+						items: (editor.settings.table_appearance_options !== false) ? [
 							colsCtrl,
 							rowsCtrl,
 							{label: 'Width', name: 'width'},
@@ -1809,6 +1936,11 @@ define("tinymce/tableplugin/Dialogs", [
 							{label: 'Cell padding', name: 'cellpadding'},
 							{label: 'Border', name: 'border'},
 							{label: 'Caption', name: 'caption', type: 'checkbox'}
+						] : [
+							colsCtrl,
+							rowsCtrl,
+							{label: 'Width', name: 'width'},
+							{label: 'Height', name: 'height'}
 						]
 					},
 
@@ -2258,8 +2390,8 @@ define("tinymce/tableplugin/Dialogs", [
 /**
  * Plugin.js
  *
- * Copyright, Moxiecode Systems AB
  * Released under LGPL License.
+ * Copyright (c) 1999-2015 Ephox Corp. All rights reserved
  *
  * License: http://www.tinymce.com/license
  * Contributing: http://www.tinymce.com/contributing
@@ -2557,6 +2689,20 @@ define("tinymce/tableplugin/Plugin", [
 
 		editor.on('Init', function() {
 			self.cellSelection = new CellSelection(editor);
+		});
+
+		editor.on('PreInit', function() {
+			// Remove internal data attributes
+			editor.serializer.addAttributeFilter(
+				'data-mce-cell-padding,data-mce-border,data-mce-border-color',
+				function(nodes, name) {
+
+					var i = nodes.length;
+
+					while (i--) {
+						nodes[i].attr(name, null);
+					}
+				});
 		});
 
 		// Register action commands

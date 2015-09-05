@@ -7,7 +7,7 @@ namespace MVCForum.Domain.Interfaces.Repositories
     public partial interface IRoleRepository
     {
         IList<MembershipRole> AllRoles();
-        MembershipRole GetRole(string rolename);
+        MembershipRole GetRole(string rolename, bool removeTracking);
         MembershipRole Add(MembershipRole item);
         MembershipRole Get(Guid id);
         void Delete(MembershipRole item);

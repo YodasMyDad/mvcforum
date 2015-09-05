@@ -7,12 +7,16 @@ namespace MVCForum.Domain.DomainModel.Attributes
     [AttributeUsage(AttributeTargets.Class)]
     public class DisplayNameAttribute : Attribute
     {
+        private readonly ILocalizationService _localizationService;
         public string DisplayName { get; set; }
 
         public DisplayNameAttribute(string desc)
         {
-            var localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
-            DisplayName = localizationService.GetResourceString(desc.Trim());
+            if (_localizationService == null)
+            {
+                _localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
+            }
+            DisplayName = _localizationService.GetResourceString(desc.Trim());
         }
     }
 }

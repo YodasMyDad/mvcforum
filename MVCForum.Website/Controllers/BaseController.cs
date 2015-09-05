@@ -1,6 +1,8 @@
-﻿using System.Web.Mvc;
+﻿using System.Linq;
+using System.Web.Mvc;
 using System.Web.Routing;
 using MVCForum.Domain.Constants;
+using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Website.Areas.Admin.ViewModels;
@@ -18,6 +20,9 @@ namespace MVCForum.Website.Controllers
         protected readonly IRoleService RoleService;
         protected readonly ISettingsService SettingsService;
         protected readonly ILoggingService LoggingService;
+
+        protected MembershipUser LoggedOnReadOnlyUser;
+        protected MembershipRole UsersRole;
 
         //private readonly MembershipUser _loggedInUser;
 
@@ -38,6 +43,9 @@ namespace MVCForum.Website.Controllers
             RoleService = roleService;
             SettingsService = settingsService;
             LoggingService = loggingService;
+
+            LoggedOnReadOnlyUser = UserIsAuthenticated ? MembershipService.GetUser(Username, true) : null;
+            UsersRole = LoggedOnReadOnlyUser == null ? RoleService.GetRole(AppConstants.GuestRoleName, true) : LoggedOnReadOnlyUser.Roles.FirstOrDefault();
         }
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
@@ -65,6 +73,11 @@ namespace MVCForum.Website.Controllers
             {
                 return System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
             }
+        }
+
+        protected bool UserIsAdmin
+        {
+            get { return User.IsInRole(AppConstants.AdminRoleName); }
         }
 
         protected void ShowMessage(GenericMessageViewModel messageViewModel)

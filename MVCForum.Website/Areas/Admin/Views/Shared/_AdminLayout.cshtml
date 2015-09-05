@@ -1,6 +1,9 @@
-﻿@using MVCForum.Website.Application
+﻿@using MVCForum.Domain.Constants
+@using MVCForum.Website.Application
 @{
-    var globalClass = Context.IsMobileDevice() ? "mobile" : "desktop";
+    TempData[AppConstants.GlobalClass] = Context.IsMobileDevice() ? "mobile" : "desktop";
+    TempData[AppConstants.CurrentAction] = ViewContext.RouteData.GetRequiredString("action").ToLower();
+    TempData[AppConstants.CurrentController] = ViewContext.RouteData.GetRequiredString("controller").ToLower();
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -13,40 +16,60 @@
     @RenderSection("AdminHeader", false)
 </head>
 
-<body class="@globalClass">
+<body class="@TempData[AppConstants.GlobalClass].ToString()">
 
-    @Html.Partial("_AdminTopNav")
-
-    <div class="container">
-
-        @Html.Partial("_GenericMessage")
-
-        <div class="row">
-
-            <div class="col-md-3">
-                <p id="logindisplay">
-                    @Html.Partial("_LogOnPartial")
-                </p>
-
-                @Html.Partial("_AdminSideNav")
-                
-                @Html.Partial("_GetCurrentVersion")
-
+    <div id="wrapper">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".mvcforum-nav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="@Url.Action("Index", "Admin", new { area = "Admin" }, null)">
+                    @Html.Lang("Site.MvcForum")
+                </a>
             </div>
 
-            <div class="col-md-9 mainadminbody">
-                @RenderBody()
+            @Html.Action("MainAdminNav", "Dashboard", new { area = "Admin" })
+        </nav>
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                @Html.Partial("_GenericMessage")
+                @if (IsSectionDefined("AdminPageHeader"))
+                {
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h1 class="page-header">
+                                @*Something Here <small>yes there is</small>*@
+                                @RenderSection("AdminPageHeader", false)
+                            </h1>
+                            @*<ol class="breadcrumb">
+                                    <li class="active">
+                                        <i class="fa fa-dashboard"></i> Breadcrumb
+                                    </li>
+                                </ol>*@
+                        </div>
+                    </div>
+                }
+
+                <div class="mainadminbody">
+                    @RenderBody()                    
+                </div>
+                <footer>
+                    @RenderSection("AdminFooter", false)
+                    <p>&copy; <a href="http://www.aptitude.co.uk">Aptitude</a> @DateTime.UtcNow.Year - @Html.Partial("_GetCurrentVersion")</p>
+                </footer>
+
             </div>
         </div>
-
-        <hr>
-
-        <footer>
-            <p>&copy; <a href="http://www.aptitude.co.uk">Aptitude</a> @DateTime.UtcNow.Year</p>
-            @RenderSection("AdminFooter", false)
-        </footer>
-
     </div>
+
+
+
+
+
 
 </body>
 </html>

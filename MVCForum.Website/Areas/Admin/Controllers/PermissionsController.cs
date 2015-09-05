@@ -68,7 +68,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                                         {
                                             MembershipRole = role,
                                             Permissions = _permissionService.GetAll().ToList(),
-                                            Categories = _categoryService.GetAll().ToList(),
+                                            Categories = _categoryService.GetAll(),
                                             CurrentGlobalPermissions = _roleService.GetPermissions(null, role)
                                         };
 

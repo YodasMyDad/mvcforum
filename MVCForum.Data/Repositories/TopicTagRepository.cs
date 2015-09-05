@@ -24,21 +24,30 @@ namespace MVCForum.Data.Repositories
 
         public IEnumerable<TopicTag> GetAll()
         {
-            return _context.TopicTag.ToList();
+            return _context.TopicTag.AsNoTracking();
         }
 
-        public Dictionary<TopicTag, int> GetPopularTags(int? amountToTake)
+        public Dictionary<TopicTag, int> GetPopularTags(int? amountToTake, List<Category> allowedCategories)
         {
+            var categoryIds = allowedCategories.Select(x => x.Id);
             amountToTake = amountToTake ?? int.MaxValue;
-            var tags = _context.TopicTag
-                .Include(x => x.Topics.Count)
-                .OrderByDescending(x => x.Topics.Count())
-                .Take((int)amountToTake)
-                .Select(s => new { TopicCount = s.Topics.Count(), Tag = s })
-                .Where(x => x.TopicCount > 0)
-                .OrderByDescending(s => s.TopicCount).ToList();
 
-            return tags.ToDictionary(tag => tag.Tag, tag => tag.TopicCount);
+            //var test = _context.TopicTag.SqlQuery("").ToList<TopicTag>();
+
+            var tags = _context.TopicTag
+                .Include(x => x.Topics.Select(s => s.Category))
+                .AsNoTracking()
+                .Select(x => new
+                {
+                    topics = x.Topics.Where(c => categoryIds.Contains(c.Category.Id)),
+                    topictag = x,
+                    topiccount = x.Topics.Count(c => categoryIds.Contains(c.Category.Id))
+                })
+                .Where(x => x.topiccount > 0)
+                .OrderByDescending(x => x.topiccount)
+                .Take((int) amountToTake);
+
+            return tags.ToDictionary(tag => tag.topictag, tag => tag.topiccount);
         }
 
         public TopicTag GetTagName(string tag)
@@ -86,6 +95,15 @@ namespace MVCForum.Data.Repositories
                 .ToList();
         }
 
+        public IList<TopicTag> GetStartsWith(string term, int amountToTake)
+        {
+            return _context.TopicTag
+                .AsNoTracking()
+                .Where(x => x.Tag.StartsWith(term))
+                .Take(amountToTake)
+                .ToList();
+        }
+
         public TopicTag Add(TopicTag topicTag)
         {
             _context.TopicTag.Add(topicTag);
@@ -95,6 +113,11 @@ namespace MVCForum.Data.Repositories
         public TopicTag Get(Guid id)
         {
             return _context.TopicTag.FirstOrDefault(x => x.Id == id);
+        }
+
+        public TopicTag Get(string tag)
+        {
+            return _context.TopicTag.FirstOrDefault(x => x.Slug.Equals(tag));
         }
 
         public void Delete(TopicTag item)

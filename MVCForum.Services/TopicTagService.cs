@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
@@ -11,15 +12,21 @@ namespace MVCForum.Services
     {
         private readonly ITopicTagRepository _tagRepository;
         private readonly ITopicRepository _topicRepository;
+        private readonly ICategoryService _categoryService;
+        private readonly IBadgeService _badgeService;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="tagRepository"></param>
-        public TopicTagService(ITopicTagRepository tagRepository, ITopicRepository topicRepository)
+        /// <param name="topicRepository"></param>
+        /// <param name="categoryService"></param>
+        public TopicTagService(ITopicTagRepository tagRepository, ITopicRepository topicRepository, ICategoryService categoryService, IBadgeService badgeService)
         {
             _tagRepository = tagRepository;
             _topicRepository = topicRepository;
+            _categoryService = categoryService;
+            _badgeService = badgeService;
         }
 
         /// <summary>
@@ -39,6 +46,12 @@ namespace MVCForum.Services
         {
             var tag = _tagRepository.GetTagName(tagName);
             _tagRepository.Delete(tag);
+        }
+
+        public IList<TopicTag> GetStartsWith(string term, int amountToTake = 4)
+        {
+            term = StringUtils.SafePlainText(term);
+            return _tagRepository.GetStartsWith(term, amountToTake);
         }
 
         /// <summary>
@@ -82,6 +95,17 @@ namespace MVCForum.Services
         public TopicTag Add(TopicTag topicTag)
         {
             return _tagRepository.Add(topicTag);
+        }
+
+        public TopicTag Get(Guid tag)
+        {
+            return _tagRepository.Get(tag);
+        }
+
+        public TopicTag Get(string tag)
+        {
+            tag = StringUtils.SafePlainText(tag);
+            return _tagRepository.Get(tag);
         }
 
         /// <summary>
@@ -130,6 +154,9 @@ namespace MVCForum.Services
 
                 newTags.AddRange(existingTags);
                 topic.Tags = newTags;
+
+                // Fire the tag badge check
+                _badgeService.ProcessBadge(BadgeType.Tag, topic.User);
             }
         }
 
@@ -189,10 +216,11 @@ namespace MVCForum.Services
         /// Get a specified amount of the most popular tags, ordered by use amount
         /// </summary>
         /// <param name="amount"></param>
+        /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public Dictionary<TopicTag, int> GetPopularTags(int? amount)
+        public Dictionary<TopicTag, int> GetPopularTags(int? amount, List<Category> allowedCategories)
         {
-                return _tagRepository.GetPopularTags(amount);
+            return _tagRepository.GetPopularTags(amount, allowedCategories);
         }
     }
 }

@@ -135,7 +135,7 @@
         e.preventDefault();
         var tableInfo = new tableContext($(this));
 
-        var inputfield = tableInfo.Row.find(".resourcevalueedit input");
+        var inputfield = tableInfo.Row.find(".resourcevalueedit textarea");
         var displayfield = tableInfo.Row.find(".resourcevaluedisplay");
 
         // Ajax call setup

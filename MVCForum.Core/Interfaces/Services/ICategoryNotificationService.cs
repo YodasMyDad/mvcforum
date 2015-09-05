@@ -9,7 +9,7 @@ namespace MVCForum.Domain.Interfaces.Services
         void Delete(CategoryNotification notification);
         IList<CategoryNotification> GetByCategory(Category category);
         IList<CategoryNotification> GetByUser(MembershipUser user);
-        IList<CategoryNotification> GetByUserAndCategory(MembershipUser user, Category category);
+        IList<CategoryNotification> GetByUserAndCategory(MembershipUser user, Category category, bool addTracking = false);
         void Add(CategoryNotification category);
     }
 }

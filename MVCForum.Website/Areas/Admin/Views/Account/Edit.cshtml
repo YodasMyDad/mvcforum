@@ -1,158 +1,156 @@
 ﻿@using MVCForum.Website.Application.ExtensionMethods
 @model MVCForum.Website.Areas.Admin.ViewModels.MemberEditViewModel
 @{
-    ViewBag.Title = "Edit";
-    var titleText = (Model.Id == Guid.Empty) ? "Add User" : "Edit User";
-}
-@section AdminHeader
-{
-    @(
- Bundle.JavaScript()
-            .Add("~/Scripts/jquery.validate.min.js")
-            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
-            .MvcRender("~/scripts/cache/validate-combined_#.js")
-     )
-}
-<p><a href="@Url.Action("Manage")" class="btn-mvc">&lt;&lt; Back</a></p>
-
-@using (Html.BeginForm("Edit", "Account", FormMethod.Post))
-{
-    @Html.HiddenFor(x => Model.Id)
-
-    @Html.ValidationSummary(false)
-
-    <fieldset>
-        <legend>@Html.Raw(titleText)</legend>
-
-        <div class="form-group">
-            @Html.LabelFor(x => x.UserName)
-            @Html.TextBoxFor(x => x.UserName, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.UserName)
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(x => x.PasswordQuestion)
-            @Html.TextBoxFor(x => x.PasswordQuestion, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.PasswordQuestion)
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(x => x.PasswordAnswer)
-            @Html.TextBoxFor(x => x.PasswordAnswer, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.PasswordAnswer)
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(x => x.Email)
-            @Html.TextBoxFor(x => x.Email, new { @class = "form-control", type="email" })
-            @Html.ValidationMessageFor(x => x.Email)
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(x => x.Age)
-            @Html.TextBoxFor(x => x.Age, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.Age)
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(x => x.Avatar)
-            @Html.TextBoxFor(x => x.Avatar, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.Avatar)
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(x => x.Location)
-            @Html.TextBoxFor(x => x.Location, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.Location)
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(x => x.Website)
-            @Html.TextBoxFor(x => x.Website, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.Website)
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(x => x.Twitter)
-            @Html.TextBoxFor(x => x.Twitter, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.Twitter)
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(x => x.Facebook)
-            @Html.TextBoxFor(x => x.Facebook, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.Facebook)
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(x => x.Signature)
-            @Html.EditorFor(x => x.Signature)
-            @Html.ValidationMessageFor(x => x.Signature)
-        </div>
-
-        <h2>Admin Specific</h2>
-        
-        
-
-        <div class="checkbox">
-            @using (Html.BeginLabelFor(m => m.DisableEmailNotifications, new { @class = "checkbox" }))
-            {
-                @Html.CheckBoxFor(m => m.DisableEmailNotifications)
-            }
-            @Html.ValidationMessageFor(m => m.DisableEmailNotifications)
-        </div>
-        
-        <div class="checkbox">
-            @using (Html.BeginLabelFor(m => m.DisablePosting, new { @class = "checkbox" }))
-            {
-                @Html.CheckBoxFor(m => m.DisablePosting)
-            }
-            @Html.ValidationMessageFor(m => m.DisablePosting)
-        </div>
-        
-        <div class="checkbox">
-            @using (Html.BeginLabelFor(m => m.DisablePrivateMessages, new { @class = "checkbox" }))
-            {
-                @Html.CheckBoxFor(m => m.DisablePrivateMessages)
-            }
-            @Html.ValidationMessageFor(m => m.DisablePrivateMessages)
-        </div>
-        
-        <div class="checkbox">
-            @using (Html.BeginLabelFor(m => m.DisableFileUploads, new { @class = "checkbox" }))
-            {
-                @Html.CheckBoxFor(m => m.DisableFileUploads)
-            }
-            @Html.ValidationMessageFor(m => m.DisableFileUploads)
-        </div>
-
-        <div class="checkbox">
-            @using (Html.BeginLabelFor(m => m.IsApproved, new { @class = "checkbox" }))
-            {
-                @Html.CheckBoxFor(m => m.IsApproved)
-            }
-            @Html.ValidationMessageFor(m => m.IsApproved)
-        </div>
-
-        <div class="checkbox">
-            @using (Html.BeginLabelFor(m => m.IsLockedOut, new { @class = "checkbox" }))
-            {
-                @Html.CheckBoxFor(m => m.IsLockedOut)
-            }
-            @Html.ValidationMessageFor(m => m.IsLockedOut)
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(x => x.Comment)
-            @Html.TextAreaFor(x => x.Comment, new { @class = "form-control" })
-            @Html.ValidationMessageFor(x => x.Comment)
-        </div>
-
-        <div class="submit-holder">
-            <input type="submit" class="btn-mvc btn-mvc-green" value="Save" />
-            <a href="@Url.Action("Delete", new{Model.Id})" onclick="return confirm('Are you sure you want to delete @Model.UserName?')" class="btn-mvc btn-mvc-red" role="button">Delete</a>
-        </div>
-    </fieldset>
+    ViewBag.Title = (Model.Id == Guid.Empty) ? "Add User" : "Edit User";
+    var buttonText = (Model.Id == Guid.Empty) ? "Create" : "Save";
 }
 
+<div class="backbutton">
+    <a href="@Url.Action("Manage")" class="btn-mvc-green">&lt;&lt; Back</a>
+</div>
 
+<div class="panel">
+    <div class="panel-heading">
+        <h5>@ViewBag.Title</h5>
+    </div>
+    <div class="panel-content">
+        @using (Html.BeginForm("Edit", "Account", FormMethod.Post))
+        {
+            @Html.HiddenFor(x => Model.Id)
+
+            @Html.ValidationSummary(false)
+
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.UserName)
+                @Html.TextBoxFor(x => x.UserName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.UserName)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.PasswordQuestion)
+                @Html.TextBoxFor(x => x.PasswordQuestion, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.PasswordQuestion)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.PasswordAnswer)
+                @Html.TextBoxFor(x => x.PasswordAnswer, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.PasswordAnswer)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Email)
+                @Html.TextBoxFor(x => x.Email, new { @class = "form-control", type = "email" })
+                @Html.ValidationMessageFor(x => x.Email)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Age)
+                @Html.TextBoxFor(x => x.Age, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.Age)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Avatar)
+                @Html.TextBoxFor(x => x.Avatar, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.Avatar)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Location)
+                @Html.TextBoxFor(x => x.Location, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.Location)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Website)
+                @Html.TextBoxFor(x => x.Website, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.Website)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Twitter)
+                @Html.TextBoxFor(x => x.Twitter, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.Twitter)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Facebook)
+                @Html.TextBoxFor(x => x.Facebook, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.Facebook)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Signature)
+                @Html.EditorFor(x => x.Signature)
+                @Html.ValidationMessageFor(x => x.Signature)
+            </div>
+
+            <h2>Admin Specific</h2>
+
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.DisableEmailNotifications, new { @class = "checkbox" }))
+                {
+                    @Html.CheckBoxFor(m => m.DisableEmailNotifications)
+                }
+                @Html.ValidationMessageFor(m => m.DisableEmailNotifications)
+            </div>
+
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.DisablePosting, new { @class = "checkbox" }))
+                {
+                    @Html.CheckBoxFor(m => m.DisablePosting)
+                }
+                @Html.ValidationMessageFor(m => m.DisablePosting)
+            </div>
+
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.DisablePrivateMessages, new { @class = "checkbox" }))
+                {
+                    @Html.CheckBoxFor(m => m.DisablePrivateMessages)
+                }
+                @Html.ValidationMessageFor(m => m.DisablePrivateMessages)
+            </div>
+
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.DisableFileUploads, new { @class = "checkbox" }))
+                {
+                    @Html.CheckBoxFor(m => m.DisableFileUploads)
+                }
+                @Html.ValidationMessageFor(m => m.DisableFileUploads)
+            </div>
+
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.IsApproved, new { @class = "checkbox" }))
+                {
+                    @Html.CheckBoxFor(m => m.IsApproved)
+                }
+                @Html.ValidationMessageFor(m => m.IsApproved)
+            </div>
+
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.IsLockedOut, new { @class = "checkbox" }))
+                {
+                    @Html.CheckBoxFor(m => m.IsLockedOut)
+                }
+                @Html.ValidationMessageFor(m => m.IsLockedOut)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(x => x.Comment)
+                @Html.TextAreaFor(x => x.Comment, new { @class = "form-control" })
+                @Html.ValidationMessageFor(x => x.Comment)
+            </div>
+
+            <div class="submit-holder">
+                <input type="submit" class="btn-mvc-green" value="@(buttonText)" />
+                @if (Model.Id != Guid.Empty)
+                {
+                    <a href="@Url.Action("Delete", new{Model.Id})" onclick="return confirm('Are you sure you want to delete @Model.UserName?')" class="btn-mvc-red" role="button">Delete</a>
+                }                
+            </div>
+        }
+
+    </div>
+</div>

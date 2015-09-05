@@ -1,0 +1,39 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.CustomCodeViewModels
+@{
+    ViewBag.Title = "Custom Code";
+}
+
+<div class="panel">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            @ViewBag.Title
+        </h4>
+    </div>
+    <div class="panel-body">
+        <p>You can add any custom code (JavaScript, Html and CSS only) to the header and footer of your site using the boxes below.</p>
+        <p>Header code will appear just before the closing head tag, and footer code will appear just before the closing body tag. The code will appear on everypage of the forum, so you can use this for things like Analytics.</p>
+
+        @using (Html.BeginForm("CustomCode", "Settings", FormMethod.Post))
+        {
+            @Html.ValidationSummary(false)
+
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.CustomHeaderCode)
+                @Html.TextAreaFor(m => m.CustomHeaderCode, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.CustomHeaderCode)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.CustomFooterCode)
+                @Html.TextAreaFor(m => m.CustomFooterCode, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.CustomFooterCode)
+            </div>
+
+            <div class="submit-holder">
+                <input type="submit" class="btn-mvc-green btn-mvc-large" value="Update" />
+            </div>
+        }
+
+
+    </div>
+</div>

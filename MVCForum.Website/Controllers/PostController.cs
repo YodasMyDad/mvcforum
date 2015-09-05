@@ -29,16 +29,14 @@ namespace MVCForum.Website.Controllers
         private readonly IPollAnswerService _pollAnswerService;
         private readonly IPollService _pollService;
         private readonly IBannedWordService _bannedWordService;
+        private readonly IVoteService _voteService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
-
-        private MembershipUser LoggedOnUser;
-        private MembershipRole UsersRole;
 
         public PostController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ISettingsService settingsService, ICategoryService categoryService, ITopicTagService topicTagService,
             ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, IPollAnswerService pollAnswerService,
-            IPollService pollService, IBannedWordService bannedWordService, IMembershipUserPointsService membershipUserPointsService)
+            IPollService pollService, IBannedWordService bannedWordService, IMembershipUserPointsService membershipUserPointsService, IVoteService voteService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
@@ -52,9 +50,7 @@ namespace MVCForum.Website.Controllers
             _pollService = pollService;
             _bannedWordService = bannedWordService;
             _membershipUserPointsService = membershipUserPointsService;
-
-            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
-            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
+            _voteService = voteService;
         }
 
 
@@ -67,6 +63,8 @@ namespace MVCForum.Website.Controllers
 
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
+                var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+
                 // Check stop words
                 var stopWords = _bannedWordService.GetAll(true);
                 foreach (var stopWord in stopWords)
@@ -78,7 +76,7 @@ namespace MVCForum.Website.Controllers
                 }
 
                 // Quick check to see if user is locked out, when logged in
-                if (LoggedOnUser.IsLockedOut || !LoggedOnUser.IsApproved)
+                if (loggedOnUser.IsLockedOut || !loggedOnUser.IsApproved)
                 {
                     FormsAuthentication.SignOut();
                     throw new Exception(LocalizationService.GetResourceString("Errors.NoAccess"));
@@ -90,28 +88,23 @@ namespace MVCForum.Website.Controllers
 
                 var akismetHelper = new AkismetHelper(SettingsService);
 
-                newPost = _postService.AddNewPost(postContent, topic, LoggedOnUser, out permissions);
+                newPost = _postService.AddNewPost(postContent, topic, loggedOnUser, out permissions);
 
-                if (!akismetHelper.IsSpam(newPost))
+                if (akismetHelper.IsSpam(newPost))
                 {
-                    try
-                    {
-                        unitOfWork.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        unitOfWork.Rollback();
-                        LoggingService.Error(ex);
-                        throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
-                    }
+                    newPost.Pending = true;
                 }
-                else
+
+                try
+                {
+                    unitOfWork.Commit();
+                }
+                catch (Exception ex)
                 {
                     unitOfWork.Rollback();
-                    throw new Exception(LocalizationService.GetResourceString("Errors.PossibleSpam"));
+                    LoggingService.Error(ex);
+                    throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
                 }
-
-
             }
 
             //Check for moderation
@@ -125,7 +118,7 @@ namespace MVCForum.Website.Controllers
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 // Create the view model
-                var viewModel = ViewModelMapping.CreatePostViewModel(newPost, new List<Vote>(), permissions, topic, LoggedOnUser, SettingsService.GetSettings(), new List<Favourite>());
+                var viewModel = ViewModelMapping.CreatePostViewModel(newPost, new List<Vote>(), permissions, topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
 
                 // Success send any notifications
                 NotifyNewTopics(topic, unitOfWork);
@@ -155,22 +148,16 @@ namespace MVCForum.Website.Controllers
                 // get the users permissions
                 var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
 
-                if (post.User.Id == LoggedOnUser.Id || permissions[AppConstants.PermissionDeletePosts].IsTicked)
+                if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[AppConstants.PermissionDeletePosts].IsTicked)
                 {
-                    var postUser = post.User;
-
                     var deleteTopic = _postService.Delete(post);
-                    unitOfWork.SaveChanges();
 
-                    var postIdList = new List<Guid>();
+                    unitOfWork.SaveChanges();
+                    
                     if (deleteTopic)
                     {
-                        postIdList = topic.Posts.Select(x => x.Id).ToList();
                         _topicService.Delete(topic);
                     }
-
-                    // Remove the points the user got for this post
-                    _membershipUserPointsService.Delete(SettingsService.GetSettings().PointsAddedPerPost, postUser);
 
                     try
                     {
@@ -220,52 +207,52 @@ namespace MVCForum.Website.Controllers
 
         private void NotifyNewTopics(Topic topic, IUnitOfWork unitOfWork)
         {
+            try
+            {
+                // Get all notifications for this category
+                var notifications = _topicNotificationService.GetByTopic(topic).Select(x => x.User.Id).ToList();
 
-                try
+                if (notifications.Any())
                 {
-                    // Get all notifications for this category
-                    var notifications = _topicNotificationService.GetByTopic(topic).Select(x => x.User.Id).ToList();
+                    // remove the current user from the notification, don't want to notify yourself that you 
+                    // have just made a topic!
+                    notifications.Remove(LoggedOnReadOnlyUser.Id);
 
-                    if (notifications.Any())
+                    if (notifications.Count > 0)
                     {
-                        // remove the current user from the notification, don't want to notify yourself that you 
-                        // have just made a topic!
-                        notifications.Remove(LoggedOnUser.Id);
+                        // Now get all the users that need notifying
+                        var usersToNotify = MembershipService.GetUsersById(notifications);
 
-                        if (notifications.Count > 0)
+                        // Create the email
+                        var sb = new StringBuilder();
+                        sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Post.Notification.NewPosts"), topic.Name));
+                        sb.Append(AppHelpers.ConvertPostContent(topic.LastPost.PostContent));
+                        sb.AppendFormat("<p><a href=\"{0}\">{0}</a></p>", string.Concat(SettingsService.GetSettings().ForumUrl.TrimEnd('/'), topic.NiceUrl));
+
+                        // create the emails only to people who haven't had notifications disabled
+                        var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true && !x.IsLockedOut).Select(user => new Email
                         {
-                            // Now get all the users that need notifying
-                            var usersToNotify = MembershipService.GetUsersById(notifications);
+                            Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
+                            EmailTo = user.Email,
+                            NameTo = user.UserName,
+                            Subject = string.Concat(LocalizationService.GetResourceString("Post.Notification.Subject"), SettingsService.GetSettings().ForumName)
+                        }).ToList();
 
-                            // Create the email
-                            var sb = new StringBuilder();
-                            sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Post.Notification.NewPosts"), topic.Name));
-                            sb.AppendFormat("<p>{0}</p>", string.Concat(SettingsService.GetSettings().ForumUrl, topic.NiceUrl));
+                        // and now pass the emails in to be sent
+                        _emailService.SendMail(emails);
 
-                            // create the emails only to people who haven't had notifications disabled
-                            var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true && !x.IsLockedOut).Select(user => new Email
-                            {
-                                Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
-                                EmailTo = user.Email,
-                                NameTo = user.UserName,
-                                Subject = string.Concat(LocalizationService.GetResourceString("Post.Notification.Subject"), SettingsService.GetSettings().ForumName)
-                            }).ToList();
-
-                            // and now pass the emails in to be sent
-                            _emailService.SendMail(emails);
-
-                            unitOfWork.Commit();
-                        }
+                        unitOfWork.Commit();
                     }
+                }
 
 
-                }
-                catch (Exception ex)
-                {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                }
-            
+            }
+            catch (Exception ex)
+            {
+                unitOfWork.Rollback();
+                LoggingService.Error(ex);
+            }
+
 
         }
 
@@ -296,7 +283,7 @@ namespace MVCForum.Website.Controllers
                     {
                         Reason = viewModel.Reason,
                         ReportedPost = post,
-                        Reporter = LoggedOnUser
+                        Reporter = LoggedOnReadOnlyUser
                     };
                     _reportService.PostReport(report);
 
@@ -319,6 +306,20 @@ namespace MVCForum.Website.Controllers
                 }
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
+        }
+
+        [HttpPost]
+        public ActionResult GetAllPostLikes(Guid id)
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var post = _postService.Get(id);
+                var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
+                var votes = _voteService.GetVotesByPosts(new List<Guid>{id});
+                var viewModel = ViewModelMapping.CreatePostViewModel(post, votes, permissions, post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
+                var upVotes = viewModel.Votes.Where(x => x.Amount > 0).ToList();
+                return View(upVotes);
+            }         
         }
 
     }

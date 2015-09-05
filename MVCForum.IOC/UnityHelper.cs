@@ -9,7 +9,6 @@ using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Services;
 using Microsoft.Practices.Unity;
 using Quartz.Unity;
-using Unity.Mvc4;
 
 namespace MVCForum.IOC
 {
@@ -97,6 +96,9 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IUploadedFileService, UploadedFileService>();
             container.BindInRequestScope<IFavouriteService, FavouriteService>();
             container.BindInRequestScope<IGlobalPermissionForRoleService, GlobalPermissionForRoleService>();
+            container.BindInRequestScope<ICacheService, CacheService>();
+            container.BindInRequestScope<ITagNotificationService, TagNotificationService>();
+            container.BindInRequestScope<IReflectionService, ReflectionService>();
 
             container.BindInRequestScope<IRoleRepository, RoleRepository>();
             container.BindInRequestScope<ICategoryRepository, CategoryRepository>();
@@ -125,6 +127,7 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IFavouriteRepository, FavouriteRepository>();
             container.BindInRequestScope<IGlobalPermissionForRoleRepository, GlobalPermissionForRoleRepository>();
             container.BindInRequestScope<IEmailRepository, EmailRepository>();
+            container.BindInRequestScope<ITagNotificationRepository, TagNotificationRepository>();
 
             //container.BindInRequestScope<ISessionHelper, SessionHelper>();
 

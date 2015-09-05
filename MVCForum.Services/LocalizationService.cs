@@ -238,16 +238,28 @@ namespace MVCForum.Services
         {
             if (!string.IsNullOrEmpty(key))
             {
-                var trimmedKey = key;
+                var trimmedKey = key.Trim();
                 try
                 {
-                    return _perRequestLanguageStrings[trimmedKey];
+                    if (_perRequestLanguageStrings.ContainsKey(trimmedKey))
+                    {
+                        var langValue = _perRequestLanguageStrings[trimmedKey];
+                        if (!string.IsNullOrEmpty(langValue))
+                        {
+                            return langValue;
+                        }
+                        _loggingService.Error(string.Format("No value is set for resource key '{0}' for language {1}.", trimmedKey, CurrentLanguage.Name));
+                    }
+                    else
+                    {
+                        _loggingService.Error(string.Format("This resource key '{0}' was not found for the language {1}.", trimmedKey, CurrentLanguage.Name));
+                    }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    _loggingService.Error(string.Format("Unable to retrieve resource key '{0}' for language id {1}.", trimmedKey, CurrentLanguage.Id));
-                    return trimmedKey;
+                    _loggingService.Error(ex);
                 }
+                return trimmedKey;
             }
             return string.Empty;
         }
@@ -297,7 +309,7 @@ namespace MVCForum.Services
                         }
 
                         // User might have a language set
-                        var changedLanguage = Get(languageGuid);
+                        var changedLanguage = Get(languageGuid, true);
                         if (changedLanguage != null)
                         {
                             // User has set the language so overide it here
@@ -323,7 +335,7 @@ namespace MVCForum.Services
         {
             get
             {
-                var settings = _settingsRepository.GetSettings();
+                var settings = _settingsRepository.GetSettings(false);
 
                 if (settings == null)
                 {
@@ -490,10 +502,11 @@ namespace MVCForum.Services
         /// Get an individual language
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="removeTracking"></param>
         /// <returns></returns>
-        public Language Get(Guid id)
+        public Language Get(Guid id, bool removeTracking = false)
         {
-            return _localizationRepository.Get(id);
+            return _localizationRepository.Get(id, removeTracking);
         }
 
 
@@ -600,6 +613,112 @@ namespace MVCForum.Services
             return csv.ToString();
         }
 
+
+        public CsvReport FromCsv(Language language, List<string> allLines)
+        {
+            var commaSeparator = new[] { ',' };
+            var report = new CsvReport();
+
+            if (allLines == null || allLines.Count == 0)
+            {
+                report.Errors.Add(new CsvErrorWarning
+                {
+                    ErrorWarningType = CsvErrorWarningType.BadDataFormat,
+                    Message = "No language keys or values found."
+                });
+                return report;
+            }
+
+            try
+            {
+                //var allResourceKeys = _localizationRepository.GetAllResourceKeys();
+                var lineCounter = 0;
+                foreach (var line in allLines)
+                {
+                    lineCounter++;
+
+                    //var keyValuePair = line.Split(commaSeparator);
+                    var keyValuePair = line.Split(commaSeparator, 2, StringSplitOptions.None);
+
+                    if (keyValuePair.Length < 2)
+                    {
+                        report.Errors.Add(new CsvErrorWarning
+                        {
+                            ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
+                            Message = string.Format("Line {0}: a key and a value are required.", lineCounter)
+                        });
+
+                        continue;
+                    }
+
+                    var key = keyValuePair[0];
+
+                    if (string.IsNullOrEmpty(key))
+                    {
+                        // Ignore empty keys
+                        continue;
+                    }
+                    key = key.Trim();
+
+                    var value = keyValuePair[1];
+
+                    var resourceKey = _localizationRepository.GetResourceKey(key);
+
+                    if (language == null)
+                    {
+                        throw new ApplicationException(string.Format("Unable to create language"));
+                    }
+
+                    // If key does not exist, it is a new one to be created
+                    if (resourceKey == null)
+                    {
+                        resourceKey = new LocaleResourceKey
+                        {
+                            Name = key,
+                            DateAdded = DateTime.UtcNow,
+                        };
+
+                        Add(resourceKey);
+                        report.Warnings.Add(new CsvErrorWarning
+                        {
+                            ErrorWarningType = CsvErrorWarningType.NewKeyCreated,
+                            Message = string.Format("A new key named '{0}' has been created, and will require a value in all languages.", key)
+                        });
+                    }
+
+                    // In the new language (only) set the value for the resource
+                    var stringResource = language.LocaleStringResources.FirstOrDefault(res => res.LocaleResourceKey.Name == resourceKey.Name);
+                    if (stringResource != null)
+                    {
+                        if (!stringResource.ResourceValue.Equals(value))
+                        {
+                            stringResource.ResourceValue = value;   
+                        }                     
+                    }
+                    else
+                    {
+                        // No string resources have been created, so most probably
+                        // this is the installer creating the keys so we need to create the 
+                        // string resource to go with it and add it
+                        stringResource = new LocaleStringResource
+                        {
+                            Language = language,
+                            LocaleResourceKey = resourceKey,
+                            ResourceValue = value
+                        };
+                        _localizationRepository.Add(stringResource);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                report.Errors.Add(new CsvErrorWarning { ErrorWarningType = CsvErrorWarningType.GeneralError, Message = ex.Message });
+            }
+
+
+            return report;
+        }
+
         /// <summary>
         /// Import a language from CSV
         /// </summary>
@@ -653,93 +772,7 @@ namespace MVCForum.Services
                 return report;
             }
 
-            try
-            {
-                var lineCounter = 0;
-                foreach (var line in allLines)
-                {
-                    lineCounter++;
-
-                    var keyValuePair = line.Split(commaSeparator);
-
-                    if (keyValuePair.Length < 2)
-                    {
-                        report.Errors.Add(new CsvErrorWarning
-                        {
-                            ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
-                            Message = string.Format("Line {0}: a key and a value are required.", lineCounter)
-                        });
-
-                        continue;
-                    }
-
-                    var key = keyValuePair[0];
-
-                    if (string.IsNullOrEmpty(key))
-                    {
-                        // Ignore empty keys
-                        continue;
-                    }
-                    key = key.Trim();
-
-                    var value = keyValuePair[1];
-
-                    var resourceKey = _localizationRepository.GetResourceKey(key);
-
-                    if (language == null)
-                    {
-                        throw new ApplicationException(string.Format("Unable to create language"));
-                    }
-
-                    // If key does not exist, it is a new one to be created
-                    if (resourceKey == null)
-                    {
-                        resourceKey = new LocaleResourceKey
-                                          {
-                                              Name = key,
-                                              DateAdded = DateTime.UtcNow,
-                                          };
-
-                        Add(resourceKey);
-                        report.Warnings.Add(new CsvErrorWarning
-                        {
-                            ErrorWarningType = CsvErrorWarningType.NewKeyCreated,
-                            Message = string.Format("A new key named '{0}' has been created, and will require a value in all languages.", key)
-                        });
-                    }
-
-                    // In the new language (only) set the value for the resource
-                    var stringResources = language.LocaleStringResources.Where(res => res.LocaleResourceKey.Name == resourceKey.Name).ToList();
-                    if (stringResources.Any())
-                    {
-                        foreach (var res in stringResources)
-                        {
-                            res.ResourceValue = value;
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        // No string resources have been created, so most probably
-                        // this is the installer creating the keys so we need to create the 
-                        // string resource to go with it and add it
-                        var stringResource = new LocaleStringResource
-                            {
-                                Language = language,
-                                LocaleResourceKey = resourceKey,
-                                ResourceValue = value
-                            };
-                        _localizationRepository.Add(stringResource);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                report.Errors.Add(new CsvErrorWarning { ErrorWarningType = CsvErrorWarningType.GeneralError, Message = ex.Message });
-            }
-
-
-            return report;
+            return FromCsv(language, allLines);
         }
 
         /// <summary>

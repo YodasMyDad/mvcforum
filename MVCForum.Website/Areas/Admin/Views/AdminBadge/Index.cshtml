@@ -1,58 +1,65 @@
 ﻿@model MVCForum.Website.Areas.Admin.ViewModels.ListBadgesViewModel
 @{
-    ViewBag.Title = "Badges";    
+    ViewBag.Title = "Badges";
 }
-<h2>@ViewBag.Title</h2>
 
-@using (Html.BeginForm("Manage", "AdminBadge", FormMethod.Post))
-{
-    @Html.HiddenFor(x => x.PageIndex)
-    <div class="input-group tablesearch">
-        @Html.TextBoxFor(x => Model.Search, new { @class = "form-control" })
-        <span class="input-group-btn">
-            <button class="btn btn-default" type="submit">Search</button>
-        </span>
+<div class="panel">
+    <div class="panel-heading">
+        <h5>@ViewBag.Title</h5>
     </div>
-}
+    <div class="panel-content">
+        @using (Html.BeginForm("Manage", "AdminBadge", FormMethod.Post))
+        {
+            @Html.HiddenFor(x => x.PageIndex)
+            <div class="input-group tablesearch">
+                @Html.TextBoxFor(x => Model.Search, new { @class = "form-control" })
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">Search</button>
+                </span>
+            </div>
+        }
 
-@if (Model.TotalCount > 0)
-{
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>
-                    &nbsp;
-                </th>
-                <th>
-                    <strong>Badge Name </strong>
-                </th>
-                <th>
-                    <strong>Badge Description </strong>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var badge in Model.Badges)
+        @if (Model.TotalCount > 0)
+        {
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            &nbsp;
+                        </th>
+                        <th>
+                            <strong>Badge Name </strong>
+                        </th>
+                        <th>
+                            <strong>Badge Description </strong>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var badge in Model.Badges)
+                    {
+
+                        <tr>
+                            <td>
+                                <img src="@Url.Content(AppHelpers.ReturnBadgeUrl(badge.Image))" alt="Badge" title="@badge.Name" width="40" />
+                            </td>
+                            <td class="badgevalue">
+                                @Html.Raw(badge.DisplayName)
+                            </td>
+                            <td class="badgevalue">
+                                @badge.Description
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            if (Model.Badges.TotalPages > 1)
             {
-
-                <tr>
-                    <td>
-                        <img src="@Url.Content(AppHelpers.ReturnBadgeUrl(badge.Image))" alt="Badge" title="@badge.Name" width="40" />
-                    </td>
-                    <td class="badgevalue">
-                        @Html.Raw(badge.DisplayName)
-                    </td>
-                    <td class="badgevalue">
-                        @badge.Description
-                    </td>
-                </tr>
+                @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
             }
-        </tbody>
-    </table>
-    
-    if (Model.Badges.TotalPages > 1)
-    {
-        @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
-    }
+        }
+    </div>
+</div>
 
-}
+

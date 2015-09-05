@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Security;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.Repositories;
@@ -18,7 +19,8 @@ namespace MVCForum.Services
 {
     public partial class MembershipService : IMembershipService
     {
-        private const int SaltSize = 24;
+        private const int MaxHoursToResetPassword = 48;
+
         private readonly IEmailService _emailService;
         private readonly IMembershipRepository _membershipRepository;
         private readonly IPostRepository _postRepository;
@@ -38,6 +40,7 @@ namespace MVCForum.Services
         private readonly IBadgeService _badgeService;
         private readonly ICategoryNotificationService _categoryNotificationService;
         private readonly ILoggingService _loggingService;
+        private readonly ICategoryService _categoryService;
 
         private LoginAttemptStatus _lastLoginStatus = LoginAttemptStatus.LoginSuccessful;
 
@@ -63,13 +66,15 @@ namespace MVCForum.Services
         /// <param name="pollRepository"></param>
         /// <param name="topicRepository"></param>
         /// <param name="favouriteRepository"></param>
+        /// <param name="categoryService"></param>
         public MembershipService(IMembershipRepository membershipRepository, ISettingsRepository settingsRepository,
             IEmailService emailService, ILocalizationService localizationService, IActivityService activityService,
             IPrivateMessageService privateMessageService, IMembershipUserPointsService membershipUserPointsService,
             ITopicNotificationService topicNotificationService, IVoteService voteService, IBadgeService badgeService,
             ICategoryNotificationService categoryNotificationService, ILoggingService loggingService, IUploadedFileService uploadedFileService,
             IPostRepository postRepository, IPollVoteRepository pollVoteRepository, IPollAnswerRepository pollAnswerRepository,
-            IPollRepository pollRepository, ITopicRepository topicRepository, IFavouriteRepository favouriteRepository)
+            IPollRepository pollRepository, ITopicRepository topicRepository, IFavouriteRepository favouriteRepository, 
+            ICategoryService categoryService)
         {
             _membershipRepository = membershipRepository;
             _settingsRepository = settingsRepository;
@@ -90,6 +95,7 @@ namespace MVCForum.Services
             _pollRepository = pollRepository;
             _topicRepository = topicRepository;
             _favouriteRepository = favouriteRepository;
+            _categoryService = categoryService;
         }
 
 
@@ -101,55 +107,12 @@ namespace MVCForum.Services
             membershipUser.Password = StringUtils.SafePlainText(membershipUser.Password);
             membershipUser.PasswordAnswer = StringUtils.SafePlainText(membershipUser.PasswordAnswer);
             membershipUser.PasswordQuestion = StringUtils.SafePlainText(membershipUser.PasswordQuestion);
-            membershipUser.Signature = StringUtils.GetSafeHtml(membershipUser.Signature);
+            membershipUser.Signature = StringUtils.GetSafeHtml(membershipUser.Signature, true);
             membershipUser.Twitter = StringUtils.SafePlainText(membershipUser.Twitter);
             membershipUser.UserName = StringUtils.SafePlainText(membershipUser.UserName);
             membershipUser.Website = StringUtils.SafePlainText(membershipUser.Website);
             return membershipUser;
         }
-
-
-        /// <summary>
-        /// Create a salt for the password hash (just makes it a bit more complex)
-        /// </summary>
-        /// <param name="size"></param>
-        /// <returns></returns>
-        private static string CreateSalt(int size)
-        {
-            // Generate a cryptographic random number.
-            var rng = new RNGCryptoServiceProvider();
-            var buff = new byte[size];
-            rng.GetBytes(buff);
-
-            // Return a Base64 string representation of the random number.
-            return Convert.ToBase64String(buff);
-        }
-
-        /// <summary>
-        /// Generate a hash for a password, adding a salt value
-        /// </summary>
-        /// <param name="plainText"></param>
-        /// <param name="salt"></param>
-        /// <returns></returns>
-        private static string GenerateSaltedHash(string plainText, string salt)
-        {
-            // http://stackoverflow.com/questions/2138429/hash-and-salt-passwords-in-c-sharp
-
-            var plainTextBytes = Encoding.UTF8.GetBytes(plainText);
-            var saltBytes = Encoding.UTF8.GetBytes(salt);
-
-            // Combine the two lists
-            var plainTextWithSaltBytes = new List<byte>(plainTextBytes.Length + saltBytes.Length);
-            plainTextWithSaltBytes.AddRange(plainTextBytes);
-            plainTextWithSaltBytes.AddRange(saltBytes);
-
-            // Produce 256-bit hashed value i.e. 32 bytes
-            HashAlgorithm algorithm = new SHA256Managed();
-            var byteHash = algorithm.ComputeHash(plainTextWithSaltBytes.ToArray());
-            return Convert.ToBase64String(byteHash);
-        }
-
-
 
         #region Status Codes
         public string ErrorCodeToString(MembershipCreateStatus createStatus)
@@ -241,7 +204,7 @@ namespace MVCForum.Services
             }
 
             var salt = user.PasswordSalt;
-            var hash = GenerateSaltedHash(password, salt);
+            var hash = StringUtils.GenerateSaltedHash(password, salt);
             var passwordMatches = hash == user.Password;
 
             user.FailedPasswordAttemptCount = passwordMatches ? 0 : user.FailedPasswordAttemptCount + 1;
@@ -295,6 +258,7 @@ namespace MVCForum.Services
         public MembershipCreateStatus CreateUser(MembershipUser newUser)
         {
             newUser = SanitizeUser(newUser);
+            var settings = _settingsRepository.GetSettings(true);
 
             var status = MembershipCreateStatus.Success;
 
@@ -332,19 +296,19 @@ namespace MVCForum.Services
                 if (status == MembershipCreateStatus.Success)
                 {
                     // Hash the password
-                    var salt = CreateSalt(SaltSize);
-                    var hash = GenerateSaltedHash(newUser.Password, salt);
+                    var salt = StringUtils.CreateSalt(AppConstants.SaltSize);
+                    var hash = StringUtils.GenerateSaltedHash(newUser.Password, salt);
                     newUser.Password = hash;
                     newUser.PasswordSalt = salt;
 
-                    newUser.Roles = new List<MembershipRole> { _settingsRepository.GetSettings().NewMemberStartingRole };
+                    newUser.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
 
                     // Set dates
                     newUser.CreateDate = newUser.LastPasswordChangedDate = DateTime.UtcNow;
                     newUser.LastLockoutDate = (DateTime)SqlDateTime.MinValue;
                     newUser.LastLoginDate = DateTime.UtcNow;
 
-                    newUser.IsApproved = !_settingsRepository.GetSettings().ManuallyAuthoriseNewMembers;
+                    newUser.IsApproved = !settings.ManuallyAuthoriseNewMembers;
                     newUser.IsLockedOut = false;
 
                     // url generator
@@ -354,14 +318,14 @@ namespace MVCForum.Services
                     {
                         _membershipRepository.Add(newUser);
 
-                        if (_settingsRepository.GetSettings().EmailAdminOnNewMemberSignUp)
+                        if (settings.EmailAdminOnNewMemberSignUp)
                         {
                             var sb = new StringBuilder();
-                            sb.AppendFormat("<p>{0}</p>", string.Format(_localizationService.GetResourceString("Members.NewMemberRegistered"), _settingsRepository.GetSettings().ForumName, _settingsRepository.GetSettings().ForumUrl));
+                            sb.AppendFormat("<p>{0}</p>", string.Format(_localizationService.GetResourceString("Members.NewMemberRegistered"), settings.ForumName, settings.ForumUrl));
                             sb.AppendFormat("<p>{0} - {1}</p>", newUser.UserName, newUser.Email);
                             var email = new Email
                                             {
-                                                EmailTo = _settingsRepository.GetSettings().AdminEmailAddress,
+                                                EmailTo = settings.AdminEmailAddress,
                                                 NameTo = _localizationService.GetResourceString("Members.Admin"),
                                                 Subject = _localizationService.GetResourceString("Members.NewMemberSubject")
                                             };
@@ -387,10 +351,11 @@ namespace MVCForum.Services
         /// Get a user by username
         /// </summary>
         /// <param name="username"></param>
+        /// <param name="removeTracking"></param>
         /// <returns></returns>
-        public MembershipUser GetUser(string username)
+        public MembershipUser GetUser(string username, bool removeTracking = false)
         {
-            var member = _membershipRepository.GetUser(username);
+            var member = _membershipRepository.GetUser(username, removeTracking);
 
             // Do a check to log out the user if they are logged in and have been deleted
             if (member == null && HttpContext.Current.User.Identity.Name == username)
@@ -486,7 +451,7 @@ namespace MVCForum.Services
         {
             username = StringUtils.SafePlainText(username);
             var roles = new List<string>();
-            var user = _membershipRepository.GetUser(username);
+            var user = _membershipRepository.GetUser(username, true);
 
             if (user != null)
             {
@@ -511,7 +476,7 @@ namespace MVCForum.Services
             //n3oCacheHelper.Clear(user.UserName);
             var existingUser = _membershipRepository.Get(user.Id);
             var salt = existingUser.PasswordSalt;
-            var oldHash = GenerateSaltedHash(oldPassword, salt);
+            var oldHash = StringUtils.GenerateSaltedHash(oldPassword, salt);
 
             if (oldHash != existingUser.Password)
             {
@@ -520,8 +485,8 @@ namespace MVCForum.Services
             }
 
             // Cleared to go ahead with new password
-            salt = CreateSalt(SaltSize);
-            var newHash = GenerateSaltedHash(newPassword, salt);
+            salt = StringUtils.CreateSalt(AppConstants.SaltSize);
+            var newHash = StringUtils.GenerateSaltedHash(newPassword, salt);
 
             existingUser.Password = newHash;
             existingUser.PasswordSalt = salt;
@@ -540,8 +505,8 @@ namespace MVCForum.Services
         {
             var existingUser = _membershipRepository.Get(user.Id);
 
-            var salt = CreateSalt(SaltSize);
-            var newHash = GenerateSaltedHash(newPassword, salt);
+            var salt = StringUtils.CreateSalt(AppConstants.SaltSize);
+            var newHash = StringUtils.GenerateSaltedHash(newPassword, salt);
 
             existingUser.Password = newHash;
             existingUser.PasswordSalt = salt;
@@ -635,18 +600,6 @@ namespace MVCForum.Services
         /// Save user (does NOT update password data)
         /// </summary>
         /// <param name="user"></param>
-        public void Save(MembershipUser user)
-        {
-
-            user = SanitizeUser(user);
-
-            _membershipRepository.Update(user);
-        }
-
-        /// <summary>
-        /// Save user (does NOT update password data)
-        /// </summary>
-        /// <param name="user"></param>
         public void ProfileUpdated(MembershipUser user)
         {
             var e = new UpdateProfileEventArgs { User = user };
@@ -686,8 +639,6 @@ namespace MVCForum.Services
                 {
                     user.FailedPasswordAnswerAttempt = 0;
                 }
-
-                _membershipRepository.Update(user);
             }
         }
 
@@ -808,7 +759,7 @@ namespace MVCForum.Services
                     userToImport.Slug = ServiceHelpers.GenerateSlug(userToImport.UserName, _membershipRepository.GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)), userToImport.Slug);
                     userToImport.Email = email;
                     userToImport.IsApproved = true;
-                    userToImport.PasswordSalt = CreateSalt(SaltSize);
+                    userToImport.PasswordSalt = StringUtils.CreateSalt(AppConstants.SaltSize);
 
                     string createDateStr = null;
                     if (values.Length >= 3)
@@ -867,6 +818,7 @@ namespace MVCForum.Services
                 {
                     _voteService.Delete(d);
                 }
+                user.Votes.Clear();
             }
 
             // User Badges
@@ -878,6 +830,7 @@ namespace MVCForum.Services
                 {
                     _badgeService.Delete(obj);
                 }
+                user.Badges.Clear();
             }
 
             // User badge time checks
@@ -889,6 +842,7 @@ namespace MVCForum.Services
                 {
                     _badgeService.DeleteTimeLastChecked(obj);
                 }
+                user.BadgeTypesTimeLastChecked.Clear();
             }
 
             // User category notifications
@@ -900,28 +854,39 @@ namespace MVCForum.Services
                 {
                     _categoryNotificationService.Delete(obj);
                 }
+                user.CategoryNotifications.Clear();
             }
 
             // User PM Received
+            var pmUpdate = false;
             if (user.PrivateMessagesReceived != null)
             {
+                pmUpdate = true;
                 var toDelete = new List<PrivateMessage>();
                 toDelete.AddRange(user.PrivateMessagesReceived);
                 foreach (var obj in toDelete)
                 {
                     _privateMessageService.DeleteMessage(obj);
                 }
+                user.PrivateMessagesReceived.Clear();
             }
 
             // User PM Sent
             if (user.PrivateMessagesSent != null)
             {
+                pmUpdate = true;
                 var toDelete = new List<PrivateMessage>();
                 toDelete.AddRange(user.PrivateMessagesSent);
                 foreach (var obj in toDelete)
                 {
                     _privateMessageService.DeleteMessage(obj);
                 }
+                user.PrivateMessagesSent.Clear();
+            }
+
+            if (pmUpdate)
+            {
+                unitOfWork.SaveChanges();
             }
 
             // User Favourites
@@ -933,6 +898,7 @@ namespace MVCForum.Services
                 {
                     _favouriteRepository.Delete(obj);
                 }
+                user.Favourites.Clear();
             }
 
             if (user.TopicNotifications != null)
@@ -943,47 +909,26 @@ namespace MVCForum.Services
                 {
                     _topicNotificationService.Delete(topicNotification);
                 }
+                user.TopicNotifications.Clear();
             }
 
-            unitOfWork.SaveChanges();
-
-            // Delete all file uploads
-            var files = _uploadedFileService.GetAllByUser(user.Id);
-            var filesList = new List<UploadedFile>();
-            filesList.AddRange(files);
-            foreach (var file in filesList)
+            // Also clear their points
+            var userPoints = user.Points;
+            if (userPoints.Any())
             {
-                // store the file path as we'll need it to delete on the file system
-                var filePath = file.FilePath;
-
-                // Now delete it
-                _uploadedFileService.Delete(file);
-
-                // And finally delete from the file system
-                System.IO.File.Delete(HostingEnvironment.MapPath(filePath));
+                var pointsList = new List<MembershipUserPoints>();
+                pointsList.AddRange(userPoints);
+                foreach (var point in pointsList)
+                {
+                    point.User = null;
+                    _membershipUserPointsService.Delete(point);
+                }
+                user.Points.Clear();
             }
 
-            // Delete all posts
-            var posts = user.Posts;
-            var postIds = posts.Select(x => x.Id).ToList();
-            var postList = new List<Post>();
-            postList.AddRange(posts);
-            foreach (var post in postList)
-            {
-                post.Files.Clear();
-                _postRepository.Delete(post);
-            }
-
-            // Need to see if any of these are last posts on Topics
-            // If so, need to swap out last post
-            var lastPostTopics = _topicRepository.GetTopicsByLastPost(postIds);
-            foreach (var topic in lastPostTopics)
-            {
-                var lastPost = topic.Posts.Where(x => !postIds.Contains(x.Id)).OrderByDescending(x => x.DateCreated).FirstOrDefault();
-                topic.LastPost = lastPost;
-            }
-
-            unitOfWork.SaveChanges();
+            // Now clear all activities for this user
+            var usersActivities = _activityService.GetDataFieldByGuid(user.Id);
+            _activityService.Delete(usersActivities.ToList());
 
             // Also clear their poll votes
             var userPollVotes = user.PollVotes;
@@ -1032,37 +977,141 @@ namespace MVCForum.Services
 
             unitOfWork.SaveChanges();
 
-            // Delete all topics
+            // ######### POSTS TOPICS ########
+
+            // Delete all topics first
             var topics = user.Topics;
-            var topicList = new List<Topic>();
-            topicList.AddRange(topics);
-            foreach (var topic in topicList)
+            if (topics != null && topics.Any())
             {
-                topic.LastPost = null;
-                topic.Tags.Clear();
-                _topicRepository.Delete(topic);
-            }
-
-            // Also clear their points
-            var userPoints = user.Points;
-            if (userPoints.Any())
-            {
-                var pointsList = new List<MembershipUserPoints>();
-                pointsList.AddRange(userPoints);
-                foreach (var point in pointsList)
+                var topicList = new List<Topic>();
+                topicList.AddRange(topics);
+                foreach (var topic in topicList)
                 {
-                    point.User = null;
-                    _membershipUserPointsService.Delete(point);
+                    topic.LastPost = null;
+                    topic.Posts.Clear();
+                    topic.Tags.Clear();
+                    _topicRepository.Delete(topic);
                 }
-                user.Points.Clear();
+                user.Topics.Clear();
+                unitOfWork.SaveChanges();
             }
 
-            unitOfWork.SaveChanges();
+            // Now sorts Last Posts on topics and delete all the users posts
+            var posts = user.Posts;
+            if (posts != null && posts.Any())
+            {
+                var postIds = posts.Select(x => x.Id).ToList();
 
-            // Now clear all activities for this user
-            var usersActivities = _activityService.GetDataFieldByGuid(user.Id);
-            _activityService.Delete(usersActivities.ToList());
+                // Get all categories
+                var allCategories = _categoryService.GetAll();
 
+                // Need to see if any of these are last posts on Topics
+                // If so, need to swap out last post
+                var lastPostTopics = _topicRepository.GetTopicsByLastPost(postIds, allCategories.ToList());
+                foreach (var topic in lastPostTopics.Where(x => x.User.Id != user.Id))
+                {
+                    var lastPost = topic.Posts.Where(x => !postIds.Contains(x.Id)).OrderByDescending(x => x.DateCreated).FirstOrDefault();
+                    topic.LastPost = lastPost;
+                }
+
+                unitOfWork.SaveChanges();
+
+                user.UploadedFiles.Clear();
+
+                // Delete all posts
+
+                var postList = new List<Post>();
+                postList.AddRange(posts);
+                foreach (var post in postList)
+                {
+                    if (post.Files != null)
+                    {
+                        var files = post.Files;
+                        var filesList = new List<UploadedFile>();
+                        filesList.AddRange(files);
+                        foreach (var file in filesList)
+                        {
+                            // store the file path as we'll need it to delete on the file system
+                            var filePath = file.FilePath;
+
+                            // Now delete it
+                            _uploadedFileService.Delete(file);
+
+                            // And finally delete from the file system
+                            System.IO.File.Delete(HostingEnvironment.MapPath(filePath));
+                        }
+                        post.Files.Clear();
+                    }
+                    _postRepository.Delete(post);
+                }
+                user.Posts.Clear();
+
+                unitOfWork.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Update the user record with a newly generated password reset security token and timestamp
+        /// </summary>
+        public bool UpdatePasswordResetToken(MembershipUser user)
+        {
+            var existingUser = GetUser(user.Id);
+            if (existingUser == null)
+            {
+                return false;   
+            }
+            existingUser.PasswordResetToken = CreatePasswordResetToken();
+            existingUser.PasswordResetTokenCreatedAt = DateTime.UtcNow;
+            return true;
+        }
+
+        /// <summary>
+        /// Remove the password reset security token and timestamp from the user record
+        /// </summary>
+        public bool ClearPasswordResetToken(MembershipUser user)
+        {
+            var existingUser = GetUser(user.Id);
+            if (existingUser == null)
+            {
+                return false;   
+            }
+            existingUser.PasswordResetToken = null;
+            existingUser.PasswordResetTokenCreatedAt = null;
+            return true;
+        }
+
+        /// <summary>
+        /// To be valid:
+        /// - The user record must contain a password reset token
+        /// - The given token must match the token in the user record
+        /// - The token timestamp must be less than 24 hours ago
+        /// </summary>
+        public bool IsPasswordResetTokenValid(MembershipUser user, string token)
+        {
+            var existingUser = GetUser(user.Id);
+            if (existingUser == null || string.IsNullOrEmpty(existingUser.PasswordResetToken))
+            {
+                return false;
+            }
+            // A security token must have an expiry date
+            if (existingUser.PasswordResetTokenCreatedAt == null)
+            {
+                return false;   
+            }
+            // The security token is only valid for 48 hours
+            if ((DateTime.UtcNow - existingUser.PasswordResetTokenCreatedAt.Value).TotalHours >= MaxHoursToResetPassword)
+            {
+                return false;   
+            }
+            return existingUser.PasswordResetToken == token;
+        }
+
+        /// <summary>
+        /// Generate a password reset token, a guid is sufficient
+        /// </summary>
+        private static string CreatePasswordResetToken()
+        {
+            return Guid.NewGuid().ToString().ToLower().Replace("-", "");
         }
     }
 }

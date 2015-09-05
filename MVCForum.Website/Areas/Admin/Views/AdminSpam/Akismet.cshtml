@@ -1,0 +1,40 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.AkismetViewModel
+@{
+    ViewBag.Title = "Akismet Settings";
+}
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5>@ViewBag.Title</h5>
+    </div>
+    <div class="panel-content">
+        <p>
+            If you have an <a href="http://akismet.com/" target="_blank">Akismet</a> key, then you can use it with this forum.
+            All posts/topics are checked against Akismet, and marked as pending - awaiting an Admin to check they are approriate.
+        </p>
+
+        @using (Html.BeginForm("Akismet", "AdminSpam", FormMethod.Post))
+        {
+            @Html.ValidationSummary(false)
+
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.EnableAkisment, new { @class = "checkbox" }))
+                {
+                    @Html.CheckBoxFor(m => m.EnableAkisment)
+                }
+                @Html.ValidationMessageFor(m => m.EnableAkisment)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.AkismentKey)
+                @Html.TextBoxFor(m => m.AkismentKey, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.AkismentKey)
+            </div>
+
+            <div class="submit-holder">
+                <input type="submit" class="btn-mvc-green btn-mvc-large" value="Update" />
+            </div>
+        }
+
+    </div>
+</div>

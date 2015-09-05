@@ -12,23 +12,23 @@ namespace MVCForum.Website.Controllers
     {
         private readonly ITopicNotificationService _topicNotificationService;
         private readonly ICategoryNotificationService _categoryNotificationService;
+        private readonly ITagNotificationService _tagNotificationService;
         private readonly ICategoryService _categoryService;
         private readonly ITopicService _topicService;
-
-        private MembershipUser LoggedOnUser;
+        private readonly ITopicTagService _topicTagService;
 
         public EmailController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
             ITopicNotificationService topicNotificationService, ICategoryNotificationService categoryNotificationService, ICategoryService categoryService,
-            ITopicService topicService)
+            ITopicService topicService, ITopicTagService topicTagService, ITagNotificationService tagNotificationService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicNotificationService = topicNotificationService;
             _categoryNotificationService = categoryNotificationService;
             _categoryService = categoryService;
             _topicService = topicService;
-
-            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
+            _topicTagService = topicTagService;
+            _tagNotificationService = tagNotificationService;
         }
 
         [HttpPost]
@@ -43,7 +43,9 @@ namespace MVCForum.Website.Controllers
                     {
                         // Add logic to add subscr
                         var isCategory = subscription.SubscriptionType.Contains("category");
+                        var isTag = subscription.SubscriptionType.Contains("tag");
                         var id = subscription.Id;
+                        var dbUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
 
                         if (isCategory)
                         {
@@ -57,11 +59,30 @@ namespace MVCForum.Website.Controllers
                                 var categoryNotification = new CategoryNotification
                                 {
                                     Category = cat,
-                                    User = LoggedOnUser
+                                    User = dbUser
                                 };
                                 //save
 
                                 _categoryNotificationService.Add(categoryNotification);   
+                            }
+                        }
+                        else if (isTag)
+                        {
+                            // get the tag
+                            var tag = _topicTagService.Get(id);
+
+                            if (tag != null)
+                            {
+
+                                // Create the notification
+                                var tagNotification = new TagNotification
+                                {
+                                    Tag = tag,
+                                    User = dbUser
+                                };
+                                //save
+
+                                _tagNotificationService.Add(tagNotification);
                             }
                         }
                         else
@@ -77,7 +98,7 @@ namespace MVCForum.Website.Controllers
                                 var topicNotification = new TopicNotification
                                 {
                                     Topic = topic,
-                                    User = LoggedOnUser
+                                    User = dbUser
                                 };
                                 //save
 
@@ -113,8 +134,9 @@ namespace MVCForum.Website.Controllers
                     {
                         // Add logic to add subscr
                         var isCategory = subscription.SubscriptionType.Contains("category");
+                        var isTag = subscription.SubscriptionType.Contains("tag");
                         var id = subscription.Id;
-
+                        var dbUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
                         if (isCategory)
                         {
                             // get the category
@@ -123,7 +145,7 @@ namespace MVCForum.Website.Controllers
                             if (cat != null)
                             {        
                                 // get the notifications by user
-                                var notifications = _categoryNotificationService.GetByUserAndCategory(LoggedOnUser, cat);
+                                var notifications = _categoryNotificationService.GetByUserAndCategory(LoggedOnReadOnlyUser, cat, true);
 
                                 if(notifications.Any())
                                 {
@@ -136,6 +158,26 @@ namespace MVCForum.Website.Controllers
                            
                             }
                         }
+                        else if (isTag)
+                        {
+                            // get the tag
+                            var tag = _topicTagService.Get(id);
+
+                            if (tag != null)
+                            {
+                                // get the notifications by user
+                                var notifications = _tagNotificationService.GetByUserAndTag(LoggedOnReadOnlyUser, tag, true);
+
+                                if (notifications.Any())
+                                {
+                                    foreach (var n in notifications)
+                                    {
+                                        // Delete
+                                        _tagNotificationService.Delete(n);
+                                    }
+                                }
+                            }
+                        }
                         else
                         {
                             // get the topic
@@ -144,7 +186,7 @@ namespace MVCForum.Website.Controllers
                             if (topic != null)
                             {
                                 // get the notifications by user
-                                var notifications = _topicNotificationService.GetByUserAndTopic(LoggedOnUser, topic);
+                                var notifications = _topicNotificationService.GetByUserAndTopic(LoggedOnReadOnlyUser, topic, true);
 
                                 if (notifications.Any())
                                 {

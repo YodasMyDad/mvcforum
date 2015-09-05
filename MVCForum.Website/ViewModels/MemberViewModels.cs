@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web;
 using System.Web.Mvc;
-using DataAnnotationsExtensions;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Website.Application;
@@ -12,7 +11,7 @@ namespace MVCForum.Website.ViewModels
 {
     public class ActiveMembersViewModel
     {
-        public IList<MembershipUser> ActiveMembers { get; set; } 
+        public IList<MembershipUser> ActiveMembers { get; set; }
     }
 
     public class MemberAddViewModel
@@ -23,7 +22,7 @@ namespace MVCForum.Website.ViewModels
         public string UserName { get; set; }
 
         [Required]
-        [Email]
+        [EmailAddress]
         [ForumMvcResourceDisplayName("Members.Label.EmailAddress")]
         public string Email { get; set; }
 
@@ -69,7 +68,7 @@ namespace MVCForum.Website.ViewModels
         public string UserName { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.EmailAddress")]
-        [Email]
+        [EmailAddress]
         [Required]
         public string Email { get; set; }
 
@@ -79,7 +78,7 @@ namespace MVCForum.Website.ViewModels
         public string Signature { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Age")]
-        [Numeric]
+        [Range(0, int.MaxValue)]
         public int? Age { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Location")]
@@ -87,12 +86,12 @@ namespace MVCForum.Website.ViewModels
         public string Location { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Website")]
-        [System.ComponentModel.DataAnnotations.Url]
+        [Url]
         [StringLength(100)]
         public string Website { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Twitter")]
-        [System.ComponentModel.DataAnnotations.Url]
+        [Url]
         [StringLength(60)]
         public string Twitter { get; set; }
 
@@ -100,12 +99,15 @@ namespace MVCForum.Website.ViewModels
         public HttpPostedFileBase[] Files { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Facebook")]
-        [System.ComponentModel.DataAnnotations.Url]
+        [Url]
         [StringLength(60)]
         public string Facebook { get; set; }
 
         public string Avatar { get; set; }
         public bool DisableFileUploads { get; set; }
+        [ForumMvcResourceDisplayName("Members.Label.DisableEmailNotifications")]
+        public bool DisableEmailNotifications { get; set; }
+
     }
 
     public class LogOnViewModel
@@ -141,6 +143,7 @@ namespace MVCForum.Website.ViewModels
     {
         public MembershipUser CurrentUser { get; set; }
         public int NewPrivateMessageCount { get; set; }
+        public bool CanViewPrivateMessages { get; set; }
     }
 
     public class AdminMemberProfileToolsViewModel
@@ -192,7 +195,7 @@ namespace MVCForum.Website.ViewModels
     public class ForgotPasswordViewModel
     {
         [ForumMvcResourceDisplayName("Members.Label.EmailAddressBlank")]
-        [Email]
+        [EmailAddress]
         [Required]
         public string EmailAddress { get; set; }
     }
@@ -214,5 +217,26 @@ namespace MVCForum.Website.ViewModels
         [ForumMvcResourceDisplayName("Members.Label.ConfirmNewPassword")]
         [System.ComponentModel.DataAnnotations.Compare("NewPassword")]
         public string ConfirmPassword { get; set; }
+    }
+
+    public class ResetPasswordViewModel
+    {
+        [Required]
+        public Guid? Id { get; set; }
+
+        [Required]
+        public string Token { get; set; }
+
+        [Required]
+        [StringLength(100, MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [ForumMvcResourceDisplayName("Members.Label.NewPassword")]
+        public string NewPassword { get; set; }
+
+        [DataType(DataType.Password)]
+        [ForumMvcResourceDisplayName("Members.Label.ConfirmNewPassword")]
+        [System.ComponentModel.DataAnnotations.Compare("NewPassword")]
+        public string ConfirmPassword { get; set; }
+
     }
 }

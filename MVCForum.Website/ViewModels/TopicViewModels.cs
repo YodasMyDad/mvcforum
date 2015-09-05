@@ -76,6 +76,8 @@ namespace MVCForum.Website.ViewModels
         public int? TotalCount { get; set; }
         public int? TotalPages { get; set; }
         public string Tag { get; set; }
+        public Guid TagId { get; set; }
+        public bool IsSubscribed { get; set; }
     }
 
     public class CheckCreateTopicPermissions
@@ -83,6 +85,8 @@ namespace MVCForum.Website.ViewModels
         public bool CanUploadFiles { get; set; }
         public bool CanStickyTopic { get; set; }
         public bool CanLockTopic { get; set; }
+        public bool CanCreatePolls { get; set; }
+        public bool CanInsertImages { get; set; }
     }
 
     public class CreateEditTopicViewModel
@@ -108,6 +112,9 @@ namespace MVCForum.Website.ViewModels
 
         public string Tags { get; set; }
 
+        [ForumMvcResourceDisplayName("Topic.Label.PollCloseAfterDays")]
+        public int PollCloseAfterDays { get; set; }
+
         public List<SelectListItem> Categories { get; set; }
 
         public IList<PollAnswer> PollAnswers { get; set; }
@@ -124,6 +131,9 @@ namespace MVCForum.Website.ViewModels
         // Edit Properties
         [HiddenInput]
         public Guid Id { get; set; }
+
+        [HiddenInput]
+        public Guid TopicId { get; set; }
 
         public bool IsTopicStarter { get; set; }
     }

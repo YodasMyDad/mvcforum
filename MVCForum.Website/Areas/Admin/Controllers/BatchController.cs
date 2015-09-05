@@ -22,11 +22,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             _topicService = topicService;
         }
 
-        public ActionResult Index()
-        {
-            return View();
-        }
-
         public ActionResult BatchDeleteMembers()
         {
             return View(new BatchDeleteMembersViewModel{AmoutOfDaysSinceRegistered = 0, AmoutOfPosts = 0});
@@ -73,7 +68,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             var viewModel = new BatchMoveTopicsViewModel
                 {
-                    Categories = _categoryService.GetAll().ToList()
+                    Categories = _categoryService.GetAll()
                 };
             return View(viewModel);
         }
@@ -101,7 +96,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
                     categoryFrom.Topics.Clear();
 
-                    viewModel.Categories = _categoryService.GetAll().ToList();
+                    viewModel.Categories = _categoryService.GetAll();
 
                     unitOfWork.Commit();
 

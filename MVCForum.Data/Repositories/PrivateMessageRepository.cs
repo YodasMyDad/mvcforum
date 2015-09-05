@@ -23,55 +23,16 @@ namespace MVCForum.Data.Repositories
             _context = context as MVCForumContext;
         }
 
-        //public IPagedList<PrivateMessage> GetPagedSentMessagesByUser(int pageIndex, int pageSize, MembershipUser user)
-        //{
-        //    var totalCount = _context.PrivateMessage
-        //                        .Include(x => x.UserTo)
-        //                        .Include(x => x.UserFrom)
-        //                        .Count(x => x.UserFrom.Id == user.Id && x.IsSentMessage == true);
-
-        //    // Get the topics using an efficient
-        //    var results = _context.PrivateMessage
-        //                        .Include(x => x.UserTo)
-        //                        .Include(x => x.UserFrom)
-        //                        .Where(x => x.UserFrom.Id == user.Id)
-        //                        .Where(x => x.IsSentMessage == true)
-        //                        .OrderByDescending(x => x.DateSent)
-        //                        .Skip((pageIndex - 1) * pageSize)
-        //                        .Take(pageSize)
-        //                        .ToList();
-
-        //    // Return a paged list
-        //    return new PagedList<PrivateMessage>(results, pageIndex, pageSize, totalCount);
-        //}
-
-        //public IPagedList<PrivateMessage> GetPagedReceivedMessagesByUser(int pageIndex, int pageSize, MembershipUser user)
-        //{
-
-
-        //    var totalCount = _context.PrivateMessage
-        //                        .Include(x => x.UserTo)
-        //                        .Include(x => x.UserFrom)                                
-        //                        .OrderByDescending(x => x.DateSent)
-        //                        .Count(x => (x.UserTo.Id == user.Id || x.UserFrom.Id == user.Id) && x.IsSentMessage != true);
-
-        //    var results = _context.PrivateMessage
-        //                        .Include(x => x.UserTo)
-        //                        .Include(x => x.UserFrom)
-        //                        .OrderByDescending(x => x.DateSent)
-        //                        .Where(x => (x.UserTo.Id == user.Id || x.UserFrom.Id == user.Id) && x.IsSentMessage != true)
-        //                        .Skip((pageIndex - 1) * pageSize)
-        //                        .Take(pageSize)
-        //                        .ToList();
-
-
-        //    // Return a paged list
-        //    return new PagedList<PrivateMessage>(results, pageIndex, pageSize, totalCount);
-        //}
-
         public IPagedList<PrivateMessageListItem> GetUsersPrivateMessages(int pageIndex, int pageSize, MembershipUser user)
         {
-            //TODO - Need to rework this as it's not very efficient
+            //TODO - Need to rework this ASAP as it's not efficient at all!!
+
+            //var pms = _context.PrivateMessage
+            //    .Where(
+            //        x =>
+            //            (x.UserTo.Id == user.Id && x.IsSentMessage == true) |
+            //            (x.UserFrom.Id == user.Id && x.IsSentMessage != true));
+
 
             // Get all received pms
             var members = user.PrivateMessagesReceived.Where(x => x.IsSentMessage == true).OrderByDescending(x => x.DateSent).DistinctBy(x => x.UserFrom.Id).Select(x => new PrivateMessageListItem

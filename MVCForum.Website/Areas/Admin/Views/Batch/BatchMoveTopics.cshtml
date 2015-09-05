@@ -4,36 +4,38 @@
     ViewBag.Title = "Batch Move Topics";
 }
 
-<h2>Batch Move Topics</h2>
-<p>Use this tool to move all topics from one category to another one.</p>
-<p>As soon as you click the button the topics will be moved.</p>
-
-
-@using (Html.BeginForm("BatchMoveTopics", "Batch", FormMethod.Post))
-{
-    @Html.ValidationSummary(false)
-    @Html.AntiForgeryToken()
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                @Html.LabelFor(m => m.FromCategory)
-                @Html.DropDownListFor(m => m.FromCategory, new SelectList(Model.Categories, "Id", "Name"), new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.FromCategory)
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                @Html.LabelFor(m => m.ToCategory)
-                @Html.DropDownListFor(m => m.ToCategory, new SelectList(Model.Categories, "Id", "Name"), new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.ToCategory)
-            </div>
-        </div>
+<div class="panel">
+    <div class="panel-heading">
+        <h5>@ViewBag.Title</h5>
     </div>
+    <div class="panel-content">
+        <p>Use this tool to move all topics from one category to another one. As soon as you click the button the topics will be moved.</p>
 
-    <div class="submit-holder">
-        <input type="submit" class="btn-mvc btn-mvc-green" value="Move Topics" />
+        @using (Html.BeginForm("BatchMoveTopics", "Batch", FormMethod.Post))
+        {
+            @Html.ValidationSummary(false)
+            @Html.AntiForgeryToken()
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.FromCategory)
+                        @Html.DropDownListFor(m => m.FromCategory, new SelectList(Model.Categories, "Id", "Name"), new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.FromCategory)
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ToCategory)
+                        @Html.DropDownListFor(m => m.ToCategory, new SelectList(Model.Categories, "Id", "Name"), new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.ToCategory)
+                    </div>
+                </div>
+            </div>
+
+            <div class="submit-holder">
+                <input type="submit" class="btn-mvc-green btn-mvc-large" value="Move Topics" />
+            </div>
+        }
     </div>
-
-}
-
+</div>

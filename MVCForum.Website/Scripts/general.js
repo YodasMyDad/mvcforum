@@ -4,24 +4,17 @@ $(function () {
 
     PostattachmentFancybox();
 
-    ChangeLanguage();
+    //ChangeLanguage();
 
     // Attach files click handler
     ShowFileUploadClickHandler();
 
     DisplayWaitForPostUploadClickHandler();
 
-    // make code pretty
-    window.prettyPrint && prettyPrint();
-
-    $('input, textarea').placeholder();
-
     // Sort the date of the member
     SortWhosOnline();
 
     ResponsiveTable();
-
-    //---------------- On Click------------------------
 
     // We add the post click events like this, so we can reattach when we do the show more posts
     AddPostClickEvents();
@@ -32,287 +25,30 @@ $(function () {
             e.preventDefault();
             $('.mobilenavbar-inner ul.nav').slideToggle();
         });
-    }
+    }   
 
-    var topicName = $(".createtopicname");
-    if (topicName.length > 0) {
-        topicName.focusout(function () {
-            var tbValue = $.trim(topicName.val());
-            var length = tbValue.length;
-            if (length > 5) {
-                // Someone has entered some text more than 5 charactors and now clicked
-                // out of the textbox, so search
-                $.ajax({
-                    url: app_base + 'Topic/GetSimilarTopics',
-                    type: 'POST',
-                    dataType: 'html',
-                    data: { 'searchTerm': tbValue },
-                    success: function (data) {
-                        if (data != '') {
-                            $('.relatedtopicskey').html(data);
-                            $('.relatedtopicsholder').show();
-                        }
-                    },
-                    error: function (xhr, ajaxOptions, thrownError) {
-                        ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-                    }
-                });
-            }
-        });
-    }
+    // Topic Methods
 
-    var createTopicCategoryDropdown = $('.createtopicholder #Category');
-    if (createTopicCategoryDropdown.length > 0) {
-        // This is purely for the UI - All the below permissions are 
-        // checked server side so it doesn't matter if they submit
-        // something they are not allowed to do. It won't get through
+    TopicShowMorePosts();
 
-        // Divs to show and hide
-        var stickyholder = $('.createtopicholder .createsticky');
-        var lockedholder = $('.createtopicholder .createlocked');
-        var uploadholder = $('.createtopicholder .createuploadfiles');
+    // Private Message Methods
 
-        // Fire when the dropdown changes
-        createTopicCategoryDropdown.change(function (e) {
-            e.preventDefault();
-            var catId = $(this).val();
-            if (catId != "") {
+    showPrivateMessagesPanel();
+    deletePrivateMessages();
 
-                // Go and get the ajax model
-                $.ajax({
-                    url: app_base + 'Topic/CheckTopicCreatePermissions',
-                    type: 'POST',
-                    dataType: 'json',
-                    data: { catId: catId },
-                    success: function (data) {
-                        if (data.CanStickyTopic) {
-                            stickyholder.show();
-                        } else {
-                            stickyholder.hide();
-                        }
+    // Subscription Methods
 
-                        if (data.CanStickyTopic) {
-                            lockedholder.show();
-                        } else {
-                            lockedholder.hide();
-                        }
-
-                        if (data.CanStickyTopic) {
-                            uploadholder.show();
-                        } else {
-                            uploadholder.hide();
-                        }
-                    },
-                    error: function (xhr, ajaxOptions, thrownError) {
-                        ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-                    }
-                });
-
-            }
-        });
-    }
-
-    $(".showmoreposts").click(function (e) {
-        e.preventDefault();
-
-        var topicId = $('#topicId').val();
-        var pageIndex = $('#pageIndex');
-        var totalPages = parseInt($('#totalPages').val());
-        var activeText = $('span.smpactive');
-        var loadingText = $('span.smploading');
-        var showMoreLink = $(this);
-
-        activeText.hide();
-        loadingText.show();
-
-        var getMorePostsViewModel = new Object();
-        getMorePostsViewModel.TopicId = topicId;
-        getMorePostsViewModel.PageIndex = pageIndex.val();
-        getMorePostsViewModel.Order = $.QueryString["order"];
-
-        // Ajax call to post the view model to the controller
-        var strung = JSON.stringify(getMorePostsViewModel);
-
-        $.ajax({
-            url: app_base + 'Topic/AjaxMorePosts',
-            type: 'POST',
-            dataType: 'html',
-            data: strung,
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
-                // Now add the new posts
-                AddNewPosts(showMoreLink, data);
-
-                // Update the page index value
-                var newPageIdex = (parseInt(pageIndex.val()) + parseInt(1));
-                pageIndex.val(newPageIdex);
-
-                // If the new pageindex is greater than the total pages, then hide the show more button
-                if (newPageIdex > totalPages) {
-                    showMoreLink.hide();
-                }
-
-                // Lastly reattch the click events
-                AddPostClickEvents();
-                ShowFileUploadClickHandler();
-                activeText.show();
-                loadingText.hide();
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-                activeText.show();
-                loadingText.hide();
-            }
-        });
-
-    });
-
-    $(".privatemessagedelete").click(function (e) {
-        e.preventDefault();
-        var linkClicked = $(this);
-        var messageId = linkClicked.data('id');
-        var deletePrivateMessageViewModel = new Object();
-        deletePrivateMessageViewModel.Id = messageId;
-
-        // Ajax call to post the view model to the controller
-        var strung = JSON.stringify(deletePrivateMessageViewModel);
-
-        $.ajax({
-            url: app_base + 'PrivateMessage/Delete',
-            type: 'POST',
-            data: strung,
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
-                var pmHolder = linkClicked.closest(".pmblock");
-                pmHolder.fadeOut("fast");
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-            }
-        });
-
-    });
-
-    $(".emailsubscription").click(function (e) {
-        var entityId = $(this).data('id');
-        var subscriptionType = $(this).data('type');
-
-        $(this).hide();
-
-        var subscribeEmailViewModel = new Object();
-        subscribeEmailViewModel.Id = entityId;
-        subscribeEmailViewModel.SubscriptionType = subscriptionType;
-
-        // Ajax call to post the view model to the controller
-        var strung = JSON.stringify(subscribeEmailViewModel);
-
-        $.ajax({
-            url: app_base + 'Email/Subscribe',
-            type: 'POST',
-            data: strung,
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
-                $(".emailunsubscription").fadeIn();
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-            }
-        });
-
-        e.preventDefault();
-        e.stopImmediatePropagation();
-    });
-
-    $(".emailunsubscription").click(function (e) {
-        var entityId = $(this).data('id');
-        var subscriptionType = $(this).data('type');
-
-        $(this).hide();
-
-        var unSubscribeEmailViewModel = new Object();
-        unSubscribeEmailViewModel.Id = entityId;
-        unSubscribeEmailViewModel.SubscriptionType = subscriptionType;
-
-        // Ajax call to post the view model to the controller
-        var strung = JSON.stringify(unSubscribeEmailViewModel);
-
-        $.ajax({
-            url: app_base + 'Email/UnSubscribe',
-            type: 'POST',
-            data: strung,
-            contentType: 'application/json; charset=utf-8',
-            success: function (data) {
-                $(".emailsubscription").fadeIn();
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-            }
-        });
-
-        e.preventDefault();
-        e.stopImmediatePropagation();
-    });
+    emailsubscription();
+    emailunsubscription();
 
     // Some manual ajax badge checks
-    if ($.QueryString["postbadges"] == "true") {
-        // Do a post badge check
-        UserPost();
-    }
-
-    // Poll Answer counter
-    //var counter = 0;
-
-    // This check is for the edit page
-    //if (typeof counter === 'undefined') {
-    //    // variable is undefined
-    //} else {
-    //    ShowHideRemovePollAnswerButton(counter);
-    //}    
-
-    // Remove the polls
-    $(".removepollbutton").click(function (e) {
-        e.preventDefault();
-        //Firstly Show the Poll Section
-        $('.pollanswerholder').hide();
-        $('.pollanswerlist').html("");
-        // Hide this button now
-        $(this).hide();
-        // Show the add poll button
-        $(".createpollbutton").show();
-        counter = 0;
-    });
-
-    // Create Polls
-    $(".createpollbutton").click(function (e) {
-        e.preventDefault();
-        //Firstly Show the Poll Section
-        $('.pollanswerholder').show();
-        // Now add in the first row
-        AddNewPollAnswer(counter);
-        counter++;
-        // Hide this button now
-        $(this).hide();
-        // Show the remove poll button
-        $(".removepollbutton").show();
-    });
-
-    // Add a new answer
-    $(".addanswer").click(function (e) {
-        e.preventDefault();
-        AddNewPollAnswer(counter);
-        counter++;
-        //ShowHideRemovePollAnswerButton(counter);
-    });
-
-    // Remove a poll answer
-    $(".removeanswer").click(function (e) {
-        e.preventDefault();
-        if (counter > 0) {
-            counter--;
-            $("#answer" + counter).remove();
-            //ShowHideRemovePollAnswerButton(counter);
+    var postBadgeQs = $.QueryString["postbadges"];
+    if (typeof postBadgeQs != 'undefined') {
+        if (postBadgeQs == "true") {
+            // Do a post badge check
+            UserPost();
         }
-    });
+    }
 
     // Poll vote radio button click
     $(".pollanswerselect").click(function () {
@@ -322,6 +58,7 @@ $(function () {
         var answerId = $(this).data("answerid");
         $('.selectedpollanswer').val(answerId);
     });
+
 
     $(".pollvotebutton").click(function (e) {
         e.preventDefault();
@@ -365,7 +102,343 @@ $(function () {
 
     });
 
+    hideSlideOutPanel();
+
+    PostGetAllLikes();
+
 });
+
+var TopicShowMorePosts = function() {
+    var smp = $(".showmoreposts");
+    if (smp.length > 0) {
+        smp.click(function (e) {
+            e.preventDefault();
+
+            var topicId = $('#topicId').val();
+            var pageIndex = $('#pageIndex');
+            var totalPages = parseInt($('#totalPages').val());
+            var activeText = $('span.smpactive');
+            var loadingText = $('span.smploading');
+            var showMoreLink = $(this);
+
+            activeText.hide();
+            loadingText.show();
+
+            var getMorePostsViewModel = new Object();
+            getMorePostsViewModel.TopicId = topicId;
+            getMorePostsViewModel.PageIndex = pageIndex.val();
+            getMorePostsViewModel.Order = $.QueryString["order"];
+
+            // Ajax call to post the view model to the controller
+            var strung = JSON.stringify(getMorePostsViewModel);
+
+            $.ajax({
+                url: app_base + 'Topic/AjaxMorePosts',
+                type: 'POST',
+                dataType: 'html',
+                data: strung,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    // Now add the new posts
+                    AddNewPosts(showMoreLink, data);
+
+                    // Update the page index value
+                    var newPageIdex = (parseInt(pageIndex.val()) + parseInt(1));
+                    pageIndex.val(newPageIdex);
+
+                    // If the new pageindex is greater than the total pages, then hide the show more button
+                    if (newPageIdex > totalPages) {
+                        showMoreLink.hide();
+                    }
+
+                    // Lastly reattch the click events
+                    AddPostClickEvents();
+                    ShowFileUploadClickHandler();
+                    activeText.show();
+                    loadingText.hide();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                    activeText.show();
+                    loadingText.hide();
+                }
+            });
+
+        });
+    }
+}
+
+var PostGetAllLikes = function() {
+    var othersliked = $('.othersliked a');
+    if (othersliked.length > 0) {
+        othersliked.click(function (e) {
+            e.preventDefault();
+            var othersLink = $(this).parent();
+            var postId = othersLink.data("postid");
+            var holdingDiv = othersLink.closest(".postlikedby");
+
+            $.ajax({
+                url: app_base + 'Post/GetAllPostLikes',
+                type: 'POST',
+                dataType: 'html',
+                data: { id: postId },
+                success: function (data) {
+                    holdingDiv.html(data);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+
+        });
+    }
+};
+
+//
+
+/*--------------- PANEL SLIDER -----------------*/
+
+//var quickcart = function () {
+//    var quickcartLink = $(".quickcart");
+//    if (quickcartLink.length > 0) {
+//        quickcartLink.click(function (e) {
+//            e.preventDefault();
+//            var thisButton = $(this);
+//            var title = thisButton.data("title");
+//            slideOutPanel(title);
+
+//            // Get the url for the page to call via ajax
+//            var url = "/umbraco/surface/cart/quickcart";
+
+//            $.get(url, function (data) {
+//                slideOutPanel(title, data);
+//            });
+
+//        });
+//    }
+//}
+/*------------------ General Ajax Form Class ----------------------*/
+var submitAjaxForm = function () {
+    var submitFormElement = $(".ajaxform form");
+    submitFormData(submitFormElement);
+};
+
+/*------------------ GENERAL SUBMIT FORMS METHOD -------------------*/
+
+var submitFormData = function (formElement) {
+    formElement.submit(function (e) {
+        e.preventDefault();
+        $(this).validate();
+        if ($(this).valid()) {
+            $.ajax({
+                url: this.action,
+                type: this.method,
+                data: $(this).serialize(),
+                dataType: "json",
+                success: function (result) {
+                    if (result.Success) {
+                        closeSlideOutPanel();
+                        ShowUserMessage(result.ReturnMessage);
+                    } else {
+                        ShowUserMessage(result.ReturnMessage);
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+        }
+        return false;
+    });
+};
+
+/*------------ SUBSCRIPTION METHODS --------------------*/
+
+var emailsubscription = function () {
+    var esub = $(".emailsubscription");
+    if (esub.length > 0) {
+        esub.click(function (e) {
+            e.preventDefault();
+            var entityId = $(this).data('id');
+            var subscriptionType = $(this).data('type');
+
+            $(this).hide();
+
+            var subscribeEmailViewModel = new Object();
+            subscribeEmailViewModel.Id = entityId;
+            subscribeEmailViewModel.SubscriptionType = subscriptionType;
+
+            // Ajax call to post the view model to the controller
+            var strung = JSON.stringify(subscribeEmailViewModel);
+
+            $.ajax({
+                url: app_base + 'Email/Subscribe',
+                type: 'POST',
+                data: strung,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    $(".emailunsubscription").fadeIn();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+        }); 
+    }
+};
+
+var emailunsubscription = function () {
+    var eunsub = $(".emailunsubscription");
+    if (eunsub.length > 0) {
+        eunsub.click(function (e) {
+            e.preventDefault();
+            var entityId = $(this).data('id');
+            var subscriptionType = $(this).data('type');
+
+            $(this).hide();
+
+            var unSubscribeEmailViewModel = new Object();
+            unSubscribeEmailViewModel.Id = entityId;
+            unSubscribeEmailViewModel.SubscriptionType = subscriptionType;
+
+            // Ajax call to post the view model to the controller
+            var strung = JSON.stringify(unSubscribeEmailViewModel);
+
+            $.ajax({
+                url: app_base + 'Email/UnSubscribe',
+                type: 'POST',
+                data: strung,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    $(".emailsubscription").fadeIn();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+        });
+    }
+};
+
+
+/*------------ PRIVATE MESSAGE METHODS --------------------*/
+
+var showPrivateMessagesPanel = function () {
+    var privatemessageButton = $(".pm-panel");
+    if (privatemessageButton.length > 0) {
+        privatemessageButton.unbind("click");
+        privatemessageButton.click(function (e) {
+            e.preventDefault();
+            var thisButton = $(this);
+            var pmUrl = thisButton.attr("href");
+            var title = thisButton.data("name");
+            slideOutPanel(title);
+            $.ajax({
+                url: pmUrl,
+                type: 'GET',
+                async: true,
+                success: function (data) {
+                    // Load the Html into the side panel
+                    slideOutPanel(title, data);
+
+                    // Trigger Validation
+                    $.validator.unobtrusive.parse(document);
+
+                    // Delete private messages
+                    deletePrivateMessages();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+
+        });
+    }
+};
+
+var deletePrivateMessages = function () {
+    var privateMessageDeleteButton = $(".privatemessagedelete");
+    if (privateMessageDeleteButton.length > 0) {
+        privateMessageDeleteButton.click(function (e) {
+            e.preventDefault();
+            var linkClicked = $(this);
+            var messageId = linkClicked.data("id");
+            var deletePrivateMessageViewModel = new Object();
+            deletePrivateMessageViewModel.Id = messageId;
+
+            // Ajax call to post the view model to the controller
+            var strung = JSON.stringify(deletePrivateMessageViewModel);
+
+            // Just fade out anyway
+            var pmHolder = linkClicked.closest(".pmblock");
+            pmHolder.fadeOut("fast");
+
+            $.ajax({
+                url: app_base + "PrivateMessage/Delete",
+                type: "POST",
+                data: strung,
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+        });
+    }
+};
+
+
+var largeSpinnerBlock = "<div class=\"loaderholder\"><img src=\"" + largeSpinnerBlockImage + "\" alt=\"\"/></div>";
+var AddLargeSpinner = function (elementToPlaceInside) {
+    elementToPlaceInside.html(largeSpinnerBlock);
+};
+
+var slideOutPanel = function (title) {
+    slideOutPanel(title, largeSpinnerBlock);
+}
+
+var slideOutPanel = function (title, content) {
+    // Get panel
+    var panel = $(".cd-panel");
+
+    // Get content div and add in content
+    var contentDiv = panel.find(".cd-panel-content");
+    contentDiv.html(content);
+    var titleDiv = panel.find(".cd-panel-header h6");
+    titleDiv.html(title);
+
+    // Show Panel
+    panel.addClass("is-visible");
+
+    // Add overflow hidden to the body tag
+    $("body").css("overflow", "hidden").css("height", "100%");
+    $("html").css("overflow", "hidden").css("height", "100%");
+};
+
+var hideSlideOutPanel = function () {
+    var panel = $(".cd-panel");
+    panel.on("click", function (event) {
+        if ($(event.target).is(".cd-panel") || $(event.target).is(".cd-panel-close")) {
+            event.preventDefault();
+            panel.removeClass("is-visible");
+            //Clear fields
+            var contentDiv = panel.find(".cd-panel-content");
+            contentDiv.html(largeSpinnerBlock);
+            var titleDiv = panel.find(".cd-panel-header h6");
+            titleDiv.html("");
+            $("body").css("overflow", "").css("height", "");
+            $("html").css("overflow", "").css("height", "");
+        }
+    });
+};
+var closeSlideOutPanel = function () {
+    var panel = $(".cd-panel");
+    panel.trigger("click");
+};
+
+/*--------------- END PANEL SLIDER -----------------*/
 
 $(document).on('change', '.btn-file :file', function () {
     var input = $(this),
@@ -487,26 +560,56 @@ function AddPostClickEvents() {
 
     $(".votelink").click(function (e) {
         e.preventDefault();
-        var postId = $(this).data('id');
-        var voteType = $(this).data('votetype');
-        var holdingLi = $(this).closest("li");
+        var voteLink = $(this);
+        var postId = voteLink.data('id');
+        var voteType = voteLink.data('votetype');
+        var holdingLi = voteLink.closest("li");
         var holdingUl = holdingLi.closest("ul");
         var votePoints = holdingLi.find(".count");
-
+        var voteText = voteLink.data('votetext');
+        var votedText = voteLink.data('votedtext');
+        var hasVoted = voteLink.data('hasvoted');
+       
         // Remove all vote links
-        holdingUl.find(".votelink").fadeOut("fast");
+        //holdingUl.find(".votelink").fadeOut("fast");
 
         var voteUpViewModel = new Object();
         voteUpViewModel.Post = postId;
 
         var voteUrl = "Vote/VoteDownPost";
+        var otherVoteLink = holdingUl.find(".votelink[data-votetype='up']");
         if (voteType == "up") {
             voteUrl = "Vote/VoteUpPost";
+            otherVoteLink = holdingUl.find(".votelink[data-votetype='down']");
+        }
+
+        // We do the show hide/change of votes here for speed in the UI
+        // Change the number up or down
+        var currentPoints = parseInt(votePoints.text());
+        if (hasVoted) {
+            // They are removing their vote
+            votePoints.text((currentPoints - 1));
+            voteLink.text(voteText);
+
+            // So show the other link
+            otherVoteLink.show();
+
+            // Change has voted to false
+            voteLink.data('hasvoted', false);
+        } else {
+            // They add adding a vote
+            votePoints.text((currentPoints + 1));
+            voteLink.text(votedText);
+
+            // Hide the other link
+            otherVoteLink.hide();
+
+            // Change has voted to false
+            voteLink.data('hasvoted', true);
         }
 
         // Ajax call to post the view model to the controller
         var strung = JSON.stringify(voteUpViewModel);
-
 
         $.ajax({
             url: app_base + voteUrl,
@@ -514,9 +617,6 @@ function AddPostClickEvents() {
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
-
-                var currentPoints = parseInt($(votePoints).text());
-                votePoints.text((currentPoints + 1));
 
                 if (voteType == "up") {
                     BadgeVoteUp(postId);
@@ -562,17 +662,19 @@ function AddPostClickEvents() {
             type: 'POST',
             data: strung,
             contentType: 'application/json; charset=utf-8',
-            dataType: 'html',
+            dataType: 'json',
             success: function (data) {
 
                 // Update the text
-                favLink.text(data);
+                favLink.text(data.Message);
 
                 // Update the count and change the link type
                 if (addremove == "add") {
                     amountOfFavsHolder.text(currentFavCount + 1);
                     favStar.removeClass("glyphicon-star-empty").addClass("glyphicon-star");
                     favLink.data('addremove', 'remove');
+
+                    BadgeFavourite(data.Id);
                 } else {
                     amountOfFavsHolder.text(currentFavCount - 1);
                     favStar.removeClass("glyphicon-star").addClass("glyphicon-star-empty");
@@ -589,34 +691,6 @@ function AddPostClickEvents() {
             }
         });
     });
-
-    //$(".post a.favourite").click(function (e) {
-    //    e.preventDefault();
-    //    var favLink = $(this);
-    //    var postId = favLink.data('postid');
-
-    //    var ajaxUrl = "Favourite/FavouritePost";
-
-    //    var viewModel = new Object();
-    //    viewModel.PostId = postId;
-
-    //    // Ajax call to post the view model to the controller
-    //    var strung = JSON.stringify(viewModel);
-
-    //    $.ajax({
-    //        url: app_base + ajaxUrl,
-    //        type: 'POST',
-    //        data: strung,
-    //        contentType: 'application/json; charset=utf-8',
-    //        dataType: 'html',
-    //        success: function (data) {
-    //            favLink.closest('.post').remove();
-    //        },
-    //        error: function (xhr, ajaxOptions, thrownError) {
-    //            ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-    //        }
-    //    });
-    //});
 }
 
 function AddNewPosts(showMoreLink, posts) {
@@ -701,12 +775,6 @@ function AddShowVoters() {
     }
 }
 
-function AddNewPollAnswer(counter) {
-    var placeHolder = $('#pollanswerplaceholder').val();
-    var liHolder = $(document.createElement('li')).attr("id", 'answer' + counter);
-    liHolder.html('<input type="text" name="PollAnswers[' + counter + '].Answer" id="PollAnswers_' + counter + '_Answer" class="form-control" value="" placeholder="' + placeHolder + '" />');
-    liHolder.appendTo(".pollanswerlist");
-}
 
 //function ShowHideRemovePollAnswerButton(counter) {
 //    var removeButton = $('.removeanswer');
@@ -741,6 +809,30 @@ function BadgeMarkAsSolution(postId) {
         }
     });
 }
+
+function BadgeFavourite(favouriteId) {
+
+    // Ajax call to post the view model to the controller
+    var favouriteViewModel = new Object();
+    favouriteViewModel.FavouriteId = favouriteId;
+
+    // Ajax call to post the view model to the controller
+    var strung = JSON.stringify(favouriteViewModel);
+
+    $.ajax({
+        url: app_base + 'Badge/Favourite',
+        type: 'POST',
+        data: strung,
+        contentType: 'application/json; charset=utf-8',
+        success: function (data) {
+            // No need to do anything
+        },
+        error: function (xhr, ajaxOptions, thrownError) {
+            ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+        }
+    });
+}
+
 
 function BadgeVoteUp(postId) {
 
@@ -852,7 +944,7 @@ function AjaxPostSuccess() {
     }
 
     // Re-enable the button
-    $('#createpostbutton').attr("disabled", false);
+    AjaxPostFinish();
 
     // Finally do an async badge check
     UserPost();
@@ -887,13 +979,24 @@ function AjaxPrivateMessageSuccess() {
     }
 
     // Re-enable the button
-    $('#createpmbutton').attr("disabled", false);
+    AjaxPostFinish();
 
     // Finally do an async badge check
     UserPost();
 }
 
 function AjaxPostBegin() {
+    var createButton = $('#createpostbutton');
+    if (createButton.length > 0) {
+        createButton.attr("disabled", true);
+    }
+    var pmButton = $('#createpmbutton');
+    if (pmButton.length > 0) {
+        pmButton.attr("disabled", true);
+    }
+}
+
+function AjaxPostFinish() {
     var createButton = $('#createpostbutton');
     if (createButton.length > 0) {
         createButton.attr("disabled", false);
@@ -906,7 +1009,7 @@ function AjaxPostBegin() {
 
 function AjaxPostError(message) {
     ShowUserMessage(message);
-    AjaxPostBegin();
+    AjaxPostFinish();
 }
 
 (function ($) {

@@ -4,10 +4,21 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using MVCForum.Domain.DomainModel;
-using DataAnnotationsExtensions;
 
 namespace MVCForum.Website.Areas.Admin.ViewModels
 {
+
+    public class CustomCodeViewModels
+    {
+        [AllowHtml]
+        [DisplayName("Custom Header Code")]
+        public string CustomHeaderCode { get; set; }
+
+        [AllowHtml]
+        [DisplayName("Custom Footer Code")]
+        public string CustomFooterCode { get; set; }
+    }
+
     public class EditSettingsViewModel
     {
         [HiddenInput]
@@ -40,8 +51,14 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Allow Posts To Be Marked As Solution")]
         public bool EnableMarkAsSolution { get; set; }
 
+        [DisplayName("Timeframe in days to wait before a reminder email is sent to topic creator, for all topics that have not been marked as solution - Set to 0 to disable")]
+        public int MarkAsSolutionReminderTimeFrame { get; set; }
+
         [DisplayName("Enable Spam Reporting")]
         public bool EnableSpamReporting { get; set; }
+
+        [DisplayName("Enable Emoticons (Smilies)")]
+        public bool EnableEmoticons { get; set; }
 
         [DisplayName("Allow Members To Report Other Members")]
         public bool EnableMemberReporting { get; set; }
@@ -73,7 +90,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Private Message Inbox Max Size")]
         public int MaxPrivateMessagesPerMember { get; set; }
 
-        [DisplayName("Private Message Flood Control Time In Minutes")]
+        [DisplayName("Private Message Flood Control - Time In Seconds a user must wait before being allowed to message another user")]
         public int PrivateMessageFloodControl { get; set; }
 
         [DisplayName("Allow Member Signatures")]
@@ -100,11 +117,11 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Points Added For A Solution")]
         public int PointsAddedForSolution { get; set; }
 
-        [Email]
+        [EmailAddress]
         [DisplayName("Admin Email Address")]
         public string AdminEmailAddress { get; set; }
 
-        [Email]
+        [EmailAddress]
         [DisplayName("Notification Reply Email Address")]
         public string NotificationReplyEmail { get; set; }
 

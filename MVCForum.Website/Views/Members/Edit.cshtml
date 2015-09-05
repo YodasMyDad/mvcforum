@@ -1,5 +1,4 @@
-﻿@using MVCForum.Utilities
-@using MVCForum.Website
+﻿@using MVCForum.Website.Application.ExtensionMethods
 @model MVCForum.Website.ViewModels.MemberFrontEndEditViewModel
 
 @{
@@ -8,13 +7,6 @@
 }
 @section Header
 {
-    @(
- Bundle.JavaScript()
-            .Add("~/Scripts/jquery.validate.min.js")
-            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
-            .MvcRender("~/scripts/cache/validate-combined_#.js")
-    )
-
     <script type="text/javascript">
         $.ajax({
             url: app_base + 'Badge/ProfileBadgeCheck',
@@ -110,9 +102,17 @@
                     @Html.TextAreaFor(x => x.Signature, new { @class = "form-control" })
                     @Html.ValidationMessageFor(x => x.Signature)
                 </div>
+                
+                <div class="checkbox">
+                    @using (Html.BeginLabelFor(m => m.DisableEmailNotifications, new { @class = "checkbox" }))
+                    {
+                        @Html.CheckBoxFor(m => m.DisableEmailNotifications)
+                    }
+                    @Html.ValidationMessageFor(m => m.DisableEmailNotifications)
+                </div>
 
                 <div class="submit-holder">
-                    <button type="submit" class="btn-mvc btn-mvc-green btn-mvc-large">@Html.LanguageString("Buttons.Save")</button>
+                    <button type="submit" class="btn-mvc-green btn-mvc-large">@Html.LanguageString("Buttons.Save")</button>
                 </div>
             </fieldset>
         }

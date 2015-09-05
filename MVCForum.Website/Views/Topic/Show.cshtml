@@ -47,7 +47,10 @@
     @(Bundle.JavaScript()
         .Add("~/Scripts/fancybox/jquery.fancybox.js")
         .Add("~/Scripts/topic.js")
-        .MvcRender("~/scripts/cache/topic_#.js"))
+          .MvcRender("~/scripts/cache/topic_#.js"))
+    <script>
+        var topicId = '@(Model.Topic.Id)';
+    </script>
 }
 
 @section side
@@ -91,7 +94,11 @@
             @if (Model.Topic.Poll != null)
             {
                 <li>
-                    <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> @Html.Lang("Topic.IsPoll")
+                    <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span> @Html.Lang("Topic.IsPoll") 
+                    @if (Model.Topic.Poll.IsClosed)
+                    {
+                        <text>(@Html.Lang("Topic.PollClosed"))</text>
+                    }
                 </li>
             }
             <li>

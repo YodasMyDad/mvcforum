@@ -42,6 +42,7 @@ namespace MVCForum.Data.Repositories
             return _context.CategoryPermissionForRole
                 .Include(x => x.MembershipRole)
                 .Include(x => x.Category)
+                .AsNoTracking()
                 .Where(x => x.Category.Id == cat.Id &&
                             x.MembershipRole.Id == role.Id)
                             .ToList();

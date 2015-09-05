@@ -1,5 +1,4 @@
-﻿@using MVCForum.Website
-@model MVCForum.Website.ViewModels.PostViewModel
+﻿@model MVCForum.Website.ViewModels.PostViewModel
 @{
     var postId = Model.Post.Id;
     var loggedOnUserId = Html.CurrentMember() != null ? Html.CurrentMember().Id : Guid.Empty;
@@ -19,7 +18,7 @@
     <div class="rowdetails clearfix">
 
         <div class="postdetails">
-            <h4>@Html.Lang("Search.InTopic"): <a href="@Html.Raw(Model.PermaLink)">@Model.ParentTopic.Name</a></h4>
+            <h5 class="topiccategory"><a href="@Html.Raw(Model.PermaLink)">@Html.Raw(Model.ParentTopic.Name)</a> <span class="glyphicon glyphicon-menu-right" aria-hidden="true"></span> <a href="@Model.ParentTopic.Category.NiceUrl">@Html.Raw(Model.ParentTopic.Category.Name)</a></h5>
             <div class="postbodytop">
                 <a class="postmember-@postId" href="@Html.Raw(Model.Post.User.NiceUrl)">@Html.Raw(Model.Post.User.UserName)</a>
                 @Html.LanguageString("Post.PostedThis")
@@ -152,23 +151,7 @@
                 </div>
             }
 
-            @if (upVotes.Any())
-            {
-                <div class="postlikedby">
-
-                    <ul>
-                        <li class="text">@Html.Lang("Post.LikedBy")</li>
-                        @foreach (var vote in upVotes)
-                        {
-                            <li>
-                                <a href="@vote.User.NiceUrl">
-                                    <img src="@vote.User.MemberImage(SiteConstants.GravatarLikedBySize)" alt="@vote.User.UserName" title="@vote.User.UserName">
-                                </a>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            }
+            @Html.Partial("_PostLikedBy", new MVCForum.Website.ViewModels.PostLikedByViewModel { Post = Model.Post, Votes = upVotes })
 
         </div>
 

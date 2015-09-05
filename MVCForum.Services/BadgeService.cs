@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Attributes;
 using MVCForum.Domain.Events;
@@ -16,6 +17,11 @@ namespace MVCForum.Services
     public partial class BadgeService : IBadgeService
     {
         private readonly ILocalizationService _localizationService;
+        private readonly IMembershipUserPointsService _membershipUserPointsService;
+        private readonly IBadgeRepository _badgeRepository;
+        private readonly ILoggingService _loggingService;
+        private readonly IActivityService _activityService;
+        private readonly IReflectionService _reflectionService;
 
         public const int BadgeCheckIntervalMinutes = 10;
 
@@ -45,10 +51,6 @@ namespace MVCForum.Services
             public IBadge BadgeClassInstance { get; set; }
         }
 
-        private readonly IBadgeRepository _badgeRepository;
-        private readonly ILoggingService _loggingService;
-        private readonly IActivityService _activityService;
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -58,12 +60,14 @@ namespace MVCForum.Services
         /// <param name="localizationService"> </param>
         /// <param name="activityService"> </param>
         public BadgeService(IBadgeRepository badgeRepository,
-            ILoggingService loggingService, ILocalizationService localizationService, IActivityService activityService)
+            ILoggingService loggingService, ILocalizationService localizationService, IActivityService activityService, IMembershipUserPointsService membershipUserPointsService, IReflectionService reflectionService)
         {
             _badgeRepository = badgeRepository;
             _loggingService = loggingService;
             _localizationService = localizationService;
             _activityService = activityService;
+            _membershipUserPointsService = membershipUserPointsService;
+            _reflectionService = reflectionService;
         }
 
         #region Private static methods
@@ -97,16 +101,6 @@ namespace MVCForum.Services
             return badge;
         }
 
-        /// <summary>
-        /// Callback used when comparing objects to see if they implement an interface
-        /// </summary>
-        /// <param name="typeObj"></param>
-        /// <param name="criteriaObj"></param>
-        /// <returns></returns>
-        private static bool InterfaceFilter(Type typeObj, Object criteriaObj)
-        {
-            return typeObj.ToString() == criteriaObj.ToString();
-        }
 
         /// <summary>
         /// Get the specified attribute off a badge class
@@ -258,41 +252,17 @@ namespace MVCForum.Services
         /// <summary>
         /// Iterates over the runtime folder looking for classes that implement the badge interface
         /// </summary>
-        private void GetBadgesByReflection()
+        private void GetBadgesByReflection(IEnumerable<Assembly> assemblies)
         {
             _badges = new Dictionary<BadgeType, List<BadgeMapping>>();
 
-            var interfaceFilter = new TypeFilter(InterfaceFilter);
-
-            var path = AppDomain.CurrentDomain.RelativeSearchPath;
+            var interfaceFilter = new TypeFilter(_reflectionService.InterfaceFilter);
 
             // Get all the dlls
-            var di = new DirectoryInfo(path);
-            foreach (var file in di.GetFiles("*.dll"))
+            foreach (var nextAssembly in assemblies)
             {
                 try
                 {
-                    if (file.Name == "EcmaScript.NET.dll" || file.Name == "Unity.WebApi.dll")
-                    {
-                        continue;
-                    }
-
-                    Assembly nextAssembly;
-                    try
-                    {
-                        nextAssembly = Assembly.LoadFrom(file.FullName);
-                    }
-                    catch (BadImageFormatException)
-                    {
-                        // Not an assembly ignore
-                        continue;
-                    }
-
-                    if (nextAssembly.FullName.StartsWith("System") || nextAssembly.FullName.StartsWith("Microsoft") || nextAssembly.FullName.StartsWith("DotNetOpenAuth") || nextAssembly.FullName.StartsWith("Unity"))
-                    {
-                        // Skip microsoft and dotnetauth assemblies
-                        continue;
-                    }
 
                     foreach (var type in nextAssembly.GetTypes())
                     {
@@ -308,7 +278,7 @@ namespace MVCForum.Services
                             if (!Badge.BadgeClassNames.ContainsKey(badgeType))
                             {
                                 throw new ApplicationException(
-                                    string.Format(_localizationService.GetResourceString("Badge.BadegEnumNoClass"), badgeType.ToString()));
+                                    string.Format(_localizationService.GetResourceString("Badge.BadegEnumNoClass"), badgeType));
                             }
 
                             var interfaceType = Badge.BadgeClassNames[badgeType];
@@ -337,8 +307,8 @@ namespace MVCForum.Services
                 {
                     var msg =
                         string.Format(
-                            "Unable to load assembly. Probably not a badge assembly. In file named '{0}', loader exception was: '{1}':'{2}'.",
-                            file.Name, rtle.LoaderExceptions[0].GetType(), rtle.LoaderExceptions[0].Message);
+                            "Unable to load assembly. Probably not an event assembly, loader exception was: '{0}':'{1}'.",
+                             rtle.LoaderExceptions[0].GetType(), rtle.LoaderExceptions[0].Message);
                     _loggingService.Error(msg);
                 }
                 catch (Exception ex)
@@ -353,11 +323,11 @@ namespace MVCForum.Services
         /// Bring the database into line with the badge classes found at runtime
         /// </summary>
         /// <returns>Set of valid badge classes to use when assigning badges</returns>
-        public void SyncBadges()
+        public void SyncBadges(List<Assembly> assemblies)
         {
             try
             {
-                GetBadgesByReflection();
+                GetBadgesByReflection(assemblies);
 
                 // Turn the badge classes into a set of domain objects
                 var badgesFromClasses = new Dictionary<Guid, Badge>();
@@ -429,6 +399,7 @@ namespace MVCForum.Services
 
                 foreach (var badge in badgesToDelete)
                 {
+                    //TODO - Remove points associated with a deleted badge?
                     _badgeRepository.Delete(badge);
                 }
 
@@ -476,29 +447,43 @@ namespace MVCForum.Services
                             // Instantiate the badge and execute the rule
                             var badge = GetInstance<IBadge>(badgeMapping);
 
-                            // Award badge?
-                            if (badge != null && badge.Rule(user))
+                            if (badge != null)
                             {
-                                // Re-fetch the badge otherwise system will try and create new badges!
                                 var dbBadge = _badgeRepository.Get(badgeMapping.DbBadge.Id);
-                                if (dbBadge.AwardsPoints != null && dbBadge.AwardsPoints > 0)
-                                {
-                                    var points = new MembershipUserPoints
-                                    {
-                                        DateAdded = DateTime.UtcNow,
-                                        Points = (int)dbBadge.AwardsPoints
-                                    };
-                                    user.Points.Add(points);
-                                }
-                                user.Badges.Add(dbBadge);
-                                _activityService.BadgeAwarded(badgeMapping.DbBadge, user, DateTime.UtcNow);
 
-                                EventManager.Instance.FireAfterBadgeAwarded(this,
-                                                                            new BadgeEventArgs
+                                // Award badge?
+                                if (badge.Rule(user))
+                                {
+                                    // Re-fetch the badge otherwise system will try and create new badges!                                
+                                    if (dbBadge.AwardsPoints != null && dbBadge.AwardsPoints > 0)
+                                    {
+                                        var points = new MembershipUserPoints
+                                        {
+                                            Points = (int)dbBadge.AwardsPoints,
+                                            PointsFor = PointsFor.Badge,
+                                            PointsForId = dbBadge.Id,
+                                            User = user
+                                        };
+                                        _membershipUserPointsService.Add(points);
+                                    }
+                                    user.Badges.Add(dbBadge);
+                                    _activityService.BadgeAwarded(badgeMapping.DbBadge, user, DateTime.UtcNow);
+
+                                    EventManager.Instance.FireAfterBadgeAwarded(this,
+                                                                                new BadgeEventArgs
                                                                                 {
                                                                                     User = user,
                                                                                     BadgeType = badgeType
                                                                                 });
+                                }
+                                //else
+                                //{
+                                //    // If we get here the user should not have the badge
+                                //    // Remove the badge if the user no longer has the criteria to be awarded it
+                                //    // and also remove any points associated with it.
+                                //    user.Badges.Remove(dbBadge);
+                                //    _membershipUserPointsService.Delete(user, PointsFor.Badge, dbBadge.Id);
+                                //}
                             }
                         }
                     }

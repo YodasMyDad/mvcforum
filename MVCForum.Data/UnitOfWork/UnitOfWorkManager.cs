@@ -1,13 +1,11 @@
 ﻿using System.Data.Entity;
 using MVCForum.Data.Context;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 
 namespace MVCForum.Data.UnitOfWork
 {
-    // http://blogs.msdn.com/b/adonet/archive/2011/01/27/using-dbcontext-in-ef-feature-ctp5-part-1-introduction-and-model.aspx
-    // http://blogs.msdn.com/b/adonet/archive/2011/03/15/ef-4-1-code-first-walkthrough.aspx
-
     public class UnitOfWorkManager : IUnitOfWorkManager
     {
         private bool _isDisposed;
@@ -15,9 +13,9 @@ namespace MVCForum.Data.UnitOfWork
 
         public UnitOfWorkManager(IMVCForumContext context)
         {
-            // http://stackoverflow.com/questions/3552000/entity-framework-code-only-error-the-model-backing-the-context-has-changed-sinc
-            Database.SetInitializer<MVCForumContext>(null);
-
+            //http://www.entityframeworktutorial.net/code-first/automated-migration-in-code-first.aspx
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<MVCForumContext, Migrations.Configuration>(AppConstants.MvcForumContext));
+            //Database.SetInitializer<MVCForumContext>(null);
             _context = context as MVCForumContext;
         }
 
@@ -44,7 +42,5 @@ namespace MVCForum.Data.UnitOfWork
                 _isDisposed = true;
             }
         }
-
-
     }
 }

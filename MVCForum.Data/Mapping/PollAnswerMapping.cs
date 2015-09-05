@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity.ModelConfiguration;
-using System.Linq;
-using System.Text;
+﻿using System.Data.Entity.ModelConfiguration;
 using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Data.Mapping
@@ -12,11 +8,12 @@ namespace MVCForum.Data.Mapping
         public PollAnswerMapping()
         {
             HasKey(x => x.Id);
-            HasRequired(x => x.Poll).WithMany(t => t.PollAnswers).Map(m => m.MapKey("Poll_Id"));
+            Property(x => x.Id).IsRequired();
+            Property(x => x.Answer).IsRequired().HasMaxLength(600);
             HasMany(x => x.PollVotes)
                 .WithRequired(t => t.PollAnswer)
                 .Map(x => x.MapKey("PollAnswer_Id"))
-                .WillCascadeOnDelete();
+                .WillCascadeOnDelete(false);
         }
     }
 }

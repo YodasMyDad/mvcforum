@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Mvc;
-using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
 using MVCForum.Website.ViewModels;
 using MVCForum.Website.ViewModels.Mapping;
 
 namespace MVCForum.Website.Controllers
 {
-    public partial class FavouriteController :  BaseController
+    public partial class FavouriteController : BaseController
     {
         private readonly ITopicService _topicService;
         private readonly IPostService _postService;
@@ -26,14 +24,12 @@ namespace MVCForum.Website.Controllers
         private readonly IBannedWordService _bannedWordService;
         private readonly IVoteService _voteService;
         private readonly IFavouriteService _favouriteService;
-
-        private readonly MembershipUser LoggedOnUser;
-        private readonly MembershipRole UsersRole;
+        private readonly IBadgeService _badgeService;
 
         public FavouriteController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
             ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, IPollService pollService,
-            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService)
+            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService, IBadgeService badgeService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
@@ -49,40 +45,44 @@ namespace MVCForum.Website.Controllers
             _bannedWordService = bannedWordService;
             _voteService = voteService;
             _favouriteService = favouriteService;
-
-            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
-            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
+            _badgeService = badgeService;
         }
 
         [Authorize]
         public ActionResult Index()
         {
-            // Get the favourites
-            var favourites = _favouriteService.GetAllByMember(LoggedOnUser.Id);
-
-            // Pull out the posts
-            var posts = favourites.Select(x => x.Post);
-
-            // Create the view Model
-            var viewModel = new MyFavouritesViewModel();
-
-            // Map the view models
-            // TODO - Need to improve performance of this
-            foreach (var post in posts)
+            using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
-                viewModel.Posts.Add(ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions, post.Topic, LoggedOnUser, SettingsService.GetSettings(), post.Favourites.ToList()));
+                // Get the favourites
+                var favourites = _favouriteService.GetAllByMember(LoggedOnReadOnlyUser.Id);
+
+                // Pull out the posts
+                var posts = favourites.Select(x => x.Post);
+
+                // Create the view Model
+                var viewModel = new MyFavouritesViewModel();
+
+                // Map the view models
+                // TODO - Need to improve performance of this
+                foreach (var post in posts)
+                {
+                    var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
+                    var postViewModel = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions, post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
+                    postViewModel.ShowTopicName = true;
+                    viewModel.Posts.Add(postViewModel);
+                }
+
+                return View(viewModel);
             }
-           
-            return View(viewModel);
         }
 
 
         [HttpPost]
         [Authorize]
-        public ActionResult FavouritePost(FavouritePostViewModel viewModel)
+        public JsonResult FavouritePost(FavouritePostViewModel viewModel)
         {
-            if (Request.IsAjaxRequest() && LoggedOnUser != null)
+            var returnValue = new FavouriteJsonReturnModel();
+            if (Request.IsAjaxRequest() && LoggedOnReadOnlyUser != null)
             {
                 using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
                 {
@@ -90,29 +90,31 @@ namespace MVCForum.Website.Controllers
                     {
                         var post = _postService.Get(viewModel.PostId);
                         var topic = _topicService.Get(post.Topic.Id);
-                        string returnValue;
 
                         // See if this is a user adding or removing the favourite
-                        var existingFavourite = _favouriteService.GetByMemberAndPost(LoggedOnUser.Id, post.Id);
+                        var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                        var existingFavourite = _favouriteService.GetByMemberAndPost(loggedOnUser.Id, post.Id);
                         if (existingFavourite != null)
                         {
                             _favouriteService.Delete(existingFavourite);
-                            returnValue = LocalizationService.GetResourceString("Post.Favourite");
+                            returnValue.Message = LocalizationService.GetResourceString("Post.Favourite");
                         }
                         else
                         {
                             var favourite = new Favourite
                             {
                                 DateCreated = DateTime.UtcNow,
-                                Member = LoggedOnUser,
+                                Member = loggedOnUser,
                                 Post = post,
                                 Topic = topic
                             };
                             _favouriteService.Add(favourite);
-                            returnValue = LocalizationService.GetResourceString("Post.Favourited");
+                            returnValue.Message = LocalizationService.GetResourceString("Post.Favourited");
+                            returnValue.Id = favourite.Id;
                         }
+
                         unitOfwork.Commit();
-                        return Content(returnValue);
+                        return Json(returnValue, JsonRequestBehavior.DenyGet);
                     }
                     catch (Exception ex)
                     {
@@ -122,7 +124,7 @@ namespace MVCForum.Website.Controllers
                     }
                 }
             }
-            return Content("error");
+            return Json(returnValue);
         }
     }
 }

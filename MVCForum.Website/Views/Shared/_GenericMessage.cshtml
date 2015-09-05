@@ -1,5 +1,4 @@
-﻿@using MVCForum.Domain.Constants
-@using MVCForum.Website.Areas.Admin.ViewModels
+﻿@using MVCForum.Website.Areas.Admin.ViewModels
 @{   
     var genericMessage = new GenericMessageViewModel();
     if (TempData[AppConstants.MessageViewBagName] != null)
@@ -10,7 +9,7 @@
     {
         genericMessage = (GenericMessageViewModel)ViewBag.Message;
     }
-    var delayTime = genericMessage.ConstantMessage ? 600000 : 3500;
+    var delayTime = genericMessage.ConstantMessage ? 600000 : 4500;
 }
 
 <div id="jsquickmessage" style="display:none;"></div>

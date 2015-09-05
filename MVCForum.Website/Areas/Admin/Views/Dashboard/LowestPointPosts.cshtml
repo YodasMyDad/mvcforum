@@ -1,9 +1,9 @@
 ﻿@model MVCForum.Website.Areas.Admin.ViewModels.LowestPointPostsViewModels
 
 
-<div class="panel panel-default">
+<div class="panel">
     <div class="panel-heading">
-        Lowest Point Posts
+        <h5>Lowest Point Posts</h5>
     </div>
     @if (Model.Posts.Any())
     {
@@ -19,7 +19,7 @@
     }
     else
     {
-        <div class="panel-body">
+        <div class="panel-content">
             Nothing to show
         </div>
     }

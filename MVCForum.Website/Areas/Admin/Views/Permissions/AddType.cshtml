@@ -4,40 +4,38 @@
 @{
     ViewBag.Title = "Add Permission Type";
 }
-@section AdminHeader
-{
-        @(
-        Bundle.JavaScript()
-            .Add("~/Scripts/jquery.validate.min.js")
-            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")            
-            .MvcRender("~/scripts/cache/validate-combined_#.js")
-    )  
-}
 
-<p><a href="@Url.Action("PermissionTypes")" class="btn-mvc">&lt;&lt; Back</a></p>
+<div class="backbutton"><a href="@Url.Action("PermissionTypes")" class="btn-mvc-green">&lt;&lt; Go Back</a></div>
 
-@using (Html.BeginForm("AddType", "Permissions", FormMethod.Post)) 
-{
-    @Html.ValidationSummary(false)
-    <fieldset>
-        <legend>@ViewBag.Title</legend>
+<div class="panel">
+    <div class="panel-heading">
+        <h5>@ViewBag.Title</h5>
+    </div>
+    <div class="panel-content">
+        @using (Html.BeginForm("AddType", "Permissions", FormMethod.Post))
+        {
+            @Html.ValidationSummary(false)
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Name)
-            @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.Name)
-        </div>
-        
-        <div class="checkbox">
-            @using (Html.BeginLabelFor(m => m.IsGlobal, new { @class = "checkbox" }))
-            {
-                @Html.CheckBoxFor(m => m.IsGlobal)
-            }
-            @Html.ValidationMessageFor(m => m.IsGlobal)
-        </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Name)
+                    @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Name)
+                </div>
 
-        <div class="submit-holder">
-            <input type="submit" class="btn btn-large btn-success" value="Create" />
-        </div>
-    </fieldset>
-}
+                <div class="checkbox">
+                    @using (Html.BeginLabelFor(m => m.IsGlobal, new { @class = "checkbox" }))
+                    {
+                        @Html.CheckBoxFor(m => m.IsGlobal)
+                    }
+                    @Html.ValidationMessageFor(m => m.IsGlobal)
+                </div>
+
+                <div class="submit-holder">
+                    <input type="submit" class="btn-mvc-green btn-mvc-large" value="Create" />
+                </div>
+
+        }
+    </div>
+</div>
+
+

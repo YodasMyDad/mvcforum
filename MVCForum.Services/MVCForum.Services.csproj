@@ -88,6 +88,8 @@
     <Compile Include="GlobalPermissionForRoleService.cs" />
     <Compile Include="FavouriteService.cs" />
     <Compile Include="InstallerService.cs" />
+    <Compile Include="ReflectionService.cs" />
+    <Compile Include="TagNotificationService.cs" />
     <Compile Include="UploadedFileService.cs" />
     <Compile Include="PollAnswerService.cs" />
     <Compile Include="PollVoteService.cs" />

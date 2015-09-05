@@ -9,5 +9,6 @@ namespace MVCForum.Domain.Interfaces.Services
         void SendMail(List<Email> email);
         void ProcessMail(int amountToSend);
         string EmailTemplate(string to, string content);
+        string EmailTemplate(string to, string content, Settings settings);
     }
 }

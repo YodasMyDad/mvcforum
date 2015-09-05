@@ -7,12 +7,17 @@ namespace MVCForum.Domain.DomainModel.Attributes
     [AttributeUsage(AttributeTargets.Class)]
     public class DescriptionAttribute : Attribute
     {
+        private readonly ILocalizationService _localizationService;
         public string Description { get; set; }
 
         public DescriptionAttribute(string desc)
         {
-            var localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
-            Description = localizationService.GetResourceString(desc.Trim());
+            if (_localizationService == null)
+            {
+                _localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
+            }
+
+            Description = _localizationService.GetResourceString(desc.Trim());
         }
     }
 }

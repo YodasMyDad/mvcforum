@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.General;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
@@ -14,18 +14,18 @@ namespace MVCForum.Services
     {
         private readonly ITopicRepository _topicRepository;
         private readonly ITopicNotificationService _topicNotificationService;
-        private readonly IPostRepository _postRepository;
+        private readonly IPostService _postService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ISettingsService _settingsService;
 
         public TopicService(IMembershipUserPointsService membershipUserPointsService,
-            ISettingsService settingsService, ITopicRepository topicRepository, IPostRepository postRepository, ITopicNotificationService topicNotificationService)
+            ISettingsService settingsService, ITopicRepository topicRepository, ITopicNotificationService topicNotificationService, IPostService postService)
         {
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
             _topicRepository = topicRepository;
-            _postRepository = postRepository;
             _topicNotificationService = topicNotificationService;
+            _postService = postService;
         }
 
         public Topic SanitizeTopic(Topic topic)
@@ -38,17 +38,17 @@ namespace MVCForum.Services
         /// Get all topics
         /// </summary>
         /// <returns></returns>
-        public IList<Topic> GetAll()
+        public IList<Topic> GetAll(List<Category> allowedCategories)
         {
-            return _topicRepository.GetAll();
+            return _topicRepository.GetAll(allowedCategories);
         }
 
-        public IList<Topic> GetHighestViewedTopics(int amountToTake)
+        public IList<Topic> GetHighestViewedTopics(int amountToTake, List<Category> allowedCategories)
         {
-            return _topicRepository.GetHighestViewedTopics(amountToTake);
+            return _topicRepository.GetHighestViewedTopics(amountToTake, allowedCategories);
         }
 
-        public IList<Topic> GetPopularTopics(DateTime? from, DateTime? to, int amountToShow = 20)
+        public IList<Topic> GetPopularTopics(DateTime? from, DateTime? to, List<Category> allowedCategories,int amountToShow = 20)
         {
             if (from == null)
             {
@@ -60,7 +60,7 @@ namespace MVCForum.Services
                 to = DateTime.UtcNow;
             }
 
-            return _topicRepository.GetPopularTopics((DateTime)from, (DateTime)to, amountToShow);
+            return _topicRepository.GetPopularTopics((DateTime)from, (DateTime)to, amountToShow, allowedCategories);
         }
 
         /// <summary>
@@ -84,10 +84,11 @@ namespace MVCForum.Services
         /// Get todays topics
         /// </summary>
         /// <param name="amountToTake"></param>
+        /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public IList<Topic> GetTodaysTopics(int amountToTake)
+        public IList<Topic> GetTodaysTopics(int amountToTake, List<Category> allowedCategories)
         {
-            return _topicRepository.GetTodaysTopics(amountToTake);
+            return _topicRepository.GetTodaysTopics(amountToTake, allowedCategories);
         }
 
         /// <summary>
@@ -108,17 +109,22 @@ namespace MVCForum.Services
                 DateCreated = DateTime.UtcNow,
                 IsTopicStarter = true,
                 DateEdited = DateTime.UtcNow,
-                PostContent = StringUtils.GetSafeHtml(postContent),
+                PostContent = postContent,
                 User = topic.User,
                 Topic = topic
             };
 
             // Add the post
-            _postRepository.Add(post);
+            _postService.Add(post);
 
             topic.LastPost = post;
 
             return post;
+        }
+
+        public List<MarkAsSolutionReminder> GetMarkAsSolutionReminderList(int days)
+        {
+            return _topicRepository.GetMarkAsSolutionReminderList(days);
         }
 
         /// <summary>
@@ -127,35 +133,38 @@ namespace MVCForum.Services
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <param name="amountToTake"></param>
+        /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public PagedList<Topic> GetRecentTopics(int pageIndex, int pageSize, int amountToTake)
+        public PagedList<Topic> GetRecentTopics(int pageIndex, int pageSize, int amountToTake, List<Category> allowedCategories)
         {
-            return _topicRepository.GetRecentTopics(pageIndex, pageSize, amountToTake);
+            return _topicRepository.GetRecentTopics(pageIndex, pageSize, amountToTake, allowedCategories);
         }
 
         /// <summary>
         /// Returns a specified amount of most recent topics in a list used for RSS feeds
         /// </summary>
         /// <param name="amountToTake"></param>
+        /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public IList<Topic> GetRecentRssTopics(int amountToTake)
+        public IList<Topic> GetRecentRssTopics(int amountToTake, List<Category> allowedCategories)
         {
-            return _topicRepository.GetRecentRssTopics(amountToTake);
+            return _topicRepository.GetRecentRssTopics(amountToTake, allowedCategories);
         }
 
         /// <summary>
         /// Returns all topics by a specified user
         /// </summary>
         /// <param name="memberId"></param>
+        /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public IList<Topic> GetTopicsByUser(Guid memberId)
+        public IList<Topic> GetTopicsByUser(Guid memberId, List<Category> allowedCategories)
         {
-            return _topicRepository.GetTopicsByUser(memberId);
+            return _topicRepository.GetTopicsByUser(memberId, allowedCategories);
         }
 
-        public IList<Topic> GetTopicsByLastPost(List<Guid> postIds)
+        public IList<Topic> GetTopicsByLastPost(List<Guid> postIds, List<Category> allowedCategories)
         {
-            return _topicRepository.GetTopicsByLastPost(postIds);
+            return _topicRepository.GetTopicsByLastPost(postIds, allowedCategories);
         }
 
         /// <summary>
@@ -176,10 +185,16 @@ namespace MVCForum.Services
         /// </summary>
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
+        /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public PagedList<Topic> GetPagedPendingTopics(int pageIndex, int pageSize)
+        public PagedList<Topic> GetPagedPendingTopics(int pageIndex, int pageSize, List<Category> allowedCategories)
         {
-            return _topicRepository.GetPagedPendingTopics(pageIndex, pageSize);
+            return _topicRepository.GetPagedPendingTopics(pageIndex, pageSize, allowedCategories);
+        }
+
+        public int GetPendingTopicsCount(List<Category> allowedCategories)
+        {
+            return _topicRepository.GetPendingTopicsCount(allowedCategories);
         }
 
         /// <summary>
@@ -200,21 +215,21 @@ namespace MVCForum.Services
         /// <param name="pageSize"></param>
         /// <param name="amountToTake"></param>
         /// <param name="tag"></param>
+        /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public PagedList<Topic> GetPagedTopicsByTag(int pageIndex, int pageSize, int amountToTake, string tag)
+        public PagedList<Topic> GetPagedTopicsByTag(int pageIndex, int pageSize, int amountToTake, string tag, List<Category> allowedCategories)
         {
-            return _topicRepository.GetPagedTopicsByTag(pageIndex, pageSize, amountToTake, StringUtils.GetSafeHtml(tag));
+            return _topicRepository.GetPagedTopicsByTag(pageIndex, pageSize, amountToTake, StringUtils.GetSafeHtml(tag), allowedCategories);
         }
 
         /// <summary>
         /// Returns a paged amount of searched topics by a string search value
         /// </summary>
-        /// <param name="pageIndex"></param>
-        /// <param name="pageSize"></param>
         /// <param name="amountToTake"></param>
         /// <param name="searchTerm"></param>
+        /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public PagedList<Topic> SearchTopics(int pageIndex, int pageSize, int amountToTake, string searchTerm)
+        public IList<Topic> SearchTopics(int amountToTake, string searchTerm, List<Category> allowedCategories)
         {
             // Create search term
             var search = StringUtils.ReturnSearchString(searchTerm);
@@ -223,22 +238,22 @@ namespace MVCForum.Services
             var splitSearch = search.Split(' ').ToList();
 
             // Pass the sanitised split words to the repo
-            return _topicRepository.SearchTopics(pageIndex, pageSize, amountToTake, splitSearch);
+            return _topicRepository.SearchTopics(amountToTake, splitSearch, allowedCategories);
         }
 
-        public PagedList<Topic> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> topicIds)
+        public PagedList<Topic> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> topicIds, List<Category> allowedCategories)
         {
-            return _topicRepository.GetTopicsByCsv(pageIndex, pageSize, amountToTake, topicIds);
+            return _topicRepository.GetTopicsByCsv(pageIndex, pageSize, amountToTake, topicIds, allowedCategories);
         }
 
-        public PagedList<Topic> GetMembersActivity(int pageIndex, int pageSize, int amountToTake, Guid memberGuid)
+        public PagedList<Topic> GetMembersActivity(int pageIndex, int pageSize, int amountToTake, Guid memberGuid, List<Category> allowedCategories)
         {
-            return _topicRepository.GetMembersActivity(pageIndex, pageSize, amountToTake, memberGuid);
+            return _topicRepository.GetMembersActivity(pageIndex, pageSize, amountToTake, memberGuid, allowedCategories);
         }
 
-        public IList<Topic> GetTopicsByCsv(int amountToTake, List<Guid> topicIds)
+        public IList<Topic> GetTopicsByCsv(int amountToTake, List<Guid> topicIds, List<Category> allowedCategories)
         {
-            return _topicRepository.GetTopicsByCsv(amountToTake, topicIds);
+            return _topicRepository.GetTopicsByCsv(amountToTake, topicIds, allowedCategories);
         }
 
         /// <summary>
@@ -261,9 +276,9 @@ namespace MVCForum.Services
             return _topicRepository.Get(topicId);
         }
 
-        public List<Topic> Get(List<Guid> topicIds)
+        public List<Topic> Get(List<Guid> topicIds, List<Category> allowedCategories)
         {
-            return _topicRepository.Get(topicIds);
+            return _topicRepository.Get(topicIds, allowedCategories);
         }
 
         /// <summary>
@@ -281,9 +296,11 @@ namespace MVCForum.Services
                 var postsToDelete = new List<Post>();
                 postsToDelete.AddRange(topic.Posts);
                 foreach (var post in postsToDelete)
-                {
-                    _postRepository.Delete(post);
+                {                    
+                    // Delete the post
+                    _postService.Delete(post, true);
                 } 
+                topic.Posts.Clear();
             }
 
             if (topic.TopicNotifications != null)
@@ -299,19 +316,20 @@ namespace MVCForum.Services
             _topicRepository.Delete(topic);
         }
 
-        public int TopicCount()
+        public int TopicCount(List<Category> allowedCategories)
         {
-            return _topicRepository.TopicCount();
+            return _topicRepository.TopicCount(allowedCategories);
         }
 
         /// <summary>
         /// Return topics by a specified user that are marked as solved
         /// </summary>
         /// <param name="memberId"></param>
+        /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public IList<Topic> GetSolvedTopicsByMember(Guid memberId)
+        public IList<Topic> GetSolvedTopicsByMember(Guid memberId, List<Category> allowedCategories)
         {
-            return _topicRepository.GetSolvedTopicsByMember(memberId);
+            return _topicRepository.GetSolvedTopicsByMember(memberId, allowedCategories);
         }
 
         /// <summary>
@@ -355,7 +373,9 @@ namespace MVCForum.Services
                         _membershipUserPointsService.Add(new MembershipUserPoints
                                                              {
                                                                  Points = _settingsService.GetSettings().PointsAddedForSolution,
-                                                                 User = solutionWriter
+                                                                 User = solutionWriter,
+                                                                 PointsFor = PointsFor.Solution,
+                                                                 PointsForId = post.Id
                                                              });
                     }
 

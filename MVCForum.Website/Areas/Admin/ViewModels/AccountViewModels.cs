@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
-using DataAnnotationsExtensions;
-using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Website.Application;
 
@@ -71,7 +68,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public string PasswordAnswer { get; set; }
 
         [Display(Name = "Email Address")]
-        [Email]
+        [EmailAddress]
         public string Email { get; set; }
 
         [Display(Name = "Signature")]
@@ -80,7 +77,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public string Signature { get; set; }
 
         [Display(Name = "Age")]
-        [Numeric]
+        [Range(0, int.MaxValue)]
         public int? Age { get; set; }
 
         [Display(Name = "Location")]

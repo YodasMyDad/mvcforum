@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Events;
@@ -40,6 +41,13 @@ namespace MVCForum.Services
         public Post SanitizePost(Post post)
         {
             post.PostContent = StringUtils.GetSafeHtml(post.PostContent);
+
+            // Check settings
+            if (_settingsService.GetSettings().EnableEmoticons == true)
+            {
+                post.PostContent = EmoticonUtils.Emotify(post.PostContent);   
+            }
+
             return post;
         }
 
@@ -52,9 +60,9 @@ namespace MVCForum.Services
         /// Return all posts
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Post> GetAll()
+        public IEnumerable<Post> GetAll(List<Category> allowedCategories)
         {
-            return _postRepository.GetAll();
+            return _postRepository.GetAll(allowedCategories);
         }
 
         /// <summary>
@@ -82,10 +90,21 @@ namespace MVCForum.Services
         /// </summary>
         /// <param name="memberId"></param>
         /// <param name="amountToTake"></param>
+        /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public IList<Post> GetByMember(Guid memberId, int amountToTake)
+        public IList<Post> GetByMember(Guid memberId, int amountToTake, List<Category> allowedCategories)
         {
-            return _postRepository.GetByMember(memberId, amountToTake);
+            return _postRepository.GetByMember(memberId, amountToTake, allowedCategories);
+        }
+
+        public IEnumerable<Post> GetPostsByFavouriteCount(Guid postsByMemberId, int minAmountOfFavourites)
+        {
+            return _postRepository.GetPostsByFavouriteCount(postsByMemberId, minAmountOfFavourites);
+        }
+
+        public IEnumerable<Post> GetPostsFavouritedByOtherMembers(Guid postsByMemberId)
+        {
+            return _postRepository.GetPostsFavouritedByOtherMembers(postsByMemberId);
         }
 
         /// <summary>
@@ -127,23 +146,29 @@ namespace MVCForum.Services
             return _postRepository.GetPagedPendingPosts(pageIndex, pageSize);
         }
 
+        public int GetPendingPostsCount()
+        {
+            return _postRepository.GetPendingPostsCount();
+        }
+
         /// <summary>
         /// Return all posts by a specified member that are marked as solution
         /// </summary>
         /// <param name="memberId"></param>
+        /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public IList<Post> GetSolutionsByMember(Guid memberId)
+        public IList<Post> GetSolutionsByMember(Guid memberId, List<Category> allowedCategories)
         {
-            return _postRepository.GetSolutionsByMember(memberId);
+            return _postRepository.GetSolutionsByMember(memberId, allowedCategories);
         }
 
         /// <summary>
         /// Returns a count of all posts
         /// </summary>
         /// <returns></returns>
-        public int PostCount()
+        public int PostCount(List<Category> allowedCategories)
         {
-            return _postRepository.PostCount();
+            return _postRepository.PostCount(allowedCategories);
         }
 
         /// <summary>
@@ -167,9 +192,9 @@ namespace MVCForum.Services
             return _postRepository.Get(postId);
         }
 
-        public IList<Post> GetPostsByTopics(List<Guid> topicIds)
+        public IList<Post> GetPostsByTopics(List<Guid> topicIds, List<Category> allowedCategories)
         {
-            return _postRepository.GetPostsByTopics(topicIds);
+            return _postRepository.GetPostsByTopics(topicIds, allowedCategories);
         }
 
         /// <summary>
@@ -178,52 +203,71 @@ namespace MVCForum.Services
         /// <param name="post"></param>
         public void SaveOrUpdate(Post post)
         {
-            _postRepository.Update(post); 
+            _postRepository.Update(post);
         }
 
         /// <summary>
         /// Delete a post
         /// </summary>
         /// <param name="post"></param>
+        /// <param name="isTopicDelete"></param>
         /// <returns> True if parent topic should now be deleted (caller's responsibility)</returns>
-        public bool Delete(Post post)
+        public bool Delete(Post post, bool isTopicDelete = false)
         {
-            // Here is where we can check for reasons not to delete the post
-            // And change the value below if not
-            var okToDelete = true;
-            var deleteTopic = false;
 
-            if (okToDelete)
-            {           
-                // Before we delete the post, we need to check if this is the last post in the topic
-                // and if so update the topic
-                var topic = post.Topic; 
-                var lastPost = topic.Posts.OrderByDescending(x => x.DateCreated).FirstOrDefault();
+            #region Deleting Points
+            
+            // Remove the points the user got for this post
+            _membershipUserPointsService.Delete(post.User, PointsFor.Post, post.Id);
 
-                if (lastPost != null && lastPost.Id == post.Id)
-                {
-                    // Get the new last post and update the topic
-                    topic.LastPost = topic.Posts.Where(x => x.Id != post.Id).OrderByDescending(x => x.DateCreated).FirstOrDefault();
-                }
+            // Also get all the votes and delete anything to do with those
+            foreach (var postVote in post.Votes)
+            {
+                _membershipUserPointsService.Delete(PointsFor.Vote, postVote.Id);
+            }
 
-                if (topic.Solved && post.IsSolution)
-                {
-                    topic.Solved = false;
-                }
+            // Also the mark as solution
+            _membershipUserPointsService.Delete(PointsFor.Solution, post.Id);
 
-                topic.Posts.Remove(post);
+            #endregion
 
-                deleteTopic = post.IsTopicStarter;
-
+            // If this is coming from a call that is deleting the entire topic, then just delete post
+            if (isTopicDelete)
+            {
                 // now delete the post
                 _postRepository.Delete(post);
-
-                // Topic should be deleted, so make sure it has no last post to avoid circular dependency
-                if (deleteTopic)
-                {
-                    topic.LastPost = null;
-                }
+                return true;
             }
+
+            // Before we delete the post, we need to check if this is the last post in the topic
+            // and if so update the topic
+            var topic = post.Topic;
+            var lastPost = topic.Posts.OrderByDescending(x => x.DateCreated).FirstOrDefault();
+
+            if (lastPost != null && lastPost.Id == post.Id)
+            {
+                // Get the new last post and update the topic
+                topic.LastPost = topic.Posts.Where(x => x.Id != post.Id).OrderByDescending(x => x.DateCreated).FirstOrDefault();
+            }
+
+            if (topic.Solved && post.IsSolution)
+            {
+                topic.Solved = false;
+            }
+
+            topic.Posts.Remove(post);
+
+            var deleteTopic = post.IsTopicStarter;
+
+            // now delete the post
+            _postRepository.Delete(post);
+
+            // Topic should be deleted, so make sure it has no last post to avoid circular dependency
+            if (deleteTopic)
+            {
+                topic.LastPost = null;
+            }
+
 
             return deleteTopic;
         }
@@ -260,7 +304,7 @@ namespace MVCForum.Services
                                    DateEdited = DateTime.UtcNow
                                };
 
-            newPost = SanitizePost(newPost);
+            // Sort the search field out
 
             var category = topic.Category;
             if (category.ModeratePosts == true)
@@ -268,7 +312,7 @@ namespace MVCForum.Services
                 newPost.Pending = true;
             }
 
-            var e = new PostMadeEventArgs { Post = newPost};
+            var e = new PostMadeEventArgs { Post = newPost };
             EventManager.Instance.FireBeforePostMade(this, e);
 
             if (!e.Cancel)
@@ -280,18 +324,39 @@ namespace MVCForum.Services
                 _membershipUserPointsService.Add(new MembershipUserPoints
                                                      {
                                                          Points = _settingsService.GetSettings().PointsAddedPerPost,
-                                                         User = user
+                                                         User = user,
+                                                         PointsFor = PointsFor.Post,
+                                                         PointsForId = newPost.Id
                                                      });
 
                 // add the last post to the topic
                 topic.LastPost = newPost;
 
-                EventManager.Instance.FireAfterPostMade(this, new PostMadeEventArgs { Post = newPost});
+                EventManager.Instance.FireAfterPostMade(this, new PostMadeEventArgs { Post = newPost });
 
                 return newPost;
             }
 
             return newPost;
+        }
+
+        public string SortSearchField(bool isTopicStarter, Topic topic, IList<TopicTag> tags)
+        {
+            var formattedSearchField = string.Empty;
+            if (isTopicStarter)
+            {
+                formattedSearchField = topic.Name;
+            }
+            if (tags != null && tags.Any())
+            {
+                var sb = new StringBuilder();
+                foreach (var topicTag in tags)
+                {
+                    sb.Append(string.Concat(topicTag.Tag, " "));
+                }
+                formattedSearchField = !string.IsNullOrEmpty(formattedSearchField) ? string.Concat(formattedSearchField, " ", sb.ToString()) : sb.ToString();
+            }
+            return formattedSearchField.Trim();
         }
     }
 }

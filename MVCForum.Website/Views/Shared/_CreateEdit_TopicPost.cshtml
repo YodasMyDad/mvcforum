@@ -3,8 +3,10 @@
 @{
     var count = 0;
     const string displayNone = "style=\"display: none;\"";
+    ViewBag.ImageUploadType = Model.OptionalPermissions.CanInsertImages ? "forumimageinsert" : "image";    
 }
 
+@Html.HiddenFor(x => x.TopicId)
 @if (Model.IsTopicStarter)
 {
     <div class="row paddedrow">
@@ -13,7 +15,7 @@
         </div>
         @if (Html.Settings().EnablePolls == true)
         {
-            <div class="col-md-4 pollcreatebuttonholder">
+            <div class="col-md-4 pollcreatebuttonholder" @Html.Raw(Model.OptionalPermissions.CanCreatePolls ? "" : displayNone)>
                 <a href="#" class="btn-mvc btn-mvc-fullwidth createpollbutton">@Html.LanguageString("Poll.Button.Create")</a>
                 <a href="#" style="display: none;" class="btn-mvc btn-mvc-fullwidth removepollbutton">@Html.LanguageString("Poll.Button.Remove")</a>
             </div>
@@ -37,40 +39,65 @@
 
     if (Html.Settings().EnablePolls == true)
     {
-        <div class="row paddedrow pollanswerholder" @Html.Raw(Model.PollAnswers != null && Model.PollAnswers.Any() ? "" : displayNone)>
-            <div class="col-md-9">
-                <ul class="pollanswerlist">
-                    @if (Model.PollAnswers != null && Model.PollAnswers.Any())
-                    {
-                        foreach (var pollAnswer in Model.PollAnswers.OrderBy(x => x.Answer))
-                        {
-                            <li id="answer@(count)">
-                                <input type="text" name="PollAnswers[@(count)].Answer" id="PollAnswers_@(count)_Answer" value="@pollAnswer.Answer" class="form-control" placeholder="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")">
-                                <input type="hidden" value="@pollAnswer.Id" name="PollAnswers[@(count)].Id" id="PollAnswers_@(count)Id" />
-                            </li>
+        <div class="pollanswerholder" @Html.Raw(Model.PollAnswers != null && Model.PollAnswers.Any() ? "" : displayNone)>
+            <div class="row paddedrow">
+                <div class="col-md-9">
 
-                            count++;
+                    <ul class="pollanswerlist">
+                        @if (Model.PollAnswers != null && Model.PollAnswers.Any())
+                        {
+                            foreach (var pollAnswer in Model.PollAnswers.OrderBy(x => x.Answer))
+                            {
+                                <li id="answer@(count)">
+                                    <input type="text" name="PollAnswers[@(count)].Answer" id="PollAnswers_@(count)_Answer" value="@pollAnswer.Answer" class="form-control" placeholder="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")">
+                                    <input type="hidden" value="@pollAnswer.Id" name="PollAnswers[@(count)].Id" id="PollAnswers_@(count)Id" />
+                                </li>
+
+                                count++;
+                            }
                         }
-                    }
-                </ul>
-                <input type="hidden" id="pollanswerplaceholder" value="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")" />
+                    </ul>
+                    <input type="hidden" id="pollanswerplaceholder" value="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")" />
+                </div>
+                <div class="col-md-3 polladdremovenewanswers">
+                    <a href="#" class="btn-mvc addanswer">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    </a>
+                    <a href="#" class="btn-mvc removeanswer">
+                        <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                    </a>
+                </div>
             </div>
-            <div class="col-md-3 polladdremovenewanswers">
-                <a href="#" class="btn-mvc addanswer">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                </a>
-                <a href="#" class="btn-mvc removeanswer">
-                    <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
-                </a>
+            <div class="paddedrow pollcloseafterdays">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PollCloseAfterDays)
+                    @Html.TextBoxFor(model => model.PollCloseAfterDays, new { @class = "form-control", type = "number" })
+                    @Html.ValidationMessageFor(model => model.PollCloseAfterDays)
+                </div>
             </div>
         </div>
     }
 
+    <div class="form-group">
+        @Html.LabelFor(model => model.Category)
+        @Html.DropDownListFor(model => model.Category, Model.Categories, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Category)
+    </div>
+    <div class="form-group">
+        <label>@Html.Lang("Topic.Label.Tags")</label>
+        <div class="topictagholder">
+            @Html.TextAreaFor(model => model.Tags, new { @class = "tagstextarea tags", title = Html.LanguageString("Topic.TagThisTopic") })
+        </div>
+    </div>
 }
 else
 {
     <h2>@ViewBag.Title</h2>
+    @Html.HiddenFor(x => x.Category)
+    @Html.HiddenFor(x => x.Name)
 }
+
+
 
 <div class="row">
     <div class="col-md-12 topiccontent">
@@ -84,7 +111,7 @@ else
 <div class="row">
     <div class="col-md-6 createtopicbuttonholder">
         <div class="submit-holder">
-            <button type="submit" class="btn-mvc btn-mvc-large btn-mvc-green btn-mvc-fullwidth">
+            <button type="submit" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">
                 @if (Model.Id == Guid.Empty)
                 {
                     @Html.LanguageString("Topic.CreateDiscussion")
@@ -124,17 +151,6 @@ else
     @if (Model.IsTopicStarter)
     {
         <div class="col-md-5 col-md-offset-1 topiccategory">
-            <div class="form-group">
-                @Html.LabelFor(model => model.Category)
-                @Html.DropDownListFor(model => model.Category, Model.Categories, new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Category)
-            </div>
-            <div class="form-group">
-                <label>@Html.Lang("Topic.Label.Tags")</label>
-                <div class="topictagholder">
-                    @Html.TextAreaFor(model => model.Tags, new { @class = "tagstextarea tags", title = Html.LanguageString("Topic.TagThisTopic") })
-                </div>
-            </div>
 
             @if (Model.Id == Guid.Empty)
             {
@@ -152,11 +168,6 @@ else
                 </div>
             }
         </div>
-    }
-    else
-    {
-        @Html.HiddenFor(x => x.Category)
-        @Html.HiddenFor(x => x.Name)
     }
 
 </div>

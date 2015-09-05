@@ -1,5 +1,4 @@
-﻿@using MVCForum.Website
-@model MVCForum.Website.ViewModels.PostViewModel
+﻿@model MVCForum.Website.ViewModels.PostViewModel
 @{
     var postId = Model.Post.Id;
     var loggedOnUserId = Html.CurrentMember() != null ? Html.CurrentMember().Id : Guid.Empty;
@@ -18,6 +17,12 @@
         {
             <span class="label label-default">
                 @Html.Lang("Admin")
+            </span>
+        }
+        @if (Model.MemberIsOnline)
+        {
+            <span class="label label-success">
+                @Html.Lang("Post.MemberIsOnline")
             </span>
         }
     </div>
@@ -77,6 +82,10 @@
 
         <div class="postdetails@(Html.CurrentMember() == null ? " postdetails-guest" : "")">
             <div class="postbodytop">
+                @if (Model.ShowTopicName)
+                {
+                    <p><a href="@Model.ParentTopic.NiceUrl">@Model.ParentTopic.Name</a></p>
+                }
                 <a class="postmember-@postId" href="@Html.Raw(Model.Post.User.NiceUrl)">@Html.Raw(Model.Post.User.UserName)</a>
                 @Html.LanguageString("Post.PostedThis")
                 @DatesUI.GetPrettyDate(Model.Post.DateCreated.ToString())
@@ -114,8 +123,8 @@
                             <span class="count">@upVotes.Count()</span>
                             @if (Model.AllowedToVote)
                             {
-                                <a class="votelink" data-id="@postId" data-votetype="up">
-                                    @Html.LanguageString("Post.VoteUp")
+                                <a class="votelink" data-id="@postId" data-votetype="up" data-votetext="@Html.LanguageString("Post.VoteUp")" data-votedtext="@Html.LanguageString("Post.VotedUp")" data-hasvoted="@Model.HasVotedUp.ToString().ToLower()" style="@Html.Raw(Model.HasVotedDown ? "display:none;" : "")">
+                                    @(Model.HasVotedUp ? Html.LanguageString("Post.VotedUp") : Html.LanguageString("Post.VoteUp"))
                                 </a>
                             }
                         </li>
@@ -125,8 +134,8 @@
                             <span class="count">@downVotes.Count()</span>
                             @if (Model.AllowedToVote)
                             {
-                                <a class="votelink" data-id="@postId" data-votetype="down">
-                                    @Html.LanguageString("Post.VoteDown")
+                                <a class="votelink" data-id="@postId" data-votetype="down" data-votetext="@Html.LanguageString("Post.VoteDown")" data-votedtext="@Html.LanguageString("Post.VotedDown")" data-hasvoted="@Model.HasVotedDown.ToString().ToLower()" style="@Html.Raw(Model.HasVotedUp ? "display:none;" : "")">
+                                    @(Model.HasVotedDown ? Html.LanguageString("Post.VotedDown") : Html.LanguageString("Post.VoteDown"))
                                 </a>
                             }
 
@@ -152,7 +161,7 @@
                                 <span class="glyphicon glyphicon-ok green-colour" aria-hidden="true"></span>
                             </li>
                         }
-                        else if (!Model.ParentTopic.Solved && !Model.Post.IsTopicStarter && Model.ParentTopic.User.Id == loggedOnUserId)
+                        else if (!Model.ParentTopic.Solved && !Model.Post.IsTopicStarter && Html.CurrentMember() != null && (Model.ParentTopic.User.Id == loggedOnUserId || User.IsInRole(AppConstants.AdminRoleName)))
                         {
                             <li>
                                 <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
@@ -186,7 +195,7 @@
                         @foreach (var file in Model.Post.Files.OrderByDescending(o => o.DateCreated))
                         {
                             <li>
-                                <a class="fileupload" href="@Html.Raw(Url.Content(file.FilePath))">
+                                <a class="fileupload" href="@Url.Action("Download", "File", new { id = file.Id})">
                                     @if (AppHelpers.FileIsImage(file.FilePath))
                                     {
                                         <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
@@ -231,23 +240,7 @@
                 </div>
             }
 
-            @if (upVotes.Any())
-            {
-                <div class="postlikedby">
-
-                    <ul>
-                        <li class="text">@Html.Lang("Post.LikedBy")</li>
-                        @foreach (var vote in upVotes)
-                        {
-                            <li>
-                                <a href="@vote.User.NiceUrl">
-                                    <img src="@vote.User.MemberImage(SiteConstants.GravatarLikedBySize)" alt="@vote.User.UserName" title="@vote.User.UserName">
-                                </a>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            }
+            @Html.Partial("_PostLikedBy", new MVCForum.Website.ViewModels.PostLikedByViewModel { Post = Model.Post, Votes = upVotes})
 
         </div>
 

@@ -7,6 +7,7 @@ using System.Web.Hosting;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
@@ -45,7 +46,8 @@ namespace MVCForum.Services
                     // If no SMTP settings then log it
                     if (string.IsNullOrEmpty(smtp))
                     {
-                        _loggingService.Error("There are no SMTP details in the settings, unable to send emails");
+                        // Not logging as it makes the log file massive
+                        //_loggingService.Error("There are no SMTP details in the settings, unable to send emails");
                         return;
                     }
 
@@ -107,14 +109,20 @@ namespace MVCForum.Services
         /// <returns></returns>
         public string EmailTemplate(string to, string content)
         {
+            var settings = _settingsService.GetSettings();
+            return EmailTemplate(to, content, settings);
+        }
+
+        public string EmailTemplate(string to, string content, Settings settings)
+        {
             using (var sr = File.OpenText(HostingEnvironment.MapPath(@"~/Content/Emails/EmailNotification.htm")))
             {
                 var sb = sr.ReadToEnd();
                 sr.Close();
                 sb = sb.Replace("#CONTENT#", content);
-                sb = sb.Replace("#SITENAME#", _settingsService.GetSettings().ForumName);
-                sb = sb.Replace("#SITEURL#", _settingsService.GetSettings().ForumUrl);
-                if(!string.IsNullOrEmpty(to))
+                sb = sb.Replace("#SITENAME#", settings.ForumName);
+                sb = sb.Replace("#SITEURL#", settings.ForumUrl);
+                if (!string.IsNullOrEmpty(to))
                 {
                     to = string.Format("<p>{0},</p>", to);
                     sb = sb.Replace("#TO#", to);
@@ -139,10 +147,14 @@ namespace MVCForum.Services
         /// <param name="emails"></param>
         public void SendMail(List<Email> emails)
         {
+            var settings = _settingsService.GetSettings();
             // Add all the emails to the email table
             // They are sent every X seconds by the email sending task
             foreach (var email in emails)
             {
+
+                // Sort local images in emails
+                email.Body = StringUtils.AppendDomainToImageUrlInHtml(email.Body, settings.ForumUrl.TrimEnd('/'));
                 _emailRepository.Add(email);
             }
         }

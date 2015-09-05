@@ -15,7 +15,7 @@
             @Html.EditorFor(x => x.Message, new { @class = "createpm required rte" })
             @Html.ValidationMessageFor(x => x.Message)
         </div>
-        <input type="submit" id="createpmbutton" class="btn-mvc btn-mvc-green btn-mvc-large" value="@Html.LanguageString("PM.Send")" />
+        <input type="submit" id="createpmbutton" class="btn-mvc-green btn-mvc-large" value="@Html.LanguageString("PM.Send")" />
         <span style="display: none;" id="createpostwait" class="ajaxspinner" title="@Html.LanguageString("Post.PleaseWait")">@Html.LanguageString("Post.PleaseWait")</span>
         @Html.HiddenFor(x => x.To)
     }

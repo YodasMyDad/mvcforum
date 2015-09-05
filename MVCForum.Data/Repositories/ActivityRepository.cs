@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Entity;
 using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Activity;
@@ -95,16 +94,6 @@ namespace MVCForum.Data.Repositories
         public void Delete(Activity item)
         {
             _context.Activity.Remove(item);
-        }
-
-        public void Update(Activity item)
-        {
-            // Check there's not an object with same identifier already in context
-            if (_context.Activity.Local.Select(x => x.Id == item.Id).Any())
-            {
-                throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
-            }
-            _context.Entry(item).State = EntityState.Modified;  
         }
     }
 }

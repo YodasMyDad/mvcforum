@@ -41,10 +41,11 @@ namespace MVCForum.Services
         /// Get role by name
         /// </summary>
         /// <param name="rolename"></param>
+        /// <param name="removeTracking">If true, adds AsNoTracking()</param>
         /// <returns></returns>
-        public MembershipRole GetRole(string rolename)
+        public MembershipRole GetRole(string rolename, bool removeTracking = false)
         {
-            return _roleRepository.GetRole(rolename);
+            return _roleRepository.GetRole(rolename, removeTracking);
         }
 
         /// <summary>
@@ -65,7 +66,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<MembershipUser> GetUsersForRole(string roleName)
         {
-            return _roleRepository.GetRole(roleName).Users;
+            return _roleRepository.GetRole(roleName, false).Users;
 
         }
 
@@ -194,7 +195,7 @@ namespace MVCForum.Services
                 }
 
                 // Deny Access may have been set (or left null) for guest for the category, so need to read for it
-                var denyAccessPermission = role.CategoryPermissionForRole
+                var denyAccessPermission = role.CategoryPermissionForRoles
                                    .FirstOrDefault(x => x.Category.Id == category.Id &&
                                                         x.Permission.Name == AppConstants.PermissionDenyAccess &&
                                                         x.MembershipRole.Id == role.Id);
@@ -238,14 +239,14 @@ namespace MVCForum.Services
             {
                 // Get the known permissions for this role and category
                 var categoryRow = _categoryPermissionForRoleRepository.GetCategoryRow(role, category);
-                var categoryRowPermissions = categoryRow.ToDictionary(catRow => catRow.Permission);
+                var categoryRowPermissions = categoryRow.ToDictionary(catRow => catRow.Permission.Id);
 
                 // Load up the results with the permisions for this role / cartegory. A null entry for a permissions results in a new
                 // record with a false value
                 foreach (var permission in permissionList.Where(x => !x.IsGlobal))
                 {
-                    categoryPermissions.Add(categoryRowPermissions.ContainsKey(permission)
-                                        ? categoryRowPermissions[permission]
+                    categoryPermissions.Add(categoryRowPermissions.ContainsKey(permission.Id)
+                                        ? categoryRowPermissions[permission.Id]
                                         : new CategoryPermissionForRole { Category = category, MembershipRole = role, IsTicked = false, Permission = permission });
                 }
             }
@@ -255,14 +256,14 @@ namespace MVCForum.Services
 
             // Get the known global permissions for this role
             var globalRow = _globalPermissionForRoleRepository.GetAll(role);
-            var globalRowPermissions = globalRow.ToDictionary(row => row.Permission);
+            var globalRowPermissions = globalRow.ToDictionary(row => row.Permission.Id);
 
             // Load up the results with the permisions for this role. A null entry for a permissions results in a new
             // record with a false value
             foreach (var permission in permissionList.Where(x => x.IsGlobal))
             {
-                globalPermissions.Add(globalRowPermissions.ContainsKey(permission)
-                                    ? globalRowPermissions[permission]
+                globalPermissions.Add(globalRowPermissions.ContainsKey(permission.Id)
+                                    ? globalRowPermissions[permission.Id]
                                     : new GlobalPermissionForRole { MembershipRole = role, IsTicked = false, Permission = permission });
             }
 

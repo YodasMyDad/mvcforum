@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MVCForum.Data.Context;
+using System.Data.Entity;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Repositories;
 
@@ -42,7 +43,10 @@ namespace MVCForum.Data.Repositories
 
         public UploadedFile Get(Guid id)
         {
-            return _context.UploadedFile.FirstOrDefault(x => x.Id == id);
+            return _context.UploadedFile
+                .Include(x => x.Post.Topic.Category)
+                .AsNoTracking()
+                .FirstOrDefault(x => x.Id == id);
         }
     }
 }

@@ -11,6 +11,7 @@ using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
 using Skybrud.Social.Facebook;
 using Skybrud.Social.Facebook.OAuth;
+using Skybrud.Social.Facebook.Options.User;
 
 namespace MVCForum.Website.Controllers.OAuthControllers
 {
@@ -39,7 +40,7 @@ namespace MVCForum.Website.Controllers.OAuthControllers
         {
             get
             {
-                return string.Concat(SettingsService.GetSettings().ForumUrl, Url.Action("FacebookLogin"));
+                return string.Concat(SettingsService.GetSettings().ForumUrl.TrimEnd('/'), Url.Action("FacebookLogin"));
             }
         }
 
@@ -164,8 +165,14 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                         // Initialize the Facebook service (no calls are made here)
                         var service = FacebookService.CreateFromAccessToken(userAccessToken);
 
+                        // Declare the options for the call to the API
+                        var options = new FacebookGetUserOptions
+                        {
+                            Identifier = "me",
+                            Fields = new[] { "id", "name", "email", "first_name", "last_name", "gender" }
+                        };
 
-                        var user = service.Users.GetUser();
+                        var user = service.Users.GetUser(options);
 
                         // Try to get the email - Some FB accounts have protected passwords
                         var email = user.Body.Email;
@@ -191,7 +198,7 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                                     resultMessage.Message = LocalizationService.GetResourceString("Members.NowLoggedIn");
                                     resultMessage.MessageType = GenericMessages.success;
                                     ShowMessage(resultMessage);
-                                    RedirectToAction("Index", "Home");
+                                    return RedirectToAction("Index", "Home");
                                 }
                                 catch (Exception ex)
                                 {

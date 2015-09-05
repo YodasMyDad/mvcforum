@@ -20,9 +20,6 @@ namespace MVCForum.Website.Controllers
         private readonly IVoteService _voteService;
         private readonly IFavouriteService _favouriteService;
 
-        private MembershipUser LoggedOnUser;
-        private MembershipRole UsersRole;
-
         public SearchController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService, ILocalizationService localizationService,
             IRoleService roleService, ISettingsService settingsService,
@@ -34,9 +31,6 @@ namespace MVCForum.Website.Controllers
             _voteService = voteService;
             _favouriteService = favouriteService;
             _categoryService = categoryService;
-
-            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
-            UsersRole = LoggedOnUser == null ? RoleService.GetRole(AppConstants.GuestRoleName) : LoggedOnUser.Roles.FirstOrDefault();
         }
 
         [HttpGet]
@@ -46,6 +40,11 @@ namespace MVCForum.Website.Controllers
             {
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
+                    if (!string.IsNullOrEmpty(term))
+                    {
+                        term = term.Trim();
+                    }
+
                     // Get the global settings
                     var settings = SettingsService.GetSettings();
 
@@ -58,8 +57,8 @@ namespace MVCForum.Website.Controllers
 
                     // Get all the topics based on the search value
                     var posts = _postService.SearchPosts(pageIndex,
-                                                         settings.PostsPerPage,
                                                          SiteConstants.SearchListSize,
+                                                         int.MaxValue,
                                                          term,
                                                          allowedCategories);
 
@@ -76,7 +75,7 @@ namespace MVCForum.Website.Controllers
                     var favs = _favouriteService.GetAllPostFavourites(postIds);
 
                     // Create the post view models
-                    var viewModels = ViewModelMapping.CreatePostViewModels(posts.ToList(), votes, topicPermissions, LoggedOnUser, settings, favs);
+                    var viewModels = ViewModelMapping.CreatePostViewModels(posts.ToList(), votes, topicPermissions, LoggedOnReadOnlyUser, settings, favs);
 
                     // create the view model
                     var viewModel = new SearchViewModel

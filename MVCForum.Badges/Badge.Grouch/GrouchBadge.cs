@@ -15,11 +15,17 @@ namespace Badge.Grouch
     [AwardsPoints(0)]
     public class GrouchBadge : IVoteDownBadge
     {
+        private readonly IVoteService _voteService;
+
+        public GrouchBadge()
+        {
+            _voteService = DependencyResolver.Current.GetService<IVoteService>();
+        }
+
         public bool Rule(MembershipUser user)
         {
             // Get all down votes
-            var voteService = DependencyResolver.Current.GetService<IVoteService>();
-            var downVotes = voteService.GetAllVotesByUser(user.Id).Where(x => x.Amount < 1).ToList();
+            var downVotes = _voteService.GetAllVotesByUser(user.Id).Where(x => x.Amount < 1).ToList();
             return downVotes.Count() >= 10;
         }
     }

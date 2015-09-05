@@ -32,6 +32,7 @@ namespace MVCForum.Data.Repositories
         {
             return _context.TopicNotification
                 .Where(x => x.Topic.Id == topic.Id)
+                .AsNoTracking()
                 .ToList();
         }
 
@@ -42,11 +43,15 @@ namespace MVCForum.Data.Repositories
                 .ToList();
         }
 
-        public IList<TopicNotification> GetByUserAndTopic(MembershipUser user, Topic topic)
+        public IList<TopicNotification> GetByUserAndTopic(MembershipUser user, Topic topic, bool addTracking = false)
         {
-            return _context.TopicNotification
-                .Where(x => x.User.Id == user.Id && x.Topic.Id == topic.Id)
-                .ToList();
+            var notifications = _context.TopicNotification
+                .Where(x => x.User.Id == user.Id && x.Topic.Id == topic.Id);
+            if (addTracking)
+            {
+                return notifications.ToList();
+            }
+            return notifications.AsNoTracking().ToList();
         }
 
         public TopicNotification Add(TopicNotification topicNotification)
@@ -64,14 +69,5 @@ namespace MVCForum.Data.Repositories
             _context.TopicNotification.Remove(item);
         }
 
-        public void Update(TopicNotification item)
-        {
-            // Check there's not an object with same identifier already in context
-            if (_context.TopicNotification.Local.Select(x => x.Id == item.Id).Any())
-            {
-                throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
-            }
-            _context.Entry(item).State = EntityState.Modified;  
-        }
     }
 }

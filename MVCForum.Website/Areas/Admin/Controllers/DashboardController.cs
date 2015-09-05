@@ -14,28 +14,59 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
         private readonly ITopicTagService _topicTagService;
+        private readonly IPrivateMessageService _privateMessageService;
+        private readonly ICategoryService _categoryService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         const int AmountToShow = 7;
 
         public DashboardController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
             ILocalizationService localizationService, ISettingsService settingsService, IPostService postService, 
-            ITopicService topicService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService)
+            ITopicService topicService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService, ICategoryService categoryService, IPrivateMessageService privateMessageService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
             _membershipUserPointsService = membershipUserPointsService;
+            _categoryService = categoryService;
+            _privateMessageService = privateMessageService;
             _postService = postService;
             _topicService = topicService;
             _topicTagService = topicTagService;
         }
 
+        public PartialViewResult MainAdminNav()
+        {
+            var pmCount = 0;
+            if (LoggedOnReadOnlyUser != null)
+            {
+                pmCount = _privateMessageService.NewPrivateMessageCount(LoggedOnReadOnlyUser.Id);
+            }
+
+            var moderateCount = 0;
+            var topicsToModerate = _topicService.GetPendingTopicsCount(_categoryService.GetAll());
+            var postsToModerate = _postService.GetPendingPostsCount();
+            if (topicsToModerate > 0 || postsToModerate > 0)
+            {
+                moderateCount = (topicsToModerate + postsToModerate);
+            }
+
+            var viewModel = new MainDashboardNavViewModel
+            {
+                PrivateMessageCount = pmCount,
+                ModerateCount = moderateCount
+            };
+            return PartialView(viewModel);
+        }
+
         [HttpPost]
         public PartialViewResult TodaysTopics()
         {
+            // Get all cats as only admins can view this page
+            var allCats = _categoryService.GetAll();
+
             if (Request.IsAjaxRequest())
             {
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
-                    return PartialView(new TodaysTopics { Topics = _topicService.GetTodaysTopics(AmountToShow) });
+                    return PartialView(new TodaysTopics { Topics = _topicService.GetTodaysTopics(AmountToShow, allCats) });
                 }
             }
             return null;
@@ -85,9 +116,11 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             if (Request.IsAjaxRequest())
             {
+                // Get all cats as only admins can view this page
+                var allCats = _categoryService.GetAll();
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
-                    return PartialView(new HighestViewedTopics { Topics = _topicService.GetHighestViewedTopics(AmountToShow) });
+                    return PartialView(new HighestViewedTopics { Topics = _topicService.GetHighestViewedTopics(AmountToShow, allCats) });
                 }
             }
             return null;

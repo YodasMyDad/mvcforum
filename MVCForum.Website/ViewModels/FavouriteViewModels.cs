@@ -8,6 +8,12 @@ namespace MVCForum.Website.ViewModels
         public Guid PostId { get; set; }
     }
 
+    public class FavouriteJsonReturnModel
+    {
+        public string Message { get; set; }
+        public Guid Id { get; set; }
+    }
+
     public class MyFavouritesViewModel
     {
         public MyFavouritesViewModel()

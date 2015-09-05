@@ -35,19 +35,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         }
 
         [ChildActionOnly]
-        public PartialViewResult ListAllCategories(Guid id)
-        {
-            using (UnitOfWorkManager.NewUnitOfWork())
-            {
-                var viewModel = new ListCategoriesViewModel
-                                    {
-                                        Categories = _categoryService.GetAllSubCategories(id)
-                                    };
-                return PartialView(viewModel);
-            }
-        }
-
-        [ChildActionOnly]
         public PartialViewResult GetMainCategories()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -64,7 +51,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var categoryViewModel = new CategoryViewModel { AllCategories = _categoryService.GetAll().ToList() };
+                var categoryViewModel = new CategoryViewModel { AllCategories = _categoryService.GetAll() };
                 return View(categoryViewModel);
             }
         }
@@ -361,7 +348,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 try
                 {
                     // var all categories
-                    var all = _categoryService.GetAll().ToList();
+                    var all = _categoryService.GetAll();
 
                     // Get all the categories
                     var maincategories = all.Where(x => x.ParentCategory == null).ToList();

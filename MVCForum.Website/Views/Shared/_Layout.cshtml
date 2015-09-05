@@ -1,47 +1,42 @@
-﻿@using MVCForum.Website
+﻿@using MVCForum.Domain.DomainModel.General
 @{
     // Global Stuff
-    var theme = Html.Settings().Theme;
-    var themePath = string.Concat(AppConstants.ThemeRootFolder, theme);
+    var themeName = Html.Settings().Theme;
+    var theme = new Theme
+    {
+        ThemeName = themeName,
+        ThemePath = string.Concat(AppConstants.ThemeRootFolder, themeName)
+    };
     TempData[AppConstants.GlobalClass] = Convert.ToBoolean(PageData[AppConstants.IsMobileDevice]) ? "mobile" : "desktop";
     TempData[AppConstants.CurrentAction] = ViewContext.RouteData.GetRequiredString("action").ToLower();
     TempData[AppConstants.CurrentController] = ViewContext.RouteData.GetRequiredString("controller").ToLower();
 }
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
     <meta name="description" content="@ViewBag.MetaDesc" />
+    <meta property="og:url" content="@HttpContext.Current.Request.Url.AbsoluteUri" />
+    <meta property="og:description" content="@ViewBag.MetaDesc" />
+    <meta property="og:title" content="@ViewBag.Title" />
+    <meta property="og:site_name" content="@Html.Settings().ForumName" />
+    <meta property="og:type" content="website" />
     @RenderSection("SocialMeta", false)
     @ViewBag.Canonical
-    @(
- Bundle.Css()
-                .Add("~/Content/bootstrap/css/bootstrap.css")
-                .Add(themePath + "/Content/Styles/theme.css")
-                .MvcRender("~/content/cache/combined_" + theme + "_#.css")
-    )
+    @Html.Partial("_StyleSheets", theme)
     <!--[if lt IE 9]>
             <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <link rel="shortcut icon" href="@Url.Content(themePath + "/content/images/favicon.ico")">
-    <link rel="apple-touch-icon-precomposed" href="@Url.Content(themePath + "/content/images/apple-touch-icon-57-precomposed.png")">
-    <script type="text/javascript">
-        var app_base = '@Url.Content("~/")';
-    </script>
-    @(Bundle.JavaScript()
-                    .Add("~/Scripts/jquery-1.11.1.min.js")
-                    .Add("~/Scripts/jquery.unobtrusive-ajax.js")
-                    .Add("~/Content/bootstrap/js/bootstrap.min.js")
-                    .Add("~/Scripts/jquery.placeholder.min.js")
-                    .Add("~/Content/bootstrap/js/bootstrap-prettify.js")
-                    .Add("~/scripts/pushy/pushy.js")
-                    .Add("~/Scripts/general.js")
-                    .Add(themePath + "/Content/Scripts/general.js")
-                    .MvcRender("~/scripts/cache/combined_" + theme + "_#.js")
-    )
+    <link rel="shortcut icon" href="@Url.Content(theme.ThemePath + "/content/images/favicon.ico")">
+    <link rel="apple-touch-icon-precomposed" href="@Url.Content(theme.ThemePath + "/content/images/apple-touch-icon-57-precomposed.png")">
+    @Html.Partial("_JavaScript", theme)
     @RenderSection("Header", false)
+    @if (!string.IsNullOrEmpty(Html.Settings().CustomHeaderCode))
+    {
+        @Html.Raw(Html.Settings().CustomHeaderCode)
+    }
 </head>
 
 <body class="@TempData[AppConstants.GlobalClass].ToString() loggedin-@(User.Identity.IsAuthenticated.ToString().ToLower())">
@@ -82,7 +77,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a class="navbar-brand" href="@Url.Action("Index", "Home")">
-                        <img src="@Url.Content(themePath + "/content/images/logo.png")" alt="@Html.Lang("Site.MvcForum")" class="logoimg"/>                        
+                        <img src="@Url.Content(theme.ThemePath + "/content/images/logo.png")" alt="@Html.Lang("Site.MvcForum")" class="logoimg"/>                        
                     </a>
                 </div>
 
@@ -96,21 +91,10 @@
                                 <li><a href="@Url.Action("Register", "Members")">@Html.LanguageString("Layout.Nav.Register")</a></li>
                             }
                             <li><a href="@Url.Action("LogOn", "Members")">@Html.LanguageString("Layout.Nav.Logon")</a></li>
-                        }
-                        @*<li><a href="http://www.mvcforum.com">Main Website</a></li>*@
+                        }                        
                         @if (User.Identity.IsAuthenticated)
                         {
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">@Html.LanguageString("SideBox.MyTools")<span class="caret"></span></a>
-                                <ul class="dropdown-menu" role="menu">
-                                    @if (User.IsInRole(AppConstants.AdminRoleName))
-                                    {
-                                        <li><a href="@Url.Action("Index", "Admin", new {area = "Admin"}, null)">@Html.LanguageString("Layout.Nav.Admin")</a></li>
-                                    }
-                                    <li>@Html.ActionLink(Html.LanguageString("Members.SearchMembers"), "Search", "Members")</li>
-                                    @Html.Action("SideAdminPanel", "Members")
-                                </ul>
-                            </li>
+                            @Html.Action("SideAdminPanel", "Members")
                         }
                     </ul>
 
@@ -174,6 +158,10 @@
 
         </div>
     </footer>
-
+    @Html.Partial("_SlideOutPanel")
+    @if (!string.IsNullOrEmpty(Html.Settings().CustomFooterCode))
+    {
+        @Html.Raw(Html.Settings().CustomFooterCode)
+    }    
 </body>
 </html>

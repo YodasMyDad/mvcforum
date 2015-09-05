@@ -11,8 +11,7 @@ namespace MVCForum.Website.Controllers
     {
         private readonly IBadgeService _badgeService;
         private readonly IPostService _postService;
-
-        private MembershipUser LoggedOnUser;
+        private readonly IFavouriteService _favouriteService;
 
         /// <summary>
         /// Constructor
@@ -25,19 +24,19 @@ namespace MVCForum.Website.Controllers
         /// <param name="localizationService"></param>
         /// <param name="roleService"> </param>
         /// <param name="settingsService"> </param>
+        /// <param name="favouriteService"></param>
         public BadgeController(ILoggingService loggingService,
             IUnitOfWorkManager unitOfWorkManager,
             IBadgeService badgeService,
             IPostService postService,
             IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService,
-            ISettingsService settingsService)
+            ISettingsService settingsService, IFavouriteService favouriteService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _badgeService = badgeService;
             _postService = postService;
-
-            LoggedOnUser = UserIsAuthenticated ? MembershipService.GetUser(Username) : null;
+            _favouriteService = favouriteService;
         }
 
 
@@ -49,7 +48,8 @@ namespace MVCForum.Website.Controllers
             {
                 try
                 {
-                    var databaseUpdateNeededOne = _badgeService.ProcessBadge(BadgeType.VoteUp, LoggedOnUser);
+                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.UserName);
+                    var databaseUpdateNeededOne = _badgeService.ProcessBadge(BadgeType.VoteUp, loggedOnUser);
                     if (databaseUpdateNeededOne)
                     {
                         unitOfwork.SaveChanges();
@@ -83,7 +83,8 @@ namespace MVCForum.Website.Controllers
             {
                 try
                 {
-                    var databaseUpdateNeededOne = _badgeService.ProcessBadge(BadgeType.VoteDown, LoggedOnUser);
+                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.UserName);
+                    var databaseUpdateNeededOne = _badgeService.ProcessBadge(BadgeType.VoteDown, loggedOnUser);
                     if (databaseUpdateNeededOne)
                     {
                         unitOfwork.SaveChanges();
@@ -120,7 +121,8 @@ namespace MVCForum.Website.Controllers
                 {
                     try
                     {
-                        var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Post, LoggedOnUser);
+                        var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.UserName);
+                        var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Post, loggedOnUser);
 
                         if (databaseUpdateNeeded)
                         {
@@ -162,15 +164,40 @@ namespace MVCForum.Website.Controllers
 
         [HttpPost]
         [Authorize]
+        public void Favourite(FavouriteViewModel favouriteViewModel)
+        {
+            using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                try
+                {
+                    var favourite = _favouriteService.Get(favouriteViewModel.FavouriteId);
+                    var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Favourite, favourite.Member) | _badgeService.ProcessBadge(BadgeType.Favourite, favourite.Post.User);
+
+                    if (databaseUpdateNeeded)
+                    {
+                        unitOfwork.Commit();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    unitOfwork.Rollback();
+                    LoggingService.Error(ex);
+                }
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
         public void ProfileBadgeCheck()
         {
             using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
             {
                 try
                 {
-                    if (LoggedOnUser != null)
+                    if (LoggedOnReadOnlyUser != null)
                     {
-                        var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Profile, LoggedOnUser);
+                        var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.UserName);
+                        var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Profile, loggedOnUser);
 
                         if (databaseUpdateNeeded)
                         {

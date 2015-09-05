@@ -1,21 +1,24 @@
 ﻿@model MVCForum.Website.Areas.Admin.ViewModels.LocaleResourceKeyViewModel
 @{
-    ViewBag.Title = "Delete Resource";
+    ViewBag.Title = "Delete Resource Key";
 }
 
-@{
-
-
-    using (Html.BeginForm("DeleteResource", "AdminLanguage", FormMethod.Post))
-    {
+<div class="panel">
+    <div class="panel-heading">
+        <h5>@ViewBag.Title</h5>
+    </div>
+    <div class="panel-content">
+        @using (Html.BeginForm("DeleteResource", "AdminLanguage", FormMethod.Post))
+        {
             @Html.AntiForgeryToken()
-            <h2>Delete Resource?</h2>        
             <p>Are you sure you want to delete this resource key (ALL languages will be affected)?</p>
             @Html.HiddenFor(x => x.Id)
             <div class="submit-holder">
-                <input type="submit" class="btn-mvc btn-mvc-green" value="Yes"name="ButtonYes" /> 
-                <input type="submit" class="btn-mvc btn-mvc-green" value="No" name="ButtonNo" />               
+                <input type="submit" class="btn-mvc-green btn-mvc-large" value="Yes" name="ButtonYes" />
+                <input type="submit" class="btn-mvc-red btn-mvc-large" value="No" name="ButtonNo" />
             </div>
         }
+    </div>
+</div>
 
-}     
+

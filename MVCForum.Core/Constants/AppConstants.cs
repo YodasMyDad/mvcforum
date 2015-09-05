@@ -1,7 +1,12 @@
-﻿namespace MVCForum.Domain.Constants
+﻿using System.Collections.Generic;
+using System.Linq.Expressions;
+
+namespace MVCForum.Domain.Constants
 {
     public static class AppConstants
     {
+        public const int SaltSize = 24;
+
         // Cookie names
         public const string LanguageIdCookieName = "LanguageCulture";
         public const string MemberEmailConfirmationCookieName = "MVCForumEmailConfirmation";
@@ -13,7 +18,7 @@
 
         // Url names
         public const string CategoryUrlIdentifier = "cat";
-        public const string TopicUrlIdentifier = "chat";
+        public const string TopicUrlIdentifier = "thread";
         public const string TagsUrlIdentifier = "tagged";
         public const string MemberUrlIdentifier = "profile";
 
@@ -54,6 +59,7 @@
 
         // Global Permissions
         public const string PermissionEditMembers = "Edit Members";
+        public const string PermissionInsertEditorImages = "Insert Editor Images";
 
         //------------ End Permissions ----------
 
@@ -96,10 +102,65 @@
         public const string IsMobileDevice = "IsMobileDevice";
 
         /// <summary>
-        /// The default cache length time
+        /// Cache lengths
         /// </summary>
         public const int ShortCacheTime = 900;
-
         public const int LongCacheTime = 10800;
+
+        /// <summary>
+        /// Cache lengths
+        /// </summary>
+        public static List<string> ReflectionDllsToAvoid = new List<string>
+        {
+            "EcmaScript.NET.dll",
+            "Unity.WebApi.dll",
+            "Skybrud.Social.dll",
+            "Antlr3.Runtime.dll",
+            "WebGrease.dll",
+            "System.Web.Optimization.dll",
+            "Common.Logging.Core.dll",
+            "Common.Logging.dll",
+            "EntityFramework.dll",
+            "EntityFramework.SqlServer.dll",
+            "EntityFramework.SqlServerCompact.dll",
+            "System.Data.SqlServerCe.dll",
+            "Newtonsoft.Json.dll",
+            "Quartz.dll",
+            "SquishIt.Framework.dll",
+            "SquishIt.Mvc.dll",
+            "ImageProcessor.Web.dll",
+            "ImageProcessor.dll",
+            "AntiXssLibrary.dll",
+            "HtmlSanitizationLibrary.dll",
+            "System.Web.Http.dll",
+            "System.Web.Http.WebHost.dll",
+            "System.Net.Http.Formatting.dll",
+            "System.Web.Helpers.dll",
+            "System.Web.Mvc.dll",
+            "System.Web.WebPages.Deployment.dll",
+            "System.Web.WebPages.dll",
+            "System.Web.WebPages.Razor.dll",
+            "System.Web.Razor.dll",
+            "Quartz.Unity.45.dll",
+            "EFCache.dll",
+            "HtmlAgilityPack.dll",
+            "Microsoft.Practices.Unity.Configuration.dll",
+            "Microsoft.Practices.Unity.dll",
+            "Microsoft.Practices.Unity.RegistrationByConvention.dll",
+            "Microsoft.Practices.ServiceLocation.dll",
+            "Unity.WebApi.dll",
+            "Unity.Mvc4.dll",
+            "WebActivator.dll",
+            "System.Net.Http.dll",
+            "System.Net.Http.WebRequest.dll",
+            "AjaxMin.dll",
+            "Iesi.Collections.dll",
+            "Yahoo.Yui.Compressor.dll",
+            "Microsoft.Web.Services3.dll",
+            "Microsoft.Web.Infrastructure.dll",
+            "DotNetOpenAuth",
+            "Microsoft",
+        };
+
     }
 }

@@ -191,25 +191,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 user.DisablePosting = userModel.DisablePosting;
                 user.DisablePrivateMessages = userModel.DisablePrivateMessages;
 
-                // If there is a location try and save the longitude and latitude
-                if (!string.IsNullOrEmpty(user.Location))
-                {
-                    try
-                    {
-                        var longLat = LocalisationUtils.GeocodeGoogle(user.Location);
-                        if (longLat != null && longLat[0] != "0")
-                        {
-                            // Got the long lat and save them to the user
-                            user.Latitude = longLat[0];
-                            user.Longitude = longLat[1];
-                        }
-                    }
-                    catch
-                    {
-                        LoggingService.Error("Error getting longitude and latitude from location");
-                    }
-                }
-
                 try
                 {
                     unitOfWork.Commit();

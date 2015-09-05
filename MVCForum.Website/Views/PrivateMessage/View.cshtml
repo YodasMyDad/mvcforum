@@ -1,33 +1,35 @@
 ﻿@model MVCForum.Website.ViewModels.ViewPrivateMessageViewModel
 @{
-    Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
+    Layout = Model.IsAjaxRequest ? "" : "~/Views/Shared/_LayoutFullWidth.cshtml";
     ViewBag.Title = string.Concat(Html.LanguageString("PM.Title"), Model.From.UserName);
-}
-
-@section Header
-{
-    @(
- Bundle.JavaScript()
-            .Add("~/Scripts/jquery.validate.min.js")
-            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
-
-            .MvcRender("~/scripts/cache/validate-combined_#.js")
-    )
 }
 
 <div class="pmview">
     <div class="row">
 
-        <div class="col-md-8 col-md-offset-2">
-            <div class="btn-group top-pm-nav">
-                @Html.ActionLink(Html.LanguageString("PM.BackToInbox"), "Index", new { }, new { @class = "btn btn-mvc btn-mvc-green" })
-            </div>
-            <h1>
-                <a href="@Model.From.NiceUrl">
-                    <img src="@Model.From.MemberImage(SiteConstants.GravatarPostSize)" alt="@Model.From.UserName" class="pmavatar" /> @Model.From.UserName
-                </a>
-            </h1>
-            
+        <div class="@(Model.IsAjaxRequest ? "col-md-12" : "col-md-8 col-md-offset-2")">
+            @if (Model.IsAjaxRequest)
+            {
+         
+                   <span class="label label-success">@Html.Lang("PM.MemberIsOnline")</span>
+             
+            }
+            else
+            {
+                <div class="btn-group top-pm-nav">
+                    @Html.ActionLink(Html.LanguageString("PM.BackToInbox"), "Index", new { }, new { @class = "btn-mvc btn-mvc-green" })
+                </div>
+                <h1>
+                    <a href="@Model.From.NiceUrl">
+                        <img src="@Model.From.MemberImage(SiteConstants.GravatarPostSize)" alt="@Model.From.UserName" class="pmavatar" /> @Model.From.UserName
+                        @if (Model.FromUserIsOnline)
+                        {
+                            <span class="label label-success">@Html.Lang("PM.MemberIsOnline")</span>
+                        }
+                    </a>
+                </h1>
+            }
+           
             <div class="createmessageholder">
                 @Html.Action("Create", new {to = Model.From.Id})
             </div>

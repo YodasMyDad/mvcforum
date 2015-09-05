@@ -14,14 +14,23 @@ namespace Badge.AuthorMarkAsSolution
     [AwardsPoints(2)]
     public class AuthorMarkAsSolutionBadge : IMarkAsSolutionBadge
     {
+        private readonly ITopicService _topicService;
+        private readonly ICategoryService _categoryService;
+
+        public AuthorMarkAsSolutionBadge()
+        {
+            _topicService = DependencyResolver.Current.GetService<ITopicService>();
+            _categoryService = DependencyResolver.Current.GetService<ICategoryService>();
+        }
+
         /// <summary>
         /// Post is marked as the answer to a topic - give the topic author a badge
         /// </summary>
         /// <returns></returns>
         public bool Rule(MembershipUser user)
         {
-            var topicService = DependencyResolver.Current.GetService<ITopicService>();
-            return topicService.GetSolvedTopicsByMember(user.Id).Count >= 1;
+            var allCats = _categoryService.GetAll();
+            return _topicService.GetSolvedTopicsByMember(user.Id, allCats).Count >= 1;
 
         }
     }

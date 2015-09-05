@@ -9,10 +9,9 @@ namespace MVCForum.Domain.Interfaces.Repositories
         IList<TopicNotification> GetAll();
         IList<TopicNotification> GetByTopic(Topic topic);
         IList<TopicNotification> GetByUser(MembershipUser user);
-        IList<TopicNotification> GetByUserAndTopic(MembershipUser user, Topic category);
+        IList<TopicNotification> GetByUserAndTopic(MembershipUser user, Topic category, bool addTracking = false);
         TopicNotification Add(TopicNotification item);
         TopicNotification Get(Guid id);
         void Delete(TopicNotification item);
-        void Update(TopicNotification item);
     }
 }

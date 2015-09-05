@@ -349,11 +349,15 @@ namespace MVCForum.Data.Repositories
         /// Get a language by Id
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="removeTracking"></param>
         /// <returns></returns>
-        public Language Get(Guid id)
+        public Language Get(Guid id, bool removeTracking = false)
         {
-            return _context.Language
-                        .FirstOrDefault(lang => lang.Id == id);
+            if (removeTracking)
+            {
+                return _context.Language.AsNoTracking().FirstOrDefault(lang => lang.Id == id);    
+            }
+            return _context.Language.FirstOrDefault(lang => lang.Id == id);
         }
 
         public void Delete(LocaleStringResource item)

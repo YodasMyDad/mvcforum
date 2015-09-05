@@ -4,16 +4,6 @@
     ViewBag.Title = "Settings";
 }
 
-@section AdminHeader
-{
-    @(
- Bundle.JavaScript()
-            .Add("~/Scripts/jquery.validate.min.js")
-            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
-            .MvcRender("~/scripts/cache/validate-combined_#.js")
-    )
-}
-
 @using (Html.BeginForm("Index", "Settings", FormMethod.Post))
 {
     @Html.HiddenFor(model => model.Id)
@@ -32,7 +22,7 @@
                     </a>
                 </h4>
             </div>
-            <div id="collapseGeneral" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingGeneral">
+            <div id="collapseGeneral" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingGeneral">
                 <div class="panel-body">
 
 
@@ -75,6 +65,14 @@
                         }
                         @Html.ValidationMessageFor(m => m.EnableRSSFeeds)
                     </div>
+                    
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.EnableEmoticons, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.EnableEmoticons)
+                        }
+                        @Html.ValidationMessageFor(m => m.EnableEmoticons)
+                    </div>
 
                     <div class="checkbox">
                         @using (Html.BeginLabelFor(m => m.DisplayEditedBy, new { @class = "checkbox" }))
@@ -99,7 +97,11 @@
                         }
                         @Html.ValidationMessageFor(m => m.EnableMarkAsSolution)
                     </div>
-
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.MarkAsSolutionReminderTimeFrame)
+                        @Html.TextBoxFor(model => model.MarkAsSolutionReminderTimeFrame, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.MarkAsSolutionReminderTimeFrame)
+                    </div>
                     <div class="checkbox">
                         @using (Html.BeginLabelFor(m => m.EnablePolls, new { @class = "checkbox" }))
                         {
@@ -108,7 +110,7 @@
                         @Html.ValidationMessageFor(m => m.EnablePolls)
                     </div>
 
-                    <div class="checkbox">
+                    @*<div class="checkbox">
                         @using (Html.BeginLabelFor(m => m.EnableSpamReporting, new { @class = "checkbox" }))
                         {
                             @Html.CheckBoxFor(m => m.EnableSpamReporting)
@@ -122,7 +124,7 @@
                             @Html.CheckBoxFor(m => m.EnableMemberReporting)
                         }
                         @Html.ValidationMessageFor(m => m.EnableMemberReporting)
-                    </div>
+                    </div>*@
 
                     <div class="checkbox">
                         @using (Html.BeginLabelFor(m => m.EnableEmailSubscriptions, new { @class = "checkbox" }))
@@ -272,7 +274,7 @@
                 <div class="panel-body">
 
                     <p class="help-block">Complete the settings below and save, then send a test email using the button below</p>
-                    <p class="help-block"><a href="@Url.Action("TestEmail")" class="btn btn-large btn-success">Test Email Settings</a></p>
+                    <p class="help-block"><a href="@Url.Action("TestEmail")" class="btn-mvc-green">Test Email Settings</a></p>
 
                     <div class="form-group">
                         @Html.LabelFor(model => model.AdminEmailAddress)
@@ -318,10 +320,10 @@
                         @Html.ValidationMessageFor(m => m.SMTPEnableSSL)
                     </div>
 
-                    <p class="help-block">
+                    @*<p class="help-block">
                         <strong>IMPORTANT:</strong> Only port 25 works in medium trust environments. You will need to comment out the medium trust entry in the web.config if you want to
                         use any other port number.
-                    </p>
+                    </p>*@
                 </div>
             </div>
         </div>
@@ -383,7 +385,7 @@
             </div>
         </div>
 
-        <div class="panel panel-default">
+        @*<div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingSpam">
                 <h4 class="panel-title">
                     <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseSpam" aria-expanded="false" aria-controls="collapseSpam">
@@ -422,9 +424,9 @@
 
                 </div>
             </div>
-        </div>
+        </div>*@
 
-        <div class="panel panel-default">
+        @*<div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingSocial">
                 <h4 class="panel-title">
                     <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseSocial" aria-expanded="false" aria-controls="collapseSocial">
@@ -444,13 +446,13 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>*@
 
 
     </div>
 
     <div class="submit-holder">
-        <button type="submit" class="btn-mvc btn-mvc-green btn-mvc-large">Save Settings</button>
+        <button type="submit" class="btn-mvc-green btn-mvc-large">Save Settings</button>
     </div>
 
 }

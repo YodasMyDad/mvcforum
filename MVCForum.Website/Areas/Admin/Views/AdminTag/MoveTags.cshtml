@@ -1,0 +1,37 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.MoveTagsViewModel
+@{
+    ViewBag.Title = "Change Tags";
+}
+
+<div class="panel">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            @ViewBag.Title
+        </h4>
+    </div>
+    <div class="panel-body">
+        <p>This page enables you to move topics from one tag to another, perfect if you want to delete a tag.</p>
+
+        @using (Html.BeginForm("MoveTags", "AdminTag", FormMethod.Post))
+        {
+            @Html.ValidationSummary(false)
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.CurrentTagId)
+                @Html.DropDownListFor(m => m.CurrentTagId, Model.Tags, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.CurrentTagId)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.NewTagId)
+                @Html.DropDownListFor(m => m.NewTagId, Model.Tags, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.NewTagId)
+            </div>
+
+            <div class="submit-holder">
+                <input type="submit" class="btn-mvc-green btn-mvc-large" value="Update" />
+            </div>
+        }
+
+    </div>
+</div>

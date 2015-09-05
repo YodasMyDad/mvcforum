@@ -5,93 +5,146 @@
     ViewBag.Title = "Edit Permissions";
     var allPermission = Model.MembershipRole.GetCategoryPermissionTable();
 }
+@section AdminPageHeader
+{
+    Edit @Model.MembershipRole.RoleName Permissions <img src="@Url.Content("~/Content/admin/Images/ajax-loader.gif")" alt="Please Wait" style="display: none;" class="editpermissionsspinner" /> <span class="label label-success ajaxsuccessshow" style="display: none;">Success</span>
+}
+<div class="backbutton">
+    <a href="@Url.Action("Index")" class="btn-mvc-green">&lt;&lt; Go Back</a>
+</div>
+<div class="panel">
+    <div class="panel-heading">
+        <h5>Category Permissions</h5>
+    </div>
+    <div class="panel-content">
+        
+        <p>Category permissions are all permissions anyone in the @Model.MembershipRole.RoleName role is able to do (Or not do) within a specific category.</p>
 
-<p><a href="@Url.Action("Index")" class="btn-mvc">&lt;&lt; Back</a></p>
-<h2>Edit @Model.MembershipRole.RoleName Permissions <img src="@Url.Content("~/Content/admin/Images/ajax-loader.gif")" alt="Please Wait" style="display: none;" class="editpermissionsspinner" /></h2>
-<p>All permissions relate to all posts, topics i.e. If you enable edit and delete posts, any member in this role will be able edit and delete posts by any other member</p>
-<span class="label label-success ajaxsuccessshow" style="display: none;">Success</span>
-<h3>Category Permissions</h3>
+        <div class="tablescroll">
 
-<div class="tablescroll">
+            <table class="table table-bordered table-striped permissiontable">
 
-    <table class="table table-bordered table-striped permissiontable">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        @foreach (var permissionType in Model.Permissions.Where(x => !x.IsGlobal))
+                        {
+                            <th>@permissionType.Name</th>
+                        }
+                    </tr>
+                </thead>
 
-        <thead>
-            <tr>
-                <th>Category</th>
-                @foreach (var permissionType in Model.Permissions.Where(x => !x.IsGlobal))
-                {
-                    <th>@permissionType.Name</th>
-                }
-            </tr>
-        </thead>
-
-        <tbody>
-            @foreach (var cat in Model.Categories)
-            {
-
-                <tr>
-                    <td style="width:160px;">
-                        @cat.Name
-                    </td>
-                    @foreach (var permission in Model.Permissions.Where(x => !x.IsGlobal))
+                <tbody>
+                    @foreach (var cat in Model.Categories)
                     {
-                        var isChecked = "";
-                        var isDisabled = DisableCheckBox(permission.Name);
-                        <td>
 
-                            @if (allPermission.ContainsKey(cat.Id) && allPermission[cat.Id].ContainsKey(permission))
+                        <tr>
+                            <td style="width:160px;">
+                                @cat.Name
+                            </td>
+                            @foreach (var permission in Model.Permissions.Where(x => !x.IsGlobal))
                             {
-                                // bingo we have this permission
-                                isChecked = allPermission[cat.Id][permission] ? " checked" : "";
+                                var isChecked = "";
+                                var isDisabled = DisableCheckBox(permission.Name);
+                                <td>
+
+                                    @if (allPermission.ContainsKey(cat.Id) && allPermission[cat.Id].ContainsKey(permission.Id))
+                                    {
+                                        // bingo we have this permission
+                                        isChecked = allPermission[cat.Id][permission.Id] ? " checked" : "";
+                                    }
+                                    <span class="permissioncheckbox">
+                                        <input data-permisssion="@permission.Id" data-category="@cat.Id" data-role="@Model.MembershipRole.Id" type="checkbox" id="@permission.Id-@cat.Id" @isChecked @isDisabled />
+                                    </span>
+                                </td>
                             }
-                            <span class="permissioncheckbox">
-                                <input data-permisssion="@permission.Id" data-category="@cat.Id" data-role="@Model.MembershipRole.Id" type="checkbox" id="@permission.Id-@cat.Id" @isChecked @isDisabled />
-                            </span>
-                        </td>
+                        </tr>
                     }
-                </tr>
-            }
-        </tbody>
+                </tbody>
 
-    </table>
+            </table>
 
+        </div>
+    </div>
 </div>
 
-<h3>Global Permissions</h3>
+<div class="panel">
+    <div class="panel-heading">
+        <h5>Global Permissions</h5>
+    </div>
+    <div class="panel-content">
+        <p>Global permissions are all permissions anyone in the @Model.MembershipRole.RoleName can do throughout the forum, and are not just tied to a category.</p>
 
-<table class="table table-bordered table-striped globalpermissiontable">
-    <thead>
-        <tr>
-            <th>Permission</th>
-            <th></th>
-        </tr>
-    </thead>
+        <table class="table table-bordered table-striped globalpermissiontable">
+            <thead>
+                <tr>
+                    <th>Permission</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var permission in Model.Permissions.Where(x => x.IsGlobal))
+                {
+                    var isChecked = "";
+                    var isDisabled = DisableCheckBox(permission.Name);
+                    <tr>
+                        <td style="width:160px;">
+                            @permission.Name
+                        </td>
+                        <td>
+                            @if (Model.CurrentGlobalPermissions.ContainsKey(permission.Name))
+                            {
+                                // bingo we have this permission
+                                isChecked = Model.CurrentGlobalPermissions[permission.Name].IsTicked ? " checked" : "";
+                            }
+                            <span class="permissioncheckbox">
+                                <input data-permisssion="@permission.Id" data-role="@Model.MembershipRole.Id" data-category="@(Guid.Empty)" type="checkbox" id="@permission.Id" @isChecked @isDisabled />
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
 
-    <tbody>
-        @foreach (var permission in Model.Permissions.Where(x => x.IsGlobal))
-        {
-            var isChecked = "";
-            var isDisabled = DisableCheckBox(permission.Name);
-            <tr>
-                <td style="width:160px;">
-                    @permission.Name
-                </td>
-                <td>
-                    @if (Model.CurrentGlobalPermissions.ContainsKey(permission.Name))
-                    {
-                        // bingo we have this permission
-                        isChecked = Model.CurrentGlobalPermissions[permission.Name].IsTicked ? " checked" : "";
-                    }
-                    <span class="permissioncheckbox">
-                        <input data-permisssion="@permission.Id" data-role="@Model.MembershipRole.Id" data-category="@(Guid.Empty)" type="checkbox" id="@permission.Id" @isChecked @isDisabled />
-                    </span>
-                </td>
-            </tr>
-        }
-    </tbody>
+        </table>
+    </div>
+</div>
 
-</table>
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5>Descriptions</h5>
+    </div>
+    <div class="panel-content">
+        <h6>@AppConstants.PermissionAttachFiles</h6>
+        <p>If you tick this permission, users in this role will be able to attach files to topics and posts for download (file types and size can be restricted in web.config app settings - FileUploadAllowedExtensions and FileUploadMaximumFileSizeInBytes)</p>
+        <h6>@AppConstants.PermissionCreatePolls</h6>
+        <p>If you tick this, then users in this role will be able to create polls in a topic.</p>
+        <h6>@AppConstants.PermissionVoteInPolls</h6>
+        <p>If you tick this, users in this role will be able to vote in polls (As long as Create Polls is enabled)</p>
+        <h6>@AppConstants.PermissionCreateTopics</h6>
+        <p>If you tick this, users in this role will be able to create topics</p>
+        <h6>@AppConstants.PermissionDeletePosts</h6>
+        <p>If you tick this, users in this role will be able to delete other users posts and topics (Good Moderator permission)</p>
+        <h6>@AppConstants.PermissionEditPosts</h6>
+        <p>If you tick this, users in this role will be able to edit other users posts and topics (Good Moderator permission)</p>
+        <h6>@AppConstants.PermissionLockTopics</h6>
+        <p>If you tick this, users in this role will be able to lock topics, stopping any further posting in it.</p>
+        <h6>@AppConstants.PermissionCreateStickyTopics</h6>
+        <p>If you tick this, users in this role will be able to make a sticky topic (Pin the topic) which will always be shown at the top of a category.</p>
+        <h6>@AppConstants.PermissionReadOnly</h6>
+        <p>If you tick this, users in this role will not be able to post in the Category.</p>
+        <h6>@AppConstants.PermissionDenyAccess</h6>
+        <p>If you tick this, users will not be able to access or see the Category - Also they won't be able to see any posts, topics or tags that were created in it either (Private Categories).</p>
+        <hr/>
+        <h6>@AppConstants.PermissionEditMembers</h6>
+        <p>If you tick this, users will be able to edit other users profiles and also ban them from the forum.</p>
+        <h6>@AppConstants.PermissionInsertEditorImages</h6>
+        <p>If you tick this, users will be able to upload and insert images into the TinyMCE editor.</p>
+    </div>
+</div>
+
+
+
 
 
 

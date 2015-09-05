@@ -1,48 +1,45 @@
 ﻿@{
-    ViewBag.Title = "Members";
+    ViewBag.Title = "Import / Export Members";
 }
 
-@section AdminHeader
-{
-    @(
- Bundle.JavaScript()
-            .Add("~/Scripts/jquery.validate.min.js")
-            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")
-            .MvcRender("~/scripts/cache/validate-combined_#.js")
-    )
-}
-
-<div class="panel panel-default">
-    <div class="panel-body">
-        <h2>Export Members</h2>
-        <p>Export all members into a CSV.</p>
-        @using (Html.BeginForm("ExportUsers", "ImportExport"))
-        {
-            <div class="submit-holder">
-                <button type="submit" class="btn-mvc btn-mvc-green">Export</button>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel">
+            <div class="panel-heading">
+                <h5>Export Members</h5>
             </div>
-        }
+            <div class="panel-body">
+                <p>Export all members into a CSV, you can use this CSV format to also import members into the forum.</p>
+                @using (Html.BeginForm("ExportUsers", "ImportExport"))
+                {
+                    <div class="submit-holder">
+                        <button type="submit" class="btn-mvc-green">Export</button>
+                    </div>
+                }
+            </div>
+        </div>
     </div>
-</div>
-
-
-<div class="panel panel-default">
-    <div class="panel-body">
-        <h2>Import Members</h2>
-        <p>The easiest way to find out what format the CSV file to import should be in, is to click the export button above and use that as a template.</p>
-        @using (Html.BeginForm("ImportUsers", "ImportExport", FormMethod.Post, new { enctype = "multipart/form-data", id = "ImportForm", name = "ImportForm", target = "UploadTarget" }))
-        {
-            <div class="submit-holder">
-                <p><input type="file" id="file" name="file" /></p>
-                <p><input type="submit" class="btn-mvc btn-mvc-green" value="Import" /></p>
+    <div class="col-md-6">
+        <div class="panel">
+            <div class="panel-heading">
+                <h5>Import Members</h5>
             </div>
-        }
+            <div class="panel-content">
+                <p>The easiest way to find out what format the CSV file to import should be in, is to click the export button above and use that as a template.</p>
+                @using (Html.BeginForm("ImportUsers", "ImportExport", FormMethod.Post, new { enctype = "multipart/form-data", id = "ImportForm", name = "ImportForm", target = "UploadTarget" }))
+                {
+                    <div class="submit-holder">
+                        <p><input type="file" id="file" name="file" /></p>
+                        <p><input type="submit" class="btn-mvc-green" value="Import" /></p>
+                    </div>
+                }
 
-        @*Results of any import are displayed here:*@
-        <div id="ImportResults"></div>
+                @*Results of any import are displayed here:*@
+                <div id="ImportResults"></div>
 
-        @*This frame is displayed off the page and gets the results of the import (ie the success or fail messages) *@
-        <iframe id="UploadTarget" name="UploadTarget" onload="Import_Complete();" style="position: absolute; left: -999em; top: -999em;"></iframe>
-
+                @*This frame is displayed off the page and gets the results of the import (ie the success or fail messages) *@
+                <iframe id="UploadTarget" name="UploadTarget" onload="Import_Complete();" style="position: absolute; left: -999em; top: -999em;"></iframe>
+            </div>
+        </div>
     </div>
 </div>

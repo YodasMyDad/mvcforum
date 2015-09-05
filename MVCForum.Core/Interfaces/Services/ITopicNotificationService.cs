@@ -9,7 +9,7 @@ namespace MVCForum.Domain.Interfaces.Services
         void Delete(TopicNotification notification);
         IList<TopicNotification> GetByTopic(Topic topic);
         IList<TopicNotification> GetByUser(MembershipUser user);
-        IList<TopicNotification> GetByUserAndTopic(MembershipUser user, Topic topic);
+        IList<TopicNotification> GetByUserAndTopic(MembershipUser user, Topic topic, bool addTracking = false);
         void Add(TopicNotification topicNotification);
     }
 }

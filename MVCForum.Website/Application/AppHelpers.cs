@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
@@ -251,7 +250,7 @@ namespace MVCForum.Website.Application
                 post = StringUtils.EmbedVideosInPosts(post);
 
                 // Add Google prettify code snippets
-                post = post.Replace("<pre>", "<pre class='prettyprint'>");
+                //post = post.Replace("<pre>", "<pre class='prettyprint'>");
             }
 
             return post;
@@ -382,7 +381,7 @@ namespace MVCForum.Website.Application
                 fileName = fileName.ToLower();
 
                 // Get the file extension
-                var fileExtension = Path.GetExtension(fileName.ToLower());
+                var fileExtension = Path.GetExtension(fileName);
 
                 //Before we do anything, check file size
                 if (file.ContentLength > Convert.ToInt32(SiteConstants.FileUploadMaximumFileSizeInBytes))

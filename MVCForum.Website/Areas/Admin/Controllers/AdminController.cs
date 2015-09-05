@@ -10,11 +10,11 @@ namespace MVCForum.Website.Areas.Admin.Controllers
     public partial class AdminController : BaseAdminController
     {
 
-        public AdminController(ILoggingService loggingService, 
-            IUnitOfWorkManager unitOfWorkManager, 
-            IMembershipService membershipService, 
-            ILocalizationService localizationService, 
-            ISettingsService settingsService) 
+        public AdminController(ILoggingService loggingService,
+            IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService,
+            ILocalizationService localizationService,
+            ISettingsService settingsService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
         }
@@ -28,13 +28,22 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             return View();
         }
 
+        #region Utils
         [HttpPost]
         public void Aptitude()
         {
-            var url = StringUtils.ReturnCurrentDomain();
-            var postString = string.Concat("url=", url);
-            var response = StringUtils.PostForm("http://www.mvcforum.com/base/MVCBase/DomainCheck", postString);
-        }
+            try
+            {
+                var url = StringUtils.ReturnCurrentDomain();
+                var postString = string.Concat("url=", url);
+                var response = StringUtils.PostForm("http://www.mvcforum.com/base/MVCBase/DomainCheck", postString);
+            }
+            catch
+            {
+                // No need to do anything
+            }
+        } 
+        #endregion
 
     }
 }

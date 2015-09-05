@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Linq;
+using System.Web.Mvc;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Attributes;
 using MVCForum.Domain.Interfaces.Badges;
@@ -14,11 +15,23 @@ namespace Badge.JediMaster
     [AwardsPoints(50)]
     public class JediMasterBadge : IMarkAsSolutionBadge
     {
+        private readonly IPostService _postService;
+        private readonly ICategoryService _categoryService;
+
+        public JediMasterBadge()
+        {
+            _postService = DependencyResolver.Current.GetService<IPostService>();
+            _categoryService = DependencyResolver.Current.GetService<ICategoryService>();
+        }
+
         public bool Rule(MembershipUser user)
         {
             //Post is marked as the answer to a topic - give the post author a badge
-            var postService = DependencyResolver.Current.GetService<IPostService>();
-            var usersSolutions = postService.GetSolutionsByMember(user.Id);
+
+            // Get all categories as we want to check all the members solutions, even across
+            // categories that he no longer is allowed to access
+            var cats = _categoryService.GetAll();
+            var usersSolutions = _postService.GetSolutionsByMember(user.Id, cats);
 
             return (usersSolutions.Count >= 50);
         }

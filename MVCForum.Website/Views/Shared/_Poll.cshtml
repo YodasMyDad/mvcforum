@@ -26,7 +26,7 @@
 
             <div class="pollanswerrow">
                 <div class="pollanswerrowholder clearfix">
-                    @if (Model.UserAllowedToVote && displayVote)
+                    @if (Model.UserAllowedToVote && displayVote && !Model.Poll.IsClosed)
                     {
                         <div class="pollradiobuttonholder">
                             <input type="radio" class="pollanswerselect" name="pollanswers" data-answerid="@pollAnswer.Id" />
@@ -38,7 +38,7 @@
                 <div class="pollbarrowholder clearfix">
                     <div class="progress">
                         <div class="progress-bar progress-bar-@color" role="progressbar" aria-valuenow="@(convertedPercentage)" aria-valuemin="0" aria-valuemax="100" style="width: @(convertedPercentage)%">
-                            <span class="sr-only">
+                            <span>
                                 @answerVotes vote
                             </span>
                         </div>
@@ -49,7 +49,7 @@
 
         }
 
-        @if (Model.UserAllowedToVote && displayVote)
+        @if (Model.UserAllowedToVote && displayVote && !Model.Poll.IsClosed)
         {
             <div class="pollvotebuttonholder" style="display: none;">
                 <a href="#" class="btn-mvc pollvotebutton">@Html.LanguageString("Poll.Button.Vote")</a>
