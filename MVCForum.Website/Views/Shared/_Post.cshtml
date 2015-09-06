@@ -33,7 +33,8 @@
         @if (Html.CurrentMember() != null)
         {
             <div class="postadmin">
-                <ul>
+                <button class="postoptions btn-mvc btn-mvc-fullwidth">@Html.LanguageString("Post.Options")</button>
+                <ul class="clearfix postadminlist">
                     <li>
                         <a class="btn-mvc btn-mvc-small btn-mvc-fullwidth" href="?quote=@Model.Post.Id#createpost">
                             @Html.LanguageString("Post.Quote")
@@ -93,11 +94,13 @@
                 {
                     <text> - @Model.Post.IpAddress</text>
                 }
-                @if (Html.Settings().DisplayEditedBy && Model.Post.DateEdited > Model.Post.DateCreated)
-                {
+                <span class="hidden-xs">
+                    @if (Html.Settings().DisplayEditedBy && Model.Post.DateEdited > Model.Post.DateCreated)
+                    {
 
-                    <text> - @Html.LanguageString("Post.LastEdited")  @DatesUI.GetPrettyDate(Model.Post.DateEdited.ToString())</text>
-                }
+                        <text> - @Html.LanguageString("Post.LastEdited")  @DatesUI.GetPrettyDate(Model.Post.DateEdited.ToString())</text>
+                    }
+                </span>
             </div>
 
             <div id="postcontent-@postId" class="postcontent">

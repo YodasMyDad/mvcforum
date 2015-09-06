@@ -1057,12 +1057,6 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
   font-weight: 600;
 }
 
-@media (max-width: 600px) {
-  .postbodytop {
-    display: none;
-  }
-}
-
 .post.solution-true .postbodytop a, .post.solution-true .postbodytop a:visited {
   color: #2abd54;
 }
@@ -1079,7 +1073,7 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 
 .postsocial ul li {
   list-style: none;
-  display: inline;
+  display: inline-block;
   padding: 0 4px 0 0;
   font-size: 13px;
 }
@@ -1109,14 +1103,27 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
 
 @media (max-width: 600px) {
   .postsocial ul li {
-    display: block;
-    padding: 4px 0 0 0;
+    padding: 10px 10px 0 0;
+    width: 45%;
   }
 }
 
 @media (max-width: 600px) {
   .postsocial ul {
     padding: 10px 0 0 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .postsocial {
+    padding-bottom: 5px;
+  }
+}
+
+@media (max-width: 600px) {
+  .postdetails-guest .postsocial ul li {
+    padding: 3px 5px 0 0;
+    width: auto;
   }
 }
 
@@ -1137,6 +1144,12 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
   margin-right: 80px;
 }
 
+@media (max-width: 600px) {
+  .postdetails {
+    margin-right: 0;
+  }
+}
+
 .postdetails-guest {
   margin-right: 0;
 }
@@ -1155,6 +1168,40 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
   list-style: none;
   text-align: right;
   padding: 0 0 2px 0;
+}
+
+@media (max-width: 600px) {
+  .postadmin {
+    float: none;
+    width: auto;
+  }
+  .postadmin ul li {
+    text-align: center;
+    float: left;
+    width: 50%;
+  }
+  .postadmin ul li a.btn-mvc {
+    width: 97%;
+  }
+}
+
+@media (max-width: 600px) {
+  .postadmin .postadminlist {
+    display: none;
+  }
+}
+
+.postadmin .postoptions {
+  display: none;
+  padding: 4px 0;
+  margin-bottom: 4px;
+  font-size: 11px;
+}
+
+@media (max-width: 600px) {
+  .postadmin .postoptions {
+    display: block;
+  }
 }
 
 .postlikedby {

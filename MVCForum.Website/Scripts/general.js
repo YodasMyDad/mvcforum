@@ -28,7 +28,7 @@ $(function () {
     }   
 
     // Topic Methods
-
+    ShowPostOptions();
     TopicShowMorePosts();
 
     // Private Message Methods
@@ -107,6 +107,18 @@ $(function () {
     PostGetAllLikes();
 
 });
+
+var ShowPostOptions = function() {
+    var postOptionButton = $(".postoptions");
+    if (postOptionButton.length > 0) {
+        postOptionButton.click(function(e) {
+            var thisButton = $(this);
+            var postadmin = thisButton.closest(".postadmin");
+            var postAdminList = postadmin.find(".postadminlist");
+            postAdminList.slideToggle("fast");
+        });
+    }
+};
 
 var TopicShowMorePosts = function() {
     var smp = $(".showmoreposts");

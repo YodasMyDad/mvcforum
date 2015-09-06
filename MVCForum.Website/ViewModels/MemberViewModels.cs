@@ -144,6 +144,7 @@ namespace MVCForum.Website.ViewModels
         public MembershipUser CurrentUser { get; set; }
         public int NewPrivateMessageCount { get; set; }
         public bool CanViewPrivateMessages { get; set; }
+        public bool IsDropDown { get; set; }
     }
 
     public class AdminMemberProfileToolsViewModel

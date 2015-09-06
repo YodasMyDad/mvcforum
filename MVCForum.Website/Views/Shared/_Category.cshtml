@@ -7,7 +7,7 @@
         <h2 style="border-color: @(string.IsNullOrEmpty(Model.Category.Colour) ? "#ced1d1" : Model.Category.Colour)"><a href="@Model.Category.NiceUrl">@Html.Raw(Model.Category.Name)</a></h2>
         <p>@Html.Raw(AppHelpers.ConvertPostContent(Model.Category.Description))</p>
         <div class="row categoryrowfooter">
-            <div class="col-md-1 catrss">
+            <div class="col-md-1 hidden-xs catrss">
                 @if (Html.Settings().EnableRSSFeeds)
                 {
                     <a title="@Html.LanguageString("Home.Rss")" href="@Url.Action("CategoryRss", "Category", new { slug = Model.Category.Slug })" class="rsssubscribe">
@@ -15,13 +15,13 @@
                     </a>
                 }
             </div>
-            <div class="col-md-2 catdiscussions">
+            <div class="col-md-2 col-xs-6 catdiscussions">
                 @string.Format(Html.LanguageString("Rss.Category.Title"), Model.TopicCount)
             </div>
-            <div class="col-md-2 catcomments">
+            <div class="col-md-2 col-xs-6 catcomments">
                 @Model.PostCount @Html.LanguageString("Topic.CommentsDetails")
             </div>
-            <div class="col-md-7 catmostrecent">
+            <div class="col-md-7 col-xs-12 catmostrecent">
                 @if (Model.LatestTopic != null)
                 {
                     <text>

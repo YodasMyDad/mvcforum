@@ -1026,7 +1026,7 @@ namespace MVCForum.Website.Controllers
         }
 
         [Authorize]
-        public PartialViewResult SideAdminPanel()
+        public PartialViewResult SideAdminPanel(bool isDropDown)
         {
             var count = 0;
             var settings = SettingsService.GetSettings();
@@ -1048,7 +1048,8 @@ namespace MVCForum.Website.Controllers
             {
                 CurrentUser = LoggedOnReadOnlyUser,
                 NewPrivateMessageCount = count,
-                CanViewPrivateMessages = settings.EnablePrivateMessages && LoggedOnReadOnlyUser != null &&  LoggedOnReadOnlyUser.DisablePrivateMessages != true
+                CanViewPrivateMessages = settings.EnablePrivateMessages && LoggedOnReadOnlyUser != null &&  LoggedOnReadOnlyUser.DisablePrivateMessages != true,
+                IsDropDown = isDropDown
             };
             
             return PartialView(viewModel);
