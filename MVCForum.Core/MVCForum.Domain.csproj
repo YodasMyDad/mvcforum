@@ -133,6 +133,12 @@
     <Compile Include="DomainModel\General\UploadedFile.cs" />
     <Compile Include="DomainModel\General\UploadFileResult.cs" />
     <Compile Include="DomainModel\Entities\Vote.cs" />
+    <Compile Include="DomainModel\LinqKit\ExpandableQuery.cs" />
+    <Compile Include="DomainModel\LinqKit\ExpressionExpander.cs" />
+    <Compile Include="DomainModel\LinqKit\ExpressionVisitor.cs" />
+    <Compile Include="DomainModel\LinqKit\Extensions.cs" />
+    <Compile Include="DomainModel\LinqKit\Linq.cs" />
+    <Compile Include="DomainModel\LinqKit\PredicateBuilder.cs" />
     <Compile Include="EqualityComparers\PermissionEqualityComparers.cs" />
     <Compile Include="Events\BadgeEventArgs.cs" />
     <Compile Include="Events\EventManager.cs" />

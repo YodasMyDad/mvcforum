@@ -4,6 +4,8 @@ using System.Linq;
 using System.Data.Entity;
 using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.General;
+using MVCForum.Domain.DomainModel.LinqKit;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Repositories;
 
@@ -242,19 +244,26 @@ namespace MVCForum.Data.Repositories
             // get the category ids
             var allowedCatIds = allowedCategories.Select(x => x.Id);
 
-            var query = _context.Post
+            var query = _context.Post.AsExpandable()
                             .Include(x => x.Topic.Category)
                             .Include(x => x.User)
                             .AsNoTracking()
                             .Where(x => x.Pending != true)
                             .Where(x => allowedCatIds.Contains(x.Topic.Category.Id));
 
+            // Start the predicate builder
+            var postFilter = PredicateBuilder.False<Post>();
+
             // Loop through each word and see if it's in the post
             foreach (var term in searchTerms)
             {
                 var sTerm = term.Trim();
-                query = query.Where(x => x.PostContent.ToUpper().Contains(sTerm) || x.SearchField.ToUpper().Contains(sTerm));
+                //query = query.Where(x => x.PostContent.ToUpper().Contains(sTerm) || x.SearchField.ToUpper().Contains(sTerm));
+                postFilter = postFilter.Or(x => x.PostContent.ToUpper().Contains(sTerm) || x.SearchField.ToUpper().Contains(sTerm));
             }
+
+            // Add the predicate builder to the query
+            query = query.Where(postFilter);
 
             // Get the count
             var total = query.Count();
