@@ -6,11 +6,11 @@
         tinymce.init({
             selector: "textarea.rte",
             plugins: [
-                "autosave link image lists charmap preview hr anchor pagebreak spellchecker forumimageinsert",
-                "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
-                "table contextmenu directionality emoticons template textcolor paste textcolor"
+                "autosave link image lists hr anchor pagebreak spellchecker forumimageinsert",
+                "searchreplace wordcount visualblocks visualchars code fullscreen media nonbreaking",
+                "directionality paste"
             ],
-            toolbar1: "bold italic underline strikethrough bullist | link unlink @(ViewBag.ImageUploadType ?? "image") code blockquote | formatselect",
+            toolbar1: "bold italic underline strikethrough bullist hr | link unlink @(ViewBag.ImageUploadType ?? "image") code blockquote | formatselect",
             remove_linebreaks: false,
             relative_urls: false,
             menubar: false,
