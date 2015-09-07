@@ -385,6 +385,7 @@ namespace MVCForum.Data.Migrations
                         DateEdited = DateTime.UtcNow,
                         Topic = topic,
                         IsTopicStarter = true,
+                        SearchField = "Read Me",
                         User = admin,
                         PostContent = readMeText
                     };
