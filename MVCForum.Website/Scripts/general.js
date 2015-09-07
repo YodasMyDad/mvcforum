@@ -744,48 +744,48 @@ function ShowExpandedVotes() {
 }
 
 // Unused now
-function AddShowVoters() {
-    var showVoters = $(".showvoters");
-    if (showVoters.length > 0) {
-        // Container/Parent
-        showVoters.click(function (e) {
-            e.preventDefault();
-            // This the child box
-            var voterBox = $(this).find('.showvotersbox');
+//function AddShowVoters() {
+//    var showVoters = $(".showvoters");
+//    if (showVoters.length > 0) {
+//        // Container/Parent
+//        showVoters.click(function (e) {
+//            e.preventDefault();
+//            // This the child box
+//            var voterBox = $(this).find('.showvotersbox');
 
-            // firstly set the left position
-            voterBox.css("left", voterBox.parent().width() + 2);
+//            // firstly set the left position
+//            voterBox.css("left", voterBox.parent().width() + 2);
 
-            // Now show it
-            voterBox.toggle();
+//            // Now show it
+//            voterBox.toggle();
 
-            if (voterBox.is(":visible")) {
-                // Is being shown so do the Ajax call
+//            if (voterBox.is(":visible")) {
+//                // Is being shown so do the Ajax call
 
-                var GetVotersViewModel = new Object();
-                GetVotersViewModel.Post = voterBox.attr("id");
+//                var GetVotersViewModel = new Object();
+//                GetVotersViewModel.Post = voterBox.attr("id");
 
-                // Ajax call to post the view model to the controller
-                var strung = JSON.stringify(GetVotersViewModel);
+//                // Ajax call to post the view model to the controller
+//                var strung = JSON.stringify(GetVotersViewModel);
 
-                $.ajax({
-                    url: app_base + 'Vote/GetVoters',
-                    type: 'POST',
-                    dataType: 'html',
-                    data: strung,
-                    contentType: 'application/json; charset=utf-8',
-                    success: function (data) {
-                        voterBox.html(data);
-                    },
-                    error: function (xhr, ajaxOptions, thrownError) {
-                        ShowUserMessage("Error: " + xhr.status + " " + thrownError);
-                    }
-                });
+//                $.ajax({
+//                    url: app_base + 'Vote/GetVoters',
+//                    type: 'POST',
+//                    dataType: 'html',
+//                    data: strung,
+//                    contentType: 'application/json; charset=utf-8',
+//                    success: function (data) {
+//                        voterBox.html(data);
+//                    },
+//                    error: function (xhr, ajaxOptions, thrownError) {
+//                        ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+//                    }
+//                });
 
-            }
-        });
-    }
-}
+//            }
+//        });
+//    }
+//}
 
 
 //function ShowHideRemovePollAnswerButton(counter) {
@@ -943,7 +943,7 @@ function AjaxPostSuccess() {
     postHolder.attr('id', 'tonystarkrules');
 
     // And more finally clear the post box
-    $('.createpost').val('');
+    $('.rte').val('');
     if ($(".bbeditorholder textarea").length > 0) {
         $(".bbeditorholder textarea").data("sceditor").val('');
     }
