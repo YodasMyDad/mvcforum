@@ -59,6 +59,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.YourPostFavourited", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.YourPostFavouritedTenTimes", "MVCForum.Badges\Badge.YourPostFavouritedTenTimes\Badge.YourPostFavouritedTenTimes.csproj", "{097883D7-6C3E-4944-B2D8-A9CC8A9356F4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{A1510FC4-74FA-4673-B04F-4BBABE8D7151}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

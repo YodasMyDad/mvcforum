@@ -39,13 +39,14 @@
         <dependency id="Quartz" version="2.3.3" />
         <dependency id="Quartz.Unity" version="1.3.1" />        
         <dependency id="SquishIt.Mvc" version="0.9.8" />
-        <dependency id="TinyMCE" version="4.2.4" />
+        <dependency id="TinyMCE" version="4.2.5" />
         <dependency id="Unity" version="3.5.1404.0" />
         <dependency id="Unity.Mvc4" version="1.4.0.0" />
         <dependency id="HtmlAgilityPack" version="1.4.9" />
         <dependency id="EntityFramework.Cache" version="1.0.0" />
         <dependency id="Skybrud.Social" version="[0.9.4.1,1.0.0)" />
         <dependency id="EntityFramework.SqlServerCompact" version="6.1.3" />
+        <dependency id="Common.Logging" version="3.2.0" />
       </group>
     </dependencies>
   </metadata>
@@ -67,19 +68,9 @@
     <file src="..\MVCForum.WebSite\Global.asax" target="content\Global.asax" />
     <!-- Compiled DLL's -->
     <file src="..\MVCForum.WebSite\bin\MVCForum.Website.dll" target="lib\MVCForum.Website.dll" />
-    <file src="..\MVCForum.WebSite\bin\Badge.UserVoteUp.dll" target="lib\Badge.UserVoteUp.dll" />
-    <file src="..\MVCForum.WebSite\bin\Badge.AuthorMarkAsSolution.dll" target="lib\Badge.AuthorMarkAsSolution.dll" />
-    <file src="..\MVCForum.WebSite\bin\Badge.PosterMarkAsSolution.dll" target="lib\Badge.PosterMarkAsSolution.dll" />
-    <file src="..\MVCForum.WebSite\bin\Badge.PosterVoteUp.dll" target="lib\Badge.PosterVoteUp.dll" />
-    <file src="..\MVCForum.WebSite\bin\Badge.PostMentionsUmbraco.dll" target="lib\Badge.PostMentionsUmbraco.dll" />
     <file src="..\MVCForum.WebSite\bin\MVCForum.IOC.dll" target="lib\MVCForum.IOC.dll" />
     <file src="..\MVCForum.WebSite\bin\MVCForum.Data.dll" target="lib\MVCForum.Data.dll" />
-    <file src="..\MVCForum.WebSite\bin\Badge.Grouch.dll" target="lib\Badge.Grouch.dll" />
-    <file src="..\MVCForum.WebSite\bin\Badge.JediMaster.dll" target="lib\Badge.JediMaster.dll" />
-    <file src="..\MVCForum.WebSite\bin\Badge.MemberForAYear.dll" target="lib\Badge.MemberForAYear.dll" />
-    <file src="..\MVCForum.WebSite\bin\Badge.Padawan.dll" target="lib\Badge.Padawan.dll" />
-    <file src="..\MVCForum.WebSite\bin\Badge.Photogenic.dll" target="lib\Badge.Photogenic.dll" />
-    <file src="..\MVCForum.WebSite\bin\Badge.ThousandPoints.dll" target="lib\Badge.ThousandPoints.dll" />
+    <file src="..\MVCForum.WebSite\bin\Badge.*.dll" target="lib" />
     <file src="..\MVCForum.WebSite\bin\MVCForum.Services.dll" target="lib\MVCForum.Services.dll" />
     <file src="..\MVCForum.WebSite\bin\MVCForum.Domain.dll" target="lib\MVCForum.Domain.dll" />
     <file src="..\MVCForum.WebSite\bin\MVCForum.Utilities.dll" target="lib\MVCForum.Utilities.dll" />
