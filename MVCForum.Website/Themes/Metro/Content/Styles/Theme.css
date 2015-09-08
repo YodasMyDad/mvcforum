@@ -69,6 +69,10 @@ pre {
   border-radius: 0;
 }
 
+blockquote {
+  font-style: italic;
+}
+
 body {
   font-family: "Open Sans", Arial, Helvetica, sans-serif;
   color: #3b3b3b;

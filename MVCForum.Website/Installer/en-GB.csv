@@ -12,10 +12,10 @@ Topic.StartedBy,Started {0} by {1}
 Topic.InCategory, in 
 Topic.LatestBy,Latest By
 Topic.Views,Views
-Post.VoteUp,Vote Up
-Post.VotedUp,Voted Up
-Post.VoteDown,Vote Down
-Post.VotedDown,Voted Down
+Post.VoteUp,Like
+Post.VotedUp,Liked
+Post.VoteDown,Dislike
+Post.VotedDown,Disliked
 Post.IsSolution,Is Solution
 Post.PostedThis,posted this
 Post.Posts,Posts
