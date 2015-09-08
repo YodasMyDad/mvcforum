@@ -56,11 +56,15 @@ Our current support forum for bugs and questions (Which is also running on the l
 
 ----------
 
+![Thread](http://www.mvcforum.com/img/screens/thread.png)
+
+----------
+
 ![Badges](http://www.mvcforum.com/img/screens/badges.png)
 
 ----------
 
-![Markdown](http://www.mvcforum.com/img/screens/markdown.png)
+![TinyMCE](http://www.mvcforum.com/img/screens/tinymce.png)
 
 ----------
 
