@@ -50,3 +50,22 @@ Our current support forum for bugs and questions (Which is also running on the l
 
 [Please see the Wiki page](https://github.com/leen3o/mvcforum/wiki/Installing)
 
+## Screenshots ##
+
+![Home Page Screenshot](http://www.mvcforum.com/img/screens/homepage.png)
+
+----------
+
+![Thread Screenshot](http://www.mvcforum.com/img/screens/thread.png)
+
+----------
+
+![Badges Screenshot](http://www.mvcforum.com/img/screens/badges.png)
+
+----------
+
+![TinyMCE Screenshot](http://www.mvcforum.com/img/screens/tinymce.png)
+
+----------
+
+![Activity Screenshot](http://www.mvcforum.com/img/screens/activity.png)
