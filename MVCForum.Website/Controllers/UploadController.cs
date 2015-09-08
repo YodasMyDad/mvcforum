@@ -32,23 +32,23 @@ namespace MVCForum.Website.Controllers
         [HttpPost]
         public ActionResult UploadPostFiles(AttachFileToPostViewModel attachFileToPostViewModel)
         {
-
-            if (attachFileToPostViewModel != null && attachFileToPostViewModel.Files != null)
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                var topic = new Topic();
+
+                try
                 {
+
                     // First this to do is get the post
                     var post = _postService.Get(attachFileToPostViewModel.UploadPostId);
-
-                    // Check we get a valid post back and have some file
-                    if (post != null && attachFileToPostViewModel.Files != null)
+                    if (post != null)
                     {
-                        Topic topic = null;
-                        try
-                        {
-                            // Now get the topic
-                            topic = post.Topic;
+                        // Now get the topic
+                        topic = post.Topic;
 
+                        // Check we get a valid post back and have some file
+                        if (attachFileToPostViewModel.Files != null && !attachFileToPostViewModel.Files.Any())
+                        {
                             // Now get the category
                             var category = topic.Category;
 
@@ -115,26 +115,26 @@ namespace MVCForum.Website.Controllers
                             };
 
                             return Redirect(topic.NiceUrl);
-                        }
-                        catch (Exception ex)
-                        {
-                            unitOfWork.Rollback();
-                            LoggingService.Error(ex);
-                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                            {
-                                Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
-                                MessageType = GenericMessages.danger
-                            };
-                            return topic != null ? Redirect(topic.NiceUrl) : ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
-                        }
 
+                        }
+                        // Else return with error to home page
+                        return topic != null ? Redirect(topic.NiceUrl) : ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }
+                    // Else return with error to home page
+                    return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
                 }
-
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+                        MessageType = GenericMessages.danger
+                    };
+                    return topic != null ? Redirect(topic.NiceUrl) : ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
+                }
             }
-
-            // Else return with error to home page
-            return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
 
         public ActionResult DeleteUploadedFile(Guid id)

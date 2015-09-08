@@ -37,7 +37,6 @@ namespace MVCForum.Data.Migrations
             var language = context.Language.FirstOrDefault(x => x.LanguageCulture == langCulture);
             if (language == null)
             {
-                var loggingService = DependencyResolver.Current.GetService<ILoggingService>();
 
                 //isFirstInstall = true;
                 var cultureInfo = LanguageUtils.GetCulture(langCulture);
@@ -87,16 +86,12 @@ namespace MVCForum.Data.Migrations
 
                         if (string.IsNullOrEmpty(key))
                         {
-                            loggingService.Error(string.Format("Empty Key on line {0} when importing initial data",
-                                lineCounter));
                             // Ignore empty keys
                             continue;
                         }
 
                         if (string.IsNullOrEmpty(value))
                         {
-                            loggingService.Error(string.Format("Empty Value on line {0} when importing initial data",
-                                lineCounter));
                             // Ignore empty values
                             continue;
                         }
@@ -386,7 +381,8 @@ namespace MVCForum.Data.Migrations
                         Topic = topic,
                         IsTopicStarter = true,
                         User = admin,
-                        PostContent = readMeText
+                        PostContent = readMeText,
+                        SearchField = name
                     };
 
                     topic.LastPost = post;
