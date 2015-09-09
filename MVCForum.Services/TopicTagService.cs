@@ -54,6 +54,12 @@ namespace MVCForum.Services
             return _tagRepository.GetStartsWith(term, amountToTake);
         }
 
+        public IList<TopicTag> GetContains(string term, int amountToTake = 4)
+        {
+            term = StringUtils.SafePlainText(term);
+            return _tagRepository.GetContains(term, amountToTake);
+        }
+
         /// <summary>
         /// Get tags by topic
         /// </summary>

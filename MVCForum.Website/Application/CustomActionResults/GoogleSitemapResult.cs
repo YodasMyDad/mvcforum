@@ -33,8 +33,8 @@ namespace MVCForum.Website.Application
                     _writer.WriteStartElement("url");
                     _writer.WriteElementString("loc", string.Concat(currentUrl, x.Url));
                     _writer.WriteElementString("lastmod", string.Concat(x.LastUpdated.ToString("s"), "+00:00"));
-                    _writer.WriteElementString("changefreq", "daily");
-                    _writer.WriteElementString("priority",  "0.5");
+                    _writer.WriteElementString("changefreq", x.ChangeFrequency.ToString());
+                    _writer.WriteElementString("priority",  string.IsNullOrEmpty(x.Priority) ? "0.5" : x.Priority);
                     _writer.WriteEndElement();
                 });
 

@@ -127,6 +127,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.PageTitle = settingsViewModel.PageTitle;
             existingSettings.MetaDesc = settingsViewModel.MetaDesc;
             existingSettings.EnableEmoticons = settingsViewModel.EnableEmoticons;
+            existingSettings.DisableDislikeButton = settingsViewModel.DisableDislikeButton;
             return existingSettings;
         }
 
@@ -180,6 +181,7 @@ namespace MVCForum.Website.ViewModels.Mapping
                 PageTitle = currentSettings.PageTitle,
                 MetaDesc = currentSettings.MetaDesc,
                 EnableEmoticons = currentSettings.EnableEmoticons == true,
+                DisableDislikeButton = currentSettings.DisableDislikeButton
             };
 
             return settingViewModel;

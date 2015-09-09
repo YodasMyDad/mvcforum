@@ -54,7 +54,7 @@ namespace MVCForum.Website.Controllers
             {
                 var toReturn = string.Empty;
                 var returnList = new List<string>();
-                var tags = _topicTagService.GetStartsWith(term);
+                var tags = _topicTagService.GetContains(term);
 
                 if (!tags.Any())
                 {
