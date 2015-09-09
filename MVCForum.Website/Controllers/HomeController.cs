@@ -186,77 +186,44 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                // Get all categoryes
-                var allCategories = _categoryService.GetAll();
-
                 // Allowed Categories for a guest
                 var guestRole = RoleService.GetRole(AppConstants.GuestRoleName);
-                var allowedCatergories = _categoryService.GetAllowedCategories(guestRole);
+                var allowedCategories = _categoryService.GetAllowedCategories(guestRole);
 
                 // Get all topics that a guest has access to
-                var allTopics = _topicService.GetAll(allowedCatergories);
+                var allTopics = _topicService.GetAll(allowedCategories);
 
+                // Sitemap holder
+                var sitemap = new List<SitemapEntry>();
+
+                // ##### TOPICS
+                foreach (var topic in allTopics.Where(x => x.LastPost != null))
+                {
+                    var sitemapEntry = new SitemapEntry
+                    {
+                        Name = topic.Name,
+                        Url = topic.NiceUrl,
+                        LastUpdated = topic.LastPost.DateEdited,
+                        ChangeFrequency = SiteMapChangeFreqency.daily,
+                        Priority = "0.6"
+                    };
+                    sitemap.Add(sitemapEntry);
+                }
+
+                return new GoogleSitemapResult(sitemap);
+            }
+        }
+
+        [OutputCache(Duration = AppConstants.ShortCacheTime)]
+        public ActionResult GoogleMemberSitemap()
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
                 // get all members profiles
                 var members = MembershipService.GetAll();
 
                 // Sitemap holder
                 var sitemap = new List<SitemapEntry>();
-
-                // create permissions
-                var permissions = new Dictionary<Category, PermissionSet>();
-
-                // loop through the categories and get the permissions
-                foreach (var category in allCategories)
-                {
-                    var permissionSet = RoleService.GetPermissions(category, UsersRole);
-                    permissions.Add(category, permissionSet);
-                }
-
-                // ##### TOPICS
-                // Now loop through the topics and remove any that user does not have permission for
-                foreach (var topic in allTopics)
-                {
-                    // Get the permissions for this topic via its parent category
-                    var permission = permissions[topic.Category];
-
-                    // Add only topics user has permission to
-                    if (!permission[AppConstants.PermissionDenyAccess].IsTicked)
-                    {
-                        if (topic.Posts.Any())
-                        {
-                            var firstOrDefault = topic.Posts.FirstOrDefault(x => x.IsTopicStarter);
-                            if (firstOrDefault != null)
-                            {
-                                var sitemapEntry = new SitemapEntry
-                                {
-                                    Name = topic.Name,
-                                    Url = topic.NiceUrl,
-                                    LastUpdated = topic.LastPost.DateEdited
-                                };
-                                sitemap.Add(sitemapEntry);
-                            }
-                        }
-                    }
-                }
-
-                // #### CATEGORIES
-                foreach (var category in allCategories)
-                {
-                    // Get the permissions for this topic via its parent category
-                    var permission = permissions[category];
-
-                    // Add only topics user has permission to
-                    if (!permission[AppConstants.PermissionDenyAccess].IsTicked)
-                    {
-                        var sitemapEntry = new SitemapEntry
-                        {
-                            Name = category.Name,
-                            Url = category.NiceUrl,
-                            LastUpdated = category.DateCreated
-                        };
-                        sitemap.Add(sitemapEntry);
-                    }
-                }
 
                 // #### MEMBERS
                 foreach (var member in members)
@@ -265,11 +232,41 @@ namespace MVCForum.Website.Controllers
                     {
                         Name = member.UserName,
                         Url = member.NiceUrl,
-                        LastUpdated = member.CreateDate
+                        LastUpdated = member.CreateDate,
+                        ChangeFrequency = SiteMapChangeFreqency.weekly,
+                        Priority = "0.4"
                     };
-                    sitemap.Add(sitemapEntry);       
+                    sitemap.Add(sitemapEntry);
                 }
 
+                return new GoogleSitemapResult(sitemap);
+            }
+        }
+
+        [OutputCache(Duration = AppConstants.ShortCacheTime)]
+        public ActionResult GoogleCategorySitemap()
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                // Allowed Categories for a guest
+                var guestRole = RoleService.GetRole(AppConstants.GuestRoleName);
+                var allowedCategories = _categoryService.GetAllowedCategories(guestRole);
+
+                // Sitemap holder
+                var sitemap = new List<SitemapEntry>();
+
+                // #### CATEGORIES
+                foreach (var category in allowedCategories)
+                {
+                    var sitemapEntry = new SitemapEntry
+                    {
+                        Name = category.Name,
+                        Url = category.NiceUrl,
+                        LastUpdated = category.DateCreated,
+                        ChangeFrequency = SiteMapChangeFreqency.monthly
+                    };
+                    sitemap.Add(sitemapEntry);
+                }
 
                 return new GoogleSitemapResult(sitemap);
             }

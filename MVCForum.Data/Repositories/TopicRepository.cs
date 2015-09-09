@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Data.Entity;
-using System.Web.Caching;
 using MVCForum.Data.Context;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.General;
@@ -37,7 +36,7 @@ namespace MVCForum.Data.Repositories
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.User)
                                 .Include(x => x.Poll)
-                                .Where(x => allowedCatIds.Contains(x.Category.Id))
+                                .Where(x => allowedCatIds.Contains(x.Category.Id) && x.Pending != true)
                                 .ToList();
         }
 
