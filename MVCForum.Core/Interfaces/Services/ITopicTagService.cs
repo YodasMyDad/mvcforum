@@ -9,6 +9,7 @@ namespace MVCForum.Domain.Interfaces.Services
         IEnumerable<TopicTag> GetAll();
         void DeleteByName(string tagName);
         IList<TopicTag> GetStartsWith(string term, int amountToTake = 4);
+        IList<TopicTag> GetContains(string term, int amountToTake = 4);
         IEnumerable<TopicTag> GetByTopic(Topic topic);
         PagedList<TopicTag> GetPagedGroupedTags(int pageIndex, int pageSize);
         PagedList<TopicTag> SearchPagedGroupedTags(string search, int pageIndex, int pageSize);

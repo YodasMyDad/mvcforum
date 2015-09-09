@@ -104,6 +104,15 @@ namespace MVCForum.Data.Repositories
                 .ToList();
         }
 
+        public IList<TopicTag> GetContains(string term, int amountToTake)
+        {
+            return _context.TopicTag
+                .AsNoTracking()
+                .Where(x => x.Tag.ToUpper().Contains(term.ToUpper()))
+                .Take(amountToTake)
+                .ToList();
+        }
+
         public TopicTag Add(TopicTag topicTag)
         {
             _context.TopicTag.Add(topicTag);
