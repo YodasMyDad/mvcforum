@@ -97,11 +97,21 @@
                         }
                         @Html.ValidationMessageFor(m => m.EnableMarkAsSolution)
                     </div>
+                    
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.DisableDislikeButton, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.DisableDislikeButton)
+                        }
+                        @Html.ValidationMessageFor(m => m.DisableDislikeButton)
+                    </div>
+
                     <div class="form-group">
                         @Html.LabelFor(model => model.MarkAsSolutionReminderTimeFrame)
                         @Html.TextBoxFor(model => model.MarkAsSolutionReminderTimeFrame, new { @class = "form-control" })
                         @Html.ValidationMessageFor(model => model.MarkAsSolutionReminderTimeFrame)
                     </div>
+
                     <div class="checkbox">
                         @using (Html.BeginLabelFor(m => m.EnablePolls, new { @class = "checkbox" }))
                         {

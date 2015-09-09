@@ -56,6 +56,7 @@ namespace MVCForum.Data.Mapping
             Property(x => x.CustomHeaderCode).IsOptional();
             Property(x => x.CustomFooterCode).IsOptional();
             Property(x => x.EnableEmoticons).IsOptional();
+            Property(x => x.DisableDislikeButton);
 
             HasRequired(t => t.NewMemberStartingRole)
                 .WithOptional(x => x.Settings).Map(m => m.MapKey("NewMemberStartingRole"));

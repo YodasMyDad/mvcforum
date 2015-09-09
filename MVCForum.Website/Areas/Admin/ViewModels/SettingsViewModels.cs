@@ -181,5 +181,9 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Meta Desc")]
         [MaxLength(200)]
         public string MetaDesc { get; set; }
+
+        [DisplayName("Disable Dislike Button - Users can only Like posts")]
+        public bool DisableDislikeButton { get; set; }
+
     }
 }
