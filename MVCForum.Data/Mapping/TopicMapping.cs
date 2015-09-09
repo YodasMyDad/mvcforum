@@ -23,7 +23,7 @@ namespace MVCForum.Data.Mapping
             Property(x => x.Pending).IsOptional();
 
             // LastPost is not really optional but causes a circular dependency so needs to be added in after the main post is saved
-            HasOptional(t => t.LastPost).WithOptionalDependent().Map(m => m.MapKey("Post_Id"));
+            HasOptional(t => t.LastPost).WithOptionalDependent().Map(m => m.MapKey("Post_Id")).WillCascadeOnDelete(false);
             HasOptional(t => t.Poll).WithOptionalDependent().Map(m => m.MapKey("Poll_Id"));            
             HasRequired(t => t.Category).WithMany(t => t.Topics).Map(m => m.MapKey("Category_Id")).WillCascadeOnDelete(false);
             HasRequired(t => t.User).WithMany(t => t.Topics).Map(m => m.MapKey("MembershipUser_Id")).WillCascadeOnDelete(false);
