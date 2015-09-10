@@ -433,15 +433,20 @@ var hideSlideOutPanel = function () {
     var panel = $(".cd-panel");
     panel.on("click", function (event) {
         if ($(event.target).is(".cd-panel") || $(event.target).is(".cd-panel-close")) {
-            event.preventDefault();
-            panel.removeClass("is-visible");
-            //Clear fields
-            var contentDiv = panel.find(".cd-panel-content");
-            contentDiv.html(largeSpinnerBlock);
-            var titleDiv = panel.find(".cd-panel-header h6");
-            titleDiv.html("");
-            $("body").css("overflow", "").css("height", "");
-            $("html").css("overflow", "").css("height", "");
+            // Confirm they want to close it
+            var closeconfirmationText = panel.data("confirmationtext");
+            if (confirm(closeconfirmationText)) {
+                event.preventDefault();
+                panel.removeClass("is-visible");
+                //Clear fields
+                var contentDiv = panel.find(".cd-panel-content");
+                contentDiv.html(largeSpinnerBlock);
+                var titleDiv = panel.find(".cd-panel-header h6");
+                titleDiv.html("");
+                $("body").css("overflow", "").css("height", "");
+                $("html").css("overflow", "").css("height", "");
+            }
+            return false;
         }
     });
 };

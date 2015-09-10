@@ -365,3 +365,4 @@ TinyMCE.InsertImage.Browse,Browse
 TinyMCE.InsertImage.ExternalImage,External Image
 TinyMCE.InsertImage.ImageDescription,Image Description
 Post.Options,View Post Options
+SlidePanel.CloseConfirmation,Are you sure you want to close?
