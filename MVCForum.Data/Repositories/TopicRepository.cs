@@ -167,11 +167,11 @@ namespace MVCForum.Data.Repositories
 
             // Get the topics using an efficient
             var results = _context.Topic
+                                .AsNoTracking()
                                 .Include(x => x.Category)
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.User)
                                 .Include(x => x.Poll)
-                                .AsNoTracking()
                                 .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
                                 .OrderByDescending(x => x.LastPost.DateCreated)
                                 .Skip((pageIndex - 1) * pageSize)

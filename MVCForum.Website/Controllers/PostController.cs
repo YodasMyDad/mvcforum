@@ -256,7 +256,6 @@ namespace MVCForum.Website.Controllers
 
         }
 
-        [Authorize]
         public ActionResult Report(Guid id)
         {
             if (SettingsService.GetSettings().EnableSpamReporting)
@@ -271,7 +270,6 @@ namespace MVCForum.Website.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public ActionResult Report(ReportPostViewModel viewModel)
         {
             if (SettingsService.GetSettings().EnableSpamReporting)
@@ -308,7 +306,9 @@ namespace MVCForum.Website.Controllers
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
 
+
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult GetAllPostLikes(Guid id)
         {
             using (UnitOfWorkManager.NewUnitOfWork())

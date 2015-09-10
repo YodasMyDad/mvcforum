@@ -84,7 +84,22 @@ namespace MVCForum.Services
         }
 
         public List<Category> GetAllowedCategories(MembershipRole role, string actionType)
-        {            
+        {
+            if (HttpContext.Current != null)
+            {
+                // Store per request
+                var key = string.Concat("allowed-categories", role.Id, actionType);
+                if (!HttpContext.Current.Items.Contains(key))
+                {
+                    HttpContext.Current.Items.Add(key, GetAllowedCategoriesCode(role, actionType));
+                }
+                return (List<Category>)HttpContext.Current.Items[key];
+            }
+            return GetAllowedCategoriesCode(role, actionType);
+        }
+
+        private List<Category> GetAllowedCategoriesCode(MembershipRole role, string actionType)
+        {
             var filteredCats = new List<Category>();
             var allCats = GetAll();
             foreach (var category in allCats)
