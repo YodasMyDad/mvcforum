@@ -5,6 +5,7 @@ namespace MVCForum.Domain.Interfaces.UnitOfWork
 {
     public partial interface IUnitOfWorkManager : IDisposable
     {
-        IUnitOfWork NewUnitOfWork();        
+        //IUnitOfWork NewUnitOfWork(bool isReadyOnly);     
+        IUnitOfWork NewUnitOfWork();
     }
 }
