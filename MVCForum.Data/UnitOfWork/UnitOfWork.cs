@@ -30,6 +30,10 @@ namespace MVCForum.Data.UnitOfWork
             // http://blogs.msdn.com/b/diego/archive/2012/01/26/exception-from-dbcontext-api-entityconnection-can-only-be-constructed-with-a-closed-dbconnection.aspx
             _objectContext = ((IObjectContextAdapter) _context).ObjectContext;
 
+            // Updating EF timeout taken from
+            // http://stackoverflow.com/questions/6232633/entity-framework-timeouts
+            _objectContext.CommandTimeout = 3 * 60; // value in seconds
+
             if (_objectContext.Connection.State != ConnectionState.Open)
             {
                 _objectContext.Connection.Open();
