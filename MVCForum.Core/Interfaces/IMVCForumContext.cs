@@ -1,7 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
+﻿using System;
 
 namespace MVCForum.Domain.Interfaces
 {

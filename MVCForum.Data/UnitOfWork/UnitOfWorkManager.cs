@@ -15,7 +15,6 @@ namespace MVCForum.Data.UnitOfWork
         {
             //http://www.entityframeworktutorial.net/code-first/automated-migration-in-code-first.aspx
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<MVCForumContext, Migrations.Configuration>(AppConstants.MvcForumContext));
-            //Database.SetInitializer<MVCForumContext>(null);
             _context = context as MVCForumContext;
         }
 
@@ -24,13 +23,8 @@ namespace MVCForum.Data.UnitOfWork
         /// class helps keep concerns separated
         /// </summary>
         /// <returns></returns>
-        //public IUnitOfWork NewUnitOfWork(bool isReadyOnly)
         public IUnitOfWork NewUnitOfWork()
         {
-            //if (isReadyOnly)
-            //{
-            //    _context.Configuration.AutoDetectChangesEnabled = false;
-            //}
             return new UnitOfWork(_context);
         }
 

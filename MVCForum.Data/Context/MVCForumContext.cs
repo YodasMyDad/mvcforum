@@ -13,6 +13,14 @@ namespace MVCForum.Data.Context
 {
     public class MVCForumContext : DbContext, IMVCForumContext
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public MVCForumContext()   
+        {
+            Configuration.LazyLoadingEnabled = true;
+        }
+
         public DbSet<Activity> Activity { get; set; }
         public DbSet<Badge> Badge { get; set; }
         public DbSet<BadgeTypeTimeLastChecked> BadgeTypeTimeLastChecked { get; set; }
@@ -32,7 +40,7 @@ namespace MVCForum.Data.Context
         public DbSet<Post> Post { get; set; }
         public DbSet<PrivateMessage> PrivateMessage { get; set; }
         public DbSet<Settings> Setting { get; set; }
-        public DbSet<Topic> Topic { get; set; } 
+        public DbSet<Topic> Topic { get; set; }
         public DbSet<TopicNotification> TopicNotification { get; set; }
         public DbSet<TagNotification> TagNotification { get; set; }
         public DbSet<Vote> Vote { get; set; }
@@ -44,13 +52,6 @@ namespace MVCForum.Data.Context
         public DbSet<GlobalPermissionForRole> GlobalPermissionForRole { get; set; }
         public DbSet<Email> Email { get; set; }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public MVCForumContext()   
-        {
-            Configuration.LazyLoadingEnabled = true;
-        }
 
         public override int SaveChanges()
         {

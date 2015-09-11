@@ -7,5 +7,7 @@ namespace MVCForum.Domain.Interfaces.UnitOfWork
         void Commit();
         void Rollback();
         void SaveChanges();
+        void AutoDetectChangesEnabled(bool option);
+        void LazyLoadingEnabled(bool option);
     }
 }

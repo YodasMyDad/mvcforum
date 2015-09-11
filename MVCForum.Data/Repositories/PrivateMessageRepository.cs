@@ -25,43 +25,32 @@ namespace MVCForum.Data.Repositories
 
         public IPagedList<PrivateMessageListItem> GetUsersPrivateMessages(int pageIndex, int pageSize, MembershipUser user)
         {
-            //TODO - Need to rework this ASAP as it's not efficient at all!!
+            var query = _context.PrivateMessage
+                .AsNoTracking()
+                .Include(x => x.UserFrom)
+                .Include(x => x.UserTo)
+                .Where(
+                    x =>
+                        (x.UserTo.Id != user.Id && x.IsSentMessage == true) ||
+                        (x.UserFrom.Id != user.Id && x.IsSentMessage != true))
+                .Select(x => new PrivateMessageListItem
+                {
+                    Date = x.DateSent,
+                    User = (x.IsSentMessage == true ? x.UserTo : x.UserFrom)
+                })
+                .GroupBy(x => x.User.Id)
+                .Select(x => x.OrderByDescending(d => d.Date).FirstOrDefault())
+                .OrderByDescending(x => x.Date);
 
-            //var pms = _context.PrivateMessage
-            //    .Where(
-            //        x =>
-            //            (x.UserTo.Id == user.Id && x.IsSentMessage == true) |
-            //            (x.UserFrom.Id == user.Id && x.IsSentMessage != true));
+            var total = query.Count();
 
-
-            // Get all received pms
-            var members = user.PrivateMessagesReceived.Where(x => x.IsSentMessage == true).OrderByDescending(x => x.DateSent).DistinctBy(x => x.UserFrom.Id).Select(x => new PrivateMessageListItem
-            {
-                Date = x.DateSent,
-                User = x.UserFrom
-            }).ToList();
-
-            // Get all sent pms + ISSent
-            var sentToMembers = user.PrivateMessagesSent.Where(x => x.IsSentMessage != true).OrderByDescending(x => x.DateSent).DistinctBy(x => x.UserTo.Id).Select(x => new PrivateMessageListItem
-            {
-                Date = x.DateSent,
-                User = x.UserTo
-            }).ToList();
-
-            // Add lists
-            members.AddRange(sentToMembers);
-
-            // Get the full amount
-            var uniqueMembers = members.OrderByDescending(x => x.Date).DistinctBy(x => x.User.Id).ToList();
-            var uniqueMembersCount = uniqueMembers.Count;
-
-            // Now distinct the lists again
-            members = uniqueMembers.Skip((pageIndex - 1) * pageSize)
-                        .Take(pageSize)
-                        .ToList();
+            var results = query
+                            .Skip((pageIndex - 1) * pageSize)
+                            .Take(pageSize)
+                            .ToList();
 
             // Return a paged list
-            return new PagedList<PrivateMessageListItem>(members, pageIndex, pageSize, uniqueMembersCount);
+            return new PagedList<PrivateMessageListItem>(results, pageIndex, pageSize, total);
         }
 
         public PrivateMessage GetLastSentPrivateMessage(Guid id)

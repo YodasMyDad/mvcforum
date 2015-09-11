@@ -41,6 +41,16 @@ namespace MVCForum.Data.UnitOfWork
             }
         }
 
+        public void AutoDetectChangesEnabled(bool option)
+        {
+            _context.Configuration.AutoDetectChangesEnabled = option;
+        }
+
+        public void LazyLoadingEnabled(bool option)
+        {
+            _context.Configuration.LazyLoadingEnabled = option;
+        }
+
         public void SaveChanges()
         {
             _context.SaveChanges();
@@ -90,5 +100,6 @@ namespace MVCForum.Data.UnitOfWork
                 _objectContext.Connection.Close();
             }
         }
+
     }
 }
