@@ -35,6 +35,7 @@ $(function () {
 
     showPrivateMessagesPanel();
     deletePrivateMessages();
+    blockMember();
 
     // Subscription Methods
 
@@ -335,6 +336,59 @@ var emailunsubscription = function () {
 
 /*------------ PRIVATE MESSAGE METHODS --------------------*/
 
+var blockMember = function () {
+    var blockMemberButton = $(".pm-block");
+    if (blockMemberButton.length > 0) {
+        blockMemberButton.click(function(e) {
+            e.preventDefault();
+            var pmButton = $(this);
+            var blockText = pmButton.data("blocktext");
+            var blockedText = pmButton.data("blockedtext");
+            var isBlocked = pmButton.data("isblocked");
+            var userid = pmButton.data("userid");
+
+            if (isBlocked) {
+                pmButton.text(blockText);
+            } else {
+                pmButton.text(blockedText);
+            }
+            
+            var viewModel = new Object();
+            viewModel.MemberToBlockOrUnBlock = userid;
+
+            // Ajax call to post the view model to the controller
+            var strung = JSON.stringify(viewModel);
+
+            $.ajax({
+                url: app_base + 'Block/BlockOrUnBlock',
+                type: 'POST',
+                data: strung,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    // Just update attribute to opposite
+                    if (isBlocked) {
+                        pmButton.data("isblocked", false);
+                    } else {
+                        pmButton.data("isblocked", true);
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+
+                    // Switch back if error
+                    if (isBlocked) {
+                        pmButton.text(blockedText);
+                    } else {
+                        pmButton.text(blockText);
+                    }
+
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+
+        });
+    }
+};
+
 var showPrivateMessagesPanel = function () {
     var privatemessageButton = $(".pm-panel");
     if (privatemessageButton.length > 0) {
@@ -358,6 +412,7 @@ var showPrivateMessagesPanel = function () {
 
                     // Delete private messages
                     deletePrivateMessages();
+                    blockMember();
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
                     ShowUserMessage("Error: " + xhr.status + " " + thrownError);

@@ -96,6 +96,7 @@
     <Compile Include="DomainModel\Entities\CategoryNotification.cs" />
     <Compile Include="DomainModel\Entities\BadgeTypeTimeLastChecked.cs" />
     <Compile Include="DomainModel\Activity\Activity.cs" />
+    <Compile Include="DomainModel\Entities\Block.cs" />
     <Compile Include="DomainModel\General\CategoryWithSubCategories.cs" />
     <Compile Include="DomainModel\Entities\BannedWord.cs" />
     <Compile Include="DomainModel\Enums\LoginType.cs" />
@@ -163,7 +164,9 @@
     <Compile Include="Interfaces\Badges\IVoteUpBadge.cs" />
     <Compile Include="Interfaces\Events\IEventHandler.cs" />
     <Compile Include="Interfaces\Events\IEventManager.cs" />
+    <Compile Include="Interfaces\Repositories\IBlockRepository.cs" />
     <Compile Include="Interfaces\Repositories\ITagNotificationRepository.cs" />
+    <Compile Include="Interfaces\Services\IBlockService.cs" />
     <Compile Include="Interfaces\Services\ICacheService.cs" />
     <Compile Include="Interfaces\IModelAttribute.cs" />
     <Compile Include="Interfaces\IMVCForumContext.cs" />

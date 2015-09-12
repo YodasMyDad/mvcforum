@@ -32,6 +32,7 @@ namespace MVCForum.Website.ViewModels
         public MembershipUser From { get; set; }
         public bool FromUserIsOnline { get; set; }
         public bool IsAjaxRequest { get; set; }
+        public bool IsBlocked { get; set; }
     }
 
     public class DeletePrivateMessageViewModel

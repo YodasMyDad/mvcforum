@@ -54,6 +54,7 @@ span.label-success { background-color: $color-global-green; }
 .input-group { z-index: 0; }
 pre { border-radius: 0; }
 blockquote {font-style:italic;}
+.textarea {min-height:150px;}
 
 // Main
 
@@ -738,6 +739,12 @@ footer { background: $color-global-grey-blue; padding: 20px 0; margin: 30px 0 0 
         &:after { bottom: -14px; right: 14px; border: solid transparent; content: ""; height: 0; width: 0; position: absolute; pointer-events: none; border-top: 4px solid transparent; border-bottom: 14px solid transparent; border-right: 20px solid #dedede; z-index: 5; }
     }
     #createpostholder { padding: 0; }
+    .pmadminav {
+        padding: 0 0 15px 0; margin:0 0 0 0;
+            li {display:inline-block; padding:0 7px 0 0;margin:0 0 0 0;}
+        
+    }
+    p.pmerrormessage{text-align:center; font-weight:bold;margin:0;display:block;padding:15px 0;}
 }
 .form-createpm { padding: 10px 0; clear: both; }
 

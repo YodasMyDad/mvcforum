@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Activity;
+using MVCForum.Domain.DomainModel.Entities;
 using MVCForum.Domain.Interfaces;
 
 namespace MVCForum.Data.Context
@@ -23,6 +24,7 @@ namespace MVCForum.Data.Context
 
         public DbSet<Activity> Activity { get; set; }
         public DbSet<Badge> Badge { get; set; }
+        public DbSet<Block> Block { get; set; }
         public DbSet<BadgeTypeTimeLastChecked> BadgeTypeTimeLastChecked { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<CategoryNotification> CategoryNotification { get; set; }

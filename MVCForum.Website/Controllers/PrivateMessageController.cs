@@ -125,6 +125,13 @@ namespace MVCForum.Website.Controllers
                 if (ModelState.IsValid)
                 {
                     var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                    var memberTo = MembershipService.GetUser(createPrivateMessageViewModel.To);
+
+                    // Check the user they are trying to message hasn't blocked them
+                    if (loggedOnUser.BlockedByOtherUsers.Any(x => x.Blocker.Id == memberTo.Id))
+                    {
+                        return Content(PmAjaxError(LocalizationService.GetResourceString("PM.BlockedMessage")));
+                    }
 
                     // Check flood control
                     var lastMessage = _privateMessageService.GetLastSentPrivateMessage(LoggedOnReadOnlyUser.Id);
@@ -133,11 +140,9 @@ namespace MVCForum.Website.Controllers
                     {
                         if (DateUtils.TimeDifferenceInSeconds(DateTime.UtcNow, lastMessage.DateSent) < settings.PrivateMessageFloodControl)
                         {
-                            throw new Exception(LocalizationService.GetResourceString("PM.SendingToQuickly"));
+                            return Content(PmAjaxError(LocalizationService.GetResourceString("PM.SendingToQuickly")));
                         }
                     }
-
-                    var memberTo = MembershipService.GetUser(createPrivateMessageViewModel.To);
 
                     // first check they are not trying to message themself!
                     if (memberTo != null)
@@ -162,7 +167,7 @@ namespace MVCForum.Website.Controllers
                             var receiverCount = _privateMessageService.GetAllReceivedByUser(memberTo.Id).Count;
                             if (receiverCount > settings.MaxPrivateMessagesPerMember)
                             {
-                                throw new Exception(string.Format(LocalizationService.GetResourceString("PM.ReceivedItemsOverCapcity"), memberTo.UserName));
+                                return  Content(string.Format(LocalizationService.GetResourceString("PM.ReceivedItemsOverCapcity"), memberTo.UserName));
                             }
 
                             // If the receiver is about to go over the allowance them let then know too
@@ -213,21 +218,21 @@ namespace MVCForum.Website.Controllers
                             {
                                 unitOfWork.Rollback();
                                 LoggingService.Error(ex);
-                                throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
+                                return Content(PmAjaxError(LocalizationService.GetResourceString("Errors.GenericMessage")));
                             }
                         }
                         else
                         {
-                            throw new Exception(LocalizationService.GetResourceString("PM.TalkToSelf"));
+                            return Content(PmAjaxError(LocalizationService.GetResourceString("PM.TalkToSelf")));
                         }
                     }
                     else
                     {
                         // Error send back to user
-                        throw new Exception(LocalizationService.GetResourceString("PM.UnableFindMember"));
+                        return Content(PmAjaxError(LocalizationService.GetResourceString("PM.UnableFindMember")));
                     }
                 }
-                throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
+                return Content(PmAjaxError(LocalizationService.GetResourceString("Errors.GenericMessage")));
             }
         }
 
@@ -268,7 +273,7 @@ namespace MVCForum.Website.Controllers
 
                     // Get all the received messages from userFrom
                     // and then get all the sent messages to userFrom
-
+                    // TODO - This is shit, and needs updating
                     var allMessages = loggedOnUser.PrivateMessagesReceived.Where(x => x.UserFrom.Id == from && x.IsSentMessage == false).ToList();
                     allMessages.AddRange(loggedOnUser.PrivateMessagesSent.Where(x => x.UserTo.Id == from && x.IsSentMessage == true).ToList());
 
@@ -280,7 +285,8 @@ namespace MVCForum.Website.Controllers
                         From = userFrom,
                         PrivateMessages = allMessages.OrderByDescending(x => x.DateSent).ToList(),
                         FromUserIsOnline = userFrom.LastActivityDate > date,
-                        IsAjaxRequest = Request.IsAjaxRequest()
+                        IsAjaxRequest = Request.IsAjaxRequest(),
+                        IsBlocked = loggedOnUser.BlockedUsers.Any(x => x.Blocked.Id == userFrom.Id)
                     };
 
                     return View(viewModel);
@@ -325,6 +331,11 @@ namespace MVCForum.Website.Controllers
             }
 
             return null;
+        }
+
+        private string PmAjaxError(string message)
+        {
+            return string.Format("<p class=\"pmerrormessage\">{0}</p>", message);
         }
 
         internal ActionResult ErrorToInbox(string errorMessage)

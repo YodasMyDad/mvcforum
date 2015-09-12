@@ -87,6 +87,7 @@
     <Compile Include="CacheService.cs" />
     <Compile Include="GlobalPermissionForRoleService.cs" />
     <Compile Include="FavouriteService.cs" />
+    <Compile Include="BlockService.cs" />
     <Compile Include="InstallerService.cs" />
     <Compile Include="ReflectionService.cs" />
     <Compile Include="TagNotificationService.cs" />

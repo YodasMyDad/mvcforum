@@ -19,6 +19,7 @@ namespace MVCForum.Services
         private readonly ILocalizationRepository _localizationRepository;
         private readonly ISettingsRepository _settingsRepository;
         private readonly ILoggingService _loggingService;
+        private readonly ICacheService _cacheService;
         private Language _currentLanguage;
 
         private readonly Dictionary<string, string> _perRequestLanguageStrings;
@@ -29,14 +30,16 @@ namespace MVCForum.Services
         /// <param name="localizationRepository"> </param>
         /// <param name="settingsRepository"> </param>
         /// <param name="loggingService"></param>
-        public LocalizationService(ILocalizationRepository localizationRepository, ISettingsRepository settingsRepository, ILoggingService loggingService)
+        public LocalizationService(ILocalizationRepository localizationRepository, ISettingsRepository settingsRepository, ILoggingService loggingService, ICacheService cacheService)
         {
             _localizationRepository = localizationRepository;
             _settingsRepository = settingsRepository;
             _loggingService = loggingService;
+            _cacheService = cacheService;
 
             _perRequestLanguageStrings = ResourceKeysByLanguage(CurrentLanguage);
         }
+
 
         public Language SanitizeLanguage(Language language)
         {
@@ -76,8 +79,8 @@ namespace MVCForum.Services
             {
                 throw new ApplicationException(string.Format("Unable to update resource with key {0} for language {1}. No resource found.", resourceKey, languageId));
             }
-
             localeStringResource.ResourceValue = StringUtils.SafePlainText(newValue);
+            _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
         }
 
         /// <summary>
@@ -129,7 +132,12 @@ namespace MVCForum.Services
             newLocaleResourceKey = SanitizeLocaleResourceKey(newLocaleResourceKey);
 
             // Add the key
-            return _localizationRepository.Add(newLocaleResourceKey);
+            var result = _localizationRepository.Add(newLocaleResourceKey);
+
+            // Clear hard cache for Languages
+            _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
+
+            return result;
         }
 
         /// <summary>
@@ -160,7 +168,7 @@ namespace MVCForum.Services
             }
 
             language = SanitizeLanguage(language);
-
+            _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
             _localizationRepository.Add(language);
         }
 
@@ -178,7 +186,7 @@ namespace MVCForum.Services
             };
 
             Add(language);
-
+            _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
             return language;
         }
 
@@ -284,7 +292,7 @@ namespace MVCForum.Services
             }
 
             localeStringResourceKey.Name = StringUtils.SafePlainText(newName);
-
+            _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
         }
 
         /// <summary>
@@ -431,7 +439,14 @@ namespace MVCForum.Services
         /// <returns></returns>
         public Dictionary<string, string> ResourceKeysByLanguage(Language language)
         {
-            return _localizationRepository.GetAllLanguageStringsByLangauge(language.Id);
+            var cacheKey = string.Concat(AppConstants.LanguageStrings, language.Id);
+            var cachedResourceKeys = _cacheService.Get(cacheKey);
+            if (cachedResourceKeys == null)
+            {
+                cachedResourceKeys = _localizationRepository.GetAllLanguageStringsByLangauge(language.Id);
+                _cacheService.Set(cacheKey, cachedResourceKeys, AppConstants.CacheTwelveHours);
+            }
+            return cachedResourceKeys as Dictionary<string, string>;
         }
 
         /// <summary>
@@ -526,30 +541,13 @@ namespace MVCForum.Services
             try
             {
                 _localizationRepository.Delete(language);
+                _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
             }
             catch (Exception ex)
             {
 
                 throw new ApplicationException(string.Format("Unable to delete language: {0}", ex.Message), ex);
             }
-        }
-
-        /// <summary>
-        /// Save language
-        /// </summary>
-        /// <param name="language"></param>
-        public void Save(Language language)
-        {
-            try
-            {
-                language = SanitizeLanguage(language);
-                _localizationRepository.Update(language);
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException(string.Format("Unable to save language: {0}", ex.Message), ex);
-            }
-
         }
 
         /// <summary>
@@ -562,6 +560,7 @@ namespace MVCForum.Services
             {
                 // Delete the key and its values
                 _localizationRepository.DeleteResourceKey(resourceKey);
+                _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
 
             }
             catch (Exception ex)
@@ -715,7 +714,7 @@ namespace MVCForum.Services
                 report.Errors.Add(new CsvErrorWarning { ErrorWarningType = CsvErrorWarningType.GeneralError, Message = ex.Message });
             }
 
-
+            _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
             return report;
         }
 
