@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.Interfaces;
 using MVCForum.Website.Application;
 
 namespace MVCForum.Website.ViewModels
 {
+
     public class ListPrivateMessageViewModel
     {
         public IList<PrivateMessageListItem> Messages { get; set; }
@@ -28,7 +30,7 @@ namespace MVCForum.Website.ViewModels
 
     public class ViewPrivateMessageViewModel
     {
-        public IList<PrivateMessage> PrivateMessages { get; set; } 
+        public IPagedList<PrivateMessage> PrivateMessages { get; set; } 
         public MembershipUser From { get; set; }
         public bool FromUserIsOnline { get; set; }
         public bool IsAjaxRequest { get; set; }
@@ -38,6 +40,13 @@ namespace MVCForum.Website.ViewModels
     public class DeletePrivateMessageViewModel
     {
         public Guid Id { get; set; }
+    }
+
+
+    public class GetMoreViewModel
+    {
+        public Guid UserId { get; set; }
+        public int PageIndex { get; set; }
     }
 
 

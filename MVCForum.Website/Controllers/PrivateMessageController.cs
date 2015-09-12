@@ -10,6 +10,7 @@ using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
+using MVCForum.Website.ViewModels.Mapping;
 
 namespace MVCForum.Website.Controllers
 {
@@ -274,8 +275,10 @@ namespace MVCForum.Website.Controllers
                     // Get all the received messages from userFrom
                     // and then get all the sent messages to userFrom
                     // TODO - This is shit, and needs updating
-                    var allMessages = loggedOnUser.PrivateMessagesReceived.Where(x => x.UserFrom.Id == from && x.IsSentMessage == false).ToList();
-                    allMessages.AddRange(loggedOnUser.PrivateMessagesSent.Where(x => x.UserTo.Id == from && x.IsSentMessage == true).ToList());
+                    //var allMessages = loggedOnUser.PrivateMessagesReceived.Where(x => x.UserFrom.Id == from && x.IsSentMessage == false).ToList();
+                    //allMessages.AddRange(loggedOnUser.PrivateMessagesSent.Where(x => x.UserTo.Id == from && x.IsSentMessage == true).ToList());
+
+                    var allMessages = _privateMessageService.GetUsersPrivateMessages(1, SiteConstants.PagingGroupSize, loggedOnUser, userFrom);
 
                     // Now order them into an order of messages
                     var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
@@ -283,7 +286,7 @@ namespace MVCForum.Website.Controllers
                     var viewModel = new ViewPrivateMessageViewModel
                     {
                         From = userFrom,
-                        PrivateMessages = allMessages.OrderByDescending(x => x.DateSent).ToList(),
+                        PrivateMessages = allMessages,
                         FromUserIsOnline = userFrom.LastActivityDate > date,
                         IsAjaxRequest = Request.IsAjaxRequest(),
                         IsBlocked = loggedOnUser.BlockedUsers.Any(x => x.Blocked.Id == userFrom.Id)
@@ -333,7 +336,38 @@ namespace MVCForum.Website.Controllers
             return null;
         }
 
-        private string PmAjaxError(string message)
+        [HttpPost]
+        public ActionResult AjaxMore(GetMoreViewModel viewModel)
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                if (Request.IsAjaxRequest())
+                {
+                    var userFrom = MembershipService.GetUser(viewModel.UserId);
+                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+
+                    var settings = SettingsService.GetSettings();
+                    if (!settings.EnablePrivateMessages || LoggedOnReadOnlyUser.DisablePrivateMessages == true)
+                    {
+                        return Content(LocalizationService.GetResourceString("Errors.GenericMessage"));
+                    }
+
+                    var allMessages = _privateMessageService.GetUsersPrivateMessages(viewModel.PageIndex, SiteConstants.PagingGroupSize, loggedOnUser, userFrom);
+
+                    var partialViewModel = new ViewPrivateMessageViewModel
+                    {
+                        From = userFrom,
+                        PrivateMessages = allMessages,
+                        IsAjaxRequest = Request.IsAjaxRequest(),
+                    };
+
+                    return PartialView(partialViewModel);
+                }
+                return Content(string.Empty);
+            }
+        }
+
+        private static string PmAjaxError(string message)
         {
             return string.Format("<p class=\"pmerrormessage\">{0}</p>", message);
         }

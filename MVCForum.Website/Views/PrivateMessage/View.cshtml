@@ -50,7 +50,17 @@
                 {
                     @Html.Partial("_PrivateMessage", pm)
                 }
+                @if (Model.PrivateMessages.TotalPages > 1)
+                {
+                    <a href="#" class="showmorepms btn-mvc btn-mvc-large btn-mvc-fullwidth">
+                        <span class="smpmactive">@Html.LanguageString("PM.ShowMore")</span>
+                        <span class="smpmloading" style="display: none;">@Html.LanguageString("PM.ShowMoreLoading")</span>
+                    </a>
+                }
             </div>
         </div>
     </div>
+    <input type="hidden" id="pageIndex" value="@(Model.PrivateMessages.PageIndex + 1)" />
+    <input type="hidden" id="userId" value="@Model.From.Id" />
+    <input type="hidden" id="totalPages" value="@Model.PrivateMessages.TotalPages" />
 </div>

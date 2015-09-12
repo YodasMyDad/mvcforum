@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Externals", "Externals", "{7859E236-ED49-482B-B325-C5EEFE650C14}"
 	ProjectSection(SolutionItems) = preProject
 		Externals\Microsoft.Web.Services3.dll = Externals\Microsoft.Web.Services3.dll
+		Externals\Skybrud.Social.Microsoft.dll = Externals\Skybrud.Social.Microsoft.dll
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Website", "MVCForum.Website\MVCForum.Website.csproj", "{C149AEDE-0F7A-46A5-B9D4-95ED7B775DE2}"

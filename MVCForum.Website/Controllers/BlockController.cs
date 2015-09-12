@@ -11,7 +11,9 @@ namespace MVCForum.Website.Controllers
     public class BlockController : BaseController
     {
         private readonly IBlockService _blockService;
-        public BlockController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IBlockService blockService) : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+        public BlockController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
+            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IBlockService blockService) : 
+            base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _blockService = blockService;
         }

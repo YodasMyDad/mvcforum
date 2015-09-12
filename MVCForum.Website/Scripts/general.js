@@ -36,6 +36,7 @@ $(function () {
     showPrivateMessagesPanel();
     deletePrivateMessages();
     blockMember();
+    PmShowMorePosts();
 
     // Subscription Methods
 
@@ -336,6 +337,62 @@ var emailunsubscription = function () {
 
 /*------------ PRIVATE MESSAGE METHODS --------------------*/
 
+var PmShowMorePosts = function () {
+    var smp = $(".showmorepms");
+    if (smp.length > 0) {
+        smp.click(function (e) {
+            e.preventDefault();
+
+            var userId = $('#userId').val();
+            var pageIndex = $('#pageIndex');
+            var totalPages = parseInt($('#totalPages').val());
+            var activeText = $('span.smpmactive');
+            var loadingText = $('span.smpmloading');
+            var showMoreLink = $(this);
+
+            activeText.hide();
+            loadingText.show();
+
+            var getMoreViewModel = new Object();
+            getMoreViewModel.UserId = userId;
+            getMoreViewModel.PageIndex = pageIndex.val();
+
+            // Ajax call to post the view model to the controller
+            var strung = JSON.stringify(getMoreViewModel);
+
+            $.ajax({
+                url: app_base + 'PrivateMessage/AjaxMore',
+                type: 'POST',
+                dataType: 'html',
+                data: strung,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    // Now add the new posts
+                    showMoreLink.before(data);
+
+                    // Update the page index value
+                    var newPageIdex = (parseInt(pageIndex.val()) + parseInt(1));
+                    pageIndex.val(newPageIdex);
+
+                    // If the new pageindex is greater than the total pages, then hide the show more button
+                    if (newPageIdex > totalPages) {
+                        showMoreLink.hide();
+                    }
+
+                    // Lastly reattch the click events
+                    deletePrivateMessages();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                    activeText.show();
+                    loadingText.hide();
+                }
+            });
+
+        });
+    }
+}
+
 var blockMember = function () {
     var blockMemberButton = $(".pm-block");
     if (blockMemberButton.length > 0) {
@@ -413,6 +470,7 @@ var showPrivateMessagesPanel = function () {
                     // Delete private messages
                     deletePrivateMessages();
                     blockMember();
+                    PmShowMorePosts();
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
                     ShowUserMessage("Error: " + xhr.status + " " + thrownError);
