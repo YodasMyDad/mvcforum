@@ -231,6 +231,10 @@ namespace MVCForum.Services
 
             #endregion
 
+            // Clear files attached to post
+
+            post.Files.Clear();
+
             // If this is coming from a call that is deleting the entire topic, then just delete post
             if (isTopicDelete)
             {
