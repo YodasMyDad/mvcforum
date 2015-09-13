@@ -50,7 +50,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Parent Category")]
         public Guid? ParentCategory { get; set; }
 
-        public List<Category> AllCategories { get; set; }
+        public List<SelectListItem> AllCategories { get; set; }
 
         [DisplayName("Page Title")]
         [MaxLength(80)]

@@ -212,16 +212,7 @@ namespace MVCForum.Website.Controllers
             }
             return model;
         }
-
-        private static List<SelectListItem> GetBaseSelectListCategories(List<Category> allowedCategories)
-        {
-            var cats = new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
-            foreach (var cat in allowedCategories)
-            {
-                cats.Add(new SelectListItem { Text = cat.Name, Value = cat.Id.ToString() });
-            }
-            return cats;
-        }
+        
         #endregion
 
         [Authorize]
@@ -274,7 +265,7 @@ namespace MVCForum.Website.Controllers
                             viewModel.IsSticky = topic.IsSticky;
                             viewModel.IsTopicStarter = post.IsTopicStarter;
                             viewModel.SubscribeToTopic = topicNotifications.Any();
-                            viewModel.Categories = GetBaseSelectListCategories(allowedAccessCategories);
+                            viewModel.Categories = _categoryService.GetBaseSelectListCategories(allowedAccessCategories);
 
                             // Tags - Populate from the topic
                             if (topic.Tags.Any())
@@ -352,7 +343,7 @@ namespace MVCForum.Website.Controllers
                         var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
                         allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
                         editPostViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
-                        editPostViewModel.Categories = GetBaseSelectListCategories(allowedAccessCategories);
+                        editPostViewModel.Categories = _categoryService.GetBaseSelectListCategories(allowedAccessCategories);
                         editPostViewModel.IsTopicStarter = editPostViewModel.Id == Guid.Empty;
                         if (editPostViewModel.PollAnswers == null)
                         {
@@ -591,7 +582,7 @@ namespace MVCForum.Website.Controllers
             return new CreateEditTopicViewModel
             {
                 SubscribeToTopic = true,
-                Categories = GetBaseSelectListCategories(allowedCategories),
+                Categories = _categoryService.GetBaseSelectListCategories(allowedCategories),
                 OptionalPermissions = new CheckCreateTopicPermissions
                 {
                     CanLockTopic = userIsAdmin,
@@ -645,7 +636,7 @@ namespace MVCForum.Website.Controllers
             allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
 
             topicViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
-            topicViewModel.Categories = GetBaseSelectListCategories(allowedAccessCategories);
+            topicViewModel.Categories = _categoryService.GetBaseSelectListCategories(allowedAccessCategories);
             topicViewModel.IsTopicStarter = true;
             if (topicViewModel.PollAnswers == null)
             {

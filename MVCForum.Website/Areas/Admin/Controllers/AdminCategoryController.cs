@@ -51,7 +51,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var categoryViewModel = new CategoryViewModel { AllCategories = _categoryService.GetAll() };
+                var categoryViewModel = new CategoryViewModel { AllCategories = _categoryService.GetBaseSelectListCategories(_categoryService.GetAll()) };
                 return View(categoryViewModel);
             }
         }
@@ -161,9 +161,9 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 Image = category.Image,
                 CategoryColour = category.Colour,
                 ParentCategory = category.ParentCategory == null ? Guid.Empty : category.ParentCategory.Id,
-                AllCategories = _categoryService.GetAll()
+                AllCategories = _categoryService.GetBaseSelectListCategories(_categoryService.GetAll()
                     .Where(x => x.Id != category.Id)
-                    .ToList()
+                    .ToList())
             };
             return categoryViewModel;
         }

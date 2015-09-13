@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
@@ -47,11 +48,63 @@ namespace MVCForum.Services
                 const string key = "get-all-categories";
                 if (!HttpContext.Current.Items.Contains(key))
                 {
-                    HttpContext.Current.Items.Add(key, _categoryRepository.GetAll().ToList());
+                    // These are now in order
+                    var orderedCategories = new List<Category>();
+                    var allCats = _categoryRepository.GetAll().ToList();
+                    foreach (var parentCategory in allCats.Where(x => x.ParentCategory == null).OrderBy(x => x.SortOrder))
+                    {
+                        // Add the main category
+                        parentCategory.Level = 1;
+                        orderedCategories.Add(parentCategory);
+
+                        // Add subcategories under this
+                        orderedCategories.AddRange(GetSubCategories(parentCategory, allCats));
+                    }
+
+                    HttpContext.Current.Items.Add(key, orderedCategories);
                 }
                 return (List<Category>)HttpContext.Current.Items[key];
             }
             return _categoryRepository.GetAll().ToList();
+        }
+
+        public List<Category> GetSubCategories(Category category, List<Category> allCategories, int level = 2)
+        {
+            var catsToReturn = new List<Category>();
+            var cats = allCategories.Where(x => x.ParentCategory != null && x.ParentCategory.Id == category.Id).OrderBy(x =>x.SortOrder);
+            foreach (var cat in cats)
+            {
+                cat.Level = level;
+                catsToReturn.Add(cat);
+                catsToReturn.AddRange(GetSubCategories(cat, allCategories, level + 1));
+            }
+
+            return catsToReturn;
+        }
+
+        public List<SelectListItem> GetBaseSelectListCategories(List<Category> allowedCategories)
+        {
+            var cats = new List<SelectListItem> { new SelectListItem { Text = "", Value = "" } };
+            foreach (var cat in allowedCategories)
+            {
+                var catName = string.Concat(LevelDashes(cat.Level), cat.Level > 1 ? " " : "", cat.Name);
+                cats.Add(new SelectListItem { Text = catName, Value = cat.Id.ToString() });
+            }
+            return cats;
+        }
+
+        private static string LevelDashes(int level)
+        {
+            if (level > 1)
+            {
+                var sb = new StringBuilder();
+                for (var i = 0; i < level-1; i++)
+                {
+                    sb.Append("-");
+                }
+                return sb.ToString();
+            }
+            return string.Empty;
         }
 
         /// <summary>

@@ -74,7 +74,7 @@
 
 <div class="form-group">
     @Html.LabelFor(model => model.ParentCategory)
-    @Html.DropDownListFor(model => model.ParentCategory, new SelectList(Model.AllCategories, "id", "Name"), string.Empty, new { @class = "form-control" })
+    @Html.DropDownListFor(model => model.ParentCategory, Model.AllCategories, new { @class = "form-control" })
     @Html.ValidationMessageFor(model => model.ParentCategory)
 </div>
 
