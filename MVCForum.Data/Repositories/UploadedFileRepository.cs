@@ -45,6 +45,7 @@ namespace MVCForum.Data.Repositories
         {
             return _context.UploadedFile
                 .Include(x => x.Post.Topic.Category)
+                .AsNoTracking()
                 .FirstOrDefault(x => x.Id == id);
         }
     }

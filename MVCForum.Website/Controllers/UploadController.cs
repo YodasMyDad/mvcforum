@@ -47,7 +47,7 @@ namespace MVCForum.Website.Controllers
                         topic = post.Topic;
 
                         // Check we get a valid post back and have some file
-                        if (attachFileToPostViewModel.Files != null && attachFileToPostViewModel.Files.Any())
+                        if (attachFileToPostViewModel.Files != null && !attachFileToPostViewModel.Files.Any())
                         {
                             // Now get the category
                             var category = topic.Category;
