@@ -1,0 +1,34 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.BatchDeletePrivateMessagesViewModel
+@{
+    ViewBag.Title = "Batch Delete Private Messages";
+}
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5>@ViewBag.Title</h5>
+    </div>
+    <div class="panel-content">
+        <p>
+            This batch tool lets you delete private messages over X days old. This is a useful tool to help free up space in your database. For example, to delete private messages over 3 years old - 
+            Just enter 1095 in the days field.
+        </p>
+        <p>As soon as you click the button the messages will be deleted. This action cannot be undone.</p>
+
+
+        @using (Html.BeginForm("BatchDeletePrivateMessages", "Batch", FormMethod.Post))
+        {
+            @Html.ValidationSummary(false)
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Days)
+                @Html.TextBoxFor(m => m.Days, new { @class = "form-control", type = "number" })
+                @Html.ValidationMessageFor(m => m.Days)
+            </div>
+
+            <div class="submit-holder">
+                <input type="submit" class="btn-mvc-green btn-mvc-large" value="Delete" />
+            </div>
+        }
+    </div>
+</div>

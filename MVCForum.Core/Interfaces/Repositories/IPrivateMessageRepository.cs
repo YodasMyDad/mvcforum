@@ -17,6 +17,11 @@ namespace MVCForum.Domain.Interfaces.Repositories
         PrivateMessage Add(PrivateMessage item);
         PrivateMessage Get(Guid id);
         void Delete(PrivateMessage item);
-        void Update(PrivateMessage item);
+        /// <summary>
+        /// Get a list of private messages older than X days
+        /// </summary>
+        /// <param name="days">Amount of days to go back</param>
+        /// <returns></returns>
+        IList<PrivateMessage> GetPrivateMessagesOlderThan(int days);
     }
 }

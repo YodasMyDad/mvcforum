@@ -80,6 +80,7 @@ $(function () {
             type: 'POST',
             dataType: 'html',
             data: strung,
+            cache: false,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
                 $(".pollcontainer").html(data);
@@ -151,6 +152,7 @@ var TopicShowMorePosts = function() {
                 type: 'POST',
                 dataType: 'html',
                 data: strung,
+                cache: false,
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
                     // Now add the new posts
@@ -195,6 +197,7 @@ var PostGetAllLikes = function() {
                 url: app_base + 'Post/GetAllPostLikes',
                 type: 'POST',
                 dataType: 'html',
+                cache: false,
                 data: { id: postId },
                 success: function (data) {
                     holdingDiv.html(data);
@@ -249,6 +252,7 @@ var submitFormData = function (formElement) {
                 type: this.method,
                 data: $(this).serialize(),
                 dataType: "json",
+                cache: false,
                 success: function (result) {
                     if (result.Success) {
                         closeSlideOutPanel();
@@ -288,6 +292,7 @@ var emailsubscription = function () {
             $.ajax({
                 url: app_base + 'Email/Subscribe',
                 type: 'POST',
+                cache: false,
                 data: strung,
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
@@ -321,6 +326,7 @@ var emailunsubscription = function () {
             $.ajax({
                 url: app_base + 'Email/UnSubscribe',
                 type: 'POST',
+                cache: false,
                 data: strung,
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
@@ -364,6 +370,7 @@ var PmShowMorePosts = function () {
                 url: app_base + 'PrivateMessage/AjaxMore',
                 type: 'POST',
                 dataType: 'html',
+                cache: false,
                 data: strung,
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
@@ -420,6 +427,7 @@ var blockMember = function () {
                 url: app_base + 'Block/BlockOrUnBlock',
                 type: 'POST',
                 data: strung,
+                cache: false,
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
                     // Just update attribute to opposite
@@ -460,6 +468,7 @@ var showPrivateMessagesPanel = function () {
                 url: pmUrl,
                 type: 'GET',
                 async: true,
+                cache: false,
                 success: function (data) {
                     // Load the Html into the side panel
                     slideOutPanel(title, data);
@@ -501,6 +510,7 @@ var deletePrivateMessages = function () {
             $.ajax({
                 url: app_base + "PrivateMessage/Delete",
                 type: "POST",
+                cache: false,
                 data: strung,
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
@@ -617,6 +627,7 @@ function ChangeLanguage() {
             $.ajax({
                 url: '/Language/ChangeLanguage',
                 type: 'POST',
+                cache: false,
                 data: { lang: langVal },
                 success: function (data) {
                     location.reload();
@@ -674,6 +685,7 @@ function AddPostClickEvents() {
         $.ajax({
             url: app_base + 'Vote/MarkAsSolution',
             type: 'POST',
+            cache: false,
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
@@ -744,6 +756,7 @@ function AddPostClickEvents() {
         $.ajax({
             url: app_base + voteUrl,
             type: 'POST',
+            cache: false,
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
@@ -790,6 +803,7 @@ function AddPostClickEvents() {
         $.ajax({
             url: app_base + ajaxUrl,
             type: 'POST',
+            cache: false,
             data: strung,
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
@@ -844,6 +858,7 @@ function ShowExpandedVotes() {
             $.ajax({
                 url: app_base + 'Vote/GetVotes',
                 type: 'POST',
+                cache: false,
                 dataType: 'html',
                 data: strung,
                 contentType: 'application/json; charset=utf-8',
@@ -929,6 +944,7 @@ function BadgeMarkAsSolution(postId) {
     $.ajax({
         url: app_base + 'Badge/MarkAsSolution',
         type: 'POST',
+        cache: false,
         data: strung,
         contentType: 'application/json; charset=utf-8',
         success: function (data) {
@@ -952,6 +968,7 @@ function BadgeFavourite(favouriteId) {
     $.ajax({
         url: app_base + 'Badge/Favourite',
         type: 'POST',
+        cache: false,
         data: strung,
         contentType: 'application/json; charset=utf-8',
         success: function (data) {
@@ -976,6 +993,7 @@ function BadgeVoteUp(postId) {
     $.ajax({
         url: app_base + 'Badge/VoteUpPost',
         type: 'POST',
+        cache: false,
         data: strung,
         contentType: 'application/json; charset=utf-8',
         success: function (data) {
@@ -999,6 +1017,7 @@ function BadgeVoteDown(postId) {
     $.ajax({
         url: app_base + 'Badge/VoteDownPost',
         type: 'POST',
+        cache: false,
         data: strung,
         contentType: 'application/json; charset=utf-8',
         success: function (data) {
@@ -1015,6 +1034,7 @@ function UserPost() {
     $.ajax({
         url: app_base + 'Badge/Post',
         type: 'POST',
+        cache: false,
         success: function (data) {
             // No need to do anything
         },

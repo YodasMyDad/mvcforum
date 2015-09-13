@@ -143,14 +143,10 @@ namespace MVCForum.Data.Repositories
             _context.PrivateMessage.Remove(item);
         }
 
-        public void Update(PrivateMessage item)
+        public IList<PrivateMessage> GetPrivateMessagesOlderThan(int days)
         {
-            // Check there's not an object with same identifier already in context
-            if (_context.PrivateMessage.Local.Select(x => x.Id == item.Id).Any())
-            {
-                throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
-            }
-            _context.Entry(item).State = EntityState.Modified;
+            var date = DateTime.UtcNow.AddDays(-days);
+            return _context.PrivateMessage.Where(x => x.DateSent <= date).ToList();
         }
     }
 }

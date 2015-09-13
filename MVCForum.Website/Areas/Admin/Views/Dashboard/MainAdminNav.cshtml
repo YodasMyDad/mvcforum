@@ -163,6 +163,9 @@
                 <li>
                     <a href="@Url.Action("BatchMoveTopics", "Batch", new { area = "Admin" }, null)" class="@(currentController == "batch" && currentAction == "batchmovetopics" ? "active" : "")">Batch Move Topics</a>
                 </li>
+                <li>
+                    <a href="@Url.Action("BatchDeletePrivateMessages", "Batch", new { area = "Admin" }, null)" class="@(currentController == "batch" && currentAction == "batchdeleteprivatemessages" ? "active" : "")">Batch Delete Private Messages</a>
+                </li>
             </ul>
         </li>
         <li>

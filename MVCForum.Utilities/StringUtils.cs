@@ -84,7 +84,7 @@ namespace MVCForum.Utilities
         #region Social Helpers
         public static string GetGravatarImage(string email, int size)
         {
-            return IsValidEmail(email) ? string.Format("{0}://www.gravatar.com/avatar/{1}?s={2}", HttpContext.Current.Request.Url.Scheme, md5HashString(email), size) : "";
+            return IsValidEmail(email) ? string.Format("{0}://www.gravatar.com/avatar/{1}?s={2}&d=identicon&r=PG", HttpContext.Current.Request.Url.Scheme, md5HashString(email), size) : "";
         }
         #endregion
 
