@@ -29,10 +29,7 @@ namespace MVCForum.Data.Repositories
                 .AsNoTracking()
                 .Include(x => x.UserFrom)
                 .Include(x => x.UserTo)
-                .Where(
-                    x =>
-                        (x.UserTo.Id != user.Id && x.IsSentMessage == true) ||
-                        (x.UserFrom.Id != user.Id && x.IsSentMessage != true))
+                .Where(x => (x.UserTo.Id == user.Id && x.IsSentMessage != true) || (x.UserFrom.Id == user.Id && x.IsSentMessage == true))
                 .Select(x => new PrivateMessageListItem
                 {
                     Date = x.DateSent,
