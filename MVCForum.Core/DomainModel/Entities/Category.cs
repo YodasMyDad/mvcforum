@@ -28,6 +28,7 @@ namespace MVCForum.Domain.DomainModel
         public virtual IList<Topic> Topics { get; set; }
         public virtual IList<CategoryNotification> CategoryNotifications { get; set; }
         public virtual IList<CategoryPermissionForRole> CategoryPermissionForRoles { get; set; }
+        public int Level { get; set; }
 
         public string NiceUrl
         {

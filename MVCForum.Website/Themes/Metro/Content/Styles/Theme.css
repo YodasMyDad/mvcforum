@@ -73,6 +73,10 @@ blockquote {
   font-style: italic;
 }
 
+.textarea {
+  min-height: 150px;
+}
+
 body {
   font-family: "Open Sans", Arial, Helvetica, sans-serif;
   color: #3b3b3b;
@@ -1724,6 +1728,25 @@ footer h6 {
 
 .pmview #createpostholder {
   padding: 0;
+}
+
+.pmview .pmadminav {
+  padding: 0 0 15px 0;
+  margin: 0 0 0 0;
+}
+
+.pmview .pmadminav li {
+  display: inline-block;
+  padding: 0 7px 0 0;
+  margin: 0 0 0 0;
+}
+
+.pmview p.pmerrormessage {
+  text-align: center;
+  font-weight: bold;
+  margin: 0;
+  display: block;
+  padding: 15px 0;
 }
 
 .form-createpm {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 
 namespace MVCForum.Domain.Constants
 {
@@ -13,8 +14,13 @@ namespace MVCForum.Domain.Constants
 
         // Cache names
         public const string SettingsCacheName = "MainSettings";
-        public const string LocalizationCacheName = "Localization";
-        public const string MemberCacheName = "#member#-{0}";       
+        public const string LocalisationCacheName = "Localization-";
+        public static string LanguageStrings = string.Concat(LocalisationCacheName, "LangStrings-");
+        public const string MemberCacheName = "#member#-{0}";
+
+        public const int CacheOneHour = 60;
+        public const int CacheSixHours = 360;
+        public const int CacheTwelveHours = 720;
 
         // Url names
         public const string CategoryUrlIdentifier = "cat";

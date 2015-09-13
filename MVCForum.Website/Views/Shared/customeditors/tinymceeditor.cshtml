@@ -6,9 +6,8 @@
         tinymce.init({
             selector: "textarea.rte",
             plugins: [
-                "autosave link image lists hr anchor pagebreak spellchecker forumimageinsert",
-                "searchreplace wordcount visualblocks visualchars code fullscreen media nonbreaking",
-                "directionality paste"
+                "autosave link image lists hr anchor forumimageinsert",
+                "wordcount visualblocks visualchars code fullscreen media nonbreaking"
             ],
             toolbar1: "bold italic underline strikethrough bullist hr | link unlink @(ViewBag.ImageUploadType ?? "image") code blockquote | formatselect",
             remove_linebreaks: false,

@@ -292,6 +292,7 @@
     <Compile Include="Areas\Admin\ViewModels\LogViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\PermissionsViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\AdminTagViewModel.cs" />
+    <Compile Include="Controllers\BlockController.cs" />
     <Compile Include="Controllers\ClosedController.cs" />
     <Compile Include="Controllers\EmailController.cs" />
     <Compile Include="Controllers\FavouriteController.cs" />
@@ -327,6 +328,7 @@
     <Compile Include="Application\ScheduledJobs\KepAliveJob.cs" />
     <Compile Include="Application\ScheduledJobs\ScheduledRunner.cs" />
     <Compile Include="Application\ScheduledJobs\EmailJob.cs" />
+    <Compile Include="ViewModels\BlockViewModels.cs" />
     <Compile Include="ViewModels\FavouriteViewModels.cs" />
     <Compile Include="ViewModels\OAuth\FacebookOAuthData.cs" />
     <Compile Include="ViewModels\OAuth\GoogleOAuthData.cs" />
@@ -1055,6 +1057,8 @@
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.eot" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\readme.md" />
     <Content Include="Scripts\tinymce\langs\readme.md" />
+    <Content Include="Views\PrivateMessage\AjaxMore.cshtml" />
+    <Content Include="Areas\Admin\Views\Batch\BatchDeletePrivateMessages.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

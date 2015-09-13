@@ -6,6 +6,7 @@ using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Website.Areas.Admin.ViewModels
 {
+    #region Members
     public class BatchDeleteMembersViewModel
     {
         [Required]
@@ -19,18 +20,32 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public int AmoutOfPosts { get; set; }
 
         public int AmountDeleted { get; set; }
-    }
+    } 
+    #endregion
 
+    #region Topics
     public class BatchMoveTopicsViewModel
     {
         public List<Category> Categories { get; set; }
 
-        [Required]        
+        [Required]
         [DisplayName("Move all Topics in this Category")]
         public Guid? FromCategory { get; set; }
 
         [Required]
         [DisplayName("To this new Category")]
         public Guid? ToCategory { get; set; }
-    }
+    } 
+    #endregion
+
+    #region Private Messages
+
+    public class BatchDeletePrivateMessagesViewModel
+    {
+        [Required]
+        [DisplayName("How many Days?")]
+        public int Days { get; set; }
+    } 
+
+    #endregion
 }

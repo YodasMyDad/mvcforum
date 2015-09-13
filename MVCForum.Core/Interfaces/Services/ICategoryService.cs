@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web.Mvc;
 using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
@@ -23,7 +24,6 @@ namespace MVCForum.Domain.Interfaces.Services
         /// <param name="actionType">Pass in the permission you want to check, for example 'Delete Posts' - This will return a list of categories that the user has permission to delete posts</param>
         /// <returns></returns>
         List<Category> GetAllowedCategories(MembershipRole role, string actionType);
-
         IEnumerable<Category> GetAllSubCategories(Guid parentId);
         Category Get(Guid id);
         IList<Category> Get(IList<Guid> ids);
@@ -34,5 +34,7 @@ namespace MVCForum.Domain.Interfaces.Services
         void Add(Category category);
         void UpdateSlugFromName(Category category);
         Category SanitizeCategory(Category category);
+        List<Category> GetSubCategories(Category category, List<Category> allCategories, int level = 2);
+        List<SelectListItem> GetBaseSelectListCategories(List<Category> allowedCategories);
     }
 }

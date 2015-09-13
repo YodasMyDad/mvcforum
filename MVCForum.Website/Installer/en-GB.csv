@@ -366,3 +366,8 @@ TinyMCE.InsertImage.ExternalImage,External Image
 TinyMCE.InsertImage.ImageDescription,Image Description
 Post.Options,View Post Options
 SlidePanel.CloseConfirmation,Are you sure you want to close?
+PM.Block,Block
+PM.Blocked,Blocked
+PM.BlockedMessage,Unable to send message
+PM.ShowMore,Show More Messages
+PM.ShowMoreLoading,Loading...

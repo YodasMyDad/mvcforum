@@ -14,7 +14,6 @@ namespace MVCForum.IOC
 {
     // http://weblogs.asp.net/shijuvarghese/archive/2010/05/07/dependency-injection-in-asp-net-mvc-nerddinner-app-using-unity-2-0.aspx
 
-
     /// <summary>
     /// Bind the given interface in request scope
     /// </summary>
@@ -34,25 +33,26 @@ namespace MVCForum.IOC
     /// <summary>
     /// The injection for Unity
     /// </summary>
-    public static class UnityHelper
+    public static partial class UnityHelper
     {
 
         public static IUnityContainer Start()
         {
-            var container = BuildUnityContainer();
+            var container = new UnityContainer();
+            var buildUnity = BuildUnityContainer(container);
 
-            DependencyResolver.SetResolver(new Unity.Mvc4.UnityDependencyResolver(container));
+            DependencyResolver.SetResolver(new Unity.Mvc4.UnityDependencyResolver(buildUnity));
 
-            return container;
+            return buildUnity;
         }
 
         /// <summary>
         /// Inject
         /// </summary>
         /// <returns></returns>
-        private static IUnityContainer BuildUnityContainer()
+        private static IUnityContainer BuildUnityContainer(UnityContainer container)
         {
-            var container = new UnityContainer();
+            
 
             // register all your components with the container here
             // it is NOT necessary to register your controllers
@@ -99,6 +99,7 @@ namespace MVCForum.IOC
             container.BindInRequestScope<ICacheService, CacheService>();
             container.BindInRequestScope<ITagNotificationService, TagNotificationService>();
             container.BindInRequestScope<IReflectionService, ReflectionService>();
+            container.BindInRequestScope<IBlockService, BlockService>();
 
             container.BindInRequestScope<IRoleRepository, RoleRepository>();
             container.BindInRequestScope<ICategoryRepository, CategoryRepository>();
@@ -128,10 +129,22 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IGlobalPermissionForRoleRepository, GlobalPermissionForRoleRepository>();
             container.BindInRequestScope<IEmailRepository, EmailRepository>();
             container.BindInRequestScope<ITagNotificationRepository, TagNotificationRepository>();
+            container.BindInRequestScope<IBlockRepository, BlockRepository>();
 
-            //container.BindInRequestScope<ISessionHelper, SessionHelper>();
+            CustomBindings(container);
 
             return container;
         }
+
+        static partial void CustomBindings(UnityContainer container);
     }
+
+    //public static partial class UnityHelper
+    //{
+    //    static partial void CustomBindings(UnityContainer container)
+    //    {
+    //        container.BindInRequestScope<IBlockRepository, BlockRepository>();
+    //        container.BindInRequestScope<IBlockService, BlockService>();
+    //    }
+    //}
 }

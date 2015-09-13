@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
+using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Website.Areas.Admin.ViewModels;
@@ -13,18 +15,21 @@ namespace MVCForum.Website.Areas.Admin.Controllers
     {
         private readonly ICategoryService _categoryService;
         private readonly ITopicService _topicService;
+        private readonly IPrivateMessageService _privateMessageService;
 
         public BatchController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
-            ILocalizationService localizationService, ISettingsService settingsService, ICategoryService categoryService, ITopicService topicService) 
+            ILocalizationService localizationService, ISettingsService settingsService, ICategoryService categoryService, ITopicService topicService, IPrivateMessageService privateMessageService) 
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
             _categoryService = categoryService;
             _topicService = topicService;
+            _privateMessageService = privateMessageService;
         }
 
+        #region Members
         public ActionResult BatchDeleteMembers()
         {
-            return View(new BatchDeleteMembersViewModel{AmoutOfDaysSinceRegistered = 0, AmoutOfPosts = 0});
+            return View(new BatchDeleteMembersViewModel { AmoutOfDaysSinceRegistered = 0, AmoutOfPosts = 0 });
         }
 
         [HttpPost]
@@ -62,8 +67,10 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             }
 
             return View();
-        }
+        } 
+        #endregion
 
+        #region Topics
         public ActionResult BatchMoveTopics()
         {
             var viewModel = new BatchMoveTopicsViewModel
@@ -119,7 +126,57 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             }
 
             return View(viewModel);
+        } 
+        #endregion
+
+        #region Private Messages
+
+        public ActionResult BatchDeletePrivateMessages()
+        {
+            var viewModel = new BatchDeletePrivateMessagesViewModel();
+            return View(viewModel);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult BatchDeletePrivateMessages(BatchDeletePrivateMessagesViewModel viewModel)
+        {
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                try
+                {
+                    var pms = _privateMessageService.GetPrivateMessagesOlderThan(viewModel.Days);
+                    var pmToDelete = new List<PrivateMessage>();
+                    pmToDelete.AddRange(pms);
+                    var count = pmToDelete.Count;
+                    foreach (var pm in pmToDelete)
+                    {
+                        _privateMessageService.DeleteMessage(pm);
+                    }
+                    unitOfWork.Commit();
+
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = string.Format("{0} Private Messages deleted", count),
+                        MessageType = GenericMessages.success
+                    };
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = ex.Message,
+                        MessageType = GenericMessages.danger
+                    };
+                }
+            }
+
+            return View(viewModel);
+        } 
+
+        #endregion
 
     }
 }

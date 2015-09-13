@@ -12,12 +12,10 @@ namespace MVCForum.Services
     public partial class PrivateMessageService : IPrivateMessageService
     {
         private readonly IPrivateMessageRepository _privateMessageRepository;
-        private readonly IMembershipRepository _membershipRepository;
 
         public PrivateMessageService(IPrivateMessageRepository privateMessageRepository, IMembershipRepository membershipRepository)
         {
             _privateMessageRepository = privateMessageRepository;
-            _membershipRepository = membershipRepository;
         }
 
         public PrivateMessage SanitizeMessage(PrivateMessage privateMessage)
@@ -75,19 +73,14 @@ namespace MVCForum.Services
             return _privateMessageRepository.Get(id);
         }
 
-        /// <summary>
-        /// Save a private message
-        /// </summary>
-        /// <param name="message"></param>
-        public void Save(PrivateMessage message)
-        {
-            message = SanitizeMessage(message);
-            _privateMessageRepository.Update(message); 
-        }
-
         public IPagedList<PrivateMessageListItem> GetUsersPrivateMessages(int pageIndex, int pageSize, MembershipUser user)
         {
             return _privateMessageRepository.GetUsersPrivateMessages(pageIndex, pageSize, user);
+        }
+
+        public IPagedList<PrivateMessage> GetUsersPrivateMessages(int pageIndex, int pageSize, MembershipUser toUser, MembershipUser fromUser)
+        {
+            return _privateMessageRepository.GetUsersPrivateMessages(pageIndex, pageSize, toUser, fromUser);
         }
 
 
@@ -114,6 +107,11 @@ namespace MVCForum.Services
         public IList<PrivateMessage> GetAllSentByUser(Guid id)
         {
             return _privateMessageRepository.GetAllSentByUser(id);
+        }
+
+        public IList<PrivateMessage> GetPrivateMessagesOlderThan(int days)
+        {
+            return _privateMessageRepository.GetPrivateMessagesOlderThan(days);
         }
 
         /// <summary>

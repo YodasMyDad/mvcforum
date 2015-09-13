@@ -29,10 +29,7 @@ namespace MVCForum.Data.Repositories
                 .AsNoTracking()
                 .Include(x => x.UserFrom)
                 .Include(x => x.UserTo)
-                .Where(
-                    x =>
-                        (x.UserTo.Id != user.Id && x.IsSentMessage == true) ||
-                        (x.UserFrom.Id != user.Id && x.IsSentMessage != true))
+                .Where(x => (x.UserTo.Id == user.Id && x.IsSentMessage != true) || (x.UserFrom.Id == user.Id && x.IsSentMessage == true))
                 .Select(x => new PrivateMessageListItem
                 {
                     Date = x.DateSent,
@@ -51,6 +48,26 @@ namespace MVCForum.Data.Repositories
 
             // Return a paged list
             return new PagedList<PrivateMessageListItem>(results, pageIndex, pageSize, total);
+        }
+
+        public IPagedList<PrivateMessage> GetUsersPrivateMessages(int pageIndex, int pageSize, MembershipUser user, MembershipUser fromUser)
+        {
+            var query = _context.PrivateMessage
+                .AsNoTracking()
+                .Include(x => x.UserFrom)
+                .Include(x => x.UserTo)
+                .Where(x => (x.UserFrom.Id == fromUser.Id && x.UserTo.Id == user.Id && x.IsSentMessage != true) || (x.UserFrom.Id == user.Id && x.UserTo.Id == fromUser.Id && x.IsSentMessage == true))
+                .OrderByDescending(x => x.DateSent);
+
+            var total = query.Count();
+
+            var results = query
+                            .Skip((pageIndex - 1) * pageSize)
+                            .Take(pageSize)
+                            .ToList();
+
+            // Return a paged list
+            return new PagedList<PrivateMessage>(results, pageIndex, pageSize, total);
         }
 
         public PrivateMessage GetLastSentPrivateMessage(Guid id)
@@ -123,14 +140,10 @@ namespace MVCForum.Data.Repositories
             _context.PrivateMessage.Remove(item);
         }
 
-        public void Update(PrivateMessage item)
+        public IList<PrivateMessage> GetPrivateMessagesOlderThan(int days)
         {
-            // Check there's not an object with same identifier already in context
-            if (_context.PrivateMessage.Local.Select(x => x.Id == item.Id).Any())
-            {
-                throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
-            }
-            _context.Entry(item).State = EntityState.Modified;
+            var date = DateTime.UtcNow.AddDays(-days);
+            return _context.PrivateMessage.Where(x => x.DateSent <= date).ToList();
         }
     }
 }

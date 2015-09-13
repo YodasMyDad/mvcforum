@@ -89,12 +89,6 @@ namespace MVCForum.Domain.Interfaces.Services
         void Delete(Language language);
 
         /// <summary>
-        /// Save a language
-        /// </summary>
-        /// <param name="language"></param>
-        void Save(Language language);
-
-        /// <summary>
         /// Convert a language into CSV format (e.g. for export)
         /// </summary>
         /// <param name="language"></param>

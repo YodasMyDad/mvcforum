@@ -39,6 +39,7 @@ namespace MVCForum.Data.Mapping
 
             // Ignores
             Ignore(x => x.NiceUrl);
+            Ignore(x => x.Level);
         }
     }
 }

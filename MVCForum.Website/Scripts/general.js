@@ -35,6 +35,8 @@ $(function () {
 
     showPrivateMessagesPanel();
     deletePrivateMessages();
+    blockMember();
+    PmShowMorePosts();
 
     // Subscription Methods
 
@@ -78,6 +80,7 @@ $(function () {
             type: 'POST',
             dataType: 'html',
             data: strung,
+            cache: false,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
                 $(".pollcontainer").html(data);
@@ -149,6 +152,7 @@ var TopicShowMorePosts = function() {
                 type: 'POST',
                 dataType: 'html',
                 data: strung,
+                cache: false,
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
                     // Now add the new posts
@@ -193,6 +197,7 @@ var PostGetAllLikes = function() {
                 url: app_base + 'Post/GetAllPostLikes',
                 type: 'POST',
                 dataType: 'html',
+                cache: false,
                 data: { id: postId },
                 success: function (data) {
                     holdingDiv.html(data);
@@ -247,6 +252,7 @@ var submitFormData = function (formElement) {
                 type: this.method,
                 data: $(this).serialize(),
                 dataType: "json",
+                cache: false,
                 success: function (result) {
                     if (result.Success) {
                         closeSlideOutPanel();
@@ -286,6 +292,7 @@ var emailsubscription = function () {
             $.ajax({
                 url: app_base + 'Email/Subscribe',
                 type: 'POST',
+                cache: false,
                 data: strung,
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
@@ -319,6 +326,7 @@ var emailunsubscription = function () {
             $.ajax({
                 url: app_base + 'Email/UnSubscribe',
                 type: 'POST',
+                cache: false,
                 data: strung,
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
@@ -335,6 +343,117 @@ var emailunsubscription = function () {
 
 /*------------ PRIVATE MESSAGE METHODS --------------------*/
 
+var PmShowMorePosts = function () {
+    var smp = $(".showmorepms");
+    if (smp.length > 0) {
+        smp.click(function (e) {
+            e.preventDefault();
+
+            var userId = $('#userId').val();
+            var pageIndex = $('#pageIndex');
+            var totalPages = parseInt($('#totalPages').val());
+            var activeText = $('span.smpmactive');
+            var loadingText = $('span.smpmloading');
+            var showMoreLink = $(this);
+
+            activeText.hide();
+            loadingText.show();
+
+            var getMoreViewModel = new Object();
+            getMoreViewModel.UserId = userId;
+            getMoreViewModel.PageIndex = pageIndex.val();
+
+            // Ajax call to post the view model to the controller
+            var strung = JSON.stringify(getMoreViewModel);
+
+            $.ajax({
+                url: app_base + 'PrivateMessage/AjaxMore',
+                type: 'POST',
+                dataType: 'html',
+                cache: false,
+                data: strung,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    // Now add the new posts
+                    showMoreLink.before(data);
+
+                    // Update the page index value
+                    var newPageIdex = (parseInt(pageIndex.val()) + parseInt(1));
+                    pageIndex.val(newPageIdex);
+
+                    // If the new pageindex is greater than the total pages, then hide the show more button
+                    if (newPageIdex > totalPages) {
+                        showMoreLink.hide();
+                    }
+
+                    // Lastly reattch the click events
+                    deletePrivateMessages();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                    activeText.show();
+                    loadingText.hide();
+                }
+            });
+
+        });
+    }
+}
+
+var blockMember = function () {
+    var blockMemberButton = $(".pm-block");
+    if (blockMemberButton.length > 0) {
+        blockMemberButton.click(function(e) {
+            e.preventDefault();
+            var pmButton = $(this);
+            var blockText = pmButton.data("blocktext");
+            var blockedText = pmButton.data("blockedtext");
+            var isBlocked = pmButton.data("isblocked");
+            var userid = pmButton.data("userid");
+
+            if (isBlocked) {
+                pmButton.text(blockText);
+            } else {
+                pmButton.text(blockedText);
+            }
+            
+            var viewModel = new Object();
+            viewModel.MemberToBlockOrUnBlock = userid;
+
+            // Ajax call to post the view model to the controller
+            var strung = JSON.stringify(viewModel);
+
+            $.ajax({
+                url: app_base + 'Block/BlockOrUnBlock',
+                type: 'POST',
+                data: strung,
+                cache: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    // Just update attribute to opposite
+                    if (isBlocked) {
+                        pmButton.data("isblocked", false);
+                    } else {
+                        pmButton.data("isblocked", true);
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+
+                    // Switch back if error
+                    if (isBlocked) {
+                        pmButton.text(blockedText);
+                    } else {
+                        pmButton.text(blockText);
+                    }
+
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+
+        });
+    }
+};
+
 var showPrivateMessagesPanel = function () {
     var privatemessageButton = $(".pm-panel");
     if (privatemessageButton.length > 0) {
@@ -349,6 +468,7 @@ var showPrivateMessagesPanel = function () {
                 url: pmUrl,
                 type: 'GET',
                 async: true,
+                cache: false,
                 success: function (data) {
                     // Load the Html into the side panel
                     slideOutPanel(title, data);
@@ -358,6 +478,8 @@ var showPrivateMessagesPanel = function () {
 
                     // Delete private messages
                     deletePrivateMessages();
+                    blockMember();
+                    PmShowMorePosts();
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
                     ShowUserMessage("Error: " + xhr.status + " " + thrownError);
@@ -388,6 +510,7 @@ var deletePrivateMessages = function () {
             $.ajax({
                 url: app_base + "PrivateMessage/Delete",
                 type: "POST",
+                cache: false,
                 data: strung,
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
@@ -504,6 +627,7 @@ function ChangeLanguage() {
             $.ajax({
                 url: '/Language/ChangeLanguage',
                 type: 'POST',
+                cache: false,
                 data: { lang: langVal },
                 success: function (data) {
                     location.reload();
@@ -561,6 +685,7 @@ function AddPostClickEvents() {
         $.ajax({
             url: app_base + 'Vote/MarkAsSolution',
             type: 'POST',
+            cache: false,
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
@@ -631,6 +756,7 @@ function AddPostClickEvents() {
         $.ajax({
             url: app_base + voteUrl,
             type: 'POST',
+            cache: false,
             data: strung,
             contentType: 'application/json; charset=utf-8',
             success: function (data) {
@@ -677,6 +803,7 @@ function AddPostClickEvents() {
         $.ajax({
             url: app_base + ajaxUrl,
             type: 'POST',
+            cache: false,
             data: strung,
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
@@ -731,6 +858,7 @@ function ShowExpandedVotes() {
             $.ajax({
                 url: app_base + 'Vote/GetVotes',
                 type: 'POST',
+                cache: false,
                 dataType: 'html',
                 data: strung,
                 contentType: 'application/json; charset=utf-8',
@@ -816,6 +944,7 @@ function BadgeMarkAsSolution(postId) {
     $.ajax({
         url: app_base + 'Badge/MarkAsSolution',
         type: 'POST',
+        cache: false,
         data: strung,
         contentType: 'application/json; charset=utf-8',
         success: function (data) {
@@ -839,6 +968,7 @@ function BadgeFavourite(favouriteId) {
     $.ajax({
         url: app_base + 'Badge/Favourite',
         type: 'POST',
+        cache: false,
         data: strung,
         contentType: 'application/json; charset=utf-8',
         success: function (data) {
@@ -863,6 +993,7 @@ function BadgeVoteUp(postId) {
     $.ajax({
         url: app_base + 'Badge/VoteUpPost',
         type: 'POST',
+        cache: false,
         data: strung,
         contentType: 'application/json; charset=utf-8',
         success: function (data) {
@@ -886,6 +1017,7 @@ function BadgeVoteDown(postId) {
     $.ajax({
         url: app_base + 'Badge/VoteDownPost',
         type: 'POST',
+        cache: false,
         data: strung,
         contentType: 'application/json; charset=utf-8',
         success: function (data) {
@@ -902,6 +1034,7 @@ function UserPost() {
     $.ajax({
         url: app_base + 'Badge/Post',
         type: 'POST',
+        cache: false,
         success: function (data) {
             // No need to do anything
         },
