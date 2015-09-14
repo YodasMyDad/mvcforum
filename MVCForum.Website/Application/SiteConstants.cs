@@ -22,6 +22,20 @@ namespace MVCForum.Website.Application
                 return ConfigurationManager.AppSettings["FacebookAppSecret"];
             }
         }
+        public static string MicrosoftAppId
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["MicrosoftAppId"];
+            }
+        }
+        public static string MicrosoftAppSecret
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["MicrosoftAppSecret"];
+            }
+        }
         public static string GooglePlusAppId
         {
             get

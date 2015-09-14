@@ -390,12 +390,21 @@ namespace MVCForum.Website.Controllers
                         // Create a HttpPostedFileBase image from the C# Image
                         using (var stream = new MemoryStream())
                         {
+                            // Microsoft doesn't give you a file extension - See if it has a file extension
+                            // Get the file extension
+                            var fileExtension = Path.GetExtension(fileName);
+                            if (string.IsNullOrEmpty(fileExtension))
+                            {
+                                // no file extension so give it one
+                                fileName = string.Concat(fileName, ".jpg");
+                            }
+
                             image.Save(stream, ImageFormat.Jpeg);
                             stream.Position = 0;
                             HttpPostedFileBase formattedImage = new MemoryFile(stream, "image/jpeg", fileName);
 
                             // Upload the file
-                            var uploadResult = AppHelpers.UploadFile(formattedImage, uploadFolderPath, LocalizationService);
+                            var uploadResult = AppHelpers.UploadFile(formattedImage, uploadFolderPath, LocalizationService, true);
 
                             // Don't throw error if problem saving avatar, just don't save it.
                             if (uploadResult.UploadSuccessful)
@@ -414,6 +423,10 @@ namespace MVCForum.Website.Controllers
                     if (userModel.LoginType == LoginType.Google)
                     {
                         userToSave.GoogleAccessToken = userModel.UserAccessToken;
+                    }
+                    if (userModel.LoginType == LoginType.Google)
+                    {
+                        userToSave.MicrosoftAccessToken = userModel.UserAccessToken;
                     }
 
                     // Set the view bag message here

@@ -33,6 +33,7 @@
         @if (string.IsNullOrEmpty(Model.FacebookAppId))
         {
             <p><span class="label label-warning">Note</span> Facebook login will not work until the Facebook App Id and Secret Key are added to the web.config (appSettings)</p>
+            <p>Ref: <a href="https://developers.facebook.com/">https://developers.facebook.com/</a></p>
         }
         else
         {
@@ -43,11 +44,23 @@
         @if (string.IsNullOrEmpty(Model.GooglePlusAppId))
         {
             <p><span class="label label-warning">Note</span> Google login will not work until the Google App Id and Secret Key are added to the web.config (appSettings)</p>
+            <p>Ref: <a href="https://console.developers.google.com/project">https://console.developers.google.com/project</a></p>
         }
         else
         {
             <p>Google App Id: @Model.GooglePlusAppId</p>
             <p>Google Secret: @Model.GooglePlusAppSecret</p>
+        }
+        
+        @if (string.IsNullOrEmpty(Model.MicrosoftAppId))
+        {
+            <p><span class="label label-warning">Note</span> Microsoft login will not work until the Google App Id and Secret Key are added to the web.config (appSettings)</p>
+            <p>Ref: <a href="https://account.live.com/developers/applications/create">https://account.live.com/developers/applications/create</a></p>
+        }
+        else
+        {
+            <p>Microsoft App Id: @Model.MicrosoftAppId</p>
+            <p>Microsoft Secret: @Model.MicrosoftAppSecret</p>
         }
 
     </div>

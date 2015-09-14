@@ -7,7 +7,7 @@
         {
             <p>
                 <a class="btn-mvc btn-mvc-large btn-mvc-fullwidth facebookloginbutton" href="@Url.Action("FacebookLogin", "FacebookOAuth")">
-                    <i class="fa fa-facebook"></i> @Html.LanguageString("Members.LogonFacebookButton")
+                    <i class="fa fa-facebook-official"></i> @Html.LanguageString("Members.LogonFacebookButton")
                 </a>
             </p>
         }
@@ -21,6 +21,19 @@
             <p>
                 <a class="btn-mvc btn-mvc-large btn-mvc-fullwidth googleloginbutton" href="@Url.Action("GoogleLogin", "GoogleOAuth")">
                     <i class="fa fa-google-plus"></i> @Html.LanguageString("Members.LogonGoogleButton")
+                </a>
+            </p>
+        }
+        else
+        {
+            @Html.LanguageString("Google.Error.EnabledButNotAddedKeys")
+        }
+        
+        @if (!string.IsNullOrEmpty(SiteConstants.MicrosoftAppId) && !string.IsNullOrEmpty(SiteConstants.MicrosoftAppSecret))
+        {
+            <p>
+                <a class="btn-mvc btn-mvc-large btn-mvc-fullwidth microsoftloginbutton" href="@Url.Action("MicrosoftLogin", "MicrosoftOAuth")">
+                    <i class="fa fa-windows"></i> @Html.LanguageString("Members.LogonMicrosoftButton")
                 </a>
             </p>
         }
