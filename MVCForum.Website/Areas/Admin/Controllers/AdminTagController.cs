@@ -48,7 +48,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         private List<SelectListItem> TagsSelectList()
         {
             var list = new List<SelectListItem>();
-            foreach (var tag in _topicTagService.GetAll().ToList())
+            foreach (var tag in _topicTagService.GetAll().OrderBy(x => x.Tag).ToList())
             {
                 list.Add(new SelectListItem
                 {
