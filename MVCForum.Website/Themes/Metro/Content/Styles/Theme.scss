@@ -716,6 +716,7 @@ footer { background: $color-global-grey-blue; padding: 20px 0; margin: 30px 0 0 
 
 .privatemessages { clear: both; padding: 30px 0 0 0;
     .top-pm-nav { padding-top: 8px; padding-bottom: 12px; }
+    .newmessageicon {color:$color-global-green;}
 }
 .previousmessageholder { padding-top: 20px; font-weight: 600; text-transform: uppercase; margin-bottom: 20px; }
 .pmview {
