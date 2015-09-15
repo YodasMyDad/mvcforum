@@ -220,9 +220,9 @@ namespace MVCForum.Services
             return _categoryRepository.Get(id);
         }
 
-        public IList<Category> Get(IList<Guid> ids)
+        public IList<Category> Get(IList<Guid> ids, bool fullGraph = false)
         {
-            return _categoryRepository.Get(ids);
+            return _categoryRepository.Get(ids, fullGraph);
         }
 
         /// <summary>
