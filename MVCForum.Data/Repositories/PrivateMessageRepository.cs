@@ -121,7 +121,7 @@ namespace MVCForum.Data.Repositories
                             .Include(x => x.UserTo)
                             .Include(x => x.UserFrom)
                             .Where(x => x.UserTo.Id == userId && !x.IsRead && x.IsSentMessage != true)
-                            .GroupBy(x => x.UserFrom).Count();
+                            .GroupBy(x => x.UserFrom.Id).Count();
         }
 
         public PrivateMessage Add(PrivateMessage item)
