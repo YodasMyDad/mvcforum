@@ -74,6 +74,7 @@
     <file src="..\MVCForum.WebSite\bin\MVCForum.Services.dll" target="lib\MVCForum.Services.dll" />
     <file src="..\MVCForum.WebSite\bin\MVCForum.Domain.dll" target="lib\MVCForum.Domain.dll" />
     <file src="..\MVCForum.WebSite\bin\MVCForum.Utilities.dll" target="lib\MVCForum.Utilities.dll" />
+    <file src="..\MVCForum.WebSite\bin\Skybrud.Social.Microsoft.dll" target="lib\Skybrud.Social.Microsoft.dll" />
   </files>
 </package>
 
