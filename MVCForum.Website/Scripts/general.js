@@ -558,21 +558,36 @@ var hideSlideOutPanel = function () {
         if ($(event.target).is(".cd-panel") || $(event.target).is(".cd-panel-close")) {
             // Confirm they want to close it
             var closeconfirmationText = panel.data("confirmationtext");
-            if (confirm(closeconfirmationText)) {
-                event.preventDefault();
-                panel.removeClass("is-visible");
-                //Clear fields
-                var contentDiv = panel.find(".cd-panel-content");
-                contentDiv.html(largeSpinnerBlock);
-                var titleDiv = panel.find(".cd-panel-header h6");
-                titleDiv.html("");
-                $("body").css("overflow", "").css("height", "");
-                $("html").css("overflow", "").css("height", "");
+
+            if (typeof tinyMCE != "undefined") {
+                var pmMessage = tinyMCE.activeEditor.getContent();
+                if (pmMessage != "") {
+                    if (confirm(closeconfirmationText)) {
+                        hardPanelClose(event, panel);
+                    }
+                } else {
+                    hardPanelClose(event, panel);
+                }
+            } else {
+                hardPanelClose(event, panel);
             }
             return false;
         }
     });
 };
+
+var hardPanelClose = function(event, panel) {
+    event.preventDefault();
+    panel.removeClass("is-visible");
+    //Clear fields
+    var contentDiv = panel.find(".cd-panel-content");
+    contentDiv.html(largeSpinnerBlock);
+    var titleDiv = panel.find(".cd-panel-header h6");
+    titleDiv.html("");
+    $("body").css("overflow", "").css("height", "");
+    $("html").css("overflow", "").css("height", "");
+};
+
 var closeSlideOutPanel = function () {
     var panel = $(".cd-panel");
     panel.trigger("click");
