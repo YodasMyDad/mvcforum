@@ -1627,6 +1627,10 @@ footer h6 {
   padding-bottom: 12px;
 }
 
+.privatemessages .newmessageicon {
+  color: #2abd54;
+}
+
 .previousmessageholder {
   padding-top: 20px;
   font-weight: 600;

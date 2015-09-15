@@ -22,5 +22,6 @@ namespace MVCForum.Domain.DomainModel
     {
         public MembershipUser User { get; set; }
         public DateTime Date { get; set; }
+        public bool HasUnreadMessages { get; set; }
     }
 }
