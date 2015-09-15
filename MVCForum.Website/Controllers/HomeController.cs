@@ -258,11 +258,13 @@ namespace MVCForum.Website.Controllers
                 // #### CATEGORIES
                 foreach (var category in allowedCategories)
                 {
+                    // Get last post 
+                    var topic = category.Topics.OrderByDescending(x => x.LastPost.DateEdited).FirstOrDefault();
                     var sitemapEntry = new SitemapEntry
                     {
                         Name = category.Name,
                         Url = category.NiceUrl,
-                        LastUpdated = category.DateCreated,
+                        LastUpdated = topic != null ? topic.LastPost.DateEdited : category.DateCreated,
                         ChangeFrequency = SiteMapChangeFreqency.monthly
                     };
                     sitemap.Add(sitemapEntry);

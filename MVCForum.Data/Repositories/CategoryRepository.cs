@@ -37,9 +37,18 @@ namespace MVCForum.Data.Repositories
             return _context.Category.FirstOrDefault(x => x.Id == id);
         }
 
-        public IList<Category> Get(IList<Guid> ids)
+        public IList<Category> Get(IList<Guid> ids, bool fullGraph = false)
         {
-            return _context.Category.AsNoTracking().Where(x => ids.Contains(x.Id)).ToList();
+            if (fullGraph)
+            {
+                return _context.Category
+                        .AsNoTracking()
+                        .Include(x => x.Topics.Select(l => l.LastPost.User))
+                        .Include(x => x.ParentCategory)
+                        .Where(x => ids.Contains(x.Id)).ToList();
+            }
+            return _context.Category
+                .AsNoTracking().Where(x => ids.Contains(x.Id)).ToList();
         }
 
         public IList<Category> GetAllSubCategories(Guid parentId)

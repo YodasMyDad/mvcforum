@@ -26,7 +26,7 @@ namespace MVCForum.Domain.Interfaces.Services
         List<Category> GetAllowedCategories(MembershipRole role, string actionType);
         IEnumerable<Category> GetAllSubCategories(Guid parentId);
         Category Get(Guid id);
-        IList<Category> Get(IList<Guid> ids);
+        IList<Category> Get(IList<Guid> ids, bool fullGraph = false);
         CategoryWithSubCategories GetBySlugWithSubCategories(string slug);
         Category Get(string slug);
         List<Category> GetCategoryParents(Category category, List<Category> allowedCategories);
