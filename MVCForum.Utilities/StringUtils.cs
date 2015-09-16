@@ -686,7 +686,13 @@ namespace MVCForum.Utilities
             var unwantedTagNames = new List<string>
             {
                 "div",
-                "font"
+                "font",
+                "table",
+                "tbody",
+                "tr",
+                "td",
+                "th",
+                "thead"
             };
 
             var htmlDoc = new HtmlDocument();
