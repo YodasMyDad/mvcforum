@@ -32,7 +32,7 @@ namespace MVCForum.Data.UnitOfWork
 
             // Updating EF timeout taken from
             // http://stackoverflow.com/questions/6232633/entity-framework-timeouts
-            _objectContext.CommandTimeout = 3 * 60; // value in seconds
+            //_objectContext.CommandTimeout = 3 * 60; // value in seconds
 
             if (_objectContext.Connection.State != ConnectionState.Open)
             {
