@@ -1,11 +1,13 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using System.Web.Routing;
+using System.Web.Security;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Website.Areas.Admin.ViewModels;
+using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
 
 namespace MVCForum.Website.Controllers
 {
@@ -65,6 +67,18 @@ namespace MVCForum.Website.Controllers
                 {
                     filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Closed" }, { "action", "Index" } });
                 }          
+            }
+
+            // If the user is banned - Log them out.
+            if (LoggedOnReadOnlyUser != null && LoggedOnReadOnlyUser.IsBanned)
+            {
+                FormsAuthentication.SignOut();
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = LocalizationService.GetResourceString("Members.NowBanned"),
+                    MessageType = GenericMessages.danger
+                };
+                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Home" }, { "action", "Index" } });
             }
         }
 

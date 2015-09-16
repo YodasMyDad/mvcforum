@@ -13,6 +13,7 @@ namespace MVCForum.Domain.Interfaces.Services
         PasswordAttemptsExceeded,
         UserLockedOut,
         UserNotApproved,
+        Banned
     }
 
     public partial interface IMembershipService

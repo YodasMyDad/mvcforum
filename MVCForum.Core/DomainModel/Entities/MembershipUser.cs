@@ -41,6 +41,7 @@ namespace MVCForum.Domain.DomainModel
         public string PasswordAnswer { get; set; }
         public bool IsApproved { get; set; }
         public bool IsLockedOut { get; set; }
+        public bool IsBanned { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime LastLoginDate { get; set; }
         public DateTime LastPasswordChangedDate { get; set; }
