@@ -51,7 +51,7 @@
         <div class="col-md-3 memberavatardetails">
             <p class="memberavatar"><img src="@Model.User.MemberImage(SiteConstants.GravatarProfileSize)" alt="@Model.User.UserName"></p>
 
-            @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name)
+            @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name && Html.CurrentMember().DisablePrivateMessages != true)
             {
                 <p><a href="@Url.Action("View", "PrivateMessage", new { from = Model.User.Id }, null)" class="btn-mvc pm-panel" data-name="@string.Concat(Html.LanguageString("PM.Title"), Model.User.UserName)">@Html.LanguageString("Members.MessageMe")</a></p>
             }
