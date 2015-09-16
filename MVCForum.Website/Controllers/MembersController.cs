@@ -1052,20 +1052,12 @@ namespace MVCForum.Website.Controllers
                 count = _privateMessageService.NewPrivateMessageCount(LoggedOnReadOnlyUser.Id);
             }
 
-            //if (count > 0)
-            //{
-            //    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-            //    {
-            //        Message = LocalizationService.GetResourceString("Member.HasNewPrivateMessages"),
-            //        MessageType = GenericMessages.info
-            //    };
-            //}
-
+            var canViewPms = settings.EnablePrivateMessages && LoggedOnReadOnlyUser != null && LoggedOnReadOnlyUser.DisablePrivateMessages != true;
             var viewModel = new ViewAdminSidePanelViewModel
             {
                 CurrentUser = LoggedOnReadOnlyUser,
-                NewPrivateMessageCount = count,
-                CanViewPrivateMessages = settings.EnablePrivateMessages && LoggedOnReadOnlyUser != null &&  LoggedOnReadOnlyUser.DisablePrivateMessages != true,
+                NewPrivateMessageCount = canViewPms ? count : 0,
+                CanViewPrivateMessages = canViewPms,
                 IsDropDown = isDropDown
             };
             
