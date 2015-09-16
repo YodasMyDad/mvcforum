@@ -51,10 +51,17 @@
                 @Html.ValidationMessageFor(x => x.Age)
             </div>
 
-            <div class="form-group">
-                @Html.LabelFor(x => x.Avatar)
-                @Html.TextBoxFor(x => x.Avatar, new { @class = "form-control" })
-                @Html.ValidationMessageFor(x => x.Avatar)
+            <div class="row membereditavatar">
+                <div class="col-sm-2">
+                    <img src="@AppHelpers.MemberImage(Model.Avatar, Model.Email, Model.Id, SiteConstants.GravatarProfileSize)" class="img-responsive" alt="@Model.UserName">
+                </div>
+                <div class="col-sm-10">
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Avatar)
+                        @Html.TextBoxFor(x => x.Avatar, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.Avatar)
+                    </div>
+                </div>
             </div>
 
             <div class="form-group">
@@ -135,6 +142,14 @@
                     @Html.CheckBoxFor(m => m.IsLockedOut)
                 }
                 @Html.ValidationMessageFor(m => m.IsLockedOut)
+            </div>
+
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.IsBanned, new { @class = "checkbox" }))
+                {
+                    @Html.CheckBoxFor(m => m.IsBanned)
+                }
+                @Html.ValidationMessageFor(m => m.IsBanned)
             </div>
 
             <div class="form-group">

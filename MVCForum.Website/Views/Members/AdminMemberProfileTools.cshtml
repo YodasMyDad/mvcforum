@@ -2,7 +2,7 @@
 @model MVCForum.Website.ViewModels.ViewMemberViewModel
 <div class="adminprofiletools">
     
-    @if(!Model.User.IsLockedOut)
+    @if(!Model.User.IsBanned)
     {
         <p><a href="@Url.Action("BanMember", "Members", new {id = Model.User.Id }, null)" class="btn-mvc">@Html.LanguageString("Members.BanUser")</a></p>
     }

@@ -34,6 +34,7 @@ namespace MVCForum.Website.ViewModels.Mapping
                 IsApproved = user.IsApproved,
                 Id = user.Id,
                 IsLockedOut = user.IsLockedOut,
+                IsBanned = user.IsBanned,
                 Roles = user.Roles.Select(x => x.RoleName).ToArray(),
                 UserName = user.UserName,
                 Age = user.Age,

@@ -21,6 +21,7 @@ namespace MVCForum.Data.Mapping
             Property(x => x.PasswordAnswer).IsOptional().HasMaxLength(256);
             Property(x => x.IsApproved).IsRequired();
             Property(x => x.IsLockedOut).IsRequired();
+            Property(x => x.IsBanned).IsRequired();
             Property(x => x.CreateDate).IsRequired();
             Property(x => x.LastLoginDate).IsRequired();
             Property(x => x.LastPasswordChangedDate).IsRequired();

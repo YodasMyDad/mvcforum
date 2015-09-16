@@ -108,7 +108,7 @@ namespace MVCForum.Website.Controllers
 
                     if (!user.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
                     {
-                        user.IsLockedOut = true;
+                        user.IsBanned = true;
 
                         try
                         {
@@ -674,7 +674,7 @@ namespace MVCForum.Website.Controllers
                             {
                                 // Set last login date
                                 user = MembershipService.GetUser(username);
-                                if (user.IsApproved && !user.IsLockedOut)
+                                if (user.IsApproved && !user.IsLockedOut && !user.IsBanned)
                                 {
                                     FormsAuthentication.SetAuthCookie(username, model.RememberMe);
                                     user.LastLoginDate = DateTime.UtcNow;
@@ -737,6 +737,10 @@ namespace MVCForum.Website.Controllers
 
                                     case LoginAttemptStatus.UserLockedOut:
                                         ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.UserLockedOut"));
+                                        break;
+
+                                    case LoginAttemptStatus.Banned:
+                                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.NowBanned"));
                                         break;
 
                                     case LoginAttemptStatus.UserNotApproved:

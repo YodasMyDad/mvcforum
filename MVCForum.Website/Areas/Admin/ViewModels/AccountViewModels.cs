@@ -117,6 +117,9 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [Display(Name = "User is Locked Out")]
         public bool IsLockedOut { get; set; }
 
+        [Display(Name = "User is Banned")]
+        public bool IsBanned { get; set; }
+
         [Display(Name = "Comment")]
         public string Comment { get; set; }
 
