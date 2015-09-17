@@ -586,6 +586,8 @@ var hardPanelClose = function(event, panel) {
     titleDiv.html("");
     $("body").css("overflow", "").css("height", "");
     $("html").css("overflow", "").css("height", "");
+    //remove onbeforeunload registered by TinyMCE
+    window.onbeforeunload = function () { };
 };
 
 var closeSlideOutPanel = function () {
