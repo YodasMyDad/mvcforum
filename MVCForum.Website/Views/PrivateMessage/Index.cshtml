@@ -27,9 +27,10 @@
                                 <td>
                                     <a href="@Url.Action("View", new { from = message.User.Id })" class="pm-panel" data-name="@string.Concat(Html.Lang("PM.Title"), message.User.UserName)">
                                         <strong>
-                                            @message.User.UserName
+                                            @message.User.UserName 
                                         </strong>
                                     </a>
+                                    @if (message.HasUnreadMessages){<text><i class="fa fa-commenting-o newmessageicon"></i></text>}
                                 </td>
                                 <td>
                                     @DatesUI.GetPrettyDate(message.Date.ToString())

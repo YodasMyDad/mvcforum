@@ -493,7 +493,7 @@ section.content-strip {
 .post { border-top: 1px #f2f2f2 solid; padding: 15px 0 15px 0;
     .glyphicon-star { color: $color-global-yellow; }
 }
-.postcontent {
+.postcontent { position:relative;
     p { font-size: 15px; overflow-x: hidden; }
     table { width: 100% !important; margin: 10px 0;
         td { border-bottom: 1px #efefef solid; padding: 4px; font-size: 12px; }
@@ -716,6 +716,7 @@ footer { background: $color-global-grey-blue; padding: 20px 0; margin: 30px 0 0 
 
 .privatemessages { clear: both; padding: 30px 0 0 0;
     .top-pm-nav { padding-top: 8px; padding-bottom: 12px; }
+    .newmessageicon {color:$color-global-green;}
 }
 .previousmessageholder { padding-top: 20px; font-weight: 600; text-transform: uppercase; margin-bottom: 20px; }
 .pmview {

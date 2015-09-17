@@ -17,6 +17,6 @@ namespace MVCForum.Domain.Interfaces.Repositories
         IList<Category> GetCategoryParents(Category category);
         void Delete(Category category);
         Category Get(Guid id);
-        IList<Category> Get(IList<Guid> ids);
+        IList<Category> Get(IList<Guid> ids, bool fullGraph = false);
     }
 }

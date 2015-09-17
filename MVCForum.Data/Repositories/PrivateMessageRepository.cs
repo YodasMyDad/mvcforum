@@ -33,7 +33,8 @@ namespace MVCForum.Data.Repositories
                 .Select(x => new PrivateMessageListItem
                 {
                     Date = x.DateSent,
-                    User = (x.IsSentMessage == true ? x.UserTo : x.UserFrom)
+                    User = (x.IsSentMessage == true ? x.UserTo : x.UserFrom),
+                    HasUnreadMessages = (x.IsSentMessage != true && x.UserFrom.Id != user.Id && (x.IsRead == false))
                 })
                 .GroupBy(x => x.User.Id)
                 .Select(x => x.OrderByDescending(d => d.Date).FirstOrDefault())
@@ -119,7 +120,8 @@ namespace MVCForum.Data.Repositories
             return _context.PrivateMessage
                             .Include(x => x.UserTo)
                             .Include(x => x.UserFrom)
-                            .Count(x => x.UserTo.Id == userId && !x.IsRead && x.IsSentMessage != true);
+                            .Where(x => x.UserTo.Id == userId && !x.IsRead && x.IsSentMessage != true)
+                            .GroupBy(x => x.UserFrom.Id).Count();
         }
 
         public PrivateMessage Add(PrivateMessage item)

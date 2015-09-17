@@ -108,7 +108,7 @@ namespace MVCForum.Website.Controllers
 
                     if (!user.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
                     {
-                        user.IsLockedOut = true;
+                        user.IsBanned = true;
 
                         try
                         {
@@ -390,12 +390,21 @@ namespace MVCForum.Website.Controllers
                         // Create a HttpPostedFileBase image from the C# Image
                         using (var stream = new MemoryStream())
                         {
+                            // Microsoft doesn't give you a file extension - See if it has a file extension
+                            // Get the file extension
+                            var fileExtension = Path.GetExtension(fileName);
+                            if (string.IsNullOrEmpty(fileExtension))
+                            {
+                                // no file extension so give it one
+                                fileName = string.Concat(fileName, ".jpg");
+                            }
+
                             image.Save(stream, ImageFormat.Jpeg);
                             stream.Position = 0;
                             HttpPostedFileBase formattedImage = new MemoryFile(stream, "image/jpeg", fileName);
 
                             // Upload the file
-                            var uploadResult = AppHelpers.UploadFile(formattedImage, uploadFolderPath, LocalizationService);
+                            var uploadResult = AppHelpers.UploadFile(formattedImage, uploadFolderPath, LocalizationService, true);
 
                             // Don't throw error if problem saving avatar, just don't save it.
                             if (uploadResult.UploadSuccessful)
@@ -414,6 +423,10 @@ namespace MVCForum.Website.Controllers
                     if (userModel.LoginType == LoginType.Google)
                     {
                         userToSave.GoogleAccessToken = userModel.UserAccessToken;
+                    }
+                    if (userModel.LoginType == LoginType.Google)
+                    {
+                        userToSave.MicrosoftAccessToken = userModel.UserAccessToken;
                     }
 
                     // Set the view bag message here
@@ -661,7 +674,7 @@ namespace MVCForum.Website.Controllers
                             {
                                 // Set last login date
                                 user = MembershipService.GetUser(username);
-                                if (user.IsApproved && !user.IsLockedOut)
+                                if (user.IsApproved && !user.IsLockedOut && !user.IsBanned)
                                 {
                                     FormsAuthentication.SetAuthCookie(username, model.RememberMe);
                                     user.LastLoginDate = DateTime.UtcNow;
@@ -724,6 +737,10 @@ namespace MVCForum.Website.Controllers
 
                                     case LoginAttemptStatus.UserLockedOut:
                                         ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.UserLockedOut"));
+                                        break;
+
+                                    case LoginAttemptStatus.Banned:
+                                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.NowBanned"));
                                         break;
 
                                     case LoginAttemptStatus.UserNotApproved:
@@ -1035,20 +1052,12 @@ namespace MVCForum.Website.Controllers
                 count = _privateMessageService.NewPrivateMessageCount(LoggedOnReadOnlyUser.Id);
             }
 
-            //if (count > 0)
-            //{
-            //    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-            //    {
-            //        Message = LocalizationService.GetResourceString("Member.HasNewPrivateMessages"),
-            //        MessageType = GenericMessages.info
-            //    };
-            //}
-
+            var canViewPms = settings.EnablePrivateMessages && LoggedOnReadOnlyUser != null && LoggedOnReadOnlyUser.DisablePrivateMessages != true;
             var viewModel = new ViewAdminSidePanelViewModel
             {
                 CurrentUser = LoggedOnReadOnlyUser,
-                NewPrivateMessageCount = count,
-                CanViewPrivateMessages = settings.EnablePrivateMessages && LoggedOnReadOnlyUser != null &&  LoggedOnReadOnlyUser.DisablePrivateMessages != true,
+                NewPrivateMessageCount = canViewPms ? count : 0,
+                CanViewPrivateMessages = canViewPms,
                 IsDropDown = isDropDown
             };
             

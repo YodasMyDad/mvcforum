@@ -180,6 +180,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 user.Facebook = userModel.Facebook;
                 user.IsApproved = userModel.IsApproved;
                 user.IsLockedOut = userModel.IsLockedOut;
+                user.IsBanned = userModel.IsBanned;
                 user.Location = userModel.Location;
                 user.PasswordAnswer = userModel.PasswordAnswer;
                 user.PasswordQuestion = userModel.PasswordQuestion;

@@ -21,6 +21,7 @@ namespace MVCForum.Data.Mapping
             Property(x => x.PasswordAnswer).IsOptional().HasMaxLength(256);
             Property(x => x.IsApproved).IsRequired();
             Property(x => x.IsLockedOut).IsRequired();
+            Property(x => x.IsBanned).IsRequired();
             Property(x => x.CreateDate).IsRequired();
             Property(x => x.LastLoginDate).IsRequired();
             Property(x => x.LastPasswordChangedDate).IsRequired();
@@ -42,6 +43,8 @@ namespace MVCForum.Data.Mapping
             Property(x => x.Avatar).IsOptional().HasMaxLength(500);
             Property(x => x.FacebookAccessToken).IsOptional().HasMaxLength(300);
             Property(x => x.FacebookId).IsOptional();
+            Property(x => x.MicrosoftAccessToken).IsOptional().HasMaxLength(300);
+            Property(x => x.MicrosoftId).IsOptional();
             Property(x => x.TwitterAccessToken).IsOptional().HasMaxLength(300);
             Property(x => x.TwitterId).IsOptional().HasMaxLength(150);
             Property(x => x.GoogleAccessToken).IsOptional().HasMaxLength(300);

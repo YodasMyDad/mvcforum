@@ -27,7 +27,9 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     FacebookAppId = SiteConstants.FacebookAppId,
                     FacebookAppSecret = SiteConstants.FacebookAppSecret,
                     GooglePlusAppId = SiteConstants.GooglePlusAppId,
-                    GooglePlusAppSecret = SiteConstants.GooglePlusAppSecret
+                    GooglePlusAppSecret = SiteConstants.GooglePlusAppSecret,
+                    MicrosoftAppId = SiteConstants.MicrosoftAppId,
+                    MicrosoftAppSecret = SiteConstants.MicrosoftAppSecret
                 };
                 return View(viewModel);
             }
@@ -48,6 +50,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 viewModel.FacebookAppSecret = SiteConstants.FacebookAppSecret;
                 viewModel.GooglePlusAppId = SiteConstants.GooglePlusAppId;
                 viewModel.GooglePlusAppSecret = SiteConstants.GooglePlusAppSecret;
+                viewModel.MicrosoftAppId = SiteConstants.MicrosoftAppId;
+                viewModel.MicrosoftAppSecret = SiteConstants.MicrosoftAppSecret;
 
                 try
                 {

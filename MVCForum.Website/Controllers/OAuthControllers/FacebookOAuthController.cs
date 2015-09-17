@@ -126,6 +126,7 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                 // Check whether an error response was received from Facebook
                 if (AuthError != null)
                 {
+                    Session.Remove("MVCForum_" + AuthState);
                     resultMessage.Message = AuthErrorDescription;
                     resultMessage.MessageType = GenericMessages.danger;
                 }
@@ -238,6 +239,7 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                 {
                     resultMessage.Message = string.Format("Unable to get user information<br/>{0}", ex.Message);
                     resultMessage.MessageType = GenericMessages.danger;
+                    LoggingService.Error(ex);
                 }
 
             }

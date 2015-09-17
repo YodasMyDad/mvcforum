@@ -4,6 +4,7 @@
     {
         Facebook,
         Google,
+        Microsoft,
         Standard
     }
 }

@@ -132,6 +132,9 @@
       <HintPath>..\packages\Skybrud.Social.0.9.4.1\lib\net40\Skybrud.Social.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Skybrud.Social.Microsoft">
+      <HintPath>..\Externals\Skybrud.Social.Microsoft.dll</HintPath>
+    </Reference>
     <Reference Include="SquishIt.Framework, Version=0.9.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SquishIt.0.9.8\lib\SquishIt.Framework.dll</HintPath>
       <Private>True</Private>
@@ -300,6 +303,7 @@
     <Compile Include="Controllers\InstallController.cs" />
     <Compile Include="Controllers\OAuthControllers\FacebookOAuthController.cs" />
     <Compile Include="Controllers\OAuthControllers\GoogleOAuthController.cs" />
+    <Compile Include="Controllers\OAuthControllers\MicrosoftOAuthController.cs" />
     <Compile Include="Controllers\PollController.cs" />
     <Compile Include="Controllers\PrivateMessageController.cs" />
     <Compile Include="Controllers\SearchController.cs" />

@@ -1033,6 +1033,10 @@ section.content-strip ul li a:hover, section.content-strip ul li a:focus, sectio
   color: #f2f226;
 }
 
+.postcontent {
+  position: relative;
+}
+
 .postcontent p {
   font-size: 15px;
   overflow-x: hidden;
@@ -1625,6 +1629,10 @@ footer h6 {
 .privatemessages .top-pm-nav {
   padding-top: 8px;
   padding-bottom: 12px;
+}
+
+.privatemessages .newmessageicon {
+  color: #2abd54;
 }
 
 .previousmessageholder {
