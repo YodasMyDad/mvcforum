@@ -194,7 +194,22 @@ namespace MVCForum.Services
             // Sanitize
             category = SanitizeCategory(category);
 
-            category.Slug = ServiceHelpers.GenerateSlug(category.Name, _categoryRepository.GetBySlugLike(category.Slug), category.Slug);
+            var updateSlug = true;
+
+            // Check if slug has changed as this could be an update
+            if (!string.IsNullOrEmpty(category.Slug))
+            {
+                var categoryBySlug = GetBySlugWithSubCategories(category.Slug);
+                if (categoryBySlug.Category.Id == category.Id)
+                {
+                    updateSlug = false;
+                }
+            }
+
+            if (updateSlug)
+            {
+                category.Slug = ServiceHelpers.GenerateSlug(category.Name, _categoryRepository.GetBySlugLike(category.Slug), category.Slug);   
+            }
         }
 
         /// <summary>
