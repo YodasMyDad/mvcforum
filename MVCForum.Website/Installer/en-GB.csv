@@ -325,6 +325,7 @@ Members.SuccessfulSrub,All done
 Post.Favourite,Favourite
 Post.Favourited,Favourited
 Members.NowBanned,Member is now banned
+Members.NowUnBanned,Member is now NOT banned
 PM.AboutToExceedInboxSizeBody,You are about to exceed your private message inbox allowance
 PM.AboutToExceedInboxSizeSubject,Private Message Inbox Allowance
 PM.NewPrivateMessage,New Private Message

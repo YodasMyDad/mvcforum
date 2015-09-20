@@ -1101,7 +1101,7 @@ namespace MVCForum.Website.Controllers
                 // Get the topics
                 var topics = _topicService.GetPagedTopicsByTag(pageIndex,
                                                            settings.TopicsPerPage,
-                                                           SiteConstants.ActiveTopicsListSize,
+                                                           int.MaxValue,
                                                            tag, allowedCategories);
 
                 // See if the user has subscribed to this topic or not

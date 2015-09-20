@@ -206,7 +206,7 @@ namespace MVCForum.Services
         {
             // Sanitize any strings in a category
             category.Description = StringUtils.GetSafeHtml(category.Description);
-            category.Name = StringUtils.SafePlainText(category.Name);
+            category.Name = HttpUtility.HtmlDecode(StringUtils.SafePlainText(category.Name));
             return category;
         }
 

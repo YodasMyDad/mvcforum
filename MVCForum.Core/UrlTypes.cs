@@ -30,7 +30,7 @@ namespace MVCForum.Domain
 
         public static string GenerateUrl(UrlType e, string slug)
         {
-            return VirtualPathUtility.ToAbsolute(string.Format("~/{0}/{1}/", UrlTypeName(e), HttpUtility.HtmlDecode(slug)));            
+            return VirtualPathUtility.ToAbsolute(string.Format("~/{0}/{1}/", UrlTypeName(e), HttpUtility.UrlEncode(HttpUtility.HtmlDecode(slug))));            
         }
 
         public static string GenerateFileUrl(string filePath)
