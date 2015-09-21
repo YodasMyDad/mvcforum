@@ -148,7 +148,7 @@ namespace MVCForum.Website.Controllers
                 {
                     if (!user.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
                     {
-                        user.IsLockedOut = false;
+                        user.IsBanned = false;
 
                         try
                         {
