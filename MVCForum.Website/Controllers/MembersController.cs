@@ -32,9 +32,6 @@ namespace MVCForum.Website.Controllers
         private readonly IPrivateMessageService _privateMessageService;
         private readonly IBannedEmailService _bannedEmailService;
         private readonly IBannedWordService _bannedWordService;
-        private readonly ITopicNotificationService _topicNotificationService;
-        private readonly IPollAnswerService _pollAnswerService;
-        private readonly IVoteService _voteService;
         private readonly ICategoryService _categoryService;
 
         public MembersController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService,
@@ -47,9 +44,6 @@ namespace MVCForum.Website.Controllers
             _privateMessageService = privateMessageService;
             _bannedEmailService = bannedEmailService;
             _bannedWordService = bannedWordService;
-            _topicNotificationService = topicNotificationService;
-            _pollAnswerService = pollAnswerService;
-            _voteService = voteService;
             _categoryService = categoryService;
         }
 
@@ -424,7 +418,7 @@ namespace MVCForum.Website.Controllers
                     {
                         userToSave.GoogleAccessToken = userModel.UserAccessToken;
                     }
-                    if (userModel.LoginType == LoginType.Google)
+                    if (userModel.LoginType == LoginType.Microsoft)
                     {
                         userToSave.MicrosoftAccessToken = userModel.UserAccessToken;
                     }
