@@ -4,7 +4,7 @@ $(function () {
 
     PostattachmentFancybox();
 
-    //ChangeLanguage();
+    ChangeLanguage();
 
     // Attach files click handler
     ShowFileUploadClickHandler();
