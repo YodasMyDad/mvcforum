@@ -216,7 +216,7 @@ namespace MVCForum.Website.Controllers
 
                 if (!permissions[AppConstants.PermissionDenyAccess].IsTicked)
                 {
-                    var topics = _topicService.GetRssTopicsByCategory(SiteConstants.ActiveTopicsListSize, category.Id);
+                    var topics = _topicService.GetRssTopicsByCategory(50, category.Id);
 
                     rssTopics.AddRange(topics.Select(x =>
                                                          {

@@ -86,7 +86,7 @@ namespace MVCForum.Website.Controllers
                 var rssTopics = new List<RssItem>();
 
                 // Get the latest topics
-                var topics = _topicService.GetRecentRssTopics(SiteConstants.ActiveTopicsListSize, allowedCategories);
+                var topics = _topicService.GetRecentRssTopics(50, allowedCategories);
 
                 // Get all the categories for this topic collection
                 var categories = topics.Select(x => x.Category).Distinct();
@@ -131,7 +131,7 @@ namespace MVCForum.Website.Controllers
                 // get an rss lit ready
                 var rssActivities = new List<RssItem>();
 
-                var activities = _activityService.GetAll(20).OrderByDescending(x => x.ActivityMapped.Timestamp);
+                var activities = _activityService.GetAll(50).OrderByDescending(x => x.ActivityMapped.Timestamp);
 
                 var activityLink = Url.Action("Activity");
 
