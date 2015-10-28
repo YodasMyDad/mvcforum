@@ -19,7 +19,7 @@ namespace MVCForum.Website.Controllers
         }
 
         [ChildActionOnly]
-        [OutputCache(Duration = AppConstants.LongCacheTime)]
+        [OutputCache(Duration = AppConstants.CacheThreeHours)]
         public PartialViewResult CurrentWeekHighPointUsers()
         {
             using (UnitOfWorkManager.NewUnitOfWork())

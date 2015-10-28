@@ -24,7 +24,7 @@ namespace MVCForum.Website.Controllers
         }
 
         [ChildActionOnly]
-        [OutputCache(Duration = AppConstants.ShortCacheTime)]
+        [OutputCache(Duration = AppConstants.CacheOneHour)]
         public PartialViewResult GetMainStats()
         {
             var allCats = _categoryService.GetAll();

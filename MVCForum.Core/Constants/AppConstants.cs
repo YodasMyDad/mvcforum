@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
 
 namespace MVCForum.Domain.Constants
 {
@@ -19,6 +17,8 @@ namespace MVCForum.Domain.Constants
         public const string MemberCacheName = "#member#-{0}";
 
         public const int CacheOneHour = 60;
+        public const int CacheTwoHours = 120;
+        public const int CacheThreeHours = 180;
         public const int CacheSixHours = 360;
         public const int CacheTwelveHours = 720;
 
@@ -107,11 +107,6 @@ namespace MVCForum.Domain.Constants
         //Mobile Check Name
         public const string IsMobileDevice = "IsMobileDevice";
 
-        /// <summary>
-        /// Cache lengths
-        /// </summary>
-        public const int ShortCacheTime = 900;
-        public const int LongCacheTime = 10800;
 
         /// <summary>
         /// Cache lengths

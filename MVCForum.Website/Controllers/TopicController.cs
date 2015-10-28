@@ -1219,7 +1219,7 @@ namespace MVCForum.Website.Controllers
                     {
                         Topics = topicViewModels
                     };
-                    _cacheService.Set(cacheKey, viewModel, AppConstants.LongCacheTime);
+                    _cacheService.Set(cacheKey, viewModel, AppConstants.CacheThreeHours);
                 }
                 else
                 {

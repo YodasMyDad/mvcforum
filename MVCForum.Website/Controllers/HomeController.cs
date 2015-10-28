@@ -73,7 +73,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.ShortCacheTime)]
+        [OutputCache(Duration = AppConstants.CacheTwoHours)]
         public ActionResult LatestRss()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -123,7 +123,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.ShortCacheTime)]
+        [OutputCache(Duration = AppConstants.CacheTwoHours)]
         public ActionResult ActivityRss()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -181,7 +181,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.ShortCacheTime)]
+        [OutputCache(Duration = AppConstants.CacheTwoHours)]
         public ActionResult GoogleSitemap()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -214,7 +214,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.ShortCacheTime)]
+        [OutputCache(Duration = AppConstants.CacheTwoHours)]
         public ActionResult GoogleMemberSitemap()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -243,7 +243,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.ShortCacheTime)]
+        [OutputCache(Duration = AppConstants.CacheTwoHours)]
         public ActionResult GoogleCategorySitemap()
         {
             using (UnitOfWorkManager.NewUnitOfWork())

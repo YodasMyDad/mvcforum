@@ -198,7 +198,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.ShortCacheTime)]
+        [OutputCache(Duration = AppConstants.CacheTwoHours)]
         public ActionResult CategoryRss(string slug)
         {
             using (UnitOfWorkManager.NewUnitOfWork())

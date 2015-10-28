@@ -36,8 +36,8 @@ namespace MVCForum.Website.Controllers
                 {
                     var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
                     var popularTags = _topicTagService.GetPopularTags(amountToTake, allowedCategories);
-                    viewModel = new PopularTagViewModel { PopularTags = popularTags };   
-                    _cacheService.Set(cacheKey, viewModel, AppConstants.LongCacheTime);
+                    viewModel = new PopularTagViewModel { PopularTags = popularTags };
+                    _cacheService.Set(cacheKey, viewModel, AppConstants.CacheThreeHours);
                 }
                 else
                 {
