@@ -39,16 +39,25 @@ namespace MVCForum.Data.Repositories
 
         public IList<Category> Get(IList<Guid> ids, bool fullGraph = false)
         {
+            IList<Category> categories;
+
             if (fullGraph)
             {
-                return _context.Category
-                        .AsNoTracking()
+                categories =
+                    _context.Category.AsNoTracking()
                         .Include(x => x.Topics.Select(l => l.LastPost.User))
                         .Include(x => x.ParentCategory)
-                        .Where(x => ids.Contains(x.Id)).ToList();
+                        .Where(x => ids.Contains(x.Id))
+                        .ToList();
             }
-            return _context.Category
-                .AsNoTracking().Where(x => ids.Contains(x.Id)).ToList();
+            else
+            {
+                categories = _context.Category
+                    .AsNoTracking().Where(x => ids.Contains(x.Id)).ToList();
+            }
+
+            // make sure categories are returned in order of ids (not in Database order)
+            return ids.Select(id => categories.Single(c => c.Id == id)).ToList();
         }
 
         public IList<Category> GetAllSubCategories(Guid parentId)

@@ -15,18 +15,16 @@ namespace MVCForum.Website.Controllers
     public partial class HomeController : BaseController
     {
         private readonly ITopicService _topicService;
-        private readonly IPostService _postService;
         private readonly ICategoryService _categoryService;
         private readonly IActivityService _activityService;
 
         public HomeController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IActivityService activityService, IMembershipService membershipService,
             ITopicService topicService, ILocalizationService localizationService, IRoleService roleService,
-            ISettingsService settingsService, ICategoryService categoryService, IPostService postService)
+            ISettingsService settingsService, ICategoryService categoryService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
             _categoryService = categoryService;
-            _postService = postService;
             _activityService = activityService;
         }
 
