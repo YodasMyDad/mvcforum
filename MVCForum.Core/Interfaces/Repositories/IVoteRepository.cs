@@ -12,5 +12,6 @@ namespace MVCForum.Domain.Interfaces.Repositories
         void Update(Vote item);
         IList<Vote> GetAllVotesByUser(Guid membershipId);
         List<Vote> GetVotesByPosts(List<Guid> postIds);
+        List<Vote> GetVotesByPost(Guid postId);
     }
 }

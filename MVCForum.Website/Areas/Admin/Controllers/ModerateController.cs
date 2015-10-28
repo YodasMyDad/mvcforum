@@ -12,7 +12,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 {
     [Authorize(Roles = AppConstants.AdminRoleName)]
     public partial class ModerateController : BaseAdminController
-    {        
+    {
         private readonly IRoleService _roleService;
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
@@ -81,14 +81,9 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     {
                         var postId = topic.LastPost.Id;
                         var post = _postService.Get(postId);
-                        var deleteTopic = _postService.Delete(post);
+                        _postService.Delete(post, unitOfWork);
 
                         unitOfWork.SaveChanges();
-
-                        if (deleteTopic)
-                        {
-                            _topicService.Delete(topic);
-                        }
                     }
 
                     unitOfWork.Commit();
@@ -120,7 +115,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     }
                     else
                     {
-                        _postService.Delete(post);
+                        _postService.Delete(post, unitOfWork);
                     }
 
                     unitOfWork.Commit();

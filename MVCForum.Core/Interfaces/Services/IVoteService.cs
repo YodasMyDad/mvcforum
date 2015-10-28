@@ -10,5 +10,6 @@ namespace MVCForum.Domain.Interfaces.Services
         void Delete(Vote vote);
         IList<Vote> GetAllVotesByUser(Guid membershipId);
         List<Vote> GetVotesByPosts(List<Guid> postIds);
+        List<Vote> GetVotesByPost(Guid postId);
     }
 }

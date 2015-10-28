@@ -7,6 +7,7 @@ using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
 using System.Linq;
+using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Utilities;
 
 namespace MVCForum.Services
@@ -14,22 +15,28 @@ namespace MVCForum.Services
     public partial class PostService : IPostService
     {
         private readonly IPostRepository _postRepository;
-        private readonly ITopicRepository _topicRepository;
+        private readonly ITopicService _topicService;
         private readonly IRoleService _roleService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ISettingsService _settingsService;
         private readonly ILocalizationService _localizationService;
+        private readonly IVoteService _voteService;
+        private readonly IUploadedFileService _uploadedFileService;
+        private readonly IFavouriteService _favouriteService;
 
         public PostService(IMembershipUserPointsService membershipUserPointsService,
-            ISettingsService settingsService, IRoleService roleService, IPostRepository postRepository, ITopicRepository topicRepository,
-            ILocalizationService localizationService)
+            ISettingsService settingsService, IRoleService roleService, IPostRepository postRepository, ITopicService topicService,
+            ILocalizationService localizationService, IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService favouriteService)
         {
             _postRepository = postRepository;
-            _topicRepository = topicRepository;
+            _topicService = topicService;
             _roleService = roleService;
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
             _localizationService = localizationService;
+            _voteService = voteService;
+            _uploadedFileService = uploadedFileService;
+            _favouriteService = favouriteService;
         }
 
 
@@ -210,18 +217,32 @@ namespace MVCForum.Services
         /// Delete a post
         /// </summary>
         /// <param name="post"></param>
-        /// <param name="isTopicDelete"></param>
-        /// <returns> True if parent topic should now be deleted (caller's responsibility)</returns>
-        public bool Delete(Post post, bool isTopicDelete = false)
+        /// <param name="unitOfWork"></param>
+        /// <returns>Returns true if can delete, returns false if it's a topic</returns>
+        public bool Delete(Post post, IUnitOfWork unitOfWork)
         {
+            // Get the topic
+            var topic = post.Topic;
+
+            // If this is coming from a call that is deleting the entire topic, then just delete post
+            if (post.IsTopicStarter)
+            {
+                // Pass it to be deleted
+                _topicService.Delete(topic, unitOfWork);
+
+                // Return true as the topic was deleted as well as this post
+                return true;
+            }
+
+            var votes = _voteService.GetVotesByPost(post.Id);
 
             #region Deleting Points
-            
+
             // Remove the points the user got for this post
             _membershipUserPointsService.Delete(post.User, PointsFor.Post, post.Id);
 
             // Also get all the votes and delete anything to do with those
-            foreach (var postVote in post.Votes)
+            foreach (var postVote in votes)
             {
                 _membershipUserPointsService.Delete(PointsFor.Vote, postVote.Id);
             }
@@ -231,21 +252,46 @@ namespace MVCForum.Services
 
             #endregion
 
-            // Clear files attached to post
+            #region Deleting Votes
 
+            var votesToDelete = new List<Vote>();
+            votesToDelete.AddRange(votes);
+            foreach (var vote in votesToDelete)
+            {
+                _voteService.Delete(vote);
+            }
+            post.Votes.Clear();
+
+            #endregion
+
+            #region Files
+
+            // Clear files attached to post
+            var filesToDelete = new List<UploadedFile>();
+            filesToDelete.AddRange(post.Files);
+            foreach (var uploadedFile in filesToDelete)
+            {
+                _uploadedFileService.Delete(uploadedFile);
+            }
             post.Files.Clear();
 
-            // If this is coming from a call that is deleting the entire topic, then just delete post
-            if (isTopicDelete)
+            #endregion
+
+            #region Favourites
+
+            var postFavourites = new List<Favourite>();
+            postFavourites.AddRange(post.Favourites);
+            foreach (var postFavourite in postFavourites)
             {
-                // now delete the post
-                _postRepository.Delete(post);
-                return true;
+                _favouriteService.Delete(postFavourite);
             }
+            post.Favourites.Clear();
+
+            #endregion
 
             // Before we delete the post, we need to check if this is the last post in the topic
             // and if so update the topic
-            var topic = post.Topic;
+                
             var lastPost = topic.Posts.OrderByDescending(x => x.DateCreated).FirstOrDefault();
 
             if (lastPost != null && lastPost.Id == post.Id)
@@ -261,19 +307,11 @@ namespace MVCForum.Services
 
             topic.Posts.Remove(post);
 
-            var deleteTopic = post.IsTopicStarter;
-
             // now delete the post
             _postRepository.Delete(post);
 
-            // Topic should be deleted, so make sure it has no last post to avoid circular dependency
-            if (deleteTopic)
-            {
-                topic.LastPost = null;
-            }
-
-
-            return deleteTopic;
+            // Only the post was deleted, not the entire topic
+            return false;
         }
 
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.General;
+using MVCForum.Domain.Interfaces.UnitOfWork;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
@@ -30,7 +31,7 @@ namespace MVCForum.Domain.Interfaces.Services
         Topic GetTopicBySlug(string slug);
         Topic Get(Guid topicId);
         List<Topic> Get(List<Guid> topicIds, List<Category> allowedCategories);
-        void Delete(Topic topic);
+        void Delete(Topic topic, IUnitOfWork unitOfWork);
         int TopicCount(List<Category> allowedCategories);
         Post AddLastPost(Topic topic, string postContent);
         List<MarkAsSolutionReminder> GetMarkAsSolutionReminderList(int days);

@@ -6,6 +6,7 @@ using MVCForum.Domain.DomainModel.General;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Utilities;
 
 namespace MVCForum.Services
@@ -14,18 +15,24 @@ namespace MVCForum.Services
     {
         private readonly ITopicRepository _topicRepository;
         private readonly ITopicNotificationService _topicNotificationService;
-        private readonly IPostService _postService;
+        private readonly IPostRepository _postRepository;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ISettingsService _settingsService;
+        private readonly IVoteService _voteService;
+        private readonly IUploadedFileService _uploadedFileService;
+        private readonly IFavouriteService _favouriteService;
 
         public TopicService(IMembershipUserPointsService membershipUserPointsService,
-            ISettingsService settingsService, ITopicRepository topicRepository, ITopicNotificationService topicNotificationService, IPostService postService)
+            ISettingsService settingsService, ITopicRepository topicRepository, ITopicNotificationService topicNotificationService, IPostRepository postRepository, IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService favouriteService)
         {
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
             _topicRepository = topicRepository;
             _topicNotificationService = topicNotificationService;
-            _postService = postService;
+            _postRepository = postRepository;
+            _voteService = voteService;
+            _uploadedFileService = uploadedFileService;
+            _favouriteService = favouriteService;
         }
 
         public Topic SanitizeTopic(Topic topic)
@@ -48,7 +55,7 @@ namespace MVCForum.Services
             return _topicRepository.GetHighestViewedTopics(amountToTake, allowedCategories);
         }
 
-        public IList<Topic> GetPopularTopics(DateTime? from, DateTime? to, List<Category> allowedCategories,int amountToShow = 20)
+        public IList<Topic> GetPopularTopics(DateTime? from, DateTime? to, List<Category> allowedCategories, int amountToShow = 20)
         {
             if (from == null)
             {
@@ -76,7 +83,7 @@ namespace MVCForum.Services
 
             // url slug generator
             topic.Slug = ServiceHelpers.GenerateSlug(topic.Name, _topicRepository.GetTopicBySlugLike(ServiceHelpers.CreateUrl(topic.Name)), null);
-            
+
             return _topicRepository.Add(topic);
         }
 
@@ -115,7 +122,7 @@ namespace MVCForum.Services
             };
 
             // Add the post
-            _postService.Add(post);
+            _postRepository.Add(post);
 
             topic.LastPost = post;
 
@@ -285,24 +292,89 @@ namespace MVCForum.Services
         /// Delete a topic
         /// </summary>
         /// <param name="topic"></param>
-        public void Delete(Topic topic)
+        /// <param name="unitOfWork"></param>
+        public void Delete(Topic topic, IUnitOfWork unitOfWork)
         {
+            // First thing - Set the last post as null and clear tags
             topic.LastPost = null;
             topic.Tags.Clear();
 
-            // Delete all posts
+            // Save here to clear the last post
+            unitOfWork.SaveChanges();
+
+            // TODO - Need to refactor as some of the code below is duplicated in the post delete
+
+            // Loop through all the posts and clear the associated entities
+            // then delete the posts
             if (topic.Posts != null)
             {
                 var postsToDelete = new List<Post>();
                 postsToDelete.AddRange(topic.Posts);
                 foreach (var post in postsToDelete)
-                {                    
-                    // Delete the post
-                    _postService.Delete(post, true);
-                } 
+                {
+                    var votes = new List<Vote>();
+                    votes.AddRange(post.Votes);
+
+                    #region Deleting Points
+
+                    // Remove the points the user got for this post
+                    _membershipUserPointsService.Delete(post.User, PointsFor.Post, post.Id);
+
+                    // Also get all the votes and delete anything to do with those
+                    foreach (var postVote in votes)
+                    {
+                        _membershipUserPointsService.Delete(PointsFor.Vote, postVote.Id);
+                    }
+
+                    // Also the mark as solution
+                    _membershipUserPointsService.Delete(PointsFor.Solution, post.Id);
+
+                    #endregion
+
+                    #region Deleting Votes
+
+                    var votesToDelete = new List<Vote>();
+                    votesToDelete.AddRange(votes);
+                    foreach (var vote in votesToDelete)
+                    {
+                        _voteService.Delete(vote);
+                    }
+                    post.Votes.Clear();
+
+                    #endregion
+
+                    #region Files
+
+                    // Clear files attached to post
+                    var filesToDelete = new List<UploadedFile>();
+                    filesToDelete.AddRange(post.Files);
+                    foreach (var uploadedFile in filesToDelete)
+                    {
+                        _uploadedFileService.Delete(uploadedFile);
+                    }
+                    post.Files.Clear();
+
+                    #endregion
+
+                    #region Favourites
+
+                    var postFavourites = new List<Favourite>();
+                    postFavourites.AddRange(post.Favourites);
+                    foreach (var postFavourite in postFavourites)
+                    {
+                        _favouriteService.Delete(postFavourite);
+                    }
+                    post.Favourites.Clear();
+
+                    #endregion
+
+                    _postRepository.Delete(post);
+                    unitOfWork.SaveChanges();
+                }
                 topic.Posts.Clear();
             }
 
+            // Remove all notifications on this topic too
             if (topic.TopicNotifications != null)
             {
                 var notificationsToDelete = new List<TopicNotification>();
@@ -310,10 +382,12 @@ namespace MVCForum.Services
                 foreach (var topicNotification in notificationsToDelete)
                 {
                     _topicNotificationService.Delete(topicNotification);
-                } 
+                }
             }
 
+            // Finally delete the topic
             _topicRepository.Delete(topic);
+
         }
 
         public int TopicCount(List<Category> allowedCategories)

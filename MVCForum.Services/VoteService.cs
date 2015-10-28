@@ -37,6 +37,11 @@ namespace MVCForum.Services
             return _voteRepository.GetVotesByPosts(postIds);
         }
 
+        public List<Vote> GetVotesByPost(Guid postId)
+        {
+            return _voteRepository.GetVotesByPost(postId);
+        }
+
         /// <summary>
         /// Add a new vote
         /// </summary>
@@ -57,5 +62,8 @@ namespace MVCForum.Services
 
             return vote;
         }
+
+
+
     }
 }

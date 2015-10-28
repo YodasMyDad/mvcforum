@@ -62,5 +62,14 @@ namespace MVCForum.Data.Repositories
                         .AsNoTracking()
                         .Where(x => postIds.Contains(x.Post.Id)).ToList();
         }
+
+        public List<Vote> GetVotesByPost(Guid postId)
+        {
+            return _context.Vote
+            .Include(x => x.VotedByMembershipUser)
+            .Include(x => x.User)
+            .Include(x => x.Post)
+            .Where(x => x.Post.Id == postId).ToList();
+        }
     }
 }
