@@ -150,6 +150,7 @@
     <Compile Include="Events\PostMadeEventArgs.cs" />
     <Compile Include="Events\PrivateMessageEventArgs.cs" />
     <Compile Include="Events\RegisterUserEventArgs.cs" />
+    <Compile Include="Events\TopicMadeEventArgs.cs" />
     <Compile Include="Events\UpdateProfileEventArgs.cs" />
     <Compile Include="Events\VoteEventArgs.cs" />
     <Compile Include="Exceptions\InUseUnableToDeleteException.cs" />

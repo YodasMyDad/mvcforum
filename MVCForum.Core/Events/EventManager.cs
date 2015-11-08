@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
-using MVCForum.Domain.Constants;
 using MVCForum.Domain.Interfaces.Events;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Utilities;
@@ -28,9 +26,11 @@ namespace MVCForum.Domain.Events
         public EventHandler<PostMadeEventArgs> BeforePostMade;
         public EventHandler<PostMadeEventArgs> AfterPostMade;
 
+        public EventHandler<TopicMadeEventArgs> BeforeTopicMade;
+        public EventHandler<TopicMadeEventArgs> AfterTopicMade;
+
         public EventHandler<RegisterUserEventArgs> BeforeRegisterUser;
         public EventHandler<RegisterUserEventArgs> AfterRegisterUser;
-
 
         public EventHandler<UpdateProfileEventArgs> BeforeUpdateProfile;
         public EventHandler<UpdateProfileEventArgs> AfterUpdateProfile;
@@ -229,6 +229,27 @@ namespace MVCForum.Domain.Events
                 handler(this, eventArgs);
             }
         } 
+        #endregion
+
+        #region Topics
+        public void FireBeforeTopicMade(object sender, TopicMadeEventArgs eventArgs)
+        {
+            var handler = BeforeTopicMade;
+
+            if (handler != null)
+            {
+                handler(this, eventArgs);
+            }
+        }
+        public void FireAfterTopicMade(object sender, TopicMadeEventArgs eventArgs)
+        {
+            var handler = AfterTopicMade;
+
+            if (handler != null)
+            {
+                handler(this, eventArgs);
+            }
+        }
         #endregion
 
         #region Profile

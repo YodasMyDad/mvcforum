@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Utilities;
@@ -671,7 +672,10 @@ namespace MVCForum.Website.Controllers
                     return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoAccess"));
                 }
 
+   
+
                 var successfullyCreated = false;
+                var cancelledByEvent = false;
                 var moderate = false;
                 var topic = new Topic();
 
@@ -719,160 +723,176 @@ namespace MVCForum.Website.Controllers
                             // Check for any banned words
                             topicViewModel.Content = _bannedWordService.SanitiseBannedWords(topicViewModel.Content, bannedWords);
 
-                            // See if this is a poll and add it to the topic
-                            if (topicViewModel.PollAnswers.Count(x => x != null) > 0)
+                            var e = new TopicMadeEventArgs { Topic = topic };
+                            EventManager.Instance.FireBeforeTopicMade(this, e);
+                            if (!e.Cancel)
                             {
-                                // Do they have permission to create a new poll
-                                if (permissions[AppConstants.PermissionCreatePolls].IsTicked)
+
+                                // See if this is a poll and add it to the topic
+                                if (topicViewModel.PollAnswers.Count(x => x != null) > 0)
                                 {
-                                    // Create a new Poll
-                                    var newPoll = new Poll
+                                    // Do they have permission to create a new poll
+                                    if (permissions[AppConstants.PermissionCreatePolls].IsTicked)
                                     {
-                                        User = loggedOnUser,
-                                        ClosePollAfterDays = topicViewModel.PollCloseAfterDays
-                                    };
-
-                                    // Create the poll
-                                    _pollService.Add(newPoll);
-
-                                    // Save the poll in the context so we can add answers
-                                    unitOfWork.SaveChanges();
-
-                                    // Now sort the answers
-                                    var newPollAnswers = new List<PollAnswer>();
-                                    foreach (var pollAnswer in topicViewModel.PollAnswers)
-                                    {
-                                        if (pollAnswer.Answer != null)
+                                        // Create a new Poll
+                                        var newPoll = new Poll
                                         {
-                                            // Attach newly created poll to each answer
-                                            pollAnswer.Poll = newPoll;
-                                            _pollAnswerService.Add(pollAnswer);
-                                            newPollAnswers.Add(pollAnswer);
-                                        }
-                                    }
-                                    // Attach answers to poll
-                                    newPoll.PollAnswers = newPollAnswers;
+                                            User = loggedOnUser,
+                                            ClosePollAfterDays = topicViewModel.PollCloseAfterDays
+                                        };
 
-                                    // Save the new answers in the context
-                                    unitOfWork.SaveChanges();
+                                        // Create the poll
+                                        _pollService.Add(newPoll);
 
-                                    // Add the poll to the topic
-                                    topic.Poll = newPoll;
-                                }
-                                else
-                                {
-                                    //No permission to create a Poll so show a message but create the topic
-                                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                                    {
-                                        Message = LocalizationService.GetResourceString("Errors.NoPermissionPolls"),
-                                        MessageType = GenericMessages.info
-                                    };
-                                }
-                            }
+                                        // Save the poll in the context so we can add answers
+                                        unitOfWork.SaveChanges();
 
-
-                            // Check for moderation
-                            if (category.ModerateTopics == true)
-                            {
-                                topic.Pending = true;
-                                moderate = true;
-                            }
-
-                            // Create the topic
-                            topic = _topicService.Add(topic);
-
-                            // Save the changes
-                            unitOfWork.SaveChanges();
-
-                            // Now create and add the post to the topic
-                            var topicPost = _topicService.AddLastPost(topic, topicViewModel.Content);
-
-                            // Update the users points score for posting
-                            _membershipUserPointsService.Add(new MembershipUserPoints
-                            {
-                                Points = SettingsService.GetSettings().PointsAddedPerPost,
-                                User = loggedOnUser,
-                                PointsFor = PointsFor.Post,
-                                PointsForId = topicPost.Id
-                            });
-
-                            // Now check its not spam
-                            var akismetHelper = new AkismetHelper(SettingsService);
-                            if (akismetHelper.IsSpam(topic))
-                            {
-                                topic.Pending = true;
-                                moderate = true;
-                            }
-
-                            if (topicViewModel.Files != null)
-                            {
-                                // Get the permissions for this category, and check they are allowed to update
-                                if (permissions[AppConstants.PermissionAttachFiles].IsTicked && LoggedOnReadOnlyUser.DisableFileUploads != true)
-                                {
-                                    // woot! User has permission and all seems ok
-                                    // Before we save anything, check the user already has an upload folder and if not create one
-                                    var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnReadOnlyUser.Id));
-                                    if (!Directory.Exists(uploadFolderPath))
-                                    {
-                                        Directory.CreateDirectory(uploadFolderPath);
-                                    }
-
-                                    // Loop through each file and get the file info and save to the users folder and Db
-                                    foreach (var file in topicViewModel.Files)
-                                    {
-                                        if (file != null)
+                                        // Now sort the answers
+                                        var newPollAnswers = new List<PollAnswer>();
+                                        foreach (var pollAnswer in topicViewModel.PollAnswers)
                                         {
-                                            // If successful then upload the file
-                                            var uploadResult = AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService);
-                                            if (!uploadResult.UploadSuccessful)
+                                            if (pollAnswer.Answer != null)
                                             {
-                                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                                                {
-                                                    Message = uploadResult.ErrorMessage,
-                                                    MessageType = GenericMessages.danger
-                                                };
-                                                unitOfWork.Rollback();
-                                                return View(topicViewModel);
+                                                // Attach newly created poll to each answer
+                                                pollAnswer.Poll = newPoll;
+                                                _pollAnswerService.Add(pollAnswer);
+                                                newPollAnswers.Add(pollAnswer);
                                             }
-
-                                            // Add the filename to the database
-                                            var uploadedFile = new UploadedFile
-                                            {
-                                                Filename = uploadResult.UploadedFileName,
-                                                Post = topicPost,
-                                                MembershipUser = loggedOnUser
-                                            };
-                                            _uploadedFileService.Add(uploadedFile);
                                         }
+                                        // Attach answers to poll
+                                        newPoll.PollAnswers = newPollAnswers;
+
+                                        // Save the new answers in the context
+                                        unitOfWork.SaveChanges();
+
+                                        // Add the poll to the topic
+                                        topic.Poll = newPoll;
+                                    }
+                                    else
+                                    {
+                                        //No permission to create a Poll so show a message but create the topic
+                                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                        {
+                                            Message = LocalizationService.GetResourceString("Errors.NoPermissionPolls"),
+                                            MessageType = GenericMessages.info
+                                        };
                                     }
                                 }
 
-                            }
-
-                            // Add the tags if any too
-                            if (!string.IsNullOrEmpty(topicViewModel.Tags))
-                            {
-                                // Sanitise the tags
-                                topicViewModel.Tags = _bannedWordService.SanitiseBannedWords(topicViewModel.Tags, bannedWords);
-
-                                // Now add the tags
-                                _topicTagService.Add(topicViewModel.Tags.ToLower(), topic);
-                            }
-
-                            // After tags sort the search field for the post
-                            topicPost.SearchField = _postService.SortSearchField(topicPost.IsTopicStarter, topic, topic.Tags);
-
-                            // Subscribe the user to the topic as they have checked the checkbox
-                            if (topicViewModel.SubscribeToTopic)
-                            {
-                                // Create the notification
-                                var topicNotification = new TopicNotification
+                                // Check for moderation
+                                if (category.ModerateTopics == true)
                                 {
-                                    Topic = topic,
-                                    User = loggedOnUser
-                                };
-                                //save
-                                _topicNotificationService.Add(topicNotification);
+                                    topic.Pending = true;
+                                    moderate = true;
+                                }
+
+                                // Create the topic
+                                topic = _topicService.Add(topic);
+
+                                // Save the changes
+                                unitOfWork.SaveChanges();
+
+                                // Now create and add the post to the topic
+                                var topicPost = _topicService.AddLastPost(topic, topicViewModel.Content);
+
+                                // Update the users points score for posting
+                                _membershipUserPointsService.Add(new MembershipUserPoints
+                                {
+                                    Points = SettingsService.GetSettings().PointsAddedPerPost,
+                                    User = loggedOnUser,
+                                    PointsFor = PointsFor.Post,
+                                    PointsForId = topicPost.Id
+                                });
+
+
+                                // Now check its not spam
+                                var akismetHelper = new AkismetHelper(SettingsService);
+                                if (akismetHelper.IsSpam(topic))
+                                {
+                                    topic.Pending = true;
+                                    moderate = true;
+                                }
+
+                                if (topicViewModel.Files != null)
+                                {
+                                    // Get the permissions for this category, and check they are allowed to update
+                                    if (permissions[AppConstants.PermissionAttachFiles].IsTicked &&
+                                        LoggedOnReadOnlyUser.DisableFileUploads != true)
+                                    {
+                                        // woot! User has permission and all seems ok
+                                        // Before we save anything, check the user already has an upload folder and if not create one
+                                        var uploadFolderPath =
+                                            HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath,
+                                                LoggedOnReadOnlyUser.Id));
+                                        if (!Directory.Exists(uploadFolderPath))
+                                        {
+                                            Directory.CreateDirectory(uploadFolderPath);
+                                        }
+
+                                        // Loop through each file and get the file info and save to the users folder and Db
+                                        foreach (var file in topicViewModel.Files)
+                                        {
+                                            if (file != null)
+                                            {
+                                                // If successful then upload the file
+                                                var uploadResult = AppHelpers.UploadFile(file, uploadFolderPath,
+                                                    LocalizationService);
+                                                if (!uploadResult.UploadSuccessful)
+                                                {
+                                                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                                    {
+                                                        Message = uploadResult.ErrorMessage,
+                                                        MessageType = GenericMessages.danger
+                                                    };
+                                                    unitOfWork.Rollback();
+                                                    return View(topicViewModel);
+                                                }
+
+                                                // Add the filename to the database
+                                                var uploadedFile = new UploadedFile
+                                                {
+                                                    Filename = uploadResult.UploadedFileName,
+                                                    Post = topicPost,
+                                                    MembershipUser = loggedOnUser
+                                                };
+                                                _uploadedFileService.Add(uploadedFile);
+                                            }
+                                        }
+                                    }
+
+                                }
+
+                                // Add the tags if any too
+                                if (!string.IsNullOrEmpty(topicViewModel.Tags))
+                                {
+                                    // Sanitise the tags
+                                    topicViewModel.Tags = _bannedWordService.SanitiseBannedWords(topicViewModel.Tags,
+                                        bannedWords);
+
+                                    // Now add the tags
+                                    _topicTagService.Add(topicViewModel.Tags.ToLower(), topic);
+                                }
+
+                                // After tags sort the search field for the post
+                                topicPost.SearchField = _postService.SortSearchField(topicPost.IsTopicStarter, topic,
+                                    topic.Tags);
+
+                                // Subscribe the user to the topic as they have checked the checkbox
+                                if (topicViewModel.SubscribeToTopic)
+                                {
+                                    // Create the notification
+                                    var topicNotification = new TopicNotification
+                                    {
+                                        Topic = topic,
+                                        User = loggedOnUser
+                                    };
+                                    //save
+                                    _topicNotificationService.Add(topicNotification);
+                                }
+                            }
+                            else
+                            {
+                                cancelledByEvent = true;
                             }
 
                             try
@@ -881,6 +901,12 @@ namespace MVCForum.Website.Controllers
                                 if (!moderate)
                                 {
                                     successfullyCreated = true;
+                                }
+
+                                // Only fire this if the create topic wasn't cancelled
+                                if (!cancelledByEvent)
+                                {
+                                    EventManager.Instance.FireAfterTopicMade(this, new TopicMadeEventArgs { Topic = topic });
                                 }
                             }
                             catch (Exception ex)
@@ -900,7 +926,7 @@ namespace MVCForum.Website.Controllers
 
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
-                    if (successfullyCreated)
+                    if (successfullyCreated && !cancelledByEvent)
                     {
                         // Success so now send the emails
                         NotifyNewTopics(category, topic, unitOfWork);
