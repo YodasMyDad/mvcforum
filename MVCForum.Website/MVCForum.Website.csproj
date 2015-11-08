@@ -1063,6 +1063,7 @@
     <Content Include="Scripts\tinymce\langs\readme.md" />
     <Content Include="Views\PrivateMessage\AjaxMore.cshtml" />
     <Content Include="Areas\Admin\Views\Batch\BatchDeletePrivateMessages.cshtml" />
+    <Content Include="Config\emoticons.config" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
