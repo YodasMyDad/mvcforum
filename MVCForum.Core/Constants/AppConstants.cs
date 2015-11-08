@@ -6,6 +6,9 @@ namespace MVCForum.Domain.Constants
     {
         public const int SaltSize = 24;
 
+        // Scheduled Tasks
+        public const string DefaultTaskGroup = "MVCForumTaskGroup";
+
         // Cookie names
         public const string LanguageIdCookieName = "LanguageCulture";
         public const string MemberEmailConfirmationCookieName = "MVCForumEmailConfirmation";

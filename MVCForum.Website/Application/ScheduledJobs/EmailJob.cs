@@ -5,6 +5,7 @@ using Quartz;
 
 namespace MVCForum.Website.Application.ScheduledJobs
 {
+    [DisallowConcurrentExecution]
     public class EmailJob : IJob
     {
         private readonly ILoggingService _loggingService;
