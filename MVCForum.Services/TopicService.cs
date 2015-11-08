@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.General;
 using MVCForum.Domain.Events;
@@ -429,8 +430,9 @@ namespace MVCForum.Services
 
             if (!e.Cancel)
             {
-                // Make sure this user owns the topic, if not do nothing
-                if (topic.User.Id == marker.Id)
+                // Make sure this user owns the topic or this is an admin, if not do nothing
+
+                if (topic.User.Id == marker.Id || marker.Roles.Any(x => x.RoleName == AppConstants.AdminRoleName))
                 {
                     // Update the post
                     post.IsSolution = true;
