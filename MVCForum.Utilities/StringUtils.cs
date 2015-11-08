@@ -669,7 +669,7 @@ namespace MVCForum.Utilities
             // causes problems with line breaks.
             if (useXssSantiser)
             {
-                return SanitizerCompatibleWithChineseCharacters(Sanitizer.GetSafeHtmlFragment(finishedHtml));
+                return SanitizerCompatibleWithForiegnCharacters(Sanitizer.GetSafeHtmlFragment(finishedHtml));
             }
 
             return finishedHtml;
@@ -1169,7 +1169,7 @@ namespace MVCForum.Utilities
         /// source:http://www.zhaoshu.net/bbs/read10.aspx?TieID=b1745a9c-03a6-4367-93e0-114707aff3e3
         /// </summary>
         /// <returns></returns>
-        public static String SanitizerCompatibleWithChineseCharacters(String originalString)
+        public static String SanitizerCompatibleWithForiegnCharacters(String originalString)
         {
             string returnString = originalString;
 
@@ -1242,6 +1242,9 @@ namespace MVCForum.Utilities
                             hbjDictionaryFX.Add("&#34108;", "蔼");
                             hbjDictionaryFX.Add("&#36156;", "贼");
                             hbjDictionaryFX.Add("&#39740;", "鬼");
+
+                            // Also add russion
+                            hbjDictionaryFX.Add("&#1084;", "м");
                         }
                     }
 
