@@ -1,12 +1,15 @@
-﻿using System.Data;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
+using System.Web.Mvc;
 using MVCForum.Data.Context;
+using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 
 namespace MVCForum.Data.UnitOfWork
 {
-    public class UnitOfWork : IUnitOfWork
+    public partial class UnitOfWork : IUnitOfWork
     {
         //http://msdn.microsoft.com/en-us/library/bb738523.aspx
         //http://stackoverflow.com/questions/815586/entity-framework-using-transactions-or-savechangesfalse-and-acceptallchanges
@@ -14,6 +17,7 @@ namespace MVCForum.Data.UnitOfWork
         private readonly MVCForumContext _context;
         private readonly IDbTransaction _transaction;
         private readonly ObjectContext _objectContext;
+        private readonly ICacheService _cacheService;
 
         /// <summary>
         /// Constructor
@@ -39,6 +43,9 @@ namespace MVCForum.Data.UnitOfWork
                 _objectContext.Connection.Open();
                 _transaction = _objectContext.Connection.BeginTransaction();
             }
+
+            // Purists... Meh.
+            _cacheService = DependencyResolver.Current.GetService<ICacheService>();
         }
 
         public void AutoDetectChangesEnabled(bool option)
@@ -60,6 +67,16 @@ namespace MVCForum.Data.UnitOfWork
         {
             _context.SaveChanges();
             _transaction.Commit();            
+        }
+
+        /// <summary>
+        /// Commits the transcation and saves changes to the database.. Also clears the long term cache based on the starting cache keys from CacheConstants
+        /// </summary>
+        /// <param name="cacheStartsWithToClear"></param>
+        public void Commit(List<string> cacheStartsWithToClear)
+        {
+            Commit();
+            _cacheService.ClearStartsWith(cacheStartsWithToClear);
         }
 
         public void Rollback()
