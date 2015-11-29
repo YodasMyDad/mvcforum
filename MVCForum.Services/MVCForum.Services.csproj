@@ -85,6 +85,7 @@
     <Compile Include="ActivityService.cs" />
     <Compile Include="BannedWordService.cs" />
     <Compile Include="CacheService.cs" />
+    <Compile Include="ConfigService.cs" />
     <Compile Include="GlobalPermissionForRoleService.cs" />
     <Compile Include="FavouriteService.cs" />
     <Compile Include="BlockService.cs" />

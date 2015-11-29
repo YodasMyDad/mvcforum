@@ -23,10 +23,11 @@ namespace MVCForum.Services
         private readonly IVoteService _voteService;
         private readonly IUploadedFileService _uploadedFileService;
         private readonly IFavouriteService _favouriteService;
+        private readonly IConfigService _configService;
 
         public PostService(IMembershipUserPointsService membershipUserPointsService,
             ISettingsService settingsService, IRoleService roleService, IPostRepository postRepository, ITopicService topicService,
-            ILocalizationService localizationService, IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService favouriteService)
+            ILocalizationService localizationService, IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService favouriteService, IConfigService configService)
         {
             _postRepository = postRepository;
             _topicService = topicService;
@@ -37,6 +38,7 @@ namespace MVCForum.Services
             _voteService = voteService;
             _uploadedFileService = uploadedFileService;
             _favouriteService = favouriteService;
+            _configService = configService;
         }
 
 
@@ -52,7 +54,7 @@ namespace MVCForum.Services
             // Check settings
             if (_settingsService.GetSettings().EnableEmoticons == true)
             {
-                post.PostContent = EmoticonUtils.Emotify(post.PostContent);   
+                post.PostContent = _configService.Emotify(post.PostContent);   
             }
 
             return post;

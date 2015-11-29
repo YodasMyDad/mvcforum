@@ -105,7 +105,6 @@
     <Compile Include="CensorUtils.cs" />
     <Compile Include="ConfigUtils.cs" />
     <Compile Include="DateUtils.cs" />
-    <Compile Include="EmoticonUtils.cs" />
     <Compile Include="EnumUtils.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="GuidComb.cs" />

@@ -8,6 +8,7 @@ using System.Web;
 using MVCForum.Domain;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Utilities;
@@ -77,21 +78,11 @@ namespace MVCForum.Services
 
             if (localeStringResource == null)
             {
-                throw new ApplicationException(string.Format("Unable to update resource with key {0} for language {1}. No resource found.", resourceKey, languageId));
+                throw new ApplicationException(
+                    $"Unable to update resource with key {resourceKey} for language {languageId}. No resource found.");
             }
             localeStringResource.ResourceValue = StringUtils.SafePlainText(newValue);
             _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
-        }
-
-        /// <summary>
-        /// Create a string resource
-        /// </summary>
-        /// <param name="newLocaleStringResource"></param>
-        /// <returns></returns>
-        private LocaleStringResource Add(LocaleStringResource newLocaleStringResource)
-        {
-            newLocaleStringResource = SanitizeLocaleStringResource(newLocaleStringResource);
-            return _localizationRepository.Add(newLocaleStringResource);
         }
 
         /// <summary>
@@ -109,7 +100,8 @@ namespace MVCForum.Services
 
             if (existingResourceKey != null)
             {
-                throw new ApplicationException(string.Format("The resource key with name '{0}' already exists.", newLocaleResourceKey.Name));
+                throw new ApplicationException(
+                    $"The resource key with name '{newLocaleResourceKey.Name}' already exists.");
             }
 
             newLocaleResourceKey.DateAdded = DateTime.UtcNow;
@@ -151,7 +143,8 @@ namespace MVCForum.Services
 
             if (existingLanguage != null)
             {
-                throw new LanguageOrCultureAlreadyExistsException(string.Format("There is already a language defined for language-culture '{0}'", existingLanguage.LanguageCulture));
+                throw new LanguageOrCultureAlreadyExistsException(
+                    $"There is already a language defined for language-culture '{existingLanguage.LanguageCulture}'");
             }
 
             // Make sure that the new language has a set of empty resources
@@ -205,7 +198,8 @@ namespace MVCForum.Services
             catch (Exception ex)
             {
                 // Could be there is no resource
-                _loggingService.Error(string.Format("Unable to retrieve resource key '{0}' for language id {1}. Error: '{2}'.", key, languageId, ex.Message));
+                _loggingService.Error(
+                    $"Unable to retrieve resource key '{key}' for language id {languageId}. Error: '{ex.Message}'.");
                 return null;
             }
         }
@@ -256,11 +250,13 @@ namespace MVCForum.Services
                         {
                             return langValue;
                         }
-                        _loggingService.Error(string.Format("No value is set for resource key '{0}' for language {1}.", trimmedKey, CurrentLanguage.Name));
+                        _loggingService.Error(
+                            $"No value is set for resource key '{trimmedKey}' for language {CurrentLanguage.Name}.");
                     }
                     else
                     {
-                        _loggingService.Error(string.Format("This resource key '{0}' was not found for the language {1}.", trimmedKey, CurrentLanguage.Name));
+                        _loggingService.Error(
+                            $"This resource key '{trimmedKey}' was not found for the language {CurrentLanguage.Name}.");
                     }
                 }
                 catch (Exception ex)
@@ -288,7 +284,7 @@ namespace MVCForum.Services
 
             if (localeStringResourceKey == null)
             {
-                throw new ApplicationException(string.Format("Unable to update resource key {0} . No resource found.", resourceKeyId));
+                throw new ApplicationException($"Unable to update resource key {resourceKeyId} . No resource found.");
             }
 
             localeStringResourceKey.Name = StringUtils.SafePlainText(newName);
@@ -440,13 +436,13 @@ namespace MVCForum.Services
         public Dictionary<string, string> ResourceKeysByLanguage(Language language)
         {
             var cacheKey = string.Concat(AppConstants.LanguageStrings, language.Id);
-            var cachedResourceKeys = _cacheService.Get(cacheKey);
+            var cachedResourceKeys = _cacheService.Get<Dictionary<string, string>>(cacheKey);
             if (cachedResourceKeys == null)
             {
                 cachedResourceKeys = _localizationRepository.GetAllLanguageStringsByLangauge(language.Id);
-                _cacheService.Set(cacheKey, cachedResourceKeys, AppConstants.CacheTwelveHours);
+                _cacheService.Set(cacheKey, cachedResourceKeys, CacheTimes.OneDay);
             }
-            return cachedResourceKeys as Dictionary<string, string>;
+            return cachedResourceKeys;
         }
 
         /// <summary>
@@ -546,7 +542,7 @@ namespace MVCForum.Services
             catch (Exception ex)
             {
 
-                throw new ApplicationException(string.Format("Unable to delete language: {0}", ex.Message), ex);
+                throw new ApplicationException($"Unable to delete language: {ex.Message}", ex);
             }
         }
 
@@ -565,7 +561,7 @@ namespace MVCForum.Services
             }
             catch (Exception ex)
             {
-                throw new ApplicationException(string.Format("Unable to delete resource key: {0}", ex.Message), ex);
+                throw new ApplicationException($"Unable to delete resource key: {ex.Message}", ex);
             }
         }
 
@@ -644,7 +640,7 @@ namespace MVCForum.Services
                         report.Errors.Add(new CsvErrorWarning
                         {
                             ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
-                            Message = string.Format("Line {0}: a key and a value are required.", lineCounter)
+                            Message = $"Line {lineCounter}: a key and a value are required."
                         });
 
                         continue;
@@ -665,7 +661,7 @@ namespace MVCForum.Services
 
                     if (language == null)
                     {
-                        throw new ApplicationException(string.Format("Unable to create language"));
+                        throw new ApplicationException("Unable to create language");
                     }
 
                     // If key does not exist, it is a new one to be created
@@ -681,7 +677,8 @@ namespace MVCForum.Services
                         report.Warnings.Add(new CsvErrorWarning
                         {
                             ErrorWarningType = CsvErrorWarningType.NewKeyCreated,
-                            Message = string.Format("A new key named '{0}' has been created, and will require a value in all languages.", key)
+                            Message =
+                                $"A new key named '{key}' has been created, and will require a value in all languages."
                         });
                     }
 
@@ -751,7 +748,7 @@ namespace MVCForum.Services
                     report.Errors.Add(new CsvErrorWarning
                     {
                         ErrorWarningType = CsvErrorWarningType.DoesNotExist,
-                        Message = string.Format("The language culture '{0}' does not exist.", langKey)
+                        Message = $"The language culture '{langKey}' does not exist."
                     });
 
                     return report;

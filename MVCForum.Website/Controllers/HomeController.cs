@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Activity;
+using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Website.Application;
@@ -71,7 +72,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.CacheTwoHours)]
+        [OutputCache(Duration = (int)CacheTimes.TwoHours)]
         public ActionResult LatestRss()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -121,7 +122,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.CacheTwoHours)]
+        [OutputCache(Duration = (int)CacheTimes.TwoHours)]
         public ActionResult ActivityRss()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -179,7 +180,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.CacheTwoHours)]
+        [OutputCache(Duration = (int)CacheTimes.TwoHours)]
         public ActionResult GoogleSitemap()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -212,7 +213,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.CacheTwoHours)]
+        [OutputCache(Duration = (int)CacheTimes.TwoHours)]
         public ActionResult GoogleMemberSitemap()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -241,7 +242,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.CacheTwoHours)]
+        [OutputCache(Duration = (int)CacheTimes.TwoHours)]
         public ActionResult GoogleCategorySitemap()
         {
             using (UnitOfWorkManager.NewUnitOfWork())

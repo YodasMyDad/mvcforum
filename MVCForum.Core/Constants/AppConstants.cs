@@ -19,12 +19,6 @@ namespace MVCForum.Domain.Constants
         public static string LanguageStrings = string.Concat(LocalisationCacheName, "LangStrings-");
         public const string MemberCacheName = "#member#-{0}";
 
-        public const int CacheOneHour = 60;
-        public const int CacheTwoHours = 120;
-        public const int CacheThreeHours = 180;
-        public const int CacheSixHours = 360;
-        public const int CacheTwelveHours = 720;
-
         // Url names
         public const string CategoryUrlIdentifier = "cat";
         public const string TopicUrlIdentifier = "thread";

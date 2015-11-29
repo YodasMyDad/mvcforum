@@ -7,6 +7,7 @@ using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Website.Application;
 using MVCForum.Website.ViewModels;
 using System.Linq;
+using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Website.ViewModels.Mapping;
 
 namespace MVCForum.Website.Controllers
@@ -198,7 +199,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.CacheTwoHours)]
+        [OutputCache(Duration = (int)CacheTimes.TwoHours)]
         public ActionResult CategoryRss(string slug)
         {
             using (UnitOfWorkManager.NewUnitOfWork())

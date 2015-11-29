@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
@@ -1217,8 +1218,6 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                HotTopicsViewModel viewModel;
-
                 if (amountToShow == null)
                 {
                     amountToShow = 5;
@@ -1228,8 +1227,8 @@ namespace MVCForum.Website.Controllers
                 var toString = to != null ? Convert.ToDateTime(to).ToShortDateString() : null;
 
                 var cacheKey = string.Concat("HotTopics", UsersRole.Id, fromString, toString, amountToShow);
-                var cachedItem = _cacheService.Get(cacheKey);
-                if (cachedItem == null)
+                var viewModel = _cacheService.Get<HotTopicsViewModel>(cacheKey);
+                if (viewModel == null)
                 {
                     // Allowed Categories
                     var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
@@ -1245,11 +1244,7 @@ namespace MVCForum.Website.Controllers
                     {
                         Topics = topicViewModels
                     };
-                    _cacheService.Set(cacheKey, viewModel, AppConstants.CacheThreeHours);
-                }
-                else
-                {
-                    viewModel = (HotTopicsViewModel)cachedItem;
+                    _cacheService.Set(cacheKey, viewModel, CacheTimes.TwoHours);
                 }
 
                 return PartialView(viewModel);

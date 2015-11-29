@@ -19,7 +19,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public static string ReturnCacheKey(Guid categoryId, Guid roleId)
         {
-            return string.Format("permissioncache-{0}-{1}", categoryId, roleId);
+            return $"permissioncache-{categoryId}-{roleId}";
         }
         #endregion
 

@@ -10,7 +10,6 @@ using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
-using MVCForum.Website.ViewModels.Mapping;
 
 namespace MVCForum.Website.Controllers
 {
@@ -19,14 +18,16 @@ namespace MVCForum.Website.Controllers
     {
         private readonly IPrivateMessageService _privateMessageService;
         private readonly IEmailService _emailService;
+        private readonly IConfigService _configService;
 
         public PrivateMessageController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IPrivateMessageService privateMessageService,
-            IEmailService emailService)
+            IEmailService emailService, IConfigService configService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _privateMessageService = privateMessageService;
             _emailService = emailService;
+            _configService = configService;
         }
 
         public ActionResult Index(int? p)
@@ -158,7 +159,7 @@ namespace MVCForum.Website.Controllers
                         // Check settings
                         if (settings.EnableEmoticons == true)
                         {
-                            privateMessage.Message = EmoticonUtils.Emotify(privateMessage.Message);
+                            privateMessage.Message = _configService.Emotify(privateMessage.Message);
                         }
 
                         // check the member

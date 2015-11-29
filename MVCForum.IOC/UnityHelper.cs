@@ -12,8 +12,6 @@ using Quartz.Unity;
 
 namespace MVCForum.IOC
 {
-    // http://weblogs.asp.net/shijuvarghese/archive/2010/05/07/dependency-injection-in-asp-net-mvc-nerddinner-app-using-unity-2-0.aspx
-
     /// <summary>
     /// Bind the given interface in request scope
     /// </summary>
@@ -51,9 +49,7 @@ namespace MVCForum.IOC
         /// </summary>
         /// <returns></returns>
         private static IUnityContainer BuildUnityContainer(UnityContainer container)
-        {
-            
-
+        {           
             // register all your components with the container here
             // it is NOT necessary to register your controllers
 
@@ -100,6 +96,7 @@ namespace MVCForum.IOC
             container.BindInRequestScope<ITagNotificationService, TagNotificationService>();
             container.BindInRequestScope<IReflectionService, ReflectionService>();
             container.BindInRequestScope<IBlockService, BlockService>();
+            container.BindInRequestScope<IConfigService, ConfigService>();
 
             container.BindInRequestScope<IRoleRepository, RoleRepository>();
             container.BindInRequestScope<ICategoryRepository, CategoryRepository>();
@@ -139,6 +136,8 @@ namespace MVCForum.IOC
         static partial void CustomBindings(UnityContainer container);
     }
 
+    // Example of adding your own bindings, just create a partial class and implement
+    // the CustomBindings method and add your bindings as shown below
     //public static partial class UnityHelper
     //{
     //    static partial void CustomBindings(UnityContainer container)

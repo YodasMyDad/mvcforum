@@ -63,6 +63,7 @@
     <file src="..\MVCForum.WebSite\Installer\**" target="content\Installer" />
     <file src="..\MVCForum.WebSite\Scripts\**" target="content\Scripts" exclude="..\MVCForum.WebSite\Scripts\tinymce\**"/>
     <file src="..\MVCForum.WebSite\Themes\**" target="content\Themes" />
+    <file src="..\MVCForum.WebSite\Config\**" target="content\Config" />
     <file src="..\MVCForum.WebSite\Views\**" target="content\Views" />
     <file src="..\MVCForum.WebSite\web.config" target="content\web.config" />
     <file src="..\MVCForum.WebSite\Global.asax" target="content\Global.asax" />
