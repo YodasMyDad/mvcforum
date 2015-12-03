@@ -2,9 +2,10 @@
 version: 1.0.{build}
 
 before_build:
-- cmd: nuget restore
+  - cmd: nuget restore
 build:
   verbosity: normal
 
 # Operating system (build VM template)
-os: Visual Studio 2015
+os:
+  - Visual Studio 2015
