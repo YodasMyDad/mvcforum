@@ -30,6 +30,7 @@
     <TargetFrameworkProfile />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -1064,6 +1065,7 @@
     <Content Include="Views\PrivateMessage\AjaxMore.cshtml" />
     <Content Include="Areas\Admin\Views\Batch\BatchDeletePrivateMessages.cshtml" />
     <Content Include="Config\emoticons.config" />
+    <Content Include="appveyor.yml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
