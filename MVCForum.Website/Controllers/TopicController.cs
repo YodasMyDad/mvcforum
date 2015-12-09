@@ -142,9 +142,9 @@ namespace MVCForum.Website.Controllers
         public PartialViewResult CreateTopicButton()
         {
             var viewModel = new CreateTopicButtonViewModel
-                {
-                    LoggedOnUser = LoggedOnReadOnlyUser
-                };
+            {
+                LoggedOnUser = LoggedOnReadOnlyUser
+            };
 
             if (LoggedOnReadOnlyUser != null)
             {
@@ -214,7 +214,7 @@ namespace MVCForum.Website.Controllers
             }
             return model;
         }
-        
+
         #endregion
 
         [Authorize]
@@ -300,9 +300,30 @@ namespace MVCForum.Website.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult EditPostTopic(CreateEditTopicViewModel editPostViewModel)
         {
-            if (ModelState.IsValid)
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                // Get the category
+                var category = _categoryService.Get(editPostViewModel.Category);
+
+                // First check this user is allowed to create topics in this category
+                var permissions = RoleService.GetPermissions(category, UsersRole);
+
+                // Now we have the category and permissionSet - Populate the optional permissions 
+                // This is just in case the viewModel is return back to the view also sort the allowedCategories
+                // Get the allowed categories for this user
+                var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
+                var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, AppConstants.PermissionCreateTopics);
+                var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
+                allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
+                editPostViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
+                editPostViewModel.Categories = _categoryService.GetBaseSelectListCategories(allowedAccessCategories);
+                editPostViewModel.IsTopicStarter = editPostViewModel.Id == Guid.Empty;
+                if (editPostViewModel.PollAnswers == null)
+                {
+                    editPostViewModel.PollAnswers = new List<PollAnswer>();
+                }
+
+                if (ModelState.IsValid)
                 {
 
                     try
@@ -329,27 +350,6 @@ namespace MVCForum.Website.Controllers
                                 // Ahhh found a stop word. Abandon operation captain.
                                 return Redirect(t.NiceUrl);
                             }
-                        }
-
-                        // Get the category
-                        var category = _categoryService.Get(editPostViewModel.Category);
-
-                        // First check this user is allowed to create topics in this category
-                        var permissions = RoleService.GetPermissions(category, UsersRole);
-
-                        // Now we have the category and permissionSet - Populate the optional permissions 
-                        // This is just in case the viewModel is return back to the view also sort the allowedCategories
-                        // Get the allowed categories for this user
-                        var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
-                        var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, AppConstants.PermissionCreateTopics);
-                        var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
-                        allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
-                        editPostViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
-                        editPostViewModel.Categories = _categoryService.GetBaseSelectListCategories(allowedAccessCategories);
-                        editPostViewModel.IsTopicStarter = editPostViewModel.Id == Guid.Empty;
-                        if (editPostViewModel.PollAnswers == null)
-                        {
-                            editPostViewModel.PollAnswers = new List<PollAnswer>();
                         }
 
                         // Quick check to see if user is locked out, when logged in
@@ -673,7 +673,7 @@ namespace MVCForum.Website.Controllers
                     return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoAccess"));
                 }
 
-   
+
 
                 var successfullyCreated = false;
                 var cancelledByEvent = false;

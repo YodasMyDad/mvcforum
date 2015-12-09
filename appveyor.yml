@@ -2,7 +2,6 @@
 version: 1.0.{build}
 
 before_build:
-  - "SET PATH=C:\\Program Files (x86)\\MSBuild\\14.0\\Bin;%PATH%"
   - cmd: nuget restore
 build:
   verbosity: normal
