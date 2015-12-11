@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
@@ -387,6 +388,12 @@ namespace MVCForum.Website.Controllers
                             // Microsoft doesn't give you a file extension - See if it has a file extension
                             // Get the file extension
                             var fileExtension = Path.GetExtension(fileName);
+
+                            // Fix invalid Illegal charactors
+                            var regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+                            var reg = new Regex($"[{Regex.Escape(regexSearch)}]");
+                            fileName = reg.Replace(fileName, "");
+
                             if (string.IsNullOrEmpty(fileExtension))
                             {
                                 // no file extension so give it one
