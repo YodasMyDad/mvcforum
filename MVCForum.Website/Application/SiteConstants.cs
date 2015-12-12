@@ -221,5 +221,13 @@ namespace MVCForum.Website.Application
                 return Convert.ToInt32(ConfigurationManager.AppSettings["EmailsToSendPerJob"]);
             }
         }
+
+        public static string StorageProviderType
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["StorageProviderType"];
+            }
+        }
     }
 }
