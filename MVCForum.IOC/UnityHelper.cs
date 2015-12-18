@@ -32,9 +32,7 @@ namespace MVCForum.IOC
         {
             var container = new UnityContainer();
             var buildUnity = BuildUnityContainer(container);
-
-            DependencyResolver.SetResolver(new Unity.Mvc4.UnityDependencyResolver(buildUnity));
-
+            DependencyResolver.SetResolver(new UnityDependencyResolver(container));
             return buildUnity;
         }
 
