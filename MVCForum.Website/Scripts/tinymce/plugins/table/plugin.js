@@ -2468,8 +2468,9 @@ define("tinymce/tableplugin/Dialogs", [
  * @private
  */
 define("tinymce/tableplugin/ResizeBars", [
-	"tinymce/util/Tools"
-], function(Tools) {
+	"tinymce/util/Tools",
+	"tinymce/util/VK"
+], function(Tools, VK) {
 	return function(editor) {
 		var RESIZE_BAR_CLASS = 'mce-resize-bar',
 			RESIZE_BAR_ROW_CLASS = 'mce-resize-bar-row',
@@ -3171,13 +3172,13 @@ define("tinymce/tableplugin/ResizeBars", [
 
 			var newSizes = recalculateWidths(tableGrid, newWidths);
 			var styleExtension = percentageBased ? '%' : 'px';
-			setSizes(newSizes, styleExtension);
-
 			var newTableWidth = percentageBased ? getNewTablePercentWidth() :
-                getNewTablePixelWidth();
+				getNewTablePixelWidth();
 
-			setTableSize(newTableWidth, styleExtension, percentageBased);
-
+			editor.undoManager.transact(function() {
+				setSizes(newSizes, styleExtension);
+				setTableSize(newTableWidth, styleExtension, percentageBased);
+			});
 		}
 
 		// Adjust the height of the row of table at index, with delta.
@@ -3197,18 +3198,21 @@ define("tinymce/tableplugin/ResizeBars", [
 			var newCellSizes = recalculateCellHeights(tableGrid, newHeights);
 			var newRowSizes = recalculateRowHeights(tableGrid, newHeights);
 
-			Tools.each(newRowSizes, function(row) {
-				editor.dom.setStyle(row.element, 'height', row.height + 'px');
-				editor.dom.setAttrib(row.element, 'height', null);
-			});
+			editor.undoManager.transact(function() {
 
-			Tools.each(newCellSizes, function(cell) {
-				editor.dom.setStyle(cell.element, 'height', cell.height + 'px');
-				editor.dom.setAttrib(cell.element, 'height', null);
-			});
+				Tools.each(newRowSizes, function(row) {
+					editor.dom.setStyle(row.element, 'height', row.height + 'px');
+					editor.dom.setAttrib(row.element, 'height', null);
+				});
 
-			editor.dom.setStyle(table, 'height', newTotalHeight + 'px');
-			editor.dom.setAttrib(table, 'height', null);
+				Tools.each(newCellSizes, function(cell) {
+					editor.dom.setStyle(cell.element, 'height', cell.height + 'px');
+					editor.dom.setAttrib(cell.element, 'height', null);
+				});
+
+				editor.dom.setStyle(table, 'height', newTotalHeight + 'px');
+				editor.dom.setAttrib(table, 'height', null);
+			});
 		}
 
 		function scheduleDelayedDropEvent() {
@@ -3278,6 +3282,7 @@ define("tinymce/tableplugin/ResizeBars", [
 					adjustHeight(hoverTable, delta, index);
 				}
 				refreshBars(hoverTable);
+				editor.nodeChanged();
 			}
 		}
 
@@ -3375,6 +3380,20 @@ define("tinymce/tableplugin/ResizeBars", [
 			}
 		});
 
+		// Prevents the user from moving the caret inside the resize bars on Chrome
+		// Only does it on arrow keys since clearBars might be an epxensive operation
+		// since it's querying the DOM
+		editor.on('keydown', function(e) {
+			switch (e.keyCode) {
+				case VK.LEFT:
+				case VK.RIGHT:
+				case VK.UP:
+				case VK.DOWN:
+					clearBars();
+					break;
+			}
+		});
+
 		return {
 			adjustWidth: adjustWidth,
 			adjustHeight: adjustHeight,
@@ -3426,7 +3445,12 @@ define("tinymce/tableplugin/Plugin", [
 	var each = Tools.each;
 
 	function Plugin(editor) {
-		var clipboardRows, self = this, dialogs = new Dialogs(editor), resizeBars = ResizeBars(editor);
+		var clipboardRows, self = this, dialogs = new Dialogs(editor), resizeBars;
+
+		if (editor.settings.object_resizing &&
+			(editor.settings.object_resizing === true || editor.settings.object_resizing === 'table')) {
+			resizeBars = ResizeBars(editor);
+		}
 
 		function cmd(command) {
 			return function() {
@@ -3775,7 +3799,9 @@ define("tinymce/tableplugin/Plugin", [
 			},
 
 			mceTableDelete: function(grid) {
-				resizeBars.clearBars();
+				if (resizeBars) {
+					resizeBars.clearBars();
+				}
 				grid.deleteTable();
 			}
 		}, function(func, name) {
@@ -3890,7 +3916,7 @@ define("tinymce/tableplugin/Plugin", [
 
 		function isTable(table) {
 
-			var selectorMatched = editor.dom.is(table, 'table');
+			var selectorMatched = editor.dom.is(table, 'table') && editor.getBody().contains(table);
 
 			return selectorMatched;
 		}
