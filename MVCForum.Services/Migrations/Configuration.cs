@@ -11,7 +11,7 @@ using MVCForum.Domain.DomainModel;
 using MVCForum.Services.Data.Context;
 using MVCForum.Utilities;
 
-namespace MVCForum.Services.Data.Migrations
+namespace MVCForum.Services.Migrations
 {
     internal sealed class Configuration : DbMigrationsConfiguration<MVCForumContext>
     {

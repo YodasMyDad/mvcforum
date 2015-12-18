@@ -3,7 +3,7 @@ using MVCForum.Domain.Constants;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Services.Data.Context;
-using MVCForum.Services.Data.Migrations;
+using MVCForum.Services.Migrations;
 
 namespace MVCForum.Services.Data.UnitOfWork
 {

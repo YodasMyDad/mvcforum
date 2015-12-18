@@ -70,7 +70,6 @@
     <!-- Compiled DLL's -->
     <file src="..\MVCForum.WebSite\bin\MVCForum.Website.dll" target="lib\MVCForum.Website.dll" />
     <file src="..\MVCForum.WebSite\bin\MVCForum.IOC.dll" target="lib\MVCForum.IOC.dll" />
-    <file src="..\MVCForum.WebSite\bin\MVCForum.Data.dll" target="lib\MVCForum.Data.dll" />
     <file src="..\MVCForum.WebSite\bin\Badge.*.dll" target="lib" />
     <file src="..\MVCForum.WebSite\bin\MVCForum.Services.dll" target="lib\MVCForum.Services.dll" />
     <file src="..\MVCForum.WebSite\bin\MVCForum.Domain.dll" target="lib\MVCForum.Domain.dll" />
