@@ -150,8 +150,17 @@ namespace MVCForum.Website.Controllers
 
                 if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[AppConstants.PermissionDeletePosts].IsTicked)
                 {
-                    // Delete post
-                    _postService.Delete(post, unitOfWork);   
+                    // Delete post / topic
+                    if (post.IsTopicStarter)
+                    {
+                       // Delete entire topic
+                       _topicService.Delete(topic, unitOfWork);
+                    }
+                    else
+                    {
+                        // Deletes single post and associated data
+                        _postService.Delete(post, unitOfWork);
+                    }
     
                     try
                     {

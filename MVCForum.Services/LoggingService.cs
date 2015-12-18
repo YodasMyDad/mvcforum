@@ -46,8 +46,8 @@ namespace MVCForum.Services
         /// <returns></returns>
         private static string MakeLogFileName(bool isArchive)
         {
-            return !isArchive ? String.Format("{0}//{1}{2}", _logFileFolder, LogFileNameOnly, LogFileExtension) :
-                String.Format("{0}//{1}_{2}{3}", _logFileFolder, LogFileNameOnly, DateTime.UtcNow.ToString("ddMMyyyy_hhmmss"), LogFileExtension);
+            return !isArchive ? $"{_logFileFolder}//{LogFileNameOnly}{LogFileExtension}"
+                : $"{_logFileFolder}//{LogFileNameOnly}_{DateTime.UtcNow.ToString("ddMMyyyy_hhmmss")}{LogFileExtension}";
         }
 
         /// <summary>
@@ -91,9 +91,8 @@ namespace MVCForum.Services
                         }
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
-                    var testing = ex;
                     // Not much to do if logging failed...
                 } 
             }

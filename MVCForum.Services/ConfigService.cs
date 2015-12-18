@@ -73,27 +73,24 @@ namespace MVCForum.Services
                     var xDoc = new XmlDocument();
                     xDoc.Load(webConfigPath);
                     XmlNode root = xDoc.DocumentElement;
-                    if (root != null)
+                    var emoticonNodes = root?.SelectNodes("//emoticon");
+                    if (emoticonNodes != null)
                     {
-                        var emoticonNodes = root.SelectNodes("//emoticon");
-                        if (emoticonNodes != null)
+                        foreach (XmlNode emoticonNode in emoticonNodes)
                         {
-                            foreach (XmlNode emoticonNode in emoticonNodes)
+                            //<emoticon symbol="O:)" image="angel-emoticon.png" />  
+                            if (emoticonNode.Attributes != null)
                             {
-                                //<emoticon symbol="O:)" image="angel-emoticon.png" />  
-                                if (emoticonNode.Attributes != null)
+                                var emoticonSymbolAttr = emoticonNode.Attributes["symbol"];
+                                var emoticonImageAttr = emoticonNode.Attributes["image"];
+                                if (emoticonSymbolAttr != null && emoticonImageAttr != null)
                                 {
-                                    var emoticonSymbolAttr = emoticonNode.Attributes["symbol"];
-                                    var emoticonImageAttr = emoticonNode.Attributes["image"];
-                                    if (emoticonSymbolAttr != null && emoticonImageAttr != null)
-                                    {
-                                        emoticons.Add(emoticonSymbolAttr.InnerText, emoticonImageAttr.InnerText);
-                                    }
+                                    emoticons.Add(emoticonSymbolAttr.InnerText, emoticonImageAttr.InnerText);
                                 }
                             }
-
-                            _cacheService.Set(key, emoticons, CacheTimes.TwelveHours);
                         }
+
+                        _cacheService.Set(key, emoticons, CacheTimes.TwelveHours);
                     }
                 }
             }

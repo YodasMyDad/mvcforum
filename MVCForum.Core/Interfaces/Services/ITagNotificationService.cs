@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
@@ -11,6 +12,7 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<TagNotification> GetByTag(List<TopicTag> tag);
         IList<TagNotification> GetByUser(MembershipUser user);
         IList<TagNotification> GetByUserAndTag(MembershipUser user, TopicTag tag, bool addTracking = false);
-        void Add(TagNotification tagNotification);
+        TagNotification Add(TagNotification tagNotification);
+        TagNotification Get(Guid id);
     }
 }

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Web.Hosting;
 using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Services.Data.Context;
 using MVCForum.Utilities;
 
 namespace MVCForum.Services
@@ -15,13 +17,28 @@ namespace MVCForum.Services
     {
         private readonly ILoggingService _loggingService;
         private readonly ISettingsService _settingsService;
-        private readonly IEmailRepository _emailRepository;
+        private readonly MVCForumContext _context;
 
-        public EmailService(ILoggingService loggingService, ISettingsService settingsService, IEmailRepository emailRepository)
+        public EmailService(ILoggingService loggingService, ISettingsService settingsService, IMVCForumContext context)
         {
             _loggingService = loggingService;
             _settingsService = settingsService;
-            _emailRepository = emailRepository;
+            _context = context as MVCForumContext;
+        }
+
+        public Email Add(Email email)
+        {
+            return _context.Email.Add(email);
+        }
+
+        public void Delete(Email email)
+        {
+            _context.Email.Remove(email);
+        }
+
+        public List<Email> GetAll(int amountToTake)
+        {
+            return _context.Email.OrderBy(x => x.DateCreated).Take(amountToTake).ToList();
         }
 
         public void ProcessMail(int amountToSend)
@@ -29,7 +46,7 @@ namespace MVCForum.Services
             try
             {
                 // Get the amount of emails to send in this batch
-                var emails = _emailRepository.GetAll(amountToSend);
+                var emails = GetAll(amountToSend);
 
                 // See if there are any
                 if (emails != null && emails.Count > 0)
@@ -90,7 +107,7 @@ namespace MVCForum.Services
                     // Loop through the sent emails and delete them
                     foreach (var sentEmail in emailsToDelete)
                     {
-                        _emailRepository.Delete(sentEmail);
+                        Delete(sentEmail);
                     }
                    
                 }
@@ -124,7 +141,7 @@ namespace MVCForum.Services
                 sb = sb.Replace("#SITEURL#", settings.ForumUrl);
                 if (!string.IsNullOrEmpty(to))
                 {
-                    to = string.Format("<p>{0},</p>", to);
+                    to = $"<p>{to},</p>";
                     sb = sb.Replace("#TO#", to);
                 }
 
@@ -155,7 +172,7 @@ namespace MVCForum.Services
 
                 // Sort local images in emails
                 email.Body = StringUtils.AppendDomainToImageUrlInHtml(email.Body, settings.ForumUrl.TrimEnd('/'));
-                _emailRepository.Add(email);
+                Add(email);
             }
         }
     }

@@ -11,8 +11,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Externals", "Externals", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Website", "MVCForum.Website\MVCForum.Website.csproj", "{C149AEDE-0F7A-46A5-B9D4-95ED7B775DE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Data", "MVCForum.Data\MVCForum.Data.csproj", "{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Domain", "MVCForum.Core\MVCForum.Domain.csproj", "{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Services", "MVCForum.Services\MVCForum.Services.csproj", "{14A002FB-9CCC-452A-A780-B322908CD45A}"
@@ -88,16 +86,6 @@ Global
 		{C149AEDE-0F7A-46A5-B9D4-95ED7B775DE2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{C149AEDE-0F7A-46A5-B9D4-95ED7B775DE2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{C149AEDE-0F7A-46A5-B9D4-95ED7B775DE2}.Release|x86.ActiveCfg = Release|Any CPU
-		{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}.Debug|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}.Debug|Mixed Platforms.Build.0 = Release|Any CPU
-		{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}.Release|x86.ActiveCfg = Release|Any CPU
 		{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}.Debug|Mixed Platforms.ActiveCfg = Release|Any CPU

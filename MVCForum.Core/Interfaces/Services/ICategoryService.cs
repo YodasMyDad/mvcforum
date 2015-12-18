@@ -31,10 +31,13 @@ namespace MVCForum.Domain.Interfaces.Services
         Category Get(string slug);
         List<Category> GetCategoryParents(Category category, List<Category> allowedCategories);
         void Delete(Category category);
-        void Add(Category category);
+        Category Add(Category category);
         void UpdateSlugFromName(Category category);
         Category SanitizeCategory(Category category);
         List<Category> GetSubCategories(Category category, List<Category> allCategories, int level = 2);
         List<SelectListItem> GetBaseSelectListCategories(List<Category> allowedCategories);
+        Category GetBySlug(string slug);
+        IList<Category> GetBySlugLike(string slug);
+        IList<Category> GetAllDeepSubCategories(Category category);
     }
 }

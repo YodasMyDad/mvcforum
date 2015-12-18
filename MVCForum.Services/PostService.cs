@@ -4,18 +4,19 @@ using System.Text;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Events;
-using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
 using System.Linq;
+using System.Data.Entity;
+using MVCForum.Domain.DomainModel.LinqKit;
+using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.UnitOfWork;
+using MVCForum.Services.Data.Context;
 using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
     public partial class PostService : IPostService
     {
-        private readonly IPostRepository _postRepository;
-        private readonly ITopicService _topicService;
         private readonly IRoleService _roleService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ISettingsService _settingsService;
@@ -24,13 +25,12 @@ namespace MVCForum.Services
         private readonly IUploadedFileService _uploadedFileService;
         private readonly IFavouriteService _favouriteService;
         private readonly IConfigService _configService;
+        private readonly MVCForumContext _context;
 
-        public PostService(IMembershipUserPointsService membershipUserPointsService,
-            ISettingsService settingsService, IRoleService roleService, IPostRepository postRepository, ITopicService topicService,
+        public PostService(IMVCForumContext context,IMembershipUserPointsService membershipUserPointsService,
+            ISettingsService settingsService, IRoleService roleService,
             ILocalizationService localizationService, IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService favouriteService, IConfigService configService)
         {
-            _postRepository = postRepository;
-            _topicService = topicService;
             _roleService = roleService;
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
@@ -39,9 +39,11 @@ namespace MVCForum.Services
             _uploadedFileService = uploadedFileService;
             _favouriteService = favouriteService;
             _configService = configService;
+            _context = context as MVCForumContext;
         }
 
 
+        #region Private / Helpers Methods
         private MembershipRole UsersRole(MembershipUser user)
         {
             return user == null ? _roleService.GetRole(AppConstants.GuestRoleName) : user.Roles.FirstOrDefault();
@@ -54,15 +56,22 @@ namespace MVCForum.Services
             // Check settings
             if (_settingsService.GetSettings().EnableEmoticons == true)
             {
-                post.PostContent = _configService.Emotify(post.PostContent);   
+                post.PostContent = _configService.Emotify(post.PostContent);
             }
 
             return post;
         }
 
+        #endregion
+
+
         public Post GetTopicStarterPost(Guid topicId)
         {
-            return _postRepository.GetTopicStarterPost(topicId);
+            var post = _context.Post
+                        .Include(x => x.Topic.Category)
+                        .Include(x => x.User)
+                        .FirstOrDefault(x => x.Topic.Id == topicId && x.IsTopicStarter);
+            return post;
         }
 
         /// <summary>
@@ -71,7 +80,11 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IEnumerable<Post> GetAll(List<Category> allowedCategories)
         {
-            return _postRepository.GetAll(allowedCategories);
+            // get the category ids
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            return _context.Post
+                    .Include(x => x.Topic.Category)
+                    .Where(x => allowedCatIds.Contains(x.Topic.Category.Id));
         }
 
         /// <summary>
@@ -81,7 +94,13 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<Post> GetLowestVotedPost(int amountToTake)
         {
-            return _postRepository.GetLowestVotedPost(amountToTake);
+            return _context.Post
+                .Include(x => x.Topic)
+                .Include(x => x.User)
+                .Where(x => x.VoteCount < 0 && x.Pending != true)
+                .OrderBy(x => x.VoteCount)
+                .Take(amountToTake)
+                .ToList();
         }
 
         /// <summary>
@@ -91,7 +110,13 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<Post> GetHighestVotedPost(int amountToTake)
         {
-            return _postRepository.GetHighestVotedPost(amountToTake);
+            return _context.Post
+                .Include(x => x.Topic)
+                .Include(x => x.User)
+                .Where(x => x.VoteCount > 0 && x.Pending != true)
+                .OrderByDescending(x => x.VoteCount)
+                .Take(amountToTake)
+                .ToList();
         }
 
         /// <summary>
@@ -103,17 +128,37 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<Post> GetByMember(Guid memberId, int amountToTake, List<Category> allowedCategories)
         {
-            return _postRepository.GetByMember(memberId, amountToTake, allowedCategories);
+            // get the category ids
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            return _context.Post
+                    .Include(x => x.Topic.LastPost.User)
+                    .Include(x => x.Topic.Category)
+                    .Include(x => x.User)
+                    .Where(x => x.User.Id == memberId && x.Pending != true)
+                    .Where(x => allowedCatIds.Contains(x.Topic.Category.Id))
+                    .OrderByDescending(x => x.DateCreated)
+                    .Take(amountToTake)
+                    .ToList();
         }
 
         public IEnumerable<Post> GetPostsByFavouriteCount(Guid postsByMemberId, int minAmountOfFavourites)
         {
-            return _postRepository.GetPostsByFavouriteCount(postsByMemberId, minAmountOfFavourites);
+            return _context.Post
+                   .Include(x => x.Topic.LastPost.User)
+                   .Include(x => x.Topic.Category)
+                   .Include(x => x.User)
+                   .Include(x => x.Favourites.Select(f => f.Member))
+                   .Where(x => x.User.Id == postsByMemberId && x.Favourites.Count(c => c.Member.Id != postsByMemberId) >= minAmountOfFavourites);
         }
 
         public IEnumerable<Post> GetPostsFavouritedByOtherMembers(Guid postsByMemberId)
         {
-            return _postRepository.GetPostsFavouritedByOtherMembers(postsByMemberId);
+            return _context.Post
+                        .Include(x => x.Topic.LastPost.User)
+                        .Include(x => x.Topic.Category)
+                        .Include(x => x.User)
+                        .Include(x => x.Favourites.Select(f => f.Member))
+                        .Where(x => x.User.Id == postsByMemberId && x.Favourites.Any(c => c.Member.Id != postsByMemberId));
         }
 
         /// <summary>
@@ -131,9 +176,51 @@ namespace MVCForum.Services
             var search = StringUtils.ReturnSearchString(searchTerm);
 
             // Now split the words
-            var splitSearch = search.Split(' ').ToList();
+            var splitSearch = search.Trim().Split(' ').ToList();
 
-            return _postRepository.SearchPosts(pageIndex, pageSize, amountToTake, splitSearch, allowedCategories);
+            // get the category ids
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+
+            var query = _context.Post.AsExpandable()
+                            .Include(x => x.Topic.Category)
+                            .Include(x => x.User)
+                            .AsNoTracking()
+                            .Where(x => x.Pending != true)
+                            .Where(x => allowedCatIds.Contains(x.Topic.Category.Id));
+
+            // Start the predicate builder
+            var postFilter = PredicateBuilder.False<Post>();
+
+            // Loop through each word and see if it's in the post
+            foreach (var term in splitSearch)
+            {
+                var sTerm = term.Trim();
+                //query = query.Where(x => x.PostContent.ToUpper().Contains(sTerm) || x.SearchField.ToUpper().Contains(sTerm));
+                postFilter = postFilter.Or(x => x.PostContent.ToUpper().Contains(sTerm) || x.SearchField.ToUpper().Contains(sTerm));
+            }
+
+            // Add the predicate builder to the query
+            query = query.Where(postFilter);
+
+            // Get the count
+            var total = query.Count();
+
+            if (amountToTake < total)
+            {
+                total = amountToTake;
+            }
+
+            // Get the Posts and then get the topics from the post
+            // This is an interim solution, as its flawed due to multiple posts in one topic so the paging might
+            // be incorrect if all posts are from one topic.
+            var results = query
+                        .OrderByDescending(x => x.DateCreated)
+                        .Skip((pageIndex - 1) * pageSize)
+                        .Take(pageSize)
+                        .ToList();
+
+            // Return a paged list
+            return new PagedList<Post>(results, pageIndex, pageSize, total);
         }
 
         /// <summary>
@@ -147,17 +234,61 @@ namespace MVCForum.Services
         /// <returns></returns>
         public PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId, PostOrderBy order)
         {
-            return _postRepository.GetPagedPostsByTopic(pageIndex, pageSize, amountToTake, topicId, order);
+            // We might only want to display the top 100
+            // but there might not be 100 topics
+            var total = _context.Post.AsNoTracking().Count(x => x.Topic.Id == topicId && !x.IsTopicStarter && x.Pending != true);
+            if (amountToTake < total)
+            {
+                total = amountToTake;
+            }
+
+            // Get the topics using an efficient
+            var results = _context.Post
+                                  .Include(x => x.User)
+                                  .Include(x => x.Topic)
+                                  .AsNoTracking()
+                                  .Where(x => x.Topic.Id == topicId && !x.IsTopicStarter && x.Pending != true);
+
+            // Sort what order the posts are sorted in
+            switch (order)
+            {
+                case PostOrderBy.Newest:
+                    results = results.OrderByDescending(x => x.DateCreated);
+                    break;
+
+                case PostOrderBy.Votes:
+                    results = results.OrderByDescending(x => x.VoteCount).ThenBy(x => x.DateCreated);
+                    break;
+
+                default:
+                    results = results.OrderBy(x => x.DateCreated);
+                    break;
+            }
+
+            // sort the paging out
+            var posts = results.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+
+            // Return a paged list
+            return new PagedList<Post>(posts, pageIndex, pageSize, total);
         }
 
         public PagedList<Post> GetPagedPendingPosts(int pageIndex, int pageSize)
         {
-            return _postRepository.GetPagedPendingPosts(pageIndex, pageSize);
+            var total = _context.Post.Count(x => x.Pending == true);
+            var results = _context.Post
+                .Include(x => x.Topic)
+                .Include(x => x.User)
+                .AsNoTracking()
+                .Where(x => x.Pending == true)
+                .OrderBy(x => x.DateCreated)
+                .Skip((pageIndex - 1) * pageSize).Take(pageSize);
+
+            return new PagedList<Post>(results.ToList(), pageIndex, pageSize, total);
         }
 
         public int GetPendingPostsCount()
         {
-            return _postRepository.GetPendingPostsCount();
+            return _context.Post.Count(x => x.Pending == true);
         }
 
         /// <summary>
@@ -168,7 +299,17 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<Post> GetSolutionsByMember(Guid memberId, List<Category> allowedCategories)
         {
-            return _postRepository.GetSolutionsByMember(memberId, allowedCategories);
+            // get the category ids
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            return _context.Post
+                .Include(x => x.Topic.Category)
+                .Include(x => x.Topic.LastPost.User)
+                .Include(x => x.User)
+                .Where(x => x.User.Id == memberId)
+                .Where(x => x.IsSolution && x.Pending != true)
+                .Where(x => allowedCatIds.Contains(x.Topic.Category.Id))
+                .OrderByDescending(x => x.DateCreated)
+                .ToList();
         }
 
         /// <summary>
@@ -177,7 +318,12 @@ namespace MVCForum.Services
         /// <returns></returns>
         public int PostCount(List<Category> allowedCategories)
         {
-            return _postRepository.PostCount(allowedCategories);
+            // get the category ids
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            return _context.Post
+                .Include(x => x.Topic)
+                .AsNoTracking()
+                .Count(x => x.Pending != true && x.Topic.Pending != true && allowedCatIds.Contains(x.Topic.Category.Id));
         }
 
         /// <summary>
@@ -188,7 +334,7 @@ namespace MVCForum.Services
         public Post Add(Post post)
         {
             post = SanitizePost(post);
-            return _postRepository.Add(post);
+            return _context.Post.Add(post);
         }
 
         /// <summary>
@@ -198,21 +344,26 @@ namespace MVCForum.Services
         /// <returns></returns>
         public Post Get(Guid postId)
         {
-            return _postRepository.Get(postId);
+            return _context.Post
+                .Include(x => x.Topic.Category)
+                .Include(x => x.Topic.LastPost.User)
+                .Include(x => x.User)
+                .FirstOrDefault(x => x.Id == postId);
         }
 
         public IList<Post> GetPostsByTopics(List<Guid> topicIds, List<Category> allowedCategories)
         {
-            return _postRepository.GetPostsByTopics(topicIds, allowedCategories);
-        }
-
-        /// <summary>
-        /// Save / Update a post
-        /// </summary>
-        /// <param name="post"></param>
-        public void SaveOrUpdate(Post post)
-        {
-            _postRepository.Update(post);
+            // get the category ids
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            return _context.Post
+                .Include(x => x.Topic.Category)
+                .Include(x => x.Topic.LastPost)
+                .Include(x => x.User)
+                .AsNoTracking()
+                .Where(x => topicIds.Contains(x.Topic.Id) && x.Pending != true)
+                .Where(x => allowedCatIds.Contains(x.Topic.Category.Id))
+                .OrderByDescending(x => x.DateCreated)
+                .ToList();
         }
 
         /// <summary>
@@ -229,11 +380,8 @@ namespace MVCForum.Services
             // If this is coming from a call that is deleting the entire topic, then just delete post
             if (post.IsTopicStarter)
             {
-                // Pass it to be deleted
-                _topicService.Delete(topic, unitOfWork);
-
                 // Return true as the topic was deleted as well as this post
-                return true;
+                return false;
             }
 
             var votes = _voteService.GetVotesByPost(post.Id);
@@ -293,7 +441,7 @@ namespace MVCForum.Services
 
             // Before we delete the post, we need to check if this is the last post in the topic
             // and if so update the topic
-                
+
             var lastPost = topic.Posts.OrderByDescending(x => x.DateCreated).FirstOrDefault();
 
             if (lastPost != null && lastPost.Id == post.Id)
@@ -310,7 +458,7 @@ namespace MVCForum.Services
             topic.Posts.Remove(post);
 
             // now delete the post
-            _postRepository.Delete(post);
+            _context.Post.Remove(post);
 
             // Only the post was deleted, not the entire topic
             return false;
@@ -401,6 +549,55 @@ namespace MVCForum.Services
                 formattedSearchField = !string.IsNullOrEmpty(formattedSearchField) ? string.Concat(formattedSearchField, " ", sb.ToString()) : sb.ToString();
             }
             return formattedSearchField.Trim();
+        }
+
+        public IList<Post> GetPostsByMember(Guid memberId, List<Category> allowedCategories)
+        {
+            // get the category ids
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            return _context.Post
+                .Include(x => x.Topic.Category)
+                .Include(x => x.User)
+                .AsNoTracking()
+                .Where(x => x.User.Id == memberId && x.Pending != true)
+                .Where(x => allowedCatIds.Contains(x.Topic.Category.Id))
+                .OrderByDescending(x => x.DateCreated)
+                .ToList();
+        }
+
+        public IList<Post> GetAllSolutionPosts(List<Category> allowedCategories)
+        {
+            // get the category ids
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            return _context.Post
+                .Include(x => x.Topic.Category)
+                .Include(x => x.User)
+                .AsNoTracking()
+                .Where(x => x.IsSolution && x.Pending != true)
+                .Where(x => allowedCatIds.Contains(x.Topic.Category.Id))
+                .OrderByDescending(x => x.DateCreated)
+                .ToList();
+        }
+
+        public IList<Post> GetPostsByTopic(Guid topicId)
+        {
+            return _context.Post
+                .Include(x => x.Topic)
+                .Include(x => x.User)
+                .Where(x => x.Topic.Id == topicId && x.Pending != true)
+                .OrderByDescending(x => x.DateCreated)
+                .ToList();
+        }
+
+        public IEnumerable<Post> GetAllWithTopics(List<Category> allowedCategories)
+        {
+            // get the category ids
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            return _context.Post
+                .Include(x => x.Topic.Category)
+                .Include(x => x.User)
+                .Where(x => x.Pending != true)
+                .Where(x => allowedCatIds.Contains(x.Topic.Category.Id));
         }
     }
 }

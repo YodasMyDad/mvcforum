@@ -57,5 +57,9 @@ namespace MVCForum.Domain.Interfaces.Services
         /// <param name="type">What points you are looking for, posts, votes, badges etc...</param>
         /// <returns></returns>
         int PointsByType(MembershipUser user, PointsFor type);
+
+        MembershipUserPoints Get(Guid id);
+        int UserPoints(MembershipUser user);
+        void Delete(IEnumerable<MembershipUserPoints> points);
     }
 }

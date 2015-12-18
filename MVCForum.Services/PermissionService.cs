@@ -1,21 +1,23 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Services.Data.Context;
 using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
     public partial class PermissionService : IPermissionService
     {
-        private readonly IPermissionRepository _permissionRepository;
-        private readonly ICategoryPermissionForRoleRepository _categoryPermissionForRoleRepository;
+        private readonly MVCForumContext _context;
+        private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
 
-        public PermissionService(IPermissionRepository permissionRepository, ICategoryPermissionForRoleRepository categoryPermissionForRoleRepository)
+        public PermissionService(ICategoryPermissionForRoleService categoryPermissionForRoleService, IMVCForumContext context)
         {
-            _permissionRepository = permissionRepository;
-            _categoryPermissionForRoleRepository = categoryPermissionForRoleRepository;
+            _categoryPermissionForRoleService = categoryPermissionForRoleService;
+            _context = context as MVCForumContext;
         }
 
         /// <summary>
@@ -24,17 +26,20 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IEnumerable<Permission> GetAll()
         {
-            return _permissionRepository.GetAll();
+            return _context.Permission
+                .AsNoTracking()
+                .OrderBy(x => x.Name)
+                .ToList();
         }
 
         /// <summary>
         /// Add a new permission
         /// </summary>
         /// <param name="permission"></param>
-        public void Add(Permission permission)
+        public Permission Add(Permission permission)
         {
             permission.Name = StringUtils.SafePlainText(permission.Name);
-            _permissionRepository.Add(permission);
+            return _context.Permission.Add(permission);
         }
 
         /// <summary>
@@ -43,13 +48,13 @@ namespace MVCForum.Services
         /// <param name="permission"></param>
         public void Delete(Permission permission)
         {
-            var catPermForRoles = _categoryPermissionForRoleRepository.GetByPermission(permission.Id);
+            var catPermForRoles = _categoryPermissionForRoleService.GetByPermission(permission.Id);
             foreach (var categoryPermissionForRole in catPermForRoles)
             {
-                _categoryPermissionForRoleRepository.Delete(categoryPermissionForRole);
+                _categoryPermissionForRoleService.Delete(categoryPermissionForRole);
             }
 
-            _permissionRepository.Delete(permission);
+            _context.Permission.Remove(permission);
         }
 
         /// <summary>
@@ -59,7 +64,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public Permission Get(Guid id)
         {
-            return _permissionRepository.Get(id);
+            return _context.Permission.FirstOrDefault(x => x.Id == id);
         }
     }
 }

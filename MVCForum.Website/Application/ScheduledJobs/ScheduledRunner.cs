@@ -55,7 +55,7 @@ namespace MVCForum.Website.Application.ScheduledJobs
             .WithIdentity("EmailJob", AppConstants.DefaultTaskGroup)
             .Build();
 
-            scheduler.ScheduleJob(emailJob, fifteenSecondsTriggerForever); 
+            scheduler.ScheduleJob(emailJob, fifteenSecondsTriggerForever);
 
             #endregion
 
@@ -66,19 +66,19 @@ namespace MVCForum.Website.Application.ScheduledJobs
                         .WithIdentity("KeepAliveJob", AppConstants.DefaultTaskGroup)
                         .Build();
 
-            scheduler.ScheduleJob(keepAliveJob, fiveMinuteTriggerForever); 
+            scheduler.ScheduleJob(keepAliveJob, fiveMinuteTriggerForever);
 
             #endregion
 
             #region Mark As Solution Job
-            
+
             // Send mark as solution reminder emails
 
             var markAsSolutionReminderJob = JobBuilder.Create<MarkAsSolutionReminderJob>()
             .WithIdentity("MarkAsSolutionReminderJob", AppConstants.DefaultTaskGroup)
             .Build();
 
-            scheduler.ScheduleJob(markAsSolutionReminderJob, sixHourTriggerForever); 
+            scheduler.ScheduleJob(markAsSolutionReminderJob, sixHourTriggerForever);
 
             #endregion
 

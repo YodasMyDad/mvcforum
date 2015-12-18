@@ -1,5 +1,5 @@
-﻿using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.UnitOfWork;
+﻿using System;
+using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
@@ -7,5 +7,6 @@ namespace MVCForum.Domain.Interfaces.Services
     {
         Settings GetSettings(bool useCache = true);
         Settings Add(Settings settings);
+        Settings Get(Guid id);
     }
 }

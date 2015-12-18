@@ -374,7 +374,7 @@ namespace MVCForum.Website.Controllers
 
                         // Set upload directory - Create if it doesn't exist
                         var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, userToSave.Id));
-                        if (!Directory.Exists(uploadFolderPath))
+                        if (uploadFolderPath != null && !Directory.Exists(uploadFolderPath))
                         {
                             Directory.CreateDirectory(uploadFolderPath);
                         }

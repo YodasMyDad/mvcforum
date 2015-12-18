@@ -86,7 +86,7 @@ namespace MVCForum.Website
                 }
                 catch (Exception ex)
                 {
-                    LoggingService.Error(string.Format("Error processing badge classes: {0}", ex.Message));
+                    LoggingService.Error($"Error processing badge classes: {ex.Message}");
                 }
             }
 

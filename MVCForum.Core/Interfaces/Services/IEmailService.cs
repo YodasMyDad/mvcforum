@@ -10,5 +10,8 @@ namespace MVCForum.Domain.Interfaces.Services
         void ProcessMail(int amountToSend);
         string EmailTemplate(string to, string content);
         string EmailTemplate(string to, string content, Settings settings);
+        Email Add(Email email);
+        void Delete(Email email);
+        List<Email> GetAll(int amountToTake);
     }
 }
