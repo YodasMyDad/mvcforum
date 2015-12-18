@@ -5,7 +5,6 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Externals", "Externals", "{7859E236-ED49-482B-B325-C5EEFE650C14}"
 	ProjectSection(SolutionItems) = preProject
-		Externals\Microsoft.Web.Services3.dll = Externals\Microsoft.Web.Services3.dll
 		Externals\Skybrud.Social.Microsoft.dll = Externals\Skybrud.Social.Microsoft.dll
 	EndProjectSection
 EndProject

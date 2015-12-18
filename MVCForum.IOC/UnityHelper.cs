@@ -4,9 +4,9 @@ using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Services;
 using Microsoft.Practices.Unity;
+using MVCForum.IOC.Quartz;
 using MVCForum.Services.Data.Context;
 using MVCForum.Services.Data.UnitOfWork;
-using Quartz.Unity;
 
 namespace MVCForum.IOC
 {
