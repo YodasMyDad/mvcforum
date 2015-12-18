@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web.Mvc;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.General;
 
 namespace MVCForum.Domain.Interfaces.Services
 {

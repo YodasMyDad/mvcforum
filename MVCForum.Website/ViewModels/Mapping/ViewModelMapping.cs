@@ -194,15 +194,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             // Get all the categories for this topic collection
             var categories = topics.Select(x => x.Category).Distinct();
 
-            // Permissions
-            // loop through the categories and get the permissions
-            var permissions = new Dictionary<Category, PermissionSet>();
-            foreach (var category in categories)
-            {
-                var permissionSet = roleService.GetPermissions(category, usersRole);
-                permissions.Add(category, permissionSet);
-            }
-            return permissions;
+            return GetPermissionsForCategories(categories, roleService, usersRole);
         }
 
         public static List<TopicViewModel> CreateTopicViewModels(List<Topic> topics, 
@@ -431,7 +423,18 @@ namespace MVCForum.Website.ViewModels.Mapping
 
         #region Category
 
-        //TODO - Create generic category mapping
+        public static Dictionary<Category, PermissionSet> GetPermissionsForCategories(IEnumerable<Category> categories, IRoleService roleService, MembershipRole usersRole)
+        {
+            // Permissions
+            // loop through the categories and get the permissions
+            var permissions = new Dictionary<Category, PermissionSet>();
+            foreach (var category in categories)
+            {
+                var permissionSet = roleService.GetPermissions(category, usersRole);
+                permissions.Add(category, permissionSet);
+            }
+            return permissions;
+        }
 
         #endregion
     }

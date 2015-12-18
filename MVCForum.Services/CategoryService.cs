@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using System.Data.Entity;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.General;
 using MVCForum.Domain.Exceptions;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Services;
