@@ -84,7 +84,7 @@ namespace MVCForum.Utilities
         #region Social Helpers
         public static string GetGravatarImage(string email, int size)
         {
-            return IsValidEmail(email) ? string.Format("{0}://www.gravatar.com/avatar/{1}?s={2}&d=identicon&r=PG", HttpContext.Current.Request.Url.Scheme, md5HashString(email), size) : "";
+            return IsValidEmail(email) ? string.Format("//www.gravatar.com/avatar/{0}?s={1}&d=identicon&r=PG", md5HashString(email), size) : "";
         }
         #endregion
 
@@ -1018,7 +1018,7 @@ namespace MVCForum.Utilities
             if (str.IndexOf("youtube.com", StringComparison.CurrentCultureIgnoreCase) >= 0 || str.IndexOf("youtu.be", StringComparison.CurrentCultureIgnoreCase) >= 0)
             {
                 const string pattern = @"(?:https?:\/\/)?(?:www\.)?(?:(?:(?:youtube.com\/watch\?[^?]*v=|youtu.be\/)([\w\-]+))(?:[^\s?]+)?)";
-                const string replacement = "<div class=\"video-container\" itemscope itemtype=\"http://schema.org/VideoObject\"><meta itemprop=\"embedURL\" content=\"http://www.youtube.com/embed/$1\"><iframe title='YouTube video player' width='500' height='281' src='http://www.youtube.com/embed/$1' frameborder='0' allowfullscreen='1'></iframe></div>";
+                const string replacement = "<div class=\"video-container\" itemscope itemtype=\"//schema.org/VideoObject\"><meta itemprop=\"embedURL\" content=\"//www.youtube.com/embed/$1\"><iframe title='YouTube video player' width='500' height='281' src='//www.youtube.com/embed/$1' frameborder='0' allowfullscreen='1'></iframe></div>";
 
                 var rgx = new Regex(pattern);
                 str = rgx.Replace(str, replacement);
@@ -1027,7 +1027,7 @@ namespace MVCForum.Utilities
             if (str.IndexOf("vimeo.com", StringComparison.CurrentCultureIgnoreCase) >= 0)
             {
                 const string pattern = @"(?:https?:\/\/)?vimeo\.com/(?:.*#|.*/videos/)?([0-9]+)";
-                const string replacement = "<div class=\"video-container\" itemscope itemtype=\"http://schema.org/VideoObject\"><meta itemprop=\"embedURL\" content=\"http://player.vimeo.com/video/$1?portrait=0\"><iframe src=\"http://player.vimeo.com/video/$1?portrait=0\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>";
+                const string replacement = "<div class=\"video-container\" itemscope itemtype=\"//schema.org/VideoObject\"><meta itemprop=\"embedURL\" content=\"//player.vimeo.com/video/$1?portrait=0\"><iframe src=\"//player.vimeo.com/video/$1?portrait=0\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>";
 
                 var rgx = new Regex(pattern);
                 str = rgx.Replace(str, replacement);
@@ -1036,7 +1036,7 @@ namespace MVCForum.Utilities
             if (str.IndexOf("screenr", StringComparison.CurrentCultureIgnoreCase) >= 0)
             {
                 const string pattern = @"(?:https?:\/\/)?(?:www\.)screenr\.com/([a-zA-Z0-9]+)";
-                const string replacement = "<div class=\"video-container\" itemscope itemtype=\"http://schema.org/VideoObject\"><meta itemprop=\"embedURL\" content=\"http://www.screenr.com/embed/$1\"><iframe src=\"http://www.screenr.com/embed/$1\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>";
+                const string replacement = "<div class=\"video-container\" itemscope itemtype=\"//schema.org/VideoObject\"><meta itemprop=\"embedURL\" content=\"//www.screenr.com/embed/$1\"><iframe src=\"//www.screenr.com/embed/$1\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>";
 
                 var rgx = new Regex(pattern);
                 str = rgx.Replace(str, replacement);
@@ -1044,7 +1044,7 @@ namespace MVCForum.Utilities
 
             if (str.IndexOf("instagr", StringComparison.CurrentCultureIgnoreCase) >= 0)
             {
-                var reg = new Regex(@"http://instagr\.?am(?:\.com)?/\S*", RegexOptions.Compiled);
+                var reg = new Regex(@"https?://instagr\.?am(?:\.com)?/\S*", RegexOptions.Compiled);
                 var idRegex = new Regex(@"(?<=p/).*?(?=/)", RegexOptions.Compiled);
                 var result = new StringBuilder();
                 using (var reader = new StringReader(str))
@@ -1058,7 +1058,7 @@ namespace MVCForum.Utilities
 
                             // Find links 
 
-                            result.AppendLine(reg.Replace(line, string.Format("<p><img src=\"http://instagram.com/p/{0}/media/?size=l\" class=\"img-responsive\" /></p>", idRegex.Match(url))));
+                            result.AppendLine(reg.Replace(line, string.Format("<p><img src=\"//instagram.com/p/{0}/media/?size=l\" class=\"img-responsive\" /></p>", idRegex.Match(url))));
                         }
                         else
                         {
