@@ -777,7 +777,7 @@ namespace MVCForum.Services
                 });
                 return report;
             }
-
+            var settings = _settingsService.GetSettings(true);
             var lineCounter = 0;
             foreach (var line in allLines)
             {
@@ -886,7 +886,7 @@ namespace MVCForum.Services
                     {
                         userToImport.Signature = values[7];
                     }
-
+                    userToImport.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
                     Add(userToImport);
                 }
                 catch (Exception ex)
