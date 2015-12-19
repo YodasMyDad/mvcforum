@@ -307,6 +307,7 @@
     <Compile Include="Controllers\MembersController.cs" />
     <Compile Include="Controllers\PointController.cs" />
     <Compile Include="Controllers\PostController.cs" />
+    <Compile Include="Controllers\SplitController.cs" />
     <Compile Include="Controllers\StatsController.cs" />
     <Compile Include="Controllers\TagController.cs" />
     <Compile Include="Controllers\TopicController.cs" />
@@ -796,6 +797,7 @@
     <Content Include="Installer\Db\1.5\Upgrade\upgrade.sql" />
     <Content Include="Installer\Db\1.4\database.sql" />
     <Content Include="Installer\Db\1.4\Upgrade\upgrade.sql" />
+    <Content Include="Scripts\badges.js" />
     <Content Include="Scripts\bbeditor\emoticons\alien.png" />
     <Content Include="Scripts\bbeditor\emoticons\angel.png" />
     <Content Include="Scripts\bbeditor\emoticons\angry.png" />
@@ -883,6 +885,11 @@
     <Content Include="Areas\Admin\Views\Settings\CustomCode.cshtml" />
     <Content Include="Areas\Admin\Views\AdminTag\MoveTags.cshtml" />
     <Content Include="Scripts\jquery-1.11.3.min.js" />
+    <Content Include="Scripts\language.js" />
+    <Content Include="Scripts\notifications.js" />
+    <Content Include="Scripts\plugins.js" />
+    <Content Include="Scripts\privatemessage.js" />
+    <Content Include="Scripts\slideoutpanel.js" />
     <Content Include="Scripts\tinymceplugins\ImageUpload\imageupload.js" />
     <Content Include="Scripts\tinymce\license.txt" />
     <Content Include="Scripts\tinymce\plugins\advlist\plugin.js" />
@@ -1095,7 +1102,7 @@
     <Content Include="Scripts\pushy\pushy.css" />
     <Content Include="Scripts\pushy\pushy.js" />
     <Content Include="Scripts\createtopic.js" />
-    <Content Include="Scripts\topic.js" />
+    <Content Include="Scripts\topic-post.js" />
     <Content Include="Scripts\dashboard.js" />
     <Content Include="Scripts\bbeditor\jquery.sceditor.default.min.css" />
     <Content Include="Scripts\bbeditor\jquery.sceditor.min.css" />
@@ -1263,6 +1270,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\languagepacks\" />
+    <Folder Include="Views\Split\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
