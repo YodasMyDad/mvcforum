@@ -11,7 +11,8 @@ namespace MVCForum.Services
 {
     public partial class ConfigService : IConfigService
     {
-        private static string EmoticonFolder => VirtualPathUtility.ToAbsolute("~/content/images/emoticons/");
+        private static string EmoticonImageFolder => VirtualPathUtility.ToAbsolute("~/content/images/emoticons/");
+        private static string SettingsConfig => HostingEnvironment.MapPath("~/config/forum.config");
 
         private readonly CacheService _cacheService;
         public ConfigService(CacheService cacheService)
@@ -19,9 +20,11 @@ namespace MVCForum.Services
             _cacheService = cacheService;
         }
 
+        #region Emoticons
+
         public string Emotify(string inputText)
         {
-            var emoticonFolder = EmoticonFolder;
+            var emoticonFolder = EmoticonImageFolder;
             var emoticons = GetEmoticonHashTable();
 
             var sb = new StringBuilder(inputText.Length);
@@ -97,5 +100,11 @@ namespace MVCForum.Services
 
             return emoticons;
         }
+        #endregion
+
+        #region Settings
+
+
+        #endregion
     }
 }

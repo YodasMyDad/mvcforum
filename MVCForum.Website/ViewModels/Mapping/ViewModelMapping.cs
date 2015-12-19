@@ -332,8 +332,12 @@ namespace MVCForum.Website.ViewModels.Mapping
         #region Post
         public static PostViewModel CreatePostViewModel(Post post, List<Vote> votes, PermissionSet permission, Topic topic, MembershipUser loggedOnUser, Settings settings, List<Favourite> favourites)
         {
-            var allowedToVote = (loggedOnUser != null && loggedOnUser.Id != post.User.Id &&
-                                 loggedOnUser.TotalPoints >= settings.PointsAllowedToVoteAmount);
+            var allowedToVote = (loggedOnUser != null && loggedOnUser.Id != post.User.Id);
+            if (allowedToVote && settings.EnablePoints)
+            {
+                // We need to check if points are enabled that they have enough points to vote
+                allowedToVote = loggedOnUser.TotalPoints >= settings.PointsAllowedToVoteAmount;
+            }
 
             // Remove votes where no VotedBy has been recorded
             votes.RemoveAll(x => x.VotedByMembershipUser == null);
