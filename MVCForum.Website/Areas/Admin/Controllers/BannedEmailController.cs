@@ -41,8 +41,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = p ?? 1;
-                var allEmails = string.IsNullOrEmpty(search) ? _bannedEmailService.GetAllPaged(pageIndex, SiteConstants.AdminListPageSize) :
-                                    _bannedEmailService.GetAllPaged(search, pageIndex, SiteConstants.AdminListPageSize);
+                var allEmails = string.IsNullOrEmpty(search) ? _bannedEmailService.GetAllPaged(pageIndex, SiteConstants.Instance.AdminListPageSize) :
+                                    _bannedEmailService.GetAllPaged(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
 
                 var vieWModel = new BannedEmailListViewModel
                     {

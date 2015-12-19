@@ -31,8 +31,8 @@ namespace MVCForum.IOC
         public static IUnityContainer Start()
         {
             var container = new UnityContainer();
-            var buildUnity = BuildUnityContainer(container);
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
+            var buildUnity = BuildUnityContainer(container);
             return buildUnity;
         }
 

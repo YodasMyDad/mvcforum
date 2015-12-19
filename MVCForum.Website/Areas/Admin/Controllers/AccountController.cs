@@ -118,8 +118,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = p ?? 1;
-                var allUsers = string.IsNullOrEmpty(search) ? MembershipService.GetAll(pageIndex, SiteConstants.AdminListPageSize) :
-                                    MembershipService.SearchMembers(search, pageIndex, SiteConstants.AdminListPageSize);
+                var allUsers = string.IsNullOrEmpty(search) ? MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize) :
+                                    MembershipService.SearchMembers(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
 
                 // Redisplay list of users
                 var allViewModelUsers = allUsers.Select(ViewModelMapping.UserToSingleMemberListViewModel).ToList();

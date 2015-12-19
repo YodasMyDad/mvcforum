@@ -10,7 +10,7 @@
 
         <div class="rowcreater hidden-xs">
             <a href="@Model.Topic.User.NiceUrl">
-                <img src="@Model.Topic.User.MemberImage(SiteConstants.GravatarTopicSize)" alt="@Model.Topic.User.UserName">
+                <img src="@Model.Topic.User.MemberImage(SiteConstants.Instance.GravatarTopicSize)" alt="@Model.Topic.User.UserName">
             </a>
             @if (Model.MemberIsOnline)
             {
@@ -51,7 +51,7 @@
 
             <p class="topicrowfooterinfo">
                 <a href="@Html.Raw(Model.LastPostPermaLink)">
-                    <img src="@Model.Topic.LastPost.User.MemberImage(SiteConstants.GravatarLatestBySize)" class="latestby" alt="@Model.Topic.LastPost.User.UserName">
+                    <img src="@Model.Topic.LastPost.User.MemberImage(SiteConstants.Instance.GravatarLatestBySize)" class="latestby" alt="@Model.Topic.LastPost.User.UserName">
                 </a> 
                 <a href="@Html.Raw(Model.LastPostPermaLink)">
                     @Html.LanguageString("Topic.LatestBy")

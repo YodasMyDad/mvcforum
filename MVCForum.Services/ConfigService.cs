@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
 using System.Web;
@@ -11,14 +12,16 @@ namespace MVCForum.Services
 {
     public partial class ConfigService : IConfigService
     {
-        private static string EmoticonImageFolder => VirtualPathUtility.ToAbsolute("~/content/images/emoticons/");
-        private static string SettingsConfig => HostingEnvironment.MapPath("~/config/forum.config");
-
-        private readonly CacheService _cacheService;
-        public ConfigService(CacheService cacheService)
+        private readonly ICacheService _cacheService;
+        public ConfigService(ICacheService cacheService)
         {
             _cacheService = cacheService;
         }
+
+        private static string EmoticonImageFolder => VirtualPathUtility.ToAbsolute("~/content/images/emoticons/");
+        private static string SiteConfig => HostingEnvironment.MapPath("~/config/forum.config");
+        private static string EmoticonsConfig => HostingEnvironment.MapPath("~/config/emoticons.config");
+
 
         #region Emoticons
 
@@ -70,11 +73,9 @@ namespace MVCForum.Services
             if (emoticons == null)
             {
                 emoticons = new OrderedDictionary();
-                var webConfigPath = HostingEnvironment.MapPath("~/config/emoticons.config");
-                if (webConfigPath != null)
+                var xDoc = GetXmlDoc(EmoticonsConfig);
+                if (xDoc != null)
                 {
-                    var xDoc = new XmlDocument();
-                    xDoc.Load(webConfigPath);
                     XmlNode root = xDoc.DocumentElement;
                     var emoticonNodes = root?.SelectNodes("//emoticon");
                     if (emoticonNodes != null)
@@ -93,7 +94,7 @@ namespace MVCForum.Services
                             }
                         }
 
-                        _cacheService.Set(key, emoticons, CacheTimes.TwelveHours);
+                        _cacheService.Set(key, emoticons, CacheTimes.OneDay);
                     }
                 }
             }
@@ -104,7 +105,54 @@ namespace MVCForum.Services
 
         #region Settings
 
+        public Dictionary<string, string> GetForumConfig()
+        {
+            const string key = "SiteConfig";
+            var siteConfig = _cacheService.Get<Dictionary<string, string>>(key);
+            if (siteConfig == null)
+            {
+                siteConfig = new Dictionary<string, string>();
+                var xDoc = GetXmlDoc(SiteConfig);
+                if (xDoc != null)
+                {
+                    XmlNode root = xDoc.DocumentElement;
+                    var nodes = root?.SelectNodes("//setting");
+                    if (nodes != null)
+                    {
+                        foreach (XmlNode node in nodes)
+                        {
+                            //<emoticon symbol="O:)" image="angel-emoticon.png" />  
+                            if (node.Attributes != null)
+                            {
+                                var keyAttr = node.Attributes["key"];
+                                var valueAttr = node.Attributes["value"];
+                                if (keyAttr != null && valueAttr != null)
+                                {
+                                    siteConfig.Add(keyAttr.InnerText, valueAttr.InnerText);
+                                }
+                            }
+                        }
 
+                        _cacheService.Set(key, siteConfig, CacheTimes.OneDay);
+                    }
+                }
+            }
+            return siteConfig;
+        }
+
+        #endregion
+
+        #region Helpers
+        private static XmlDocument GetXmlDoc(string pathToConfig)
+        {
+            if (pathToConfig != null)
+            {
+                var xDoc = new XmlDocument();
+                xDoc.Load(pathToConfig);
+                return xDoc;
+            }
+            return null;
+        } 
         #endregion
     }
 }

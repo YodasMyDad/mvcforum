@@ -5,6 +5,7 @@ namespace MVCForum.Domain.Constants
     public static class AppConstants
     {
         public const int SaltSize = 24;
+        public const string EditorType = "forumeditor";
 
         // Scheduled Tasks
         public const string DefaultTaskGroup = "MVCForumTaskGroup";

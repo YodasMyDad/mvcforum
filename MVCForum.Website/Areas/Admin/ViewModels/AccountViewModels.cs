@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Website.Application;
 
@@ -73,7 +74,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [Display(Name = "Signature")]
         [StringLength(1000)]
-        [UIHint(SiteConstants.EditorType), AllowHtml]
+        [UIHint(AppConstants.EditorType), AllowHtml]
         public string Signature { get; set; }
 
         [Display(Name = "Age")]

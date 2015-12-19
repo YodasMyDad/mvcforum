@@ -1,225 +1,107 @@
 ﻿using System;
-using System.Configuration;
+using System.Web.Mvc;
+using MVCForum.Domain.Interfaces.Services;
 
 namespace MVCForum.Website.Application
 {
-    public static partial class SiteConstants
+    public class SiteConstants
     {
+        #region Singleton
+        private static SiteConstants _instance;
+        private static readonly object InstanceLock = new object();
+        private static IConfigService _configService;
+        private SiteConstants(IConfigService configService)
+        {
+            _configService = configService;
+        }
+
+        public static SiteConstants Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    lock (InstanceLock)
+                    {
+                        if (_instance == null)
+                        {
+                            var configService = DependencyResolver.Current.GetService<IConfigService>();
+                            _instance = new SiteConstants(configService);
+                        }
+                    }
+                }
+
+                return _instance;
+            }
+        }
+        #endregion
+
+        #region Generic Get
+
+        /// <summary>
+        /// This is the generic get config method, you can use this to also get custom config items out
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public string GetConfig(string key)
+        {
+            var dict = _configService.GetForumConfig();
+            if (!string.IsNullOrEmpty(key) && dict.ContainsKey(key))
+            {
+                return dict[key];
+            }
+            return string.Empty;
+        }
+
+
+        #endregion
+
+        public string MvcForumVersion => GetConfig("MVCForumVersion");
+
         /// <summary>
         /// Social Login Keys
         /// </summary>
-        public static string FacebookAppId
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["FacebookAppId"];
-            }
-        }
-        public static string FacebookAppSecret
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["FacebookAppSecret"];
-            }
-        }
-        public static string MicrosoftAppId
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["MicrosoftAppId"];
-            }
-        }
-        public static string MicrosoftAppSecret
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["MicrosoftAppSecret"];
-            }
-        }
-        public static string GooglePlusAppId
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["GooglePlusAppId"];
-            }
-        }
-        public static string GooglePlusAppSecret
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["GooglePlusAppSecret"];
-            }
-        }
+        public string FacebookAppId => GetConfig("FacebookAppId");
+        public string FacebookAppSecret => GetConfig("FacebookAppSecret");
+        public string MicrosoftAppId => GetConfig("MicrosoftAppId");
+        public string MicrosoftAppSecret => GetConfig("MicrosoftAppSecret");
+        public string GooglePlusAppId => GetConfig("GooglePlusAppId");
+        public string GooglePlusAppSecret => GetConfig("GooglePlusAppSecret");
 
         /// <summary>
         /// File Upload Settings
         /// </summary>
-        public static string FileUploadAllowedExtensions
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["FileUploadAllowedExtensions"];
-            }
-        }
-        public static string FileUploadMaximumFileSizeInBytes
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["FileUploadMaximumFileSizeInBytes"];
-            }
-        }
-        public static string UploadFolderPath
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["UploadFolderPath"];
-            }
-        }
-        public static int PrivateMessageWarningAmountLessThanAllowedSize
-        {
-            get
-            {
-                return Convert.ToInt32(ConfigurationManager.AppSettings["PrivateMessageWarningAmountLessThanAllowedSize"]);
-            }
-        }
-
+        public string FileUploadAllowedExtensions => GetConfig("FileUploadAllowedExtensions");
+        public string FileUploadMaximumFileSizeInBytes => GetConfig("FileUploadMaximumFileSizeInBytes");
+        public string UploadFolderPath => GetConfig("UploadFolderPath");
+        public int PrivateMessageWarningAmountLessThanAllowedSize => Convert.ToInt32(GetConfig("PrivateMessageWarningAmountLessThanAllowedSize"));
 
         /// <summary>
         /// Paging options - Amount per page on different pages.
         /// </summary>
-        public static int PagingGroupSize
-        {
-            get
-            {
-                return Convert.ToInt32(ConfigurationManager.AppSettings["PagingGroupSize"]);
-            }
-        }
-
-
-        public static int AdminListPageSize
-        {
-            get
-            {
-                return Convert.ToInt32(ConfigurationManager.AppSettings["AdminListPageSize"]);
-            }
-        }
-
-        public static int ActiveTopicsListSize
-        {
-            get
-            {
-                return Convert.ToInt32(ConfigurationManager.AppSettings["ActiveTopicsListSize"]);
-            }
-        }
-
-        public static int SearchListSize
-        {
-            get
-            {
-                return Convert.ToInt32(ConfigurationManager.AppSettings["SearchListSize"]);
-            }
-        }
-
-        public static int MembersActivityListSize
-        {
-            get
-            {
-                return Convert.ToInt32(ConfigurationManager.AppSettings["MembersActivityListSize"]);
-            }
-        }
-
-        public static int PrivateMessageListSize
-        {
-            get
-            {
-                return Convert.ToInt32(ConfigurationManager.AppSettings["PrivateMessageListSize"]);
-            }
-        }
-
-        public static int SimilarTopicsListSize
-        {
-            get
-            {
-                return Convert.ToInt32(ConfigurationManager.AppSettings["SimilarTopicsListSize"]);
-            }
-        }
+        public int PagingGroupSize => Convert.ToInt32(GetConfig("PagingGroupSize"));
+        public int AdminListPageSize => Convert.ToInt32(GetConfig("AdminListPageSize"));
+        public int ActiveTopicsListSize => Convert.ToInt32(GetConfig("ActiveTopicsListSize"));
+        public int SearchListSize => Convert.ToInt32(GetConfig("SearchListSize"));
+        public int MembersActivityListSize => Convert.ToInt32(GetConfig("MembersActivityListSize"));
+        public int PrivateMessageListSize => Convert.ToInt32(GetConfig("PrivateMessageListSize"));
+        public int SimilarTopicsListSize => Convert.ToInt32(GetConfig("SimilarTopicsListSize"));
 
         /// <summary>
         /// Social Gravatar size
         /// </summary>
-        public static int GravatarPostSize
-        {
-            get
-            {
-                return Convert.ToInt32(ConfigurationManager.AppSettings["GravatarPostSize"]);
-            }
-        }
-        public static int GravatarTopicSize
-        {
-            get
-            {
-                return Convert.ToInt32(ConfigurationManager.AppSettings["GravatarTopicSize"]);
-            }
-        }
-        public static int GravatarProfileSize
-        {
-            get
-            {
-                return Convert.ToInt32(ConfigurationManager.AppSettings["GravatarProfileSize"]);
-            }
-        }
-        public static int GravatarLeaderboardSize
-        {
-            get
-            {
-                return Convert.ToInt32(ConfigurationManager.AppSettings["GravatarLeaderboardSize"]);
-            }
-        }
-        public static int GravatarLikedBySize
-        {
-            get
-            {
-                return Convert.ToInt32(ConfigurationManager.AppSettings["GravatarLikedBySize"]);
-            }
-        }
+        public int GravatarPostSize => Convert.ToInt32(GetConfig("GravatarPostSize"));
+        public int GravatarTopicSize => Convert.ToInt32(GetConfig("GravatarTopicSize"));
+        public int GravatarProfileSize => Convert.ToInt32(GetConfig("GravatarProfileSize"));
+        public int GravatarLeaderboardSize => Convert.ToInt32(GetConfig("GravatarLeaderboardSize"));
+        public int GravatarLikedBySize => Convert.ToInt32(GetConfig("GravatarLikedBySize"));
+        public int GravatarLatestBySize => Convert.ToInt32(GetConfig("GravatarLatestBySize"));
+        public int GravatarFooterSize => Convert.ToInt32(GetConfig("GravatarFooterSize"));
 
-        public static int GravatarLatestBySize
-        {
-            get
-            {
-                return Convert.ToInt32(ConfigurationManager.AppSettings["GravatarLatestBySize"]);
-            }
-        }
 
-        public static int GravatarFooterSize
-        {
-            get
-            {
-                return Convert.ToInt32(ConfigurationManager.AppSettings["GravatarFooterSize"]);
-            }
-        }
-
-        
         /// <summary>
         /// Which Editor the site should use
         /// </summary>
-        public static string ChosenEditor
-        {
-            get
-            {
-                return ConfigurationManager.AppSettings["EditorType"];
-            }
-        }
-
-        public const string EditorType = "forumeditor";
-
-        // Misc
-        public static int EmailsToSendPerJob
-        {
-            get
-            {
-                return Convert.ToInt32(ConfigurationManager.AppSettings["EmailsToSendPerJob"]);
-            }
-        }
+        public string ChosenEditor => GetConfig("EditorType");
     }
 }

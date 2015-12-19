@@ -20,16 +20,10 @@ namespace MVCForum.Website.Application
     {
         #region Application
 
-        public static string GetCurrentMvcForumVersion()
-        {
-            var version = ConfigUtils.GetAppSetting("MVCForumVersion");
-            return version;
-        }
-
         public static bool SameVersionNumbers()
         {
             var version = HttpContext.Current.Application["Version"].ToString();
-            return GetCurrentMvcForumVersion() == version;
+            return SiteConstants.Instance.MvcForumVersion == version;
         }
 
         public static bool InInstaller()
@@ -271,7 +265,7 @@ namespace MVCForum.Website.Application
         /// <returns></returns>
         public static string PreviousVersionNo()
         {
-            return ConfigUtils.GetAppSetting("MVCForumVersion");
+            return SiteConstants.Instance.MvcForumVersion;
         }
 
         /// <summary>
@@ -352,7 +346,7 @@ namespace MVCForum.Website.Application
             if (!string.IsNullOrEmpty(avatar))
             {
                 // Has an avatar image
-                return VirtualPathUtility.ToAbsolute(string.Concat(SiteConstants.UploadFolderPath, userId, "/", avatar, string.Format("?width={0}&crop=0,0,{0},{0}", size)));
+                return VirtualPathUtility.ToAbsolute(string.Concat(SiteConstants.Instance.UploadFolderPath, userId, "/", avatar, string.Format("?width={0}&crop=0,0,{0},{0}", size)));
             }
             return StringUtils.GetGravatarImage(email, size);
         }
@@ -363,7 +357,7 @@ namespace MVCForum.Website.Application
             if (!string.IsNullOrEmpty(image))
             {
                 // Has an avatar image
-                return VirtualPathUtility.ToAbsolute(string.Concat(SiteConstants.UploadFolderPath, categoryId, "/", image, sizeFormat));
+                return VirtualPathUtility.ToAbsolute(string.Concat(SiteConstants.Instance.UploadFolderPath, categoryId, "/", image, sizeFormat));
             }
             //TODO - Return default image for category
             return null;
@@ -384,7 +378,7 @@ namespace MVCForum.Website.Application
                 var fileExtension = Path.GetExtension(fileName);
 
                 //Before we do anything, check file size
-                if (file.ContentLength > Convert.ToInt32(SiteConstants.FileUploadMaximumFileSizeInBytes))
+                if (file.ContentLength > Convert.ToInt32(SiteConstants.Instance.FileUploadMaximumFileSizeInBytes))
                 {
                     //File is too big
                     upResult.UploadSuccessful = false;
@@ -393,7 +387,7 @@ namespace MVCForum.Website.Application
                 }
 
                 // now check allowed extensions
-                var allowedFileExtensions = SiteConstants.FileUploadAllowedExtensions;
+                var allowedFileExtensions = SiteConstants.Instance.FileUploadAllowedExtensions;
 
                 if (onlyImages)
                 {

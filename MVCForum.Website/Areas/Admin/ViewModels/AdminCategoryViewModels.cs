@@ -27,7 +27,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [DisplayName("Category Description")]
         [DataType(DataType.MultilineText)]
-        [UIHint(SiteConstants.EditorType), AllowHtml]
+        [UIHint(AppConstants.EditorType), AllowHtml]
         public string Description { get; set; }
 
         [DisplayName("Category Colour")]

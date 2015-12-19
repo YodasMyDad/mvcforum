@@ -23,7 +23,7 @@
 
     if (Model.TotalPages > 1)
     {
-        @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.SearchListSize, totalCount, new { term = Model.Term })
+        @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.Instance.SearchListSize, totalCount, new { term = Model.Term })
     }
 }
 else

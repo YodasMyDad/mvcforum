@@ -78,7 +78,7 @@ namespace MVCForum.Website.Controllers
                 // Get the topics
                 var topics = _topicService.GetMembersActivity(pageIndex,
                                                            settings.TopicsPerPage,
-                                                           SiteConstants.MembersActivityListSize,
+                                                           SiteConstants.Instance.MembersActivityListSize,
                                                            LoggedOnReadOnlyUser.Id,
                                                            allowedCategories);
 
@@ -823,7 +823,7 @@ namespace MVCForum.Website.Controllers
                                         // woot! User has permission and all seems ok
                                         // Before we save anything, check the user already has an upload folder and if not create one
                                         var uploadFolderPath =
-                                            HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath,
+                                            HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath,
                                                 LoggedOnReadOnlyUser.Id));
                                         if (!Directory.Exists(uploadFolderPath))
                                         {
@@ -1164,7 +1164,7 @@ namespace MVCForum.Website.Controllers
                 IList<Topic> topics = null;
                 try
                 {
-                    var searchResults = _topicService.SearchTopics(SiteConstants.SimilarTopicsListSize, formattedSearchTerm, allowedCategories);
+                    var searchResults = _topicService.SearchTopics(SiteConstants.Instance.SimilarTopicsListSize, formattedSearchTerm, allowedCategories);
                     if (searchResults != null)
                     {
                         topics = searchResults;
@@ -1194,7 +1194,7 @@ namespace MVCForum.Website.Controllers
                 // Get the topics
                 var topics = _topicService.GetRecentTopics(pageIndex,
                                                            settings.TopicsPerPage,
-                                                           SiteConstants.ActiveTopicsListSize,
+                                                           SiteConstants.Instance.ActiveTopicsListSize,
                                                            allowedCategories);
 
                 // Get the Topic View Models

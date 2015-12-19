@@ -86,7 +86,7 @@
 
         @if (Model.TotalPages > 1)
         {
-            @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { languageId = Model.LanguageId, search = Model.Search })
+            @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { languageId = Model.LanguageId, search = Model.Search })
         }
 
 

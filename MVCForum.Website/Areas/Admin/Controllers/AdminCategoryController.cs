@@ -83,7 +83,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         if (categoryViewModel.Files != null)
                         {
                             // Before we save anything, check the user already has an upload folder and if not create one
-                            var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, category.Id));
+                            var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, category.Id));
                             if (!Directory.Exists(uploadFolderPath))
                             {
                                 Directory.CreateDirectory(uploadFolderPath);
@@ -206,7 +206,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         if (categoryViewModel.Files != null)
                         {
                             // Before we save anything, check the user already has an upload folder and if not create one
-                            var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, categoryViewModel.Id));
+                            var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, categoryViewModel.Id));
                             if (!Directory.Exists(uploadFolderPath))
                             {
                                 Directory.CreateDirectory(uploadFolderPath);

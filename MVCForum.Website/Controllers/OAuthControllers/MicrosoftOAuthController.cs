@@ -76,8 +76,8 @@ namespace MVCForum.Website.Controllers.OAuthControllers
 
 
             // Get the prevalue options
-            if (string.IsNullOrEmpty(SiteConstants.MicrosoftAppId) ||
-                string.IsNullOrEmpty(SiteConstants.MicrosoftAppSecret))
+            if (string.IsNullOrEmpty(SiteConstants.Instance.MicrosoftAppId) ||
+                string.IsNullOrEmpty(SiteConstants.Instance.MicrosoftAppSecret))
             {
                 resultMessage.Message = "You need to add the Microsoft app credentials to the web.config";
                 resultMessage.MessageType = GenericMessages.danger;
@@ -87,8 +87,8 @@ namespace MVCForum.Website.Controllers.OAuthControllers
 
                 var client = new MicrosoftOAuthClient
                 {
-                    ClientId = SiteConstants.MicrosoftAppId,
-                    ClientSecret = SiteConstants.MicrosoftAppSecret,
+                    ClientId = SiteConstants.Instance.MicrosoftAppId,
+                    ClientSecret = SiteConstants.Instance.MicrosoftAppSecret,
                     RedirectUri = ReturnUrl
                 };
 

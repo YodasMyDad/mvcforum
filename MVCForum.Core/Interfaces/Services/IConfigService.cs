@@ -1,4 +1,5 @@
-﻿using System.Collections.Specialized;
+﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
@@ -10,7 +11,8 @@ namespace MVCForum.Domain.Interfaces.Services
         #region Emojies
 
         string Emotify(string inputText);
-        OrderedDictionary GetEmoticonHashTable(); 
+        OrderedDictionary GetEmoticonHashTable();
+        Dictionary<string, string> GetForumConfig();
 
         #endregion
     }

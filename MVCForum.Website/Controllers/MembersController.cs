@@ -373,7 +373,7 @@ namespace MVCForum.Website.Controllers
                         var image = AppHelpers.GetImageFromExternalUrl(userModel.SocialProfileImageUrl);
 
                         // Set upload directory - Create if it doesn't exist
-                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, userToSave.Id));
+                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, userToSave.Id));
                         if (uploadFolderPath != null && !Directory.Exists(uploadFolderPath))
                         {
                             Directory.CreateDirectory(uploadFolderPath);
@@ -913,7 +913,7 @@ namespace MVCForum.Website.Controllers
                     if (userModel.Files != null)
                     {
                         // Before we save anything, check the user already has an upload folder and if not create one
-                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnReadOnlyUser.Id));
+                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, LoggedOnReadOnlyUser.Id));
                         if (!Directory.Exists(uploadFolderPath))
                         {
                             Directory.CreateDirectory(uploadFolderPath);
@@ -1153,8 +1153,8 @@ namespace MVCForum.Website.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = p ?? 1;
-                var allUsers = string.IsNullOrEmpty(search) ? MembershipService.GetAll(pageIndex, SiteConstants.AdminListPageSize) :
-                                    MembershipService.SearchMembers(search, pageIndex, SiteConstants.AdminListPageSize);
+                var allUsers = string.IsNullOrEmpty(search) ? MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize) :
+                                    MembershipService.SearchMembers(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
 
                 // Redisplay list of users
                 var allViewModelUsers = allUsers.Select(user => new PublicSingleMemberListViewModel

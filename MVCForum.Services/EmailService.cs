@@ -49,7 +49,7 @@ namespace MVCForum.Services
                 var emails = GetAll(amountToSend);
 
                 // See if there are any
-                if (emails != null && emails.Count > 0)
+                if (emails != null && emails.Any())
                 {
                     // Get the mails settings
                     var settings = _settingsService.GetSettings(false);

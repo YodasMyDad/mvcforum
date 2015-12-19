@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web;
 using System.Web.Mvc;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Website.Application;
 
@@ -97,7 +98,7 @@ namespace MVCForum.Website.ViewModels
         [ForumMvcResourceDisplayName("Topic.Label.TopicTitle")]
         public string Name { get; set; }
 
-        [UIHint(SiteConstants.EditorType), AllowHtml]
+        [UIHint(AppConstants.EditorType), AllowHtml]
         [StringLength(6000)]
         public string Content { get; set; }
 
