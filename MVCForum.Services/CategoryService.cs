@@ -154,7 +154,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public List<Category> GetAllowedCategories(MembershipRole role)
         {
-            return GetAllowedCategories(role, AppConstants.PermissionDenyAccess);
+            return GetAllowedCategories(role, SiteConstants.Instance.PermissionDenyAccess);
         }
 
         public List<Category> GetAllowedCategories(MembershipRole role, string actionType)

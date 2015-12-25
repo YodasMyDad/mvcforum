@@ -132,10 +132,10 @@ namespace MVCForum.Services.Migrations
                 }
 
                 // Create the Standard role if it doesn't exist
-                var standardRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == AppConstants.StandardMembers);
+                var standardRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == SiteConstants.Instance.StandardMembers);
                 if (standardRole == null)
                 {
-                    standardRole = new MembershipRole {RoleName = AppConstants.StandardMembers};
+                    standardRole = new MembershipRole {RoleName = SiteConstants.Instance.StandardMembers };
                     context.MembershipRole.Add(standardRole);
                     saveRoles = true;
                 }
@@ -223,91 +223,91 @@ namespace MVCForum.Services.Migrations
                 // Create the initial category permissions
 
                 // Edit Posts
-                if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionEditPosts) == null)
+                if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionEditPosts) == null)
                 {
-                    var permission = new Permission {Name = AppConstants.PermissionEditPosts};
+                    var permission = new Permission {Name = SiteConstants.Instance.PermissionEditPosts};
                     context.Permission.Add(permission);
 
                     // NOTE: Because this is null - We assumed it's a new install so carry on checking and adding the other permissions
 
                     // Read Only
-                    if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionReadOnly) == null)
+                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionReadOnly) == null)
                     {
-                        var p = new Permission {Name = AppConstants.PermissionReadOnly};
+                        var p = new Permission {Name = SiteConstants.Instance.PermissionReadOnly};
                         context.Permission.Add(p);
                     }
 
                     // Delete Posts
-                    if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionDeletePosts) == null)
+                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionDeletePosts) == null)
                     {
-                        var p = new Permission {Name = AppConstants.PermissionDeletePosts};
+                        var p = new Permission {Name = SiteConstants.Instance.PermissionDeletePosts};
                         context.Permission.Add(p);
                     }
 
                     // Sticky Topics
-                    if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionCreateStickyTopics) ==
+                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionCreateStickyTopics) ==
                         null)
                     {
-                        var p = new Permission {Name = AppConstants.PermissionCreateStickyTopics};
+                        var p = new Permission {Name = SiteConstants.Instance.PermissionCreateStickyTopics};
                         context.Permission.Add(p);
                     }
 
                     // Lock Topics
-                    if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionLockTopics) == null)
+                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionLockTopics) == null)
                     {
-                        var p = new Permission {Name = AppConstants.PermissionLockTopics};
+                        var p = new Permission {Name = SiteConstants.Instance.PermissionLockTopics};
                         context.Permission.Add(p);
                     }
 
                     // Vote In Polls
-                    if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionVoteInPolls) == null)
+                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionVoteInPolls) == null)
                     {
-                        var p = new Permission {Name = AppConstants.PermissionVoteInPolls};
+                        var p = new Permission {Name = SiteConstants.Instance.PermissionVoteInPolls};
                         context.Permission.Add(p);
                     }
 
                     // Create Polls
-                    if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionCreatePolls) == null)
+                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionCreatePolls) == null)
                     {
-                        var p = new Permission {Name = AppConstants.PermissionCreatePolls};
+                        var p = new Permission {Name = SiteConstants.Instance.PermissionCreatePolls};
                         context.Permission.Add(p);
                     }
 
                     // Create Topics
-                    if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionCreateTopics) == null)
+                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionCreateTopics) == null)
                     {
-                        var p = new Permission {Name = AppConstants.PermissionCreateTopics};
+                        var p = new Permission {Name = SiteConstants.Instance.PermissionCreateTopics};
                         context.Permission.Add(p);
                     }
 
                     // Attach Files
-                    if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionAttachFiles) == null)
+                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionAttachFiles) == null)
                     {
-                        var p = new Permission {Name = AppConstants.PermissionAttachFiles};
+                        var p = new Permission {Name = SiteConstants.Instance.PermissionAttachFiles};
                         context.Permission.Add(p);
                     }
 
                     // Deny Access
-                    if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionDenyAccess) == null)
+                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionDenyAccess) == null)
                     {
-                        var p = new Permission {Name = AppConstants.PermissionDenyAccess};
+                        var p = new Permission {Name = SiteConstants.Instance.PermissionDenyAccess};
                         context.Permission.Add(p);
                     }
 
                     // === Global Permissions === //
 
                     // Deny Access
-                    if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionEditMembers) == null)
+                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionEditMembers) == null)
                     {
-                        var p = new Permission {Name = AppConstants.PermissionEditMembers, IsGlobal = true};
+                        var p = new Permission {Name = SiteConstants.Instance.PermissionEditMembers, IsGlobal = true};
                         context.Permission.Add(p);
                     }
 
                     // Insert Editor Images
-                    if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionInsertEditorImages) ==
+                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionInsertEditorImages) ==
                         null)
                     {
-                        var p = new Permission {Name = AppConstants.PermissionInsertEditorImages, IsGlobal = true};
+                        var p = new Permission {Name = SiteConstants.Instance.PermissionInsertEditorImages, IsGlobal = true};
                         context.Permission.Add(p);
                     }
 
@@ -394,9 +394,9 @@ namespace MVCForum.Services.Migrations
                 // Data to update on versions v1.7+
 
                 // Insert Editor Images
-                if (context.Permission.FirstOrDefault(x => x.Name == AppConstants.PermissionInsertEditorImages) == null)
+                if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionInsertEditorImages) == null)
                 {
-                    var p = new Permission { Name = AppConstants.PermissionInsertEditorImages, IsGlobal = true };
+                    var p = new Permission { Name = SiteConstants.Instance.PermissionInsertEditorImages, IsGlobal = true };
                     context.Permission.Add(p);
                 }
             }

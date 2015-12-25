@@ -107,7 +107,7 @@ namespace MVCForum.Website.Controllers
                     var permission = permissions[topic.Category];
 
                     // Add only topics user has permission to
-                    if (!permission[AppConstants.PermissionDenyAccess].IsTicked)
+                    if (!permission[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
                     {
                         if (topic.Posts.Any())
                         {

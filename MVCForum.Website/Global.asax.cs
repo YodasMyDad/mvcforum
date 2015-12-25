@@ -33,11 +33,13 @@ namespace MVCForum.Website
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             // Start unity
             var unityContainer = UnityHelper.Start();
+
+            // Routes
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             // Store the value for use in the app
             Application["Version"] = AppHelpers.GetCurrentVersionNo();

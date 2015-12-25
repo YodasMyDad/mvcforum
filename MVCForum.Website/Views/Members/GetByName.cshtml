@@ -61,7 +61,7 @@
                 <p><a href="@Url.Action("Report", "Members", new { id = Model.User.Id }, null)" class="btn-mvc">@Html.LanguageString("Buttons.Report")</a></p>
             }
 
-            @if (Model.Permissions[AppConstants.PermissionEditMembers].IsTicked)
+            @if (Model.Permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
             {
 
                 // If this is an admins profile then do not show

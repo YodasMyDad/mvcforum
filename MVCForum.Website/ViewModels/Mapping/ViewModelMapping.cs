@@ -309,7 +309,7 @@ namespace MVCForum.Website.ViewModels.Mapping
                     viewModel.Poll = new PollViewModel
                     {
                         Poll = topic.Poll,
-                        UserAllowedToVote = permission[AppConstants.PermissionVoteInPolls].IsTicked
+                        UserAllowedToVote = permission[SiteConstants.Instance.PermissionVoteInPolls].IsTicked
                     };
 
                     var answers = pollAnswerService.GetAllPollAnswersByPoll(topic.Poll);

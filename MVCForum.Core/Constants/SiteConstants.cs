@@ -2,7 +2,7 @@
 using System.Web.Mvc;
 using MVCForum.Domain.Interfaces.Services;
 
-namespace MVCForum.Website.Application
+namespace MVCForum.Domain.Constants
 {
     public class SiteConstants
     {
@@ -58,6 +58,10 @@ namespace MVCForum.Website.Application
 
         public string MvcForumVersion => GetConfig("MVCForumVersion");
 
+
+        // This is just the initial standard role
+        public string StandardMembers => GetConfig("StandardMembers");
+
         /// <summary>
         /// Social Login Keys
         /// </summary>
@@ -98,10 +102,37 @@ namespace MVCForum.Website.Application
         public int GravatarLatestBySize => Convert.ToInt32(GetConfig("GravatarLatestBySize"));
         public int GravatarFooterSize => Convert.ToInt32(GetConfig("GravatarFooterSize"));
 
+        // Url names
+        public string CategoryUrlIdentifier => GetConfig("CategoryUrlIdentifier");
+        public string TopicUrlIdentifier => GetConfig("TopicUrlIdentifier");
+        public string TagsUrlIdentifier => GetConfig("TagsUrlIdentifier");
+        public string MemberUrlIdentifier => GetConfig("MemberUrlIdentifier");
 
         /// <summary>
         /// Which Editor the site should use
         /// </summary>
         public string ChosenEditor => GetConfig("EditorType");
+
+
+        /// <summary>
+        ///  These are the permission names used as keys to return them
+        ///  So they must be the same as the database value 
+        /// </summary>
+
+        // Category Permissions
+        public string PermissionReadOnly => GetConfig("PermissionReadOnly");
+        public string PermissionDeletePosts => GetConfig("PermissionDeletePosts");
+        public string PermissionEditPosts => GetConfig("PermissionEditPosts");
+        public string PermissionCreateStickyTopics => GetConfig("PermissionCreateStickyTopics");
+        public string PermissionDenyAccess => GetConfig("PermissionDenyAccess");
+        public string PermissionLockTopics => GetConfig("PermissionLockTopics");
+        public string PermissionVoteInPolls => GetConfig("PermissionVoteInPolls");
+        public string PermissionCreatePolls => GetConfig("PermissionCreatePolls");
+        public string PermissionCreateTopics => GetConfig("PermissionCreateTopics");
+        public string PermissionAttachFiles => GetConfig("PermissionAttachFiles");
+
+        // Global Permissions
+        public string PermissionEditMembers => GetConfig("PermissionEditMembers");
+        public string PermissionInsertEditorImages => GetConfig("PermissionInsertEditorImages");
     }
 }

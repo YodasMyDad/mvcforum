@@ -223,7 +223,7 @@ namespace MVCForum.Website.Application
 
         public static string CategoryRssUrls(string slug)
         {
-            return String.Format("/{0}/rss/{1}", AppConstants.CategoryUrlIdentifier, slug);
+            return $"/{SiteConstants.Instance.CategoryUrlIdentifier}/rss/{slug}";
         }
 
         #endregion
@@ -279,7 +279,7 @@ namespace MVCForum.Website.Application
             var version = Assembly.GetExecutingAssembly().GetName().Version;
 
             // Store the value for use in the app
-            return String.Format("{0}.{1}", version.Major, version.Minor);
+            return $"{version.Major}.{version.Minor}";
         }
 
         /// <summary>
@@ -293,7 +293,7 @@ namespace MVCForum.Website.Application
             var version = Assembly.GetExecutingAssembly().GetName().Version;
 
             // Store the value for use in the app
-            return String.Format("{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
+            return $"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
         }
 
         /// <summary>
@@ -497,7 +497,7 @@ namespace MVCForum.Website.Application
 
         private static string CreateNewFileName(string fileName)
         {
-            return string.Format("{0}_{1}", GuidComb.GenerateComb(), fileName.Trim(' ').Replace("_", "-").Replace(" ", "-").ToLower());
+            return $"{GuidComb.GenerateComb()}_{fileName.Trim(' ').Replace("_", "-").Replace(" ", "-").ToLower()}";
         }
 
         #endregion

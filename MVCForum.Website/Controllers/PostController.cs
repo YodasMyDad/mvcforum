@@ -148,7 +148,7 @@ namespace MVCForum.Website.Controllers
                 // get the users permissions
                 var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
 
-                if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[AppConstants.PermissionDeletePosts].IsTicked)
+                if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[SiteConstants.Instance.PermissionDeletePosts].IsTicked)
                 {
                     // Delete post / topic
                     if (post.IsTopicStarter)

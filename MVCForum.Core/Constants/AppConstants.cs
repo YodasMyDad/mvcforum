@@ -20,12 +20,6 @@ namespace MVCForum.Domain.Constants
         public static string LanguageStrings = string.Concat(LocalisationCacheName, "LangStrings-");
         public const string MemberCacheName = "#member#-{0}";
 
-        // Url names
-        public const string CategoryUrlIdentifier = "cat";
-        public const string TopicUrlIdentifier = "thread";
-        public const string TagsUrlIdentifier = "tagged";
-        public const string MemberUrlIdentifier = "profile";
-
         // View Bag / Temp Data Constants
         public const string MessageViewBagName = "Message";
         public const string DefaultCategoryViewBagName = "DefaultCategory";
@@ -40,30 +34,6 @@ namespace MVCForum.Domain.Constants
         // Main guest role [This should never be changed]
         // This is the role a non logged in user defaults to
         public const string GuestRoleName = "Guest";
-
-        // This is just the initial standard role
-        public const string StandardMembers = "Standard Members";
-
-        /// <summary>
-        ///  These are the permission names used as keys to return them
-        ///  So they must be the same as the database value 
-        /// </summary>
-        
-        // Category Permissions
-        public const string PermissionReadOnly = "Read Only";
-        public const string PermissionDeletePosts = "Delete Posts";
-        public const string PermissionEditPosts = "Edit Posts";
-        public const string PermissionCreateStickyTopics = "Sticky Topics";
-        public const string PermissionDenyAccess = "Deny Access";
-        public const string PermissionLockTopics = "Lock Topics";
-        public const string PermissionVoteInPolls = "Vote In Polls";
-        public const string PermissionCreatePolls = "Create Polls";
-        public const string PermissionCreateTopics = "Create Topics";
-        public const string PermissionAttachFiles = "Attach Files";
-
-        // Global Permissions
-        public const string PermissionEditMembers = "Edit Members";
-        public const string PermissionInsertEditorImages = "Insert Editor Images";
 
         //------------ End Permissions ----------
 
@@ -87,7 +57,6 @@ namespace MVCForum.Domain.Constants
 
         // Database Connection Key
         public const string MvcForumContext = "MVCForumContext";
-
 
         // Default Theme folder
         public const string ThemeRootFolder = "~/Themes/";

@@ -98,7 +98,7 @@ namespace MVCForum.Website.Controllers
                 var user = MembershipService.GetUser(id);
                 var permissions = RoleService.GetPermissions(null, UsersRole);
 
-                if (permissions[AppConstants.PermissionEditMembers].IsTicked)
+                if (permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                 {
 
                     if (!user.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
@@ -139,7 +139,7 @@ namespace MVCForum.Website.Controllers
                 var user = MembershipService.GetUser(id);
                 var permissions = RoleService.GetPermissions(null, UsersRole);
 
-                if (permissions[AppConstants.PermissionEditMembers].IsTicked)
+                if (permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                 {
                     if (!user.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
                     {
@@ -851,12 +851,12 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var loggedOnUserId = (LoggedOnReadOnlyUser != null ? LoggedOnReadOnlyUser.Id : Guid.Empty);
+                var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
 
                 var permissions = RoleService.GetPermissions(null, UsersRole);
 
                 // Check is has permissions
-                if (UserIsAdmin || loggedOnUserId == id || permissions[AppConstants.PermissionEditMembers].IsTicked)
+                if (UserIsAdmin || loggedOnUserId == id || permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                 {
                     var user = MembershipService.GetUser(id);
                     var viewModel = PopulateMemberViewModel(user);
@@ -874,11 +874,11 @@ namespace MVCForum.Website.Controllers
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-                var loggedOnUserId = (LoggedOnReadOnlyUser != null ? LoggedOnReadOnlyUser.Id : Guid.Empty);
+                var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
                 var permissions = RoleService.GetPermissions(null, UsersRole);
 
                 // Check is has permissions
-                if (UserIsAdmin || loggedOnUserId == userModel.Id || permissions[AppConstants.PermissionEditMembers].IsTicked)
+                if (UserIsAdmin || loggedOnUserId == userModel.Id || permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                 {
                     // Get the user from DB
                     var user = MembershipService.GetUser(userModel.Id);

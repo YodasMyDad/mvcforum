@@ -98,7 +98,7 @@ namespace MVCForum.Website.Controllers
                     }
 
                     // Set editor permissions
-                    ViewBag.ImageUploadType = permissions[AppConstants.PermissionInsertEditorImages].IsTicked ? "forumimageinsert" : "image";
+                    ViewBag.ImageUploadType = permissions[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked ? "forumimageinsert" : "image";
 
                     unitOfWork.Commit();
 

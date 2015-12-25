@@ -158,7 +158,7 @@ namespace MVCForum.Website.Controllers
                         // if so, check they are allowed to create topics - If no to either set to false
                         viewModel.UserCanPostTopics = false;
                         var permissionSet = RoleService.GetPermissions(category, UsersRole);
-                        if (permissionSet[AppConstants.PermissionCreateTopics].IsTicked)
+                        if (permissionSet[SiteConstants.Instance.PermissionCreateTopics].IsTicked)
                         {
                             viewModel.UserCanPostTopics = true;
                             break;
@@ -188,27 +188,27 @@ namespace MVCForum.Website.Controllers
         {
             var model = new CheckCreateTopicPermissions();
 
-            if (permissionSet[AppConstants.PermissionCreateStickyTopics].IsTicked)
+            if (permissionSet[SiteConstants.Instance.PermissionCreateStickyTopics].IsTicked)
             {
                 model.CanStickyTopic = true;
             }
 
-            if (permissionSet[AppConstants.PermissionLockTopics].IsTicked)
+            if (permissionSet[SiteConstants.Instance.PermissionLockTopics].IsTicked)
             {
                 model.CanLockTopic = true;
             }
 
-            if (permissionSet[AppConstants.PermissionAttachFiles].IsTicked)
+            if (permissionSet[SiteConstants.Instance.PermissionAttachFiles].IsTicked)
             {
                 model.CanUploadFiles = true;
             }
 
-            if (permissionSet[AppConstants.PermissionCreatePolls].IsTicked)
+            if (permissionSet[SiteConstants.Instance.PermissionCreatePolls].IsTicked)
             {
                 model.CanCreatePolls = true;
             }
 
-            if (permissionSet[AppConstants.PermissionInsertEditorImages].IsTicked)
+            if (permissionSet[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked)
             {
                 model.CanInsertImages = true;
             }
@@ -232,11 +232,11 @@ namespace MVCForum.Website.Controllers
                 var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
 
                 // Is the user allowed to edit this post
-                if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[AppConstants.PermissionEditPosts].IsTicked)
+                if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
                 {
                     // Get the allowed categories for this user
                     var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
-                    var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, AppConstants.PermissionCreateTopics);
+                    var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, SiteConstants.Instance.PermissionCreateTopics);
                     var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
 
                     // If this user hasn't got any allowed cats OR they are not allowed to post then abandon
@@ -312,7 +312,7 @@ namespace MVCForum.Website.Controllers
                 // This is just in case the viewModel is return back to the view also sort the allowedCategories
                 // Get the allowed categories for this user
                 var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
-                var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, AppConstants.PermissionCreateTopics);
+                var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, SiteConstants.Instance.PermissionCreateTopics);
                 var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
                 allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
                 editPostViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
@@ -366,7 +366,7 @@ namespace MVCForum.Website.Controllers
                         // Get the topic
                         var topic = post.Topic;
 
-                        if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[AppConstants.PermissionEditPosts].IsTicked)
+                        if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
                         {
 
                             // User has permission so update the post
@@ -390,7 +390,7 @@ namespace MVCForum.Website.Controllers
                                 topic.Name = StringUtils.GetSafeHtml(_bannedWordService.SanitiseBannedWords(editPostViewModel.Name));
 
                                 // See if there is a poll
-                                if (editPostViewModel.PollAnswers != null && editPostViewModel.PollAnswers.Count(x => x != null && !string.IsNullOrEmpty(x.Answer)) > 0 && permissions[AppConstants.PermissionCreatePolls].IsTicked)
+                                if (editPostViewModel.PollAnswers != null && editPostViewModel.PollAnswers.Count(x => x != null && !string.IsNullOrEmpty(x.Answer)) > 0 && permissions[SiteConstants.Instance.PermissionCreatePolls].IsTicked)
                                 {
                                     // Now sort the poll answers, what to add and what to remove
                                     // Poll answers already in this poll.
@@ -579,7 +579,7 @@ namespace MVCForum.Website.Controllers
             var canInsertImages = userIsAdmin;
             if (!canInsertImages)
             {
-                canInsertImages = permissions[AppConstants.PermissionInsertEditorImages].IsTicked;
+                canInsertImages = permissions[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked;
             }
             return new CreateEditTopicViewModel
             {
@@ -605,7 +605,7 @@ namespace MVCForum.Website.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
-                var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, AppConstants.PermissionCreateTopics);
+                var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, SiteConstants.Instance.PermissionCreateTopics);
                 var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
                 if (allowedAccessCategories.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
                 {
@@ -633,7 +633,7 @@ namespace MVCForum.Website.Controllers
             // Now we have the category and permissionSet - Populate the optional permissions 
             // This is just in case the viewModel is return back to the view also sort the allowedCategories
             var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
-            var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, AppConstants.PermissionCreateTopics);
+            var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, SiteConstants.Instance.PermissionCreateTopics);
             var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
             allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
 
@@ -683,7 +683,7 @@ namespace MVCForum.Website.Controllers
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
                     // Check this users role has permission to create a post
-                    if (permissions[AppConstants.PermissionDenyAccess].IsTicked || permissions[AppConstants.PermissionReadOnly].IsTicked || !permissions[AppConstants.PermissionCreateTopics].IsTicked)
+                    if (permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked || permissions[SiteConstants.Instance.PermissionReadOnly].IsTicked || !permissions[SiteConstants.Instance.PermissionCreateTopics].IsTicked)
                     {
                         // Add a model error that the user has no permissions
                         ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.NoPermission"));
@@ -709,11 +709,11 @@ namespace MVCForum.Website.Controllers
                         };
 
                         // Check Permissions for topic topions
-                        if (permissions[AppConstants.PermissionLockTopics].IsTicked)
+                        if (permissions[SiteConstants.Instance.PermissionLockTopics].IsTicked)
                         {
                             topic.IsLocked = topicViewModel.IsLocked;
                         }
-                        if (permissions[AppConstants.PermissionCreateStickyTopics].IsTicked)
+                        if (permissions[SiteConstants.Instance.PermissionCreateStickyTopics].IsTicked)
                         {
                             topic.IsSticky = topicViewModel.IsSticky;
                         }
@@ -733,7 +733,7 @@ namespace MVCForum.Website.Controllers
                                 if (topicViewModel.PollAnswers.Count(x => x != null) > 0)
                                 {
                                     // Do they have permission to create a new poll
-                                    if (permissions[AppConstants.PermissionCreatePolls].IsTicked)
+                                    if (permissions[SiteConstants.Instance.PermissionCreatePolls].IsTicked)
                                     {
                                         // Create a new Poll
                                         var newPoll = new Poll
@@ -817,7 +817,7 @@ namespace MVCForum.Website.Controllers
                                 if (topicViewModel.Files != null)
                                 {
                                     // Get the permissions for this category, and check they are allowed to update
-                                    if (permissions[AppConstants.PermissionAttachFiles].IsTicked &&
+                                    if (permissions[SiteConstants.Instance.PermissionAttachFiles].IsTicked &&
                                         LoggedOnReadOnlyUser.DisableFileUploads != true)
                                     {
                                         // woot! User has permission and all seems ok
@@ -933,7 +933,7 @@ namespace MVCForum.Website.Controllers
                         NotifyNewTopics(category, topic, unitOfWork);
 
                         // Redirect to the newly created topic
-                        return Redirect(string.Format("{0}?postbadges=true", topic.NiceUrl));
+                        return Redirect($"{topic.NiceUrl}?postbadges=true");
                     }
                     if (moderate)
                     {
@@ -999,13 +999,13 @@ namespace MVCForum.Website.Controllers
 
                     // If this user doesn't have access to this topic then
                     // redirect with message
-                    if (permissions[AppConstants.PermissionDenyAccess].IsTicked)
+                    if (permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
                     {
                         return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
                     }
 
                     // Set editor permissions
-                    ViewBag.ImageUploadType = permissions[AppConstants.PermissionInsertEditorImages].IsTicked ? "forumimageinsert" : "image";
+                    ViewBag.ImageUploadType = permissions[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked ? "forumimageinsert" : "image";
 
                     var viewModel = ViewModelMapping.CreateTopicViewModel(topic, permissions, posts.ToList(), starterPost, posts.PageIndex, posts.TotalCount, posts.TotalPages, LoggedOnReadOnlyUser, settings, true);
 
@@ -1091,7 +1091,7 @@ namespace MVCForum.Website.Controllers
                 var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
 
                 // If this user doesn't have access to this topic then just return nothing
-                if (permissions[AppConstants.PermissionDenyAccess].IsTicked)
+                if (permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
                 {
                     return null;
                 }

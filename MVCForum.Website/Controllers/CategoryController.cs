@@ -148,7 +148,7 @@ namespace MVCForum.Website.Controllers
                 // check the user has permission to this category
                 var permissions = RoleService.GetPermissions(category.Category, UsersRole);
 
-                if (!permissions[AppConstants.PermissionDenyAccess].IsTicked)
+                if (!permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
                 {
 
                     var topics = _topicService.GetPagedTopicsByCategory(pageIndex,
@@ -208,7 +208,7 @@ namespace MVCForum.Website.Controllers
                 // check the user has permission to this category
                 var permissions = RoleService.GetPermissions(category, UsersRole);
 
-                if (!permissions[AppConstants.PermissionDenyAccess].IsTicked)
+                if (!permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
                 {
                     var topics = _topicService.GetRssTopicsByCategory(50, category.Id);
 

@@ -144,7 +144,7 @@ namespace MVCForum.Services
                     categoryPermissions.Add(new CategoryPermissionForRole
                     {
                         Category = category,
-                        IsTicked = (permission.Name != AppConstants.PermissionDenyAccess && permission.Name != AppConstants.PermissionReadOnly),
+                        IsTicked = (permission.Name != SiteConstants.Instance.PermissionDenyAccess && permission.Name != SiteConstants.Instance.PermissionReadOnly),
                         MembershipRole = role,
                         Permission = permission
                     });
@@ -189,7 +189,7 @@ namespace MVCForum.Services
                     categoryPermissions.Add(new CategoryPermissionForRole
                     {
                         Category = category,
-                        IsTicked = permission.Name == AppConstants.PermissionReadOnly,
+                        IsTicked = permission.Name == SiteConstants.Instance.PermissionReadOnly,
                         MembershipRole = role,
                         Permission = permission
                     });
@@ -198,11 +198,11 @@ namespace MVCForum.Services
                 // Deny Access may have been set (or left null) for guest for the category, so need to read for it
                 var denyAccessPermission = role.CategoryPermissionForRoles
                                    .FirstOrDefault(x => x.Category.Id == category.Id &&
-                                                        x.Permission.Name == AppConstants.PermissionDenyAccess &&
+                                                        x.Permission.Name == SiteConstants.Instance.PermissionDenyAccess &&
                                                         x.MembershipRole.Id == role.Id);
 
                 // Set the Deny Access value in the results. If it's null for this role/category, record it as false in the results
-                var categoryPermissionForRole = categoryPermissions.FirstOrDefault(x => x.Permission.Name == AppConstants.PermissionDenyAccess);
+                var categoryPermissionForRole = categoryPermissions.FirstOrDefault(x => x.Permission.Name == SiteConstants.Instance.PermissionDenyAccess);
                 if (categoryPermissionForRole != null)
                 {
                     categoryPermissionForRole.IsTicked = denyAccessPermission != null && denyAccessPermission.IsTicked;

@@ -50,7 +50,7 @@
                         </li>
                     }
 
-                    @if (Model.Post.User.Id == loggedOnUserId || Model.Permissions[AppConstants.PermissionDeletePosts].IsTicked)
+                    @if (Model.Post.User.Id == loggedOnUserId || Model.Permissions[SiteConstants.Instance.PermissionDeletePosts].IsTicked)
                     {
                         <li>
                             <a class="btn-mvc btn-mvc-small btn-mvc-fullwidth" onclick="return confirm('@(Html.LanguageString("Post.DeleteConfirmation"))')" href="@Url.Action("DeletePost", "Post", new { id = Model.Post.Id })">
@@ -59,7 +59,7 @@
                         </li>
                     }
 
-                    @if (Model.Post.User.Id == loggedOnUserId || Model.Permissions[AppConstants.PermissionEditPosts].IsTicked)
+                    @if (Model.Post.User.Id == loggedOnUserId || Model.Permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
                     {
                         <li>
                             <a class="btn-mvc btn-mvc-small btn-mvc-fullwidth" href="@Url.Action("EditPostTopic", "Topic", new { id = Model.Post.Id })">
@@ -68,7 +68,7 @@
                         </li>
                     }
 
-                    @if ((Model.Post.User.Id == loggedOnUserId && Model.Post.User.DisableFileUploads != true || User.IsInRole(AppConstants.AdminRoleName)) && Model.Permissions[AppConstants.PermissionAttachFiles].IsTicked)
+                    @if ((Model.Post.User.Id == loggedOnUserId && Model.Post.User.DisableFileUploads != true || User.IsInRole(AppConstants.AdminRoleName)) && Model.Permissions[SiteConstants.Instance.PermissionAttachFiles].IsTicked)
                     {
                         <li>
                             <a class="btn-mvc btn-mvc-small btn-mvc-fullwidth postshowattach" href="#">
@@ -224,7 +224,7 @@
                 </div>
             }
 
-            @if (Model.Permissions[AppConstants.PermissionAttachFiles].IsTicked && Model.Post.User.DisableFileUploads != true)
+            @if (Model.Permissions[SiteConstants.Instance.PermissionAttachFiles].IsTicked && Model.Post.User.DisableFileUploads != true)
             {
                 <div class="postuploadholder">
                     @using (Html.BeginForm("UploadPostFiles", "Upload", FormMethod.Post, new { enctype = "multipart/form-data" }))

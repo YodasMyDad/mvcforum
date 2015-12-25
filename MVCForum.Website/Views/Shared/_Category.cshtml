@@ -1,6 +1,6 @@
 ﻿@model MVCForum.Website.ViewModels.CategoryViewModel
 
-@if (!Model.Permissions[AppConstants.PermissionDenyAccess].IsTicked)
+@if (!Model.Permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
 {
     <div class="categoryrow">
         

@@ -55,7 +55,7 @@ namespace MVCForum.Website.Controllers
                             // Get the permissions for this category, and check they are allowed to update and 
                             // not trying to be a sneaky mofo
                             var permissions = RoleService.GetPermissions(category, UsersRole);
-                            if (permissions[AppConstants.PermissionAttachFiles].IsTicked == false || LoggedOnReadOnlyUser.DisableFileUploads == true)
+                            if (permissions[SiteConstants.Instance.PermissionAttachFiles].IsTicked == false || LoggedOnReadOnlyUser.DisableFileUploads == true)
                             {
                                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                                 {
