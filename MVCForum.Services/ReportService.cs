@@ -60,9 +60,8 @@ namespace MVCForum.Services
                 report.Reporter.UserName,
                 _localizationService.GetResourceString("Report.Reporter"));
 
-            sb.AppendFormat("<p>{2}: <a href=\"{0}\">{1}</a></p>", string.Concat(_settingsService.GetSettings().ForumUrl.TrimEnd('/'), 
-                report.ReportedPost.Topic.NiceUrl), report.ReportedPost.Topic.Name,
-                _localizationService.GetResourceString("Report.PostReported"));
+            var urlOfPost =$"{_settingsService.GetSettings().ForumUrl.TrimEnd('/')}{report.ReportedPost.Topic.NiceUrl}?order=all#comment-{report.ReportedPost.Id}";
+            sb.AppendFormat("<p>{2}: <a href=\"{0}\">{1}</a></p>", urlOfPost, report.ReportedPost.Topic.Name, _localizationService.GetResourceString("Report.PostReported"));
 
             sb.AppendFormat("<p>{0}:</p>", _localizationService.GetResourceString("Report.Reason"));
             sb.AppendFormat("<p>{0}</p>", report.Reason);
