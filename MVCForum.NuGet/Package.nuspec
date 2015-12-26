@@ -53,15 +53,15 @@
     <file src="tools\" target="tools" />
     <file src="content\" target="content" />
     <!-- Normal Files -->
-    <file src="..\MVCForum.WebSite\App_Data\Hello.txt" target="content\App_Data" />
     <file src="..\MVCForum.WebSite\App_Data\NuGetBackup\Hello.txt" target="content\App_Data\NuGetBackup" />
+    <file src="..\MVCForum.WebSite\App_Data\emoticons.config" target="content\App_Data" />
+    <file src="..\MVCForum.WebSite\App_Data\forum.config" target="content\App_Data" />
     <file src="..\MVCForum.WebSite\Areas\Admin\Views\**" target="content\Areas\Admin\Views" />
     <file src="..\MVCForum.WebSite\Content\**" target="content\Content" exclude="..\MVCForum.WebSite\Content\uploads\**" />
     <file src="..\MVCForum.WebSite\Content\uploads\readme.txt" target="content\Content\uploads" />
     <file src="..\MVCForum.WebSite\Installer\**" target="content\Installer" />
     <file src="..\MVCForum.WebSite\Scripts\**" target="content\Scripts" exclude="..\MVCForum.WebSite\Scripts\tinymce\**"/>
     <file src="..\MVCForum.WebSite\Themes\**" target="content\Themes" />
-    <file src="..\MVCForum.WebSite\Config\**" target="content\Config" />
     <file src="..\MVCForum.WebSite\Views\**" target="content\Views" />
     <file src="..\MVCForum.WebSite\web.config" target="content\web.config" />
     <file src="..\MVCForum.WebSite\Global.asax" target="content\Global.asax" />

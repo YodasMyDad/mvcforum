@@ -76,10 +76,9 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<MembershipUser> GetUsersForRole(string roleName)
         {
-            return GetRole(roleName, false).Users;
+            return GetRole(roleName).Users;
 
         }
-
         /// <summary>
         /// Create a new role
         /// </summary>
@@ -87,7 +86,7 @@ namespace MVCForum.Services
         public MembershipRole CreateRole(MembershipRole role)
         {
             role.RoleName = StringUtils.SafePlainText(role.RoleName);
-            var membershipRole = GetRole(role.RoleName, false);
+            var membershipRole = GetRole(role.RoleName);
             return membershipRole ?? _context.MembershipRole.Add(role);
         }
 

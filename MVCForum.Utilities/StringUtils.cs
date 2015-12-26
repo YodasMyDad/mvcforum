@@ -819,13 +819,10 @@ namespace MVCForum.Utilities
                 {
                     foreach (var image in nodes)
                     {
-                        if (image != null)
+                        HtmlAttribute imageUrl = image?.Attributes[@"src"];
+                        if (imageUrl != null && !imageUrl.Value.Contains("http"))
                         {
-                            HtmlAttribute imageUrl = image.Attributes[@"src"];
-                            if (imageUrl != null && !imageUrl.Value.Contains("http"))
-                            {
-                                imageUrl.Value = string.Concat(domain, imageUrl.Value);
-                            }
+                            imageUrl.Value = string.Concat(domain, imageUrl.Value);
                         }
                     }
 
@@ -852,13 +849,10 @@ namespace MVCForum.Utilities
                 {
                     foreach (var image in nodes.Take(amount))
                     {
-                        if (image != null)
+                        var imageUrl = image?.Attributes[@"src"];
+                        if (imageUrl != null)
                         {
-                            var imageUrl = image.Attributes[@"src"];
-                            if (imageUrl != null)
-                            {
-                                images.Add(imageUrl.Value);
-                            }
+                            images.Add(imageUrl.Value);
                         }
                     }
                 }
@@ -896,7 +890,7 @@ namespace MVCForum.Utilities
         /// <returns></returns>
         public static string ReturnImageHtml(string url, string alt)
         {
-            return string.Format("<img src=\"{0}\" alt=\"{1}\" />", url, alt);
+            return $"<img src=\"{url}\" alt=\"{alt}\" />";
         }
         #endregion
 
@@ -980,7 +974,7 @@ namespace MVCForum.Utilities
         /// <returns></returns>
         public static string FormatCurrency(int? amount)
         {
-            return amount != null ? string.Format("{0:C}", amount) : "n/a";
+            return amount != null ? $"{amount:C}" : "n/a";
         }
 
         /// <summary>
@@ -1058,7 +1052,7 @@ namespace MVCForum.Utilities
 
                             // Find links 
 
-                            result.AppendLine(reg.Replace(line, string.Format("<p><img src=\"//instagram.com/p/{0}/media/?size=l\" class=\"img-responsive\" /></p>", idRegex.Match(url))));
+                            result.AppendLine(reg.Replace(line, $"<p><img src=\"//instagram.com/p/{idRegex.Match(url)}/media/?size=l\" class=\"img-responsive\" /></p>"));
                         }
                         else
                         {

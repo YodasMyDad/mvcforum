@@ -19,8 +19,8 @@ namespace MVCForum.Services
         }
 
         private static string EmoticonImageFolder => VirtualPathUtility.ToAbsolute("~/content/images/emoticons/");
-        private static string SiteConfig => HostingEnvironment.MapPath("~/config/forum.config");
-        private static string EmoticonsConfig => HostingEnvironment.MapPath("~/config/emoticons.config");
+        private static string SiteConfig => HostingEnvironment.MapPath("~/App_Data/forum.config");
+        private static string EmoticonsConfig => HostingEnvironment.MapPath("~/App_Data/emoticons.config");
 
 
         #region Emoticons

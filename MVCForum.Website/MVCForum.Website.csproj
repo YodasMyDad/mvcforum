@@ -348,7 +348,6 @@
     <Compile Include="Areas\Admin\ViewModels\SettingsViewModels.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\Hello.txt" />
     <Content Include="App_Data\NuGetBackup\Hello.txt" />
     <Content Include="Content\admin\Admin.css">
       <DependentUpon>Admin.scss</DependentUpon>
@@ -1037,7 +1036,7 @@
     <Content Include="Views\Shared\_PostLikedBy.cshtml" />
     <Content Include="Views\PrivateMessage\AjaxMore.cshtml" />
     <Content Include="Areas\Admin\Views\Batch\BatchDeletePrivateMessages.cshtml" />
-    <Content Include="Config\emoticons.config" />
+    <Content Include="App_Data\emoticons.config" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.woff" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.ttf" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.json" />
@@ -1048,7 +1047,7 @@
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.eot" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\readme.md" />
     <Content Include="Scripts\tinymce\langs\readme.md" />
-    <Content Include="Config\forum.config">
+    <Content Include="App_Data\forum.config">
       <SubType>Designer</SubType>
     </Content>
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
