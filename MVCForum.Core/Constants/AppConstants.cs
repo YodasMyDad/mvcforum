@@ -48,15 +48,6 @@ namespace MVCForum.Domain.Constants
         /// </summary>
         public const int TimeSpanInMinutesToDoCheck = 3;
 
-        // Database Connection Key
-        public const string MvcForumContext = "MVCForumContext";
-
-        // Default Theme folder
-        public const string ThemeRootFolder = "~/Themes/";
-
-        // Themes
-        public const string ThemeRootFolderName = "Themes";
-
         
         public const string EditorTemplateColourPicker = "colourpicker";
 
@@ -66,7 +57,6 @@ namespace MVCForum.Domain.Constants
 
         //Mobile Check Name
         public const string IsMobileDevice = "IsMobileDevice";
-
 
         /// <summary>
         /// Cache lengths

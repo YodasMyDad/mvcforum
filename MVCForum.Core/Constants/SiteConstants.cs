@@ -134,5 +134,14 @@ namespace MVCForum.Domain.Constants
         // Global Permissions
         public string PermissionEditMembers => GetConfig("PermissionEditMembers");
         public string PermissionInsertEditorImages => GetConfig("PermissionInsertEditorImages");
+
+        // Database Connection Key
+        public string MvcForumContext => GetConfig("MvcForumContext");
+
+        // Default Theme folder
+        public string ThemeRootFolder => GetConfig("ThemeRootFolder");
+
+        // Themes
+        public string ThemeRootFolderName => GetConfig("ThemeRootFolderName");
     }
 }

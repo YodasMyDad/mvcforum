@@ -79,7 +79,7 @@ namespace MVCForum.Website.Application
         public static List<string> GetThemeFolders()
         {
             var folders = new List<string>();
-            var themeRootFolder = HostingEnvironment.MapPath(String.Format("~/{0}", AppConstants.ThemeRootFolderName));
+            var themeRootFolder = HostingEnvironment.MapPath($"~/{SiteConstants.Instance.ThemeRootFolderName}");
             if (Directory.Exists(themeRootFolder))
             {
                 folders.AddRange(Directory.GetDirectories(themeRootFolder)

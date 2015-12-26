@@ -4,7 +4,7 @@
     var theme = new Theme
     {
         ThemeName = themeName,
-        ThemePath = string.Concat(AppConstants.ThemeRootFolder, themeName)
+        ThemePath = string.Concat(SiteConstants.Instance.ThemeRootFolder, themeName)
     };
 }
 @Html.Partial("_StyleSheets", theme)
