@@ -48,13 +48,6 @@ namespace MVCForum.Domain.Constants
         /// </summary>
         public const int TimeSpanInMinutesToDoCheck = 3;
 
-        // Installer Stuff
-        public const string InstallerName = "YesImAnInstallerSpankMe";
-        public const string InstallerUrl = "/install/";
-        public const string InMobileView = "InMobileView";
-        public const string GoToInstaller = "GoToInstaller";
-        public const string SuccessDbFile = "SuccessDbFile.txt";
-
         // Database Connection Key
         public const string MvcForumContext = "MVCForumContext";
 

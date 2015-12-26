@@ -20,23 +20,6 @@ namespace MVCForum.Website.Application
     {
         #region Application
 
-        public static bool SameVersionNumbers()
-        {
-            var version = HttpContext.Current.Application["Version"].ToString();
-            return SiteConstants.Instance.MvcForumVersion == version;
-        }
-
-        public static bool InInstaller()
-        {
-            var url = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Path);
-            if (!string.IsNullOrEmpty(url))
-            {
-                url = url.ToLowerInvariant();
-                return url.Contains(AppConstants.InstallerUrl);
-            }
-            return false;
-        }
-
         /// <summary>
         /// Returns true if the requested resource is one of the typical resources that needn't be processed by the cms engine.
         /// </summary>
@@ -83,19 +66,6 @@ namespace MVCForum.Website.Application
             }
 
             return false;
-        }
-
-        public static bool IsDbInstalled()
-        {
-            var filePath = Path.Combine(HostingEnvironment.MapPath("~/App_Data/"), AppConstants.SuccessDbFile);
-            //if (!File.Exists(filePath))
-            //{
-            //    using (File.Create(filePath))
-            //    {
-            //        //we use 'using' to close the file after it's created
-            //    }
-            //}
-            return File.Exists(filePath);
         }
 
         #endregion
