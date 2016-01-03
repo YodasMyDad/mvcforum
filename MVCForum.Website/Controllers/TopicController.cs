@@ -114,6 +114,12 @@ namespace MVCForum.Website.Controllers
 
                     // Get the Topic View Models
                     viewModel = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
+
+                    // Show the unsubscribe link
+                    foreach (var topicViewModel in viewModel)
+                    {
+                        topicViewModel.ShowUnSubscribedLink = true;
+                    }
                 }
             }
             return PartialView("GetSubscribedTopics", viewModel);

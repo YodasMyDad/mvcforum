@@ -39,7 +39,16 @@
                     @Html.Raw(Model.Topic.Name)
                 </a>
             </h3>
-            @if (Model.Topic.Tags.Any())
+            @if (Model.ShowUnSubscribedLink)
+            {
+                <p>
+                    <a href="#" class="emailunsubscription" data-id="@Model.Topic.Id" data-type="topic">
+                        <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                        @Html.LanguageString("Topic.UnSubscribe")
+                    </a>
+                </p>
+            }
+            else if (Model.Topic.Tags.Any())
             {
                 <div class="tagsinput clearfix">
                     @foreach (var tag in Model.Topic.Tags)

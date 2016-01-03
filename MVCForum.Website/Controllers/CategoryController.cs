@@ -106,7 +106,8 @@ namespace MVCForum.Website.Controllers
                         LatestTopic = latestTopicInCategory,
                         Permissions = permissionSet,
                         PostCount = postCount,
-                        TopicCount = topicCount
+                        TopicCount = topicCount,
+                        ShowUnSubscribedLink = true
                     };
                     viewModel.Add(model);
                 }

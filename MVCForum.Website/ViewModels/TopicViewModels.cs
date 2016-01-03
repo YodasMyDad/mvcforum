@@ -50,6 +50,9 @@ namespace MVCForum.Website.ViewModels
         // Stats
         public int Answers { get; set; }
         public int Views { get; set; }
+
+        // Misc
+        public bool ShowUnSubscribedLink { get; set; }
     }
 
     public class ActiveTopicsViewModel

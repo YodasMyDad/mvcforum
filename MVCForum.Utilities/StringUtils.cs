@@ -1155,7 +1155,7 @@ namespace MVCForum.Utilities
         #endregion
 
         #region Sanitizer Compatible With Chinese Characters
-        private static System.Collections.Generic.Dictionary<string, string> hbjDictionaryFX = new System.Collections.Generic.Dictionary<string, string>();
+        private static readonly Dictionary<string, string> HbjDictionaryFx = new Dictionary<string, string>();
         /// <summary>
         /// 微软的AntiXSS v4.0 让部分汉字乱码,这里将乱码部分汉字转换回来
         /// Microsoft AntiXSS Library Sanitizer causes some Chinese characters become "encoded",
@@ -1163,96 +1163,98 @@ namespace MVCForum.Utilities
         /// source:http://www.zhaoshu.net/bbs/read10.aspx?TieID=b1745a9c-03a6-4367-93e0-114707aff3e3
         /// </summary>
         /// <returns></returns>
-        public static String SanitizerCompatibleWithForiegnCharacters(String originalString)
+        public static string SanitizerCompatibleWithForiegnCharacters(string originalString)
         {
-            string returnString = originalString;
+            var returnString = originalString;
 
             //returnString = returnString.Replace("\r\n", "");
             if (returnString.Contains("&#"))
             {
                 //Initialize the dictionary, if it doesn't contain anything. 
-                if (hbjDictionaryFX.Keys.Count == 0)
+                if (HbjDictionaryFx.Keys.Count == 0)
                 {
-                    lock (hbjDictionaryFX)
+                    lock (HbjDictionaryFx)
                     {
-                        if (hbjDictionaryFX.Keys.Count == 0)
+                        if (HbjDictionaryFx.Keys.Count == 0)
                         {
-                            hbjDictionaryFX.Clear();
-                            hbjDictionaryFX.Add("&#20028;", "丼");
-                            hbjDictionaryFX.Add("&#20284;", "似");
-                            hbjDictionaryFX.Add("&#20540;", "值");
-                            hbjDictionaryFX.Add("&#20796;", "儼");
-                            hbjDictionaryFX.Add("&#21052;", "刼");
-                            hbjDictionaryFX.Add("&#21308;", "匼");
-                            hbjDictionaryFX.Add("&#21564;", "吼");
-                            hbjDictionaryFX.Add("&#21820;", "唼");
-                            hbjDictionaryFX.Add("&#22076;", "嘼");
-                            hbjDictionaryFX.Add("&#22332;", "圼");
-                            hbjDictionaryFX.Add("&#22588;", "堼");
-                            hbjDictionaryFX.Add("&#23612;", "尼");
-                            hbjDictionaryFX.Add("&#26684;", "格");
-                            hbjDictionaryFX.Add("&#22844;", "夼");
-                            hbjDictionaryFX.Add("&#23100;", "娼");
-                            hbjDictionaryFX.Add("&#23356;", "嬼");
-                            hbjDictionaryFX.Add("&#23868;", "崼");
-                            hbjDictionaryFX.Add("&#24124;", "帼");
-                            hbjDictionaryFX.Add("&#24380;", "弼");
-                            hbjDictionaryFX.Add("&#24636;", "怼");
-                            hbjDictionaryFX.Add("&#24892;", "愼");
-                            hbjDictionaryFX.Add("&#25148;", "戼");
-                            hbjDictionaryFX.Add("&#25404;", "挼");
-                            hbjDictionaryFX.Add("&#25660;", "搼");
-                            hbjDictionaryFX.Add("&#25916;", "攼");
-                            hbjDictionaryFX.Add("&#26172;", "昼");
-                            hbjDictionaryFX.Add("&#26428;", "朼");
-                            hbjDictionaryFX.Add("&#26940;", "椼");
-                            hbjDictionaryFX.Add("&#27196;", "樼");
-                            hbjDictionaryFX.Add("&#27452;", "欼");
-                            hbjDictionaryFX.Add("&#27708;", "氼");
-                            hbjDictionaryFX.Add("&#27964;", "洼");
-                            hbjDictionaryFX.Add("&#28220;", "渼");
-                            hbjDictionaryFX.Add("&#28476;", "漼");
-                            hbjDictionaryFX.Add("&#28732;", "瀼");
-                            hbjDictionaryFX.Add("&#28988;", "焼");
-                            hbjDictionaryFX.Add("&#29244;", "爼");
-                            hbjDictionaryFX.Add("&#29500;", "猼");
-                            hbjDictionaryFX.Add("&#29756;", "琼");
-                            hbjDictionaryFX.Add("&#30012;", "甼");
-                            hbjDictionaryFX.Add("&#30268;", "瘼");
-                            hbjDictionaryFX.Add("&#30524;", "眼");
-                            hbjDictionaryFX.Add("&#30780;", "砼");
-                            hbjDictionaryFX.Add("&#31036;", "礼");
-                            hbjDictionaryFX.Add("&#31292;", "稼");
-                            hbjDictionaryFX.Add("&#31548;", "笼");
-                            hbjDictionaryFX.Add("&#31804;", "簼");
-                            hbjDictionaryFX.Add("&#32060;", "紼");
-                            hbjDictionaryFX.Add("&#32316;", "縼");
-                            hbjDictionaryFX.Add("&#32572;", "缼");
-                            hbjDictionaryFX.Add("&#32828;", "耼");
-                            hbjDictionaryFX.Add("&#33084;", "脼");
-                            hbjDictionaryFX.Add("&#33340;", "舼");
-                            hbjDictionaryFX.Add("&#33596;", "茼");
-                            hbjDictionaryFX.Add("&#33852;", "萼");
-                            hbjDictionaryFX.Add("&#34108;", "蔼");
-                            hbjDictionaryFX.Add("&#36156;", "贼");
-                            hbjDictionaryFX.Add("&#39740;", "鬼");
+                            HbjDictionaryFx.Clear();
+                            HbjDictionaryFx.Add("&#20028;", "丼");
+                            HbjDictionaryFx.Add("&#20284;", "似");
+                            HbjDictionaryFx.Add("&#20540;", "值");
+                            HbjDictionaryFx.Add("&#20796;", "儼");
+                            HbjDictionaryFx.Add("&#21052;", "刼");
+                            HbjDictionaryFx.Add("&#21308;", "匼");
+                            HbjDictionaryFx.Add("&#21564;", "吼");
+                            HbjDictionaryFx.Add("&#21820;", "唼");
+                            HbjDictionaryFx.Add("&#22076;", "嘼");
+                            HbjDictionaryFx.Add("&#22332;", "圼");
+                            HbjDictionaryFx.Add("&#22588;", "堼");
+                            HbjDictionaryFx.Add("&#23612;", "尼");
+                            HbjDictionaryFx.Add("&#26684;", "格");
+                            HbjDictionaryFx.Add("&#22844;", "夼");
+                            HbjDictionaryFx.Add("&#23100;", "娼");
+                            HbjDictionaryFx.Add("&#23356;", "嬼");
+                            HbjDictionaryFx.Add("&#23868;", "崼");
+                            HbjDictionaryFx.Add("&#24124;", "帼");
+                            HbjDictionaryFx.Add("&#24380;", "弼");
+                            HbjDictionaryFx.Add("&#24636;", "怼");
+                            HbjDictionaryFx.Add("&#24892;", "愼");
+                            HbjDictionaryFx.Add("&#25148;", "戼");
+                            HbjDictionaryFx.Add("&#25404;", "挼");
+                            HbjDictionaryFx.Add("&#25660;", "搼");
+                            HbjDictionaryFx.Add("&#25916;", "攼");
+                            HbjDictionaryFx.Add("&#26172;", "昼");
+                            HbjDictionaryFx.Add("&#26428;", "朼");
+                            HbjDictionaryFx.Add("&#26940;", "椼");
+                            HbjDictionaryFx.Add("&#27196;", "樼");
+                            HbjDictionaryFx.Add("&#27452;", "欼");
+                            HbjDictionaryFx.Add("&#27708;", "氼");
+                            HbjDictionaryFx.Add("&#27964;", "洼");
+                            HbjDictionaryFx.Add("&#28220;", "渼");
+                            HbjDictionaryFx.Add("&#28476;", "漼");
+                            HbjDictionaryFx.Add("&#28732;", "瀼");
+                            HbjDictionaryFx.Add("&#28988;", "焼");
+                            HbjDictionaryFx.Add("&#29244;", "爼");
+                            HbjDictionaryFx.Add("&#29500;", "猼");
+                            HbjDictionaryFx.Add("&#29756;", "琼");
+                            HbjDictionaryFx.Add("&#30012;", "甼");
+                            HbjDictionaryFx.Add("&#30268;", "瘼");
+                            HbjDictionaryFx.Add("&#30524;", "眼");
+                            HbjDictionaryFx.Add("&#30780;", "砼");
+                            HbjDictionaryFx.Add("&#31036;", "礼");
+                            HbjDictionaryFx.Add("&#31292;", "稼");
+                            HbjDictionaryFx.Add("&#31548;", "笼");
+                            HbjDictionaryFx.Add("&#31804;", "簼");
+                            HbjDictionaryFx.Add("&#32060;", "紼");
+                            HbjDictionaryFx.Add("&#32316;", "縼");
+                            HbjDictionaryFx.Add("&#32572;", "缼");
+                            HbjDictionaryFx.Add("&#32828;", "耼");
+                            HbjDictionaryFx.Add("&#33084;", "脼");
+                            HbjDictionaryFx.Add("&#33340;", "舼");
+                            HbjDictionaryFx.Add("&#33596;", "茼");
+                            HbjDictionaryFx.Add("&#33852;", "萼");
+                            HbjDictionaryFx.Add("&#34108;", "蔼");
+                            HbjDictionaryFx.Add("&#36156;", "贼");
+                            HbjDictionaryFx.Add("&#39740;", "鬼");
 
                             // Also add russion
-                            hbjDictionaryFX.Add("&#1084;", "м");
+                            HbjDictionaryFx.Add("&#1084;", "м");
                         }
                     }
 
                 }
 
                 //start to replace "encoded" Chinese characters.
-                foreach (string key in hbjDictionaryFX.Keys)
+                lock (HbjDictionaryFx)
                 {
-                    if (returnString.Contains(key))
+                    foreach (string key in HbjDictionaryFx.Keys)
                     {
-                        returnString = returnString.Replace(key, hbjDictionaryFX[key]);
+                        if (returnString.Contains(key))
+                        {
+                            returnString = returnString.Replace(key, HbjDictionaryFx[key]);
+                        }
                     }
                 }
-
             }
 
             return returnString;

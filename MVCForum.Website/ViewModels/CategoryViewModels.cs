@@ -33,6 +33,9 @@ namespace MVCForum.Website.ViewModels
         // Topic info
         public Topic LatestTopic { get; set; }
         public int TopicCount { get; set; }
+
+        // Misc
+        public bool ShowUnSubscribedLink { get; set; }
     }
 
     public class SubCategoryViewModel
