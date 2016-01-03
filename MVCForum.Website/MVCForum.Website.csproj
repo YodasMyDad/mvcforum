@@ -224,6 +224,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application\ActionFilterAttributes\MustBeTrueAttribute.cs" />
     <Compile Include="Application\Akismet\Comment.cs" />
     <Compile Include="Application\Akismet\IValidator.cs" />
     <Compile Include="Application\Akismet\Validator.cs" />
@@ -1051,6 +1052,7 @@
     </Content>
     <Content Include="Views\Post\MovePost.cshtml" />
     <Content Include="Themes\Metro\Content\Styles\Theme.scss" />
+    <Content Include="Views\Home\TermsAndConditions.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

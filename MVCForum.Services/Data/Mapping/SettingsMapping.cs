@@ -57,6 +57,8 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.CustomFooterCode).IsOptional();
             Property(x => x.EnableEmoticons).IsOptional();
             Property(x => x.DisableDislikeButton);
+            Property(x => x.AgreeToTermsAndConditions);
+            Property(x => x.TermsAndConditions).IsOptional().HasMaxLength(6000);
 
             HasRequired(t => t.NewMemberStartingRole)
                 .WithOptional(x => x.Settings).Map(m => m.MapKey("NewMemberStartingRole"));

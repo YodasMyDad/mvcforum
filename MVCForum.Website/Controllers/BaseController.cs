@@ -54,6 +54,7 @@ namespace MVCForum.Website.Controllers
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             var controller = filterContext.RouteData.Values["controller"];
+            var action = filterContext.RouteData.Values["action"];
             var area = filterContext.RouteData.DataTokens["area"] ?? string.Empty;
 
             //if (Session[AppConstants.GoToInstaller] != null && Session[AppConstants.GoToInstaller].ToString() == "True")
@@ -67,6 +68,14 @@ namespace MVCForum.Website.Controllers
                 {
                     filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Closed" }, { "action", "Index" } });
                 }          
+            }
+            if (SettingsService.GetSettings().AgreeToTermsAndConditions && !filterContext.IsChildAction && LoggedOnReadOnlyUser != null && LoggedOnReadOnlyUser.HasAgreedToTermsAndConditions != true)
+            {
+                // Only redirect if its closed and user is NOT in the admin
+                if (action.ToString().ToLower() != "termsandconditions" && !area.ToString().ToLower().Contains("admin"))
+                {
+                    filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Home" }, { "action", "TermsAndConditions" } });
+                }
             }
 
             // If the user is banned - Log them out.

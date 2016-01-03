@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
+﻿using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Activity;
+using MVCForum.Website.Application;
+using MVCForum.Website.Application.ActionFilterAttributes;
 
 namespace MVCForum.Website.ViewModels
 {
@@ -16,5 +17,14 @@ namespace MVCForum.Website.ViewModels
 
         public int? PageIndex { get; set; }
         public int? TotalCount { get; set; }
+    }
+
+    public class TermsAndConditionsViewModel
+    {
+        public string TermsAndConditions { get; set; }
+
+        [ForumMvcResourceDisplayName("TermsAndConditions.Label.Agree")]
+        [MustBeTrue(ErrorMessage = "TermsAndConditions.Label.AgreeError")]
+        public bool Agree { get; set; }
     }
 }

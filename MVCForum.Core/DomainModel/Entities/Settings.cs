@@ -59,6 +59,8 @@ namespace MVCForum.Domain.DomainModel
         public string CustomFooterCode { get; set; }
         public bool? EnableEmoticons { get; set; }
         public bool DisableDislikeButton { get; set; }
+        public bool AgreeToTermsAndConditions { get; set; }
+        public string TermsAndConditions { get; set; }
         public virtual MembershipRole NewMemberStartingRole { get; set; }
         public virtual Language DefaultLanguage { get; set; }
     }

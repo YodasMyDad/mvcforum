@@ -60,6 +60,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.Latitude).IsOptional().HasMaxLength(40);
             Property(x => x.Longitude).IsOptional().HasMaxLength(40);
             Property(x => x.LastActivityDate).IsOptional();
+            Property(x => x.HasAgreedToTermsAndConditions).IsOptional();
 
             Ignore(x => x.TotalPoints);
             Ignore(x => x.NiceUrl);

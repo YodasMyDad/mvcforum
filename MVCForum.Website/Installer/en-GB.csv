@@ -89,6 +89,7 @@ Ajax.PleaseWait,Please Wait...
 Members.Profile.Badges,Badges
 Members.EditProfile,Edit Profile
 Buttons.Save,Save
+Buttons.Continue,Continue
 Members.EditMember,Edit Member
 Leaderboard.ThisWeeksStars,This Weeks Stars
 Leaderboard.ThisYearsStars,This Years Rock Stars
@@ -382,3 +383,7 @@ Post.Move.Label.Topic,Topic
 Post.Move.Label.NewTopicTitle,Create New Topic
 Post.Move.Label.ReplyToPosts,Move Replies and Quotes Too
 Post.Move.PostTitle,Move Post
+Post.Move.Description,Move post to an existing topic, or create a new one.
+TermsAndConditions.Label.Agree,I have read and agree to the site Terms and Conditions
+TermsAndConditions.PageTitle,Agree to Terms and Conditions
+TermsAndConditions.Label.AgreeError,You must Agree to the Terms and Conditions

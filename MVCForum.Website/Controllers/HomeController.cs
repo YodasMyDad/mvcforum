@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
@@ -48,6 +49,45 @@ namespace MVCForum.Website.Controllers
         public ActionResult PostedIn()
         {
             return View();
+        }
+
+        public ActionResult TermsAndConditions()
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var settings = SettingsService.GetSettings();
+                var viewModel = new TermsAndConditionsViewModel
+                {
+                    Agree = false,
+                    TermsAndConditions = settings.TermsAndConditions
+                };
+                return View(viewModel);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult TermsAndConditions(TermsAndConditionsViewModel viewmodel)
+        {
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                if (ModelState.IsValid)
+                {
+                    var user = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                    user.HasAgreedToTermsAndConditions = viewmodel.Agree;
+                    try
+                    {
+                        unitOfWork.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                    }
+                    return RedirectToAction("Index");
+                }
+            }
+
+            return View(viewmodel);
         }
 
         public ActionResult Activity(int? p)
@@ -141,13 +181,13 @@ namespace MVCForum.Website.Controllers
                     {
                         var badgeActivity = activity as BadgeActivity;
                         rssActivities.Add(new RssItem
-                            {
-                                Description = badgeActivity.Badge.Description,
-                                Title = string.Concat(badgeActivity.User.UserName, " ", LocalizationService.GetResourceString("Activity.UserAwardedBadge"), " ", badgeActivity.Badge.DisplayName, " ", LocalizationService.GetResourceString("Activity.Badge")),
-                                PublishedDate = badgeActivity.ActivityMapped.Timestamp,
-                                RssImage = AppHelpers.ReturnBadgeUrl(badgeActivity.Badge.Image),
-                                Link = activityLink
-                            });
+                        {
+                            Description = badgeActivity.Badge.Description,
+                            Title = string.Concat(badgeActivity.User.UserName, " ", LocalizationService.GetResourceString("Activity.UserAwardedBadge"), " ", badgeActivity.Badge.DisplayName, " ", LocalizationService.GetResourceString("Activity.Badge")),
+                            PublishedDate = badgeActivity.ActivityMapped.Timestamp,
+                            RssImage = AppHelpers.ReturnBadgeUrl(badgeActivity.Badge.Image),
+                            Link = activityLink
+                        });
                     }
                     else if (activity is MemberJoinedActivity)
                     {

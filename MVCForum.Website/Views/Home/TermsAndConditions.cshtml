@@ -1,0 +1,39 @@
+﻿@using System.Web.Mvc.Html
+@using MVCForum.Website.Application.ExtensionMethods
+@model MVCForum.Website.ViewModels.TermsAndConditionsViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
+    ViewBag.Title = Html.LanguageString("TermsAndConditions.PageTitle");
+}
+<script type="text/javascript">
+    $.validator.unobtrusive.adapters.addBool("mustbetrue", "required");
+</script>
+<div class="row">
+
+    <div class="col-md-6 col-md-offset-3">
+        <h1>@ViewBag.Title</h1>
+        @using (Html.BeginForm("TermsAndConditions", "Home", FormMethod.Post, new {@class = "form-report"}))
+        {
+            @Html.ValidationSummary(true)
+
+            <div class="termsandconditionsholder">
+                @Html.Raw(Model.TermsAndConditions)
+            </div>
+
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.Agree, new {@class = "checkbox"}))
+                {
+                    @Html.CheckBoxFor(m => m.Agree)
+                }
+                @Html.ValidationMessageFor(m => m.Agree)
+            </div>
+
+            <div class="submit-holder">
+                <button type="submit" class="btn-mvc-green btn-mvc-large">
+                    @Html.LanguageString("Buttons.Continue")
+                </button>
+            </div>
+        }
+    </div>
+</div>
