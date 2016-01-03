@@ -82,31 +82,16 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        protected bool UserIsAuthenticated
-        {
-            get
-            {
-                return System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-            }
-        }
+        protected bool UserIsAuthenticated => System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
 
-        protected bool UserIsAdmin
-        {
-            get { return User.IsInRole(AppConstants.AdminRoleName); }
-        }
+        protected bool UserIsAdmin => User.IsInRole(AppConstants.AdminRoleName);
 
         protected void ShowMessage(GenericMessageViewModel messageViewModel)
         {
             //ViewData[AppConstants.MessageViewBagName] = messageViewModel;
             TempData[AppConstants.MessageViewBagName] = messageViewModel;
         }
-        protected string Username
-        {
-            get
-            {
-                return UserIsAuthenticated ? System.Web.HttpContext.Current.User.Identity.Name : null;
-            }
-        }
+        protected string Username => UserIsAuthenticated ? System.Web.HttpContext.Current.User.Identity.Name : null;
 
         internal ActionResult ErrorToHomePage(string errorMessage)
         {

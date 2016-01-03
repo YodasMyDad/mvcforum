@@ -141,6 +141,18 @@ namespace MVCForum.Services
                     .ToList();
         }
 
+        public IList<Post> GetReplyToPosts(Post post)
+        {
+            return GetReplyToPosts(post.Id);
+        }
+
+        public IList<Post> GetReplyToPosts(Guid postId)
+        {
+            // We don't allow topic starters in the list OR solutions. As if it's marked as a solution, it's a solution for that topic
+            // and moving it wouldn't make sense.
+            return _context.Post.Where(x => x.InReplyTo != null & x.InReplyTo == postId && !x.IsTopicStarter && !x.IsSolution).ToList();
+        }
+
         public IEnumerable<Post> GetPostsByFavouriteCount(Guid postsByMemberId, int minAmountOfFavourites)
         {
             return _context.Post

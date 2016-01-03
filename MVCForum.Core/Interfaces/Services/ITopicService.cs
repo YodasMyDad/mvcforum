@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web.Mvc;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.General;
 using MVCForum.Domain.Interfaces.UnitOfWork;
@@ -10,6 +11,7 @@ namespace MVCForum.Domain.Interfaces.Services
     {
         Topic SanitizeTopic(Topic topic);
         IList<Topic> GetAll(List<Category> allowedCategories);
+        IList<SelectListItem> GetAllSelectList(List<Category> allowedCategories, int amount);
         IList<Topic> GetHighestViewedTopics(int amountToTake, List<Category> allowedCategories);
         IList<Topic> GetPopularTopics(DateTime? from, DateTime? to, List<Category> allowedCategories, int amountToShow = 20);
         Topic Add(Topic topic);

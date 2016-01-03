@@ -158,7 +158,7 @@
 
         if (!Model.Permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked && !Model.Permissions[SiteConstants.Instance.PermissionReadOnly].IsTicked)
         {
-            @Html.Partial("_CreateNewPost", new CreateAjaxPostViewModel { Topic = Model.Topic.Id, DisablePosting = Model.DisablePosting, PostContent = Model.QuotedPost })
+            @Html.Partial("_CreateNewPost", new CreateAjaxPostViewModel { Topic = Model.Topic.Id, DisablePosting = Model.DisablePosting, PostContent = Model.QuotedPost, InReplyTo = Model.ReplyTo, ReplyToUsername = Model.ReplyToUsername})
         }
         <a id="createpost"></a>
     }

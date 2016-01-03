@@ -19,6 +19,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.IpAddress).IsOptional().HasMaxLength(50);
             Property(x => x.Pending).IsOptional();
             Property(x => x.SearchField).IsOptional();
+            Property(x => x.InReplyTo).IsOptional();
 
             HasMany(x => x.Votes).WithRequired(x => x.Post)
                 .Map(x => x.MapKey("Post_Id"))

@@ -189,6 +189,10 @@ var AjaxPostSuccess = function () {
         tinyMCE.activeEditor.setContent("");
     }
 
+    // Clear the reply div
+    var replyToDiv = $(".showreplyto");
+    replyToDiv.html("");
+
     // Re-enable the button
     AjaxPostFinish();
 

@@ -30,7 +30,7 @@
     <div class="rowdetails clearfix">
 
 
-        @if (Html.CurrentMember() != null)
+        @if (Html.CurrentMember() != null && !Model.MinimalPost)
         {
             <div class="postadmin">
                 <button class="postoptions btn-mvc btn-mvc-fullwidth">@Html.LanguageString("Post.Options")</button>
@@ -64,6 +64,15 @@
                         <li>
                             <a class="btn-mvc btn-mvc-small btn-mvc-fullwidth" href="@Url.Action("EditPostTopic", "Topic", new { id = Model.Post.Id })">
                                 @Html.LanguageString("Post.Edit")
+                            </a>
+                        </li>
+                    }
+
+                    @if (!Model.Post.IsTopicStarter && Model.Permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                    {
+                        <li>
+                            <a class="btn-mvc btn-mvc-small btn-mvc-fullwidth" href="@Url.Action("MovePost", "Post", new { id = Model.Post.Id })">
+                                @Html.LanguageString("Post.Move")
                             </a>
                         </li>
                     }
@@ -112,76 +121,88 @@
                 }
             </div>
 
-            <div class="postsocial">
-                <ul>
-                    <li class="permalink">
-                        <a href="@Html.Raw(Model.PermaLink)">
-                            #@Html.Lang("Post.Permalink")
-                        </a>
-                    </li>
-                    <li>
-                        <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
-                        @if (Html.Settings().EnablePoints)
-                        {
-                            <span class="count">@upVotes.Count.KiloFormat()</span>
-                        }
-                        @if (Model.AllowedToVote)
-                        {
-                            <a class="votelink" data-id="@postId" data-votetype="up" data-votetext="@Html.LanguageString("Post.VoteUp")" data-votedtext="@Html.LanguageString("Post.VotedUp")" data-hasvoted="@Model.HasVotedUp.ToString().ToLower()" style="@Html.Raw(Model.HasVotedDown ? "display:none;" : "")">
-                                @(Model.HasVotedUp ? Html.LanguageString("Post.VotedUp") : Html.LanguageString("Post.VoteUp"))
+            @if (!Model.MinimalPost)
+            {
+                <div class="postsocial">
+                    <ul>
+                        <li class="permalink">
+                            <a href="@Html.Raw(Model.PermaLink)">
+                                #@Html.Lang("Post.Permalink")
                             </a>
-                        }
-                    </li>
+                        </li>
+                        <li>
+                            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+                            @if (Html.Settings().EnablePoints)
+                            {
+                                <span class="count">@upVotes.Count.KiloFormat()</span>
+                            }
+                            @if (Model.AllowedToVote)
+                            {
+                                <a class="votelink" data-id="@postId" data-votetype="up" data-votetext="@Html.LanguageString("Post.VoteUp")" data-votedtext="@Html.LanguageString("Post.VotedUp")" data-hasvoted="@Model.HasVotedUp.ToString().ToLower()" style="@Html.Raw(Model.HasVotedDown ? "display:none;" : "")">
+                                    @(Model.HasVotedUp ? Html.LanguageString("Post.VotedUp") : Html.LanguageString("Post.VoteUp"))
+                                </a>
+                            }
+                        </li>
 
-                    @if (!Html.Settings().DisableDislikeButton)
-                    {
-                    <li>
-                        <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>
-                        @if (Html.Settings().EnablePoints)
-                        {
-                            <span class="count">@downVotes.Count.KiloFormat()</span>
-                        }
-                        @if (Model.AllowedToVote)
-                        {
-                            <a class="votelink" data-id="@postId" data-votetype="down" data-votetext="@Html.LanguageString("Post.VoteDown")" data-votedtext="@Html.LanguageString("Post.VotedDown")" data-hasvoted="@Model.HasVotedDown.ToString().ToLower()" style="@Html.Raw(Model.HasVotedUp ? "display:none;" : "")">
-                                @(Model.HasVotedDown ? Html.LanguageString("Post.VotedDown") : Html.LanguageString("Post.VoteDown"))
-                            </a>
-                        }
-                    </li>
-                    }
-                    <li>
-                        <span class="glyphicon @(Model.MemberHasFavourited ? "glyphicon glyphicon-star" : "glyphicon-star-empty")" aria-hidden="true"></span>
-                        <span class="count">@Model.Favourites.Count</span>
-                        @if (Html.CurrentMember() != null && Model.Post.User.Id != loggedOnUserId)
-                        {
-                            <a class="favourite" data-id="@postId" data-addremove="@(Model.MemberHasFavourited ? "remove" : "add")">
-                                @(Model.MemberHasFavourited ? Html.Lang("Post.Favourited") : Html.Lang("Post.Favourite"))
-                            </a>
-                        }
-                    </li>
-
-                    @if (Html.Settings().EnableMarkAsSolution)
-                    {
-                        if (Model.ParentTopic.Solved && Model.Post.IsSolution)
+                        @if (!Html.Settings().DisableDislikeButton)
                         {
                             <li>
-                                <span class="glyphicon glyphicon-ok green-colour" aria-hidden="true"></span>
+                                <span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span>
+                                @if (Html.Settings().EnablePoints)
+                                {
+                                    <span class="count">@downVotes.Count.KiloFormat()</span>
+                                }
+                                @if (Model.AllowedToVote)
+                                {
+                                    <a class="votelink" data-id="@postId" data-votetype="down" data-votetext="@Html.LanguageString("Post.VoteDown")" data-votedtext="@Html.LanguageString("Post.VotedDown")" data-hasvoted="@Model.HasVotedDown.ToString().ToLower()" style="@Html.Raw(Model.HasVotedUp ? "display:none;" : "")">
+                                        @(Model.HasVotedDown ? Html.LanguageString("Post.VotedDown") : Html.LanguageString("Post.VoteDown"))
+                                    </a>
+                                }
                             </li>
                         }
-                        else if (!Model.ParentTopic.Solved && !Model.Post.IsTopicStarter && Html.CurrentMember() != null && (Model.ParentTopic.User.Id == loggedOnUserId || User.IsInRole(AppConstants.AdminRoleName)))
+                        <li>
+                            <span class="glyphicon @(Model.MemberHasFavourited ? "glyphicon glyphicon-star" : "glyphicon-star-empty")" aria-hidden="true"></span>
+                            <span class="count">@Model.Favourites.Count</span>
+                            @if (Html.CurrentMember() != null && Model.Post.User.Id != loggedOnUserId)
+                            {
+                                <a class="favourite" data-id="@postId" data-addremove="@(Model.MemberHasFavourited ? "remove" : "add")">
+                                    @(Model.MemberHasFavourited ? Html.Lang("Post.Favourited") : Html.Lang("Post.Favourite"))
+                                </a>
+                            }
+                        </li>
+
+                        @if (Html.Settings().EnableMarkAsSolution)
+                        {
+                            if (Model.ParentTopic.Solved && Model.Post.IsSolution)
+                            {
+                                <li>
+                                    <span class="glyphicon glyphicon-ok green-colour" aria-hidden="true"></span>
+                                </li>
+                            }
+                            else if (!Model.ParentTopic.Solved && !Model.Post.IsTopicStarter && Html.CurrentMember() != null && (Model.ParentTopic.User.Id == loggedOnUserId || User.IsInRole(AppConstants.AdminRoleName)))
+                            {
+                                <li>
+                                    <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                                    <a class="solutionlink" data-id="@postId">
+                                        @Html.LanguageString("Post.IsSolution")
+                                    </a>
+                                </li>
+                            }
+                        }
+
+                        @if (Html.CurrentMember() != null && Model.Post.User.Id != loggedOnUserId && !Model.Post.IsTopicStarter)
                         {
                             <li>
-                                <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-                                <a class="solutionlink" data-id="@postId">
-                                    @Html.LanguageString("Post.IsSolution")
+                                <i class="fa fa-reply"></i>
+                                <a class="replytolink" href="?reply=@Model.Post.Id#createpost">
+                                    @Html.LanguageString("Post.Reply")
                                 </a>
                             </li>
                         }
-                    }
+                    </ul>
 
-                </ul>
-
-            </div>
+                </div>
+            }
 
             @if (Model.Post.IsTopicStarter && Model.ParentTopic.Tags.Any())
             {

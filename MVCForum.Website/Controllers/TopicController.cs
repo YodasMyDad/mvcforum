@@ -646,34 +646,33 @@ namespace MVCForum.Website.Controllers
             }
             /*---- End Re-populate ViewModel ----*/
 
-            // Check stop words
-            var stopWords = _bannedWordService.GetAll(true);
-            foreach (var stopWord in stopWords)
-            {
-                if (topicViewModel.Content.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
-                    topicViewModel.Name.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0)
-                {
-                    ShowMessage(new GenericMessageViewModel
-                    {
-                        Message = LocalizationService.GetResourceString("StopWord.Error"),
-                        MessageType = GenericMessages.danger
-                    });
-
-                    // Ahhh found a stop word. Abandon operation captain.
-                    return View(topicViewModel);
-                }
-            }
-
             if (ModelState.IsValid)
             {
+
+                // Check stop words
+                var stopWords = _bannedWordService.GetAll(true);
+                foreach (var stopWord in stopWords)
+                {
+                    if (topicViewModel.Content.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
+                        topicViewModel.Name.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                    {
+                        ShowMessage(new GenericMessageViewModel
+                        {
+                            Message = LocalizationService.GetResourceString("StopWord.Error"),
+                            MessageType = GenericMessages.danger
+                        });
+
+                        // Ahhh found a stop word. Abandon operation captain.
+                        return View(topicViewModel);
+                    }
+                }
+
                 // Quick check to see if user is locked out, when logged in
                 if (LoggedOnReadOnlyUser.IsLockedOut || LoggedOnReadOnlyUser.DisablePosting == true || !LoggedOnReadOnlyUser.IsApproved)
                 {
                     FormsAuthentication.SignOut();
                     return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoAccess"));
                 }
-
-
 
                 var successfullyCreated = false;
                 var cancelledByEvent = false;
@@ -1018,6 +1017,24 @@ namespace MVCForum.Website.Controllers
                             // Got a quote
                             var postToQuote = _postService.Get(new Guid(quote));
                             viewModel.QuotedPost = postToQuote.PostContent;
+                            viewModel.ReplyTo = postToQuote.Id;
+                            viewModel.ReplyToUsername = postToQuote.User.UserName;
+                        }
+                        catch (Exception ex)
+                        {
+                            LoggingService.Error(ex);
+                        }
+                    }
+
+                    var reply = Request["reply"];
+                    if (!string.IsNullOrEmpty(reply))
+                    {
+                        try
+                        {
+                            // Set the reply
+                            var toReply = _postService.Get(new Guid(reply));
+                            viewModel.ReplyTo = toReply.Id;
+                            viewModel.ReplyToUsername = toReply.User.UserName;
                         }
                         catch (Exception ex)
                         {
@@ -1036,7 +1053,7 @@ namespace MVCForum.Website.Controllers
                     }
 
                     // Check the poll - To see if it has one, and whether it needs to be closed.
-                    if (viewModel.Poll != null && viewModel.Poll.Poll != null)
+                    if (viewModel.Poll?.Poll != null)
                     {
                         if (viewModel.Poll.Poll.ClosePollAfterDays != null &&
                             viewModel.Poll.Poll.ClosePollAfterDays > 0 &&

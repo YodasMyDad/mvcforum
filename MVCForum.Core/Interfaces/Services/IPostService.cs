@@ -13,6 +13,8 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<Post> GetLowestVotedPost(int amountToTake);
         IList<Post> GetHighestVotedPost(int amountToTake);
         IList<Post> GetByMember(Guid memberId, int amountToTake, List<Category> allowedCategories);
+        IList<Post> GetReplyToPosts(Post post);
+        IList<Post> GetReplyToPosts(Guid postId);
         IEnumerable<Post> GetPostsByFavouriteCount(Guid postsByMemberId, int minAmountOfFavourites);
         IEnumerable<Post> GetPostsFavouritedByOtherMembers(Guid postsByMemberId);
         PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm, List<Category> allowedCategories);

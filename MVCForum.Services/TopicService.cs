@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Data.Entity;
+using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.General;
@@ -60,6 +61,22 @@ namespace MVCForum.Services
                                 .Include(x => x.Poll)
                                 .Where(x => allowedCatIds.Contains(x.Category.Id) && x.Pending != true)
                                 .ToList();
+        }
+
+        public IList<SelectListItem> GetAllSelectList(List<Category> allowedCategories, int amount)
+        {
+            // get the category ids
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            return _context.Topic.AsNoTracking()
+                                .Include(x => x.Category)
+                                .Where(x => allowedCatIds.Contains(x.Category.Id) && x.Pending != true)
+                                .OrderByDescending(x => x.CreateDate)
+                                .Take(amount)
+                                .Select(x => new SelectListItem
+                                {
+                                   Text = x.Name,
+                                    Value = x.Id.ToString()
+                                }).ToList();
         }
 
         public IList<Topic> GetHighestViewedTopics(int amountToTake, List<Category> allowedCategories)

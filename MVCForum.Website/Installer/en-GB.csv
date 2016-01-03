@@ -24,6 +24,9 @@ Post.LastEdited,Last edited
 Post.Report,Report
 Post.Edit,Edit
 Post.Delete,Delete
+Post.Move,Move
+Post.Reply,Reply
+Post.ReplyingTo,Replying To:
 LogOn.LogOn,Log On
 LogOn.LogOff,Log Off
 Post.PleaseWait,Please Wait...
@@ -34,6 +37,7 @@ Topic.UnSubscribe,UnFollow
 Topic.IsLocked,Topic Is Locked
 Topic.CreateDiscussion,Create Discussion
 Topic.TagThisTopic,Tag this topic
+Topic.Choose,Choose Existing Topic
 Tags.PopularTags,Popular Tags
 Stats.FooterMainStatText,Our {0} members have posted {1} times in {2} discussions
 Stats.LatestMembers,Latest Members:
@@ -374,3 +378,7 @@ PM.ShowMore,Show More Messages
 PM.ShowMoreLoading,Loading...
 Members.LogonMicrosoftButton,Login with Microsoft
 Search.Results,Results Found
+Post.Move.Label.Topic,Topic
+Post.Move.Label.NewTopicTitle,Create New Topic
+Post.Move.Label.ReplyToPosts,Move Replies and Quotes Too
+Post.Move.PostTitle,Move Post
