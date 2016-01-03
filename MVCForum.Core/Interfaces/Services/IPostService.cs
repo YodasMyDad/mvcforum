@@ -19,8 +19,9 @@ namespace MVCForum.Domain.Interfaces.Services
         IEnumerable<Post> GetPostsFavouritedByOtherMembers(Guid postsByMemberId);
         PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm, List<Category> allowedCategories);
         PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId, PostOrderBy order);
-        PagedList<Post> GetPagedPendingPosts(int pageIndex, int pageSize);
-        int GetPendingPostsCount();
+        PagedList<Post> GetPagedPendingPosts(int pageIndex, int pageSize, List<Category> allowedCategories);
+        IList<Post> GetPendingPosts(List<Category> allowedCategories, MembershipRole usersRole);
+        int GetPendingPostsCount(List<Category> allowedCategories);
         Post Add(Post post);
         Post Get(Guid postId);
         IList<Post> GetPostsByTopics(List<Guid> topicIds, List<Category> allowedCategories);

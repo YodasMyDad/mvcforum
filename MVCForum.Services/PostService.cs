@@ -287,23 +287,55 @@ namespace MVCForum.Services
             return new PagedList<Post>(posts, pageIndex, pageSize, total);
         }
 
-        public PagedList<Post> GetPagedPendingPosts(int pageIndex, int pageSize)
+        public PagedList<Post> GetPagedPendingPosts(int pageIndex, int pageSize, List<Category> allowedCategories)
         {
-            var total = _context.Post.Count(x => x.Pending == true);
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            var total = _context.Post.Count(x => x.Pending == true && allowedCatIds.Contains(x.Topic.Category.Id));
             var results = _context.Post
-                .Include(x => x.Topic)
+                .Include(x => x.Topic.Category)
                 .Include(x => x.User)
                 .AsNoTracking()
-                .Where(x => x.Pending == true)
+                .Where(x => x.Pending == true && allowedCatIds.Contains(x.Topic.Category.Id))
                 .OrderBy(x => x.DateCreated)
                 .Skip((pageIndex - 1) * pageSize).Take(pageSize);
 
             return new PagedList<Post>(results.ToList(), pageIndex, pageSize, total);
         }
 
-        public int GetPendingPostsCount()
+        public IList<Post> GetPendingPosts(List<Category> allowedCategories, MembershipRole usersRole)
         {
-            return _context.Post.Count(x => x.Pending == true);
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            var allPendingPosts = _context.Post.AsNoTracking().Include(x => x.Topic.Category).Where(x => x.Pending == true && allowedCatIds.Contains(x.Topic.Category.Id)).ToList();
+            if (usersRole != null)
+            {
+                var pendingPosts = new List<Post>();
+                var permissionSets = new Dictionary<Guid, PermissionSet>();
+                foreach (var category in allowedCategories)
+                {
+                    var permissionSet = _roleService.GetPermissions(category, usersRole);
+                    permissionSets.Add(category.Id, permissionSet);
+                }
+
+                foreach (var pendingPost in allPendingPosts)
+                {
+                    if (permissionSets.ContainsKey(pendingPost.Topic.Category.Id))
+                    {
+                        var permissions = permissionSets[pendingPost.Topic.Category.Id];
+                        if (permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                        {
+                            pendingPosts.Add(pendingPost);
+                        }
+                    }
+                }
+                return pendingPosts;
+            }
+            return allPendingPosts;
+        }
+
+        public int GetPendingPostsCount(List<Category> allowedCategories)
+        {
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            return _context.Post.AsNoTracking().Include(x => x.Topic.Category).Count(x => x.Pending == true && allowedCatIds.Contains(x.Topic.Category.Id));
         }
 
         /// <summary>

@@ -10,7 +10,124 @@
     SelectPollAnswer();
     VoteInPoll();
     ShowPostEditHistory();
+    ModerateTopicPosts();
 });
+
+var ModerateTopicPosts = function() {
+    var moderatepanel = $(".moderatepanelnav");
+    if (moderatepanel) {
+        moderatepanel.click(function (e) {
+            e.preventDefault();
+            var thisButton = $(this);
+            var pmUrl = thisButton.attr("href");
+            var title = thisButton.data("name");
+            slideOutPanel(title);
+            $.ajax({
+                url: pmUrl,
+                type: "GET",
+                async: true,
+                cache: false,
+                success: function (data) {
+                    // Load the Html into the side panel
+                    slideOutPanel(title, data);
+
+                    // Trigger Validation
+                    $.validator.unobtrusive.parse(document);
+
+                    // Add validate click event
+                    AddModerateClickEvents();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+        });
+    }
+};
+
+var AddModerateClickEvents = function () {
+
+    var approvetopic = $('.topicaction');
+    if (approvetopic.length > 0) {
+        approvetopic.click(function (e) {
+            e.preventDefault();
+            var id = $(this).data("topicid");
+            var action = $(this).data("topicaction");
+            var snippetHolder = $('#topic-' + id);
+            var approve = true;
+            if (action === "delete") {
+                if (!confirm(areYouSureText)) {
+                    return false;
+                }
+                approve = false;
+            }
+
+            var moderateActionViewModel = new Object();
+            moderateActionViewModel.IsApproved = approve;
+            moderateActionViewModel.TopicId = id;
+            var strung = JSON.stringify(moderateActionViewModel);
+
+            $.ajax({
+                url: app_base + 'Moderate/ModerateTopic',
+                type: 'POST',
+                data: strung,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data === "allgood") {
+                        snippetHolder.fadeOut('fast');
+                    } else {
+                        ShowUserMessage(data);
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+
+        });
+    }
+
+    var approvepost = $('.postaction');
+    if (approvepost.length > 0) {
+        approvepost.click(function (e) {
+            e.preventDefault();
+            var id = $(this).data("postid");
+            var action = $(this).data("postaction");
+            var snippetHolder = $('#post-' + id);
+            var approve = true;
+            if (action === "delete") {
+                if (!confirm(areYouSureText)) {
+                    return false;
+                }
+                approve = false;
+            }
+
+            var moderateActionViewModel = new Object();
+            moderateActionViewModel.IsApproved = approve;
+            moderateActionViewModel.PostId = id;
+            var strung = JSON.stringify(moderateActionViewModel);
+
+            $.ajax({
+                url: app_base + 'Moderate/ModeratePost',
+                type: 'POST',
+                data: strung,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data === "allgood") {
+                        snippetHolder.fadeOut('fast');
+                    } else {
+                        ShowUserMessage(data);
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+
+        });
+    }
+
+}
 
 var ShowPostEditHistory = function() {
     var showpostedithistory = $(".showpostedithistory");

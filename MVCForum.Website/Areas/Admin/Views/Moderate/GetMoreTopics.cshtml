@@ -1,8 +1,0 @@
-﻿@model MVCForum.Domain.DomainModel.PagedList<MVCForum.Domain.DomainModel.Topic>
-@{
-    Layout = null;
-}
-@foreach (var topic in Model)
-{
-    @Html.Partial("_ModerateTopic", topic)
-}

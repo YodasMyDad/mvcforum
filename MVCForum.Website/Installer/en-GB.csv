@@ -392,3 +392,8 @@ PostEdit.None,This post has not post edit history at the moment
 PostEdit.EditedBy,Edited By
 PostEdit.OriginalVersion,Original
 PostEdit.EditedVersion,Edited
+Moderate.Title,Moderate
+Moderate.NothingHere,Nothing here at the moment
+Moderate.Topics,Topics
+Moderate.Posts,Posts
+Moderate.NavText,Pending Posts/Topics

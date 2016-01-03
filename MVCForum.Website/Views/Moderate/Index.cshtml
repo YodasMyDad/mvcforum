@@ -1,0 +1,85 @@
+﻿@model MVCForum.Website.ViewModels.ModerateViewModel
+@{
+    Layout = null;
+    ViewBag.Title = Html.Lang("Moderate.Title");
+}
+<script>
+    var areYouSureText = '@Html.Lang("Post.DeleteConfirmation")';
+</script>
+@if (!Model.Topics.Any() && !Model.Posts.Any())
+{
+    <p>
+        @Html.Lang("Moderate.NothingHere")
+    </p>
+}
+else
+{
+    <div class="panel">
+        <div class="panel-content">
+            <div role="tabpanel">
+
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#topics" aria-controls="topics" role="tab" data-toggle="tab">@Html.Lang("Moderate.Topics")</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#posts" aria-controls="posts" role="tab" data-toggle="tab">@Html.Lang("Moderate.Posts")</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="topics">
+                        <div class="moderatepanel">
+                   
+                                    @if (Model.Topics.Any())
+                                    {
+                                        <div class="moderatetopicholder">
+                                            @foreach (var topic in Model.Topics)
+                                            {
+                                                @Html.Partial("_ModerateTopic", topic)
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p>
+                                            @Html.Lang("Moderate.NothingHere")
+                                        </p>
+                                    }
+                      
+                        </div>
+
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="posts">
+                        <div class="moderatepanel">
+               
+                                    @if (Model.Posts.Any())
+                                    {
+                                        <div class="moderatepostholder">
+                                            @foreach (var post in Model.Posts)
+                                            {
+                                                @Html.Partial("_ModeratePost", post)
+                                            }
+                                        </div>
+
+                                    }
+                                    else
+                                    {
+                                        <p>
+                                            @Html.Lang("Moderate.NothingHere")
+                                        </p>
+                                    }
+
+                   
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+}
+

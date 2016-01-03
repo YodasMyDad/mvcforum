@@ -42,7 +42,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
             var moderateCount = 0;
             var topicsToModerate = _topicService.GetPendingTopicsCount(_categoryService.GetAll());
-            var postsToModerate = _postService.GetPendingPostsCount();
+            var postsToModerate = _postService.GetPendingPostsCount(_categoryService.GetAll());
             if (topicsToModerate > 0 || postsToModerate > 0)
             {
                 moderateCount = (topicsToModerate + postsToModerate);

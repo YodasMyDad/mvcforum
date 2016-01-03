@@ -25,11 +25,12 @@ namespace MVCForum.Services
         private readonly IPostService _postService;
         private readonly IUploadedFileService _uploadedFileService;
         private readonly IFavouriteService _favouriteService;
+        private readonly IRoleService _roleService;
 
         public TopicService(IMVCForumContext context, IMembershipUserPointsService membershipUserPointsService,
             ISettingsService settingsService, ITopicNotificationService topicNotificationService, 
             IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService favouriteService, 
-            IPostService postService)
+            IPostService postService, IRoleService roleService)
         {
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
@@ -38,6 +39,7 @@ namespace MVCForum.Services
             _uploadedFileService = uploadedFileService;
             _favouriteService = favouriteService;
             _postService = postService;
+            _roleService = roleService;
             _context = context as MVCForumContext;
         }
 
@@ -383,10 +385,40 @@ namespace MVCForum.Services
             return new PagedList<Topic>(results, pageIndex, pageSize, total);
         }
 
+        public IList<Topic> GetPendingTopics(List<Category> allowedCategories, MembershipRole usersRole)
+        {
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            var allPendingTopics = _context.Topic.AsNoTracking().Include(x => x.Category).Where(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id)).ToList();
+            if (usersRole != null)
+            {
+                var pendingTopics = new List<Topic>();
+                var permissionSets = new Dictionary<Guid, PermissionSet>();
+                foreach (var category in allowedCategories)
+                {
+                    var permissionSet = _roleService.GetPermissions(category, usersRole);
+                    permissionSets.Add(category.Id, permissionSet);
+                }
+
+                foreach (var pendingTopic in allPendingTopics)
+                {
+                    if (permissionSets.ContainsKey(pendingTopic.Category.Id))
+                    {
+                        var permissions = permissionSets[pendingTopic.Category.Id];
+                        if (permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                        {
+                            pendingTopics.Add(pendingTopic);
+                        }
+                    }
+                }
+                return pendingTopics;
+            }
+            return allPendingTopics;
+        }
+
         public int GetPendingTopicsCount(List<Category> allowedCategories)
         {
             var allowedCatIds = allowedCategories.Select(x => x.Id);
-            return _context.Topic.AsNoTracking().Count(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id));
+            return _context.Topic.AsNoTracking().Include(x => x.Category).Count(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id));
         }
 
         /// <summary>

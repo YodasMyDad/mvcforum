@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -28,6 +29,7 @@ namespace MVCForum.Website.Controllers
     public partial class MembersController : BaseController
     {
         private readonly IPostService _postService;
+        private readonly ITopicService _topicService;
         private readonly IReportService _reportService;
         private readonly IEmailService _emailService;
         private readonly IPrivateMessageService _privateMessageService;
@@ -36,7 +38,7 @@ namespace MVCForum.Website.Controllers
         private readonly ICategoryService _categoryService;
 
         public MembersController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService,
-            IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService, IBannedWordService bannedWordService, ITopicNotificationService topicNotificationService, IPollAnswerService pollAnswerService, IVoteService voteService, ICategoryService categoryService)
+            IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService, IBannedWordService bannedWordService, ITopicNotificationService topicNotificationService, IPollAnswerService pollAnswerService, IVoteService voteService, ICategoryService categoryService, ITopicService topicService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _postService = postService;
@@ -46,6 +48,7 @@ namespace MVCForum.Website.Controllers
             _bannedEmailService = bannedEmailService;
             _bannedWordService = bannedWordService;
             _categoryService = categoryService;
+            _topicService = topicService;
         }
 
         [Authorize(Roles = AppConstants.AdminRoleName)]
@@ -1046,19 +1049,25 @@ namespace MVCForum.Website.Controllers
         [Authorize]
         public PartialViewResult SideAdminPanel(bool isDropDown)
         {
-            var count = 0;
+            var privateMessageCount = 0;
+            var moderateCount = 0;    
             var settings = SettingsService.GetSettings();
             if (LoggedOnReadOnlyUser != null)
             {
-                count = _privateMessageService.NewPrivateMessageCount(LoggedOnReadOnlyUser.Id);
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                privateMessageCount = _privateMessageService.NewPrivateMessageCount(LoggedOnReadOnlyUser.Id);
+                var pendingTopics = _topicService.GetPendingTopics(allowedCategories, UsersRole);
+                var pendingPosts = _postService.GetPendingPosts(allowedCategories, UsersRole);
+                moderateCount = (pendingTopics.Count + pendingPosts.Count);
             }
 
             var canViewPms = settings.EnablePrivateMessages && LoggedOnReadOnlyUser != null && LoggedOnReadOnlyUser.DisablePrivateMessages != true;
             var viewModel = new ViewAdminSidePanelViewModel
             {
                 CurrentUser = LoggedOnReadOnlyUser,
-                NewPrivateMessageCount = canViewPms ? count : 0,
+                NewPrivateMessageCount = canViewPms ? privateMessageCount : 0,
                 CanViewPrivateMessages = canViewPms,
+                ModerateCount = moderateCount,
                 IsDropDown = isDropDown
             };
             

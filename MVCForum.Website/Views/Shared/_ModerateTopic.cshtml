@@ -1,5 +1,5 @@
 ﻿@model MVCForum.Domain.DomainModel.Topic
-           
+
 <div class="topicsnippet" id="topic-@Model.Id">
     <div class="row">
         <div class="col-md-9">
@@ -8,8 +8,8 @@
             <p class="postuser">@Model.LastPost.User.UserName</p>
         </div>
         <div class="col-md-3">
-            <a href="#" data-topicid="@Model.Id" data-topicaction="approve" class="btn-mvc-green topicaction">Approve</a>
-            <a href="#" data-topicid="@Model.Id" data-topicaction="delete" class="btn-mvc-red topicaction">Delete</a>
+            <p><a href="#" data-topicid="@Model.Id" data-topicaction="approve" class="btn-mvc-green btn-mvc-fullwidth topicaction">Approve</a></p>
+            <p><a href="#" data-topicid="@Model.Id" data-topicaction="delete" class="btn-mvc-red btn-mvc-fullwidth topicaction">Delete</a></p>
         </div>
     </div>
 </div>
