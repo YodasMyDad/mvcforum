@@ -98,6 +98,7 @@
     <Compile Include="DomainModel\Entities\BadgeTypeTimeLastChecked.cs" />
     <Compile Include="DomainModel\Activity\Activity.cs" />
     <Compile Include="DomainModel\Entities\Block.cs" />
+    <Compile Include="DomainModel\Entities\PostEdit.cs" />
     <Compile Include="DomainModel\Enums\CacheTimes.cs" />
     <Compile Include="DomainModel\General\CategoryWithSubCategories.cs" />
     <Compile Include="DomainModel\Entities\BannedWord.cs" />
@@ -181,6 +182,7 @@
     <Compile Include="Interfaces\Services\IPollVoteService.cs" />
     <Compile Include="Interfaces\Services\IPollService.cs" />
     <Compile Include="Interfaces\Services\IActivityService.cs" />
+    <Compile Include="Interfaces\Services\IPostEditService.cs" />
     <Compile Include="Interfaces\Services\IPrivateMessageService.cs" />
     <Compile Include="Interfaces\Services\IReflectionService.cs" />
     <Compile Include="Interfaces\Services\IReportService.cs" />

@@ -143,6 +143,11 @@ namespace MVCForum.Services.Data.Mapping
                m.MapRightKey("Badge_Id");
            });
 
+            HasMany(x => x.PostEdits)
+                .WithRequired(x => x.EditedBy)
+                .Map(x => x.MapKey("MembershipUser_Id"))
+                .WillCascadeOnDelete(false);
+
         }
     }
 }

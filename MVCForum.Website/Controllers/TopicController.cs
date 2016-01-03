@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.Entities;
 using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.Services;
@@ -38,11 +39,12 @@ namespace MVCForum.Website.Controllers
         private readonly IVoteService _voteService;
         private readonly IUploadedFileService _uploadedFileService;
         private readonly ICacheService _cacheService;
+        private readonly IPostEditService _postEditService;
 
         public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
             ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, IPollService pollService,
-            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService, IUploadedFileService uploadedFileService, ICacheService cacheService, ITagNotificationService tagNotificationService)
+            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService, IUploadedFileService uploadedFileService, ICacheService cacheService, ITagNotificationService tagNotificationService, IPostEditService postEditService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
@@ -61,6 +63,7 @@ namespace MVCForum.Website.Controllers
             _uploadedFileService = uploadedFileService;
             _cacheService = cacheService;
             _tagNotificationService = tagNotificationService;
+            _postEditService = postEditService;
         }
 
 
@@ -375,11 +378,30 @@ namespace MVCForum.Website.Controllers
                         if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
                         {
 
+                            // Get the DB user so we can use lazy loading and update
+                            var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+
+                            // Want the same edit date on both post and postedit
+                            var dateEdited = DateTime.UtcNow;
+
+                            // Create a post edit
+                            var postEdit = new PostEdit
+                            {
+                                Post = post,
+                                DateEdited = dateEdited,
+                                EditedBy = loggedOnUser,
+                                OriginalPostContent = post.PostContent,
+                                OriginalPostTitle = post.IsTopicStarter ? topic.Name : string.Empty
+                            };
+
                             // User has permission so update the post
                             post.PostContent = _bannedWordService.SanitiseBannedWords(editPostViewModel.Content);
-                            post.DateEdited = DateTime.UtcNow;
+                            post.DateEdited = dateEdited;
 
                             post = _postService.SanitizePost(post);
+
+                            // Update postedit content
+                            postEdit.EditedPostContent = post.PostContent;
 
                             // if topic starter update the topic
                             if (post.IsTopicStarter)
@@ -390,10 +412,12 @@ namespace MVCForum.Website.Controllers
                                     var cat = _categoryService.Get(editPostViewModel.Category);
                                     topic.Category = cat;
                                 }
-
                                 topic.IsLocked = editPostViewModel.IsLocked;
                                 topic.IsSticky = editPostViewModel.IsSticky;
                                 topic.Name = StringUtils.GetSafeHtml(_bannedWordService.SanitiseBannedWords(editPostViewModel.Name));
+
+                                // Update post edit
+                                postEdit.EditedPostTitle = topic.Name;
 
                                 // See if there is a poll
                                 if (editPostViewModel.PollAnswers != null && editPostViewModel.PollAnswers.Count(x => x != null && !string.IsNullOrEmpty(x.Answer)) > 0 && permissions[SiteConstants.Instance.PermissionCreatePolls].IsTicked)
@@ -408,8 +432,6 @@ namespace MVCForum.Website.Controllers
                                     var pollAnswersToRemove = new List<PollAnswer>();
                                     if (topic.Poll == null)
                                     {
-                                        var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
-
                                         // Create a new Poll
                                         var newPoll = new Poll
                                         {
@@ -535,7 +557,10 @@ namespace MVCForum.Website.Controllers
                                 }
                             }
 
+                            // Add the post edit too
+                            _postEditService.Add(postEdit);
 
+                            // Commit the changes
                             unitOfWork.Commit();
 
                             if (topicPostInModeration)
@@ -557,7 +582,7 @@ namespace MVCForum.Website.Controllers
                             }
 
                             // redirect back to topic
-                            return Redirect(string.Format("{0}?postbadges=true", topic.NiceUrl));
+                            return Redirect($"{topic.NiceUrl}?postbadges=true");
                         }
                     }
                     catch (Exception ex)

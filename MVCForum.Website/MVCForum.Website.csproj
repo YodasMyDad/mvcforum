@@ -1053,6 +1053,7 @@
     <Content Include="Views\Post\MovePost.cshtml" />
     <Content Include="Themes\Metro\Content\Styles\Theme.scss" />
     <Content Include="Views\Home\TermsAndConditions.cshtml" />
+    <Content Include="Views\Post\GetPostEditHistory.cshtml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

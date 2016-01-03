@@ -9,7 +9,37 @@
     PostGetAllLikes();
     SelectPollAnswer();
     VoteInPoll();
+    ShowPostEditHistory();
 });
+
+var ShowPostEditHistory = function() {
+    var showpostedithistory = $(".showpostedithistory");
+    if (showpostedithistory) {
+        showpostedithistory.click(function(e) {
+            e.preventDefault();
+            var thisButton = $(this);
+            var pmUrl = thisButton.attr("href");
+            var title = thisButton.data("name");
+            slideOutPanel(title);
+            $.ajax({
+                url: pmUrl,
+                type: "GET",
+                async: true,
+                cache: false,
+                success: function (data) {
+                    // Load the Html into the side panel
+                    slideOutPanel(title, data);
+
+                    // Trigger Validation
+                    $.validator.unobtrusive.parse(document);
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+        });
+    }
+};
 
 var SelectPollAnswer = function () {
     var pollanswerselect = $(".pollanswerselect");

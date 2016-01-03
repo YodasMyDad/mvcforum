@@ -106,9 +106,15 @@
                 <span class="hidden-xs">
                     @if (Html.Settings().DisplayEditedBy && Model.Post.DateEdited > Model.Post.DateCreated)
                     {
-
-                        <text> - @Html.LanguageString("Post.LastEdited")  @DatesUI.GetPrettyDate(Model.Post.DateEdited.ToString())</text>
-                    }
+                        if (Model.Permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                        {
+                            <text> - <a href="@Url.Action("GetPostEditHistory", "Post", new {id = Model.Post.Id})" class="showpostedithistory" data-name="@Html.Lang("PostEdit.Panel.Name")">@Html.LanguageString("Post.LastEdited")  @DatesUI.GetPrettyDate(Model.Post.DateEdited.ToString())</a></text>
+                        }
+                        else
+                        {
+                            <text> - @Html.LanguageString("Post.LastEdited")  @DatesUI.GetPrettyDate(Model.Post.DateEdited.ToString())</text>
+    }
+}
                 </span>
             </div>
 

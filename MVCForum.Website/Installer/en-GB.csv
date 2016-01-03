@@ -387,3 +387,8 @@ Post.Move.Description,Move post to an existing topic, or create a new one.
 TermsAndConditions.Label.Agree,I have read and agree to the site Terms and Conditions
 TermsAndConditions.PageTitle,Agree to Terms and Conditions
 TermsAndConditions.Label.AgreeError,You must Agree to the Terms and Conditions
+PostEdit.Panel.Name,Post Edit History
+PostEdit.None,This post has not post edit history at the moment
+PostEdit.EditedBy,Edited By
+PostEdit.OriginalVersion,Original
+PostEdit.EditedVersion,Edited

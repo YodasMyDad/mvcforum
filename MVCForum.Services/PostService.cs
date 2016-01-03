@@ -7,6 +7,7 @@ using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.Services;
 using System.Linq;
 using System.Data.Entity;
+using MVCForum.Domain.DomainModel.Entities;
 using MVCForum.Domain.DomainModel.LinqKit;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.UnitOfWork;
@@ -26,10 +27,11 @@ namespace MVCForum.Services
         private readonly IFavouriteService _favouriteService;
         private readonly IConfigService _configService;
         private readonly MVCForumContext _context;
+        private readonly IPostEditService _postEditService;
 
         public PostService(IMVCForumContext context,IMembershipUserPointsService membershipUserPointsService,
             ISettingsService settingsService, IRoleService roleService,
-            ILocalizationService localizationService, IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService favouriteService, IConfigService configService)
+            ILocalizationService localizationService, IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService favouriteService, IConfigService configService, IPostEditService postEditService)
         {
             _roleService = roleService;
             _membershipUserPointsService = membershipUserPointsService;
@@ -39,6 +41,7 @@ namespace MVCForum.Services
             _uploadedFileService = uploadedFileService;
             _favouriteService = favouriteService;
             _configService = configService;
+            _postEditService = postEditService;
             _context = context as MVCForumContext;
         }
 
@@ -448,6 +451,15 @@ namespace MVCForum.Services
                 _favouriteService.Delete(postFavourite);
             }
             post.Favourites.Clear();
+
+            #endregion
+
+            #region Post Edits
+
+            var postEdits = new List<PostEdit>();
+            postEdits.AddRange(post.PostEdits); 
+            _postEditService.Delete(postEdits);        
+            post.PostEdits.Clear();
 
             #endregion
 

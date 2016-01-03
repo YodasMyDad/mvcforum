@@ -87,6 +87,7 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IReflectionService, ReflectionService>();
             container.BindInRequestScope<IBlockService, BlockService>();
             container.BindInRequestScope<IConfigService, ConfigService>();
+            container.BindInRequestScope<IPostEditService, PostEditService>();
 
             CustomBindings(container);
 

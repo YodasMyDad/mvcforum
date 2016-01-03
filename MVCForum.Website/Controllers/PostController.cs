@@ -13,8 +13,6 @@ using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
 using MVCForum.Website.ViewModels.Mapping;
-using WebGrease.Activities;
-using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
 
 namespace MVCForum.Website.Controllers
 {
@@ -22,37 +20,30 @@ namespace MVCForum.Website.Controllers
     public partial class PostController : BaseController
     {
         private readonly ITopicService _topicService;
-        private readonly ITopicTagService _topicTagService;
         private readonly ITopicNotificationService _topicNotificationService;
         private readonly ICategoryService _categoryService;
         private readonly IPostService _postService;
         private readonly IEmailService _emailService;
         private readonly IReportService _reportService;
-        private readonly IPollAnswerService _pollAnswerService;
-        private readonly IPollService _pollService;
         private readonly IBannedWordService _bannedWordService;
         private readonly IVoteService _voteService;
-        private readonly IMembershipUserPointsService _membershipUserPointsService;
+        private readonly IPostEditService _postEditService;
 
         public PostController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ITopicService topicService, IPostService postService,
-            ISettingsService settingsService, ICategoryService categoryService, ITopicTagService topicTagService,
-            ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, IPollAnswerService pollAnswerService,
-            IPollService pollService, IBannedWordService bannedWordService, IMembershipUserPointsService membershipUserPointsService, IVoteService voteService)
+            ISettingsService settingsService, ICategoryService categoryService,
+            ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, IBannedWordService bannedWordService, IVoteService voteService, IPostEditService postEditService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
             _postService = postService;
             _categoryService = categoryService;
-            _topicTagService = topicTagService;
             _topicNotificationService = topicNotificationService;
             _emailService = emailService;
             _reportService = reportService;
-            _pollAnswerService = pollAnswerService;
-            _pollService = pollService;
             _bannedWordService = bannedWordService;
-            _membershipUserPointsService = membershipUserPointsService;
             _voteService = voteService;
+            _postEditService = postEditService;
         }
 
 
@@ -538,6 +529,31 @@ namespace MVCForum.Website.Controllers
                 return View(viewModel);
             }
 
+        }
+
+        public ActionResult GetPostEditHistory(Guid id)
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var post = _postService.Get(id);
+                if (post != null)
+                {
+                    // Check permissions
+                    var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
+                    if (permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                    {
+                        // Good to go
+                        var postEdits = _postEditService.GetByPost(id);
+                        var viewModel = new PostEditHistoryViewModel
+                        {
+                            PostEdits = postEdits
+                        };
+                        return PartialView(viewModel);
+                    }
+                }
+
+                return Content(LocalizationService.GetResourceString("Errors.GenericMessage"));
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.Entities;
 using MVCForum.Website.Application;
 
 namespace MVCForum.Website.ViewModels
@@ -75,5 +76,10 @@ namespace MVCForum.Website.ViewModels
 
         [ForumMvcResourceDisplayName("Post.Move.Label.ReplyToPosts")]
         public bool MoveReplyToPosts { get; set; }
+    }
+
+    public class PostEditHistoryViewModel
+    {
+        public IList<PostEdit> PostEdits { get; set; } 
     }
 }

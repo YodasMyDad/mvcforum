@@ -103,18 +103,16 @@ namespace MVCForum.Domain.DomainModel
         public virtual IList<UploadedFile> UploadedFiles { get; set; }
         public virtual IList<Block> BlockedUsers { get; set; }
         public virtual IList<Block> BlockedByOtherUsers { get; set; }
+        public virtual IList<PostEdit> PostEdits { get; set; }
 
         public int TotalPoints 
         { 
             get {
-                return Points != null ? Points.Select(x => x.Points).Sum() : 0;
+                return Points?.Select(x => x.Points).Sum() ?? 0;
             }
         }
 
-        public string NiceUrl
-        {
-            get { return UrlTypes.GenerateUrl(UrlType.Member, Slug); }
-        }
+        public string NiceUrl => UrlTypes.GenerateUrl(UrlType.Member, Slug);
     }
 
 }
