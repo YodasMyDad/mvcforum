@@ -33,6 +33,7 @@ Current Features Include
 - Member & Post Reporting 
 - Batch tools
 - Plus loads more
+- Turkish Language Support
 
 We are looking for feedback on improvements, bugs and new features so please give it a spin and let us know what you think. MVCForum is designed and developed by the [team at Aptitude](https://www.aptitude.co.uk)
 

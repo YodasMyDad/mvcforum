@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Externals", "Externals", "{7859E236-ED49-482B-B325-C5EEFE650C14}"
 	ProjectSection(SolutionItems) = preProject
@@ -63,6 +63,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{A1510FC4-74FA-4673-B04F-4BBABE8D7151}"
 	ProjectSection(SolutionItems) = preProject
 		readme.md = readme.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Languanges", "Languanges", "{240B5465-C49E-4E41-8ADA-51C1D2CDE600}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\Desktop\tr-TR.txt = ..\..\..\Desktop\tr-TR.txt
 	EndProjectSection
 EndProject
 Global
