@@ -588,82 +588,120 @@ namespace MVCForum.Utilities
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
 
-            //Remove potentially harmful elements
-            var nc = doc.DocumentNode.SelectNodes("//script|//link|//iframe|//frameset|//frame|//applet|//object|//embed");
-            if (nc != null)
-            {
-                foreach (var node in nc)
-                {
-                    node.ParentNode.RemoveChild(node, false);
+            var finishedHtml = html;
 
+            // Embed Urls
+            if (doc.DocumentNode != null)
+            {
+                // Get all the links we are going to 
+                var tags = doc.DocumentNode.SelectNodes("//a[contains(@href, 'youtube.com')]|//a[contains(@href, 'youtu.be')]|//a[contains(@href, 'vimeo.com')]|//a[contains(@href, 'screenr.com')]|//a[contains(@href, 'instagram.com')]");
+
+                if (tags != null)
+                {
+                    // find formatting tags
+                    foreach (var item in tags)
+                    {
+                        if (item.PreviousSibling == null)
+                        {
+                            // Prepend children to parent node in reverse order
+                            foreach (var node in item.ChildNodes.Reverse())
+                            {
+                                item.ParentNode.PrependChild(node);
+                            }
+                        }
+                        else
+                        {
+                            // Insert children after previous sibling
+                            foreach (var node in item.ChildNodes)
+                            {
+                                item.ParentNode.InsertAfter(node, item.PreviousSibling);
+                            }
+                        }
+
+                        // remove from tree
+                        item.Remove();
+                    }
                 }
+
+
+                //Remove potentially harmful elements
+                var nc = doc.DocumentNode.SelectNodes("//script|//link|//iframe|//frameset|//frame|//applet|//object|//embed");
+                if (nc != null)
+                {
+                    foreach (var node in nc)
+                    {
+                        node.ParentNode.RemoveChild(node, false);
+
+                    }
+                }
+
+                //remove hrefs to java/j/vbscript URLs
+                nc = doc.DocumentNode.SelectNodes("//a[starts-with(translate(@href, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'javascript')]|//a[starts-with(translate(@href, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'jscript')]|//a[starts-with(translate(@href, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'vbscript')]");
+                if (nc != null)
+                {
+
+                    foreach (var node in nc)
+                    {
+                        node.SetAttributeValue("href", "#");
+                    }
+                }
+
+                //remove img with refs to java/j/vbscript URLs
+                nc = doc.DocumentNode.SelectNodes("//img[starts-with(translate(@src, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'javascript')]|//img[starts-with(translate(@src, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'jscript')]|//img[starts-with(translate(@src, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'vbscript')]");
+                if (nc != null)
+                {
+                    foreach (var node in nc)
+                    {
+                        node.SetAttributeValue("src", "#");
+                    }
+                }
+
+                //remove on<Event> handlers from all tags
+                nc = doc.DocumentNode.SelectNodes("//*[@onclick or @onmouseover or @onfocus or @onblur or @onmouseout or @ondblclick or @onload or @onunload or @onerror]");
+                if (nc != null)
+                {
+                    foreach (var node in nc)
+                    {
+                        node.Attributes.Remove("onFocus");
+                        node.Attributes.Remove("onBlur");
+                        node.Attributes.Remove("onClick");
+                        node.Attributes.Remove("onMouseOver");
+                        node.Attributes.Remove("onMouseOut");
+                        node.Attributes.Remove("onDblClick");
+                        node.Attributes.Remove("onLoad");
+                        node.Attributes.Remove("onUnload");
+                        node.Attributes.Remove("onError");
+                    }
+                }
+
+                // remove any style attributes that contain the word expression (IE evaluates this as script)
+                nc = doc.DocumentNode.SelectNodes("//*[contains(translate(@style, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'expression')]");
+                if (nc != null)
+                {
+                    foreach (var node in nc)
+                    {
+                        node.Attributes.Remove("stYle");
+                    }
+                }
+
+                // build a list of nodes ordered by stream position
+                var pos = new NodePositions(doc);
+
+                // browse all tags detected as not opened
+                foreach (var error in doc.ParseErrors.Where(e => e.Code == HtmlParseErrorCode.TagNotOpened))
+                {
+                    // find the text node just before this error
+                    var last = pos.Nodes.OfType<HtmlTextNode>().LastOrDefault(n => n.StreamPosition < error.StreamPosition);
+                    if (last != null)
+                    {
+                        // fix the text; reintroduce the broken tag
+                        last.Text = error.SourceText.Replace("/", "") + last.Text + error.SourceText;
+                    }
+                }
+
+                finishedHtml = doc.DocumentNode.WriteTo();
             }
 
-            //remove hrefs to java/j/vbscript URLs
-            nc = doc.DocumentNode.SelectNodes("//a[starts-with(translate(@href, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'javascript')]|//a[starts-with(translate(@href, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'jscript')]|//a[starts-with(translate(@href, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'vbscript')]");
-            if (nc != null)
-            {
-
-                foreach (var node in nc)
-                {
-                    node.SetAttributeValue("href", "#");
-                }
-            }
-
-            //remove img with refs to java/j/vbscript URLs
-            nc = doc.DocumentNode.SelectNodes("//img[starts-with(translate(@src, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'javascript')]|//img[starts-with(translate(@src, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'jscript')]|//img[starts-with(translate(@src, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'vbscript')]");
-            if (nc != null)
-            {
-                foreach (var node in nc)
-                {
-                    node.SetAttributeValue("src", "#");
-                }
-            }
-
-            //remove on<Event> handlers from all tags
-            nc = doc.DocumentNode.SelectNodes("//*[@onclick or @onmouseover or @onfocus or @onblur or @onmouseout or @ondblclick or @onload or @onunload or @onerror]");
-            if (nc != null)
-            {
-                foreach (var node in nc)
-                {
-                    node.Attributes.Remove("onFocus");
-                    node.Attributes.Remove("onBlur");
-                    node.Attributes.Remove("onClick");
-                    node.Attributes.Remove("onMouseOver");
-                    node.Attributes.Remove("onMouseOut");
-                    node.Attributes.Remove("onDblClick");
-                    node.Attributes.Remove("onLoad");
-                    node.Attributes.Remove("onUnload");
-                    node.Attributes.Remove("onError");
-                }
-            }
-
-            // remove any style attributes that contain the word expression (IE evaluates this as script)
-            nc = doc.DocumentNode.SelectNodes("//*[contains(translate(@style, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'expression')]");
-            if (nc != null)
-            {
-                foreach (var node in nc)
-                {
-                    node.Attributes.Remove("stYle");
-                }
-            }
-
-            // build a list of nodes ordered by stream position
-            var pos = new NodePositions(doc);
-
-            // browse all tags detected as not opened
-            foreach (var error in doc.ParseErrors.Where(e => e.Code == HtmlParseErrorCode.TagNotOpened))
-            {
-                // find the text node just before this error
-                var last = pos.Nodes.OfType<HtmlTextNode>().LastOrDefault(n => n.StreamPosition < error.StreamPosition);
-                if (last != null)
-                {
-                    // fix the text; reintroduce the broken tag
-                    last.Text = error.SourceText.Replace("/", "") + last.Text + error.SourceText;
-                }
-            }
-
-            var finishedHtml = doc.DocumentNode.WriteTo();
 
             // The reason we have this option, is using the santiser with the MarkDown editor 
             // causes problems with line breaks.
@@ -678,11 +716,6 @@ namespace MVCForum.Utilities
         public static string RemoveUnwantedTags(string html)
         {
 
-            if (string.IsNullOrEmpty(html))
-            {
-                return html;
-            }
-
             var unwantedTagNames = new List<string>
             {
                 "div",
@@ -694,6 +727,16 @@ namespace MVCForum.Utilities
                 "th",
                 "thead"
             };
+
+            return RemoveUnwantedTags(html, unwantedTagNames);
+        }
+
+        public static string RemoveUnwantedTags(string html, List<string> unwantedTagNames)
+        {
+            if (string.IsNullOrEmpty(html))
+            {
+                return html;
+            }
 
             var htmlDoc = new HtmlDocument();
 
@@ -990,25 +1033,6 @@ namespace MVCForum.Utilities
 
         public static string EmbedVideosInPosts(string str)
         {
-            #region OLD PARSING BB TAGS
-            //// YouTube Insert Video, just add the video ID and it inserts video into post
-            //var exp = new Regex(@"\[youtube\]([^\]]+)\[/youtube\]");
-            //str = exp.Replace(str, "<div class=\"video-container\"><iframe title=\"YouTube video player\" width=\"500\" height=\"281\" src=\"http://www.youtube.com/embed/$1\" frameborder=\"0\" allowfullscreen></iframe></div>");
-
-            //// YouTube Insert Video, just add the video ID and it inserts video into post
-            //exp = new Regex(@"\[vimeo\]([^\]]+)\[/vimeo\]");
-            //str = exp.Replace(str, "<div class=\"video-container\"><iframe src=\"http://player.vimeo.com/video/$1?portrait=0\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>");
-
-            //// YouTube Screenr Video, just add the video ID and it inserts video into post
-            //exp = new Regex(@"\[screenr\]([^\]]+)\[/screenr\]");
-            //str = exp.Replace(str, "<div class=\"video-container\"><iframe src=\"http://www.screenr.com/embed/$1\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>");
-
-            //// Add tweets
-
-            //return str; 
-            #endregion
-
-
             if (str.IndexOf("youtube.com", StringComparison.CurrentCultureIgnoreCase) >= 0 || str.IndexOf("youtu.be", StringComparison.CurrentCultureIgnoreCase) >= 0)
             {
                 const string pattern = @"(?:https?:\/\/)?(?:www\.)?(?:(?:(?:youtube.com\/watch\?[^?]*v=|youtu.be\/)([\w\-]+))(?:[^\s?]+)?)";
@@ -1038,7 +1062,7 @@ namespace MVCForum.Utilities
 
             if (str.IndexOf("instagr", StringComparison.CurrentCultureIgnoreCase) >= 0)
             {
-                var reg = new Regex(@"https?://instagr\.?am(?:\.com)?/\S*", RegexOptions.Compiled);
+                var reg = new Regex(@"(?:https?:\/\/)?(?:www\.)?instagr\.?am(?:\.com)?/\S*", RegexOptions.Compiled);
                 var idRegex = new Regex(@"(?<=p/).*?(?=/)", RegexOptions.Compiled);
                 var result = new StringBuilder();
                 using (var reader = new StringReader(str))

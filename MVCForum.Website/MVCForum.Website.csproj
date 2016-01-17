@@ -1036,7 +1036,6 @@
     <Content Include="Views\Shared\_PostLikedBy.cshtml" />
     <Content Include="Views\PrivateMessage\AjaxMore.cshtml" />
     <Content Include="Areas\Admin\Views\Batch\BatchDeletePrivateMessages.cshtml" />
-    <Content Include="App_Data\emoticons.config" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.woff" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.ttf" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.json" />

@@ -49,6 +49,16 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
     }
 
+    public class UserPointChartItem
+    {
+        public MembershipUserPoints MembershipUserPoints { get; set; }
+        public Post Post { get; set; }
+        public Vote Vote { get; set; }
+        public Domain.DomainModel.Badge Badge { get; set; }
+        public TopicTag TopicTag { get; set; }
+
+    }
+
     public class MemberEditViewModel
     {
         [Required]

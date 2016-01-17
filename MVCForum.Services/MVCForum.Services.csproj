@@ -149,6 +149,7 @@
     <Compile Include="BlockService.cs" />
     <Compile Include="PostEditService.cs" />
     <Compile Include="ReflectionService.cs" />
+    <Compile Include="SiteConfig\SiteConfig.cs" />
     <Compile Include="TagNotificationService.cs" />
     <Compile Include="UploadedFileService.cs" />
     <Compile Include="PollAnswerService.cs" />

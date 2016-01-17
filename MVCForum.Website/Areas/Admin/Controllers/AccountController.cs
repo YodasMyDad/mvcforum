@@ -151,11 +151,11 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
 
         [Authorize(Roles = AppConstants.AdminRoleName)]
-        public ActionResult Edit(Guid Id)
+        public ActionResult Edit(Guid id)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var user = MembershipService.GetUser(Id);
+                var user = MembershipService.GetUser(id);
 
                 var viewModel = ViewModelMapping.UserToMemberEditViewModel(user);
                 viewModel.AllRoles = _roleService.AllRoles();

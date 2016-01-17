@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
 using System.Web;
-using System.Web.Hosting;
 using System.Xml;
 using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Domain.Interfaces.Services;
@@ -19,9 +18,6 @@ namespace MVCForum.Services
         }
 
         private static string EmoticonImageFolder => VirtualPathUtility.ToAbsolute("~/content/images/emoticons/");
-        private static string SiteConfig => HostingEnvironment.MapPath("~/App_Data/forum.config");
-        private static string EmoticonsConfig => HostingEnvironment.MapPath("~/App_Data/emoticons.config");
-
 
         #region Emoticons
 
@@ -73,11 +69,8 @@ namespace MVCForum.Services
             if (emoticons == null)
             {
                 emoticons = new OrderedDictionary();
-                var xDoc = GetXmlDoc(EmoticonsConfig);
-                if (xDoc != null)
-                {
-                    XmlNode root = xDoc.DocumentElement;
-                    var emoticonNodes = root?.SelectNodes("//emoticon");
+                var root = SiteConfig.Instance.GetSiteConfig();
+                    var emoticonNodes = root?.SelectNodes("/forum/emoticons/emoticon");
                     if (emoticonNodes != null)
                     {
                         foreach (XmlNode emoticonNode in emoticonNodes)
@@ -96,7 +89,7 @@ namespace MVCForum.Services
 
                         _cacheService.Set(key, emoticons, CacheTimes.OneDay);
                     }
-                }
+              
             }
 
             return emoticons;
@@ -112,11 +105,8 @@ namespace MVCForum.Services
             if (siteConfig == null)
             {
                 siteConfig = new Dictionary<string, string>();
-                var xDoc = GetXmlDoc(SiteConfig);
-                if (xDoc != null)
-                {
-                    XmlNode root = xDoc.DocumentElement;
-                    var nodes = root?.SelectNodes("//setting");
+                var root = SiteConfig.Instance.GetSiteConfig();
+                    var nodes = root?.SelectNodes("/forum/settings/setting");
                     if (nodes != null)
                     {
                         foreach (XmlNode node in nodes)
@@ -135,24 +125,13 @@ namespace MVCForum.Services
 
                         _cacheService.Set(key, siteConfig, CacheTimes.OneDay);
                     }
-                }
+             
             }
             return siteConfig;
         }
 
         #endregion
 
-        #region Helpers
-        private static XmlDocument GetXmlDoc(string pathToConfig)
-        {
-            if (pathToConfig != null)
-            {
-                var xDoc = new XmlDocument();
-                xDoc.Load(pathToConfig);
-                return xDoc;
-            }
-            return null;
-        } 
-        #endregion
+
     }
 }
