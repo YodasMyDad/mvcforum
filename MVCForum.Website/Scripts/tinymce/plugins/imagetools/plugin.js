@@ -1968,7 +1968,7 @@ define("tinymce/imagetoolsplugin/Plugin", [
 	"tinymce/imagetoolsplugin/Dialog"
 ], function(PluginManager, Env, Promise, URI, Tools, Delay, ImageTools, Conversions, Dialog) {
 	PluginManager.add('imagetools', function(editor) {
-		var count = 0, imageUploadTimer, lastSelectedImage;
+		var count = 0, imageUploadTimer, lastSelectedImage, settings = editor.settings;
 
 		if (!Env.fileApi) {
 			return;
@@ -2093,7 +2093,6 @@ define("tinymce/imagetoolsplugin/Plugin", [
 		}
 
 		function requestUrlAsBlob(url) {
-			// Needs to be XHR for IE 10 compatibility
 			return new Promise(function(resolve) {
 				var xhr = new XMLHttpRequest();
 
@@ -2102,6 +2101,11 @@ define("tinymce/imagetoolsplugin/Plugin", [
 				};
 
 				xhr.open('GET', url, true);
+
+				if (settings.imagetools_api_key) {
+					xhr.setRequestHeader('tiny-api-key', settings.imagetools_api_key);
+				}
+
 				xhr.responseType = 'blob';
 				xhr.send();
 			});
@@ -2117,6 +2121,11 @@ define("tinymce/imagetoolsplugin/Plugin", [
 			if (!isLocalImage(img)) {
 				src = editor.settings.imagetools_proxy;
 				src += (src.indexOf('?') === -1 ? '?' : '&') + 'url=' + encodeURIComponent(img.src);
+
+				if (settings.imagetools_api_key) {
+					return requestUrlAsBlob(src);
+				}
+
 				img = new Image();
 				img.src = src;
 			}
