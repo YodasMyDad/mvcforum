@@ -122,7 +122,6 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Admin Email Address")]
         public string AdminEmailAddress { get; set; }
 
-        [EmailAddress]
         [DisplayName("Notification Reply Email Address")]
         public string NotificationReplyEmail { get; set; }
 
