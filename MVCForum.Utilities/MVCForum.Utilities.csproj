@@ -101,7 +101,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BotUtils.cs" />
-    <Compile Include="CacheUtils.cs" />
     <Compile Include="CensorUtils.cs" />
     <Compile Include="ConfigUtils.cs" />
     <Compile Include="DateUtils.cs" />

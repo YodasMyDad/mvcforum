@@ -1,0 +1,70 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.ManageUsersPointsViewModel
+
+@{
+    ViewBag.Title = "Manage User Points";
+}
+
+<div class="backbutton">
+    <a href="@Url.Action("Edit", new {id = Model.User.Id})" class="btn-mvc-green">&lt;&lt; Back</a>
+</div>
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5>
+            Show all points for @Model.User.UserName
+        </h5>
+    </div>    
+    <div class="panel-content">
+        <div role="tabpanel">
+
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active">
+                    <a href="#points" aria-controls="points" role="tab" data-toggle="tab">
+                        All Points
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="#addpoints" aria-controls="addpoints" role="tab" data-toggle="tab">
+                        Add Points
+                    </a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="points">
+                    <div class="moderatepanel">
+
+                        @if (Model.AllPoints.Any())
+                        {
+                            <ul class="list-group">
+                                @foreach (var point in Model.AllPoints)
+                                {
+                                    <li class="list-group-item">
+                                        <span class="badge">@point.Points</span>
+                                        <button class="removepoints btn-mvc-green" data-pointid="@point.Id">Remove</button>
+                                        <strong>@point.PointsFor.ToString()</strong> - @DatesUI.GetPrettyDate(point.DateAdded.ToString())
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p>This user does not have any points</p>
+                        }
+
+                    </div>
+
+                </div>
+                <div role="tabpanel" class="tab-pane" id="addpoints">
+                    <div class="moderatepanel">
+
+                        TODO
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

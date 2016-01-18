@@ -3,7 +3,6 @@ using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 
 namespace MVCForum.Website.Areas.Admin.Controllers
@@ -11,9 +10,12 @@ namespace MVCForum.Website.Areas.Admin.Controllers
     [Authorize(Roles = AppConstants.AdminRoleName)]
     public class AdminSocialController : BaseAdminController
     {
-        public AdminSocialController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService, ISettingsService settingsService)
+        private readonly ICacheService _cacheService;
+
+        public AdminSocialController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService, ISettingsService settingsService, ICacheService cacheService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
+            _cacheService = cacheService;
         }
 
         public ActionResult Index()
@@ -56,7 +58,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 try
                 {
                     unitOfWork.Commit();
-
+                    _cacheService.ClearStartsWith(AppConstants.SettingsCacheName);
                     // Show a message
                     ShowMessage(new GenericMessageViewModel
                     {

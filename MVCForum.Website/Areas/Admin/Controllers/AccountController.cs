@@ -16,7 +16,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 {
     public partial class AccountController : BaseAdminController
     {
-        public IActivityService _activityService { get; set; }
+        public readonly IActivityService _activityService;    
         private readonly IRoleService _roleService;
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
@@ -138,6 +138,17 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             }
         }
 
+        [Authorize(Roles = AppConstants.AdminRoleName)]
+        public ActionResult ManageUserPoints(Guid id)
+        {
+            var user = MembershipService.GetUser(id);
+            var viewModel = new ManageUsersPointsViewModel
+            {
+                AllPoints = _membershipUserPointsService.GetByUser(user).OrderByDescending(x => x.DateAdded).ToList(),
+                User = user
+            };
+            return View(viewModel);
+        }
 
         /// <summary>
         /// Manage users

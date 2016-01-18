@@ -8,6 +8,7 @@
 
 <div class="backbutton">
     <a href="@Url.Action("Manage")" class="btn-mvc-green">&lt;&lt; Back</a>
+    <a href="@Url.Action("ManageUserPoints", new {id = Model.Id})" class="btn-mvc-green">Manage Users Points</a>
 </div>
 
 <div class="panel">
@@ -164,7 +165,7 @@
                 @if (Model.Id != Guid.Empty)
                 {
                     <a href="@Url.Action("Delete", new{Model.Id})" onclick="return confirm('Are you sure you want to delete @Model.UserName?')" class="btn-mvc-red" role="button">Delete</a>
-                }                
+                }
             </div>
         }
 

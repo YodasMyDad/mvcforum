@@ -2,7 +2,9 @@
 using System.Web;
 using System.Data.Entity;
 using System.Linq;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Services.Data.Context;
@@ -12,13 +14,16 @@ namespace MVCForum.Services
     public partial class SettingsService : ISettingsService
     {
         private readonly MVCForumContext _context;
+        private readonly ICacheService _cacheService;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="context"> </param>
-        public SettingsService(IMVCForumContext context)
+        /// <param name="cacheService"></param>
+        public SettingsService(IMVCForumContext context, ICacheService cacheService)
         {
+            _cacheService = cacheService;
             _context = context as MVCForumContext;
         }
 
@@ -30,12 +35,13 @@ namespace MVCForum.Services
         {
             if (useCache)
             {
-                var objectContextKey = HttpContext.Current.GetHashCode().ToString("x");
-                if (!HttpContext.Current.Items.Contains(objectContextKey))
+                var cachedSettings = _cacheService.Get<Settings>(AppConstants.SettingsCacheName);
+                if (cachedSettings == null)
                 {
-                    HttpContext.Current.Items.Add(objectContextKey, GetSettingsLocal(false));
+                    cachedSettings = GetSettingsLocal(false);
+                    _cacheService.Set(AppConstants.SettingsCacheName, cachedSettings, CacheTimes.OneDay);
                 }
-                return HttpContext.Current.Items[objectContextKey] as Settings;   
+                return cachedSettings;
             }
             return GetSettingsLocal(true);
         }

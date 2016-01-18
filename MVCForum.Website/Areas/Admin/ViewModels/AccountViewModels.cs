@@ -4,10 +4,21 @@ using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
-using MVCForum.Website.Application;
 
 namespace MVCForum.Website.Areas.Admin.ViewModels
 {
+    #region Users Points
+
+    public class ManageUsersPointsViewModel
+    {
+        public MembershipUser User { get; set; }
+        public List<MembershipUserPoints> AllPoints { get; set; }
+
+        [Display(Name = "Manually give this user points")]
+        public int? Amount { get; set; }
+    }
+
+    #endregion
 
     #region Users
 
