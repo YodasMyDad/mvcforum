@@ -264,7 +264,8 @@ namespace MVCForum.Services
         public MembershipCreateStatus CreateUser(MembershipUser newUser)
         {
             newUser = SanitizeUser(newUser);
-            var settings = _settingsService.GetSettings(true);
+            var settings = _settingsService.GetSettings(false);
+
 
             var status = MembershipCreateStatus.Success;
 
@@ -283,13 +284,13 @@ namespace MVCForum.Services
                 }
 
                 // get by username
-                if (GetUser(newUser.UserName) != null)
+                if (GetUser(newUser.UserName, true) != null)
                 {
                     status = MembershipCreateStatus.DuplicateUserName;
                 }
 
                 // Add get by email address
-                if (GetUserByEmail(newUser.Email) != null)
+                if (GetUserByEmail(newUser.Email, true) != null)
                 {
                     status = MembershipCreateStatus.DuplicateEmail;
                 }
@@ -399,10 +400,17 @@ namespace MVCForum.Services
         /// Get a user by email address
         /// </summary>
         /// <param name="email"></param>
+        /// <param name="removeTracking"></param>
         /// <returns></returns>
-        public MembershipUser GetUserByEmail(string email)
+        public MembershipUser GetUserByEmail(string email, bool removeTracking = false)
         {
             email = StringUtils.SafePlainText(email);
+            if (removeTracking)
+            {
+                return _context.MembershipUser.AsNoTracking()
+                    .Include(x => x.Roles)
+                    .FirstOrDefault(name => name.Email == email);
+            }
             return _context.MembershipUser
                 .Include(x => x.Roles)
                 .FirstOrDefault(name => name.Email == email);
@@ -425,6 +433,7 @@ namespace MVCForum.Services
         {
             return _context.MembershipUser
                     .Include(x => x.Roles)
+                    .AsNoTracking()
                     .Where(name => name.Slug.ToUpper().Contains(slug.ToUpper()))
                     .ToList();
         }

@@ -86,8 +86,7 @@ namespace MVCForum.Services
                         {
                             var callStack = new StackFrame(2, true); // Go back one stack frame to get module info
 
-                            tw.WriteLine("{0} | {1} | {2} | {3}", DateTime.UtcNow.ToString(DateTimeFormat),
-                                         callStack.GetMethod().Module.Name, callStack.GetMethod().Name, message);
+                            tw.WriteLine("{0} | {1} | {2} | {3} | {4} | {5}", DateTime.UtcNow.ToString(DateTimeFormat), callStack.GetMethod().Module.Name, callStack.GetMethod().Name, callStack.GetMethod().DeclaringType, callStack.GetFileLineNumber(), message);
                         }
                     }
                 }
@@ -144,8 +143,10 @@ namespace MVCForum.Services
                                   Date = DateTime.ParseExact(lineSplit[0].Trim(), DateTimeFormat, CultureInfo.InvariantCulture),
                                   Module = lineSplit[1].Trim(),
                                   Method = lineSplit[2].Trim(),
-                                  ErrorMessage = lineSplit[3].Trim(),
-                              };
+                                  DeclaringType = lineSplit[3].Trim(),
+                                  LineNumber = lineSplit[4].Trim(),
+                                  ErrorMessage = lineSplit[5].Trim(),
+                              };                
             }
             catch (Exception)
             {

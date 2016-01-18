@@ -149,6 +149,11 @@ namespace MVCForum.Services
             }
         }
 
+        public void SendMail(Email email, Settings settings)
+        {
+            SendMail(new List<Email> { email }, settings);
+        }
+
         /// <summary>
         /// Send a single email
         /// </summary>
@@ -165,6 +170,11 @@ namespace MVCForum.Services
         public void SendMail(List<Email> emails)
         {
             var settings = _settingsService.GetSettings();
+            SendMail(emails, settings);
+        }
+
+        public void SendMail(List<Email> emails, Settings settings)
+        {
             // Add all the emails to the email table
             // They are sent every X seconds by the email sending task
             foreach (var email in emails)

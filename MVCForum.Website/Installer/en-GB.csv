@@ -212,7 +212,8 @@ Poll.Button.Remove,Remove Poll From Topic
 Poll.Button.Vote,Submit Vote
 Error.WrongAnswerRegistration,There was an error with your answer. Please try again
 Members.LoginOrText,Or
-Facebook.Error.EnabledButNotAddedKeys,You have enabled Facebook login but not added your AppId or Secret key to the web.config
+Facebook.Error.EnabledButNotAddedKeys,You have enabled Facebook login but not added your AppId or Secret key to the forum.config
+Microsoft.Error.EnabledButNotAddedKeys,You have enabled Microsoft login but not added your AppId or Secret key to the forum.config
 Members.Profile.IsSocialAccount,Social Account
 Date.JustNow,Just now
 Date.OneMinuteAgo,1 minute ago
@@ -249,7 +250,8 @@ Category.AllCategories,All Categories
 Category.MostRecent,Most recent:
 Members.LogonFacebookButton,Login with Facebook
 Members.LogonGoogleButton,Login with Google
-Twitter.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Twitter id and secret key in the web.config
+Twitter.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Twitter id and secret key in the forum.config
+Google.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Google id and secret key in the forum.config
 Error.EmailIsBanned,The email address or domain you are trying to use is banned
 Post.FilesUploaded,Files uploaded successfully
 Post.Attach,Attach

@@ -57,7 +57,7 @@ namespace MVCForum.Services
                 {
                     // See if there is only one. And if it matches exactly
                     // someone else has this, grab all like it and do a count, stick a suffix on
-                    slug = string.Concat(slug, "-", matchingEntities.Count());
+                    slug = string.Concat(slug, "-", matchingEntities.Count);
                 }
             }
             else
@@ -68,7 +68,7 @@ namespace MVCForum.Services
                     // Name/Title has changed
                     if (matchingEntities.Any())
                     {
-                        slug = string.Concat(slug, "-", matchingEntities.Count());
+                        slug = string.Concat(slug, "-", matchingEntities.Count);
                     }
                 }
             }

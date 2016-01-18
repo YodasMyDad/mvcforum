@@ -51,10 +51,7 @@ namespace MVCForum.Website.Application.ScheduledJobs
                             foreach (var markAsSolutionReminder in remindersToSend)
                             {
                                 // Topic Link
-                                var topicLink = string.Format("<a href=\"{0}{1}\">{2}</a>",
-                                    settings.ForumUrl.TrimEnd('/'),
-                                    markAsSolutionReminder.Topic.NiceUrl,
-                                    markAsSolutionReminder.Topic.Name);
+                                var topicLink = $"<a href=\"{settings.ForumUrl.TrimEnd('/')}{markAsSolutionReminder.Topic.NiceUrl}\">{markAsSolutionReminder.Topic.Name}</a>";
 
                                 // Create the email
                                 var sb = new StringBuilder();
@@ -78,14 +75,15 @@ namespace MVCForum.Website.Application.ScheduledJobs
 
 
                                 // and now pass the emails in to be sent
-                                _emailService.SendMail(email);
+                                // We have to pass the current settings to SendMail when it's within a task
+                                _emailService.SendMail(email, settings);
 
                                 // And now mark the topic as reminder sent
                                 markAsSolutionReminder.Topic.SolvedReminderSent = true;
                             }
 
                             unitOfWork.Commit();
-                            _loggingService.Error(string.Format("{0} Mark as solution reminder emails sent", amount));
+                            _loggingService.Error($"{amount} Mark as solution reminder emails sent");
 
                         }
                     }
