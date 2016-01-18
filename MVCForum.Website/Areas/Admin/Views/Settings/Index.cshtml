@@ -341,7 +341,7 @@
 
                     <div class="form-group">
                         @Html.LabelFor(model => model.SMTPPassword)
-                        @Html.PasswordFor(model => model.SMTPPassword, new { @class = "form-control" })
+                        @Html.PasswordFor(model => model.SMTPPassword, new { @class = "form-control", value = Model.SMTPPassword })
                         @Html.ValidationMessageFor(model => model.SMTPPassword)
                     </div>
 
