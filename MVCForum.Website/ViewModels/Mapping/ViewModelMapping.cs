@@ -104,6 +104,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.EnableSignatures = settingsViewModel.EnableSignatures;
             existingSettings.EnablePoints = settingsViewModel.EnablePoints;
             existingSettings.PointsAllowedToVoteAmount = settingsViewModel.PointsAllowedToVoteAmount;
+            existingSettings.PointsAllowedForExtendedProfile = settingsViewModel.PointsAllowedForExtendedProfile;
             existingSettings.PointsAddedPerPost = settingsViewModel.PointsAddedPerPost;
             existingSettings.PointsAddedPostiveVote = settingsViewModel.PointsAddedPostiveVote;
             existingSettings.PointsDeductedNagativeVote = settingsViewModel.PointsDeductedNagativeVote;
@@ -159,6 +160,7 @@ namespace MVCForum.Website.ViewModels.Mapping
                 EnableSignatures = currentSettings.EnableSignatures,
                 EnablePoints = currentSettings.EnablePoints,
                 PointsAllowedToVoteAmount = currentSettings.PointsAllowedToVoteAmount,
+                PointsAllowedForExtendedProfile = currentSettings.PointsAllowedForExtendedProfile ?? 0,
                 PointsAddedPerPost = currentSettings.PointsAddedPerPost,
                 PointsAddedPostiveVote = currentSettings.PointsAddedPostiveVote,
                 PointsDeductedNagativeVote = currentSettings.PointsDeductedNagativeVote,

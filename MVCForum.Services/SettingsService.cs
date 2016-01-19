@@ -51,6 +51,7 @@ namespace MVCForum.Services
             var settings = _context.Setting
                               .Include(x => x.DefaultLanguage)
                               .Include(x => x.NewMemberStartingRole);
+
             return addTracking ? settings.FirstOrDefault() : settings.AsNoTracking().FirstOrDefault();
         }
 

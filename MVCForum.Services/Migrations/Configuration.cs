@@ -201,6 +201,7 @@ namespace MVCForum.Services.Migrations
                         EnableSignatures = false,
                         EnablePoints = true,
                         PointsAllowedToVoteAmount = 1,
+                        PointsAllowedForExtendedProfile = 1,
                         PointsAddedPerPost = 1,
                         PointsAddedForSolution = 4,
                         PointsDeductedNagativeVote = 2,

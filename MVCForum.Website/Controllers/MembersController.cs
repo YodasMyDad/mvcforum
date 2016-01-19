@@ -829,7 +829,7 @@ namespace MVCForum.Website.Controllers
             return null;
         }
 
-        private MemberFrontEndEditViewModel PopulateMemberViewModel(MembershipUser user)
+        private static MemberFrontEndEditViewModel PopulateMemberViewModel(MembershipUser user)
         {
             var viewModel = new MemberFrontEndEditViewModel
             {
@@ -844,7 +844,8 @@ namespace MVCForum.Website.Controllers
                 Facebook = user.Facebook,
                 DisableFileUploads = user.DisableFileUploads == true,
                 Avatar = user.Avatar,
-                DisableEmailNotifications = user.DisableEmailNotifications == true
+                DisableEmailNotifications = user.DisableEmailNotifications == true,
+                AmountOfPoints = user.TotalPoints
             };
             return viewModel;
         }

@@ -270,8 +270,15 @@
 
                     <div class="form-group">
                         @Html.LabelFor(model => model.PointsAllowedToVoteAmount)
-                        @Html.TextBoxFor(model => model.PointsAllowedToVoteAmount, new { @class = "form-control" })
+                        @Html.TextBoxFor(model => model.PointsAllowedToVoteAmount, new {@class = "form-control"})
                         @Html.ValidationMessageFor(model => model.PointsAllowedToVoteAmount)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PointsAllowedForExtendedProfile)
+                        <p class="help-block">This is the amount of points a user must have to add Signatures, Website and social urls to their profile (Good for stopping spammers)</p>
+                        @Html.TextBoxFor(model => model.PointsAllowedForExtendedProfile, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PointsAllowedForExtendedProfile)
                     </div>
 
                     <div class="form-group">

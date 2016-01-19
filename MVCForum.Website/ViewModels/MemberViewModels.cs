@@ -107,6 +107,7 @@ namespace MVCForum.Website.ViewModels
         public bool DisableFileUploads { get; set; }
         [ForumMvcResourceDisplayName("Members.Label.DisableEmailNotifications")]
         public bool DisableEmailNotifications { get; set; }
+        public int AmountOfPoints { get; set; }
 
     }
 

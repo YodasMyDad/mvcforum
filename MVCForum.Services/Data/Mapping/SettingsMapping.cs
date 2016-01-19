@@ -29,6 +29,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.EnableSignatures).IsOptional();
             Property(x => x.EnablePoints).IsOptional();
             Property(x => x.PointsAllowedToVoteAmount).IsOptional();
+            Property(x => x.PointsAllowedForExtendedProfile).IsOptional();
             Property(x => x.PointsAddedPerPost).IsOptional();
             Property(x => x.PointsAddedPostiveVote).IsOptional();
             Property(x => x.PointsAddedForSolution).IsOptional();

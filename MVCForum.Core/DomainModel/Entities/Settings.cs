@@ -34,6 +34,7 @@ namespace MVCForum.Domain.DomainModel
         public int PrivateMessageFloodControl { get; set; }
         public bool EnableSignatures { get; set; }
         public bool EnablePoints { get; set; }
+        public int? PointsAllowedForExtendedProfile { get; set; }
         public int PointsAllowedToVoteAmount { get; set; }
         public int PointsAddedPerPost { get; set; }
         public int PointsAddedPostiveVote { get; set; }
