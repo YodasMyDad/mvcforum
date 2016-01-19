@@ -14,8 +14,14 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public MembershipUser User { get; set; }
         public List<MembershipUserPoints> AllPoints { get; set; }
 
-        [Display(Name = "Manually give this user points")]
+        [Display(Name = "Amount of points to give this user")]
         public int? Amount { get; set; }
+
+        [Display(Name = "Notes about this point allocation")]
+        [MaxLength(400)]
+        public string Note { get; set; } 
+
+        public Guid Id { get; set; }
     }
 
     #endregion

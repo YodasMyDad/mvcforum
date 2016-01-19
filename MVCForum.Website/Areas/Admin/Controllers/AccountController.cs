@@ -141,13 +141,106 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult ManageUserPoints(Guid id)
         {
-            var user = MembershipService.GetUser(id);
-            var viewModel = new ManageUsersPointsViewModel
+            using (UnitOfWorkManager.NewUnitOfWork())
             {
-                AllPoints = _membershipUserPointsService.GetByUser(user).OrderByDescending(x => x.DateAdded).ToList(),
-                User = user
-            };
-            return View(viewModel);
+                var user = MembershipService.GetUser(id);
+                var viewModel = new ManageUsersPointsViewModel
+                {
+                    AllPoints = _membershipUserPointsService.GetByUser(user).OrderByDescending(x => x.DateAdded).ToList(),
+                    User = user
+                };
+                return View(viewModel);
+            }
+        }
+
+        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ManageUserPoints(ManageUsersPointsViewModel viewModel)
+        {
+            using (var uow = UnitOfWorkManager.NewUnitOfWork())
+            {
+                // Repopulate viewmodel
+                var user = MembershipService.GetUser(viewModel.Id);
+                viewModel.AllPoints = _membershipUserPointsService.GetByUser(user).OrderByDescending(x => x.DateAdded).ToList();
+                viewModel.User = user;
+
+                if (viewModel.Amount > 0)
+                {
+                    // Add the new points
+                    var newPoints = new MembershipUserPoints
+                    {
+                        DateAdded = DateTime.UtcNow,
+                        Notes = viewModel.Note,
+                        Points = (int)viewModel.Amount,
+                        PointsFor = PointsFor.Manual,
+                        User = user
+                    };
+
+                    _membershipUserPointsService.Add(newPoints);
+
+                    try
+                    {
+                        uow.Commit();
+
+                        ShowMessage(new GenericMessageViewModel
+                        {
+                            Message = "Points Added",
+                            MessageType = GenericMessages.success
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        uow.Rollback();
+                        LoggingService.Error(ex);
+                        ShowMessage(new GenericMessageViewModel
+                        {
+                            Message = "There was an error adding the points",
+                            MessageType = GenericMessages.danger
+                        });
+                    }
+                }
+
+
+                return RedirectToAction("ManageUserPoints", new { id = user.Id });
+            }
+        }
+
+        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RemovePoints(Guid pointToRemove)
+        {
+            using (var uow = UnitOfWorkManager.NewUnitOfWork())
+            {
+                var point = _membershipUserPointsService.Get(pointToRemove);
+                var user = point.User;        
+                _membershipUserPointsService.Delete(point);
+
+                try
+                {
+                    uow.Commit();
+
+                    ShowMessage(new GenericMessageViewModel
+                    {
+                        Message = "Points Removed",
+                        MessageType = GenericMessages.success
+                    });
+                }
+                catch (Exception ex)
+                {
+                    uow.Rollback();
+                    LoggingService.Error(ex);
+                    ShowMessage(new GenericMessageViewModel
+                    {
+                        Message = "There was an error",
+                        MessageType = GenericMessages.danger
+                    });
+                }
+
+                return RedirectToAction("ManageUserPoints", new {id = user.Id });
+
+            }            
         }
 
         /// <summary>

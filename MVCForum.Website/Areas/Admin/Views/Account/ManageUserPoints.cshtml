@@ -13,7 +13,7 @@
         <h5>
             Show all points for @Model.User.UserName
         </h5>
-    </div>    
+    </div>
     <div class="panel-content">
         <div role="tabpanel">
 
@@ -36,16 +36,56 @@
 
                         @if (Model.AllPoints.Any())
                         {
-                            <ul class="list-group">
-                                @foreach (var point in Model.AllPoints)
-                                {
-                                    <li class="list-group-item">
-                                        <span class="badge">@point.Points</span>
-                                        <button class="removepoints btn-mvc-green" data-pointid="@point.Id">Remove</button>
-                                        <strong>@point.PointsFor.ToString()</strong> - @DatesUI.GetPrettyDate(point.DateAdded.ToString())
-                                    </li>
-                                }
-                            </ul>
+                            <div class="tablescroll">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Amount
+                                            </th>
+                                            <th>
+                                                For
+                                            </th>
+                                            <th>
+                                                Notes
+                                            </th>
+                                            <th>
+                                                Awarded On
+                                            </th>
+                                            <th>
+                                                
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var point in Model.AllPoints)
+                                        {
+                                            <tr>
+                                                <td class="pointsamount">
+                                                    <span class="badge">@point.Points</span>
+                                                </td>
+                                                <td class="pointsfor">
+                                                    @point.PointsFor.ToString()
+                                                </td>
+                                                <td class="pointsnotes">
+                                                    @point.Notes
+                                                </td>
+                                                <td class="pointsawardedon">
+                                                    @DatesUI.GetPrettyDate(point.DateAdded.ToString())
+                                                </td>
+                                                <td class="pointsremove">
+                                                    @using (Html.BeginForm("RemovePoints", "Account", FormMethod.Post))
+                                                    {
+                                                        @Html.AntiForgeryToken()
+                                                        <input data-val="true" data-val-required="The pointToRemove field is required." id="PointToRemove" name="PointToRemove" type="hidden" value="@point.Id">
+                                                        <button type="submit" class="removepoints btn-mvc-green">Remove</button>
+                                                    }                                                    
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
                         }
                         else
                         {
@@ -58,7 +98,28 @@
                 <div role="tabpanel" class="tab-pane" id="addpoints">
                     <div class="moderatepanel">
 
-                        TODO
+                        <p>Add points to this User</p>
+                        @using (Html.BeginForm("ManageUserPoints", "Account", FormMethod.Post))
+                        {
+                            @Html.HiddenFor(x => x.Id)
+                            @Html.ValidationSummary(false)
+                            @Html.AntiForgeryToken()
+
+                            <div class="form-group">
+                                @Html.LabelFor(x => x.Amount)
+                                @Html.TextBoxFor(x => x.Amount, new {@class = "form-control", type = "number"})
+                                @Html.ValidationMessageFor(x => x.Amount)
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(x => x.Note)
+                                @Html.TextBoxFor(x => x.Note, new {@class = "form-control"})
+                                @Html.ValidationMessageFor(x => x.Note)
+                            </div>
+
+                            <button type="submit" class="btn btn--mvc-green">Add Manual Points</button>
+
+                        }
 
                     </div>
 
