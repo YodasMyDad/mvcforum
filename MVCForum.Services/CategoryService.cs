@@ -181,7 +181,8 @@ namespace MVCForum.Services
                 var permissionSet = _roleService.GetPermissions(category, role);
                 if (!permissionSet[actionType].IsTicked)
                 {
-                    filteredCats.Add(category);
+                        // Only add it category is NOT locked
+                        filteredCats.Add(category);
                 }
             }
             return filteredCats;

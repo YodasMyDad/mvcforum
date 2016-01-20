@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.EnterpriseServices;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -630,19 +631,28 @@ namespace MVCForum.Website.Controllers
             };
         }
 
+        private List<Category> AllowedCreateCategories()
+        {
+            var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
+            var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, SiteConstants.Instance.PermissionCreateTopics);
+            var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
+            if (allowedAccessCategories.Any())
+            {
+                allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
+                allowedAccessCategories.RemoveAll(x =>UsersRole.RoleName != AppConstants.AdminRoleName && x.IsLocked);
+            }
+            return allowedAccessCategories;
+        }
+
         [Authorize]
         public ActionResult Create()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
-                var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, SiteConstants.Instance.PermissionCreateTopics);
-                var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
+                var allowedAccessCategories = AllowedCreateCategories();
+
                 if (allowedAccessCategories.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
                 {
-                    // Remove all Categories that don't have create topic permission
-                    allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
-
                     var viewModel = PrePareCreateEditTopicViewModel(allowedAccessCategories);
                     return View(viewModel);
                 }
@@ -663,13 +673,8 @@ namespace MVCForum.Website.Controllers
 
             // Now we have the category and permissionSet - Populate the optional permissions 
             // This is just in case the viewModel is return back to the view also sort the allowedCategories
-            var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
-            var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, SiteConstants.Instance.PermissionCreateTopics);
-            var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
-            allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
-
             topicViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
-            topicViewModel.Categories = _categoryService.GetBaseSelectListCategories(allowedAccessCategories);
+            topicViewModel.Categories = _categoryService.GetBaseSelectListCategories(AllowedCreateCategories());
             topicViewModel.IsTopicStarter = true;
             if (topicViewModel.PollAnswers == null)
             {
