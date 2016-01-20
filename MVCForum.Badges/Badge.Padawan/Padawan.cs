@@ -8,9 +8,9 @@ using MVCForum.Domain.Interfaces.Services;
 namespace Badge.Padawan
 {
     [Id("A88C62B2-394F-4D89-B61E-04A7B546416B")]
-    [Name("PadawanBadge")]
-    [DisplayName("Badge.PadawanBadge.Name")]
-    [Description("Badge.PadawanBadge.Desc")]
+    [Name("Padawan")]
+    [DisplayName("Badge.Padawan.Name")]
+    [Description("Badge.Padawan.Desc")]
     [Image("padawan.png")]
     [AwardsPoints(10)]
     public class PadawanBadge : IMarkAsSolutionBadge

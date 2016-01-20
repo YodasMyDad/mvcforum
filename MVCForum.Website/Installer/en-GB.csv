@@ -273,28 +273,34 @@ Language.Change,Change Language
 Post.Quote,Quote
 Members.Label.UploadNewAvatar,Upload a new profile image
 Member.HasNewPrivateMessages,You have new unread Private messages
-Badge.AuthorMarkAsSolutionBadge.Name,Your Question Solved
-Badge.AuthorMarkAsSolutionBadge.Desc,This badge is awarded to a user when they mark another users post as the solution to their topic
-Badge.UserVoteUpBadge.Name,You've Given Your First Vote Up
-Badge.UserVoteUpBadge.Desc,This badge is awarded to users after they make their first vote up
+Badge.AuthorMarkAsSolution.Name,Your Question Solved
+Badge.AuthorMarkAsSolution.Desc,This badge is awarded to a user when they mark another users post as the solution to their topic
+Badge.UserVoteUp.Name,You've Given Your First Vote Up
+Badge.UserVoteUp.Desc,This badge is awarded to users after they make their first vote up
 Badge.PostMentionsUmbraco.Name,Umbraco Fan
 Badge.PostMentionsUmbraco.Desc,This badge is awarded to a user who mentions Umbraco in their latest post
-Badge.PosterVoteUpBadge.Name,First Vote Up Received
-Badge.PosterVoteUpBadge.Desc,This badge is awarded to users after they receive their first vote up from another user
-Badge.PosterMarkAsSolutionBadge.Name,Post Selected As Answer
-Badge.PosterMarkAsSolutionBadge.Desc,This badge is awarded to a user when their post is marked as the solution to a topic
-Badge.PadawanBadge.Name,Padawan
-Badge.PadawanBadge.Desc,Had 10 or more posts successfully marked as an answer
+Badge.PosterVoteUp.Name,First Vote Up Received
+Badge.PosterVoteUp.Desc,This badge is awarded to users after they receive their first vote up from another user
+Badge.PosterMarkAsSolution.Name,Post Selected As Answer
+Badge.PosterMarkAsSolution.Desc,This badge is awarded to a user when their post is marked as the solution to a topic
+Badge.Padawan.Name,Padawan
+Badge.Padawan.Desc,Had 10 or more posts successfully marked as an answer
 Badge.OneThousandPoints.Name,Thousand Pointer
 Badge.OneThousandPoints.Desc,This badge is awarded to users who have received 1000 points
-Badge.MemberForAYearBadge.Name,First Anniversary
-Badge.MemberForAYearBadge.Desc,This badge is awarded to a user after their first year anniversary
-Badge.GrouchBadge.Name,The Grouch
-Badge.GrouchBadge.Desc,This badge is awarded to users who have voted down other users posts 10 or more times
-Badge.JediMasterBadge.Name,Jedi Master
-Badge.JediMasterBadge.Desc,Had 50 or more posts successfully marked as an answer
+Badge.MemberForAYear.Name,First Anniversary
+Badge.MemberForAYear.Desc,This badge is awarded to a user after their first year anniversary
+Badge.TheGrouch.Name,The Grouch
+Badge.TheGrouch.Desc,This badge is awarded to users who have voted down other users posts 10 or more times
+Badge.JediMaster.Name,Jedi Master
+Badge.JediMaster.Desc,Had 50 or more posts successfully marked as an answer
 Badge.Photogenic.Name,Photogenic
 Badge.Photogenic.Desc,Little things like uploading a profile picture make the community a better place. Thanks!
+Badge.FavouriteFirstPost.Name,First Favourite
+Badge.FavouriteFirstPost.Desc,You have Favourited your first post
+Badge.YourPostFavouritedTenTimes.Name,Recognised Post
+Badge.YourPostFavouritedTenTimes.Desc,One or more of your posts have been Favourited by 10 or more people
+Badge.YourPostFavourited.Name,Favourited Post
+Badge.YourPostFavourited.Desc,You have one or more posts that have been Favourited by another member
 Site.MvcForum,MvcForum
 Layout.Nav.Utilities,Utilities
 Side.Search.SearchFor,Search for...
@@ -349,12 +355,6 @@ Members.ResetPassword.InvalidToken,This request is either invalid or has expired
 Members.ResetPassword.Error,There was an error resetting your password. Please try again.
 Tasks.MarkAsSolutionReminderJob.EmailBody,Your topic {0} on {1} has {2} replies but has still not been marked as solved. Please check again to see if any answers are appropriate and mark them as the solution if they are.
 Tasks.MarkAsSolutionReminderJob.Subject,Your post on {0}
-Badge.FavouriteFirstPost.Name,First Favourite
-Badge.FavouriteFirstPost.Desc,You have Favourited your first post
-Badge.YourPostFavouritedTenTimes.Name,Recognised Post
-Badge.YourPostFavouritedTenTimes.Desc,One or more of your posts have been Favourited by 10 or more people
-Badge.YourPostFavourited.Name,Favourited Post
-Badge.YourPostFavourited.Desc,You have one or more posts that have been Favourited by another member
 Post.MemberIsOnline,Online
 PM.MemberIsOnline,Online
 Topic.Label.PollCloseAfterDays,Close Poll After Specified Amount Of Days? Leave as 0 to disable

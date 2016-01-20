@@ -425,6 +425,7 @@ namespace MVCForum.Services
         {
             slug = StringUtils.GetSafeHtml(slug);
             return _context.MembershipUser
+                .Include(x => x.Badges)
                 .Include(x => x.Roles)
                 .FirstOrDefault(name => name.Slug == slug);
         }

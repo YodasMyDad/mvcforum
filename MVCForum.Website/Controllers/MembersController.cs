@@ -233,6 +233,15 @@ namespace MVCForum.Website.Controllers
                 var member = MembershipService.GetUserBySlug(slug);
                 var loggedonId = UserIsAuthenticated ? LoggedOnReadOnlyUser.Id : Guid.Empty;
                 var permissions = RoleService.GetPermissions(null, UsersRole);
+
+                // Localise the badge names
+                foreach (var item in member.Badges)
+                {
+                    var partialKey = string.Concat("Badge.", item.Name);
+                    item.DisplayName = LocalizationService.GetResourceString(string.Concat(partialKey, ".Name"));
+                    item.Description = LocalizationService.GetResourceString(string.Concat(partialKey, ".Desc"));
+                }
+
                 return View(new ViewMemberViewModel
                 {
                     User = member,

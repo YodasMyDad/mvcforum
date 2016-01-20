@@ -7,8 +7,8 @@ namespace Badge.PosterVoteUp
 {
     [Id("2ac1fc11-2f9e-4d5a-9df4-29715f10b6d1")]
     [Name("PosterVoteUp")]
-    [DisplayName("Badge.PosterVoteUpBadge.Name")]
-    [Description("Badge.PosterVoteUpBadge.Desc")]
+    [DisplayName("Badge.PosterVoteUp.Name")]
+    [Description("Badge.PosterVoteUp.Desc")]
     [Image("PosterVoteUpBadge.png")]
     [AwardsPoints(2)]
     public class PosterVoteUpBadge : IVoteUpBadge

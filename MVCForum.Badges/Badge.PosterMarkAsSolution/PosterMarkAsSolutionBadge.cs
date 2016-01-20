@@ -8,8 +8,8 @@ namespace Badge.PosterMarkAsSolution
 {
     [Id("8250f9f0-84d2-4dff-b651-c3df9e12bf2a")]
     [Name("PosterMarkAsSolution")]
-    [DisplayName("Badge.PosterMarkAsSolutionBadge.Name")]
-    [Description("Badge.PosterMarkAsSolutionBadge.Desc")]
+    [DisplayName("Badge.PosterMarkAsSolution.Name")]
+    [Description("Badge.PosterMarkAsSolution.Desc")]
     [Image("PosterMarkAsSolutionBadge.png")]
     [AwardsPoints(2)]
     public class PosterMarkAsSolutionBadge : IMarkAsSolutionBadge

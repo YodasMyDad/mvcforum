@@ -494,6 +494,9 @@ section.content-strip {
 }
 .postcontent { position:relative;
     p { font-size: 15px; overflow-x: hidden; }
+    ol, ul {
+         p { overflow-x: visible; }
+     }
     table { width: 100% !important; margin: 10px 0;
         td { border-bottom: 1px #efefef solid; padding: 4px; font-size: 12px; }
     }
