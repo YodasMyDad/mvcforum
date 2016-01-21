@@ -129,7 +129,6 @@ namespace MVCForum.Website.Controllers
         {
             bool isTopicStarter;
             Topic topic;
-
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 // Got to get a lot of things here as we have to check permissions
@@ -142,6 +141,7 @@ namespace MVCForum.Website.Controllers
 
                 // Get the topic
                 topic = post.Topic;
+                var topicUrl = topic.NiceUrl;
 
                 // get the users permissions
                 var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
@@ -157,7 +157,7 @@ namespace MVCForum.Website.Controllers
                     else
                     {
                         // Deletes single post and associated data
-                        _postService.Delete(post, unitOfWork);
+                        _postService.Delete(post, unitOfWork, false);
 
                         // Remove in replyto's
                         var relatedPosts = _postService.GetReplyToPosts(postId);
@@ -175,7 +175,12 @@ namespace MVCForum.Website.Controllers
                     {
                         unitOfWork.Rollback();
                         LoggingService.Error(ex);
-                        throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
+                        ShowMessage(new GenericMessageViewModel
+                        {
+                            Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+                            MessageType = GenericMessages.danger
+                        });
+                        return Redirect(topicUrl);
                     }
                 }
             }

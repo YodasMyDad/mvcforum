@@ -26,11 +26,13 @@ namespace MVCForum.Services
         private readonly IUploadedFileService _uploadedFileService;
         private readonly IFavouriteService _favouriteService;
         private readonly IRoleService _roleService;
+        private readonly IPollService _pollService;
+        private readonly IPollAnswerService _pollAnswerService;
 
         public TopicService(IMVCForumContext context, IMembershipUserPointsService membershipUserPointsService,
-            ISettingsService settingsService, ITopicNotificationService topicNotificationService, 
-            IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService favouriteService, 
-            IPostService postService, IRoleService roleService)
+            ISettingsService settingsService, ITopicNotificationService topicNotificationService,
+            IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService favouriteService,
+            IPostService postService, IRoleService roleService, IPollService pollService, IPollAnswerService pollAnswerService)
         {
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
@@ -40,6 +42,8 @@ namespace MVCForum.Services
             _favouriteService = favouriteService;
             _postService = postService;
             _roleService = roleService;
+            _pollService = pollService;
+            _pollAnswerService = pollAnswerService;
             _context = context as MVCForumContext;
         }
 
@@ -76,7 +80,7 @@ namespace MVCForum.Services
                                 .Take(amount)
                                 .Select(x => new SelectListItem
                                 {
-                                   Text = x.Name,
+                                    Text = x.Name,
                                     Value = x.Id.ToString()
                                 }).ToList();
         }
@@ -688,12 +692,14 @@ namespace MVCForum.Services
                 {
                     // Posts should only be deleted from this method as it clears
                     // associated data
-                    _postService.Delete(post, unitOfWork);
-
-                    unitOfWork.SaveChanges();
+                    _postService.Delete(post, unitOfWork, true);
                 }
+
+                // Final clear
                 topic.Posts.Clear();
             }
+
+            unitOfWork.SaveChanges();
 
             // Remove all notifications on this topic too
             if (topic.TopicNotifications != null)
@@ -704,6 +710,47 @@ namespace MVCForum.Services
                 {
                     _topicNotificationService.Delete(topicNotification);
                 }
+
+                // Final Clear
+                topic.TopicNotifications.Clear();
+            }
+
+            // Remove all favourites on this topic too
+            if (topic.Favourites != null)
+            {
+                var toDelete = new List<Favourite>();
+                toDelete.AddRange(topic.Favourites);
+                foreach (var entity in toDelete)
+                {
+                    _favouriteService.Delete(entity);
+                }
+
+                // Final Clear
+                topic.Favourites.Clear();
+            }
+
+            // Poll
+            if (topic.Poll != null)
+            {
+                //Delete the poll answers
+                var pollAnswers = topic.Poll.PollAnswers;
+                if (pollAnswers.Any())
+                {
+                    var pollAnswersList = new List<PollAnswer>();
+                    pollAnswersList.AddRange(pollAnswers);
+                    foreach (var answer in pollAnswersList)
+                    {
+                        answer.Poll = null;
+                        _pollAnswerService.Delete(answer);
+                    }
+                }
+
+                topic.Poll.PollAnswers.Clear();
+                topic.Poll.User = null;
+                _pollService.Delete(topic.Poll);
+
+                // Final Clear
+                topic.Poll = null;
             }
 
             // Finally delete the topic
@@ -758,12 +805,12 @@ namespace MVCForum.Services
             var solved = false;
 
             var e = new MarkedAsSolutionEventArgs
-                        {
-                            Topic = topic,
-                            Post = post,
-                            Marker = marker,
-                            SolutionWriter = solutionWriter
-                        };
+            {
+                Topic = topic,
+                Post = post,
+                Marker = marker,
+                SolutionWriter = solutionWriter
+            };
             EventManager.Instance.FireBeforeMarkedAsSolution(this, e);
 
             if (!e.Cancel)
@@ -785,21 +832,21 @@ namespace MVCForum.Services
                     if (marker.Id != solutionWriter.Id)
                     {
                         _membershipUserPointsService.Add(new MembershipUserPoints
-                                                             {
-                                                                 Points = _settingsService.GetSettings().PointsAddedForSolution,
-                                                                 User = solutionWriter,
-                                                                 PointsFor = PointsFor.Solution,
-                                                                 PointsForId = post.Id
-                                                             });
+                        {
+                            Points = _settingsService.GetSettings().PointsAddedForSolution,
+                            User = solutionWriter,
+                            PointsFor = PointsFor.Solution,
+                            PointsForId = post.Id
+                        });
                     }
 
                     EventManager.Instance.FireAfterMarkedAsSolution(this, new MarkedAsSolutionEventArgs
-                                                                              {
-                                                                                  Topic = topic,
-                                                                                  Post = post,
-                                                                                  Marker = marker,
-                                                                                  SolutionWriter = solutionWriter
-                                                                              });
+                    {
+                        Topic = topic,
+                        Post = post,
+                        Marker = marker,
+                        SolutionWriter = solutionWriter
+                    });
                     solved = true;
                 }
             }

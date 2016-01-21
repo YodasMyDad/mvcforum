@@ -418,18 +418,12 @@ namespace MVCForum.Services
         /// </summary>
         /// <param name="post"></param>
         /// <param name="unitOfWork"></param>
-        /// <returns>Returns true if can delete, returns false if it's a topic</returns>
-        public bool Delete(Post post, IUnitOfWork unitOfWork)
+        /// <param name="ignoreLastPost"></param>
+        /// <returns>Returns true if can delete</returns>
+        public bool Delete(Post post, IUnitOfWork unitOfWork, bool ignoreLastPost)
         {
             // Get the topic
             var topic = post.Topic;
-
-            // If this is coming from a call that is deleting the entire topic, then just delete post
-            if (post.IsTopicStarter)
-            {
-                // Return true as the topic was deleted as well as this post
-                return false;
-            }
 
             var votes = _voteService.GetVotesByPost(post.Id);
 
@@ -449,6 +443,8 @@ namespace MVCForum.Services
 
             #endregion
 
+            unitOfWork.SaveChanges();
+
             #region Deleting Votes
 
             var votesToDelete = new List<Vote>();
@@ -460,6 +456,8 @@ namespace MVCForum.Services
             post.Votes.Clear();
 
             #endregion
+
+            unitOfWork.SaveChanges();
 
             #region Files
 
@@ -474,6 +472,8 @@ namespace MVCForum.Services
 
             #endregion
 
+            unitOfWork.SaveChanges();
+
             #region Favourites
 
             var postFavourites = new List<Favourite>();
@@ -486,6 +486,8 @@ namespace MVCForum.Services
 
             #endregion
 
+            unitOfWork.SaveChanges();
+
             #region Post Edits
 
             var postEdits = new List<PostEdit>();
@@ -495,26 +497,34 @@ namespace MVCForum.Services
 
             #endregion
 
+            unitOfWork.SaveChanges();
+
             // Before we delete the post, we need to check if this is the last post in the topic
             // and if so update the topic
-
-            var lastPost = topic.Posts.OrderByDescending(x => x.DateCreated).FirstOrDefault();
-
-            if (lastPost != null && lastPost.Id == post.Id)
+            if (!ignoreLastPost)
             {
-                // Get the new last post and update the topic
-                topic.LastPost = topic.Posts.Where(x => x.Id != post.Id).OrderByDescending(x => x.DateCreated).FirstOrDefault();
+                var lastPost = topic.Posts.OrderByDescending(x => x.DateCreated).FirstOrDefault();
+
+                if (lastPost != null && lastPost.Id == post.Id)
+                {
+                    // Get the new last post and update the topic
+                    topic.LastPost = topic.Posts.Where(x => x.Id != post.Id).OrderByDescending(x => x.DateCreated).FirstOrDefault();
+                }
+
+                if (topic.Solved && post.IsSolution)
+                {
+                    topic.Solved = false;
+                }
             }
 
-            if (topic.Solved && post.IsSolution)
-            {
-                topic.Solved = false;
-            }
-
+            // Remove from the topic
             topic.Posts.Remove(post);
 
             // now delete the post
             _context.Post.Remove(post);
+
+            // Save changes
+            unitOfWork.SaveChanges();
 
             // Only the post was deleted, not the entire topic
             return false;

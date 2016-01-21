@@ -9,6 +9,7 @@ using System.Web.Hosting;
 using System.Web.Security;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.Entities;
 using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Services;
@@ -41,6 +42,7 @@ namespace MVCForum.Services
         private readonly ICategoryNotificationService _categoryNotificationService;
         private readonly ILoggingService _loggingService;
         private readonly ICategoryService _categoryService;
+        private readonly IPostEditService _postEditService;
 
         /// <summary>
         /// Constructor
@@ -72,7 +74,7 @@ namespace MVCForum.Services
             ICategoryNotificationService categoryNotificationService, ILoggingService loggingService, IUploadedFileService uploadedFileService,
             IPostService postService, IPollVoteService pollVoteService, IPollAnswerService pollAnswerService,
             IPollService pollService, ITopicService topicService, IFavouriteService favouriteService, 
-            ICategoryService categoryService)
+            ICategoryService categoryService, IPostEditService postEditService)
         {
             _settingsService = settingsService;
             _emailService = emailService;
@@ -93,6 +95,7 @@ namespace MVCForum.Services
             _topicService = topicService;
             _favouriteService = favouriteService;
             _categoryService = categoryService;
+            _postEditService = postEditService;
             _context = context as MVCForumContext;
         }
 
@@ -910,6 +913,8 @@ namespace MVCForum.Services
 
         public void ScrubUsers(MembershipUser user, IUnitOfWork unitOfWork)
         {
+            // TODO - This REALLY needs to be refactored
+
             // PROFILE
             user.Website = string.Empty;
             user.Twitter = string.Empty;
@@ -1150,7 +1155,11 @@ namespace MVCForum.Services
                         }
                         post.Files.Clear();
                     }
-                    _postService.Delete(post, unitOfWork);
+                    var postEdits = new List<PostEdit>();
+                    postEdits.AddRange(post.PostEdits);
+                    _postEditService.Delete(postEdits);
+                    post.PostEdits.Clear();
+                    _postService.Delete(post, unitOfWork, true);
                 }
                 user.Posts.Clear();
 

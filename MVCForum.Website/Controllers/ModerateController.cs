@@ -96,7 +96,7 @@ namespace MVCForum.Website.Controllers
                     }
                     else
                     {
-                        _postService.Delete(post, unitOfWork);
+                        _postService.Delete(post, unitOfWork, false);
                     }
 
                     unitOfWork.Commit();

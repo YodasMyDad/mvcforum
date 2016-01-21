@@ -25,7 +25,7 @@ namespace MVCForum.Domain.Interfaces.Services
         Post Add(Post post);
         Post Get(Guid postId);
         IList<Post> GetPostsByTopics(List<Guid> topicIds, List<Category> allowedCategories);
-        bool Delete(Post post, IUnitOfWork unitOfWork);
+        bool Delete(Post post, IUnitOfWork unitOfWork, bool ignoreLastPost);
         IList<Post> GetSolutionsByMember(Guid memberId, List<Category> allowedCategories);
         int PostCount(List<Category> allowedCategories);
         Post AddNewPost(string postContent, Topic topic, MembershipUser user, out PermissionSet permissions);
