@@ -193,6 +193,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public bool DisableDislikeButton { get; set; }
 
         [DisplayName("New Members must agree to the Terms & Conditions below before using the forum")]
+        [StringLength(6000)]
         public bool AgreeToTermsAndConditions { get; set; }
 
         [DisplayName("Terms & Conditions of the forum")]

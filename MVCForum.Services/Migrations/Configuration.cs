@@ -401,6 +401,8 @@ namespace MVCForum.Services.Migrations
             }
             else
             {
+                // ---- Do Data Updates here
+
                 // Data to update on versions v1.7+
 
                 // Insert Editor Images

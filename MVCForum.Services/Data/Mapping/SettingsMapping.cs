@@ -60,7 +60,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.DisableDislikeButton);
             Property(x => x.AgreeToTermsAndConditions).IsOptional();
             Property(x => x.DisableStandardRegistration).IsOptional();
-            Property(x => x.TermsAndConditions).IsOptional().HasMaxLength(6000);
+            Property(x => x.TermsAndConditions).IsOptional();
 
             HasRequired(t => t.NewMemberStartingRole)
                 .WithOptional(x => x.Settings).Map(m => m.MapKey("NewMemberStartingRole"));
