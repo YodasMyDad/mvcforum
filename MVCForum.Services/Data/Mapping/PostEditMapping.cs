@@ -11,8 +11,8 @@ namespace MVCForum.Services.Data.Mapping
 
             Property(x => x.Id).IsRequired();
             Property(x => x.DateEdited).IsRequired();
-            Property(x => x.OriginalPostContent).IsOptional().HasMaxLength(6100);
-            Property(x => x.EditedPostContent).IsOptional().HasMaxLength(6100);
+            Property(x => x.OriginalPostContent).IsOptional();
+            Property(x => x.EditedPostContent).IsOptional();
             Property(x => x.OriginalPostTitle).IsOptional().HasMaxLength(500);
             Property(x => x.EditedPostTitle).IsOptional().HasMaxLength(500);
         }
