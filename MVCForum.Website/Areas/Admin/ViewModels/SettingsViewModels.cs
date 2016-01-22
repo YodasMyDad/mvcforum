@@ -175,6 +175,9 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Enable social logins (Facebook etc...)")]
         public bool EnableSocialLogins { get; set; }
 
+        [DisplayName("Disable Standard Registration")]
+        public bool DisableStandardRegistration { get; set; }
+
         [DisplayName("Suspend the registration (Don't allow any new members to register)")]
         public bool SuspendRegistration { get; set; }
 

@@ -130,6 +130,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.EnableEmoticons = settingsViewModel.EnableEmoticons;
             existingSettings.DisableDislikeButton = settingsViewModel.DisableDislikeButton;
             existingSettings.AgreeToTermsAndConditions = settingsViewModel.AgreeToTermsAndConditions;
+            existingSettings.DisableStandardRegistration = settingsViewModel.DisableStandardRegistration;
             existingSettings.TermsAndConditions = settingsViewModel.TermsAndConditions;
             return existingSettings;
         }
@@ -187,7 +188,8 @@ namespace MVCForum.Website.ViewModels.Mapping
                 EnableEmoticons = currentSettings.EnableEmoticons == true,
                 DisableDislikeButton = currentSettings.DisableDislikeButton,
                 TermsAndConditions = currentSettings.TermsAndConditions,
-                AgreeToTermsAndConditions = currentSettings.AgreeToTermsAndConditions
+                AgreeToTermsAndConditions = currentSettings.AgreeToTermsAndConditions ?? false,
+                DisableStandardRegistration = currentSettings.DisableStandardRegistration ?? false
             };
 
             return settingViewModel;

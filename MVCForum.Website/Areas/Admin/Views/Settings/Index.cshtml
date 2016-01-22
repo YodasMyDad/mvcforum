@@ -58,6 +58,15 @@
             </div>
 
             <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.DisableStandardRegistration, new { @class = "checkbox" }))
+                {
+                    @Html.CheckBoxFor(m => m.DisableStandardRegistration)
+                }
+                <p class="help-block">This disables the standard registration form, perfect for people who just want to use Social logins only</p>
+                @Html.ValidationMessageFor(m => m.DisableStandardRegistration)
+            </div>
+
+            <div class="checkbox">
                 @using (Html.BeginLabelFor(m => m.EnableRSSFeeds, new {@class = "checkbox"}))
                 {
                     @Html.CheckBoxFor(m => m.EnableRSSFeeds)
@@ -425,70 +434,6 @@
                 </div>
             </div>
         </div>
-
-        @*<div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingSpam">
-                <h4 class="panel-title">
-                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseSpam" aria-expanded="false" aria-controls="collapseSpam">
-                        Spam
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseSpam" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSpam">
-                <div class="panel-body">
-
-                    <div class="checkbox">
-                        @using (Html.BeginLabelFor(m => m.EnableAkisment, new { @class = "checkbox" }))
-                        {
-                            @Html.CheckBoxFor(m => m.EnableAkisment)
-                        }
-                        @Html.ValidationMessageFor(m => m.EnableAkisment)
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.AkismentKey)
-                        @Html.TextBoxFor(model => model.AkismentKey, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.AkismentKey)
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.SpamQuestion)
-                        @Html.TextBoxFor(model => model.SpamQuestion, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.SpamQuestion)
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.SpamAnswer)
-                        @Html.TextBoxFor(model => model.SpamAnswer, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.SpamAnswer)
-                    </div>
-
-                </div>
-            </div>
-        </div>*@
-
-        @*<div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingSocial">
-                <h4 class="panel-title">
-                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseSocial" aria-expanded="false" aria-controls="collapseSocial">
-                        Social
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseSocial" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSocial">
-                <div class="panel-body">
-                    <p>You must have the correct AppId/Keys for the social accounts (Facebook &amp; Google) in the mvcforum.config file in the root of your website.</p>
-                    <div class="checkbox">
-                        @using (Html.BeginLabelFor(m => m.EnableSocialLogins, new { @class = "checkbox" }))
-                        {
-                            @Html.CheckBoxFor(m => m.EnableSocialLogins)
-                        }
-                        @Html.ValidationMessageFor(m => m.EnableSocialLogins)
-                    </div>
-                </div>
-            </div>
-        </div>*@
-
 
     </div>
 

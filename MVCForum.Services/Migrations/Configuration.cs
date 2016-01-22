@@ -205,6 +205,7 @@ namespace MVCForum.Services.Migrations
                         PointsAddedPerPost = 1,
                         PointsAddedForSolution = 4,
                         PointsDeductedNagativeVote = 2,
+                        PointsAddedPostiveVote = 2,
                         AdminEmailAddress = "my@email.com",
                         NotificationReplyEmail = "noreply@myemail.com",
                         SMTPEnableSSL = false,
@@ -214,7 +215,10 @@ namespace MVCForum.Services.Migrations
                         ActivitiesPerPage = 20,
                         EnableAkisment = false,
                         EnableSocialLogins = false,
-                        EnablePolls = true
+                        EnablePolls = true,
+                        MarkAsSolutionReminderTimeFrame = 7,
+                        EnableEmoticons = true,
+                        DisableStandardRegistration = false
                     };
 
                     context.Setting.Add(settings);
@@ -367,10 +371,15 @@ namespace MVCForum.Services.Migrations
                     context.Topic.Add(topic);
                     context.SaveChanges();
 
-                    const string readMeText = @"<p>We have auto created an admin user for you to manage the site</p>
-<p>Username: admin<br />Password: password</p>
-<p><strong>Important: </strong>Please update the password and username before putting this site live.</p>
-<p>Most of the docs are on the <a href=""http://www.mvcforum.com"">website</a> and <a href=""https://github.com/leen3o/mvcforum"">github</a></p>";
+                    const string readMeText = @"<h2>Administration</h2>
+<p>We have auto created an admin user for you to manage the site</p>
+<p>Username: <strong>admin</strong><br />Password: <strong>password</strong></p>
+<p>Once you have logged in, you can manage the forum <a href=""/admin/"">through the admin section</a>. </p>
+<p><strong><font color=""#ff0000"">Important:</font> </strong>Please update the admin password (and username) before putting this site live.</p>
+<h2>Documentation</h2>
+<p>We have documentation on Github in the WIKI</p>
+<p><a href=""https://github.com/YodasMyDad/mvcforum/wiki"">https://github.com/YodasMyDad/mvcforum/wiki</a></p>
+<p>You can also grab the source code from Github too.</p>";
 
                     var post = new Post
                     {
