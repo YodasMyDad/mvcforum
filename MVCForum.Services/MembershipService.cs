@@ -317,9 +317,18 @@ namespace MVCForum.Services
                     newUser.CreateDate = newUser.LastPasswordChangedDate = DateTime.UtcNow;
                     newUser.LastLockoutDate = (DateTime)SqlDateTime.MinValue;
                     newUser.LastLoginDate = DateTime.UtcNow;
-
-                    newUser.IsApproved = !settings.ManuallyAuthoriseNewMembers;
                     newUser.IsLockedOut = false;
+
+                    var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
+                    var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
+                    if (manuallyAuthoriseMembers || memberEmailAuthorisationNeeded)
+                    {
+                        newUser.IsApproved = false;
+                    }
+                    else
+                    {
+                        newUser.IsApproved = true;
+                    }
 
                     // url generator
                     newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)), null);

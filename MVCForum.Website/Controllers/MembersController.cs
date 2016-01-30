@@ -351,6 +351,11 @@ namespace MVCForum.Website.Controllers
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
+                var settings = SettingsService.GetSettings();
+                var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
+                var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
+                var homeRedirect = false;
+
                 var userToSave = new MembershipUser
                 {
                     UserName = _bannedWordService.SanitiseBannedWords(userModel.UserName),
@@ -359,17 +364,6 @@ namespace MVCForum.Website.Controllers
                     IsApproved = userModel.IsApproved,
                     Comment = userModel.Comment,
                 };
-
-                var homeRedirect = false;
-
-                // Now check settings, see if users need to be manually authorised
-                // OR Does the user need to confirm their email
-                var manuallyAuthoriseMembers = SettingsService.GetSettings().ManuallyAuthoriseNewMembers;
-                var memberEmailAuthorisationNeeded = SettingsService.GetSettings().NewMemberEmailConfirmation ?? false;
-                if (manuallyAuthoriseMembers || memberEmailAuthorisationNeeded)
-                {
-                    userToSave.IsApproved = false;
-                }
 
                 var createStatus = MembershipService.CreateUser(userToSave);
                 if (createStatus != MembershipCreateStatus.Success)
@@ -512,8 +506,9 @@ namespace MVCForum.Website.Controllers
 
         private void SendEmailConfirmationEmail(MembershipUser userToSave)
         {
-            var manuallyAuthoriseMembers = SettingsService.GetSettings().ManuallyAuthoriseNewMembers;
-            var memberEmailAuthorisationNeeded = SettingsService.GetSettings().NewMemberEmailConfirmation ?? false;
+            var settings = SettingsService.GetSettings();
+            var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
+            var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
             if (manuallyAuthoriseMembers == false && memberEmailAuthorisationNeeded)
             {
                 if (!string.IsNullOrEmpty(userToSave.Email))
@@ -522,7 +517,7 @@ namespace MVCForum.Website.Controllers
                     var sb = new StringBuilder();
                     var confirmationLink = string.Concat(StringUtils.ReturnCurrentDomain(), Url.Action("EmailConfirmation", new { id = userToSave.Id }));
                     sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.EmailBody"),
-                                                SettingsService.GetSettings().ForumName,
+                                                settings.ForumName,
                                                 string.Format("<p><a href=\"{0}\">{0}</a></p>", confirmationLink)));
                     var email = new Email
                     {
@@ -538,7 +533,7 @@ namespace MVCForum.Website.Controllers
                     // This cookie is removed when they click the confirmation link
                     var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
                     {
-                        Value = string.Format("{0}#{1}", userToSave.Email, userToSave.UserName),
+                        Value = $"{userToSave.Email}#{userToSave.UserName}",
                         Expires = DateTime.UtcNow.AddDays(7)
                     };
                     // Add the cookie.

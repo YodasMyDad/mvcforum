@@ -56,12 +56,10 @@ namespace MVCForum.Website.Controllers
             var controller = filterContext.RouteData.Values["controller"];
             var action = filterContext.RouteData.Values["action"];
             var area = filterContext.RouteData.DataTokens["area"] ?? string.Empty;
+            var settings = SettingsService.GetSettings();
 
-            //if (Session[AppConstants.GoToInstaller] != null && Session[AppConstants.GoToInstaller].ToString() == "True")
-            //{
-            //    filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Install" }, { "action", "Index" } });
-            //}
-            if (SettingsService.GetSettings().IsClosed && !filterContext.IsChildAction)
+            // Check if forum is closed
+            if (settings.IsClosed && !filterContext.IsChildAction)
             {
                 // Only redirect if its closed and user is NOT in the admin
                 if (controller.ToString().ToLower() != "closed" && controller.ToString().ToLower() != "members" && !area.ToString().ToLower().Contains("admin"))
@@ -69,6 +67,8 @@ namespace MVCForum.Website.Controllers
                     filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Closed" }, { "action", "Index" } });
                 }          
             }
+
+            // Check if they need to agree to permissions
             if (SettingsService.GetSettings().AgreeToTermsAndConditions == true && !filterContext.IsChildAction && LoggedOnReadOnlyUser != null && LoggedOnReadOnlyUser.HasAgreedToTermsAndConditions != true)
             {
                 // Only redirect if its closed and user is NOT in the admin
@@ -76,6 +76,18 @@ namespace MVCForum.Website.Controllers
                 {
                     filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Home" }, { "action", "TermsAndConditions" } });
                 }
+            }
+
+            // If the forum is new members need approving and the user is not approved, log them out
+            if (LoggedOnReadOnlyUser != null && !LoggedOnReadOnlyUser.IsApproved && settings.NewMemberEmailConfirmation == true)
+            {
+                FormsAuthentication.SignOut();
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = LocalizationService.GetResourceString("Members.MemberEmailAuthorisationNeeded"),
+                    MessageType = GenericMessages.success
+                };
+                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Home" }, { "action", "Index" } });
             }
 
             // If the user is banned - Log them out.
