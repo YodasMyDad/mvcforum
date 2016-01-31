@@ -13,11 +13,13 @@ using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Utilities;
+using MVCForum.Website.Application.StorageProviders;
 
 namespace MVCForum.Website.Application
 {
     public static class AppHelpers
     {
+
         #region Application
 
         /// <summary>
@@ -317,8 +319,10 @@ namespace MVCForum.Website.Application
             if (!string.IsNullOrEmpty(avatar))
             {
                 // Has an avatar image
-                return VirtualPathUtility.ToAbsolute(string.Concat(SiteConstants.Instance.UploadFolderPath, userId, "/", avatar, string.Format("?width={0}&crop=0,0,{0},{0}", size)));
+                var storageProvider = StorageProvider.Current;
+                return storageProvider.BuildFileUrl(userId, "/", avatar, string.Format("?width={0}&crop=0,0,{0},{0}", size));
             }
+
             return StringUtils.GetGravatarImage(email, size);
         }
 
@@ -327,8 +331,8 @@ namespace MVCForum.Website.Application
             var sizeFormat = string.Format("?width={0}&crop=0,0,{0},{0}", size);
             if (!string.IsNullOrEmpty(image))
             {
-                // Has an avatar image
-                return VirtualPathUtility.ToAbsolute(string.Concat(SiteConstants.Instance.UploadFolderPath, categoryId, "/", image, sizeFormat));
+                var storageProvider = StorageProvider.Current;
+                return storageProvider.BuildFileUrl(categoryId, "/", image, sizeFormat);
             }
             //TODO - Return default image for category
             return null;
@@ -339,6 +343,7 @@ namespace MVCForum.Website.Application
             var upResult = new UploadFileResult { UploadSuccessful = true };
             const string imageExtensions = "jpg,jpeg,png,gif";
             var fileName = Path.GetFileName(file.FileName);
+            var storageProvider = StorageProvider.Current;
 
             if (fileName != null)
             {
@@ -370,7 +375,6 @@ namespace MVCForum.Website.Application
                     // Turn into a list and strip unwanted commas as we don't trust users!
                     var allowedFileExtensionsList = allowedFileExtensions.ToLower().Trim()
                                                      .TrimStart(',').TrimEnd(',').Split(',').ToList();
-
 
                     // If can't work out extension then just error
                     if (string.IsNullOrEmpty(fileExtension))
@@ -435,32 +439,20 @@ namespace MVCForum.Website.Application
 
                             // Sort the file name
                             newFileName = CreateNewFileName(fileName);
-                            path = Path.Combine(uploadFolderPath, newFileName);
 
-                            // Save the file to disk
-                            file.SaveAs(path);
+                            // Get the storage provider and save file
+                            upResult.UploadedFileUrl = storageProvider.SaveAs(uploadFolderPath, newFileName, file);
                         }
                     }
-
                 }
                 else
                 {
                     // Sort the file name
                     newFileName = CreateNewFileName(fileName);
-                    path = Path.Combine(uploadFolderPath, newFileName);
-
-                    // Save the file to disk
-                    file.SaveAs(path);
+                    upResult.UploadedFileUrl = storageProvider.SaveAs(uploadFolderPath, newFileName, file);
                 }
 
-
-
-                var hostingRoot = HostingEnvironment.MapPath("~/") ?? "";
-                var fileUrl = path.Substring(hostingRoot.Length).Replace('\\', '/').Insert(0, "/");
-
                 upResult.UploadedFileName = newFileName;
-                upResult.UploadedFileUrl = fileUrl;
-
             }
 
             return upResult;

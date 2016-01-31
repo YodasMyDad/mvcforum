@@ -168,6 +168,7 @@
     <Compile Include="Interfaces\Badges\IVoteUpBadge.cs" />
     <Compile Include="Interfaces\Events\IEventHandler.cs" />
     <Compile Include="Interfaces\Events\IEventManager.cs" />
+    <Compile Include="Interfaces\Providers\IStorageProvider.cs" />
     <Compile Include="Interfaces\Services\IBlockService.cs" />
     <Compile Include="Interfaces\Services\ICacheService.cs" />
     <Compile Include="Interfaces\IModelAttribute.cs" />
