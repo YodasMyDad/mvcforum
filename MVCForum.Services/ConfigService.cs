@@ -132,6 +132,41 @@ namespace MVCForum.Services
 
         #endregion
 
+        #region Types
+
+        public Dictionary<string, string> GetTypes()
+        {
+            const string key = "SiteTypes";
+            var siteConfig = _cacheService.Get<Dictionary<string, string>>(key);
+            if (siteConfig == null)
+            {
+                siteConfig = new Dictionary<string, string>();
+                var root = SiteConfig.Instance.GetSiteConfig();
+                var nodes = root?.SelectNodes("/forum/types/type");
+                if (nodes != null)
+                {
+                    foreach (XmlNode node in nodes)
+                    {
+                        //<emoticon symbol="O:)" image="angel-emoticon.png" />  
+                        if (node.Attributes != null)
+                        {
+                            var keyAttr = node.Attributes["name"];
+                            var valueAttr = node.Attributes["value"];
+                            if (keyAttr != null && valueAttr != null)
+                            {
+                                siteConfig.Add(keyAttr.InnerText, valueAttr.InnerText);
+                            }
+                        }
+                    }
+
+                    _cacheService.Set(key, siteConfig, CacheTimes.OneDay);
+                }
+
+            }
+            return siteConfig;
+        }
+
+        #endregion
 
     }
 }

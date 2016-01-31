@@ -13,6 +13,7 @@ namespace MVCForum.Domain.Interfaces.Services
         string Emotify(string inputText);
         OrderedDictionary GetEmoticonHashTable();
         Dictionary<string, string> GetForumConfig();
+        Dictionary<string, string> GetTypes();
 
         #endregion
     }

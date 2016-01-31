@@ -53,6 +53,16 @@ namespace MVCForum.Domain.Constants
             return string.Empty;
         }
 
+        public string GetType(string key)
+        {
+            var dict = _configService.GetTypes();
+            if (!string.IsNullOrEmpty(key) && dict.ContainsKey(key))
+            {
+                return dict[key];
+            }
+            return string.Empty;
+        }
+
 
         #endregion
 
@@ -143,5 +153,8 @@ namespace MVCForum.Domain.Constants
 
         // Themes
         public string ThemeRootFolderName => GetConfig("ThemeRootFolderName");
+
+        // Default Storage Type
+        public string StorageProviderType => GetType("StorageProviderType");
     }
 }

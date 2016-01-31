@@ -6,7 +6,7 @@ namespace MVCForum.Website.Application.StorageProviders
 {
     public static class StorageProvider
     {
-        private static readonly Lazy<IStorageProvider> _currentStorageProvider = new Lazy<IStorageProvider>(() =>
+        private static readonly Lazy<IStorageProvider> CurrentStorageProvider = new Lazy<IStorageProvider>(() =>
         {
             var type = SiteConstants.Instance.StorageProviderType;
             if (string.IsNullOrEmpty(type))
@@ -24,6 +24,6 @@ namespace MVCForum.Website.Application.StorageProviders
             }
         });
 
-        public static IStorageProvider Current => _currentStorageProvider.Value;
+        public static IStorageProvider Current => CurrentStorageProvider.Value;
     }
 }
