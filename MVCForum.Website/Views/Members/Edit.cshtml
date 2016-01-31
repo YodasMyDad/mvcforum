@@ -109,9 +109,9 @@
                         </div>
                     }
                 }
-                
+
                 <div class="checkbox">
-                    @using (Html.BeginLabelFor(m => m.DisableEmailNotifications, new { @class = "checkbox" }))
+                    @using (Html.BeginLabelFor(m => m.DisableEmailNotifications, new {@class = "checkbox"}))
                     {
                         @Html.CheckBoxFor(m => m.DisableEmailNotifications)
                     }

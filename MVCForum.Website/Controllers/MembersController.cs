@@ -423,17 +423,29 @@ namespace MVCForum.Website.Controllers
                     }
 
                     // Store access token for social media account in case we want to do anything with it
+                    var isSocialLogin = false;
                     if (userModel.LoginType == LoginType.Facebook)
                     {
                         userToSave.FacebookAccessToken = userModel.UserAccessToken;
+                        isSocialLogin = true;
                     }
                     if (userModel.LoginType == LoginType.Google)
                     {
                         userToSave.GoogleAccessToken = userModel.UserAccessToken;
+                        isSocialLogin = true;
                     }
                     if (userModel.LoginType == LoginType.Microsoft)
                     {
                         userToSave.MicrosoftAccessToken = userModel.UserAccessToken;
+                        isSocialLogin = true;
+                    }
+
+                    // If this is a social login, and memberEmailAuthorisationNeeded is true then we need to ignore it
+                    // and set memberEmailAuthorisationNeeded to false because the email addresses are validated by the social media providers
+                    if (isSocialLogin && !manuallyAuthoriseMembers)
+                    {
+                        memberEmailAuthorisationNeeded = false;
+                        userToSave.IsApproved = true;
                     }
 
                     // Set the view bag message here
@@ -916,6 +928,9 @@ namespace MVCForum.Website.Controllers
 
                         }
                     }
+
+                    // Repopulate any viewmodel data
+                    userModel.AmountOfPoints = user.TotalPoints;
 
                     // Sort image out first
                     if (userModel.Files != null)
