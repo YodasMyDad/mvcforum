@@ -54,7 +54,6 @@
     <file src="content\" target="content" />
     <!-- Normal Files -->
     <file src="..\MVCForum.WebSite\App_Data\NuGetBackup\Hello.txt" target="content\App_Data\NuGetBackup" />
-    <file src="..\MVCForum.WebSite\App_Data\emoticons.config" target="content\App_Data" />
     <file src="..\MVCForum.WebSite\App_Data\forum.config" target="content\App_Data" />
     <file src="..\MVCForum.WebSite\Areas\Admin\Views\**" target="content\Areas\Admin\Views" />
     <file src="..\MVCForum.WebSite\Content\**" target="content\Content" exclude="..\MVCForum.WebSite\Content\uploads\**" />
