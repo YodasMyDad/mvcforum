@@ -59,8 +59,8 @@
                                     var showChecked = user.Roles.Contains(role.RoleName) ? "checked='checked'" : "";
                                     var disablecb = disabled ? "disabled='disabled'" : "";
                                     <span class="listrolecb">
-                                        <input type="radio" name="Roles-@user.Id" value="@role.RoleName" @showChecked @disablecb /> @Html.Raw(role.RoleName)
-                                    </span>
+                                        <input type="checkbox" name="Roles-@user.Id" value="@role.RoleName" @showChecked @disablecb /> @Html.Raw(role.RoleName)
+                                    </span><br/>
                                 }
                                 <input type="hidden" id="userId" value="@user.Id" />
                             </span>

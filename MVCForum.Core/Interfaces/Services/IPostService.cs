@@ -20,7 +20,7 @@ namespace MVCForum.Domain.Interfaces.Services
         PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm, List<Category> allowedCategories);
         PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId, PostOrderBy order);
         PagedList<Post> GetPagedPendingPosts(int pageIndex, int pageSize, List<Category> allowedCategories);
-        IList<Post> GetPendingPosts(List<Category> allowedCategories, MembershipRole usersRole);
+        IList<Post> GetPendingPosts(List<Category> allowedCategories, MembershipRole usersRole, IList<MembershipRole> usersRoles);
         int GetPendingPostsCount(List<Category> allowedCategories);
         Post Add(Post post);
         Post Get(Guid postId);

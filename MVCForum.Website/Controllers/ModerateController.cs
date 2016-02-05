@@ -28,11 +28,11 @@ namespace MVCForum.Website.Controllers
         {
             // Show both pending topics and also pending posts
             // Use ajax for paging too
-            var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+            var allowedCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles);
             var viewModel = new ModerateViewModel
             {
-                Posts = _postService.GetPendingPosts(allowedCategories, UsersRole),
-                Topics = _topicService.GetPendingTopics(allowedCategories, UsersRole)
+                Posts = _postService.GetPendingPosts(allowedCategories, UsersRole, UsersRoles),
+                Topics = _topicService.GetPendingTopics(allowedCategories, UsersRole, UsersRoles)
             };
             return View(viewModel);
         }
@@ -45,7 +45,7 @@ namespace MVCForum.Website.Controllers
                 try
                 {
                     var topic = _topicService.Get(viewModel.TopicId);
-                    var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
+                    var permissions = RoleService.GetPermissions(topic.Category, UsersRole, UsersRoles);
 
                     // Is this user allowed to moderate - We use EditPosts for now until we change the permissions system
                     if (!permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
@@ -84,7 +84,7 @@ namespace MVCForum.Website.Controllers
                 try
                 {
                     var post = _postService.Get(viewModel.PostId);
-                    var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
+                    var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole, UsersRoles);
                     if (!permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
                     {
                         return Content(LocalizationService.GetResourceString("Errors.NoPermission"));

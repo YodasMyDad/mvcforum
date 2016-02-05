@@ -8,6 +8,7 @@ using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
+using System.Collections.Generic;
 
 namespace MVCForum.Website.Controllers
 {
@@ -25,6 +26,7 @@ namespace MVCForum.Website.Controllers
 
         protected MembershipUser LoggedOnReadOnlyUser;
         protected MembershipRole UsersRole;
+        protected IList<MembershipRole> UsersRoles;
 
         /// <summary>
         /// Constructor
@@ -47,7 +49,22 @@ namespace MVCForum.Website.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 LoggedOnReadOnlyUser = UserIsAuthenticated ? MembershipService.GetUser(Username, true) : null;
-                UsersRole = LoggedOnReadOnlyUser == null ? RoleService.GetRole(AppConstants.GuestRoleName, true) : LoggedOnReadOnlyUser.Roles.FirstOrDefault();   
+                UsersRole = LoggedOnReadOnlyUser == null ? RoleService.GetRole(AppConstants.GuestRoleName, true) : LoggedOnReadOnlyUser.Roles.FirstOrDefault();
+                //TODO: Rather than use roles for category permissions, use logged on user, including Guest. 
+                //Will require LoggedOnReadOnlyUser != null to be replaced throughout where used to determine if a user is loggedd in
+
+                if (LoggedOnReadOnlyUser != null)
+                {
+                    UsersRoles = LoggedOnReadOnlyUser.Roles;
+                }
+                else
+                {
+                    IList<MembershipRole> lstRoles = new List<MembershipRole>();
+                    MembershipRole Guest = new MembershipRole();
+                    Guest = RoleService.GetRole(AppConstants.GuestRoleName, true);
+                    lstRoles.Add(Guest);
+                    UsersRoles = lstRoles;
+                }
             }
         }
 

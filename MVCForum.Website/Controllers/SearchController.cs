@@ -49,7 +49,7 @@ namespace MVCForum.Website.Controllers
                     var settings = SettingsService.GetSettings();
 
                     // Get allowed categories
-                    var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                    var allowedCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles);
 
 
                     // Set the page index
@@ -63,7 +63,7 @@ namespace MVCForum.Website.Controllers
                                                          allowedCategories);
 
                     // Get all the permissions for these topics
-                    var topicPermissions = ViewModelMapping.GetPermissionsForTopics(posts.Select(x => x.Topic), RoleService, UsersRole);
+                    var topicPermissions = ViewModelMapping.GetPermissionsForTopics(posts.Select(x => x.Topic), RoleService, UsersRole, UsersRoles);
 
                     // Get the post Ids
                     var postIds = posts.Select(x => x.Id).ToList();

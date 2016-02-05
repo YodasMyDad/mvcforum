@@ -13,5 +13,6 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<MembershipUser> GetUsersForRole(string roleName);
         MembershipRole CreateRole(MembershipRole role);
         PermissionSet GetPermissions(Category category, MembershipRole role);
+        PermissionSet GetPermissions(Category category, MembershipRole role, IList<MembershipRole> roles);
     }
 }

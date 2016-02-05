@@ -52,6 +52,22 @@ namespace MVCForum.Services
             return user == null ? _roleService.GetRole(AppConstants.GuestRoleName) : user.Roles.FirstOrDefault();
         }
 
+        private IList<MembershipRole> UsersRoles(MembershipUser user)
+        {
+            if (user != null)
+            {
+                return user.Roles;
+            }
+            else
+            {
+                IList<MembershipRole> lstRoles = new List<MembershipRole>();
+                MembershipRole Guest = new MembershipRole();
+                Guest = _roleService.GetRole(AppConstants.GuestRoleName, true);
+                lstRoles.Add(Guest);
+                return lstRoles;
+            }
+        }
+
         public Post SanitizePost(Post post)
         {
             post.PostContent = StringUtils.GetSafeHtml(post.PostContent);
@@ -302,7 +318,7 @@ namespace MVCForum.Services
             return new PagedList<Post>(results.ToList(), pageIndex, pageSize, total);
         }
 
-        public IList<Post> GetPendingPosts(List<Category> allowedCategories, MembershipRole usersRole)
+        public IList<Post> GetPendingPosts(List<Category> allowedCategories, MembershipRole usersRole, IList<MembershipRole> usersRoles)
         {
             var allowedCatIds = allowedCategories.Select(x => x.Id);
             var allPendingPosts = _context.Post.AsNoTracking().Include(x => x.Topic.Category).Where(x => x.Pending == true && allowedCatIds.Contains(x.Topic.Category.Id)).ToList();
@@ -312,7 +328,7 @@ namespace MVCForum.Services
                 var permissionSets = new Dictionary<Guid, PermissionSet>();
                 foreach (var category in allowedCategories)
                 {
-                    var permissionSet = _roleService.GetPermissions(category, usersRole);
+                    var permissionSet = _roleService.GetPermissions(category, usersRole, usersRoles);
                     permissionSets.Add(category.Id, permissionSet);
                 }
 
@@ -331,7 +347,7 @@ namespace MVCForum.Services
             }
             return allPendingPosts;
         }
-
+ 
         public int GetPendingPostsCount(List<Category> allowedCategories)
         {
             var allowedCatIds = allowedCategories.Select(x => x.Id);
@@ -542,7 +558,7 @@ namespace MVCForum.Services
         public Post AddNewPost(string postContent, Topic topic, MembershipUser user, out PermissionSet permissions)
         {
             // Get the permissions for the category that this topic is in
-            permissions = _roleService.GetPermissions(topic.Category, UsersRole(user));
+            permissions = _roleService.GetPermissions(topic.Category, UsersRole(user), UsersRoles(user));
 
             // Check this users role has permission to create a post
             if (permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked || permissions[SiteConstants.Instance.PermissionReadOnly].IsTicked)

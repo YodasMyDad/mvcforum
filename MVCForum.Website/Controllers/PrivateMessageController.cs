@@ -68,7 +68,7 @@ namespace MVCForum.Website.Controllers
 
                 try
                 {
-                    var permissions = RoleService.GetPermissions(null, UsersRole);
+                    var permissions = RoleService.GetPermissions(null, UsersRole, UsersRoles);
                     var settings = SettingsService.GetSettings();
                     // Check if private messages are enabled
                     if (!settings.EnablePrivateMessages || LoggedOnReadOnlyUser.DisablePrivateMessages == true)

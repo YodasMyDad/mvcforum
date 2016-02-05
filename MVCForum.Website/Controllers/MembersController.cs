@@ -99,7 +99,7 @@ namespace MVCForum.Website.Controllers
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 var user = MembershipService.GetUser(id);
-                var permissions = RoleService.GetPermissions(null, UsersRole);
+                var permissions = RoleService.GetPermissions(null, UsersRole, UsersRoles);
 
                 if (permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                 {
@@ -140,7 +140,7 @@ namespace MVCForum.Website.Controllers
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 var user = MembershipService.GetUser(id);
-                var permissions = RoleService.GetPermissions(null, UsersRole);
+                var permissions = RoleService.GetPermissions(null, UsersRole, UsersRoles);
 
                 if (permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                 {
@@ -232,7 +232,7 @@ namespace MVCForum.Website.Controllers
             {
                 var member = MembershipService.GetUserBySlug(slug);
                 var loggedonId = UserIsAuthenticated ? LoggedOnReadOnlyUser.Id : Guid.Empty;
-                var permissions = RoleService.GetPermissions(null, UsersRole);
+                var permissions = RoleService.GetPermissions(null, UsersRole, UsersRoles);
 
                 // Localise the badge names
                 foreach (var item in member.Badges)
@@ -821,7 +821,7 @@ namespace MVCForum.Website.Controllers
             {
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
-                    var allowedCategories = _categoryService.GetAllowedCategories(UsersRole).ToList();
+                    var allowedCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles).ToList();
 
                     // Get the user discussions, only grab 100 posts
                     var posts = _postService.GetByMember(id, 100, allowedCategories);
@@ -830,7 +830,7 @@ namespace MVCForum.Website.Controllers
                     var topics = posts.Select(x => x.Topic).Distinct().Take(6).OrderByDescending(x => x.LastPost.DateCreated).ToList();
 
                     // Get the Topic View Models
-                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
+                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, UsersRoles, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
 
                     // create the view model
                     var viewModel = new ViewMemberDiscussionsViewModel
@@ -873,7 +873,7 @@ namespace MVCForum.Website.Controllers
             {
                 var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
 
-                var permissions = RoleService.GetPermissions(null, UsersRole);
+                var permissions = RoleService.GetPermissions(null, UsersRole, UsersRoles);
 
                 // Check is has permissions
                 if (UserIsAdmin || loggedOnUserId == id || permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
@@ -895,7 +895,7 @@ namespace MVCForum.Website.Controllers
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
-                var permissions = RoleService.GetPermissions(null, UsersRole);
+                var permissions = RoleService.GetPermissions(null, UsersRole, UsersRoles);
 
                 // Check is has permissions
                 if (UserIsAdmin || loggedOnUserId == userModel.Id || permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
@@ -1074,10 +1074,10 @@ namespace MVCForum.Website.Controllers
             var settings = SettingsService.GetSettings();
             if (LoggedOnReadOnlyUser != null)
             {
-                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles);
                 privateMessageCount = _privateMessageService.NewPrivateMessageCount(LoggedOnReadOnlyUser.Id);
-                var pendingTopics = _topicService.GetPendingTopics(allowedCategories, UsersRole);
-                var pendingPosts = _postService.GetPendingPosts(allowedCategories, UsersRole);
+                var pendingTopics = _topicService.GetPendingTopics(allowedCategories, UsersRole, UsersRoles);
+                var pendingPosts = _postService.GetPendingPosts(allowedCategories, UsersRole, UsersRoles);
                 moderateCount = (pendingTopics.Count + pendingPosts.Count);
             }
 

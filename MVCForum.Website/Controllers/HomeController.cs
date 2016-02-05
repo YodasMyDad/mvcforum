@@ -136,7 +136,7 @@ namespace MVCForum.Website.Controllers
                 // loop through the categories and get the permissions
                 foreach (var category in categories)
                 {
-                    var permissionSet = RoleService.GetPermissions(category, UsersRole);
+                    var permissionSet = RoleService.GetPermissions(category, UsersRole, UsersRoles);
                     permissions.Add(category, permissionSet);
                 }
 

@@ -24,7 +24,7 @@
     var listrolecbholder = 'span.listrolecbholder';
     $(listrolecbholder).click(function () {
         var checkedRoles = [];
-        $(this).find('input[type=radio]:checked').each(function () {
+        $(this).find('input[type=checkbox]:checked').each(function () {
             checkedRoles.push($(this).val());
         });
 
