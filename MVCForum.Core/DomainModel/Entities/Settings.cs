@@ -65,5 +65,6 @@ namespace MVCForum.Domain.DomainModel
         public bool? DisableStandardRegistration { get; set; }
         public virtual MembershipRole NewMemberStartingRole { get; set; }
         public virtual Language DefaultLanguage { get; set; }
+        public bool? EnableDefaultCategoryinDiscussions { get; set; }
     }
 }

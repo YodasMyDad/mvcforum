@@ -199,5 +199,8 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [UIHint(AppConstants.EditorType), AllowHtml]
         [StringLength(6000)]
         public string TermsAndConditions { get; set; }
+
+        [DisplayName("Enable Default Category in Discussions")]
+        public bool EnableDefaultCategoryinDiscussions { get; set; }
     }
 }

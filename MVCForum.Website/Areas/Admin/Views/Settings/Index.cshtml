@@ -222,6 +222,14 @@
                 @Html.ValidationMessageFor(model => model.PrivateMessageFloodControl)
             </div>
 
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.EnableDefaultCategoryinDiscussions, new { @class = "checkbox" }))
+                {
+                    @Html.CheckBoxFor(m => m.EnableDefaultCategoryinDiscussions)
+                }
+                @Html.ValidationMessageFor(m => m.EnableDefaultCategoryinDiscussions)
+            </div>
+
 
         </div>
     </div>

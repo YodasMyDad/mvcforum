@@ -132,6 +132,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.AgreeToTermsAndConditions = settingsViewModel.AgreeToTermsAndConditions;
             existingSettings.DisableStandardRegistration = settingsViewModel.DisableStandardRegistration;
             existingSettings.TermsAndConditions = settingsViewModel.TermsAndConditions;
+            existingSettings.EnableDefaultCategoryinDiscussions = settingsViewModel.EnableDefaultCategoryinDiscussions;
             return existingSettings;
         }
 
@@ -189,7 +190,8 @@ namespace MVCForum.Website.ViewModels.Mapping
                 DisableDislikeButton = currentSettings.DisableDislikeButton,
                 TermsAndConditions = currentSettings.TermsAndConditions,
                 AgreeToTermsAndConditions = currentSettings.AgreeToTermsAndConditions ?? false,
-                DisableStandardRegistration = currentSettings.DisableStandardRegistration ?? false
+                DisableStandardRegistration = currentSettings.DisableStandardRegistration ?? false,
+                EnableDefaultCategoryinDiscussions = currentSettings.EnableDefaultCategoryinDiscussions ?? false,
             };
 
             return settingViewModel;

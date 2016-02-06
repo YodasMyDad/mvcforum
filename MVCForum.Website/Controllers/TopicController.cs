@@ -645,7 +645,7 @@ namespace MVCForum.Website.Controllers
         }
 
         [Authorize]
-        public ActionResult Create()
+        public ActionResult Create(Guid? CategoryId)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
@@ -654,6 +654,10 @@ namespace MVCForum.Website.Controllers
                 if (allowedAccessCategories.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
                 {
                     var viewModel = PrePareCreateEditTopicViewModel(allowedAccessCategories);
+                    if (CategoryId != null && SettingsService.GetSettings().EnableDefaultCategoryinDiscussions == true)
+                    {
+                        viewModel.Category = _categoryService.Get(CategoryId.GetValueOrDefault()).Id;
+                    }
                     return View(viewModel);
                 }
                 return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
