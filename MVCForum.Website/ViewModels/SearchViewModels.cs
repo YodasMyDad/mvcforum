@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MVCForum.Website.ViewModels
 {
@@ -9,6 +10,7 @@ namespace MVCForum.Website.ViewModels
         public int? TotalCount { get; set; }
         public int? TotalPages { get; set; }
         public string Term { get; set; }
+        public Guid? CategoryId { get; set; }
 
     }
 }

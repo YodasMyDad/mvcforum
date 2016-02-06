@@ -201,7 +201,7 @@ namespace MVCForum.Services
         /// <param name="searchTerm"></param>
         /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm, List<Category> allowedCategories)
+        public PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm, List<Category> allowedCategories, Guid? CategoryId)
         {
             // Create search term
             var search = StringUtils.ReturnSearchString(searchTerm);
@@ -218,6 +218,11 @@ namespace MVCForum.Services
                             .AsNoTracking()
                             .Where(x => x.Pending != true)
                             .Where(x => allowedCatIds.Contains(x.Topic.Category.Id));
+
+            if (CategoryId != null)
+            {
+                query = query.Where(x => x.Topic.Category.Id == CategoryId);
+            }
 
             // Start the predicate builder
             var postFilter = PredicateBuilder.False<Post>();
