@@ -45,3 +45,5 @@ packages/*
 MVCForum.Website/Properties/PublishProfiles/Profile1.pubxml
 MVCForum.Website/Properties/PublishProfiles/Local Deployment.pubxml
 MVCForum.Website/Properties/PublishProfiles/Profile1.pubxml
+
+.vs/config/
