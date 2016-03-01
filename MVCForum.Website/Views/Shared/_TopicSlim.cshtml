@@ -1,10 +1,9 @@
 ﻿@using MVCForum.Utilities
-@using MVCForum.Website
 @model MVCForum.Website.ViewModels.TopicViewModel
 @{
     var postToolTip = string.Concat(StringUtils.ReturnAmountWordsFromString(StringUtils.StripHtmlFromString(Model.StarterPost.Post.PostContent), 50), "....");
 }
-@if (!Model.Permissions[AppConstants.PermissionDenyAccess].IsTicked)
+@if (!Model.Permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
 {
     <div class="topicrow topicrow-slim topicsticky-@(Model.Topic.IsSticky.ToString().ToLower()) topiclocked-@(Model.Topic.IsLocked.ToString().ToLower()) topicsolved-@(Model.Topic.Solved.ToString().ToLower())">
 

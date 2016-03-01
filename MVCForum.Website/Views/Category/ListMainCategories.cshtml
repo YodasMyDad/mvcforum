@@ -19,14 +19,14 @@
         var actualPostCount = cat.Topics.SelectMany(x => x.Posts).Count();
         var postCount = (actualPostCount < 1 ? actualPostCount : actualPostCount - 1);
 
-        @Html.Partial("_Category", new CategoryRowViewModel
-                                       {
-                                           Category = cat,
-                                           LatestTopic = latestTopicInCategory,
-                                           Permissions = permissions,
-                                           PostCount = postCount,
-                                           TopicCount = topicCount
-                                       })
+        @Html.Partial("_Category", new CategoryViewModel
+   {
+       Category = cat,
+       LatestTopic = latestTopicInCategory,
+       Permissions = permissions,
+       PostCount = postCount,
+       TopicCount = topicCount
+   })
 
     }
 

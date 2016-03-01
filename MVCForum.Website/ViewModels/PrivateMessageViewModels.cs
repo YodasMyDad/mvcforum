@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces;
 using MVCForum.Website.Application;
@@ -19,7 +20,7 @@ namespace MVCForum.Website.ViewModels
 
     public class CreatePrivateMessageViewModel
     {
-        [UIHint(SiteConstants.EditorType), AllowHtml]
+        [UIHint(AppConstants.EditorType), AllowHtml]
         public string Message { get; set; }
 
         [ForumMvcResourceDisplayName("PM.RecipientUsername")]

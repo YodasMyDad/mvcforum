@@ -1,37 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Entity;
 using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Services.Data.Context;
 
 namespace MVCForum.Services
 {
     public partial class GlobalPermissionForRoleService : IGlobalPermissionForRoleService
     {
-        private readonly IGlobalPermissionForRoleRepository _globalPermissionForRoleRepository;
-
-        public GlobalPermissionForRoleService(IGlobalPermissionForRoleRepository globalPermissionForRoleRepository)
+        private readonly MVCForumContext _context;
+        public GlobalPermissionForRoleService(IMVCForumContext context)
         {
-            _globalPermissionForRoleRepository = globalPermissionForRoleRepository;
+            _context = context as MVCForumContext;
         }
 
-
-        public void Add(GlobalPermissionForRole permissionForRole)
+        public GlobalPermissionForRole Add(GlobalPermissionForRole permissionForRole)
         {
-            _globalPermissionForRoleRepository.Add(permissionForRole);
+            return _context.GlobalPermissionForRole.Add(permissionForRole);
         }
 
         public void Delete(GlobalPermissionForRole permissionForRole)
         {
-            _globalPermissionForRoleRepository.Delete(permissionForRole);
+            _context.GlobalPermissionForRole.Remove(permissionForRole);
         }
 
         public GlobalPermissionForRole CheckExists(GlobalPermissionForRole permissionForRole)
         {
             if (permissionForRole.Permission != null && permissionForRole.MembershipRole != null)
             {
-                return _globalPermissionForRoleRepository.Get(permissionForRole.Permission.Id, permissionForRole.MembershipRole.Id);
+                return Get(permissionForRole.Permission.Id, permissionForRole.MembershipRole.Id);
             }
 
             return null;
@@ -39,24 +39,24 @@ namespace MVCForum.Services
 
         public Dictionary<Permission, GlobalPermissionForRole> GetAll(MembershipRole role)
         {
-            var catRowList = _globalPermissionForRoleRepository.GetAll(role);
+            var catRowList =  _context.GlobalPermissionForRole.Include(x => x.MembershipRole).Where(x => x.MembershipRole.Id == role.Id).ToList();
             return catRowList.ToDictionary(catRow => catRow.Permission);
         }
 
         public Dictionary<Permission, GlobalPermissionForRole> GetAll()
         {
-            var catRowList = _globalPermissionForRoleRepository.GetAll();
+            var catRowList = _context.GlobalPermissionForRole.Include(x => x.MembershipRole).ToList();
             return catRowList.ToDictionary(catRow => catRow.Permission);
         }
 
         public GlobalPermissionForRole Get(Guid permId, Guid roleId)
         {
-            return _globalPermissionForRoleRepository.Get(permId, roleId);
+            return _context.GlobalPermissionForRole.Include(x => x.MembershipRole).FirstOrDefault(x => x.Permission.Id == permId && x.MembershipRole.Id == roleId);
         }
 
         public GlobalPermissionForRole Get(Guid permId)
         {
-            return _globalPermissionForRoleRepository.Get(permId);
+            return _context.GlobalPermissionForRole.Include(x => x.MembershipRole).FirstOrDefault(x => x.Id == permId);
         }
 
         public void UpdateOrCreateNew(GlobalPermissionForRole globalPermissionForRole)

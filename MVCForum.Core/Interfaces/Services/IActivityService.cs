@@ -54,5 +54,9 @@ namespace MVCForum.Domain.Interfaces.Services
         /// </summary>
         /// <param name="activities"></param>
         void Delete(IList<Activity> activities);
+
+        Activity Add(Activity newActivity);
+        Activity Get(Guid id);
+        void Delete(Activity item);
     }
 }

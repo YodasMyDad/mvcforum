@@ -1,0 +1,8 @@
+﻿@model MVCForum.Domain.DomainModel.PagedList<MVCForum.Domain.DomainModel.Post>
+@{
+    Layout = null;
+}
+@foreach (var post in Model)
+{
+    @Html.Partial("_ModeratePost", post)
+}

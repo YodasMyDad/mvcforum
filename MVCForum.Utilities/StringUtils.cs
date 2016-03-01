@@ -84,7 +84,7 @@ namespace MVCForum.Utilities
         #region Social Helpers
         public static string GetGravatarImage(string email, int size)
         {
-            return IsValidEmail(email) ? string.Format("{0}://www.gravatar.com/avatar/{1}?s={2}&d=identicon&r=PG", HttpContext.Current.Request.Url.Scheme, md5HashString(email), size) : "";
+            return IsValidEmail(email) ? string.Format("//www.gravatar.com/avatar/{0}?s={1}&d=identicon&r=PG", md5HashString(email), size) : "";
         }
         #endregion
 
@@ -588,88 +588,126 @@ namespace MVCForum.Utilities
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
 
-            //Remove potentially harmful elements
-            var nc = doc.DocumentNode.SelectNodes("//script|//link|//iframe|//frameset|//frame|//applet|//object|//embed");
-            if (nc != null)
-            {
-                foreach (var node in nc)
-                {
-                    node.ParentNode.RemoveChild(node, false);
+            var finishedHtml = html;
 
+            // Embed Urls
+            if (doc.DocumentNode != null)
+            {
+                // Get all the links we are going to 
+                var tags = doc.DocumentNode.SelectNodes("//a[contains(@href, 'youtube.com')]|//a[contains(@href, 'youtu.be')]|//a[contains(@href, 'vimeo.com')]|//a[contains(@href, 'screenr.com')]|//a[contains(@href, 'instagram.com')]");
+
+                if (tags != null)
+                {
+                    // find formatting tags
+                    foreach (var item in tags)
+                    {
+                        if (item.PreviousSibling == null)
+                        {
+                            // Prepend children to parent node in reverse order
+                            foreach (var node in item.ChildNodes.Reverse())
+                            {
+                                item.ParentNode.PrependChild(node);
+                            }
+                        }
+                        else
+                        {
+                            // Insert children after previous sibling
+                            foreach (var node in item.ChildNodes)
+                            {
+                                item.ParentNode.InsertAfter(node, item.PreviousSibling);
+                            }
+                        }
+
+                        // remove from tree
+                        item.Remove();
+                    }
                 }
+
+
+                //Remove potentially harmful elements
+                var nc = doc.DocumentNode.SelectNodes("//script|//link|//iframe|//frameset|//frame|//applet|//object|//embed");
+                if (nc != null)
+                {
+                    foreach (var node in nc)
+                    {
+                        node.ParentNode.RemoveChild(node, false);
+
+                    }
+                }
+
+                //remove hrefs to java/j/vbscript URLs
+                nc = doc.DocumentNode.SelectNodes("//a[starts-with(translate(@href, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'javascript')]|//a[starts-with(translate(@href, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'jscript')]|//a[starts-with(translate(@href, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'vbscript')]");
+                if (nc != null)
+                {
+
+                    foreach (var node in nc)
+                    {
+                        node.SetAttributeValue("href", "#");
+                    }
+                }
+
+                //remove img with refs to java/j/vbscript URLs
+                nc = doc.DocumentNode.SelectNodes("//img[starts-with(translate(@src, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'javascript')]|//img[starts-with(translate(@src, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'jscript')]|//img[starts-with(translate(@src, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'vbscript')]");
+                if (nc != null)
+                {
+                    foreach (var node in nc)
+                    {
+                        node.SetAttributeValue("src", "#");
+                    }
+                }
+
+                //remove on<Event> handlers from all tags
+                nc = doc.DocumentNode.SelectNodes("//*[@onclick or @onmouseover or @onfocus or @onblur or @onmouseout or @ondblclick or @onload or @onunload or @onerror]");
+                if (nc != null)
+                {
+                    foreach (var node in nc)
+                    {
+                        node.Attributes.Remove("onFocus");
+                        node.Attributes.Remove("onBlur");
+                        node.Attributes.Remove("onClick");
+                        node.Attributes.Remove("onMouseOver");
+                        node.Attributes.Remove("onMouseOut");
+                        node.Attributes.Remove("onDblClick");
+                        node.Attributes.Remove("onLoad");
+                        node.Attributes.Remove("onUnload");
+                        node.Attributes.Remove("onError");
+                    }
+                }
+
+                // remove any style attributes that contain the word expression (IE evaluates this as script)
+                nc = doc.DocumentNode.SelectNodes("//*[contains(translate(@style, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'expression')]");
+                if (nc != null)
+                {
+                    foreach (var node in nc)
+                    {
+                        node.Attributes.Remove("stYle");
+                    }
+                }
+
+                // build a list of nodes ordered by stream position
+                var pos = new NodePositions(doc);
+
+                // browse all tags detected as not opened
+                foreach (var error in doc.ParseErrors.Where(e => e.Code == HtmlParseErrorCode.TagNotOpened))
+                {
+                    // find the text node just before this error
+                    var last = pos.Nodes.OfType<HtmlTextNode>().LastOrDefault(n => n.StreamPosition < error.StreamPosition);
+                    if (last != null)
+                    {
+                        // fix the text; reintroduce the broken tag
+                        last.Text = error.SourceText.Replace("/", "") + last.Text + error.SourceText;
+                    }
+                }
+
+                finishedHtml = doc.DocumentNode.WriteTo();
             }
 
-            //remove hrefs to java/j/vbscript URLs
-            nc = doc.DocumentNode.SelectNodes("//a[starts-with(translate(@href, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'javascript')]|//a[starts-with(translate(@href, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'jscript')]|//a[starts-with(translate(@href, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'vbscript')]");
-            if (nc != null)
-            {
-
-                foreach (var node in nc)
-                {
-                    node.SetAttributeValue("href", "#");
-                }
-            }
-
-            //remove img with refs to java/j/vbscript URLs
-            nc = doc.DocumentNode.SelectNodes("//img[starts-with(translate(@src, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'javascript')]|//img[starts-with(translate(@src, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'jscript')]|//img[starts-with(translate(@src, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'vbscript')]");
-            if (nc != null)
-            {
-                foreach (var node in nc)
-                {
-                    node.SetAttributeValue("src", "#");
-                }
-            }
-
-            //remove on<Event> handlers from all tags
-            nc = doc.DocumentNode.SelectNodes("//*[@onclick or @onmouseover or @onfocus or @onblur or @onmouseout or @ondblclick or @onload or @onunload or @onerror]");
-            if (nc != null)
-            {
-                foreach (var node in nc)
-                {
-                    node.Attributes.Remove("onFocus");
-                    node.Attributes.Remove("onBlur");
-                    node.Attributes.Remove("onClick");
-                    node.Attributes.Remove("onMouseOver");
-                    node.Attributes.Remove("onMouseOut");
-                    node.Attributes.Remove("onDblClick");
-                    node.Attributes.Remove("onLoad");
-                    node.Attributes.Remove("onUnload");
-                    node.Attributes.Remove("onError");
-                }
-            }
-
-            // remove any style attributes that contain the word expression (IE evaluates this as script)
-            nc = doc.DocumentNode.SelectNodes("//*[contains(translate(@style, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), 'expression')]");
-            if (nc != null)
-            {
-                foreach (var node in nc)
-                {
-                    node.Attributes.Remove("stYle");
-                }
-            }
-
-            // build a list of nodes ordered by stream position
-            var pos = new NodePositions(doc);
-
-            // browse all tags detected as not opened
-            foreach (var error in doc.ParseErrors.Where(e => e.Code == HtmlParseErrorCode.TagNotOpened))
-            {
-                // find the text node just before this error
-                var last = pos.Nodes.OfType<HtmlTextNode>().LastOrDefault(n => n.StreamPosition < error.StreamPosition);
-                if (last != null)
-                {
-                    // fix the text; reintroduce the broken tag
-                    last.Text = error.SourceText.Replace("/", "") + last.Text + error.SourceText;
-                }
-            }
-
-            var finishedHtml = doc.DocumentNode.WriteTo();
 
             // The reason we have this option, is using the santiser with the MarkDown editor 
             // causes problems with line breaks.
             if (useXssSantiser)
             {
-                return SanitizerCompatibleWithChineseCharacters(Sanitizer.GetSafeHtmlFragment(finishedHtml));
+                return SanitizerCompatibleWithForiegnCharacters(Sanitizer.GetSafeHtmlFragment(finishedHtml));
             }
 
             return finishedHtml;
@@ -677,11 +715,6 @@ namespace MVCForum.Utilities
 
         public static string RemoveUnwantedTags(string html)
         {
-
-            if (string.IsNullOrEmpty(html))
-            {
-                return html;
-            }
 
             var unwantedTagNames = new List<string>
             {
@@ -694,6 +727,16 @@ namespace MVCForum.Utilities
                 "th",
                 "thead"
             };
+
+            return RemoveUnwantedTags(html, unwantedTagNames);
+        }
+
+        public static string RemoveUnwantedTags(string html, List<string> unwantedTagNames)
+        {
+            if (string.IsNullOrEmpty(html))
+            {
+                return html;
+            }
 
             var htmlDoc = new HtmlDocument();
 
@@ -819,13 +862,10 @@ namespace MVCForum.Utilities
                 {
                     foreach (var image in nodes)
                     {
-                        if (image != null)
+                        HtmlAttribute imageUrl = image?.Attributes[@"src"];
+                        if (imageUrl != null && !imageUrl.Value.Contains("http"))
                         {
-                            HtmlAttribute imageUrl = image.Attributes[@"src"];
-                            if (imageUrl != null && !imageUrl.Value.Contains("http"))
-                            {
-                                imageUrl.Value = string.Concat(domain, imageUrl.Value);
-                            }
+                            imageUrl.Value = string.Concat(domain, imageUrl.Value);
                         }
                     }
 
@@ -852,13 +892,10 @@ namespace MVCForum.Utilities
                 {
                     foreach (var image in nodes.Take(amount))
                     {
-                        if (image != null)
+                        var imageUrl = image?.Attributes[@"src"];
+                        if (imageUrl != null)
                         {
-                            var imageUrl = image.Attributes[@"src"];
-                            if (imageUrl != null)
-                            {
-                                images.Add(imageUrl.Value);
-                            }
+                            images.Add(imageUrl.Value);
                         }
                     }
                 }
@@ -896,7 +933,7 @@ namespace MVCForum.Utilities
         /// <returns></returns>
         public static string ReturnImageHtml(string url, string alt)
         {
-            return string.Format("<img src=\"{0}\" alt=\"{1}\" />", url, alt);
+            return $"<img src=\"{url}\" alt=\"{alt}\" />";
         }
         #endregion
 
@@ -980,7 +1017,7 @@ namespace MVCForum.Utilities
         /// <returns></returns>
         public static string FormatCurrency(int? amount)
         {
-            return amount != null ? string.Format("{0:C}", amount) : "n/a";
+            return amount != null ? $"{amount:C}" : "n/a";
         }
 
         /// <summary>
@@ -996,29 +1033,10 @@ namespace MVCForum.Utilities
 
         public static string EmbedVideosInPosts(string str)
         {
-            #region OLD PARSING BB TAGS
-            //// YouTube Insert Video, just add the video ID and it inserts video into post
-            //var exp = new Regex(@"\[youtube\]([^\]]+)\[/youtube\]");
-            //str = exp.Replace(str, "<div class=\"video-container\"><iframe title=\"YouTube video player\" width=\"500\" height=\"281\" src=\"http://www.youtube.com/embed/$1\" frameborder=\"0\" allowfullscreen></iframe></div>");
-
-            //// YouTube Insert Video, just add the video ID and it inserts video into post
-            //exp = new Regex(@"\[vimeo\]([^\]]+)\[/vimeo\]");
-            //str = exp.Replace(str, "<div class=\"video-container\"><iframe src=\"http://player.vimeo.com/video/$1?portrait=0\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>");
-
-            //// YouTube Screenr Video, just add the video ID and it inserts video into post
-            //exp = new Regex(@"\[screenr\]([^\]]+)\[/screenr\]");
-            //str = exp.Replace(str, "<div class=\"video-container\"><iframe src=\"http://www.screenr.com/embed/$1\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>");
-
-            //// Add tweets
-
-            //return str; 
-            #endregion
-
-
             if (str.IndexOf("youtube.com", StringComparison.CurrentCultureIgnoreCase) >= 0 || str.IndexOf("youtu.be", StringComparison.CurrentCultureIgnoreCase) >= 0)
             {
                 const string pattern = @"(?:https?:\/\/)?(?:www\.)?(?:(?:(?:youtube.com\/watch\?[^?]*v=|youtu.be\/)([\w\-]+))(?:[^\s?]+)?)";
-                const string replacement = "<div class=\"video-container\" itemscope itemtype=\"http://schema.org/VideoObject\"><meta itemprop=\"embedURL\" content=\"http://www.youtube.com/embed/$1\"><iframe title='YouTube video player' width='500' height='281' src='http://www.youtube.com/embed/$1' frameborder='0' allowfullscreen='1'></iframe></div>";
+                const string replacement = "<div class=\"video-container\" itemscope itemtype=\"//schema.org/VideoObject\"><meta itemprop=\"embedURL\" content=\"//www.youtube.com/embed/$1\"><iframe title='YouTube video player' width='500' height='281' src='//www.youtube.com/embed/$1' frameborder='0' allowfullscreen='1'></iframe></div>";
 
                 var rgx = new Regex(pattern);
                 str = rgx.Replace(str, replacement);
@@ -1027,7 +1045,7 @@ namespace MVCForum.Utilities
             if (str.IndexOf("vimeo.com", StringComparison.CurrentCultureIgnoreCase) >= 0)
             {
                 const string pattern = @"(?:https?:\/\/)?vimeo\.com/(?:.*#|.*/videos/)?([0-9]+)";
-                const string replacement = "<div class=\"video-container\" itemscope itemtype=\"http://schema.org/VideoObject\"><meta itemprop=\"embedURL\" content=\"http://player.vimeo.com/video/$1?portrait=0\"><iframe src=\"http://player.vimeo.com/video/$1?portrait=0\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>";
+                const string replacement = "<div class=\"video-container\" itemscope itemtype=\"//schema.org/VideoObject\"><meta itemprop=\"embedURL\" content=\"//player.vimeo.com/video/$1?portrait=0\"><iframe src=\"//player.vimeo.com/video/$1?portrait=0\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>";
 
                 var rgx = new Regex(pattern);
                 str = rgx.Replace(str, replacement);
@@ -1036,7 +1054,7 @@ namespace MVCForum.Utilities
             if (str.IndexOf("screenr", StringComparison.CurrentCultureIgnoreCase) >= 0)
             {
                 const string pattern = @"(?:https?:\/\/)?(?:www\.)screenr\.com/([a-zA-Z0-9]+)";
-                const string replacement = "<div class=\"video-container\" itemscope itemtype=\"http://schema.org/VideoObject\"><meta itemprop=\"embedURL\" content=\"http://www.screenr.com/embed/$1\"><iframe src=\"http://www.screenr.com/embed/$1\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>";
+                const string replacement = "<div class=\"video-container\" itemscope itemtype=\"//schema.org/VideoObject\"><meta itemprop=\"embedURL\" content=\"//www.screenr.com/embed/$1\"><iframe src=\"//www.screenr.com/embed/$1\" width=\"500\" height=\"281\" frameborder=\"0\"></iframe></div>";
 
                 var rgx = new Regex(pattern);
                 str = rgx.Replace(str, replacement);
@@ -1044,7 +1062,7 @@ namespace MVCForum.Utilities
 
             if (str.IndexOf("instagr", StringComparison.CurrentCultureIgnoreCase) >= 0)
             {
-                var reg = new Regex(@"http://instagr\.?am(?:\.com)?/\S*", RegexOptions.Compiled);
+                var reg = new Regex(@"(?:https?:\/\/)?(?:www\.)?instagr\.?am(?:\.com)?/\S*", RegexOptions.Compiled);
                 var idRegex = new Regex(@"(?<=p/).*?(?=/)", RegexOptions.Compiled);
                 var result = new StringBuilder();
                 using (var reader = new StringReader(str))
@@ -1058,7 +1076,7 @@ namespace MVCForum.Utilities
 
                             // Find links 
 
-                            result.AppendLine(reg.Replace(line, string.Format("<p><img src=\"http://instagram.com/p/{0}/media/?size=l\" class=\"img-responsive\" /></p>", idRegex.Match(url))));
+                            result.AppendLine(reg.Replace(line, $"<p><img src=\"//instagram.com/p/{idRegex.Match(url)}/media/?size=l\" class=\"img-responsive\" /></p>"));
                         }
                         else
                         {
@@ -1161,7 +1179,7 @@ namespace MVCForum.Utilities
         #endregion
 
         #region Sanitizer Compatible With Chinese Characters
-        private static System.Collections.Generic.Dictionary<string, string> hbjDictionaryFX = new System.Collections.Generic.Dictionary<string, string>();
+        private static readonly Dictionary<string, string> HbjDictionaryFx = new Dictionary<string, string>();
         /// <summary>
         /// 微软的AntiXSS v4.0 让部分汉字乱码,这里将乱码部分汉字转换回来
         /// Microsoft AntiXSS Library Sanitizer causes some Chinese characters become "encoded",
@@ -1169,93 +1187,98 @@ namespace MVCForum.Utilities
         /// source:http://www.zhaoshu.net/bbs/read10.aspx?TieID=b1745a9c-03a6-4367-93e0-114707aff3e3
         /// </summary>
         /// <returns></returns>
-        public static String SanitizerCompatibleWithChineseCharacters(String originalString)
+        public static string SanitizerCompatibleWithForiegnCharacters(string originalString)
         {
-            string returnString = originalString;
+            var returnString = originalString;
 
             //returnString = returnString.Replace("\r\n", "");
             if (returnString.Contains("&#"))
             {
                 //Initialize the dictionary, if it doesn't contain anything. 
-                if (hbjDictionaryFX.Keys.Count == 0)
+                if (HbjDictionaryFx.Keys.Count == 0)
                 {
-                    lock (hbjDictionaryFX)
+                    lock (HbjDictionaryFx)
                     {
-                        if (hbjDictionaryFX.Keys.Count == 0)
+                        if (HbjDictionaryFx.Keys.Count == 0)
                         {
-                            hbjDictionaryFX.Clear();
-                            hbjDictionaryFX.Add("&#20028;", "丼");
-                            hbjDictionaryFX.Add("&#20284;", "似");
-                            hbjDictionaryFX.Add("&#20540;", "值");
-                            hbjDictionaryFX.Add("&#20796;", "儼");
-                            hbjDictionaryFX.Add("&#21052;", "刼");
-                            hbjDictionaryFX.Add("&#21308;", "匼");
-                            hbjDictionaryFX.Add("&#21564;", "吼");
-                            hbjDictionaryFX.Add("&#21820;", "唼");
-                            hbjDictionaryFX.Add("&#22076;", "嘼");
-                            hbjDictionaryFX.Add("&#22332;", "圼");
-                            hbjDictionaryFX.Add("&#22588;", "堼");
-                            hbjDictionaryFX.Add("&#23612;", "尼");
-                            hbjDictionaryFX.Add("&#26684;", "格");
-                            hbjDictionaryFX.Add("&#22844;", "夼");
-                            hbjDictionaryFX.Add("&#23100;", "娼");
-                            hbjDictionaryFX.Add("&#23356;", "嬼");
-                            hbjDictionaryFX.Add("&#23868;", "崼");
-                            hbjDictionaryFX.Add("&#24124;", "帼");
-                            hbjDictionaryFX.Add("&#24380;", "弼");
-                            hbjDictionaryFX.Add("&#24636;", "怼");
-                            hbjDictionaryFX.Add("&#24892;", "愼");
-                            hbjDictionaryFX.Add("&#25148;", "戼");
-                            hbjDictionaryFX.Add("&#25404;", "挼");
-                            hbjDictionaryFX.Add("&#25660;", "搼");
-                            hbjDictionaryFX.Add("&#25916;", "攼");
-                            hbjDictionaryFX.Add("&#26172;", "昼");
-                            hbjDictionaryFX.Add("&#26428;", "朼");
-                            hbjDictionaryFX.Add("&#26940;", "椼");
-                            hbjDictionaryFX.Add("&#27196;", "樼");
-                            hbjDictionaryFX.Add("&#27452;", "欼");
-                            hbjDictionaryFX.Add("&#27708;", "氼");
-                            hbjDictionaryFX.Add("&#27964;", "洼");
-                            hbjDictionaryFX.Add("&#28220;", "渼");
-                            hbjDictionaryFX.Add("&#28476;", "漼");
-                            hbjDictionaryFX.Add("&#28732;", "瀼");
-                            hbjDictionaryFX.Add("&#28988;", "焼");
-                            hbjDictionaryFX.Add("&#29244;", "爼");
-                            hbjDictionaryFX.Add("&#29500;", "猼");
-                            hbjDictionaryFX.Add("&#29756;", "琼");
-                            hbjDictionaryFX.Add("&#30012;", "甼");
-                            hbjDictionaryFX.Add("&#30268;", "瘼");
-                            hbjDictionaryFX.Add("&#30524;", "眼");
-                            hbjDictionaryFX.Add("&#30780;", "砼");
-                            hbjDictionaryFX.Add("&#31036;", "礼");
-                            hbjDictionaryFX.Add("&#31292;", "稼");
-                            hbjDictionaryFX.Add("&#31548;", "笼");
-                            hbjDictionaryFX.Add("&#31804;", "簼");
-                            hbjDictionaryFX.Add("&#32060;", "紼");
-                            hbjDictionaryFX.Add("&#32316;", "縼");
-                            hbjDictionaryFX.Add("&#32572;", "缼");
-                            hbjDictionaryFX.Add("&#32828;", "耼");
-                            hbjDictionaryFX.Add("&#33084;", "脼");
-                            hbjDictionaryFX.Add("&#33340;", "舼");
-                            hbjDictionaryFX.Add("&#33596;", "茼");
-                            hbjDictionaryFX.Add("&#33852;", "萼");
-                            hbjDictionaryFX.Add("&#34108;", "蔼");
-                            hbjDictionaryFX.Add("&#36156;", "贼");
-                            hbjDictionaryFX.Add("&#39740;", "鬼");
+                            HbjDictionaryFx.Clear();
+                            HbjDictionaryFx.Add("&#20028;", "丼");
+                            HbjDictionaryFx.Add("&#20284;", "似");
+                            HbjDictionaryFx.Add("&#20540;", "值");
+                            HbjDictionaryFx.Add("&#20796;", "儼");
+                            HbjDictionaryFx.Add("&#21052;", "刼");
+                            HbjDictionaryFx.Add("&#21308;", "匼");
+                            HbjDictionaryFx.Add("&#21564;", "吼");
+                            HbjDictionaryFx.Add("&#21820;", "唼");
+                            HbjDictionaryFx.Add("&#22076;", "嘼");
+                            HbjDictionaryFx.Add("&#22332;", "圼");
+                            HbjDictionaryFx.Add("&#22588;", "堼");
+                            HbjDictionaryFx.Add("&#23612;", "尼");
+                            HbjDictionaryFx.Add("&#26684;", "格");
+                            HbjDictionaryFx.Add("&#22844;", "夼");
+                            HbjDictionaryFx.Add("&#23100;", "娼");
+                            HbjDictionaryFx.Add("&#23356;", "嬼");
+                            HbjDictionaryFx.Add("&#23868;", "崼");
+                            HbjDictionaryFx.Add("&#24124;", "帼");
+                            HbjDictionaryFx.Add("&#24380;", "弼");
+                            HbjDictionaryFx.Add("&#24636;", "怼");
+                            HbjDictionaryFx.Add("&#24892;", "愼");
+                            HbjDictionaryFx.Add("&#25148;", "戼");
+                            HbjDictionaryFx.Add("&#25404;", "挼");
+                            HbjDictionaryFx.Add("&#25660;", "搼");
+                            HbjDictionaryFx.Add("&#25916;", "攼");
+                            HbjDictionaryFx.Add("&#26172;", "昼");
+                            HbjDictionaryFx.Add("&#26428;", "朼");
+                            HbjDictionaryFx.Add("&#26940;", "椼");
+                            HbjDictionaryFx.Add("&#27196;", "樼");
+                            HbjDictionaryFx.Add("&#27452;", "欼");
+                            HbjDictionaryFx.Add("&#27708;", "氼");
+                            HbjDictionaryFx.Add("&#27964;", "洼");
+                            HbjDictionaryFx.Add("&#28220;", "渼");
+                            HbjDictionaryFx.Add("&#28476;", "漼");
+                            HbjDictionaryFx.Add("&#28732;", "瀼");
+                            HbjDictionaryFx.Add("&#28988;", "焼");
+                            HbjDictionaryFx.Add("&#29244;", "爼");
+                            HbjDictionaryFx.Add("&#29500;", "猼");
+                            HbjDictionaryFx.Add("&#29756;", "琼");
+                            HbjDictionaryFx.Add("&#30012;", "甼");
+                            HbjDictionaryFx.Add("&#30268;", "瘼");
+                            HbjDictionaryFx.Add("&#30524;", "眼");
+                            HbjDictionaryFx.Add("&#30780;", "砼");
+                            HbjDictionaryFx.Add("&#31036;", "礼");
+                            HbjDictionaryFx.Add("&#31292;", "稼");
+                            HbjDictionaryFx.Add("&#31548;", "笼");
+                            HbjDictionaryFx.Add("&#31804;", "簼");
+                            HbjDictionaryFx.Add("&#32060;", "紼");
+                            HbjDictionaryFx.Add("&#32316;", "縼");
+                            HbjDictionaryFx.Add("&#32572;", "缼");
+                            HbjDictionaryFx.Add("&#32828;", "耼");
+                            HbjDictionaryFx.Add("&#33084;", "脼");
+                            HbjDictionaryFx.Add("&#33340;", "舼");
+                            HbjDictionaryFx.Add("&#33596;", "茼");
+                            HbjDictionaryFx.Add("&#33852;", "萼");
+                            HbjDictionaryFx.Add("&#34108;", "蔼");
+                            HbjDictionaryFx.Add("&#36156;", "贼");
+                            HbjDictionaryFx.Add("&#39740;", "鬼");
+
+                            // Also add russion
+                            HbjDictionaryFx.Add("&#1084;", "м");
                         }
                     }
 
                 }
 
                 //start to replace "encoded" Chinese characters.
-                foreach (string key in hbjDictionaryFX.Keys)
+                lock (HbjDictionaryFx)
                 {
-                    if (returnString.Contains(key))
+                    foreach (string key in HbjDictionaryFx.Keys)
                     {
-                        returnString = returnString.Replace(key, hbjDictionaryFX[key]);
+                        if (returnString.Contains(key))
+                        {
+                            returnString = returnString.Replace(key, HbjDictionaryFx[key]);
+                        }
                     }
                 }
-
             }
 
             return returnString;

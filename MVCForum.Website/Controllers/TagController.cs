@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
+using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Utilities;
@@ -29,19 +30,14 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                PopularTagViewModel viewModel;
                 var cacheKey = string.Concat("PopularTags", amountToTake, UsersRole.Id);
-                var cachedData = _cacheService.Get(cacheKey);
-                if (cachedData == null)
+                var viewModel = _cacheService.Get<PopularTagViewModel>(cacheKey);
+                if (viewModel == null)
                 {
                     var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
                     var popularTags = _topicTagService.GetPopularTags(amountToTake, allowedCategories);
-                    viewModel = new PopularTagViewModel { PopularTags = popularTags };   
-                    _cacheService.Set(cacheKey, viewModel, AppConstants.LongCacheTime);
-                }
-                else
-                {
-                    viewModel = (PopularTagViewModel) cachedData;
+                    viewModel = new PopularTagViewModel { PopularTags = popularTags };
+                    _cacheService.Set(cacheKey, viewModel, CacheTimes.SixHours);
                 }
                 return PartialView(viewModel);
             }

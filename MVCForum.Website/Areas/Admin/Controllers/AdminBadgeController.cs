@@ -39,8 +39,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var allBadges = string.IsNullOrEmpty(search) ? _badgeService.GetPagedGroupedBadges(pageIndex, SiteConstants.AdminListPageSize) :
-                            _badgeService.SearchPagedGroupedTags(search, pageIndex, SiteConstants.AdminListPageSize);
+                var allBadges = string.IsNullOrEmpty(search) ? _badgeService.GetPagedGroupedBadges(pageIndex, SiteConstants.Instance.AdminListPageSize) :
+                            _badgeService.SearchPagedGroupedTags(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
 
                 var badgesListModel = new ListBadgesViewModel
                 {

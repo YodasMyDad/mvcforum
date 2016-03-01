@@ -36,13 +36,34 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EFCache, Version=1.0.0.0, Culture=neutral, PublicKeyToken=46c4868af4307d2c, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.Cache.1.0.0\lib\net45\EFCache.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServerCompact, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.SqlServerCompact.6.1.3\lib\net45\EntityFramework.SqlServerCompact.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.SqlServer.Compact.4.0.8876.1\lib\net40\System.Data.SqlServerCe.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers">
@@ -85,11 +106,50 @@
     <Compile Include="ActivityService.cs" />
     <Compile Include="BannedWordService.cs" />
     <Compile Include="CacheService.cs" />
+    <Compile Include="ConfigService.cs" />
+    <Compile Include="Data\Caching\CachingConfiguration.cs" />
+    <Compile Include="Data\Context\MVCForumContext.cs" />
+    <Compile Include="Data\Mapping\ActivityMapping.cs" />
+    <Compile Include="Data\Mapping\BadgeMapping.cs" />
+    <Compile Include="Data\Mapping\BadgeTypeTimeLastCheckedMapping.cs" />
+    <Compile Include="Data\Mapping\BannedEmailMapping.cs" />
+    <Compile Include="Data\Mapping\BannedWordMapping.cs" />
+    <Compile Include="Data\Mapping\BlockMapping.cs" />
+    <Compile Include="Data\Mapping\CategoryMapping.cs" />
+    <Compile Include="Data\Mapping\CategoryNotificationMapping.cs" />
+    <Compile Include="Data\Mapping\CategoryPermissionForRoleMapping.cs" />
+    <Compile Include="Data\Mapping\EmailMapping.cs" />
+    <Compile Include="Data\Mapping\FavouriteMapping.cs" />
+    <Compile Include="Data\Mapping\GlobalPermissionForRoleMapping.cs" />
+    <Compile Include="Data\Mapping\LanguageMapping.cs" />
+    <Compile Include="Data\Mapping\LocaleResourceKeyMapping.cs" />
+    <Compile Include="Data\Mapping\LocaleStringResourceMapping.cs" />
+    <Compile Include="Data\Mapping\MembershipRoleMapping.cs" />
+    <Compile Include="Data\Mapping\MembershipUserMapping.cs" />
+    <Compile Include="Data\Mapping\MembershipUserPointsMapping.cs" />
+    <Compile Include="Data\Mapping\PermissionMapping.cs" />
+    <Compile Include="Data\Mapping\PollAnswerMapping.cs" />
+    <Compile Include="Data\Mapping\PollMapping.cs" />
+    <Compile Include="Data\Mapping\PollVoteMapping.cs" />
+    <Compile Include="Data\Mapping\PostEditMapping.cs" />
+    <Compile Include="Data\Mapping\PostMapping.cs" />
+    <Compile Include="Data\Mapping\PrivateMessageMapping.cs" />
+    <Compile Include="Data\Mapping\SettingsMapping.cs" />
+    <Compile Include="Data\Mapping\TagNotificationMapping.cs" />
+    <Compile Include="Data\Mapping\TopicMapping.cs" />
+    <Compile Include="Data\Mapping\TopicNotificationMapping.cs" />
+    <Compile Include="Data\Mapping\TopicTagMapping.cs" />
+    <Compile Include="Data\Mapping\UploadedFileMapping.cs" />
+    <Compile Include="Data\Mapping\VoteMapping.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Data\UnitOfWork\UnitOfWork.cs" />
+    <Compile Include="Data\UnitOfWork\UnitOfWorkManager.cs" />
     <Compile Include="GlobalPermissionForRoleService.cs" />
     <Compile Include="FavouriteService.cs" />
     <Compile Include="BlockService.cs" />
-    <Compile Include="InstallerService.cs" />
+    <Compile Include="PostEditService.cs" />
     <Compile Include="ReflectionService.cs" />
+    <Compile Include="SiteConfig\SiteConfig.cs" />
     <Compile Include="TagNotificationService.cs" />
     <Compile Include="UploadedFileService.cs" />
     <Compile Include="PollAnswerService.cs" />
@@ -107,7 +167,6 @@
     <Compile Include="LocalizationService.cs" />
     <Compile Include="PermissionService.cs" />
     <Compile Include="SettingsService.cs" />
-    <Compile Include="IntegrityServiceManager.cs" />
     <Compile Include="CategoryService.cs" />
     <Compile Include="MembershipService.cs" />
     <Compile Include="PostService.cs" />
@@ -130,7 +189,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -139,6 +197,13 @@
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>
+    if not exist "$(TargetDir)x86" md "$(TargetDir)x86"
+    xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\x86\*.*" "$(TargetDir)x86"
+    if not exist "$(TargetDir)amd64" md "$(TargetDir)amd64"
+    xcopy /s /y "$(SolutionDir)packages\Microsoft.SqlServer.Compact.4.0.8876.1\NativeBinaries\amd64\*.*" "$(TargetDir)amd64"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

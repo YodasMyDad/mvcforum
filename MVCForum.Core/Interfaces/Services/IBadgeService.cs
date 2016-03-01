@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using MVCForum.Domain.DomainModel;
 
@@ -55,5 +56,22 @@ namespace MVCForum.Domain.Interfaces.Services
         /// </summary>
         /// <param name="badgeTypeTimeLastChecked"></param>
         void DeleteTimeLastChecked(BadgeTypeTimeLastChecked badgeTypeTimeLastChecked);
+
+        /// <summary>
+        /// Get a badge by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        Badge GetBadge(string name);
+
+        Badge Get(Guid id);
+
+        /// <summary>
+        /// All badges
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<Badge> GetAll();
+
+        Badge Add(Badge newBadge);
     }
 }

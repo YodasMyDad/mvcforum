@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
@@ -27,18 +29,16 @@ namespace MVCForum.Website.Controllers
     public partial class MembersController : BaseController
     {
         private readonly IPostService _postService;
+        private readonly ITopicService _topicService;
         private readonly IReportService _reportService;
         private readonly IEmailService _emailService;
         private readonly IPrivateMessageService _privateMessageService;
         private readonly IBannedEmailService _bannedEmailService;
         private readonly IBannedWordService _bannedWordService;
-        private readonly ITopicNotificationService _topicNotificationService;
-        private readonly IPollAnswerService _pollAnswerService;
-        private readonly IVoteService _voteService;
         private readonly ICategoryService _categoryService;
 
         public MembersController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService,
-            IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService, IBannedWordService bannedWordService, ITopicNotificationService topicNotificationService, IPollAnswerService pollAnswerService, IVoteService voteService, ICategoryService categoryService)
+            IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService, IBannedWordService bannedWordService, ITopicNotificationService topicNotificationService, IPollAnswerService pollAnswerService, IVoteService voteService, ICategoryService categoryService, ITopicService topicService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _postService = postService;
@@ -47,10 +47,8 @@ namespace MVCForum.Website.Controllers
             _privateMessageService = privateMessageService;
             _bannedEmailService = bannedEmailService;
             _bannedWordService = bannedWordService;
-            _topicNotificationService = topicNotificationService;
-            _pollAnswerService = pollAnswerService;
-            _voteService = voteService;
             _categoryService = categoryService;
+            _topicService = topicService;
         }
 
         [Authorize(Roles = AppConstants.AdminRoleName)]
@@ -103,7 +101,7 @@ namespace MVCForum.Website.Controllers
                 var user = MembershipService.GetUser(id);
                 var permissions = RoleService.GetPermissions(null, UsersRole);
 
-                if (permissions[AppConstants.PermissionEditMembers].IsTicked)
+                if (permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                 {
 
                     if (!user.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
@@ -144,11 +142,11 @@ namespace MVCForum.Website.Controllers
                 var user = MembershipService.GetUser(id);
                 var permissions = RoleService.GetPermissions(null, UsersRole);
 
-                if (permissions[AppConstants.PermissionEditMembers].IsTicked)
+                if (permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                 {
                     if (!user.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
                     {
-                        user.IsLockedOut = false;
+                        user.IsBanned = false;
 
                         try
                         {
@@ -235,6 +233,15 @@ namespace MVCForum.Website.Controllers
                 var member = MembershipService.GetUserBySlug(slug);
                 var loggedonId = UserIsAuthenticated ? LoggedOnReadOnlyUser.Id : Guid.Empty;
                 var permissions = RoleService.GetPermissions(null, UsersRole);
+
+                // Localise the badge names
+                foreach (var item in member.Badges)
+                {
+                    var partialKey = string.Concat("Badge.", item.Name);
+                    item.DisplayName = LocalizationService.GetResourceString(string.Concat(partialKey, ".Name"));
+                    item.Description = LocalizationService.GetResourceString(string.Concat(partialKey, ".Desc"));
+                }
+
                 return View(new ViewMemberViewModel
                 {
                     User = member,
@@ -289,7 +296,7 @@ namespace MVCForum.Website.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Register(MemberAddViewModel userModel)
         {
-            if (SettingsService.GetSettings().SuspendRegistration != true)
+            if (SettingsService.GetSettings().SuspendRegistration != true && SettingsService.GetSettings().DisableStandardRegistration != true)
             {
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
@@ -344,6 +351,11 @@ namespace MVCForum.Website.Controllers
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
+                var settings = SettingsService.GetSettings();
+                var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
+                var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
+                var homeRedirect = false;
+
                 var userToSave = new MembershipUser
                 {
                     UserName = _bannedWordService.SanitiseBannedWords(userModel.UserName),
@@ -352,17 +364,6 @@ namespace MVCForum.Website.Controllers
                     IsApproved = userModel.IsApproved,
                     Comment = userModel.Comment,
                 };
-
-                var homeRedirect = false;
-
-                // Now check settings, see if users need to be manually authorised
-                // OR Does the user need to confirm their email
-                var manuallyAuthoriseMembers = SettingsService.GetSettings().ManuallyAuthoriseNewMembers;
-                var memberEmailAuthorisationNeeded = SettingsService.GetSettings().NewMemberEmailConfirmation ?? false;
-                if (manuallyAuthoriseMembers || memberEmailAuthorisationNeeded)
-                {
-                    userToSave.IsApproved = false;
-                }
 
                 var createStatus = MembershipService.CreateUser(userToSave);
                 if (createStatus != MembershipCreateStatus.Success)
@@ -378,8 +379,8 @@ namespace MVCForum.Website.Controllers
                         var image = AppHelpers.GetImageFromExternalUrl(userModel.SocialProfileImageUrl);
 
                         // Set upload directory - Create if it doesn't exist
-                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, userToSave.Id));
-                        if (!Directory.Exists(uploadFolderPath))
+                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, userToSave.Id));
+                        if (uploadFolderPath != null && !Directory.Exists(uploadFolderPath))
                         {
                             Directory.CreateDirectory(uploadFolderPath);
                         }
@@ -393,6 +394,12 @@ namespace MVCForum.Website.Controllers
                             // Microsoft doesn't give you a file extension - See if it has a file extension
                             // Get the file extension
                             var fileExtension = Path.GetExtension(fileName);
+
+                            // Fix invalid Illegal charactors
+                            var regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+                            var reg = new Regex($"[{Regex.Escape(regexSearch)}]");
+                            fileName = reg.Replace(fileName, "");
+
                             if (string.IsNullOrEmpty(fileExtension))
                             {
                                 // no file extension so give it one
@@ -416,17 +423,29 @@ namespace MVCForum.Website.Controllers
                     }
 
                     // Store access token for social media account in case we want to do anything with it
+                    var isSocialLogin = false;
                     if (userModel.LoginType == LoginType.Facebook)
                     {
                         userToSave.FacebookAccessToken = userModel.UserAccessToken;
+                        isSocialLogin = true;
                     }
                     if (userModel.LoginType == LoginType.Google)
                     {
                         userToSave.GoogleAccessToken = userModel.UserAccessToken;
+                        isSocialLogin = true;
                     }
-                    if (userModel.LoginType == LoginType.Google)
+                    if (userModel.LoginType == LoginType.Microsoft)
                     {
                         userToSave.MicrosoftAccessToken = userModel.UserAccessToken;
+                        isSocialLogin = true;
+                    }
+
+                    // If this is a social login, and memberEmailAuthorisationNeeded is true then we need to ignore it
+                    // and set memberEmailAuthorisationNeeded to false because the email addresses are validated by the social media providers
+                    if (isSocialLogin && !manuallyAuthoriseMembers)
+                    {
+                        memberEmailAuthorisationNeeded = false;
+                        userToSave.IsApproved = true;
                     }
 
                     // Set the view bag message here
@@ -499,8 +518,9 @@ namespace MVCForum.Website.Controllers
 
         private void SendEmailConfirmationEmail(MembershipUser userToSave)
         {
-            var manuallyAuthoriseMembers = SettingsService.GetSettings().ManuallyAuthoriseNewMembers;
-            var memberEmailAuthorisationNeeded = SettingsService.GetSettings().NewMemberEmailConfirmation ?? false;
+            var settings = SettingsService.GetSettings();
+            var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
+            var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
             if (manuallyAuthoriseMembers == false && memberEmailAuthorisationNeeded)
             {
                 if (!string.IsNullOrEmpty(userToSave.Email))
@@ -509,7 +529,7 @@ namespace MVCForum.Website.Controllers
                     var sb = new StringBuilder();
                     var confirmationLink = string.Concat(StringUtils.ReturnCurrentDomain(), Url.Action("EmailConfirmation", new { id = userToSave.Id }));
                     sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.EmailBody"),
-                                                SettingsService.GetSettings().ForumName,
+                                                settings.ForumName,
                                                 string.Format("<p><a href=\"{0}\">{0}</a></p>", confirmationLink)));
                     var email = new Email
                     {
@@ -525,7 +545,7 @@ namespace MVCForum.Website.Controllers
                     // This cookie is removed when they click the confirmation link
                     var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
                     {
-                        Value = string.Format("{0}#{1}", userToSave.Email, userToSave.UserName),
+                        Value = $"{userToSave.Email}#{userToSave.UserName}",
                         Expires = DateTime.UtcNow.AddDays(7)
                     };
                     // Add the cookie.
@@ -825,7 +845,7 @@ namespace MVCForum.Website.Controllers
             return null;
         }
 
-        private MemberFrontEndEditViewModel PopulateMemberViewModel(MembershipUser user)
+        private static MemberFrontEndEditViewModel PopulateMemberViewModel(MembershipUser user)
         {
             var viewModel = new MemberFrontEndEditViewModel
             {
@@ -840,7 +860,8 @@ namespace MVCForum.Website.Controllers
                 Facebook = user.Facebook,
                 DisableFileUploads = user.DisableFileUploads == true,
                 Avatar = user.Avatar,
-                DisableEmailNotifications = user.DisableEmailNotifications == true
+                DisableEmailNotifications = user.DisableEmailNotifications == true,
+                AmountOfPoints = user.TotalPoints
             };
             return viewModel;
         }
@@ -850,12 +871,12 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var loggedOnUserId = (LoggedOnReadOnlyUser != null ? LoggedOnReadOnlyUser.Id : Guid.Empty);
+                var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
 
                 var permissions = RoleService.GetPermissions(null, UsersRole);
 
                 // Check is has permissions
-                if (UserIsAdmin || loggedOnUserId == id || permissions[AppConstants.PermissionEditMembers].IsTicked)
+                if (UserIsAdmin || loggedOnUserId == id || permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                 {
                     var user = MembershipService.GetUser(id);
                     var viewModel = PopulateMemberViewModel(user);
@@ -873,11 +894,11 @@ namespace MVCForum.Website.Controllers
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-                var loggedOnUserId = (LoggedOnReadOnlyUser != null ? LoggedOnReadOnlyUser.Id : Guid.Empty);
+                var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
                 var permissions = RoleService.GetPermissions(null, UsersRole);
 
                 // Check is has permissions
-                if (UserIsAdmin || loggedOnUserId == userModel.Id || permissions[AppConstants.PermissionEditMembers].IsTicked)
+                if (UserIsAdmin || loggedOnUserId == userModel.Id || permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                 {
                     // Get the user from DB
                     var user = MembershipService.GetUser(userModel.Id);
@@ -908,11 +929,14 @@ namespace MVCForum.Website.Controllers
                         }
                     }
 
+                    // Repopulate any viewmodel data
+                    userModel.AmountOfPoints = user.TotalPoints;
+
                     // Sort image out first
                     if (userModel.Files != null)
                     {
                         // Before we save anything, check the user already has an upload folder and if not create one
-                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, LoggedOnReadOnlyUser.Id));
+                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, LoggedOnReadOnlyUser.Id));
                         if (!Directory.Exists(uploadFolderPath))
                         {
                             Directory.CreateDirectory(uploadFolderPath);
@@ -1045,19 +1069,25 @@ namespace MVCForum.Website.Controllers
         [Authorize]
         public PartialViewResult SideAdminPanel(bool isDropDown)
         {
-            var count = 0;
+            var privateMessageCount = 0;
+            var moderateCount = 0;    
             var settings = SettingsService.GetSettings();
             if (LoggedOnReadOnlyUser != null)
             {
-                count = _privateMessageService.NewPrivateMessageCount(LoggedOnReadOnlyUser.Id);
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                privateMessageCount = _privateMessageService.NewPrivateMessageCount(LoggedOnReadOnlyUser.Id);
+                var pendingTopics = _topicService.GetPendingTopics(allowedCategories, UsersRole);
+                var pendingPosts = _postService.GetPendingPosts(allowedCategories, UsersRole);
+                moderateCount = (pendingTopics.Count + pendingPosts.Count);
             }
 
             var canViewPms = settings.EnablePrivateMessages && LoggedOnReadOnlyUser != null && LoggedOnReadOnlyUser.DisablePrivateMessages != true;
             var viewModel = new ViewAdminSidePanelViewModel
             {
                 CurrentUser = LoggedOnReadOnlyUser,
-                NewPrivateMessageCount = canViewPms ? count : 0,
+                NewPrivateMessageCount = canViewPms ? privateMessageCount : 0,
                 CanViewPrivateMessages = canViewPms,
+                ModerateCount = moderateCount,
                 IsDropDown = isDropDown
             };
             
@@ -1152,8 +1182,8 @@ namespace MVCForum.Website.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = p ?? 1;
-                var allUsers = string.IsNullOrEmpty(search) ? MembershipService.GetAll(pageIndex, SiteConstants.AdminListPageSize) :
-                                    MembershipService.SearchMembers(search, pageIndex, SiteConstants.AdminListPageSize);
+                var allUsers = string.IsNullOrEmpty(search) ? MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize) :
+                                    MembershipService.SearchMembers(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
 
                 // Redisplay list of users
                 var allViewModelUsers = allUsers.Select(user => new PublicSingleMemberListViewModel

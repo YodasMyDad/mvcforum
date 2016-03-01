@@ -6,7 +6,7 @@ using MVCForum.Domain.Interfaces.Badges;
 namespace Badge.PostMentionsUmbraco
 {
     [Id("9a247d50-35b5-4cd2-adaa-a0cf013325ac")]
-    [Name("PostContainsUmbraco")]
+    [Name("PostMentionsUmbraco")]
     [DisplayName("Badge.PostMentionsUmbraco.Name")]
     [Description("Badge.PostMentionsUmbraco.Desc")]
     [Image("MentionsUmbracoBadge.png")]

@@ -15,44 +15,58 @@
 
         @if (Model.LogFiles.Any())
         {
-            <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>
-                            Entry Date
-                        </th>
-                        <th>
-                            Module
-                        </th>
-                        <th>
-                            Method
-                        </th>
-                        <th>
-                            Message
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var log in Model.LogFiles)
-                    {
+            <div class="tablescroll">
+                <table class="table table-bordered table-striped">
+                    <thead>
                         <tr>
-                            <td class="logentrydate">
-                                @log.Date
-                            </td>
-                            <td class="logentrymodule">
-                                @log.Module
-                            </td>
-                            <td class="logentrymethod">
-                                @log.Method
-                            </td>
-                            <td class="logentrymessage">
-                                @log.ErrorMessage
-                            </td>
-
+                            <th>
+                                Entry Date
+                            </th>
+                            <th>
+                                Module
+                            </th>
+                            <th>
+                                Method
+                            </th>
+                            <th>
+                                DeclaringType
+                            </th>
+                            <th>
+                                LineNumber
+                            </th>
+                            <th>
+                                Message
+                            </th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in Model.LogFiles)
+                        {
+                            <tr>
+                                <td class="logentrydate">
+                                    @log.Date
+                                </td>
+                                <td class="logentrymodule">
+                                    @log.Module
+                                </td>
+                                <td class="logentrymethod">
+                                    @log.Method
+                                </td>
+                                <td class="logentrydeclaringtype">
+                                    @log.DeclaringType
+                                </td>
+                                <td class="logentrylinenumber">
+                                    @log.LineNumber
+                                </td>
+                                <td class="logentrymessage">
+                                    @log.ErrorMessage
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         }
 
     </div>

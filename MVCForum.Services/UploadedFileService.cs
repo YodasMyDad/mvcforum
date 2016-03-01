@@ -1,49 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Data.Entity;
 using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Repositories;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Services.Data.Context;
 
 namespace MVCForum.Services
 {
     public partial class UploadedFileService : IUploadedFileService
     {
-        private readonly IUploadedFileRepository _uploadedFileRepository;
-
-        public UploadedFileService(IUploadedFileRepository uploadedFileRepository)
+        private readonly MVCForumContext _context;
+        public UploadedFileService(MVCForumContext context)
         {
-            _uploadedFileRepository = uploadedFileRepository;
+            _context = context;
         }
+
 
         public UploadedFile Add(UploadedFile uploadedFile)
         {
             uploadedFile.DateCreated = DateTime.UtcNow;
-            return _uploadedFileRepository.Add(uploadedFile);
+            return _context.UploadedFile.Add(uploadedFile);
         }
 
         public void Delete(UploadedFile uploadedFile)
         {
-            _uploadedFileRepository.Delete(uploadedFile);
+            _context.UploadedFile.Remove(uploadedFile);
         }
 
         public IList<UploadedFile> GetAll()
         {
-            return _uploadedFileRepository.GetAll();
+            return _context.UploadedFile.ToList();
         }
 
         public IList<UploadedFile> GetAllByPost(Guid postId)
         {
-            return _uploadedFileRepository.GetAllByPost(postId);
+            return _context.UploadedFile.Where(x => x.Post.Id == postId).ToList();
         }
 
         public IList<UploadedFile> GetAllByUser(Guid membershipUserId)
         {
-            return _uploadedFileRepository.GetAllByUser(membershipUserId);
+            return _context.UploadedFile.Where(x => x.MembershipUser.Id == membershipUserId).ToList();
         }
 
         public UploadedFile Get(Guid id)
         {
-            return _uploadedFileRepository.Get(id);
+            return _context.UploadedFile
+                .Include(x => x.Post.Topic.Category)
+                .FirstOrDefault(x => x.Id == id);
         }
     }
 }

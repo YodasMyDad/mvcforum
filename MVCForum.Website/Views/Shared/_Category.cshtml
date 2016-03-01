@@ -1,11 +1,26 @@
-﻿@model MVCForum.Website.ViewModels.CategoryRowViewModel
+﻿@model MVCForum.Website.ViewModels.CategoryViewModel
 
-@if (!Model.Permissions[AppConstants.PermissionDenyAccess].IsTicked)
+@if (!Model.Permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
 {
     <div class="categoryrow">
-        
-        <h2 style="border-color: @(string.IsNullOrEmpty(Model.Category.Colour) ? "#ced1d1" : Model.Category.Colour)"><a href="@Model.Category.NiceUrl">@Html.Raw(Model.Category.Name)</a></h2>
-        <p>@Html.Raw(AppHelpers.ConvertPostContent(Model.Category.Description))</p>
+
+        <h2 style="border-color: @(string.IsNullOrEmpty(Model.Category.Colour) ? "#ced1d1" : Model.Category.Colour)">
+            <a href="@Model.Category.NiceUrl">@Html.Raw(Model.Category.Name)</a>
+        </h2>
+        @if (Model.ShowUnSubscribedLink)
+        {
+            <p>
+                <a href="#" class="emailunsubscription" data-id="@Model.Category.Id" data-type="category">
+                    <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                    @Html.LanguageString("Notification.UnSubscribe")
+                </a>
+            </p>
+        }
+        else
+        {
+            <p>@Html.Raw(AppHelpers.ConvertPostContent(Model.Category.Description))</p>
+        }
+
         <div class="row categoryrowfooter">
             <div class="col-md-1 hidden-xs catrss">
                 @if (Html.Settings().EnableRSSFeeds)

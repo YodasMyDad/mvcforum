@@ -1,0 +1,47 @@
+﻿@using MVCForum.Website.Application.ExtensionMethods
+@model MVCForum.Website.ViewModels.MovePostViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
+    ViewBag.Title = Html.LanguageString("Post.Move.PostTitle");
+}
+
+<div class="row">
+
+    <div class="col-md-6 col-md-offset-3">
+        <p>@Html.Lang("Post.Move.Description")</p>
+        @using (Html.BeginForm("MovePost", "post", FormMethod.Post, new {@class = "form-report"}))
+        {
+            @Html.HiddenFor(x => Model.PostId)
+            @Html.ValidationSummary(false)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.TopicId)
+                @Html.DropDownListFor(model => model.TopicId, Model.LatestTopics, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.TopicId)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.TopicTitle)
+                @Html.TextBoxFor(model => model.TopicTitle, new {@class = "form-control"})
+                @Html.ValidationMessageFor(model => model.TopicTitle)
+            </div>
+
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.MoveReplyToPosts, new { @class = "checkbox" }))
+                {
+                    @Html.CheckBoxFor(m => m.MoveReplyToPosts)
+                }
+                @Html.ValidationMessageFor(m => m.MoveReplyToPosts)
+            </div>
+
+            <div class="submit-holder">
+                <button type="submit" class="btn-mvc-green btn-mvc-large">
+                    @Html.LanguageString("Buttons.Save")
+                </button>
+            </div>
+        }
+        <p>&nbsp;</p>
+        @Html.Partial("_Post", Model.Post)
+    </div>
+</div>

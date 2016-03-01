@@ -1,4 +1,5 @@
-﻿@using MVCForum.Website.Application.ExtensionMethods
+﻿@using MVCForum.Domain.Constants
+@using MVCForum.Website.Application.ExtensionMethods
 @model MVCForum.Website.Areas.Admin.ViewModels.MemberEditViewModel
 @{
     ViewBag.Title = (Model.Id == Guid.Empty) ? "Add User" : "Edit User";
@@ -7,6 +8,7 @@
 
 <div class="backbutton">
     <a href="@Url.Action("Manage")" class="btn-mvc-green">&lt;&lt; Back</a>
+    <a href="@Url.Action("ManageUserPoints", new {id = Model.Id})" class="btn-mvc-green">Manage Users Points</a>
 </div>
 
 <div class="panel">
@@ -53,7 +55,7 @@
 
             <div class="row membereditavatar">
                 <div class="col-sm-2">
-                    <img src="@AppHelpers.MemberImage(Model.Avatar, Model.Email, Model.Id, SiteConstants.GravatarProfileSize)" class="img-responsive" alt="@Model.UserName">
+                    <img src="@AppHelpers.MemberImage(Model.Avatar, Model.Email, Model.Id, SiteConstants.Instance.GravatarProfileSize)" class="img-responsive" alt="@Model.UserName">
                 </div>
                 <div class="col-sm-10">
                     <div class="form-group">
@@ -163,7 +165,7 @@
                 @if (Model.Id != Guid.Empty)
                 {
                     <a href="@Url.Action("Delete", new{Model.Id})" onclick="return confirm('Are you sure you want to delete @Model.UserName?')" class="btn-mvc-red" role="button">Delete</a>
-                }                
+                }
             </div>
         }
 

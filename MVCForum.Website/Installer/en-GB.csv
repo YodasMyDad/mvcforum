@@ -24,6 +24,9 @@ Post.LastEdited,Last edited
 Post.Report,Report
 Post.Edit,Edit
 Post.Delete,Delete
+Post.Move,Move
+Post.Reply,Reply
+Post.ReplyingTo,Replying To:
 LogOn.LogOn,Log On
 LogOn.LogOff,Log Off
 Post.PleaseWait,Please Wait...
@@ -34,6 +37,7 @@ Topic.UnSubscribe,UnFollow
 Topic.IsLocked,Topic Is Locked
 Topic.CreateDiscussion,Create Discussion
 Topic.TagThisTopic,Tag this topic
+Topic.Choose,Choose Existing Topic
 Tags.PopularTags,Popular Tags
 Stats.FooterMainStatText,Our {0} members have posted {1} times in {2} discussions
 Stats.LatestMembers,Latest Members:
@@ -85,6 +89,7 @@ Ajax.PleaseWait,Please Wait...
 Members.Profile.Badges,Badges
 Members.EditProfile,Edit Profile
 Buttons.Save,Save
+Buttons.Continue,Continue
 Members.EditMember,Edit Member
 Leaderboard.ThisWeeksStars,This Weeks Stars
 Leaderboard.ThisYearsStars,This Years Rock Stars
@@ -207,7 +212,8 @@ Poll.Button.Remove,Remove Poll From Topic
 Poll.Button.Vote,Submit Vote
 Error.WrongAnswerRegistration,There was an error with your answer. Please try again
 Members.LoginOrText,Or
-Facebook.Error.EnabledButNotAddedKeys,You have enabled Facebook login but not added your AppId or Secret key to the web.config
+Facebook.Error.EnabledButNotAddedKeys,You have enabled Facebook login but not added your AppId or Secret key to the forum.config
+Microsoft.Error.EnabledButNotAddedKeys,You have enabled Microsoft login but not added your AppId or Secret key to the forum.config
 Members.Profile.IsSocialAccount,Social Account
 Date.JustNow,Just now
 Date.OneMinuteAgo,1 minute ago
@@ -244,7 +250,8 @@ Category.AllCategories,All Categories
 Category.MostRecent,Most recent:
 Members.LogonFacebookButton,Login with Facebook
 Members.LogonGoogleButton,Login with Google
-Twitter.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Twitter id and secret key in the web.config
+Twitter.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Twitter id and secret key in the forum.config
+Google.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Google id and secret key in the forum.config
 Error.EmailIsBanned,The email address or domain you are trying to use is banned
 Post.FilesUploaded,Files uploaded successfully
 Post.Attach,Attach
@@ -266,28 +273,34 @@ Language.Change,Change Language
 Post.Quote,Quote
 Members.Label.UploadNewAvatar,Upload a new profile image
 Member.HasNewPrivateMessages,You have new unread Private messages
-Badge.AuthorMarkAsSolutionBadge.Name,Your Question Solved
-Badge.AuthorMarkAsSolutionBadge.Desc,This badge is awarded to a user when they mark another users post as the solution to their topic
-Badge.UserVoteUpBadge.Name,You've Given Your First Vote Up
-Badge.UserVoteUpBadge.Desc,This badge is awarded to users after they make their first vote up
+Badge.AuthorMarkAsSolution.Name,Your Question Solved
+Badge.AuthorMarkAsSolution.Desc,This badge is awarded to a user when they mark another users post as the solution to their topic
+Badge.UserVoteUp.Name,You've Given Your First Vote Up
+Badge.UserVoteUp.Desc,This badge is awarded to users after they make their first vote up
 Badge.PostMentionsUmbraco.Name,Umbraco Fan
 Badge.PostMentionsUmbraco.Desc,This badge is awarded to a user who mentions Umbraco in their latest post
-Badge.PosterVoteUpBadge.Name,First Vote Up Received
-Badge.PosterVoteUpBadge.Desc,This badge is awarded to users after they receive their first vote up from another user
-Badge.PosterMarkAsSolutionBadge.Name,Post Selected As Answer
-Badge.PosterMarkAsSolutionBadge.Desc,This badge is awarded to a user when their post is marked as the solution to a topic
-Badge.PadawanBadge.Name,Padawan
-Badge.PadawanBadge.Desc,Had 10 or more posts successfully marked as an answer
+Badge.PosterVoteUp.Name,First Vote Up Received
+Badge.PosterVoteUp.Desc,This badge is awarded to users after they receive their first vote up from another user
+Badge.PosterMarkAsSolution.Name,Post Selected As Answer
+Badge.PosterMarkAsSolution.Desc,This badge is awarded to a user when their post is marked as the solution to a topic
+Badge.Padawan.Name,Padawan
+Badge.Padawan.Desc,Had 10 or more posts successfully marked as an answer
 Badge.OneThousandPoints.Name,Thousand Pointer
 Badge.OneThousandPoints.Desc,This badge is awarded to users who have received 1000 points
-Badge.MemberForAYearBadge.Name,First Anniversary
-Badge.MemberForAYearBadge.Desc,This badge is awarded to a user after their first year anniversary
-Badge.GrouchBadge.Name,The Grouch
-Badge.GrouchBadge.Desc,This badge is awarded to users who have voted down other users posts 10 or more times
-Badge.JediMasterBadge.Name,Jedi Master
-Badge.JediMasterBadge.Desc,Had 50 or more posts successfully marked as an answer
+Badge.MemberForAYear.Name,First Anniversary
+Badge.MemberForAYear.Desc,This badge is awarded to a user after their first year anniversary
+Badge.TheGrouch.Name,The Grouch
+Badge.TheGrouch.Desc,This badge is awarded to users who have voted down other users posts 10 or more times
+Badge.JediMaster.Name,Jedi Master
+Badge.JediMaster.Desc,Had 50 or more posts successfully marked as an answer
 Badge.Photogenic.Name,Photogenic
 Badge.Photogenic.Desc,Little things like uploading a profile picture make the community a better place. Thanks!
+Badge.FavouriteFirstPost.Name,First Favourite
+Badge.FavouriteFirstPost.Desc,You have Favourited your first post
+Badge.YourPostFavouritedTenTimes.Name,Recognised Post
+Badge.YourPostFavouritedTenTimes.Desc,One or more of your posts have been Favourited by 10 or more people
+Badge.YourPostFavourited.Name,Favourited Post
+Badge.YourPostFavourited.Desc,You have one or more posts that have been Favourited by another member
 Site.MvcForum,MvcForum
 Layout.Nav.Utilities,Utilities
 Side.Search.SearchFor,Search for...
@@ -325,6 +338,7 @@ Members.SuccessfulSrub,All done
 Post.Favourite,Favourite
 Post.Favourited,Favourited
 Members.NowBanned,Member is now banned
+Members.NowUnBanned,Member is now NOT banned
 PM.AboutToExceedInboxSizeBody,You are about to exceed your private message inbox allowance
 PM.AboutToExceedInboxSizeSubject,Private Message Inbox Allowance
 PM.NewPrivateMessage,New Private Message
@@ -341,12 +355,6 @@ Members.ResetPassword.InvalidToken,This request is either invalid or has expired
 Members.ResetPassword.Error,There was an error resetting your password. Please try again.
 Tasks.MarkAsSolutionReminderJob.EmailBody,Your topic {0} on {1} has {2} replies but has still not been marked as solved. Please check again to see if any answers are appropriate and mark them as the solution if they are.
 Tasks.MarkAsSolutionReminderJob.Subject,Your post on {0}
-Badge.FavouriteFirstPost.Name,First Favourite
-Badge.FavouriteFirstPost.Desc,You have Favourited your first post
-Badge.YourPostFavouritedTenTimes.Name,Recognised Post
-Badge.YourPostFavouritedTenTimes.Desc,One or more of your posts have been Favourited by 10 or more people
-Badge.YourPostFavourited.Name,Favourited Post
-Badge.YourPostFavourited.Desc,You have one or more posts that have been Favourited by another member
 Post.MemberIsOnline,Online
 PM.MemberIsOnline,Online
 Topic.Label.PollCloseAfterDays,Close Poll After Specified Amount Of Days? Leave as 0 to disable
@@ -373,3 +381,21 @@ PM.ShowMore,Show More Messages
 PM.ShowMoreLoading,Loading...
 Members.LogonMicrosoftButton,Login with Microsoft
 Search.Results,Results Found
+Post.Move.Label.Topic,Topic
+Post.Move.Label.NewTopicTitle,Create New Topic
+Post.Move.Label.ReplyToPosts,Move Replies and Quotes Too
+Post.Move.PostTitle,Move Post
+Post.Move.Description,Move post to an existing topic, or create a new one.
+TermsAndConditions.Label.Agree,I have read and agree to the site Terms and Conditions
+TermsAndConditions.PageTitle,Agree to Terms and Conditions
+TermsAndConditions.Label.AgreeError,You must Agree to the Terms and Conditions
+PostEdit.Panel.Name,Post Edit History
+PostEdit.None,This post has not post edit history at the moment
+PostEdit.EditedBy,Edited By
+PostEdit.OriginalVersion,Original
+PostEdit.EditedVersion,Edited
+Moderate.Title,Moderate
+Moderate.NothingHere,Nothing here at the moment
+Moderate.Topics,Topics
+Moderate.Posts,Posts
+Moderate.NavText,Pending Posts/Topics

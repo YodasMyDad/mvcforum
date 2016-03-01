@@ -3,7 +3,7 @@
 {
     <div class="oauthbuttons">
 
-        @if (!string.IsNullOrEmpty(SiteConstants.FacebookAppId) && !string.IsNullOrEmpty(SiteConstants.FacebookAppSecret))
+        @if (!string.IsNullOrEmpty(SiteConstants.Instance.FacebookAppId) && !string.IsNullOrEmpty(SiteConstants.Instance.FacebookAppSecret))
         {
             <p>
                 <a class="btn-mvc btn-mvc-large btn-mvc-fullwidth facebookloginbutton" href="@Url.Action("FacebookLogin", "FacebookOAuth")">
@@ -16,7 +16,7 @@
             @Html.LanguageString("Facebook.Error.EnabledButNotAddedKeys")
         }
         
-        @if (!string.IsNullOrEmpty(SiteConstants.GooglePlusAppId) && !string.IsNullOrEmpty(SiteConstants.GooglePlusAppSecret))
+        @if (!string.IsNullOrEmpty(SiteConstants.Instance.GooglePlusAppId) && !string.IsNullOrEmpty(SiteConstants.Instance.GooglePlusAppSecret))
         {
             <p>
                 <a class="btn-mvc btn-mvc-large btn-mvc-fullwidth googleloginbutton" href="@Url.Action("GoogleLogin", "GoogleOAuth")">
@@ -29,7 +29,7 @@
             @Html.LanguageString("Google.Error.EnabledButNotAddedKeys")
         }
         
-        @if (!string.IsNullOrEmpty(SiteConstants.MicrosoftAppId) && !string.IsNullOrEmpty(SiteConstants.MicrosoftAppSecret))
+        @if (!string.IsNullOrEmpty(SiteConstants.Instance.MicrosoftAppId) && !string.IsNullOrEmpty(SiteConstants.Instance.MicrosoftAppSecret))
         {
             <p>
                 <a class="btn-mvc btn-mvc-large btn-mvc-fullwidth microsoftloginbutton" href="@Url.Action("MicrosoftLogin", "MicrosoftOAuth")">
@@ -39,7 +39,7 @@
         }
         else
         {
-            @Html.LanguageString("Google.Error.EnabledButNotAddedKeys")
+            @Html.LanguageString("Microsoft.Error.EnabledButNotAddedKeys")
         }
     </div>
 

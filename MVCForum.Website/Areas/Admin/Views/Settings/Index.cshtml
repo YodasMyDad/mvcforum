@@ -14,113 +14,121 @@
 
     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
-        <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingGeneral">
-                <h4 class="panel-title">
-                    <a data-toggle="collapse" data-parent="#accordion" href="#collapseGeneral" aria-expanded="true" aria-controls="collapseGeneral">
-                        General
-                    </a>
-                </h4>
+    <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingGeneral">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseGeneral" aria-expanded="true" aria-controls="collapseGeneral">
+                General
+            </a>
+        </h4>
+    </div>
+    <div id="collapseGeneral" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingGeneral">
+        <div class="panel-body">
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ForumName)
+                @Html.TextBoxFor(model => model.ForumName, new {@class = "form-control"})
+                @Html.ValidationMessageFor(model => model.ForumName)
             </div>
-            <div id="collapseGeneral" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingGeneral">
-                <div class="panel-body">
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ForumUrl)
+                @Html.TextBoxFor(model => model.ForumUrl, new {@class = "form-control"})
+                @Html.ValidationMessageFor(model => model.ForumUrl)
+            </div>
 
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.ForumName)
-                        @Html.TextBoxFor(model => model.ForumName, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.ForumName)
-                    </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.PageTitle)
+                @Html.TextBoxFor(model => model.PageTitle, new {@class = "form-control"})
+                @Html.ValidationMessageFor(model => model.PageTitle)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.MetaDesc)
+                @Html.TextAreaFor(model => model.MetaDesc, new {@class = "form-control"})
+                @Html.ValidationMessageFor(model => model.MetaDesc)
+            </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.ForumUrl)
-                        @Html.TextBoxFor(model => model.ForumUrl, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.ForumUrl)
-                    </div>
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.IsClosed, new {@class = "checkbox"}))
+                {
+                    @Html.CheckBoxFor(m => m.IsClosed)
+                }
+                @Html.ValidationMessageFor(m => m.IsClosed)
+            </div>
 
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.DisableStandardRegistration, new { @class = "checkbox" }))
+                {
+                    @Html.CheckBoxFor(m => m.DisableStandardRegistration)
+                }
+                <p class="help-block">This disables the standard registration form, perfect for people who just want to use Social logins only</p>
+                @Html.ValidationMessageFor(m => m.DisableStandardRegistration)
+            </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.PageTitle)
-                        @Html.TextBoxFor(model => model.PageTitle, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.PageTitle)
-                    </div>
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.MetaDesc)
-                        @Html.TextAreaFor(model => model.MetaDesc, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.MetaDesc)
-                    </div>
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.EnableRSSFeeds, new {@class = "checkbox"}))
+                {
+                    @Html.CheckBoxFor(m => m.EnableRSSFeeds)
+                }
+                @Html.ValidationMessageFor(m => m.EnableRSSFeeds)
+            </div>
 
-                    <div class="checkbox">
-                        @using (Html.BeginLabelFor(m => m.IsClosed, new { @class = "checkbox" }))
-                        {
-                            @Html.CheckBoxFor(m => m.IsClosed)
-                        }
-                        @Html.ValidationMessageFor(m => m.IsClosed)
-                    </div>
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.EnableEmoticons, new {@class = "checkbox"}))
+                {
+                    @Html.CheckBoxFor(m => m.EnableEmoticons)
+                }
+                @Html.ValidationMessageFor(m => m.EnableEmoticons)
+            </div>
 
-                    <div class="checkbox">
-                        @using (Html.BeginLabelFor(m => m.EnableRSSFeeds, new { @class = "checkbox" }))
-                        {
-                            @Html.CheckBoxFor(m => m.EnableRSSFeeds)
-                        }
-                        @Html.ValidationMessageFor(m => m.EnableRSSFeeds)
-                    </div>
-                    
-                    <div class="checkbox">
-                        @using (Html.BeginLabelFor(m => m.EnableEmoticons, new { @class = "checkbox" }))
-                        {
-                            @Html.CheckBoxFor(m => m.EnableEmoticons)
-                        }
-                        @Html.ValidationMessageFor(m => m.EnableEmoticons)
-                    </div>
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.DisplayEditedBy, new {@class = "checkbox"}))
+                {
+                    @Html.CheckBoxFor(m => m.DisplayEditedBy)
+                }
+                @Html.ValidationMessageFor(m => m.DisplayEditedBy)
+            </div>
 
-                    <div class="checkbox">
-                        @using (Html.BeginLabelFor(m => m.DisplayEditedBy, new { @class = "checkbox" }))
-                        {
-                            @Html.CheckBoxFor(m => m.DisplayEditedBy)
-                        }
-                        @Html.ValidationMessageFor(m => m.DisplayEditedBy)
-                    </div>
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.SuspendRegistration, new {@class = "checkbox"}))
+                {
+                    @Html.CheckBoxFor(m => m.SuspendRegistration)
+                }
+                @Html.ValidationMessageFor(m => m.SuspendRegistration)
+            </div>
 
-                    <div class="checkbox">
-                        @using (Html.BeginLabelFor(m => m.SuspendRegistration, new { @class = "checkbox" }))
-                        {
-                            @Html.CheckBoxFor(m => m.SuspendRegistration)
-                        }
-                        @Html.ValidationMessageFor(m => m.SuspendRegistration)
-                    </div>
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.EnableMarkAsSolution, new {@class = "checkbox"}))
+                {
+                    @Html.CheckBoxFor(m => m.EnableMarkAsSolution)
+                }
+                @Html.ValidationMessageFor(m => m.EnableMarkAsSolution)
+            </div>
 
-                    <div class="checkbox">
-                        @using (Html.BeginLabelFor(m => m.EnableMarkAsSolution, new { @class = "checkbox" }))
-                        {
-                            @Html.CheckBoxFor(m => m.EnableMarkAsSolution)
-                        }
-                        @Html.ValidationMessageFor(m => m.EnableMarkAsSolution)
-                    </div>
-                    
-                    <div class="checkbox">
-                        @using (Html.BeginLabelFor(m => m.DisableDislikeButton, new { @class = "checkbox" }))
-                        {
-                            @Html.CheckBoxFor(m => m.DisableDislikeButton)
-                        }
-                        @Html.ValidationMessageFor(m => m.DisableDislikeButton)
-                    </div>
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.DisableDislikeButton, new {@class = "checkbox"}))
+                {
+                    @Html.CheckBoxFor(m => m.DisableDislikeButton)
+                }
+                @Html.ValidationMessageFor(m => m.DisableDislikeButton)
+            </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.MarkAsSolutionReminderTimeFrame)
-                        @Html.TextBoxFor(model => model.MarkAsSolutionReminderTimeFrame, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.MarkAsSolutionReminderTimeFrame)
-                    </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.MarkAsSolutionReminderTimeFrame)
+                @Html.TextBoxFor(model => model.MarkAsSolutionReminderTimeFrame, new {@class = "form-control"})
+                @Html.ValidationMessageFor(model => model.MarkAsSolutionReminderTimeFrame)
+            </div>
 
-                    <div class="checkbox">
-                        @using (Html.BeginLabelFor(m => m.EnablePolls, new { @class = "checkbox" }))
-                        {
-                            @Html.CheckBoxFor(m => m.EnablePolls)
-                        }
-                        @Html.ValidationMessageFor(m => m.EnablePolls)
-                    </div>
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.EnablePolls, new {@class = "checkbox"}))
+                {
+                    @Html.CheckBoxFor(m => m.EnablePolls)
+                }
+                @Html.ValidationMessageFor(m => m.EnablePolls)
+            </div>
 
-                    @*<div class="checkbox">
+            @*<div class="checkbox">
                         @using (Html.BeginLabelFor(m => m.EnableSpamReporting, new { @class = "checkbox" }))
                         {
                             @Html.CheckBoxFor(m => m.EnableSpamReporting)
@@ -136,91 +144,121 @@
                         @Html.ValidationMessageFor(m => m.EnableMemberReporting)
                     </div>*@
 
-                    <div class="checkbox">
-                        @using (Html.BeginLabelFor(m => m.EnableEmailSubscriptions, new { @class = "checkbox" }))
-                        {
-                            @Html.CheckBoxFor(m => m.EnableEmailSubscriptions)
-                        }
-                        @Html.ValidationMessageFor(m => m.EnableEmailSubscriptions)
-                    </div>
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.EnableEmailSubscriptions, new {@class = "checkbox"}))
+                {
+                    @Html.CheckBoxFor(m => m.EnableEmailSubscriptions)
+                }
+                @Html.ValidationMessageFor(m => m.EnableEmailSubscriptions)
+            </div>
+
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.ManuallyAuthoriseNewMembers, new {@class = "checkbox"}))
+                {
+                    @Html.CheckBoxFor(m => m.ManuallyAuthoriseNewMembers)
+                }
+                @Html.ValidationMessageFor(m => m.ManuallyAuthoriseNewMembers)
+            </div>
+
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.EmailAdminOnNewMemberSignUp, new {@class = "checkbox"}))
+                {
+                    @Html.CheckBoxFor(m => m.EmailAdminOnNewMemberSignUp)
+                }
+                @Html.ValidationMessageFor(m => m.EmailAdminOnNewMemberSignUp)
+            </div>
+
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.NewMemberEmailConfirmation, new {@class = "checkbox"}))
+                {
+                    @Html.CheckBoxFor(m => m.NewMemberEmailConfirmation)
+                }
+                @Html.ValidationMessageFor(m => m.NewMemberEmailConfirmation)
+            </div>
+
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.EnableSignatures, new {@class = "checkbox"}))
+                {
+                    @Html.CheckBoxFor(m => m.EnableSignatures)
+                }
+                @Html.ValidationMessageFor(m => m.EnableSignatures)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.TopicsPerPage)
+                @Html.TextBoxFor(model => model.TopicsPerPage, new {@class = "form-control"})
+                @Html.ValidationMessageFor(model => model.TopicsPerPage)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.PostsPerPage)
+                @Html.TextBoxFor(model => model.PostsPerPage, new {@class = "form-control"})
+                @Html.ValidationMessageFor(model => model.PostsPerPage)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ActivitiesPerPage)
+                @Html.TextBoxFor(model => model.ActivitiesPerPage, new {@class = "form-control"})
+                @Html.ValidationMessageFor(model => model.ActivitiesPerPage)
+            </div>
+
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.EnablePrivateMessages, new {@class = "checkbox"}))
+                {
+                    @Html.CheckBoxFor(m => m.EnablePrivateMessages)
+                }
+                @Html.ValidationMessageFor(m => m.EnablePrivateMessages)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.MaxPrivateMessagesPerMember)
+                @Html.TextBoxFor(model => model.MaxPrivateMessagesPerMember, new {@class = "form-control"})
+                @Html.ValidationMessageFor(model => model.MaxPrivateMessagesPerMember)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.PrivateMessageFloodControl)
+                @Html.TextBoxFor(model => model.PrivateMessageFloodControl, new {@class = "form-control"})
+                @Html.ValidationMessageFor(model => model.PrivateMessageFloodControl)
+            </div>
+
+
+        </div>
+    </div>
+
+    </div>
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingTermsConditions">
+                <h4 class="panel-title">
+                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTermsConditions" aria-expanded="false" aria-controls="collapseTermsConditions">
+                        Terms &amp; Conditions
+                    </a>
+                </h4>
+            </div>
+            <div id="collapseTermsConditions" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTermsConditions">
+                <div class="panel-body">
 
                     <div class="checkbox">
-                        @using (Html.BeginLabelFor(m => m.ManuallyAuthoriseNewMembers, new { @class = "checkbox" }))
+                        @using (Html.BeginLabelFor(m => m.AgreeToTermsAndConditions, new { @class = "checkbox" }))
                         {
-                            @Html.CheckBoxFor(m => m.ManuallyAuthoriseNewMembers)
+                            @Html.CheckBoxFor(m => m.AgreeToTermsAndConditions)
                         }
-                        @Html.ValidationMessageFor(m => m.ManuallyAuthoriseNewMembers)
-                    </div>
-
-                    <div class="checkbox">
-                        @using (Html.BeginLabelFor(m => m.EmailAdminOnNewMemberSignUp, new { @class = "checkbox" }))
-                        {
-                            @Html.CheckBoxFor(m => m.EmailAdminOnNewMemberSignUp)
-                        }
-                        @Html.ValidationMessageFor(m => m.EmailAdminOnNewMemberSignUp)
-                    </div>
-
-                    <div class="checkbox">
-                        @using (Html.BeginLabelFor(m => m.NewMemberEmailConfirmation, new { @class = "checkbox" }))
-                        {
-                            @Html.CheckBoxFor(m => m.NewMemberEmailConfirmation)
-                        }
-                        @Html.ValidationMessageFor(m => m.NewMemberEmailConfirmation)
-                    </div>
-
-                    <div class="checkbox">
-                        @using (Html.BeginLabelFor(m => m.EnableSignatures, new { @class = "checkbox" }))
-                        {
-                            @Html.CheckBoxFor(m => m.EnableSignatures)
-                        }
-                        @Html.ValidationMessageFor(m => m.EnableSignatures)
+                        @Html.ValidationMessageFor(m => m.AgreeToTermsAndConditions)
                     </div>
 
                     <div class="form-group">
-                        @Html.LabelFor(model => model.TopicsPerPage)
-                        @Html.TextBoxFor(model => model.TopicsPerPage, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.TopicsPerPage)
+                        @Html.LabelFor(model => model.TermsAndConditions)
+                        @Html.EditorFor(model => model.TermsAndConditions)
+                        @Html.ValidationMessageFor(model => model.TermsAndConditions)
                     </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.PostsPerPage)
-                        @Html.TextBoxFor(model => model.PostsPerPage, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.PostsPerPage)
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.ActivitiesPerPage)
-                        @Html.TextBoxFor(model => model.ActivitiesPerPage, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.ActivitiesPerPage)
-                    </div>
-
-                    <div class="checkbox">
-                        @using (Html.BeginLabelFor(m => m.EnablePrivateMessages, new { @class = "checkbox" }))
-                        {
-                            @Html.CheckBoxFor(m => m.EnablePrivateMessages)
-                        }
-                        @Html.ValidationMessageFor(m => m.EnablePrivateMessages)
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.MaxPrivateMessagesPerMember)
-                        @Html.TextBoxFor(model => model.MaxPrivateMessagesPerMember, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.MaxPrivateMessagesPerMember)
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.PrivateMessageFloodControl)
-                        @Html.TextBoxFor(model => model.PrivateMessageFloodControl, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.PrivateMessageFloodControl)
-                    </div>
-
 
                 </div>
             </div>
-
         </div>
 
-        <div class="panel panel-default">
+    <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingPoints">
                 <h4 class="panel-title">
                     <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapsePoints" aria-expanded="false" aria-controls="collapsePoints">
@@ -241,8 +279,15 @@
 
                     <div class="form-group">
                         @Html.LabelFor(model => model.PointsAllowedToVoteAmount)
-                        @Html.TextBoxFor(model => model.PointsAllowedToVoteAmount, new { @class = "form-control" })
+                        @Html.TextBoxFor(model => model.PointsAllowedToVoteAmount, new {@class = "form-control"})
                         @Html.ValidationMessageFor(model => model.PointsAllowedToVoteAmount)
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.PointsAllowedForExtendedProfile)
+                        <p class="help-block">This is the amount of points a user must have to add Signatures, Website and social urls to their profile (Good for stopping spammers)</p>
+                        @Html.TextBoxFor(model => model.PointsAllowedForExtendedProfile, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PointsAllowedForExtendedProfile)
                     </div>
 
                     <div class="form-group">
@@ -312,7 +357,7 @@
 
                     <div class="form-group">
                         @Html.LabelFor(model => model.SMTPPassword)
-                        @Html.TextBoxFor(model => model.SMTPPassword, new { @class = "form-control" })
+                        @Html.PasswordFor(model => model.SMTPPassword, new { @class = "form-control", value = Model.SMTPPassword })
                         @Html.ValidationMessageFor(model => model.SMTPPassword)
                     </div>
 
@@ -329,11 +374,6 @@
                         }
                         @Html.ValidationMessageFor(m => m.SMTPEnableSSL)
                     </div>
-
-                    @*<p class="help-block">
-                        <strong>IMPORTANT:</strong> Only port 25 works in medium trust environments. You will need to comment out the medium trust entry in the web.config if you want to
-                        use any other port number.
-                    </p>*@
                 </div>
             </div>
         </div>
@@ -394,70 +434,6 @@
                 </div>
             </div>
         </div>
-
-        @*<div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingSpam">
-                <h4 class="panel-title">
-                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseSpam" aria-expanded="false" aria-controls="collapseSpam">
-                        Spam
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseSpam" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSpam">
-                <div class="panel-body">
-
-                    <div class="checkbox">
-                        @using (Html.BeginLabelFor(m => m.EnableAkisment, new { @class = "checkbox" }))
-                        {
-                            @Html.CheckBoxFor(m => m.EnableAkisment)
-                        }
-                        @Html.ValidationMessageFor(m => m.EnableAkisment)
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.AkismentKey)
-                        @Html.TextBoxFor(model => model.AkismentKey, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.AkismentKey)
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.SpamQuestion)
-                        @Html.TextBoxFor(model => model.SpamQuestion, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.SpamQuestion)
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(model => model.SpamAnswer)
-                        @Html.TextBoxFor(model => model.SpamAnswer, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.SpamAnswer)
-                    </div>
-
-                </div>
-            </div>
-        </div>*@
-
-        @*<div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingSocial">
-                <h4 class="panel-title">
-                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseSocial" aria-expanded="false" aria-controls="collapseSocial">
-                        Social
-                    </a>
-                </h4>
-            </div>
-            <div id="collapseSocial" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSocial">
-                <div class="panel-body">
-                    <p>You must have the correct AppId/Keys for the social accounts (Facebook &amp; Google) in the mvcforum.config file in the root of your website.</p>
-                    <div class="checkbox">
-                        @using (Html.BeginLabelFor(m => m.EnableSocialLogins, new { @class = "checkbox" }))
-                        {
-                            @Html.CheckBoxFor(m => m.EnableSocialLogins)
-                        }
-                        @Html.ValidationMessageFor(m => m.EnableSocialLogins)
-                    </div>
-                </div>
-            </div>
-        </div>*@
-
 
     </div>
 

@@ -19,39 +19,8 @@ namespace MVCForum.Website.Application
 {
     public static class AppHelpers
     {
-        #region General helpers
-
-        public static T GetInstanceOf<T>(string type)
-        {
-            return (T)Activator.CreateInstance(Type.GetType(type));
-        }
-
-        #endregion
 
         #region Application
-
-        public static string GetCurrentMvcForumVersion()
-        {
-            var version = ConfigUtils.GetAppSetting("MVCForumVersion");
-            return version;
-        }
-
-        public static bool SameVersionNumbers()
-        {
-            var version = HttpContext.Current.Application["Version"].ToString();
-            return GetCurrentMvcForumVersion() == version;
-        }
-
-        public static bool InInstaller()
-        {
-            var url = HttpContext.Current.Request.Url.GetLeftPart(UriPartial.Path);
-            if (!string.IsNullOrEmpty(url))
-            {
-                url = url.ToLowerInvariant();
-                return url.Contains(AppConstants.InstallerUrl);
-            }
-            return false;
-        }
 
         /// <summary>
         /// Returns true if the requested resource is one of the typical resources that needn't be processed by the cms engine.
@@ -101,19 +70,6 @@ namespace MVCForum.Website.Application
             return false;
         }
 
-        public static bool IsDbInstalled()
-        {
-            var filePath = Path.Combine(HostingEnvironment.MapPath("~/App_Data/"), AppConstants.SuccessDbFile);
-            //if (!File.Exists(filePath))
-            //{
-            //    using (File.Create(filePath))
-            //    {
-            //        //we use 'using' to close the file after it's created
-            //    }
-            //}
-            return File.Exists(filePath);
-        }
-
         #endregion
 
         #region Themes
@@ -125,7 +81,7 @@ namespace MVCForum.Website.Application
         public static List<string> GetThemeFolders()
         {
             var folders = new List<string>();
-            var themeRootFolder = HostingEnvironment.MapPath(String.Format("~/{0}", AppConstants.ThemeRootFolderName));
+            var themeRootFolder = HostingEnvironment.MapPath($"~/{SiteConstants.Instance.ThemeRootFolderName}");
             if (Directory.Exists(themeRootFolder))
             {
                 folders.AddRange(Directory.GetDirectories(themeRootFolder)
@@ -239,7 +195,7 @@ namespace MVCForum.Website.Application
 
         public static string CategoryRssUrls(string slug)
         {
-            return String.Format("/{0}/rss/{1}", AppConstants.CategoryUrlIdentifier, slug);
+            return $"/{SiteConstants.Instance.CategoryUrlIdentifier}/rss/{slug}";
         }
 
         #endregion
@@ -251,7 +207,8 @@ namespace MVCForum.Website.Application
             if (!string.IsNullOrEmpty(post))
             {
                 // Convert any BBCode
-                post = StringUtils.ConvertBbCodeToHtml(post, false);
+                //NOTE: Decided to remove BB code
+                //post = StringUtils.ConvertBbCodeToHtml(post, false);
 
                 // If using the PageDown/MarkDown Editor uncomment this line
                 post = StringUtils.ConvertMarkDown(post);
@@ -260,7 +217,7 @@ namespace MVCForum.Website.Application
                 post = StringUtils.EmbedVideosInPosts(post);
 
                 // Add Google prettify code snippets
-                //post = post.Replace("<pre>", "<pre class='prettyprint'>");
+                post = post.Replace("<pre>", "<pre class='prettyprint'>");
             }
 
             return post;
@@ -268,7 +225,7 @@ namespace MVCForum.Website.Application
 
         public static string ReturnBadgeUrl(string badgeFile)
         {
-            return String.Concat("~/content/badges/", badgeFile);
+            return string.Concat("~/content/badges/", badgeFile);
         }
 
         #endregion
@@ -281,7 +238,7 @@ namespace MVCForum.Website.Application
         /// <returns></returns>
         public static string PreviousVersionNo()
         {
-            return ConfigUtils.GetAppSetting("MVCForumVersion");
+            return SiteConstants.Instance.MvcForumVersion;
         }
 
         /// <summary>
@@ -295,7 +252,7 @@ namespace MVCForum.Website.Application
             var version = Assembly.GetExecutingAssembly().GetName().Version;
 
             // Store the value for use in the app
-            return String.Format("{0}.{1}", version.Major, version.Minor);
+            return $"{version.Major}.{version.Minor}";
         }
 
         /// <summary>
@@ -309,7 +266,7 @@ namespace MVCForum.Website.Application
             var version = Assembly.GetExecutingAssembly().GetName().Version;
 
             // Store the value for use in the app
-            return String.Format("{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
+            return $"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
         }
 
         /// <summary>
@@ -397,7 +354,7 @@ namespace MVCForum.Website.Application
                 var fileExtension = Path.GetExtension(fileName);
 
                 //Before we do anything, check file size
-                if (file.ContentLength > Convert.ToInt32(SiteConstants.FileUploadMaximumFileSizeInBytes))
+                if (file.ContentLength > Convert.ToInt32(SiteConstants.Instance.FileUploadMaximumFileSizeInBytes))
                 {
                     //File is too big
                     upResult.UploadSuccessful = false;
@@ -406,7 +363,7 @@ namespace MVCForum.Website.Application
                 }
 
                 // now check allowed extensions
-                var allowedFileExtensions = SiteConstants.FileUploadAllowedExtensions;
+                var allowedFileExtensions = SiteConstants.Instance.FileUploadAllowedExtensions;
 
                 if (onlyImages)
                 {
@@ -503,7 +460,7 @@ namespace MVCForum.Website.Application
 
         private static string CreateNewFileName(string fileName)
         {
-            return string.Format("{0}_{1}", GuidComb.GenerateComb(), fileName.Trim(' ').Replace("_", "-").Replace(" ", "-").ToLower());
+            return $"{GuidComb.GenerateComb()}_{fileName.Trim(' ').Replace("_", "-").Replace(" ", "-").ToLower()}";
         }
 
         #endregion

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Web.Mvc;
 using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Website.ViewModels
@@ -16,16 +15,8 @@ namespace MVCForum.Website.ViewModels
         public Dictionary<Category, PermissionSet> AllPermissionSets { get; set; }
     }
 
-    public class CategoryRowViewModel
-    {
-        public Category Category { get; set; }
-        public int TopicCount { get; set; }
-        public Topic LatestTopic { get; set; }
-        public int PostCount { get; set; }
-        public PermissionSet Permissions { get; set; }
-    }
 
-    public class ViewCategoryViewModel
+    public class CategoryViewModel
     {
         public List<TopicViewModel> Topics { get; set; }
         public PermissionSet Permissions { get; set; }
@@ -37,6 +28,14 @@ namespace MVCForum.Website.ViewModels
         public int? PageIndex { get; set; }
         public int? TotalCount { get; set; }
         public int? TotalPages { get; set; }
+        public int PostCount { get; set; }
+
+        // Topic info
+        public Topic LatestTopic { get; set; }
+        public int TopicCount { get; set; }
+
+        // Misc
+        public bool ShowUnSubscribedLink { get; set; }
     }
 
     public class SubCategoryViewModel

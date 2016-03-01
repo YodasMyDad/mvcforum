@@ -18,6 +18,7 @@ namespace MVCForum.Domain.DomainModel
         public DateTime DateAdded { get; set; }
         public PointsFor PointsFor { get; set; }
         public Guid? PointsForId { get; set; }
+        public string Notes { get; set; }
         public virtual MembershipUser User { get; set; }
     }
 }

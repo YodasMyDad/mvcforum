@@ -21,5 +21,7 @@ namespace MVCForum.Domain.Interfaces.Services
         void DeleteTags(IEnumerable<TopicTag> tags);
         void UpdateTagNames(string tagName, string oldTagName);
         Dictionary<TopicTag, int> GetPopularTags(int? amount, List<Category> allowedCategories);
+        TopicTag GetTagName(string tag);
+        void Delete(TopicTag item);
     }
 }

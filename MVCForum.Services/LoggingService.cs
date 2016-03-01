@@ -46,8 +46,8 @@ namespace MVCForum.Services
         /// <returns></returns>
         private static string MakeLogFileName(bool isArchive)
         {
-            return !isArchive ? String.Format("{0}//{1}{2}", _logFileFolder, LogFileNameOnly, LogFileExtension) :
-                String.Format("{0}//{1}_{2}{3}", _logFileFolder, LogFileNameOnly, DateTime.UtcNow.ToString("ddMMyyyy_hhmmss"), LogFileExtension);
+            return !isArchive ? $"{_logFileFolder}//{LogFileNameOnly}{LogFileExtension}"
+                : $"{_logFileFolder}//{LogFileNameOnly}_{DateTime.UtcNow.ToString("ddMMyyyy_hhmmss")}{LogFileExtension}";
         }
 
         /// <summary>
@@ -86,14 +86,12 @@ namespace MVCForum.Services
                         {
                             var callStack = new StackFrame(2, true); // Go back one stack frame to get module info
 
-                            tw.WriteLine("{0} | {1} | {2} | {3}", DateTime.UtcNow.ToString(DateTimeFormat),
-                                         callStack.GetMethod().Module.Name, callStack.GetMethod().Name, message);
+                            tw.WriteLine("{0} | {1} | {2} | {3} | {4} | {5}", DateTime.UtcNow.ToString(DateTimeFormat), callStack.GetMethod().Module.Name, callStack.GetMethod().Name, callStack.GetMethod().DeclaringType, callStack.GetFileLineNumber(), message);
                         }
                     }
                 }
-                catch (Exception ex)
+                catch
                 {
-                    var testing = ex;
                     // Not much to do if logging failed...
                 } 
             }
@@ -145,8 +143,10 @@ namespace MVCForum.Services
                                   Date = DateTime.ParseExact(lineSplit[0].Trim(), DateTimeFormat, CultureInfo.InvariantCulture),
                                   Module = lineSplit[1].Trim(),
                                   Method = lineSplit[2].Trim(),
-                                  ErrorMessage = lineSplit[3].Trim(),
-                              };
+                                  DeclaringType = lineSplit[3].Trim(),
+                                  LineNumber = lineSplit[4].Trim(),
+                                  ErrorMessage = lineSplit[5].Trim(),
+                              };                
             }
             catch (Exception)
             {

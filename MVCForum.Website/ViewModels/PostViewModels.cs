@@ -2,18 +2,22 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.Entities;
 using MVCForum.Website.Application;
 
 namespace MVCForum.Website.ViewModels
 {
     public class CreateAjaxPostViewModel
     {
-        [UIHint(SiteConstants.EditorType), AllowHtml]
+        [UIHint(AppConstants.EditorType), AllowHtml]
         [StringLength(6000)]
         public string PostContent { get; set; }
         public Guid Topic { get; set; }
         public bool DisablePosting { get; set; }
+        public Guid? InReplyTo { get; set; }
+        public string ReplyToUsername { get; set; }
     }
 
     public class ShowMorePostsViewModel
@@ -46,6 +50,7 @@ namespace MVCForum.Website.ViewModels
         public bool MemberHasFavourited { get; set; }
         public bool MemberIsOnline { get; set; }
         public bool ShowTopicName { get; set; }
+        public bool MinimalPost { get; set; }
     }
 
     public class ReportPostViewModel
@@ -55,5 +60,26 @@ namespace MVCForum.Website.ViewModels
         
         [Required]
         public string Reason { get; set; }
+    }
+
+    public class MovePostViewModel
+    {
+        public PostViewModel Post { get; set; }
+        public IList<SelectListItem> LatestTopics { get; set; }
+
+        [ForumMvcResourceDisplayName("Post.Move.Label.Topic")]
+        public Guid? TopicId { get; set; }
+        public Guid PostId { get; set; }
+
+        [ForumMvcResourceDisplayName("Post.Move.Label.NewTopicTitle")]
+        public string TopicTitle { get; set; }
+
+        [ForumMvcResourceDisplayName("Post.Move.Label.ReplyToPosts")]
+        public bool MoveReplyToPosts { get; set; }
+    }
+
+    public class PostEditHistoryViewModel
+    {
+        public IList<PostEdit> PostEdits { get; set; } 
     }
 }

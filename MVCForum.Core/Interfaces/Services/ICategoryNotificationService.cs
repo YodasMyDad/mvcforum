@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Domain.Interfaces.Services
@@ -10,6 +11,7 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<CategoryNotification> GetByCategory(Category category);
         IList<CategoryNotification> GetByUser(MembershipUser user);
         IList<CategoryNotification> GetByUserAndCategory(MembershipUser user, Category category, bool addTracking = false);
-        void Add(CategoryNotification category);
+        CategoryNotification Add(CategoryNotification category);
+        CategoryNotification Get(Guid id);
     }
 }

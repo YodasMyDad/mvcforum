@@ -5,9 +5,16 @@
     <li class="dropdown">
         <a href="#" class="dropdown-toggle mytoolslink" data-toggle="dropdown">
             @Html.LanguageString("SideBox.MyTools")
-            @if (Model.NewPrivateMessageCount > 0)
+            @if (Model.NewPrivateMessageCount > 0 || Model.ModerateCount > 0)
             {
-                <span class="badge">@Model.NewPrivateMessageCount</span>
+                if (Model.ModerateCount > 0)
+                {
+                    <span class="badge">@Model.ModerateCount</span> 
+                }
+                if (Model.NewPrivateMessageCount > 0)
+                {
+                    <span class="badge">@Model.NewPrivateMessageCount</span>
+                }
             }
             else
             {
@@ -44,6 +51,18 @@ else
                 @if (Model.NewPrivateMessageCount > 0)
                 {
                     <span class="badge">@Model.NewPrivateMessageCount</span>
+                }
+            </a>
+        </li>
+}
+    if (Model.ModerateCount > 0)
+    {
+        <li>
+            <a href="@Url.Action("Index", "Moderate")" class="moderatepanelnav" data-name="@Html.Lang("Moderate.NavText")">
+                @Html.LanguageString("Moderate.NavText")
+                @if (Model.ModerateCount > 0)
+                {
+                    <span class="badge">@Model.ModerateCount</span>
                 }
             </a>
         </li>

@@ -9,7 +9,7 @@
     <ul class="pmmessagetools">
         <li>
             <a class="privatemessagedelete" data-id="@Model.Id">
-                Delete
+                @Html.Lang("PM.Delete")
             </a>
         </li>
         @if (Model.IsRead && Model.UserFrom.Id == userId)

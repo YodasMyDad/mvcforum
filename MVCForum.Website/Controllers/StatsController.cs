@@ -1,6 +1,5 @@
-﻿using System.Linq;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
+﻿using System.Web.Mvc;
+using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Website.ViewModels;
@@ -24,7 +23,7 @@ namespace MVCForum.Website.Controllers
         }
 
         [ChildActionOnly]
-        [OutputCache(Duration = AppConstants.ShortCacheTime)]
+        [OutputCache(Duration = (int)CacheTimes.OneHour)]
         public PartialViewResult GetMainStats()
         {
             var allCats = _categoryService.GetAll();

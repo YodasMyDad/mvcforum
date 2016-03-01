@@ -1,17 +1,30 @@
-﻿using System.Web;
+﻿using System;
+using System.Web;
+using System.Data.Entity;
+using System.Linq;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Domain.DomainModel.Enums;
+using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Services.Data.Context;
 
 namespace MVCForum.Services
 {
     public partial class SettingsService : ISettingsService
     {
-        private readonly ISettingsRepository _settingsRepository;
+        private readonly MVCForumContext _context;
+        private readonly ICacheService _cacheService;
 
-        public SettingsService(ISettingsRepository settingsRepository)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="context"> </param>
+        /// <param name="cacheService"></param>
+        public SettingsService(IMVCForumContext context, ICacheService cacheService)
         {
-            _settingsRepository = settingsRepository;
+            _cacheService = cacheService;
+            _context = context as MVCForumContext;
         }
 
         /// <summary>
@@ -22,19 +35,34 @@ namespace MVCForum.Services
         {
             if (useCache)
             {
-                var objectContextKey = HttpContext.Current.GetHashCode().ToString("x");
-                if (!HttpContext.Current.Items.Contains(objectContextKey))
+                var cachedSettings = _cacheService.Get<Settings>(AppConstants.SettingsCacheName);
+                if (cachedSettings == null)
                 {
-                    HttpContext.Current.Items.Add(objectContextKey, _settingsRepository.GetSettings(false));
+                    cachedSettings = GetSettingsLocal(false);
+                    _cacheService.Set(AppConstants.SettingsCacheName, cachedSettings, CacheTimes.OneDay);
                 }
-                return HttpContext.Current.Items[objectContextKey] as Settings;   
+                return cachedSettings;
             }
-            return _settingsRepository.GetSettings(true);
+            return GetSettingsLocal(true);
+        }
+
+        private Settings GetSettingsLocal(bool addTracking)
+        {
+            var settings = _context.Setting
+                              .Include(x => x.DefaultLanguage)
+                              .Include(x => x.NewMemberStartingRole);
+
+            return addTracking ? settings.FirstOrDefault() : settings.AsNoTracking().FirstOrDefault();
         }
 
         public Settings Add(Settings settings)
         {
-            return _settingsRepository.Add(settings);
+            return _context.Setting.Add(settings);
+        }
+
+        public Settings Get(Guid id)
+        {
+            return _context.Setting.FirstOrDefault(x => x.Id == id);
         }
     }
 }

@@ -8,6 +8,7 @@ using Quartz;
 
 namespace MVCForum.Website.Application.ScheduledJobs
 {
+    [DisallowConcurrentExecution]
     public class MarkAsSolutionReminderJob : IJob
     {
         private readonly ILoggingService _loggingService;
@@ -31,18 +32,18 @@ namespace MVCForum.Website.Application.ScheduledJobs
         {
             using (var unitOfWork = _unitOfWorkManager.NewUnitOfWork())
             {
-                var settings = _settingsService.GetSettings(false);
-                var timeFrame = settings.MarkAsSolutionReminderTimeFrame ?? 0;
-                if (timeFrame > 0 && settings.EnableMarkAsSolution)
+                try
                 {
-                    var amount = 0;
-                    try
+                    var settings = _settingsService.GetSettings(false);
+                    var timeFrame = settings.MarkAsSolutionReminderTimeFrame ?? 0;
+                    if (timeFrame > 0 && settings.EnableMarkAsSolution)
                     {
+
 
                         var remindersToSend = _topicService.GetMarkAsSolutionReminderList(timeFrame);
                         if (remindersToSend.Any())
                         {
-                            amount = remindersToSend.Count;
+                            var amount = remindersToSend.Count;
 
                             // Use settings days amount and also mark topics as reminded
                             // Only send if markassolution is enabled and day is not 0
@@ -50,15 +51,12 @@ namespace MVCForum.Website.Application.ScheduledJobs
                             foreach (var markAsSolutionReminder in remindersToSend)
                             {
                                 // Topic Link
-                                var topicLink = string.Format("<a href=\"{0}{1}\">{2}</a>",
-                                    settings.ForumUrl.TrimEnd('/'),
-                                    markAsSolutionReminder.Topic.NiceUrl,
-                                    markAsSolutionReminder.Topic.Name);
+                                var topicLink = $"<a href=\"{settings.ForumUrl.TrimEnd('/')}{markAsSolutionReminder.Topic.NiceUrl}\">{markAsSolutionReminder.Topic.Name}</a>";
 
                                 // Create the email
                                 var sb = new StringBuilder();
                                 sb.AppendFormat("<p>{0}</p>", string.Format(_localizationService.GetResourceString("Tasks.MarkAsSolutionReminderJob.EmailBody"),
-                                                                topicLink, 
+                                                                topicLink,
                                                                 settings.ForumName, markAsSolutionReminder.PostCount));
 
                                 // create the emails and only send them to people who have not had notifications disabled
@@ -77,22 +75,23 @@ namespace MVCForum.Website.Application.ScheduledJobs
 
 
                                 // and now pass the emails in to be sent
-                                _emailService.SendMail(email);
+                                // We have to pass the current settings to SendMail when it's within a task
+                                _emailService.SendMail(email, settings);
 
                                 // And now mark the topic as reminder sent
                                 markAsSolutionReminder.Topic.SolvedReminderSent = true;
                             }
+
+                            unitOfWork.Commit();
+                            _loggingService.Error($"{amount} Mark as solution reminder emails sent");
+
                         }
-
-
-                        unitOfWork.Commit();
-                        _loggingService.Error(string.Format("{0} Mark as solution reminder emails sent", amount));
                     }
-                    catch (Exception ex)
-                    {
-                        unitOfWork.Rollback();
-                        _loggingService.Error(ex);
-                    }
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    _loggingService.Error(ex);
                 }
             }
         }

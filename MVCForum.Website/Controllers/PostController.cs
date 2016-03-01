@@ -6,13 +6,13 @@ using System.Linq;
 using System.Web.Security;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.Events;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
 using MVCForum.Website.ViewModels.Mapping;
-using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
 
 namespace MVCForum.Website.Controllers
 {
@@ -20,37 +20,30 @@ namespace MVCForum.Website.Controllers
     public partial class PostController : BaseController
     {
         private readonly ITopicService _topicService;
-        private readonly ITopicTagService _topicTagService;
         private readonly ITopicNotificationService _topicNotificationService;
         private readonly ICategoryService _categoryService;
         private readonly IPostService _postService;
         private readonly IEmailService _emailService;
         private readonly IReportService _reportService;
-        private readonly IPollAnswerService _pollAnswerService;
-        private readonly IPollService _pollService;
         private readonly IBannedWordService _bannedWordService;
         private readonly IVoteService _voteService;
-        private readonly IMembershipUserPointsService _membershipUserPointsService;
+        private readonly IPostEditService _postEditService;
 
         public PostController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ITopicService topicService, IPostService postService,
-            ISettingsService settingsService, ICategoryService categoryService, ITopicTagService topicTagService,
-            ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, IPollAnswerService pollAnswerService,
-            IPollService pollService, IBannedWordService bannedWordService, IMembershipUserPointsService membershipUserPointsService, IVoteService voteService)
+            ISettingsService settingsService, ICategoryService categoryService,
+            ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, IBannedWordService bannedWordService, IVoteService voteService, IPostEditService postEditService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
             _postService = postService;
             _categoryService = categoryService;
-            _topicTagService = topicTagService;
             _topicNotificationService = topicNotificationService;
             _emailService = emailService;
             _reportService = reportService;
-            _pollAnswerService = pollAnswerService;
-            _pollService = pollService;
             _bannedWordService = bannedWordService;
-            _membershipUserPointsService = membershipUserPointsService;
             _voteService = voteService;
+            _postEditService = postEditService;
         }
 
 
@@ -89,6 +82,10 @@ namespace MVCForum.Website.Controllers
                 var akismetHelper = new AkismetHelper(SettingsService);
 
                 newPost = _postService.AddNewPost(postContent, topic, loggedOnUser, out permissions);
+
+                // Set the reply to
+                newPost.InReplyTo = post.InReplyTo;
+            
 
                 if (akismetHelper.IsSpam(newPost))
                 {
@@ -132,33 +129,44 @@ namespace MVCForum.Website.Controllers
         {
             bool isTopicStarter;
             Topic topic;
-
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 // Got to get a lot of things here as we have to check permissions
                 // Get the post
                 var post = _postService.Get(id);
+                var postId = post.Id;
 
                 // get this so we know where to redirect after
                 isTopicStarter = post.IsTopicStarter;
 
                 // Get the topic
                 topic = post.Topic;
+                var topicUrl = topic.NiceUrl;
 
                 // get the users permissions
                 var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
 
-                if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[AppConstants.PermissionDeletePosts].IsTicked)
+                if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[SiteConstants.Instance.PermissionDeletePosts].IsTicked)
                 {
-                    var deleteTopic = _postService.Delete(post);
-
-                    unitOfWork.SaveChanges();
-                    
-                    if (deleteTopic)
+                    // Delete post / topic
+                    if (post.IsTopicStarter)
                     {
-                        _topicService.Delete(topic);
+                       // Delete entire topic
+                       _topicService.Delete(topic, unitOfWork);
                     }
+                    else
+                    {
+                        // Deletes single post and associated data
+                        _postService.Delete(post, unitOfWork, false);
 
+                        // Remove in replyto's
+                        var relatedPosts = _postService.GetReplyToPosts(postId);
+                        foreach (var relatedPost in relatedPosts)
+                        {
+                            relatedPost.InReplyTo = null;
+                        }
+                    }
+    
                     try
                     {
                         unitOfWork.Commit();
@@ -167,7 +175,12 @@ namespace MVCForum.Website.Controllers
                     {
                         unitOfWork.Rollback();
                         LoggingService.Error(ex);
-                        throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
+                        ShowMessage(new GenericMessageViewModel
+                        {
+                            Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+                            MessageType = GenericMessages.danger
+                        });
+                        return Redirect(topicUrl);
                     }
                 }
             }
@@ -322,5 +335,230 @@ namespace MVCForum.Website.Controllers
             }         
         }
 
+
+        public ActionResult MovePost(Guid id)
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+            }
+
+            // Firstly check if this is a post and they are allowed to move it
+                var post = _postService.Get(id);
+            if (post == null)
+            {
+                return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
+            }
+
+            var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
+            var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+
+            // Does the user have permission to this posts category
+            var cat = allowedCategories.FirstOrDefault(x => x.Id == post.Topic.Category.Id);
+            if (cat == null)
+            {
+                return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
+            }
+
+            // Does this user have permission to move
+            if (!permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+            {
+                return NoPermission(post.Topic);
+            }
+
+            var topics = _topicService.GetAllSelectList(allowedCategories, 30);
+            topics.Insert(0, new SelectListItem
+            {
+                Text = LocalizationService.GetResourceString("Topic.Choose"),
+                Value = ""
+            });
+
+            var postViewModel = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions, post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
+            postViewModel.MinimalPost = true;
+            var viewModel = new MovePostViewModel
+            {
+                Post = postViewModel,
+                PostId = post.Id,
+                LatestTopics = topics,
+                MoveReplyToPosts = true
+            };
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult MovePost(MovePostViewModel viewModel)
+        {
+
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                // Firstly check if this is a post and they are allowed to move it
+                var post = _postService.Get(viewModel.PostId);
+                if (post == null)
+                {
+                    return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
+                }
+
+                var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+
+                // Does the user have permission to this posts category
+                var cat = allowedCategories.FirstOrDefault(x => x.Id == post.Topic.Category.Id);
+                if (cat == null)
+                {
+                    return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
+                }
+
+                // Does this user have permission to move
+                if (!permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                {
+                    return NoPermission(post.Topic);
+                }
+
+                var previousTopic = post.Topic;
+                var category = post.Topic.Category;
+                var postCreator = post.User;
+
+                Topic topic;
+                var cancelledByEvent = false;
+                // If the dropdown has a value, then we choose that first
+                if (viewModel.TopicId != null)
+                {
+                    // Get the selected topic
+                    topic = _topicService.Get((Guid) viewModel.TopicId);
+                }
+                else if(!string.IsNullOrEmpty(viewModel.TopicTitle))
+                {
+                    // We get the banned words here and pass them in, so its just one call
+                    // instead of calling it several times and each call getting all the words back
+                    var bannedWordsList = _bannedWordService.GetAll();
+                    List<string> bannedWords = null;
+                    if (bannedWordsList.Any())
+                    {
+                        bannedWords = bannedWordsList.Select(x => x.Word).ToList();
+                    }
+
+                    // Create the topic
+                    topic = new Topic
+                    {
+                        Name = _bannedWordService.SanitiseBannedWords(viewModel.TopicTitle, bannedWords),
+                        Category = category,
+                        User = postCreator
+                    };
+
+                    // Create the topic
+                    topic = _topicService.Add(topic);
+
+                    // Save the changes
+                    unitOfWork.SaveChanges();
+
+                    // Set the post to be a topic starter
+                    post.IsTopicStarter = true;
+
+                    // Check the Events
+                    var e = new TopicMadeEventArgs { Topic = topic };
+                    EventManager.Instance.FireBeforeTopicMade(this, e);
+                    if (e.Cancel)
+                    {
+                        cancelledByEvent = true;
+                        ShowMessage(new GenericMessageViewModel
+                        {
+                            MessageType = GenericMessages.warning, Message = LocalizationService.GetResourceString("Errors.GenericMessage")
+                        });
+                    }                    
+                }
+                else
+                {
+                    // No selected topic OR topic title, just redirect back to the topic
+                    return Redirect(post.Topic.NiceUrl);
+                }
+
+                // If this create was cancelled by an event then don't continue
+                if (!cancelledByEvent)
+                {
+                    // Now update the post to the new topic
+                    post.Topic = topic;
+
+                    // Also move any posts, which were in reply to this post
+                    if (viewModel.MoveReplyToPosts)
+                    {
+                        var relatedPosts = _postService.GetReplyToPosts(viewModel.PostId);
+                        foreach (var relatedPost in relatedPosts)
+                        {
+                            relatedPost.Topic = topic;
+                        }
+                    }
+
+                    unitOfWork.SaveChanges();
+
+                    // Update Last post..  As we have done a save, we should get all posts including the added ones
+                    var lastPost = topic.Posts.OrderByDescending(x => x.DateCreated).FirstOrDefault();
+                    topic.LastPost = lastPost;
+
+                    // If any of the posts we are moving, were the last post - We need to update the old Topic
+                    var previousTopicLastPost = previousTopic.Posts.OrderByDescending(x => x.DateCreated).FirstOrDefault();
+                    previousTopic.LastPost = previousTopicLastPost;
+
+                    try
+                    {
+                        unitOfWork.Commit();
+
+                        EventManager.Instance.FireAfterTopicMade(this, new TopicMadeEventArgs { Topic = topic });
+
+                        // On Update redirect to the topic
+                        return RedirectToAction("Show", "Topic", new { slug = topic.Slug });
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                        ShowMessage(new GenericMessageViewModel
+                        {
+                            Message = ex.Message,
+                            MessageType = GenericMessages.danger
+                        });
+                    }
+                }
+
+                // Repopulate the topics
+                var topics = _topicService.GetAllSelectList(allowedCategories, 30);
+                topics.Insert(0, new SelectListItem
+                {
+                    Text = LocalizationService.GetResourceString("Topic.Choose"),
+                    Value = ""
+                });
+
+                viewModel.LatestTopics = topics;
+                viewModel.Post = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions, post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
+                viewModel.Post.MinimalPost = true;
+                viewModel.PostId = post.Id;
+
+                return View(viewModel);
+            }
+
+        }
+
+        public ActionResult GetPostEditHistory(Guid id)
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var post = _postService.Get(id);
+                if (post != null)
+                {
+                    // Check permissions
+                    var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
+                    if (permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                    {
+                        // Good to go
+                        var postEdits = _postEditService.GetByPost(id);
+                        var viewModel = new PostEditHistoryViewModel
+                        {
+                            PostEdits = postEdits
+                        };
+                        return PartialView(viewModel);
+                    }
+                }
+
+                return Content(LocalizationService.GetResourceString("Errors.GenericMessage"));
+            }
+        }
     }
 }

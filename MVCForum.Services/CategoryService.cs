@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.General;
 using MVCForum.Domain.Exceptions;
-using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Services.Data.Context;
 using MVCForum.Utilities;
 
 namespace MVCForum.Services
@@ -16,24 +19,23 @@ namespace MVCForum.Services
     public partial class CategoryService : ICategoryService
     {
         private readonly IRoleService _roleService;
-        private readonly ICategoryRepository _categoryRepository;
         private readonly ICategoryNotificationService _categoryNotificationService;
-        private readonly ICategoryPermissionForRoleRepository _categoryPermissionForRoleRepository;
+        private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
+        private readonly MVCForumContext _context;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="categoryPermissionForRoleRepository"> </param>
+        /// <param name="context"></param>
         /// <param name="roleService"> </param>
-        /// <param name="categoryRepository"> </param>
         /// <param name="categoryNotificationService"> </param>
-        public CategoryService(ICategoryRepository categoryRepository, ICategoryPermissionForRoleRepository categoryPermissionForRoleRepository,
-            IRoleService roleService, ICategoryNotificationService categoryNotificationService)
+        /// <param name="categoryPermissionForRoleService"></param>
+        public CategoryService(IMVCForumContext context, IRoleService roleService, ICategoryNotificationService categoryNotificationService, ICategoryPermissionForRoleService categoryPermissionForRoleService)
         {
-            _categoryRepository = categoryRepository;
-            _categoryPermissionForRoleRepository = categoryPermissionForRoleRepository;
             _roleService = roleService;
             _categoryNotificationService = categoryNotificationService;
+            _categoryPermissionForRoleService = categoryPermissionForRoleService;
+            _context = context as MVCForumContext;
         }
 
         /// <summary>
@@ -50,7 +52,11 @@ namespace MVCForum.Services
                 {
                     // These are now in order
                     var orderedCategories = new List<Category>();
-                    var allCats = _categoryRepository.GetAll().ToList();
+                    var allCats = _context.Category
+                            .Include(x => x.ParentCategory)
+                            .AsNoTracking()
+                            .OrderBy(x => x.SortOrder)
+                            .ToList();
                     foreach (var parentCategory in allCats.Where(x => x.ParentCategory == null).OrderBy(x => x.SortOrder))
                     {
                         // Add the main category
@@ -65,7 +71,11 @@ namespace MVCForum.Services
                 }
                 return (List<Category>)HttpContext.Current.Items[key];
             }
-            return _categoryRepository.GetAll().ToList();
+            return _context.Category
+                            .Include(x => x.ParentCategory)
+                            .AsNoTracking()
+                            .OrderBy(x => x.SortOrder)
+                            .ToList();
         }
 
         public List<Category> GetSubCategories(Category category, List<Category> allCategories, int level = 2)
@@ -114,7 +124,10 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IEnumerable<Category> GetAllSubCategories(Guid parentId)
         {
-            return _categoryRepository.GetAllSubCategories(parentId);
+            return _context.Category
+                    .Where(x => x.ParentCategory.Id == parentId)
+                    .OrderBy(x => x.SortOrder)
+                    .ToList();
         }
 
         /// <summary>
@@ -123,7 +136,15 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IEnumerable<Category> GetAllMainCategories()
         {
-            return _categoryRepository.GetMainCategories();
+            var categories = _context.Category
+                                .Include(x => x.ParentCategory)
+                                .Include(x => x.Topics.Select(l => l.LastPost))
+                                .Include(x => x.Topics.Select(l => l.Posts))
+                                .Where(cat => cat.ParentCategory == null)
+                                .OrderBy(x => x.SortOrder)
+                                .ToList();
+
+            return categories;
         }
 
         /// <summary>
@@ -133,7 +154,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public List<Category> GetAllowedCategories(MembershipRole role)
         {
-            return GetAllowedCategories(role, AppConstants.PermissionDenyAccess);
+            return GetAllowedCategories(role, SiteConstants.Instance.PermissionDenyAccess);
         }
 
         public List<Category> GetAllowedCategories(MembershipRole role, string actionType)
@@ -160,7 +181,8 @@ namespace MVCForum.Services
                 var permissionSet = _roleService.GetPermissions(category, role);
                 if (!permissionSet[actionType].IsTicked)
                 {
-                    filteredCats.Add(category);
+                        // Only add it category is NOT locked
+                        filteredCats.Add(category);
                 }
             }
             return filteredCats;
@@ -170,7 +192,7 @@ namespace MVCForum.Services
         /// Add a new category
         /// </summary>
         /// <param name="category"></param>
-        public void Add(Category category)
+        public Category Add(Category category)
         {
             // Sanitize
             category = SanitizeCategory(category);
@@ -179,10 +201,10 @@ namespace MVCForum.Services
             category.DateCreated = DateTime.UtcNow;
 
             // url slug generator
-            category.Slug = ServiceHelpers.GenerateSlug(category.Name, _categoryRepository.GetBySlugLike(ServiceHelpers.CreateUrl(category.Name)), null);            
+            category.Slug = ServiceHelpers.GenerateSlug(category.Name, GetBySlugLike(ServiceHelpers.CreateUrl(category.Name)), null);
 
             // Add the category
-            _categoryRepository.Add(category);
+            return _context.Category.Add(category);
         }
 
         /// <summary>
@@ -194,7 +216,22 @@ namespace MVCForum.Services
             // Sanitize
             category = SanitizeCategory(category);
 
-            category.Slug = ServiceHelpers.GenerateSlug(category.Name, _categoryRepository.GetBySlugLike(category.Slug), category.Slug);
+            var updateSlug = true;
+
+            // Check if slug has changed as this could be an update
+            if (!string.IsNullOrEmpty(category.Slug))
+            {
+                var categoryBySlug = GetBySlugWithSubCategories(category.Slug);
+                if (categoryBySlug.Category.Id == category.Id)
+                {
+                    updateSlug = false;
+                }
+            }
+
+            if (updateSlug)
+            {
+                category.Slug = ServiceHelpers.GenerateSlug(category.Name, GetBySlugLike(category.Slug), category.Slug);   
+            }
         }
 
         /// <summary>
@@ -206,7 +243,7 @@ namespace MVCForum.Services
         {
             // Sanitize any strings in a category
             category.Description = StringUtils.GetSafeHtml(category.Description);
-            category.Name = StringUtils.SafePlainText(category.Name);
+            category.Name = HttpUtility.HtmlDecode(StringUtils.SafePlainText(category.Name));
             return category;
         }
 
@@ -217,12 +254,30 @@ namespace MVCForum.Services
         /// <returns></returns>
         public Category Get(Guid id)
         {
-            return _categoryRepository.Get(id);
+            return _context.Category.FirstOrDefault(x => x.Id == id);
         }
 
         public IList<Category> Get(IList<Guid> ids, bool fullGraph = false)
         {
-            return _categoryRepository.Get(ids, fullGraph);
+            IList<Category> categories;
+
+            if (fullGraph)
+            {
+                categories =
+                    _context.Category.AsNoTracking()
+                        .Include(x => x.Topics.Select(l => l.LastPost.User))
+                        .Include(x => x.ParentCategory)
+                        .Where(x => ids.Contains(x.Id))
+                        .ToList();
+            }
+            else
+            {
+                categories = _context.Category
+                    .AsNoTracking().Where(x => ids.Contains(x.Id)).ToList();
+            }
+
+            // make sure categories are returned in order of ids (not in Database order)
+            return ids.Select(id => categories.Single(c => c.Id == id)).ToList();
         }
 
         /// <summary>
@@ -232,7 +287,18 @@ namespace MVCForum.Services
         /// <returns></returns>
         public CategoryWithSubCategories GetBySlugWithSubCategories(string slug)
         {
-            return _categoryRepository.GetBySlugWithSubCategories(slug);
+            slug = StringUtils.SafePlainText(slug);
+            var cat = (from category in _context.Category
+                       where category.Slug == slug
+                       select new CategoryWithSubCategories
+                       {
+                           Category = category,
+                           SubCategories = (from cats in _context.Category
+                                            where cats.ParentCategory.Id == category.Id
+                                            select cats)
+                       }).FirstOrDefault();
+
+            return cat;
         }
 
         /// <summary>
@@ -242,12 +308,22 @@ namespace MVCForum.Services
         /// <returns></returns>
         public Category Get(string slug)
         {
-            return _categoryRepository.GetBySlug(StringUtils.GetSafeHtml(slug));
+            return GetBySlug(StringUtils.GetSafeHtml(slug));
         }
 
         public List<Category> GetCategoryParents(Category category, List<Category> allowedCategories)
         {
-            var cats = _categoryRepository.GetCategoryParents(category);
+            var path = category.Path;
+            var cats = new List<Category>();
+            if (!string.IsNullOrEmpty(path))
+            {
+                var catGuids = path.Trim().Split(',').Select(x => new Guid(x)).ToList();
+                if (!catGuids.Contains(category.Id))
+                {
+                    catGuids.Add(category.Id);
+                }
+                cats = Get(catGuids).ToList();
+            }
             var allowedCatIds = new List<Guid>();
             if (allowedCategories != null && allowedCategories.Any())
             {
@@ -268,11 +344,11 @@ namespace MVCForum.Services
             if (okToDelete)
             {
                 // Get any categorypermissionforoles and delete these first
-                var rolesToDelete = _categoryPermissionForRoleRepository.GetByCategory(category.Id);
+                var rolesToDelete = _categoryPermissionForRoleService.GetByCategory(category.Id);
 
                 foreach (var categoryPermissionForRole in rolesToDelete)
                 {
-                    _categoryPermissionForRoleRepository.Delete(categoryPermissionForRole);
+                    _categoryPermissionForRoleService.Delete(categoryPermissionForRole);
                 }
 
                 var categoryNotificationsToDelete = new List<CategoryNotification>();
@@ -282,7 +358,7 @@ namespace MVCForum.Services
                     _categoryNotificationService.Delete(categoryNotification);
                 }
 
-                _categoryRepository.Delete(category);
+                _context.Category.Remove(category);
             }
             else
             {
@@ -292,8 +368,32 @@ namespace MVCForum.Services
             }
         }
 
+        public Category GetBySlug(string slug)
+        {
+            //StringUtils.GetSafeHtml(slug)
+            return _context.Category.FirstOrDefault(x => x.Slug == slug);
+        }
 
+        public IList<Category> GetBySlugLike(string slug)
+        {
+            return _context.Category
+                    .Where(x => x.Slug.Contains(slug))
+                    .ToList();
+        }
 
+        /// <summary>
+        /// Gets all categories right the way down
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        public IList<Category> GetAllDeepSubCategories(Category category)
+        {
+            var catGuid = category.Id.ToString().ToLower();
+            return _context.Category
+                    .Where(x => x.Path != null && x.Path.ToLower().Contains(catGuid))
+                    .OrderBy(x => x.SortOrder)
+                    .ToList();
+        }
     }
 }
 

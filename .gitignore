@@ -44,7 +44,6 @@ packages/*
 MVCForum.Website/Properties/PublishProfiles/Profile1.pubxml
 MVCForum.Website/Properties/PublishProfiles/Local Deployment.pubxml
 MVCForum.Website/Properties/PublishProfiles/Profile1.pubxml
-
 *.vspx
 *.psess
 MVCForum.Website/App_Data/cache/*
@@ -52,6 +51,4 @@ MVCForum.Website/App_Data/LogFile*
 MVCForum.Website/App_Data/MVCForum.sdf
 
 
-
 .vs/config/
-

@@ -1,12 +1,14 @@
 ﻿using System;
+using MVCForum.Domain.Constants;
+using MVCForum.Domain.Interfaces.Providers;
 
 namespace MVCForum.Website.Application.StorageProviders
 {
     public static class StorageProvider
     {
-        private static Lazy<IStorageProvider> _currentStorageProvider = new Lazy<IStorageProvider>(() =>
+        private static readonly Lazy<IStorageProvider> CurrentStorageProvider = new Lazy<IStorageProvider>(() =>
         {
-            var type = SiteConstants.StorageProviderType;
+            var type = SiteConstants.Instance.StorageProviderType;
             if (string.IsNullOrEmpty(type))
             {
                 return new DiskStorageProvider();
@@ -14,7 +16,7 @@ namespace MVCForum.Website.Application.StorageProviders
 
             try
             {
-                return AppHelpers.GetInstanceOf<IStorageProvider>(type);
+                return TypeFactory.GetInstanceOf<IStorageProvider>(type);
             }
             catch (Exception)
             {
@@ -22,12 +24,6 @@ namespace MVCForum.Website.Application.StorageProviders
             }
         });
 
-        public static IStorageProvider Current
-        {
-            get
-            {
-                return _currentStorageProvider.Value;
-            }
-        }
+        public static IStorageProvider Current => CurrentStorageProvider.Value;
     }
 }

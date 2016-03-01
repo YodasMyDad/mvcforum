@@ -104,6 +104,15 @@ namespace MVCForum.Domain.Interfaces.Services
         CsvReport FromCsv(string langKey, List<string> allLines);
         CsvReport FromCsv(Language lang, List<string> allLines);
 
+        IEnumerable<Language> GetAll();
+
+        /// <summary>
+        /// Get all the values with keys for a language
+        /// </summary>
+        /// <param name="languageId"></param>
+        /// <returns></returns>
+        Dictionary<string, string> GetAllLanguageStringsByLangauge(Guid languageId);
+
         #endregion
 
         #region Resource
@@ -240,6 +249,46 @@ namespace MVCForum.Domain.Interfaces.Services
         /// <param name="resourceKeyId"></param>
         /// <param name="newName"></param>
         void UpdateResourceKey(Guid resourceKeyId, string newName);
+
+        PagedList<LocaleStringResource> SearchResourceValuesForKey(Guid languageId, string search, int pageIndex, int pageSize);
+
+        /// <summary>
+        /// Delete a resource key
+        /// </summary>
+        /// <param name="resourceKey"></param>
+        void DeleteResourceKey(LocaleResourceKey resourceKey);
+
+        /// <summary>
+        /// Delete a resource value
+        /// </summary>
+        /// <param name="resourceValue"></param>
+        void DeleteResourceValue(LocaleStringResource resourceValue);
+
+        /// <summary>
+        /// Get a resource key by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        LocaleResourceKey GetResourceKey(string name);
+
+        /// <summary>
+        /// Add a new resource key
+        /// </summary>
+        /// <param name="newLocaleStringResource"></param>
+        LocaleStringResource Add(LocaleStringResource newLocaleStringResource);
+
+        /// <summary>
+        /// Get all the language resources for a language
+        /// </summary>
+        /// <param name="languageId"></param>
+        /// <returns></returns>
+        IList<LocaleStringResource> AllLanguageResources(Guid languageId);
+
+        void Delete(LocaleStringResource item);
+        void Delete(LocaleResourceKey item);
+
+        void Update(LocaleStringResource item);
+        void Update(LocaleResourceKey item);
 
         #endregion
     }

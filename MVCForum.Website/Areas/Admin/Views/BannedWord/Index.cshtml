@@ -1,4 +1,5 @@
-﻿@model MVCForum.Website.Areas.Admin.ViewModels.BannedWordListViewModel
+﻿@using MVCForum.Domain.Constants
+@model MVCForum.Website.Areas.Admin.ViewModels.BannedWordListViewModel
 @{
     ViewBag.Title = "Banned & Stop Words";
 }
@@ -91,7 +92,7 @@
 
             if (Model.Words.TotalPages > 1)
             {
-                @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
+                @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
             }
         }
 

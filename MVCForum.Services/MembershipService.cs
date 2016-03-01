@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
-using System.Security.Cryptography;
+using System.Data.Entity;
 using System.Text;
 using System.Linq;
 using System.Web;
@@ -9,10 +9,12 @@ using System.Web.Hosting;
 using System.Web.Security;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
+using MVCForum.Domain.DomainModel.Entities;
 using MVCForum.Domain.Events;
-using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
+using MVCForum.Services.Data.Context;
 using MVCForum.Utilities;
 
 namespace MVCForum.Services
@@ -20,16 +22,15 @@ namespace MVCForum.Services
     public partial class MembershipService : IMembershipService
     {
         private const int MaxHoursToResetPassword = 48;
-
+        private readonly MVCForumContext _context;
         private readonly IEmailService _emailService;
-        private readonly IMembershipRepository _membershipRepository;
-        private readonly IPostRepository _postRepository;
-        private readonly IPollVoteRepository _pollVoteRepository;
-        private readonly IPollAnswerRepository _pollAnswerRepository;
-        private readonly IFavouriteRepository _favouriteRepository;
-        private readonly ISettingsRepository _settingsRepository;
-        private readonly IPollRepository _pollRepository;
-        private readonly ITopicRepository _topicRepository;
+        private readonly IPostService _postService;
+        private readonly IPollVoteService _pollVoteService;
+        private readonly IPollAnswerService _pollAnswerService;
+        private readonly IFavouriteService _favouriteService;
+        private readonly ISettingsService _settingsService;
+        private readonly IPollService _pollService;
+        private readonly ITopicService _topicService;
         private readonly IActivityService _activityService;
         private readonly ILocalizationService _localizationService;
         private readonly IPrivateMessageService _privateMessageService;
@@ -41,14 +42,13 @@ namespace MVCForum.Services
         private readonly ICategoryNotificationService _categoryNotificationService;
         private readonly ILoggingService _loggingService;
         private readonly ICategoryService _categoryService;
-
-        private LoginAttemptStatus _lastLoginStatus = LoginAttemptStatus.LoginSuccessful;
+        private readonly IPostEditService _postEditService;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="membershipRepository"> </param>
-        /// <param name="settingsRepository"> </param>
+        /// <param name="context"></param>
+        /// <param name="settingsService"> </param>
         /// <param name="emailService"> </param>
         /// <param name="localizationService"> </param>
         /// <param name="activityService"> </param>
@@ -60,24 +60,23 @@ namespace MVCForum.Services
         /// <param name="categoryNotificationService"> </param>
         /// <param name="loggingService"></param>
         /// <param name="uploadedFileService"></param>
-        /// <param name="postRepository"></param>
-        /// <param name="pollVoteRepository"></param>
-        /// <param name="pollAnswerRepository"></param>
-        /// <param name="pollRepository"></param>
-        /// <param name="topicRepository"></param>
-        /// <param name="favouriteRepository"></param>
+        /// <param name="postService"></param>
+        /// <param name="pollVoteService"></param>
+        /// <param name="pollAnswerService"></param>
+        /// <param name="pollService"></param>
+        /// <param name="topicService"></param>
+        /// <param name="favouriteService"></param>
         /// <param name="categoryService"></param>
-        public MembershipService(IMembershipRepository membershipRepository, ISettingsRepository settingsRepository,
+        public MembershipService(IMVCForumContext context, ISettingsService settingsService,
             IEmailService emailService, ILocalizationService localizationService, IActivityService activityService,
             IPrivateMessageService privateMessageService, IMembershipUserPointsService membershipUserPointsService,
             ITopicNotificationService topicNotificationService, IVoteService voteService, IBadgeService badgeService,
             ICategoryNotificationService categoryNotificationService, ILoggingService loggingService, IUploadedFileService uploadedFileService,
-            IPostRepository postRepository, IPollVoteRepository pollVoteRepository, IPollAnswerRepository pollAnswerRepository,
-            IPollRepository pollRepository, ITopicRepository topicRepository, IFavouriteRepository favouriteRepository, 
-            ICategoryService categoryService)
+            IPostService postService, IPollVoteService pollVoteService, IPollAnswerService pollAnswerService,
+            IPollService pollService, ITopicService topicService, IFavouriteService favouriteService, 
+            ICategoryService categoryService, IPostEditService postEditService)
         {
-            _membershipRepository = membershipRepository;
-            _settingsRepository = settingsRepository;
+            _settingsService = settingsService;
             _emailService = emailService;
             _localizationService = localizationService;
             _activityService = activityService;
@@ -89,15 +88,22 @@ namespace MVCForum.Services
             _categoryNotificationService = categoryNotificationService;
             _loggingService = loggingService;
             _uploadedFileService = uploadedFileService;
-            _postRepository = postRepository;
-            _pollVoteRepository = pollVoteRepository;
-            _pollAnswerRepository = pollAnswerRepository;
-            _pollRepository = pollRepository;
-            _topicRepository = topicRepository;
-            _favouriteRepository = favouriteRepository;
+            _postService = postService;
+            _pollVoteService = pollVoteService;
+            _pollAnswerService = pollAnswerService;
+            _pollService = pollService;
+            _topicService = topicService;
+            _favouriteService = favouriteService;
             _categoryService = categoryService;
+            _postEditService = postEditService;
+            _context = context as MVCForumContext;
         }
 
+
+        public MembershipUser Add(MembershipUser newUser)
+        {
+            return _context.MembershipUser.Add(newUser);
+        }
 
         public MembershipUser SanitizeUser(MembershipUser membershipUser)
         {
@@ -157,10 +163,7 @@ namespace MVCForum.Services
         /// <summary>
         /// Return last login status
         /// </summary>
-        public LoginAttemptStatus LastLoginStatus
-        {
-            get { return _lastLoginStatus; }
-        }
+        public LoginAttemptStatus LastLoginStatus { get; private set; } = LoginAttemptStatus.LoginSuccessful;
 
         /// <summary>
         /// Validate a user by password
@@ -174,38 +177,38 @@ namespace MVCForum.Services
             userName = StringUtils.SafePlainText(userName);
             password = StringUtils.SafePlainText(password);
 
-            _lastLoginStatus = LoginAttemptStatus.LoginSuccessful;
+            LastLoginStatus = LoginAttemptStatus.LoginSuccessful;
 
-            var user = _membershipRepository.GetUser(userName);
+            var user = GetUser(userName);
 
             if (user == null)
             {
-                _lastLoginStatus = LoginAttemptStatus.UserNotFound;
+                LastLoginStatus = LoginAttemptStatus.UserNotFound;
                 return false;
             }
 
             if (user.IsBanned)
             {
-                _lastLoginStatus = LoginAttemptStatus.Banned;
+                LastLoginStatus = LoginAttemptStatus.Banned;
                 return false;                
             }
 
             if (user.IsLockedOut)
             {
-                _lastLoginStatus = LoginAttemptStatus.UserLockedOut;
+                LastLoginStatus = LoginAttemptStatus.UserLockedOut;
                 return false;
             }
 
             if (!user.IsApproved)
             {
-                _lastLoginStatus = LoginAttemptStatus.UserNotApproved;
+                LastLoginStatus = LoginAttemptStatus.UserNotApproved;
                 return false;
             }
 
             var allowedPasswordAttempts = maxInvalidPasswordAttempts;
             if (user.FailedPasswordAttemptCount >= allowedPasswordAttempts)
             {
-                _lastLoginStatus = LoginAttemptStatus.PasswordAttemptsExceeded;
+                LastLoginStatus = LoginAttemptStatus.PasswordAttemptsExceeded;
                 return false;
             }
 
@@ -223,11 +226,11 @@ namespace MVCForum.Services
 
             if (!passwordMatches)
             {
-                _lastLoginStatus = LoginAttemptStatus.PasswordIncorrect;
+                LastLoginStatus = LoginAttemptStatus.PasswordIncorrect;
                 return false;
             }
 
-            return _lastLoginStatus == LoginAttemptStatus.LoginSuccessful;
+            return LastLoginStatus == LoginAttemptStatus.LoginSuccessful;
         }
 
         /// <summary>
@@ -264,7 +267,8 @@ namespace MVCForum.Services
         public MembershipCreateStatus CreateUser(MembershipUser newUser)
         {
             newUser = SanitizeUser(newUser);
-            var settings = _settingsRepository.GetSettings(true);
+            var settings = _settingsService.GetSettings(false);
+
 
             var status = MembershipCreateStatus.Success;
 
@@ -283,13 +287,13 @@ namespace MVCForum.Services
                 }
 
                 // get by username
-                if (_membershipRepository.GetUser(newUser.UserName) != null)
+                if (GetUser(newUser.UserName, true) != null)
                 {
                     status = MembershipCreateStatus.DuplicateUserName;
                 }
 
                 // Add get by email address
-                if (_membershipRepository.GetUserByEmail(newUser.Email) != null)
+                if (GetUserByEmail(newUser.Email, true) != null)
                 {
                     status = MembershipCreateStatus.DuplicateEmail;
                 }
@@ -313,16 +317,25 @@ namespace MVCForum.Services
                     newUser.CreateDate = newUser.LastPasswordChangedDate = DateTime.UtcNow;
                     newUser.LastLockoutDate = (DateTime)SqlDateTime.MinValue;
                     newUser.LastLoginDate = DateTime.UtcNow;
-
-                    newUser.IsApproved = !settings.ManuallyAuthoriseNewMembers;
                     newUser.IsLockedOut = false;
 
+                    var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
+                    var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
+                    if (manuallyAuthoriseMembers || memberEmailAuthorisationNeeded)
+                    {
+                        newUser.IsApproved = false;
+                    }
+                    else
+                    {
+                        newUser.IsApproved = true;
+                    }
+
                     // url generator
-                    newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, _membershipRepository.GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)), null);
+                    newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)), null);
 
                     try
                     {
-                        _membershipRepository.Add(newUser);
+                        Add(newUser);
 
                         if (settings.EmailAdminOnNewMemberSignUp)
                         {
@@ -353,6 +366,13 @@ namespace MVCForum.Services
             return status;
         }
 
+        public MembershipUser Get(Guid id)
+        {
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .FirstOrDefault(x => x.Id == id);
+        }
+
         /// <summary>
         /// Get a user by username
         /// </summary>
@@ -361,7 +381,22 @@ namespace MVCForum.Services
         /// <returns></returns>
         public MembershipUser GetUser(string username, bool removeTracking = false)
         {
-            var member = _membershipRepository.GetUser(username, removeTracking);
+            MembershipUser member;
+
+            if (removeTracking)
+            {
+                member = _context.MembershipUser
+                    .Include(x => x.Roles)
+                    .AsNoTracking()
+                    .FirstOrDefault(name => name.UserName.Equals(username, StringComparison.CurrentCultureIgnoreCase));
+            }
+            else
+            {
+                member = _context.MembershipUser
+                    .Include(x => x.Roles)
+                    .FirstOrDefault(name => name.UserName.Equals(username, StringComparison.CurrentCultureIgnoreCase));
+            }
+
 
             // Do a check to log out the user if they are logged in and have been deleted
             if (member == null && HttpContext.Current.User.Identity.Name == username)
@@ -377,11 +412,20 @@ namespace MVCForum.Services
         /// Get a user by email address
         /// </summary>
         /// <param name="email"></param>
+        /// <param name="removeTracking"></param>
         /// <returns></returns>
-        public MembershipUser GetUserByEmail(string email)
+        public MembershipUser GetUserByEmail(string email, bool removeTracking = false)
         {
             email = StringUtils.SafePlainText(email);
-            return _membershipRepository.GetUserByEmail(email);
+            if (removeTracking)
+            {
+                return _context.MembershipUser.AsNoTracking()
+                    .Include(x => x.Roles)
+                    .FirstOrDefault(name => name.Email == email);
+            }
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .FirstOrDefault(name => name.Email == email);
         }
 
         /// <summary>
@@ -392,7 +436,19 @@ namespace MVCForum.Services
         public MembershipUser GetUserBySlug(string slug)
         {
             slug = StringUtils.GetSafeHtml(slug);
-            return _membershipRepository.GetUserBySlug(slug);
+            return _context.MembershipUser
+                .Include(x => x.Badges)
+                .Include(x => x.Roles)
+                .FirstOrDefault(name => name.Slug == slug);
+        }
+
+        public IList<MembershipUser> GetUserBySlugLike(string slug)
+        {
+            return _context.MembershipUser
+                    .Include(x => x.Roles)
+                    .AsNoTracking()
+                    .Where(name => name.Slug.ToUpper().Contains(slug.ToUpper()))
+                    .ToList();
         }
 
         /// <summary>
@@ -402,17 +458,23 @@ namespace MVCForum.Services
         /// <returns></returns>
         public MembershipUser GetUserByFacebookId(long facebookId)
         {
-            return _membershipRepository.GetUserByFacebookId(facebookId);
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .FirstOrDefault(name => name.FacebookId == facebookId);
         }
 
         public MembershipUser GetUserByTwitterId(string twitterId)
         {
-            return _membershipRepository.GetUserByTwitterId(twitterId);
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .FirstOrDefault(name => name.TwitterAccessToken == twitterId);
         }
 
         public MembershipUser GetUserByGoogleId(string googleId)
         {
-            return _membershipRepository.GetUserByGoogleId(googleId);
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .FirstOrDefault(name => name.GoogleAccessToken == googleId);
         }
 
         /// <summary>
@@ -423,7 +485,9 @@ namespace MVCForum.Services
         public MembershipUser GetUserByOpenIdToken(string openId)
         {
             openId = StringUtils.GetSafeHtml(openId);
-            return _membershipRepository.GetUserByOpenIdToken(openId);
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .FirstOrDefault(name => name.MiscAccessToken == openId);
         }
 
         /// <summary>
@@ -433,7 +497,10 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<MembershipUser> GetUsersById(List<Guid> guids)
         {
-            return _membershipRepository.GetUsersById(guids);
+            return _context.MembershipUser
+              .Where(x => guids.Contains(x.Id))
+              .AsNoTracking()
+              .ToList();
         }
 
         /// <summary>
@@ -444,7 +511,14 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<MembershipUser> GetUsersByDaysPostsPoints(int amoutOfDaysSinceRegistered, int amoutOfPosts)
         {
-            return _membershipRepository.GetUsersByDaysPostsPoints(amoutOfDaysSinceRegistered, amoutOfPosts);
+            var registerEnd = DateTime.UtcNow;
+            var registerStart = registerEnd.AddDays(-amoutOfDaysSinceRegistered);
+            return _context.MembershipUser
+                .Where(x =>
+                        x.Posts.Count <= amoutOfPosts &&
+                        x.CreateDate > registerStart &&
+                        x.CreateDate <= registerEnd)
+                .ToList();
         }
 
 
@@ -457,7 +531,7 @@ namespace MVCForum.Services
         {
             username = StringUtils.SafePlainText(username);
             var roles = new List<string>();
-            var user = _membershipRepository.GetUser(username, true);
+            var user = GetUser(username, true);
 
             if (user != null)
             {
@@ -480,7 +554,7 @@ namespace MVCForum.Services
             newPassword = StringUtils.SafePlainText(newPassword);
 
             //n3oCacheHelper.Clear(user.UserName);
-            var existingUser = _membershipRepository.Get(user.Id);
+            var existingUser = Get(user.Id);
             var salt = existingUser.PasswordSalt;
             var oldHash = StringUtils.GenerateSaltedHash(oldPassword, salt);
 
@@ -509,7 +583,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public bool ResetPassword(MembershipUser user, string newPassword)
         {
-            var existingUser = _membershipRepository.Get(user.Id);
+            var existingUser = Get(user.Id);
 
             var salt = StringUtils.CreateSalt(AppConstants.SaltSize);
             var newHash = StringUtils.GenerateSaltedHash(newPassword, salt);
@@ -527,27 +601,54 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<MembershipUser> GetAll()
         {
-            return _membershipRepository.GetAll();
+            return _context.MembershipUser.ToList();
         }
 
         public PagedList<MembershipUser> GetAll(int pageIndex, int pageSize)
         {
-            return _membershipRepository.GetAll(pageIndex, pageSize);
+            var totalCount = _context.MembershipUser.Count();
+            var results = _context.MembershipUser
+                                .OrderBy(x => x.UserName)
+                                .Skip((pageIndex - 1) * pageSize)
+                                .Take(pageSize)
+                                .ToList();
+
+            return new PagedList<MembershipUser>(results, pageIndex, pageSize, totalCount);
         }
 
         public PagedList<MembershipUser> SearchMembers(string search, int pageIndex, int pageSize)
         {
-            return _membershipRepository.SearchMembers(StringUtils.SafePlainText(search), pageIndex, pageSize);
+            search = StringUtils.SafePlainText(search);
+            var query = _context.MembershipUser
+    .Where(x => x.UserName.ToUpper().Contains(search.ToUpper()) || x.Email.ToUpper().Contains(search.ToUpper()));
+
+            var results = query
+                .OrderBy(x => x.UserName)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new PagedList<MembershipUser>(results, pageIndex, pageSize, query.Count());
         }
 
         public IList<MembershipUser> SearchMembers(string username, int amount)
         {
-            return _membershipRepository.SearchMembers(StringUtils.SafePlainText(username), amount);
+            username = StringUtils.SafePlainText(username);
+            return _context.MembershipUser
+                .Where(x => x.UserName.ToUpper().Contains(username.ToUpper()))
+                .OrderBy(x => x.UserName)
+                .Take(amount)
+                .ToList();
         }
 
         public IList<MembershipUser> GetActiveMembers()
         {
-            return _membershipRepository.GetActiveMembers();
+            // Get members that last activity date is valid
+            var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
+            return _context.MembershipUser
+                .Where(x => x.LastActivityDate > date)
+                .AsNoTracking()
+                .ToList();
         }
 
         /// <summary>
@@ -557,7 +658,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public MembershipUser GetUser(Guid id)
         {
-            return _membershipRepository.Get(id);
+            return Get(id);
         }
 
         /// <summary>
@@ -576,7 +677,7 @@ namespace MVCForum.Services
                 user.Roles.Clear();
 
                 // Now delete the member
-                _membershipRepository.Delete(user);
+                _context.MembershipUser.Remove(user);
 
                 return true;
             }
@@ -589,17 +690,30 @@ namespace MVCForum.Services
 
         public IList<MembershipUser> GetLatestUsers(int amountToTake)
         {
-            return _membershipRepository.GetLatestUsers(amountToTake);
+            return _context.MembershipUser.Include(x => x.Roles).AsNoTracking()
+              .OrderByDescending(x => x.CreateDate)
+              .Take(amountToTake)
+              .ToList();
         }
 
         public IList<MembershipUser> GetLowestPointUsers(int amountToTake)
         {
-            return _membershipRepository.GetLowestPointUsers(amountToTake);
+            return _context.MembershipUser
+                 .Join(_context.MembershipUserPoints.AsNoTracking(), // The sequence to join to the first sequence.
+                        user => user.Id, // A function to extract the join key from each element of the first sequence.
+                        userPoints => userPoints.User.Id, // A function to extract the join key from each element of the second sequence
+                        (user, userPoints) => new { MembershipUser = user, UserPoints = userPoints } // A function to create a result element from two matching elements.
+                    )
+                 .AsNoTracking()
+                .OrderBy(x => x.UserPoints)
+                .Take(amountToTake)
+                .Select(t => t.MembershipUser)
+                .ToList();
         }
 
         public int MemberCount()
         {
-            return _membershipRepository.MemberCount();
+            return _context.MembershipUser.AsNoTracking().Count();
         }
 
         /// <summary>
@@ -633,7 +747,7 @@ namespace MVCForum.Services
                     throw new ApplicationException(_localizationService.GetResourceString("Members.CantUnlock"));
                 }
 
-                var existingUser = _membershipRepository.Get(user.Id);
+                var existingUser = Get(user.Id);
 
                 user.IsLockedOut = false;
                 user.Roles = existingUser.Roles;
@@ -656,7 +770,7 @@ namespace MVCForum.Services
         {
             var csv = new StringBuilder();
 
-            foreach (var user in _membershipRepository.GetAll())
+            foreach (var user in GetAll())
             {
                 csv.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7}", user.UserName, user.Email, user.CreateDate, user.Age,
                     user.Location, user.Website, user.Facebook, user.Signature);
@@ -685,7 +799,7 @@ namespace MVCForum.Services
                 });
                 return report;
             }
-
+            var settings = _settingsService.GetSettings(true);
             var lineCounter = 0;
             foreach (var line in allLines)
             {
@@ -702,7 +816,7 @@ namespace MVCForum.Services
                         report.Errors.Add(new CsvErrorWarning
                         {
                             ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
-                            Message = string.Format("Line {0}: insufficient values supplied.", lineCounter)
+                            Message = $"Line {lineCounter}: insufficient values supplied."
                         });
 
                         continue;
@@ -715,7 +829,7 @@ namespace MVCForum.Services
                         report.Errors.Add(new CsvErrorWarning
                         {
                             ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
-                            Message = string.Format("Line {0}: no username supplied.", lineCounter)
+                            Message = $"Line {lineCounter}: no username supplied."
                         });
 
                         continue;
@@ -727,21 +841,21 @@ namespace MVCForum.Services
                         report.Errors.Add(new CsvErrorWarning
                         {
                             ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
-                            Message = string.Format("Line {0}: no email supplied.", lineCounter)
+                            Message = $"Line {lineCounter}: no email supplied."
                         });
 
                         continue;
                     }
 
                     // get the user
-                    var userToImport = _membershipRepository.GetUser(userName);
+                    var userToImport = GetUser(userName);
 
                     if (userToImport != null)
                     {
                         report.Errors.Add(new CsvErrorWarning
                         {
                             ErrorWarningType = CsvErrorWarningType.AlreadyExists,
-                            Message = string.Format("Line {0}: user already exists in forum.", lineCounter)
+                            Message = $"Line {lineCounter}: user already exists in forum."
                         });
 
                         continue;
@@ -752,7 +866,7 @@ namespace MVCForum.Services
                         report.Errors.Add(new CsvErrorWarning
                         {
                             ErrorWarningType = CsvErrorWarningType.AlreadyExists,
-                            Message = string.Format("Line {0}: user already exists in import file.", lineCounter)
+                            Message = $"Line {lineCounter}: user already exists in import file."
                         });
 
                         continue;
@@ -762,7 +876,7 @@ namespace MVCForum.Services
 
                     userToImport = CreateEmptyUser();
                     userToImport.UserName = userName;
-                    userToImport.Slug = ServiceHelpers.GenerateSlug(userToImport.UserName, _membershipRepository.GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)), userToImport.Slug);
+                    userToImport.Slug = ServiceHelpers.GenerateSlug(userToImport.UserName, GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)), userToImport.Slug);
                     userToImport.Email = email;
                     userToImport.IsApproved = true;
                     userToImport.PasswordSalt = StringUtils.CreateSalt(AppConstants.SaltSize);
@@ -794,8 +908,8 @@ namespace MVCForum.Services
                     {
                         userToImport.Signature = values[7];
                     }
-
-                    _membershipRepository.Add(userToImport);
+                    userToImport.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
+                    Add(userToImport);
                 }
                 catch (Exception ex)
                 {
@@ -808,6 +922,8 @@ namespace MVCForum.Services
 
         public void ScrubUsers(MembershipUser user, IUnitOfWork unitOfWork)
         {
+            // TODO - This REALLY needs to be refactored
+
             // PROFILE
             user.Website = string.Empty;
             user.Twitter = string.Empty;
@@ -902,7 +1018,7 @@ namespace MVCForum.Services
                 toDelete.AddRange(user.Favourites);
                 foreach (var obj in toDelete)
                 {
-                    _favouriteRepository.Delete(obj);
+                    _favouriteService.Delete(obj);
                 }
                 user.Favourites.Clear();
             }
@@ -945,7 +1061,7 @@ namespace MVCForum.Services
                 foreach (var vote in pollList)
                 {
                     vote.User = null;
-                    _pollVoteRepository.Delete(vote);
+                    _pollVoteService.Delete(vote);
                 }
                 user.PollVotes.Clear();
             }
@@ -970,13 +1086,13 @@ namespace MVCForum.Services
                         foreach (var answer in pollAnswersList)
                         {
                             answer.Poll = null;
-                            _pollAnswerRepository.Delete(answer);
+                            _pollAnswerService.Delete(answer);
                         }
                     }
 
                     poll.PollAnswers.Clear();
                     poll.User = null;
-                    _pollRepository.Delete(poll);
+                    _pollService.Delete(poll);
                 }
                 user.Polls.Clear();
             }
@@ -996,7 +1112,7 @@ namespace MVCForum.Services
                     topic.LastPost = null;
                     topic.Posts.Clear();
                     topic.Tags.Clear();
-                    _topicRepository.Delete(topic);
+                    _topicService.Delete(topic, unitOfWork);
                 }
                 user.Topics.Clear();
                 unitOfWork.SaveChanges();
@@ -1013,7 +1129,7 @@ namespace MVCForum.Services
 
                 // Need to see if any of these are last posts on Topics
                 // If so, need to swap out last post
-                var lastPostTopics = _topicRepository.GetTopicsByLastPost(postIds, allCategories.ToList());
+                var lastPostTopics = _topicService.GetTopicsByLastPost(postIds, allCategories.ToList());
                 foreach (var topic in lastPostTopics.Where(x => x.User.Id != user.Id))
                 {
                     var lastPost = topic.Posts.Where(x => !postIds.Contains(x.Id)).OrderByDescending(x => x.DateCreated).FirstOrDefault();
@@ -1048,7 +1164,11 @@ namespace MVCForum.Services
                         }
                         post.Files.Clear();
                     }
-                    _postRepository.Delete(post);
+                    var postEdits = new List<PostEdit>();
+                    postEdits.AddRange(post.PostEdits);
+                    _postEditService.Delete(postEdits);
+                    post.PostEdits.Clear();
+                    _postService.Delete(post, unitOfWork, true);
                 }
                 user.Posts.Clear();
 
@@ -1095,7 +1215,7 @@ namespace MVCForum.Services
         public bool IsPasswordResetTokenValid(MembershipUser user, string token)
         {
             var existingUser = GetUser(user.Id);
-            if (existingUser == null || string.IsNullOrEmpty(existingUser.PasswordResetToken))
+            if (string.IsNullOrEmpty(existingUser?.PasswordResetToken))
             {
                 return false;
             }

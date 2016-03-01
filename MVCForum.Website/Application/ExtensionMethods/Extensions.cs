@@ -5,7 +5,6 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using System.Web.Routing;
-using System.Security.Principal;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
@@ -100,7 +99,7 @@ namespace MVCForum.Website.Application
         public static MvcHtmlString Pager(this HtmlHelper helper, int currentPage, int pageSize, int totalItemCount, object routeValues, string actionOveride = null, string controllerOveride = null)
         {
             // how many pages to display in each page group const  	
-            var cGroupSize = SiteConstants.PagingGroupSize;
+            var cGroupSize = SiteConstants.Instance.PagingGroupSize;
             var pageCount = (int)Math.Ceiling(totalItemCount / (double)pageSize);
 
             if(pageCount <= 0)
