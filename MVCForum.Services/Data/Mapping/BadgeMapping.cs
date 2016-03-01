@@ -21,7 +21,7 @@ namespace MVCForum.Services.Data.Mapping
             Ignore(x => x.Milestone);
 
             // TODO - Change Table Names
-            //ToTable("ForumBadge"); 
+            ToTable("Badge", DatabaseOwner.Name);
         }
     }
 }

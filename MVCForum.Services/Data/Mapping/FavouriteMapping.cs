@@ -13,6 +13,8 @@ namespace MVCForum.Services.Data.Mapping
             HasRequired(x => x.Post).WithMany(x => x.Favourites).Map(x => x.MapKey("PostId")).WillCascadeOnDelete(false);
             HasRequired(x => x.Member).WithMany(x => x.Favourites).Map(x => x.MapKey("MemberId")).WillCascadeOnDelete(false);
             HasRequired(x => x.Topic).WithMany(x => x.Favourites).Map(x => x.MapKey("TopicId")).WillCascadeOnDelete(false);
+
+            ToTable("Favourite", DatabaseOwner.Name);
         }
     }
 }

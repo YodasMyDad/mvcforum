@@ -14,6 +14,8 @@ namespace MVCForum.Services.Data.Mapping
                 .WithMany(x => x.Notifications)
                 .Map(x => x.MapKey("TopicTag_Id"))
                 .WillCascadeOnDelete(false);
+
+            ToTable("TagNotification", DatabaseOwner.Name);
         }
     }
 }

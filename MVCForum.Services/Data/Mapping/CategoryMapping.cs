@@ -40,6 +40,8 @@ namespace MVCForum.Services.Data.Mapping
             // Ignores
             Ignore(x => x.NiceUrl);
             Ignore(x => x.Level);
+
+            ToTable("Category", DatabaseOwner.Name);
         }
     }
 }

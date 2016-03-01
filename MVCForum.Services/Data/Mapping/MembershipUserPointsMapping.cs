@@ -18,6 +18,8 @@ namespace MVCForum.Services.Data.Mapping
                                     new IndexAnnotation(new IndexAttribute("IX_MembershipUserPoints_PointsFor", 1) { IsUnique = false }));
             Property(x => x.PointsForId).IsOptional().HasColumnAnnotation("Index",
                                     new IndexAnnotation(new IndexAttribute("IX_MembershipUserPoints_PointsForId", 1) { IsUnique = false }));
+
+            ToTable("MembershipUserPoints", DatabaseOwner.Name);
         }
     }
 }

@@ -13,6 +13,8 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.DateCreated).IsRequired();
 
             HasOptional(x => x.Post).WithMany(x => x.Files).Map(x => x.MapKey("Post_Id")).WillCascadeOnDelete(false);
+
+            ToTable("UploadedFile", DatabaseOwner.Name);
         }
     }
 }

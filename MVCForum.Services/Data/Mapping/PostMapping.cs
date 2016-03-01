@@ -30,6 +30,8 @@ namespace MVCForum.Services.Data.Mapping
                 .WillCascadeOnDelete(false);
             //ToTable("CustomTableName");
             //Property(t => t.TopicId).HasColumnName("Topic_Id");
+
+            ToTable("Post", DatabaseOwner.Name);
         }
     }
 }

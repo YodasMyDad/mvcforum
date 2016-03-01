@@ -10,6 +10,8 @@ namespace MVCForum.Services.Data.Mapping
             HasKey(x => x.Id);
             Property(x => x.Id).IsRequired();
             Property(x => x.ResourceValue).IsRequired().HasMaxLength(1000);
+
+            ToTable("LocaleStringResource", DatabaseOwner.Name);
         }
     }
 }

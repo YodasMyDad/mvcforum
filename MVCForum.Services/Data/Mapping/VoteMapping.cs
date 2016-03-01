@@ -11,6 +11,8 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.Id).IsRequired();
             Property(x => x.Amount).IsRequired();
             Property(x => x.DateVoted).IsOptional();
+
+            ToTable("Vote", DatabaseOwner.Name);
         }
     }
 }
