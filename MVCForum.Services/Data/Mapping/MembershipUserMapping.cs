@@ -128,7 +128,7 @@ namespace MVCForum.Services.Data.Mapping
             .WithMany(t => t.Users)
             .Map(m =>
             {
-                m.ToTable("MembershipUsersInRoles", DatabaseOwner.Name);
+                m.ToTable("MembershipUsersInRoles", Schema.Name);
                 m.MapLeftKey("UserIdentifier");
                 m.MapRightKey("RoleIdentifier");
             });
@@ -138,7 +138,7 @@ namespace MVCForum.Services.Data.Mapping
            .WithMany(t => t.Users)
            .Map(m =>
            {
-               m.ToTable("MembershipUser_Badge", DatabaseOwner.Name);
+               m.ToTable("MembershipUser_Badge", Schema.Name);
                m.MapLeftKey("MembershipUser_Id");
                m.MapRightKey("Badge_Id");
            });
@@ -148,7 +148,7 @@ namespace MVCForum.Services.Data.Mapping
                 .Map(x => x.MapKey("MembershipUser_Id"))
                 .WillCascadeOnDelete(false);
 
-            ToTable("MembershipUser", DatabaseOwner.Name);
+            ToTable("MembershipUser", Schema.Name);
 
         }
     }

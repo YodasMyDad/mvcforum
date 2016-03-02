@@ -16,7 +16,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.OriginalPostTitle).IsOptional().HasMaxLength(500);
             Property(x => x.EditedPostTitle).IsOptional().HasMaxLength(500);
 
-            ToTable("PostEdit", DatabaseOwner.Name);
+            ToTable("PostEdit", Schema.Name);
 
         }
     }

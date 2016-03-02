@@ -31,7 +31,7 @@ namespace MVCForum.Services.Data.Mapping
             //ToTable("CustomTableName");
             //Property(t => t.TopicId).HasColumnName("Topic_Id");
 
-            ToTable("Post", DatabaseOwner.Name);
+            ToTable("Post", Schema.Name);
         }
     }
 }

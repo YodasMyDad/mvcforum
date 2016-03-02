@@ -15,7 +15,7 @@ namespace MVCForum.Services.Data.Mapping
                 .Map(x => x.MapKey("PollAnswer_Id"))
                 .WillCascadeOnDelete(false);
 
-            ToTable("PollAnswer", DatabaseOwner.Name);
+            ToTable("PollAnswer", Schema.Name);
         }
     }
 }

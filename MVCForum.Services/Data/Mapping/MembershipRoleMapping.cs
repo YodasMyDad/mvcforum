@@ -11,7 +11,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.Id).IsRequired();
             Property(x => x.RoleName).IsRequired().HasMaxLength(256);
 
-            ToTable("MembershipRole", DatabaseOwner.Name);
+            ToTable("MembershipRole", Schema.Name);
         }
     }
 }

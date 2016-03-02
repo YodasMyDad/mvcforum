@@ -10,7 +10,7 @@ namespace MVCForum.Services.Data.Mapping
             HasKey(x => x.Id);
             Property(x => x.Id).IsRequired();
 
-            ToTable("PollVote", DatabaseOwner.Name);
+            ToTable("PollVote", Schema.Name);
         }
     }
 }

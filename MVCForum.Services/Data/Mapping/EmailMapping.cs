@@ -15,7 +15,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.NameTo).IsRequired().HasMaxLength(100);
             Property(x => x.DateCreated).IsRequired();
 
-            ToTable("Email", DatabaseOwner.Name);
+            ToTable("Email", Schema.Name);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.Name).IsRequired().HasMaxLength(150);
             Property(x => x.IsGlobal).IsRequired();
 
-            ToTable("Permission", DatabaseOwner.Name);
+            ToTable("Permission", Schema.Name);
         }
 
     }

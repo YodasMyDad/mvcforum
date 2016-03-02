@@ -10,7 +10,7 @@ namespace MVCForum.Services.Data.Mapping
             HasKey(x => x.Id);
             Property(x => x.Id).IsRequired();
 
-            ToTable("TopicNotification", DatabaseOwner.Name);
+            ToTable("TopicNotification", Schema.Name);
         }
     }
 }

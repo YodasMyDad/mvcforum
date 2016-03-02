@@ -14,7 +14,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.IsRead).IsRequired();
             Property(x => x.IsSentMessage).IsRequired();
 
-            ToTable("PrivateMessage", DatabaseOwner.Name);
+            ToTable("PrivateMessage", Schema.Name);
         }
     }
 }

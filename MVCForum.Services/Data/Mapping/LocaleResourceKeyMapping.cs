@@ -17,7 +17,7 @@ namespace MVCForum.Services.Data.Mapping
                 .Map(x => x.MapKey("LocaleResourceKey_Id"))
                 .WillCascadeOnDelete(false);
 
-            ToTable("LocaleResourceKey", DatabaseOwner.Name);
+            ToTable("LocaleResourceKey", Schema.Name);
         }
     }
 }

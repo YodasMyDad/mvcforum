@@ -15,7 +15,7 @@ namespace MVCForum.Services.Data.Mapping
                 .WithMany(t => t.BadgeTypesTimeLastChecked)
                 .Map(m => m.MapKey("MembershipUser_Id"))
                 .WillCascadeOnDelete(false);
-            ToTable("BadgeTypeTimeLastChecked", DatabaseOwner.Name);
+            ToTable("BadgeTypeTimeLastChecked", Schema.Name);
         }
     }
 }

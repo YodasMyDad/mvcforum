@@ -2,13 +2,13 @@
 
 namespace MVCForum.Services.Data.Mapping
 {
-    internal static class DatabaseOwner
+    internal static class Schema
     {
         public static string Name
         {
             get
             {
-                var owner = ConfigurationManager.AppSettings["MVCForum:DatabaseOwner"];
+                var owner = ConfigurationManager.AppSettings["MVCForum:SchemaName"];
                 return string.IsNullOrEmpty(owner) ? "dbo" : owner;
             }
         }

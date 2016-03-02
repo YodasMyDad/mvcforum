@@ -15,7 +15,7 @@ namespace MVCForum.Services.Data.Mapping
                 .Map(x => x.MapKey("Category_Id"))
                 .WillCascadeOnDelete(false);
 
-            ToTable("CategoryNotification", DatabaseOwner.Name);
+            ToTable("CategoryNotification", Schema.Name);
 
         }
     }

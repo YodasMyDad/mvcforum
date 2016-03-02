@@ -12,7 +12,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.Word).IsRequired().HasMaxLength(75);
             Property(x => x.DateAdded).IsRequired();
             Property(x => x.IsStopWord).IsOptional();
-            ToTable("BannedWord", DatabaseOwner.Name);
+            ToTable("BannedWord", Schema.Name);
         }
     }
 }

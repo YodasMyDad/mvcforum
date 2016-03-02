@@ -14,7 +14,7 @@ namespace MVCForum.Services.Data.Mapping
 
             HasOptional(x => x.Post).WithMany(x => x.Files).Map(x => x.MapKey("Post_Id")).WillCascadeOnDelete(false);
 
-            ToTable("UploadedFile", DatabaseOwner.Name);
+            ToTable("UploadedFile", Schema.Name);
         }
     }
 }

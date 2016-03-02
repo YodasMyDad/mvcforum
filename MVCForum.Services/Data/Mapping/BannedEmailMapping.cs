@@ -11,7 +11,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.Id).IsRequired();
             Property(x => x.Email).IsRequired().HasMaxLength(200);
             Property(x => x.DateAdded).IsRequired();
-            ToTable("BannedEmail", DatabaseOwner.Name);
+            ToTable("BannedEmail", Schema.Name);
         }
     }
 }
