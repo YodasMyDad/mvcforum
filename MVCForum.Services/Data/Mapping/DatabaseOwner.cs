@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Configuration;
 
 namespace MVCForum.Services.Data.Mapping
 {
     internal static class DatabaseOwner
     {
-        public static readonly string Name = "Forum";
+        public static string Name
+        {
+            get
+            {
+                var owner = ConfigurationManager.AppSettings["MVCForum:DatabaseOwner"];
+                return string.IsNullOrEmpty(owner) ? "dbo" : owner;
+            }
+        }
     }
 }
