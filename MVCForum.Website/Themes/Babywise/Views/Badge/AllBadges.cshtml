@@ -1,0 +1,21 @@
+﻿@model MVCForum.Website.ViewModels.AllBadgesViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
+    ViewBag.Title = Html.LanguageString("Badges.PageTitle");
+}
+
+@section side
+{
+    @Html.Partial("_CommonSideNav")
+}
+
+<div class="mainheading">
+    <h1>@ViewBag.Title</h1>    
+</div>
+
+<div class="badgeholder">
+    @foreach (var badge in Model.AllBadges)
+    {
+        @Html.Partial("_Badge", badge)
+    }
+</div>

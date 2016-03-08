@@ -1,0 +1,22 @@
+﻿@model MVCForum.Website.ViewModels.CreatePrivateMessageViewModel
+
+<div id="createpostholder">
+    @using (Ajax.BeginForm("Create", "PrivateMessage", null, new AjaxOptions
+        {
+            HttpMethod = "POST",
+            LoadingElementId = "createpostwait",
+            OnSuccess = "AjaxPrivateMessageSuccess()",
+            OnFailure = "AjaxPostError('Error creating private message')",
+            UpdateTargetId = "newpmmarker",
+            OnBegin = "AjaxPostBegin()"
+        }, new { @id = "postcodeform", @class = "form-createpm" }))
+    {
+        <div class="editorholder">
+            @Html.EditorFor(x => x.Message, new { @class = "createpm required rte" })
+            @Html.ValidationMessageFor(x => x.Message)
+        </div>
+        <input type="submit" id="createpmbutton" class="btn-mvc-green btn-mvc-large" value="@Html.LanguageString("PM.Send")" />
+        <span style="display: none;" id="createpostwait" class="ajaxspinner" title="@Html.LanguageString("Post.PleaseWait")">@Html.LanguageString("Post.PleaseWait")</span>
+        @Html.HiddenFor(x => x.To)
+    }
+</div>

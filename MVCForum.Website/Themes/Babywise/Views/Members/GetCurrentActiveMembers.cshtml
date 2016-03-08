@@ -1,0 +1,23 @@
+﻿@using MVCForum.Website
+@model MVCForum.Website.ViewModels.ActiveMembersViewModel
+
+<div class="active-members">
+    <h6>@Html.LanguageString("Stats.FooterActiveUsersText")</h6>
+    @if (Model.ActiveMembers.Any())
+    {
+        <ul class="activememberslist">
+            @foreach (var member in Model.ActiveMembers)
+            {
+                <li>
+                    <a title="@Html.Raw(member.UserName)" href="@member.NiceUrl">
+                        <img src="@member.MemberImage(SiteConstants.Instance.GravatarLeaderboardSize)" alt="@Html.Raw(member.UserName)" />
+                    </a>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>@Html.Lang("Notifications.NoActiveMembers")</p>
+    }
+</div>

@@ -1,0 +1,14 @@
+﻿@if (SiteConstants.Instance.ChosenEditor == "tinymceeditor")
+{
+    @Html.Partial("customeditors/tinymceeditor")
+}
+
+@if (SiteConstants.Instance.ChosenEditor == "bbeditor")
+{
+    @Html.Partial("customeditors/bbeditor")
+}
+
+@if (SiteConstants.Instance.ChosenEditor == "markdowneditor")
+{
+    @Html.Partial("customeditors/markdowneditor")
+}

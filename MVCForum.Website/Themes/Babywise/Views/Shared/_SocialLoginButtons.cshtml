@@ -1,0 +1,49 @@
+﻿@using MVCForum.Website
+@if (Html.Settings().EnableSocialLogins == true)
+{
+    <div class="oauthbuttons">
+
+        @if (!string.IsNullOrEmpty(SiteConstants.Instance.FacebookAppId) && !string.IsNullOrEmpty(SiteConstants.Instance.FacebookAppSecret))
+        {
+            <p>
+                <a class="btn-mvc btn-mvc-large btn-mvc-fullwidth facebookloginbutton" href="@Url.Action("FacebookLogin", "FacebookOAuth")">
+                    <i class="fa fa-facebook-official"></i> @Html.LanguageString("Members.LogonFacebookButton")
+                </a>
+            </p>
+        }
+        else
+        {
+            @Html.LanguageString("Facebook.Error.EnabledButNotAddedKeys")
+        }
+        
+        @if (!string.IsNullOrEmpty(SiteConstants.Instance.GooglePlusAppId) && !string.IsNullOrEmpty(SiteConstants.Instance.GooglePlusAppSecret))
+        {
+            <p>
+                <a class="btn-mvc btn-mvc-large btn-mvc-fullwidth googleloginbutton" href="@Url.Action("GoogleLogin", "GoogleOAuth")">
+                    <i class="fa fa-google-plus"></i> @Html.LanguageString("Members.LogonGoogleButton")
+                </a>
+            </p>
+        }
+        else
+        {
+            @Html.LanguageString("Google.Error.EnabledButNotAddedKeys")
+        }
+        
+        @if (!string.IsNullOrEmpty(SiteConstants.Instance.MicrosoftAppId) && !string.IsNullOrEmpty(SiteConstants.Instance.MicrosoftAppSecret))
+        {
+            <p>
+                <a class="btn-mvc btn-mvc-large btn-mvc-fullwidth microsoftloginbutton" href="@Url.Action("MicrosoftLogin", "MicrosoftOAuth")">
+                    <i class="fa fa-windows"></i> @Html.LanguageString("Members.LogonMicrosoftButton")
+                </a>
+            </p>
+        }
+        else
+        {
+            @Html.LanguageString("Microsoft.Error.EnabledButNotAddedKeys")
+        }
+    </div>
+
+    <div class="loginortext">
+        @Html.LanguageString("Members.LoginOrText")
+    </div>
+}

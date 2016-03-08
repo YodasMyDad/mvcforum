@@ -1,0 +1,49 @@
+﻿@using MVCForum.Domain.DomainModel.General
+@{
+    var themeName = Html.Settings().Theme;
+    var theme = new Theme
+    {
+        ThemeName = themeName,
+        ThemePath = string.Concat(SiteConstants.Instance.ThemeRootFolder, themeName)
+    };
+}
+@Html.Partial("_StyleSheets", theme)
+@Html.Partial("_JavaScript", theme)
+
+<div class="tinymceinsertimageplugin">
+    <div class="fullloader" id="waiting" style="display: none;">
+        <img src="@Url.Content("~/Content/Images/ajaxloader-large.gif")" alt="" />
+    </div>
+    <table style="width: 100%;">
+        <tr id="uploadrow">
+            <td style="width: 141px; vertical-align: middle;">
+                <label style="font-weight: normal;">
+                    @Html.Lang("TinyMCE.InsertImage.LabelUploadImage")
+                </label>
+            </td>
+            <td style="vertical-align: middle;">
+
+                <div class="input-group input-group-sm">
+                    <span class="input-group-btn">
+                        <span class="btn btn-default btn-file">
+                            @Html.Lang("TinyMCE.InsertImage.Browse")&hellip; <input type="file" id="content" name="content">
+                        </span>
+                    </span>
+                    <input type="text" class="form-control" readonly>
+                </div>
+            </td>
+        </tr>
+        <tr id="externalrow">
+            <td style="width: 141px; vertical-align: middle; padding-top: 20px;"><label style="font-weight: normal;">@Html.Lang("TinyMCE.InsertImage.ExternalImage")</label></td>
+            <td style="vertical-align: middle; padding-top: 20px;">
+                <input id="external" name="external" type="text" class="form-control">
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 141px; vertical-align: middle; padding-top: 20px;"><label style="font-weight: normal;">@Html.Lang("TinyMCE.InsertImage.ImageDescription")</label></td>
+            <td style="vertical-align: middle; padding-top: 20px;">
+                <input id="desc" name="desc" type="text" class="form-control">
+            </td>
+        </tr>
+    </table>
+</div>

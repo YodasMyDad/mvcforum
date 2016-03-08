@@ -61,6 +61,15 @@
       <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="CacheManager.Core">
+      <HintPath>..\packages\CacheManager.Core.0.7.1\lib\net45\CacheManager.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="CacheManager.SystemRuntimeCaching">
+      <HintPath>..\packages\CacheManager.SystemRuntimeCaching.0.7.1\lib\net45\CacheManager.SystemRuntimeCaching.dll</HintPath>
+    </Reference>
+    <Reference Include="CacheManager.Web">
+      <HintPath>..\packages\CacheManager.Web.0.7.1\lib\net45\CacheManager.Web.dll</HintPath>
+    </Reference>
     <Reference Include="Common.Logging, Version=3.3.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
       <HintPath>..\packages\Common.Logging.3.3.1\lib\net40\Common.Logging.dll</HintPath>
       <Private>True</Private>
@@ -831,6 +840,12 @@
     <Content Include="Scripts\bbeditor\themes\square.min.css" />
     <Content Include="Content\bootstrap\js\bootstrap-prettify.js" />
     <Content Include="Scripts\cache\Cache.txt" />
+    <Content Include="Scripts\jquery-1.11.3.min.es5.js">
+      <DependentUpon>jquery-1.11.3.min.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\jquery-1.11.3.min.es5.min.js">
+      <DependentUpon>jquery-1.11.3.min.es5.js</DependentUpon>
+    </Content>
     <Content Include="Scripts\tinymce\license.txt" />
     <Content Include="Scripts\tinymce\plugins\advlist\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\advlist\plugin.min.js" />
@@ -988,6 +1003,17 @@
     <Content Include="Scripts\tinymce\themes\modern\theme.min.js" />
     <Content Include="Scripts\tinymce\tinymce.js" />
     <Content Include="Scripts\tinymce\tinymce.min.js" />
+    <Content Include="Themes\Babywise\Content\Fonts\mvcforumli.svg" />
+    <Content Include="Themes\Babywise\Content\Fonts\mvcforumsb.svg" />
+    <Content Include="Themes\Babywise\Content\Images\apple-touch-icon-57-precomposed.png" />
+    <Content Include="Themes\Babywise\Content\Images\arrow-spinner-blue.gif" />
+    <Content Include="Themes\Babywise\Content\Images\favicon.ico" />
+    <Content Include="Themes\Babywise\Content\Images\logo.png" />
+    <Content Include="Themes\Babywise\Content\Scripts\general.js" />
+    <Content Include="Themes\Babywise\Content\Styles\imports.css" />
+    <Content Include="Themes\Babywise\Content\Styles\Theme.css" />
+    <Content Include="Themes\Babywise\Content\Styles\Theme.min.css" />
+    <Content Include="Themes\Babywise\Content\Styles\Theme.min.min.css" />
     <Content Include="Themes\Metro\Content\Styles\Theme.min.css" />
     <Content Include="Views\Moderate\Index.cshtml" />
     <Content Include="Views\Moderate\GetMoreTopics.cshtml" />
@@ -1060,6 +1086,125 @@
     <Content Include="Scripts\tinymce\langs\readme.md" />
     <Content Include="Areas\Admin\Views\Account\ManageUserPoints.cshtml" />
     <Content Include="Themes\Metro\Content\Styles\Theme.css.map" />
+    <Content Include="Themes\Babywise\Content\Fonts\mvcforumli.eot" />
+    <Content Include="Themes\Babywise\Content\Fonts\mvcforumli.ttf" />
+    <Content Include="Themes\Babywise\Content\Fonts\mvcforumli.woff" />
+    <Content Include="Themes\Babywise\Content\Fonts\mvcforumsb.eot" />
+    <Content Include="Themes\Babywise\Content\Fonts\mvcforumsb.ttf" />
+    <Content Include="Themes\Babywise\Content\Fonts\mvcforumsb.woff" />
+    <Content Include="Themes\Babywise\Content\Styles\Theme.css.map" />
+    <Content Include="Themes\Babywise\Content\Styles\Theme.scss" />
+    <Content Include="Themes\Babywise\Views\Badge\AllBadges.cshtml" />
+    <Content Include="Themes\Babywise\Views\Category\GetSubscribedCategories.cshtml" />
+    <Content Include="Themes\Babywise\Views\Category\Index.cshtml" />
+    <Content Include="Themes\Babywise\Views\Category\ListCategorySideMenu.cshtml" />
+    <Content Include="Themes\Babywise\Views\Category\ListMainCategories.cshtml" />
+    <Content Include="Themes\Babywise\Views\Category\Show.cshtml" />
+    <Content Include="Themes\Babywise\Views\Closed\Index.cshtml" />
+    <Content Include="Themes\Babywise\Views\Favourite\Index.cshtml" />
+    <Content Include="Themes\Babywise\Views\File\ImageUploadTinyMce.cshtml" />
+    <Content Include="Themes\Babywise\Views\Home\Activity.cshtml" />
+    <Content Include="Themes\Babywise\Views\Home\Following.cshtml" />
+    <Content Include="Themes\Babywise\Views\Home\Index.cshtml" />
+    <Content Include="Themes\Babywise\Views\Home\Leaderboard.cshtml" />
+    <Content Include="Themes\Babywise\Views\Home\PostedIn.cshtml" />
+    <Content Include="Themes\Babywise\Views\Home\TermsAndConditions.cshtml" />
+    <Content Include="Themes\Babywise\Views\Install\Complete.cshtml" />
+    <Content Include="Themes\Babywise\Views\Install\CreateDb.cshtml" />
+    <Content Include="Themes\Babywise\Views\Install\Index.cshtml" />
+    <Content Include="Themes\Babywise\Views\Install\ManualUpgradeNeeded.cshtml" />
+    <Content Include="Themes\Babywise\Views\Install\UpgradeDb.cshtml" />
+    <Content Include="Themes\Babywise\Views\Members\AdminMemberProfileTools.cshtml" />
+    <Content Include="Themes\Babywise\Views\Members\ChangePassword.cshtml" />
+    <Content Include="Themes\Babywise\Views\Members\Edit.cshtml" />
+    <Content Include="Themes\Babywise\Views\Members\ForgotPassword.cshtml" />
+    <Content Include="Themes\Babywise\Views\Members\GetByName.cshtml" />
+    <Content Include="Themes\Babywise\Views\Members\GetCurrentActiveMembers.cshtml" />
+    <Content Include="Themes\Babywise\Views\Members\GetMemberDiscussions.cshtml" />
+    <Content Include="Themes\Babywise\Views\Members\LatestMembersJoined.cshtml" />
+    <Content Include="Themes\Babywise\Views\Members\LogOn.cshtml" />
+    <Content Include="Themes\Babywise\Views\Members\PasswordChanged.cshtml" />
+    <Content Include="Themes\Babywise\Views\Members\PasswordResetSent.cshtml" />
+    <Content Include="Themes\Babywise\Views\Members\Register.cshtml" />
+    <Content Include="Themes\Babywise\Views\Members\Report.cshtml" />
+    <Content Include="Themes\Babywise\Views\Members\ResetPassword.cshtml" />
+    <Content Include="Themes\Babywise\Views\Members\Search.cshtml" />
+    <Content Include="Themes\Babywise\Views\Members\SideAdminPanel.cshtml" />
+    <Content Include="Themes\Babywise\Views\Moderate\GetMorePosts.cshtml" />
+    <Content Include="Themes\Babywise\Views\Moderate\GetMoreTopics.cshtml" />
+    <Content Include="Themes\Babywise\Views\Moderate\Index.cshtml" />
+    <Content Include="Themes\Babywise\Views\Point\CurrentWeekHighPointUsers.cshtml" />
+    <Content Include="Themes\Babywise\Views\Post\GetAllPostLikes.cshtml" />
+    <Content Include="Themes\Babywise\Views\Post\GetPostEditHistory.cshtml" />
+    <Content Include="Themes\Babywise\Views\Post\MovePost.cshtml" />
+    <Content Include="Themes\Babywise\Views\Post\Report.cshtml" />
+    <Content Include="Themes\Babywise\Views\PrivateMessage\AjaxMore.cshtml" />
+    <Content Include="Themes\Babywise\Views\PrivateMessage\Create.cshtml" />
+    <Content Include="Themes\Babywise\Views\PrivateMessage\Index.cshtml" />
+    <Content Include="Themes\Babywise\Views\PrivateMessage\View.cshtml" />
+    <Content Include="Themes\Babywise\Views\Search\Index.cshtml" />
+    <Content Include="Themes\Babywise\Views\Search\SideSearch.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\customeditors\bbeditor.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\customeditors\markdowneditor.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\customeditors\tinymceeditor.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\EditorTemplates\colourpicker.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\EditorTemplates\forumeditor.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\Error.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\GetCategoryBreadcrumb.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\SubNavigation.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_Badge.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_Category.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_CommonSideNav.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_CreateEdit_TopicPost.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_CreateNewPost.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_DocumentationBlock.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_EmailConfirmationNotice.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_GenericMessage.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_Install.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_JavaScript.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_LanguagePartial.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_Layout.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_LayoutFullWidth.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_LayoutRightSideBar.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_LogOnPartial.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_ModeratePost.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_ModerateTopic.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_NoScript.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_Poll.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_Post.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_PostLikedBy.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_PostModeration.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_PostSearch.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_PrivateMessage.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_SlideOutPanel.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_SocialLoginButtons.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_StyleSheets.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_SubCategories.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_Topic.cshtml" />
+    <Content Include="Themes\Babywise\Views\Shared\_TopicSlim.cshtml" />
+    <Content Include="Themes\Babywise\Views\Snippets\GetThisWeeksTopEarners.cshtml" />
+    <Content Include="Themes\Babywise\Views\Snippets\GetThisYearsTopEarners.cshtml" />
+    <Content Include="Themes\Babywise\Views\Stats\GetMainStats.cshtml" />
+    <Content Include="Themes\Babywise\Views\Tag\PopularTags.cshtml" />
+    <Content Include="Themes\Babywise\Views\Topic\AjaxMorePosts.cshtml" />
+    <Content Include="Themes\Babywise\Views\Topic\Create.cshtml" />
+    <Content Include="Themes\Babywise\Views\Topic\CreateTopicButton.cshtml" />
+    <Content Include="Themes\Babywise\Views\Topic\EditPostTopic.cshtml" />
+    <Content Include="Themes\Babywise\Views\Topic\GetSimilarTopics.cshtml" />
+    <Content Include="Themes\Babywise\Views\Topic\GetSubscribedTopics.cshtml" />
+    <Content Include="Themes\Babywise\Views\Topic\HotTopics.cshtml" />
+    <Content Include="Themes\Babywise\Views\Topic\LatestTopics.cshtml" />
+    <Content Include="Themes\Babywise\Views\Topic\Show.cshtml" />
+    <Content Include="Themes\Babywise\Views\Topic\TopicsByTag.cshtml" />
+    <Content Include="Themes\Babywise\Views\Topic\TopicsMemberHasPostedIn.cshtml" />
+    <Content Include="Themes\Babywise\Views\Vote\GetVoters.cshtml" />
+    <Content Include="Themes\Babywise\Views\Vote\GetVotes.cshtml" />
+    <Content Include="Themes\Babywise\Views\Web.config" />
+    <Content Include="Themes\Babywise\Views\_ViewStart.cshtml" />
+    <None Include="compilerconfig.json" />
+    <None Include="compilerconfig.json.defaults">
+      <DependentUpon>compilerconfig.json</DependentUpon>
+    </None>
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />

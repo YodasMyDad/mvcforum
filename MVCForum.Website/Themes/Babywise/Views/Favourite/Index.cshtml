@@ -1,0 +1,28 @@
+﻿@using MVCForum.Website.Application
+@model MVCForum.Website.ViewModels.MyFavouritesViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
+    ViewBag.Title = Html.Lang("Favourites.PageTitle");    
+}
+
+@section side
+{
+    @Html.Partial("_CommonSideNav")
+}
+
+<div class="myfavourites">
+    
+    <h1>@ViewBag.Title</h1>
+
+    @if (Model.Posts.Any())
+    {
+        foreach (var postViewModel in Model.Posts)
+        {
+            @Html.Partial("_Post", postViewModel)
+        }
+    }
+    else
+    {
+        <p>@Html.Lang("Favourites.NoMemberFavourites")</p>
+    }
+</div>

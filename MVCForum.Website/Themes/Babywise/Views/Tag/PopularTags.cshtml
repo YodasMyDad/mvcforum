@@ -1,0 +1,18 @@
+﻿@model MVCForum.Website.ViewModels.PopularTagViewModel
+           
+@if (Model.PopularTags.Any())
+{
+    <div class="side-box popular-tags-box">
+        <h5>@Html.LanguageString("Tags.PopularTags")</h5>
+        <ul class="tagCloud">
+            @foreach (var tag in Model.PopularTags)
+            {
+                <li>
+                    <span class="tag">
+                        <a href="@Html.Raw(tag.Key.NiceUrl)">@Html.Raw(tag.Key.Tag) <span class="badge">@tag.Value</span></a>
+                    </span>
+                </li>
+            }
+        </ul>
+    </div>
+}

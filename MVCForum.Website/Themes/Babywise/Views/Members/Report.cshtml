@@ -1,0 +1,31 @@
+﻿@model MVCForum.Website.ViewModels.ReportMemberViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
+    ViewBag.Title = string.Concat(Html.LanguageString("Report.Report"), " ", Model.Username);
+}
+
+<div class="row">
+
+    <div class="col-md-6 col-md-offset-3">
+        @using (Html.BeginForm("Report", "Members", FormMethod.Post, new { @class = "form-report" }))
+        {
+            @Html.HiddenFor(x => Model.Id)
+            @Html.ValidationSummary(false)
+
+            <h2>@ViewBag.Title</h2>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Reason)
+                @Html.TextAreaFor(model => model.Reason, new { @class = "form-control textarea" })
+                @Html.ValidationMessageFor(model => model.Reason)
+            </div>
+
+            <div class="submit-holder">
+                <button type="submit" class="btn-mvc-green btn-mvc-large">
+                    @Html.LanguageString("Buttons.Send")
+                </button>
+            </div>
+        }
+    </div>
+</div>

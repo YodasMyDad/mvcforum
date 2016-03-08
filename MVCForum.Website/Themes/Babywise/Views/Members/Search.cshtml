@@ -1,0 +1,70 @@
+﻿@using MVCForum.Website
+
+@model MVCForum.Website.ViewModels.PublicMemberListViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
+    ViewBag.Title = Html.LanguageString("Members.SearchMembers");
+}
+
+@section side
+{
+    @Html.Partial("_CommonSideNav")
+}
+
+
+<div class="searchmembers">
+    
+    <div class="mainheading clearfix">
+        <div class="row">
+            <div class="col-md-6">
+                <h1>@ViewBag.Title</h1>
+            </div>
+            <div class="col-md-6">
+                @using (Html.BeginForm("Search", "Members", FormMethod.Get))
+                {
+                    <div class="input-group">
+                        @Html.TextBoxFor(x => Model.Search, new { @class = "form-control" })
+                        <span class="input-group-btn">
+                            <button class="btn btn-default">@Html.LanguageString("Buttons.Search")</button>
+                        </span>
+                    </div>
+                    @Html.HiddenFor(x => x.PageIndex)
+                }
+            </div>
+        </div>
+    </div>
+
+
+    <table class="table table-bordered table-striped table-adaptive">
+        <thead>
+            <tr>
+                <th>@Html.LanguageString("Members.Users")</th>
+                <th>@Html.LanguageString("Members.Points")</th>
+                <th>@Html.LanguageString("Members.DateJoined")</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td>
+                        <a href="@user.NiceUrl">@user.UserName</a>
+                    </td>
+                    <td>
+                        @user.TotalPoints
+                    </td>
+                    <td>
+                        @user.CreateDate.ToShortDateString()
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (Convert.ToInt32(Model.TotalCount) > SiteConstants.Instance.AdminListPageSize)
+    {
+        @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
+    }
+
+
+</div>

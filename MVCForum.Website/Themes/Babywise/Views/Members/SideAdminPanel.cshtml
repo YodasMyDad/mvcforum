@@ -1,0 +1,72 @@
+﻿@model MVCForum.Website.ViewModels.ViewAdminSidePanelViewModel
+
+@if (Model.IsDropDown)
+{
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle mytoolslink" data-toggle="dropdown">
+            @Html.LanguageString("SideBox.MyTools")
+            @if (Model.NewPrivateMessageCount > 0 || Model.ModerateCount > 0)
+            {
+                if (Model.ModerateCount > 0)
+                {
+                    <span class="badge">@Model.ModerateCount</span> 
+                }
+                if (Model.NewPrivateMessageCount > 0)
+                {
+                    <span class="badge">@Model.NewPrivateMessageCount</span>
+                }
+            }
+            else
+            {
+                <span class="caret"></span>
+            }
+        </a>
+        <ul class="dropdown-menu" role="menu">
+            @Html.Raw(DropDownContents())
+        </ul>
+    </li>
+}
+else
+{
+    @Html.Raw(DropDownContents())
+}
+
+
+
+@helper DropDownContents()
+{
+    if (User.IsInRole(AppConstants.AdminRoleName))
+    {
+        <li><a href="@Url.Action("Index", "Admin", new {area = "Admin"}, null)">@Html.LanguageString("Layout.Nav.Admin")</a></li>
+    }
+    <li>@Html.ActionLink(Html.LanguageString("Members.SearchMembers"), "Search", "Members")</li>
+    <li>
+        <a href="@Url.Action("Edit", "Members", new { id = Model.CurrentUser.Id })">@Html.LanguageString("Buttons.Edit") @Model.CurrentUser.UserName</a>
+    </li>
+    if (Model.CanViewPrivateMessages)
+    {
+        <li>
+            <a href="@Url.Action("Index", "PrivateMessage")">
+                @Html.LanguageString("PM.PrivateMessages")
+                @if (Model.NewPrivateMessageCount > 0)
+                {
+                    <span class="badge">@Model.NewPrivateMessageCount</span>
+                }
+            </a>
+        </li>
+}
+    if (Model.ModerateCount > 0)
+    {
+        <li>
+            <a href="@Url.Action("Index", "Moderate")" class="moderatepanelnav" data-name="@Html.Lang("Moderate.NavText")">
+                @Html.LanguageString("Moderate.NavText")
+                @if (Model.ModerateCount > 0)
+                {
+                    <span class="badge">@Model.ModerateCount</span>
+                }
+            </a>
+        </li>
+    }
+
+    <li>@Html.ActionLink(Html.LanguageString("LogOn.LogOff"), "LogOff", "Members")</li>
+}

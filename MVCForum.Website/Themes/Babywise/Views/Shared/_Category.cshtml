@@ -1,0 +1,52 @@
+﻿@model MVCForum.Website.ViewModels.CategoryViewModel
+
+@if (!Model.Permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
+{
+    <div class="categoryrow">
+
+        <h2 style="border-color: @(string.IsNullOrEmpty(Model.Category.Colour) ? "#ced1d1" : Model.Category.Colour)">
+            <a href="@Model.Category.NiceUrl">@Html.Raw(Model.Category.Name)</a>
+        </h2>
+        @if (Model.ShowUnSubscribedLink)
+        {
+            <p>
+                <a href="#" class="emailunsubscription" data-id="@Model.Category.Id" data-type="category">
+                    <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                    @Html.LanguageString("Notification.UnSubscribe")
+                </a>
+            </p>
+        }
+        else
+        {
+            <p>@Html.Raw(AppHelpers.ConvertPostContent(Model.Category.Description))</p>
+        }
+
+        <div class="row categoryrowfooter">
+            <div class="col-md-1 hidden-xs catrss">
+                @if (Html.Settings().EnableRSSFeeds)
+                {
+                    <a title="@Html.LanguageString("Home.Rss")" href="@Url.Action("CategoryRss", "Category", new { slug = Model.Category.Slug })" class="rsssubscribe">
+                        <i class="fa fa-rss-square orange-colour"></i>
+                    </a>
+                }
+            </div>
+            <div class="col-md-2 col-xs-6 catdiscussions">
+                @string.Format(Html.LanguageString("Rss.Category.Title"), Model.TopicCount)
+            </div>
+            <div class="col-md-2 col-xs-6 catcomments">
+                @Model.PostCount @Html.LanguageString("Topic.CommentsDetails")
+            </div>
+            <div class="col-md-7 col-xs-12 catmostrecent">
+                @if (Model.LatestTopic != null)
+                {
+                    <text>
+                        @Html.LanguageString("Category.MostRecent") <a href="@Model.LatestTopic.NiceUrl">@Html.Raw(Model.LatestTopic.Name)</a>
+                        @Html.Raw(string.Format(Html.LanguageString("Topic.StartedBy"),
+                            DatesUI.GetPrettyDate(Model.LatestTopic.CreateDate.ToString()),
+                            string.Format("<a href='{0}'>{1}</a>", Model.LatestTopic.User.NiceUrl, Model.LatestTopic.User.UserName)))
+                    </text>
+                }
+            </div>
+        </div>
+    </div>
+}

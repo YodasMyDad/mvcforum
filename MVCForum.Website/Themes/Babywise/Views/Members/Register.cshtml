@@ -1,0 +1,77 @@
+﻿@using MVCForum.Utilities
+@model MVCForum.Website.ViewModels.MemberAddViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
+    ViewBag.Title = Html.LanguageString("Members.Register");
+}
+
+@if (!User.Identity.IsAuthenticated)
+{
+
+    <div class="row">
+
+        <div class="col-md-6 col-md-offset-3">
+
+            @Html.Partial("_SocialLoginButtons")
+
+            @if (Html.Settings().DisableStandardRegistration != true)
+            {
+                <div class="mainregisterform">
+
+                    <h3>@ViewBag.Title</h3>
+
+                    @using (Html.BeginForm("Register", "Members", FormMethod.Post, new { @class = "form-register" }))
+                    {
+                        @Html.ValidationSummary(true)
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-group">
+                            @Html.LabelFor(x => Model.UserName)
+                            @Html.TextBoxFor(x => Model.UserName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.UserName)
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(x => Model.Password)
+                            @Html.PasswordFor(x => Model.Password, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.Password)
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(x => Model.ConfirmPassword)
+                            @Html.PasswordFor(x => Model.ConfirmPassword, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.ConfirmPassword)
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(x => x.Email)
+                            @Html.TextBoxFor(x => x.Email, new { type = "email", @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.Email)
+                        </div>
+
+                        if (!string.IsNullOrEmpty(Html.Settings().SpamQuestion))
+                        {
+                            <div class="form-group">
+                                <label for="SpamAnswer">@Html.Settings().SpamQuestion</label>
+                                @Html.TextBoxFor(x => x.SpamAnswer, new { @class = "form-control" })
+                            </div>
+                        }
+
+                        <div class="submit-holder">
+                            <button type="submit" class="btn-mvc-green btn-mvc-large">
+                                @Html.LanguageString("Members.Register")
+                            </button>
+                        </div>
+
+                        @Html.HiddenFor(x => x.ReturnUrl)
+                    }
+                </div>
+            }
+        </div>
+
+    </div>
+}
+else
+{
+    <p>@Html.LanguageString("Members.AlreadyRegistered")</p>
+}

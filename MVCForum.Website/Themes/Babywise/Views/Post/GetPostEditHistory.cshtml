@@ -1,0 +1,47 @@
+﻿@model MVCForum.Website.ViewModels.PostEditHistoryViewModel
+@if (Model.PostEdits.Any())
+{
+    <div class="postedithistorypanels">
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+            @foreach (var postEdit in Model.PostEdits)
+            {
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="postedit-@postEdit.Id">
+                        <h4 class="panel-title">
+                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-@postEdit.Id" aria-expanded="true" aria-controls="collapse-@postEdit.Id">
+                                @DatesUI.GetPrettyDate(postEdit.DateEdited.ToString()) - @Html.Lang("PostEdit.EditedBy") @postEdit.EditedBy.UserName
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse-@postEdit.Id" class="panel-collapse collapse" role="tabpanel" aria-labelledby="postedit-@postEdit.Id">
+                        <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h3>@Html.Lang("PostEdit.OriginalVersion")</h3>
+                                        @if (!string.IsNullOrEmpty(postEdit.OriginalPostTitle))
+                                        {
+                                            <h4>@Html.Raw(postEdit.OriginalPostTitle)</h4>
+                                        }
+                                        @Html.Raw(postEdit.OriginalPostContent)
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h3>@postEdit.EditedBy.UserName @Html.Lang("PostEdit.EditedVersion")</h3>
+                                        @if (!string.IsNullOrEmpty(postEdit.EditedPostTitle))
+                                        {
+                                            <h4>@Html.Raw(postEdit.EditedPostTitle)</h4>
+                                        }
+                                        @Html.Raw(postEdit.EditedPostContent)
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>       
+    </div>
+}
+else
+{
+    <p>@Html.Lang("PostEdit.None")</p>
+}

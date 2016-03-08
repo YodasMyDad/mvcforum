@@ -1,0 +1,98 @@
+﻿@using MVCForum.Domain.DomainModel.Activity;
+@using MVCForum.Website
+@using MVCForum.Website.Application
+@using MVCForum.Website.ViewModels
+@model AllRecentActivitiesViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
+    ViewBag.Title = @Html.LanguageString("Activity.ActivityTitle");
+    var totalCount = Convert.ToInt32(Model.TotalCount);
+}
+@section side
+{
+    @Html.Partial("_CommonSideNav")
+}
+
+<div class="mainheading">
+    <div class="widgetright">
+        @if (Html.Settings().EnableRSSFeeds)
+        {
+            <a title="@Html.LanguageString("Home.Rss")" href="@Url.Action("ActivityRss", "Home")" class="rsssubscribe">
+                <i class="fa fa-rss-square orange-colour"></i>
+            </a>
+        }
+    </div>
+    <h1>@Html.Raw(ViewBag.Title)</h1>
+</div>
+
+<div class="activityholder">
+
+    @foreach (var activity in Model.Activities)
+    {
+        <div class="activityentry">
+
+
+            @if (activity is BadgeActivity)
+            {
+                var badgeActivity = activity as BadgeActivity;
+                <div class="row badgeactivity">
+                    <div class="activitybadge col-md-1">
+                        <img src="@Url.Content(AppHelpers.ReturnBadgeUrl(badgeActivity.Badge.Image))" alt="@badgeActivity.Badge.DisplayName" />
+                    </div>
+
+                    <div class="activityinfo col-md-11">
+                        <p class="activityinfotext"><a href="@Html.Raw(badgeActivity.User.NiceUrl)">@Html.Raw(badgeActivity.User.UserName)</a> @Html.LanguageString("Activity.UserAwardedBadge") @Html.Raw(badgeActivity.Badge.DisplayName) @Html.LanguageString("Activity.Badge")</p>
+                        <p class="activitybadgedescription">
+                            @Html.Raw(badgeActivity.Badge.Description)
+                            @if (badgeActivity.Badge.AwardsPoints != null && badgeActivity.Badge.AwardsPoints > 0)
+                            {
+                                @(string.Format("({0} {1})", badgeActivity.Badge.AwardsPoints, Html.LanguageString("Members.Points")))
+                            }
+                        </p>
+                        <p class="activitysubdate">
+                            @DatesUI.GetPrettyDate(badgeActivity.ActivityMapped.Timestamp.ToString())
+                        </p>
+                    </div>
+                </div>
+            }
+            else if (activity is MemberJoinedActivity)
+            {
+                var memberJoinedActivity = activity as MemberJoinedActivity;
+                <div class="row memberjoinedactivity">
+                    <div class="activitybadge col-md-1">
+                        <img src="@memberJoinedActivity.User.MemberImage(SiteConstants.Instance.GravatarPostSize)" alt="@memberJoinedActivity.User.UserName" />
+                    </div>
+
+                    <div class="activityinfo col-md-11">
+                        <p class="activityinfotext"><a href="@Html.Raw(memberJoinedActivity.User.NiceUrl)">@Html.Raw(memberJoinedActivity.User.UserName)</a> @Html.LanguageString("Activity.UserJoined")</p>
+                        <p class="activitysubdate">
+                            @DatesUI.GetPrettyDate(memberJoinedActivity.ActivityMapped.Timestamp.ToString())
+                        </p>
+                    </div>
+                </div>
+            }
+            else if (activity is ProfileUpdatedActivity)
+            {
+                var profileUpdatedActivity = activity as ProfileUpdatedActivity;
+                <div class="row profileupdatedactivity">
+                    <div class="activitybadge col-md-1">
+                        <img src="@profileUpdatedActivity.User.MemberImage(SiteConstants.Instance.GravatarPostSize)" alt="@profileUpdatedActivity.User.UserName" />
+                    </div>
+
+                    <div class="activityinfo col-md-11">
+                        <p class="activityinfotext"><a href="@Html.Raw(profileUpdatedActivity.User.NiceUrl)">@Html.Raw(profileUpdatedActivity.User.UserName)</a> @Html.LanguageString("Activity.ProfileUpdated")</p>
+                        <p class="activitysubdate">
+                           @DatesUI.GetPrettyDate(profileUpdatedActivity.ActivityMapped.Timestamp.ToString())
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    @if (Model.Activities.TotalPages > 1)
+    {
+        @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null)
+    }
+
+</div>

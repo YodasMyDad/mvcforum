@@ -1,0 +1,18 @@
+﻿@model MVCForum.Domain.DomainModel.Badge
+
+
+<div class="publicbadgeline">
+    <div class="row">
+        <div class="publicbadge col-md-2">
+            <img src="@Url.Content(AppHelpers.ReturnBadgeUrl(Model.Image))" alt="@Model.Name" />
+        </div>
+        <div class="publicbadgedetails col-md-10">
+            <p class="publicbadgename">@Html.Raw(Model.DisplayName)</p>
+            <p class="publicbadgenamedesc">@Model.Description</p>
+            @if (Model.AwardsPoints != null && Model.AwardsPoints > 0)
+            {
+                <p class="publicbadgeawards">@(string.Format(Html.LanguageString("Badges.AwardsPoints"), Model.AwardsPoints))</p>
+            }
+        </div>
+    </div>
+</div>

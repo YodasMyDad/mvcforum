@@ -1,0 +1,66 @@
+﻿@model MVCForum.Website.ViewModels.ViewPrivateMessageViewModel
+@{
+    Layout = Model.IsAjaxRequest ? "" : "~/Views/Shared/_LayoutFullWidth.cshtml";
+    ViewBag.Title = string.Concat(Html.LanguageString("PM.Title"), Model.From.UserName);
+}
+
+<div class="pmview">
+    <div class="row">
+
+        <div class="@(Model.IsAjaxRequest ? "col-md-12" : "col-md-8 col-md-offset-2")">            
+            @if (!Model.IsAjaxRequest)
+            {
+                <div class="btn-group top-pm-nav">
+                    @Html.ActionLink(Html.LanguageString("PM.BackToInbox"), "Index", new { }, new { @class = "btn-mvc btn-mvc-green" })
+                </div>
+                <h1>
+                    <a href="@Model.From.NiceUrl">
+                        <img src="@Model.From.MemberImage(SiteConstants.Instance.GravatarPostSize)" alt="@Model.From.UserName" class="pmavatar" /> @Model.From.UserName
+                        @if (Model.FromUserIsOnline)
+                        {
+                            <span class="label label-success">@Html.Lang("PM.MemberIsOnline")</span>
+                        }
+                    </a>
+                </h1>
+            }
+            <ul class="pmadminav">
+                <li>
+                    <a href="#" class="btn-mvc pm-block" data-userid="@Model.From.Id" data-blocktext="@Html.Lang("PM.Block") @Model.From.UserName" data-isblocked="@Model.IsBlocked.ToString().ToLower()" data-blockedtext="@Html.Lang("PM.Blocked") @Model.From.UserName">                        
+                        @(Model.IsBlocked ? Html.Lang("PM.Blocked") : Html.Lang("PM.Block")) @Model.From.UserName
+                    </a>
+                </li>
+                @if (Html.Settings().EnableMemberReporting)
+                {
+                    <li><a href="@Url.Action("Report", "Members", new { id = Model.From.Id }, null)" class="btn-mvc">@Html.LanguageString("Buttons.Report")</a></li>
+                }
+                @if (Model.FromUserIsOnline)
+                {
+                    <li>
+                        <span class="label label-success">@Html.Lang("PM.MemberIsOnline")</span>
+                    </li>
+                }
+            </ul>
+            <div class="createmessageholder">
+                @Html.Action("Create", new {to = Model.From.Id})
+            </div>
+            
+            <div class="privatemessages">
+                <span id="newpmmarker"></span>
+                @foreach (var pm in Model.PrivateMessages)
+                {
+                    @Html.Partial("_PrivateMessage", pm)
+                }
+                @if (Model.PrivateMessages.TotalPages > 1)
+                {
+                    <a href="#" class="showmorepms btn-mvc btn-mvc-large btn-mvc-fullwidth">
+                        <span class="smpmactive">@Html.LanguageString("PM.ShowMore")</span>
+                        <span class="smpmloading" style="display: none;">@Html.LanguageString("PM.ShowMoreLoading")</span>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+    <input type="hidden" id="pageIndex" value="@(Model.PrivateMessages.PageIndex + 1)" />
+    <input type="hidden" id="userId" value="@Model.From.Id" />
+    <input type="hidden" id="totalPages" value="@Model.PrivateMessages.TotalPages" />
+</div>

@@ -1,0 +1,32 @@
+﻿@{
+    Layout = "_Layout.cshtml";
+}
+
+@section SocialMeta{
+    @RenderSection("SocialMeta", false)
+}
+
+@section Header {
+    @RenderSection("Header", false)
+}
+<div class="row">
+    <div class="col-md-9">
+
+        @RenderBody()
+
+    </div>
+    <div class="col-md-3 sidelayoutsection">
+        <div class="main-side-box clearfix">
+            @if (User.Identity.IsAuthenticated)
+            {
+                @Html.Action("CreateTopicButton", "Topic")
+            }
+            @RenderSection("side", false)
+        </div>
+    </div>
+</div>
+
+@section Footer {
+    RenderSection("Footer", false)
+    @*@Html.Raw("http://localhost:53519/babywise/themes/template/footer")*@
+}    

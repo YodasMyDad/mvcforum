@@ -1,0 +1,23 @@
+﻿@if (!Context.IsMobileDevice())
+{
+    <link href="@Url.Content("~/Scripts/bbeditor/jquery.sceditor.min.css")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/Scripts/bbeditor/jquery.sceditor.bbcode.min.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+    //toolbar: "bold,italic,underline,strike,subscript,superscript|left,center,right,justify|font,size,color,removeformat|cut,copy,paste,pastetext|
+    // bulletlist,orderedlist|table|code,quote|horizontalrule,image,email,link,unlink|emoticon,youtube,date,time|print,source"
+        $(function() {
+            $(".bbeditorholder textarea").sceditor({
+                style: "@Url.Content("~/Scripts/bbeditor/jquery.sceditor.default.min.css")",
+                toolbar: "bold,italic,underline,strike,size,link,unlink,image|bulletlist,orderedlist|code,quote|source|removeformat|youtube",
+                resizeMaxHeight: -1,
+                width: 700,
+                resizeMinWidth: 700,
+                resizeMaxWidth: 700
+            });
+        });
+    </script>
+}
+
+<div class="bbeditorholder">
+    @Html.TextArea(string.Empty, ViewData.TemplateInfo.FormattedModelValue)
+</div>

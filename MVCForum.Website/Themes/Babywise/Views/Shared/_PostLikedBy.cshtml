@@ -1,0 +1,27 @@
+﻿@model MVCForum.Website.ViewModels.PostLikedByViewModel
+@if (Model.Votes.Any())
+{
+    <div class="postlikedby">
+
+        <ul>
+            <li class="text">@Html.Lang("Post.LikedBy")</li>
+            @foreach (var vote in Model.Votes.Take(4))
+            {
+                <li>
+                    <a href="@vote.VotedByMembershipUser.NiceUrl">
+                        <img src="@vote.VotedByMembershipUser.MemberImage(SiteConstants.Instance.GravatarLikedBySize)" alt="@vote.VotedByMembershipUser.UserName" title="@vote.VotedByMembershipUser.UserName">
+                    </a>
+                </li>
+            }
+
+            @if (Model.Votes.Count > 4)
+            {
+                <li class="text othersliked" data-postid="@Model.Post.Id">
+                    <a href="#">
+                        @(string.Format(Html.Lang("Post.OthersLiked"), (Model.Votes.Count - 4)))
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+}

@@ -1,0 +1,84 @@
+﻿@using MVCForum.Utilities
+@model MVCForum.Website.ViewModels.TopicViewModel
+@{
+    var postToolTip = string.Concat(StringUtils.ReturnAmountWordsFromString(StringUtils.StripHtmlFromString(Model.StarterPost.Post.PostContent), 50), "....");
+}
+@if (!Model.Permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
+{
+
+    <div class="topicrow topicsticky-@(Model.Topic.IsSticky.ToString().ToLower()) topiclocked-@(Model.Topic.IsLocked.ToString().ToLower()) topicsolved-@(Model.Topic.Solved.ToString().ToLower())">
+
+        <div class="rowcreater hidden-xs">
+            <a href="@Model.Topic.User.NiceUrl">
+                <img src="@Model.Topic.User.MemberImage(SiteConstants.Instance.GravatarTopicSize)" alt="@Model.Topic.User.UserName">
+            </a>
+            @if (Model.MemberIsOnline)
+            {
+                <span class="label label-success">
+                    @Html.Lang("Post.MemberIsOnline")
+                </span>
+            }
+        </div>
+
+        <div class="rowdetails">
+            <p class="category categorysolved@(Model.Topic.Solved.ToString().ToLower())" style="border-color: @(string.IsNullOrEmpty(Model.Topic.Category.Colour) ? "#ced1d1" : Model.Topic.Category.Colour)">@Html.LanguageString("Topic.Category"): <a href="@Model.Topic.Category.NiceUrl">@Model.Topic.Category.Name</a></p>
+            <h3>
+                <a title="@postToolTip" href="@Html.Raw(Model.Topic.NiceUrl)">
+                    @if (Model.Topic.IsSticky)
+                    {
+                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    }
+                    @if (Model.Topic.IsLocked)
+                    {
+                        <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                    }
+                    @if (Model.Topic.Poll != null)
+                    {
+                        <span class="glyphicon glyphicon-align-left" aria-hidden="true"></span>
+                    }
+                    @Html.Raw(Model.Topic.Name)
+                </a>
+            </h3>
+            @if (Model.ShowUnSubscribedLink)
+            {
+                <p>
+                    <a href="#" class="emailunsubscription" data-id="@Model.Topic.Id" data-type="topic">
+                        <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                        @Html.LanguageString("Topic.UnSubscribe")
+                    </a>
+                </p>
+            }
+            else if (Model.Topic.Tags.Any())
+            {
+                <div class="tagsinput clearfix">
+                    @foreach (var tag in Model.Topic.Tags)
+                    {
+                        <span class="tag"><span><a href="@Html.Raw(tag.NiceUrl)">@Html.Raw(tag.Tag)</a></span></span>
+                    }
+                </div>
+            }
+
+            <p class="topicrowfooterinfo">
+                <a href="@Html.Raw(Model.LastPostPermaLink)">
+                    <img src="@Model.Topic.LastPost.User.MemberImage(SiteConstants.Instance.GravatarLatestBySize)" class="latestby" alt="@Model.Topic.LastPost.User.UserName">
+                </a> 
+                <a href="@Html.Raw(Model.LastPostPermaLink)">
+                    @Html.LanguageString("Topic.LatestBy")
+                </a> 
+                <a href="@Model.Topic.LastPost.User.NiceUrl">
+                    @Model.Topic.LastPost.User.UserName
+                </a> 
+                @DatesUI.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString()).
+                <span class="stats topicanswers"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Model.Answers.KiloFormat()</span>
+                <span class="stats topicviews"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Model.Views.KiloFormat()</span>
+                <span class="stats topicupvotes"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> @Model.VotesUp.KiloFormat()</span>
+                <span class="stats topicdownvotes"><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span> @Model.VotesDown.KiloFormat()</span>
+                @if (Model.Topic.Solved)
+                {
+                    <span class="stats topicsolved"><span class="glyphicon glyphicon-ok green-colour" aria-hidden="true"></span></span>
+                }
+            </p>
+
+        </div>
+    </div>
+}

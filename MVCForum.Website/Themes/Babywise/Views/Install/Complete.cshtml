@@ -1,0 +1,13 @@
+﻿@{
+    Layout = "~/Views/Shared/_Install.cshtml";
+    ViewBag.Title = "MVCForum Installer";   
+}
+
+<div class="well well-lg">
+    <h2>Installation Complete</h2>
+    <p>Click the complete button to go to your home page. If this is a first time install you can login using the details below.</p>
+    <p>Username: <strong>admin</strong></p>
+    <p>Password: <strong>password</strong></p>
+    <p>Be sure to update the admin username and password once you have logged in!</p>
+    <p class="submit-holder"><a href="@Url.Action("Index", "Home")" class="btn btn-default btn-lg btn-block">Go To Main Site...</a></p>
+</div>

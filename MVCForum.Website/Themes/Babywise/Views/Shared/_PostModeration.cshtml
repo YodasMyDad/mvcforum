@@ -1,0 +1,10 @@
+﻿@using MVCForum.Website.Areas.Admin.ViewModels
+@{
+    var viewModel = new GenericMessageViewModel
+    {
+        Message = Html.LanguageString("Moderate.AwaitingModeration"),
+        MessageType = GenericMessages.info
+    };
+    TempData[AppConstants.MessageViewBagName] = viewModel;
+}
+@Html.Partial("_GenericMessage")
