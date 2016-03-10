@@ -25,7 +25,6 @@ syntax: glob
 [Bb]in
 [Dd]ebug*/
 obj/
-App_Data*/
 [Rr]elease*/
 _ReSharper*/
 [Tt]humbs.db
@@ -45,3 +44,8 @@ packages/*
 MVCForum.Website/Properties/PublishProfiles/Profile1.pubxml
 MVCForum.Website/Properties/PublishProfiles/Local Deployment.pubxml
 MVCForum.Website/Properties/PublishProfiles/Profile1.pubxml
+*.vspx
+*.psess
+MVCForum.Website/App_Data/cache/*
+MVCForum.Website/App_Data/LogFile*
+MVCForum.Website/App_Data/MVCForum.sdf

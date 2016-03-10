@@ -105,8 +105,12 @@ namespace MVCForum.Website.ViewModels
 
         public string Avatar { get; set; }
         public bool DisableFileUploads { get; set; }
+
         [ForumMvcResourceDisplayName("Members.Label.DisableEmailNotifications")]
         public bool DisableEmailNotifications { get; set; }
+
+
+        public int AmountOfPoints { get; set; }
 
     }
 
@@ -145,6 +149,7 @@ namespace MVCForum.Website.ViewModels
         public int NewPrivateMessageCount { get; set; }
         public bool CanViewPrivateMessages { get; set; }
         public bool IsDropDown { get; set; }
+        public int ModerateCount { get; set; }
     }
 
     public class AdminMemberProfileToolsViewModel

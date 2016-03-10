@@ -6,7 +6,7 @@ namespace MVCForum.Domain.Interfaces.Services
 {
     public partial interface IGlobalPermissionForRoleService
     {
-        void Add(GlobalPermissionForRole permissionForRole);
+        GlobalPermissionForRole Add(GlobalPermissionForRole permissionForRole);
         void Delete(GlobalPermissionForRole permissionForRole);
         GlobalPermissionForRole CheckExists(GlobalPermissionForRole permissionForRole);
         Dictionary<Permission, GlobalPermissionForRole> GetAll(MembershipRole role);

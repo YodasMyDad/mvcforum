@@ -41,13 +41,6 @@
 
 @section Header
 {
-    @(Bundle.Css()
-              .Add("~/Scripts/fancybox/jquery.fancybox.css")
-              .MvcRender("~/content/cache/fancybox_#.css"))
-    @(Bundle.JavaScript()
-        .Add("~/Scripts/fancybox/jquery.fancybox.js")
-        .Add("~/Scripts/topic.js")
-          .MvcRender("~/scripts/cache/topic_#.js"))
     <script>
         var topicId = '@(Model.Topic.Id)';
     </script>
@@ -163,9 +156,9 @@
     {
         <span id="newpostmarker"></span>
 
-        if (!Model.Permissions[AppConstants.PermissionDenyAccess].IsTicked && !Model.Permissions[AppConstants.PermissionReadOnly].IsTicked)
+        if (!Model.Permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked && !Model.Permissions[SiteConstants.Instance.PermissionReadOnly].IsTicked && !Model.Topic.Category.IsLocked)
         {
-            @Html.Partial("_CreateNewPost", new CreateAjaxPostViewModel { Topic = Model.Topic.Id, DisablePosting = Model.DisablePosting, PostContent = Model.QuotedPost })
+            @Html.Partial("_CreateNewPost", new CreateAjaxPostViewModel { Topic = Model.Topic.Id, DisablePosting = Model.DisablePosting, PostContent = Model.QuotedPost, InReplyTo = Model.ReplyTo, ReplyToUsername = Model.ReplyToUsername})
         }
         <a id="createpost"></a>
     }

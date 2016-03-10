@@ -5,6 +5,7 @@ using Quartz;
 
 namespace MVCForum.Website.Application.ScheduledJobs
 {
+    [DisallowConcurrentExecution]
     public class EmailJob : IJob
     {
         private readonly ILoggingService _loggingService;
@@ -22,11 +23,11 @@ namespace MVCForum.Website.Application.ScheduledJobs
         {
             using (var unitOfWork = _unitOfWorkManager.NewUnitOfWork())
             {
-                // Process emails to send - Only send the amount per job from the siteconstants
-                _emailService.ProcessMail(SiteConstants.EmailsToSendPerJob);
-
                 try
                 {
+                    // Process emails to send - Only send the amount per job from the siteconstants
+                    _emailService.ProcessMail(5);
+
                     // Commit - Which deletes the jobs that have been sent
                     unitOfWork.Commit();
                 }

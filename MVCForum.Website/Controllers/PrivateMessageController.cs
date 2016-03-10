@@ -10,7 +10,6 @@ using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels;
-using MVCForum.Website.ViewModels.Mapping;
 
 namespace MVCForum.Website.Controllers
 {
@@ -19,14 +18,16 @@ namespace MVCForum.Website.Controllers
     {
         private readonly IPrivateMessageService _privateMessageService;
         private readonly IEmailService _emailService;
+        private readonly IConfigService _configService;
 
         public PrivateMessageController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IPrivateMessageService privateMessageService,
-            IEmailService emailService)
+            IEmailService emailService, IConfigService configService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _privateMessageService = privateMessageService;
             _emailService = emailService;
+            _configService = configService;
         }
 
         public ActionResult Index(int? p)
@@ -43,7 +44,7 @@ namespace MVCForum.Website.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = p ?? 1;
-                var pagedMessages = _privateMessageService.GetUsersPrivateMessages(pageIndex, SiteConstants.PrivateMessageListSize, LoggedOnReadOnlyUser);
+                var pagedMessages = _privateMessageService.GetUsersPrivateMessages(pageIndex, SiteConstants.Instance.PrivateMessageListSize, LoggedOnReadOnlyUser);
                 var viewModel = new ListPrivateMessageViewModel
                 {
                     Messages = pagedMessages,
@@ -81,7 +82,7 @@ namespace MVCForum.Website.Controllers
                     {
                         return Content(LocalizationService.GetResourceString("PM.SentItemsOverCapcity"));
                     }
-                    if (senderCount > (settings.MaxPrivateMessagesPerMember - SiteConstants.PrivateMessageWarningAmountLessThanAllowedSize))
+                    if (senderCount > (settings.MaxPrivateMessagesPerMember - SiteConstants.Instance.PrivateMessageWarningAmountLessThanAllowedSize))
                     {
                         // Send user a warning they are about to exceed 
                         var sb = new StringBuilder();
@@ -97,7 +98,7 @@ namespace MVCForum.Website.Controllers
                     }
 
                     // Set editor permissions
-                    ViewBag.ImageUploadType = permissions[AppConstants.PermissionInsertEditorImages].IsTicked ? "forumimageinsert" : "image";
+                    ViewBag.ImageUploadType = permissions[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked ? "forumimageinsert" : "image";
 
                     unitOfWork.Commit();
 
@@ -158,7 +159,7 @@ namespace MVCForum.Website.Controllers
                         // Check settings
                         if (settings.EnableEmoticons == true)
                         {
-                            privateMessage.Message = EmoticonUtils.Emotify(privateMessage.Message);
+                            privateMessage.Message = _configService.Emotify(privateMessage.Message);
                         }
 
                         // check the member
@@ -172,7 +173,7 @@ namespace MVCForum.Website.Controllers
                             }
 
                             // If the receiver is about to go over the allowance them let then know too
-                            if (receiverCount > (settings.MaxPrivateMessagesPerMember - SiteConstants.PrivateMessageWarningAmountLessThanAllowedSize))
+                            if (receiverCount > (settings.MaxPrivateMessagesPerMember - SiteConstants.Instance.PrivateMessageWarningAmountLessThanAllowedSize))
                             {
                                 // Send user a warning they are about to exceed 
                                 var sb = new StringBuilder();
@@ -278,7 +279,7 @@ namespace MVCForum.Website.Controllers
                     //var allMessages = loggedOnUser.PrivateMessagesReceived.Where(x => x.UserFrom.Id == from && x.IsSentMessage == false).ToList();
                     //allMessages.AddRange(loggedOnUser.PrivateMessagesSent.Where(x => x.UserTo.Id == from && x.IsSentMessage == true).ToList());
 
-                    var allMessages = _privateMessageService.GetUsersPrivateMessages(1, SiteConstants.PagingGroupSize, loggedOnUser, userFrom);
+                    var allMessages = _privateMessageService.GetUsersPrivateMessages(1, SiteConstants.Instance.PagingGroupSize, loggedOnUser, userFrom);
 
                     // Now order them into an order of messages
                     var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
@@ -352,7 +353,7 @@ namespace MVCForum.Website.Controllers
                         return Content(LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }
 
-                    var allMessages = _privateMessageService.GetUsersPrivateMessages(viewModel.PageIndex, SiteConstants.PagingGroupSize, loggedOnUser, userFrom);
+                    var allMessages = _privateMessageService.GetUsersPrivateMessages(viewModel.PageIndex, SiteConstants.Instance.PagingGroupSize, loggedOnUser, userFrom);
 
                     var partialViewModel = new ViewPrivateMessageViewModel
                     {

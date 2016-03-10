@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -8,38 +9,41 @@ using System.Web;
 using MVCForum.Domain;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Domain.DomainModel.Enums;
+using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Services.Data.Context;
 using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
     public partial class LocalizationService : ILocalizationService
     {
-        private readonly ILocalizationRepository _localizationRepository;
-        private readonly ISettingsRepository _settingsRepository;
+        private readonly ISettingsService _settingsService;
         private readonly ILoggingService _loggingService;
         private readonly ICacheService _cacheService;
         private Language _currentLanguage;
-
+        private readonly MVCForumContext _context;
         private readonly Dictionary<string, string> _perRequestLanguageStrings;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="localizationRepository"> </param>
-        /// <param name="settingsRepository"> </param>
+        /// <param name="settingsService"> </param>
         /// <param name="loggingService"></param>
-        public LocalizationService(ILocalizationRepository localizationRepository, ISettingsRepository settingsRepository, ILoggingService loggingService, ICacheService cacheService)
+        /// <param name="cacheService"></param>
+        /// <param name="context"></param>
+        public LocalizationService(ISettingsService settingsService, ILoggingService loggingService, ICacheService cacheService, IMVCForumContext context)
         {
-            _localizationRepository = localizationRepository;
-            _settingsRepository = settingsRepository;
+            _settingsService = settingsService;
             _loggingService = loggingService;
             _cacheService = cacheService;
-
+            _context = context as MVCForumContext;
             _perRequestLanguageStrings = ResourceKeysByLanguage(CurrentLanguage);
         }
 
+
+        #region Sanitizing
 
         public Language SanitizeLanguage(Language language)
         {
@@ -61,6 +65,7 @@ namespace MVCForum.Services
             return localeStringResource;
         }
 
+        #endregion
 
         #region Private methods
 
@@ -77,21 +82,11 @@ namespace MVCForum.Services
 
             if (localeStringResource == null)
             {
-                throw new ApplicationException(string.Format("Unable to update resource with key {0} for language {1}. No resource found.", resourceKey, languageId));
+                throw new ApplicationException(
+                    $"Unable to update resource with key {resourceKey} for language {languageId}. No resource found.");
             }
             localeStringResource.ResourceValue = StringUtils.SafePlainText(newValue);
             _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
-        }
-
-        /// <summary>
-        /// Create a string resource
-        /// </summary>
-        /// <param name="newLocaleStringResource"></param>
-        /// <returns></returns>
-        private LocaleStringResource Add(LocaleStringResource newLocaleStringResource)
-        {
-            newLocaleStringResource = SanitizeLocaleStringResource(newLocaleStringResource);
-            return _localizationRepository.Add(newLocaleStringResource);
         }
 
         /// <summary>
@@ -105,18 +100,19 @@ namespace MVCForum.Services
             newLocaleResourceKey.Name = newLocaleResourceKey.Name.Trim();
 
             // Check to see if a respource key of this name already exists
-            var existingResourceKey = _localizationRepository.GetResourceKey(newLocaleResourceKey.Name);
+            var existingResourceKey = GetResourceKey(newLocaleResourceKey.Name);
 
             if (existingResourceKey != null)
             {
-                throw new ApplicationException(string.Format("The resource key with name '{0}' already exists.", newLocaleResourceKey.Name));
+                throw new ApplicationException(
+                    $"The resource key with name '{newLocaleResourceKey.Name}' already exists.");
             }
 
             newLocaleResourceKey.DateAdded = DateTime.UtcNow;
 
             // Now add an empty value for each language
             newLocaleResourceKey.LocaleStringResources = new List<LocaleStringResource>();
-            foreach (var language in _localizationRepository.GetAll())
+            foreach (var language in GetAll())
             {
                 var resourceValue = new LocaleStringResource
                 {
@@ -132,7 +128,7 @@ namespace MVCForum.Services
             newLocaleResourceKey = SanitizeLocaleResourceKey(newLocaleResourceKey);
 
             // Add the key
-            var result = _localizationRepository.Add(newLocaleResourceKey);
+            var result = _context.LocaleResourceKey.Add(newLocaleResourceKey);
 
             // Clear hard cache for Languages
             _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
@@ -151,12 +147,13 @@ namespace MVCForum.Services
 
             if (existingLanguage != null)
             {
-                throw new LanguageOrCultureAlreadyExistsException(string.Format("There is already a language defined for language-culture '{0}'", existingLanguage.LanguageCulture));
+                throw new LanguageOrCultureAlreadyExistsException(
+                    $"There is already a language defined for language-culture '{existingLanguage.LanguageCulture}'");
             }
 
             // Make sure that the new language has a set of empty resources
             language.LocaleStringResources = new List<LocaleStringResource>();
-            foreach (var localeResourceKey in _localizationRepository.GetAllResourceKeys())
+            foreach (var localeResourceKey in GetAllResourceKeys())
             {
                 var localeStringResource = new LocaleStringResource
                 {
@@ -169,7 +166,7 @@ namespace MVCForum.Services
 
             language = SanitizeLanguage(language);
             _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
-            _localizationRepository.Add(language);
+            _context.Language.Add(language);
         }
 
         /// <summary>
@@ -200,12 +197,16 @@ namespace MVCForum.Services
         {
             try
             {
-                return _localizationRepository.GetResource(languageId, key.Trim());
+                // Get the language again - otherwise if the language was previously fetched then the lazy load of
+                // resource members might fail with a session closed error...
+                var lang = Get(languageId);
+                return lang.LocaleStringResources.FirstOrDefault(localization => localization.LocaleResourceKey.Name == key.Trim());
             }
             catch (Exception ex)
             {
                 // Could be there is no resource
-                _loggingService.Error(string.Format("Unable to retrieve resource key '{0}' for language id {1}. Error: '{2}'.", key, languageId, ex.Message));
+                _loggingService.Error(
+                    $"Unable to retrieve resource key '{key}' for language id {languageId}. Error: '{ex.Message}'.");
                 return null;
             }
         }
@@ -227,13 +228,10 @@ namespace MVCForum.Services
         {
             var resFormat = GetResource(language.Id, key);
 
-            if (resFormat != null)
+            var resValue = resFormat?.ResourceValue;
+            if (!string.IsNullOrEmpty(resValue))
             {
-                var resValue = resFormat.ResourceValue;
-                if (!string.IsNullOrEmpty(resValue))
-                {
-                    return new LocalizedString(resValue).Text;
-                }
+                return new LocalizedString(resValue).Text;
             }
             return new LocalizedString(key).Text;
         }
@@ -256,11 +254,13 @@ namespace MVCForum.Services
                         {
                             return langValue;
                         }
-                        _loggingService.Error(string.Format("No value is set for resource key '{0}' for language {1}.", trimmedKey, CurrentLanguage.Name));
+                        _loggingService.Error(
+                            $"No value is set for resource key '{trimmedKey}' for language {CurrentLanguage.Name}.");
                     }
                     else
                     {
-                        _loggingService.Error(string.Format("This resource key '{0}' was not found for the language {1}.", trimmedKey, CurrentLanguage.Name));
+                        _loggingService.Error(
+                            $"This resource key '{trimmedKey}' was not found for the language {CurrentLanguage.Name}.");
                     }
                 }
                 catch (Exception ex)
@@ -284,15 +284,105 @@ namespace MVCForum.Services
         {
 
             // Get the resource
-            var localeStringResourceKey = _localizationRepository.GetResourceKey(resourceKeyId);
+            var localeStringResourceKey = GetResourceKey(resourceKeyId);
 
             if (localeStringResourceKey == null)
             {
-                throw new ApplicationException(string.Format("Unable to update resource key {0} . No resource found.", resourceKeyId));
+                throw new ApplicationException($"Unable to update resource key {resourceKeyId} . No resource found.");
             }
 
             localeStringResourceKey.Name = StringUtils.SafePlainText(newName);
             _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
+        }
+
+        public PagedList<LocaleStringResource> SearchResourceValuesForKey(Guid languageId, string search, int pageIndex, int pageSize)
+        {
+            var totalCount = _context.LocaleStringResource
+    .Join(_context.LocaleResourceKey, strRes => strRes.LocaleResourceKey.Id, resKey => resKey.Id, (strRes, resKey) =>
+        new { LocaleStringResource = strRes, LocaleResourceKey = resKey }).Count(joinResult => joinResult.LocaleStringResource.Language.Id == languageId &&
+                                                                                                                                                                                                         joinResult.LocaleResourceKey.Name.ToUpper().Contains(search.ToUpper()));
+
+            var results = _context.LocaleStringResource
+                .Join(_context.LocaleResourceKey, // The sequence to join to the first sequence.
+                        strRes => strRes.LocaleResourceKey.Id, // A function to extract the join key from each element of the first sequence.
+                        resKey => resKey.Id, // A function to extract the join key from each element of the second sequence
+                        (strRes, resKey) => new { LocaleStringResource = strRes, LocaleResourceKey = resKey } // A function to create a result element from two matching elements.
+                    )
+                .Where(joinResult => joinResult.LocaleStringResource.Language.Id == languageId &&
+                    joinResult.LocaleResourceKey.Name.ToUpper().Contains(search.ToUpper()))
+                .OrderBy(joinResult => joinResult.LocaleResourceKey.Name)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .Select(item => item.LocaleStringResource).ToList();
+
+            return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, totalCount);
+        }
+
+        public void DeleteResourceKey(LocaleResourceKey resourceKey)
+        {
+            // Delete all the string resources referencing this key
+            var allValuesForKey = GetAllValuesForKey(resourceKey.Id);
+            var allValuesToDelete = new List<LocaleStringResource>();
+            allValuesToDelete.AddRange(allValuesForKey);
+            foreach (var valueToDelete in allValuesToDelete)
+            {
+                _context.LocaleStringResource.Remove(valueToDelete);
+            }
+
+            _context.LocaleResourceKey.Remove(resourceKey);
+        }
+
+        public void DeleteResourceValue(LocaleStringResource resourceValue)
+        {
+            _context.LocaleStringResource.Remove(resourceValue);
+        }
+
+        public LocaleResourceKey GetResourceKey(string name)
+        {
+            return _context.LocaleResourceKey.FirstOrDefault(x => x.Name.Trim() == name);
+        }
+
+        public LocaleStringResource Add(LocaleStringResource newLocaleStringResource)
+        {
+            _context.LocaleStringResource.Add(newLocaleStringResource);
+            return newLocaleStringResource;
+        }
+
+        public IList<LocaleStringResource> AllLanguageResources(Guid languageId)
+        {
+            return _context.LocaleStringResource
+    .Where(x => x.Language.Id == languageId)
+    .ToList();
+        }
+
+        public void Delete(LocaleStringResource item)
+        {
+            _context.LocaleStringResource.Remove(item);
+        }
+
+        public void Delete(LocaleResourceKey item)
+        {
+            _context.LocaleResourceKey.Remove(item);
+        }
+
+        public void Update(LocaleStringResource item)
+        {
+            // Check there's not an object with same identifier already in context
+            if (_context.LocaleStringResource.Local.Select(x => x.Id == item.Id).Any())
+            {
+                throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
+            }
+            _context.Entry(item).State = EntityState.Modified;
+        }
+
+        public void Update(LocaleResourceKey item)
+        {
+            // Check there's not an object with same identifier already in context
+            if (_context.LocaleResourceKey.Local.Select(x => x.Id == item.Id).Any())
+            {
+                throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
+            }
+            _context.Entry(item).State = EntityState.Modified;
         }
 
         /// <summary>
@@ -343,7 +433,7 @@ namespace MVCForum.Services
         {
             get
             {
-                var settings = _settingsRepository.GetSettings(false);
+                var settings = _settingsService.GetSettings(false);
 
                 if (settings == null)
                 {
@@ -372,8 +462,7 @@ namespace MVCForum.Services
         /// <param name="languageCulture"></param>
         public Language GetLanguageByLanguageCulture(string languageCulture)
         {
-
-            return _localizationRepository.GetLanguageByLanguageCulture(languageCulture);
+            return _context.Language.FirstOrDefault(x => x.LanguageCulture == languageCulture);
         }
 
 
@@ -384,20 +473,14 @@ namespace MVCForum.Services
         public Language GetLanguageByName(string name)
         {
 
-            return _localizationRepository.GetLanguageByLanguageCulture(name);
+            return GetLanguageByLanguageCulture(name);
 
         }
 
         /// <summary>
         /// All languages
         /// </summary>
-        public IEnumerable<Language> AllLanguages
-        {
-            get
-            {
-                return _localizationRepository.GetAll();
-            }
-        }
+        public IEnumerable<Language> AllLanguages => GetAll();
 
         /// <summary>
         /// Get paged set of resources for a language
@@ -408,7 +491,24 @@ namespace MVCForum.Services
         /// <returns></returns>
         public PagedList<LocaleStringResource> GetAllValues(Guid languageId, int pageIndex, int pageSize)
         {
-            return _localizationRepository.GetAllValues(languageId, pageIndex, pageSize);
+            var totalCount = _context.LocaleStringResource
+                .Join(_context.LocaleResourceKey, strRes => strRes.LocaleResourceKey.Id, resKey => resKey.Id,
+                      (strRes, resKey) => new { LocaleStringResource = strRes, LocaleResourceKey = resKey })
+                .Count(joinResult => joinResult.LocaleStringResource.Language.Id == languageId);
+
+            var results = _context.LocaleStringResource
+                .Join(_context.LocaleResourceKey, // The sequence to join to the first sequence.
+                      strRes => strRes.LocaleResourceKey.Id, // A function to extract the join key from each element of the first sequence.
+                        resKey => resKey.Id, // A function to extract the join key from each element of the second sequence
+                        (strRes, resKey) => new { LocaleStringResource = strRes, LocaleResourceKey = resKey } // A function to create a result element from two matching elements.
+                        )
+                .Where(joinResult => joinResult.LocaleStringResource.Language.Id == languageId)
+                .OrderBy(joinResult => joinResult.LocaleResourceKey.Name)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .Select(item => item.LocaleStringResource).ToList();
+
+            return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, totalCount);
         }
 
         /// <summary>
@@ -418,7 +518,11 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<LocaleStringResource> GetAllValuesForKey(Guid resourceKeyId)
         {
-            return _localizationRepository.GetAllValuesForKey(resourceKeyId);
+            return _context.LocaleStringResource
+                        .Include(x => x.Language)
+                        .Include(x => x.LocaleResourceKey)
+                        .Where(strRes => strRes.LocaleResourceKey.Id == resourceKeyId)
+                        .Select(strRes => strRes).ToList();
         }
 
         /// <summary>
@@ -429,7 +533,16 @@ namespace MVCForum.Services
         /// <returns></returns>
         public PagedList<LocaleResourceKey> GetAllResourceKeys(int pageIndex, int pageSize)
         {
-            return _localizationRepository.GetAllResourceKeys(pageIndex, pageSize);
+            var totalCount = _context.LocaleResourceKey.Count();
+
+            var results = _context.LocaleResourceKey
+                .OrderBy(x => x.Name)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .Select(item => item)
+                .ToList();
+
+            return new PagedList<LocaleResourceKey>(results, pageIndex, pageSize, totalCount);
         }
 
         /// <summary>
@@ -440,13 +553,13 @@ namespace MVCForum.Services
         public Dictionary<string, string> ResourceKeysByLanguage(Language language)
         {
             var cacheKey = string.Concat(AppConstants.LanguageStrings, language.Id);
-            var cachedResourceKeys = _cacheService.Get(cacheKey);
+            var cachedResourceKeys = _cacheService.Get<Dictionary<string, string>>(cacheKey);
             if (cachedResourceKeys == null)
             {
-                cachedResourceKeys = _localizationRepository.GetAllLanguageStringsByLangauge(language.Id);
-                _cacheService.Set(cacheKey, cachedResourceKeys, AppConstants.CacheTwelveHours);
+                cachedResourceKeys = GetAllLanguageStringsByLangauge(language.Id);
+                _cacheService.Set(cacheKey, cachedResourceKeys, CacheTimes.OneDay);
             }
-            return cachedResourceKeys as Dictionary<string, string>;
+            return cachedResourceKeys;
         }
 
         /// <summary>
@@ -455,8 +568,9 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<LocaleResourceKey> GetAllResourceKeys()
         {
-            return _localizationRepository.GetAllResourceKeys();
+            return _context.LocaleResourceKey.ToList();
         }
+
 
         /// <summary>
         /// Search resources in a language
@@ -468,7 +582,19 @@ namespace MVCForum.Services
         /// <returns></returns>
         public PagedList<LocaleStringResource> SearchResourceValues(Guid languageId, string search, int pageIndex, int pageSize)
         {
-            return _localizationRepository.SearchResourceValues(languageId, StringUtils.SafePlainText(search), pageIndex, pageSize);
+            search = StringUtils.SafePlainText(search);
+            var totalCount = _context.LocaleStringResource.Count();
+            var results = _context.LocaleStringResource
+                .Include(x => x.Language)
+                .Include(x => x.LocaleResourceKey)
+                .Where(x => x.Language.Id == languageId)
+                .Where(x => x.ResourceValue.ToUpper().Contains(search.ToUpper()))
+                .OrderBy(x => x.ResourceValue)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .Select(item => item).ToList();
+
+            return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, totalCount);
         }
 
 
@@ -481,7 +607,16 @@ namespace MVCForum.Services
         /// <returns></returns>
         public PagedList<LocaleResourceKey> SearchResourceKeys(string search, int pageIndex, int pageSize)
         {
-            return _localizationRepository.SearchResourceKeys(StringUtils.SafePlainText(search), pageIndex, pageSize);
+            search = StringUtils.SafePlainText(search);
+            var totalCount = _context.LocaleResourceKey.Count();
+            var results = _context.LocaleResourceKey
+                            .Where(resKey => resKey.Name.ToUpper().Contains(search.ToUpper()))
+                            .OrderBy(resKey => resKey.Name)
+                            .Skip((pageIndex - 1) * pageSize)
+                            .Take(pageSize)
+                            .ToList();
+
+            return new PagedList<LocaleResourceKey>(results, pageIndex, pageSize, totalCount);
         }
 
         /// <summary>
@@ -495,7 +630,30 @@ namespace MVCForum.Services
         /// <returns></returns>
         public PagedList<LocaleStringResource> SearchResourceKeys(Guid languageId, string search, int pageIndex, int pageSize)
         {
-            return _localizationRepository.SearchResourceKeys(languageId, StringUtils.SafePlainText(search), pageIndex, pageSize);
+            search = StringUtils.SafePlainText(search);
+
+            var totalCount = _context.LocaleStringResource
+    .Join(_context.LocaleResourceKey,
+          strRes => strRes.LocaleResourceKey.Id,
+          resKey => resKey.Id,
+          (strRes, resKey) => new { LocaleStringResource = strRes, LocaleResourceKey = resKey })
+          .Count(joinResult => joinResult.LocaleStringResource.Language.Id == languageId
+              && joinResult.LocaleResourceKey.Name.ToUpper().Contains(search.ToUpper()));
+
+            var results = _context.LocaleStringResource
+                .Join(_context.LocaleResourceKey, // The sequence to join to the first sequence.
+                        strRes => strRes.LocaleResourceKey.Id, // A function to extract the join key from each element of the first sequence.
+                        resKey => resKey.Id, // A function to extract the join key from each element of the second sequence
+                        (strRes, resKey) => new { LocaleStringResource = strRes, LocaleResourceKey = resKey } // A function to create a result element from two matching elements.
+                    )
+                .Where(joinResult => joinResult.LocaleStringResource.Language.Id == languageId &&
+                    joinResult.LocaleResourceKey.Name.ToUpper().Contains(search.ToUpper()))
+                .OrderBy(joinResult => joinResult.LocaleResourceKey.Name)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .Select(item => item.LocaleStringResource).ToList();
+
+            return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, totalCount);
         }
 
         public IList<CultureInfo> LanguagesAll
@@ -521,7 +679,11 @@ namespace MVCForum.Services
         /// <returns></returns>
         public Language Get(Guid id, bool removeTracking = false)
         {
-            return _localizationRepository.Get(id, removeTracking);
+            if (removeTracking)
+            {
+                return _context.Language.AsNoTracking().FirstOrDefault(lang => lang.Id == id);
+            }
+            return _context.Language.FirstOrDefault(lang => lang.Id == id);
         }
 
 
@@ -540,13 +702,24 @@ namespace MVCForum.Services
 
             try
             {
-                _localizationRepository.Delete(language);
+                var strResToDelete = new List<LocaleStringResource>();
+                foreach (var localeStringRes in language.LocaleStringResources)
+                {
+                    strResToDelete.Add(localeStringRes);
+                }
+                foreach (var strToDelete in strResToDelete)
+                {
+                    _context.LocaleStringResource.Remove(strToDelete);
+                }
+
+                language.LocaleStringResources.Clear();
+                _context.Language.Remove(language);
                 _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
             }
             catch (Exception ex)
             {
 
-                throw new ApplicationException(string.Format("Unable to delete language: {0}", ex.Message), ex);
+                throw new ApplicationException($"Unable to delete language: {ex.Message}", ex);
             }
         }
 
@@ -559,13 +732,13 @@ namespace MVCForum.Services
             try
             {
                 // Delete the key and its values
-                _localizationRepository.DeleteResourceKey(resourceKey);
+                DeleteResourceKey(resourceKey);
                 _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
 
             }
             catch (Exception ex)
             {
-                throw new ApplicationException(string.Format("Unable to delete resource key: {0}", ex.Message), ex);
+                throw new ApplicationException($"Unable to delete resource key: {ex.Message}", ex);
             }
         }
 
@@ -576,7 +749,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public LocaleResourceKey GetResourceKey(Guid id)
         {
-            return _localizationRepository.GetResourceKey(id);
+            return _context.LocaleResourceKey.FirstOrDefault(x => x.Id == id);
         }
 
         /// <summary>
@@ -603,7 +776,7 @@ namespace MVCForum.Services
         {
             var csv = new StringBuilder();
 
-            foreach (var resource in _localizationRepository.AllLanguageResources(language.Id))
+            foreach (var resource in AllLanguageResources(language.Id))
             {
                 csv.AppendFormat("{0},{1}", resource.LocaleResourceKey.Name, resource.ResourceValue);
                 csv.AppendLine();
@@ -630,7 +803,7 @@ namespace MVCForum.Services
 
             try
             {
-                //var allResourceKeys = _localizationRepository.GetAllResourceKeys();
+                //var allResourceKeys = GetAllResourceKeys();
                 var lineCounter = 0;
                 foreach (var line in allLines)
                 {
@@ -644,7 +817,7 @@ namespace MVCForum.Services
                         report.Errors.Add(new CsvErrorWarning
                         {
                             ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
-                            Message = string.Format("Line {0}: a key and a value are required.", lineCounter)
+                            Message = $"Line {lineCounter}: a key and a value are required."
                         });
 
                         continue;
@@ -661,11 +834,11 @@ namespace MVCForum.Services
 
                     var value = keyValuePair[1];
 
-                    var resourceKey = _localizationRepository.GetResourceKey(key);
+                    var resourceKey = GetResourceKey(key);
 
                     if (language == null)
                     {
-                        throw new ApplicationException(string.Format("Unable to create language"));
+                        throw new ApplicationException("Unable to create language");
                     }
 
                     // If key does not exist, it is a new one to be created
@@ -681,7 +854,8 @@ namespace MVCForum.Services
                         report.Warnings.Add(new CsvErrorWarning
                         {
                             ErrorWarningType = CsvErrorWarningType.NewKeyCreated,
-                            Message = string.Format("A new key named '{0}' has been created, and will require a value in all languages.", key)
+                            Message =
+                                $"A new key named '{key}' has been created, and will require a value in all languages."
                         });
                     }
 
@@ -705,7 +879,7 @@ namespace MVCForum.Services
                             LocaleResourceKey = resourceKey,
                             ResourceValue = value
                         };
-                        _localizationRepository.Add(stringResource);
+                        Add(stringResource);
                     }
                 }
             }
@@ -718,6 +892,27 @@ namespace MVCForum.Services
             return report;
         }
 
+        public IEnumerable<Language> GetAll()
+        {
+            return _context.Language.OrderBy(x => x.Name).ToList();
+        }
+
+        public Dictionary<string, string> GetAllLanguageStringsByLangauge(Guid languageId)
+        {
+            var results = _context.LocaleStringResource
+                    .Include(x => x.Language)
+                    .Include(x => x.LocaleResourceKey)
+                    .Where(x => x.Language.Id == languageId)
+                      .Join(_context.LocaleResourceKey,
+                            strRes => strRes.LocaleResourceKey.Id,
+                            resKey => resKey.Id,
+                            (strRes, resKey) =>
+                            new { LocaleStringResource = strRes, LocaleResourceKey = resKey })
+                      .ToDictionary(arg => arg.LocaleResourceKey.Name.Trim(), arg => arg.LocaleStringResource.ResourceValue);
+
+            return results;
+        }
+
         /// <summary>
         /// Import a language from CSV
         /// </summary>
@@ -726,7 +921,6 @@ namespace MVCForum.Services
         /// <returns>A report on the import</returns>
         public CsvReport FromCsv(string langKey, List<string> allLines)
         {
-            var commaSeparator = new[] { ',' };
             var report = new CsvReport();
 
             if (allLines == null || allLines.Count == 0)
@@ -751,7 +945,7 @@ namespace MVCForum.Services
                     report.Errors.Add(new CsvErrorWarning
                     {
                         ErrorWarningType = CsvErrorWarningType.DoesNotExist,
-                        Message = string.Format("The language culture '{0}' does not exist.", langKey)
+                        Message = $"The language culture '{langKey}' does not exist."
                     });
 
                     return report;

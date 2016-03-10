@@ -243,6 +243,14 @@ namespace MVCForum.Website.Controllers
             {
                 var allBadges = _badgeService.GetallBadges();
 
+                // Localise the badge names
+                foreach (var item in allBadges)
+                {
+                    var partialKey = string.Concat("Badge.", item.Name);
+                    item.DisplayName = LocalizationService.GetResourceString(string.Concat(partialKey, ".Name"));
+                    item.Description = LocalizationService.GetResourceString(string.Concat(partialKey, ".Desc"));
+                }
+
                 var badgesListModel = new AllBadgesViewModel
                 {
                     AllBadges = allBadges

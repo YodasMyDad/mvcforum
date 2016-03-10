@@ -30,10 +30,7 @@ namespace MVCForum.Domain.DomainModel
         public virtual IList<CategoryPermissionForRole> CategoryPermissionForRoles { get; set; }
         public int Level { get; set; }
 
-        public string NiceUrl
-        {
-            get { return UrlTypes.GenerateUrl(UrlType.Category, Slug); }
-        }
+        public string NiceUrl => UrlTypes.GenerateUrl(UrlType.Category, Slug);
     }
 
 

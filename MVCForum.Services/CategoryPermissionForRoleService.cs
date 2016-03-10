@@ -1,28 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Entity;
 using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Services.Data.Context;
 
 namespace MVCForum.Services
 {
     public partial class CategoryPermissionForRoleService : ICategoryPermissionForRoleService
     {
-        private readonly ICategoryPermissionForRoleRepository _categoryPermissionForRoleService;
+        private readonly MVCForumContext _context;
 
-        public CategoryPermissionForRoleService(ICategoryPermissionForRoleRepository categoryPermissionForRoleService)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="context"></param>
+        public CategoryPermissionForRoleService(IMVCForumContext context)
         {
-            _categoryPermissionForRoleService = categoryPermissionForRoleService;
+            _context = context as MVCForumContext;
         }
 
         /// <summary>
         /// Add new category permission for role
         /// </summary>
         /// <param name="categoryPermissionForRole"></param>
-        public void Add(CategoryPermissionForRole categoryPermissionForRole)
+        public CategoryPermissionForRole Add(CategoryPermissionForRole categoryPermissionForRole)
         {
-            _categoryPermissionForRoleService.Add(categoryPermissionForRole);
+            return _context.CategoryPermissionForRole.Add(categoryPermissionForRole);
         }
 
         /// <summary>
@@ -37,9 +43,12 @@ namespace MVCForum.Services
                         categoryPermissionForRole.MembershipRole != null)
             {
 
-                return _categoryPermissionForRoleService.GetByPermissionRoleCategoryId(categoryPermissionForRole.Permission.Id,
-                                                          categoryPermissionForRole.MembershipRole.Id,
-                                                          categoryPermissionForRole.Category.Id);
+                return _context.CategoryPermissionForRole
+                        .Include(x => x.MembershipRole)
+                        .Include(x => x.Category)
+                        .FirstOrDefault(x => x.Category.Id == categoryPermissionForRole.Category.Id &&
+                                             x.Permission.Id == categoryPermissionForRole.Permission.Id &&
+                                             x.MembershipRole.Id == categoryPermissionForRole.MembershipRole.Id);
             }
 
             return null;
@@ -74,7 +83,13 @@ namespace MVCForum.Services
         /// <returns></returns>
         public Dictionary<Permission, CategoryPermissionForRole> GetCategoryRow(MembershipRole role, Category cat)
         {
-            var catRowList = _categoryPermissionForRoleService.GetCategoryRow(role, cat);
+            var catRowList = _context.CategoryPermissionForRole
+                            .Include(x => x.MembershipRole)
+                            .Include(x => x.Category)
+                            .AsNoTracking()
+                            .Where(x => x.Category.Id == cat.Id &&
+                                        x.MembershipRole.Id == role.Id)
+                                        .ToList();
             return catRowList.ToDictionary(catRow => catRow.Permission);
         }
 
@@ -85,7 +100,42 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IEnumerable<CategoryPermissionForRole> GetByCategory(Guid categoryId)
         {
-            return _categoryPermissionForRoleService.GetByCategory(categoryId);
+            return _context.CategoryPermissionForRole
+                .Include(x => x.MembershipRole)
+                .Include(x => x.Category)
+                .Where(x => x.Category.Id == categoryId)
+                .ToList();
+        }
+
+        public IEnumerable<CategoryPermissionForRole> GetByRole(Guid roleId)
+        {
+            return _context.CategoryPermissionForRole
+                .Include(x => x.MembershipRole)
+                .Include(x => x.Category)
+                .Where(x => x.MembershipRole.Id == roleId)
+                .ToList();
+        }
+
+        public IEnumerable<CategoryPermissionForRole> GetByPermission(Guid permId)
+        {
+            return _context.CategoryPermissionForRole
+                .Include(x => x.MembershipRole)
+                .Include(x => x.Category)
+                .Where(x => x.Permission.Id == permId)
+                .ToList();
+        }
+
+        public CategoryPermissionForRole Get(Guid id)
+        {
+            return _context.CategoryPermissionForRole
+                    .Include(x => x.MembershipRole)
+                    .Include(x => x.Category)
+                    .FirstOrDefault(cat => cat.Id == id);
+        }
+
+        public void Delete(CategoryPermissionForRole categoryPermissionForRole)
+        {
+            _context.CategoryPermissionForRole.Remove(categoryPermissionForRole);
         }
     }
 }

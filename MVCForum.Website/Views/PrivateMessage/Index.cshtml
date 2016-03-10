@@ -42,7 +42,7 @@
 
                 if (Model.TotalPages > 1)
                 {
-                    @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.PrivateMessageListSize, Convert.ToInt32(Model.TotalCount), new { })
+                    @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.Instance.PrivateMessageListSize, Convert.ToInt32(Model.TotalCount), new { })
                 }
             }
             else

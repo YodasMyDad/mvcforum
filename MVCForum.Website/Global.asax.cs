@@ -20,36 +20,12 @@ namespace MVCForum.Website
     public class MvcApplication : HttpApplication
     {
 
-        public IUnitOfWorkManager UnitOfWorkManager
-        {
-            get { return ServiceFactory.Get<IUnitOfWorkManager>(); }
-        }
-
-        public IBadgeService BadgeService
-        {
-            get { return ServiceFactory.Get<IBadgeService>(); }
-        }
-
-        public ISettingsService SettingsService
-        {
-            get { return ServiceFactory.Get<ISettingsService>(); }
-        }
-
-        public ILoggingService LoggingService
-        {
-            get { return ServiceFactory.Get<ILoggingService>(); }
-        }
-
-        public ILocalizationService LocalizationService
-        {
-            get { return ServiceFactory.Get<ILocalizationService>(); }
-        }
-
-        public IReflectionService ReflectionService
-        {
-            get { return ServiceFactory.Get<IReflectionService>(); }
-        }
-
+        public IUnitOfWorkManager UnitOfWorkManager => ServiceFactory.Get<IUnitOfWorkManager>();
+        public IBadgeService BadgeService => ServiceFactory.Get<IBadgeService>();
+        public ISettingsService SettingsService => ServiceFactory.Get<ISettingsService>();
+        public ILoggingService LoggingService => ServiceFactory.Get<ILoggingService>();
+        public ILocalizationService LocalizationService => ServiceFactory.Get<ILocalizationService>();
+        public IReflectionService ReflectionService => ServiceFactory.Get<IReflectionService>();
 
 
         protected void Application_Start()
@@ -57,14 +33,13 @@ namespace MVCForum.Website
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             // Start unity
             var unityContainer = UnityHelper.Start();
-            
-            // Run scheduled tasks
-            ScheduledRunner.Run(unityContainer);
+
+            // Routes
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             // Store the value for use in the app
             Application["Version"] = AppHelpers.GetCurrentVersionNo();
@@ -86,7 +61,7 @@ namespace MVCForum.Website
                 }
                 catch (Exception ex)
                 {
-                    LoggingService.Error(string.Format("Error processing badge classes: {0}", ex.Message));
+                    LoggingService.Error($"Error processing badge classes: {ex.Message}");
                 }
             }
 
@@ -96,6 +71,9 @@ namespace MVCForum.Website
 
             // Initialise the events
             EventManager.Instance.Initialize(LoggingService, loadedAssemblies);
+
+            // Finally Run scheduled tasks
+            ScheduledRunner.Run(unityContainer);
         }
 
         protected void Application_AcquireRequestState(object sender, EventArgs e)

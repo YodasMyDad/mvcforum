@@ -98,8 +98,8 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                 }
             }
 
-            if (string.IsNullOrEmpty(SiteConstants.GooglePlusAppId) ||
-                string.IsNullOrEmpty(SiteConstants.GooglePlusAppSecret))
+            if (string.IsNullOrEmpty(SiteConstants.Instance.GooglePlusAppId) ||
+                string.IsNullOrEmpty(SiteConstants.Instance.GooglePlusAppSecret))
             {
                 resultMessage.Message = "You need to add the Google app credentials";
                 resultMessage.MessageType = GenericMessages.danger;
@@ -109,8 +109,8 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                 // Configure the OAuth client based on the options of the prevalue options
                 var client = new GoogleOAuthClient
                 {
-                    ClientId = SiteConstants.GooglePlusAppId,
-                    ClientSecret = SiteConstants.GooglePlusAppSecret,
+                    ClientId = SiteConstants.Instance.GooglePlusAppId,
+                    ClientSecret = SiteConstants.Instance.GooglePlusAppSecret,
                     RedirectUri = ReturnUrl
                 };
 

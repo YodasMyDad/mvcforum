@@ -5,7 +5,7 @@
     var theme = new Theme
     {
         ThemeName = themeName,
-        ThemePath = string.Concat(AppConstants.ThemeRootFolder, themeName)
+        ThemePath = string.Concat(SiteConstants.Instance.ThemeRootFolder, themeName)
     };
     TempData[AppConstants.GlobalClass] = Convert.ToBoolean(PageData[AppConstants.IsMobileDevice]) ? "mobile" : "desktop";
     TempData[AppConstants.CurrentAction] = ViewContext.RouteData.GetRequiredString("action").ToLower();

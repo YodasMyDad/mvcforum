@@ -1,4 +1,5 @@
-﻿@using MVCForum.Website.Application
+﻿@using MVCForum.Domain.Constants
+@using MVCForum.Website.Application
 @model MVCForum.Website.Areas.Admin.ViewModels.MemberListViewModel
 @{
     ViewBag.Title = "Members";
@@ -80,7 +81,7 @@
 
         @if (Model.TotalPages > 1)
         {
-            @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
+            @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
         }
 
     </div>

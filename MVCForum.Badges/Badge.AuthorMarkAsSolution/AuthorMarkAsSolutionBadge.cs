@@ -8,8 +8,8 @@ namespace Badge.AuthorMarkAsSolution
 {
     [Id("d68c289a-e3f7-4f55-ae4f-fc7ac2147781")]
     [Name("AuthorMarkAsSolution")]
-    [DisplayName("Badge.AuthorMarkAsSolutionBadge.Name")]
-    [Description("Badge.AuthorMarkAsSolutionBadge.Desc")]
+    [DisplayName("Badge.AuthorMarkAsSolution.Name")]
+    [Description("Badge.AuthorMarkAsSolution.Desc")]
     [Image("UserMarkAsSolutionBadge.png")]
     [AwardsPoints(2)]
     public class AuthorMarkAsSolutionBadge : IMarkAsSolutionBadge

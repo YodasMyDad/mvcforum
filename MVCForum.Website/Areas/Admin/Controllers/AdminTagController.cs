@@ -29,8 +29,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var allTags = string.IsNullOrEmpty(search) ? _topicTagService.GetPagedGroupedTags(pageIndex, SiteConstants.AdminListPageSize) :
-                            _topicTagService.SearchPagedGroupedTags(search, pageIndex, SiteConstants.AdminListPageSize);
+                var allTags = string.IsNullOrEmpty(search) ? _topicTagService.GetPagedGroupedTags(pageIndex, SiteConstants.Instance.AdminListPageSize) :
+                            _topicTagService.SearchPagedGroupedTags(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
 
                 var memberListModel = new ListTagsViewModel
                 {

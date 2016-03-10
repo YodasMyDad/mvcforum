@@ -83,7 +83,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         if (categoryViewModel.Files != null)
                         {
                             // Before we save anything, check the user already has an upload folder and if not create one
-                            var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, category.Id));
+                            var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, category.Id));
                             if (!Directory.Exists(uploadFolderPath))
                             {
                                 Directory.CreateDirectory(uploadFolderPath);
@@ -191,12 +191,22 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
                         var category = _categoryService.Get(categoryViewModel.Id);
 
+                        // Check they are not trying to add a subcategory of this category as the parent or it will break
+                        if (category.Path != null && categoryViewModel.ParentCategory != null)
+                        {
+                            var parentCats = category.Path.Split(',').Where(x => !string.IsNullOrEmpty(x)).Select(x => new Guid(x)).ToList();
+                            if (parentCats.Contains((Guid) categoryViewModel.ParentCategory))
+                            {
+                                // Remove the parent category, but still let them create the catgory
+                                categoryViewModel.ParentCategory = null;
+                            }
+                        }
 
                         // Sort image out first
                         if (categoryViewModel.Files != null)
                         {
                             // Before we save anything, check the user already has an upload folder and if not create one
-                            var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, categoryViewModel.Id));
+                            var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, categoryViewModel.Id));
                             if (!Directory.Exists(uploadFolderPath))
                             {
                                 Directory.CreateDirectory(uploadFolderPath);

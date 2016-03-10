@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 
 namespace MVCForum.Website.Areas.Admin.ViewModels
@@ -104,7 +105,10 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [DisplayName("Amount Of Points Before A User Can Vote")]
         public int PointsAllowedToVoteAmount { get; set; }
-        
+
+        [DisplayName("Amount Of Points For Extended Profile")]
+        public int PointsAllowedForExtendedProfile { get; set; }
+
         [DisplayName("Points Added Per New Post")]
         public int PointsAddedPerPost { get; set; }
 
@@ -121,8 +125,8 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Admin Email Address")]
         public string AdminEmailAddress { get; set; }
 
-        [EmailAddress]
         [DisplayName("Notification Reply Email Address")]
+        [AllowHtml] // We have to put this to allow this type of reply address MVCForum <noreply@mvcforum.com>
         public string NotificationReplyEmail { get; set; }
 
         [DisplayName("SMTP Server")]
@@ -171,6 +175,9 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Enable social logins (Facebook etc...)")]
         public bool EnableSocialLogins { get; set; }
 
+        [DisplayName("Disable Standard Registration")]
+        public bool DisableStandardRegistration { get; set; }
+
         [DisplayName("Suspend the registration (Don't allow any new members to register)")]
         public bool SuspendRegistration { get; set; }
 
@@ -185,5 +192,12 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Disable Dislike Button - Users can only Like posts")]
         public bool DisableDislikeButton { get; set; }
 
+        [DisplayName("New Members must agree to the Terms & Conditions below before using the forum")]        
+        public bool AgreeToTermsAndConditions { get; set; }
+
+        [DisplayName("Terms & Conditions of the forum")]
+        [UIHint(AppConstants.EditorType), AllowHtml]
+        [StringLength(6000)]
+        public string TermsAndConditions { get; set; }
     }
 }

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Activity;
+using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Website.Application;
@@ -15,18 +17,16 @@ namespace MVCForum.Website.Controllers
     public partial class HomeController : BaseController
     {
         private readonly ITopicService _topicService;
-        private readonly IPostService _postService;
         private readonly ICategoryService _categoryService;
         private readonly IActivityService _activityService;
 
         public HomeController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IActivityService activityService, IMembershipService membershipService,
             ITopicService topicService, ILocalizationService localizationService, IRoleService roleService,
-            ISettingsService settingsService, ICategoryService categoryService, IPostService postService)
+            ISettingsService settingsService, ICategoryService categoryService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _topicService = topicService;
             _categoryService = categoryService;
-            _postService = postService;
             _activityService = activityService;
         }
 
@@ -51,6 +51,45 @@ namespace MVCForum.Website.Controllers
             return View();
         }
 
+        public ActionResult TermsAndConditions()
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var settings = SettingsService.GetSettings();
+                var viewModel = new TermsAndConditionsViewModel
+                {
+                    Agree = false,
+                    TermsAndConditions = settings.TermsAndConditions
+                };
+                return View(viewModel);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult TermsAndConditions(TermsAndConditionsViewModel viewmodel)
+        {
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                if (ModelState.IsValid)
+                {
+                    var user = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                    user.HasAgreedToTermsAndConditions = viewmodel.Agree;
+                    try
+                    {
+                        unitOfWork.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        unitOfWork.Rollback();
+                        LoggingService.Error(ex);
+                    }
+                    return RedirectToAction("Index");
+                }
+            }
+
+            return View(viewmodel);
+        }
+
         public ActionResult Activity(int? p)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -73,7 +112,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.ShortCacheTime)]
+        [OutputCache(Duration = (int)CacheTimes.TwoHours)]
         public ActionResult LatestRss()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -86,7 +125,7 @@ namespace MVCForum.Website.Controllers
                 var rssTopics = new List<RssItem>();
 
                 // Get the latest topics
-                var topics = _topicService.GetRecentRssTopics(SiteConstants.ActiveTopicsListSize, allowedCategories);
+                var topics = _topicService.GetRecentRssTopics(50, allowedCategories);
 
                 // Get all the categories for this topic collection
                 var categories = topics.Select(x => x.Category).Distinct();
@@ -108,7 +147,7 @@ namespace MVCForum.Website.Controllers
                     var permission = permissions[topic.Category];
 
                     // Add only topics user has permission to
-                    if (!permission[AppConstants.PermissionDenyAccess].IsTicked)
+                    if (!permission[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
                     {
                         if (topic.Posts.Any())
                         {
@@ -123,7 +162,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.ShortCacheTime)]
+        [OutputCache(Duration = (int)CacheTimes.TwoHours)]
         public ActionResult ActivityRss()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -131,7 +170,7 @@ namespace MVCForum.Website.Controllers
                 // get an rss lit ready
                 var rssActivities = new List<RssItem>();
 
-                var activities = _activityService.GetAll(20).OrderByDescending(x => x.ActivityMapped.Timestamp);
+                var activities = _activityService.GetAll(50).OrderByDescending(x => x.ActivityMapped.Timestamp);
 
                 var activityLink = Url.Action("Activity");
 
@@ -142,13 +181,13 @@ namespace MVCForum.Website.Controllers
                     {
                         var badgeActivity = activity as BadgeActivity;
                         rssActivities.Add(new RssItem
-                            {
-                                Description = badgeActivity.Badge.Description,
-                                Title = string.Concat(badgeActivity.User.UserName, " ", LocalizationService.GetResourceString("Activity.UserAwardedBadge"), " ", badgeActivity.Badge.DisplayName, " ", LocalizationService.GetResourceString("Activity.Badge")),
-                                PublishedDate = badgeActivity.ActivityMapped.Timestamp,
-                                RssImage = AppHelpers.ReturnBadgeUrl(badgeActivity.Badge.Image),
-                                Link = activityLink
-                            });
+                        {
+                            Description = badgeActivity.Badge.Description,
+                            Title = string.Concat(badgeActivity.User.UserName, " ", LocalizationService.GetResourceString("Activity.UserAwardedBadge"), " ", badgeActivity.Badge.DisplayName, " ", LocalizationService.GetResourceString("Activity.Badge")),
+                            PublishedDate = badgeActivity.ActivityMapped.Timestamp,
+                            RssImage = AppHelpers.ReturnBadgeUrl(badgeActivity.Badge.Image),
+                            Link = activityLink
+                        });
                     }
                     else if (activity is MemberJoinedActivity)
                     {
@@ -158,7 +197,7 @@ namespace MVCForum.Website.Controllers
                             Description = string.Empty,
                             Title = LocalizationService.GetResourceString("Activity.UserJoined"),
                             PublishedDate = memberJoinedActivity.ActivityMapped.Timestamp,
-                            RssImage = memberJoinedActivity.User.MemberImage(SiteConstants.GravatarPostSize),
+                            RssImage = memberJoinedActivity.User.MemberImage(SiteConstants.Instance.GravatarPostSize),
                             Link = activityLink
                         });
                     }
@@ -170,7 +209,7 @@ namespace MVCForum.Website.Controllers
                             Description = string.Empty,
                             Title = LocalizationService.GetResourceString("Activity.ProfileUpdated"),
                             PublishedDate = profileUpdatedActivity.ActivityMapped.Timestamp,
-                            RssImage = profileUpdatedActivity.User.MemberImage(SiteConstants.GravatarPostSize),
+                            RssImage = profileUpdatedActivity.User.MemberImage(SiteConstants.Instance.GravatarPostSize),
                             Link = activityLink
                         });
                     }
@@ -181,7 +220,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.ShortCacheTime)]
+        [OutputCache(Duration = (int)CacheTimes.TwoHours)]
         public ActionResult GoogleSitemap()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -214,7 +253,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.ShortCacheTime)]
+        [OutputCache(Duration = (int)CacheTimes.TwoHours)]
         public ActionResult GoogleMemberSitemap()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -243,7 +282,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.ShortCacheTime)]
+        [OutputCache(Duration = (int)CacheTimes.TwoHours)]
         public ActionResult GoogleCategorySitemap()
         {
             using (UnitOfWorkManager.NewUnitOfWork())

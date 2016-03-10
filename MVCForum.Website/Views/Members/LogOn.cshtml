@@ -11,17 +11,18 @@
 
         @Html.Partial("_SocialLoginButtons")
 
+@if (Html.Settings().DisableStandardRegistration != true)
+{
+    <div class="mainlogonform">
 
-        <div class="mainlogonform">
+        <h3>@ViewBag.Title</h3>
 
-            <h3>@ViewBag.Title</h3>
+        @using (Html.BeginForm("LogOn", "Members", FormMethod.Post, new { @class = "form-login" }))
+        {
+            @Html.ValidationSummary(false)
+            @Html.AntiForgeryToken()
 
-            @using (Html.BeginForm("LogOn", "Members", FormMethod.Post, new { @class = "form-login" }))
-            {
-                @Html.ValidationSummary(false)
-                @Html.AntiForgeryToken()
-
-                <p class="help-block">@Html.Raw(string.Format(Html.LanguageString("Members.LogOnMessage"), Html.ActionLink("Register", "Register")))</p>
+            <p class="help-block">@Html.Raw(string.Format(Html.LanguageString("Members.LogOnMessage"), Html.ActionLink(Html.Lang("Members.Register"), "Register")))</p>
 
                 <div class="form-group">
                     @Html.LabelFor(m => m.UserName)
@@ -48,15 +49,15 @@
                 </div>
 
                 @Html.HiddenFor(x => x.ReturnUrl)
-            }
-        </div>
+        }
+    </div>
 
         <p class="forgotpasswordtext">
             <a href="@Url.Action("ForgotPassword")">
                 @Html.LanguageString("Members.ForgotPassword.Link")
             </a>
         </p>
-
+}
     </div>
 
 </div>

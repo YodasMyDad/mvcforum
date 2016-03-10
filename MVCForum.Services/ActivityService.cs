@@ -3,34 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Activity;
-using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Services.Data.Context;
 using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
     public partial class ActivityService : IActivityService
     {
-        private readonly IActivityRepository _activityRepository;
-        private readonly IMembershipRepository _membershipRepository;
-        private readonly IBadgeRepository _badgeRepository;
+        private readonly MVCForumContext _context;
+        private readonly IBadgeService _badgeService;
         private readonly ILoggingService _loggingService;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="activityRepository"> </param>
-        /// <param name="badgeRepository"> </param>
-        /// <param name="membershipRepository"> </param>
-        /// <param name="loggingService"> </param>
-        public ActivityService(IActivityRepository activityRepository, IBadgeRepository badgeRepository, IMembershipRepository membershipRepository, ILoggingService loggingService)
+        public ActivityService(IBadgeService badgeService, ILoggingService loggingService, IMVCForumContext context)
         {
-            _activityRepository = activityRepository;
-            _badgeRepository = badgeRepository;
+            _badgeService = badgeService;
             _loggingService = loggingService;
-            _membershipRepository = membershipRepository;
+            _context = context as MVCForumContext;
         }
 
+        #region Private Methods
         /// <summary>
         /// Make a badge activity object from the more generic database activity object
         /// </summary>
@@ -44,29 +40,30 @@ namespace MVCForum.Services
             if (!dataPairs.ContainsKey(BadgeActivity.KeyBadgeId))
             {
                 // Log the problem then skip
-                _loggingService.Error(string.Format("A badge activity record with id '{0}' has no badge id in its data.", activity.Id.ToString()));
+                _loggingService.Error(
+                    $"A badge activity record with id '{activity.Id}' has no badge id in its data.");
                 return null;
             }
 
             var badgeId = dataPairs[BadgeActivity.KeyBadgeId];
-            var badge = _badgeRepository.Get(new Guid(badgeId));
+            var badge = _badgeService.Get(new Guid(badgeId));
 
             if (badge == null)
             {
                 // Log the problem then skip
-                _loggingService.Error(string.Format("A badge activity record with id '{0}' has a badge id '{1}' that is not found in the badge table.",
-                    activity.Id.ToString(), badgeId));
+                _loggingService.Error(
+                    $"A badge activity record with id '{activity.Id}' has a badge id '{badgeId}' that is not found in the badge table.");
                 return null;
             }
 
             var userId = dataPairs[BadgeActivity.KeyUserId];
-            var user = _membershipRepository.Get(new Guid(userId));
+            var user = _context.MembershipUser.FirstOrDefault(x => x.Id == new Guid(userId));
 
             if (user == null)
             {
                 // Log the problem then skip
-                _loggingService.Error(string.Format("A badge activity record with id '{0}' has a user id '{1}' that is not found in the user table.",
-                    activity.Id, userId));
+                _loggingService.Error(
+                    $"A badge activity record with id '{activity.Id}' has a user id '{userId}' that is not found in the user table.");
                 return null;
             }
 
@@ -85,18 +82,19 @@ namespace MVCForum.Services
             if (!dataPairs.ContainsKey(ProfileUpdatedActivity.KeyUserId))
             {
                 // Log the problem then skip
-                _loggingService.Error(string.Format("A profile updated activity record with id '{0}' has no user id in its data.", activity.Id));
+                _loggingService.Error(
+                    $"A profile updated activity record with id '{activity.Id}' has no user id in its data.");
                 return null;
             }
 
             var userId = dataPairs[ProfileUpdatedActivity.KeyUserId];
-            var user = _membershipRepository.Get(new Guid(userId));
+            var user = _context.MembershipUser.FirstOrDefault(x => x.Id == new Guid(userId));
 
             if (user == null)
             {
                 // Log the problem then skip
-                _loggingService.Error(string.Format("A profile updated activity record with id '{0}' has a user id '{1}' that is not found in the user table.",
-                    activity.Id, userId));
+                _loggingService.Error(
+                    $"A profile updated activity record with id '{activity.Id}' has a user id '{userId}' that is not found in the user table.");
                 return null;
             }
 
@@ -115,18 +113,19 @@ namespace MVCForum.Services
             if (!dataPairs.ContainsKey(MemberJoinedActivity.KeyUserId))
             {
                 // Log the problem then skip
-                _loggingService.Error(string.Format("A member joined activity record with id '{0}' has no user id in its data.", activity.Id));
+                _loggingService.Error(
+                    $"A member joined activity record with id '{activity.Id}' has no user id in its data.");
                 return null;
             }
 
             var userId = dataPairs[MemberJoinedActivity.KeyUserId];
-            var user = _membershipRepository.Get(new Guid(userId));
+            var user = _context.MembershipUser.FirstOrDefault(x => x.Id == new Guid(userId));
 
             if (user == null)
             {
                 // Log the problem then skip
-                _loggingService.Error(string.Format("A member joined activity record with id '{0}' has a user id '{1}' that is not found in the user table.",
-                    activity.Id, userId));
+                _loggingService.Error(
+                    $"A member joined activity record with id '{activity.Id}' has a user id '{userId}' that is not found in the user table.");
                 return null;
             }
 
@@ -188,7 +187,8 @@ namespace MVCForum.Services
                 }
             }
             return listedResults;
-        }
+        } 
+        #endregion
 
         /// <summary>
         /// Gets a paged list of badges
@@ -200,7 +200,17 @@ namespace MVCForum.Services
         {
             // Read the database for all activities and convert each to a more specialised activity type
 
-            var activities = _activityRepository.GetPagedGroupedActivities(pageIndex, pageSize);
+            var totalCount = _context.Activity.Count();
+            var results = _context.Activity
+                  .OrderByDescending(x => x.Timestamp)
+                  .Skip((pageIndex - 1) * pageSize)
+                  .Take(pageSize)
+                  .ToList();
+
+            // Return a paged list
+            var activities = new PagedList<Activity>(results, pageIndex, pageSize, totalCount);
+
+            // Convert
             var specificActivities = ConvertToSpecificActivities(activities, pageIndex, pageSize);
 
             return specificActivities;
@@ -213,14 +223,28 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IEnumerable<Activity> GetDataFieldByGuid(Guid guid)
         {
-            return _activityRepository.GetDataFieldByGuid(guid);
+            var stringGuid = guid.ToString();
+            return _context.Activity.Where(x => x.Data.Contains(stringGuid));
         }
 
         public PagedList<ActivityBase> SearchPagedGroupedActivities(string search, int pageIndex, int pageSize)
         {
             // Read the database for all activities and convert each to a more specialised activity type
+            search = StringUtils.SafePlainText(search);
+            var totalCount = _context.Activity.Count(x => x.Type.ToUpper().Contains(search.ToUpper()));
 
-            var activities = _activityRepository.SearchPagedGroupedActivities(StringUtils.SafePlainText(search), pageIndex, pageSize);
+            // Get the topics using an efficient
+            var results = _context.Activity
+                  .Where(x => x.Type.ToUpper().Contains(search.ToUpper()))
+                  .OrderByDescending(x => x.Timestamp)
+                  .Skip((pageIndex - 1) * pageSize)
+                  .Take(pageSize)
+                  .ToList();
+
+            // Return a paged list
+            var activities = new PagedList<Activity>(results, pageIndex, pageSize, totalCount);
+
+            // Convert
             var specificActivities = ConvertToSpecificActivities(activities, pageIndex, pageSize);
 
             return specificActivities;
@@ -228,7 +252,7 @@ namespace MVCForum.Services
 
         public IEnumerable<ActivityBase> GetAll(int howMany)
         {
-            var activities = _activityRepository.GetAll().Take(howMany);
+            var activities = _context.Activity.Take(howMany);
             var specificActivities = ConvertToSpecificActivities(activities);
             return specificActivities;
         }
@@ -242,7 +266,7 @@ namespace MVCForum.Services
         public void BadgeAwarded(Badge badge, MembershipUser user, DateTime timestamp)
         {
             var badgeActivity = BadgeActivity.GenerateMappedRecord(badge, user, timestamp);
-            _activityRepository.Add(badgeActivity);
+            Add(badgeActivity);
         }
 
         /// <summary>
@@ -252,7 +276,7 @@ namespace MVCForum.Services
         public void MemberJoined(MembershipUser user)
         {
             var memberJoinedActivity = MemberJoinedActivity.GenerateMappedRecord(user);
-            _activityRepository.Add(memberJoinedActivity);
+            Add(memberJoinedActivity);
         }
 
         /// <summary>
@@ -262,7 +286,7 @@ namespace MVCForum.Services
         public void ProfileUpdated(MembershipUser user)
         {
             var profileUpdatedActivity = ProfileUpdatedActivity.GenerateMappedRecord(user, DateTime.UtcNow);
-            _activityRepository.Add(profileUpdatedActivity);
+            Add(profileUpdatedActivity);
         }
 
         /// <summary>
@@ -273,8 +297,23 @@ namespace MVCForum.Services
         {
             foreach (var activity in activities)
             {
-                _activityRepository.Delete(activity);
+                Delete(activity);
             }
+        }
+
+        public Activity Add(Activity newActivity)
+        {
+            return _context.Activity.Add(newActivity);
+        }
+
+        public Activity Get(Guid id)
+        {
+            return _context.Activity.FirstOrDefault(x => x.Id == id);
+        }
+
+        public void Delete(Activity item)
+        {
+            _context.Activity.Remove(item);
         }
     }
 }

@@ -3,7 +3,8 @@
 
 @{
     Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
-    ViewBag.Title = @Html.LanguageString("Members.EditProfile");
+    ViewBag.Title = Html.LanguageString("Members.EditProfile");
+    var settings = Html.Settings();
 }
 @section Header
 {
@@ -50,7 +51,7 @@
                 {
                     <div class="row membereditavatar">
                         <div class="col-md-2">
-                            <img src="@AppHelpers.MemberImage(Model.Avatar, Model.Email, Model.Id, SiteConstants.GravatarProfileSize)" alt="@Model.UserName">
+                            <img src="@AppHelpers.MemberImage(Model.Avatar, Model.Email, Model.Id, SiteConstants.Instance.GravatarProfileSize)" alt="@Model.UserName">
                         </div>
                         <div class="col-md-10">
                             @Html.LabelFor(x => x.Files)
@@ -79,32 +80,38 @@
                     @Html.ValidationMessageFor(x => x.Location)
                 </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(x => x.Website)
-                    @Html.TextBoxFor(x => x.Website, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(x => x.Website)
-                </div>
+                @if (Model.AmountOfPoints >= settings.PointsAllowedForExtendedProfile)
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Website)
+                        @Html.TextBoxFor(x => x.Website, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.Website)
+                    </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(x => x.Twitter)
-                    @Html.TextBoxFor(x => x.Twitter, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(x => x.Twitter)
-                </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Twitter)
+                        @Html.TextBoxFor(x => x.Twitter, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.Twitter)
+                    </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(x => x.Facebook)
-                    @Html.TextBoxFor(x => x.Facebook, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(x => x.Facebook)
-                </div>
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Facebook)
+                        @Html.TextBoxFor(x => x.Facebook, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => x.Facebook)
+                    </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(x => x.Signature)
-                    @Html.TextAreaFor(x => x.Signature, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(x => x.Signature)
-                </div>
-                
+                    if (settings.EnableSignatures)
+                    {
+                        <div class="form-group">
+                            @Html.LabelFor(x => x.Signature)
+                            @Html.TextAreaFor(x => x.Signature, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.Signature)
+                        </div>
+                    }
+                }
+
                 <div class="checkbox">
-                    @using (Html.BeginLabelFor(m => m.DisableEmailNotifications, new { @class = "checkbox" }))
+                    @using (Html.BeginLabelFor(m => m.DisableEmailNotifications, new {@class = "checkbox"}))
                     {
                         @Html.CheckBoxFor(m => m.DisableEmailNotifications)
                     }

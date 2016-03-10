@@ -1,45 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
 using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Services.Data.Context;
 using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
     public partial class PollAnswerService : IPollAnswerService
     {
-        private readonly IPollAnswerRepository _pollAnswerRepository;
-
-        public PollAnswerService(IPollAnswerRepository pollAnswerRepository)
+        private readonly MVCForumContext _context;
+        public PollAnswerService(IMVCForumContext context)
         {
-            _pollAnswerRepository = pollAnswerRepository;
+            _context = context as MVCForumContext;
         }
 
         public List<PollAnswer> GetAllPollAnswers()
         {
-            return _pollAnswerRepository.GetAllPollAnswers();
+            return _context.PollAnswer
+                    .Include(x => x.Poll).ToList();
         }
 
         public PollAnswer Add(PollAnswer pollAnswer)
         {
             pollAnswer.Answer = StringUtils.SafePlainText(pollAnswer.Answer);
-            return _pollAnswerRepository.Add(pollAnswer);
+            return _context.PollAnswer.Add(pollAnswer);
         }
 
         public List<PollAnswer> GetAllPollAnswersByPoll(Poll poll)
         {
-            return _pollAnswerRepository.GetAllPollAnswersByPoll(poll);
+            var answers = _context.PollAnswer
+                    .Include(x => x.Poll)
+                    .AsNoTracking()
+                    .Where(x => x.Poll.Id == poll.Id).ToList();
+            return answers;
         }
 
         public PollAnswer Get(Guid id)
         {
-            return _pollAnswerRepository.Get(id);
+            return _context.PollAnswer.FirstOrDefault(x => x.Id == id);
         }
 
         public void Delete(PollAnswer pollAnswer)
         {
-            _pollAnswerRepository.Delete(pollAnswer);
+            _context.PollAnswer.Remove(pollAnswer);
         }
 
     }

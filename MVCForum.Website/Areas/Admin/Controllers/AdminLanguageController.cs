@@ -87,8 +87,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = page ?? 1;
-                var allResources = string.IsNullOrEmpty(search) ? LocalizationService.GetAllResourceKeys(pageIndex, SiteConstants.AdminListPageSize) :
-                                                                   LocalizationService.SearchResourceKeys(search, pageIndex, SiteConstants.AdminListPageSize);
+                var allResources = string.IsNullOrEmpty(search) ? LocalizationService.GetAllResourceKeys(pageIndex, SiteConstants.Instance.AdminListPageSize) :
+                                                                   LocalizationService.SearchResourceKeys(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
 
                 // Redisplay list of resources
                 var allViewModelResourceKeys = allResources.Select(resource => new LocaleResourceKeyViewModel
@@ -143,17 +143,13 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
                         // Get all the resources or just the ones that match the search
                         var allResources = string.IsNullOrEmpty(search)
-                                               ? LocalizationService.GetAllValues(language.Id, pageIndex,
-                                                                                  SiteConstants.AdminListPageSize)
-                                               : searchByKey
-                                                     ? LocalizationService.SearchResourceKeys(language.Id, search,
+                                               ? LocalizationService.GetAllValues(language.Id, pageIndex,SiteConstants.Instance.AdminListPageSize)
+                                               : searchByKey ? LocalizationService.SearchResourceKeys(language.Id, search,
                                                                                               pageIndex,
-                                                                                              SiteConstants.
-                                                                                                  AdminListPageSize)
+                                                                                              SiteConstants.Instance.AdminListPageSize)
                                                      : LocalizationService.SearchResourceValues(language.Id, search,
                                                                                                 pageIndex,
-                                                                                                SiteConstants.
-                                                                                                    AdminListPageSize);
+                                                                                                SiteConstants.Instance.AdminListPageSize);
 
                         var models = allResources.Select(resource => new LocaleResourceViewModel
                                                                          {

@@ -68,15 +68,6 @@
             </a>
         </li>
         <li>
-            <a href="@Url.Action("Index", "Moderate", new { area = "Admin" })" class="@(currentController == "moderate" && currentAction == "index" ? "active" : "")">
-                <i class="fa fa-fw fa-comments-o"></i> Moderate
-                @if (Model.ModerateCount > 0)
-                {
-                    <span class="badge">@Model.ModerateCount</span>
-                }
-            </a>
-        </li>
-        <li>
             <a href="#" data-toggle="collapse" data-target="#permissions">
                 <i class="fa fa-fw fa-check-square-o"></i> Permissions <i class="fa fa-fw fa-caret-down"></i>
             </a>

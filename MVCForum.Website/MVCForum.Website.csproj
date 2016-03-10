@@ -30,6 +30,7 @@
     <TargetFrameworkProfile />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -60,12 +61,12 @@
       <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Common.Logging, Version=3.2.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Common.Logging.3.2.0\lib\net40\Common.Logging.dll</HintPath>
+    <Reference Include="Common.Logging, Version=3.3.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.3.3.1\lib\net40\Common.Logging.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Common.Logging.Core, Version=3.2.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Common.Logging.Core.3.2.0\lib\net40\Common.Logging.Core.dll</HintPath>
+    <Reference Include="Common.Logging.Core, Version=3.3.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.Core.3.3.1\lib\net40\Common.Logging.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="EcmaScript.NET, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -88,45 +89,41 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\YUICompressor.NET.2.0.0.0\lib\NET20\Iesi.Collections.dll</HintPath>
     </Reference>
-    <Reference Include="ImageProcessor, Version=2.2.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ImageProcessor.2.2.8.0\lib\net45\ImageProcessor.dll</HintPath>
+    <Reference Include="ImageProcessor, Version=2.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ImageProcessor.2.3.2.0\lib\net45\ImageProcessor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ImageProcessor.Web, Version=4.3.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ImageProcessor.Web.4.3.6.0\lib\net45\ImageProcessor.Web.dll</HintPath>
+    <Reference Include="ImageProcessor.Web, Version=4.5.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ImageProcessor.Web.4.5.1.0\lib\net45\ImageProcessor.Web.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Practices.ServiceLocation">
       <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Practices.Unity, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Unity.3.5.1404.0\lib\net45\Microsoft.Practices.Unity.dll</HintPath>
+    <Reference Include="Microsoft.Practices.Unity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Practices.Unity.Configuration, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Unity.3.5.1404.0\lib\net45\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    <Reference Include="Microsoft.Practices.Unity.Configuration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.Practices.Unity.RegistrationByConvention, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Unity.3.5.1404.0\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
+    <Reference Include="Microsoft.Practices.Unity.RegistrationByConvention, Version=4.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Quartz, Version=2.3.3.0, Culture=neutral, PublicKeyToken=f6b8c98a402cc8a4, processorArchitecture=MSIL">
       <HintPath>..\packages\Quartz.2.3.3\lib\net40\Quartz.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="Quartz.Unity.45">
-      <HintPath>..\packages\Quartz.Unity.1.3.1\lib\net45\Quartz.Unity.45.dll</HintPath>
     </Reference>
     <Reference Include="Skybrud.Social, Version=0.9.4.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.Social.0.9.4.1\lib\net40\Skybrud.Social.dll</HintPath>
@@ -135,12 +132,12 @@
     <Reference Include="Skybrud.Social.Microsoft">
       <HintPath>..\Externals\Skybrud.Social.Microsoft.dll</HintPath>
     </Reference>
-    <Reference Include="SquishIt.Framework, Version=0.9.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SquishIt.0.9.8\lib\SquishIt.Framework.dll</HintPath>
+    <Reference Include="SquishIt.Framework, Version=0.9.8.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SquishIt.0.9.8.2\lib\SquishIt.Framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SquishIt.Mvc, Version=0.9.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SquishIt.Mvc.0.9.8\lib\SquishIt.Mvc.dll</HintPath>
+    <Reference Include="SquishIt.Mvc, Version=0.9.8.2, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SquishIt.Mvc.0.9.8.2\lib\SquishIt.Mvc.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
@@ -213,10 +210,6 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Unity.Mvc4">
-      <HintPath>..\packages\Unity.Mvc4.1.4.0.0\lib\net45\Unity.Mvc4.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="WebActivator, Version=1.5.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\WebActivator.1.5.2\lib\net40\WebActivator.dll</HintPath>
@@ -231,6 +224,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application\ActionFilterAttributes\MustBeTrueAttribute.cs" />
     <Compile Include="Application\Akismet\Comment.cs" />
     <Compile Include="Application\Akismet\IValidator.cs" />
     <Compile Include="Application\Akismet\Validator.cs" />
@@ -247,11 +241,13 @@
     <Compile Include="Application\CustomActionResults\CsvFileResult.cs" />
     <Compile Include="Application\ExtensionMethods\Extensions.cs" />
     <Compile Include="Application\ScheduledJobs\MarkAsSolutionReminderJob.cs" />
+    <Compile Include="Application\StorageProviders\DiskStorageProvider.cs" />
+    <Compile Include="Application\StorageProviders\StorageProvider.cs" />
+    <Compile Include="Application\TypeFactory.cs" />
     <Compile Include="Application\ViewEngine\ForumViewEngine.cs" />
     <Compile Include="Application\Localization\Localizer.cs" />
     <Compile Include="Application\ServiceFactory.cs" />
     <Compile Include="Application\CustomActionResults\WrappedJSonResult.cs" />
-    <Compile Include="Application\SiteConstants.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
@@ -269,7 +265,7 @@
     <Compile Include="Areas\Admin\Controllers\BatchController.cs" />
     <Compile Include="Areas\Admin\Controllers\BannedWordController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
-    <Compile Include="Areas\Admin\Controllers\ModerateController.cs" />
+    <Compile Include="Controllers\ModerateController.cs" />
     <Compile Include="Areas\Admin\ViewModels\AdminBadgeViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\AjaxAdminViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\BannedEmailViewModels.cs" />
@@ -279,7 +275,6 @@
     <Compile Include="Areas\Admin\ViewModels\SocialViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\SpamViewModels.cs" />
     <Compile Include="Controllers\ApiControllers\TinyMcePluginsController.cs" />
-    <Compile Include="Controllers\BaseInstallController.cs" />
     <Compile Include="Controllers\BadgeController.cs" />
     <Compile Include="Areas\Admin\Controllers\BaseAdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminCategoryController.cs" />
@@ -300,7 +295,6 @@
     <Compile Include="Controllers\EmailController.cs" />
     <Compile Include="Controllers\FavouriteController.cs" />
     <Compile Include="Controllers\FileController.cs" />
-    <Compile Include="Controllers\InstallController.cs" />
     <Compile Include="Controllers\OAuthControllers\FacebookOAuthController.cs" />
     <Compile Include="Controllers\OAuthControllers\GoogleOAuthController.cs" />
     <Compile Include="Controllers\OAuthControllers\MicrosoftOAuthController.cs" />
@@ -328,7 +322,7 @@
     <Compile Include="Application\Providers\RoleProvider.cs" />
     <Compile Include="Areas\Admin\ViewModels\AccountViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Areas\Admin\ViewModels\ModerateViewModels.cs" />
+    <Compile Include="ViewModels\ModerateViewModels.cs" />
     <Compile Include="Application\ScheduledJobs\KepAliveJob.cs" />
     <Compile Include="Application\ScheduledJobs\ScheduledRunner.cs" />
     <Compile Include="Application\ScheduledJobs\EmailJob.cs" />
@@ -357,7 +351,6 @@
     <Compile Include="Areas\Admin\ViewModels\SettingsViewModels.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\Hello.txt" />
     <Content Include="App_Data\NuGetBackup\Hello.txt" />
     <Content Include="Content\admin\Admin.css">
       <DependentUpon>Admin.scss</DependentUpon>
@@ -787,23 +780,8 @@
     <Content Include="Content\spectrum\spectrum.js" />
     <Content Include="Content\tinymce.css" />
     <Content Include="Content\uploads\readme.txt" />
-    <Content Include="Installer\Content\arrow-spinner-blue.gif" />
-    <Content Include="Installer\Content\Images\logo.png" />
-    <Content Include="Installer\Content\Scripts\general.js" />
-    <Content Include="Installer\Content\Styles\install.css" />
-    <Content Include="Installer\Db\1.0\database.sql" />
-    <Content Include="Installer\Db\1.1\database.sql" />
-    <Content Include="Installer\Db\1.2\database.sql" />
-    <Content Include="Installer\Db\1.2\Upgrade\upgrade.sql" />
-    <Content Include="Installer\Db\1.3\database.sql" />
-    <Content Include="Installer\Db\1.7\database.sql" />
-    <Content Include="Installer\Db\1.7\Upgrade\upgrade.sql" />
-    <Content Include="Installer\Db\1.6\database.sql" />
-    <Content Include="Installer\Db\1.6\Upgrade\upgrade.sql" />
-    <Content Include="Installer\Db\1.5\database.sql" />
-    <Content Include="Installer\Db\1.5\Upgrade\upgrade.sql" />
-    <Content Include="Installer\Db\1.4\database.sql" />
-    <Content Include="Installer\Db\1.4\Upgrade\upgrade.sql" />
+    <Content Include="Installer\ManualSql\manualVersionOneSevenToOneEight.sql" />
+    <Content Include="Scripts\badges.js" />
     <Content Include="Scripts\bbeditor\emoticons\alien.png" />
     <Content Include="Scripts\bbeditor\emoticons\angel.png" />
     <Content Include="Scripts\bbeditor\emoticons\angry.png" />
@@ -853,44 +831,6 @@
     <Content Include="Scripts\bbeditor\themes\square.min.css" />
     <Content Include="Content\bootstrap\js\bootstrap-prettify.js" />
     <Content Include="Scripts\cache\Cache.txt" />
-    <Content Include="Areas\Admin\Views\Moderate\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Moderate\GetMoreTopics.cshtml" />
-    <Content Include="Areas\Admin\Views\Moderate\GetMorePosts.cshtml" />
-    <Content Include="Scripts\bbeditor\themes\monocons\monocons.eot" />
-    <Content Include="Scripts\bbeditor\themes\monocons\monocons.ttf" />
-    <Content Include="Content\bootstrap\css\bootstrap-theme.css.map" />
-    <Content Include="Content\bootstrap\css\bootstrap.css.map" />
-    <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="Areas\Admin\Views\Shared\_AdminScripts.cshtml" />
-    <Content Include="Areas\Admin\Views\Shared\_AdminTopNav.cshtml" />
-    <Content Include="Areas\Admin\Views\AdminCategory\_CategoryFields.cshtml" />
-    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-bold-webfont.eot" />
-    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-bold-webfont.ttf" />
-    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-bold-webfont.woff" />
-    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-extralight-webfont.eot" />
-    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-extralight-webfont.ttf" />
-    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-extralight-webfont.woff" />
-    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.eot" />
-    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.ttf" />
-    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.woff" />
-    <Content Include="Areas\Admin\Views\AdminCategory\_CategoryNavButtons.cshtml" />
-    <Content Include="Areas\Admin\Views\Permissions\PermissionTypes.cshtml" />
-    <Content Include="Areas\Admin\Views\AdminLanguage\Create.cshtml" />
-    <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="Content\admin\Admin.scss" />
-    <Content Include="Content\admin\Admin.css.map">
-      <DependentUpon>Admin.css</DependentUpon>
-    </Content>
-    <Content Include="Areas\Admin\Views\Dashboard\MainAdminNav.cshtml" />
-    <Content Include="Areas\Admin\Views\AdminSocial\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\AdminSpam\Akismet.cshtml" />
-    <Content Include="Areas\Admin\Views\AdminSpam\RegistrationQuestion.cshtml" />
-    <Content Include="Areas\Admin\Views\AdminSpam\SpamReporting.cshtml" />
-    <Content Include="Areas\Admin\Views\Settings\CustomCode.cshtml" />
-    <Content Include="Areas\Admin\Views\AdminTag\MoveTags.cshtml" />
-    <Content Include="Scripts\tinymceplugins\ImageUpload\imageupload.js" />
     <Content Include="Scripts\tinymce\license.txt" />
     <Content Include="Scripts\tinymce\plugins\advlist\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\advlist\plugin.min.js" />
@@ -906,6 +846,9 @@
     <Content Include="Scripts\tinymce\plugins\bbcode\plugin.min.js" />
     <Content Include="Scripts\tinymce\plugins\charmap\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\charmap\plugin.min.js" />
+    <Content Include="Scripts\tinymce\plugins\codesample\css\prism.css" />
+    <Content Include="Scripts\tinymce\plugins\codesample\plugin.js" />
+    <Content Include="Scripts\tinymce\plugins\codesample\plugin.min.js" />
     <Content Include="Scripts\tinymce\plugins\code\plugin.js" />
     <Content Include="Scripts\tinymce\plugins\code\plugin.min.js" />
     <Content Include="Scripts\tinymce\plugins\colorpicker\plugin.js" />
@@ -1045,24 +988,78 @@
     <Content Include="Scripts\tinymce\themes\modern\theme.min.js" />
     <Content Include="Scripts\tinymce\tinymce.js" />
     <Content Include="Scripts\tinymce\tinymce.min.js" />
+    <Content Include="Themes\Metro\Content\Styles\Theme.min.css" />
+    <Content Include="Views\Moderate\Index.cshtml" />
+    <Content Include="Views\Moderate\GetMoreTopics.cshtml" />
+    <Content Include="Views\Moderate\GetMorePosts.cshtml" />
+    <Content Include="Scripts\bbeditor\themes\monocons\monocons.eot" />
+    <Content Include="Scripts\bbeditor\themes\monocons\monocons.ttf" />
+    <Content Include="Content\bootstrap\css\bootstrap-theme.css.map" />
+    <Content Include="Content\bootstrap\css\bootstrap.css.map" />
+    <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Areas\Admin\Views\Shared\_AdminScripts.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_AdminTopNav.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminCategory\_CategoryFields.cshtml" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-bold-webfont.eot" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-bold-webfont.ttf" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-bold-webfont.woff" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-extralight-webfont.eot" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-extralight-webfont.ttf" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-extralight-webfont.woff" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.eot" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.ttf" />
+    <Content Include="Content\jstree\themes\proton\fonts\titillium\titilliumweb-regular-webfont.woff" />
+    <Content Include="Areas\Admin\Views\AdminCategory\_CategoryNavButtons.cshtml" />
+    <Content Include="Areas\Admin\Views\Permissions\PermissionTypes.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminLanguage\Create.cshtml" />
+    <Content Include="Content\bootstrap\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Content\admin\Admin.scss" />
+    <Content Include="Content\admin\Admin.css.map">
+      <DependentUpon>Admin.css</DependentUpon>
+    </Content>
+    <Content Include="Areas\Admin\Views\Dashboard\MainAdminNav.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminSocial\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminSpam\Akismet.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminSpam\RegistrationQuestion.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminSpam\SpamReporting.cshtml" />
+    <Content Include="Areas\Admin\Views\Settings\CustomCode.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminTag\MoveTags.cshtml" />
+    <Content Include="Scripts\jquery-1.11.3.min.js" />
+    <Content Include="Scripts\language.js" />
+    <Content Include="Scripts\notifications.js" />
+    <Content Include="Scripts\plugins.js" />
+    <Content Include="Scripts\privatemessage.js" />
+    <Content Include="Scripts\slideoutpanel.js" />
+    <Content Include="Scripts\tinymceplugins\ImageUpload\imageupload.js" />
     <Content Include="Views\Shared\_SlideOutPanel.cshtml" />
     <Content Include="Views\Post\GetAllPostLikes.cshtml" />
     <Content Include="Views\File\ImageUploadTinyMce.cshtml" />
     <Content Include="Views\Shared\_StyleSheets.cshtml" />
     <Content Include="Views\Shared\_JavaScript.cshtml" />
     <Content Include="Views\Shared\_PostLikedBy.cshtml" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.woff" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.ttf" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.json" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.eot" />
+    <Content Include="Views\PrivateMessage\AjaxMore.cshtml" />
+    <Content Include="Areas\Admin\Views\Batch\BatchDeletePrivateMessages.cshtml" />
+    <Content Include="App_Data\forum.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\Post\MovePost.cshtml" />
+    <Content Include="Themes\Metro\Content\Styles\Theme.scss" />
+    <Content Include="Views\Home\TermsAndConditions.cshtml" />
+    <Content Include="Views\Post\GetPostEditHistory.cshtml" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.woff" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.ttf" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.json" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.eot" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.woff" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.ttf" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.json" />
+    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.eot" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\readme.md" />
     <Content Include="Scripts\tinymce\langs\readme.md" />
-    <Content Include="Views\PrivateMessage\AjaxMore.cshtml" />
-    <Content Include="Areas\Admin\Views\Batch\BatchDeletePrivateMessages.cshtml" />
+    <Content Include="Areas\Admin\Views\Account\ManageUserPoints.cshtml" />
+    <Content Include="Themes\Metro\Content\Styles\Theme.css.map" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
@@ -1083,10 +1080,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\PublishProfiles\Local Deployment.pubxml" />
-    <None Include="Scripts\jquery-1.11.1.intellisense.js" />
-    <Content Include="Scripts\jquery-1.11.1.js" />
-    <Content Include="Scripts\jquery-1.11.1.min.js" />
-    <Content Include="Scripts\jquery-1.11.1.min.map" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
@@ -1101,7 +1094,7 @@
     <Content Include="Scripts\pushy\pushy.css" />
     <Content Include="Scripts\pushy\pushy.js" />
     <Content Include="Scripts\createtopic.js" />
-    <Content Include="Scripts\topic.js" />
+    <Content Include="Scripts\topic-post.js" />
     <Content Include="Scripts\dashboard.js" />
     <Content Include="Scripts\bbeditor\jquery.sceditor.default.min.css" />
     <Content Include="Scripts\bbeditor\jquery.sceditor.min.css" />
@@ -1156,12 +1149,6 @@
     <Content Include="Scripts\admin\Admin.js" />
     <Content Include="Scripts\admin\FadeOutMessage.js" />
     <Content Include="Content\slideoutpanel.css" />
-    <Content Include="Themes\Metro\Content\Styles\Theme.css">
-      <DependentUpon>Theme.scss</DependentUpon>
-    </Content>
-    <Content Include="Themes\Metro\Content\Styles\Theme.min.css">
-      <DependentUpon>Theme.css</DependentUpon>
-    </Content>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1260,10 +1247,6 @@
     <Content Include="Views\Members\PasswordResetSent.cshtml" />
     <Content Include="Views\Members\ResetPassword.cshtml" />
     <Content Include="Views\Members\PasswordChanged.cshtml" />
-    <Content Include="Themes\Metro\Content\Styles\Theme.scss" />
-    <Content Include="Themes\Metro\Content\Styles\Theme.css.map">
-      <DependentUpon>Theme.css</DependentUpon>
-    </Content>
     <None Include="_bin_deployableAssemblies\amd64\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest" />
     <None Include="_bin_deployableAssemblies\x86\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest" />
   </ItemGroup>

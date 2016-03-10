@@ -1,43 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Services.Data.Context;
 
 namespace MVCForum.Services
 {
     public partial class PollVoteService : IPollVoteService
     {
-        private readonly IPollVoteRepository _pollVoteRepository;
-
-        public PollVoteService(IPollVoteRepository pollVoteRepository)
+        private readonly MVCForumContext _context;
+        public PollVoteService(IMVCForumContext context)
         {
-            _pollVoteRepository = pollVoteRepository;
+            _context = context as MVCForumContext;
         }
 
         public List<PollVote> GetAllPollVotes()
         {
-            return _pollVoteRepository.GetAllPollVotes();
+            return _context.PollVote.ToList();
         }
 
         public PollVote Add(PollVote pollVote)
         {
-            return _pollVoteRepository.Add(pollVote);
+            return _context.PollVote.Add(pollVote);
         }
 
         public bool HasUserVotedAlready(Guid answerId, Guid userId)
         {
-            return _pollVoteRepository.HasUserVotedAlready(answerId, userId);
+            var vote = _context.PollVote.FirstOrDefault(x => x.PollAnswer.Id == answerId && x.User.Id == userId);
+            return (vote != null);
         }
 
         public PollVote Get(Guid id)
         {
-            return _pollVoteRepository.Get(id);
+            return _context.PollVote.FirstOrDefault(x => x.Id == id);
         }
 
         public void Delete(PollVote pollVote)
         {
-            _pollVoteRepository.Delete(pollVote);
+            _context.PollVote.Remove(pollVote);
         }
 
     }

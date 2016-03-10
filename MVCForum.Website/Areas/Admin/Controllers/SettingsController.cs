@@ -18,16 +18,18 @@ namespace MVCForum.Website.Areas.Admin.Controllers
     {
         private readonly IRoleService _roleService;
         private readonly IEmailService _emailService;
+        private readonly ICacheService _cacheService;
 
         public SettingsController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
             ILocalizationService localizationService,
             IMembershipService membershipService,
             IRoleService roleService,
-            ISettingsService settingsService, IEmailService emailService)
+            ISettingsService settingsService, IEmailService emailService, ICacheService cacheService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
             _roleService = roleService;
             _emailService = emailService;
+            _cacheService = cacheService;
         }
 
         public ActionResult Index()
@@ -53,8 +55,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
                     try
-                    {
-                        
+                    {                        
                         var existingSettings = SettingsService.GetSettings(false);
                         var updatedSettings = ViewModelMapping.SettingsViewModelToSettings(settingsViewModel, existingSettings);
 
@@ -72,7 +73,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         }
 
                         unitOfWork.Commit();
-
+                        _cacheService.ClearStartsWith(AppConstants.SettingsCacheName);
                     }
                     catch (Exception ex)
                     {

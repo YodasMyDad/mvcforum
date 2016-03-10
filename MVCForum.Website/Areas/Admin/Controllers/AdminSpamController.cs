@@ -12,10 +12,12 @@ namespace MVCForum.Website.Areas.Admin.Controllers
     public class AdminSpamController : BaseAdminController
     {
         private readonly Settings _settings;
+        private readonly ICacheService _cacheService;
 
-        public AdminSpamController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService, ISettingsService settingsService)
+        public AdminSpamController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService, ISettingsService settingsService, ICacheService cacheService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
+            _cacheService = cacheService;
             _settings = SettingsService.GetSettings();
         }
 
@@ -44,6 +46,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 try
                 {
                     unitOfWork.Commit();
+                    _cacheService.ClearStartsWith(AppConstants.SettingsCacheName);
+
                     // Show a message
                     ShowMessage(new GenericMessageViewModel
                     {

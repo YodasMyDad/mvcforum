@@ -2,11 +2,29 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
-using MVCForum.Website.Application;
 
 namespace MVCForum.Website.Areas.Admin.ViewModels
 {
+    #region Users Points
+
+    public class ManageUsersPointsViewModel
+    {
+        public MembershipUser User { get; set; }
+        public List<MembershipUserPoints> AllPoints { get; set; }
+
+        [Display(Name = "Amount of points to give this user")]
+        public int? Amount { get; set; }
+
+        [Display(Name = "Notes about this point allocation")]
+        [MaxLength(400)]
+        public string Note { get; set; } 
+
+        public Guid Id { get; set; }
+    }
+
+    #endregion
 
     #region Users
 
@@ -48,6 +66,16 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
     }
 
+    public class UserPointChartItem
+    {
+        public MembershipUserPoints MembershipUserPoints { get; set; }
+        public Post Post { get; set; }
+        public Vote Vote { get; set; }
+        public Domain.DomainModel.Badge Badge { get; set; }
+        public TopicTag TopicTag { get; set; }
+
+    }
+
     public class MemberEditViewModel
     {
         [Required]
@@ -73,7 +101,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [Display(Name = "Signature")]
         [StringLength(1000)]
-        [UIHint(SiteConstants.EditorType), AllowHtml]
+        [UIHint(AppConstants.EditorType), AllowHtml]
         public string Signature { get; set; }
 
         [Display(Name = "Age")]

@@ -2,58 +2,78 @@
 using System.Linq;
 using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Services.Data.Context;
 using MVCForum.Utilities;
 
 namespace MVCForum.Services
 {
     public partial class BannedEmailService : IBannedEmailService
     {
-        private readonly IBannedEmailRepository _bannedEmailRepository;
+        private readonly MVCForumContext _context;
 
-        public BannedEmailService(IBannedEmailRepository bannedEmailRepository)
+        public BannedEmailService(IMVCForumContext context)
         {
-            _bannedEmailRepository = bannedEmailRepository;
+            _context = context as MVCForumContext;
         }
+
         public BannedEmail Add(BannedEmail bannedEmail)
         {
-            return _bannedEmailRepository.Add(bannedEmail);
+            return _context.BannedEmail.Add(bannedEmail);
         }
 
         public void Delete(BannedEmail bannedEmail)
         {
-            _bannedEmailRepository.Delete(bannedEmail);
+            _context.BannedEmail.Remove(bannedEmail);
         }
 
         public IList<BannedEmail> GetAll()
         {
-            return _bannedEmailRepository.GetAll();
+            return _context.BannedEmail.ToList();
         }
 
         public BannedEmail Get(Guid id)
         {
-            return _bannedEmailRepository.Get(id);
+            return _context.BannedEmail.FirstOrDefault(x => x.Id == id);
         }
 
         public PagedList<BannedEmail> GetAllPaged(int pageIndex, int pageSize)
         {
-            return _bannedEmailRepository.GetAllPaged(pageIndex, pageSize);
+            var total = _context.BannedEmail.Count();
+
+            var results = _context.BannedEmail
+                                .OrderByDescending(x => x.Email)
+                                .Skip((pageIndex - 1) * pageSize)
+                                .Take(pageSize)
+                                .ToList();
+
+            return new PagedList<BannedEmail>(results, pageIndex, pageSize, total);
         }
 
         public PagedList<BannedEmail> GetAllPaged(string search, int pageIndex, int pageSize)
         {
-            return _bannedEmailRepository.GetAllPaged(StringUtils.SafePlainText(search), pageIndex, pageSize);
+            search = StringUtils.SafePlainText(search);
+            var total = _context.BannedEmail.Count(x => x.Email.ToLower().Contains(search.ToLower()));
+
+            var results = _context.BannedEmail
+                                .Where(x => x.Email.ToLower().Contains(search.ToLower()))
+                                .OrderByDescending(x => x.Email)
+                                .Skip((pageIndex - 1) * pageSize)
+                                .Take(pageSize)
+                                .ToList();
+
+            return new PagedList<BannedEmail>(results, pageIndex, pageSize, total);
         }
 
         public IList<BannedEmail> GetAllWildCards()
         {
-            return _bannedEmailRepository.GetAllWildCards();
+            return _context.BannedEmail.Where(x => x.Email.StartsWith("*@")).ToList();
         }
 
         public IList<BannedEmail> GetAllNonWildCards()
         {
-            return _bannedEmailRepository.GetAllNonWildCards();
+            return _context.BannedEmail.Where(x => !x.Email.StartsWith("*@")).ToList();
         }
 
         public bool EmailIsBanned(string email)
@@ -67,7 +87,7 @@ namespace MVCForum.Services
             var emailDomain = ReturnDomainOnly(sanitisedEmail).ToLower();
             
             // Get all banned emails
-            var allBannedEmails = _bannedEmailRepository.GetAll();
+            var allBannedEmails = GetAll();
 
             if (allBannedEmails.Any())
             {
@@ -100,7 +120,7 @@ namespace MVCForum.Services
             return domainBanned;
         }
 
-        private string ReturnDomainOnly(string email)
+        private static string ReturnDomainOnly(string email)
         {
             return email.Split('@')[1];
         }

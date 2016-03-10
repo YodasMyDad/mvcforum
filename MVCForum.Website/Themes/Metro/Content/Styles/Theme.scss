@@ -55,6 +55,7 @@ span.label-success { background-color: $color-global-green; }
 pre { border-radius: 0; }
 blockquote {font-style:italic;}
 .textarea {min-height:150px;}
+.panel-group .panel {border-radius:0;}
 
 // Main
 
@@ -486,8 +487,6 @@ section.content-strip {
         }
     }
 }
-
-
 // Post
 
 .post { border-top: 1px #f2f2f2 solid; padding: 15px 0 15px 0;
@@ -495,6 +494,9 @@ section.content-strip {
 }
 .postcontent { position:relative;
     p { font-size: 15px; overflow-x: hidden; }
+    ol, ul {
+         p { overflow-x: visible; }
+     }
     table { width: 100% !important; margin: 10px 0;
         td { border-bottom: 1px #efefef solid; padding: 4px; font-size: 12px; }
     }
@@ -502,7 +504,9 @@ section.content-strip {
 }
 
 .postbodytop { color: #B3B3B3; font-size: 13px; font-weight: 300; padding-bottom: 10px;
-    a, a:visited { color: #2c2c2c; font-weight: 600; }
+    a, a:visited { color: #2c2c2c; font-weight: 600;
+       &.showpostedithistory {font-weight:400;}
+    }
 }
 
 .post.solution-true .postbodytop a, .post.solution-true .postbodytop a:visited { color: $color-global-green; }
@@ -516,7 +520,9 @@ section.content-strip {
             display: inline-block;
             padding: 0 4px 0 0;
             font-size: 13px;
-            a, a:visited { font-weight: 400; cursor: pointer; }
+            a, a:visited { font-weight: 400; cursor: pointer; 
+                 &.replytolink { font-weight:600;}
+            }
 
             &.permalink {
                 a, a:visited { color: #B3B3B3; font-size: 12px; font-weight: 300; text-decoration: none; margin: 0 5px 0 0;
@@ -757,7 +763,8 @@ footer { background: $color-global-grey-blue; padding: 20px 0; margin: 30px 0 0 
 
 // Create new post
 
-#createpostholder { padding: 20px 0 0 0; }
+.showreplyto {padding:15px 0 0 0;}
+#createpostholder { padding: 5px 0 0 0; }
 
 #PostContent {
     @media (max-width: $media-query-small) { width: 100%; height: 10em; font-size: 1.4em; }
@@ -933,3 +940,31 @@ div.mce-path { padding: 2px 10px; margin: 0; }
 }
 
 // ============ end pushy css
+
+// Terms & Conditions
+.termsandconditionsholder {overflow-y : scroll; max-height:200px; margin:15px 0;}
+
+// Post Edit
+.postedithistorypanels {
+    .panel-body{ 
+        h3{border-bottom:1px $border-color solid;}
+        h4{font-weight:400;}
+    }
+}
+
+// Moderate Topics and Posts
+.moderatepanel { padding: 20px 0; }
+.moderatetopicholder,.moderatepostholder {
+    .topicsnippet { padding: 0 0 12px 0; margin: 0 0 12px 0; border-bottom: 3px dotted #efefef;
+        h2 { font-size: 17px; padding: 0 0 0 0; margin: 0 0 0 0; }
+        &:last-child {border-bottom:none;}
+        .postuser {font-style:italic;}
+    }
+}
+.moderatepostholder {
+    .postsnippet { padding: 0 0 12px 0; margin: 0 0 12px 0; border-bottom: 3px dotted #efefef;
+        h2 { font-size: 15px; padding: 0; margin: 0; }
+        &:last-child {border-bottom:none;}
+        .postuser {font-style:italic;}
+    }
+}

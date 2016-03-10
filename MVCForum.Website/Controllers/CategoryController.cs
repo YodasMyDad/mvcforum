@@ -7,6 +7,7 @@ using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Website.Application;
 using MVCForum.Website.ViewModels;
 using System.Linq;
+using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Website.ViewModels.Mapping;
 
 namespace MVCForum.Website.Controllers
@@ -19,6 +20,7 @@ namespace MVCForum.Website.Controllers
         private readonly IPollAnswerService _pollAnswerService;
         private readonly ITopicNotificationService _topicNotificationService;
         private readonly IVoteService _voteService;
+        private readonly IRoleService _roleService;
 
         /// <summary>
         /// Constructor
@@ -32,12 +34,15 @@ namespace MVCForum.Website.Controllers
         /// <param name="settingsService"> </param>
         /// <param name="topicService"> </param>
         /// <param name="categoryNotificationService"> </param>
+        /// <param name="pollAnswerService"></param>
+        /// <param name="topicNotificationService"></param>
+        /// <param name="voteService"></param>
         public CategoryController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService,
             ILocalizationService localizationService,
             IRoleService roleService,
             ICategoryService categoryService,
-            ISettingsService settingsService, ITopicService topicService, ICategoryNotificationService categoryNotificationService, IPollAnswerService pollAnswerService, ITopicNotificationService topicNotificationService, IVoteService voteService)
+            ISettingsService settingsService, ITopicService topicService, ICategoryNotificationService categoryNotificationService, IPollAnswerService pollAnswerService, ITopicNotificationService topicNotificationService, IVoteService voteService, IRoleService roleService1)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
         {
             _categoryService = categoryService;
@@ -46,6 +51,7 @@ namespace MVCForum.Website.Controllers
             _pollAnswerService = pollAnswerService;
             _topicNotificationService = topicNotificationService;
             _voteService = voteService;
+            _roleService = roleService1;
         }
 
         public ActionResult Index()
@@ -56,47 +62,35 @@ namespace MVCForum.Website.Controllers
         [ChildActionOnly]
         public PartialViewResult ListMainCategories()
         {
-            var catViewModel = new CategoryListViewModel
-            {
-                AllPermissionSets = new Dictionary<Category, PermissionSet>()
-            };
-
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                foreach (var category in _categoryService.GetAllMainCategories())
-                {
-                    var permissionSet = RoleService.GetPermissions(category, UsersRole);
-                    catViewModel.AllPermissionSets.Add(category, permissionSet);
-                }
-            }
 
-            return PartialView(catViewModel);
+                var catViewModel = new CategoryListViewModel
+                {
+                    AllPermissionSets = ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAllMainCategories(), _roleService, UsersRole)
+                };
+                return PartialView(catViewModel);
+            }
         }
 
         [ChildActionOnly]
         public PartialViewResult ListCategorySideMenu()
         {
-            var catViewModel = new CategoryListViewModel
-            {
-                AllPermissionSets = new Dictionary<Category, PermissionSet>()
-            };
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                foreach (var category in _categoryService.GetAll())
+                var catViewModel = new CategoryListViewModel
                 {
-                    var permissionSet = RoleService.GetPermissions(category, UsersRole);
-                    catViewModel.AllPermissionSets.Add(category, permissionSet);
-                }
+                    AllPermissionSets = ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAll(), _roleService, UsersRole)
+                };
+                return PartialView(catViewModel);
             }
-
-            return PartialView(catViewModel);
         }
 
         [Authorize]
         [ChildActionOnly]
         public PartialViewResult GetSubscribedCategories()
         {
-            var viewModel = new List<CategoryRowViewModel>();
+            var viewModel = new List<CategoryViewModel>();
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var categories = LoggedOnReadOnlyUser.CategoryNotifications.Select(x => x.Category);
@@ -106,13 +100,14 @@ namespace MVCForum.Website.Controllers
                     var topicCount = category.Topics.Count;
                     var latestTopicInCategory = category.Topics.OrderByDescending(x => x.LastPost.DateCreated).FirstOrDefault();
                     var postCount = (category.Topics.SelectMany(x => x.Posts).Count() - 1);
-                    var model = new CategoryRowViewModel
+                    var model = new CategoryViewModel
                     {
                         Category = category,
                         LatestTopic = latestTopicInCategory,
                         Permissions = permissionSet,
                         PostCount = postCount,
-                        TopicCount = topicCount
+                        TopicCount = topicCount,
+                        ShowUnSubscribedLink = true
                     };
                     viewModel.Add(model);
                 }
@@ -154,7 +149,7 @@ namespace MVCForum.Website.Controllers
                 // check the user has permission to this category
                 var permissions = RoleService.GetPermissions(category.Category, UsersRole);
 
-                if (!permissions[AppConstants.PermissionDenyAccess].IsTicked)
+                if (!permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
                 {
 
                     var topics = _topicService.GetPagedTopicsByCategory(pageIndex,
@@ -164,7 +159,7 @@ namespace MVCForum.Website.Controllers
                     var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
 
                     // Create the main view model for the category
-                    var viewModel = new ViewCategoryViewModel
+                    var viewModel = new CategoryViewModel
                         {
                             Permissions = permissions,
                             Topics = topicViewModels,
@@ -198,7 +193,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
-        [OutputCache(Duration = AppConstants.ShortCacheTime)]
+        [OutputCache(Duration = (int)CacheTimes.TwoHours)]
         public ActionResult CategoryRss(string slug)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -214,9 +209,9 @@ namespace MVCForum.Website.Controllers
                 // check the user has permission to this category
                 var permissions = RoleService.GetPermissions(category, UsersRole);
 
-                if (!permissions[AppConstants.PermissionDenyAccess].IsTicked)
+                if (!permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
                 {
-                    var topics = _topicService.GetRssTopicsByCategory(SiteConstants.ActiveTopicsListSize, category.Id);
+                    var topics = _topicService.GetRssTopicsByCategory(50, category.Id);
 
                     rssTopics.AddRange(topics.Select(x =>
                                                          {

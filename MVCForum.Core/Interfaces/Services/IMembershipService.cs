@@ -18,13 +18,16 @@ namespace MVCForum.Domain.Interfaces.Services
 
     public partial interface IMembershipService
     {
+        MembershipUser Add(MembershipUser newUser);
         MembershipUser SanitizeUser(MembershipUser membershipUser);
         bool ValidateUser(string userName, string password, int maxInvalidPasswordAttempts);
         LoginAttemptStatus LastLoginStatus { get; }
         string[] GetRolesForUser(string username);
+        MembershipUser Get(Guid id);
         MembershipUser GetUser(string username, bool removeTracking = false);
-        MembershipUser GetUserByEmail(string email);
+        MembershipUser GetUserByEmail(string email, bool removeTracking = false);
         MembershipUser GetUserBySlug(string slug);
+        IList<MembershipUser> GetUserBySlugLike(string slug);
         MembershipUser GetUserByFacebookId(long facebookId);
         MembershipUser GetUserByTwitterId(string twitterId);
         MembershipUser GetUserByGoogleId(string googleId);

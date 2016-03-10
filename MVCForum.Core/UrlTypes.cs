@@ -18,19 +18,19 @@ namespace MVCForum.Domain
             switch (e)
             {
                 case UrlType.Topic:
-                    return AppConstants.TopicUrlIdentifier;
+                    return SiteConstants.Instance.TopicUrlIdentifier;
                 case UrlType.Member:
-                    return AppConstants.MemberUrlIdentifier;
+                    return SiteConstants.Instance.MemberUrlIdentifier;
                 case UrlType.Tag:
-                    return AppConstants.TagsUrlIdentifier;
+                    return SiteConstants.Instance.TagsUrlIdentifier;
                 default:
-                    return AppConstants.CategoryUrlIdentifier;
+                    return SiteConstants.Instance.CategoryUrlIdentifier;
             }
         }
 
         public static string GenerateUrl(UrlType e, string slug)
         {
-            return VirtualPathUtility.ToAbsolute(string.Format("~/{0}/{1}/", UrlTypeName(e), HttpUtility.HtmlDecode(slug)));            
+            return VirtualPathUtility.ToAbsolute($"~/{UrlTypeName(e)}/{HttpUtility.UrlEncode(HttpUtility.HtmlDecode(slug))}/");            
         }
 
         public static string GenerateFileUrl(string filePath)

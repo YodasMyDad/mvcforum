@@ -12,6 +12,11 @@
 
 tinymce.PluginManager.add('autolink', function(editor) {
 	var AutoUrlDetectState;
+	var AutoLinkPattern = /^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+\-]+@)(.+)$/i;
+
+	if (editor.settings.autolink_pattern) {
+		AutoLinkPattern = editor.settings.autolink_pattern;
+	}
 
 	editor.on("keydown", function(e) {
 		if (e.keyCode == 13) {
@@ -104,7 +109,7 @@ tinymce.PluginManager.add('autolink', function(editor) {
 		// hence, at minimum, five characters from the beginning of the line.
 		rng = editor.selection.getRng(true).cloneRange();
 		if (rng.startOffset < 5) {
-			// During testing, the caret is placed inbetween two text nodes.
+			// During testing, the caret is placed between two text nodes.
 			// The previous text node contains the URL.
 			prev = rng.endContainer.previousSibling;
 			if (!prev) {
@@ -179,7 +184,7 @@ tinymce.PluginManager.add('autolink', function(editor) {
 		}
 
 		text = rng.toString();
-		matches = text.match(/^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|(?:mailto:)?[A-Z0-9._%+\-]+@)(.+)$/i);
+		matches = text.match(AutoLinkPattern);
 
 		if (matches) {
 			if (matches[1] == 'www.') {

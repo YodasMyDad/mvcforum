@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web;
 using System.Web.Mvc;
+using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Website.Application;
 
@@ -41,12 +42,17 @@ namespace MVCForum.Website.ViewModels
         public int VotesUp { get; set; }
         public int VotesDown { get; set; }
 
-        // Quote
+        // Quote/Reply
         public string QuotedPost { get; set; }
+        public Guid? ReplyTo { get; set; }
+        public string ReplyToUsername { get; set; }
 
         // Stats
         public int Answers { get; set; }
         public int Views { get; set; }
+
+        // Misc
+        public bool ShowUnSubscribedLink { get; set; }
     }
 
     public class ActiveTopicsViewModel
@@ -97,7 +103,7 @@ namespace MVCForum.Website.ViewModels
         [ForumMvcResourceDisplayName("Topic.Label.TopicTitle")]
         public string Name { get; set; }
 
-        [UIHint(SiteConstants.EditorType), AllowHtml]
+        [UIHint(AppConstants.EditorType), AllowHtml]
         [StringLength(6000)]
         public string Content { get; set; }
 

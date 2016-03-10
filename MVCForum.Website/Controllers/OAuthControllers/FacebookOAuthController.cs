@@ -98,8 +98,8 @@ namespace MVCForum.Website.Controllers.OAuthControllers
             }
 
             // Get the prevalue options
-            if (string.IsNullOrEmpty(SiteConstants.FacebookAppId) ||
-                string.IsNullOrEmpty(SiteConstants.FacebookAppSecret))
+            if (string.IsNullOrEmpty(SiteConstants.Instance.FacebookAppId) ||
+                string.IsNullOrEmpty(SiteConstants.Instance.FacebookAppSecret))
             {
                 resultMessage.Message = "You need to add the Facebook app credentials";
                 resultMessage.MessageType = GenericMessages.danger;
@@ -111,8 +111,8 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                 // Configure the OAuth client based on the options of the prevalue options
                 var client = new FacebookOAuthClient
                 {
-                    AppId = SiteConstants.FacebookAppId,
-                    AppSecret = SiteConstants.FacebookAppSecret,
+                    AppId = SiteConstants.Instance.FacebookAppId,
+                    AppSecret = SiteConstants.Instance.FacebookAppSecret,
                     RedirectUri = ReturnUrl
                 };
 

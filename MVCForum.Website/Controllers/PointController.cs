@@ -1,5 +1,6 @@
 ﻿using System.Web.Mvc;
 using MVCForum.Domain.Constants;
+using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Website.ViewModels;
@@ -19,7 +20,7 @@ namespace MVCForum.Website.Controllers
         }
 
         [ChildActionOnly]
-        [OutputCache(Duration = AppConstants.LongCacheTime)]
+        [OutputCache(Duration = (int)CacheTimes.TwoHours)]
         public PartialViewResult CurrentWeekHighPointUsers()
         {
             using (UnitOfWorkManager.NewUnitOfWork())

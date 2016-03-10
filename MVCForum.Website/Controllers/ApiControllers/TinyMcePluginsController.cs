@@ -53,11 +53,11 @@ namespace MVCForum.Website.Controllers.ApiControllers
                             var loggedOnReadOnlyUser = memberService.GetUser(HttpContext.Current.User.Identity.Name);
                             var permissions = roleService.GetPermissions(null, loggedOnReadOnlyUser.Roles.FirstOrDefault());
                             // Get the permissions for this category, and check they are allowed to update
-                            if (permissions[AppConstants.PermissionInsertEditorImages].IsTicked && loggedOnReadOnlyUser.DisableFileUploads != true)
+                            if (permissions[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked && loggedOnReadOnlyUser.DisableFileUploads != true)
                             {
                                 // woot! User has permission and all seems ok
                                 // Before we save anything, check the user already has an upload folder and if not create one
-                                var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.UploadFolderPath, loggedOnReadOnlyUser.Id));
+                                var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, loggedOnReadOnlyUser.Id));
                                 if (!Directory.Exists(uploadFolderPath))
                                 {
                                     Directory.CreateDirectory(uploadFolderPath);

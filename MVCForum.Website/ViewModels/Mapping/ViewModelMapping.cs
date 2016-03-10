@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
@@ -105,6 +104,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.EnableSignatures = settingsViewModel.EnableSignatures;
             existingSettings.EnablePoints = settingsViewModel.EnablePoints;
             existingSettings.PointsAllowedToVoteAmount = settingsViewModel.PointsAllowedToVoteAmount;
+            existingSettings.PointsAllowedForExtendedProfile = settingsViewModel.PointsAllowedForExtendedProfile;
             existingSettings.PointsAddedPerPost = settingsViewModel.PointsAddedPerPost;
             existingSettings.PointsAddedPostiveVote = settingsViewModel.PointsAddedPostiveVote;
             existingSettings.PointsDeductedNagativeVote = settingsViewModel.PointsDeductedNagativeVote;
@@ -129,6 +129,9 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.MetaDesc = settingsViewModel.MetaDesc;
             existingSettings.EnableEmoticons = settingsViewModel.EnableEmoticons;
             existingSettings.DisableDislikeButton = settingsViewModel.DisableDislikeButton;
+            existingSettings.AgreeToTermsAndConditions = settingsViewModel.AgreeToTermsAndConditions;
+            existingSettings.DisableStandardRegistration = settingsViewModel.DisableStandardRegistration;
+            existingSettings.TermsAndConditions = settingsViewModel.TermsAndConditions;
             return existingSettings;
         }
 
@@ -158,6 +161,7 @@ namespace MVCForum.Website.ViewModels.Mapping
                 EnableSignatures = currentSettings.EnableSignatures,
                 EnablePoints = currentSettings.EnablePoints,
                 PointsAllowedToVoteAmount = currentSettings.PointsAllowedToVoteAmount,
+                PointsAllowedForExtendedProfile = currentSettings.PointsAllowedForExtendedProfile ?? 0,
                 PointsAddedPerPost = currentSettings.PointsAddedPerPost,
                 PointsAddedPostiveVote = currentSettings.PointsAddedPostiveVote,
                 PointsDeductedNagativeVote = currentSettings.PointsDeductedNagativeVote,
@@ -182,7 +186,10 @@ namespace MVCForum.Website.ViewModels.Mapping
                 PageTitle = currentSettings.PageTitle,
                 MetaDesc = currentSettings.MetaDesc,
                 EnableEmoticons = currentSettings.EnableEmoticons == true,
-                DisableDislikeButton = currentSettings.DisableDislikeButton
+                DisableDislikeButton = currentSettings.DisableDislikeButton,
+                TermsAndConditions = currentSettings.TermsAndConditions,
+                AgreeToTermsAndConditions = currentSettings.AgreeToTermsAndConditions ?? false,
+                DisableStandardRegistration = currentSettings.DisableStandardRegistration ?? false
             };
 
             return settingViewModel;
@@ -195,15 +202,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             // Get all the categories for this topic collection
             var categories = topics.Select(x => x.Category).Distinct();
 
-            // Permissions
-            // loop through the categories and get the permissions
-            var permissions = new Dictionary<Category, PermissionSet>();
-            foreach (var category in categories)
-            {
-                var permissionSet = roleService.GetPermissions(category, usersRole);
-                permissions.Add(category, permissionSet);
-            }
-            return permissions;
+            return GetPermissionsForCategories(categories, roleService, usersRole);
         }
 
         public static List<TopicViewModel> CreateTopicViewModels(List<Topic> topics, 
@@ -318,7 +317,7 @@ namespace MVCForum.Website.ViewModels.Mapping
                     viewModel.Poll = new PollViewModel
                     {
                         Poll = topic.Poll,
-                        UserAllowedToVote = permission[AppConstants.PermissionVoteInPolls].IsTicked
+                        UserAllowedToVote = permission[SiteConstants.Instance.PermissionVoteInPolls].IsTicked
                     };
 
                     var answers = pollAnswerService.GetAllPollAnswersByPoll(topic.Poll);
@@ -341,8 +340,12 @@ namespace MVCForum.Website.ViewModels.Mapping
         #region Post
         public static PostViewModel CreatePostViewModel(Post post, List<Vote> votes, PermissionSet permission, Topic topic, MembershipUser loggedOnUser, Settings settings, List<Favourite> favourites)
         {
-            var allowedToVote = (loggedOnUser != null && loggedOnUser.Id != post.User.Id &&
-                                 loggedOnUser.TotalPoints >= settings.PointsAllowedToVoteAmount);
+            var allowedToVote = (loggedOnUser != null && loggedOnUser.Id != post.User.Id);
+            if (allowedToVote && settings.EnablePoints)
+            {
+                // We need to check if points are enabled that they have enough points to vote
+                allowedToVote = loggedOnUser.TotalPoints >= settings.PointsAllowedToVoteAmount;
+            }
 
             // Remove votes where no VotedBy has been recorded
             votes.RemoveAll(x => x.VotedByMembershipUser == null);
@@ -432,7 +435,18 @@ namespace MVCForum.Website.ViewModels.Mapping
 
         #region Category
 
-        //TODO - Create generic category mapping
+        public static Dictionary<Category, PermissionSet> GetPermissionsForCategories(IEnumerable<Category> categories, IRoleService roleService, MembershipRole usersRole)
+        {
+            // Permissions
+            // loop through the categories and get the permissions
+            var permissions = new Dictionary<Category, PermissionSet>();
+            foreach (var category in categories)
+            {
+                var permissionSet = roleService.GetPermissions(category, usersRole);
+                permissions.Add(category, permissionSet);
+            }
+            return permissions;
+        }
 
         #endregion
     }

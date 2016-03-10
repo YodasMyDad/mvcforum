@@ -28,7 +28,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
-                var err = string.Format("Unable to access logs: {0}", ex.Message);
+                var err = $"Unable to access logs: {ex.Message}";
                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = err,

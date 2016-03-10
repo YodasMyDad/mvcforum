@@ -5,13 +5,10 @@ VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Externals", "Externals", "{7859E236-ED49-482B-B325-C5EEFE650C14}"
 	ProjectSection(SolutionItems) = preProject
-		Externals\Microsoft.Web.Services3.dll = Externals\Microsoft.Web.Services3.dll
 		Externals\Skybrud.Social.Microsoft.dll = Externals\Skybrud.Social.Microsoft.dll
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Website", "MVCForum.Website\MVCForum.Website.csproj", "{C149AEDE-0F7A-46A5-B9D4-95ED7B775DE2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Data", "MVCForum.Data\MVCForum.Data.csproj", "{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForum.Domain", "MVCForum.Core\MVCForum.Domain.csproj", "{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}"
 EndProject
@@ -85,16 +82,6 @@ Global
 		{C149AEDE-0F7A-46A5-B9D4-95ED7B775DE2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{C149AEDE-0F7A-46A5-B9D4-95ED7B775DE2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{C149AEDE-0F7A-46A5-B9D4-95ED7B775DE2}.Release|x86.ActiveCfg = Release|Any CPU
-		{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}.Debug|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}.Debug|Mixed Platforms.Build.0 = Release|Any CPU
-		{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{A7DF6A0B-32D4-49B5-9827-6BE5C88A1A31}.Release|x86.ActiveCfg = Release|Any CPU
 		{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}.Debug|Mixed Platforms.ActiveCfg = Release|Any CPU
@@ -246,11 +233,9 @@ Global
 		{ABE6051B-56D8-4867-84DF-43B6AD04A562}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{ABE6051B-56D8-4867-84DF-43B6AD04A562}.Release|x86.ActiveCfg = Release|Any CPU
 		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Debug|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{0451BAEF-DF2E-4B98-8644-94EE9415E389}.Release|x86.ActiveCfg = Release|Any CPU
 		{9C923D92-4963-44FE-B75B-0A8AAAB9B689}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

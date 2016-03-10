@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MVCForum.Domain.DomainModel
+namespace MVCForum.Domain.DomainModel.General
 {
     /// <summary>
     /// This is a special domain model and not mapped to the database

@@ -34,6 +34,7 @@ namespace MVCForum.Domain.DomainModel
         public int PrivateMessageFloodControl { get; set; }
         public bool EnableSignatures { get; set; }
         public bool EnablePoints { get; set; }
+        public int? PointsAllowedForExtendedProfile { get; set; }
         public int PointsAllowedToVoteAmount { get; set; }
         public int PointsAddedPerPost { get; set; }
         public int PointsAddedPostiveVote { get; set; }
@@ -59,6 +60,9 @@ namespace MVCForum.Domain.DomainModel
         public string CustomFooterCode { get; set; }
         public bool? EnableEmoticons { get; set; }
         public bool DisableDislikeButton { get; set; }
+        public bool? AgreeToTermsAndConditions { get; set; }
+        public string TermsAndConditions { get; set; }
+        public bool? DisableStandardRegistration { get; set; }
         public virtual MembershipRole NewMemberStartingRole { get; set; }
         public virtual Language DefaultLanguage { get; set; }
     }

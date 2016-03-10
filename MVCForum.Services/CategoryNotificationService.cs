@@ -1,17 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
 using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Repositories;
+using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.Services;
+using MVCForum.Services.Data.Context;
 
 namespace MVCForum.Services
 {
     public partial class CategoryNotificationService : ICategoryNotificationService
     {
-        private readonly ICategoryNotificationRepository _categoryNotificationRepository;
+        private readonly MVCForumContext _context;
 
-        public CategoryNotificationService(ICategoryNotificationRepository categoryNotificationRepository)
+        public CategoryNotificationService(IMVCForumContext context)
         {
-            _categoryNotificationRepository = categoryNotificationRepository;
+            _context = context as MVCForumContext;
         }
 
         /// <summary>
@@ -20,7 +24,7 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<CategoryNotification> GetAll()
         {
-            return _categoryNotificationRepository.GetAll();
+            return _context.CategoryNotification.ToList();
         }
 
         /// <summary>
@@ -29,7 +33,7 @@ namespace MVCForum.Services
         /// <param name="notification"></param>
         public void Delete(CategoryNotification notification)
         {
-            _categoryNotificationRepository.Delete(notification);
+            _context.CategoryNotification.Remove(notification);
         }
 
         /// <summary>
@@ -39,7 +43,10 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<CategoryNotification> GetByCategory(Category category)
         {
-            return _categoryNotificationRepository.GetByCategory(category);
+            return _context.CategoryNotification
+                .AsNoTracking()
+                .Where(x => x.Category.Id == category.Id)
+                .ToList();
         }
 
         /// <summary>
@@ -49,7 +56,9 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<CategoryNotification> GetByUser(MembershipUser user)
         {
-            return _categoryNotificationRepository.GetByUser(user);
+            return _context.CategoryNotification
+                .Where(x => x.User.Id == user.Id)
+                .ToList();
         }
 
         /// <summary>
@@ -61,17 +70,28 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<CategoryNotification> GetByUserAndCategory(MembershipUser user, Category category, bool addTracking = false)
         {
-            return _categoryNotificationRepository.GetByUserAndCategory(user, category, addTracking);
+            var notifications = _context.CategoryNotification
+                .Where(x => x.Category.Id == category.Id && x.User.Id == user.Id);
+            if (addTracking)
+            {
+                return notifications.ToList();
+            }
+            return notifications.AsNoTracking().ToList();
         }
 
         /// <summary>
         /// Add a new category notification
         /// </summary>
         /// <param name="category"></param>
-        public void Add(CategoryNotification category)
+        public CategoryNotification Add(CategoryNotification category)
         {
-            _categoryNotificationRepository.Add(category);
+            return _context.CategoryNotification.Add(category);
 
+        }
+
+        public CategoryNotification Get(Guid id)
+        {
+            return _context.CategoryNotification.FirstOrDefault(cat => cat.Id == id);
         }
     }
 }

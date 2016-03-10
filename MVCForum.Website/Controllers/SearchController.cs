@@ -57,7 +57,7 @@ namespace MVCForum.Website.Controllers
 
                     // Get all the topics based on the search value
                     var posts = _postService.SearchPosts(pageIndex,
-                                                         SiteConstants.SearchListSize,
+                                                         SiteConstants.Instance.SearchListSize,
                                                          int.MaxValue,
                                                          term,
                                                          allowedCategories);
