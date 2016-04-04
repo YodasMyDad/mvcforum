@@ -13,6 +13,7 @@ using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Services.Data.Context;
 using MVCForum.Utilities;
+using System.Text.RegularExpressions;
 
 namespace MVCForum.Services
 {
@@ -203,11 +204,8 @@ namespace MVCForum.Services
         /// <returns></returns>
         public PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm, List<Category> allowedCategories, Guid? CategoryId)
         {
-            // Create search term
-            var search = StringUtils.ReturnSearchString(searchTerm);
-
-            // Now split the words
-            var splitSearch = search.Trim().Split(' ').ToList();
+            // Now split the words and terms
+            var splitSearch = Regex.Matches(searchTerm, @"(?<="")|\w[\w\s]*(?="")|\w+|""[\w\s]*""");
 
             // get the category ids
             var allowedCatIds = allowedCategories.Select(x => x.Id);
@@ -224,19 +222,14 @@ namespace MVCForum.Services
                 query = query.Where(x => x.Topic.Category.Id == CategoryId);
             }
 
-            // Start the predicate builder
-            var postFilter = PredicateBuilder.False<Post>();
-
-            // Loop through each word and see if it's in the post
+            // Loop through each word and term and see if it's in the post
             foreach (var term in splitSearch)
             {
-                var sTerm = term.Trim();
-                //query = query.Where(x => x.PostContent.ToUpper().Contains(sTerm) || x.SearchField.ToUpper().Contains(sTerm));
-                postFilter = postFilter.Or(x => x.PostContent.ToUpper().Contains(sTerm) || x.SearchField.ToUpper().Contains(sTerm));
+                var sTerm = term.ToString().Trim().Replace("\"","").ToUpper();
+                if (sTerm != "") {
+                    query = query.Where(x => x.PostContent.ToUpper().Contains(sTerm) || x.SearchField.ToUpper().Contains(sTerm));
+                }
             }
-
-            // Add the predicate builder to the query
-            query = query.Where(postFilter);
 
             // Get the count
             var total = query.Count();

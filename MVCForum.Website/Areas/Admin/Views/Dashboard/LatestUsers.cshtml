@@ -10,7 +10,11 @@
             @foreach (var user in Model.Users)
             {
                 <li class="list-group-item">
-                    <a href="@user.NiceUrl">@Html.Raw(user.UserName)</a> On @user.CreateDate.ToShortDateString()
+                    <a href="/admin/account/edit/@user.Id/">@Html.Raw(user.UserName)</a> on @user.CreateDate.ToShortDateString()
+                    @if (!user.IsApproved)
+                    {
+                        @Html.Encode("[Approval Pending]")
+                    }
                 </li>
             }
         </ul>

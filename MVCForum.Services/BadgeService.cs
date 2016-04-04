@@ -549,7 +549,7 @@ namespace MVCForum.Services
 
         public IEnumerable<Badge> GetAll()
         {
-            return _context.Badge.ToList();
+            return _context.Badge.OrderBy(x => x.AwardsPoints).ToList();
         }
 
         public Badge Add(Badge newBadge)

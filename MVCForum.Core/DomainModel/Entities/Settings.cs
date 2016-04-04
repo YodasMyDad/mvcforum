@@ -66,5 +66,7 @@ namespace MVCForum.Domain.DomainModel
         public virtual MembershipRole NewMemberStartingRole { get; set; }
         public virtual Language DefaultLanguage { get; set; }
         public bool? EnableDefaultCategoryinDiscussions { get; set; }
+        public bool? EnableHomePageHeader { get; set; }
+        public string HomePageHeader { get; set; }
     }
 }

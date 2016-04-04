@@ -130,13 +130,48 @@ namespace MVCForum.Services
             return EmailTemplate(to, content, settings);
         }
 
+        public string EmailTemplateNewUser(string to, string content, Guid userId)
+        {
+            var settings = _settingsService.GetSettings();
+            return EmailTemplate(to, content, settings, userId);
+        }
+
         public string EmailTemplate(string to, string content, Settings settings)
         {
             using (var sr = File.OpenText(HostingEnvironment.MapPath(@"~/Content/Emails/EmailNotification.htm")))
             {
                 var sb = sr.ReadToEnd();
                 sr.Close();
+
+                var touser =  _context.MembershipUser.FirstOrDefault(name => name.UserName.Equals(to, StringComparison.CurrentCultureIgnoreCase));
+
                 sb = sb.Replace("#CONTENT#", content);
+                sb = sb.Replace("#USERGUID#", touser.Id.ToString());
+                sb = sb.Replace("#YEAR#", DateTime.UtcNow.Year.ToString());
+                sb = sb.Replace("#SITENAME#", settings.ForumName);
+                sb = sb.Replace("#SITEURL#", settings.ForumUrl);
+                if (!string.IsNullOrEmpty(to))
+                {
+                    to = $"<p>{to},</p>";
+                    sb = sb.Replace("#TO#", to);
+                }
+
+                return sb;
+            }
+        }
+
+        public string EmailTemplate(string to, string content, Settings settings, Guid userId)
+        {
+            using (var sr = File.OpenText(HostingEnvironment.MapPath(@"~/Content/Emails/EmailNotification.htm")))
+            {
+                var sb = sr.ReadToEnd();
+                sr.Close();
+
+                var touser = _context.MembershipUser.FirstOrDefault(name => name.UserName.Equals(to, StringComparison.CurrentCultureIgnoreCase));
+
+                sb = sb.Replace("#CONTENT#", content);
+                sb = sb.Replace("#USERGUID#", userId.ToString());
+                sb = sb.Replace("#YEAR#", DateTime.UtcNow.Year.ToString());
                 sb = sb.Replace("#SITENAME#", settings.ForumName);
                 sb = sb.Replace("#SITEURL#", settings.ForumUrl);
                 if (!string.IsNullOrEmpty(to))

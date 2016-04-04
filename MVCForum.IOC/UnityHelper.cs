@@ -55,6 +55,7 @@ namespace MVCForum.IOC
             //Bind the various domain model services and repositories that e.g. our controllers require         
             container.BindInRequestScope<IUnitOfWorkManager, UnitOfWorkManager>();
             container.BindInRequestScope<IRoleService, RoleService>();
+            container.BindInRequestScope<IFirmService, FirmService>();
             container.BindInRequestScope<ICategoryService, CategoryService>();
             container.BindInRequestScope<IMembershipService, MembershipService>();
             container.BindInRequestScope<IPermissionService, PermissionService>();

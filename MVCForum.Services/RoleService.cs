@@ -188,7 +188,7 @@ namespace MVCForum.Services
                     categoryPermissions.Add(new CategoryPermissionForRole
                     {
                         Category = category,
-                        IsTicked = permission.Name == SiteConstants.Instance.PermissionReadOnly,
+                        IsTicked = permission.Name == SiteConstants.Instance.PermissionDenyAccess,
                         MembershipRole = role,
                         Permission = permission
                     });
@@ -196,18 +196,16 @@ namespace MVCForum.Services
 
 
                 // Deny Access may have been set (or left null) for guest for the category, so need to read for it
-                var denyAccessPermission = role.CategoryPermissionForRoles
+                var readOnlyPermission = role.CategoryPermissionForRoles
                                    .FirstOrDefault(x => x.Category.Id == category.Id &&
-                                                        x.Permission.Name == SiteConstants.Instance.PermissionDenyAccess &&
+                                                        x.Permission.Name == SiteConstants.Instance.PermissionReadOnly &&
                                                         x.MembershipRole.Id == role.Id);
 
                 // Set the Deny Access/Read Only values in the results. If it's null for this role/category, record it as false in the results
-                 if (denyAccessPermission != null && denyAccessPermission.IsTicked)
+                 if (readOnlyPermission != null && readOnlyPermission.IsTicked)
                 {
-                    var categoryPermissionForRoleDeny = categoryPermissions.FirstOrDefault(x => x.Permission.Name == SiteConstants.Instance.PermissionDenyAccess);
                     var categoryPermissionForRoleReadOnly = categoryPermissions.FirstOrDefault(x => x.Permission.Name == SiteConstants.Instance.PermissionReadOnly);
-                    categoryPermissionForRoleDeny.IsTicked = true;
-                    categoryPermissionForRoleReadOnly.IsTicked = false;
+                    categoryPermissionForRoleReadOnly.IsTicked = true;
                 }
             }
 
@@ -298,8 +296,8 @@ namespace MVCForum.Services
                 categoryId = category.Id;
             }
 
-            var objectContextKey = string.Concat(HttpContext.Current.GetHashCode().ToString("x"), "-", categoryId, "-", role.Id);
-            if (!HttpContext.Current.Items.Contains(objectContextKey))
+            var objectContextKey = string.Concat("cat-", categoryId, "-role-", role.Id);
+            if (HttpContext.Current.Session[objectContextKey] == null)
             {
                 switch (role.RoleName)
                 {
@@ -314,10 +312,10 @@ namespace MVCForum.Services
                         break;
                 }
 
-                HttpContext.Current.Items.Add(objectContextKey, _permissions);
+                HttpContext.Current.Session[objectContextKey] = _permissions;
             }
 
-            return HttpContext.Current.Items[objectContextKey] as PermissionSet;
+            return HttpContext.Current.Session[objectContextKey] as PermissionSet;
 
         }
 

@@ -1,0 +1,88 @@
+﻿@{
+    var time = 5; // time in seconds
+    var windowLocation = "/members/register";
+}
+<div class="row documentation-message">
+    <div class="col-md-12">
+         <div id="owl-banner" class="owl-carousel owl-theme">
+            @if (User.Identity.IsAuthenticated == true && Html.Settings().EnableHomePageHeader == true)
+            {
+                @Html.Raw(Html.Settings().HomePageHeader);
+                time = 15;
+                windowLocation = "#";
+            }
+            else
+            {
+                        <div class="item"><img src="~/Themes/AEUC/content/images/banner0.png" )" alt="Mission Statement"></div>
+                        <div class="item"><img src="~/Themes/AEUC/content/images/banner1.png" )" alt="Membership Benefit 1"></div>
+                        <div class="item"><img src="~/Themes/AEUC/content/images/banner2.png" )" alt="Membership Benefit 2"></div>
+                        <div class="item"><img src="~/Themes/AEUC/content/images/banner3.png" )" alt="Membership Benefit 3"></div>
+                        <div class="item"><img src="~/Themes/AEUC/content/images/banner4.png" )" alt="Membership Benefit 4"></div>
+                        <div class="item"><img src="~/Themes/AEUC/content/images/banner5.png" )" alt="Membership Benefit 5"></div>
+                        <div class="item"><img src="~/Themes/AEUC/content/images/banner6.png" )" alt="Membership Benefit 6"></div>
+                        <div class="item"><img src="~/Themes/AEUC/content/images/banner7.png" )" alt="Membership Benefit 7"></div>
+                        <div class="item"><img src="~/Themes/AEUC/content/images/banner8.png" )" alt="Membership Benefit 8"></div>
+                        <div class="item"><img src="~/Themes/AEUC/content/images/banner9.png" )" alt="Membership Benefit 9"></div>
+            }
+        </div>
+    </div>
+</div>
+<script>
+        $(document).ready(function () {
+            var time = @Html.Raw(time); // time in seconds
+            var $elem,isPause,tick,percentTime;
+
+            //Init the carousel
+            $("#owl-banner").owlCarousel({
+                slideSpeed: 500,
+                paginationSpeed: 500,
+                singleItem: true,
+                afterInit: init,
+                afterMove: moved,
+                startDragging: pauseOnDragging
+            });
+
+
+            $('.item').on('click', function (event) {
+            window.location = "@Html.Raw(windowLocation)";
+    });
+
+    function init(elem) {
+                $elem = elem;
+        start();
+    }
+
+    function start(elem) {
+        //reset timer
+        percentTime = 0;
+        isPause = false;
+        //run interval every 0.01 second
+        tick = setInterval(interval, 10);
+    };
+
+    function interval() {
+        if (isPause === false) {
+            percentTime += 1 / time;
+            //if percentTime is equal or greater than 100
+            if (percentTime >= 100) {
+                        //slide to next item
+                        $elem.trigger('owl.next')
+                    }
+        }
+    }
+
+    //pause while dragging
+    function pauseOnDragging() {
+        isPause = true;
+    }
+
+    //moved callback
+    function moved() {
+        //clear interval
+        clearTimeout(tick);
+        //start again
+        start();
+    }
+
+});
+</script>

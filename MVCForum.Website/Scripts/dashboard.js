@@ -1,7 +1,7 @@
 ﻿$(function () {
     CallHome();
     LatestUsers();
-    LowestPointUsers();
+    PendingUsers();
     LowestPointPosts();
     HighestViewedTopics();
     LatestNews();
@@ -12,6 +12,13 @@ function LatestUsers() {
     $.post(app_base + "Admin/Dashboard/LatestUsers",
     function (data) {
         $(".dashboardlatestusers").html(data);
+    });
+}
+
+function PendingUsers() {
+    $.post(app_base + "Admin/Dashboard/PendingUsers",
+    function (data) {
+        $(".dashboardpendingusers").html(data);
     });
 }
 

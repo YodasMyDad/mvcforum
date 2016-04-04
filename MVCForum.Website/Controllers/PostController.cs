@@ -248,7 +248,8 @@ namespace MVCForum.Website.Controllers
                             Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
                             EmailTo = user.Email,
                             NameTo = user.UserName,
-                            Subject = string.Concat(LocalizationService.GetResourceString("Post.Notification.Subject"), SettingsService.GetSettings().ForumName)
+                            IdTo = user.Id,
+                            Subject = string.Concat(LocalizationService.GetResourceString("Post.Notification.Subject"), " ", SettingsService.GetSettings().ForumName)
                         }).ToList();
 
                         // and now pass the emails in to be sent

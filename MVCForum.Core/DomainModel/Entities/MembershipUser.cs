@@ -39,6 +39,8 @@ namespace MVCForum.Domain.DomainModel
         public string Email { get; set; }
         public string PasswordQuestion { get; set; }
         public string PasswordAnswer { get; set; }
+        public string JobTitle { get; set; }
+        public bool IsVotingMember { get; set; }
         public bool IsApproved { get; set; }
         public bool IsLockedOut { get; set; }
         public bool IsBanned { get; set; }
@@ -56,6 +58,8 @@ namespace MVCForum.Domain.DomainModel
         public string Signature { get; set; }
         public int? Age { get; set; }
         public string Location { get; set; }
+        public string City { get; set; }
+        public string Country{ get; set; }
         public string Website { get; set; }
         public string Twitter { get; set; }
         public string Facebook { get; set; }
@@ -84,6 +88,8 @@ namespace MVCForum.Domain.DomainModel
         public string Latitude { get; set; }
         public string Longitude { get; set; }
 
+        public virtual MembershipFirm MembershipFirm { get; set; }
+        public virtual IList<AnnualMeetingRegistration> AnnualMeetingRegistrations{ get; set; }
         public virtual IList<MembershipRole> Roles { get; set; }
         public virtual IList<Post> Posts { get; set; }
         public virtual IList<Topic> Topics { get; set; }

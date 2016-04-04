@@ -46,21 +46,23 @@
                                 @RenderSection("AdminPageHeader", false)
                             </h1>
                             @*<ol class="breadcrumb">
-                                    <li class="active">
-                                        <i class="fa fa-dashboard"></i> Breadcrumb
-                                    </li>
-                                </ol>*@
+                            <li class="active">
+                                <i class="fa fa-dashboard"></i> Breadcrumb
+                            </li>
+                        </ol>*@
                         </div>
                     </div>
                 }
 
                 <div class="mainadminbody">
-                    @RenderBody()                    
+                    @RenderBody()
                 </div>
                 <footer>
-                    @RenderSection("AdminFooter", false)
-                    <p>&copy; <a href="http://www.aptitude.co.uk">Aptitude</a> @DateTime.UtcNow.Year - @Html.Partial("_GetCurrentVersion")</p>
-                </footer>
+                    <div class="col-md-9">
+                        @RenderSection("AdminFooter", false)
+                        <!--<p>&copy; <a href="http://www.aptitude.co.uk">Aptitude</a> @DateTime.UtcNow.Year - @Html.Partial("_GetCurrentVersion")</p>-->
+                    </div>
+               </footer>
 
             </div>
         </div>

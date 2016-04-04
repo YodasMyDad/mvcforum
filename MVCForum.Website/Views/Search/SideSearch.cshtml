@@ -12,7 +12,7 @@
     @using (Html.BeginForm("Index", "Search", FormMethod.Get))
     {
         <div class="input-group">
-            @Html.TextBox("term", null, new { @class = "form-control", placeholder = searchFor })
+            @Html.TextBox("term", TempData["SearchTerms"], new { @class = "form-control", placeholder = searchFor })
             <span class="input-group-btn">
                 <button class="btn btn-default" type="submit">@Html.Lang("Side.Search.Go")</button>
             </span>

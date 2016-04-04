@@ -104,7 +104,7 @@ namespace MVCForum.Website.ViewModels
         public string Name { get; set; }
 
         [UIHint(AppConstants.EditorType), AllowHtml]
-        [StringLength(6000)]
+        [StringLength(8000)]
         public string Content { get; set; }
 
         [ForumMvcResourceDisplayName("Post.Label.IsStickyTopic")]

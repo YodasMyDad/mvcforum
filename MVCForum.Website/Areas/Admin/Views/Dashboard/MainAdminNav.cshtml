@@ -40,9 +40,50 @@
             </a>
         </li>
         <li>
+            <a href="#" data-toggle="collapse" data-target="#membership">
+                <i class="fa fa-fw fa-users"></i> Membership <i class="fa fa-fw fa-caret-down"></i>
+            </a>
+            <ul id="membership" class="collapse">
+                <li>
+                    <a href="@Url.Action("Manage", "Account", new { area = "Admin" }, null)" class="@(currentController == "account" && currentAction == "manage" ? "active" : "")">Manage Users</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ManageRoles", "Account", new { area = "Admin" }, null)" class="@(currentController == "account" && currentAction == "manageroles" ? "active" : "")">Manage Users Roles</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ListAllFirms", "Account", new { area = "Admin" }, null)" class="@(currentController == "account" && currentAction == "listallfirms" ? "active" : "")">Manage Firms</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ListAllRoles", "Account", new { area = "Admin" }, null)" class="@(currentController == "account" && currentAction == "listallroles" ? "active" : "")">Manage Roles</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("AddRole", "Account", new { area = "Admin" }, null)" class="@(currentController == "account" && currentAction == "addrole" ? "active" : "")">Add Roles</a>
+                </li>
+                <li>
+                    <a href="@Url.Action("AddFirm", "Account", new { area = "Admin" }, null)" class="@(currentController == "account" && currentAction == "addfirm" ? "active" : "")">Add Firm</a>
+                </li>
+                <!--
+                           <li>
+                                <a href="@Url.Action("Index", "AdminSocial", new { area = "Admin" }, null)" class="@(currentController == "adminsocial" && currentAction == "index" ? "active" : "")">Social Logins</a>
+                            </li>
+            -->
+                <li>
+                    <a href="@Url.Action("Members", "ImportExport", new { area = "Admin" }, null)" class="@(currentController == "importexport" && currentAction == "members" ? "active" : "")">Import / Export</a>
+                </li>
+            </ul>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "Permissions", new { area = "Admin" }, null)" class="@(currentController == "permissions" && currentAction == "index" ? "active" : "")">
+                <i class="fa fa-fw fa-check-square-o"></i>Manage Permissions
+            </a>
+        </li>
+        <li>
             <a href="@Url.Action("Index", "AdminCategory", new { area = "Admin" }, null)" class="@(currentController == "admincategory" && currentAction == "index" ? "active" : "")">
                 <i class="fa fa-fw fa-folder-open-o"></i> Categories
             </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "Reports", new { area = "Admin" }, null)" class="@(currentController == "settings" && currentAction == "reports" ? "active" : "")"><i class="fa fa-fw fa-file-text-o"></i> Reports</a>
         </li>
         <li>
             <a href="#" data-toggle="collapse" data-target="#tags">
@@ -62,6 +103,7 @@
             </ul>
 
         </li>
+        <!--
         <li>
             <a href="@Url.Action("Index", "AdminBadge", new { area = "Admin" })" class="@(currentController == "adminbadge" && currentAction == "index" ? "active" : "")">
                 <i class="fa fa-fw fa-trophy"></i> Badges
@@ -80,28 +122,7 @@
                 </li>
             </ul>
         </li>
-        <li>
-            <a href="#" data-toggle="collapse" data-target="#membership">
-                <i class="fa fa-fw fa-users"></i> Membership <i class="fa fa-fw fa-caret-down"></i>
-            </a>
-            <ul id="membership" class="collapse">
-                <li>
-                    <a href="@Url.Action("Manage", "Account", new { area = "Admin" }, null)" class="@(currentController == "account" && currentAction == "manage" ? "active" : "")">Manage Users</a>
-                </li>
-                <li>
-                    <a href="@Url.Action("ListAllRoles", "Account", new { area = "Admin" }, null)" class="@(currentController == "account" && currentAction == "listallroles" ? "active" : "")">Manage Roles</a>
-                </li>
-                <li>
-                    <a href="@Url.Action("AddRole", "Account", new { area = "Admin" }, null)" class="@(currentController == "account" && currentAction == "addrole" ? "active" : "")">Add Roles</a>
-                </li>
-                <li>
-                    <a href="@Url.Action("Index", "AdminSocial", new { area = "Admin" }, null)" class="@(currentController == "adminsocial" && currentAction == "index" ? "active" : "")">Social Logins</a>
-                </li>
-                <li>
-                    <a href="@Url.Action("Members", "ImportExport", new { area = "Admin" }, null)" class="@(currentController == "importexport" && currentAction == "members" ? "active" : "")">Import / Export</a>
-                </li>
-            </ul>
-        </li>
+-->
         <li>
             <a href="#" data-toggle="collapse" data-target="#spam">
                 <i class="fa fa-fw fa-frown-o"></i> Spam Prevention <i class="fa fa-fw fa-caret-down"></i>
@@ -113,9 +134,11 @@
                 <li>
                     <a href="@Url.Action("Index", "BannedWord", new { area = "Admin" })" class="@(currentController == "bannedword" && currentAction == "index" ? "active" : "")">Banned &amp; Stop Words</a>
                 </li>
+<!--
                 <li>
                     <a href="@Url.Action("Akismet", "AdminSpam", new { area = "Admin" })" class="@(currentController == "adminspam" && currentAction == "akismet" ? "active" : "")">Akismet</a>
                 </li>
+--> 
                 <li>
                     <a href="@Url.Action("RegistrationQuestion", "AdminSpam", new { area = "Admin" })" class="@(currentController == "adminspam" && currentAction == "registrationquestion" ? "active" : "")">Registration Question</a>
                 </li>
@@ -148,9 +171,11 @@
                 <i class="fa fa-fw fa-bolt"></i> Batch Tools <i class="fa fa-fw fa-caret-down"></i>
             </a>
             <ul id="batch" class="collapse">
+<!--
                 <li>
                     <a href="@Url.Action("BatchDeleteMembers", "Batch", new { area = "Admin" }, null)" class="@(currentController == "batch" && currentAction == "batchdeletemembers" ? "active" : "")">Batch Delete Members</a>
                 </li>
+-->
                 <li>
                     <a href="@Url.Action("BatchMoveTopics", "Batch", new { area = "Admin" }, null)" class="@(currentController == "batch" && currentAction == "batchmovetopics" ? "active" : "")">Batch Move Topics</a>
                 </li>

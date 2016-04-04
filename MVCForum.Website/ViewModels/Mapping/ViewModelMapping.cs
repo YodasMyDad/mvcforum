@@ -18,10 +18,77 @@ namespace MVCForum.Website.ViewModels.Mapping
             var viewModel = new SingleMemberListViewModel
             {
                 IsApproved = user.IsApproved,
+                IsVotingMember = user.IsVotingMember,
+                JobTitle = user.JobTitle,
+                Email = user.Email,
+                City = user.City,
+                Country = user.Country,
+                MembershipFirmName = user.MembershipFirm.FirmName, 
                 Id = user.Id,
                 IsLockedOut = user.IsLockedOut,
+                IsBanned = user.IsBanned,
                 Roles = user.Roles.Select(x => x.RoleName).ToArray(),
                 UserName = user.UserName
+            };
+            return viewModel;
+        }
+
+        public static SingleMemberListViewModel RegistrationToSingleMemberListViewModel(AnnualMeetingRegistration user)
+        {
+            var viewModel = new SingleMemberListViewModel
+            {
+                IsApproved = user.MembershipUser.IsApproved,
+                IsVotingMember = user.MembershipUser.IsVotingMember,
+                JobTitle = user.MembershipUser.JobTitle,
+                Email = user.MembershipUser.Email,
+                City = user.MembershipUser.City,
+                Country = user.MembershipUser.Country,
+                MembershipFirmName = user.MembershipUser.MembershipFirm.FirmName,
+                MembershipFirmId = user.MembershipUser.MembershipFirm.Id,
+                Id = user.Id,
+                IsLockedOut = user.MembershipUser.IsLockedOut,
+                IsBanned = user.MembershipUser.IsBanned,
+                Roles = user.MembershipUser.Roles.Select(x => x.RoleName).ToArray(),
+                UserName = user.MembershipUser.UserName
+            };
+            return viewModel;
+        }
+        
+        public static RegisteredMemberListViewModel RegisterUserToRegisteredMemberListViewModel(SingleRegisteredMemberListViewModel regUser, MembershipUser user)
+        {
+             var viewModel = new RegisteredMemberListViewModel
+            {
+                RegUserName = regUser.UserName,
+                RegJobTitle = regUser.JobTitle,
+                RegIsVotingMember = regUser.IsVotingMember,
+                RegMembershipFirmName = regUser.MembershipFirmName,
+                RegMembershipFirmSizeBanding = user.MembershipFirm.SizeBanding,
+                RegMembershipFirmVendor = user.MembershipFirm.Vendor,
+                UserName = user.UserName, 
+                IsVotingMember = user.IsVotingMember,
+                JobTitle = user.JobTitle,
+                Email = user.Email,
+            };
+            return viewModel;
+
+        }
+
+        public static SingleRegisteredMemberListViewModel RegistrationToSingleRegisteredMemberListViewModel(AnnualMeetingRegistration user)
+        {
+            var viewModel = new SingleRegisteredMemberListViewModel
+            {
+                IsApproved = user.MembershipUser.IsApproved,
+                IsVotingMember = user.MembershipUser.IsVotingMember,
+                JobTitle = user.MembershipUser.JobTitle,
+                Email = user.MembershipUser.Email,
+                City = user.MembershipUser.City,
+                Country = user.MembershipUser.Country,
+                MembershipFirmName = user.MembershipUser.MembershipFirm.FirmName,
+                MembershipFirmId = user.MembershipUser.MembershipFirm.Id,
+                IsLockedOut = user.MembershipUser.IsLockedOut,
+                IsBanned = user.MembershipUser.IsBanned,
+                Roles = user.MembershipUser.Roles.Select(x => x.RoleName).ToArray(),
+                UserName = user.MembershipUser.UserName
             };
             return viewModel;
         }
@@ -36,6 +103,12 @@ namespace MVCForum.Website.ViewModels.Mapping
                 IsBanned = user.IsBanned,
                 Roles = user.Roles.Select(x => x.RoleName).ToArray(),
                 UserName = user.UserName,
+                JobTitle = user.JobTitle,
+                City = user.City,
+                Country = user.Country,
+                MembershipFirm = user.MembershipFirm.FirmName,
+                MembershipFirmId = user.MembershipFirm.Id,
+                IsVotingMember = user.IsVotingMember,
                 Age = user.Age,
                 Comment = user.Comment,
                 Email = user.Email,
@@ -70,6 +143,73 @@ namespace MVCForum.Website.ViewModels.Mapping
             var viewModel = new MembershipRole
             {
                 RoleName = roleViewModel.RoleName
+            };
+            return viewModel;
+        }
+        public static FirmViewModel FirmToFirmViewModel(MembershipFirm firm)
+        {
+            var viewModel = new FirmViewModel
+            {
+                Id = firm.Id,
+                FirmName = firm.FirmName,
+                Address1 = firm.Address1,
+                Address2 = firm.Address2,
+                Address3 = firm.Address3,
+                City = firm.City,
+                County = firm.County,
+                Country = firm.Country,
+                Postcode = firm.Postcode,
+                IsApproved = firm.IsApproved,
+                IsActive = firm.IsActive,
+                SizeBanding = firm.SizeBanding,
+                US = firm.US,
+                Canada = firm.Canada,
+                UK = firm.UK,
+                EMEA = firm.EMEA,
+                APAC = firm.APAC,
+                Other = firm.Other,
+                ProfessionalServices = firm.ProfessionalServices,
+                Vendor = firm.Vendor,
+                CreateDate = firm.CreateDate,
+                LastModified = firm.LastModified,
+                MemberInfoCheck = firm.MemberInfoCheck,
+                SizeCheck = firm.SizeCheck,
+                Comment = firm.Comment,
+                Website = firm.Website
+
+            };
+            return viewModel;
+        }
+
+
+        public static MembershipFirm FirmViewModelToFirm(FirmViewModel firmViewModel)
+        {
+            var viewModel = new MembershipFirm
+            {
+                FirmName = firmViewModel.FirmName,
+                Address1 = firmViewModel.Address1,
+                Address2 = firmViewModel.Address2,
+                Address3 = firmViewModel.Address3,
+                City = firmViewModel.City,
+                County = firmViewModel.County,
+                Country = firmViewModel.Country,
+                Postcode = firmViewModel.Postcode,
+                IsApproved = firmViewModel.IsApproved,
+                IsActive = firmViewModel.IsActive,
+                SizeBanding = firmViewModel.SizeBanding,
+                US = firmViewModel.US,
+                Canada = firmViewModel.Canada,
+                UK = firmViewModel.UK,
+                EMEA = firmViewModel.EMEA,
+                APAC = firmViewModel.APAC,
+                Other = firmViewModel.Other,
+                ProfessionalServices = firmViewModel.ProfessionalServices,
+                CreateDate = firmViewModel.CreateDate,
+                LastModified = firmViewModel.LastModified,
+                MemberInfoCheck = firmViewModel.MemberInfoCheck,
+                SizeCheck = firmViewModel.SizeCheck,
+                Comment = firmViewModel.Comment,
+                Website = firmViewModel.Website
             };
             return viewModel;
         }
@@ -133,6 +273,8 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.DisableStandardRegistration = settingsViewModel.DisableStandardRegistration;
             existingSettings.TermsAndConditions = settingsViewModel.TermsAndConditions;
             existingSettings.EnableDefaultCategoryinDiscussions = settingsViewModel.EnableDefaultCategoryinDiscussions;
+            existingSettings.EnableHomePageHeader = settingsViewModel.EnableHomePageHeader;
+            existingSettings.HomePageHeader = settingsViewModel.HomePageHeader;
             return existingSettings;
         }
 
@@ -192,6 +334,8 @@ namespace MVCForum.Website.ViewModels.Mapping
                 AgreeToTermsAndConditions = currentSettings.AgreeToTermsAndConditions ?? false,
                 DisableStandardRegistration = currentSettings.DisableStandardRegistration ?? false,
                 EnableDefaultCategoryinDiscussions = currentSettings.EnableDefaultCategoryinDiscussions ?? false,
+                EnableHomePageHeader = currentSettings.EnableHomePageHeader ?? false,
+                HomePageHeader = currentSettings.HomePageHeader,
             };
 
             return settingViewModel;

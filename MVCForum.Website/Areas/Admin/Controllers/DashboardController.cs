@@ -86,6 +86,19 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        public PartialViewResult PendingUsers()
+        {
+            if (Request.IsAjaxRequest())
+            {
+                using (UnitOfWorkManager.NewUnitOfWork())
+                {
+                    return PartialView(new PendingUsersViewModels { Users = MembershipService.GetPendingUsers() });
+                }
+            }
+            return null;
+        }
+
+        [HttpPost]
         public PartialViewResult LowestPointUsers()
         {
             if (Request.IsAjaxRequest())

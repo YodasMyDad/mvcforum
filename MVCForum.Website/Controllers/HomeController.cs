@@ -30,27 +30,34 @@ namespace MVCForum.Website.Controllers
             _activityService = activityService;
         }
 
+        [RequireHttps]
         public ActionResult Index()
         {
             return View();
         }
 
+
+        [RequireHttps]
+        [Authorize]
         public ActionResult Leaderboard()
         {
             return View();
         }
 
+        [RequireHttps]
         public ActionResult Following()
         {
 
             return View();
         }
 
+        [RequireHttps]
         public ActionResult PostedIn()
         {
             return View();
         }
 
+        [RequireHttps]
         public ActionResult TermsAndConditions()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -65,6 +72,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+        [RequireHttps]
         [HttpPost]
         public ActionResult TermsAndConditions(TermsAndConditionsViewModel viewmodel)
         {
@@ -90,6 +98,8 @@ namespace MVCForum.Website.Controllers
             return View(viewmodel);
         }
 
+        [RequireHttps]
+        [Authorize]
         public ActionResult Activity(int? p)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -112,6 +122,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+        [RequireHttps]
         [OutputCache(Duration = (int)CacheTimes.TwoHours)]
         public ActionResult LatestRss()
         {
@@ -162,6 +173,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+        [RequireHttps]
         [OutputCache(Duration = (int)CacheTimes.TwoHours)]
         public ActionResult ActivityRss()
         {
@@ -220,6 +232,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+        [RequireHttps]
         [OutputCache(Duration = (int)CacheTimes.TwoHours)]
         public ActionResult GoogleSitemap()
         {
@@ -253,6 +266,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+        [RequireHttps]
         [OutputCache(Duration = (int)CacheTimes.TwoHours)]
         public ActionResult GoogleMemberSitemap()
         {
@@ -282,6 +296,7 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+        [RequireHttps]
         [OutputCache(Duration = (int)CacheTimes.TwoHours)]
         public ActionResult GoogleCategorySitemap()
         {

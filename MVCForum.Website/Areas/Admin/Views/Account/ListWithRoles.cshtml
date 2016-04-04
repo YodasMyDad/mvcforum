@@ -1,0 +1,77 @@
+﻿@using MVCForum.Domain.Constants
+@using MVCForum.Website.Application
+@model MVCForum.Website.Areas.Admin.ViewModels.MemberListViewModel
+@{
+    ViewBag.Title = "Users Roles";
+}
+
+<h2>
+    @ViewBag.Title
+</h2>
+        @using (Html.BeginForm("ManageRoles", "Account", FormMethod.Post))
+        {
+            <div class="input-group membersadminsearch">
+                @Html.TextBoxFor(x => Model.Search, new { @class = "form-control" })
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">Search</button>
+                </span>
+            </div>
+            @Html.HiddenFor(x => x.PageIndex)
+        }
+
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Edit</th>
+                    <th>Users</th>
+                    <th>Firm</th>
+                    <th>Is Voting Member</th>
+                    <th>Roles</th>
+                 </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model.Users)
+                {
+                    var disabled = user.Id == Model.Id;
+
+                    <tr>
+                        <td>
+                            <a href="@Url.Action("Edit", new { user.Id })" class="btn-mvc">
+                                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <strong>@Html.DisplayFor(modelItem => user.UserName)</strong>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => user.MembershipFirmName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => user.IsVotingMember)
+                        </td>
+                        <td>
+                            <span class="listrolecbholder">
+                                @foreach (var role in @Model.AllRoles)
+                                {
+                                    var showChecked = user.Roles.Contains(role.RoleName) ? "checked='checked'" : "";
+                                    var disablecb = disabled ? "disabled='disabled'" : "";
+                                    <span class="listrolecb">
+                                        <input type="checkbox" name="Roles-@user.Id" value="@role.RoleName" @showChecked @disablecb /> @Html.Raw(role.RoleName)
+                                    </span><br/>
+                                }
+                                <input type="hidden" id="userId" value="@user.Id" />
+                            </span>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+        @if (Model.TotalPages > 1)
+        {
+            @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
+        }
+
+

@@ -110,6 +110,7 @@
     <Compile Include="Data\Caching\CachingConfiguration.cs" />
     <Compile Include="Data\Context\MVCForumContext.cs" />
     <Compile Include="Data\Mapping\ActivityMapping.cs" />
+    <Compile Include="Data\Mapping\AnnualMeetingRegistrationMapping.cs" />
     <Compile Include="Data\Mapping\BadgeMapping.cs" />
     <Compile Include="Data\Mapping\BadgeTypeTimeLastCheckedMapping.cs" />
     <Compile Include="Data\Mapping\BannedEmailMapping.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="Data\Mapping\LanguageMapping.cs" />
     <Compile Include="Data\Mapping\LocaleResourceKeyMapping.cs" />
     <Compile Include="Data\Mapping\LocaleStringResourceMapping.cs" />
+    <Compile Include="Data\Mapping\MembershipFirmMapping.cs" />
     <Compile Include="Data\Mapping\MembershipRoleMapping.cs" />
     <Compile Include="Data\Mapping\MembershipUserMapping.cs" />
     <Compile Include="Data\Mapping\MembershipUserPointsMapping.cs" />
@@ -141,6 +143,7 @@
     <Compile Include="Data\Mapping\TopicTagMapping.cs" />
     <Compile Include="Data\Mapping\UploadedFileMapping.cs" />
     <Compile Include="Data\Mapping\VoteMapping.cs" />
+    <Compile Include="FirmService.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Data\UnitOfWork\UnitOfWork.cs" />
     <Compile Include="Data\UnitOfWork\UnitOfWorkManager.cs" />

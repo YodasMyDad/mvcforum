@@ -16,12 +16,13 @@ using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Services.Data.Context;
 using MVCForum.Utilities;
+using System.Text.RegularExpressions;
 
 namespace MVCForum.Services
 {
     public partial class MembershipService : IMembershipService
     {
-        private const int MaxHoursToResetPassword = 48;
+        private const int MaxHoursToResetPassword = 500;
         private readonly MVCForumContext _context;
         private readonly IEmailService _emailService;
         private readonly IPostService _postService;
@@ -102,9 +103,18 @@ namespace MVCForum.Services
 
         public MembershipUser Add(MembershipUser newUser)
         {
-            return _context.MembershipUser.Add(newUser);
+            if (newUser.Slug == null)
+            {
+                newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)), null);
+            }
+
+         return _context.MembershipUser.Add(newUser);
         }
 
+        public AnnualMeetingRegistration AddAnnualMeetingRegistration(AnnualMeetingRegistration newRegistration)
+        {
+            return _context.AnnualMeetingRegistration.Add(newRegistration);
+        }
         public MembershipUser SanitizeUser(MembershipUser membershipUser)
         {
             membershipUser.Avatar = StringUtils.SafePlainText(membershipUser.Avatar);
@@ -256,20 +266,28 @@ namespace MVCForum.Services
                            IsApproved = false,
                            IsLockedOut = false,
                            LastLoginDate = (DateTime)SqlDateTime.MinValue,
-                       };
+                           MembershipFirm = GetFirmByName("Not Listed"),
+            };
         }
 
+
+        public MembershipFirm GetFirmByName(string FirmName)
+        {
+
+            return _context.MembershipFirm
+                .FirstOrDefault(name => name.FirmName == FirmName);
+
+        }
         /// <summary>
-        /// Create new user
-        /// </summary>
-        /// <param name="newUser"></param>
-        /// <returns></returns>
+                /// Create new user
+                /// </summary>
+                /// <param name="newUser"></param>
+                /// <returns></returns>
         public MembershipCreateStatus CreateUser(MembershipUser newUser)
         {
             newUser = SanitizeUser(newUser);
             var settings = _settingsService.GetSettings(false);
-
-
+            
             var status = MembershipCreateStatus.Success;
 
             var e = new RegisterUserEventArgs { User = newUser };
@@ -333,6 +351,8 @@ namespace MVCForum.Services
                     // url generator
                     newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)), null);
 
+                    // Set Default Firm
+                    newUser.MembershipFirm = GetFirmByName("Not Listed");
                     try
                     {
                         Add(newUser);
@@ -340,8 +360,8 @@ namespace MVCForum.Services
                         if (settings.EmailAdminOnNewMemberSignUp)
                         {
                             var sb = new StringBuilder();
-                            sb.AppendFormat("<p>{0}</p>", string.Format(_localizationService.GetResourceString("Members.NewMemberRegistered"), settings.ForumName, settings.ForumUrl));
-                            sb.AppendFormat("<p>{0} - {1}</p>", newUser.UserName, newUser.Email);
+                            sb.AppendFormat("<p>{0}</p>", string.Format(_localizationService.GetResourceString("Members.NewMemberRegistered"), settings.ForumName, settings.ForumUrl, "<a href=\"" + settings.ForumUrl + "admin/account/edit/" + newUser.Id + "\">Click Here</a>"));
+                            sb.AppendFormat("<p>Username: <strong>{0}</strong></p><p>Email: </strong>{1}<strong></p><p>Company: <strong>{2}</strong></p>", newUser.UserName, newUser.Email, newUser.Comment);
                             var email = new Email
                                             {
                                                 EmailTo = settings.AdminEmailAddress,
@@ -373,12 +393,19 @@ namespace MVCForum.Services
                 .FirstOrDefault(x => x.Id == id);
         }
 
+
+        public MembershipUser Get(Guid? id)
+        {
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .FirstOrDefault(x => x.Id == id);
+        }
         /// <summary>
-        /// Get a user by username
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="removeTracking"></param>
-        /// <returns></returns>
+                /// Get a user by username
+                /// </summary>
+                /// <param name="username"></param>
+                /// <param name="removeTracking"></param>
+                /// <returns></returns>
         public MembershipUser GetUser(string username, bool removeTracking = false)
         {
             MembershipUser member;
@@ -421,11 +448,26 @@ namespace MVCForum.Services
             {
                 return _context.MembershipUser.AsNoTracking()
                     .Include(x => x.Roles)
-                    .FirstOrDefault(name => name.Email == email);
+                    .FirstOrDefault(name => name.Email.Equals(email, StringComparison.CurrentCultureIgnoreCase));
             }
             return _context.MembershipUser
                 .Include(x => x.Roles)
-                .FirstOrDefault(name => name.Email == email);
+                .FirstOrDefault(name => name.Email.Equals(email, StringComparison.CurrentCultureIgnoreCase));
+        }
+
+        /// <summary>
+        /// Get a user by slug
+        /// </summary>
+        /// <param name="slug"></param>
+        /// <returns></returns>
+        public bool RegistrationExists(string email, DateTime eventDate)
+        {
+            email = StringUtils.SafePlainText(email);
+            var results = _context.AnnualMeetingRegistration
+                        .Where(name => name.MembershipUser.Email.Equals(email, StringComparison.CurrentCultureIgnoreCase))
+                        .Where(x => x.EventDate == eventDate)
+                        .ToList();
+            return (results.Count > 0);
         }
 
         /// <summary>
@@ -604,6 +646,35 @@ namespace MVCForum.Services
             return _context.MembershipUser.ToList();
         }
 
+        public PagedList<MembershipUser> GetAllActive(int pageIndex, int pageSize)
+        {
+            var totalCount = _context.MembershipUser.Where(x => x.IsApproved && x.IsBanned == false).Count();
+            var results = _context.MembershipUser
+                                .Where(x => x.IsApproved && x.IsBanned == false)
+                                .OrderBy(x => x.UserName)
+                                .Skip((pageIndex - 1) * pageSize)
+                                .Take(pageSize)
+                                .ToList();
+
+            return new PagedList<MembershipUser>(results, pageIndex, pageSize, totalCount);
+        }
+
+        public IList<MembershipUser> GetAllActive()
+        {
+            return _context.MembershipUser
+                                .Where(x => x.IsApproved && x.IsBanned == false)
+                                .OrderBy(x => x.UserName)
+                                .ToList();
+          }
+
+        public List<AnnualMeetingRegistration> GetAllRegistered()
+        {
+            return _context.AnnualMeetingRegistration
+                                .Where(x => x.MembershipUser.IsApproved && !x.MembershipUser.IsBanned)
+                                .OrderBy(x => x.MembershipUser.MembershipFirm.FirmName).ThenBy(y => y.MembershipUser.UserName)
+                                .ToList();
+        }
+
         public PagedList<MembershipUser> GetAll(int pageIndex, int pageSize)
         {
             var totalCount = _context.MembershipUser.Count();
@@ -616,11 +687,39 @@ namespace MVCForum.Services
             return new PagedList<MembershipUser>(results, pageIndex, pageSize, totalCount);
         }
 
-        public PagedList<MembershipUser> SearchMembers(string search, int pageIndex, int pageSize)
+        public PagedList<MembershipUser> SearchActiveMembers(string search, int pageIndex, int pageSize)
         {
-            search = StringUtils.SafePlainText(search);
+            search = StringUtils.SafePlainText(search).Replace("&amp;","&");
             var query = _context.MembershipUser
-    .Where(x => x.UserName.ToUpper().Contains(search.ToUpper()) || x.Email.ToUpper().Contains(search.ToUpper()));
+                .Where(x => x.IsApproved && x.IsBanned == false)
+                .Where(x => x.UserName.ToUpper().Contains(search.ToUpper()) || x.Email.ToUpper().Contains(search.ToUpper()) || x.MembershipFirm.FirmName.ToUpper().Contains(search.ToUpper()) || x.City.ToUpper().Contains(search.ToUpper()) || x.Country.ToUpper().Contains(search.ToUpper()));
+
+            var results = query
+                .OrderBy(x => x.UserName)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new PagedList<MembershipUser>(results, pageIndex, pageSize, query.Count());
+        }
+        public PagedList<MembershipUser> GetFirmMembers(Guid firmId, int pageIndex, int pageSize)
+        {
+             var query = _context.MembershipUser
+                .Where(x => x.MembershipFirm.Id == firmId);
+
+            var results = query
+                .OrderBy(x => x.UserName)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new PagedList<MembershipUser>(results, pageIndex, pageSize, query.Count());
+        }
+         public PagedList<MembershipUser> SearchMembers(string search, int pageIndex, int pageSize)
+        {
+            search = StringUtils.SafePlainText(search).Replace("&amp;", "&");
+            var query = _context.MembershipUser
+                .Where(x => x.UserName.ToUpper().Contains(search.ToUpper()) || x.Email.ToUpper().Contains(search.ToUpper()) || x.MembershipFirm.FirmName.ToUpper().Contains(search.ToUpper()) || x.MembershipFirm.City.ToUpper().Contains(search.ToUpper()) || x.Country.ToUpper().Contains(search.ToUpper()));
 
             var results = query
                 .OrderBy(x => x.UserName)
@@ -660,6 +759,11 @@ namespace MVCForum.Services
         {
             return Get(id);
         }
+        public MembershipUser GetUser(Guid? id)
+        {
+            return Get(id);
+        }
+
 
         /// <summary>
         /// Delete a member
@@ -693,6 +797,14 @@ namespace MVCForum.Services
             return _context.MembershipUser.Include(x => x.Roles).AsNoTracking()
               .OrderByDescending(x => x.CreateDate)
               .Take(amountToTake)
+              .ToList();
+        }
+
+        public IList<MembershipUser> GetPendingUsers()
+        {
+            return _context.MembershipUser.Include(x => x.Roles).AsNoTracking()
+              .OrderByDescending(x => x.CreateDate)
+              .Where(x => !x.IsApproved )
               .ToList();
         }
 
@@ -770,10 +882,20 @@ namespace MVCForum.Services
         {
             var csv = new StringBuilder();
 
+            csv.AppendLine("Username,Email,JobTitle,Join Date,IsApproved,IsLockedOut,Last Activity,Last Login,IsVotingMember,Firm Name,Firm Address1,Firm Address2,Firm Addres3,Firm City,Firm County/State,Firm Country,Firm Postcode/Zipcode,Firm Website,Firm Size Banding,Professional Services?,Vendor?,US,Canada,UK,EMEA,APAC,Other,Firm Active,Firm Approved,Firm Join Date,Firm Last Modified,Firm Member Info Check Date");
+
             foreach (var user in GetAll())
             {
-                csv.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7}", user.UserName, user.Email, user.CreateDate, user.Age,
-                    user.Location, user.Website, user.Facebook, user.Signature);
+                csv.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31}",
+                    user.UserName, user.Email, "\"" + user.JobTitle + "\"", user.CreateDate,
+                    user.IsApproved, user.IsLockedOut, user.LastActivityDate, user.LastLoginDate, user.IsVotingMember,
+                    "\"" + user.MembershipFirm.FirmName + "\"", "\"" + user.MembershipFirm.Address1 + "\"", "\"" + user.MembershipFirm.Address2 + "\"", "\"" + user.MembershipFirm.Address3 + "\"", "\"" + user.MembershipFirm.City + "\"",
+                    "\"" + user.MembershipFirm.County + "\"", "\"" + user.MembershipFirm.Country + "\"", "\"" + user.MembershipFirm.Postcode + "\"", user.MembershipFirm.Website, user.MembershipFirm.SizeBanding,
+                    user.MembershipFirm.ProfessionalServices,
+                    user.MembershipFirm.Vendor, user.MembershipFirm.US, user.MembershipFirm.Canada, user.MembershipFirm.UK, user.MembershipFirm.EMEA,
+                    user.MembershipFirm.APAC, user.MembershipFirm.Other, user.MembershipFirm.IsActive, user.MembershipFirm.IsApproved,
+                    user.MembershipFirm.CreateDate, user.MembershipFirm.LastModified, user.MembershipFirm.MemberInfoCheck);
+
                 csv.AppendLine();
             }
 
@@ -910,6 +1032,141 @@ namespace MVCForum.Services
                     }
                     userToImport.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
                     Add(userToImport);
+                }
+                catch (Exception ex)
+                {
+                    report.Errors.Add(new CsvErrorWarning { ErrorWarningType = CsvErrorWarningType.GeneralError, Message = ex.Message });
+                }
+            }
+
+            return report;
+        }
+
+        /// <summary>
+        /// Extract users from CSV format and import them
+        /// </summary>
+        /// <returns></returns>
+        public CsvReport AttendeesFromCsv(List<string> allLines, DateTime eventDate)
+        {
+            var commaSeparator = new[] { ',' };
+            var report = new CsvReport();
+
+            if (allLines == null || allLines.Count == 0)
+            {
+                report.Errors.Add(new CsvErrorWarning
+                {
+                    ErrorWarningType = CsvErrorWarningType.BadDataFormat,
+                    Message = "No users found."
+                });
+                return report;
+            }
+            var settings = _settingsService.GetSettings(true);
+            var lineCounter = 0;
+            foreach (var line in allLines)
+            {
+                try
+                {
+                    lineCounter++;
+                    // Each line is made up of n items in a predefined order
+                    //"(?:^|,)(?=[^""]|("")?)""?((?(1)[^""]*|[^,""]*))""?(?=,|$)"
+                    //var values = line.Split(commaSeparator);
+                    string[] values = Regex.Split(line, ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+                    if (values.Length < 2)
+                    {
+                        report.Errors.Add(new CsvErrorWarning
+                        {
+                            ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
+                            Message = $"Line {lineCounter}: insufficient values supplied."
+                        });
+
+                        continue;
+                    }
+
+                    if (lineCounter > 1)
+                    { 
+                        DateTime registerDate = Convert.ToDateTime(values[0]);
+                        var firstName = values[1];
+                        if (firstName.IsNullEmpty())
+                        {
+                            report.Errors.Add(new CsvErrorWarning
+                            {
+                                ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
+                                Message = $"Line {lineCounter}: no firstName supplied."
+                            });
+
+                            continue;
+                        }
+
+                        var lastName= values[2];
+                        if (lastName.IsNullEmpty())
+                        {
+                            report.Errors.Add(new CsvErrorWarning
+                            {
+                                ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
+                                Message = $"Line {lineCounter}: no lastname supplied."
+                            });
+
+                            continue;
+                        }
+
+                        var eMail = values[3];
+                        if (eMail.IsNullEmpty())
+                        {
+                            report.Errors.Add(new CsvErrorWarning
+                            {
+                                ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
+                                Message = $"Line {lineCounter}: no email supplied."
+                            });
+
+                            continue;
+                        }
+
+                        var company = values[4].Replace("\"","");
+                        if (company.IsNullEmpty())
+                        {
+                            report.Errors.Add(new CsvErrorWarning
+                            {
+                                ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
+                                Message = $"Line {lineCounter}: no company supplied."
+                            });
+
+                            continue;
+                        }
+
+                        var userToImport = GetUserByEmail(eMail);
+                        if (userToImport == null)
+                        {
+                            report.Errors.Add(new CsvErrorWarning
+                            {
+                                ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
+                                Message = $"Line {lineCounter}: {eMail} is not a registered member - correct and reimport."
+                            });
+
+                            continue;
+                        }
+
+                        if (!RegistrationExists(eMail, eventDate))
+                        {
+                            var registration = new AnnualMeetingRegistration();
+                            registration.RegistrationDate = registerDate;
+                            registration.EventDate = eventDate;
+                            registration.FirstName = firstName;
+                            registration.Surname = lastName;
+                            registration.EMail = eMail;
+                            registration.FirmName = company;
+                            registration.MembershipUser = userToImport;
+
+                            AddAnnualMeetingRegistration(registration);
+                        } else
+                        {
+                            report.Errors.Add(new CsvErrorWarning
+                            {
+                                ErrorWarningType = CsvErrorWarningType.MissingKeyOrValue,
+                                Message = $"Line {lineCounter}: {eMail} already registered."
+                            });
+
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -1184,6 +1441,9 @@ namespace MVCForum.Services
             var existingUser = GetUser(user.Id);
             if (existingUser == null)
             {
+                existingUser = GetUserByEmail(user.Email);
+            }
+            if (existingUser == null) { 
                 return false;   
             }
             existingUser.PasswordResetToken = CreatePasswordResetToken();

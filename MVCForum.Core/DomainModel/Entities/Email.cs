@@ -15,6 +15,7 @@ namespace MVCForum.Domain.DomainModel
         public string Body { get; set; }
         public string Subject { get; set; }
         public string NameTo { get; set; }
+        public Guid IdTo { get; set; }
         public DateTime DateCreated { get; set; }
     }
 }

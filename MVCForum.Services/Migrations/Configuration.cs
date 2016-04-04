@@ -219,7 +219,8 @@ namespace MVCForum.Services.Migrations
                         MarkAsSolutionReminderTimeFrame = 7,
                         EnableEmoticons = true,
                         DisableStandardRegistration = false,
-                        EnableDefaultCategoryinDiscussions = false
+                        EnableDefaultCategoryinDiscussions = false,
+                        EnableHomePageHeader = false
                     };
 
                     context.Setting.Add(settings);

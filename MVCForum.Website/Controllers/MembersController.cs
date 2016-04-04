@@ -225,7 +225,7 @@ namespace MVCForum.Website.Controllers
             // You can return anything to reset the timer.
             return Json(new { Timer = "reset" }, JsonRequestBehavior.AllowGet);
         }
-
+        [Authorize]
         public ActionResult GetByName(string slug)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -255,6 +255,7 @@ namespace MVCForum.Website.Controllers
         /// Add a new user
         /// </summary>
         /// <returns></returns>
+        [RequireHttps]
         public ActionResult Register()
         {
             if (SettingsService.GetSettings().SuspendRegistration != true)
@@ -292,6 +293,7 @@ namespace MVCForum.Website.Controllers
         /// </summary>
         /// <param name="userModel"></param>
         /// <returns></returns>
+        [RequireHttps]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Register(MemberAddViewModel userModel)
@@ -304,7 +306,7 @@ namespace MVCForum.Website.Controllers
                     if (!string.IsNullOrEmpty(SettingsService.GetSettings().SpamQuestion))
                     {
                         // There is a spam question, if answer is wrong return with error
-                        if (userModel.SpamAnswer == null || userModel.SpamAnswer.Trim() != SettingsService.GetSettings().SpamAnswer)
+                        if (userModel.SpamAnswer == null || userModel.SpamAnswer.Trim().ToLower() != SettingsService.GetSettings().SpamAnswer.ToLower())
                         {
                             // POTENTIAL SPAMMER!
                             ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Error.WrongAnswerRegistration"));
@@ -354,7 +356,7 @@ namespace MVCForum.Website.Controllers
                 var settings = SettingsService.GetSettings();
                 var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
                 var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
-                var homeRedirect = false;
+                var homeRedirect = true;
 
                 var userToSave = new MembershipUser
                 {
@@ -362,6 +364,9 @@ namespace MVCForum.Website.Controllers
                     Email = userModel.Email,
                     Password = userModel.Password,
                     IsApproved = userModel.IsApproved,
+                    JobTitle = userModel.JobTitle,
+                    City = userModel.City,
+                    Country = userModel.Country,
                     Comment = userModel.Comment,
                 };
 
@@ -535,6 +540,7 @@ namespace MVCForum.Website.Controllers
                     {
                         EmailTo = userToSave.Email,
                         NameTo = userToSave.UserName,
+                        IdTo = userToSave.Id,
                         Subject = LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.Subject")
                     };
                     email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
@@ -638,6 +644,7 @@ namespace MVCForum.Website.Controllers
         /// Log on
         /// </summary>
         /// <returns></returns>
+        [RequireHttps]
         public ActionResult LogOn()
         {
             // Create the empty view model
@@ -658,6 +665,7 @@ namespace MVCForum.Website.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [RequireHttps]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult LogOn(LogOnViewModel model)
@@ -855,6 +863,9 @@ namespace MVCForum.Website.Controllers
                 Signature = user.Signature,
                 Age = user.Age,
                 Location = user.Location,
+                JobTitle = user.JobTitle,
+                City = user.City,
+                Country = user.Country,
                 Website = user.Website,
                 Twitter = user.Twitter,
                 Facebook = user.Facebook,
@@ -911,6 +922,8 @@ namespace MVCForum.Website.Controllers
                     foreach (var stopWord in stopWords)
                     {
                         if ((userModel.Facebook != null && userModel.Facebook.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
+                            (userModel.City!= null && userModel.City.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
+                            (userModel.Country!= null && userModel.Country.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
                             (userModel.Location != null && userModel.Location.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
                             (userModel.Signature != null && userModel.Signature.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
                             (userModel.Twitter != null && userModel.Twitter.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
@@ -970,8 +983,11 @@ namespace MVCForum.Website.Controllers
                     // Update other users properties
                     user.Age = userModel.Age;
                     user.Facebook = _bannedWordService.SanitiseBannedWords(userModel.Facebook, bannedWords);
+                    user.JobTitle = _bannedWordService.SanitiseBannedWords(userModel.JobTitle, bannedWords);
+                    user.City = _bannedWordService.SanitiseBannedWords(userModel.City, bannedWords);
+                    user.Country = _bannedWordService.SanitiseBannedWords(userModel.Country, bannedWords);
                     user.Location = _bannedWordService.SanitiseBannedWords(userModel.Location, bannedWords);
-                    user.Signature = _bannedWordService.SanitiseBannedWords(StringUtils.ScrubHtml(userModel.Signature, true), bannedWords);
+                    user.Signature = _bannedWordService.SanitiseBannedWords(userModel.Signature, bannedWords);
                     user.Twitter = _bannedWordService.SanitiseBannedWords(userModel.Twitter, bannedWords);
                     user.Website = _bannedWordService.SanitiseBannedWords(userModel.Website, bannedWords);
                     user.DisableEmailNotifications = userModel.DisableEmailNotifications;
@@ -1176,14 +1192,15 @@ namespace MVCForum.Website.Controllers
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
-
+        [Authorize]
+        [RequireHttps]
         public ActionResult Search(int? p, string search)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = p ?? 1;
-                var allUsers = string.IsNullOrEmpty(search) ? MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize) :
-                                    MembershipService.SearchMembers(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
+                var allUsers = string.IsNullOrEmpty(search) ? MembershipService.GetAllActive(pageIndex, SiteConstants.Instance.AdminListPageSize) :
+                                    MembershipService.SearchActiveMembers(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
 
                 // Redisplay list of users
                 var allViewModelUsers = allUsers.Select(user => new PublicSingleMemberListViewModel
@@ -1191,8 +1208,16 @@ namespace MVCForum.Website.Controllers
                                                                         UserName = user.UserName,
                                                                         NiceUrl = user.NiceUrl,
                                                                         CreateDate = user.CreateDate,
-                                                                        TotalPoints = user.TotalPoints,
-                                                                    }).ToList();
+                                                                        City = user.City,
+                                                                        Country = user.Country,
+                                                                        FirmName = user.MembershipFirm.FirmName,
+                                                                        FirmCity = user.MembershipFirm.City,
+                                                                        FirmCountry = user.MembershipFirm.Country,
+                                                                        IsVotingMember = user.IsVotingMember,
+                                                                        TotalPoints = user.TotalPoints
+
+                                                                    })
+                                                                    .ToList();
 
                 var memberListModel = new PublicMemberListViewModel
                 {
@@ -1326,6 +1351,7 @@ namespace MVCForum.Website.Controllers
                 {
                     EmailTo = user.Email,
                     NameTo = user.UserName,
+                    IdTo = user.Id,
                     Subject = LocalizationService.GetResourceString("Members.ForgotPassword.Subject")
                 };
                 email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
@@ -1345,6 +1371,87 @@ namespace MVCForum.Website.Controllers
             }
 
             return RedirectToAction("PasswordResetSent", "Members");
+        }
+
+        [RequireHttps]
+        [Authorize(Roles = AppConstants.AdminRoleName)]
+        public ActionResult ResetAllCurrentUsersPassword()
+        {
+
+            var allUsers = MembershipService.GetAll();
+
+            foreach (MembershipUser user in allUsers)
+            {
+
+                if (user.IsBanned == false && user.DisableEmailNotifications == false && user.Password == "Not Set")
+                {
+                    //using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                    //{
+
+                    //    try
+                    //    {
+                    //        // Create a security token and a timestamp that will allow a change of password
+                    //        MembershipService.UpdatePasswordResetToken(user);
+                    //        unitOfWork.Commit();
+                    //    }
+                    //    catch (Exception ex)
+                    //    {
+                    //        unitOfWork.Rollback();
+                    //        LoggingService.Error(ex);
+                    //        ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.Error"));
+                    //        return View();
+                    //    }
+                    //}
+
+                    //if (user.Email == "adam.munns@rpc.co.uk")
+                    //{ 
+                        // Security token has been created so send an email with instructions on how to change the password
+                        using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                        {
+                            var settings = SettingsService.GetSettings();
+                            var url = new Uri(string.Concat(settings.ForumUrl.TrimEnd('/'), Url.Action("ResetPassword", "Members", new { user.Id, token = user.PasswordResetToken })));
+
+                            var sb = new StringBuilder();
+                            sb.Append("<p>To make sure you have all the time you need to reset your password, the link below will now not expire until 9th April 2016. So that you do not recieve any unwanted email following this date your AEUC account will be disabled. If you wish to continue to use this service, please can you follow the steps below at your earliest convenience.</p>");
+                            sb.AppendFormat("<p>Before you are able to login, with your username as below, please <a href=\"{0}\">click here</a> to reset your password.</p>", url);
+                            sb.AppendFormat("<p>Username: <a href=\"{1}\">{0}</a></p>", user.UserName,url);
+                            sb.AppendFormat("<p>If you are unable to reset your password before the expiry date, you can re-enable your account and reset your password using the folloing link: <a href=\"{0}\">{0}</a>.</p>", "https://expertusers.org/members/forgotpassword/");
+                            sb.Append("<p>We hope you like the new site and here are just some of the key benefits:</p>");
+                            sb.Append("&middot;Simplified user interface to deliver the core functionality required of the forum<br />");
+                            sb.Append("&middot;Responsive design providing a tailored user experience on all form factors<br />");
+                            sb.Append("&middot;A focus on gamification to drive increased user engagement<br />");
+                            sb.Append("&middot;Deployment to a Microsoft Azure PaaS model, minimising the administrative burden of the backend infrastructure<br />");
+                            sb.Append("&middot;Open source MVC C#.Net platform facilitates further development opportunities to meet the future needs of the AEUC<br />");
+                            sb.Append("&middot;SQL Server database provides more data analysis and reporting capabilities<br />");
+                            sb.Append("<p>We are really keen to hear what you think about the new site and contribute to it's future direction, so feel free to join the discussion here: <a href='https://expertusers.org/cat/site-help-suggestions-and-feedback/'>Site Help, Suggestions and Feedback</a>.</p><p>We look forward to your feedback.</p>");
+                            sb.Append("<p>Kind regards,<br/>The AEUC Board</p>");
+ 
+                            var email = new Email
+                            {
+                                EmailTo = user.Email,
+                                NameTo = user.UserName,
+                                Subject = "FINAL REMINDER: Welcome to the new website of the Aderant Expert Users Community"
+                            };
+                            email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+
+                            _emailService.SendMail(email);
+
+                            try
+                            {
+                                unitOfWork.Commit();
+                            }
+                            catch (Exception ex)
+                            {
+                                unitOfWork.Rollback();
+                                LoggingService.Error(ex);
+                                ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.Error"));
+                                return View();
+                            }
+                        }
+                    //}
+                }
+            }
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpGet]

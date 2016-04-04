@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Enums;
 using MVCForum.Website.Application;
+using MVCForum.Domain.Constants;
 
 namespace MVCForum.Website.ViewModels
 {
@@ -43,7 +44,15 @@ namespace MVCForum.Website.ViewModels
         [ForumMvcResourceDisplayName("Members.Label.UserIsApproved")]
         public bool IsApproved { get; set; }
 
+        [Display(Name = "Job Title")]
+        [StringLength(100)]
+        public String JobTitle { get; set; }
+        public string City { get; set; }
+        [StringLength(100)]
+        public string Country { get; set; }
+
         [ForumMvcResourceDisplayName("Members.Label.Comment")]
+        [StringLength(100)]
         public string Comment { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Roles")]
@@ -73,8 +82,8 @@ namespace MVCForum.Website.ViewModels
         public string Email { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Signature")]
+        [UIHint(AppConstants.EditorType), AllowHtml]
         [StringLength(1000)]
-        [AllowHtml]
         public string Signature { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Age")]
@@ -84,6 +93,18 @@ namespace MVCForum.Website.ViewModels
         [ForumMvcResourceDisplayName("Members.Label.Location")]
         [StringLength(100)]
         public string Location { get; set; }
+
+        [Display(Name = "Job Title")]
+        [StringLength(100)]
+        public String JobTitle { get; set; }
+
+        [Display(Name = "City")]
+        [StringLength(100)]
+        public String City { get; set; }
+
+        [Display(Name = "Country")]
+        [StringLength(100)]
+        public String Country { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Website")]
         [Url]
@@ -194,6 +215,14 @@ namespace MVCForum.Website.ViewModels
 
         [ForumMvcResourceDisplayName("Members.Label.DateJoined")]
         public DateTime CreateDate { get; set; }
+
+        public string City { get; set; }
+        public string Country { get; set; }
+
+        public string FirmName { get; set; }
+        public string FirmCity { get; set; }
+        public string FirmCountry { get; set; }
+        public bool IsVotingMember { get; set; }
 
         public int TotalPoints { get; set; }
     }

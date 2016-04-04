@@ -76,7 +76,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                return new CsvFileResult { FileDownloadName = "MVCForumUsers.csv", Body = MembershipService.ToCsv() };
+                return new CsvFileResult { FileDownloadName = "AEUCMembers.csv", Body = MembershipService.ToCsv() };
             }
         }
 
@@ -128,6 +128,60 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     {
                         ErrorWarningType = CsvErrorWarningType.GeneralError,
                         Message = string.Format("Unable to import users: {0}", ex.Message)
+                    });
+                }
+
+                return new WrappedJsonResult { Data = ToJSON(report) };
+            }
+        }
+
+        /// <summary>
+        /// Post of data for user attendees import (file info)
+        /// </summary>
+        /// <param name="file">The name-value pairs for the language content</param>
+        /// <returns></returns>
+        [HttpPost]
+        public WrappedJsonResult ImportAttendees(HttpPostedFileBase file, DateTime eventdate)
+        {
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                var report = new CsvReport();
+
+                //http://www.dustinhorne.com/post/2011/11/16/AJAX-File-Uploads-with-jQuery-and-MVC-3.aspx
+                try
+                {
+                    // Verify that the user selected a file
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        // Unpack the data
+                        var allLines = new List<string>();
+                        using (var streamReader = new StreamReader(file.InputStream, System.Text.Encoding.UTF8, true))
+                        {
+                            while (streamReader.Peek() >= 0)
+                            {
+                                allLines.Add(streamReader.ReadLine());
+                            }
+                        }
+
+                        report = MembershipService.AttendeesFromCsv(allLines, eventdate);
+                        unitOfWork.Commit();
+                    }
+                    else
+                    {
+                        report.Errors.Add(new CsvErrorWarning
+                        {
+                            ErrorWarningType = CsvErrorWarningType.BadDataFormat,
+                            Message = "File does not contain any attendees."
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    report.Errors.Add(new CsvErrorWarning
+                    {
+                        ErrorWarningType = CsvErrorWarningType.GeneralError,
+                        Message = string.Format("Unable to import attendees: {0}", ex.Message)
                     });
                 }
 
