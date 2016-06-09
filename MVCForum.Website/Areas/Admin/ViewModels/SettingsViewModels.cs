@@ -199,5 +199,12 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [UIHint(AppConstants.EditorType), AllowHtml]
         [StringLength(6000)]
         public string TermsAndConditions { get; set; }
+
+        [DisplayName("Show Post Content In Notifications")]
+        public bool ShowPostContent { get; set; }
+
+        [DisplayName("Auto Login After Registration")]
+        public bool AutoLoginAfterRegister { get; set; }
+
     }
 }
