@@ -239,7 +239,14 @@ namespace MVCForum.Website.Controllers
                         // Create the email
                         var sb = new StringBuilder();
                         sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Post.Notification.NewPosts"), topic.Name));
-                        sb.Append(AppHelpers.ConvertPostContent(topic.LastPost.PostContent));
+                        if (SettingsService.GetSettings().ShowPostContent == true)
+                            {
+                            sb.Append(AppHelpers.ConvertPostContent(topic.LastPost.PostContent));
+                        }
+                        else
+                        {
+                            sb.Append("<br />");
+                        }
                         sb.AppendFormat("<p><a href=\"{0}\">{0}</a></p>", string.Concat(SettingsService.GetSettings().ForumUrl.TrimEnd('/'), topic.NiceUrl));
 
                         // create the emails only to people who haven't had notifications disabled
@@ -248,7 +255,7 @@ namespace MVCForum.Website.Controllers
                             Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
                             EmailTo = user.Email,
                             NameTo = user.UserName,
-                            Subject = string.Concat(LocalizationService.GetResourceString("Post.Notification.Subject"), SettingsService.GetSettings().ForumName)
+                            Subject = string.Concat(LocalizationService.GetResourceString("Post.Notification.Subject"), " ", SettingsService.GetSettings().ForumName)
                         }).ToList();
 
                         // and now pass the emails in to be sent
