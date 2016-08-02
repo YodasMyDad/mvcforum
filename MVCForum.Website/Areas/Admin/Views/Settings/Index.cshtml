@@ -67,6 +67,14 @@
             </div>
 
             <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.AutoLoginAfterRegister, new { @class = "checkbox" }))
+                    {
+                        @Html.CheckBoxFor(m => m.AutoLoginAfterRegister)
+                    }
+                @Html.ValidationMessageFor(m => m.AutoLoginAfterRegister)
+            </div>
+
+            <div class="checkbox">
                 @using (Html.BeginLabelFor(m => m.EnableRSSFeeds, new {@class = "checkbox"}))
                 {
                     @Html.CheckBoxFor(m => m.EnableRSSFeeds)
@@ -182,6 +190,14 @@
                     @Html.CheckBoxFor(m => m.EnableSignatures)
                 }
                 @Html.ValidationMessageFor(m => m.EnableSignatures)
+            </div>
+
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.ShowPostContent, new { @class = "checkbox" }))
+                {
+                    @Html.CheckBoxFor(m => m.ShowPostContent)
+                }
+                @Html.ValidationMessageFor(m => m.ShowPostContent)
             </div>
 
             <div class="form-group">

@@ -218,7 +218,9 @@ namespace MVCForum.Services.Migrations
                         EnablePolls = true,
                         MarkAsSolutionReminderTimeFrame = 7,
                         EnableEmoticons = true,
-                        DisableStandardRegistration = false
+                        DisableStandardRegistration = false,
+                        ShowPostContent = true,    
+                        AutoLoginAfterRegister = true                    
                     };
 
                     context.Setting.Add(settings);
