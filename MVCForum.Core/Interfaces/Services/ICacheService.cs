@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using MVCForum.Domain.DomainModel.Enums;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MVCForum.Domain.Interfaces.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using DomainModel.Enums;
+
     public partial interface ICacheService
     {
         T Get<T>(string key);
@@ -14,13 +15,12 @@ namespace MVCForum.Domain.Interfaces.Services
         /// <param name="data">Object / Data to cache</param>
         /// <param name="minutesToCache">How many minutes to cache them for</param>
         void Set(string key, object data, CacheTimes minutesToCache);
-
         bool IsSet(string key);
         void Invalidate(string key);
         void Clear();
         void ClearStartsWith(string keyStartsWith);
         void ClearStartsWith(List<string> keysStartsWith);
-        THelper CachePerRequest<THelper>(string cacheKey);
+        T CachePerRequest<T>(string cacheKey, Func<T> getCacheItem);
         void SetPerRequest(string cacheKey, object objectToCache);
     }
 }

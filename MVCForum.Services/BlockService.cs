@@ -1,17 +1,21 @@
-﻿using System;
-using System.Linq;
-using MVCForum.Domain.DomainModel.Entities;
-using MVCForum.Domain.Interfaces;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Services.Data.Context;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using Domain.Constants;
+    using System;
+    using System.Linq;
+    using Domain.DomainModel.Entities;
+    using Domain.Interfaces;
+    using Domain.Interfaces.Services;
+    using Data.Context;
+
     public partial class BlockService : IBlockService
     {
         private readonly MVCForumContext _context;
-        public BlockService(IMVCForumContext context)
+        private readonly ICacheService _cacheService;
+
+        public BlockService(IMVCForumContext context, ICacheService cacheService)
         {
+            _cacheService = cacheService;
             _context = context as MVCForumContext;
         }
 
@@ -28,7 +32,8 @@ namespace MVCForum.Services
 
         public Block Get(Guid id)
         {
-            return _context.Block.FirstOrDefault(x => x.Id == id);
+            var cacheKey = string.Concat(CacheKeys.Block.StartsWith, "Get-", id);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.Block.FirstOrDefault(x => x.Id == id));
         }
     }
 }

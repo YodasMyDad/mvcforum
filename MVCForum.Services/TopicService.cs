@@ -1,29 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Data.Entity;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.General;
-using MVCForum.Domain.Events;
-using MVCForum.Domain.Interfaces;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Services.Data.Context;
-using MVCForum.Utilities;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Data.Entity;
+    using System.Web.Mvc;
+    using Domain.Constants;
+    using Domain.DomainModel;
+    using Domain.DomainModel.General;
+    using Domain.Events;
+    using Domain.Interfaces;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using Data.Context;
+    using Utilities;
+
     public partial class TopicService : ITopicService
     {
         private readonly ITopicNotificationService _topicNotificationService;
         private readonly MVCForumContext _context;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ISettingsService _settingsService;
-        private readonly IVoteService _voteService;
         private readonly IPostService _postService;
-        private readonly IUploadedFileService _uploadedFileService;
         private readonly IFavouriteService _favouriteService;
         private readonly IRoleService _roleService;
         private readonly IPollService _pollService;
@@ -31,14 +29,12 @@ namespace MVCForum.Services
 
         public TopicService(IMVCForumContext context, IMembershipUserPointsService membershipUserPointsService,
             ISettingsService settingsService, ITopicNotificationService topicNotificationService,
-            IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService favouriteService,
+            IFavouriteService favouriteService,
             IPostService postService, IRoleService roleService, IPollService pollService, IPollAnswerService pollAnswerService)
         {
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
             _topicNotificationService = topicNotificationService;
-            _voteService = voteService;
-            _uploadedFileService = uploadedFileService;
             _favouriteService = favouriteService;
             _postService = postService;
             _roleService = roleService;

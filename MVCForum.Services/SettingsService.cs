@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Web;
-using System.Data.Entity;
 using System.Linq;
+using System.Data.Entity;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.DomainModel.Enums;
@@ -35,11 +34,11 @@ namespace MVCForum.Services
         {
             if (useCache)
             {
-                var cachedSettings = _cacheService.Get<Settings>(AppConstants.SettingsCacheName);
+                var cachedSettings = _cacheService.Get<Settings>(CacheKeys.Settings.Main);
                 if (cachedSettings == null)
                 {
                     cachedSettings = GetSettingsLocal(false);
-                    _cacheService.Set(AppConstants.SettingsCacheName, cachedSettings, CacheTimes.OneDay);
+                    _cacheService.Set(CacheKeys.Settings.Main, cachedSettings, CacheTimes.OneDay);
                 }
                 return cachedSettings;
             }

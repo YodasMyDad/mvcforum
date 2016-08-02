@@ -1,21 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Events;
-using MVCForum.Domain.Interfaces.Services;
-using System.Linq;
-using System.Data.Entity;
-using MVCForum.Domain.DomainModel.Entities;
-using MVCForum.Domain.DomainModel.LinqKit;
-using MVCForum.Domain.Interfaces;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Services.Data.Context;
-using MVCForum.Utilities;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using Domain.Constants;
+    using Domain.DomainModel;
+    using Domain.Events;
+    using Domain.Interfaces.Services;
+    using System.Linq;
+    using System.Data.Entity;
+    using Domain.DomainModel.Entities;
+    using Domain.DomainModel.LinqKit;
+    using Domain.Interfaces;
+    using Domain.Interfaces.UnitOfWork;
+    using Data.Context;
+    using Utilities;
+
     public partial class PostService : IPostService
     {
         private readonly IRoleService _roleService;
@@ -28,10 +28,11 @@ namespace MVCForum.Services
         private readonly IConfigService _configService;
         private readonly MVCForumContext _context;
         private readonly IPostEditService _postEditService;
+        private readonly ICacheService _cacheService;
 
         public PostService(IMVCForumContext context,IMembershipUserPointsService membershipUserPointsService,
             ISettingsService settingsService, IRoleService roleService,
-            ILocalizationService localizationService, IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService favouriteService, IConfigService configService, IPostEditService postEditService)
+            ILocalizationService localizationService, IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService favouriteService, IConfigService configService, IPostEditService postEditService, ICacheService cacheService)
         {
             _roleService = roleService;
             _membershipUserPointsService = membershipUserPointsService;
@@ -42,6 +43,7 @@ namespace MVCForum.Services
             _favouriteService = favouriteService;
             _configService = configService;
             _postEditService = postEditService;
+            _cacheService = cacheService;
             _context = context as MVCForumContext;
         }
 
@@ -70,11 +72,11 @@ namespace MVCForum.Services
 
         public Post GetTopicStarterPost(Guid topicId)
         {
-            var post = _context.Post
-                        .Include(x => x.Topic.Category)
-                        .Include(x => x.User)
-                        .FirstOrDefault(x => x.Topic.Id == topicId && x.IsTopicStarter);
-            return post;
+            var cacheKey = string.Concat(CacheKeys.Post.StartsWith, "GetTopicStarterPost-", topicId);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.Post
+                                                                        .Include(x => x.Topic.Category)
+                                                                        .Include(x => x.User)
+                                                                        .FirstOrDefault(x => x.Topic.Id == topicId && x.IsTopicStarter));
         }
 
         /// <summary>
@@ -83,11 +85,15 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IEnumerable<Post> GetAll(List<Category> allowedCategories)
         {
-            // get the category ids
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
-            return _context.Post
-                    .Include(x => x.Topic.Category)
-                    .Where(x => allowedCatIds.Contains(x.Topic.Category.Id));
+            var cacheKey = string.Concat(CacheKeys.Post.StartsWith, "GetAll-", allowedCategories.GetHashCode());
+            return _cacheService.CachePerRequest(cacheKey, () =>
+            {
+                // get the category ids
+                var allowedCatIds = allowedCategories.Select(x => x.Id);
+                return _context.Post
+                        .Include(x => x.Topic.Category)
+                        .Where(x => allowedCatIds.Contains(x.Topic.Category.Id));
+            });
         }
 
         /// <summary>

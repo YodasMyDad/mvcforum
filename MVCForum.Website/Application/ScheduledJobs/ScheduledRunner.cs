@@ -59,17 +59,6 @@ namespace MVCForum.Website.Application.ScheduledJobs
 
             #endregion
 
-            #region KeepAliveJob
-
-            // Ping the site every 5 minutes to keep it alive
-            var keepAliveJob = JobBuilder.Create<KeepAliveJob>()
-                        .WithIdentity("KeepAliveJob", AppConstants.DefaultTaskGroup)
-                        .Build();
-
-            scheduler.ScheduleJob(keepAliveJob, fiveMinuteTriggerForever);
-
-            #endregion
-
             #region Mark As Solution Job
 
             // Send mark as solution reminder emails

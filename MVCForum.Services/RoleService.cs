@@ -1,31 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Data.Entity;
-using System.Web;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Exceptions;
-using MVCForum.Domain.Interfaces;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Services.Data.Context;
-using MVCForum.Utilities;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Data.Entity;
+    using Domain.Constants;
+    using Domain.DomainModel;
+    using Domain.Exceptions;
+    using Domain.Interfaces;
+    using Domain.Interfaces.Services;
+    using Data.Context;
+    using Utilities;
+
     public partial class RoleService : IRoleService
     {
         private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
         private readonly IGlobalPermissionForRoleService _globalPermissionForRoleService;
         private readonly IPermissionService _permissionService;
         private readonly MVCForumContext _context;
-        private PermissionSet _permissions;
+        private readonly ICacheService _cacheService;
 
-        public RoleService(IMVCForumContext context, ICategoryPermissionForRoleService categoryPermissionForRoleService, IPermissionService permissionService, IGlobalPermissionForRoleService globalPermissionForRoleService)
+        public RoleService(IMVCForumContext context, ICategoryPermissionForRoleService categoryPermissionForRoleService, IPermissionService permissionService, IGlobalPermissionForRoleService globalPermissionForRoleService, ICacheService cacheService)
         {
             _categoryPermissionForRoleService = categoryPermissionForRoleService;
             _permissionService = permissionService;
             _globalPermissionForRoleService = globalPermissionForRoleService;
+            _cacheService = cacheService;
             _context = context as MVCForumContext;
         }
 
@@ -35,9 +35,10 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<MembershipRole> AllRoles()
         {
-            return _context.MembershipRole
-                .OrderByDescending(x => x.RoleName)
-                .ToList();
+            var cacheKey = string.Concat(CacheKeys.Role.StartsWith, "AllRoles");
+            return _cacheService.CachePerRequest(cacheKey, () => _context.MembershipRole
+                                                                    .OrderByDescending(x => x.RoleName)
+                                                                    .ToList());
         }
 
         /// <summary>
@@ -48,15 +49,20 @@ namespace MVCForum.Services
         /// <returns></returns>
         public MembershipRole GetRole(string rolename, bool removeTracking = false)
         {
-            if (removeTracking)
+            var cacheKey = string.Concat(CacheKeys.Role.StartsWith, "GetRole-", rolename, "-", removeTracking);
+            return _cacheService.CachePerRequest(cacheKey, () =>
             {
-                return _context.MembershipRole
-                    .Include(x => x.CategoryPermissionForRoles)
-                    .Include(x => x.GlobalPermissionForRole)
-                    .AsNoTracking()
-                    .FirstOrDefault(y => y.RoleName.Contains(rolename));
-            }
-            return _context.MembershipRole.FirstOrDefault(y => y.RoleName.Contains(rolename));
+                if (removeTracking)
+                {
+                    return _context.MembershipRole
+                        .Include(x => x.CategoryPermissionForRoles.Select(p => p.Permission))
+                        .Include(x => x.CategoryPermissionForRoles.Select(p => p.Category))
+                        .Include(x => x.GlobalPermissionForRole.Select(p => p.Permission))
+                        .AsNoTracking()
+                        .FirstOrDefault(y => y.RoleName.Contains(rolename));
+                }
+                return _context.MembershipRole.FirstOrDefault(y => y.RoleName.Contains(rolename));
+            });
         }
 
         /// <summary>
@@ -66,7 +72,8 @@ namespace MVCForum.Services
         /// <returns></returns>
         public MembershipRole GetRole(Guid id)
         {
-            return _context.MembershipRole.FirstOrDefault(x => x.Id == id);
+            var cacheKey = string.Concat(CacheKeys.Role.StartsWith, "GetRole-", id);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.MembershipRole.FirstOrDefault(x => x.Id == id));
         }
 
         /// <summary>
@@ -77,7 +84,6 @@ namespace MVCForum.Services
         public IList<MembershipUser> GetUsersForRole(string roleName)
         {
             return GetRole(roleName).Users;
-
         }
         /// <summary>
         /// Create a new role
@@ -155,11 +161,11 @@ namespace MVCForum.Services
             var globalPermissions = permissionList
                                         .Where(x => x.IsGlobal)
                                         .Select(permission => new GlobalPermissionForRole
-                                                        {
-                                                            IsTicked = true,
-                                                            MembershipRole = role,
-                                                            Permission = permission
-                                                        });
+                                        {
+                                            IsTicked = true,
+                                            MembershipRole = role,
+                                            Permission = permission
+                                        });
 
             // Create the permission set
             return new PermissionSet(categoryPermissions, globalPermissions);
@@ -288,27 +294,27 @@ namespace MVCForum.Services
                 categoryId = category.Id;
             }
 
-            var objectContextKey = string.Concat(HttpContext.Current.GetHashCode().ToString("x"), "-", categoryId, "-", role.Id);
-            if (!HttpContext.Current.Items.Contains(objectContextKey))
+            var cacheKey = string.Concat(CacheKeys.Role.StartsWith, "GetPermissions-", categoryId, "-", role.Id);
+            return _cacheService.CachePerRequest(cacheKey, () =>
             {
+                PermissionSet permissions;
+
                 switch (role.RoleName)
                 {
                     case AppConstants.AdminRoleName:
-                        _permissions = GetAdminPermissions(category, role);
+                        permissions = GetAdminPermissions(category, role);
                         break;
                     case AppConstants.GuestRoleName:
-                        _permissions = GetGuestPermissions(category, role);
+                        permissions = GetGuestPermissions(category, role);
                         break;
                     default:
-                        _permissions = GetOtherPermissions(category, role);
+                        permissions = GetOtherPermissions(category, role);
                         break;
                 }
 
-                HttpContext.Current.Items.Add(objectContextKey, _permissions);
-            }
+                return permissions;
 
-            return HttpContext.Current.Items[objectContextKey] as PermissionSet;
-
+            });
         }
 
         #endregion

@@ -1,28 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Activity;
-using MVCForum.Domain.Interfaces;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Services.Data.Context;
-using MVCForum.Utilities;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using Domain.Constants;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Domain.DomainModel;
+    using Domain.DomainModel.Activity;
+    using Domain.Interfaces;
+    using Domain.Interfaces.Services;
+    using Data.Context;
+    using Utilities;
+
     public partial class ActivityService : IActivityService
     {
         private readonly MVCForumContext _context;
         private readonly IBadgeService _badgeService;
         private readonly ILoggingService _loggingService;
+        private readonly ICacheService _cacheService;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public ActivityService(IBadgeService badgeService, ILoggingService loggingService, IMVCForumContext context)
+        public ActivityService(IBadgeService badgeService, ILoggingService loggingService, IMVCForumContext context, ICacheService cacheService)
         {
             _badgeService = badgeService;
             _loggingService = loggingService;
+            _cacheService = cacheService;
             _context = context as MVCForumContext;
         }
 
@@ -34,40 +37,42 @@ namespace MVCForum.Services
         /// <returns></returns>
         private BadgeActivity GenerateBadgeActivity(Activity activity)
         {
-            // Get the corresponding badge
-            var dataPairs = ActivityBase.UnpackData(activity);
-
-            if (!dataPairs.ContainsKey(BadgeActivity.KeyBadgeId))
+            //System.Reflection.MethodBase.GetCurrentMethod().Name
+            var cacheKey = string.Concat(CacheKeys.Activity.StartsWith, "GenerateBadgeActivity-", activity.GetHashCode());
+            return _cacheService.CachePerRequest(cacheKey, () =>
             {
-                // Log the problem then skip
-                _loggingService.Error(
-                    $"A badge activity record with id '{activity.Id}' has no badge id in its data.");
-                return null;
-            }
+                // Get the corresponding badge
+                var dataPairs = ActivityBase.UnpackData(activity);
 
-            var badgeId = dataPairs[BadgeActivity.KeyBadgeId];
-            var badge = _badgeService.Get(new Guid(badgeId));
+                if (!dataPairs.ContainsKey(BadgeActivity.KeyBadgeId))
+                {
+                    // Log the problem then skip
+                    _loggingService.Error($"A badge activity record with id '{activity.Id}' has no badge id in its data.");
+                    return null;
+                }
 
-            if (badge == null)
-            {
-                // Log the problem then skip
-                _loggingService.Error(
-                    $"A badge activity record with id '{activity.Id}' has a badge id '{badgeId}' that is not found in the badge table.");
-                return null;
-            }
+                var badgeId = dataPairs[BadgeActivity.KeyBadgeId];
+                var badge = _badgeService.Get(new Guid(badgeId));
 
-            var userId = dataPairs[BadgeActivity.KeyUserId];
-            var user = _context.MembershipUser.FirstOrDefault(x => x.Id == new Guid(userId));
+                if (badge == null)
+                {
+                    // Log the problem then skip
+                    _loggingService.Error($"A badge activity record with id '{activity.Id}' has a badge id '{badgeId}' that is not found in the badge table.");
+                    return null;
+                }
 
-            if (user == null)
-            {
-                // Log the problem then skip
-                _loggingService.Error(
-                    $"A badge activity record with id '{activity.Id}' has a user id '{userId}' that is not found in the user table.");
-                return null;
-            }
+                var userId = dataPairs[BadgeActivity.KeyUserId];
+                var user = _context.MembershipUser.FirstOrDefault(x => x.Id == new Guid(userId));
 
-            return new BadgeActivity(activity, badge, user);
+                if (user == null)
+                {
+                    // Log the problem then skip
+                    _loggingService.Error($"A badge activity record with id '{activity.Id}' has a user id '{userId}' that is not found in the user table.");
+                    return null;
+                }
+
+                return new BadgeActivity(activity, badge, user);
+            });
         }
 
         /// <summary>
@@ -77,28 +82,32 @@ namespace MVCForum.Services
         /// <returns></returns>
         private ProfileUpdatedActivity GenerateProfileUpdatedActivity(Activity activity)
         {
-            var dataPairs = ActivityBase.UnpackData(activity);
 
-            if (!dataPairs.ContainsKey(ProfileUpdatedActivity.KeyUserId))
+            var cacheKey = string.Concat(CacheKeys.Activity.StartsWith, "GenerateProfileUpdatedActivity-", activity.GetHashCode());
+            return _cacheService.CachePerRequest(cacheKey, () =>
             {
-                // Log the problem then skip
-                _loggingService.Error(
-                    $"A profile updated activity record with id '{activity.Id}' has no user id in its data.");
-                return null;
-            }
+                var dataPairs = ActivityBase.UnpackData(activity);
 
-            var userId = dataPairs[ProfileUpdatedActivity.KeyUserId];
-            var user = _context.MembershipUser.FirstOrDefault(x => x.Id == new Guid(userId));
+                if (!dataPairs.ContainsKey(ProfileUpdatedActivity.KeyUserId))
+                {
+                    // Log the problem then skip
+                    _loggingService.Error($"A profile updated activity record with id '{activity.Id}' has no user id in its data.");
+                    return null;
+                }
 
-            if (user == null)
-            {
-                // Log the problem then skip
-                _loggingService.Error(
-                    $"A profile updated activity record with id '{activity.Id}' has a user id '{userId}' that is not found in the user table.");
-                return null;
-            }
+                var userId = dataPairs[ProfileUpdatedActivity.KeyUserId];
+                var user = _context.MembershipUser.FirstOrDefault(x => x.Id == new Guid(userId));
 
-            return new ProfileUpdatedActivity(activity, user);
+                if (user == null)
+                {
+                    // Log the problem then skip
+                    _loggingService.Error($"A profile updated activity record with id '{activity.Id}' has a user id '{userId}' that is not found in the user table.");
+                    return null;
+                }
+
+                return new ProfileUpdatedActivity(activity, user);
+            });
+
         }
 
         /// <summary>
@@ -108,28 +117,30 @@ namespace MVCForum.Services
         /// <returns></returns>
         private MemberJoinedActivity GenerateMemberJoinedActivity(Activity activity)
         {
-            var dataPairs = ActivityBase.UnpackData(activity);
-
-            if (!dataPairs.ContainsKey(MemberJoinedActivity.KeyUserId))
+            var cacheKey = string.Concat(CacheKeys.Activity.StartsWith, "GenerateMemberJoinedActivity-", activity.GetHashCode());
+            return _cacheService.CachePerRequest(cacheKey, () =>
             {
-                // Log the problem then skip
-                _loggingService.Error(
-                    $"A member joined activity record with id '{activity.Id}' has no user id in its data.");
-                return null;
-            }
+                var dataPairs = ActivityBase.UnpackData(activity);
 
-            var userId = dataPairs[MemberJoinedActivity.KeyUserId];
-            var user = _context.MembershipUser.FirstOrDefault(x => x.Id == new Guid(userId));
+                if (!dataPairs.ContainsKey(MemberJoinedActivity.KeyUserId))
+                {
+                    // Log the problem then skip
+                    _loggingService.Error($"A member joined activity record with id '{activity.Id}' has no user id in its data.");
+                    return null;
+                }
 
-            if (user == null)
-            {
-                // Log the problem then skip
-                _loggingService.Error(
-                    $"A member joined activity record with id '{activity.Id}' has a user id '{userId}' that is not found in the user table.");
-                return null;
-            }
+                var userId = dataPairs[MemberJoinedActivity.KeyUserId];
+                var user = _context.MembershipUser.FirstOrDefault(x => x.Id == new Guid(userId));
 
-            return new MemberJoinedActivity(activity, user);
+                if (user == null)
+                {
+                    // Log the problem then skip
+                    _loggingService.Error($"A member joined activity record with id '{activity.Id}' has a user id '{userId}' that is not found in the user table.");
+                    return null;
+                }
+
+                return new MemberJoinedActivity(activity, user);
+            });
         }
 
         /// <summary>
@@ -141,9 +152,12 @@ namespace MVCForum.Services
         /// <returns></returns>
         private PagedList<ActivityBase> ConvertToSpecificActivities(PagedList<Activity> activities, int pageIndex, int pageSize)
         {
-            var listedResults = ConvertToSpecificActivities(activities);
-
-            return new PagedList<ActivityBase>(listedResults, pageIndex, pageSize, activities.Count);
+            var cacheKey = string.Concat(CacheKeys.Activity.StartsWith, "ConvertToSpecificActivities-", activities.GetHashCode(), "-", pageIndex, "-", pageSize);
+            return _cacheService.CachePerRequest(cacheKey, () =>
+            {
+                var listedResults = ConvertToSpecificActivities(activities);
+                return new PagedList<ActivityBase>(listedResults, pageIndex, pageSize, activities.Count);
+            });
         }
 
         /// <summary>
@@ -153,40 +167,44 @@ namespace MVCForum.Services
         /// <returns></returns>
         private IEnumerable<ActivityBase> ConvertToSpecificActivities(IEnumerable<Activity> activities)
         {
-            var listedResults = new List<ActivityBase>();
-            foreach (var activity in activities)
+            var cacheKey = string.Concat(CacheKeys.Activity.StartsWith, "ConvertToSpecificActivities-", activities.GetHashCode());
+            return _cacheService.CachePerRequest(cacheKey, () =>
             {
-                if (activity.Type == ActivityType.BadgeAwarded.ToString())
+                var listedResults = new List<ActivityBase>();
+                foreach (var activity in activities)
                 {
-                    var badgeActivity = GenerateBadgeActivity(activity);
-
-                    if (badgeActivity != null)
+                    if (activity.Type == ActivityType.BadgeAwarded.ToString())
                     {
-                        listedResults.Add(badgeActivity);
+                        var badgeActivity = GenerateBadgeActivity(activity);
+
+                        if (badgeActivity != null)
+                        {
+                            listedResults.Add(badgeActivity);
+                        }
+
                     }
-
-                }
-                else if (activity.Type == ActivityType.MemberJoined.ToString())
-                {
-                    var memberJoinedActivity = GenerateMemberJoinedActivity(activity);
-
-                    if (memberJoinedActivity != null)
+                    else if (activity.Type == ActivityType.MemberJoined.ToString())
                     {
-                        listedResults.Add(memberJoinedActivity);
+                        var memberJoinedActivity = GenerateMemberJoinedActivity(activity);
+
+                        if (memberJoinedActivity != null)
+                        {
+                            listedResults.Add(memberJoinedActivity);
+                        }
                     }
-                }
-                else if (activity.Type == ActivityType.ProfileUpdated.ToString())
-                {
-
-                    var profileUpdatedActivity = GenerateProfileUpdatedActivity(activity);
-
-                    if (profileUpdatedActivity != null)
+                    else if (activity.Type == ActivityType.ProfileUpdated.ToString())
                     {
-                        listedResults.Add(profileUpdatedActivity);
+
+                        var profileUpdatedActivity = GenerateProfileUpdatedActivity(activity);
+
+                        if (profileUpdatedActivity != null)
+                        {
+                            listedResults.Add(profileUpdatedActivity);
+                        }
                     }
                 }
-            }
-            return listedResults;
+                return listedResults;
+            });
         } 
         #endregion
 
@@ -200,20 +218,25 @@ namespace MVCForum.Services
         {
             // Read the database for all activities and convert each to a more specialised activity type
 
-            var totalCount = _context.Activity.Count();
-            var results = _context.Activity
-                  .OrderByDescending(x => x.Timestamp)
-                  .Skip((pageIndex - 1) * pageSize)
-                  .Take(pageSize)
-                  .ToList();
+            var cacheKey = string.Concat(CacheKeys.Activity.StartsWith, "GetPagedGroupedActivities-", pageIndex, "-", pageSize);
+            return _cacheService.CachePerRequest(cacheKey, () =>
+            {
+                var totalCount = _context.Activity.Count();
+                var results = _context.Activity
+                      .OrderByDescending(x => x.Timestamp)
+                      .Skip((pageIndex - 1) * pageSize)
+                      .Take(pageSize)
+                      .ToList();
 
-            // Return a paged list
-            var activities = new PagedList<Activity>(results, pageIndex, pageSize, totalCount);
+                // Return a paged list
+                var activities = new PagedList<Activity>(results, pageIndex, pageSize, totalCount);
 
-            // Convert
-            var specificActivities = ConvertToSpecificActivities(activities, pageIndex, pageSize);
+                // Convert
+                var specificActivities = ConvertToSpecificActivities(activities, pageIndex, pageSize);
 
-            return specificActivities;
+                return specificActivities;
+            });
+
         }
 
         /// <summary>
@@ -223,38 +246,46 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IEnumerable<Activity> GetDataFieldByGuid(Guid guid)
         {
-            var stringGuid = guid.ToString();
-            return _context.Activity.Where(x => x.Data.Contains(stringGuid));
+            var cacheKey = string.Concat(CacheKeys.Activity.StartsWith, "GetDataFieldByGuid-", guid);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.Activity.Where(x => x.Data.Contains(guid.ToString())));
         }
 
         public PagedList<ActivityBase> SearchPagedGroupedActivities(string search, int pageIndex, int pageSize)
         {
-            // Read the database for all activities and convert each to a more specialised activity type
-            search = StringUtils.SafePlainText(search);
-            var totalCount = _context.Activity.Count(x => x.Type.ToUpper().Contains(search.ToUpper()));
+            var cacheKey = string.Concat(CacheKeys.Activity.StartsWith, "SearchPagedGroupedActivities-", search, "-", pageIndex, "-", pageSize);
+            return _cacheService.CachePerRequest(cacheKey, () =>
+            {
+                // Read the database for all activities and convert each to a more specialised activity type
+                search = StringUtils.SafePlainText(search);
+                var totalCount = _context.Activity.Count(x => x.Type.ToUpper().Contains(search.ToUpper()));
 
-            // Get the topics using an efficient
-            var results = _context.Activity
-                  .Where(x => x.Type.ToUpper().Contains(search.ToUpper()))
-                  .OrderByDescending(x => x.Timestamp)
-                  .Skip((pageIndex - 1) * pageSize)
-                  .Take(pageSize)
-                  .ToList();
+                // Get the topics using an efficient
+                var results = _context.Activity
+                      .Where(x => x.Type.ToUpper().Contains(search.ToUpper()))
+                      .OrderByDescending(x => x.Timestamp)
+                      .Skip((pageIndex - 1) * pageSize)
+                      .Take(pageSize)
+                      .ToList();
 
-            // Return a paged list
-            var activities = new PagedList<Activity>(results, pageIndex, pageSize, totalCount);
+                // Return a paged list
+                var activities = new PagedList<Activity>(results, pageIndex, pageSize, totalCount);
 
-            // Convert
-            var specificActivities = ConvertToSpecificActivities(activities, pageIndex, pageSize);
+                // Convert
+                var specificActivities = ConvertToSpecificActivities(activities, pageIndex, pageSize);
 
-            return specificActivities;
+                return specificActivities;
+            });
         }
 
         public IEnumerable<ActivityBase> GetAll(int howMany)
         {
-            var activities = _context.Activity.Take(howMany);
-            var specificActivities = ConvertToSpecificActivities(activities);
-            return specificActivities;
+            var cacheKey = string.Concat(CacheKeys.Activity.StartsWith, "GetAll-", howMany);
+            return _cacheService.CachePerRequest(cacheKey, () =>
+            {
+                var activities = _context.Activity.Take(howMany);
+                var specificActivities = ConvertToSpecificActivities(activities);
+                return specificActivities;
+            });
         }
 
         /// <summary>
@@ -308,7 +339,8 @@ namespace MVCForum.Services
 
         public Activity Get(Guid id)
         {
-            return _context.Activity.FirstOrDefault(x => x.Id == id);
+            var cacheKey = string.Concat(CacheKeys.Activity.StartsWith, "Get-", id);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.Activity.FirstOrDefault(x => x.Id == id));
         }
 
         public void Delete(Activity item)

@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Web;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using MVCForum.Domain.DomainModel;
+    using MVCForum.Domain.Interfaces.Services;
+
     /// <summary>
     /// A class for logging errors to a text file. Works in Partial Trust.
     /// </summary>

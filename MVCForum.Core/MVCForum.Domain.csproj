@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants\AppConstants.cs" />
+    <Compile Include="Constants\CacheKeys.cs" />
     <Compile Include="Constants\SiteConstants.cs" />
     <Compile Include="DomainModel\Activity\ActivityBase.cs" />
     <Compile Include="DomainModel\Activity\BadgeActivity.cs" />
