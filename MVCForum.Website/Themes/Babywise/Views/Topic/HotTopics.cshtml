@@ -1,0 +1,23 @@
+﻿@using MVCForum.Website.ViewModels
+@model HotTopicsViewModel
+@{
+    var count = 1;
+}
+@if (Model.Topics.Any())
+{
+    <div class="side-box hottopics-box">
+        <h5>@Html.LanguageString("Topic.HotTopics")</h5>
+
+        <ul>
+            @foreach (var topicViewModel in Model.Topics)
+            {
+                <li>
+                    <span class="badge">@count</span>
+                    <a href="@topicViewModel.Topic.NiceUrl">@Html.Raw(topicViewModel.Topic.Name)</a>
+                </li>
+                count++;
+            }
+        </ul>
+
+    </div>
+}

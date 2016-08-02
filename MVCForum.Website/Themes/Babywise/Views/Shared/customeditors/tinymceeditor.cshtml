@@ -1,0 +1,43 @@
+﻿@if (!Context.IsMobileDevice())
+{
+<script src="@Url.Content("~/scripts/tinymce/tinymce.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/tinymceplugins/ImageUpload/imageupload.js")" type="text/javascript"></script>
+    <script type="text/javascript">        
+        tinymce.init({
+            selector: "textarea.rte",
+            plugins: [
+                "autosave link image lists hr anchor forumimageinsert",
+                "wordcount visualblocks visualchars code fullscreen media nonbreaking"
+            ],
+            toolbar1: "bold italic underline strikethrough bullist hr | link unlink @(ViewBag.ImageUploadType ?? "image") code blockquote | formatselect",
+            remove_linebreaks: false,
+            relative_urls: false,
+            menubar: false,
+            toolbar_items_size: 'small',
+            content_css: app_base + "content/tinymce.css",
+            height: 175,
+            nonbreaking_force_tab: true
+            //setup: function(editor) {
+            //    editor.on( 'keydown', function(editor, evt) {
+            //        if (evt.keyCode == 9) {
+            //            editor.execCommand('mceInsertContent', false, '&emsp;&emsp;');
+            //            evt.preventDefault();
+            //        }
+            //    } );
+            //}
+        });
+
+        // Language strings
+        var buttonTitle = '@(Html.Lang("TinyMCE.InsertImage.ButtonTitle"))';
+        var buttonOk = '@(Html.Lang("TinyMCE.InsertImage.ButtonOk"))';
+        var buttonClose = '@(Html.Lang("TinyMCE.InsertImage.ButtonClose"))';
+        var enterValidUrl = '@(Html.Lang("TinyMCE.InsertImage.EnterValidUrl"))';
+        var selectFile = '@(Html.Lang("TinyMCE.InsertImage.SelectFile"))';
+        var maxImageFileSize = '@(Html.Lang("TinyMCE.InsertImage.MaxFileSize"))';
+        var onlyImages = '@(Html.Lang("TinyMCE.InsertImage.OnlyImages"))';
+        var generalError = '@(Html.Lang("Errors.GenericMessage"))';
+    </script>
+}
+<div class="tinymceholder">    
+    @Html.TextArea(string.Empty, new {@class = "rte"})     
+</div>

@@ -13,6 +13,8 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.Message).IsRequired();
             Property(x => x.IsRead).IsRequired();
             Property(x => x.IsSentMessage).IsRequired();
+
+            ToTable("PrivateMessage", Schema.Name);
         }
     }
 }

@@ -1,0 +1,163 @@
+﻿@using MVCForum.Domain.DomainModel.General
+@{
+    // Global Stuff
+    var themeName = Html.Settings().Theme;
+    var theme = new Theme
+    {
+        ThemeName = themeName,
+        ThemePath = string.Concat(SiteConstants.Instance.ThemeRootFolder, themeName)
+    };
+    TempData[AppConstants.GlobalClass] = Convert.ToBoolean(PageData[AppConstants.IsMobileDevice]) ? "mobile" : "desktop";
+    TempData[AppConstants.CurrentAction] = ViewContext.RouteData.GetRequiredString("action").ToLower();
+    TempData[AppConstants.CurrentController] = ViewContext.RouteData.GetRequiredString("controller").ToLower();
+}
+<!DOCTYPE html>
+<html lang="en">
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# website: http://ogp.me/ns/website#">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <meta name="description" content="@ViewBag.MetaDesc" />
+    <meta property="og:url" content="@HttpContext.Current.Request.Url.AbsoluteUri" />
+    <meta property="og:description" content="@ViewBag.MetaDesc" />
+    <meta property="og:title" content="@ViewBag.Title" />
+    <meta property="og:site_name" content="@Html.Settings().ForumName" />
+    <meta property="og:type" content="website" />
+    @RenderSection("SocialMeta", false)
+    @ViewBag.Canonical
+    @Html.Partial("_StyleSheets", theme)
+    <!--[if lt IE 9]>
+            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link rel="shortcut icon" href="@Url.Content(theme.ThemePath + "/content/images/favicon.ico")">
+    <link rel="apple-touch-icon-precomposed" href="@Url.Content(theme.ThemePath + "/content/images/apple-touch-icon-57-precomposed.png")">
+    @Html.Partial("_JavaScript", theme)
+    @RenderSection("Header", false)
+    @if (!string.IsNullOrEmpty(Html.Settings().CustomHeaderCode))
+    {
+        @Html.Raw(Html.Settings().CustomHeaderCode)
+    }
+</head>
+
+<body class="@TempData[AppConstants.GlobalClass].ToString() loggedin-@(User.Identity.IsAuthenticated.ToString().ToLower())">
+    
+    <nav class="pushy pushy-left">
+        <ul>
+            @if (User.Identity.IsAuthenticated)
+            {
+                @Html.Action("SideAdminPanel", "Members", new { isDropDown  = false})
+            }
+            else
+            {
+                if (Html.Settings().SuspendRegistration != true)
+                {
+                    <li><a href="@Url.Action("Register", "Members")">@Html.LanguageString("Layout.Nav.Register")</a></li>
+                }
+                <li><a href="@Url.Action("LogOn", "Members")">@Html.LanguageString("Layout.Nav.Logon")</a></li>
+            }
+            <li><a href="@Url.Action("Index", "Category")">@Html.LanguageString("Category.AllCategories")</a></li>
+            @Html.Partial("SubNavigation")
+        </ul>
+    </nav>
+    <div class="site-overlay"></div>    
+
+    <header>
+
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle menu-btn">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                        <img src="@Url.Content(theme.ThemePath + "/content/images/logo.png")" alt="@Html.Lang("Site.MvcForum")" class="logoimg"/>                        
+                    </a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="mvcforum-nav">
+    
+                    <ul class="nav navbar-nav navbar-right">
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            if (Html.Settings().SuspendRegistration != true)
+                            {
+                                <li><a href="@Url.Action("Register", "Members")">@Html.LanguageString("Layout.Nav.Register")</a></li>
+                            }
+                            <li><a href="@Url.Action("LogOn", "Members")">@Html.LanguageString("Layout.Nav.Logon")</a></li>
+                        }                        
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            @Html.Action("SideAdminPanel", "Members", new { isDropDown = true })
+                        }
+                    </ul>
+
+
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="content-strip content-strip-@(User.Identity.IsAuthenticated.ToString().ToLower())">
+        <div class="container sub-nav-container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <ul>
+                        @Html.Partial("SubNavigation")
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container main-section">
+        @Html.Partial("_GenericMessage")
+        @Html.Partial("_EmailConfirmationNotice")
+        @Html.Partial("_NoScript")
+        <div id="main" class="mainbody">
+
+            @RenderBody()
+
+        </div>
+    </section>
+
+
+    <footer>
+        <div class="container">
+
+            @RenderSection("Footer", false)
+
+            <div class="row">
+                <div class="col-sm-6">
+                    @Html.Action("GetMainStats", "Stats")
+                </div>
+                <div class="col-sm-6">
+                    @Html.Action("GetCurrentActiveMembers", "Members")
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="licenceblock">
+                        <!-- ########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ###########################
+
+                            If you would like to remove the powered by notice, then please vist http://www.mvcforum.com/license -->
+
+                        <p>&copy; @DateTime.UtcNow.Year - @Html.LanguageString("Layout.PoweredBy") <a rel="nofollow" href="http://www.mvcforum.com">MVCForum.com</a></p>
+
+                        <!--########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ########################### -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+    @Html.Partial("_SlideOutPanel")
+    @if (!string.IsNullOrEmpty(Html.Settings().CustomFooterCode))
+    {
+        @Html.Raw(Html.Settings().CustomFooterCode)
+    }    
+</body>
+</html>

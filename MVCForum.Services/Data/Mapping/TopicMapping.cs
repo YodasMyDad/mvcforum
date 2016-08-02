@@ -33,10 +33,12 @@ namespace MVCForum.Services.Data.Mapping
             .WithMany(t => t.Topics)
             .Map(m =>
                     {
-                        m.ToTable("Topic_Tag");
+                        m.ToTable("Topic_Tag", Schema.Name);
                         m.MapLeftKey("Topic_Id");
                         m.MapRightKey("TopicTag_Id");
                     });
+
+            ToTable("Topic", Schema.Name);
         }
     }
 }

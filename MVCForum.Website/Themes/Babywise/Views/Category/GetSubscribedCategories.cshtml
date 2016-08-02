@@ -1,0 +1,13 @@
+﻿@model List<MVCForum.Website.ViewModels.CategoryViewModel>
+        
+@if (Model.Any())
+{
+    foreach (var catModel in Model)
+    {
+        @Html.Partial("_Category", catModel)
+    }
+}
+else
+{
+    <p>@Html.Lang("SubscribedCats.NothingToShow")</p>
+}

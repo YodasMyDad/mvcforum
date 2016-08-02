@@ -1,0 +1,51 @@
+﻿@model MVCForum.Website.ViewModels.CreateAjaxPostViewModel
+@{
+    if (!string.IsNullOrEmpty(Model.PostContent))
+    {
+        // Need to turn into a blockquote
+        if (SiteConstants.Instance.ChosenEditor.ToLower().Contains("markdown"))
+        {
+            Model.PostContent = string.Concat("> ", Model.PostContent);
+        }
+        if (SiteConstants.Instance.ChosenEditor.ToLower().Contains("bbcode"))
+        {
+            Model.PostContent = string.Concat("[quote]", Model.PostContent, "[/quote]");
+        }
+        if (SiteConstants.Instance.ChosenEditor.ToLower().Contains("tiny"))
+        {
+            Model.PostContent = string.Concat("<blockquote>", Model.PostContent, "</blockquote>");
+        }
+    }
+}
+@if (!Model.DisablePosting)
+{
+    if (Model.InReplyTo != null && !string.IsNullOrEmpty(Model.ReplyToUsername))
+    {
+        <div class="showreplyto">
+            @Html.Lang("Post.ReplyingTo") <strong>@Model.ReplyToUsername</strong>
+        </div>
+    }
+    <div id="createpostholder">
+        @using (Ajax.BeginForm("CreatePost", "Post", null, new AjaxOptions
+        {
+            HttpMethod = "POST",
+            LoadingElementId = "createpostwait",
+            OnSuccess = "AjaxPostSuccess()",
+            OnFailure = "AjaxPostError('Error creating post')",
+            UpdateTargetId = "newpostmarker",
+            OnBegin = "AjaxPostBegin()"
+        }, new { @id = "postcodeform" }))
+        {
+            <div class="editorholder">
+                @Html.EditorFor(x => x.PostContent, new { @class = "createpost required form-control rte" })
+                @Html.ValidationMessageFor(x => x.PostContent)
+            </div>
+            <input type="submit" id="createpostbutton" class="btn-mvc-green btn-mvc-large" value="@Html.LanguageString("Buttons.CreatePost")" />
+            <span style="display: none;" id="createpostwait" class="ajaxspinner" title="@Html.LanguageString("Post.PleaseWait")">@Html.LanguageString("Post.PleaseWait")</span>
+            @Html.HiddenFor(x => x.Topic)
+            @Html.HiddenFor(x => x.InReplyTo)
+        }
+
+    </div>
+
+}

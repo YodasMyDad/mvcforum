@@ -1,0 +1,36 @@
+﻿@using MVCForum.Website.Application
+@using MVCForum.Website.ViewModels
+@model ActiveTopicsViewModel
+@{
+    Layout = null;
+    var totalCount = Convert.ToInt32(Model.TotalCount);
+    ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
+}
+
+<div class="latesttopics">
+
+    <div class="mainheading clearfix">
+        <div class="widgetright hidden-xs">
+            @if (Html.Settings().EnableRSSFeeds)
+            {
+                <a href="@Url.Action("LatestRss", "Home")" class="rsssubscribe" title="@Html.LanguageString("Home.Rss")">
+                    <i class="fa fa-rss-square orange-colour"></i>
+                </a>
+            }
+        </div>
+        <h2>@Html.LanguageString("Home.LatestDiscussions")</h2>
+    </div>
+
+
+
+    @foreach (var topic in Model.Topics)
+    {
+        Html.RenderPartial("_Topic", topic);
+    }
+
+    @if (Model.TotalPages > 1)
+    {
+        @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null, "Index", "Home")
+    }
+
+</div>

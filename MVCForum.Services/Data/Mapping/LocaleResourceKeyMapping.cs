@@ -16,6 +16,8 @@ namespace MVCForum.Services.Data.Mapping
             HasMany(x => x.LocaleStringResources).WithRequired(x => x.LocaleResourceKey)
                 .Map(x => x.MapKey("LocaleResourceKey_Id"))
                 .WillCascadeOnDelete(false);
+
+            ToTable("LocaleResourceKey", Schema.Name);
         }
     }
 }

@@ -1,0 +1,19 @@
+﻿@using MVCForum.Website
+@model MVCForum.Website.ViewModels.HighEarnersPointViewModel
+
+<div class="highearners-box">
+    <ul>
+        @foreach (var dict in Model.HighEarners.Where(x => x.Value > 0))
+        {
+            <li class="clearfix">
+                <span class="earnername">
+                    <img src="@dict.Key.MemberImage(SiteConstants.Instance.GravatarLeaderboardSize)" alt="@dict.Key.UserName">
+                    <a href="@dict.Key.NiceUrl">@dict.Key.UserName</a>
+                </span>
+                <span class="earneramount">
+                    @dict.Value <span class="glyphicon glyphicon-sort" aria-hidden="true"></span>
+                </span>
+            </li>
+        }
+    </ul>
+</div>

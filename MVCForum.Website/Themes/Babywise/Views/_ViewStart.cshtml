@@ -1,0 +1,39 @@
+﻿@using MVCForum.Domain.Interfaces.Services
+@{
+    // Get the current theme
+    var currentTheme = DependencyResolver.Current.GetService<ISettingsService>().GetSettings().Theme;
+
+    // Set if this is a mobile device
+    PageData[AppConstants.IsMobileDevice] = Context.IsMobileDevice();
+
+    // Set the Layout view
+    //const string layoutName = "_Layout";
+    //Layout = string.Concat("~/Themes/", currentTheme, "/Views/Shared/", layoutName, ".cshtml");
+
+    const string layoutName = "_Layout";
+    Layout = "~/Views/Shared/" + layoutName + ".cshtml";
+
+    // set the theme locations as valid locations for views
+    var locationFormats = new List<string>
+                                  {
+                                      string.Concat("~/Themes/", currentTheme, "/Views/{0}.cshtml"),
+                                      string.Concat("~/Themes/", currentTheme, "/Views/Shared/{0}.cshtml")
+                                  };
+
+    foreach (var format in locationFormats)
+    {
+        var virtualPath = String.Format(
+            System.Globalization.CultureInfo.InvariantCulture,
+            format,
+            layoutName);
+        System.Diagnostics.Trace.WriteLine(virtualPath);
+        if (!System.Web.Hosting.HostingEnvironment.VirtualPathProvider.FileExists(virtualPath))
+        {
+            continue;
+        }
+
+        this.Layout = virtualPath;
+        break;
+    }
+
+}

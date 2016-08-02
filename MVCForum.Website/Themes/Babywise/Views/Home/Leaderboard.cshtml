@@ -1,0 +1,38 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
+    ViewBag.Title = Html.LanguageString("Leaderboard.LeaderboardTitle");
+}
+
+@section side
+{
+    @Html.Partial("_CommonSideNav")
+}
+
+@section Header {
+        @(
+        Bundle.JavaScript()
+            .Add("~/Scripts/leaderboard.js")            
+            .MvcRender("~/scripts/cache/leaderboard-combined_#.js")
+    )
+}
+
+<div class="leaderboard">
+    
+    <div class="row">
+        <div class="col-md-6 thisweeksstars">
+            <h2>@Html.LanguageString("Leaderboard.ThisWeeksStars")</h2>
+
+            <div class="leaderboardholders thisweekleaderboard">
+                <span class="ajaxspinner" title="@Html.LanguageString("Ajax.PleaseWait")">@Html.LanguageString("Ajax.PleaseWait")</span>
+            </div>
+
+        </div>
+        <div class="col-md-6 thisyearsstars">
+            <h2>@Html.LanguageString("Leaderboard.ThisYearsStars")</h2>
+            <div class="leaderboardholders alltimeleaderboard">
+                <span class="ajaxspinner" title="@Html.LanguageString("Ajax.PleaseWait")">@Html.LanguageString("Ajax.PleaseWait")</span>
+            </div>
+        </div>
+    </div>
+
+</div>

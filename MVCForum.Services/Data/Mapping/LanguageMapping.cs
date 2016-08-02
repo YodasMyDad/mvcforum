@@ -17,6 +17,8 @@ namespace MVCForum.Services.Data.Mapping
             HasMany(x => x.LocaleStringResources)
                 .WithRequired(x => x.Language).Map(x => x.MapKey("Language_Id"))
                 .WillCascadeOnDelete(false);
+
+            ToTable("Language", Schema.Name);
         }
     }
 }

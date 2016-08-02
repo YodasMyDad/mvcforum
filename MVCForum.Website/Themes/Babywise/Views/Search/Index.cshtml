@@ -1,0 +1,33 @@
+﻿@using MVCForum.Website.ViewModels
+@model SearchViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
+    ViewBag.Title = Html.Settings().ForumName;
+    var totalCount = Convert.ToInt32(Model.TotalCount);
+}
+
+@section side
+{
+    @Html.Partial("_CommonSideNav")
+}
+
+<h2>@Html.LanguageString("Search.Searching"): @Model.Term - @Model.TotalCount @Html.LanguageString("Search.Results")</h2>
+
+@if (Model.Posts.Any())
+{
+    foreach (var post in Model.Posts)
+    {
+        Html.RenderPartial("_PostSearch", post);
+    }
+
+    if (Model.TotalPages > 1)
+    {
+        @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.Instance.SearchListSize, totalCount, new { term = Model.Term })
+    }
+}
+else
+{
+    @Html.LanguageString("Search.NoResults")
+}
+

@@ -1,0 +1,20 @@
+﻿@using MVCForum.Website
+@model MVCForum.Website.ViewModels.MainStatsViewModel
+
+<div class="board-stats">
+    <p>@Html.Raw(string.Format(Html.LanguageString("Stats.FooterMainStatText"), Model.MemberCount, Model.PostCount, Model.TopicCount))</p>    
+</div>
+<div class="latest-members">
+    <h6>@Html.LanguageString("Stats.LatestMembers")</h6>
+    <ul class="latestmembersjoined">
+        @foreach (var member in Model.LatestMembers)
+        {
+            <li>
+                <a title="@Html.Raw(member.UserName)" href="@member.NiceUrl">
+                    <img src="@member.MemberImage(SiteConstants.Instance.GravatarLeaderboardSize)" alt="@Html.Raw(member.UserName)" />
+                </a>
+            </li>
+        }
+    </ul>
+</div>
+

@@ -1,0 +1,72 @@
+﻿@model MVCForum.Website.ViewModels.BreadcrumbViewModel
+
+@if (Model.Categories.Any())
+{
+
+    <ul class="breadcrumb" itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb">
+        @{
+    var catCount = Model.Categories.Count;
+    if (catCount <= 1)
+    {
+        if (Model.Topic != null)
+        {
+            <li>
+                <a itemprop="url" href="@Model.Categories[0].NiceUrl">
+                    <span itemprop="title">@Html.Raw(Model.Categories[0].Name)</span>
+                </a>
+            </li>
+            <li itemprop="child" class="active">
+                <span itemprop="title">@Html.Raw(Model.Topic.Name)</span>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a itemprop="url" href="@Model.Categories[0].NiceUrl">
+                    <span itemprop="title">@Html.Raw(Model.Categories[0].Name)</span>
+                </a>
+            </li>
+            <li itemprop="child" class="active">
+                <span itemprop="title">@Html.Raw(Model.Category.Name)</span>
+            </li>
+        }
+    }
+    else
+    {
+        var i = 1;
+        foreach (var cat in Model.Categories)
+        {
+            if (i < catCount)
+            {
+                <li>
+                    <a itemprop="url" href="@cat.NiceUrl">
+                        <span itemprop="title">@Html.Raw(cat.Name)</span>
+                    </a>
+                </li>
+            }
+            else
+            {
+                if (Model.Topic != null)
+                {
+                    <li itemprop="child">
+                        <a itemprop="url" href="@cat.NiceUrl">
+                            <span itemprop="title">@Html.Raw(cat.Name)</span>
+                        </a>
+                    </li>
+                    <li itemprop="child" class="active">
+                        <span itemprop="title"> @Html.Raw(Model.Topic.Name)</span>
+                    </li>
+                }
+                else
+                {
+                    <li itemprop="child" class="active">
+                        <span itemprop="title">@Html.Raw(Model.Category.Name)</span>
+                    </li>
+                }
+            }
+            i++;
+        }
+    }
+        }
+    </ul>
+}

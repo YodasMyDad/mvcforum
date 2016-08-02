@@ -1,0 +1,19 @@
+﻿@model MVCForum.Website.ViewModels.SubCategoryViewModel
+@{
+
+}
+    <div class="subcategoryholder">
+        @*<h4>@Html.Raw(string.Concat(Html.LanguageString("Category.SubCategoriesHeading"), " ", Model.ParentCategory.Name))</h4>*@
+        <ul class="clearfix">
+            @foreach (var category in Model.AllPermissionSets.Keys)
+            {
+                var permissions = Model.AllPermissionSets[category];    
+                if (!permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)            
+                {        
+                    <li><a style="border-color: @(string.IsNullOrEmpty(category.Colour) ? "#ced1d1" : category.Colour)" href="@Html.Raw(category.NiceUrl)">@Html.Raw(@category.Name)</a></li>
+                }
+            }
+        </ul>
+    </div>
+
+ 

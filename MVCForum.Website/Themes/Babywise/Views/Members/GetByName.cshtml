@@ -1,0 +1,134 @@
+﻿@using System.Globalization
+@using MVCForum.Utilities
+@model MVCForum.Website.ViewModels.ViewMemberViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
+    ViewBag.Title = string.Concat(Model.User.UserName, " ",Html.LanguageString("Members.ProfileTitle"));
+}
+
+@section Header
+{
+    <script type="text/javascript">
+        $(function () {
+            $.post(app_base + "Members/GetMemberDiscussions",
+                { "Id": '@Model.User.Id' },
+                function (data) {
+                    $(".memberdiscussions").html(data);
+                });
+            TimeBadges();
+        });
+        function TimeBadges() {
+            var timeBadgeViewModel = new Object();
+            timeBadgeViewModel.Id = '@Model.User.Id';
+            var strung = JSON.stringify(timeBadgeViewModel);
+            $.ajax({
+                url: app_base + 'Badge/Time',
+                type: 'POST',
+                dataType: 'html',
+                data: strung,
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    ShowUserMessage("Error: " + xhr.status + " " + thrownError);
+                }
+            });
+        }
+    </script>
+}
+
+@section side
+{
+    @Html.Partial("_CommonSideNav")
+}
+
+
+<div class="memberprofilepublic">
+
+    <div class="row">
+
+        <div class="col-md-3 memberavatardetails">
+            <p class="memberavatar"><img src="@Model.User.MemberImage(SiteConstants.Instance.GravatarProfileSize)" alt="@Model.User.UserName"></p>
+
+            @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name && Html.CurrentMember().DisablePrivateMessages != true && Html.Settings().EnablePrivateMessages)
+            {
+                <p><a href="@Url.Action("View", "PrivateMessage", new { from = Model.User.Id }, null)" class="btn-mvc pm-panel" data-name="@string.Concat(Html.LanguageString("PM.Title"), Model.User.UserName)">@Html.LanguageString("Members.MessageMe")</a></p>
+            }
+
+            @if (User.Identity.IsAuthenticated && Html.Settings().EnableMemberReporting && Model.User.Id != Model.LoggedOnUserId)
+            {
+                <p><a href="@Url.Action("Report", "Members", new { id = Model.User.Id }, null)" class="btn-mvc">@Html.LanguageString("Buttons.Report")</a></p>
+            }
+
+            @if (Model.Permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
+            {
+
+                // If this is an admins profile then do not show
+                if (!Model.User.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
+                {
+                    <div class="memberprofileadminsection">
+                        @Html.Partial("AdminMemberProfileTools")
+                    </div>
+                }
+            }
+        </div>
+
+        <div class="col-md-9 membermaindetails">
+
+            <div class="membersection memberbio">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3>@Model.User.UserName</h3>
+                    </div>
+                    <div class="col-md-6">
+                        <p>@Html.LanguageString("Members.Profile.Joined") @DatesUI.GetPrettyDate(Model.User.CreateDate.ToString())</p>
+                        @if (Model.User.LastActivityDate != null)
+                        {
+                            <p>@(Html.LanguageString("Members.Profile.LastOnline")): @DatesUI.GetPrettyDate(Model.User.LastActivityDate.ToString())</p>
+                        }                        
+                        <p>@Html.LanguageString("Members.Profile.Posts") @Model.User.Posts.Count</p>
+                        <p>@Html.LanguageString("Members.Profile.Points") @Model.User.TotalPoints</p>
+                        <p>@Html.LanguageString("Members.Profile.Age") @Html.Raw(Model.User.Age > 0 ? Model.User.Age.ToString() : "")</p>  
+                    </div>
+                    <div class="col-md-6">
+                        <p>@Html.LanguageString("Members.Profile.Location") @Html.Raw(string.IsNullOrEmpty(Model.User.Location) ? "" : Model.User.Location)</p>
+                        <p>@Html.LanguageString("Members.Profile.Website") @Html.Raw(string.IsNullOrEmpty(Model.User.Website) ? "" : string.Format("<a href='{0}' rel='nofollow'>{0}</a>", Model.User.Website))</p>
+                        <p>@Html.LanguageString("Members.Profile.Twitter") @Html.Raw(string.IsNullOrEmpty(Model.User.Twitter) ? "" : string.Format("<a href='{0}' rel='nofollow'>{0}</a>", Model.User.Twitter))</p>
+                        <p>@Html.LanguageString("Members.Profile.Facebook") @Html.Raw(string.IsNullOrEmpty(Model.User.Facebook) ? "" : string.Format("<a href='{0}' rel='nofollow'>{0}</a>", Model.User.Facebook))</p>  
+                    </div>
+                </div>
+            </div>
+
+            <div class="membersection memberlatesttopics">
+
+                <h3>@Html.LanguageString("Members.Profile.DiscussionActivity")</h3>
+                <div class="memberdiscussions">
+                    <span class="ajaxspinner" title="@Html.LanguageString("Ajax.PleaseWait")">@Html.LanguageString("Ajax.PleaseWait")</span>
+                </div>
+
+            </div>
+
+
+            @if (Model.User.Badges != null && Model.User.Badges.Any())
+            {
+                <div class="membersection badgeactivity">
+                    <h3>@Html.LanguageString("Members.Profile.Badges")</h3>
+                    @foreach (var badge in Model.User.Badges)
+                    {
+                        @Html.Partial("_Badge", badge)
+                    }
+                </div>
+            }
+
+            @if (User.IsInRole(AppConstants.AdminRoleName))
+            {
+                <div class="membersection adminpublicomments">
+                    @Html.Raw(Model.User.Comment)
+                </div>
+            }
+
+        </div>
+
+    </div>
+</div>

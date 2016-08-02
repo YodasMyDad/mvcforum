@@ -9,6 +9,8 @@ namespace MVCForum.Services.Data.Mapping
         {
             HasKey(x => x.Id);
             Property(x => x.Id).IsRequired();
+
+            ToTable("TopicNotification", Schema.Name);
         }
     }
 }

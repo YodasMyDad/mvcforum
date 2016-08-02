@@ -1,0 +1,96 @@
+﻿@using MVCForum.Utilities
+@using MVCForum.Website.ViewModels
+@model CategoryViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
+    ViewBag.Title = Html.Raw(Model.Category.PageTitle ?? Model.Category.Name);
+    ViewBag.MetaDesc = Model.Category.MetaDescription ?? StringUtils.StripHtmlFromString(Model.Category.Description);
+    var totalCount = Convert.ToInt32(Model.TotalCount);
+    ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
+
+    var subScribe = string.Empty;
+    var unSubscribe = string.Empty;
+    const string displayNone = "style='display:none;'";
+    if (Model.IsSubscribed)
+    {
+        subScribe = displayNone;
+    }
+    else
+    {
+        unSubscribe = displayNone;
+    }
+    //TempData[AppConstants.DefaultCategoryViewBagName] = Model.Category.Id;
+}
+@section SocialMeta {
+    <meta property="og:title" content="@ViewBag.Title" />
+    <meta property="og:url" content="@HttpContext.Current.Request.Url.AbsoluteUri" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="@ViewBag.Title" />
+    <meta name="twitter:description" content="@ViewBag.MetaDesc" />
+}
+@section side
+{
+    @Html.Partial("_CommonSideNav")
+}
+
+@Html.Action("GetCategoryBreadcrumb", "Category", new { category = Model.Category })
+
+<div class="category">
+
+    <div class="mainheading clearfix">
+
+        <div class="widgetright">
+            @if (Html.Settings().EnableRSSFeeds)
+            {
+                <a title="@Html.LanguageString("Home.Rss")" href="@Url.Action("CategoryRss", "Category", new { slug = Model.Category.Slug })" class="rsssubscribe">
+                    <i class="fa fa-rss-square orange-colour"></i>
+                </a>
+            }
+            @if (Model.User != null && Html.Settings().EnableEmailSubscriptions)
+            {
+                <a @Html.Raw(subScribe) href="#" class="emailsubscription" data-id="@Model.Category.Id" data-type="category">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    @Html.LanguageString("Notification.Subscribe")
+                </a>
+                <a @Html.Raw(unSubscribe) href="#" class="emailunsubscription" data-id="@Model.Category.Id" data-type="category">
+                    <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                    @Html.LanguageString("Notification.UnSubscribe")
+                </a>
+            }
+        </div>
+        @if (!string.IsNullOrEmpty(Model.Category.Image))
+        {
+            <img src="@AppHelpers.CategoryImage(Model.Category.Image, Model.Category.Id,110)" alt="@Model.Category" class="categoryimage" />
+        }
+        <h1>@Html.Raw(Model.Category.Name)</h1>
+        <p>@Html.Raw(AppHelpers.ConvertPostContent(Model.Category.Description))</p>
+    </div>
+
+    @if (Model.SubCategories != null)
+    {
+        Html.RenderPartial("_SubCategories", new SubCategoryViewModel
+            {
+                AllPermissionSets = Model.SubCategories.AllPermissionSets,
+                ParentCategory = Model.Category
+            });
+    }
+
+    @if (Model.TotalCount > 0)
+    {
+        foreach (var topic in Model.Topics)
+        {
+            Html.RenderPartial("_Topic", topic);
+        }
+
+        if (Model.TotalPages > 1)
+        {
+            @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null)
+        }
+    }
+    else
+    {
+        <p>@Html.LanguageString("Category.NoDiscussions")</p>
+    }
+
+</div>

@@ -1,0 +1,7 @@
+﻿@using MVCForum.Website.ViewModels
+@model ShowMorePostsViewModel
+
+@foreach (var post in Model.Posts)
+{
+    Html.RenderPartial("_Post", post);
+}

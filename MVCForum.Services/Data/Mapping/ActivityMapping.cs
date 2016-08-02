@@ -15,7 +15,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.Type).IsRequired().HasMaxLength(50);
 
             // TODO - Change Table Names
-            //ToTable("Activity"); 
+            ToTable("Activity", Schema.Name); 
         }
     }
 }

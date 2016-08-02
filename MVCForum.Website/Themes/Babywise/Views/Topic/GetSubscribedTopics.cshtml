@@ -1,0 +1,13 @@
+﻿@model List<MVCForum.Website.ViewModels.TopicViewModel>
+
+@if (Model.Any())
+{
+    foreach (var topicModel in Model)
+    {
+        @Html.Partial("_Topic", topicModel)
+    }
+}
+else
+{
+    <p>@Html.Lang("SubscribedTopics.NothingToShow")</p>
+}

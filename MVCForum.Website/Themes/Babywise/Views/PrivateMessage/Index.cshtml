@@ -1,0 +1,54 @@
+﻿@model MVCForum.Website.ViewModels.ListPrivateMessageViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
+    ViewBag.Title = Html.LanguageString("PM.ReceivedPrivateMessages");
+}
+<div class="row">
+
+    <div class="col-md-8 col-md-offset-2">
+        <div class="privatemessages">
+
+            <h2>@ViewBag.Title</h2>
+
+            @if (Model.Messages.Any())
+            {
+                <table class="table table-bordered table-striped table-adaptive">
+                    <thead>
+                        <tr>
+                            <th>@Html.LanguageString("PM.From")</th>
+                            <th>@Html.LanguageString("PM.LastActivity")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var message in Model.Messages)
+                        {
+                            <tr>
+                                <td>
+                                    <a href="@Url.Action("View", new { from = message.User.Id })" class="pm-panel" data-name="@string.Concat(Html.Lang("PM.Title"), message.User.UserName)">
+                                        <strong>
+                                            @message.User.UserName 
+                                        </strong>
+                                    </a>
+                                    @if (message.HasUnreadMessages){<text><i class="fa fa-commenting-o newmessageicon"></i></text>}
+                                </td>
+                                <td>
+                                    @DatesUI.GetPrettyDate(message.Date.ToString())
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                if (Model.TotalPages > 1)
+                {
+                    @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.Instance.PrivateMessageListSize, Convert.ToInt32(Model.TotalCount), new { })
+                }
+            }
+            else
+            {
+                <p>@Html.LanguageString("PM.NoMessages")</p>
+            }
+        </div>
+    </div>
+</div>

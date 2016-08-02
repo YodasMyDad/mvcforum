@@ -1,0 +1,7 @@
+﻿@using MVCForum.Website.ViewModels
+@model ViewMemberDiscussionsViewModel
+
+@foreach (var topic in Model.Topics)
+{
+    Html.RenderPartial("_TopicSlim", topic);    
+}

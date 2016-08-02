@@ -1,0 +1,42 @@
+﻿@model MVCForum.Website.ViewModels.CategoryListViewModel
+@{
+    var allCats = Model.AllPermissionSets.Keys;
+}
+<div class="side-box categories-box">
+    <h5>@Html.LanguageString("Category.CategoriesSideHeading")</h5>
+
+    <ul>
+        <li><a href="@Url.Action("Index")">@Html.LanguageString("Category.AllCategories")</a></li>
+        @foreach (var category in allCats.Where(x => x.ParentCategory == null))
+        {
+            var currentcatId = category.Id;
+            var permissions = Model.AllPermissionSets[category];
+            var subCats = allCats.Where(x => x.ParentCategory != null && x.ParentCategory.Id == currentcatId).ToList();
+            if (!permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
+            {
+                <li class="catitem">
+                    <a style="border-color: @(string.IsNullOrEmpty(category.Colour) ? "#ced1d1" : category.Colour)" href="@Html.Raw(category.NiceUrl)">@Html.Raw(category.Name)</a>
+                    @if (subCats.Any())
+                    {
+                        <ul>
+                            @foreach (var subCat in subCats)
+                            {
+                                var subPermissions = Model.AllPermissionSets[subCat];
+                                if (!subPermissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
+                                {
+                                    <li class="catitem">
+                                        <a style="border-color: @(string.IsNullOrEmpty(subCat.Colour) ? "#ced1d1" : subCat.Colour)" href="@Html.Raw(subCat.NiceUrl)">@Html.Raw(subCat.Name)</a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    }
+
+                </li>
+            }
+        }
+    </ul>
+
+
+
+</div>

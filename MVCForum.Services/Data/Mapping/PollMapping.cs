@@ -17,6 +17,8 @@ namespace MVCForum.Services.Data.Mapping
                 .WithRequired(t => t.Poll)
                 .Map(x => x.MapKey("Poll_Id"))
                 .WillCascadeOnDelete(false);
+
+            ToTable("Poll", Schema.Name);
         }
     }
 }

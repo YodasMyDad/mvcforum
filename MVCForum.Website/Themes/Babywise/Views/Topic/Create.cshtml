@@ -1,0 +1,35 @@
+﻿@model MVCForum.Website.ViewModels.CreateEditTopicViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
+    ViewBag.Title = Html.LanguageString("Topic.CreateDiscussion");
+}
+
+@section Header
+{
+    @(
+ Bundle.JavaScript()
+            .Add("~/Scripts/jquery.tagsinput.min.js")
+            .Add("~/Scripts/tags.js")
+            .Add("~/Scripts/createtopic.js")
+            .MvcRender("~/scripts/cache/topic-combined_#.js")
+    )
+    <script type="text/javascript">
+        counter = @(Model.PollAnswers != null ? Model.PollAnswers.Count : 0);
+    </script>
+}
+
+<div class="row">
+
+    <div class="col-md-8 col-md-offset-2">
+        <div class="createtopicholder">
+
+            @using (Html.BeginForm("Create", "Topic", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.ValidationSummary(false)
+                @Html.AntiForgeryToken()
+                @Html.Partial("_CreateEdit_TopicPost", Model)
+            }
+
+        </div>
+    </div>
+</div>

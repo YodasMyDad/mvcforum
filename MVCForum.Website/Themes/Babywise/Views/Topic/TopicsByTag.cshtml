@@ -1,0 +1,61 @@
+﻿@using MVCForum.Website.Application
+@using MVCForum.Website.ViewModels
+
+@model TagTopicsViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
+    ViewBag.Title = string.Concat(Html.LanguageString("Topic.DiscussionTaggedWith"), Model.Tag);
+    var totalCount = Convert.ToInt32(Model.TotalCount);
+    ViewBag.Canonical = Html.Raw(AppHelpers.CanonicalPagingTag(totalCount, Html.Settings().TopicsPerPage, Html));
+
+    // Email subscription
+    var subScribe = string.Empty;
+    var unSubscribe = string.Empty;
+    const string displayNone = "style='display:none;'";
+    if (Model.IsSubscribed)
+    {
+        subScribe = displayNone;
+    }
+    else
+    {
+        unSubscribe = displayNone;
+    }
+}
+
+@section side
+{
+    @Html.Partial("_CommonSideNav")
+}
+
+
+<div class="mainheading">
+    
+
+    <div class="widgetright">
+        @if (Html.CurrentMember() != null && Html.Settings().EnableEmailSubscriptions)
+        {
+            <a @Html.Raw(subScribe) href="#" class="emailsubscription" data-id="@Model.TagId" data-type="tag">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                @Html.LanguageString("Topic.Subscribe")
+            </a>
+            <a @Html.Raw(unSubscribe) href="#" class="emailunsubscription" data-id="@Model.TagId" data-type="tag">
+                <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                @Html.LanguageString("Topic.UnSubscribe")
+            </a>
+        }
+    </div>
+
+
+
+    <h1>@ViewBag.Title</h1>
+</div>
+
+@foreach (var topic in Model.Topics)
+{
+    Html.RenderPartial("_Topic", topic);
+}
+
+@if (Model.TotalPages > 1)
+{
+    @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null)
+}

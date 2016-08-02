@@ -12,6 +12,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.Date).IsRequired();
             HasRequired(x => x.Blocker).WithMany(x => x.BlockedUsers).Map(x => x.MapKey("Blocker_Id")).WillCascadeOnDelete(false);
             HasRequired(x => x.Blocked).WithMany(x => x.BlockedByOtherUsers).Map(x => x.MapKey("Blocked_Id")).WillCascadeOnDelete(false);
+            ToTable("Block", Schema.Name);
         }
     }
 }

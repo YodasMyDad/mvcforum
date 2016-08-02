@@ -1,0 +1,61 @@
+﻿@model MVCForum.Website.ViewModels.PollViewModel
+@{
+    var poll = Model.Poll;
+    var displayVote = !Model.UserHasAlreadyVoted;
+
+    <div class="pollcontainer">
+        @foreach (var pollAnswer in poll.PollAnswers.OrderBy(x => x.Answer))
+        {
+            var answerVotes = pollAnswer.PollVotes.Count;
+            var widthPercentage = answerVotes > 0 ? ((((float)answerVotes / (float)Model.TotalVotesInPoll) * 100)) : 0;
+            var convertedPercentage = Convert.ToInt32(widthPercentage);
+            var color = "success";
+            if (widthPercentage >= 0 & widthPercentage <= 25)
+            {
+                color = "danger";
+            }
+            if (widthPercentage > 25 & widthPercentage <= 50)
+            {
+                color = "warning";
+            }
+            if (widthPercentage > 50 & widthPercentage <= 75)
+            {
+                color = "info";
+            }
+
+
+            <div class="pollanswerrow">
+                <div class="pollanswerrowholder clearfix">
+                    @if (Model.UserAllowedToVote && displayVote && !Model.Poll.IsClosed)
+                    {
+                        <div class="pollradiobuttonholder">
+                            <input type="radio" class="pollanswerselect" name="pollanswers" data-answerid="@pollAnswer.Id" />
+                        </div>
+                    }
+                    @pollAnswer.Answer
+                </div>
+
+                <div class="pollbarrowholder clearfix">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-@color" role="progressbar" aria-valuenow="@(convertedPercentage)" aria-valuemin="0" aria-valuemax="100" style="width: @(convertedPercentage)%">
+                            <span>
+                                @answerVotes @Html.Lang("Topic.Votes")
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        }
+
+        @if (Model.UserAllowedToVote && displayVote && !Model.Poll.IsClosed)
+        {
+            <div class="pollvotebuttonholder" style="display: none;">
+                <a href="#" class="btn-mvc pollvotebutton">@Html.LanguageString("Poll.Button.Vote")</a>
+                <input type="hidden" class="selectedpollanswer" value="" />
+                @Html.HiddenFor(x => x.Poll.Id)
+            </div>
+        }
+    </div>
+}

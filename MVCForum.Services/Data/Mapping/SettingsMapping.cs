@@ -67,6 +67,8 @@ namespace MVCForum.Services.Data.Mapping
 
             HasRequired(x => x.DefaultLanguage)
                 .WithOptional().Map(m => m.MapKey("DefaultLanguage_Id"));
+
+            ToTable("Settings", Schema.Name);
         }
     }
 }

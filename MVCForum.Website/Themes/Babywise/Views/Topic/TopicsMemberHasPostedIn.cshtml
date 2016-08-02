@@ -1,0 +1,14 @@
+﻿@model  MVCForum.Website.ViewModels.PostedInViewModel
+@{
+    var totalCount = Convert.ToInt32(Model.TotalCount);
+}
+
+@foreach (var topic in Model.Topics)
+{
+    Html.RenderPartial("_Topic", topic);
+}
+
+@if (Model.TotalPages > 1)
+{
+    @Html.Pager(Convert.ToInt32(Model.PageIndex), Html.Settings().TopicsPerPage, totalCount, null, "PostedIn", "Home")
+}

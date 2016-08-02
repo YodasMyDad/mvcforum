@@ -1,0 +1,63 @@
+﻿@using MVCForum.Website.Application.ExtensionMethods
+@model MVCForum.Website.ViewModels.LogOnViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
+    ViewBag.Title = Html.LanguageString("LogOn.LogOn");
+}
+
+<div class="row">
+
+    <div class="col-md-6 col-md-offset-3">
+
+        @Html.Partial("_SocialLoginButtons")
+
+@if (Html.Settings().DisableStandardRegistration != true)
+{
+    <div class="mainlogonform">
+
+        <h3>@ViewBag.Title</h3>
+
+        @using (Html.BeginForm("LogOn", "Members", FormMethod.Post, new { @class = "form-login" }))
+        {
+            @Html.ValidationSummary(false)
+            @Html.AntiForgeryToken()
+
+            <p class="help-block">@Html.Raw(string.Format(Html.LanguageString("Members.LogOnMessage"), Html.ActionLink(Html.Lang("Members.Register"), "Register")))</p>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.UserName)
+                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.UserName)
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Password)
+                </div>
+
+                <div class="checkbox">
+                    @using (Html.BeginLabelFor(m => m.RememberMe, new { @class = "checkbox" }))
+                    {
+                        @Html.CheckBoxFor(m => m.RememberMe)
+                    }
+                    @Html.ValidationMessageFor(m => m.RememberMe)
+                </div>
+
+                <div class="submit-holder">
+                    <button type="submit" class="btn-mvc-green btn-mvc-large">@Html.LanguageString("Buttons.LogOn")</button>
+                </div>
+
+                @Html.HiddenFor(x => x.ReturnUrl)
+        }
+    </div>
+
+        <p class="forgotpasswordtext">
+            <a href="@Url.Action("ForgotPassword")">
+                @Html.LanguageString("Members.ForgotPassword.Link")
+            </a>
+        </p>
+}
+    </div>
+
+</div>

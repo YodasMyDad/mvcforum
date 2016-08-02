@@ -1,0 +1,21 @@
+﻿@using MVCForum.Domain.Constants
+@model MVCForum.Website.ViewModels.ViewMemberViewModel
+<div class="adminprofiletools">
+    
+    @if(!Model.User.IsBanned)
+    {
+        <p><a href="@Url.Action("BanMember", "Members", new {id = Model.User.Id }, null)" class="btn-mvc">@Html.LanguageString("Members.BanUser")</a></p>
+    }
+    else
+    {
+        <p><a href="@Url.Action("UnBanMember", "Members", new {id = Model.User.Id }, null)" class="btn-mvc">@Html.LanguageString("Members.UnBanUser")</a></p>
+    }
+
+    <p><a href="@Url.Action("Edit", "Members", new { Model.User.Id }, null)" class="btn-mvc">@Html.LanguageString("Members.EditMember")</a></p>      
+
+    @if (User.IsInRole(AppConstants.AdminRoleName))
+    {
+        <p><a href="@Url.Action("SrubAndBanUser", "Members", new { id = Model.User.Id }, null)" class="btn-mvc" onclick="return confirm('@Html.LanguageString("Confirmation.SrubAndBan")')">@Html.LanguageString("Members.SrubAndBan")</a></p> 
+    }
+
+</div>

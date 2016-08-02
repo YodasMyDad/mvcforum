@@ -1,0 +1,33 @@
+﻿@using MVCForum.Website.ViewModels
+@model CategoryListViewModel
+@{
+    Layout = null;
+}
+<div class="row">
+    <div class="col-md-9">
+        <h2>@ViewBag.Title</h2>
+    </div>
+</div>
+
+<div class="categoryindex">
+
+    @foreach (var cat in Model.AllPermissionSets.Keys)
+    {
+        var permissions = Model.AllPermissionSets[cat];
+        var topicCount = cat.Topics.Count;
+        var latestTopicInCategory = cat.Topics.OrderByDescending(x => x.LastPost.DateCreated).FirstOrDefault();
+        var actualPostCount = cat.Topics.SelectMany(x => x.Posts).Count();
+        var postCount = (actualPostCount < 1 ? actualPostCount : actualPostCount - 1);
+
+        @Html.Partial("_Category", new CategoryViewModel
+   {
+       Category = cat,
+       LatestTopic = latestTopicInCategory,
+       Permissions = permissions,
+       PostCount = postCount,
+       TopicCount = topicCount
+   })
+
+    }
+
+</div>

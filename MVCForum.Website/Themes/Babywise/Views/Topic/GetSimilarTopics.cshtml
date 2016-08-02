@@ -1,0 +1,15 @@
+﻿@model IList<MVCForum.Domain.DomainModel.Topic>
+@if (Model != null && Model.Any())
+{
+    <ul>
+        @foreach (var topic in Model)
+        {
+            <li class="clearfix">
+                <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
+                <a href="@Html.Raw(topic.NiceUrl)">@Html.Raw(topic.Name)</a>
+                <span class="topicvotes topicvotessmall">@topic.Posts.Count</span>
+            </li>
+        }
+    </ul>
+
+}

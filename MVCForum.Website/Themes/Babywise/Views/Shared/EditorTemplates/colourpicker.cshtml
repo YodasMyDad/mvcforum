@@ -1,0 +1,15 @@
+﻿<script src='/content/spectrum/spectrum.js'></script>
+<link rel='stylesheet' href='/content/spectrum/spectrum.css' />
+<script type="text/javascript">
+    $(function () {
+        var colPicker = $(".colourpicker");
+        colPicker.spectrum({
+            showInitial: true,
+            showInput: true,
+            change: function (color) {
+                colPicker.val(color.toHexString());
+            }
+        });
+    });
+</script>
+@Html.TextBox(string.Empty,ViewData.TemplateInfo.FormattedModelValue, new { @class = "colourpicker" })
