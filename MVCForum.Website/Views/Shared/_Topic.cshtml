@@ -68,7 +68,9 @@
                 <a href="@Model.Topic.LastPost.User.NiceUrl">
                     @Model.Topic.LastPost.User.UserName
                 </a> 
-                @DatesUI.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString()).
+                <span title="@DatesUI.GetFormattedDate(@Model.Topic.LastPost.DateCreated.ToString())">
+                    @DatesUI.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString()).
+                </span>                
                 <span class="stats topicanswers"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Model.Answers.KiloFormat()</span>
                 <span class="stats topicviews"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Model.Views.KiloFormat()</span>
                 <span class="stats topicupvotes"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> @Model.VotesUp.KiloFormat()</span>

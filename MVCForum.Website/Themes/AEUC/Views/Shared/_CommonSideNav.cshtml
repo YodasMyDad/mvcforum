@@ -1,0 +1,9 @@
+﻿@Html.Action("Index", "Language")
+@Html.Action("SideSearch", "Search")
+@Html.Action("ListCategorySideMenu", "Category")
+@if (User.Identity.IsAuthenticated)
+    {   
+        @Html.Action("PopularTags", "Tag", new { amountToTake = 20 })
+        @Html.Action("CurrentWeekHighPointUsers", "Point")
+    }
+@Html.Action("HotTopics", "Topic")

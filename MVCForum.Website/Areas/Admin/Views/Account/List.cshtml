@@ -2,21 +2,25 @@
 @using MVCForum.Website.Application
 @model MVCForum.Website.Areas.Admin.ViewModels.MemberListViewModel
 @{
-    ViewBag.Title = "Members";
+    ViewBag.Title = "Users";
 }
 
-<div class="panel">
-    <div class="panel-heading">
-        <h5>@ViewBag.Title</h5>
-    </div>
-    <div class="panel-content">
+<h2>
+    <a href="@Url.Action("Edit")" class="btn-mvc">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+    </a>
+    @ViewBag.Title
+</h2>
         @using (Html.BeginForm("Manage", "Account", FormMethod.Post))
         {
-            <div class="input-group membersadminsearch">
+            <div class="input-group membersadminsearch" style="padding-bottom: 15px;">
                 @Html.TextBoxFor(x => Model.Search, new { @class = "form-control" })
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="submit">Search</button>
                 </span>
+            </div>
+            <div style="text-align: right; padding-bottom: 10px;">
+                @Html.CheckBoxFor(x => Model.ShowDisabled) @Html.Raw(" Show Disabled")
             </div>
             @Html.HiddenFor(x => x.PageIndex)
         }
@@ -25,10 +29,10 @@
             <thead>
                 <tr>
                     <th>Edit</th>
-                    <th>Users</th>
-                    <th>Approved</th>
-                    <th>Locked Out</th>
-                    <th>Roles</th>
+                    <th>User</th>
+                    <th>Firm</th>
+                    <th>Disabled</th>
+                    <th>Is Voting Member</th>
                     <th>Delete</th>
                 </tr>
             </thead>
@@ -47,23 +51,13 @@
                             <strong>@Html.DisplayFor(modelItem => user.UserName)</strong>
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => user.IsApproved)
+                            @Html.DisplayFor(modelItem => user.MembershipFirmName)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => user.IsLockedOut)
+                            @Html.DisplayFor(modelItem => user.IsBanned)
                         </td>
                         <td>
-                            <span class="listrolecbholder">
-                                @foreach (var role in @Model.AllRoles)
-                                {
-                                    var showChecked = user.Roles.Contains(role.RoleName) ? "checked='checked'" : "";
-                                    var disablecb = disabled ? "disabled='disabled'" : "";
-                                    <span class="listrolecb">
-                                        <input type="radio" name="Roles-@user.Id" value="@role.RoleName" @showChecked @disablecb /> @Html.Raw(role.RoleName)
-                                    </span>
-                                }
-                                <input type="hidden" id="userId" value="@user.Id" />
-                            </span>
+                            @Html.DisplayFor(modelItem => user.IsVotingMember)
                         </td>
                         <td>
                             @if (!disabled)
@@ -81,10 +75,7 @@
 
         @if (Model.TotalPages > 1)
         {
-            @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
+            @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search, showdisabled = Model.ShowDisabled })
         }
-
-    </div>
-</div>
 
 

@@ -37,6 +37,8 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.Signature).IsOptional().HasMaxLength(1000);
             Property(x => x.Age).IsOptional();
             Property(x => x.Location).IsOptional().HasMaxLength(100);
+            Property(x => x.City).IsOptional().HasMaxLength(100);
+            Property(x => x.Country).IsOptional().HasMaxLength(100);
             Property(x => x.Website).IsOptional().HasMaxLength(100);
             Property(x => x.Twitter).IsOptional().HasMaxLength(60);
             Property(x => x.Facebook).IsOptional().HasMaxLength(60);
@@ -119,6 +121,11 @@ namespace MVCForum.Services.Data.Mapping
                         .Map(x => x.MapKey("UserFrom_Id"))
                         .WillCascadeOnDelete(false);
 
+            HasMany(x => x.AnnualMeetingRegistrations)
+                        .WithOptional(x => x.MembershipUser)
+                        .Map(x => x.MapKey("MembershipUser_Id"))
+                        .WillCascadeOnDelete(false);
+
             HasMany(x => x.BadgeTypesTimeLastChecked).WithRequired(x => x.User)
                 .Map(x => x.MapKey("MembershipUser_Id"))
                 .WillCascadeOnDelete(false);
@@ -132,7 +139,7 @@ namespace MVCForum.Services.Data.Mapping
                 m.MapLeftKey("UserIdentifier");
                 m.MapRightKey("RoleIdentifier");
             });
-           
+
             // Many-to-many join table - a badge may belong to many users
             HasMany(t => t.Badges)
            .WithMany(t => t.Users)

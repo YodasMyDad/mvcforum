@@ -237,6 +237,8 @@ namespace MVCForum.Website.Controllers
             }
         }
 
+        [RequireHttps]
+        [Authorize]
         public ActionResult AllBadges()
         {
             using (UnitOfWorkManager.NewUnitOfWork())

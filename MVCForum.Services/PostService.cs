@@ -13,6 +13,7 @@ using MVCForum.Domain.Interfaces;
 using MVCForum.Domain.Interfaces.UnitOfWork;
 using MVCForum.Services.Data.Context;
 using MVCForum.Utilities;
+using System.Text.RegularExpressions;
 
 namespace MVCForum.Services
 {
@@ -50,6 +51,22 @@ namespace MVCForum.Services
         private MembershipRole UsersRole(MembershipUser user)
         {
             return user == null ? _roleService.GetRole(AppConstants.GuestRoleName) : user.Roles.FirstOrDefault();
+        }
+
+        private IList<MembershipRole> UsersRoles(MembershipUser user)
+        {
+            if (user != null)
+            {
+                return user.Roles;
+            }
+            else
+            {
+                IList<MembershipRole> lstRoles = new List<MembershipRole>();
+                MembershipRole Guest = new MembershipRole();
+                Guest = _roleService.GetRole(AppConstants.GuestRoleName, true);
+                lstRoles.Add(Guest);
+                return lstRoles;
+            }
         }
 
         public Post SanitizePost(Post post)
@@ -185,13 +202,10 @@ namespace MVCForum.Services
         /// <param name="searchTerm"></param>
         /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm, List<Category> allowedCategories)
+        public PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm, List<Category> allowedCategories, Guid? CategoryId)
         {
-            // Create search term
-            var search = StringUtils.ReturnSearchString(searchTerm);
-
-            // Now split the words
-            var splitSearch = search.Trim().Split(' ').ToList();
+            // Now split the words and terms
+            var splitSearch = Regex.Matches(searchTerm, @"(?<="")|\w[\w\s]*(?="")|\w+|""[\w\s]*""");
 
             // get the category ids
             var allowedCatIds = allowedCategories.Select(x => x.Id);
@@ -203,19 +217,19 @@ namespace MVCForum.Services
                             .Where(x => x.Pending != true)
                             .Where(x => allowedCatIds.Contains(x.Topic.Category.Id));
 
-            // Start the predicate builder
-            var postFilter = PredicateBuilder.False<Post>();
-
-            // Loop through each word and see if it's in the post
-            foreach (var term in splitSearch)
+            if (CategoryId != null)
             {
-                var sTerm = term.Trim();
-                //query = query.Where(x => x.PostContent.ToUpper().Contains(sTerm) || x.SearchField.ToUpper().Contains(sTerm));
-                postFilter = postFilter.Or(x => x.PostContent.ToUpper().Contains(sTerm) || x.SearchField.ToUpper().Contains(sTerm));
+                query = query.Where(x => x.Topic.Category.Id == CategoryId);
             }
 
-            // Add the predicate builder to the query
-            query = query.Where(postFilter);
+            // Loop through each word and term and see if it's in the post
+            foreach (var term in splitSearch)
+            {
+                var sTerm = term.ToString().Trim().Replace("\"","").ToUpper();
+                if (sTerm != "") {
+                    query = query.Where(x => x.PostContent.ToUpper().Contains(sTerm) || x.SearchField.ToUpper().Contains(sTerm));
+                }
+            }
 
             // Get the count
             var total = query.Count();
@@ -302,7 +316,7 @@ namespace MVCForum.Services
             return new PagedList<Post>(results.ToList(), pageIndex, pageSize, total);
         }
 
-        public IList<Post> GetPendingPosts(List<Category> allowedCategories, MembershipRole usersRole)
+        public IList<Post> GetPendingPosts(List<Category> allowedCategories, MembershipRole usersRole, IList<MembershipRole> usersRoles)
         {
             var allowedCatIds = allowedCategories.Select(x => x.Id);
             var allPendingPosts = _context.Post.AsNoTracking().Include(x => x.Topic.Category).Where(x => x.Pending == true && allowedCatIds.Contains(x.Topic.Category.Id)).ToList();
@@ -312,7 +326,7 @@ namespace MVCForum.Services
                 var permissionSets = new Dictionary<Guid, PermissionSet>();
                 foreach (var category in allowedCategories)
                 {
-                    var permissionSet = _roleService.GetPermissions(category, usersRole);
+                    var permissionSet = _roleService.GetPermissions(category, usersRole, usersRoles);
                     permissionSets.Add(category.Id, permissionSet);
                 }
 
@@ -331,7 +345,7 @@ namespace MVCForum.Services
             }
             return allPendingPosts;
         }
-
+ 
         public int GetPendingPostsCount(List<Category> allowedCategories)
         {
             var allowedCatIds = allowedCategories.Select(x => x.Id);
@@ -542,7 +556,7 @@ namespace MVCForum.Services
         public Post AddNewPost(string postContent, Topic topic, MembershipUser user, out PermissionSet permissions)
         {
             // Get the permissions for the category that this topic is in
-            permissions = _roleService.GetPermissions(topic.Category, UsersRole(user));
+            permissions = _roleService.GetPermissions(topic.Category, UsersRole(user), UsersRoles(user));
 
             // Check this users role has permission to create a post
             if (permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked || permissions[SiteConstants.Instance.PermissionReadOnly].IsTicked)

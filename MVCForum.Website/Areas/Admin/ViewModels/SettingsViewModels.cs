@@ -199,5 +199,16 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [UIHint(AppConstants.EditorType), AllowHtml]
         [StringLength(6000)]
         public string TermsAndConditions { get; set; }
+
+        [DisplayName("Enable Default Category in Discussions")]
+        public bool EnableDefaultCategoryinDiscussions { get; set; }
+
+        [DisplayName("Enable authenticated homepage header")]
+        public bool EnableHomePageHeader { get; set; }
+
+        [DisplayName("Authenticated homepage header")]
+        [UIHint(AppConstants.EditorType), AllowHtml]
+        [StringLength(6000)]
+        public string HomePageHeader { get; set; }
     }
 }

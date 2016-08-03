@@ -26,7 +26,7 @@ namespace MVCForum.Website.Controllers
             {
                 // Check the user has permission to download this file
                 var fileCategory = uploadedFileById.Post.Topic.Category;
-                var allowedCategoryIds = _categoryService.GetAllowedCategories(UsersRole).Select(x => x.Id);
+                var allowedCategoryIds = _categoryService.GetAllowedCategories(UsersRole, UsersRoles).Select(x => x.Id);
                 if (allowedCategoryIds.Contains(fileCategory.Id))
                 {
                     //if(AppHelpers.FileIsImage(uploadedFileById.FilePath))

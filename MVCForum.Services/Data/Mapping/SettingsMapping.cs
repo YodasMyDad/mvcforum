@@ -61,6 +61,9 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.AgreeToTermsAndConditions).IsOptional();
             Property(x => x.DisableStandardRegistration).IsOptional();
             Property(x => x.TermsAndConditions).IsOptional();
+            Property(x => x.EnableDefaultCategoryinDiscussions).IsOptional();
+            Property(x => x.EnableHomePageHeader).IsOptional();
+            Property(x => x.HomePageHeader).IsOptional();
 
             HasRequired(t => t.NewMemberStartingRole)
                 .WithOptional(x => x.Settings).Map(m => m.MapKey("NewMemberStartingRole"));

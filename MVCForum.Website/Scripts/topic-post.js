@@ -11,7 +11,7 @@
     VoteInPoll();
     ShowPostEditHistory();
     ModerateTopicPosts();
-});
+ });
 
 var ModerateTopicPosts = function() {
     var moderatepanel = $(".moderatepanelnav");

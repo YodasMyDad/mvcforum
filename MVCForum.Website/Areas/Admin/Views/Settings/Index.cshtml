@@ -222,6 +222,14 @@
                 @Html.ValidationMessageFor(model => model.PrivateMessageFloodControl)
             </div>
 
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.EnableDefaultCategoryinDiscussions, new { @class = "checkbox" }))
+                {
+                    @Html.CheckBoxFor(m => m.EnableDefaultCategoryinDiscussions)
+                }
+                @Html.ValidationMessageFor(m => m.EnableDefaultCategoryinDiscussions)
+            </div>
+
 
         </div>
     </div>
@@ -229,34 +237,64 @@
     </div>
 
 
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="headingTermsConditions">
+            <h4 class="panel-title">
+                <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTermsConditions" aria-expanded="false" aria-controls="collapseTermsConditions">
+                    Terms &amp; Conditions
+                </a>
+            </h4>
+        </div>
+        <div id="collapseTermsConditions" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTermsConditions">
+            <div class="panel-body">
+
+                <div class="checkbox">
+                    @using (Html.BeginLabelFor(m => m.AgreeToTermsAndConditions, new { @class = "checkbox" }))
+                    {
+                        @Html.CheckBoxFor(m => m.AgreeToTermsAndConditions)
+                    }
+                    @Html.ValidationMessageFor(m => m.AgreeToTermsAndConditions)
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.TermsAndConditions)
+                    @Html.EditorFor(model => model.TermsAndConditions)
+                    @Html.ValidationMessageFor(model => model.TermsAndConditions)
+                </div>
+
+            </div>
+        </div>
+    </div>
+
         <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="headingTermsConditions">
+            <div class="panel-heading" role="tab" id="headingHomePageHeader">
                 <h4 class="panel-title">
-                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTermsConditions" aria-expanded="false" aria-controls="collapseTermsConditions">
-                        Terms &amp; Conditions
+                    <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseHomePageHeader" aria-expanded="false" aria-controls="collapseHomePageHeader">
+                        Homepage Header
                     </a>
                 </h4>
             </div>
-            <div id="collapseTermsConditions" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTermsConditions">
+            <div id="collapseHomePageHeader" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingHomePageHeader">
                 <div class="panel-body">
 
                     <div class="checkbox">
-                        @using (Html.BeginLabelFor(m => m.AgreeToTermsAndConditions, new { @class = "checkbox" }))
+                        @using (Html.BeginLabelFor(m => m.EnableHomePageHeader, new { @class = "checkbox" }))
                         {
-                            @Html.CheckBoxFor(m => m.AgreeToTermsAndConditions)
+                            @Html.CheckBoxFor(m => m.EnableHomePageHeader)
                         }
-                        @Html.ValidationMessageFor(m => m.AgreeToTermsAndConditions)
+                        @Html.ValidationMessageFor(m => m.EnableHomePageHeader)
                     </div>
 
                     <div class="form-group">
-                        @Html.LabelFor(model => model.TermsAndConditions)
-                        @Html.EditorFor(model => model.TermsAndConditions)
-                        @Html.ValidationMessageFor(model => model.TermsAndConditions)
+                        @Html.LabelFor(model => model.HomePageHeader)
+                        @Html.EditorFor(model => model.HomePageHeader)
+                        @Html.ValidationMessageFor(model => model.HomePageHeader)
                     </div>
 
                 </div>
             </div>
         </div>
+
 
     <div class="panel panel-default">
             <div class="panel-heading" role="tab" id="headingPoints">

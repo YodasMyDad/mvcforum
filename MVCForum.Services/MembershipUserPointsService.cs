@@ -139,11 +139,11 @@ namespace MVCForum.Services
         public Dictionary<MembershipUser, int> GetThisYearsPoints(int? amountToTake)
         {
             amountToTake = amountToTake ?? int.MaxValue;
-            var thisYear = DateTime.UtcNow.Year;
+            var lastYear = DateTime.UtcNow.AddDays(-365);
 
             var results = _context.MembershipUserPoints
                 .Include(x => x.User)
-                .Where(x => x.DateAdded.Year == thisYear)
+                .Where(x => x.DateAdded >= lastYear)
                 .ToList();
 
             return results.GroupBy(x => x.User)

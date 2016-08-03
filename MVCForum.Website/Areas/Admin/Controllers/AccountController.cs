@@ -11,13 +11,18 @@ using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
 using MVCForum.Website.ViewModels.Mapping;
 using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
+using System.Text;
+using Microsoft.Reporting.WebForms;
+using System.Data.SqlTypes;
+
 
 namespace MVCForum.Website.Areas.Admin.Controllers
 {
     public partial class AccountController : BaseAdminController
     {
-        public readonly IActivityService _activityService;    
+        public readonly IActivityService _activityService;
         private readonly IRoleService _roleService;
+        private readonly IFirmService _firmService;
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
@@ -25,6 +30,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         private readonly IPollVoteService _pollVoteService;
         private readonly IPollAnswerService _pollAnswerService;
         private readonly IUploadedFileService _uploadedFileService;
+        private readonly IEmailService _emailService;
 
         /// <summary>
         /// Constructor
@@ -43,17 +49,22 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         /// <param name="pollVoteService"> </param>
         /// <param name="pollAnswerService"> </param>
         /// <param name="uploadedFileService"></param>
+        /// <param name="emailFileService"></param>
         public AccountController(ILoggingService loggingService,
             IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService,
             ILocalizationService localizationService,
             IRoleService roleService,
-            ISettingsService settingsService, IPostService postService, ITopicService topicService, IMembershipUserPointsService membershipUserPointsService, 
-            IActivityService activityService, IPollService pollService, IPollVoteService pollVoteService, IPollAnswerService pollAnswerService, IUploadedFileService uploadedFileService)
+            IFirmService firmService,
+            ISettingsService settingsService, IPostService postService, ITopicService topicService, IMembershipUserPointsService membershipUserPointsService,
+            IActivityService activityService, IPollService pollService, IPollVoteService pollVoteService, IPollAnswerService pollAnswerService, IUploadedFileService uploadedFileService,
+            IEmailService emailService)
+
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
             _activityService = activityService;
             _roleService = roleService;
+            _firmService = firmService;
             _postService = postService;
             _topicService = topicService;
             _membershipUserPointsService = membershipUserPointsService;
@@ -61,6 +72,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             _pollVoteService = pollVoteService;
             _pollAnswerService = pollAnswerService;
             _uploadedFileService = uploadedFileService;
+            _emailService = emailService;
         }
 
         #region Users
@@ -101,19 +113,18 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
             // Replace the roles in the user's collection
             user.Roles.Clear();
-            foreach(var role in updatedRolesSet)
+            foreach (var role in updatedRolesSet)
             {
                 user.Roles.Add(role);
             }
 
         }
-
         /// <summary>
         /// List out users and allow editing
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = AppConstants.AdminRoleName)]
-        private ActionResult ListUsers(int? p, string search)
+        public ActionResult ListWithRolesUsers(int? p, string search)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
@@ -134,10 +145,72 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     TotalPages = allUsers.TotalPages
                 };
 
+                return View("ListWithRoles", memberListModel);
+            }
+        }
+
+
+        /// <summary>
+        /// List out users and allow editing
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = AppConstants.AdminRoleName)]
+        public ActionResult ListUsers(int? p, string search, bool showDisabled)
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var pageIndex = p ?? 1;
+                var allUsers = string.IsNullOrEmpty(search) ?
+                                   showDisabled ?
+                                        MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize) :
+                                        MembershipService.GetAllActive(pageIndex, SiteConstants.Instance.AdminListPageSize) :
+                                    showDisabled ? 
+                                        MembershipService.SearchMembers(search, pageIndex, SiteConstants.Instance.AdminListPageSize) : 
+                                        MembershipService.SearchActiveMembers(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
+
+                // Redisplay list of users
+                var allViewModelUsers = allUsers.Select(ViewModelMapping.UserToSingleMemberListViewModel).ToList();
+
+                var memberListModel = new MemberListViewModel
+                {
+                    Users = allViewModelUsers,
+                    AllRoles = _roleService.AllRoles(),
+                    Id = MembershipService.GetUser(User.Identity.Name).Id,
+                    PageIndex = pageIndex,
+                    TotalCount = allUsers.TotalCount,
+                    Search = search,
+                    ShowDisabled = showDisabled,
+                    TotalPages = allUsers.TotalPages
+                };
+
                 return View("List", memberListModel);
             }
         }
 
+        public ActionResult ListUsers(Guid firmId, bool showDisabled)
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var pageIndex = 1;
+                var allUsers = MembershipService.GetFirmMembers(firmId, pageIndex, SiteConstants.Instance.AdminListPageSize);
+
+                // Redisplay list of users
+                var allViewModelUsers = showDisabled ? allUsers.Select(ViewModelMapping.UserToSingleMemberListViewModel).Where(x => x.IsBanned != showDisabled).ToList()
+                    : allUsers.Select(ViewModelMapping.UserToSingleMemberListViewModel).ToList(); ;
+                var memberListModel = new MemberListViewModel
+                {
+                    Users = allViewModelUsers,
+                    AllRoles = _roleService.AllRoles(),
+                    Id = MembershipService.GetUser(User.Identity.Name).Id,
+                    PageIndex = pageIndex,
+                    TotalCount = allUsers.TotalCount,
+                    ShowDisabled = showDisabled,
+                    TotalPages = allUsers.TotalPages
+                };
+
+                return View("List", memberListModel);
+            }
+        }
         [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult ManageUserPoints(Guid id)
         {
@@ -214,7 +287,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             using (var uow = UnitOfWorkManager.NewUnitOfWork())
             {
                 var point = _membershipUserPointsService.Get(pointToRemove);
-                var user = point.User;        
+                var user = point.User;
                 _membershipUserPointsService.Delete(point);
 
                 try
@@ -238,9 +311,9 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     });
                 }
 
-                return RedirectToAction("ManageUserPoints", new {id = user.Id });
+                return RedirectToAction("ManageUserPoints", new { id = user.Id });
 
-            }            
+            }
         }
 
         /// <summary>
@@ -248,21 +321,66 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = AppConstants.AdminRoleName)]
-        public ActionResult Manage(int? p, string search)
+        public ActionResult Manage(int? p, string search, string firmId, bool showDisabled = false)
         {
-            return ListUsers(p, search);
+            if (firmId != null)
+            {
+                return ListUsers(new Guid(firmId), showDisabled);
+            }
+            else {
+                return ListUsers(p, search, showDisabled);
+            }
         }
 
+        /// <summary>
+        /// Manage users
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = AppConstants.AdminRoleName)]
+        public ActionResult ManageRoles(int? p, string search, string firmId)
+        {
+            return ListWithRolesUsers(p, search);
+        }
 
         [Authorize(Roles = AppConstants.AdminRoleName)]
-        public ActionResult Edit(Guid id)
+        public ActionResult Add()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = AppConstants.AdminRoleName)]
+        public ActionResult Edit(Guid? id)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var user = MembershipService.GetUser(id);
+                var user = new MembershipUser();
+                if (id == null)
+                {
+                    var now = DateTime.UtcNow;
+
+                    user.Id = Guid.Empty;
+                    user.UserName = string.Empty;
+                    user.Password = string.Empty;
+                    user.Email = string.Empty;
+                    user.PasswordQuestion = string.Empty;
+                    user.PasswordAnswer = string.Empty;
+                    user.IsApproved = true;
+                    user.IsLockedOut = false;
+                    user.MembershipFirm = MembershipService.GetFirmByName("Not Listed");
+                    IList<MembershipRole> Roles = new List<MembershipRole>();
+                    Roles.Add(_roleService.GetRole(SettingsService.GetSettings().NewMemberStartingRole.Id));
+                    user.Roles = Roles;
+
+                }
+                else
+                {
+                    user = MembershipService.GetUser(id);
+                }
+
 
                 var viewModel = ViewModelMapping.UserToMemberEditViewModel(user);
                 viewModel.AllRoles = _roleService.AllRoles();
+                viewModel.AllFirms = _firmService.AllFirms();
 
                 return View(viewModel);
             }
@@ -275,34 +393,88 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-                var user = MembershipService.GetUser(userModel.Id);
 
-                // Map everything in model except properties hidden on page
-                user.Age = userModel.Age;
-                user.Comment = userModel.Comment;
-                user.Email = userModel.Email;
-                user.Facebook = userModel.Facebook;
-                user.IsApproved = userModel.IsApproved;
-                user.IsLockedOut = userModel.IsLockedOut;
-                user.IsBanned = userModel.IsBanned;
-                user.Location = userModel.Location;
-                user.PasswordAnswer = userModel.PasswordAnswer;
-                user.PasswordQuestion = userModel.PasswordQuestion;
-                user.Signature = userModel.Signature;
-                user.Twitter = userModel.Twitter;
-                user.UserName = userModel.UserName;
-                user.Website = userModel.Website;
-                user.DisableEmailNotifications = userModel.DisableEmailNotifications;
-                user.DisablePosting = userModel.DisablePosting;
-                user.DisablePrivateMessages = userModel.DisablePrivateMessages;
+
+                var user = new MembershipUser();
+                var userIsApproved = true;
+                var message = "User Created.";
+
+                if (userModel.Id == Guid.Empty)
+                {
+                    var now = DateTime.UtcNow;
+                    user.UserName = userModel.UserName;
+                    user.Password = "New User";
+                    user.PasswordSalt = "New User";
+                    user.Email = userModel.Email;
+                    user.PasswordQuestion = userModel.PasswordQuestion;
+                    user.PasswordAnswer = userModel.PasswordAnswer;
+                    user.CreateDate = now;
+                    user.FailedPasswordAnswerAttempt = 0;
+                    user.FailedPasswordAttemptCount = 0;
+                    user.LastLockoutDate = (DateTime)SqlDateTime.MinValue;
+                    user.LastPasswordChangedDate = now;
+                    user.IsVotingMember = userModel.IsVotingMember;
+                    user.IsApproved = userModel.IsApproved;
+                    user.IsLockedOut = userModel.IsLockedOut;
+                    user.IsBanned = false;
+                    user.LastLoginDate = (DateTime)SqlDateTime.MinValue;
+                    user.JobTitle = userModel.JobTitle;
+                    user.Comment = "";
+                    user.Website = "";
+                    user.City = userModel.City;
+                    user.Country = userModel.Country;
+                    user.DisableEmailNotifications = userModel.DisableEmailNotifications;
+                    user.MembershipFirm = _firmService.GetFirm(userModel.MembershipFirmId);
+                    IList<MembershipRole> Roles = new List<MembershipRole>();
+                    Roles.Add(_roleService.GetRole(SettingsService.GetSettings().NewMemberStartingRole.Id));
+                    user.Roles = Roles;
+                    MembershipService.Add(user);
+                }
+                else
+                {
+
+                    user = MembershipService.GetUser(userModel.Id);
+                    userIsApproved = user.IsApproved;
+
+                    // Map everything in model except properties hidden on page
+                    user.Age = userModel.Age;
+                    user.Comment = userModel.Comment;
+                    user.Email = userModel.Email;
+                    user.Facebook = userModel.Facebook;
+                    user.IsApproved = userModel.IsApproved;
+                    user.IsLockedOut = userModel.IsLockedOut;
+                    user.IsBanned = userModel.IsBanned;
+                    user.City = userModel.City;
+                    user.Country = userModel.Country;
+                    user.Location = userModel.Location;
+                    user.PasswordAnswer = userModel.PasswordAnswer;
+                    user.PasswordQuestion = userModel.PasswordQuestion;
+                    user.Signature = userModel.Signature;
+                    user.Twitter = userModel.Twitter;
+                    user.UserName = userModel.UserName;
+                    user.Website = userModel.Website;
+                    user.DisableEmailNotifications = userModel.DisableEmailNotifications;
+                    user.DisablePosting = userModel.DisablePosting;
+                    user.DisablePrivateMessages = userModel.DisablePrivateMessages;
+                    user.JobTitle = userModel.JobTitle;
+                    user.MembershipFirm = _firmService.GetFirm(userModel.MembershipFirmId);
+                    user.IsVotingMember = userModel.IsVotingMember;
+                    message = "User saved";
+                }
 
                 try
                 {
+                    // Send Email if user is approved for the first time
+                    if (!userIsApproved && userIsApproved != userModel.IsApproved && user.IsBanned == false)
+                    {
+                        SendEmailConfirmationEmail(userModel);
+                    }
+
                     unitOfWork.Commit();
 
                     ViewBag.Message = new GenericMessageViewModel
                     {
-                        Message = "User saved",
+                        Message = message,
                         MessageType = GenericMessages.success
                     };
                 }
@@ -313,7 +485,13 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
                 }
 
-                return ListUsers(null, null);
+                if (user.Password == "New User" && user.IsBanned == false)
+                {
+                    // Send Email as user has been created by and admin and they will need to create a password.
+                    SendEmailConfirmationWithPasswordeResetEmail(user);
+                }
+
+                return ListUsers(null, null, false);
             }
         }
 
@@ -350,7 +528,73 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         MessageType = GenericMessages.danger
                     };
                 }
-                return RedirectToAction("Manage", new {p, search});
+                return RedirectToAction("Manage", new { p, search });
+            }
+        }
+        [HttpPost]
+        [Authorize(Roles = AppConstants.AdminRoleName)]
+        private void SendEmailConfirmationEmail(MemberEditViewModel user)
+        {
+            // Send mail notification if the admin is authorising emails and the user is now approved
+            var sb = new StringBuilder();
+            sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.EmailBody"),
+                                        user.UserName));
+            var email = new Email
+            {
+                EmailTo = user.Email,
+                NameTo = user.UserName,
+                IdTo = user.Id,
+                Subject = LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.Subject")
+            };
+            email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+            _emailService.SendMail(email);
+        }
+
+        private void SendEmailConfirmationWithPasswordeResetEmail(MembershipUser user)
+        {
+            // If the user is registered then create a security token and a timestamp that will allow a change of password
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                MembershipService.UpdatePasswordResetToken(user);
+                try
+                {
+                    unitOfWork.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    LoggingService.Error(ex);
+                    ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.Error"));
+                }
+            }
+
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                var url = new Uri(string.Concat(SettingsService.GetSettings().ForumUrl.TrimEnd('/'), Url.Action("ResetPassword", "Members", new { user.Id, token = user.PasswordResetToken })).Replace("admin/", ""));
+
+                // Send mail notification if the admin is authorising emails and the user is now approved
+                var sb = new StringBuilder();
+                sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.EmailWithPasswordResetBody"),
+                                            user.UserName, url));
+                var email = new Email
+                {
+                    EmailTo = user.Email,
+                    NameTo = user.UserName,
+                    IdTo = user.Id,
+                    Subject = LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.Subject")
+                };
+                email.Body = _emailService.EmailTemplateNewUser(email.NameTo, sb.ToString(), user.Id);
+                _emailService.SendMail(email);
+
+                try
+                {
+                    unitOfWork.Commit();
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
+                    ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.Error"));
+                }
             }
         }
 
@@ -389,9 +633,9 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var roles = new RoleListViewModel
-                        {
-                            MembershipRoles = _roleService.AllRoles()
-                        };
+                {
+                    MembershipRoles = _roleService.AllRoles()
+                };
                 return View(roles);
             }
         }
@@ -417,7 +661,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             {
                 var existingRole = _roleService.GetRole(role.Id);
                 existingRole.RoleName = role.RoleName;
-               
+
                 try
                 {
                     unitOfWork.Commit();
@@ -552,6 +796,187 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 MessageType = GenericMessages.success
             };
             return RedirectToAction("ListAllRoles");
+        }
+        #endregion
+
+        #region Firms
+        [Authorize(Roles = AppConstants.AdminRoleName)]
+        public ActionResult ListAllFirms()
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var firms = new FirmListViewModel
+                {
+                    MembershipFirms = _firmService.AllFirms()
+                };
+                return View(firms);
+            }
+        }
+        [Authorize(Roles = AppConstants.AdminRoleName)]
+        public ActionResult EditFirm(Guid Id)
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var firm = _firmService.GetFirm(Id);
+                var SizeBandings = GetAllSizeBandings();
+
+                var viewModel = ViewModelMapping.FirmToFirmViewModel(firm);
+
+                viewModel.SizeBandings = GetSelectListItems(SizeBandings);
+
+                return View(viewModel);
+            }
+        }
+
+        private IEnumerable<string> GetAllSizeBandings()
+        {
+            return new List<string>
+            {
+                "1 to 49",
+                "50 to 249",
+                "250 to 499",
+                "500 to 999",
+                "1000+",
+            };
+        }
+        private IEnumerable<SelectListItem> GetSelectListItems(IEnumerable<string> elements)
+        {
+            var selectList = new List<SelectListItem>();
+            foreach (var element in elements)
+            {
+                selectList.Add(new SelectListItem
+                {
+                    Value = element,
+                    Text = element
+                });
+            }
+
+            return selectList;
+        }
+
+        [HttpPost]
+        [Authorize(Roles = AppConstants.AdminRoleName)]
+        public ActionResult EditFirm(FirmViewModel firm)
+        {
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                var existingFirm = _firmService.GetFirm(firm.Id);
+                existingFirm.FirmName = firm.FirmName;
+                existingFirm.Address1 = firm.Address1;
+                existingFirm.Address2 = firm.Address2;
+                existingFirm.Address3 = firm.Address3;
+                existingFirm.City = firm.City;
+                existingFirm.County = firm.County;
+                existingFirm.Country = firm.Country;
+                existingFirm.Postcode = firm.Postcode;
+                existingFirm.MemberInfoCheck = firm.MemberInfoCheck;
+                existingFirm.SizeCheck = firm.SizeCheck;
+                existingFirm.LastModified = DateTime.UtcNow;
+                existingFirm.IsActive = firm.IsActive;
+                existingFirm.IsApproved = firm.IsApproved;
+                existingFirm.ProfessionalServices = firm.ProfessionalServices;
+                existingFirm.Vendor = firm.Vendor;
+                existingFirm.US = firm.US;
+                existingFirm.Canada = firm.Canada;
+                existingFirm.UK = firm.UK;
+                existingFirm.EMEA = firm.EMEA;
+                existingFirm.APAC = firm.APAC;
+                existingFirm.Other = firm.Other;
+                existingFirm.SizeBanding = firm.SizeBanding;
+                existingFirm.Comment = firm.Comment;
+                existingFirm.Website = firm.Website;
+
+                try
+                {
+                    unitOfWork.Commit();
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
+                    throw new Exception("Error editing firm");
+                }
+            }
+
+            // Use temp data as its a redirect
+            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            {
+                Message = "Firm saved",
+                MessageType = GenericMessages.success
+            };
+
+            return RedirectToAction("ListAllFirms");
+        }
+
+        [Authorize(Roles = AppConstants.AdminRoleName)]
+        public ActionResult DeleteFirm(Guid Id)
+        {
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+                var firmToDelete = _firmService.GetFirm(Id);
+                _firmService.Delete(firmToDelete);
+
+                try
+                {
+                    unitOfWork.Commit();
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
+                    throw new Exception("Error voting up post");
+                }
+            }
+
+            // Use temp data as its a redirect
+            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            {
+                Message = "Firm Deleted",
+                MessageType = GenericMessages.success
+            };
+            return RedirectToAction("ListAllFirms");
+        }
+
+        [Authorize(Roles = AppConstants.AdminRoleName)]
+        public ActionResult AddFirm()
+        {
+            var firm = new FirmViewModel();
+            var SizeBandings = GetAllSizeBandings();
+
+            firm.SizeBandings = GetSelectListItems(SizeBandings);
+
+            return View(firm);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = AppConstants.AdminRoleName)]
+        public ActionResult AddFirm(FirmViewModel firm)
+        {
+            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            {
+
+                var newFirm = ViewModelMapping.FirmViewModelToFirm(firm);
+                _firmService.CreateFirm(newFirm);
+
+                try
+                {
+                    unitOfWork.Commit();
+                }
+                catch (Exception ex)
+                {
+                    unitOfWork.Rollback();
+                    LoggingService.Error(ex);
+                    throw new Exception("Error adding a firm");
+                }
+            }
+
+            // Use temp data as its a redirect
+            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            {
+                Message = "Firm Added",
+                MessageType = GenericMessages.success
+            };
+            return RedirectToAction("ListAllFirms");
         }
 
         #endregion

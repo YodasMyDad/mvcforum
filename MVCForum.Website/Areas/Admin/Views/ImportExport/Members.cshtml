@@ -6,10 +6,35 @@
     <div class="col-md-6">
         <div class="panel">
             <div class="panel-heading">
+                <h5>Import Members</h5>
+            </div>
+            <div class="panel-content">
+                <p>The file should be in the form of a comma seperate values (CSV) file in the following format:</p>
+                <p>
+                    <blockquote style="font-size:9pt">
+                        Adam Munns,adam.munns@rpc.co.uk
+                    </blockquote>
+                </p>
+                @using (Html.BeginForm("ImportUsers", "ImportExport", FormMethod.Post, new { enctype = "multipart/form-data", id = "ImportForm", name = "ImportForm", target = "UploadTarget" }))
+                {
+                    <div class="submit-holder">
+                        <p><input type="file" id="file" name="file" /></p>
+                        <p><input type="submit" class="btn-mvc-green" value="Import" /></p>
+                    </div>
+                }
+
+                @*This frame is displayed off the page and gets the results of the import (ie the success or fail messages) *@
+                <iframe id="UploadTarget" name="UploadTarget" onload="Import_Complete();" style="position: absolute; left: -999em; top: -999em;"></iframe>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel">
+            <div class="panel-heading">
                 <h5>Export Members</h5>
             </div>
             <div class="panel-body">
-                <p>Export all members into a CSV, you can use this CSV format to also import members into the forum.</p>
+                <p>Export all members and their details into a CSV.</p>
                 @using (Html.BeginForm("ExportUsers", "ImportExport"))
                 {
                     <div class="submit-holder">
@@ -19,26 +44,41 @@
             </div>
         </div>
     </div>
+</div>
+<div class="row">
     <div class="col-md-6">
         <div class="panel">
             <div class="panel-heading">
-                <h5>Import Members</h5>
+                <h5>Import Annual Meeting Registrations</h5>
             </div>
-            <div class="panel-content">
-                <p>The easiest way to find out what format the CSV file to import should be in, is to click the export button above and use that as a template.</p>
-                @using (Html.BeginForm("ImportUsers", "ImportExport", FormMethod.Post, new { enctype = "multipart/form-data", id = "ImportForm", name = "ImportForm", target = "UploadTarget" }))
+            <div class="panel-body">
+                <p>Import list of Members registered for Annual Meeting as exported from EventBrite</p>
+                <p>The file should be in the form of a comma seperate values (CSV) file in the following format:</p>
+                <p><blockquote style="font-size:9pt">
+    Date,First Name,Last Name,Email,Company<br />
+    2016-02-16,Adam,Munns,adam.munns@rpc.co.uk,Reynolds Porter Chamberlain LLP
+</blockquote></p>
+                @using (Html.BeginForm("ImportAttendees", "ImportExport", FormMethod.Post, new { enctype = "multipart/form-data", id = "ImportForm", name = "ImportForm", target = "UploadTarget" }))
                 {
+                    <div class="submit-holder">
+                        <p>Event Date YYYY/MM/DD <input type="date" id="eventdate" name="eventdate" /></p>
+                    </div>
                     <div class="submit-holder">
                         <p><input type="file" id="file" name="file" /></p>
                         <p><input type="submit" class="btn-mvc-green" value="Import" /></p>
                     </div>
                 }
-
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel">
+            <div class="panel-heading">
+                <h5>Import Status Window</h5>
+            </div>
+            <div class="panel-body">
                 @*Results of any import are displayed here:*@
                 <div id="ImportResults"></div>
-
-                @*This frame is displayed off the page and gets the results of the import (ie the success or fail messages) *@
-                <iframe id="UploadTarget" name="UploadTarget" onload="Import_Complete();" style="position: absolute; left: -999em; top: -999em;"></iframe>
             </div>
         </div>
     </div>

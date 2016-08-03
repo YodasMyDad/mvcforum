@@ -9,6 +9,7 @@ using MVCForum.Utilities;
 using MVCForum.Website.Application;
 using MVCForum.Website.ViewModels;
 using MVCForum.Website.ViewModels.Mapping;
+using System;
 
 namespace MVCForum.Website.Controllers
 {
@@ -34,7 +35,7 @@ namespace MVCForum.Website.Controllers
         }
 
         [HttpGet]
-        public ActionResult Index(int? p, string term)
+        public ActionResult Index(int? p, string term, Guid? CategoryId)
         {
             if (!string.IsNullOrEmpty(term))
             {
@@ -49,7 +50,7 @@ namespace MVCForum.Website.Controllers
                     var settings = SettingsService.GetSettings();
 
                     // Get allowed categories
-                    var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                    var allowedCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles);
 
 
                     // Set the page index
@@ -60,10 +61,11 @@ namespace MVCForum.Website.Controllers
                                                          SiteConstants.Instance.SearchListSize,
                                                          int.MaxValue,
                                                          term,
-                                                         allowedCategories);
+                                                         allowedCategories,
+                                                         CategoryId);
 
                     // Get all the permissions for these topics
-                    var topicPermissions = ViewModelMapping.GetPermissionsForTopics(posts.Select(x => x.Topic), RoleService, UsersRole);
+                    var topicPermissions = ViewModelMapping.GetPermissionsForTopics(posts.Select(x => x.Topic), RoleService, UsersRole, UsersRoles);
 
                     // Get the post Ids
                     var postIds = posts.Select(x => x.Id).ToList();

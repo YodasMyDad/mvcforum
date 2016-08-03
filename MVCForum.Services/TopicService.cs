@@ -389,7 +389,7 @@ namespace MVCForum.Services
             return new PagedList<Topic>(results, pageIndex, pageSize, total);
         }
 
-        public IList<Topic> GetPendingTopics(List<Category> allowedCategories, MembershipRole usersRole)
+        public IList<Topic> GetPendingTopics(List<Category> allowedCategories, MembershipRole usersRole, IList<MembershipRole> usersRoles)
         {
             var allowedCatIds = allowedCategories.Select(x => x.Id);
             var allPendingTopics = _context.Topic.AsNoTracking().Include(x => x.Category).Where(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id)).ToList();
@@ -399,7 +399,7 @@ namespace MVCForum.Services
                 var permissionSets = new Dictionary<Guid, PermissionSet>();
                 foreach (var category in allowedCategories)
                 {
-                    var permissionSet = _roleService.GetPermissions(category, usersRole);
+                    var permissionSet = _roleService.GetPermissions(category, usersRole, usersRoles);
                     permissionSets.Add(category.Id, permissionSet);
                 }
 

@@ -1,10 +1,8 @@
 ﻿@*<li><a href="//www.mvcforum.com"><span class="glyphicon glyphicon glyphicon-menu-left" aria-hidden="true"></span> Main Website</a></li>*@<li><a href="@Url.Action("Index", "Home")" class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "index" ? "active" : "")">@Html.Lang("SubNav.Latest")</a></li><!--
 -->@if (User.Identity.IsAuthenticated)
-{<!--
-    --><li><a href="@Url.Action("Following", "Home")" class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "following" ? "active" : "")">@Html.Lang("SubNav.Following")</a></li><!--
-    --><li><a href="@Url.Action("PostedIn", "Home")" class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "postedin" ? "active" : "")">@Html.Lang("SubNav.PostedIn")</a></li><!--
-    --><li><a href="@Url.Action("Index", "Favourite")" class="@(TempData[AppConstants.CurrentController].ToString() == "favourite" && TempData[AppConstants.CurrentAction].ToString() == "index" ? "active" : "")">@Html.Lang("SubNav.Favourites")</a></li><!--
--->}
+{
+    <li><a href="@Url.Action("Search", "Members")" class="@(TempData[AppConstants.CurrentController].ToString() == "members" && TempData[AppConstants.CurrentAction].ToString() == "search" ? "active" : "")">@Html.LanguageString("Members.SearchMembers")</a></li>
+}
 @if (Html.Settings().EnablePoints)
 {<!--
     --><li><a href="@Url.Action("Leaderboard", "Home")" class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "leaderboard" ? "active" : "")">@Html.LanguageString("Layout.Nav.Leaderboard")</a></li><!--

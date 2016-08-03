@@ -94,6 +94,9 @@ $(function () {
 
             }
         });
+
+        // Call change function due to potential default category
+        createTopicCategoryDropdown.change();
     }
 
 

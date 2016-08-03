@@ -1,5 +1,10 @@
 ﻿@{
     var searchFor = Html.Lang("Side.Search.SearchFor");
+    string CategoryId = "";
+    if (TempData[AppConstants.DefaultCategoryViewBagName] != null)
+    {
+        CategoryId = TempData[AppConstants.DefaultCategoryViewBagName].ToString();
+    }
 }
 <div class="side-box sidesearchbox">
     <h5>@Html.LanguageString("Side.Search")</h5>
@@ -7,10 +12,19 @@
     @using (Html.BeginForm("Index", "Search", FormMethod.Get))
     {
         <div class="input-group">
-            @Html.TextBox("term", null, new { @class = "form-control", placeholder = searchFor })
+            @Html.TextBox("term", TempData["SearchTerms"], new { @class = "form-control", placeholder = searchFor })
             <span class="input-group-btn">
                 <button class="btn btn-default" type="submit">@Html.Lang("Side.Search.Go")</button>
             </span>
         </div>
+        if (CategoryId != "")
+        {
+            @Html.CheckBox("CategoryId", new { @class = "searchcheckbox", value = CategoryId })
+            <span>in current Category</span>
+        }
+        else
+        {
+            @Html.Hidden("CategoryId")
+        };
     }
 </div>

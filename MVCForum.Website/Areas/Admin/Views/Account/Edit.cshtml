@@ -22,152 +22,201 @@
 
             @Html.ValidationSummary(false)
 
-
-            <div class="form-group">
-                @Html.LabelFor(x => x.UserName)
-                @Html.TextBoxFor(x => x.UserName, new { @class = "form-control" })
-                @Html.ValidationMessageFor(x => x.UserName)
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(x => x.PasswordQuestion)
-                @Html.TextBoxFor(x => x.PasswordQuestion, new { @class = "form-control" })
-                @Html.ValidationMessageFor(x => x.PasswordQuestion)
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(x => x.PasswordAnswer)
-                @Html.TextBoxFor(x => x.PasswordAnswer, new { @class = "form-control" })
-                @Html.ValidationMessageFor(x => x.PasswordAnswer)
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(x => x.Email)
-                @Html.TextBoxFor(x => x.Email, new { @class = "form-control", type = "email" })
-                @Html.ValidationMessageFor(x => x.Email)
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(x => x.Age)
-                @Html.TextBoxFor(x => x.Age, new { @class = "form-control" })
-                @Html.ValidationMessageFor(x => x.Age)
-            </div>
-
-            <div class="row membereditavatar">
-                <div class="col-sm-2">
-                    <img src="@AppHelpers.MemberImage(Model.Avatar, Model.Email, Model.Id, SiteConstants.Instance.GravatarProfileSize)" class="img-responsive" alt="@Model.UserName">
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(x => x.UserName)
+                    @Html.TextBoxFor(x => x.UserName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.UserName)
                 </div>
-                <div class="col-sm-10">
-                    <div class="form-group">
-                        @Html.LabelFor(x => x.Avatar)
-                        @Html.TextBoxFor(x => x.Avatar, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(x => x.Avatar)
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.JobTitle)
+                    @Html.TextBoxFor(x => x.JobTitle, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.JobTitle)
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Email)
+                    @Html.TextBoxFor(x => x.Email, new { @class = "form-control", type = "email" })
+                    @Html.ValidationMessageFor(x => x.Email)
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.AllFirms)
+                    @Html.DropDownListFor(x => x.MembershipFirmId, new SelectList(Model.AllFirms, "Id", "FirmName", Model.MembershipFirmId), new { @class = "form-control" })
+                </div>
+
+                <div class="checkbox">
+                    @using (Html.BeginLabelFor(m => m.IsVotingMember, new { @class = "checkbox" }))
+                {
+                        @Html.CheckBoxFor(m => m.IsVotingMember)
+                    }
+                    @Html.ValidationMessageFor(m => m.IsVotingMember)
+                </div>
+                <!--
+                            <div class="form-group">
+                                @Html.LabelFor(x => x.PasswordQuestion)
+                                @Html.TextBoxFor(x => x.PasswordQuestion, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.PasswordQuestion)
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(x => x.PasswordAnswer)
+                                @Html.TextBoxFor(x => x.PasswordAnswer, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.PasswordAnswer)
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(x => x.Email)
+                                @Html.TextBoxFor(x => x.Email, new { @class = "form-control", type = "email" })
+                                @Html.ValidationMessageFor(x => x.Email)
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(x => x.Age)
+                                @Html.TextBoxFor(x => x.Age, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.Age)
+                            </div>
+                -->
+                <div class="form-group">
+                    @Html.LabelFor(x => x.City)
+                    @Html.TextBoxFor(x => x.City, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.City)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Country)
+                    @Html.TextBoxFor(x => x.Country, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Country)
+                </div>
+                <div class="row membereditavatar">
+                    <div class="col-sm-2">
+                        <img src="@AppHelpers.MemberImage(Model.Avatar, Model.Email, Model.Id, SiteConstants.Instance.GravatarProfileSize)" class="img-responsive" alt="@Model.UserName">
+                    </div>
+                    <div class="col-sm-10">
+                        <div class="form-group">
+                            @Html.LabelFor(x => x.Avatar)
+                            @Html.TextBoxFor(x => x.Avatar, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(x => x.Avatar)
+                        </div>
                     </div>
                 </div>
+                <!--
+                            <div class="form-group">
+                                @Html.LabelFor(x => x.Location)
+                                @Html.TextBoxFor(x => x.Location, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.Location)
+                            </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Website)
+                    @Html.TextBoxFor(x => x.Website, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Website)
+                </div>
+                <!--
+                            <div class="form-group">
+                                @Html.LabelFor(x => x.Twitter)
+                                @Html.TextBoxFor(x => x.Twitter, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.Twitter)
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(x => x.Facebook)
+                                @Html.TextBoxFor(x => x.Facebook, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.Facebook)
+                            </div>
+                -->
             </div>
+            <div class="col-md-6">
 
-            <div class="form-group">
-                @Html.LabelFor(x => x.Location)
-                @Html.TextBoxFor(x => x.Location, new { @class = "form-control" })
-                @Html.ValidationMessageFor(x => x.Location)
-            </div>
+                <h2>Admin Specific</h2>
 
-            <div class="form-group">
-                @Html.LabelFor(x => x.Website)
-                @Html.TextBoxFor(x => x.Website, new { @class = "form-control" })
-                @Html.ValidationMessageFor(x => x.Website)
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(x => x.Twitter)
-                @Html.TextBoxFor(x => x.Twitter, new { @class = "form-control" })
-                @Html.ValidationMessageFor(x => x.Twitter)
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(x => x.Facebook)
-                @Html.TextBoxFor(x => x.Facebook, new { @class = "form-control" })
-                @Html.ValidationMessageFor(x => x.Facebook)
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(x => x.Signature)
-                @Html.EditorFor(x => x.Signature)
-                @Html.ValidationMessageFor(x => x.Signature)
-            </div>
-
-            <h2>Admin Specific</h2>
-
-            <div class="checkbox">
-                @using (Html.BeginLabelFor(m => m.DisableEmailNotifications, new { @class = "checkbox" }))
+                <div class="checkbox">
+                    @using (Html.BeginLabelFor(m => m.DisableEmailNotifications, new { @class = "checkbox" }))
                 {
-                    @Html.CheckBoxFor(m => m.DisableEmailNotifications)
-                }
-                @Html.ValidationMessageFor(m => m.DisableEmailNotifications)
-            </div>
+                        @Html.CheckBoxFor(m => m.DisableEmailNotifications)
+                    }
+                    @Html.ValidationMessageFor(m => m.DisableEmailNotifications)
+                </div>
 
-            <div class="checkbox">
-                @using (Html.BeginLabelFor(m => m.DisablePosting, new { @class = "checkbox" }))
+                <div class="checkbox">
+                    @using (Html.BeginLabelFor(m => m.DisablePosting, new { @class = "checkbox" }))
                 {
-                    @Html.CheckBoxFor(m => m.DisablePosting)
-                }
-                @Html.ValidationMessageFor(m => m.DisablePosting)
-            </div>
+                        @Html.CheckBoxFor(m => m.DisablePosting)
+                    }
+                    @Html.ValidationMessageFor(m => m.DisablePosting)
+                </div>
 
-            <div class="checkbox">
-                @using (Html.BeginLabelFor(m => m.DisablePrivateMessages, new { @class = "checkbox" }))
+                <div class="checkbox">
+                    @using (Html.BeginLabelFor(m => m.DisablePrivateMessages, new { @class = "checkbox" }))
                 {
-                    @Html.CheckBoxFor(m => m.DisablePrivateMessages)
-                }
-                @Html.ValidationMessageFor(m => m.DisablePrivateMessages)
-            </div>
+                        @Html.CheckBoxFor(m => m.DisablePrivateMessages)
+                    }
+                    @Html.ValidationMessageFor(m => m.DisablePrivateMessages)
+                </div>
 
-            <div class="checkbox">
-                @using (Html.BeginLabelFor(m => m.DisableFileUploads, new { @class = "checkbox" }))
+                <div class="checkbox">
+                    @using (Html.BeginLabelFor(m => m.DisableFileUploads, new { @class = "checkbox" }))
+                    {
+                        @Html.CheckBoxFor(m => m.DisableFileUploads)
+                    }
+                    @Html.ValidationMessageFor(m => m.DisableFileUploads)
+                </div>
+
+                <div class="checkbox">
+                    @if(Model.IsApproved) {
+                        using (Html.BeginLabelFor(m => m.IsApproved, new { @class = "checkbox", @readonly = "true" }))
+                        {
+                            @Html.CheckBoxFor(m => m.IsApproved)
+                        }
+                    }
+                    else
+                    {
+                        using (Html.BeginLabelFor(m => m.IsApproved, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.IsApproved)
+                        }
+                    }
+                    @Html.ValidationMessageFor(m => m.IsApproved)
+                </div>
+
+                <div class="checkbox">
+                    @using (Html.BeginLabelFor(m => m.IsLockedOut, new { @class = "checkbox" }))
+                    {
+                        @Html.CheckBoxFor(m => m.IsLockedOut)
+                    }
+                    @Html.ValidationMessageFor(m => m.IsLockedOut)
+                </div>
+
+                <div class="checkbox">
+                    @using (Html.BeginLabelFor(m => m.IsBanned, new { @class = "checkbox" }))
                 {
-                    @Html.CheckBoxFor(m => m.DisableFileUploads)
-                }
-                @Html.ValidationMessageFor(m => m.DisableFileUploads)
-            </div>
+                        @Html.CheckBoxFor(m => m.IsBanned)
+                    }
+                    @Html.ValidationMessageFor(m => m.IsBanned)
+                </div>
 
-            <div class="checkbox">
-                @using (Html.BeginLabelFor(m => m.IsApproved, new { @class = "checkbox" }))
-                {
-                    @Html.CheckBoxFor(m => m.IsApproved)
-                }
-                @Html.ValidationMessageFor(m => m.IsApproved)
-            </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Signature)
+                    @Html.EditorFor(x => x.Signature)
+                    @Html.ValidationMessageFor(x => x.Signature)
+                </div>
 
-            <div class="checkbox">
-                @using (Html.BeginLabelFor(m => m.IsLockedOut, new { @class = "checkbox" }))
-                {
-                    @Html.CheckBoxFor(m => m.IsLockedOut)
-                }
-                @Html.ValidationMessageFor(m => m.IsLockedOut)
-            </div>
-
-            <div class="checkbox">
-                @using (Html.BeginLabelFor(m => m.IsBanned, new { @class = "checkbox" }))
-                {
-                    @Html.CheckBoxFor(m => m.IsBanned)
-                }
-                @Html.ValidationMessageFor(m => m.IsBanned)
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(x => x.Comment)
-                @Html.TextAreaFor(x => x.Comment, new { @class = "form-control" })
-                @Html.ValidationMessageFor(x => x.Comment)
-            </div>
-
-            <div class="submit-holder">
-                <input type="submit" class="btn-mvc-green" value="@(buttonText)" />
-                @if (Model.Id != Guid.Empty)
-                {
-                    <a href="@Url.Action("Delete", new{Model.Id})" onclick="return confirm('Are you sure you want to delete @Model.UserName?')" class="btn-mvc-red" role="button">Delete</a>
-                }
-            </div>
-        }
-
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Comment)
+                    @Html.TextAreaFor(x => x.Comment, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Comment)
+                </div>
     </div>
+    <div class="col-md-12">
+
+                <div class="submit-holder">
+                    <input type="submit" class="btn-mvc-green" value="@(buttonText)" />
+                    @if (Model.Id != Guid.Empty)
+                {
+                        <a href="@Url.Action("Delete", new{Model.Id})" onclick="return confirm('Are you sure you want to delete @Model.UserName?')" class="btn-mvc-red" role="button">Delete</a>
+                    }
+                </div>
+     </div>
+                }
+
+     </div>
 </div>

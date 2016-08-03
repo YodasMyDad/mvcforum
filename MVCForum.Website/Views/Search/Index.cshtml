@@ -5,8 +5,9 @@
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = Html.Settings().ForumName;
     var totalCount = Convert.ToInt32(Model.TotalCount);
+    TempData["SearchTerms"] = Model.Term;
+    TempData[AppConstants.DefaultCategoryViewBagName] = Model.CategoryId;
 }
-
 @section side
 {
     @Html.Partial("_CommonSideNav")

@@ -22,7 +22,7 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
-    <IISExpressSSLPort />
+    <IISExpressSSLPort>44300</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -113,6 +113,15 @@
       <HintPath>..\packages\Unity.4.0.1\lib\net45\Microsoft.Practices.Unity.RegistrationByConvention.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.ReportViewer.DataVisualization, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Windows\assembly\GAC_MSIL\Microsoft.ReportViewer.DataVisualization\10.0.0.0__b03f5f7f11d50a3a\Microsoft.ReportViewer.DataVisualization.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.ProcessingObjectModel, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\Windows\assembly\GAC_MSIL\Microsoft.ReportViewer.ProcessingObjectModel\10.0.0.0__b03f5f7f11d50a3a\Microsoft.ReportViewer.ProcessingObjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WebForms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
@@ -224,6 +233,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AEUCForum.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AEUCForum.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Application\ActionFilterAttributes\MustBeTrueAttribute.cs" />
     <Compile Include="Application\Akismet\Comment.cs" />
     <Compile Include="Application\Akismet\IValidator.cs" />
@@ -265,6 +279,7 @@
     <Compile Include="Areas\Admin\Controllers\BatchController.cs" />
     <Compile Include="Areas\Admin\Controllers\BannedWordController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ReportsController.cs" />
     <Compile Include="Controllers\ModerateController.cs" />
     <Compile Include="Areas\Admin\ViewModels\AdminBadgeViewModels.cs" />
     <Compile Include="Areas\Admin\ViewModels\AjaxAdminViewModels.cs" />
@@ -620,8 +635,16 @@
     <Content Include="Content\admin\Images\icons\zone.png" />
     <Content Include="Content\admin\Imports.css" />
     <Content Include="Content\admin\sb-admin.css" />
+    <Content Include="Content\badges\AderantGuru.png" />
+    <Content Include="Content\badges\AderantMaster.png" />
     <Content Include="Content\badges\jedi.png" />
+    <Content Include="Content\badges\MemberFor10YearsBadge.png" />
+    <Content Include="Content\badges\MemberFor15YearsBadge.png" />
+    <Content Include="Content\badges\MemberFor20YearsBadge.png" />
+    <Content Include="Content\badges\MemberFor25YearsBadge.png" />
+    <Content Include="Content\badges\MemberFor5YearsBadge.png" />
     <Content Include="Content\badges\MemberForAYearBadge.png" />
+    <Content Include="Content\badges\MentionsAEUCBadge.png" />
     <Content Include="Content\badges\MentionsUmbracoBadge.png" />
     <Content Include="Content\badges\OneThousandPoints.png" />
     <Content Include="Content\badges\padawan.png" />
@@ -644,7 +667,6 @@
     <Content Include="Content\bootstrap\js\bootstrap.min.js" />
     <Content Include="Content\bootstrap\js\npm.js" />
     <Content Include="Content\cache\Cache.txt" />
-    <Content Include="Content\Emails\EmailNotification.htm" />
     <Content Include="Content\Images\ajaxloader-large.gif" />
     <Content Include="Content\Images\ajaxloader.gif" />
     <Content Include="Content\Images\arrow-spinner-blue.gif" />
@@ -988,6 +1010,88 @@
     <Content Include="Scripts\tinymce\themes\modern\theme.min.js" />
     <Content Include="Scripts\tinymce\tinymce.js" />
     <Content Include="Scripts\tinymce\tinymce.min.js" />
+    <Content Include="Themes\AEUC\Content\assets\css\bootstrapTheme.css" />
+    <Content Include="Themes\AEUC\Content\assets\css\custom.css" />
+    <Content Include="Themes\AEUC\Content\assets\css\font-awesome.min.css" />
+    <Content Include="Themes\AEUC\Content\assets\css\ie8.css" />
+    <Content Include="Themes\AEUC\Content\assets\css\ie9.css" />
+    <Content Include="Themes\AEUC\Content\assets\css\images\dark-bl.svg" />
+    <Content Include="Themes\AEUC\Content\assets\css\images\dark-br.svg" />
+    <Content Include="Themes\AEUC\Content\assets\css\images\dark-tl.svg" />
+    <Content Include="Themes\AEUC\Content\assets\css\images\dark-tr.svg" />
+    <Content Include="Themes\AEUC\Content\assets\css\images\light-bl.svg" />
+    <Content Include="Themes\AEUC\Content\assets\css\images\light-br.svg" />
+    <Content Include="Themes\AEUC\Content\assets\css\images\light-tl.svg" />
+    <Content Include="Themes\AEUC\Content\assets\css\images\light-tr.svg" />
+    <Content Include="Themes\AEUC\Content\assets\css\images\overlay.png" />
+    <Content Include="Themes\AEUC\Content\assets\css\main.css" />
+    <Content Include="Themes\AEUC\Content\assets\css\responsive.css" />
+    <Content Include="Themes\AEUC\Content\assets\fonts\fontawesome-webfont.svg" />
+    <Content Include="Themes\AEUC\Content\assets\ico\apple-touch-icon-114-precomposed.png" />
+    <Content Include="Themes\AEUC\Content\assets\ico\apple-touch-icon-144-precomposed.png" />
+    <Content Include="Themes\AEUC\Content\assets\ico\apple-touch-icon-57-precomposed.png" />
+    <Content Include="Themes\AEUC\Content\assets\ico\apple-touch-icon-72-precomposed.png" />
+    <Content Include="Themes\AEUC\Content\assets\ico\favicon.png" />
+    <Content Include="Themes\AEUC\Content\assets\img\AjaxLoader.gif" />
+    <Content Include="Themes\AEUC\Content\assets\img\glyphicons-halflings-green.png" />
+    <Content Include="Themes\AEUC\Content\assets\img\glyphicons-halflings-white.png" />
+    <Content Include="Themes\AEUC\Content\assets\img\glyphicons-halflings.png" />
+    <Content Include="Themes\AEUC\Content\assets\img\owl-logo.png" />
+    <Content Include="Themes\AEUC\Content\assets\js\application.js" />
+    <Content Include="Themes\AEUC\Content\assets\js\bootstrap-collapse.js" />
+    <Content Include="Themes\AEUC\Content\assets\js\bootstrap-tab.js" />
+    <Content Include="Themes\AEUC\Content\assets\js\bootstrap-transition.js" />
+    <Content Include="Themes\AEUC\Content\assets\js\google-code-prettify\prettify.css" />
+    <Content Include="Themes\AEUC\Content\assets\js\google-code-prettify\prettify.js" />
+    <Content Include="Themes\AEUC\Content\assets\js\google-code-prettify\run_prettify.js" />
+    <Content Include="Themes\AEUC\Content\assets\js\ie\backgroundsize.min.htc" />
+    <Content Include="Themes\AEUC\Content\assets\js\ie\html5shiv.js" />
+    <Content Include="Themes\AEUC\Content\assets\js\ie\respond.min.js" />
+    <Content Include="Themes\AEUC\Content\assets\js\jquery-1.9.1.min.js" />
+    <Content Include="Themes\AEUC\Content\assets\js\jquery.dropotron.min.js" />
+    <Content Include="Themes\AEUC\Content\assets\js\jquery.min.js" />
+    <Content Include="Themes\AEUC\Content\assets\js\jquery.scrollgress.min.js" />
+    <Content Include="Themes\AEUC\Content\assets\js\jquery.scrolly.min.js" />
+    <Content Include="Themes\AEUC\Content\assets\js\main.js" />
+    <Content Include="Themes\AEUC\Content\assets\js\skel.min.js" />
+    <Content Include="Themes\AEUC\Content\assets\js\util.js" />
+    <Content Include="Themes\AEUC\Content\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\Emails\EmailNotification.htm" />
+    <Content Include="Themes\AEUC\Content\Fonts\mvcforumli.svg" />
+    <Content Include="Themes\AEUC\Content\Fonts\mvcforumsb.svg" />
+    <Content Include="Themes\AEUC\Content\Images\apple-touch-icon-57-precomposed.png" />
+    <Content Include="Themes\AEUC\Content\Images\arrow-spinner-blue.gif" />
+    <Content Include="Themes\AEUC\Content\Images\Banner0.png" />
+    <Content Include="Themes\AEUC\Content\Images\Banner1.png" />
+    <Content Include="Themes\AEUC\Content\Images\Banner2.png" />
+    <Content Include="Themes\AEUC\Content\Images\Banner3.png" />
+    <Content Include="Themes\AEUC\Content\Images\Banner4.png" />
+    <Content Include="Themes\AEUC\Content\Images\Banner5.png" />
+    <Content Include="Themes\AEUC\Content\Images\Banner6.png" />
+    <Content Include="Themes\AEUC\Content\Images\Banner7.png" />
+    <Content Include="Themes\AEUC\Content\Images\Banner8.png" />
+    <Content Include="Themes\AEUC\Content\Images\Banner9.png" />
+    <Content Include="Themes\AEUC\Content\Images\favicon.ico" />
+    <Content Include="Themes\AEUC\Content\Images\logo.png" />
+    <Content Include="Themes\AEUC\Content\owl-carousel\AjaxLoader.gif" />
+    <Content Include="Themes\AEUC\Content\owl-carousel\grabbing.png" />
+    <Content Include="Themes\AEUC\Content\owl-carousel\owl.carousel.css" />
+    <Content Include="Themes\AEUC\Content\owl-carousel\owl.carousel.js" />
+    <Content Include="Themes\AEUC\Content\owl-carousel\owl.carousel.min.js" />
+    <Content Include="Themes\AEUC\Content\owl-carousel\owl.theme.css" />
+    <Content Include="Themes\AEUC\Content\owl-carousel\owl.transitions.css" />
+    <Content Include="Themes\AEUC\Content\Scripts\general.js" />
+    <Content Include="Themes\AEUC\Content\Styles\imports.css" />
+    <Content Include="Themes\AEUC\Content\Styles\Theme.css">
+      <DependentUpon>Theme.scss</DependentUpon>
+    </Content>
+    <Content Include="Themes\AEUC\Content\Styles\Theme.min.css" />
+    <Content Include="Themes\AEUC\Content\Styles\Theme.min.min.css">
+      <DependentUpon>Theme.min.css</DependentUpon>
+    </Content>
+    <Content Include="Themes\Metro\Content\Styles\Theme.css">
+      <DependentUpon>Theme.scss</DependentUpon>
+    </Content>
     <Content Include="Themes\Metro\Content\Styles\Theme.min.css" />
     <Content Include="Views\Moderate\Index.cshtml" />
     <Content Include="Views\Moderate\GetMoreTopics.cshtml" />
@@ -1060,6 +1164,68 @@
     <Content Include="Scripts\tinymce\langs\readme.md" />
     <Content Include="Areas\Admin\Views\Account\ManageUserPoints.cshtml" />
     <Content Include="Themes\Metro\Content\Styles\Theme.css.map" />
+    <Content Include="Themes\AEUC\Content\assets\fonts\fontawesome-webfont.eot" />
+    <Content Include="Themes\AEUC\Content\assets\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Themes\AEUC\Content\assets\fonts\fontawesome-webfont.woff" />
+    <Content Include="Themes\AEUC\Content\assets\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Themes\AEUC\Content\assets\fonts\FontAwesome.otf" />
+    <Content Include="Themes\AEUC\Content\assets\sass\ie8.scss" />
+    <Content Include="Themes\AEUC\Content\assets\sass\ie9.scss" />
+    <Content Include="Themes\AEUC\Content\assets\sass\libs\_functions.scss" />
+    <Content Include="Themes\AEUC\Content\assets\sass\libs\_mixins.scss" />
+    <Content Include="Themes\AEUC\Content\assets\sass\libs\_skel.scss" />
+    <Content Include="Themes\AEUC\Content\assets\sass\libs\_vars.scss" />
+    <Content Include="Themes\AEUC\Content\assets\sass\main.scss" />
+    <Content Include="Themes\AEUC\Content\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Themes\AEUC\Content\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Themes\AEUC\Content\bootstrap\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Themes\AEUC\Content\Fonts\mvcforumli.eot" />
+    <Content Include="Themes\AEUC\Content\Fonts\mvcforumli.ttf" />
+    <Content Include="Themes\AEUC\Content\Fonts\mvcforumli.woff" />
+    <Content Include="Themes\AEUC\Content\Fonts\mvcforumsb.eot" />
+    <Content Include="Themes\AEUC\Content\Fonts\mvcforumsb.ttf" />
+    <Content Include="Themes\AEUC\Content\Fonts\mvcforumsb.woff" />
+    <Content Include="Themes\AEUC\Content\Styles\Theme.css.map" />
+    <Content Include="Themes\AEUC\Views\Shared\_CommonSideNav.cshtml" />
+    <Content Include="Themes\AEUC\Views\Shared\_DocumentationBlock.cshtml" />
+    <Content Include="Themes\AEUC\Views\Web.config" />
+    <Content Include="Themes\AEUC\Views\Shared\_JavaScript.cshtml" />
+    <Content Include="Themes\AEUC\Views\Shared\_StyleSheets.cshtml" />
+    <Content Include="Themes\AEUC\Views\Members\Edit.cshtml" />
+    <Content Include="Themes\AEUC\Views\Members\GetByName.cshtml" />
+    <Content Include="Themes\AEUC\Views\Members\Register.cshtml" />
+    <Content Include="Themes\AEUC\Views\Members\Search.cshtml" />
+    <Content Include="Areas\Admin\Views\Account\AddFirm.cshtml" />
+    <Content Include="Areas\Admin\Views\Account\EditFirm.cshtml" />
+    <Content Include="Areas\Admin\Views\Account\ListAllFirms.cshtml" />
+    <Content Include="Areas\Admin\Views\Account\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\ReportViewer.cshtml" />
+    <Content Include="AEUCForum.xsc">
+      <DependentUpon>AEUCForum.xsd</DependentUpon>
+    </Content>
+    <None Include="AEUCForum.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>AEUCForum.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="AEUCForum.xss">
+      <DependentUpon>AEUCForum.xsd</DependentUpon>
+    </Content>
+    <Content Include="Areas\Admin\Views\Reports\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Dashboard\PendingUsers.cshtml" />
+    <Content Include="Areas\Admin\Views\Account\ListWithRoles.cshtml" />
+    <None Include="compilerconfig.json" />
+    <None Include="compilerconfig.json.defaults">
+      <DependentUpon>compilerconfig.json</DependentUpon>
+    </None>
+    <Content Include="Themes\AEUC\Content\Styles\Theme.scss" />
+    <Content Include="Content\Reports\LanyardInserts.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="Properties\PublishProfiles\expertusers %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\expertusers.pubxml" />
+    <None Include="Properties\PublishProfiles\MSDN.pubxml" />
     <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
     <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
@@ -1259,6 +1425,14 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.AderantGuru\Badge.AderantGuru.csproj">
+      <Project>{23007af3-c9e3-48eb-836f-f2b91170dca4}</Project>
+      <Name>Badge.AderantGuru</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.AderantMaster\Badge.AderantMaster.csproj">
+      <Project>{aa61e157-f4e8-4915-853e-ac9b0db022d2}</Project>
+      <Name>Badge.AderantMaster</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MVCForum.Badges\Badge.AuthorMarkAsSolution\Badge.AuthorMarkAsSolution.csproj">
       <Project>{c90e299c-58d3-4afa-90b8-cb39aa4a1e99}</Project>
       <Name>Badge.AuthorMarkAsSolution</Name>
@@ -1267,21 +1441,29 @@
       <Project>{9c923d92-4963-44fe-b75b-0a8aaab9b689}</Project>
       <Name>Badge.FavouriteFirstPost</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MVCForum.Badges\Badge.Grouch\Badge.Grouch.csproj">
-      <Project>{83f9f278-d2be-479a-a398-b36779be3348}</Project>
-      <Name>Badge.Grouch</Name>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.MemberFor10Years\Badge.MemberFor10Years.csproj">
+      <Project>{0bdda366-d734-40db-90a8-fdc0ec52b20f}</Project>
+      <Name>Badge.MemberFor10Years</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MVCForum.Badges\Badge.JediMaster\Badge.JediMaster.csproj">
-      <Project>{7dff8353-e247-4840-a9a5-9e81114276b5}</Project>
-      <Name>Badge.JediMaster</Name>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.MemberFor15Years\Badge.MemberFor15Years.csproj">
+      <Project>{c0ba5db3-1e1d-4f1f-b09d-6790caeea4dc}</Project>
+      <Name>Badge.MemberFor15Years</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.MemberFor20Years\Badge.MemberFor20Years.csproj">
+      <Project>{90b74f54-3533-4aa7-a520-dd058b3b6d76}</Project>
+      <Name>Badge.MemberFor20Years</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.MemberFor25Years\Badge.MemberFor25Years.csproj">
+      <Project>{e68c6573-8f75-45c3-b9b5-0bcfa2b94a32}</Project>
+      <Name>Badge.MemberFor25Years</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.MemberFor5Years\Badge.MemberFor5Years.csproj">
+      <Project>{a3270450-d893-4707-af45-2a9ef6e45684}</Project>
+      <Name>Badge.MemberFor5Years</Name>
     </ProjectReference>
     <ProjectReference Include="..\MVCForum.Badges\Badge.MemberForAYear\Badge.MemberForAYear.csproj">
       <Project>{168911c2-86d0-4e12-a675-7a035bab9dd0}</Project>
       <Name>Badge.MemberForAYear</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MVCForum.Badges\Badge.Padawan\Badge.Padawan.csproj">
-      <Project>{a891ff9c-83ae-40db-9fec-552c209f953b}</Project>
-      <Name>Badge.Padawan</Name>
     </ProjectReference>
     <ProjectReference Include="..\MVCForum.Badges\Badge.Photogenic\Badge.Photogenic.csproj">
       <Project>{23f1a8bc-856a-4f67-ae6b-1a79230c5c3c}</Project>
@@ -1295,9 +1477,9 @@
       <Project>{327a7feb-aefe-47d9-aa0f-c08835e26a3a}</Project>
       <Name>Badge.PosterVoteUp</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MVCForum.Badges\Badge.PostMentionsUmbraco\Badge.PostMentionsUmbraco.csproj">
-      <Project>{330a777b-fe88-4cf5-9583-6693547a8f1c}</Project>
-      <Name>Badge.PostMentionsUmbraco</Name>
+    <ProjectReference Include="..\MVCForum.Badges\Badge.PostMentionsAEUC\Badge.PostMentionsAEUC.csproj">
+      <Project>{e9b1c3df-0b3c-401f-9c4f-ca65604cf35e}</Project>
+      <Name>Badge.PostMentionsAEUC</Name>
     </ProjectReference>
     <ProjectReference Include="..\MVCForum.Badges\Badge.ThousandPoints\Badge.ThousandPoints.csproj">
       <Project>{ba3ac605-745e-4de4-a1bd-08f6d63757db}</Project>
@@ -1335,9 +1517,6 @@
     <Content Include="Areas\Admin\Views\Shared\_AdminLayout.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_GenericMessage.cshtml" />
     <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Areas\Admin\Views\Account\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Views\Account\List.cshtml" />
@@ -1465,6 +1644,12 @@
     <Content Include="Views\Install\CreateDb.cshtml" />
     <Content Include="Views\Install\Complete.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\Reports\MembershipCheck.rdlc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -1485,11 +1670,11 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>9666</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:9666/</IISUrl>
+          <IISUrl>https://localhost:44300/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

@@ -144,7 +144,7 @@ namespace MVCForum.Website.Controllers
                 var topicUrl = topic.NiceUrl;
 
                 // get the users permissions
-                var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
+                var permissions = RoleService.GetPermissions(topic.Category, UsersRole, UsersRoles);
 
                 if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[SiteConstants.Instance.PermissionDeletePosts].IsTicked)
                 {
@@ -248,7 +248,8 @@ namespace MVCForum.Website.Controllers
                             Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
                             EmailTo = user.Email,
                             NameTo = user.UserName,
-                            Subject = string.Concat(LocalizationService.GetResourceString("Post.Notification.Subject"), SettingsService.GetSettings().ForumName)
+                            IdTo = user.Id,
+                            Subject = string.Concat(LocalizationService.GetResourceString("Post.Notification.Subject"), " ", SettingsService.GetSettings().ForumName)
                         }).ToList();
 
                         // and now pass the emails in to be sent
@@ -327,7 +328,7 @@ namespace MVCForum.Website.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var post = _postService.Get(id);
-                var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
+                var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole, UsersRoles);
                 var votes = _voteService.GetVotesByPosts(new List<Guid>{id});
                 var viewModel = ViewModelMapping.CreatePostViewModel(post, votes, permissions, post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
                 var upVotes = viewModel.Votes.Where(x => x.Amount > 0).ToList();
@@ -349,8 +350,8 @@ namespace MVCForum.Website.Controllers
                 return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
             }
 
-            var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
-            var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+            var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole, UsersRoles);
+            var allowedCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles);
 
             // Does the user have permission to this posts category
             var cat = allowedCategories.FirstOrDefault(x => x.Id == post.Topic.Category.Id);
@@ -397,8 +398,8 @@ namespace MVCForum.Website.Controllers
                     return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
                 }
 
-                var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
-                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole, UsersRoles);
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles);
 
                 // Does the user have permission to this posts category
                 var cat = allowedCategories.FirstOrDefault(x => x.Id == post.Topic.Category.Id);
@@ -544,7 +545,7 @@ namespace MVCForum.Website.Controllers
                 if (post != null)
                 {
                     // Check permissions
-                    var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
+                    var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole, UsersRoles);
                     if (permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
                     {
                         // Good to go

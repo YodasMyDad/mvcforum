@@ -149,6 +149,7 @@ namespace MVCForum.Services
 
         /// <summary>
         /// Return allowed categories based on the users role
+        /// *** Only used for Guest Role ***
         /// </summary>
         /// <param name="role"></param>
         /// <returns></returns>
@@ -179,6 +180,47 @@ namespace MVCForum.Services
             foreach (var category in allCats)
             {
                 var permissionSet = _roleService.GetPermissions(category, role);
+                if (!permissionSet[actionType].IsTicked)
+                {
+                    // Only add it category is NOT locked
+                    filteredCats.Add(category);
+                }
+            }
+            return filteredCats;
+        }
+
+        /// <summary>
+        /// Return allowed categories based on the users role
+        /// </summary>
+        /// <param name="roles"></param>
+        /// <returns></returns>
+        public List<Category> GetAllowedCategories(MembershipRole role, IList<MembershipRole> roles)
+        {
+            return GetAllowedCategories(role, roles, SiteConstants.Instance.PermissionDenyAccess);
+        }
+
+        public List<Category> GetAllowedCategories(MembershipRole role, IList<MembershipRole> roles, string actionType)
+        {
+            if (HttpContext.Current != null)
+            {
+                // Store per request
+                var key = string.Concat("allowed-categories", role.Id, actionType);
+                if (!HttpContext.Current.Items.Contains(key))
+                {
+                    HttpContext.Current.Items.Add(key, GetAllowedCategoriesCode(role, roles, actionType));
+                }
+                return (List<Category>)HttpContext.Current.Items[key];
+            }
+            return GetAllowedCategoriesCode(role, roles, actionType);
+        }
+
+        private List<Category> GetAllowedCategoriesCode(MembershipRole role, IList<MembershipRole> roles, string actionType)
+        {
+            var filteredCats = new List<Category>();
+            var allCats = GetAll();
+            foreach (var category in allCats)
+            {
+                var permissionSet = _roleService.GetPermissions(category, role, roles);
                 if (!permissionSet[actionType].IsTicked)
                 {
                         // Only add it category is NOT locked

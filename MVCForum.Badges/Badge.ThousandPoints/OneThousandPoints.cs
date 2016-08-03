@@ -10,7 +10,7 @@ namespace Badge.ThousandPoints
     [DisplayName("Badge.OneThousandPoints.Name")]
     [Description("Badge.OneThousandPoints.Desc")]
     [Image("OneThousandPoints.png")]
-    [AwardsPoints(10)]
+    [AwardsPoints(100)]
     public class OneThousandPoints : IPostBadge
     {
         public bool Rule(MembershipUser user)

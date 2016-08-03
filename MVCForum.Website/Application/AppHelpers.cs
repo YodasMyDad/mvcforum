@@ -211,7 +211,7 @@ namespace MVCForum.Website.Application
                 //post = StringUtils.ConvertBbCodeToHtml(post, false);
 
                 // If using the PageDown/MarkDown Editor uncomment this line
-                post = StringUtils.ConvertMarkDown(post);
+                //post = StringUtils.ConvertMarkDown(post);
 
                 // Allow video embeds
                 post = StringUtils.EmbedVideosInPosts(post);

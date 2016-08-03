@@ -12,7 +12,7 @@ namespace MVCForum.Website.ViewModels
     public class CreateAjaxPostViewModel
     {
         [UIHint(AppConstants.EditorType), AllowHtml]
-        [StringLength(6000)]
+        [StringLength(8000)]
         public string PostContent { get; set; }
         public Guid Topic { get; set; }
         public bool DisablePosting { get; set; }

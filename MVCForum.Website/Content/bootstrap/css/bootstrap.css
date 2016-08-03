@@ -4,6 +4,11 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
+
+$media-query-medium: 991px;
+$media-query-small: 767px;
+$media-query-mobile: 600px;
+
 html {
   font-family: sans-serif;
   -webkit-text-size-adjust: 100%;
@@ -1590,7 +1595,7 @@ pre code {
 }
 @media (min-width: 768px) {
   .container {
-    width: 750px;
+    width: 755px;
   }
 }
 @media (min-width: 992px) {
@@ -3610,6 +3615,7 @@ tbody.collapse.in {
   line-height: 1.42857143;
   color: #333;
   white-space: nowrap;
+  background-color: #fff;
 }
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
@@ -5075,6 +5081,9 @@ a.thumbnail.active {
   margin-bottom: 20px;
   border: 1px solid transparent;
   border-radius: 4px;
+    margin-top: 136px;
+    @media (max-width: $media-query-small) { margin-top: 100px;}
+    @media (max-width: $media-query-mobile) { margin-top: 86px;}
 }
 .alert h4 {
   margin-top: 0;

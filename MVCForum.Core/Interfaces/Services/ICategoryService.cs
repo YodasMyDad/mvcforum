@@ -17,7 +17,7 @@ namespace MVCForum.Domain.Interfaces.Services
         /// <param name="role">Users Role</param>
         /// <returns></returns>
         List<Category> GetAllowedCategories(MembershipRole role);
-
+        List<Category> GetAllowedCategories(MembershipRole role, IList<MembershipRole> roles);
         /// <summary>
         /// Get category permissions for a specific permission
         /// </summary>
@@ -25,6 +25,7 @@ namespace MVCForum.Domain.Interfaces.Services
         /// <param name="actionType">Pass in the permission you want to check, for example 'Delete Posts' - This will return a list of categories that the user has permission to delete posts</param>
         /// <returns></returns>
         List<Category> GetAllowedCategories(MembershipRole role, string actionType);
+        List<Category> GetAllowedCategories(MembershipRole role, IList<MembershipRole> roles, string actionType);
         IEnumerable<Category> GetAllSubCategories(Guid parentId);
         Category Get(Guid id);
         IList<Category> Get(IList<Guid> ids, bool fullGraph = false);

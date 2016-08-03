@@ -68,5 +68,22 @@ namespace MVCForum.Website.Application
             }
             return date;
         }
+        /// <summary>
+        /// Returns a pretty date for tooltip
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns>String as date format "d MMMM yyyy"</returns>
+        public static string GetFormattedDate(string date)
+        {
+            DateTime time;
+            if (DateTime.TryParse(date, out time))
+            {
+                var span = DateTime.UtcNow.Subtract(time);
+                var totalDays = (int)span.TotalDays;
+                var totalSeconds = (int)span.TotalSeconds;
+                return DateUtils.FormatDateTime(date, "d MMMM yyyy");
+            }
+            return date;
+        }
     }
 }

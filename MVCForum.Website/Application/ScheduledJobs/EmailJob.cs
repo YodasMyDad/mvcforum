@@ -26,7 +26,7 @@ namespace MVCForum.Website.Application.ScheduledJobs
                 try
                 {
                     // Process emails to send - Only send the amount per job from the siteconstants
-                    _emailService.ProcessMail(5);
+                    _emailService.ProcessMail(50);
 
                     // Commit - Which deletes the jobs that have been sent
                     unitOfWork.Commit();

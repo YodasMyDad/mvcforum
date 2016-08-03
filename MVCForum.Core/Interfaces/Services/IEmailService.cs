@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using MVCForum.Domain.DomainModel;
+using System;
 
 namespace MVCForum.Domain.Interfaces.Services
 {
@@ -11,6 +12,8 @@ namespace MVCForum.Domain.Interfaces.Services
         void SendMail(List<Email> email, Settings settings);
         void ProcessMail(int amountToSend);
         string EmailTemplate(string to, string content);
+        string EmailTemplateNewUser(string to, string content, Guid userId);
+
         string EmailTemplate(string to, string content, Settings settings);
         Email Add(Email email);
         void Delete(Email email);

@@ -24,7 +24,7 @@
     var listrolecbholder = 'span.listrolecbholder';
     $(listrolecbholder).click(function () {
         var checkedRoles = [];
-        $(this).find('input[type=radio]:checked').each(function () {
+        $(this).find('input[type=checkbox]:checked').each(function () {
             checkedRoles.push($(this).val());
         });
 
@@ -646,7 +646,7 @@ function Import_Complete() {
     }
 
     if (importResults.HasErrors) {
-        displayImportResults += "<div>The import had the following errors:</div>";
+        displayImportResults += "<div>The import has completed with the following errors:</div>";
         displayImportResults += formatImportResults(importResults.Errors);
     }
 

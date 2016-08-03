@@ -67,7 +67,7 @@ namespace MVCForum.Website.Controllers
 
                 var catViewModel = new CategoryListViewModel
                 {
-                    AllPermissionSets = ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAllMainCategories(), _roleService, UsersRole)
+                    AllPermissionSets = ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAllMainCategories(), _roleService, UsersRole, UsersRoles)
                 };
                 return PartialView(catViewModel);
             }
@@ -80,7 +80,7 @@ namespace MVCForum.Website.Controllers
             {
                 var catViewModel = new CategoryListViewModel
                 {
-                    AllPermissionSets = ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAll(), _roleService, UsersRole)
+                    AllPermissionSets = ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAll(), _roleService, UsersRole, UsersRoles)
                 };
                 return PartialView(catViewModel);
             }
@@ -96,7 +96,7 @@ namespace MVCForum.Website.Controllers
                 var categories = LoggedOnReadOnlyUser.CategoryNotifications.Select(x => x.Category);
                 foreach (var category in categories)
                 {
-                    var permissionSet = RoleService.GetPermissions(category, UsersRole);
+                    var permissionSet = RoleService.GetPermissions(category, UsersRole, UsersRoles);
                     var topicCount = category.Topics.Count;
                     var latestTopicInCategory = category.Topics.OrderByDescending(x => x.LastPost.DateCreated).FirstOrDefault();
                     var postCount = (category.Topics.SelectMany(x => x.Posts).Count() - 1);
@@ -120,7 +120,7 @@ namespace MVCForum.Website.Controllers
         [ChildActionOnly]
         public PartialViewResult GetCategoryBreadcrumb(Category category)
         {
-            var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+            var allowedCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles);
 
             using (UnitOfWorkManager.NewUnitOfWork())
             {
@@ -141,13 +141,13 @@ namespace MVCForum.Website.Controllers
                 var category = _categoryService.GetBySlugWithSubCategories(slug);
 
                 // Allowed Categories for this user
-                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles);
 
                 // Set the page index
                 var pageIndex = p ?? 1;
 
                 // check the user has permission to this category
-                var permissions = RoleService.GetPermissions(category.Category, UsersRole);
+                var permissions = RoleService.GetPermissions(category.Category, UsersRole, UsersRoles);
 
                 if (!permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
                 {
@@ -156,7 +156,7 @@ namespace MVCForum.Website.Controllers
                                                                         SettingsService.GetSettings().TopicsPerPage,
                                                                         int.MaxValue, category.Category.Id);
 
-                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
+                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, UsersRoles, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
 
                     // Create the main view model for the category
                     var viewModel = new CategoryViewModel
@@ -180,7 +180,7 @@ namespace MVCForum.Website.Controllers
                             };
                         foreach (var subCategory in category.SubCategories)
                         {
-                            var permissionSet = RoleService.GetPermissions(subCategory, UsersRole);
+                            var permissionSet = RoleService.GetPermissions(subCategory, UsersRole, UsersRoles);
                             subCatViewModel.AllPermissionSets.Add(subCategory, permissionSet);
                         }
                         viewModel.SubCategories = subCatViewModel;
@@ -207,7 +207,7 @@ namespace MVCForum.Website.Controllers
                 var category = _categoryService.Get(slug);
 
                 // check the user has permission to this category
-                var permissions = RoleService.GetPermissions(category, UsersRole);
+                var permissions = RoleService.GetPermissions(category, UsersRole, UsersRoles);
 
                 if (!permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
                 {

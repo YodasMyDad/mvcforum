@@ -1,0 +1,220 @@
+﻿@using MVCForum.Website.Application.ExtensionMethods
+@model MVCForum.Website.Areas.Admin.ViewModels.FirmViewModel
+
+@{
+    ViewBag.Title = "AddFirm";    
+}
+
+@section AdminHeader
+{
+    @(
+        Bundle.JavaScript()
+            .Add("~/Scripts/jquery.validate.min.js")
+            .Add("~/Scripts/jquery.validate.unobtrusive.min.js")            
+            .MvcRender("~/scripts/cache/validate-combined_#.js")
+    )  
+}
+
+
+@using (Html.BeginForm("AddFirm", "Account", FormMethod.Post))
+{
+    @Html.ValidationSummary(false)
+    <fieldset>
+        <legend>Add New Firm</legend>
+
+        <div class="col-md-6">
+            <div class="form-group">
+                @Html.LabelFor(model => model.FirmName)
+                @Html.TextBoxFor(model => model.FirmName, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.FirmName)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Address1)
+                @Html.TextBoxFor(model => model.Address1, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Address1)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Address2)
+                @Html.TextBoxFor(model => model.Address2, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Address2)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Address3)
+                @Html.TextBoxFor(model => model.Address3, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Address3)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.City)
+                @Html.TextBoxFor(model => model.City, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.City)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.County)
+                @Html.TextBoxFor(model => model.County, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.County)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Country)
+                @Html.TextBoxFor(model => model.Country, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Country)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Postcode)
+                @Html.TextBoxFor(model => model.Postcode, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Postcode)
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.MemberInfoCheck)
+                    @Html.TextBoxFor(model => model.MemberInfoCheck, new { @class = "form-control form-control-date-inline date-picker" })
+                    @Html.ValidationMessageFor(model => model.MemberInfoCheck)
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SizeCheck)
+                    @Html.TextBoxFor(model => model.SizeCheck, new { @class = "form-control form-control-date-inline date-picker" })
+                    @Html.ValidationMessageFor(model => model.SizeCheck)
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CreateDate)
+                    @Html.TextBoxFor(model => model.CreateDate, new { @class = "form-control form-control-date-inline", @readonly = "true" })
+                    @Html.ValidationMessageFor(model => model.CreateDate)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.LastModified)
+                    @Html.TextBoxFor(model => model.LastModified, new { @class = "form-control form-control-datetime-inline", @readonly = "true" })
+                    @Html.ValidationMessageFor(model => model.LastModified)
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Website)
+                    @Html.TextBoxFor(model => model.Website, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Website)
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Comment)
+                    @Html.TextAreaFor(model => model.Comment, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Comment)
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.SizeBanding)
+                    @Html.DropDownListFor(x => x.SizeBanding, new SelectList(Model.SizeBandings, "Value", "Text", Model.SizeBanding), new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div>
+                    <label>Status</label>
+                </div>
+                <div class="col-md-6">
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.IsActive, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.IsActive)
+                        }
+                        @Html.ValidationMessageFor(m => m.IsActive)
+                    </div>
+
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.IsApproved, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.IsApproved)
+                        }
+                        @Html.ValidationMessageFor(m => m.IsApproved)
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.Vendor, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.Vendor)
+                        }
+                        @Html.ValidationMessageFor(m => m.Vendor)
+                    </div>
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.ProfessionalServices, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.ProfessionalServices)
+                        }
+                        @Html.ValidationMessageFor(m => m.ProfessionalServices)
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-12">
+                <div>
+                    <label>Office Locations</label>
+                </div>
+                <div class="col-md-6">
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.US, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.US)
+                        }
+                        @Html.ValidationMessageFor(m => m.US)
+                    </div>
+
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.Canada, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.Canada)
+                        }
+                        @Html.ValidationMessageFor(m => m.Canada)
+                    </div>
+
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.UK, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.UK)
+                        }
+                        @Html.ValidationMessageFor(m => m.UK)
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.EMEA, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.EMEA)
+                        }
+                        @Html.ValidationMessageFor(m => m.EMEA)
+                    </div>
+
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.APAC, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.APAC)
+                        }
+                        @Html.ValidationMessageFor(m => m.APAC)
+                    </div>
+
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.Other, new { @class = "checkbox" }))
+                        {
+                            @Html.CheckBoxFor(m => m.Other)
+                        }
+                        @Html.ValidationMessageFor(m => m.Other)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="submit-holder">
+                <input type="submit" class="btn-mvc btn-mvc-green" value="Save" />
+            </div>
+        </div>
+    </fieldset>
+}

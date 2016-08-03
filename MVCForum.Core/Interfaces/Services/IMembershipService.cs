@@ -35,6 +35,8 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<MembershipUser> GetUsersById(List<Guid> guids);
         IList<MembershipUser> GetUsersByDaysPostsPoints(int amoutOfDaysSinceRegistered, int amoutOfPosts);
         MembershipUser GetUser(Guid id);
+        MembershipUser GetUser(Guid? id);
+        MembershipFirm GetFirmByName(string FirmName);
         bool ChangePassword(MembershipUser user, string oldPassword, string newPassword);
         bool ResetPassword(MembershipUser user, string newPassword);
         void UnlockUser(string username, bool resetPasswordAttempts);
@@ -43,16 +45,24 @@ namespace MVCForum.Domain.Interfaces.Services
         MembershipUser CreateEmptyUser();
         IList<MembershipUser> GetAll();
         PagedList<MembershipUser> GetAll(int pageIndex, int pageSize);
+        PagedList<MembershipUser> GetAllActive(int pageIndex, int pageSize);
+        IList<MembershipUser> GetAllActive();
+        List<AnnualMeetingRegistration> GetAllRegistered();
         PagedList<MembershipUser> SearchMembers(string search, int pageIndex, int pageSize);
+        PagedList<MembershipUser> SearchActiveMembers(string search, int pageIndex, int pageSize);
         IList<MembershipUser> SearchMembers(string username, int amount);
+        PagedList<MembershipUser> GetFirmMembers(Guid firmId, int pageIndex, int pageSize);
         IList<MembershipUser> GetActiveMembers();
         void ProfileUpdated(MembershipUser user);
         bool Delete(MembershipUser user, IUnitOfWork unitOfWork);
         IList<MembershipUser> GetLatestUsers(int amountToTake);
+        IList<MembershipUser> GetPendingUsers();
         IList<MembershipUser> GetLowestPointUsers(int amountToTake);
         int MemberCount();
         string ToCsv();
         CsvReport FromCsv(List<string> allLines);
+        CsvReport AttendeesFromCsv(List<string> allLines, DateTime eventDate);
+
         /// <summary>
         /// Completed scrubs a users account clean
         /// Clears everything - Posts, polls, votes, favourites, profile etc...

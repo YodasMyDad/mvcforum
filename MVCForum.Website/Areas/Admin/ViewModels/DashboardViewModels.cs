@@ -16,6 +16,11 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public IList<MembershipUser> Users { get; set; }
     }
 
+    public class PendingUsersViewModels
+    {
+        public IList<MembershipUser> Users { get; set; }
+    }
+
     public class LowestPointUsersViewModels
     {
         public Dictionary<MembershipUser, int> Users { get; set; }

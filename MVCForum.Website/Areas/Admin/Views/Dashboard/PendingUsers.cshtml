@@ -1,0 +1,25 @@
+﻿@model MVCForum.Website.Areas.Admin.ViewModels.PendingUsersViewModels
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5>Users Pending Approval</h5>
+    </div>
+    @if (Model.Users.Any())
+    {
+        <ul class="list-group">
+            @foreach (var user in Model.Users)
+            {
+                <li class="list-group-item">
+                    <a href="/admin/account/edit/@user.Id/">@Html.Raw(user.UserName)</a> on @user.CreateDate.ToShortDateString()
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <div class="panel-content">
+            Nothing to show
+        </div>
+    }
+
+</div>

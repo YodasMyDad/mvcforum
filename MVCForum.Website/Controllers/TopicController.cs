@@ -74,7 +74,7 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles);
                 var settings = SettingsService.GetSettings();
                 // Set the page index
                 var pageIndex = p ?? 1;
@@ -87,7 +87,7 @@ namespace MVCForum.Website.Controllers
                                                            allowedCategories);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, settings);
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, UsersRoles, LoggedOnReadOnlyUser, allowedCategories, settings);
 
                 // create the view model
                 var viewModel = new PostedInViewModel
@@ -110,14 +110,14 @@ namespace MVCForum.Website.Controllers
             var viewModel = new List<TopicViewModel>();
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles);
                 var topicIds = LoggedOnReadOnlyUser.TopicNotifications.Select(x => x.Topic.Id).ToList();
                 if (topicIds.Any())
                 {
                     var topics = _topicService.Get(topicIds, allowedCategories);
 
                     // Get the Topic View Models
-                    viewModel = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
+                    viewModel = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, UsersRoles, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
 
                     // Show the unsubscribe link
                     foreach (var topicViewModel in viewModel)
@@ -133,7 +133,7 @@ namespace MVCForum.Website.Controllers
         public PartialViewResult GetTopicBreadcrumb(Topic topic)
         {
             var category = topic.Category;
-            var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+            var allowedCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles);
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var viewModel = new BreadcrumbViewModel
@@ -167,7 +167,7 @@ namespace MVCForum.Website.Controllers
                         // Now check to see if they have access to any categories
                         // if so, check they are allowed to create topics - If no to either set to false
                         viewModel.UserCanPostTopics = false;
-                        var permissionSet = RoleService.GetPermissions(category, UsersRole);
+                        var permissionSet = RoleService.GetPermissions(category, UsersRole, UsersRoles);
                         if (permissionSet[SiteConstants.Instance.PermissionCreateTopics].IsTicked)
                         {
                             viewModel.UserCanPostTopics = true;
@@ -186,7 +186,7 @@ namespace MVCForum.Website.Controllers
             if (Request.IsAjaxRequest())
             {
                 var category = _categoryService.Get(catId);
-                var permissionSet = RoleService.GetPermissions(category, UsersRole);
+                var permissionSet = RoleService.GetPermissions(category, UsersRole, UsersRoles);
                 var model = GetCheckCreateTopicPermissions(permissionSet);
                 return Json(model);
             }
@@ -239,14 +239,14 @@ namespace MVCForum.Website.Controllers
                 var topic = post.Topic;
 
                 // get the users permissions
-                var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
+                var permissions = RoleService.GetPermissions(topic.Category, UsersRole, UsersRoles);
 
                 // Is the user allowed to edit this post
                 if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
                 {
                     // Get the allowed categories for this user
-                    var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
-                    var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, SiteConstants.Instance.PermissionCreateTopics);
+                    var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles);
+                    var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles, SiteConstants.Instance.PermissionCreateTopics);
                     var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
 
                     // If this user hasn't got any allowed cats OR they are not allowed to post then abandon
@@ -316,13 +316,13 @@ namespace MVCForum.Website.Controllers
                 var category = _categoryService.Get(editPostViewModel.Category);
 
                 // First check this user is allowed to create topics in this category
-                var permissions = RoleService.GetPermissions(category, UsersRole);
+                var permissions = RoleService.GetPermissions(category, UsersRole, UsersRoles);
 
                 // Now we have the category and permissionSet - Populate the optional permissions 
                 // This is just in case the viewModel is return back to the view also sort the allowedCategories
                 // Get the allowed categories for this user
-                var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
-                var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, SiteConstants.Instance.PermissionCreateTopics);
+                var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles);
+                var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles, SiteConstants.Instance.PermissionCreateTopics);
                 var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
                 allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
                 editPostViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
@@ -607,7 +607,7 @@ namespace MVCForum.Website.Controllers
         private CreateEditTopicViewModel PrePareCreateEditTopicViewModel(List<Category> allowedCategories)
         {
             var userIsAdmin = UserIsAdmin;
-            var permissions = RoleService.GetPermissions(null, UsersRole);
+            var permissions = RoleService.GetPermissions(null, UsersRole, UsersRoles);
             var canInsertImages = userIsAdmin;
             if (!canInsertImages)
             {
@@ -633,8 +633,8 @@ namespace MVCForum.Website.Controllers
 
         private List<Category> AllowedCreateCategories()
         {
-            var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
-            var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, SiteConstants.Instance.PermissionCreateTopics);
+            var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles);
+            var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles, SiteConstants.Instance.PermissionCreateTopics);
             var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
             if (allowedAccessCategories.Any())
             {
@@ -645,7 +645,7 @@ namespace MVCForum.Website.Controllers
         }
 
         [Authorize]
-        public ActionResult Create()
+        public ActionResult Create(Guid? CategoryId)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
@@ -654,6 +654,10 @@ namespace MVCForum.Website.Controllers
                 if (allowedAccessCategories.Any() && LoggedOnReadOnlyUser.DisablePosting != true)
                 {
                     var viewModel = PrePareCreateEditTopicViewModel(allowedAccessCategories);
+                    if (CategoryId != null && SettingsService.GetSettings().EnableDefaultCategoryinDiscussions == true)
+                    {
+                        viewModel.Category = _categoryService.Get(CategoryId.GetValueOrDefault()).Id;
+                    }
                     return View(viewModel);
                 }
                 return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
@@ -669,7 +673,7 @@ namespace MVCForum.Website.Controllers
             var category = _categoryService.Get(topicViewModel.Category);
 
             // First check this user is allowed to create topics in this category
-            var permissions = RoleService.GetPermissions(category, UsersRole);
+            var permissions = RoleService.GetPermissions(category, UsersRole, UsersRoles);
 
             // Now we have the category and permissionSet - Populate the optional permissions 
             // This is just in case the viewModel is return back to the view also sort the allowedCategories
@@ -1030,7 +1034,7 @@ namespace MVCForum.Website.Controllers
                     var starterPost = _postService.GetTopicStarterPost(topic.Id);
 
                     // Get the permissions for the category that this topic is in
-                    var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
+                    var permissions = RoleService.GetPermissions(topic.Category, UsersRole, UsersRoles);
 
                     // If this user doesn't have access to this topic then
                     // redirect with message
@@ -1141,7 +1145,7 @@ namespace MVCForum.Website.Controllers
                 var settings = SettingsService.GetSettings();
 
                 // Get the permissions for the category that this topic is in
-                var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
+                var permissions = RoleService.GetPermissions(topic.Category, UsersRole, UsersRoles);
 
                 // If this user doesn't have access to this topic then just return nothing
                 if (permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
@@ -1171,7 +1175,7 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles);
                 var settings = SettingsService.GetSettings();
                 var tagModel = _topicTagService.Get(tag);
 
@@ -1188,7 +1192,7 @@ namespace MVCForum.Website.Controllers
                 var isSubscribed = UserIsAuthenticated && (_tagNotificationService.GetByUserAndTag(LoggedOnReadOnlyUser, tagModel).Any());
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, settings);
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, UsersRoles, LoggedOnReadOnlyUser, allowedCategories, settings);
 
                 // create the view model
                 var viewModel = new TagTopicsViewModel
@@ -1213,7 +1217,7 @@ namespace MVCForum.Website.Controllers
             {
                 // Returns the formatted string to search on
                 var formattedSearchTerm = StringUtils.ReturnSearchString(searchTerm);
-                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles);
                 IList<Topic> topics = null;
                 try
                 {
@@ -1238,7 +1242,7 @@ namespace MVCForum.Website.Controllers
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles);
                 var settings = SettingsService.GetSettings();
 
                 // Set the page index
@@ -1251,7 +1255,7 @@ namespace MVCForum.Website.Controllers
                                                            allowedCategories);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, settings);
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, UsersRoles, LoggedOnReadOnlyUser, allowedCategories, settings);
 
                 // create the view model
                 var viewModel = new ActiveTopicsViewModel
@@ -1284,13 +1288,13 @@ namespace MVCForum.Website.Controllers
                 if (viewModel == null)
                 {
                     // Allowed Categories
-                    var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                    var allowedCategories = _categoryService.GetAllowedCategories(UsersRole, UsersRoles);
 
                     // Get the topics
                     var topics = _topicService.GetPopularTopics(from, to, allowedCategories, (int)amountToShow);
 
                     // Get the Topic View Models
-                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
+                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, UsersRoles, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
 
                     // create the view model
                     viewModel = new HotTopicsViewModel
@@ -1342,7 +1346,8 @@ namespace MVCForum.Website.Controllers
                         Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
                         EmailTo = user.Email,
                         NameTo = user.UserName,
-                        Subject = string.Concat(LocalizationService.GetResourceString("Topic.Notification.Subject"), settings.ForumName)
+                        IdTo = user.Id,
+                        Subject = string.Concat(LocalizationService.GetResourceString("Topic.Notification.Subject"), " ", settings.ForumName)
                     }).ToList();
 
                     // and now pass the emails in to be sent

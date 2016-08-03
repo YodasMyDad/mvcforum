@@ -32,8 +32,10 @@ namespace MVCForum.Services.Data.Context
         public DbSet<Language> Language { get; set; }
         public DbSet<LocaleResourceKey> LocaleResourceKey { get; set; }
         public DbSet<LocaleStringResource> LocaleStringResource { get; set; }
+        public DbSet<MembershipFirm> MembershipFirm { get; set; }
         public DbSet<MembershipRole> MembershipRole { get; set; }
         public DbSet<MembershipUser> MembershipUser { get; set; }
+        public DbSet<AnnualMeetingRegistration> AnnualMeetingRegistration { get; set; }
         public DbSet<MembershipUserPoints> MembershipUserPoints { get; set; }
         public DbSet<Permission> Permission { get; set; }
         public DbSet<Poll> Poll { get; set; }
