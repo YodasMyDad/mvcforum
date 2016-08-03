@@ -1,9 +1,9 @@
-﻿using System.Text;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using System.Text;
+    using Domain.DomainModel;
+    using Domain.Interfaces.Services;
+
     public partial class ReportService : IReportService
     {
         private readonly IEmailService _emailService;
@@ -36,8 +36,8 @@ namespace MVCForum.Services
                 report.ReportedMember.UserName,
                 _localizationService.GetResourceString("Report.MemberReported"));
 
-            sb.AppendFormat("<p>{0}:</p>", _localizationService.GetResourceString("Report.Reason"));
-            sb.AppendFormat("<p>{0}</p>", report.Reason);
+            sb.Append($"<p>{_localizationService.GetResourceString("Report.Reason")}:</p>");
+            sb.Append($"<p>{report.Reason}</p>");
 
             email.EmailTo = _settingsService.GetSettings().AdminEmailAddress;
             email.Subject = _localizationService.GetResourceString("Report.MemberReport");
@@ -63,8 +63,8 @@ namespace MVCForum.Services
             var urlOfPost =$"{_settingsService.GetSettings().ForumUrl.TrimEnd('/')}{report.ReportedPost.Topic.NiceUrl}?order=all#comment-{report.ReportedPost.Id}";
             sb.AppendFormat("<p>{2}: <a href=\"{0}\">{1}</a></p>", urlOfPost, report.ReportedPost.Topic.Name, _localizationService.GetResourceString("Report.PostReported"));
 
-            sb.AppendFormat("<p>{0}:</p>", _localizationService.GetResourceString("Report.Reason"));
-            sb.AppendFormat("<p>{0}</p>", report.Reason);
+            sb.Append($"<p>{_localizationService.GetResourceString("Report.Reason")}:</p>");
+            sb.Append($"<p>{report.Reason}</p>");
 
             email.EmailTo = _settingsService.GetSettings().AdminEmailAddress;
             email.Subject = _localizationService.GetResourceString("Report.PostReport");

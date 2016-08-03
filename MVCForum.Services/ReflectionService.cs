@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.Interfaces.Services;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Reflection;
+    using Domain.Constants;
+    using Domain.Interfaces.Services;
+
     public partial class ReflectionService : IReflectionService
     {
         /// <summary>

@@ -26,7 +26,7 @@ namespace Badge.Grouch
         {
             // Get all down votes
             var downVotes = _voteService.GetAllVotesByUser(user.Id).Where(x => x.Amount < 1).ToList();
-            return downVotes.Count() >= 10;
+            return downVotes.Count >= 10;
         }
     }
 

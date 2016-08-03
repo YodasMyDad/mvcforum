@@ -1,15 +1,15 @@
-﻿using System;
-using System.Linq;
-using System.Data.Entity;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Enums;
-using MVCForum.Domain.Interfaces;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Services.Data.Context;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using System;
+    using System.Linq;
+    using System.Data.Entity;
+    using Domain.Constants;
+    using Domain.DomainModel;
+    using Domain.DomainModel.Enums;
+    using Domain.Interfaces;
+    using Domain.Interfaces.Services;
+    using Data.Context;
+
     public partial class SettingsService : ISettingsService
     {
         private readonly MVCForumContext _context;

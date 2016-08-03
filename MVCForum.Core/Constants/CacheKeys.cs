@@ -7,9 +7,19 @@
             public const string StartsWith = "Topic.";
         }
 
+        public static class TopicTag
+        {
+            public const string StartsWith = "TopicTag.";
+        }
+
         public static class Post
         {
             public const string StartsWith = "Post.";
+        }
+
+        public static class PrivateMessage
+        {
+            public const string StartsWith = "PrivateMessage.";
         }
 
         public static class PostEdit
@@ -50,6 +60,11 @@
         public static class BannedEmail
         {
             public const string StartsWith = "BannedEmail.";
+        }
+
+        public static class Vote
+        {
+            public const string StartsWith = "Vote.";
         }
 
         public static class BannedWord
