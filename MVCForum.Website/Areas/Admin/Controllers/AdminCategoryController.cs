@@ -40,9 +40,9 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var viewModel = new ListCategoriesViewModel
-                                    {
-                                        Categories = _categoryService.GetAll().OrderBy(x => x.SortOrder)
-                                    };
+                {
+                    Categories = _categoryService.GetAll().OrderBy(x => x.SortOrder)
+                };
                 return PartialView(viewModel);
             }
         }
@@ -67,17 +67,17 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     try
                     {
                         var category = new Category
-                                           {
-                                               Name = categoryViewModel.Name,
-                                               Description = categoryViewModel.Description,
-                                               IsLocked = categoryViewModel.IsLocked,
-                                               ModeratePosts = categoryViewModel.ModeratePosts,
-                                               ModerateTopics = categoryViewModel.ModerateTopics,
-                                               SortOrder = categoryViewModel.SortOrder,
-                                               PageTitle = categoryViewModel.PageTitle,
-                                               MetaDescription = categoryViewModel.MetaDesc,
-                                               Colour = categoryViewModel.CategoryColour
-                                           };
+                        {
+                            Name = categoryViewModel.Name,
+                            Description = categoryViewModel.Description,
+                            IsLocked = categoryViewModel.IsLocked,
+                            ModeratePosts = categoryViewModel.ModeratePosts,
+                            ModerateTopics = categoryViewModel.ModerateTopics,
+                            SortOrder = categoryViewModel.SortOrder,
+                            PageTitle = categoryViewModel.PageTitle,
+                            MetaDescription = categoryViewModel.MetaDesc,
+                            Colour = categoryViewModel.CategoryColour
+                        };
 
                         // Sort image out first
                         if (categoryViewModel.Files != null)
@@ -123,11 +123,11 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
                         // We use temp data because we are doing a redirect
                         TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                                                                        {
-                                                                            Message = "Category Created",
-                                                                            MessageType =
+                        {
+                            Message = "Category Created",
+                            MessageType =
                                                                                 GenericMessages.success
-                                                                        };
+                        };
                         unitOfWork.Commit();
                     }
                     catch (Exception)
@@ -190,12 +190,15 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     {
 
                         var category = _categoryService.Get(categoryViewModel.Id);
+                        var parentCat = categoryViewModel.ParentCategory != null
+                                            ? _categoryService.Get((Guid)categoryViewModel.ParentCategory.Value)
+                                            : null;
 
                         // Check they are not trying to add a subcategory of this category as the parent or it will break
-                        if (category.Path != null && categoryViewModel.ParentCategory != null)
+                        if (parentCat?.Path != null && categoryViewModel.ParentCategory != null)
                         {
-                            var parentCats = category.Path.Split(',').Where(x => !string.IsNullOrEmpty(x)).Select(x => new Guid(x)).ToList();
-                            if (parentCats.Contains((Guid) categoryViewModel.ParentCategory))
+                            var parentCats = parentCat.Path.Split(',').Where(x => !string.IsNullOrEmpty(x)).Select(x => new Guid(x)).ToList();
+                            if (parentCats.Contains(categoryViewModel.Id))
                             {
                                 // Remove the parent category, but still let them create the catgory
                                 categoryViewModel.ParentCategory = null;
@@ -268,10 +271,10 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         _categoryService.UpdateSlugFromName(category);
 
                         TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                                                                        {
-                                                                            Message = "Category Updated",
-                                                                            MessageType = GenericMessages.success
-                                                                        };
+                        {
+                            Message = "Category Updated",
+                            MessageType = GenericMessages.success
+                        };
 
                         categoryViewModel = CreateEditCategoryViewModel(category);
 
@@ -317,11 +320,11 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 var cat = _categoryService.Get(id);
                 var subCats = _categoryService.GetAllSubCategories(id).ToList();
                 var viewModel = new DeleteCategoryViewModel
-                                    {
-                                        Id = cat.Id,
-                                        Category = cat,
-                                        SubCategories = subCats
-                                    };
+                {
+                    Id = cat.Id,
+                    Category = cat,
+                    SubCategories = subCats
+                };
 
                 return View(viewModel);
             }
@@ -336,10 +339,10 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     var cat = _categoryService.Get(id);
                     _categoryService.Delete(cat);
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                                                                    {
-                                                                        Message = "Category Deleted",
-                                                                        MessageType = GenericMessages.success
-                                                                    };
+                    {
+                        Message = "Category Deleted",
+                        MessageType = GenericMessages.success
+                    };
                     unitOfWork.Commit();
                 }
                 catch (Exception)
@@ -421,7 +424,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     {
                         Message = "Error syncing paths",
                         MessageType = GenericMessages.danger
-                    };                    
+                    };
                 }
 
                 return RedirectToAction("Index");
