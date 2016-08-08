@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Text;
-using System.Web;
-using System.Xml;
-using MVCForum.Domain.DomainModel.Enums;
-using MVCForum.Domain.Interfaces.Services;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.Specialized;
+    using System.Text;
+    using System.Web;
+    using System.Xml;
+    using Domain.DomainModel.Enums;
+    using Domain.Interfaces.Services;
+
     public partial class ConfigService : IConfigService
     {
         private readonly ICacheService _cacheService;
@@ -51,7 +51,7 @@ namespace MVCForum.Services
 
                 if (strEmote.Length != 0)
                 {
-                    sb.AppendFormat("<img src=\"{0}{1}\" alt=\"\" class=\"emoticon\" />", emoticonFolder, emoticons[strEmote]);
+                    sb.Append($"<img src=\"{emoticonFolder}{emoticons[strEmote]}\" alt=\"\" class=\"emoticon\" />");
                     i += strEmote.Length - 1;
                 }
                 else

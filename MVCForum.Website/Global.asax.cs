@@ -17,6 +17,9 @@ using MVCForum.Website.Application.ViewEngine;
 
 namespace MVCForum.Website
 {
+    using Domain.Constants;
+    using NPoco;
+
     public class MvcApplication : HttpApplication
     {
 
@@ -86,6 +89,12 @@ namespace MVCForum.Website
                 Thread.CurrentThread.CurrentUICulture = ci;
                 Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(ci.Name);
             }
+        }
+
+        protected void Application_EndRequest(object sender, EventArgs e)
+        {
+            var entityContext = HttpContext.Current.Items[SiteConstants.Instance.MvcForumContext] as IDatabase;
+            entityContext?.Dispose();
         }
 
         protected void Application_Error(object sender, EventArgs e)

@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Caching;
-using System.Web;
-using MVCForum.Domain.DomainModel.Enums;
-using MVCForum.Domain.Interfaces.Services;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Runtime.Caching;
+    using System.Web;
+    using Domain.DomainModel.Enums;
+    using Domain.Interfaces.Services;
+
     public partial class CacheService : ICacheService
     {
         #region Long Cache
@@ -121,17 +121,23 @@ namespace MVCForum.Services
 
         #region Short Per Request Cache
 
-        public THelper CachePerRequest<THelper>(string cacheKey)
+        public T CachePerRequest<T>(string cacheKey, Func<T> getCacheItem)
         {
             if (HttpContext.Current != null)
             {
                 if (!HttpContext.Current.Items.Contains(cacheKey))
                 {
-                    return default(THelper);
+                    var result = getCacheItem();
+                    if (result != null)
+                    {
+                        SetPerRequest(cacheKey, result);
+                        return result;
+                    }
+                    return default(T);
                 }
-                return (THelper)HttpContext.Current.Items[cacheKey];
+                return (T)HttpContext.Current.Items[cacheKey];
             }
-            return default(THelper);
+            return getCacheItem();
         }
 
         public void SetPerRequest(string cacheKey, object objectToCache)

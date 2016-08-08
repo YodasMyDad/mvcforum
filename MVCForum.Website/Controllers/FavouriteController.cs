@@ -1,51 +1,29 @@
-﻿using System;
-using System.Linq;
-using System.Web.Mvc;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.ViewModels;
-using MVCForum.Website.ViewModels.Mapping;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MVCForum.Website.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Web.Mvc;
+    using Domain.DomainModel;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using ViewModels;
+    using ViewModels.Mapping;
+
     public partial class FavouriteController : BaseController
     {
         private readonly ITopicService _topicService;
         private readonly IPostService _postService;
-        private readonly ITopicTagService _topicTagService;
-        private readonly ICategoryService _categoryService;
-        private readonly ICategoryNotificationService _categoryNotificationService;
-        private readonly ITopicNotificationService _topicNotificationService;
-        private readonly IMembershipUserPointsService _membershipUserPointsService;
-        private readonly IEmailService _emailService;
-        private readonly IPollService _pollService;
-        private readonly IPollAnswerService _pollAnswerService;
-        private readonly IBannedWordService _bannedWordService;
-        private readonly IVoteService _voteService;
         private readonly IFavouriteService _favouriteService;
-        private readonly IBadgeService _badgeService;
 
-        public FavouriteController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
-            ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
-            ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, IPollService pollService,
-            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService, IBadgeService badgeService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+        public FavouriteController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
+            IRoleService roleService, ITopicService topicService, IPostService postService,
+            ILocalizationService localizationService, ISettingsService settingsService, 
+            IFavouriteService favouriteService, ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _topicService = topicService;
             _postService = postService;
-            _categoryService = categoryService;
-            _topicTagService = topicTagService;
-            _membershipUserPointsService = membershipUserPointsService;
-            _categoryNotificationService = categoryNotificationService;
-            _emailService = emailService;
-            _topicNotificationService = topicNotificationService;
-            _pollService = pollService;
-            _pollAnswerService = pollAnswerService;
-            _bannedWordService = bannedWordService;
-            _voteService = voteService;
             _favouriteService = favouriteService;
-            _badgeService = badgeService;
         }
 
         [Authorize]

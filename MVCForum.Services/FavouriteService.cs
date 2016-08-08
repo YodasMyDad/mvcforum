@@ -1,21 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Events;
-using MVCForum.Domain.Interfaces;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Services.Data.Context;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity;
+    using System.Linq;
+    using Domain.DomainModel;
+    using Domain.Events;
+    using Domain.Interfaces;
+    using Domain.Interfaces.Services;
+    using Data.Context;
+    using Domain.Constants;
 
     public partial class FavouriteService : IFavouriteService
     {
         private readonly MVCForumContext _context;
-        public FavouriteService(IMVCForumContext context)
+        private readonly ICacheService _cacheService;
+
+        public FavouriteService(IMVCForumContext context, ICacheService cacheService)
         {
+            _cacheService = cacheService;
             _context = context as MVCForumContext;
         }
 
@@ -41,57 +44,63 @@ namespace MVCForum.Services
 
         public List<Favourite> GetAll()
         {
-            return _context.Favourite
-                            .Include(x => x.Post)
-                            .Include(x => x.Topic.Category)
-                            .Include(x => x.Member)
-                .ToList();
+            var cacheKey = string.Concat(CacheKeys.Favourite.StartsWith, "GetAll");
+            return _cacheService.CachePerRequest(cacheKey, () => _context.Favourite
+                                                                    .Include(x => x.Post)
+                                                                    .Include(x => x.Topic.Category)
+                                                                    .Include(x => x.Member)
+                                                                    .ToList());
         }
 
         public Favourite Get(Guid id)
         {
-            return _context.Favourite
-                            .Include(x => x.Post.User)
-                            .Include(x => x.Topic.Category)
-                            .Include(x => x.Member)
-                .FirstOrDefault(x => x.Id == id);
+            var cacheKey = string.Concat(CacheKeys.Favourite.StartsWith, "Get-", id);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.Favourite
+                                                                    .Include(x => x.Post.User)
+                                                                    .Include(x => x.Topic.Category)
+                                                                    .Include(x => x.Member)
+                                                                    .FirstOrDefault(x => x.Id == id));
         }
 
         public List<Favourite> GetAllByMember(Guid memberId)
         {
-            return _context.Favourite
-                            .Include(x => x.Post)
-                            .Include(x => x.Topic.Category)
-                            .Include(x => x.Member)
-                .Where(x => x.Member.Id == memberId).ToList();
+            var cacheKey = string.Concat(CacheKeys.Favourite.StartsWith, "GetAllByMember-", memberId);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.Favourite
+                                                                    .Include(x => x.Post)
+                                                                    .Include(x => x.Topic.Category)
+                                                                    .Include(x => x.Member)
+                                                                    .Where(x => x.Member.Id == memberId).ToList());
         }
 
         public Favourite GetByMemberAndPost(Guid memberId, Guid postId)
         {
-            return _context.Favourite
-                            .Include(x => x.Post)
-                            .Include(x => x.Topic.Category)
-                            .Include(x => x.Member)
-                            .FirstOrDefault(x => x.Member.Id == memberId && x.Post.Id == postId);
+            var cacheKey = string.Concat(CacheKeys.Favourite.StartsWith, "GetByMemberAndPost-", memberId, "-", postId);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.Favourite
+                                                                .Include(x => x.Post)
+                                                                .Include(x => x.Topic.Category)
+                                                                .Include(x => x.Member)
+                                                                .FirstOrDefault(x => x.Member.Id == memberId && x.Post.Id == postId));
         }
 
         public List<Favourite> GetByTopic(Guid topicId)
         {
-            return _context.Favourite
-                            .Include(x => x.Post)
-                            .Include(x => x.Topic.Category)
-                            .Include(x => x.Member)
-                            .AsNoTracking()
-                            .Where(x => x.Topic.Id == topicId).ToList();
+            var cacheKey = string.Concat(CacheKeys.Favourite.StartsWith, "GetByTopic-", topicId);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.Favourite
+                                                                        .Include(x => x.Post)
+                                                                        .Include(x => x.Topic.Category)
+                                                                        .Include(x => x.Member)
+                                                                        .AsNoTracking()
+                                                                        .Where(x => x.Topic.Id == topicId).ToList());
         }
 
         public List<Favourite> GetAllPostFavourites(List<Guid> postIds)
         {
-            return _context.Favourite
-                            .Include(x => x.Post)
-                            .Include(x => x.Topic.Category)
-                            .Include(x => x.Member)
-                            .Where(x => postIds.Contains(x.Post.Id)).ToList();
+            var cacheKey = string.Concat(CacheKeys.Favourite.StartsWith, "GetAllPostFavourites-", postIds.GetHashCode());
+            return _cacheService.CachePerRequest(cacheKey, () => _context.Favourite
+                                                                        .Include(x => x.Post)
+                                                                        .Include(x => x.Topic.Category)
+                                                                        .Include(x => x.Member)
+                                                                        .Where(x => postIds.Contains(x.Post.Id)).ToList());
         }
     }
 }

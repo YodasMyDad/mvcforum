@@ -1,13 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Web.Mvc;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.ViewModels;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MVCForum.Website.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Web.Mvc;
+    using Domain.DomainModel;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using ViewModels;
+
     public partial class EmailController : BaseController
     {
         private readonly ITopicNotificationService _topicNotificationService;
@@ -20,8 +20,8 @@ namespace MVCForum.Website.Controllers
         public EmailController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
             ITopicNotificationService topicNotificationService, ICategoryNotificationService categoryNotificationService, ICategoryService categoryService,
-            ITopicService topicService, ITopicTagService topicTagService, ITagNotificationService tagNotificationService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+            ITopicService topicService, ITopicTagService topicTagService, ITagNotificationService tagNotificationService, ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _topicNotificationService = topicNotificationService;
             _categoryNotificationService = categoryNotificationService;

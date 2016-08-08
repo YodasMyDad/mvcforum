@@ -1,20 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Services.Data.Context;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using Domain.Constants;
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity;
+    using System.Linq;
+    using Domain.DomainModel;
+    using Domain.Interfaces;
+    using Domain.Interfaces.Services;
+    using Data.Context;
+
     public partial class CategoryNotificationService : ICategoryNotificationService
     {
         private readonly MVCForumContext _context;
+        private readonly ICacheService _cacheService;
 
-        public CategoryNotificationService(IMVCForumContext context)
+        public CategoryNotificationService(IMVCForumContext context, ICacheService cacheService)
         {
+            _cacheService = cacheService;
             _context = context as MVCForumContext;
         }
 
@@ -24,7 +27,8 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<CategoryNotification> GetAll()
         {
-            return _context.CategoryNotification.ToList();
+            var cacheKey = string.Concat(CacheKeys.CategoryNotification.StartsWith, "GetAll");
+            return _cacheService.CachePerRequest(cacheKey, () => _context.CategoryNotification.ToList());
         }
 
         /// <summary>
@@ -43,10 +47,11 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<CategoryNotification> GetByCategory(Category category)
         {
-            return _context.CategoryNotification
-                .AsNoTracking()
-                .Where(x => x.Category.Id == category.Id)
-                .ToList();
+            var cacheKey = string.Concat(CacheKeys.CategoryNotification.StartsWith, "GetByCategory-", category.Id);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.CategoryNotification
+                                                                        .AsNoTracking()
+                                                                        .Where(x => x.Category.Id == category.Id)
+                                                                        .ToList());
         }
 
         /// <summary>
@@ -56,9 +61,10 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<CategoryNotification> GetByUser(MembershipUser user)
         {
-            return _context.CategoryNotification
-                .Where(x => x.User.Id == user.Id)
-                .ToList();
+            var cacheKey = string.Concat(CacheKeys.CategoryNotification.StartsWith, "GetByUser-", user.Id);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.CategoryNotification
+                                                                        .Where(x => x.User.Id == user.Id)
+                                                                        .ToList());
         }
 
         /// <summary>
@@ -70,13 +76,16 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IList<CategoryNotification> GetByUserAndCategory(MembershipUser user, Category category, bool addTracking = false)
         {
-            var notifications = _context.CategoryNotification
-                .Where(x => x.Category.Id == category.Id && x.User.Id == user.Id);
-            if (addTracking)
+            var cacheKey = string.Concat(CacheKeys.CategoryNotification.StartsWith, "GetByUserAndCategory-", user.Id, "-", category.Id, "-", addTracking);
+            return _cacheService.CachePerRequest(cacheKey, () =>
             {
-                return notifications.ToList();
-            }
-            return notifications.AsNoTracking().ToList();
+                var notifications = _context.CategoryNotification.Where(x => x.Category.Id == category.Id && x.User.Id == user.Id);
+                if (addTracking)
+                {
+                    return notifications.ToList();
+                }
+                return notifications.AsNoTracking().ToList();
+            });
         }
 
         /// <summary>
@@ -91,7 +100,8 @@ namespace MVCForum.Services
 
         public CategoryNotification Get(Guid id)
         {
-            return _context.CategoryNotification.FirstOrDefault(cat => cat.Id == id);
+            var cacheKey = string.Concat(CacheKeys.CategoryNotification.StartsWith, "Get-", id);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.CategoryNotification.FirstOrDefault(cat => cat.Id == id));
         }
     }
 }

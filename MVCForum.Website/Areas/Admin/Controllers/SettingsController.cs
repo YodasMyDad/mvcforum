@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
-using System.Web.Services.Description;
 using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
@@ -38,7 +37,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             {
                 var currentSettings = SettingsService.GetSettings();
                 var settingViewModel = ViewModelMapping.SettingsToSettingsViewModel(currentSettings);
-                settingViewModel.NewMemberStartingRole = _roleService.GetRole(SettingsService.GetSettings().NewMemberStartingRole.Id).Id;
+                settingViewModel.NewMemberStartingRole = _roleService.GetRole(currentSettings.NewMemberStartingRole.Id).Id;
                 settingViewModel.DefaultLanguage = LocalizationService.DefaultLanguage.Id;
                 settingViewModel.Roles = _roleService.AllRoles().ToList();
                 settingViewModel.Languages = LocalizationService.AllLanguages.ToList();
@@ -73,7 +72,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         }
 
                         unitOfWork.Commit();
-                        _cacheService.ClearStartsWith(AppConstants.SettingsCacheName);
+                        _cacheService.ClearStartsWith(CacheKeys.Settings.Main);
                     }
                     catch (Exception ex)
                     {
@@ -108,14 +107,14 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             using (var uow = UnitOfWorkManager.NewUnitOfWork())
             {
+                var settings = SettingsService.GetSettings();
                 var sb = new StringBuilder();
-                sb.AppendFormat("<p>{0}</p>",
-                    string.Concat("This is a test email from ", SettingsService.GetSettings().ForumName));
+                sb.Append($"<p>{string.Concat("This is a test email from ", settings.ForumName)}</p>");
                 var email = new Email
                 {
-                    EmailTo = SettingsService.GetSettings().AdminEmailAddress,
+                    EmailTo = settings.AdminEmailAddress,
                     NameTo = "Email Test Admin",
-                    Subject = string.Concat("Email Test From ", SettingsService.GetSettings().ForumName)
+                    Subject = string.Concat("Email Test From ", settings.ForumName)
                 };
                 email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
                 _emailService.SendMail(email);
@@ -171,6 +170,9 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 try
                 {
                     unitOfWork.Commit();
+
+                    // Clear cache
+                    _cacheService.ClearStartsWith(CacheKeys.Settings.Main);
 
                     // Show a message
                     ShowMessage(new GenericMessageViewModel

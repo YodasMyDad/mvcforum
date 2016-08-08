@@ -40,20 +40,20 @@
       <HintPath>..\packages\AntiXSS.4.3.0\lib\net40\AntiXssLibrary.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.5, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.4.9.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="HtmlSanitizationLibrary, Version=4.3.0.0, Culture=neutral, PublicKeyToken=d127efab8a9c114f, processorArchitecture=MSIL">
       <HintPath>..\packages\AntiXSS.4.3.0\lib\net40\HtmlSanitizationLibrary.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ImageProcessor, Version=2.3.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ImageProcessor.2.3.2.0\lib\net45\ImageProcessor.dll</HintPath>
+    <Reference Include="ImageProcessor, Version=2.4.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ImageProcessor.2.4.3.0\lib\net45\ImageProcessor.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ImageProcessor.Web, Version=4.5.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ImageProcessor.Web.4.5.1.0\lib\net45\ImageProcessor.Web.dll</HintPath>
+    <Reference Include="ImageProcessor.Web, Version=4.6.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ImageProcessor.Web.4.6.3.0\lib\net45\ImageProcessor.Web.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">

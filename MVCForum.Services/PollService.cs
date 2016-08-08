@@ -1,24 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Services.Data.Context;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using System.Data.Entity;
+    using Domain.Constants;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Domain.DomainModel;
+    using Domain.Interfaces;
+    using Domain.Interfaces.Services;
+    using Data.Context;
+
     public partial class PollService : IPollService
     {
         private readonly MVCForumContext _context;
-        public PollService(IMVCForumContext context)
+        private readonly ICacheService _cacheService;
+
+        public PollService(IMVCForumContext context, ICacheService cacheService)
         {
+            _cacheService = cacheService;
             _context = context as MVCForumContext;
         }
 
         public List<Poll> GetAllPolls()
         {
-            return _context.Poll.ToList();
+            var cacheKey = string.Concat(CacheKeys.Poll.StartsWith, "GetAllPolls");
+            return _cacheService.CachePerRequest(cacheKey, () => _context.Poll.ToList());
         }
 
         public Poll Add(Poll poll)
@@ -30,7 +36,8 @@ namespace MVCForum.Services
 
         public Poll Get(Guid id)
         {
-            return _context.Poll.FirstOrDefault(x => x.Id == id);
+            var cacheKey = string.Concat(CacheKeys.Poll.StartsWith, "Get-", id);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.Poll.FirstOrDefault(x => x.Id == id));
         }
 
         public void Delete(Poll item)

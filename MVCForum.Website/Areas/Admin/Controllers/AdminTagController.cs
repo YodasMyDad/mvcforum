@@ -6,19 +6,18 @@ using MVCForum.Domain.Constants;
 using MVCForum.Domain.DomainModel;
 using MVCForum.Domain.Interfaces.Services;
 using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Application;
 using MVCForum.Website.Areas.Admin.ViewModels;
-using MVCForum.Website.Controllers;
 
 namespace MVCForum.Website.Areas.Admin.Controllers
 {
     [Authorize(Roles = AppConstants.AdminRoleName)]
-    public partial class AdminTagController : BaseController
+    public partial class AdminTagController : BaseAdminController
     {
         private readonly ITopicTagService _topicTagService;
 
-        public AdminTagController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, ITopicTagService topicTagService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+        public AdminTagController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
+            ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService) 
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
             _topicTagService = topicTagService;
         }
@@ -96,7 +95,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     unitOfWork.Commit();
                     ShowMessage(new GenericMessageViewModel
                     {
-                        Message = string.Format("All topics tagged with {0} have been updated to {1}", oldTag.Tag, newTag.Tag),
+                        Message = $"All topics tagged with {oldTag.Tag} have been updated to {newTag.Tag}",
                         MessageType = GenericMessages.success
                     });
                 }
@@ -106,7 +105,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     LoggingService.Error(ex);
                     ShowMessage(new GenericMessageViewModel
                     {
-                        Message = string.Format("Error: {0}", ex.Message),
+                        Message = $"Error: {ex.Message}",
                         MessageType = GenericMessages.danger
                     });
                 }
@@ -146,7 +145,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     LoggingService.Error(ex);
                     ShowMessage(new GenericMessageViewModel
                     {
-                        Message = string.Format("Delete failed: {0}", ex.Message),
+                        Message = $"Delete failed: {ex.Message}",
                         MessageType = GenericMessages.danger
                     });
                 }
@@ -177,6 +176,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 }
             }
         }
+
 
     }
 }

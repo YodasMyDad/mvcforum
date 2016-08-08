@@ -1,25 +1,22 @@
-﻿using System.Collections.Generic;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Application;
-using MVCForum.Website.ViewModels;
-using System.Linq;
-using MVCForum.Domain.DomainModel.Enums;
-using MVCForum.Website.ViewModels.Mapping;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MVCForum.Website.Controllers
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Web.Mvc;
+    using Application;
+    using Domain.Constants;
+    using Domain.DomainModel;
+    using Domain.DomainModel.Enums;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using ViewModels;
+    using ViewModels.Mapping;
+
     public partial class CategoryController : BaseController
     {
         private readonly ICategoryService _categoryService;
         private readonly ICategoryNotificationService _categoryNotificationService;
         private readonly ITopicService _topicService;
-        private readonly IPollAnswerService _pollAnswerService;
-        private readonly ITopicNotificationService _topicNotificationService;
-        private readonly IVoteService _voteService;
         private readonly IRoleService _roleService;
 
         /// <summary>
@@ -34,24 +31,19 @@ namespace MVCForum.Website.Controllers
         /// <param name="settingsService"> </param>
         /// <param name="topicService"> </param>
         /// <param name="categoryNotificationService"> </param>
-        /// <param name="pollAnswerService"></param>
-        /// <param name="topicNotificationService"></param>
-        /// <param name="voteService"></param>
+        /// <param name="cacheService"></param>
         public CategoryController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService,
             ILocalizationService localizationService,
             IRoleService roleService,
             ICategoryService categoryService,
-            ISettingsService settingsService, ITopicService topicService, ICategoryNotificationService categoryNotificationService, IPollAnswerService pollAnswerService, ITopicNotificationService topicNotificationService, IVoteService voteService, IRoleService roleService1)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+            ISettingsService settingsService, ITopicService topicService, ICategoryNotificationService categoryNotificationService, ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _categoryService = categoryService;
             _topicService = topicService;
             _categoryNotificationService = categoryNotificationService;
-            _pollAnswerService = pollAnswerService;
-            _topicNotificationService = topicNotificationService;
-            _voteService = voteService;
-            _roleService = roleService1;
+            _roleService = roleService;
         }
 
         public ActionResult Index()

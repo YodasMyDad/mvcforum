@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Activity;
-using MVCForum.Domain.DomainModel.Enums;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Application;
-using MVCForum.Website.ViewModels;
-using RssItem = MVCForum.Domain.DomainModel.RssItem;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MVCForum.Website.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Web.Mvc;
+    using Domain.Constants;
+    using Domain.DomainModel;
+    using Domain.DomainModel.Activity;
+    using Domain.DomainModel.Enums;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using Application;
+    using ViewModels;
+    using RssItem = Domain.DomainModel.RssItem;
+
     public partial class HomeController : BaseController
     {
         private readonly ITopicService _topicService;
@@ -22,8 +22,8 @@ namespace MVCForum.Website.Controllers
 
         public HomeController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IActivityService activityService, IMembershipService membershipService,
             ITopicService topicService, ILocalizationService localizationService, IRoleService roleService,
-            ISettingsService settingsService, ICategoryService categoryService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+            ISettingsService settingsService, ICategoryService categoryService, ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _topicService = topicService;
             _categoryService = categoryService;
@@ -303,7 +303,7 @@ namespace MVCForum.Website.Controllers
                     {
                         Name = category.Name,
                         Url = category.NiceUrl,
-                        LastUpdated = topic != null ? topic.LastPost.DateEdited : category.DateCreated,
+                        LastUpdated = topic?.LastPost.DateEdited ?? category.DateCreated,
                         ChangeFrequency = SiteMapChangeFreqency.monthly
                     };
                     sitemap.Add(sitemapEntry);

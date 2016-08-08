@@ -1,34 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using System.Linq;
-using System.Data.Entity;
-using MVCForum.Domain.Interfaces;
-using MVCForum.Services.Data.Context;
-using MVCForum.Utilities;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using Domain.Constants;
+    using System;
+    using System.Collections.Generic;
+    using Domain.DomainModel;
+    using Domain.Interfaces.Services;
+    using System.Linq;
+    using System.Data.Entity;
+    using Domain.Interfaces;
+    using Data.Context;
+    using Utilities;
+
     public partial class TopicTagService : ITopicTagService
     {
-        private readonly ITopicService _topicService;
-        private readonly ICategoryService _categoryService;
         private readonly IBadgeService _badgeService;
         private readonly MVCForumContext _context;
+        private readonly ICacheService _cacheService;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="topicService"></param>
-        /// <param name="categoryService"></param>
         /// <param name="badgeService"></param>
-        public TopicTagService(IMVCForumContext context, ITopicService topicService, ICategoryService categoryService, IBadgeService badgeService)
+        /// <param name="cacheService"></param>
+        public TopicTagService(IMVCForumContext context, IBadgeService badgeService, ICacheService cacheService)
         {
-            _topicService = topicService;
-            _categoryService = categoryService;
             _badgeService = badgeService;
+            _cacheService = cacheService;
             _context = context as MVCForumContext;
         }
 
@@ -38,7 +36,8 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IEnumerable<TopicTag> GetAll()
         {
-            return _context.TopicTag.AsNoTracking();
+            var cacheKey = string.Concat(CacheKeys.TopicTag.StartsWith, "GetAll");
+            return _cacheService.CachePerRequest(cacheKey, () => _context.TopicTag.AsNoTracking());
         }
 
         /// <summary>
@@ -64,11 +63,12 @@ namespace MVCForum.Services
         public IList<TopicTag> GetContains(string term, int amountToTake = 4)
         {
             term = StringUtils.SafePlainText(term);
-            return _context.TopicTag
-                .AsNoTracking()
-                .Where(x => x.Tag.ToUpper().Contains(term.ToUpper()))
-                .Take(amountToTake)
-                .ToList();
+            var cacheKey = string.Concat(CacheKeys.TopicTag.StartsWith, "GetContains-", amountToTake, "-", term);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.TopicTag
+                                                                    .AsNoTracking()
+                                                                    .Where(x => x.Tag.ToUpper().Contains(term.ToUpper()))
+                                                                    .Take(amountToTake)
+                                                                    .ToList());
         }
 
         /// <summary>
@@ -143,13 +143,15 @@ namespace MVCForum.Services
 
         public TopicTag Get(Guid id)
         {
-            return _context.TopicTag.FirstOrDefault(x => x.Id == id);
+            var cacheKey = string.Concat(CacheKeys.TopicTag.StartsWith, "Get-", id);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.TopicTag.FirstOrDefault(x => x.Id == id));
         }
 
         public TopicTag Get(string tag)
         {
             tag = StringUtils.SafePlainText(tag);
-            return _context.TopicTag.FirstOrDefault(x => x.Slug.Equals(tag));
+            var cacheKey = string.Concat(CacheKeys.TopicTag.StartsWith, "Get-", tag);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.TopicTag.FirstOrDefault(x => x.Slug.Equals(tag)));
         }
 
         /// <summary>
@@ -274,7 +276,6 @@ namespace MVCForum.Services
                 .AsNoTracking()
                 .Select(x => new
                 {
-                    topics = x.Topics.Where(c => categoryIds.Contains(c.Category.Id)),
                     topictag = x,
                     topiccount = x.Topics.Count(c => categoryIds.Contains(c.Category.Id))
                 })

@@ -49,6 +49,7 @@ namespace MVCForum.IOC
             container.BindInRequestScope<IMVCForumContext, MVCForumContext>();
             container.BindInRequestScope<IUnitOfWorkManager, UnitOfWorkManager>();
 
+
             // Quartz
             container.AddNewExtension<QuartzUnityExtension>();
 

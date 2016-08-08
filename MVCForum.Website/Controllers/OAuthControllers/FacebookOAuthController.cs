@@ -1,20 +1,19 @@
-﻿using System;
-using System.Web.Mvc;
-using System.Web.Security;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel.Enums;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
-using MVCForum.Website.Application;
-using MVCForum.Website.Areas.Admin.ViewModels;
-using MVCForum.Website.ViewModels;
-using Skybrud.Social.Facebook;
-using Skybrud.Social.Facebook.OAuth;
-using Skybrud.Social.Facebook.Options.User;
-
-namespace MVCForum.Website.Controllers.OAuthControllers
+﻿namespace MVCForum.Website.Controllers.OAuthControllers
 {
+    using System;
+    using System.Web.Mvc;
+    using System.Web.Security;
+    using Domain.Constants;
+    using Domain.DomainModel.Enums;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using Utilities;
+    using Areas.Admin.ViewModels;
+    using ViewModels;
+    using Skybrud.Social.Facebook;
+    using Skybrud.Social.Facebook.OAuth;
+    using Skybrud.Social.Facebook.Options.User;
+
     // Facebook uses OAuth 2.0 for authentication and communication. In order for users to authenticate with the Facebook API, 
     // you must specify the ID, secret and redirect URI of your Facebook app. 
     // You can create a new app at the following URL: https://developers.facebook.com/
@@ -26,12 +25,14 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                                         IMembershipService membershipService, 
                                         ILocalizationService localizationService, 
                                         IRoleService roleService, 
-                                        ISettingsService settingsService) : base(loggingService, 
+                                        ISettingsService settingsService, 
+                                        ICacheService cacheService) : base(loggingService, 
                                                                                 unitOfWorkManager, 
                                                                                 membershipService, 
                                                                                 localizationService, 
                                                                                 roleService, 
-                                                                                settingsService)
+                                                                                settingsService, 
+                                                                                cacheService)
         {
 
         }
@@ -53,30 +54,15 @@ namespace MVCForum.Website.Controllers.OAuthControllers
         /// <summary>
         /// Gets the authorizing code from the query string (if specified).
         /// </summary>
-        public string AuthCode
-        {
-            get { return Request.QueryString["code"]; }
-        }
+        public string AuthCode => Request.QueryString["code"];
 
-        public string AuthState
-        {
-            get { return Request.QueryString["state"]; }
-        }
+        public string AuthState => Request.QueryString["state"];
 
-        public string AuthErrorReason
-        {
-            get { return Request.QueryString["error_reason"]; }
-        }
+        public string AuthErrorReason => Request.QueryString["error_reason"];
 
-        public string AuthError
-        {
-            get { return Request.QueryString["error"]; }
-        }
+        public string AuthError => Request.QueryString["error"];
 
-        public string AuthErrorDescription
-        {
-            get { return Request.QueryString["error_description"]; }
-        }
+        public string AuthErrorDescription => Request.QueryString["error_description"];
 
         public ActionResult FacebookLogin()
         {
@@ -155,7 +141,7 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                 }
                 catch (Exception ex)
                 {
-                    resultMessage.Message = string.Format("Unable to acquire access token<br/>{0}", ex.Message);
+                    resultMessage.Message = $"Unable to acquire access token<br/>{ex.Message}";
                     resultMessage.MessageType = GenericMessages.danger;
                 }
 
@@ -219,7 +205,7 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                                 };
 
                                 // Get the image and save it
-                                var getImageUrl = string.Format("http://graph.facebook.com/{0}/picture?type=square", user.Body.Id);
+                                var getImageUrl = $"http://graph.facebook.com/{user.Body.Id}/picture?type=square";
                                 viewModel.SocialProfileImageUrl = getImageUrl;
 
                                 //Large size photo https://graph.facebook.com/{facebookId}/picture?type=large
@@ -237,7 +223,7 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                 }
                 catch (Exception ex)
                 {
-                    resultMessage.Message = string.Format("Unable to get user information<br/>{0}", ex.Message);
+                    resultMessage.Message = $"Unable to get user information<br/>{ex.Message}";
                     resultMessage.MessageType = GenericMessages.danger;
                     LoggingService.Error(ex);
                 }

@@ -1,23 +1,26 @@
-﻿using System;
-using System.Data.Entity;
-using System.Linq;
-using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Events;
-using MVCForum.Domain.Interfaces;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Services.Data.Context;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using Domain.Constants;
+    using System;
+    using System.Data.Entity;
+    using System.Linq;
+    using System.Collections.Generic;
+    using Domain.DomainModel;
+    using Domain.Events;
+    using Domain.Interfaces;
+    using Domain.Interfaces.Services;
+    using Data.Context;
+
     public partial class VoteService : IVoteService
     {
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly MVCForumContext _context;
+        private readonly ICacheService _cacheService;
 
-        public VoteService(IMVCForumContext context, IMembershipUserPointsService membershipUserPointsService)
+        public VoteService(IMVCForumContext context, IMembershipUserPointsService membershipUserPointsService, ICacheService cacheService)
         {
             _membershipUserPointsService = membershipUserPointsService;
+            _cacheService = cacheService;
             _context = context as MVCForumContext;
         }
 
@@ -42,12 +45,16 @@ namespace MVCForum.Services
 
         public List<Vote> GetVotesByPosts(List<Guid> postIds)
         {
-            return _context.Vote
-                        .Include(x => x.VotedByMembershipUser)
-                        .Include(x => x.User)
-                        .Include(x => x.Post)
-                        .AsNoTracking()
-                        .Where(x => postIds.Contains(x.Post.Id)).ToList();
+            var cacheKey = string.Concat(CacheKeys.BannedEmail.StartsWith, "GetVotesByPosts-", postIds.GetHashCode());
+            return _cacheService.CachePerRequest(cacheKey, () =>
+            {
+                return _context.Vote
+                            .Include(x => x.VotedByMembershipUser)
+                            .Include(x => x.User)
+                            .Include(x => x.Post)
+                            .AsNoTracking()
+                            .Where(x => postIds.Contains(x.Post.Id)).ToList();
+            });
         }
 
         public List<Vote> GetVotesByPost(Guid postId)

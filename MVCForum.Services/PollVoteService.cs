@@ -1,24 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Services.Data.Context;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Data.Entity;
+    using Domain.DomainModel;
+    using Domain.Interfaces;
+    using Domain.Interfaces.Services;
+    using Data.Context;
+    using Domain.Constants;
+
     public partial class PollVoteService : IPollVoteService
     {
         private readonly MVCForumContext _context;
-        public PollVoteService(IMVCForumContext context)
+        private readonly ICacheService _cacheService;
+
+        public PollVoteService(IMVCForumContext context, ICacheService cacheService)
         {
+            _cacheService = cacheService;
             _context = context as MVCForumContext;
         }
 
         public List<PollVote> GetAllPollVotes()
         {
-            return _context.PollVote.ToList();
+            var cacheKey = string.Concat(CacheKeys.PollVote.StartsWith, "GetAllPollVotes");
+            return _cacheService.CachePerRequest(cacheKey, () => _context.PollVote.ToList());
         }
 
         public PollVote Add(PollVote pollVote)
@@ -28,13 +34,19 @@ namespace MVCForum.Services
 
         public bool HasUserVotedAlready(Guid answerId, Guid userId)
         {
-            var vote = _context.PollVote.FirstOrDefault(x => x.PollAnswer.Id == answerId && x.User.Id == userId);
-            return (vote != null);
+            var cacheKey = string.Concat(CacheKeys.PollVote.StartsWith, "HasUserVotedAlready-", answerId, "-", userId);
+            return _cacheService.CachePerRequest(cacheKey, () =>
+            {
+                var vote = _context.PollVote.Include(x => x.PollAnswer).Include(x => x.User).FirstOrDefault(x => x.PollAnswer.Id == answerId && x.User.Id == userId);
+                return (vote != null);
+            });
+
         }
 
         public PollVote Get(Guid id)
         {
-            return _context.PollVote.FirstOrDefault(x => x.Id == id);
+            var cacheKey = string.Concat(CacheKeys.PollVote.StartsWith, "Get-", id);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.PollVote.FirstOrDefault(x => x.Id == id));
         }
 
         public void Delete(PollVote pollVote)

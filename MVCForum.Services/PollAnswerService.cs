@@ -1,27 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Services.Data.Context;
-using MVCForum.Utilities;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity;
+    using System.Linq;
+    using Domain.DomainModel;
+    using Domain.Interfaces;
+    using Domain.Interfaces.Services;
+    using Data.Context;
+    using Domain.Constants;
+    using Utilities;
+
     public partial class PollAnswerService : IPollAnswerService
     {
         private readonly MVCForumContext _context;
-        public PollAnswerService(IMVCForumContext context)
+        private readonly ICacheService _cacheService;
+
+        public PollAnswerService(IMVCForumContext context, ICacheService cacheService)
         {
+            _cacheService = cacheService;
             _context = context as MVCForumContext;
         }
 
         public List<PollAnswer> GetAllPollAnswers()
         {
-            return _context.PollAnswer
-                    .Include(x => x.Poll).ToList();
+            var cacheKey = string.Concat(CacheKeys.PollAnswer.StartsWith, "GetAllPollAnswers");
+            return _cacheService.CachePerRequest(cacheKey, () => _context.PollAnswer.Include(x => x.Poll).ToList());
         }
 
         public PollAnswer Add(PollAnswer pollAnswer)
@@ -32,16 +36,17 @@ namespace MVCForum.Services
 
         public List<PollAnswer> GetAllPollAnswersByPoll(Poll poll)
         {
-            var answers = _context.PollAnswer
-                    .Include(x => x.Poll)
-                    .AsNoTracking()
-                    .Where(x => x.Poll.Id == poll.Id).ToList();
-            return answers;
+            var cacheKey = string.Concat(CacheKeys.PollAnswer.StartsWith, "GetAllPollAnswersByPoll-", poll.Id);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.PollAnswer
+                                                                    .Include(x => x.Poll)
+                                                                    .AsNoTracking()
+                                                                    .Where(x => x.Poll.Id == poll.Id).ToList());            
         }
 
         public PollAnswer Get(Guid id)
         {
-            return _context.PollAnswer.FirstOrDefault(x => x.Id == id);
+            var cacheKey = string.Concat(CacheKeys.PollAnswer.StartsWith, "Get-", id);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.PollAnswer.FirstOrDefault(x => x.Id == id));
         }
 
         public void Delete(PollAnswer pollAnswer)

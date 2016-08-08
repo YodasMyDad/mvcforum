@@ -1,19 +1,19 @@
-﻿using System;
-using System.Linq;
-using System.Web.Mvc;
-using MVCForum.Domain.DomainModel.Entities;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.ViewModels;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MVCForum.Website.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Web.Mvc;
+    using Domain.DomainModel.Entities;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using ViewModels;
+
     public class BlockController : BaseController
     {
         private readonly IBlockService _blockService;
         public BlockController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
-            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IBlockService blockService) : 
-            base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IBlockService blockService, ICacheService cacheService) : 
+            base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _blockService = blockService;
         }

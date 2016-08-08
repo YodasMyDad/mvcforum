@@ -1,19 +1,20 @@
-﻿using System;
-using System.Linq;
-using System.Web.Hosting;
-using System.Web.Mvc;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MVCForum.Website.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Web.Hosting;
+    using System.Web.Mvc;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+
     public class FileController : BaseController
     {
         private readonly IUploadedFileService _uploadedFileService;
         private readonly ICategoryService _categoryService;
 
-        public FileController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IUploadedFileService uploadedFileService, ICategoryService categoryService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+        public FileController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
+            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IUploadedFileService uploadedFileService, ICategoryService categoryService, ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _uploadedFileService = uploadedFileService;
             _categoryService = categoryService;

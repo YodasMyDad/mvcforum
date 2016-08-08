@@ -1,49 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Data.Entity;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.General;
-using MVCForum.Domain.Events;
-using MVCForum.Domain.Interfaces;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Services.Data.Context;
-using MVCForum.Utilities;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Data.Entity;
+    using System.Web.Mvc;
+    using Domain.Constants;
+    using Domain.DomainModel;
+    using Domain.DomainModel.General;
+    using Domain.Events;
+    using Domain.Interfaces;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using Data.Context;
+    using Utilities;
+
     public partial class TopicService : ITopicService
     {
         private readonly ITopicNotificationService _topicNotificationService;
         private readonly MVCForumContext _context;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ISettingsService _settingsService;
-        private readonly IVoteService _voteService;
         private readonly IPostService _postService;
-        private readonly IUploadedFileService _uploadedFileService;
         private readonly IFavouriteService _favouriteService;
         private readonly IRoleService _roleService;
         private readonly IPollService _pollService;
         private readonly IPollAnswerService _pollAnswerService;
+        private readonly ICacheService _cacheService;
 
         public TopicService(IMVCForumContext context, IMembershipUserPointsService membershipUserPointsService,
             ISettingsService settingsService, ITopicNotificationService topicNotificationService,
-            IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService favouriteService,
-            IPostService postService, IRoleService roleService, IPollService pollService, IPollAnswerService pollAnswerService)
+            IFavouriteService favouriteService,
+            IPostService postService, IRoleService roleService, IPollService pollService, IPollAnswerService pollAnswerService, ICacheService cacheService)
         {
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
             _topicNotificationService = topicNotificationService;
-            _voteService = voteService;
-            _uploadedFileService = uploadedFileService;
             _favouriteService = favouriteService;
             _postService = postService;
             _roleService = roleService;
             _pollService = pollService;
             _pollAnswerService = pollAnswerService;
+            _cacheService = cacheService;
             _context = context as MVCForumContext;
         }
 
@@ -71,18 +69,22 @@ namespace MVCForum.Services
 
         public IList<SelectListItem> GetAllSelectList(List<Category> allowedCategories, int amount)
         {
-            // get the category ids
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
-            return _context.Topic.AsNoTracking()
-                                .Include(x => x.Category)
-                                .Where(x => allowedCatIds.Contains(x.Category.Id) && x.Pending != true)
-                                .OrderByDescending(x => x.CreateDate)
-                                .Take(amount)
-                                .Select(x => new SelectListItem
-                                {
-                                    Text = x.Name,
-                                    Value = x.Id.ToString()
-                                }).ToList();
+            var cacheKey = string.Concat(CacheKeys.Topic.StartsWith, "GetAllSelectList-", allowedCategories.GetHashCode(), "-", amount);
+            return _cacheService.CachePerRequest(cacheKey, () =>
+            {
+                // get the category ids
+                var allowedCatIds = allowedCategories.Select(x => x.Id);
+                return _context.Topic.AsNoTracking()
+                                    .Include(x => x.Category)
+                                    .Where(x => allowedCatIds.Contains(x.Category.Id) && x.Pending != true)
+                                    .OrderByDescending(x => x.CreateDate)
+                                    .Take(amount)
+                                    .Select(x => new SelectListItem
+                                    {
+                                        Text = x.Name,
+                                        Value = x.Id.ToString()
+                                    }).ToList();
+            });
         }
 
         public IList<Topic> GetHighestViewedTopics(int amountToTake, List<Category> allowedCategories)
@@ -391,38 +393,47 @@ namespace MVCForum.Services
 
         public IList<Topic> GetPendingTopics(List<Category> allowedCategories, MembershipRole usersRole)
         {
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
-            var allPendingTopics = _context.Topic.AsNoTracking().Include(x => x.Category).Where(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id)).ToList();
-            if (usersRole != null)
+            var cacheKey = string.Concat(CacheKeys.Topic.StartsWith, "GetPendingTopics-", allowedCategories.GetHashCode(), "-", usersRole.Id);
+            return _cacheService.CachePerRequest(cacheKey, () =>
             {
-                var pendingTopics = new List<Topic>();
-                var permissionSets = new Dictionary<Guid, PermissionSet>();
-                foreach (var category in allowedCategories)
+                var allowedCatIds = allowedCategories.Select(x => x.Id);
+                var allPendingTopics = _context.Topic.AsNoTracking().Include(x => x.Category).Where(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id)).ToList();
+                if (usersRole != null)
                 {
-                    var permissionSet = _roleService.GetPermissions(category, usersRole);
-                    permissionSets.Add(category.Id, permissionSet);
-                }
-
-                foreach (var pendingTopic in allPendingTopics)
-                {
-                    if (permissionSets.ContainsKey(pendingTopic.Category.Id))
+                    var pendingTopics = new List<Topic>();
+                    var permissionSets = new Dictionary<Guid, PermissionSet>();
+                    foreach (var category in allowedCategories)
                     {
-                        var permissions = permissionSets[pendingTopic.Category.Id];
-                        if (permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                        var permissionSet = _roleService.GetPermissions(category, usersRole);
+                        permissionSets.Add(category.Id, permissionSet);
+                    }
+
+                    foreach (var pendingTopic in allPendingTopics)
+                    {
+                        if (permissionSets.ContainsKey(pendingTopic.Category.Id))
                         {
-                            pendingTopics.Add(pendingTopic);
+                            var permissions = permissionSets[pendingTopic.Category.Id];
+                            if (permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                            {
+                                pendingTopics.Add(pendingTopic);
+                            }
                         }
                     }
+                    return pendingTopics;
                 }
-                return pendingTopics;
-            }
-            return allPendingTopics;
+                return allPendingTopics;
+            });
         }
 
         public int GetPendingTopicsCount(List<Category> allowedCategories)
         {
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
-            return _context.Topic.AsNoTracking().Include(x => x.Category).Count(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id));
+            var cacheKey = string.Concat(CacheKeys.Topic.StartsWith, "GetPendingTopicsCount-", allowedCategories.GetHashCode());
+            return _cacheService.CachePerRequest(cacheKey, () =>
+            {
+                var allowedCatIds = allowedCategories.Select(x => x.Id);
+                return _context.Topic.AsNoTracking().Include(x => x.Category).Count(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id));
+            });
+
         }
 
         /// <summary>
@@ -642,14 +653,18 @@ namespace MVCForum.Services
         /// <returns></returns>
         public Topic Get(Guid topicId)
         {
-            var topic = _context.Topic
-                                .Include(x => x.Category)
-                                .Include(x => x.LastPost.User)
-                                .Include(x => x.User)
-                                .Include(x => x.Poll)
-                            .FirstOrDefault(x => x.Id == topicId);
+            var cacheKey = string.Concat(CacheKeys.Topic.StartsWith, "Get-", topicId);
+            return _cacheService.CachePerRequest(cacheKey, () =>
+            {
+                var topic = _context.Topic
+                                    .Include(x => x.Category)
+                                    .Include(x => x.LastPost.User)
+                                    .Include(x => x.User)
+                                    .Include(x => x.Poll)
+                                .FirstOrDefault(x => x.Id == topicId);
 
-            return topic;
+                return topic;
+            });
         }
 
         public List<Topic> Get(List<Guid> topicIds, List<Category> allowedCategories)
@@ -759,12 +774,17 @@ namespace MVCForum.Services
 
         public int TopicCount(List<Category> allowedCategories)
         {
-            // get the category ids
-            var allowedCatIds = allowedCategories.Select(x => x.Id);
-            return _context.Topic
-                .Include(x => x.Category)
-                .AsNoTracking()
-                .Count(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id));
+            var cacheKey = string.Concat(CacheKeys.Topic.StartsWith, "TopicCount-", allowedCategories.GetHashCode());
+            return _cacheService.CachePerRequest(cacheKey, () =>
+            {
+                // get the category ids
+                var allowedCatIds = allowedCategories.Select(x => x.Id);
+                return _context.Topic
+                    .Include(x => x.Category)
+                    .AsNoTracking()
+                    .Count(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id));
+            });
+
         }
 
         /// <summary>

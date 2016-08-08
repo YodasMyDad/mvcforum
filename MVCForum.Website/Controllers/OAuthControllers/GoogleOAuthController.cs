@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Specialized;
-using System.Web.Mvc;
-using System.Web.Security;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel.Enums;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
-using MVCForum.Website.Application;
-using MVCForum.Website.Areas.Admin.ViewModels;
-using MVCForum.Website.ViewModels;
-using Skybrud.Social.Google;
-using Skybrud.Social.Google.OAuth;
-
-namespace MVCForum.Website.Controllers.OAuthControllers
+﻿namespace MVCForum.Website.Controllers.OAuthControllers
 {
+    using System;
+    using System.Collections.Specialized;
+    using System.Web.Mvc;
+    using System.Web.Security;
+    using Domain.Constants;
+    using Domain.DomainModel.Enums;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using Utilities;
+    using Areas.Admin.ViewModels;
+    using ViewModels;
+    using Skybrud.Social.Google;
+    using Skybrud.Social.Google.OAuth;
+
     // Google uses OAuth 2.0 for authentication and communication. In order for users to authenticate with the Google API, 
     // you must specify the ID, secret and redirect URI of your Google app. 
     // You can create a new app at the following URL: https://console.developers.google.com/project
@@ -26,20 +25,19 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                                     IMembershipService membershipService,
                                     ILocalizationService localizationService,
                                     IRoleService roleService,
-                                    ISettingsService settingsService)
+                                    ISettingsService settingsService,
+                                    ICacheService cacheService)
             : base(loggingService,
                   unitOfWorkManager,
                   membershipService,
                   localizationService,
                   roleService,
-                  settingsService)
+                  settingsService,
+                  cacheService)
         {
         }
 
-        public string ReturnUrl
-        {
-            get { return string.Concat(SettingsService.GetSettings().ForumUrl.TrimEnd('/'), Url.Action("GoogleLogin")); }
-        }
+        public string ReturnUrl => string.Concat(SettingsService.GetSettings().ForumUrl.TrimEnd('/'), Url.Action("GoogleLogin"));
 
         public string Callback { get; private set; }
 
@@ -52,30 +50,15 @@ namespace MVCForum.Website.Controllers.OAuthControllers
         /// <summary>
         /// Gets the authorizing code from the query string (if specified).
         /// </summary>
-        public string AuthCode
-        {
-            get { return Request.QueryString["code"]; }
-        }
+        public string AuthCode => Request.QueryString["code"];
 
-        public string AuthState
-        {
-            get { return Request.QueryString["state"]; }
-        }
+        public string AuthState => Request.QueryString["state"];
 
-        public string AuthErrorReason
-        {
-            get { return Request.QueryString["error_reason"]; }
-        }
+        public string AuthErrorReason => Request.QueryString["error_reason"];
 
-        public string AuthError
-        {
-            get { return Request.QueryString["error"]; }
-        }
+        public string AuthError => Request.QueryString["error"];
 
-        public string AuthErrorDescription
-        {
-            get { return Request.QueryString["error_description"]; }
-        }
+        public string AuthErrorDescription => Request.QueryString["error_description"];
 
         public ActionResult GoogleLogin()
         {
@@ -165,7 +148,7 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                 }
                 catch (Exception ex)
                 {
-                    resultMessage.Message = string.Format("Unable to acquire access token<br/>{0}", ex.Message);
+                    resultMessage.Message = $"Unable to acquire access token<br/>{ex.Message}";
                     resultMessage.MessageType = GenericMessages.danger;
                 }
 
@@ -213,7 +196,7 @@ namespace MVCForum.Website.Controllers.OAuthControllers
                 }
                 catch (Exception ex)
                 {
-                    resultMessage.Message = string.Format("Unable to get user information<br/>{0}", ex.Message);
+                    resultMessage.Message = $"Unable to get user information<br/>{ex.Message}";
                     resultMessage.MessageType = GenericMessages.danger;
                     LoggingService.Error(ex);
                 }

@@ -1,21 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Web.Mvc;
-using System.Linq;
-using System.Web.Security;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Events;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Application;
-using MVCForum.Website.Areas.Admin.ViewModels;
-using MVCForum.Website.ViewModels;
-using MVCForum.Website.ViewModels.Mapping;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MVCForum.Website.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+    using System.Web.Mvc;
+    using System.Linq;
+    using System.Web.Security;
+    using Domain.Constants;
+    using Domain.DomainModel;
+    using Domain.Events;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using Application;
+    using Areas.Admin.ViewModels;
+    using ViewModels;
+    using ViewModels.Mapping;
+
     [Authorize]
     public partial class PostController : BaseController
     {
@@ -32,8 +32,9 @@ namespace MVCForum.Website.Controllers
         public PostController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ISettingsService settingsService, ICategoryService categoryService,
-            ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, IBannedWordService bannedWordService, IVoteService voteService, IPostEditService postEditService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+            ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, 
+            IBannedWordService bannedWordService, IVoteService voteService, IPostEditService postEditService, ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _topicService = topicService;
             _postService = postService;
@@ -239,11 +240,14 @@ namespace MVCForum.Website.Controllers
                         // Create the email
                         var sb = new StringBuilder();
                         sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Post.Notification.NewPosts"), topic.Name));
-                        sb.Append(AppHelpers.ConvertPostContent(topic.LastPost.PostContent));
-                        sb.AppendFormat("<p><a href=\"{0}\">{0}</a></p>", string.Concat(SettingsService.GetSettings().ForumUrl.TrimEnd('/'), topic.NiceUrl));
+                        if (SiteConstants.Instance.IncludeFullPostInEmailNotifications)
+                        {
+                            sb.Append(AppHelpers.ConvertPostContent(topic.LastPost.PostContent));
+                        }
+                        sb.AppendFormat("<p><a href=\"{0}\">{0}</a></p>", string.Concat(Domain, topic.NiceUrl));
 
                         // create the emails only to people who haven't had notifications disabled
-                        var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true && !x.IsLockedOut).Select(user => new Email
+                        var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true && !x.IsLockedOut && x.IsBanned != true).Select(user => new Email
                         {
                             Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
                             EmailTo = user.Email,

@@ -1,19 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Data.Entity;
-using MVCForum.Domain.DomainModel.Entities;
-using MVCForum.Domain.Interfaces;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Services.Data.Context;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using Domain.Constants;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Data.Entity;
+    using Domain.DomainModel.Entities;
+    using Domain.Interfaces;
+    using Domain.Interfaces.Services;
+    using Data.Context;
+
     public partial class PostEditService : IPostEditService
     {
         private readonly MVCForumContext _context;
-        public PostEditService(IMVCForumContext context)
+        private readonly ICacheService _cacheService;
+
+        public PostEditService(IMVCForumContext context, ICacheService cacheService)
         {
+            _cacheService = cacheService;
             _context = context as MVCForumContext;
         }
 
@@ -58,6 +62,10 @@ namespace MVCForum.Services
                         isTheSame = true;
                     }
                 }
+                else
+                {
+                    isTheSame = false;
+                }
                 isEmpty = false;
             }
 
@@ -71,25 +79,32 @@ namespace MVCForum.Services
 
         public PostEdit Get(Guid id)
         {
-            return _context.PostEdit.FirstOrDefault(x => x.Id == id);
+            var cacheKey = string.Concat(CacheKeys.PostEdit.StartsWith, "Get-", id);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.PostEdit
+                                                                         .Include(x => x.EditedBy)
+                                                                         .Include(x => x.Post.User)
+                                                                         .FirstOrDefault(x => x.Id == id));
         }
 
         public IList<PostEdit> GetByPost(Guid postId)
         {
-            return _context.PostEdit.AsNoTracking()
-                .Include(x => x.EditedBy)
-                .Include(x => x.Post.User)
-                .Where(x => x.Post.Id == postId)
-                .OrderByDescending(x => x.DateEdited).ToList();
+            var cacheKey = string.Concat(CacheKeys.PostEdit.StartsWith, "GetByPost-", postId);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.PostEdit.AsNoTracking()
+                                                                            .Include(x => x.EditedBy)
+                                                                            .Include(x => x.Post.User)
+                                                                            .Where(x => x.Post.Id == postId)
+                                                                            .OrderByDescending(x => x.DateEdited).ToList());
         }
 
         public IList<PostEdit> GetByMember(Guid memberId)
         {
-            return _context.PostEdit.AsNoTracking()
-                .Include(x => x.EditedBy)
-                .Include(x => x.Post.User)
-                .Where(x => x.EditedBy.Id == memberId)
-                .OrderByDescending(x => x.DateEdited).ToList();
+            var cacheKey = string.Concat(CacheKeys.PostEdit.StartsWith, "GetByMember-", memberId);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.PostEdit.AsNoTracking()
+                                                                        .Include(x => x.EditedBy)
+                                                                        .Include(x => x.Post.User)
+                                                                        .Where(x => x.EditedBy.Id == memberId)
+                                                                        .OrderByDescending(x => x.DateEdited).ToList());
+
         }
     }
 }

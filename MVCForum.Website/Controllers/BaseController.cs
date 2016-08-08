@@ -11,6 +11,8 @@ using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
 
 namespace MVCForum.Website.Controllers
 {
+    using Utilities;
+
     /// <summary>
     /// A base class for the white site controllers
     /// </summary>
@@ -22,6 +24,7 @@ namespace MVCForum.Website.Controllers
         protected readonly IRoleService RoleService;
         protected readonly ISettingsService SettingsService;
         protected readonly ILoggingService LoggingService;
+        protected readonly ICacheService CacheService;
 
         protected MembershipUser LoggedOnReadOnlyUser;
         protected MembershipRole UsersRole;
@@ -35,13 +38,15 @@ namespace MVCForum.Website.Controllers
         /// <param name="localizationService"> </param>
         /// <param name="roleService"> </param>
         /// <param name="settingsService"> </param>
-        public BaseController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService)
+        /// <param name="cacheService"></param>
+        public BaseController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, ICacheService cacheService)
         {
             UnitOfWorkManager = unitOfWorkManager;
             MembershipService = membershipService;
             LocalizationService = localizationService;
             RoleService = roleService;
             SettingsService = settingsService;
+            CacheService = cacheService;
             LoggingService = loggingService;
 
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -106,6 +111,8 @@ namespace MVCForum.Website.Controllers
         protected bool UserIsAuthenticated => System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
 
         protected bool UserIsAdmin => User.IsInRole(AppConstants.AdminRoleName);
+
+        protected string Domain => CacheService.CachePerRequest(CacheKeys.Domain, StringUtils.ReturnCurrentDomain);
 
         protected void ShowMessage(GenericMessageViewModel messageViewModel)
         {

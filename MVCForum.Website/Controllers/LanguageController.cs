@@ -1,14 +1,14 @@
-﻿using System;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.ViewModels;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MVCForum.Website.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Web;
+    using System.Web.Mvc;
+    using Domain.Constants;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using ViewModels;
+
     public partial class LanguageController : BaseController
     {
         /// <summary>
@@ -20,9 +20,10 @@ namespace MVCForum.Website.Controllers
         /// <param name="roleService"></param>
         /// <param name="settingsService"> </param>
         /// <param name="loggingService"> </param>
+        /// <param name="cacheService"></param>
         public LanguageController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService, 
-            IRoleService roleService, ISettingsService settingsService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+            IRoleService roleService, ISettingsService settingsService, ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             
         }

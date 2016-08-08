@@ -30,11 +30,8 @@ namespace MVCForum.Domain.DomainModel
         public virtual IList<Favourite> Favourites { get; set; }
         public virtual Poll Poll { get; set; }
         public bool? Pending { get; set; }
-        public string NiceUrl
-        {
-            get { return UrlTypes.GenerateUrl(UrlType.Topic, Slug); }
-            //get { return Slug; }
-        }
+        public string NiceUrl => UrlTypes.GenerateUrl(UrlType.Topic, Slug);
+
         public int VoteCount
         {
             get { return Posts.Select(x => x.VoteCount).Sum(); }

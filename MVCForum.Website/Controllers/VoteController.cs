@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
-using System.Web.Security;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.ViewModels;
-using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MVCForum.Website.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Web.Mvc;
+    using System.Web.Security;
+    using Domain.DomainModel;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using ViewModels;
+    using MembershipUser = Domain.DomainModel.MembershipUser;
 
     public class VoteController : BaseController
     {
@@ -18,7 +17,6 @@ namespace MVCForum.Website.Controllers
         private readonly IVoteService _voteService;
         private readonly ITopicService _topicService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
-        private readonly IBadgeService _badgeService;
 
         public VoteController(ILoggingService loggingService,
             IUnitOfWorkManager unitOfWorkManager,
@@ -30,14 +28,13 @@ namespace MVCForum.Website.Controllers
             ISettingsService settingsService,
             ITopicService topicService,
             IMembershipUserPointsService membershipUserPointsService,
-            IBadgeService badgeService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+            ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _postService = postService;
             _voteService = voteService;
             _topicService = topicService;
             _membershipUserPointsService = membershipUserPointsService;
-            _badgeService = badgeService;
         }
 
         [HttpPost]

@@ -1,31 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Security.Principal;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Web;
-using System.Web.Hosting;
-using System.Web.Mvc;
-using System.Web.Security;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Enums;
-using MVCForum.Domain.Events;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
-using MVCForum.Website.Application;
-using MVCForum.Website.Areas.Admin.ViewModels;
-using MVCForum.Website.ViewModels;
-using MVCForum.Website.ViewModels.Mapping;
-using MembershipCreateStatus = MVCForum.Domain.DomainModel.MembershipCreateStatus;
-using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MVCForum.Website.Controllers
 {
+    using System;
+    using System.Drawing.Imaging;
+    using System.IO;
+    using System.Linq;
+    using System.Security.Principal;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Web;
+    using System.Web.Hosting;
+    using System.Web.Mvc;
+    using System.Web.Security;
+    using Domain.Constants;
+    using Domain.DomainModel;
+    using Domain.DomainModel.Enums;
+    using Domain.Events;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using Utilities;
+    using Application;
+    using Areas.Admin.ViewModels;
+    using ViewModels;
+    using ViewModels.Mapping;
+    using MembershipCreateStatus = Domain.DomainModel.MembershipCreateStatus;
+    using MembershipUser = Domain.DomainModel.MembershipUser;
+
     public partial class MembersController : BaseController
     {
         private readonly IPostService _postService;
@@ -38,8 +37,10 @@ namespace MVCForum.Website.Controllers
         private readonly ICategoryService _categoryService;
 
         public MembersController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService,
-            IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, IEmailService emailService, IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService, IBannedWordService bannedWordService, ITopicNotificationService topicNotificationService, IPollAnswerService pollAnswerService, IVoteService voteService, ICategoryService categoryService, ITopicService topicService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+            IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, 
+            IEmailService emailService, IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService, 
+            IBannedWordService bannedWordService, ICategoryService categoryService, ITopicService topicService, ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _postService = postService;
             _reportService = reportService;
@@ -690,7 +691,7 @@ namespace MVCForum.Website.Controllers
                         {
                             var message = new GenericMessageViewModel();
                             var user = new MembershipUser();
-                            if (MembershipService.ValidateUser(username, password, System.Web.Security.Membership.MaxInvalidPasswordAttempts))
+                            if (MembershipService.ValidateUser(username, password, Membership.MaxInvalidPasswordAttempts))
                             {
                                 // Set last login date
                                 user = MembershipService.GetUser(username);
@@ -1177,6 +1178,7 @@ namespace MVCForum.Website.Controllers
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
 
+        [Authorize]
         public ActionResult Search(int? p, string search)
         {
             using (UnitOfWorkManager.NewUnitOfWork())

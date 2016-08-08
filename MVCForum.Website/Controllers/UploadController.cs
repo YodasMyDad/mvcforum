@@ -1,19 +1,18 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Web.Hosting;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
-using MVCForum.Website.Application;
-using MVCForum.Website.Areas.Admin.ViewModels;
-using MVCForum.Website.ViewModels;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MVCForum.Website.Controllers
 {
+    using System;
+    using System.IO;
+    using System.Linq;
+    using System.Web.Hosting;
+    using System.Web.Mvc;
+    using Domain.Constants;
+    using Domain.DomainModel;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using Application;
+    using Areas.Admin.ViewModels;
+    using ViewModels;
+
     [Authorize]
     public partial class UploadController : BaseController
     {
@@ -22,8 +21,8 @@ namespace MVCForum.Website.Controllers
 
         public UploadController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
-            IPostService postService, IUploadedFileService uploadedFileService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+            IPostService postService, IUploadedFileService uploadedFileService, ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _postService = postService;
             _uploadedFileService = uploadedFileService;

@@ -1,24 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Data.Entity;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Services.Data.Context;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using Domain.Constants;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Data.Entity;
+    using Domain.DomainModel;
+    using Domain.Interfaces;
+    using Domain.Interfaces.Services;
+    using Data.Context;
+
     public partial class CategoryPermissionForRoleService : ICategoryPermissionForRoleService
     {
         private readonly MVCForumContext _context;
+        private readonly ICacheService _cacheService;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="context"></param>
-        public CategoryPermissionForRoleService(IMVCForumContext context)
+        /// <param name="cacheService"></param>
+        public CategoryPermissionForRoleService(IMVCForumContext context, ICacheService cacheService)
         {
+            _cacheService = cacheService;
             _context = context as MVCForumContext;
         }
 
@@ -38,20 +42,24 @@ namespace MVCForum.Services
         /// <returns></returns>
         public CategoryPermissionForRole CheckExists(CategoryPermissionForRole categoryPermissionForRole)
         {
-            if (categoryPermissionForRole.Permission != null &&
-                    categoryPermissionForRole.Category != null &&
-                        categoryPermissionForRole.MembershipRole != null)
+            var cacheKey = string.Concat(CacheKeys.CategoryPermissionForRole.StartsWith, "CheckExists-", categoryPermissionForRole.Id);
+            return _cacheService.CachePerRequest(cacheKey, () =>
             {
+                if (categoryPermissionForRole.Permission != null &&
+                    categoryPermissionForRole.Category != null &&
+                    categoryPermissionForRole.MembershipRole != null)
+                {
 
-                return _context.CategoryPermissionForRole
-                        .Include(x => x.MembershipRole)
-                        .Include(x => x.Category)
-                        .FirstOrDefault(x => x.Category.Id == categoryPermissionForRole.Category.Id &&
-                                             x.Permission.Id == categoryPermissionForRole.Permission.Id &&
-                                             x.MembershipRole.Id == categoryPermissionForRole.MembershipRole.Id);
-            }
+                    return _context.CategoryPermissionForRole
+                            .Include(x => x.MembershipRole)
+                            .Include(x => x.Category)
+                            .FirstOrDefault(x => x.Category.Id == categoryPermissionForRole.Category.Id &&
+                                                 x.Permission.Id == categoryPermissionForRole.Permission.Id &&
+                                                 x.MembershipRole.Id == categoryPermissionForRole.MembershipRole.Id);
+                }
 
-            return null;
+                return null;
+            });
         }
 
         /// <summary>
@@ -83,14 +91,19 @@ namespace MVCForum.Services
         /// <returns></returns>
         public Dictionary<Permission, CategoryPermissionForRole> GetCategoryRow(MembershipRole role, Category cat)
         {
-            var catRowList = _context.CategoryPermissionForRole
-                            .Include(x => x.MembershipRole)
-                            .Include(x => x.Category)
-                            .AsNoTracking()
-                            .Where(x => x.Category.Id == cat.Id &&
-                                        x.MembershipRole.Id == role.Id)
-                                        .ToList();
-            return catRowList.ToDictionary(catRow => catRow.Permission);
+            var cacheKey = string.Concat(CacheKeys.CategoryPermissionForRole.StartsWith, "GetCategoryRow-", role.Id, "-", cat.Id);
+            return _cacheService.CachePerRequest(cacheKey, () =>
+            {
+                var catRowList = _context.CategoryPermissionForRole
+                .Include(x => x.MembershipRole)
+                .Include(x => x.Category)
+                .Include(x => x.Permission)
+                .AsNoTracking()
+                .Where(x => x.Category.Id == cat.Id &&
+                            x.MembershipRole.Id == role.Id)
+                            .ToList();
+                return catRowList.ToDictionary(catRow => catRow.Permission);
+            });
         }
 
         /// <summary>
@@ -100,37 +113,57 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IEnumerable<CategoryPermissionForRole> GetByCategory(Guid categoryId)
         {
-            return _context.CategoryPermissionForRole
-                .Include(x => x.MembershipRole)
-                .Include(x => x.Category)
-                .Where(x => x.Category.Id == categoryId)
-                .ToList();
+            var cacheKey = string.Concat(CacheKeys.CategoryPermissionForRole.StartsWith, "GetByCategory-", categoryId);
+            return _cacheService.CachePerRequest(cacheKey, () =>
+            {
+                return _context.CategoryPermissionForRole
+                                .Include(x => x.MembershipRole)
+                                .Include(x => x.Category)
+                                .Include(x => x.Permission)
+                                .Where(x => x.Category.Id == categoryId)
+                                .ToList();
+            });
         }
 
         public IEnumerable<CategoryPermissionForRole> GetByRole(Guid roleId)
         {
-            return _context.CategoryPermissionForRole
-                .Include(x => x.MembershipRole)
-                .Include(x => x.Category)
-                .Where(x => x.MembershipRole.Id == roleId)
-                .ToList();
+            var cacheKey = string.Concat(CacheKeys.CategoryPermissionForRole.StartsWith, "GetByRole-", roleId);
+            return _cacheService.CachePerRequest(cacheKey, () =>
+            {
+                return _context.CategoryPermissionForRole
+                    .Include(x => x.MembershipRole)
+                    .Include(x => x.Category)
+                    .Include(x => x.Permission)
+                    .Where(x => x.MembershipRole.Id == roleId);
+            });
         }
 
         public IEnumerable<CategoryPermissionForRole> GetByPermission(Guid permId)
         {
-            return _context.CategoryPermissionForRole
-                .Include(x => x.MembershipRole)
-                .Include(x => x.Category)
-                .Where(x => x.Permission.Id == permId)
-                .ToList();
+            var cacheKey = string.Concat(CacheKeys.CategoryPermissionForRole.StartsWith, "GetByPermission-", permId);
+            return _cacheService.CachePerRequest(cacheKey, () =>
+            {
+                return _context.CategoryPermissionForRole
+                    .Include(x => x.MembershipRole)
+                    .Include(x => x.Category)
+                    .Include(x => x.Permission)
+                    .Where(x => x.Permission.Id == permId);
+            });
+
         }
 
         public CategoryPermissionForRole Get(Guid id)
         {
-            return _context.CategoryPermissionForRole
-                    .Include(x => x.MembershipRole)
-                    .Include(x => x.Category)
-                    .FirstOrDefault(cat => cat.Id == id);
+            var cacheKey = string.Concat(CacheKeys.CategoryPermissionForRole.StartsWith, "Get-", id);
+            return _cacheService.CachePerRequest(cacheKey, () =>
+            {
+                return _context.CategoryPermissionForRole
+                        .Include(x => x.MembershipRole)
+                        .Include(x => x.Category)
+                        .Include(x => x.Permission)
+                        .FirstOrDefault(cat => cat.Id == id);
+            });
+
         }
 
         public void Delete(CategoryPermissionForRole categoryPermissionForRole)

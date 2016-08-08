@@ -1,18 +1,18 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
-using MVCForum.Website.Application;
-using MVCForum.Website.Areas.Admin.ViewModels;
-using MVCForum.Website.ViewModels;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MVCForum.Website.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Text;
+    using System.Web.Mvc;
+    using Domain.Constants;
+    using Domain.DomainModel;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using Utilities;
+    using Application;
+    using Areas.Admin.ViewModels;
+    using ViewModels;
+
     [Authorize]
     public partial class PrivateMessageController : BaseController
     {
@@ -22,8 +22,8 @@ namespace MVCForum.Website.Controllers
 
         public PrivateMessageController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IPrivateMessageService privateMessageService,
-            IEmailService emailService, IConfigService configService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+            IEmailService emailService, IConfigService configService, ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _privateMessageService = privateMessageService;
             _emailService = emailService;
@@ -86,7 +86,7 @@ namespace MVCForum.Website.Controllers
                     {
                         // Send user a warning they are about to exceed 
                         var sb = new StringBuilder();
-                        sb.AppendFormat("<p>{0}</p>", LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeBody"));
+                        sb.Append($"<p>{LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeBody")}</p>");
                         var email = new Email
                         {
                             EmailTo = LoggedOnReadOnlyUser.Email,
@@ -177,7 +177,7 @@ namespace MVCForum.Website.Controllers
                             {
                                 // Send user a warning they are about to exceed 
                                 var sb = new StringBuilder();
-                                sb.AppendFormat("<p>{0}</p>", LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeBody"));
+                                sb.Append($"<p>{LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeBody")}</p>");
                                 var email = new Email
                                 {
                                     EmailTo = memberTo.Email,
@@ -206,7 +206,7 @@ namespace MVCForum.Website.Controllers
                                     };
 
                                     var sb = new StringBuilder();
-                                    sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("PM.NewPrivateMessageBody"), LoggedOnReadOnlyUser.UserName));
+                                    sb.Append($"<p>{string.Format(LocalizationService.GetResourceString("PM.NewPrivateMessageBody"), LoggedOnReadOnlyUser.UserName)}</p>");
                                     sb.Append(AppHelpers.ConvertPostContent(createPrivateMessageViewModel.Message));
                                     email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
                                     _emailService.SendMail(email);
@@ -370,7 +370,7 @@ namespace MVCForum.Website.Controllers
 
         private static string PmAjaxError(string message)
         {
-            return string.Format("<p class=\"pmerrormessage\">{0}</p>", message);
+            return $"<p class=\"pmerrormessage\">{message}</p>";
         }
 
         internal ActionResult ErrorToInbox(string errorMessage)

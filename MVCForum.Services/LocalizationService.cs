@@ -1,22 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Data.Entity;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Web;
-using MVCForum.Domain;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Enums;
-using MVCForum.Domain.Interfaces;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Services.Data.Context;
-using MVCForum.Utilities;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Data.SqlTypes;
+    using System.Data.Entity;
+    using System.Globalization;
+    using System.Linq;
+    using System.Text;
+    using System.Web;
+    using Domain;
+    using Domain.Constants;
+    using Domain.DomainModel;
+    using Domain.DomainModel.Enums;
+    using Domain.Interfaces;
+    using Domain.Interfaces.Services;
+    using Data.Context;
+    using Utilities;
+
     public partial class LocalizationService : ILocalizationService
     {
         private readonly ISettingsService _settingsService;
@@ -351,8 +351,8 @@ namespace MVCForum.Services
         public IList<LocaleStringResource> AllLanguageResources(Guid languageId)
         {
             return _context.LocaleStringResource
-    .Where(x => x.Language.Id == languageId)
-    .ToList();
+                        .Where(x => x.Language.Id == languageId)
+                        .ToList();
         }
 
         public void Delete(LocaleStringResource item)
@@ -395,29 +395,34 @@ namespace MVCForum.Services
             {
                 try
                 {
-                    // Check for cookie, as the user may have switched the language from the deafult one
-                    var languageCooke = HttpContext.Current.Request.Cookies[AppConstants.LanguageIdCookieName];
-                    if (languageCooke != null)
+                    if (HttpContext.Current != null)
                     {
-                        // See if it's the same language as already set
-                        var languageGuid = new Guid(languageCooke.Value);
-                        if (_currentLanguage != null && languageGuid == _currentLanguage.Id)
+                        // Check for cookie, as the user may have switched the language from the deafult one
+                        var languageCooke = HttpContext.Current.Request.Cookies[AppConstants.LanguageIdCookieName];
+                        if (languageCooke != null)
                         {
-                            return _currentLanguage;
-                        }
+                            // See if it's the same language as already set
+                            var languageGuid = new Guid(languageCooke.Value);
+                            if (_currentLanguage != null && languageGuid == _currentLanguage.Id)
+                            {
+                                return _currentLanguage;
+                            }
 
-                        // User might have a language set
-                        var changedLanguage = Get(languageGuid, true);
-                        if (changedLanguage != null)
-                        {
-                            // User has set the language so overide it here
-                            _currentLanguage = changedLanguage;
+                            // User might have a language set
+                            var changedLanguage = Get(languageGuid, true);
+                            if (changedLanguage != null)
+                            {
+                                // User has set the language so overide it here
+                                _currentLanguage = changedLanguage;
+                            }
                         }
                     }
+
                 }
-                catch (Exception)
+                catch
                 {
-                    //_loggingService.Error(ex);
+                    // App Start cause this to error
+                    // http://stackoverflow.com/questions/2518057/request-is-not-available-in-this-context
                 }
 
                 return _currentLanguage ?? (_currentLanguage = DefaultLanguage);
@@ -681,9 +686,9 @@ namespace MVCForum.Services
         {
             if (removeTracking)
             {
-                return _context.Language.AsNoTracking().FirstOrDefault(lang => lang.Id == id);
+                return _context.Language.Include(x => x.LocaleStringResources).AsNoTracking().FirstOrDefault(lang => lang.Id == id);
             }
-            return _context.Language.FirstOrDefault(lang => lang.Id == id);
+            return _context.Language.Include(x => x.LocaleStringResources).FirstOrDefault(lang => lang.Id == id);
         }
 
 

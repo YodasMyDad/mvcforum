@@ -102,6 +102,11 @@ namespace MVCForum.Domain.Constants
         public int SimilarTopicsListSize => Convert.ToInt32(GetConfig("SimilarTopicsListSize"));
 
         /// <summary>
+        /// Post Settings
+        /// </summary>
+        public bool IncludeFullPostInEmailNotifications => Convert.ToBoolean(GetConfig("IncludeFullPostInEmailNotifications"));
+
+        /// <summary>
         /// Social Gravatar size
         /// </summary>
         public int GravatarPostSize => Convert.ToInt32(GetConfig("GravatarPostSize"));

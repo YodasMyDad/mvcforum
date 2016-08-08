@@ -15,10 +15,9 @@ namespace MVCForum.Domain.Constants
         public const string MemberEmailConfirmationCookieName = "MVCForumEmailConfirmation";
 
         // Cache names
-        public const string SettingsCacheName = "MainSettings";
+        //TODO - Move to cache keys
         public const string LocalisationCacheName = "Localization-";
         public static string LanguageStrings = string.Concat(LocalisationCacheName, "LangStrings-");
-        public const string MemberCacheName = "#member#-{0}";
 
         // View Bag / Temp Data Constants
         public const string MessageViewBagName = "Message";

@@ -1,22 +1,25 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Services.Data.Context;
-using MVCForum.Utilities;
-
-namespace MVCForum.Services
+﻿namespace MVCForum.Services
 {
+    using Domain.Constants;
+    using System;
+    using System.Linq;
+    using System.Collections.Generic;
+    using Domain.DomainModel;
+    using Domain.Interfaces;
+    using Domain.Interfaces.Services;
+    using Data.Context;
+    using Utilities;
+
     public partial class PermissionService : IPermissionService
     {
         private readonly MVCForumContext _context;
         private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
+        private readonly ICacheService _cacheService;
 
-        public PermissionService(ICategoryPermissionForRoleService categoryPermissionForRoleService, IMVCForumContext context)
+        public PermissionService(ICategoryPermissionForRoleService categoryPermissionForRoleService, IMVCForumContext context, ICacheService cacheService)
         {
             _categoryPermissionForRoleService = categoryPermissionForRoleService;
+            _cacheService = cacheService;
             _context = context as MVCForumContext;
         }
 
@@ -26,10 +29,11 @@ namespace MVCForum.Services
         /// <returns></returns>
         public IEnumerable<Permission> GetAll()
         {
-            return _context.Permission
-                .AsNoTracking()
-                .OrderBy(x => x.Name)
-                .ToList();
+            var cacheKey = string.Concat(CacheKeys.Permission.StartsWith, "GetAll");
+            return _cacheService.CachePerRequest(cacheKey, () => _context.Permission
+                                                                            .AsNoTracking()
+                                                                            .OrderBy(x => x.Name)
+                                                                            .ToList());
         }
 
         /// <summary>
@@ -64,7 +68,8 @@ namespace MVCForum.Services
         /// <returns></returns>
         public Permission Get(Guid id)
         {
-            return _context.Permission.FirstOrDefault(x => x.Id == id);
+            var cacheKey = string.Concat(CacheKeys.Permission.StartsWith, "Get-", id);
+            return _cacheService.CachePerRequest(cacheKey, () => _context.Permission.FirstOrDefault(x => x.Id == id));
         }
     }
 }

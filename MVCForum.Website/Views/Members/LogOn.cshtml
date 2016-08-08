@@ -11,53 +11,56 @@
 
         @Html.Partial("_SocialLoginButtons")
 
-@if (Html.Settings().DisableStandardRegistration != true)
-{
-    <div class="mainlogonform">
-
-        <h3>@ViewBag.Title</h3>
-
-        @using (Html.BeginForm("LogOn", "Members", FormMethod.Post, new { @class = "form-login" }))
+        @if (Html.Settings().DisableStandardRegistration != true)
         {
-            @Html.ValidationSummary(false)
-            @Html.AntiForgeryToken()
+            <div class="mainlogonform">
 
-            <p class="help-block">@Html.Raw(string.Format(Html.LanguageString("Members.LogOnMessage"), Html.ActionLink(Html.Lang("Members.Register"), "Register")))</p>
+                <h3>@ViewBag.Title</h3>
 
-                <div class="form-group">
-                    @Html.LabelFor(m => m.UserName)
-                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.UserName)
-                </div>
+                @using (Html.BeginForm("LogOn", "Members", FormMethod.Post, new { @class = "form-login" }))
+                {
+                    @Html.ValidationSummary(false)
+                    @Html.AntiForgeryToken()
 
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Password)
-                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.Password)
-                </div>
-
-                <div class="checkbox">
-                    @using (Html.BeginLabelFor(m => m.RememberMe, new { @class = "checkbox" }))
+                    if (Html.Settings().DisableStandardRegistration != true)
                     {
-                        @Html.CheckBoxFor(m => m.RememberMe)
+                        <p class="help-block">@Html.Raw(string.Format(Html.LanguageString("Members.LogOnMessage"), Html.ActionLink(Html.Lang("Members.Register"), "Register")))</p>
                     }
-                    @Html.ValidationMessageFor(m => m.RememberMe)
-                </div>
 
-                <div class="submit-holder">
-                    <button type="submit" class="btn-mvc-green btn-mvc-large">@Html.LanguageString("Buttons.LogOn")</button>
-                </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.UserName)
+                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.UserName)
+                    </div>
 
-                @Html.HiddenFor(x => x.ReturnUrl)
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Password)
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Password)
+                    </div>
+
+                    <div class="checkbox">
+                        @using (Html.BeginLabelFor(m => m.RememberMe, new { @class = "checkbox" }))
+                    {
+                            @Html.CheckBoxFor(m => m.RememberMe)
+                        }
+                        @Html.ValidationMessageFor(m => m.RememberMe)
+                    </div>
+
+                    <div class="submit-holder">
+                        <button type="submit" class="btn-mvc-green btn-mvc-large">@Html.LanguageString("Buttons.LogOn")</button>
+                    </div>
+
+                    @Html.HiddenFor(x => x.ReturnUrl)
+                }
+            </div>
+
+            <p class="forgotpasswordtext">
+                <a href="@Url.Action("ForgotPassword")">
+                    @Html.LanguageString("Members.ForgotPassword.Link")
+                </a>
+            </p>
         }
-    </div>
-
-        <p class="forgotpasswordtext">
-            <a href="@Url.Action("ForgotPassword")">
-                @Html.LanguageString("Members.ForgotPassword.Link")
-            </a>
-        </p>
-}
     </div>
 
 </div>

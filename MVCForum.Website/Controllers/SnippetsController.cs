@@ -1,18 +1,18 @@
-﻿using System.Web.Mvc;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.ViewModels;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MVCForum.Website.Controllers
 {
+    using System.Web.Mvc;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using ViewModels;
+
     public partial class SnippetsController : BaseController
     {
         private readonly IMembershipUserPointsService _membershipUserPointsService;
 
         public SnippetsController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, 
-            IMembershipUserPointsService membershipUserPointsService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+            IMembershipUserPointsService membershipUserPointsService, ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _membershipUserPointsService = membershipUserPointsService;
         }
