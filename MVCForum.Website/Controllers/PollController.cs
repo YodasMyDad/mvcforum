@@ -1,13 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Web.Mvc;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.ViewModels;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MVCForum.Website.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Web.Mvc;
+    using Domain.DomainModel;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using ViewModels;
+
     [Authorize]
     public partial class PollController : BaseController
     {
@@ -17,8 +17,8 @@ namespace MVCForum.Website.Controllers
 
         public PollController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IPollService pollService, IPollVoteService pollVoteService, 
-            IPollAnswerService pollAnswerService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+            IPollAnswerService pollAnswerService, ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _pollService = pollService;
             _pollAnswerService = pollAnswerService;

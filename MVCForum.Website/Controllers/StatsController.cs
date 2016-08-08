@@ -1,11 +1,11 @@
-﻿using System.Web.Mvc;
-using MVCForum.Domain.DomainModel.Enums;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.ViewModels;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MVCForum.Website.Controllers
 {
+    using System.Web.Mvc;
+    using Domain.DomainModel.Enums;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using ViewModels;
+
     public partial class StatsController : BaseController
     {
         private readonly ITopicService _topicService;
@@ -14,8 +14,8 @@ namespace MVCForum.Website.Controllers
 
         public StatsController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, ITopicService topicService, 
-            IPostService postService, ICategoryService categoryService) : 
-            base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+            IPostService postService, ICategoryService categoryService, ICacheService cacheService) : 
+            base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _topicService = topicService;
             _postService = postService;

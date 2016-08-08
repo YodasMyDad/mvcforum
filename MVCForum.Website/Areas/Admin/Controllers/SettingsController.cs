@@ -171,6 +171,9 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 {
                     unitOfWork.Commit();
 
+                    // Clear cache
+                    _cacheService.ClearStartsWith(CacheKeys.Settings.Main);
+
                     // Show a message
                     ShowMessage(new GenericMessageViewModel
                     {

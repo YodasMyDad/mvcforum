@@ -22,8 +22,8 @@
 
         public HomeController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IActivityService activityService, IMembershipService membershipService,
             ITopicService topicService, ILocalizationService localizationService, IRoleService roleService,
-            ISettingsService settingsService, ICategoryService categoryService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+            ISettingsService settingsService, ICategoryService categoryService, ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _topicService = topicService;
             _categoryService = categoryService;
@@ -303,7 +303,7 @@
                     {
                         Name = category.Name,
                         Url = category.NiceUrl,
-                        LastUpdated = topic != null ? topic.LastPost.DateEdited : category.DateCreated,
+                        LastUpdated = topic?.LastPost.DateEdited ?? category.DateCreated,
                         ChangeFrequency = SiteMapChangeFreqency.monthly
                     };
                     sitemap.Add(sitemapEntry);

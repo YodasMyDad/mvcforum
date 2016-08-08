@@ -2,6 +2,8 @@
 {
     public static class CacheKeys
     {
+        public const string Domain = "ThisDomain";
+
         public static class Topic
         {
             public const string StartsWith = "Topic.";

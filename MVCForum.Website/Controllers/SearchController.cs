@@ -1,21 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
-using MVCForum.Website.Application;
-using MVCForum.Website.ViewModels;
-using MVCForum.Website.ViewModels.Mapping;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MVCForum.Website.Controllers
 {
+    using System.Linq;
+    using System.Web.Mvc;
+    using Domain.Constants;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using ViewModels;
+    using ViewModels.Mapping;
+
     public partial class SearchController : BaseController
     {
         private readonly IPostService _postService;
-        private readonly ITopicService _topicsService;
         private readonly ICategoryService _categoryService;
         private readonly IVoteService _voteService;
         private readonly IFavouriteService _favouriteService;
@@ -23,11 +18,11 @@ namespace MVCForum.Website.Controllers
         public SearchController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService, ILocalizationService localizationService,
             IRoleService roleService, ISettingsService settingsService,
-            IPostService postService, ITopicService topicService, IVoteService voteService, IFavouriteService favouriteService, ICategoryService categoryService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+            IPostService postService, IVoteService voteService, IFavouriteService favouriteService, 
+            ICategoryService categoryService, ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _postService = postService;
-            _topicsService = topicService;
             _voteService = voteService;
             _favouriteService = favouriteService;
             _categoryService = categoryService;

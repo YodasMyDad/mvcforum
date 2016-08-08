@@ -1,12 +1,12 @@
-﻿using System;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.ViewModels;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MVCForum.Website.Controllers
 {
+    using System;
+    using System.Web.Mvc;
+    using Domain.Constants;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using ViewModels;
+
     [Authorize]
     public partial class ModerateController : BaseController
     {
@@ -16,8 +16,8 @@ namespace MVCForum.Website.Controllers
 
         public ModerateController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IPostService postService, 
-            ITopicService topicService, ICategoryService categoryService) 
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+            ITopicService topicService, ICategoryService categoryService, ICacheService cacheService) 
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _postService = postService;
             _topicService = topicService;

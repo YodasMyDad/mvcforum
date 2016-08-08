@@ -49,7 +49,7 @@
                             foreach (var pollAnswer in Model.PollAnswers.OrderBy(x => x.Answer))
                             {
                                 <li id="answer@(count)">
-                                    <input type="text" name="PollAnswers[@(count)].Answer" id="PollAnswers_@(count)_Answer" value="@pollAnswer.Answer" class="form-control" placeholder="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")">
+                                    <input type="text" name="PollAnswers[@(count)].Answer" id="PollAnswers_@(count)_Answer" value="@pollAnswer.Answer" class="form-control" placeholder="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")" @Html.Raw(pollAnswer.PollVotes.Any() ? "disabled" : "") />
                                     <input type="hidden" value="@pollAnswer.Id" name="PollAnswers[@(count)].Id" id="PollAnswers_@(count)Id" />
                                 </li>
 

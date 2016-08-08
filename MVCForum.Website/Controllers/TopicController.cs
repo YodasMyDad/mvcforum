@@ -1,27 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.EnterpriseServices;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Web.Hosting;
-using System.Web.Mvc;
-using System.Web.Security;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Entities;
-using MVCForum.Domain.DomainModel.Enums;
-using MVCForum.Domain.Events;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
-using MVCForum.Website.Application;
-using MVCForum.Website.Areas.Admin.ViewModels;
-using MVCForum.Website.ViewModels;
-using MVCForum.Website.ViewModels.Mapping;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MVCForum.Website.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Web.Hosting;
+    using System.Web.Mvc;
+    using System.Web.Security;
+    using Domain.Constants;
+    using Domain.DomainModel;
+    using Domain.DomainModel.Entities;
+    using Domain.DomainModel.Enums;
+    using Domain.Events;
+    using Domain.Interfaces.Services;
+    using Domain.Interfaces.UnitOfWork;
+    using Utilities;
+    using Application;
+    using Areas.Admin.ViewModels;
+    using ViewModels;
+    using ViewModels.Mapping;
+
     public partial class TopicController : BaseController
     {
         private readonly IFavouriteService _favouriteService;
@@ -39,14 +38,14 @@ namespace MVCForum.Website.Controllers
         private readonly IBannedWordService _bannedWordService;
         private readonly IVoteService _voteService;
         private readonly IUploadedFileService _uploadedFileService;
-        private readonly ICacheService _cacheService;
         private readonly IPostEditService _postEditService;
 
         public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
             ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, IPollService pollService,
-            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService, IUploadedFileService uploadedFileService, ICacheService cacheService, ITagNotificationService tagNotificationService, IPostEditService postEditService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService, IUploadedFileService uploadedFileService, ICacheService cacheService, 
+            ITagNotificationService tagNotificationService, IPostEditService postEditService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _topicService = topicService;
             _postService = postService;
@@ -62,7 +61,6 @@ namespace MVCForum.Website.Controllers
             _voteService = voteService;
             _favouriteService = favouriteService;
             _uploadedFileService = uploadedFileService;
-            _cacheService = cacheService;
             _tagNotificationService = tagNotificationService;
             _postEditService = postEditService;
         }
@@ -421,12 +419,12 @@ namespace MVCForum.Website.Controllers
                                 postEdit.EditedPostTitle = topic.Name;
 
                                 // See if there is a poll
-                                if (editPostViewModel.PollAnswers != null && editPostViewModel.PollAnswers.Count(x => x != null && !string.IsNullOrEmpty(x.Answer)) > 0 && permissions[SiteConstants.Instance.PermissionCreatePolls].IsTicked)
+                                if (editPostViewModel.PollAnswers != null && editPostViewModel.PollAnswers.Count(x => !string.IsNullOrEmpty(x?.Answer)) > 1 && permissions[SiteConstants.Instance.PermissionCreatePolls].IsTicked)
                                 {
                                     // Now sort the poll answers, what to add and what to remove
                                     // Poll answers already in this poll.
                                     //var existingAnswers = topic.Poll.PollAnswers.Where(x => postedIds.Contains(x.Id)).ToList();
-                                    var postedIds = editPostViewModel.PollAnswers.Where(x => x != null && !string.IsNullOrEmpty(x.Answer)).Select(x => x.Id);
+                                    var postedIds = editPostViewModel.PollAnswers.Where(x => !string.IsNullOrEmpty(x?.Answer)).Select(x => x.Id);
 
                                     // This post might not have a poll on it, if not they are creating a poll for the first time
                                     var topicPollAnswerIds = new List<Guid>();
@@ -765,7 +763,7 @@ namespace MVCForum.Website.Controllers
                             {
 
                                 // See if this is a poll and add it to the topic
-                                if (topicViewModel.PollAnswers.Count(x => x != null) > 0)
+                                if (topicViewModel.PollAnswers.Count(x => x != null) > 1)
                                 {
                                     // Do they have permission to create a new poll
                                     if (permissions[SiteConstants.Instance.PermissionCreatePolls].IsTicked)
@@ -1089,20 +1087,17 @@ namespace MVCForum.Website.Controllers
                     }
 
                     // Check the poll - To see if it has one, and whether it needs to be closed.
-                    if (viewModel.Poll?.Poll != null)
+                    if (viewModel.Poll?.Poll?.ClosePollAfterDays != null &&
+                        viewModel.Poll.Poll.ClosePollAfterDays > 0 &&
+                        !viewModel.Poll.Poll.IsClosed)
                     {
-                        if (viewModel.Poll.Poll.ClosePollAfterDays != null &&
-                            viewModel.Poll.Poll.ClosePollAfterDays > 0 &&
-                            !viewModel.Poll.Poll.IsClosed)
+                        // Check the date the topic was created
+                        var endDate = viewModel.Poll.Poll.DateCreated.AddDays((int)viewModel.Poll.Poll.ClosePollAfterDays);
+                        if (DateTime.UtcNow > endDate)
                         {
-                            // Check the date the topic was created
-                            var endDate = viewModel.Poll.Poll.DateCreated.AddDays((int)viewModel.Poll.Poll.ClosePollAfterDays);
-                            if (DateTime.UtcNow > endDate)
-                            {
-                                topic.Poll.IsClosed = true;
-                                viewModel.Topic.Poll.IsClosed = true;
-                                updateDatabase = true;
-                            }
+                            topic.Poll.IsClosed = true;
+                            viewModel.Topic.Poll.IsClosed = true;
+                            updateDatabase = true;
                         }
                     }
 
@@ -1280,7 +1275,7 @@ namespace MVCForum.Website.Controllers
                 var toString = to != null ? Convert.ToDateTime(to).ToShortDateString() : null;
 
                 var cacheKey = string.Concat("HotTopics", UsersRole.Id, fromString, toString, amountToShow);
-                var viewModel = _cacheService.Get<HotTopicsViewModel>(cacheKey);
+                var viewModel = CacheService.Get<HotTopicsViewModel>(cacheKey);
                 if (viewModel == null)
                 {
                     // Allowed Categories
@@ -1297,7 +1292,7 @@ namespace MVCForum.Website.Controllers
                     {
                         Topics = topicViewModels
                     };
-                    _cacheService.Set(cacheKey, viewModel, CacheTimes.TwoHours);
+                    CacheService.Set(cacheKey, viewModel, CacheTimes.TwoHours);
                 }
 
                 return PartialView(viewModel);
@@ -1332,12 +1327,15 @@ namespace MVCForum.Website.Controllers
                     // Create the email
                     var sb = new StringBuilder();
                     sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Topic.Notification.NewTopics"), cat.Name));
-                    sb.AppendFormat("<p>{0}</p>", topic.Name);
-                    sb.Append(AppHelpers.ConvertPostContent(topic.LastPost.PostContent));
-                    sb.AppendFormat("<p><a href=\"{0}\">{0}</a></p>", string.Concat(settings.ForumUrl.TrimEnd('/'), cat.NiceUrl));
+                    sb.Append($"<p>{topic.Name}</p>");
+                    if (SiteConstants.Instance.IncludeFullPostInEmailNotifications)
+                    {
+                        sb.Append(AppHelpers.ConvertPostContent(topic.LastPost.PostContent));
+                    }
+                    sb.AppendFormat("<p><a href=\"{0}\">{0}</a></p>", string.Concat(Domain, cat.NiceUrl));
 
                     // create the emails and only send them to people who have not had notifications disabled
-                    var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true).Select(user => new Email
+                    var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true && !x.IsLockedOut && x.IsBanned != true).Select(user => new Email
                     {
                         Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
                         EmailTo = user.Email,

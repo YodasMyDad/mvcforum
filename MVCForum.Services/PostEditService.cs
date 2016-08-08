@@ -62,6 +62,10 @@
                         isTheSame = true;
                     }
                 }
+                else
+                {
+                    isTheSame = false;
+                }
                 isEmpty = false;
             }
 
