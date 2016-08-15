@@ -682,6 +682,13 @@
 
             if (ModelState.IsValid)
             {
+                // Check posting flood control
+                // Flood control test
+                if (!_topicService.PassedTopicFloodTest(topicViewModel.Name, LoggedOnReadOnlyUser))
+                {
+                    // Failed test so don't post topic
+                    return View(topicViewModel);
+                }
 
                 // Check stop words
                 var stopWords = _bannedWordService.GetAll(true);

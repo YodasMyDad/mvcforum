@@ -930,5 +930,21 @@
                             .Where(x => x.Slug.Contains(slug))
                             .ToList();
         }
+
+        public bool PassedTopicFloodTest(string topicTitle, MembershipUser user)
+        {
+            topicTitle = StringUtils.SafePlainText(topicTitle);
+
+            var timeNow = DateTime.UtcNow;
+            var floodWindow = timeNow.AddMinutes(-2);
+
+            // Firstly check to see if they have posted the same topic title already in the past 2 minutes
+            var matchingTopicTitles = _context.Topic
+                .Include(x => x.User)
+                .AsNoTracking()
+                .Count(x => x.User.Id == user.Id && x.Name.Equals(topicTitle) && x.CreateDate >= floodWindow);
+
+            return matchingTopicTitles <= 0;
+        }
     }
 }

@@ -106,6 +106,8 @@ namespace MVCForum.Domain.Constants
         /// </summary>
         public bool IncludeFullPostInEmailNotifications => Convert.ToBoolean(GetConfig("IncludeFullPostInEmailNotifications"));
 
+        public int PostSecondsWaitBeforeNewPost => Convert.ToInt32(GetConfig("PostSecondsWaitBeforeNewPost"));
+
         /// <summary>
         /// Social Gravatar size
         /// </summary>
