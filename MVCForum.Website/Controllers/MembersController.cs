@@ -508,7 +508,11 @@
             else
             {
                 // If not manually authorise then log the user in
-                FormsAuthentication.SetAuthCookie(userToSave.UserName, false);
+                if (SiteConstants.Instance.AutoLoginAfterRegister)
+                {
+                    FormsAuthentication.SetAuthCookie(userToSave.UserName, false);
+                }
+
                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = LocalizationService.GetResourceString("Members.NowRegistered"),
