@@ -585,7 +585,12 @@
 
             // We might only want to display the top 100
             // but there might not be 100 topics
-            var total = _context.Post.AsNoTracking().Where(x => x.User.Id == memberGuid && x.Pending != true && allowedCatIds.Contains(x.Topic.Category.Id)).DistinctBy(x => x.Topic.Id).Count();
+            var total = _context.Post
+                            .Include(x => x.Topic.Category)
+                            .Include(x => x.Topic.LastPost.User)
+                            .Include(x => x.Topic.Poll)
+                            .Include(x => x.User)
+                            .AsNoTracking().Where(x => x.User.Id == memberGuid && x.Pending != true && allowedCatIds.Contains(x.Topic.Category.Id)).DistinctBy(x => x.Topic.Id).Count();
             if (amountToTake < total)
             {
                 total = amountToTake;
@@ -929,6 +934,22 @@
                                 .Include(x => x.Poll)
                             .Where(x => x.Slug.Contains(slug))
                             .ToList();
+        }
+
+        public bool PassedTopicFloodTest(string topicTitle, MembershipUser user)
+        {
+            topicTitle = StringUtils.SafePlainText(topicTitle);
+
+            var timeNow = DateTime.UtcNow;
+            var floodWindow = timeNow.AddMinutes(-2);
+
+            // Firstly check to see if they have posted the same topic title already in the past 2 minutes
+            var matchingTopicTitles = _context.Topic
+                .Include(x => x.User)
+                .AsNoTracking()
+                .Count(x => x.User.Id == user.Id && x.Name.Equals(topicTitle) && x.CreateDate >= floodWindow);
+
+            return matchingTopicTitles <= 0;
         }
     }
 }

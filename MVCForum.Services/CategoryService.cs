@@ -72,7 +72,7 @@
 
         public List<Category> GetSubCategories(Category category, List<Category> allCategories, int level = 2)
         {
-            var cacheKey = string.Concat(CacheKeys.Category.StartsWith, "GetSubCategories", "-", allCategories.GetHashCode(), "-", level);
+            var cacheKey = string.Concat(CacheKeys.Category.StartsWith, "GetSubCategories", "-", category.GetHashCode(), "-", level);
             return _cacheService.CachePerRequest(cacheKey, () =>
             {
                 var catsToReturn = new List<Category>();

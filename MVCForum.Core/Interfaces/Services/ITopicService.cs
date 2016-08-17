@@ -50,5 +50,6 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<Topic> GetAllTopicsByCategory(Guid categoryId);
         PagedList<Topic> GetPagedTopicsAll(int pageIndex, int pageSize, int amountToTake, List<Category> allowedCategories);
         IList<Topic> GetTopicBySlugLike(string slug);
+        bool PassedTopicFloodTest(string topicTitle, MembershipUser user);
     }
 }

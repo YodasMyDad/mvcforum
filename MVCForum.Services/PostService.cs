@@ -741,5 +741,15 @@
             });
 
         }
+
+        public bool PassedPostFloodTest(MembershipUser user)
+        {
+            var timeNow = DateTime.UtcNow;
+            var floodWindow = timeNow.AddSeconds(-SiteConstants.Instance.PostSecondsWaitBeforeNewPost);
+
+            return _context.Post
+                    .Include(x => x.User)
+                    .Count(x => x.User.Id == user.Id && x.DateCreated >= floodWindow && !x.IsTopicStarter) <= 0;
+        }
     }
 }

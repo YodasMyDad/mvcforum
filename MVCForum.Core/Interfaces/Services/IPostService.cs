@@ -34,5 +34,6 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<Post> GetAllSolutionPosts(List<Category> allowedCategories);
         IList<Post> GetPostsByTopic(Guid topicId);
         IEnumerable<Post> GetAllWithTopics(List<Category> allowedCategories);
+        bool PassedPostFloodTest(MembershipUser user);
     }
 }

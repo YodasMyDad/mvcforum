@@ -59,6 +59,12 @@
             {
                 var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
 
+                // Flood control
+                if (!_postService.PassedPostFloodTest(LoggedOnReadOnlyUser))
+                {
+                    throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
+                }
+
                 // Check stop words
                 var stopWords = _bannedWordService.GetAll(true);
                 foreach (var stopWord in stopWords)
