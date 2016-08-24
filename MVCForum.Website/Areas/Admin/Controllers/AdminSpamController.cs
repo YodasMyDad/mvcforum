@@ -95,6 +95,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 try
                 {
                     unitOfWork.Commit();
+                    _cacheService.ClearStartsWith(CacheKeys.Settings.Main);
+
                     // Show a message
                     ShowMessage(new GenericMessageViewModel
                     {
@@ -142,6 +144,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 try
                 {
                     unitOfWork.Commit();
+                    _cacheService.ClearStartsWith(CacheKeys.Settings.Main);
+
                     // Show a message
                     ShowMessage(new GenericMessageViewModel
                     {
