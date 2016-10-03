@@ -21,6 +21,13 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public PermissionSet CurrentGlobalPermissions { get; set; }
     }
 
+    public class EditCategoryPermissionsViewModel
+    {
+        public Category Category { get; set; }
+        public List<Permission> Permissions { get; set; }
+        public List<MembershipRole> Roles { get; set; }
+    }
+
     public class AddTypeViewModel
     {
         [HiddenInput]
