@@ -468,7 +468,7 @@ var AddPostClickEvents = function () {
         });
     });
 
-    $(".post a.favourite").click(function (e) {
+    $(".post a.Favourite").click(function (e) {
         e.preventDefault();
         var favLink = $(this);
 
@@ -484,8 +484,8 @@ var AddPostClickEvents = function () {
         var currentFavCount = parseInt(amountOfFavsHolder.text());
         var favStar = holdingLi.find(".glyphicon");
 
-        // Are we on the my favourites page
-        var myFavsHolder = $("div.myfavourites");
+        // Are we on the my Favourites page
+        var myFavsHolder = $("div.myFavourites");
 
         var voteViewModel = new Object();
         voteViewModel.PostId = postId;
@@ -519,7 +519,7 @@ var AddPostClickEvents = function () {
                     favStar.removeClass("glyphicon-star").addClass("glyphicon-star-empty");
                     favLink.data("addremove", "add");
                     if (myFavsHolder.length > 0) {
-                        // We are on the member my favourites page - So find and remove the post
+                        // We are on the member my Favourites page - So find and remove the post
                         var postHolder = favLink.closest("div.post");
                         postHolder.fadeOut("fast");
                     }

@@ -24,7 +24,7 @@
         private readonly ILocalizationService _localizationService;
         private readonly IVoteService _voteService;
         private readonly IUploadedFileService _uploadedFileService;
-        private readonly IFavouriteService _favouriteService;
+        private readonly IFavouriteService _FavouriteService;
         private readonly IConfigService _configService;
         private readonly MVCForumContext _context;
         private readonly IPostEditService _postEditService;
@@ -32,7 +32,7 @@
 
         public PostService(IMVCForumContext context,IMembershipUserPointsService membershipUserPointsService,
             ISettingsService settingsService, IRoleService roleService,
-            ILocalizationService localizationService, IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService favouriteService, IConfigService configService, IPostEditService postEditService, ICacheService cacheService)
+            ILocalizationService localizationService, IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService FavouriteService, IConfigService configService, IPostEditService postEditService, ICacheService cacheService)
         {
             _roleService = roleService;
             _membershipUserPointsService = membershipUserPointsService;
@@ -40,7 +40,7 @@
             _localizationService = localizationService;
             _voteService = voteService;
             _uploadedFileService = uploadedFileService;
-            _favouriteService = favouriteService;
+            _FavouriteService = FavouriteService;
             _configService = configService;
             _postEditService = postEditService;
             _cacheService = cacheService;
@@ -538,7 +538,7 @@
             postFavourites.AddRange(post.Favourites);
             foreach (var postFavourite in postFavourites)
             {
-                _favouriteService.Delete(postFavourite);
+                _FavouriteService.Delete(postFavourite);
             }
             post.Favourites.Clear();
 

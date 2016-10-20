@@ -19,7 +19,7 @@ namespace MVCForum.Services.Data.Context
         /// </summary>
         public MVCForumContext()   
         {
-            Configuration.LazyLoadingEnabled = true;
+            Configuration.LazyLoadingEnabled = true;            
         }
 
         public DbSet<Activity> Activity { get; set; }
