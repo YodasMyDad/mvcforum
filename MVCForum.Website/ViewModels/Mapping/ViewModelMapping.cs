@@ -89,7 +89,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.EnableRSSFeeds = settingsViewModel.EnableRSSFeeds;
             existingSettings.DisplayEditedBy = settingsViewModel.DisplayEditedBy;
             existingSettings.EnableMarkAsSolution = settingsViewModel.EnableMarkAsSolution;
-            existingSettings.MarkAsSolutionReminderTimeFrame = settingsViewModel.MarkAsSolutionReminderTimeFrame;
+            existingSettings.MarkSolutionReminderTime = settingsViewModel.MarkSolutionReminderTime;
             //existingSettings.EnableSpamReporting = settingsViewModel.EnableSpamReporting;
             //existingSettings.EnableMemberReporting = settingsViewModel.EnableMemberReporting;
             existingSettings.EnableEmailSubscriptions = settingsViewModel.EnableEmailSubscriptions;
@@ -104,7 +104,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.EnableSignatures = settingsViewModel.EnableSignatures;
             existingSettings.EnablePoints = settingsViewModel.EnablePoints;
             existingSettings.PointsAllowedToVoteAmount = settingsViewModel.PointsAllowedToVoteAmount;
-            existingSettings.PointsAllowedForExtendedProfile = settingsViewModel.PointsAllowedForExtendedProfile;
+            existingSettings.PointsAllowedExtendedProfile = settingsViewModel.PointsAllowedExtendedProfile;
             existingSettings.PointsAddedPerPost = settingsViewModel.PointsAddedPerPost;
             existingSettings.PointsAddedPostiveVote = settingsViewModel.PointsAddedPostiveVote;
             existingSettings.PointsDeductedNagativeVote = settingsViewModel.PointsDeductedNagativeVote;
@@ -146,7 +146,7 @@ namespace MVCForum.Website.ViewModels.Mapping
                 EnableRSSFeeds = currentSettings.EnableRSSFeeds,
                 DisplayEditedBy = currentSettings.DisplayEditedBy,
                 EnableMarkAsSolution = currentSettings.EnableMarkAsSolution,
-                MarkAsSolutionReminderTimeFrame = currentSettings.MarkAsSolutionReminderTimeFrame ?? 0,
+                MarkSolutionReminderTime = currentSettings.MarkSolutionReminderTime ?? 0,
                 //EnableSpamReporting = currentSettings.EnableSpamReporting,
                 //EnableMemberReporting = currentSettings.EnableMemberReporting,
                 EnableEmailSubscriptions = currentSettings.EnableEmailSubscriptions,
@@ -161,7 +161,7 @@ namespace MVCForum.Website.ViewModels.Mapping
                 EnableSignatures = currentSettings.EnableSignatures,
                 EnablePoints = currentSettings.EnablePoints,
                 PointsAllowedToVoteAmount = currentSettings.PointsAllowedToVoteAmount,
-                PointsAllowedForExtendedProfile = currentSettings.PointsAllowedForExtendedProfile ?? 0,
+                PointsAllowedExtendedProfile = currentSettings.PointsAllowedExtendedProfile ?? 0,
                 PointsAddedPerPost = currentSettings.PointsAddedPerPost,
                 PointsAddedPostiveVote = currentSettings.PointsAddedPostiveVote,
                 PointsDeductedNagativeVote = currentSettings.PointsDeductedNagativeVote,

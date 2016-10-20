@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
-using System.Data.SqlTypes;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -11,13 +10,14 @@ using MVCForum.Domain.DomainModel;
 using MVCForum.Services.Data.Context;
 using MVCForum.Utilities;
 
+
 namespace MVCForum.Services.Migrations
 {
     internal sealed class Configuration : DbMigrationsConfiguration<MVCForumContext>
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationsEnabled = true;      
             AutomaticMigrationDataLossAllowed = true;
         }
 
@@ -25,16 +25,16 @@ namespace MVCForum.Services.Migrations
         {
 
             #region Initial Installer Code
-
-
-            //var isFirstInstall = false;
+           
 
             // Add the language - If it's not already there
             const string langCulture = "en-GB";
             var language = context.Language.FirstOrDefault(x => x.LanguageCulture == langCulture);
+
+            //if Language not detected assuming the first install
             if (language == null)
             {
-
+               
                 //isFirstInstall = true;
                 var cultureInfo = LanguageUtils.GetCulture(langCulture);
                 language = new Language
@@ -44,24 +44,35 @@ namespace MVCForum.Services.Migrations
                 };
                 context.Language.Add(language);
 
-                // Save the language
-                context.SaveChanges();
+
+
+                // // Save the language
+                 context.SaveChanges();
+
 
                 // Now add the default language strings
+                #region Language
                 var file = HostingEnvironment.MapPath(@"~/Installer/en-GB.csv");
                 var commaSeparator = new[] {','};
                 if (file != null)
                 {
                     // Unpack the data
                     var allLines = new List<string>();
-                    using (var streamReader = new StreamReader(file, Encoding.UTF8, true))
+
+                    try
                     {
-                        while (streamReader.Peek() >= 0)
+                        using (var streamReader = new StreamReader(file, Encoding.UTF8, true))
                         {
-                            allLines.Add(streamReader.ReadLine());
+                            while (streamReader.Peek() >= 0)
+                            {
+                                allLines.Add(streamReader.ReadLine());
+                            }
                         }
                     }
-
+                    catch (FieldAccessException e)
+                    {
+                        throw new FieldAccessException("Unable to read file: " + file + Environment.NewLine + e.Message);
+                    }
                     // Read the CSV file and import all the keys and values
                     var lineCounter = 0;
                     foreach (var csvline in allLines)
@@ -115,12 +126,14 @@ namespace MVCForum.Services.Migrations
                         context.LocaleStringResource.Add(stringResource);
                     }
 
+                    
                     // Save the language strings
                     context.SaveChanges();
+                    
                 }
+                #endregion
 
-
-
+                #region Add Default Roles
                 var saveRoles = false;
                 // Create the admin role if it doesn't exist
                 var adminRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == AppConstants.AdminRoleName);
@@ -131,14 +144,19 @@ namespace MVCForum.Services.Migrations
                     saveRoles = true;
                 }
 
+             
                 // Create the Standard role if it doesn't exist
                 var standardRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == SiteConstants.Instance.StandardMembers);
+           //     throw new Exception("Good to here!");
+
                 if (standardRole == null)
                 {
                     standardRole = new MembershipRole {RoleName = SiteConstants.Instance.StandardMembers };
                     context.MembershipRole.Add(standardRole);
                     saveRoles = true;
                 }
+
+      
 
                 // Create the Guest role if it doesn't exist
                 var guestRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == AppConstants.GuestRoleName);
@@ -148,14 +166,18 @@ namespace MVCForum.Services.Migrations
                     context.MembershipRole.Add(guestRole);
                     saveRoles = true;
                 }
+         
 
                 if (saveRoles)
                 {
                     context.SaveChanges();
+
                 }
+                #endregion
+
 
                 // Create an example Category
-
+                #region Add Example
                 if (!context.Category.Any())
                 {
                     // Doesn't exist so add the example category
@@ -172,9 +194,11 @@ namespace MVCForum.Services.Migrations
                     context.Category.Add(exampleCat);
                     context.SaveChanges();
                 }
+                #endregion
 
                 // if the settings already exist then do nothing
                 // If not then add default settings
+                #region Add Settings
                 var currentSettings = context.Setting.FirstOrDefault();
                 if (currentSettings == null)
                 {
@@ -201,7 +225,7 @@ namespace MVCForum.Services.Migrations
                         EnableSignatures = false,
                         EnablePoints = true,
                         PointsAllowedToVoteAmount = 1,
-                        PointsAllowedForExtendedProfile = 1,
+                        PointsAllowedExtendedProfile = 1,
                         PointsAddedPerPost = 1,
                         PointsAddedForSolution = 4,
                         PointsDeductedNagativeVote = 2,
@@ -216,7 +240,7 @@ namespace MVCForum.Services.Migrations
                         EnableAkisment = false,
                         EnableSocialLogins = false,
                         EnablePolls = true,
-                        MarkAsSolutionReminderTimeFrame = 7,
+                        MarkSolutionReminderTime = 7,
                         EnableEmoticons = true,
                         DisableStandardRegistration = false
                     };
@@ -225,9 +249,13 @@ namespace MVCForum.Services.Migrations
                     context.SaveChanges();
                 }
 
+                #endregion
+
+
                 // Create the initial category permissions
 
                 // Edit Posts
+                #region Edit permissions
                 if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionEditPosts) == null)
                 {
                     var permission = new Permission {Name = SiteConstants.Instance.PermissionEditPosts};
@@ -319,8 +347,10 @@ namespace MVCForum.Services.Migrations
                     // Save to the database
                     context.SaveChanges();
                 }
+                #endregion
 
                 // If the admin user exists then don't do anything else
+                #region Add Default Admin
                 const string adminUsername = "admin";
                 if (context.MembershipUser.FirstOrDefault(x => x.UserName == adminUsername) == null)
                 {
@@ -335,8 +365,8 @@ namespace MVCForum.Services.Migrations
                         DisablePosting = false,
                         DisablePrivateMessages = false,
                         CreateDate = DateTime.UtcNow,
-                        LastLockoutDate = (DateTime) SqlDateTime.MinValue,
-                        LastPasswordChangedDate = (DateTime) SqlDateTime.MinValue,
+                        LastLockoutDate = null,
+                        LastPasswordChangedDate = null,
                         LastLoginDate = DateTime.UtcNow,
                         LastActivityDate = null,
                         IsLockedOut = false,
@@ -412,6 +442,7 @@ namespace MVCForum.Services.Migrations
                     context.Permission.Add(p);
                 }
             }
+            #endregion
 
             #endregion
         }

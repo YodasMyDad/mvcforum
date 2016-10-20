@@ -2,13 +2,13 @@ ALTER TABLE [Settings] ADD [AgreeToTermsAndConditions] bit NULL
 GO
 ALTER TABLE [Settings] ADD [TermsAndConditions] nvarchar(Max) NULL
 GO
-ALTER TABLE [Settings] ADD [PointsAllowedForExtendedProfile] int NULL
+ALTER TABLE [Settings] ADD [PointsAllowedExtendedProfile] int NULL
 GO
 ALTER TABLE [Settings] ADD [DisableStandardRegistration] int NULL
 GO
 ALTER TABLE [Post] ADD InReplyTo [uniqueidentifier] NULL
 GO
-ALTER TABLE [MembershipUser] ADD [HasAgreedToTermsAndConditions] bit NULL
+ALTER TABLE [MembershipUser] ADD [HasAgreedToTermsConditions] bit NULL
 GO
 ALTER TABLE [MembershipUserPoints] ADD [Notes] nvarchar(400) NULL
 GO

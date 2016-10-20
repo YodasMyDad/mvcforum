@@ -80,7 +80,7 @@
                         <span class="count">@Model.Favourites.Count()</span>
                         @if (Html.CurrentMember() != null && Model.Post.User.Id != loggedOnUserId)
                         {
-                            <a class="favourite" data-id="@postId" data-addremove="@(Model.MemberHasFavourited ? "remove" : "add")">
+                            <a class="Favourite" data-id="@postId" data-addremove="@(Model.MemberHasFavourited ? "remove" : "add")">
                                 @(Model.MemberHasFavourited ? Html.Lang("Post.Favourited") : Html.Lang("Post.Favourite"))
                             </a>
                         }

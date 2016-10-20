@@ -55,7 +55,7 @@ namespace MVCForum.Domain.Interfaces.Services
         CsvReport FromCsv(List<string> allLines);
         /// <summary>
         /// Completed scrubs a users account clean
-        /// Clears everything - Posts, polls, votes, favourites, profile etc...
+        /// Clears everything - Posts, polls, votes, Favourites, profile etc...
         /// </summary>
         /// <param name="user"></param>
         /// <param name="unitOfWork"></param>
