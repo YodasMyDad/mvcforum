@@ -22,7 +22,7 @@
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ISettingsService _settingsService;
         private readonly IPostService _postService;
-        private readonly IFavouriteService _favouriteService;
+        private readonly IFavouriteService _FavouriteService;
         private readonly IRoleService _roleService;
         private readonly IPollService _pollService;
         private readonly IPollAnswerService _pollAnswerService;
@@ -30,13 +30,13 @@
 
         public TopicService(IMVCForumContext context, IMembershipUserPointsService membershipUserPointsService,
             ISettingsService settingsService, ITopicNotificationService topicNotificationService,
-            IFavouriteService favouriteService,
+            IFavouriteService FavouriteService,
             IPostService postService, IRoleService roleService, IPollService pollService, IPollAnswerService pollAnswerService, ICacheService cacheService)
         {
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
             _topicNotificationService = topicNotificationService;
-            _favouriteService = favouriteService;
+            _FavouriteService = FavouriteService;
             _postService = postService;
             _roleService = roleService;
             _pollService = pollService;
@@ -735,14 +735,14 @@
                 topic.TopicNotifications.Clear();
             }
 
-            // Remove all favourites on this topic too
+            // Remove all Favourites on this topic too
             if (topic.Favourites != null)
             {
                 var toDelete = new List<Favourite>();
                 toDelete.AddRange(topic.Favourites);
                 foreach (var entity in toDelete)
                 {
-                    _favouriteService.Delete(entity);
+                    _FavouriteService.Delete(entity);
                 }
 
                 // Final Clear

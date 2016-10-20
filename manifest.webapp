@@ -1,0 +1,14 @@
+{
+  "name": "MVCForum",
+  "short_name": "MVCForum",
+  "start_url": "./MVCForum.Website/Global.asax",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "MVCForum",
+  "scope":"/MVCForum.Website/",
+  "icons": [{
+    "src": "MVCForum.Website/Content/Badges/PosterVoteUpBadge.png",
+    "sizes": "70x70",
+    "type": "image/png"
+  }]
+}

@@ -19,7 +19,7 @@ namespace MVCForum.Domain.DomainModel
         public bool DisplayEditedBy { get; set; }
         public bool EnablePostFileAttachments { get; set; }
         public bool EnableMarkAsSolution { get; set; }
-        public int? MarkAsSolutionReminderTimeFrame { get; set; }
+        public int? MarkSolutionReminderTime { get; set; }
         public bool EnableSpamReporting { get; set; }
         public bool EnableMemberReporting { get; set; }
         public bool EnableEmailSubscriptions { get; set; }
@@ -34,7 +34,7 @@ namespace MVCForum.Domain.DomainModel
         public int PrivateMessageFloodControl { get; set; }
         public bool EnableSignatures { get; set; }
         public bool EnablePoints { get; set; }
-        public int? PointsAllowedForExtendedProfile { get; set; }
+        public int? PointsAllowedExtendedProfile { get; set; }
         public int PointsAllowedToVoteAmount { get; set; }
         public int PointsAddedPerPost { get; set; }
         public int PointsAddedPostiveVote { get; set; }

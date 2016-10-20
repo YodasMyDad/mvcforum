@@ -11,7 +11,7 @@ namespace Badge.YourPostFavourited
     [Name("YourPostFavourited")]
     [DisplayName("Badge.YourPostFavourited.Name")]
     [Description("Badge.YourPostFavourited.Desc")]
-    [Image("your-post-got-favourited-by-another-member.png")]
+    [Image("your-post-got-Favourited-by-another-member.png")]
     [AwardsPoints(2)]
     public class YourPostFavouritedBadge : IFavouriteBadge
     {

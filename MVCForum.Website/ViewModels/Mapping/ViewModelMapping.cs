@@ -89,7 +89,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.EnableRSSFeeds = settingsViewModel.EnableRSSFeeds;
             existingSettings.DisplayEditedBy = settingsViewModel.DisplayEditedBy;
             existingSettings.EnableMarkAsSolution = settingsViewModel.EnableMarkAsSolution;
-            existingSettings.MarkAsSolutionReminderTimeFrame = settingsViewModel.MarkAsSolutionReminderTimeFrame;
+            existingSettings.MarkSolutionReminderTime = settingsViewModel.MarkSolutionReminderTime;
             //existingSettings.EnableSpamReporting = settingsViewModel.EnableSpamReporting;
             //existingSettings.EnableMemberReporting = settingsViewModel.EnableMemberReporting;
             existingSettings.EnableEmailSubscriptions = settingsViewModel.EnableEmailSubscriptions;
@@ -104,7 +104,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             existingSettings.EnableSignatures = settingsViewModel.EnableSignatures;
             existingSettings.EnablePoints = settingsViewModel.EnablePoints;
             existingSettings.PointsAllowedToVoteAmount = settingsViewModel.PointsAllowedToVoteAmount;
-            existingSettings.PointsAllowedForExtendedProfile = settingsViewModel.PointsAllowedForExtendedProfile;
+            existingSettings.PointsAllowedExtendedProfile = settingsViewModel.PointsAllowedExtendedProfile;
             existingSettings.PointsAddedPerPost = settingsViewModel.PointsAddedPerPost;
             existingSettings.PointsAddedPostiveVote = settingsViewModel.PointsAddedPostiveVote;
             existingSettings.PointsDeductedNagativeVote = settingsViewModel.PointsDeductedNagativeVote;
@@ -146,7 +146,7 @@ namespace MVCForum.Website.ViewModels.Mapping
                 EnableRSSFeeds = currentSettings.EnableRSSFeeds,
                 DisplayEditedBy = currentSettings.DisplayEditedBy,
                 EnableMarkAsSolution = currentSettings.EnableMarkAsSolution,
-                MarkAsSolutionReminderTimeFrame = currentSettings.MarkAsSolutionReminderTimeFrame ?? 0,
+                MarkSolutionReminderTime = currentSettings.MarkSolutionReminderTime ?? 0,
                 //EnableSpamReporting = currentSettings.EnableSpamReporting,
                 //EnableMemberReporting = currentSettings.EnableMemberReporting,
                 EnableEmailSubscriptions = currentSettings.EnableEmailSubscriptions,
@@ -161,7 +161,7 @@ namespace MVCForum.Website.ViewModels.Mapping
                 EnableSignatures = currentSettings.EnableSignatures,
                 EnablePoints = currentSettings.EnablePoints,
                 PointsAllowedToVoteAmount = currentSettings.PointsAllowedToVoteAmount,
-                PointsAllowedForExtendedProfile = currentSettings.PointsAllowedForExtendedProfile ?? 0,
+                PointsAllowedExtendedProfile = currentSettings.PointsAllowedExtendedProfile ?? 0,
                 PointsAddedPerPost = currentSettings.PointsAddedPerPost,
                 PointsAddedPostiveVote = currentSettings.PointsAddedPostiveVote,
                 PointsDeductedNagativeVote = currentSettings.PointsDeductedNagativeVote,
@@ -250,7 +250,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             var topicNotificationService = ServiceFactory.Get<ITopicNotificationService>();
             var pollAnswerService = ServiceFactory.Get<IPollAnswerService>();
             var voteService = ServiceFactory.Get<IVoteService>();
-            var favouriteService = ServiceFactory.Get<IFavouriteService>();
+            var FavouriteService = ServiceFactory.Get<IFavouriteService>();
 
             var userIsAuthenticated = loggedOnUser != null;
 
@@ -282,8 +282,8 @@ namespace MVCForum.Website.ViewModels.Mapping
             // Get all votes by post
             var votes = voteService.GetVotesByPosts(postIds);
 
-            // Get all favourites for this user
-            var allFavourites = favouriteService.GetByTopic(topic.Id);
+            // Get all Favourites for this user
+            var allFavourites = FavouriteService.GetByTopic(topic.Id);
 
             // Map the votes
             var startPostVotes = votes.Where(x => x.Post.Id == starterPost.Id).ToList();
@@ -338,7 +338,7 @@ namespace MVCForum.Website.ViewModels.Mapping
         #endregion
 
         #region Post
-        public static PostViewModel CreatePostViewModel(Post post, List<Vote> votes, PermissionSet permission, Topic topic, MembershipUser loggedOnUser, Settings settings, List<Favourite> favourites)
+        public static PostViewModel CreatePostViewModel(Post post, List<Vote> votes, PermissionSet permission, Topic topic, MembershipUser loggedOnUser, Settings settings, List<Favourite> Favourites)
         {
             var allowedToVote = (loggedOnUser != null && loggedOnUser.Id != post.User.Id);
             if (allowedToVote && settings.EnablePoints)
@@ -355,7 +355,7 @@ namespace MVCForum.Website.ViewModels.Mapping
             var hasFavourited = false;
             if (loggedOnUser != null && loggedOnUser.Id != post.User.Id)
             {
-                hasFavourited = favourites.Any(x => x.Member.Id == loggedOnUser.Id);
+                hasFavourited = Favourites.Any(x => x.Member.Id == loggedOnUser.Id);
                 hasVotedUp = votes.Count(x => x.Amount > 0 && x.VotedByMembershipUser.Id == loggedOnUser.Id) > 0;
                 hasVotedDown = votes.Count(x => x.Amount < 0 && x.VotedByMembershipUser.Id == loggedOnUser.Id) > 0;
             }
@@ -371,7 +371,7 @@ namespace MVCForum.Website.ViewModels.Mapping
                 ParentTopic = topic,
                 AllowedToVote = allowedToVote,
                 MemberHasFavourited = hasFavourited,
-                Favourites = favourites,
+                Favourites = Favourites,
                 PermaLink = string.Concat(topic.NiceUrl, "?", AppConstants.PostOrderBy, "=", AppConstants.AllPosts, "#comment-", post.Id),
                 MemberIsOnline = post.User.LastActivityDate > date,
                 HasVotedDown = hasVotedDown,
@@ -388,13 +388,13 @@ namespace MVCForum.Website.ViewModels.Mapping
         /// <param name="topic"></param>
         /// <param name="loggedOnUser"></param>
         /// <param name="settings"></param>
-        /// <param name="favourites"></param>
+        /// <param name="Favourites"></param>
         /// <returns></returns>
-        public static List<PostViewModel> CreatePostViewModels(IEnumerable<Post> posts, List<Vote> votes, PermissionSet permission, Topic topic, MembershipUser loggedOnUser, Settings settings, List<Favourite> favourites)
+        public static List<PostViewModel> CreatePostViewModels(IEnumerable<Post> posts, List<Vote> votes, PermissionSet permission, Topic topic, MembershipUser loggedOnUser, Settings settings, List<Favourite> Favourites)
         {
             var viewModels = new List<PostViewModel>();
             var groupedVotes = votes.ToLookup(x => x.Post.Id);
-            var groupedFavourites = favourites.ToLookup(x => x.Post.Id);
+            var groupedFavourites = Favourites.ToLookup(x => x.Post.Id);
             foreach (var post in posts)
             {
                 var id = post.Id;
@@ -413,13 +413,13 @@ namespace MVCForum.Website.ViewModels.Mapping
         /// <param name="permissions"></param>
         /// <param name="loggedOnUser"></param>
         /// <param name="settings"></param>
-        /// <param name="favourites"></param>
+        /// <param name="Favourites"></param>
         /// <returns></returns>
-        public static List<PostViewModel> CreatePostViewModels(IEnumerable<Post> posts, List<Vote> votes, Dictionary<Category, PermissionSet> permissions, MembershipUser loggedOnUser, Settings settings, List<Favourite> favourites)
+        public static List<PostViewModel> CreatePostViewModels(IEnumerable<Post> posts, List<Vote> votes, Dictionary<Category, PermissionSet> permissions, MembershipUser loggedOnUser, Settings settings, List<Favourite> Favourites)
         {
             var viewModels = new List<PostViewModel>();
             var groupedVotes = votes.ToLookup(x => x.Post.Id);
-            var groupedFavourites = favourites.ToLookup(x => x.Post.Id);
+            var groupedFavourites = Favourites.ToLookup(x => x.Post.Id);
             foreach (var post in posts)
             {
                 var id = post.Id;

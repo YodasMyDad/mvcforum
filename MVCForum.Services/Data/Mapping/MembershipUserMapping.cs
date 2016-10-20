@@ -24,8 +24,8 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.IsBanned).IsRequired();
             Property(x => x.CreateDate).IsRequired();
             Property(x => x.LastLoginDate).IsRequired();
-            Property(x => x.LastPasswordChangedDate).IsRequired();
-            Property(x => x.LastLockoutDate).IsRequired();
+            Property(x => x.LastPasswordChangedDate).IsOptional();
+            Property(x => x.LastLockoutDate).IsOptional();
             Property(x => x.FailedPasswordAttemptCount).IsRequired();
             Property(x => x.FailedPasswordAnswerAttempt).IsRequired();
             Property(x => x.PasswordResetToken).HasMaxLength(150).IsOptional();
@@ -60,7 +60,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.Latitude).IsOptional().HasMaxLength(40);
             Property(x => x.Longitude).IsOptional().HasMaxLength(40);
             Property(x => x.LastActivityDate).IsOptional();
-            Property(x => x.HasAgreedToTermsAndConditions).IsOptional();
+            Property(x => x.HasAgreedToTermsConditions).IsOptional();
 
             Ignore(x => x.TotalPoints);
             Ignore(x => x.NiceUrl);

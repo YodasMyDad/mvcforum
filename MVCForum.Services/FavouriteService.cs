@@ -22,24 +22,24 @@
             _context = context as MVCForumContext;
         }
 
-        public Favourite Add(Favourite favourite)
+        public Favourite Add(Favourite Favourite)
         {
-            var e = new FavouriteEventArgs { Favourite = favourite };
+            var e = new FavouriteEventArgs { Favourite = Favourite };
             EventManager.Instance.FireBeforeFavourite(this, e);
 
             if (!e.Cancel)
             {
-                favourite =  _context.Favourite.Add(favourite);
+                Favourite =  _context.Favourite.Add(Favourite);
 
-                EventManager.Instance.FireAfterFavourite(this, new FavouriteEventArgs { Favourite = favourite});
+                EventManager.Instance.FireAfterFavourite(this, new FavouriteEventArgs { Favourite = Favourite});
             }
 
-            return favourite;
+            return Favourite;
         }
 
-        public Favourite Delete(Favourite favourite)
+        public Favourite Delete(Favourite Favourite)
         {
-            return _context.Favourite.Remove(favourite);
+            return _context.Favourite.Remove(Favourite);
         }
 
         public List<Favourite> GetAll()

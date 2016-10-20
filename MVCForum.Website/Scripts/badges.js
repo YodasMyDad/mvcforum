@@ -38,14 +38,14 @@ function BadgeMarkAsSolution(postId) {
     });
 }
 
-function BadgeFavourite(favouriteId) {
+function BadgeFavourite(FavouriteId) {
 
     // Ajax call to post the view model to the controller
-    var favouriteViewModel = new Object();
-    favouriteViewModel.FavouriteId = favouriteId;
+    var FavouriteViewModel = new Object();
+    FavouriteViewModel.FavouriteId = FavouriteId;
 
     // Ajax call to post the view model to the controller
-    var strung = JSON.stringify(favouriteViewModel);
+    var strung = JSON.stringify(FavouriteViewModel);
 
     $.ajax({
         url: app_base + "Badge/Favourite",

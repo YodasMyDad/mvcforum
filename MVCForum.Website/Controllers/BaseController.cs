@@ -74,7 +74,7 @@ namespace MVCForum.Website.Controllers
             }
 
             // Check if they need to agree to permissions
-            if (SettingsService.GetSettings().AgreeToTermsAndConditions == true && !filterContext.IsChildAction && LoggedOnReadOnlyUser != null && LoggedOnReadOnlyUser.HasAgreedToTermsAndConditions != true)
+            if (SettingsService.GetSettings().AgreeToTermsAndConditions == true && !filterContext.IsChildAction && LoggedOnReadOnlyUser != null && LoggedOnReadOnlyUser.HasAgreedToTermsConditions != true)
             {
                 // Only redirect if its closed and user is NOT in the admin
                 if (action.ToString().ToLower() != "termsandconditions" && !area.ToString().ToLower().Contains("admin"))

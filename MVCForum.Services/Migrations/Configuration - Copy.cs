@@ -17,7 +17,7 @@ namespace MVCForum.Services.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;      
+            AutomaticMigrationsEnabled = true;
             AutomaticMigrationDataLossAllowed = true;
         }
 
@@ -25,13 +25,16 @@ namespace MVCForum.Services.Migrations
         {
 
             #region Initial Installer Code
+
+
+            //var isFirstInstall = false;
+
            
 
             // Add the language - If it's not already there
             const string langCulture = "en-GB";
             var language = context.Language.FirstOrDefault(x => x.LanguageCulture == langCulture);
 
-            //if Language not detected assuming the first install
             if (language == null)
             {
                
@@ -51,9 +54,13 @@ namespace MVCForum.Services.Migrations
 
 
                 // Now add the default language strings
-                #region Language
+
                 var file = HostingEnvironment.MapPath(@"~/Installer/en-GB.csv");
                 var commaSeparator = new[] {','};
+
+               
+
+
                 if (file != null)
                 {
                     // Unpack the data
@@ -131,9 +138,9 @@ namespace MVCForum.Services.Migrations
                     context.SaveChanges();
                     
                 }
-                #endregion
 
-                #region Add Default Roles
+               
+
                 var saveRoles = false;
                 // Create the admin role if it doesn't exist
                 var adminRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == AppConstants.AdminRoleName);
@@ -173,11 +180,11 @@ namespace MVCForum.Services.Migrations
                     context.SaveChanges();
 
                 }
-                #endregion
+                throw new Exception("Good to here!");
 
 
                 // Create an example Category
-                #region Add Example
+
                 if (!context.Category.Any())
                 {
                     // Doesn't exist so add the example category
@@ -194,19 +201,17 @@ namespace MVCForum.Services.Migrations
                     context.Category.Add(exampleCat);
                     context.SaveChanges();
                 }
-                #endregion
 
                 // if the settings already exist then do nothing
                 // If not then add default settings
-                #region Add Settings
                 var currentSettings = context.Setting.FirstOrDefault();
                 if (currentSettings == null)
                 {
                     // create the settings
                     var settings = new Settings
                     {
-                        ForumName = "MVCForum",
-                        ForumUrl = "http://www.mydomain.com",
+                        ForumName = "iNSIPPForum",
+                        ForumUrl = "",
                         IsClosed = false,
                         EnableRSSFeeds = true,
                         DisplayEditedBy = true,
@@ -230,8 +235,8 @@ namespace MVCForum.Services.Migrations
                         PointsAddedForSolution = 4,
                         PointsDeductedNagativeVote = 2,
                         PointsAddedPostiveVote = 2,
-                        AdminEmailAddress = "my@email.com",
-                        NotificationReplyEmail = "noreply@myemail.com",
+                        AdminEmailAddress = "joe@vsolvit.com",
+                        NotificationReplyEmail = "noreply@vsolvit.com",
                         SMTPEnableSSL = false,
                         Theme = "Metro",
                         NewMemberStartingRole = standardRole,
@@ -249,13 +254,9 @@ namespace MVCForum.Services.Migrations
                     context.SaveChanges();
                 }
 
-                #endregion
-
-
                 // Create the initial category permissions
 
                 // Edit Posts
-                #region Edit permissions
                 if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionEditPosts) == null)
                 {
                     var permission = new Permission {Name = SiteConstants.Instance.PermissionEditPosts};
@@ -347,17 +348,15 @@ namespace MVCForum.Services.Migrations
                     // Save to the database
                     context.SaveChanges();
                 }
-                #endregion
 
                 // If the admin user exists then don't do anything else
-                #region Add Default Admin
                 const string adminUsername = "admin";
                 if (context.MembershipUser.FirstOrDefault(x => x.UserName == adminUsername) == null)
                 {
                     // create the admin user and put him in the admin role
                     var admin = new MembershipUser
                     {
-                        Email = "you@email.com",
+                        Email = "joseph.fascenda@vsolvit.com",
                         UserName = adminUsername,
                         Password = "password",
                         IsApproved = true,
@@ -442,7 +441,6 @@ namespace MVCForum.Services.Migrations
                     context.Permission.Add(p);
                 }
             }
-            #endregion
 
             #endregion
         }

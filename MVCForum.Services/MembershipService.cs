@@ -27,7 +27,7 @@
         private readonly IPostService _postService;
         private readonly IPollVoteService _pollVoteService;
         private readonly IPollAnswerService _pollAnswerService;
-        private readonly IFavouriteService _favouriteService;
+        private readonly IFavouriteService _FavouriteService;
         private readonly ISettingsService _settingsService;
         private readonly IPollService _pollService;
         private readonly ITopicService _topicService;
@@ -66,7 +66,7 @@
         /// <param name="pollAnswerService"></param>
         /// <param name="pollService"></param>
         /// <param name="topicService"></param>
-        /// <param name="favouriteService"></param>
+        /// <param name="FavouriteService"></param>
         /// <param name="categoryService"></param>
         /// <param name="postEditService"></param>
         /// <param name="cacheService"></param>
@@ -76,7 +76,7 @@
             ITopicNotificationService topicNotificationService, IVoteService voteService, IBadgeService badgeService,
             ICategoryNotificationService categoryNotificationService, ILoggingService loggingService, IUploadedFileService uploadedFileService,
             IPostService postService, IPollVoteService pollVoteService, IPollAnswerService pollAnswerService,
-            IPollService pollService, ITopicService topicService, IFavouriteService favouriteService,
+            IPollService pollService, ITopicService topicService, IFavouriteService FavouriteService,
             ICategoryService categoryService, IPostEditService postEditService, ICacheService cacheService)
         {
             _settingsService = settingsService;
@@ -96,7 +96,7 @@
             _pollAnswerService = pollAnswerService;
             _pollService = pollService;
             _topicService = topicService;
-            _favouriteService = favouriteService;
+            _FavouriteService = FavouriteService;
             _categoryService = categoryService;
             _postEditService = postEditService;
             _cacheService = cacheService;
@@ -317,7 +317,7 @@
                     newUser.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
 
                     // Set dates
-                    newUser.CreateDate = newUser.LastPasswordChangedDate = DateTime.UtcNow;
+                    newUser.CreateDate = (DateTime)(newUser.LastPasswordChangedDate = DateTime.UtcNow);
                     newUser.LastLockoutDate = (DateTime)SqlDateTime.MinValue;
                     newUser.LastLoginDate = DateTime.UtcNow;
                     newUser.IsLockedOut = false;
@@ -1077,7 +1077,7 @@
                 toDelete.AddRange(user.Favourites);
                 foreach (var obj in toDelete)
                 {
-                    _favouriteService.Delete(obj);
+                    _FavouriteService.Delete(obj);
                 }
                 user.Favourites.Clear();
             }

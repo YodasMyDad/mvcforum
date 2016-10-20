@@ -23,7 +23,7 @@ namespace MVCForum.Services.Data.Mapping
             Property(x => x.ModeratePosts).IsRequired();
             Property(x => x.PageTitle).IsOptional().HasMaxLength(80);
             Property(x => x.MetaDescription).IsOptional().HasMaxLength(200);
-            Property(x => x.Path).IsOptional().HasMaxLength(2500);
+            Property(x => x.Path).IsOptional().HasMaxLength(2000);
             Property(x => x.Colour).IsOptional().HasMaxLength(50);
             Property(x => x.Image).IsOptional().HasMaxLength(200);
 

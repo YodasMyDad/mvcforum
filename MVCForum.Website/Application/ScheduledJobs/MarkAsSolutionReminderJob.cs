@@ -35,7 +35,7 @@ namespace MVCForum.Website.Application.ScheduledJobs
                 try
                 {
                     var settings = _settingsService.GetSettings(false);
-                    var timeFrame = settings.MarkAsSolutionReminderTimeFrame ?? 0;
+                    var timeFrame = settings.MarkSolutionReminderTime ?? 0;
                     if (timeFrame > 0 && settings.EnableMarkAsSolution)
                     {
 

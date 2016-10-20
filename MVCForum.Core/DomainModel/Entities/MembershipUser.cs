@@ -44,8 +44,8 @@ namespace MVCForum.Domain.DomainModel
         public bool IsBanned { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime LastLoginDate { get; set; }
-        public DateTime LastPasswordChangedDate { get; set; }
-        public DateTime LastLockoutDate { get; set; }
+        public DateTime? LastPasswordChangedDate { get; set; }
+        public DateTime? LastLockoutDate { get; set; }
         public DateTime? LastActivityDate { get; set; }
         public int FailedPasswordAttemptCount { get; set; }
         public int FailedPasswordAnswerAttempt { get; set; }
@@ -79,7 +79,7 @@ namespace MVCForum.Domain.DomainModel
         public bool? DisablePrivateMessages { get; set; }
         public bool? DisableFileUploads { get; set; }
 
-        public bool? HasAgreedToTermsAndConditions { get; set; }
+        public bool? HasAgreedToTermsConditions { get; set; }
 
         public string Latitude { get; set; }
         public string Longitude { get; set; }
