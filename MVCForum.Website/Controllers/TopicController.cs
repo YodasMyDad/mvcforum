@@ -23,7 +23,7 @@
 
     public partial class TopicController : BaseController
     {
-        private readonly IFavouriteService _FavouriteService;
+        private readonly IFavouriteService _favouriteService;
         private readonly ITopicService _topicService;
         private readonly IPostService _postService;
         private readonly ITopicTagService _topicTagService;
@@ -43,7 +43,7 @@
         public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
             ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, IPollService pollService,
-            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService FavouriteService, IUploadedFileService uploadedFileService, ICacheService cacheService, 
+            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService, IUploadedFileService uploadedFileService, ICacheService cacheService, 
             ITagNotificationService tagNotificationService, IPostEditService postEditService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
@@ -59,7 +59,7 @@
             _pollAnswerService = pollAnswerService;
             _bannedWordService = bannedWordService;
             _voteService = voteService;
-            _FavouriteService = FavouriteService;
+            _favouriteService = favouriteService;
             _uploadedFileService = uploadedFileService;
             _tagNotificationService = tagNotificationService;
             _postEditService = postEditService;
@@ -1157,7 +1157,7 @@
                 var posts = _postService.GetPagedPostsByTopic(getMorePostsViewModel.PageIndex, settings.PostsPerPage, int.MaxValue, topic.Id, orderBy);
                 var postIds = posts.Select(x => x.Id).ToList();
                 var votes = _voteService.GetVotesByPosts(postIds);
-                var favs = _FavouriteService.GetAllPostFavourites(postIds);
+                var favs = _favouriteService.GetAllPostFavourites(postIds);
                 var viewModel = new ShowMorePostsViewModel
                 {
                     Posts = ViewModelMapping.CreatePostViewModels(posts, votes, permissions, topic, LoggedOnReadOnlyUser, settings, favs),

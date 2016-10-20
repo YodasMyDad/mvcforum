@@ -26,9 +26,8 @@
             var emoticonFolder = EmoticonImageFolder;
             var emoticons = GetEmoticonHashTable();
 
-            //Unhandled exception for string length of zero
             var sb = new StringBuilder(inputText.Length);
-            
+
             for (var i = 0; i < inputText.Length; i++)
             {
                 var strEmote = string.Empty;
