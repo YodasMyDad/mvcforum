@@ -9,7 +9,7 @@ namespace Badge.FavouriteFirstPost
     [Name("FavouriteFirstPost")]
     [DisplayName("Badge.FavouriteFirstPost.Name")]
     [Description("Badge.FavouriteFirstPost.Desc")]
-    [Image("you-Favourited-your-first-post.png")]
+    [Image("you-favourited-your-first-post.png")]
     [AwardsPoints(1)]
     public class FavouriteFirstPostBadge : IFavouriteBadge
     {
