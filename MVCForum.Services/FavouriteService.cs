@@ -29,7 +29,7 @@
 
             if (!e.Cancel)
             {
-                Favourite =  _context.Favourite.Add(favourite);
+                favourite =  _context.Favourite.Add(favourite);
 
                 EventManager.Instance.FireAfterFavourite(this, new FavouriteEventArgs { Favourite = favourite});
             }
