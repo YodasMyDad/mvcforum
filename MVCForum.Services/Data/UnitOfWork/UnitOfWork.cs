@@ -43,7 +43,6 @@ namespace MVCForum.Services.Data.UnitOfWork
             }
         }
 
-
         public void AutoDetectChangesEnabled(bool option)
         {
             _context.Configuration.AutoDetectChangesEnabled = option;
