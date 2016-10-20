@@ -13,18 +13,18 @@
         private readonly IPostService _postService;
         private readonly ICategoryService _categoryService;
         private readonly IVoteService _voteService;
-        private readonly IFavouriteService _favouriteService;
+        private readonly IFavouriteService _FavouriteService;
 
         public SearchController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService, ILocalizationService localizationService,
             IRoleService roleService, ISettingsService settingsService,
-            IPostService postService, IVoteService voteService, IFavouriteService favouriteService, 
+            IPostService postService, IVoteService voteService, IFavouriteService FavouriteService, 
             ICategoryService categoryService, ICacheService cacheService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _postService = postService;
             _voteService = voteService;
-            _favouriteService = favouriteService;
+            _FavouriteService = FavouriteService;
             _categoryService = categoryService;
         }
 
@@ -66,8 +66,8 @@
                     // Get all votes for these posts
                     var votes = _voteService.GetVotesByPosts(postIds);
 
-                    // Get all favourites for these posts
-                    var favs = _favouriteService.GetAllPostFavourites(postIds);
+                    // Get all Favourites for these posts
+                    var favs = _FavouriteService.GetAllPostFavourites(postIds);
 
                     // Create the post view models
                     var viewModels = ViewModelMapping.CreatePostViewModels(posts.ToList(), votes, topicPermissions, LoggedOnReadOnlyUser, settings, favs);

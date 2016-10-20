@@ -13,17 +13,17 @@
     {
         private readonly ITopicService _topicService;
         private readonly IPostService _postService;
-        private readonly IFavouriteService _favouriteService;
+        private readonly IFavouriteService _FavouriteService;
 
         public FavouriteController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
             IRoleService roleService, ITopicService topicService, IPostService postService,
             ILocalizationService localizationService, ISettingsService settingsService, 
-            IFavouriteService favouriteService, ICacheService cacheService)
+            IFavouriteService FavouriteService, ICacheService cacheService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _topicService = topicService;
             _postService = postService;
-            _favouriteService = favouriteService;
+            _FavouriteService = FavouriteService;
         }
 
         [Authorize]
@@ -31,11 +31,11 @@
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                // Get the favourites
-                var favourites = _favouriteService.GetAllByMember(LoggedOnReadOnlyUser.Id);
+                // Get the Favourites
+                var Favourites = _FavouriteService.GetAllByMember(LoggedOnReadOnlyUser.Id);
 
                 // Pull out the posts
-                var posts = favourites.Select(x => x.Post);
+                var posts = Favourites.Select(x => x.Post);
 
                 // Create the view Model
                 var viewModel = new MyFavouritesViewModel();
@@ -69,26 +69,26 @@
                         var post = _postService.Get(viewModel.PostId);
                         var topic = _topicService.Get(post.Topic.Id);
 
-                        // See if this is a user adding or removing the favourite
+                        // See if this is a user adding or removing the Favourite
                         var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
-                        var existingFavourite = _favouriteService.GetByMemberAndPost(loggedOnUser.Id, post.Id);
+                        var existingFavourite = _FavouriteService.GetByMemberAndPost(loggedOnUser.Id, post.Id);
                         if (existingFavourite != null)
                         {
-                            _favouriteService.Delete(existingFavourite);
+                            _FavouriteService.Delete(existingFavourite);
                             returnValue.Message = LocalizationService.GetResourceString("Post.Favourite");
                         }
                         else
                         {
-                            var favourite = new Favourite
+                            var Favourite = new Favourite
                             {
                                 DateCreated = DateTime.UtcNow,
                                 Member = loggedOnUser,
                                 Post = post,
                                 Topic = topic
                             };
-                            _favouriteService.Add(favourite);
+                            _FavouriteService.Add(Favourite);
                             returnValue.Message = LocalizationService.GetResourceString("Post.Favourited");
-                            returnValue.Id = favourite.Id;
+                            returnValue.Id = Favourite.Id;
                         }
 
                         unitOfwork.Commit();

@@ -21,7 +21,7 @@ namespace MVCForum.Services.Data.UnitOfWork
         /// Constructor
         /// </summary>
         public UnitOfWork(MVCForumContext context)
-        {            
+        {
             _context = context;
 
             // In order to make calls that are overidden in the caching ef-wrapper, we need to use
@@ -42,6 +42,7 @@ namespace MVCForum.Services.Data.UnitOfWork
                 _transaction = _objectContext.Connection.BeginTransaction();
             }
         }
+
 
         public void AutoDetectChangesEnabled(bool option)
         {
