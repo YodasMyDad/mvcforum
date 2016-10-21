@@ -15,6 +15,7 @@ namespace MVCForum.Services.Data.UnitOfWork
         public UnitOfWorkManager(IMVCForumContext context)
         {
             //http://www.entityframeworktutorial.net/code-first/automated-migration-in-code-first.aspx
+          //  Database.SetInitializer<MVCForumContext>(null); //Disable Migrations for now
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<MVCForumContext, Configuration>(SiteConstants.Instance.MvcForumContext));
             _context = context as MVCForumContext;
         }

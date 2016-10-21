@@ -73,7 +73,7 @@
                 if (ModelState.IsValid)
                 {
                     var user = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
-                    user.HasAgreedToTermsAndConditions = viewmodel.Agree;
+                    user.HasAgreedToTermsConditions = viewmodel.Agree;
                     try
                     {
                         unitOfWork.Commit();

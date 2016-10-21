@@ -80,7 +80,7 @@
                     @Html.ValidationMessageFor(x => x.Location)
                 </div>
 
-                @if (Model.AmountOfPoints >= settings.PointsAllowedForExtendedProfile)
+                @if (Model.AmountOfPoints >= settings.PointsAllowedExtendedProfile)
                 {
                     <div class="form-group">
                         @Html.LabelFor(x => x.Website)

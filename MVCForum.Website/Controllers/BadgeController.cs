@@ -11,7 +11,7 @@
     {
         private readonly IBadgeService _badgeService;
         private readonly IPostService _postService;
-        private readonly IFavouriteService _favouriteService;
+        private readonly IFavouriteService _FavouriteService;
 
         /// <summary>
         /// Constructor
@@ -24,7 +24,7 @@
         /// <param name="localizationService"></param>
         /// <param name="roleService"> </param>
         /// <param name="settingsService"> </param>
-        /// <param name="favouriteService"></param>
+        /// <param name="FavouriteService"></param>
         /// <param name="cacheService"></param>
         public BadgeController(ILoggingService loggingService,
             IUnitOfWorkManager unitOfWorkManager,
@@ -32,12 +32,12 @@
             IPostService postService,
             IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService,
-            ISettingsService settingsService, IFavouriteService favouriteService, ICacheService cacheService)
+            ISettingsService settingsService, IFavouriteService FavouriteService, ICacheService cacheService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _badgeService = badgeService;
             _postService = postService;
-            _favouriteService = favouriteService;
+            _FavouriteService = FavouriteService;
         }
 
 
@@ -165,14 +165,14 @@
 
         [HttpPost]
         [Authorize]
-        public void Favourite(FavouriteViewModel favouriteViewModel)
+        public void Favourite(FavouriteViewModel FavouriteViewModel)
         {
             using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
             {
                 try
                 {
-                    var favourite = _favouriteService.Get(favouriteViewModel.FavouriteId);
-                    var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Favourite, favourite.Member) | _badgeService.ProcessBadge(BadgeType.Favourite, favourite.Post.User);
+                    var Favourite = _FavouriteService.Get(FavouriteViewModel.FavouriteId);
+                    var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Favourite, Favourite.Member) | _badgeService.ProcessBadge(BadgeType.Favourite, Favourite.Post.User);
 
                     if (databaseUpdateNeeded)
                     {
