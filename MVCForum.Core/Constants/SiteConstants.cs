@@ -169,9 +169,13 @@ namespace MVCForum.Domain.Constants
         public string StorageProviderType => GetType("StorageProviderType");
 
         /// <summary>
-        /// Language Selector is turned on
+        /// Language Selector is turned off
         /// </summary>
-        public bool AllowLanguageSelector => GetConfig("AllowLanguageSelector") == "true";
+        public bool HideLanguageSelector => GetConfig("HideLanguageSelector") == "true";
 
+        /// <summary>
+        /// Show categories on home page instead of topics
+        /// </summary>
+        public bool CategoriesOnMain => GetConfig("CategoriesOnMain") == "true";
     }
 }

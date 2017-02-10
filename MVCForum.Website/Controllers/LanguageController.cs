@@ -36,7 +36,7 @@
         [ChildActionOnly]
         public ActionResult Index()
         {
-            if (!SiteConstants.Instance.AllowLanguageSelector)
+            if (SiteConstants.Instance.HideLanguageSelector)
             {
                 return Content(string.Empty);
             }
