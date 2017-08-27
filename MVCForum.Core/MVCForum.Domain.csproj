@@ -82,8 +82,10 @@
     <Compile Include="Constants\SiteConstants.cs" />
     <Compile Include="DomainModel\Activity\ActivityBase.cs" />
     <Compile Include="DomainModel\Activity\BadgeActivity.cs" />
+    <Compile Include="DomainModel\Activity\PostCreatedActivity.cs" />
     <Compile Include="DomainModel\Activity\ProfileUpdatedActivity.cs" />
     <Compile Include="DomainModel\Activity\MemberJoinedActivity.cs" />
+    <Compile Include="DomainModel\Activity\TopicCreatedActivity.cs" />
     <Compile Include="DomainModel\Attributes\AwardsPointsAttribute.cs" />
     <Compile Include="DomainModel\Attributes\DisplayNameAttribute.cs" />
     <Compile Include="DomainModel\Attributes\ImageAttribute.cs" />

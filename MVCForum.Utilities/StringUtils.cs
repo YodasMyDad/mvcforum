@@ -79,6 +79,21 @@ namespace MVCForum.Utilities
             var results = source.IndexOf(value, StringComparison.CurrentCultureIgnoreCase);
             return results != -1;
         }
+
+        /// <summary>
+        /// Truncate long string
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="maxLength"></param>
+        /// <param name="addSuffix">Add a suffix '...' in case of truncation</param>
+        /// <returns></returns>
+        public static string TruncateLongString(this string str, int maxLength, bool addSuffix)
+        {
+            if (str.Length <= maxLength)
+                return str;
+
+            return str.Substring(0, maxLength) + (addSuffix ? "..." : "");
+        }
         #endregion
 
         #region Social Helpers

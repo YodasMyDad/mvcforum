@@ -8,6 +8,8 @@ namespace MVCForum.Domain.DomainModel.Activity
         BadgeAwarded,
         MemberJoined,
         ProfileUpdated,
+        PostCreated,
+        TopicCreated
     }
 
     public class Activity : Entity

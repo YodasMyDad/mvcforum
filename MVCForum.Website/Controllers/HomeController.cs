@@ -98,7 +98,7 @@
                 var pageIndex = p ?? 1;
 
                 // Get the topics
-                var activities = _activityService.GetPagedGroupedActivities(pageIndex, SettingsService.GetSettings().ActivitiesPerPage);
+                var activities = _activityService.GetPagedGroupedActivities(pageIndex, SettingsService.GetSettings().ActivitiesPerPage, UsersRole);
 
                 // create the view model
                 var viewModel = new AllRecentActivitiesViewModel
