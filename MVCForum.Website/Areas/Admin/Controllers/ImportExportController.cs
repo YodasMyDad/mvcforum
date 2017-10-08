@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
@@ -241,5 +242,61 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             return View();
         }
+
+        #region GenerateLanguageFile
+
+        /// <summary>
+        /// Appends missing lines from one csv file in "~/Installer" folder to another 
+        /// OR creates a copy of source file if the destination file does not exist.
+        /// </summary>
+        public ActionResult GenerateLanguageFile(string from = "en-GB", string to = "ru-RU")
+        {
+            var fromFile = GetLanguageFileAsDictionary($"~/Installer/{from}.csv");
+            if (fromFile == null)
+            {
+                return Content(string.Empty);
+            }
+
+            var toFile = GetLanguageFileAsDictionary($"~/Installer/{to}.csv");
+
+            var result = toFile == null
+                ? fromFile
+                : fromFile.ToDictionary(i => i.Key, i => toFile.ContainsKey(i.Key) ? toFile[i.Key] : i.Value);
+
+            System.IO.File.WriteAllLines(Request.MapPath($"~/Installer/{to}.csv"),
+                result.Select(i => $"{i.Key},{i.Value}").ToArray(), Encoding.UTF8);
+
+            return Content(string.Empty);
+        }
+
+        private Dictionary<string, string> GetLanguageFileAsDictionary(string fileName)
+        {
+            var mappedFileName = Request.MapPath(fileName);
+
+            if (!System.IO.File.Exists(mappedFileName))
+            {
+                return null;
+            }
+
+            return
+                System.IO.File.ReadLines(mappedFileName)
+                    .Where(l => !string.IsNullOrWhiteSpace(l))
+                    .Where(l => l.Contains(","))
+                    .Select(GetKeyValue)
+                    .ToList()
+                    .ToDictionary(l => l[0], l => l[1]);
+        }
+
+        private static string[] GetKeyValue(string line)
+        {
+            var i = line.IndexOf(",", StringComparison.Ordinal);
+            return new[]
+            {
+                line.Substring(0, i),
+                line.Substring(i + 1)
+            };
+        }
+
+        #endregion
     }
 }

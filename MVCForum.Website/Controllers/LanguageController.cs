@@ -36,6 +36,11 @@
         [ChildActionOnly]
         public ActionResult Index()
         {
+            if (SiteConstants.Instance.HideLanguageSelector)
+            {
+                return Content(string.Empty);
+            }
+
             var viewModel = new LanguageListAllViewModel
             {
                 Alllanguages = LocalizationService.AllLanguages,
