@@ -12,8 +12,9 @@ namespace MVCForum.Domain.Interfaces.Services
         /// </summary>
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
+        /// <param name="usersRole"></param>
         /// <returns></returns>
-        PagedList<ActivityBase> GetPagedGroupedActivities(int pageIndex, int pageSize);
+        PagedList<ActivityBase> GetPagedGroupedActivities(int pageIndex, int pageSize, MembershipRole usersRole);
 
         /// <summary>
         /// Gets all activities by search data field for a Guid
@@ -48,6 +49,18 @@ namespace MVCForum.Domain.Interfaces.Services
         /// </summary>
         /// <param name="user"></param>
         void ProfileUpdated(MembershipUser user);
+
+        /// <summary>
+        /// Post has been created
+        /// </summary>
+        /// <param name="post"></param>
+        void PostCreated(Post post);
+
+        /// <summary>
+        /// Topic has been created
+        /// </summary>
+        /// <param name="topic"></param>
+        void TopicCreated(Topic topic);
 
         /// <summary>
         /// Delete a number of activities

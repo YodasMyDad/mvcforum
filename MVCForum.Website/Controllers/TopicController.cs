@@ -39,12 +39,13 @@
         private readonly IVoteService _voteService;
         private readonly IUploadedFileService _uploadedFileService;
         private readonly IPostEditService _postEditService;
+        private readonly IActivityService _activityService;
 
         public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
             ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, IPollService pollService,
             IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService, IUploadedFileService uploadedFileService, ICacheService cacheService, 
-            ITagNotificationService tagNotificationService, IPostEditService postEditService)
+            ITagNotificationService tagNotificationService, IPostEditService postEditService, IActivityService activityService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _topicService = topicService;
@@ -63,6 +64,7 @@
             _uploadedFileService = uploadedFileService;
             _tagNotificationService = tagNotificationService;
             _postEditService = postEditService;
+            _activityService = activityService;
         }
 
 
@@ -935,6 +937,9 @@
                             {
                                 cancelledByEvent = true;
                             }
+
+                            if (!topic.Pending.HasValue || !topic.Pending.Value)
+                                _activityService.TopicCreated(topic);
 
                             try
                             {

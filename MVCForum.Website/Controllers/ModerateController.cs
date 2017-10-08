@@ -13,15 +13,17 @@
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
         private readonly ICategoryService _categoryService;
+        private readonly IActivityService _activityService;
 
         public ModerateController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IPostService postService, 
-            ITopicService topicService, ICategoryService categoryService, ICacheService cacheService) 
+            ITopicService topicService, IActivityService activityService, ICategoryService categoryService, ICacheService cacheService) 
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
         {
             _postService = postService;
             _topicService = topicService;
             _categoryService = categoryService;
+            _activityService = activityService;
         }
 
         public ActionResult Index()
@@ -56,6 +58,7 @@
                     if (viewModel.IsApproved)
                     {
                         topic.Pending = false;
+                        _activityService.TopicCreated(topic);
                     }
                     else
                     {
@@ -93,6 +96,7 @@
                     if (viewModel.IsApproved)
                     {
                         post.Pending = false;
+                        _activityService.PostCreated(post);
                     }
                     else
                     {

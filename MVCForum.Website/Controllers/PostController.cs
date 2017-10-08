@@ -28,10 +28,11 @@
         private readonly IBannedWordService _bannedWordService;
         private readonly IVoteService _voteService;
         private readonly IPostEditService _postEditService;
+        private readonly IActivityService _activityService;
 
         public PostController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ITopicService topicService, IPostService postService,
-            ISettingsService settingsService, ICategoryService categoryService,
+            ISettingsService settingsService, ICategoryService categoryService, IActivityService activityService,
             ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, 
             IBannedWordService bannedWordService, IVoteService voteService, IPostEditService postEditService, ICacheService cacheService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
@@ -45,6 +46,7 @@
             _bannedWordService = bannedWordService;
             _voteService = voteService;
             _postEditService = postEditService;
+            _activityService = activityService;
         }
 
 
@@ -97,11 +99,14 @@
                 if (akismetHelper.IsSpam(newPost))
                 {
                     newPost.Pending = true;
-                }
+                }                
+
+                if (!newPost.Pending.HasValue || !newPost.Pending.Value)
+                    _activityService.PostCreated(newPost);
 
                 try
                 {
-                    unitOfWork.Commit();
+                    unitOfWork.Commit();                  
                 }
                 catch (Exception ex)
                 {
@@ -111,11 +116,11 @@
                 }
             }
 
-            //Check for moderation
+            // Check for moderation
             if (newPost.Pending == true)
             {
                 return PartialView("_PostModeration");
-            }
+            }            
 
             // All good send the notifications and send the post back
 
