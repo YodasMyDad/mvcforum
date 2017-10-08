@@ -1,4 +1,7 @@
 ﻿@model MVCForum.Domain.DomainModel.General.Theme
+
+@Bundle.ConfigureDefaults().UseYuiForCssMinification();
+
 @(
  Bundle.Css()
     .Add(Model.ThemePath + "/Content/Styles/imports.css")
