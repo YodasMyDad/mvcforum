@@ -76,6 +76,24 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             }
         }
 
+        public ActionResult EditCategoryPermissions(Guid id)
+        {
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                var category = _categoryService.Get(id);
+                var catPermissionViewModel = new EditCategoryPermissionsViewModel
+                {
+                    Category = category,
+                    Permissions = _permissionService.GetAll().ToList(),
+                    Roles = _roleService.AllRoles()
+                        .Where(x => x.RoleName != AppConstants.AdminRoleName)
+                        .OrderBy(x => x.RoleName)
+                        .ToList()
+                };
+                return View(catPermissionViewModel);
+            }
+        }
+
         public ActionResult PermissionTypes()
         {
             var permViewModel = new ChoosePermissionsViewModel{
