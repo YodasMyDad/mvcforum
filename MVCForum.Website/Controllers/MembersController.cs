@@ -550,13 +550,24 @@
                     // This cookie is removed when they click the confirmation link
                     var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
                     {
-                        Value = $"{userToSave.Email}#{userToSave.UserName}",
+                        Value = CreateForgotPasswordCookieHas(userToSave).ToString(),
                         Expires = DateTime.UtcNow.AddDays(7)
                     };
                     // Add the cookie.
                     Response.Cookies.Add(myCookie);
                 }
             }
+        }
+
+        /// <summary>
+        /// Creates a hash code for the password reset cookie
+        /// </summary>
+        /// <param name="userToSave"></param>
+        /// <returns></returns>
+        private static int CreateForgotPasswordCookieHas(MembershipUser userToSave)
+        {
+            var combinedData = $"{userToSave.Email}{userToSave.CreateDate.ToLongTimeString()}";
+            return combinedData.GetHashCode();
         }
 
         public ActionResult ResendEmailConfirmation(string username)
@@ -600,20 +611,46 @@
                 var user = MembershipService.GetUser(id);
                 if (user != null)
                 {
-                    // Set the user to active
-                    user.IsApproved = true;
-
                     // Delete Cookie and log them in if this cookie is present
-                    if (Request.Cookies[AppConstants.MemberEmailConfirmationCookieName] != null)
+                    var cookie = Request.Cookies[AppConstants.MemberEmailConfirmationCookieName];
+                    if (cookie != null)
                     {
-                        var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
-                        {
-                            Expires = DateTime.UtcNow.AddDays(-1)
-                        };
-                        Response.Cookies.Add(myCookie);
+                        // Set the user to active
+                        user.IsApproved = true;
 
-                        // Login code
-                        FormsAuthentication.SetAuthCookie(user.UserName, false);
+                        // The hashcode to check against
+                        var hashCode = CreateForgotPasswordCookieHas(user).ToString();
+                        if (cookie.Value == hashCode)
+                        {
+                            var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
+                            {
+                                Expires = DateTime.UtcNow.AddDays(-1)
+                            };
+                            Response.Cookies.Add(myCookie);
+
+                            // Login code
+                            FormsAuthentication.SetAuthCookie(user.UserName, false);
+                        }
+                        else
+                        {
+                            // Show a new message
+                            // We use temp data because we are doing a redirect
+                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                            {
+                                Message = LocalizationService.GetResourceString("Members.Errors.LogonGeneric"),
+                                MessageType = GenericMessages.danger
+                            };
+                        }
+                    }
+                    else
+                    {
+                        // Show a new message
+                        // We use temp data because we are doing a redirect
+                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = LocalizationService.GetResourceString("Members.Errors.LogonGeneric"),
+                            MessageType = GenericMessages.danger
+                        };
                     }
 
                     // Show a new message
