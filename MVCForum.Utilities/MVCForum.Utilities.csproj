@@ -94,23 +94,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BotUtils.cs" />
-    <Compile Include="CensorUtils.cs" />
-    <Compile Include="ConfigUtils.cs" />
-    <Compile Include="DateUtils.cs" />
-    <Compile Include="EnumUtils.cs" />
-    <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="GuidComb.cs" />
-    <Compile Include="InstallerHelper.cs" />
-    <Compile Include="LanguageUtils.cs" />
-    <Compile Include="Markdown.cs" />
-    <Compile Include="NodePositions.cs" />
-    <Compile Include="PorterStemmingAlgorithm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CsvReader.cs" />
-    <Compile Include="ReflectionUtilities.cs" />
-    <Compile Include="RssReader.cs" />
-    <Compile Include="StringUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
