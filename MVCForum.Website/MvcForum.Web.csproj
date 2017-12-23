@@ -34,6 +34,7 @@
     <Use64BitIISExpress />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -56,83 +57,17 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AjaxMin, Version=5.14.5506.26196, Culture=neutral, PublicKeyToken=21ef50ce11b5d80f, processorArchitecture=MSIL">
-      <HintPath>..\packages\AjaxMin.5.14.5506.26202\lib\net40\AjaxMin.dll</HintPath>
-    </Reference>
-    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
-      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Common.Logging, Version=3.4.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Common.Logging.3.4.1\lib\net40\Common.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Common.Logging.Core, Version=3.4.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Common.Logging.Core.3.4.1\lib\net40\Common.Logging.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="CommonServiceLocator, Version=2.0.1.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.5.0\lib\net45\CommonServiceLocator.dll</HintPath>
-    </Reference>
-    <Reference Include="EcmaScript.NET, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\EcmaScript.Net.1.0.1.0\lib\net20\EcmaScript.NET.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServerCompact, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.SqlServerCompact.6.2.0\lib\net45\EntityFramework.SqlServerCompact.dll</HintPath>
-    </Reference>
-    <Reference Include="ImageProcessor, Version=2.5.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ImageProcessor.2.5.6\lib\net45\ImageProcessor.dll</HintPath>
-    </Reference>
-    <Reference Include="ImageProcessor.Web, Version=4.8.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ImageProcessor.Web.4.8.7\lib\net45\ImageProcessor.Web.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=1.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.IO.RecyclableMemoryStream.1.2.2\lib\net45\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="NPoco, Version=3.9.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NPoco.3.9.2\lib\net45\NPoco.dll</HintPath>
-    </Reference>
-    <Reference Include="Quartz, Version=2.6.1.0, Culture=neutral, PublicKeyToken=f6b8c98a402cc8a4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Quartz.2.6.1\lib\net40\Quartz.dll</HintPath>
-    </Reference>
-    <Reference Include="Skybrud.Social, Version=0.9.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Skybrud.Social.0.9.6.0\lib\net40\Skybrud.Social.dll</HintPath>
-    </Reference>
     <Reference Include="Skybrud.Social.Microsoft">
       <HintPath>..\Externals\Skybrud.Social.Microsoft.dll</HintPath>
     </Reference>
-    <Reference Include="SquishIt.AspNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SquishIt.AspNet.1.0.0\lib\SquishIt.AspNet.dll</HintPath>
-    </Reference>
-    <Reference Include="SquishIt.Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SquishIt.Framework.1.0.0\lib\SquishIt.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="SquishIt.Mvc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SquishIt.Mvc.1.0.0\lib\SquishIt.Mvc.dll</HintPath>
-    </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.SqlServer.Compact.4.0.8876.1\lib\net40\System.Data.SqlServerCe.dll</HintPath>
-    </Reference>
     <Reference Include="System.Net.Http">
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
-    </Reference>
     <Reference Include="System.Net.Http.WebRequest">
       <Private>True</Private>
     </Reference>
@@ -145,34 +80,7 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web.Routing" />
-    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
@@ -180,44 +88,8 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Unity.Abstractions, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.5.0\lib\net45\Unity.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Configuration, Version=5.1.2.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.5.0\lib\net45\Unity.Configuration.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Container, Version=5.5.0.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.5.0\lib\net45\Unity.Container.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Interception, Version=5.2.1.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.5.0\lib\net45\Unity.Interception.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Interception.Configuration, Version=5.1.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.5.0\lib\net45\Unity.Interception.Configuration.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RegistrationByConvention, Version=2.1.3.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.5.0\lib\net45\Unity.RegistrationByConvention.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ServiceLocation, Version=2.0.10.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.5.0\lib\net45\Unity.ServiceLocation.dll</HintPath>
-    </Reference>
-    <Reference Include="WebActivator, Version=1.5.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\WebActivator.1.5.3\lib\net40\WebActivator.dll</HintPath>
-    </Reference>
-    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
-      <HintPath>..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
-    </Reference>
-    <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
-    </Reference>
-    <Reference Include="Yahoo.Yui.Compressor, Version=2.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\YUICompressor.NET.2.7.0.0\lib\NET20\Yahoo.Yui.Compressor.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Akismet.NET\Comment.cs" />
-    <Compile Include="Akismet.NET\IValidator.cs" />
-    <Compile Include="Akismet.NET\Validator.cs" />
     <Compile Include="Application\ActionFilterAttributes\MustBeTrueAttribute.cs" />
     <Compile Include="Application\Akismet\Comment.cs" />
     <Compile Include="Application\Akismet\IValidator.cs" />
@@ -826,186 +698,6 @@
     <Content Include="Scripts\cache\Cache.txt" />
     <Content Include="Content\bootstrap\css\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap\css\bootstrap.min.css.map" />
-    <None Include="job_scheduling_data_2_0.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <Content Include="Scripts\tinymce\jquery.tinymce.min.js" />
-    <Content Include="Scripts\tinymce\license.txt" />
-    <Content Include="Scripts\tinymce\plugins\advlist\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\advlist\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\anchor\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\anchor\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\autolink\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\autolink\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\autoresize\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\autoresize\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\autosave\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\autosave\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\bbcode\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\bbcode\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\charmap\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\charmap\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\codesample\css\prism.css" />
-    <Content Include="Scripts\tinymce\plugins\codesample\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\codesample\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\code\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\code\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\colorpicker\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\colorpicker\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\compat3x\css\dialog.css" />
-    <Content Include="Scripts\tinymce\plugins\compat3x\img\buttons.png" />
-    <Content Include="Scripts\tinymce\plugins\compat3x\img\icons.gif" />
-    <Content Include="Scripts\tinymce\plugins\compat3x\img\items.gif" />
-    <Content Include="Scripts\tinymce\plugins\compat3x\img\menu_arrow.gif" />
-    <Content Include="Scripts\tinymce\plugins\compat3x\img\menu_check.gif" />
-    <Content Include="Scripts\tinymce\plugins\compat3x\img\progress.gif" />
-    <Content Include="Scripts\tinymce\plugins\compat3x\img\tabs.gif" />
-    <Content Include="Scripts\tinymce\plugins\compat3x\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\compat3x\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\compat3x\tiny_mce_popup.js" />
-    <Content Include="Scripts\tinymce\plugins\compat3x\utils\editable_selects.js" />
-    <Content Include="Scripts\tinymce\plugins\compat3x\utils\form_utils.js" />
-    <Content Include="Scripts\tinymce\plugins\compat3x\utils\mctabs.js" />
-    <Content Include="Scripts\tinymce\plugins\compat3x\utils\validate.js" />
-    <Content Include="Scripts\tinymce\plugins\contextmenu\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\contextmenu\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\directionality\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\directionality\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-cool.gif" />
-    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-cry.gif" />
-    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-embarassed.gif" />
-    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-foot-in-mouth.gif" />
-    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-frown.gif" />
-    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-innocent.gif" />
-    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-kiss.gif" />
-    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-laughing.gif" />
-    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-money-mouth.gif" />
-    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-sealed.gif" />
-    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-smile.gif" />
-    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-surprised.gif" />
-    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-tongue-out.gif" />
-    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-undecided.gif" />
-    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-wink.gif" />
-    <Content Include="Scripts\tinymce\plugins\emoticons\img\smiley-yell.gif" />
-    <Content Include="Scripts\tinymce\plugins\emoticons\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\emoticons\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\fullpage\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\fullpage\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\fullscreen\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\fullscreen\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\help\img\logo.png" />
-    <Content Include="Scripts\tinymce\plugins\help\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\help\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\hr\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\hr\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\imagetools\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\imagetools\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\image\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\image\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\importcss\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\importcss\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\insertdatetime\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\insertdatetime\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\legacyoutput\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\legacyoutput\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\link\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\link\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\lists\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\lists\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\media\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\media\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\nonbreaking\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\nonbreaking\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\noneditable\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\noneditable\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\pagebreak\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\pagebreak\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\paste\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\paste\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\preview\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\preview\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\print\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\print\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\save\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\save\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\searchreplace\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\searchreplace\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\spellchecker\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\spellchecker\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\tabfocus\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\tabfocus\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\table\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\table\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\template\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\template\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\textcolor\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\textcolor\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\textpattern\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\textpattern\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\toc\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\toc\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\visualblocks\css\visualblocks.css" />
-    <Content Include="Scripts\tinymce\plugins\visualblocks\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\visualblocks\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\visualchars\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\visualchars\plugin.min.js" />
-    <Content Include="Scripts\tinymce\plugins\wordcount\plugin.js" />
-    <Content Include="Scripts\tinymce\plugins\wordcount\plugin.min.js" />
-    <Content Include="Scripts\tinymce\skins\lightgray\content.inline.min.css" />
-    <Content Include="Scripts\tinymce\skins\lightgray\content.min.css" />
-    <Content Include="Scripts\tinymce\skins\lightgray\content.mobile.min.css" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.svg" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.svg" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.woff" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.ttf" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.eot" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.woff" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.ttf" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-small.eot" />
-    <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce-mobile.woff" />
-    <Content Include="Scripts\tinymce\langs\readme.md" />
-    <None Include="_bin_deployableAssemblies\x86\sqlcese40.dll" />
-    <None Include="_bin_deployableAssemblies\x86\sqlceqp40.dll" />
-    <None Include="_bin_deployableAssemblies\x86\sqlceme40.dll" />
-    <None Include="_bin_deployableAssemblies\x86\sqlceer40EN.dll" />
-    <None Include="_bin_deployableAssemblies\x86\sqlcecompact40.dll" />
-    <None Include="_bin_deployableAssemblies\x86\sqlceca40.dll" />
-    <None Include="_bin_deployableAssemblies\x86\Microsoft.VC90.CRT\README_ENU.txt" />
-    <None Include="_bin_deployableAssemblies\x86\Microsoft.VC90.CRT\msvcr90.dll" />
-    <None Include="_bin_deployableAssemblies\amd64\sqlcese40.dll" />
-    <None Include="_bin_deployableAssemblies\amd64\sqlceqp40.dll" />
-    <None Include="_bin_deployableAssemblies\amd64\sqlceme40.dll" />
-    <None Include="_bin_deployableAssemblies\amd64\sqlceer40EN.dll" />
-    <None Include="_bin_deployableAssemblies\amd64\sqlcecompact40.dll" />
-    <None Include="_bin_deployableAssemblies\amd64\sqlceca40.dll" />
-    <None Include="_bin_deployableAssemblies\amd64\Microsoft.VC90.CRT\README_ENU.txt" />
-    <None Include="_bin_deployableAssemblies\amd64\Microsoft.VC90.CRT\msvcr90.dll" />
-    <None Include="Scripts\jquery-3.2.1.intellisense.js" />
-    <Content Include="Scripts\jquery-3.2.1.js" />
-    <Content Include="Scripts\jquery-3.2.1.min.js" />
-    <Content Include="Scripts\jquery-3.2.1.slim.js" />
-    <Content Include="Scripts\jquery-3.2.1.slim.min.js" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
-    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
-    <Content Include="Scripts\jquery.validate.js" />
-    <Content Include="Scripts\jquery.validate.min.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Scripts\tinymce\skins\lightgray\img\anchor.gif" />
-    <Content Include="Scripts\tinymce\skins\lightgray\img\loader.gif" />
-    <Content Include="Scripts\tinymce\skins\lightgray\img\object.gif" />
-    <Content Include="Scripts\tinymce\skins\lightgray\img\trans.gif" />
-    <Content Include="Scripts\tinymce\skins\lightgray\skin.min.css" />
-    <Content Include="Scripts\tinymce\skins\lightgray\skin.mobile.min.css" />
-    <Content Include="Scripts\tinymce\themes\inlite\theme.js" />
-    <Content Include="Scripts\tinymce\themes\inlite\theme.min.js" />
-    <Content Include="Scripts\tinymce\themes\mobile\theme.js" />
-    <Content Include="Scripts\tinymce\themes\mobile\theme.min.js" />
-    <Content Include="Scripts\tinymce\themes\modern\theme.js" />
-    <Content Include="Scripts\tinymce\themes\modern\theme.min.js" />
-    <Content Include="Scripts\tinymce\tinymce.js" />
-    <Content Include="Scripts\tinymce\tinymce.min.js" />
     <Content Include="Themes\Metro\Content\Styles\Theme.min.css" />
     <Content Include="Views\Moderate\Index.cshtml" />
     <Content Include="Views\Moderate\GetMoreTopics.cshtml" />
@@ -1067,7 +759,6 @@
     <Content Include="Views\Post\GetPostEditHistory.cshtml" />
     <Content Include="Areas\Admin\Views\Account\ManageUserPoints.cshtml" />
     <Content Include="Themes\Metro\Content\Styles\Theme.css.map" />
-    <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\Local Deployment.pubxml" />
     <Content Include="Scripts\jquery-ui.min.js" />
     <Content Include="Scripts\json2.js" />
@@ -1229,10 +920,6 @@
     <Content Include="Views\Members\PasswordResetSent.cshtml" />
     <Content Include="Views\Members\ResetPassword.cshtml" />
     <Content Include="Views\Members\PasswordChanged.cshtml" />
-    <Content Include="Scripts\jquery-3.2.1.slim.min.map" />
-    <Content Include="Scripts\jquery-3.2.1.min.map" />
-    <None Include="_bin_deployableAssemblies\amd64\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest" />
-    <None Include="_bin_deployableAssemblies\x86\Microsoft.VC90.CRT\Microsoft.VC90.CRT.manifest" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\languagepacks\" />
@@ -1436,6 +1123,134 @@
     <Content Include="Views\Install\CreateDb.cshtml" />
     <Content Include="Views\Install\Complete.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AjaxMin">
+      <Version>5.14.5506.26202</Version>
+    </PackageReference>
+    <PackageReference Include="Akismet.NET">
+      <Version>1.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Antlr">
+      <Version>3.5.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="Common.Logging">
+      <Version>3.4.1</Version>
+    </PackageReference>
+    <PackageReference Include="Common.Logging.Core">
+      <Version>3.4.1</Version>
+    </PackageReference>
+    <PackageReference Include="CommonServiceLocator">
+      <Version>2.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="EcmaScript.Net">
+      <Version>1.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="EntityFramework">
+      <Version>6.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="EntityFramework.SqlServerCompact">
+      <Version>6.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="ImageProcessor">
+      <Version>2.5.6</Version>
+    </PackageReference>
+    <PackageReference Include="ImageProcessor.Web">
+      <Version>4.8.7</Version>
+    </PackageReference>
+    <PackageReference Include="jQuery">
+      <Version>3.2.1</Version>
+    </PackageReference>
+    <PackageReference Include="jQuery.Validation">
+      <Version>1.16.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.Mvc">
+      <Version>5.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.Razor">
+      <Version>3.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.Web.Optimization">
+      <Version>1.1.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.WebApi">
+      <Version>5.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client">
+      <Version>5.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core">
+      <Version>5.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.WebApi.WebHost">
+      <Version>5.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.WebPages">
+      <Version>3.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Bcl.Build">
+      <Version>1.0.21</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CSharp">
+      <Version>4.4.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream">
+      <Version>1.2.2</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax">
+      <Version>3.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.jQuery.Unobtrusive.Validation">
+      <Version>3.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.SqlServer.Compact">
+      <Version>4.0.8876.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Web.Infrastructure">
+      <Version>1.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>10.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="NPoco">
+      <Version>3.9.2</Version>
+    </PackageReference>
+    <PackageReference Include="Quartz">
+      <Version>2.6.1</Version>
+    </PackageReference>
+    <PackageReference Include="Skybrud.Social">
+      <Version>0.9.6</Version>
+    </PackageReference>
+    <PackageReference Include="SquishIt">
+      <Version>1.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="SquishIt.AspNet">
+      <Version>1.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="SquishIt.Framework">
+      <Version>1.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="SquishIt.Mvc">
+      <Version>1.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="TinyMCE">
+      <Version>4.7.4</Version>
+    </PackageReference>
+    <PackageReference Include="Unity">
+      <Version>5.5.0</Version>
+    </PackageReference>
+    <PackageReference Include="WebActivator">
+      <Version>1.5.3</Version>
+    </PackageReference>
+    <PackageReference Include="WebActivatorEx">
+      <Version>2.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="WebGrease">
+      <Version>1.6.0</Version>
+    </PackageReference>
+    <PackageReference Include="YUICompressor.NET">
+      <Version>2.7.0</Version>
+    </PackageReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -1476,7 +1291,5 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
   </Target>
-  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
 </Project>
