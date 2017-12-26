@@ -1,5 +1,6 @@
 ﻿@using MvcForum.Core.Utilities
-@model MVCForum.Website.ViewModels.TopicViewModel
+@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.TopicViewModel
 @{
     var postToolTip = string.Concat(StringUtils.ReturnAmountWordsFromString(StringUtils.StripHtmlFromString(Model.StarterPost.Post.PostContent), 50), "....");
 }
@@ -68,7 +69,7 @@
                 <a href="@Model.Topic.LastPost.User.NiceUrl">
                     @Model.Topic.LastPost.User.UserName
                 </a> 
-                @DatesUI.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString()).
+                @DatesUi.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString()).
                 <span class="stats topicanswers"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Model.Answers.KiloFormat()</span>
                 <span class="stats topicviews"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Model.Views.KiloFormat()</span>
                 <span class="stats topicupvotes"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> @Model.VotesUp.KiloFormat()</span>

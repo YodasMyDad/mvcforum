@@ -6,7 +6,7 @@
 
     public class SiteConstants
     {
-        public string MvcForumVersion => GetConfig("MVCForumVersion");
+        public string MvcForumVersion => GetConfig("MvcForumVersion");
 
 
         // This is just the initial standard role

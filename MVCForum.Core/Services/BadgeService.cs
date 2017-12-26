@@ -51,7 +51,7 @@
         #region Private static methods
 
         /// <summary>
-        /// The discovered badge class .Net types, indexed by MVCForum badge type
+        /// The discovered badge class .Net types, indexed by MvcForum badge type
         /// </summary>
         private static Dictionary<BadgeType, List<BadgeMapping>> _badges;
 

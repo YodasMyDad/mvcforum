@@ -1,5 +1,6 @@
-﻿@using MVCForum.Domain.Constants
-@using MVCForum.Website.Application
+﻿@using MvcForum.Core.Constants
+@using MvcForum.Web.Application
+@using MvcForum.Web.Application.ExtensionMethods
 @{
     TempData[AppConstants.GlobalClass] = Context.IsMobileDevice() ? "mobile" : "desktop";
     TempData[AppConstants.CurrentAction] = ViewContext.RouteData.GetRequiredString("action").ToLower();

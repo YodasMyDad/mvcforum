@@ -3,7 +3,7 @@
     using DomainModel.Entities;
     using DomainModel.Enums;
 
-    public class RegisterUserEventArgs : MVCForumEventArgs
+    public class RegisterUserEventArgs : MvcForumEventArgs
     {
         public MembershipUser User { get; set; }
         public MembershipCreateStatus CreateStatus { get; set; }

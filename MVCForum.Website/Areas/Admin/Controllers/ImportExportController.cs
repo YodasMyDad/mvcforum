@@ -77,7 +77,7 @@
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                return new CsvFileResult {FileDownloadName = "MVCForumUsers.csv", Body = MembershipService.ToCsv()};
+                return new CsvFileResult {FileDownloadName = "MvcForumUsers.csv", Body = MembershipService.ToCsv()};
             }
         }
 

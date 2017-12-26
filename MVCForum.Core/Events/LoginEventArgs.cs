@@ -2,7 +2,7 @@
 {
     using Interfaces.UnitOfWork;
 
-    public class LoginEventArgs : MVCForumEventArgs
+    public class LoginEventArgs : MvcForumEventArgs
     {
         public string ReturnUrl { get; set; }
         public string UserName { get; set; }

@@ -178,7 +178,7 @@ namespace MvcForum.Core.Services.Migrations
                     // create the settings
                     var settings = new Settings
                     {
-                        ForumName = "MVCForum",
+                        ForumName = "MvcForum",
                         ForumUrl = "http://www.mydomain.com",
                         IsClosed = false,
                         EnableRSSFeeds = true,

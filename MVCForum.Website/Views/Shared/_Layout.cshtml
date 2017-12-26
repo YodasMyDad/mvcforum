@@ -1,4 +1,6 @@
-﻿@using MVCForum.Domain.DomainModel.General
+﻿@using MvcForum.Core.DomainModel.General
+@using MvcForum.Web.Application.ExtensionMethods
+
 @{
     // Global Stuff
     var themeName = Html.Settings().Theme;
@@ -145,7 +147,7 @@
 
                             If you would like to remove the powered by notice, then please vist http://www.mvcforum.com/license -->
 
-                        <p>&copy; @DateTime.UtcNow.Year - @Html.LanguageString("Layout.PoweredBy") <a rel="nofollow" href="http://www.mvcforum.com">MVCForum.com</a></p>
+                        <p>&copy; @DateTime.UtcNow.Year - @Html.LanguageString("Layout.PoweredBy") <a rel="nofollow" href="http://www.mvcforum.com">MvcForum.com</a></p>
 
                         <!--########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ########################### -->
                     </div>

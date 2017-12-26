@@ -1,5 +1,6 @@
-﻿@using MVCForum.Domain.Constants
-@model MVCForum.Website.Areas.Admin.ViewModels.MainDashboardNavViewModel
+﻿
+@using MvcForum.Core.Constants
+@model MvcForum.Web.Areas.Admin.ViewModels.MainDashboardNavViewModel
 @{
     var currentController = TempData[AppConstants.CurrentController].ToString();
     var currentAction = TempData[AppConstants.CurrentAction].ToString();

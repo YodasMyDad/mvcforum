@@ -23,14 +23,14 @@
         /// </summary>
         public static readonly Dictionary<BadgeType, string> BadgeClassNames = new Dictionary<BadgeType, string>
         {
-            {BadgeType.VoteUp, "MVCForum.Domain.Interfaces.Badges.IVoteUpBadge"},
-            {BadgeType.MarkAsSolution, "MVCForum.Domain.Interfaces.Badges.IMarkAsSolutionBadge"},
-            {BadgeType.Time, "MVCForum.Domain.Interfaces.Badges.ITimeBadge"},
-            {BadgeType.Post, "MVCForum.Domain.Interfaces.Badges.IPostBadge"},
-            {BadgeType.VoteDown, "MVCForum.Domain.Interfaces.Badges.IVoteDownBadge"},
-            {BadgeType.Profile, "MVCForum.Domain.Interfaces.Badges.IProfileBadge"},
-            {BadgeType.Favourite, "MVCForum.Domain.Interfaces.Badges.IFavouriteBadge"},
-            {BadgeType.Tag, "MVCForum.Domain.Interfaces.Badges.ITagBadge"}
+            {BadgeType.VoteUp, "MvcForum.Core.Interfaces.Badges .IVoteUpBadge"},
+            {BadgeType.MarkAsSolution, "MvcForum.Core.Interfaces.Badges .IMarkAsSolutionBadge"},
+            {BadgeType.Time, "MvcForum.Core.Interfaces.Badges .ITimeBadge"},
+            {BadgeType.Post, "MvcForum.Core.Interfaces.Badges .IPostBadge"},
+            {BadgeType.VoteDown, "MvcForum.Core.Interfaces.Badges .IVoteDownBadge"},
+            {BadgeType.Profile, "MvcForum.Core.Interfaces.Badges .IProfileBadge"},
+            {BadgeType.Favourite, "MvcForum.Core.Interfaces.Badges .IFavouriteBadge"},
+            {BadgeType.Tag, "MvcForum.Core.Interfaces.Badges .ITagBadge"}
         };
 
         public Badge()

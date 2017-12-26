@@ -3,7 +3,7 @@
     using DomainModel;
     using DomainModel.Entities;
 
-    public class FavouriteEventArgs : MVCForumEventArgs
+    public class FavouriteEventArgs : MvcForumEventArgs
     {
         public Favourite Favourite { get; set; }
     }

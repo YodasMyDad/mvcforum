@@ -1,5 +1,5 @@
 ﻿@using System.Globalization
-@model MVCForum.Website.ViewModels.ViewMemberViewModel
+@model MvcForum.Web.ViewModels.ViewMemberViewModel
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = string.Concat(Model.User.UserName, " ",Html.LanguageString("Members.ProfileTitle"));
@@ -81,10 +81,10 @@
                         <h3>@Model.User.UserName</h3>
                     </div>
                     <div class="col-md-6">
-                        <p>@Html.LanguageString("Members.Profile.Joined") @DatesUI.GetPrettyDate(Model.User.CreateDate.ToString())</p>
+                        <p>@Html.LanguageString("Members.Profile.Joined") @DatesUi.GetPrettyDate(Model.User.CreateDate.ToString())</p>
                         @if (Model.User.LastActivityDate != null)
                         {
-                            <p>@(Html.LanguageString("Members.Profile.LastOnline")): @DatesUI.GetPrettyDate(Model.User.LastActivityDate.ToString())</p>
+                            <p>@(Html.LanguageString("Members.Profile.LastOnline")): @DatesUi.GetPrettyDate(Model.User.LastActivityDate.ToString())</p>
                         }                        
                         <p>@Html.LanguageString("Members.Profile.Posts") @Model.User.Posts.Count</p>
                         <p>@Html.LanguageString("Members.Profile.Points") @Model.User.TotalPoints</p>

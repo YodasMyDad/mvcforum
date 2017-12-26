@@ -36,7 +36,7 @@
             // If ok check the user exists and log the user in using the details below
             FormsAuthentication.SetAuthCookie(e.UserName, e.RememberMe);
 
-            // Get membership service - you must create the member in MVCForum if they don't exist
+            // Get membership service - you must create the member in MvcForum if they don't exist
             // Or you'll get an error when they have been redirected to the home page and logged in
             // this is pretty simple to do once we have the member service
             var memberService = ServiceFactory.Get<IMembershipService>();

@@ -72,7 +72,7 @@
 
             if (AuthState != null)
             {
-                var stateValue = Session["MVCForum_" + AuthState] as NameValueCollection;
+                var stateValue = Session["MvcForum_" + AuthState] as NameValueCollection;
                 if (stateValue != null)
                 {
                     Callback = stateValue["Callback"];
@@ -99,7 +99,7 @@
                 };
 
                 // Session expired?
-                if (AuthState != null && Session["MVCForum_" + AuthState] == null)
+                if (AuthState != null && Session["MvcForum_" + AuthState] == null)
                 {
                     resultMessage.Message = "Session Expired";
                     resultMessage.MessageType = GenericMessages.danger;
@@ -112,7 +112,7 @@
                     resultMessage.MessageType = GenericMessages.danger;
                     if (AuthState != null)
                     {
-                        Session.Remove("MVCForum_" + AuthState);
+                        Session.Remove("MvcForum_" + AuthState);
                     }
                 }
 
@@ -123,7 +123,7 @@
                     var state = Guid.NewGuid().ToString();
 
                     // Save the state in the current user session
-                    Session["MVCForum_" + state] = new NameValueCollection
+                    Session["MvcForum_" + state] = new NameValueCollection
                     {
                         {"Callback", Callback},
                         {"ContentTypeAlias", ContentTypeAlias},

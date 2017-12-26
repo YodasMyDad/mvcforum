@@ -74,7 +74,7 @@
                 };
 
                 // Session expired?
-                if (input.State != null && Session["MVCForum_" + input.State] == null)
+                if (input.State != null && Session["MvcForum_" + input.State] == null)
                 {
                     resultMessage.Message = "Session Expired";
                     resultMessage.MessageType = GenericMessages.danger;
@@ -83,7 +83,7 @@
                 // Check whether an error response was received from Microsoft
                 if (input.Error.HasError)
                 {
-                    Session.Remove("MVCForum_" + input.State);
+                    Session.Remove("MvcForum_" + input.State);
                     resultMessage.Message = AuthErrorDescription;
                     resultMessage.MessageType = GenericMessages.danger;
                 }
@@ -95,7 +95,7 @@
                     var state = Guid.NewGuid().ToString();
 
                     // Save the state in the current user session
-                    Session["MVCForum_" + state] = "/";
+                    Session["MvcForum_" + state] = "/";
 
                     // Construct the authorization URL
                     var url = client.GetAuthorizationUrl(state, WindowsLiveScopes.Emails + WindowsLiveScopes.Birthday);
@@ -108,7 +108,7 @@
                 MicrosoftTokenResponse accessTokenResponse;
                 try
                 {
-                    Session.Remove("MVCForum_" + input.State);
+                    Session.Remove("MvcForum_" + input.State);
                     accessTokenResponse = client.GetAccessTokenFromAuthCode(input.Code);
                 }
                 catch (Exception ex)

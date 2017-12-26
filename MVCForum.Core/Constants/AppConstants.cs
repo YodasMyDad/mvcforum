@@ -8,11 +8,11 @@ namespace MvcForum.Core.Constants
         public const string EditorType = "forumeditor";
 
         // Scheduled Tasks
-        public const string DefaultTaskGroup = "MVCForumTaskGroup";
+        public const string DefaultTaskGroup = "MvcForumTaskGroup";
 
         // Cookie names
         public const string LanguageIdCookieName = "LanguageCulture";
-        public const string MemberEmailConfirmationCookieName = "MVCForumEmailConfirmation";
+        public const string MemberEmailConfirmationCookieName = "MvcForumEmailConfirmation";
 
         // Cache names
         //TODO - Move to cache keys

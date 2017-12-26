@@ -3,7 +3,7 @@
     using DomainModel;
     using DomainModel.Entities;
 
-    public class PostMadeEventArgs : MVCForumEventArgs
+    public class PostMadeEventArgs : MvcForumEventArgs
     {
         public Post Post { get; set; }
     }

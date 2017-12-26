@@ -101,7 +101,7 @@
             if (string.IsNullOrEmpty(config["description"]))
             {
                 config.Remove("description");
-                config.Add("description", "MVCForum Standard Membership Provider");
+                config.Add("description", "MvcForum Standard Membership Provider");
             }
 
             // Initialize the abstract base class.

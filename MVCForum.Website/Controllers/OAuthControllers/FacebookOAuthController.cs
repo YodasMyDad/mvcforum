@@ -68,7 +68,7 @@
 
             if (AuthState != null)
             {
-                var stateValue = Session["MVCForum_" + AuthState] as string[];
+                var stateValue = Session["MvcForum_" + AuthState] as string[];
                 if (stateValue != null && stateValue.Length == 3)
                 {
                     Callback = stateValue[0];
@@ -96,7 +96,7 @@
                 };
 
                 // Session expired?
-                if (AuthState != null && Session["MVCForum_" + AuthState] == null)
+                if (AuthState != null && Session["MvcForum_" + AuthState] == null)
                 {
                     resultMessage.Message = "Session Expired";
                     resultMessage.MessageType = GenericMessages.danger;
@@ -105,7 +105,7 @@
                 // Check whether an error response was received from Facebook
                 if (AuthError != null)
                 {
-                    Session.Remove("MVCForum_" + AuthState);
+                    Session.Remove("MvcForum_" + AuthState);
                     resultMessage.Message = AuthErrorDescription;
                     resultMessage.MessageType = GenericMessages.danger;
                 }
@@ -117,7 +117,7 @@
                     var state = Guid.NewGuid().ToString();
 
                     // Save the state in the current user session
-                    Session["MVCForum_" + state] = new[] {Callback, ContentTypeAlias, PropertyAlias};
+                    Session["MvcForum_" + state] = new[] {Callback, ContentTypeAlias, PropertyAlias};
 
                     // Construct the authorization URL
                     var url = client.GetAuthorizationUrl(state, "public_profile", "email"); //"user_friends"

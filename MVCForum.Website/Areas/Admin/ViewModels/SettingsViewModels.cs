@@ -128,7 +128,7 @@
         public string AdminEmailAddress { get; set; }
 
         [DisplayName("Notification Reply Email Address")]
-        [AllowHtml] // We have to put this to allow this type of reply address MVCForum <noreply@mvcforum.com>
+        [AllowHtml] // We have to put this to allow this type of reply address MvcForum <noreply@mvcforum.com>
         public string NotificationReplyEmail { get; set; }
 
         [DisplayName("SMTP Server")]

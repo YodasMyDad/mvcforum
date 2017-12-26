@@ -3,7 +3,7 @@
     using DomainModel;
     using DomainModel.Entities;
 
-    public class PrivateMessageEventArgs : MVCForumEventArgs
+    public class PrivateMessageEventArgs : MvcForumEventArgs
     {
         public PrivateMessage PrivateMessage { get; set; }
     }

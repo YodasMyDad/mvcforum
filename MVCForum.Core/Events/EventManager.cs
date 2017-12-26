@@ -11,7 +11,7 @@
 
     public sealed class EventManager : IEventManager
     {
-        private const string InterfaceTargetName = @"MVCForum.Domain.Interfaces.Events.IEventHandler";
+        private const string InterfaceTargetName = @"MvcForum.Core.Interfaces.Events.IEventHandler";
 
         private static volatile EventManager _instance;
         private static readonly object SyncRoot = new object();

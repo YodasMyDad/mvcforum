@@ -3,7 +3,7 @@
     using DomainModel;
     using DomainModel.Entities;
 
-    public class UpdateProfileEventArgs : MVCForumEventArgs
+    public class UpdateProfileEventArgs : MvcForumEventArgs
     {
         public MembershipUser User { get; set; }
     }
