@@ -1,19 +1,18 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
     using System;
     using System.Collections.Generic;
+    using System.Data.Entity;
     using System.Linq;
     using System.Text;
     using System.Web;
     using System.Web.Mvc;
-    using System.Data.Entity;
-    using Domain.Constants;
-    using Domain.DomainModel;
-    using Domain.DomainModel.General;
-    using Domain.Exceptions;
-    using Domain.Interfaces;
-    using Domain.Interfaces.Services;
+    using Constants;
     using Data.Context;
+    using DomainModel.Entities;
+    using DomainModel.General;
+    using Interfaces;
+    using Interfaces.Services;
     using Utilities;
 
     public partial class CategoryService : ICategoryService
@@ -21,7 +20,7 @@
         private readonly IRoleService _roleService;
         private readonly ICategoryNotificationService _categoryNotificationService;
         private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
-        private readonly MVCForumContext _context;
+        private readonly MvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         /// <summary>
@@ -32,13 +31,13 @@
         /// <param name="categoryNotificationService"> </param>
         /// <param name="categoryPermissionForRoleService"></param>
         /// <param name="cacheService"></param>
-        public CategoryService(IMVCForumContext context, IRoleService roleService, ICategoryNotificationService categoryNotificationService, ICategoryPermissionForRoleService categoryPermissionForRoleService, ICacheService cacheService)
+        public CategoryService(IMvcForumContext context, IRoleService roleService, ICategoryNotificationService categoryNotificationService, ICategoryPermissionForRoleService categoryPermissionForRoleService, ICacheService cacheService)
         {
             _roleService = roleService;
             _categoryNotificationService = categoryNotificationService;
             _categoryPermissionForRoleService = categoryPermissionForRoleService;
             _cacheService = cacheService;
-            _context = context as MVCForumContext;
+            _context = context as MvcForumContext;
         }
 
         /// <summary>
@@ -380,7 +379,7 @@
             {
                 var inUseBy = new List<Entity>();
                 inUseBy.AddRange(category.Topics);
-                throw new InUseUnableToDeleteException(inUseBy);
+                throw new Exception($"In use by {inUseBy.Count} entities");
             }
         }
 

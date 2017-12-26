@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Website.Areas.Admin.ViewModels
+﻿namespace MvcForum.Web.Areas.Admin.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
+    using Core.DomainModel.Entities;
+
     #region Members
+
     public class BatchDeleteMembersViewModel
     {
         [Required]
@@ -20,10 +21,12 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public int AmoutOfPosts { get; set; }
 
         public int AmountDeleted { get; set; }
-    } 
+    }
+
     #endregion
 
     #region Topics
+
     public class BatchMoveTopicsViewModel
     {
         public List<Category> Categories { get; set; }
@@ -35,7 +38,8 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [Required]
         [DisplayName("To this new Category")]
         public Guid? ToCategory { get; set; }
-    } 
+    }
+
     #endregion
 
     #region Private Messages
@@ -45,7 +49,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [Required]
         [DisplayName("How many Days?")]
         public int Days { get; set; }
-    } 
+    }
 
     #endregion
 }

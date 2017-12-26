@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Attributes;
-using MVCForum.Domain.Interfaces.Badges;
-
-namespace Badge.ThousandPoints
+﻿namespace Badge.ThousandPoints
 {
+    using System.Linq;
+    using MvcForum.Core.DomainModel.Attributes;
+    using MvcForum.Core.DomainModel.Entities;
+    using MvcForum.Core.Interfaces.Badges;
+
     [Id("a54ec5d1-111d-4698-b2d0-78fbdaa52d1b")]
     [Name("OneThousandPoints")]
     [DisplayName("Badge.OneThousandPoints.Name")]

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Website.ViewModels
+﻿namespace MvcForum.Web.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using Core.DomainModel.Entities;
+
     public class VoteUpViewModel
     {
         public Guid Post { get; set; }
@@ -34,5 +34,4 @@ namespace MVCForum.Website.ViewModels
         public int UpVotes { get; set; }
         public int DownVotes { get; set; }
     }
-
 }

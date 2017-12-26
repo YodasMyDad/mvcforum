@@ -1,19 +1,20 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
-    using Domain.Constants;
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Domain.DomainModel;
-    using Domain.DomainModel.Activity;
-    using Domain.Interfaces;
-    using Domain.Interfaces.Services;
+    using Constants;
     using Data.Context;
+    using DomainModel.Activity;
+    using DomainModel.Entities;
+    using DomainModel.General;
+    using Interfaces;
+    using Interfaces.Services;
     using Utilities;
 
     public partial class ActivityService : IActivityService
     {
-        private readonly MVCForumContext _context;
+        private readonly MvcForumContext _context;
         private readonly IBadgeService _badgeService;
         private readonly ILoggingService _loggingService;
         private readonly ICacheService _cacheService;
@@ -21,12 +22,12 @@
         /// <summary>
         /// Constructor
         /// </summary>
-        public ActivityService(IBadgeService badgeService, ILoggingService loggingService, IMVCForumContext context, ICacheService cacheService)
+        public ActivityService(IBadgeService badgeService, ILoggingService loggingService, IMvcForumContext context, ICacheService cacheService)
         {
             _badgeService = badgeService;
             _loggingService = loggingService;
             _cacheService = cacheService;
-            _context = context as MVCForumContext;
+            _context = context as MvcForumContext;
         }
 
         #region Private Methods

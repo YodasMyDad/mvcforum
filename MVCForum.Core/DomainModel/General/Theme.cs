@@ -1,4 +1,4 @@
-﻿namespace MVCForum.Domain.DomainModel.General
+﻿namespace MvcForum.Core.DomainModel.General
 {
     public class Theme
     {

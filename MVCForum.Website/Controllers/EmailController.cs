@@ -1,27 +1,31 @@
-﻿namespace MVCForum.Website.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
     using System;
     using System.Linq;
     using System.Web.Mvc;
-    using Domain.DomainModel;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
+    using Core.DomainModel.Entities;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
     using ViewModels;
 
     public partial class EmailController : BaseController
     {
-        private readonly ITopicNotificationService _topicNotificationService;
         private readonly ICategoryNotificationService _categoryNotificationService;
-        private readonly ITagNotificationService _tagNotificationService;
         private readonly ICategoryService _categoryService;
+        private readonly ITagNotificationService _tagNotificationService;
+        private readonly ITopicNotificationService _topicNotificationService;
         private readonly ITopicService _topicService;
         private readonly ITopicTagService _topicTagService;
 
-        public EmailController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
+        public EmailController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
-            ITopicNotificationService topicNotificationService, ICategoryNotificationService categoryNotificationService, ICategoryService categoryService,
-            ITopicService topicService, ITopicTagService topicTagService, ITagNotificationService tagNotificationService, ICacheService cacheService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
+            ITopicNotificationService topicNotificationService,
+            ICategoryNotificationService categoryNotificationService, ICategoryService categoryService,
+            ITopicService topicService, ITopicTagService topicTagService,
+            ITagNotificationService tagNotificationService, ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
+                settingsService, cacheService)
         {
             _topicNotificationService = topicNotificationService;
             _categoryNotificationService = categoryNotificationService;
@@ -35,7 +39,7 @@
         [Authorize]
         public void Subscribe(SubscribeEmailViewModel subscription)
         {
-            if(Request.IsAjaxRequest())
+            if (Request.IsAjaxRequest())
             {
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
@@ -52,9 +56,8 @@
                             // get the category
                             var cat = _categoryService.Get(id);
 
-                            if(cat != null)
+                            if (cat != null)
                             {
-                                
                                 // Create the notification
                                 var categoryNotification = new CategoryNotification
                                 {
@@ -63,7 +66,7 @@
                                 };
                                 //save
 
-                                _categoryNotificationService.Add(categoryNotification);   
+                                _categoryNotificationService.Add(categoryNotification);
                             }
                         }
                         else if (isTag)
@@ -73,7 +76,6 @@
 
                             if (tag != null)
                             {
-
                                 // Create the notification
                                 var tagNotification = new TagNotification
                                 {
@@ -93,7 +95,6 @@
                             // check its not null
                             if (topic != null)
                             {
-
                                 // Create the notification
                                 var topicNotification = new TopicNotification
                                 {
@@ -113,12 +114,12 @@
                         unitOfWork.Rollback();
                         LoggingService.Error(ex);
                         throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
-                    }                   
+                    }
                 }
             }
             else
             {
-                throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));                
+                throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
             }
         }
 
@@ -143,19 +144,19 @@
                             var cat = _categoryService.Get(id);
 
                             if (cat != null)
-                            {        
+                            {
                                 // get the notifications by user
-                                var notifications = _categoryNotificationService.GetByUserAndCategory(LoggedOnReadOnlyUser, cat, true);
+                                var notifications =
+                                    _categoryNotificationService.GetByUserAndCategory(LoggedOnReadOnlyUser, cat, true);
 
-                                if(notifications.Any())
+                                if (notifications.Any())
                                 {
                                     foreach (var categoryNotification in notifications)
                                     {
                                         // Delete
                                         _categoryNotificationService.Delete(categoryNotification);
-                                    }         
+                                    }
                                 }
-                           
                             }
                         }
                         else if (isTag)
@@ -166,7 +167,8 @@
                             if (tag != null)
                             {
                                 // get the notifications by user
-                                var notifications = _tagNotificationService.GetByUserAndTag(LoggedOnReadOnlyUser, tag, true);
+                                var notifications =
+                                    _tagNotificationService.GetByUserAndTag(LoggedOnReadOnlyUser, tag, true);
 
                                 if (notifications.Any())
                                 {
@@ -186,7 +188,8 @@
                             if (topic != null)
                             {
                                 // get the notifications by user
-                                var notifications = _topicNotificationService.GetByUserAndTopic(LoggedOnReadOnlyUser, topic, true);
+                                var notifications =
+                                    _topicNotificationService.GetByUserAndTopic(LoggedOnReadOnlyUser, topic, true);
 
                                 if (notifications.Any())
                                 {
@@ -196,7 +199,6 @@
                                         _topicNotificationService.Delete(topicNotification);
                                     }
                                 }
-
                             }
                         }
 

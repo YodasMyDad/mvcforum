@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using MVCForum.Domain.DomainModel.Entities;
-using MVCForum.Utilities;
-
-namespace MVCForum.Domain.DomainModel
+﻿namespace MvcForum.Core.DomainModel.Entities
 {
-    public enum PostOrderBy
-    {
-        Standard,
-        Newest,
-        Votes
-    }
+    using System;
+    using System.Collections.Generic;
+    using General;
+    using Utilities;
 
-    public partial class Post : Entity
+    public class Post : Entity
     {
         public Post()
         {
             Id = GuidComb.GenerateComb();
         }
+
         public Guid Id { get; set; }
         public string PostContent { get; set; }
         public DateTime DateCreated { get; set; }

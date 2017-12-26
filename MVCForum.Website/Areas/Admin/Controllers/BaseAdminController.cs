@@ -1,34 +1,37 @@
-﻿using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Areas.Admin.ViewModels;
-
-namespace MVCForum.Website.Areas.Admin.Controllers
+﻿namespace MvcForum.Web.Areas.Admin.Controllers
 {
+    using System;
+    using System.Web.Mvc;
+    using Core.Constants;
+    using Core.DomainModel.Entities;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
+    using ViewModels;
+
     /// <summary>
-    /// A base class for the white site controllers
+    ///     A base class for the white site controllers
     /// </summary>
-    public partial class BaseAdminController : Controller
+    public class BaseAdminController : Controller
     {
-        protected readonly IMembershipService MembershipService;
         protected readonly ILocalizationService LocalizationService;
+        protected readonly ILoggingService LoggingService;
+        protected readonly IMembershipService MembershipService;
         protected readonly ISettingsService SettingsService;
         protected readonly IUnitOfWorkManager UnitOfWorkManager;
-        protected readonly ILoggingService LoggingService;
 
         protected MembershipUser LoggedOnReadOnlyUser;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="loggingService"> </param>
         /// <param name="unitOfWorkManager"> </param>
         /// <param name="membershipService"></param>
         /// <param name="localizationService"> </param>
         /// <param name="settingsService"> </param>
-        public BaseAdminController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService, ISettingsService settingsService)
+        public BaseAdminController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService, ILocalizationService localizationService,
+            ISettingsService settingsService)
         {
             UnitOfWorkManager = unitOfWorkManager;
             MembershipService = membershipService;
@@ -37,7 +40,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             SettingsService = settingsService;
             LoggingService = loggingService;
 
-            LoggedOnReadOnlyUser = MembershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
+            LoggedOnReadOnlyUser = membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
         }
 
         protected void ShowMessage(GenericMessageViewModel messageViewModel)
@@ -45,10 +48,9 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             //ViewData[AppConstants.MessageViewBagName] = messageViewModel;
             TempData[AppConstants.MessageViewBagName] = messageViewModel;
         }
-
     }
 
-    public class UserNotLoggedOnException : System.Exception
+    public class UserNotLoggedOnException : Exception
     {
     }
 }

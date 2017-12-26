@@ -1,7 +1,9 @@
 ﻿using System;
 
-namespace MVCForum.Domain.DomainModel.Activity
+namespace MvcForum.Core.DomainModel.Activity
 {
+    using Entities;
+
     public class BadgeActivity : ActivityBase
     {
         public const string KeyBadgeId = @"BadgeID";

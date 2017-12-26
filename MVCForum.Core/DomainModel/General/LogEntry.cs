@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace MVCForum.Domain.DomainModel
+﻿namespace MvcForum.Core.DomainModel.General
 {
+    using System;
+
     public partial class LogEntry
     {
         public DateTime Date { get; set; }

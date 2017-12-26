@@ -1,5 +1,7 @@
-﻿namespace MVCForum.Domain.DomainModel.Activity
+﻿namespace MvcForum.Core.DomainModel.Activity
 {
+    using Entities;
+
     // Seal this class to avoid "virtual member call in constructor" problem
 
     public sealed class MemberJoinedActivity : ActivityBase

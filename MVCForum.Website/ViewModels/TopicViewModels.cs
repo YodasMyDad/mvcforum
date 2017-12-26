@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Web;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Website.Application;
-
-namespace MVCForum.Website.ViewModels
+﻿namespace MvcForum.Web.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.Web;
+    using System.Web.Mvc;
+    using Application;
+    using Core.Constants;
+    using Core.DomainModel.Entities;
+    using Core.DomainModel.General;
+
     public class CreateTopicButtonViewModel
     {
         public MembershipUser LoggedOnUser { get; set; }
@@ -26,6 +27,7 @@ namespace MVCForum.Website.ViewModels
 
         // Post Stuff
         public PostViewModel StarterPost { get; set; }
+
         public List<PostViewModel> Posts { get; set; }
         public int? PageIndex { get; set; }
         public int? TotalCount { get; set; }
@@ -40,15 +42,18 @@ namespace MVCForum.Website.ViewModels
 
         // Votes
         public int VotesUp { get; set; }
+
         public int VotesDown { get; set; }
 
         // Quote/Reply
         public string QuotedPost { get; set; }
+
         public Guid? ReplyTo { get; set; }
         public string ReplyToUsername { get; set; }
 
         // Stats
         public int Answers { get; set; }
+
         public int Views { get; set; }
 
         // Misc
@@ -103,7 +108,8 @@ namespace MVCForum.Website.ViewModels
         [ForumMvcResourceDisplayName("Topic.Label.TopicTitle")]
         public string Name { get; set; }
 
-        [UIHint(AppConstants.EditorType), AllowHtml]
+        [UIHint(AppConstants.EditorType)]
+        [AllowHtml]
         [StringLength(6000)]
         public string Content { get; set; }
 
@@ -125,7 +131,7 @@ namespace MVCForum.Website.ViewModels
         public List<SelectListItem> Categories { get; set; }
 
         public IList<PollAnswer> PollAnswers { get; set; }
-            
+
         [ForumMvcResourceDisplayName("Topic.Label.SubscribeToTopic")]
         public bool SubscribeToTopic { get; set; }
 

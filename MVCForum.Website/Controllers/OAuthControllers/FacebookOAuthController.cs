@@ -1,18 +1,18 @@
-﻿namespace MVCForum.Website.Controllers.OAuthControllers
+﻿namespace MvcForum.Web.Controllers.OAuthControllers
 {
     using System;
     using System.Web.Mvc;
     using System.Web.Security;
-    using Domain.Constants;
-    using Domain.DomainModel.Enums;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
-    using Utilities;
     using Areas.Admin.ViewModels;
-    using ViewModels;
+    using Core.Constants;
+    using Core.DomainModel.Enums;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
+    using Core.Utilities;
     using Skybrud.Social.Facebook;
     using Skybrud.Social.Facebook.OAuth;
     using Skybrud.Social.Facebook.Options.User;
+    using ViewModels;
 
     // Facebook uses OAuth 2.0 for authentication and communication. In order for users to authenticate with the Facebook API, 
     // you must specify the ID, secret and redirect URI of your Facebook app. 
@@ -20,30 +20,24 @@
 
     public partial class FacebookOAuthController : BaseController
     {
-        public FacebookOAuthController(ILoggingService loggingService, 
-                                        IUnitOfWorkManager unitOfWorkManager, 
-                                        IMembershipService membershipService, 
-                                        ILocalizationService localizationService, 
-                                        IRoleService roleService, 
-                                        ISettingsService settingsService, 
-                                        ICacheService cacheService) : base(loggingService, 
-                                                                                unitOfWorkManager, 
-                                                                                membershipService, 
-                                                                                localizationService, 
-                                                                                roleService, 
-                                                                                settingsService, 
-                                                                                cacheService)
+        public FacebookOAuthController(ILoggingService loggingService,
+            IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService,
+            ILocalizationService localizationService,
+            IRoleService roleService,
+            ISettingsService settingsService,
+            ICacheService cacheService) : base(loggingService,
+            unitOfWorkManager,
+            membershipService,
+            localizationService,
+            roleService,
+            settingsService,
+            cacheService)
         {
-
         }
 
-        public string ReturnUrl
-        {
-            get
-            {
-                return string.Concat(SettingsService.GetSettings().ForumUrl.TrimEnd('/'), Url.Action("FacebookLogin"));
-            }
-        }
+        public string ReturnUrl =>
+            string.Concat(SettingsService.GetSettings().ForumUrl.TrimEnd('/'), Url.Action("FacebookLogin"));
 
         public string Callback { get; private set; }
 
@@ -52,7 +46,7 @@
         public string PropertyAlias { get; private set; }
 
         /// <summary>
-        /// Gets the authorizing code from the query string (if specified).
+        ///     Gets the authorizing code from the query string (if specified).
         /// </summary>
         public string AuthCode => Request.QueryString["code"];
 
@@ -92,7 +86,6 @@
             }
             else
             {
-
                 // Settings valid move on
                 // Configure the OAuth client based on the options of the prevalue options
                 var client = new FacebookOAuthClient
@@ -124,7 +117,7 @@
                     var state = Guid.NewGuid().ToString();
 
                     // Save the state in the current user session
-                    Session["MVCForum_" + state] = new[] { Callback, ContentTypeAlias, PropertyAlias };
+                    Session["MVCForum_" + state] = new[] {Callback, ContentTypeAlias, PropertyAlias};
 
                     // Construct the authorization URL
                     var url = client.GetAuthorizationUrl(state, "public_profile", "email"); //"user_friends"
@@ -156,7 +149,7 @@
                         var options = new FacebookGetUserOptions
                         {
                             Identifier = "me",
-                            Fields = new[] { "id", "name", "email", "first_name", "last_name", "gender" }
+                            Fields = new[] {"id", "name", "email", "first_name", "last_name", "gender"}
                         };
 
                         var user = service.Users.GetUser(options);
@@ -165,7 +158,8 @@
                         var email = user.Body.Email;
                         if (string.IsNullOrEmpty(email))
                         {
-                            resultMessage.Message = LocalizationService.GetResourceString("Members.UnableToGetEmailAddress");
+                            resultMessage.Message =
+                                LocalizationService.GetResourceString("Members.UnableToGetEmailAddress");
                             resultMessage.MessageType = GenericMessages.danger;
                             ShowMessage(resultMessage);
                             return RedirectToAction("LogOn", "Members");
@@ -182,7 +176,8 @@
                                 {
                                     // Users already exists, so log them in
                                     FormsAuthentication.SetAuthCookie(userExists.UserName, true);
-                                    resultMessage.Message = LocalizationService.GetResourceString("Members.NowLoggedIn");
+                                    resultMessage.Message =
+                                        LocalizationService.GetResourceString("Members.NowLoggedIn");
                                     resultMessage.MessageType = GenericMessages.success;
                                     ShowMessage(resultMessage);
                                     return RedirectToAction("Index", "Home");
@@ -227,7 +222,6 @@
                     resultMessage.MessageType = GenericMessages.danger;
                     LoggingService.Error(ex);
                 }
-
             }
 
             ShowMessage(resultMessage);

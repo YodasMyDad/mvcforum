@@ -1,11 +1,8 @@
-﻿using System;
-using System.Reflection;
-using System.Web;
-using System.Web.Hosting;
-using System.Xml;
-
-namespace MVCForum.Utilities
+﻿namespace MvcForum.Core.Utilities
 {
+    using System.Web.Hosting;
+    using System.Xml;
+
     public static class InstallerHelper
     {
         public static void TouchWebConfig()
@@ -18,12 +15,12 @@ namespace MVCForum.Utilities
 
         public static string GetMainDatabaseFilePath(string appVersion)
         {
-            return String.Format("~/Installer/Db/{0}/database.sql", appVersion);
+            return $"~/Installer/Db/{appVersion}/database.sql";
         }
 
         public static string GetUpdateDatabaseFilePath(string appVersion)
         {
-            return String.Format("~/Installer/Db/{0}/Upgrade/upgrade.sql", appVersion);
+            return $"~/Installer/Db/{appVersion}/Upgrade/upgrade.sql";
         }
     }
 

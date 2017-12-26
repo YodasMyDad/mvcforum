@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using MVCForum.Utilities;
-
-namespace MVCForum.Domain.DomainModel
+﻿namespace MvcForum.Core.DomainModel.Entities
 {
+    using System;
+    using System.Collections.Generic;
+    using Enums;
+    using Utilities;
+
     public partial class Category : Entity
     {
         public Category()
@@ -32,8 +33,5 @@ namespace MVCForum.Domain.DomainModel
 
         public string NiceUrl => UrlTypes.GenerateUrl(UrlType.Category, Slug);
     }
-
-
-
 
 }

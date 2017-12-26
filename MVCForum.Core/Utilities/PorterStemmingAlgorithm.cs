@@ -1,8 +1,6 @@
-﻿using System;
-using System.Runtime.InteropServices;
-
-namespace MVCForum.Utilities 
+﻿namespace MvcForum.Core.Utilities 
 {
+    using System;
 
     #region NOTES
     /*

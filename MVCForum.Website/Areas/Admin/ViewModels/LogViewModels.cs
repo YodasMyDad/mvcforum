@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Website.Areas.Admin.ViewModels
+﻿namespace MvcForum.Web.Areas.Admin.ViewModels
 {
+    using System.Collections.Generic;
+    using Core.DomainModel.General;
+
     public class ListLogViewModel
     {
         public IList<LogEntry> LogFiles { get; set; }

@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using System.Text;
-using System.Web;
-using System.Web.Mvc;
-
-namespace MVCForum.Website.Application
+﻿namespace MvcForum.Web.Application.CustomActionResults
 {
+    using System.Linq;
+    using System.Text;
+    using System.Web;
+    using System.Web.Mvc;
+
     public class CsvFileResult : FileResult
     {
         public CsvFileResult()

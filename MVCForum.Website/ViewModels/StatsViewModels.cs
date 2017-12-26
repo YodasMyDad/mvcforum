@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Website.ViewModels
+﻿namespace MvcForum.Web.ViewModels
 {
+    using System.Collections.Generic;
+    using Core.DomainModel.Entities;
+
     public class MainStatsViewModel
     {
         public int PostCount { get; set; }

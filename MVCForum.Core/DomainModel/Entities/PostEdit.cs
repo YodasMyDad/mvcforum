@@ -1,14 +1,15 @@
-﻿using System;
-using MVCForum.Utilities;
-
-namespace MVCForum.Domain.DomainModel.Entities
+﻿namespace MvcForum.Core.DomainModel.Entities
 {
+    using System;
+    using Utilities;
+
     public partial class PostEdit : Entity
     {
         public PostEdit()
         {
             Id = GuidComb.GenerateComb();
         }
+
         public Guid Id { get; set; }
         public DateTime DateEdited { get; set; }
         public string OriginalPostContent { get; set; }

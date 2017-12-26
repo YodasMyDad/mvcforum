@@ -1,34 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Script.Serialization;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Application;
-using MVCForum.Website.Areas.Admin.ViewModels;
-
-namespace MVCForum.Website.Areas.Admin.Controllers
+﻿namespace MvcForum.Web.Areas.Admin.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Web;
+    using System.Web.Mvc;
+    using System.Web.Script.Serialization;
+    using Application.CustomActionResults;
+    using Core.Constants;
+    using Core.DomainModel.General;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
+    using ViewModels;
+
     [Authorize(Roles = AppConstants.AdminRoleName)]
-    public partial class ImportExportController : BaseAdminController
+    public class ImportExportController : BaseAdminController
     {
         private readonly ILocalizationService _localizationService;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="unitOfWorkManager"> </param>
         /// <param name="membershipService"> </param>
         /// <param name="localizationService"></param>
         /// <param name="settingsService"> </param>
         /// <param name="loggingService"> </param>
-        public ImportExportController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, 
-            IMembershipService membershipService, ILocalizationService localizationService, ISettingsService settingsService)
+        public ImportExportController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService, ILocalizationService localizationService,
+            ISettingsService settingsService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
             _localizationService = localizationService;
@@ -37,7 +39,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         #region Private methods
 
         /// <summary>
-        /// Convert an import report into JSON data
+        ///     Convert an import report into JSON data
         /// </summary>
         /// <param name="report"></param>
         /// <returns></returns>
@@ -49,18 +51,17 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 HasErrors = report.Errors.Any(),
                 HasWarnings = report.Warnings.Any(),
                 Warnings = oSerializer.Serialize(report.Warnings.ExtractMessages()),
-                Errors = oSerializer.Serialize(report.Errors.ExtractMessages()),
+                Errors = oSerializer.Serialize(report.Errors.ExtractMessages())
             };
 
             return json;
         }
 
-
         #endregion
 
         /// <summary>
-        /// We get here via the admin default layout (_AdminLayout). The returned view is displayed by
-        /// the @RenderBody in that layout
+        ///     We get here via the admin default layout (_AdminLayout). The returned view is displayed by
+        ///     the @RenderBody in that layout
         /// </summary>
         /// <returns></returns>
         public ActionResult Index()
@@ -69,19 +70,19 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         }
 
         /// <summary>
-        /// Export a language in csv format
+        ///     Export a language in csv format
         /// </summary>
         /// <returns></returns>
         public CsvFileResult ExportUsers()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                return new CsvFileResult { FileDownloadName = "MVCForumUsers.csv", Body = MembershipService.ToCsv() };
+                return new CsvFileResult {FileDownloadName = "MVCForumUsers.csv", Body = MembershipService.ToCsv()};
             }
         }
 
         /// <summary>
-        /// Post of data for users import (file info)
+        ///     Post of data for users import (file info)
         /// </summary>
         /// <param name="file">The name-value pairs for the language content</param>
         /// <returns></returns>
@@ -100,7 +101,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     {
                         // Unpack the data
                         var allLines = new List<string>();
-                        using (var streamReader = new StreamReader(file.InputStream, System.Text.Encoding.UTF8, true))
+                        using (var streamReader = new StreamReader(file.InputStream, Encoding.UTF8, true))
                         {
                             while (streamReader.Peek() >= 0)
                             {
@@ -131,12 +132,12 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     });
                 }
 
-                return new WrappedJsonResult { Data = ToJSON(report) };
+                return new WrappedJsonResult {Data = ToJSON(report)};
             }
         }
 
         /// <summary>
-        /// Export a language in csv format
+        ///     Export a language in csv format
         /// </summary>
         /// <param name="languageCulture"></param>
         /// <returns></returns>
@@ -159,12 +160,12 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     LoggingService.Error("No such language when trying to export language");
                 }
 
-                return csv; 
+                return csv;
             }
         }
 
         /// <summary>
-        /// Post of data for language import (file info)
+        ///     Post of data for language import (file info)
         /// </summary>
         /// <param name="languageCulture">This defines the name etc of the imported language</param>
         /// <param name="file">The name-value pairs for the language content</param>
@@ -184,7 +185,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     {
                         // Unpack the data
                         var allLines = new List<string>();
-                        using (var streamReader = new StreamReader(file.InputStream, System.Text.Encoding.UTF8, true))
+                        using (var streamReader = new StreamReader(file.InputStream, Encoding.UTF8, true))
                         {
                             while (streamReader.Peek() >= 0)
                             {
@@ -215,7 +216,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     });
                 }
 
-                return new WrappedJsonResult { Data = ToJSON(report) }; 
+                return new WrappedJsonResult {Data = ToJSON(report)};
             }
         }
 

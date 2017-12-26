@@ -1,20 +1,21 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
-    using Domain.Constants;
     using System;
     using System.Collections.Generic;
-    using Domain.DomainModel;
-    using Domain.Interfaces.Services;
-    using System.Linq;
     using System.Data.Entity;
-    using Domain.Interfaces;
+    using System.Linq;
+    using Constants;
     using Data.Context;
+    using DomainModel.Entities;
+    using DomainModel.General;
+    using Interfaces;
+    using Interfaces.Services;
     using Utilities;
 
     public partial class TopicTagService : ITopicTagService
     {
         private readonly IBadgeService _badgeService;
-        private readonly MVCForumContext _context;
+        private readonly MvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         /// <summary>
@@ -23,11 +24,11 @@
         /// <param name="context"></param>
         /// <param name="badgeService"></param>
         /// <param name="cacheService"></param>
-        public TopicTagService(IMVCForumContext context, IBadgeService badgeService, ICacheService cacheService)
+        public TopicTagService(IMvcForumContext context, IBadgeService badgeService, ICacheService cacheService)
         {
             _badgeService = badgeService;
             _cacheService = cacheService;
-            _context = context as MVCForumContext;
+            _context = context as MvcForumContext;
         }
 
         /// <summary>

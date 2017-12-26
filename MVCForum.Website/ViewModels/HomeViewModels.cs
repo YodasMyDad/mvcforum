@@ -1,10 +1,11 @@
-﻿using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Activity;
-using MVCForum.Website.Application;
-using MVCForum.Website.Application.ActionFilterAttributes;
-
-namespace MVCForum.Website.ViewModels
+﻿namespace MvcForum.Web.ViewModels
 {
+    using Application;
+    using Application.ActionFilterAttributes;
+    using Core.DomainModel.Activity;
+    using Core.DomainModel.Entities;
+    using Core.DomainModel.General;
+
     public class ListCategoriesViewModels
     {
         public MembershipUser MembershipUser { get; set; }

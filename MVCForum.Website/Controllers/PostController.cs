@@ -1,40 +1,47 @@
-﻿namespace MVCForum.Website.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Text;
     using System.Web.Mvc;
-    using System.Linq;
     using System.Web.Security;
-    using Domain.Constants;
-    using Domain.DomainModel;
-    using Domain.Events;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
     using Application;
+    using Application.Akismet;
     using Areas.Admin.ViewModels;
+    using Core.Constants;
+    using Core.DomainModel.Entities;
+    using Core.DomainModel.General;
+    using Core.Events;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
     using ViewModels;
     using ViewModels.Mapping;
 
     [Authorize]
     public partial class PostController : BaseController
     {
-        private readonly ITopicService _topicService;
-        private readonly ITopicNotificationService _topicNotificationService;
-        private readonly ICategoryService _categoryService;
-        private readonly IPostService _postService;
-        private readonly IEmailService _emailService;
-        private readonly IReportService _reportService;
         private readonly IBannedWordService _bannedWordService;
-        private readonly IVoteService _voteService;
+        private readonly ICategoryService _categoryService;
+        private readonly IEmailService _emailService;
         private readonly IPostEditService _postEditService;
+        private readonly IPostService _postService;
+        private readonly IReportService _reportService;
+        private readonly ITopicNotificationService _topicNotificationService;
+        private readonly ITopicService _topicService;
+        private readonly IVoteService _voteService;
 
-        public PostController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
-            ILocalizationService localizationService, IRoleService roleService, ITopicService topicService, IPostService postService,
+        public PostController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService,
+            ILocalizationService localizationService, IRoleService roleService, ITopicService topicService,
+            IPostService postService,
             ISettingsService settingsService, ICategoryService categoryService,
-            ITopicNotificationService topicNotificationService, IEmailService emailService, IReportService reportService, 
-            IBannedWordService bannedWordService, IVoteService voteService, IPostEditService postEditService, ICacheService cacheService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
+            ITopicNotificationService topicNotificationService, IEmailService emailService,
+            IReportService reportService,
+            IBannedWordService bannedWordService, IVoteService voteService, IPostEditService postEditService,
+            ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
+                settingsService, cacheService)
         {
             _topicService = topicService;
             _postService = postService;
@@ -92,7 +99,7 @@
 
                 // Set the reply to
                 newPost.InReplyTo = post.InReplyTo;
-            
+
 
                 if (akismetHelper.IsSpam(newPost))
                 {
@@ -122,7 +129,8 @@
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 // Create the view model
-                var viewModel = ViewModelMapping.CreatePostViewModel(newPost, new List<Vote>(), permissions, topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
+                var viewModel = ViewModelMapping.CreatePostViewModel(newPost, new List<Vote>(), permissions, topic,
+                    LoggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
 
                 // Success send any notifications
                 NotifyNewTopics(topic, unitOfWork);
@@ -153,13 +161,14 @@
                 // get the users permissions
                 var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
 
-                if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[SiteConstants.Instance.PermissionDeletePosts].IsTicked)
+                if (post.User.Id == LoggedOnReadOnlyUser.Id ||
+                    permissions[SiteConstants.Instance.PermissionDeletePosts].IsTicked)
                 {
                     // Delete post / topic
                     if (post.IsTopicStarter)
                     {
-                       // Delete entire topic
-                       _topicService.Delete(topic, unitOfWork);
+                        // Delete entire topic
+                        _topicService.Delete(topic, unitOfWork);
                     }
                     else
                     {
@@ -173,7 +182,7 @@
                             relatedPost.InReplyTo = null;
                         }
                     }
-    
+
                     try
                     {
                         unitOfWork.Commit();
@@ -245,7 +254,9 @@
 
                         // Create the email
                         var sb = new StringBuilder();
-                        sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Post.Notification.NewPosts"), topic.Name));
+                        sb.AppendFormat("<p>{0}</p>",
+                            string.Format(LocalizationService.GetResourceString("Post.Notification.NewPosts"),
+                                topic.Name));
                         if (SiteConstants.Instance.IncludeFullPostInEmailNotifications)
                         {
                             sb.Append(AppHelpers.ConvertPostContent(topic.LastPost.PostContent));
@@ -253,13 +264,17 @@
                         sb.AppendFormat("<p><a href=\"{0}\">{0}</a></p>", string.Concat(Domain, topic.NiceUrl));
 
                         // create the emails only to people who haven't had notifications disabled
-                        var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true && !x.IsLockedOut && x.IsBanned != true).Select(user => new Email
-                        {
-                            Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
-                            EmailTo = user.Email,
-                            NameTo = user.UserName,
-                            Subject = string.Concat(LocalizationService.GetResourceString("Post.Notification.Subject"), SettingsService.GetSettings().ForumName)
-                        }).ToList();
+                        var emails = usersToNotify
+                            .Where(x => x.DisableEmailNotifications != true && !x.IsLockedOut && x.IsBanned != true)
+                            .Select(user => new Email
+                            {
+                                Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
+                                EmailTo = user.Email,
+                                NameTo = user.UserName,
+                                Subject = string.Concat(
+                                    LocalizationService.GetResourceString("Post.Notification.Subject"),
+                                    SettingsService.GetSettings().ForumName)
+                            }).ToList();
 
                         // and now pass the emails in to be sent
                         _emailService.SendMail(emails);
@@ -267,16 +282,12 @@
                         unitOfWork.Commit();
                     }
                 }
-
-
             }
             catch (Exception ex)
             {
                 unitOfWork.Rollback();
                 LoggingService.Error(ex);
             }
-
-
         }
 
         public ActionResult Report(Guid id)
@@ -286,7 +297,7 @@
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
                     var post = _postService.Get(id);
-                    return View(new ReportPostViewModel { PostId = post.Id, PostCreatorUsername = post.User.UserName });
+                    return View(new ReportPostViewModel {PostId = post.Id, PostCreatorUsername = post.User.UserName});
                 }
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
@@ -323,7 +334,7 @@
                         Message = LocalizationService.GetResourceString("Report.ReportSent"),
                         MessageType = GenericMessages.success
                     };
-                    return View(new ReportPostViewModel { PostId = post.Id, PostCreatorUsername = post.User.UserName });
+                    return View(new ReportPostViewModel {PostId = post.Id, PostCreatorUsername = post.User.UserName});
                 }
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
@@ -338,11 +349,12 @@
             {
                 var post = _postService.Get(id);
                 var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
-                var votes = _voteService.GetVotesByPosts(new List<Guid>{id});
-                var viewModel = ViewModelMapping.CreatePostViewModel(post, votes, permissions, post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
+                var votes = _voteService.GetVotesByPosts(new List<Guid> {id});
+                var viewModel = ViewModelMapping.CreatePostViewModel(post, votes, permissions, post.Topic,
+                    LoggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
                 var upVotes = viewModel.Votes.Where(x => x.Amount > 0).ToList();
                 return View(upVotes);
-            }         
+            }
         }
 
 
@@ -353,7 +365,7 @@
             }
 
             // Firstly check if this is a post and they are allowed to move it
-                var post = _postService.Get(id);
+            var post = _postService.Get(id);
             if (post == null)
             {
                 return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
@@ -382,7 +394,8 @@
                 Value = ""
             });
 
-            var postViewModel = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions, post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
+            var postViewModel = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions, post.Topic,
+                LoggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
             postViewModel.MinimalPost = true;
             var viewModel = new MovePostViewModel
             {
@@ -397,7 +410,6 @@
         [HttpPost]
         public ActionResult MovePost(MovePostViewModel viewModel)
         {
-
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 // Firstly check if this is a post and they are allowed to move it
@@ -435,7 +447,7 @@
                     // Get the selected topic
                     topic = _topicService.Get((Guid) viewModel.TopicId);
                 }
-                else if(!string.IsNullOrEmpty(viewModel.TopicTitle))
+                else if (!string.IsNullOrEmpty(viewModel.TopicTitle))
                 {
                     // We get the banned words here and pass them in, so its just one call
                     // instead of calling it several times and each call getting all the words back
@@ -464,16 +476,17 @@
                     post.IsTopicStarter = true;
 
                     // Check the Events
-                    var e = new TopicMadeEventArgs { Topic = topic };
+                    var e = new TopicMadeEventArgs {Topic = topic};
                     EventManager.Instance.FireBeforeTopicMade(this, e);
                     if (e.Cancel)
                     {
                         cancelledByEvent = true;
                         ShowMessage(new GenericMessageViewModel
                         {
-                            MessageType = GenericMessages.warning, Message = LocalizationService.GetResourceString("Errors.GenericMessage")
+                            MessageType = GenericMessages.warning,
+                            Message = LocalizationService.GetResourceString("Errors.GenericMessage")
                         });
-                    }                    
+                    }
                 }
                 else
                 {
@@ -504,17 +517,18 @@
                     topic.LastPost = lastPost;
 
                     // If any of the posts we are moving, were the last post - We need to update the old Topic
-                    var previousTopicLastPost = previousTopic.Posts.OrderByDescending(x => x.DateCreated).FirstOrDefault();
+                    var previousTopicLastPost =
+                        previousTopic.Posts.OrderByDescending(x => x.DateCreated).FirstOrDefault();
                     previousTopic.LastPost = previousTopicLastPost;
 
                     try
                     {
                         unitOfWork.Commit();
 
-                        EventManager.Instance.FireAfterTopicMade(this, new TopicMadeEventArgs { Topic = topic });
+                        EventManager.Instance.FireAfterTopicMade(this, new TopicMadeEventArgs {Topic = topic});
 
                         // On Update redirect to the topic
-                        return RedirectToAction("Show", "Topic", new { slug = topic.Slug });
+                        return RedirectToAction("Show", "Topic", new {slug = topic.Slug});
                     }
                     catch (Exception ex)
                     {
@@ -537,13 +551,13 @@
                 });
 
                 viewModel.LatestTopics = topics;
-                viewModel.Post = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions, post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
+                viewModel.Post = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions,
+                    post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
                 viewModel.Post.MinimalPost = true;
                 viewModel.PostId = post.Id;
 
                 return View(viewModel);
             }
-
         }
 
         public ActionResult GetPostEditHistory(Guid id)

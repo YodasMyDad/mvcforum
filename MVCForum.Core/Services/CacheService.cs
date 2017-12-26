@@ -1,4 +1,4 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
     using System;
     using System.Collections;
@@ -6,8 +6,8 @@
     using System.Linq;
     using System.Runtime.Caching;
     using System.Web;
-    using Domain.DomainModel.Enums;
-    using Domain.Interfaces.Services;
+    using DomainModel.Enums;
+    using Interfaces.Services;
 
     public class CacheService : ICacheService
     {

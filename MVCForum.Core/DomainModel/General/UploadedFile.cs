@@ -1,8 +1,9 @@
-﻿using System;
-using MVCForum.Utilities;
-
-namespace MVCForum.Domain.DomainModel
+﻿namespace MvcForum.Core.DomainModel.General
 {
+    using System;
+    using Entities;
+    using Utilities;
+
     public partial class UploadedFile
     {
         public UploadedFile()

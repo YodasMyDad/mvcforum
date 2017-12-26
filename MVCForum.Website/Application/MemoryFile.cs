@@ -1,40 +1,26 @@
-﻿using System.IO;
-using System.Web;
-
-namespace MVCForum.Website.Application
+﻿namespace MvcForum.Web.Application
 {
+    using System.IO;
+    using System.Web;
+
     internal class MemoryFile : HttpPostedFileBase
     {
-        readonly Stream _stream;
-        readonly string _contentType;
-        readonly string _fileName;
+        private readonly Stream _stream;
 
         public MemoryFile(Stream stream, string contentType, string fileName)
         {
             _stream = stream;
-            _contentType = contentType;
-            _fileName = fileName;
+            ContentType = contentType;
+            FileName = fileName;
         }
 
-        public override int ContentLength
-        {
-            get { return (int)_stream.Length; }
-        }
+        public override int ContentLength => (int) _stream.Length;
 
-        public override string ContentType
-        {
-            get { return _contentType; }
-        }
+        public override string ContentType { get; }
 
-        public override string FileName
-        {
-            get { return _fileName; }
-        }
+        public override string FileName { get; }
 
-        public override Stream InputStream
-        {
-            get { return _stream; }
-        }
+        public override Stream InputStream => _stream;
 
         public override void SaveAs(string filename)
         {
@@ -43,6 +29,5 @@ namespace MVCForum.Website.Application
                 _stream.CopyTo(file);
             }
         }
-
     }
 }

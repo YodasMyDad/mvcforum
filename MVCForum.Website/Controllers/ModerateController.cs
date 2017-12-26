@@ -1,23 +1,26 @@
-﻿namespace MVCForum.Website.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
     using System;
     using System.Web.Mvc;
-    using Domain.Constants;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
+    using Core.Constants;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
     using ViewModels;
 
     [Authorize]
     public partial class ModerateController : BaseController
     {
+        private readonly ICategoryService _categoryService;
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
-        private readonly ICategoryService _categoryService;
 
-        public ModerateController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
-            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IPostService postService, 
-            ITopicService topicService, ICategoryService categoryService, ICacheService cacheService) 
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
+        public ModerateController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService,
+            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
+            IPostService postService,
+            ITopicService topicService, ICategoryService categoryService, ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
+                settingsService, cacheService)
         {
             _postService = postService;
             _topicService = topicService;
@@ -80,7 +83,6 @@
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-
                 try
                 {
                     var post = _postService.Get(viewModel.PostId);
@@ -111,7 +113,5 @@
 
             return Content("allgood");
         }
-
-
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace MVCForum.Domain.DomainModel.Activity
+namespace MvcForum.Core.DomainModel.Activity
 {
     /// <summary>
     /// The purpose of this class is to add a base class to our more-derived activity classes,

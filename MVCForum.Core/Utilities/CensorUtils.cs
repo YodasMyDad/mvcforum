@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-
-namespace MVCForum.Utilities
+﻿namespace MvcForum.Core.Utilities
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Text.RegularExpressions;
+
     public class CensorUtils
     {
         public IList<string> CensoredWords { get; private set; }

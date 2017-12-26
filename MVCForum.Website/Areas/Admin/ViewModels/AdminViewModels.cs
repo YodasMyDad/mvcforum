@@ -1,4 +1,4 @@
-﻿namespace MVCForum.Website.Areas.Admin.ViewModels
+﻿namespace MvcForum.Web.Areas.Admin.ViewModels
 {
     public class IndexViewModel
     {

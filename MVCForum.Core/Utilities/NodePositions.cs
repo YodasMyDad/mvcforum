@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using HtmlAgilityPack;
-
-namespace MVCForum.Utilities
+﻿namespace MvcForum.Core.Utilities
 {
+    using System.Collections.Generic;
+    using HtmlAgilityPack;
+
     public class NodePositions
     {
         public NodePositions(HtmlDocument doc)

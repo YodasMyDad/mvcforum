@@ -1,20 +1,24 @@
-﻿namespace MVCForum.Website.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
     using System;
     using System.Linq;
+    using System.Net.Mime;
     using System.Web.Hosting;
     using System.Web.Mvc;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
 
     public class FileController : BaseController
     {
-        private readonly IUploadedFileService _uploadedFileService;
         private readonly ICategoryService _categoryService;
+        private readonly IUploadedFileService _uploadedFileService;
 
-        public FileController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
-            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IUploadedFileService uploadedFileService, ICategoryService categoryService, ICacheService cacheService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
+        public FileController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService,
+            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
+            IUploadedFileService uploadedFileService, ICategoryService categoryService, ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
+                settingsService, cacheService)
         {
             _uploadedFileService = uploadedFileService;
             _categoryService = categoryService;
@@ -36,8 +40,7 @@
                     //}
 
                     var fileBytes = System.IO.File.ReadAllBytes(HostingEnvironment.MapPath(uploadedFileById.FilePath));
-                    return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, uploadedFileById.Filename);
-
+                    return File(fileBytes, MediaTypeNames.Application.Octet, uploadedFileById.Filename);
                 }
             }
             return null;

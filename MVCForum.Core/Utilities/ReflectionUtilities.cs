@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-
-namespace MVCForum.Utilities
+﻿namespace MvcForum.Core.Utilities
 {
+    using System.Linq.Expressions;
+    using System.Reflection;
+
     public class ReflectionUtilities
     {
         // http://rogeralsing.com/2008/02/28/linq-expressions-creating-objects/

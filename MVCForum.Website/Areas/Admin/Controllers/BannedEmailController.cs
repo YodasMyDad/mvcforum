@@ -1,22 +1,20 @@
-﻿using System;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Application;
-using MVCForum.Website.Areas.Admin.ViewModels;
-
-namespace MVCForum.Website.Areas.Admin.Controllers
+﻿namespace MvcForum.Web.Areas.Admin.Controllers
 {
-    [Authorize(Roles = AppConstants.AdminRoleName)]
-    public partial class BannedEmailController : BaseAdminController
-    {
+    using System;
+    using System.Web.Mvc;
+    using Core.Constants;
+    using Core.DomainModel.Entities;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
+    using ViewModels;
 
+    [Authorize(Roles = AppConstants.AdminRoleName)]
+    public class BannedEmailController : BaseAdminController
+    {
         private readonly IBannedEmailService _bannedEmailService;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="unitOfWorkManager"> </param>
         /// <param name="membershipService"></param>
@@ -28,7 +26,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService,
             ILocalizationService localizationService,
-            ISettingsService settingsService, 
+            ISettingsService settingsService,
             IBannedEmailService bannedEmailService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
@@ -41,20 +39,20 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = p ?? 1;
-                var allEmails = string.IsNullOrEmpty(search) ? _bannedEmailService.GetAllPaged(pageIndex, SiteConstants.Instance.AdminListPageSize) :
-                                    _bannedEmailService.GetAllPaged(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
+                var allEmails = string.IsNullOrEmpty(search)
+                    ? _bannedEmailService.GetAllPaged(pageIndex, SiteConstants.Instance.AdminListPageSize)
+                    : _bannedEmailService.GetAllPaged(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
 
                 var vieWModel = new BannedEmailListViewModel
-                    {
-                        Emails = allEmails,
-                        PageIndex = pageIndex,
-                        TotalCount = allEmails.TotalCount,
-                        Search = search
-                    };
-                
+                {
+                    Emails = allEmails,
+                    PageIndex = pageIndex,
+                    TotalCount = allEmails.TotalCount,
+                    Search = search
+                };
+
                 return View(vieWModel);
             }
-            
         }
 
         [HttpPost]
@@ -90,7 +88,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                             MessageType = GenericMessages.danger
                         };
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -100,7 +97,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     {
                         Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
                         MessageType = GenericMessages.danger
-                    }; 
+                    };
                 }
             }
 
@@ -139,12 +136,12 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     };
                 }
 
-                return RedirectToAction("Index", new { p, search });
+                return RedirectToAction("Index", new {p, search});
             }
         }
 
         /// <summary>
-        /// Edit a resource key
+        ///     Edit a resource key
         /// </summary>
         /// <returns></returns>
         [HttpPost]

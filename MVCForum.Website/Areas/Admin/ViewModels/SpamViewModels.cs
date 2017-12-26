@@ -1,13 +1,13 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-
-namespace MVCForum.Website.Areas.Admin.ViewModels
+﻿namespace MvcForum.Web.Areas.Admin.ViewModels
 {
+    using System.ComponentModel;
+
     public class AkismetViewModel
     {
-        [DisplayName("Enable Akisment")]        
+        [DisplayName("Enable Akisment")]
         public bool EnableAkisment { get; set; }
-        [DisplayName("Akisment Key")]        
+
+        [DisplayName("Akisment Key")]
         public string AkismentKey { get; set; }
     }
 
@@ -15,6 +15,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
     {
         [DisplayName("Your Spam Question")]
         public string SpamQuestion { get; set; }
+
         [DisplayName("The Answer to the Spam question")]
         public string SpamAnswer { get; set; }
     }
@@ -23,6 +24,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
     {
         [DisplayName("Enable Spam Reporting")]
         public bool EnableSpamReporting { get; set; }
+
         [DisplayName("Enable Member Reporting")]
         public bool EnableMemberReporting { get; set; }
     }

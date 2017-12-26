@@ -1,9 +1,9 @@
-﻿using Quartz;
-using Quartz.Core;
-using Quartz.Impl;
-
-namespace MVCForum.IOC.Quartz
+﻿namespace MvcForum.Core.Ioc.Quartz
 {
+    using global::Quartz;
+    using global::Quartz.Core;
+    using global::Quartz.Impl;
+
     public class UnitySchedulerFactory : StdSchedulerFactory
     {
         private readonly UnityJobFactory _unityJobFactory;

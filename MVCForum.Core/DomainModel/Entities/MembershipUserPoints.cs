@@ -1,12 +1,9 @@
-﻿using System;
-using MVCForum.Utilities;
-
-namespace MVCForum.Domain.DomainModel
+﻿namespace MvcForum.Core.DomainModel.Entities
 {
-    public enum PointsFor
-    {
-        Post, Vote, Solution, Badge, Tag, Spam, Profile, Manual
-    }
+    using System;
+    using Enums;
+    using Utilities;
+
     public partial class MembershipUserPoints : Entity
     {
         public MembershipUserPoints()

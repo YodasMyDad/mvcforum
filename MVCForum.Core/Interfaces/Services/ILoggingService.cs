@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using DomainModel.General;
+
     public partial interface ILoggingService
     {
         void Error(string message);

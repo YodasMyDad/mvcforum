@@ -1,26 +1,27 @@
-﻿namespace MVCForum.Website.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
     using System.Linq;
     using System.Web.Mvc;
-    using Domain.Constants;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
+    using Core.Constants;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
     using ViewModels;
     using ViewModels.Mapping;
 
     public partial class SearchController : BaseController
     {
-        private readonly IPostService _postService;
         private readonly ICategoryService _categoryService;
-        private readonly IVoteService _voteService;
         private readonly IFavouriteService _favouriteService;
+        private readonly IPostService _postService;
+        private readonly IVoteService _voteService;
 
         public SearchController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService, ILocalizationService localizationService,
             IRoleService roleService, ISettingsService settingsService,
-            IPostService postService, IVoteService voteService, IFavouriteService favouriteService, 
+            IPostService postService, IVoteService voteService, IFavouriteService favouriteService,
             ICategoryService categoryService, ICacheService cacheService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
+                settingsService, cacheService)
         {
             _postService = postService;
             _voteService = voteService;
@@ -52,13 +53,14 @@
 
                     // Get all the topics based on the search value
                     var posts = _postService.SearchPosts(pageIndex,
-                                                         SiteConstants.Instance.SearchListSize,
-                                                         int.MaxValue,
-                                                         term,
-                                                         allowedCategories);
+                        SiteConstants.Instance.SearchListSize,
+                        int.MaxValue,
+                        term,
+                        allowedCategories);
 
                     // Get all the permissions for these topics
-                    var topicPermissions = ViewModelMapping.GetPermissionsForTopics(posts.Select(x => x.Topic), RoleService, UsersRole);
+                    var topicPermissions =
+                        ViewModelMapping.GetPermissionsForTopics(posts.Select(x => x.Topic), RoleService, UsersRole);
 
                     // Get the post Ids
                     var postIds = posts.Select(x => x.Id).ToList();
@@ -70,7 +72,8 @@
                     var favs = _favouriteService.GetAllPostFavourites(postIds);
 
                     // Create the post view models
-                    var viewModels = ViewModelMapping.CreatePostViewModels(posts.ToList(), votes, topicPermissions, LoggedOnReadOnlyUser, settings, favs);
+                    var viewModels = ViewModelMapping.CreatePostViewModels(posts.ToList(), votes, topicPermissions,
+                        LoggedOnReadOnlyUser, settings, favs);
 
                     // create the view model
                     var viewModel = new SearchViewModel
@@ -95,6 +98,5 @@
         {
             return PartialView();
         }
-
     }
 }

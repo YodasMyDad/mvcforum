@@ -1,19 +1,23 @@
-﻿namespace MVCForum.Website.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
     using System;
     using System.Linq;
     using System.Web.Mvc;
-    using Domain.DomainModel.Entities;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
+    using Core.DomainModel.Entities;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
     using ViewModels;
 
     public class BlockController : BaseController
     {
         private readonly IBlockService _blockService;
-        public BlockController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
-            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IBlockService blockService, ICacheService cacheService) : 
-            base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
+
+        public BlockController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService,
+            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
+            IBlockService blockService, ICacheService cacheService) :
+            base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
+                settingsService, cacheService)
         {
             _blockService = blockService;
         }
@@ -23,7 +27,7 @@
         public virtual void BlockOrUnBlock(BlockMemberViewModel viewModel)
         {
             if (Request.IsAjaxRequest())
-            {                
+            {
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
                     try
@@ -44,7 +48,9 @@
                         {
                             loggedOnUser.BlockedUsers.Add(new Block
                             {
-                                Blocked = otherMember, Blocker = loggedOnUser, Date = DateTime.UtcNow
+                                Blocked = otherMember,
+                                Blocker = loggedOnUser,
+                                Date = DateTime.UtcNow
                             });
                         }
 

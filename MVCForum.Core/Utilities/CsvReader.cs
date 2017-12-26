@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-
-namespace MVCForum.Utilities
+﻿namespace MvcForum.Core.Utilities
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+
     public class CsvLine
     {
         /// <summary>

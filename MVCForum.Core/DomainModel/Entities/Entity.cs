@@ -1,4 +1,4 @@
-﻿namespace MVCForum.Domain.DomainModel
+﻿namespace MvcForum.Core.DomainModel.Entities
 {
     /// <summary>
     /// A holding class to identify our entity classes generically

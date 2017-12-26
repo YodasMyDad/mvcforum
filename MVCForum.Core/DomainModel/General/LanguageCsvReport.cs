@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace MVCForum.Domain.DomainModel
+﻿namespace MvcForum.Core.DomainModel.General
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     public static class CsvExtensionMethods
     {
         public static List<string> ExtractMessages(this  List<CsvErrorWarning> errorWarnings)

@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace MVCForum.Website.ViewModels
+﻿namespace MvcForum.Web.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+
     public class FavouritePostViewModel
     {
         public Guid PostId { get; set; }
@@ -20,6 +20,7 @@ namespace MVCForum.Website.ViewModels
         {
             Posts = new List<PostViewModel>();
         }
+
         public List<PostViewModel> Posts { get; set; }
     }
 }

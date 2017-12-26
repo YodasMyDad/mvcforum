@@ -1,7 +1,7 @@
-﻿using System.Web.Http;
-
-namespace MVCForum.Website
+﻿namespace MvcForum.Web
 {
+    using System.Web.Http;
+
     public static class WebApiConfig
     {
         public static void Register(HttpConfiguration config)
@@ -15,9 +15,9 @@ namespace MVCForum.Website
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
+                "DefaultApi",
+                "api/{controller}/{id}",
+                new {id = RouteParameter.Optional}
             );
         }
     }

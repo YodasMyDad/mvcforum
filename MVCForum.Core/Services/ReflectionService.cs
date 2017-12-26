@@ -1,11 +1,11 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
-    using Domain.Constants;
-    using Domain.Interfaces.Services;
+    using Constants;
+    using Interfaces.Services;
 
     public partial class ReflectionService : IReflectionService
     {

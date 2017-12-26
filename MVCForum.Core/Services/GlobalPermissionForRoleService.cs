@@ -1,24 +1,24 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Data.Entity;
-    using Domain.DomainModel;
-    using Domain.Interfaces;
-    using Domain.Interfaces.Services;
+    using System.Linq;
+    using Constants;
     using Data.Context;
-    using Domain.Constants;
+    using DomainModel.Entities;
+    using Interfaces;
+    using Interfaces.Services;
 
     public partial class GlobalPermissionForRoleService : IGlobalPermissionForRoleService
     {
-        private readonly MVCForumContext _context;
+        private readonly MvcForumContext _context;
         private readonly ICacheService _cacheService;
 
-        public GlobalPermissionForRoleService(IMVCForumContext context, ICacheService cacheService)
+        public GlobalPermissionForRoleService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
-            _context = context as MVCForumContext;
+            _context = context as MvcForumContext;
         }
 
         public GlobalPermissionForRole Add(GlobalPermissionForRole permissionForRole)

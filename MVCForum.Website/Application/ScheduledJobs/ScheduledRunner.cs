@@ -1,6 +1,6 @@
-﻿namespace MVCForum.Website.Application.ScheduledJobs
+﻿namespace MvcForum.Web.Application.ScheduledJobs
 {
-    using Domain.Constants;
+    using Core.Constants;
     using Quartz;
     using Unity;
 

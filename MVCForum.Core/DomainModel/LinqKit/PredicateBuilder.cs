@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace MVCForum.Domain.DomainModel.LinqKit
+namespace MvcForum.Core.DomainModel.LinqKit
 {
 	/// <summary>
 	/// See http://www.albahari.com/expressions for information and examples.

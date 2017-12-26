@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace MVCForum.Domain.DomainModel.LinqKit
+namespace MvcForum.Core.DomainModel.LinqKit
 {
 	/// <summary>
 	/// Another good idea by Tomas Petricek.

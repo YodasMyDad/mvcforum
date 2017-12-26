@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Specialized;
-using System.IO;
-using System.Net;
-using System.Web;
-
-namespace MVCForum.Website.Akismet.NET
+﻿namespace MvcForum.Web.Application.Akismet
 {
+    using System;
+    using System.Collections.Specialized;
+    using System.IO;
+    using System.Net;
+    using System.Web;
+
     /// <summary>
     /// This class is responsible validating information against Akismet.
     /// </summary>
@@ -38,7 +38,7 @@ namespace MVCForum.Website.Akismet.NET
         /// <summary>
         /// The Akismet key, if any.
         /// </summary>
-        protected String m_key = String.Empty;
+        protected string m_key = string.Empty;
         
         #endregion
 
@@ -48,7 +48,7 @@ namespace MVCForum.Website.Akismet.NET
         /// Initialize class members based on the input parameters
         /// </summary>
         /// <param name="key">The input Akismet key.</param>
-        public Validator(String key)
+        public Validator(string key)
         {
             m_key = key;
         }
@@ -61,7 +61,7 @@ namespace MVCForum.Website.Akismet.NET
         /// Check if the validator's key is valid or not.
         /// </summary>
         /// <returns>True if the key is valid, false otherwise.</returns>
-        public Boolean VerifyKey(String domain)
+        public bool VerifyKey(string domain)
         {
             // prepare pars for the request
             NameValueCollection pars = PreparePars(m_key, domain);
@@ -80,14 +80,14 @@ namespace MVCForum.Website.Akismet.NET
         /// </summary>
         /// <param name="comment">The input comment to be checked.</param>
         /// <returns>True if the comment is valid, false otherwise.</returns>
-        public Boolean IsSpam(Comment comment)
+        public bool IsSpam(Comment comment)
         {
             // prepare pars for the request
             NameValueCollection pars = PreparePars(comment);
             if (null != pars)
             {
                 // extract result from the request
-                return ExtractResult(PostRequest(String.Format("http://{0}.rest.akismet.com/1.1/comment-check", m_key), pars));
+                return ExtractResult(PostRequest(string.Format("http://{0}.rest.akismet.com/1.1/comment-check", m_key), pars));
             }
 
             // return no spam
@@ -105,7 +105,7 @@ namespace MVCForum.Website.Akismet.NET
             NameValueCollection pars = PreparePars(comment);
             if (null != pars)
             {
-                PostRequest(String.Format("http://{0}.rest.akismet.com/1.1/submit-spam", m_key), pars);
+                PostRequest(string.Format("http://{0}.rest.akismet.com/1.1/submit-spam", m_key), pars);
             }
         }
 
@@ -120,7 +120,7 @@ namespace MVCForum.Website.Akismet.NET
             NameValueCollection pars = PreparePars(comment);
             if (null != pars)
             {
-                PostRequest(String.Format("http://{0}.rest.akismet.com/1.1/submit-spam", m_key), pars);
+                PostRequest(string.Format("http://{0}.rest.akismet.com/1.1/submit-spam", m_key), pars);
             }
         }
        
@@ -134,20 +134,20 @@ namespace MVCForum.Website.Akismet.NET
         /// <param name="url">The input url (absolute).</param>
         /// <param name="pars">The input parameters to send.</param>
         /// <returns>The response, if any.</returns>
-        protected virtual String PostRequest(String url, NameValueCollection pars)
+        protected virtual string PostRequest(string url, NameValueCollection pars)
         {
             // check input data
-            if (String.IsNullOrEmpty(url) || !Uri.IsWellFormedUriString(url, UriKind.Absolute) || (null == pars))
-                return String.Empty;
+            if (string.IsNullOrEmpty(url) || !Uri.IsWellFormedUriString(url, UriKind.Absolute) || (null == pars))
+                return string.Empty;
 
-            String content = String.Empty;
+            string content = string.Empty;
             // create content for the post request
-            foreach (String key in pars.AllKeys)
+            foreach (string key in pars.AllKeys)
             {
-                if (String.IsNullOrEmpty(content))
-                    content = String.Format("{0}={1}", key, pars[key]);
+                if (string.IsNullOrEmpty(content))
+                    content = string.Format("{0}={1}", key, pars[key]);
                 else
-                    content += String.Format("&{0}={1}", key, pars[key]);
+                    content += string.Format("&{0}={1}", key, pars[key]);
             }
 
             // initialize request
@@ -166,7 +166,7 @@ namespace MVCForum.Website.Akismet.NET
             }
             catch (Exception)
             { // return failure
-                return String.Empty;
+                return string.Empty;
             }
             finally
             { // close the writer, if any
@@ -179,7 +179,7 @@ namespace MVCForum.Website.Akismet.NET
             using (var reader = new StreamReader(response.GetResponseStream(), System.Text.Encoding.UTF8, true))
             {
                 // retrieve response
-                String result = reader.ReadToEnd();
+                string result = reader.ReadToEnd();
 
                 // close the reader
                 reader.Close();
@@ -208,13 +208,13 @@ namespace MVCForum.Website.Akismet.NET
             result["user_ip"] = HttpUtility.UrlEncode(comment.user_ip);
             result["user_agent"] = HttpUtility.UrlEncode(comment.user_agent);
             // add optional information
-            result["referrer"] = String.IsNullOrEmpty(comment.referrer) ? String.Empty : HttpUtility.UrlEncode(comment.referrer);
-            result["permalink"] = String.IsNullOrEmpty(comment.permalink) ? String.Empty : HttpUtility.UrlEncode(comment.permalink);
-            result["comment_type"] = String.IsNullOrEmpty(comment.comment_type) ? String.Empty : HttpUtility.UrlEncode(comment.comment_type);
-            result["comment_author"] = String.IsNullOrEmpty(comment.comment_author) ? String.Empty : HttpUtility.UrlEncode(comment.comment_author);
-            result["comment_author_email"] = String.IsNullOrEmpty(comment.comment_author_email) ? String.Empty : HttpUtility.UrlEncode(comment.comment_author_email);
-            result["comment_author_url"] = String.IsNullOrEmpty(comment.comment_author_url) ? String.Empty : HttpUtility.UrlEncode(comment.comment_author_url);
-            result["comment_content"] = String.IsNullOrEmpty(comment.comment_content) ? String.Empty : HttpUtility.UrlEncode(comment.comment_content);
+            result["referrer"] = string.IsNullOrEmpty(comment.referrer) ? string.Empty : HttpUtility.UrlEncode(comment.referrer);
+            result["permalink"] = string.IsNullOrEmpty(comment.permalink) ? string.Empty : HttpUtility.UrlEncode(comment.permalink);
+            result["comment_type"] = string.IsNullOrEmpty(comment.comment_type) ? string.Empty : HttpUtility.UrlEncode(comment.comment_type);
+            result["comment_author"] = string.IsNullOrEmpty(comment.comment_author) ? string.Empty : HttpUtility.UrlEncode(comment.comment_author);
+            result["comment_author_email"] = string.IsNullOrEmpty(comment.comment_author_email) ? string.Empty : HttpUtility.UrlEncode(comment.comment_author_email);
+            result["comment_author_url"] = string.IsNullOrEmpty(comment.comment_author_url) ? string.Empty : HttpUtility.UrlEncode(comment.comment_author_url);
+            result["comment_content"] = string.IsNullOrEmpty(comment.comment_content) ? string.Empty : HttpUtility.UrlEncode(comment.comment_content);
 
             // return result
             return result;
@@ -226,10 +226,10 @@ namespace MVCForum.Website.Akismet.NET
         /// <param name="key">The input key.</param>
         /// <param name="domain">The input domain.</param>
         /// <returns>The prepared parameters if any.</returns>
-        protected virtual NameValueCollection PreparePars(String key, String domain)
+        protected virtual NameValueCollection PreparePars(string key, string domain)
         {
             // check the input parameters
-            if (String.IsNullOrEmpty(key) || String.IsNullOrEmpty(domain))
+            if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(domain))
                 return null;
 
             // initialize result
@@ -248,10 +248,10 @@ namespace MVCForum.Website.Akismet.NET
         /// </summary>
         /// <param name="content">The input content.</param>
         /// <returns>True if the content is valid, false otherwise.</returns>
-        protected virtual Boolean ExtractResult(String content)
+        protected virtual bool ExtractResult(string content)
         {
             // check the input parameters
-            if (String.IsNullOrEmpty(content))
+            if (string.IsNullOrEmpty(content))
                 return false;
 
             // check for valid content

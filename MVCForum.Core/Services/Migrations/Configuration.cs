@@ -1,19 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Data.Entity.Migrations;
-using System.Data.SqlTypes;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Web.Hosting;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Services.Data.Context;
-using MVCForum.Utilities;
-
-namespace MVCForum.Services.Migrations
+namespace MvcForum.Core.Services.Migrations
 {
-    internal sealed class Configuration : DbMigrationsConfiguration<MVCForumContext>
+    using System;
+    using System.Collections.Generic;
+    using System.Data.Entity.Migrations;
+    using System.Data.SqlTypes;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Web.Hosting;
+    using Constants;
+    using Data.Context;
+    using DomainModel.Entities;
+    using Utilities;
+
+    internal sealed class Configuration : DbMigrationsConfiguration<MvcForumContext>
     {
         public Configuration()
         {
@@ -21,11 +21,9 @@ namespace MVCForum.Services.Migrations
             AutomaticMigrationDataLossAllowed = true;
         }
 
-        protected override void Seed(MVCForumContext context)
+        protected override void Seed(MvcForumContext context)
         {
-
             #region Initial Installer Code
-
 
             //var isFirstInstall = false;
 
@@ -34,13 +32,12 @@ namespace MVCForum.Services.Migrations
             var language = context.Language.FirstOrDefault(x => x.LanguageCulture == langCulture);
             if (language == null)
             {
-
                 //isFirstInstall = true;
                 var cultureInfo = LanguageUtils.GetCulture(langCulture);
                 language = new Language
                 {
                     Name = cultureInfo.EnglishName,
-                    LanguageCulture = cultureInfo.Name,
+                    LanguageCulture = cultureInfo.Name
                 };
                 context.Language.Add(language);
 
@@ -101,7 +98,7 @@ namespace MVCForum.Services.Migrations
                         var resourceKey = new LocaleResourceKey
                         {
                             Name = key,
-                            DateAdded = DateTime.UtcNow,
+                            DateAdded = DateTime.UtcNow
                         };
                         context.LocaleResourceKey.Add(resourceKey);
 
@@ -120,7 +117,6 @@ namespace MVCForum.Services.Migrations
                 }
 
 
-
                 var saveRoles = false;
                 // Create the admin role if it doesn't exist
                 var adminRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == AppConstants.AdminRoleName);
@@ -132,10 +128,11 @@ namespace MVCForum.Services.Migrations
                 }
 
                 // Create the Standard role if it doesn't exist
-                var standardRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == SiteConstants.Instance.StandardMembers);
+                var standardRole =
+                    context.MembershipRole.FirstOrDefault(x => x.RoleName == SiteConstants.Instance.StandardMembers);
                 if (standardRole == null)
                 {
-                    standardRole = new MembershipRole {RoleName = SiteConstants.Instance.StandardMembers };
+                    standardRole = new MembershipRole {RoleName = SiteConstants.Instance.StandardMembers};
                     context.MembershipRole.Add(standardRole);
                     saveRoles = true;
                 }
@@ -228,7 +225,8 @@ namespace MVCForum.Services.Migrations
                 // Create the initial category permissions
 
                 // Edit Posts
-                if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionEditPosts) == null)
+                if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionEditPosts) ==
+                    null)
                 {
                     var permission = new Permission {Name = SiteConstants.Instance.PermissionEditPosts};
                     context.Permission.Add(permission);
@@ -236,21 +234,24 @@ namespace MVCForum.Services.Migrations
                     // NOTE: Because this is null - We assumed it's a new install so carry on checking and adding the other permissions
 
                     // Read Only
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionReadOnly) == null)
+                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionReadOnly) ==
+                        null)
                     {
                         var p = new Permission {Name = SiteConstants.Instance.PermissionReadOnly};
                         context.Permission.Add(p);
                     }
 
                     // Delete Posts
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionDeletePosts) == null)
+                    if (context.Permission.FirstOrDefault(x =>
+                            x.Name == SiteConstants.Instance.PermissionDeletePosts) == null)
                     {
                         var p = new Permission {Name = SiteConstants.Instance.PermissionDeletePosts};
                         context.Permission.Add(p);
                     }
 
                     // Sticky Topics
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionCreateStickyTopics) ==
+                    if (context.Permission.FirstOrDefault(x =>
+                            x.Name == SiteConstants.Instance.PermissionCreateStickyTopics) ==
                         null)
                     {
                         var p = new Permission {Name = SiteConstants.Instance.PermissionCreateStickyTopics};
@@ -258,42 +259,48 @@ namespace MVCForum.Services.Migrations
                     }
 
                     // Lock Topics
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionLockTopics) == null)
+                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionLockTopics) ==
+                        null)
                     {
                         var p = new Permission {Name = SiteConstants.Instance.PermissionLockTopics};
                         context.Permission.Add(p);
                     }
 
                     // Vote In Polls
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionVoteInPolls) == null)
+                    if (context.Permission.FirstOrDefault(x =>
+                            x.Name == SiteConstants.Instance.PermissionVoteInPolls) == null)
                     {
                         var p = new Permission {Name = SiteConstants.Instance.PermissionVoteInPolls};
                         context.Permission.Add(p);
                     }
 
                     // Create Polls
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionCreatePolls) == null)
+                    if (context.Permission.FirstOrDefault(x =>
+                            x.Name == SiteConstants.Instance.PermissionCreatePolls) == null)
                     {
                         var p = new Permission {Name = SiteConstants.Instance.PermissionCreatePolls};
                         context.Permission.Add(p);
                     }
 
                     // Create Topics
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionCreateTopics) == null)
+                    if (context.Permission.FirstOrDefault(x =>
+                            x.Name == SiteConstants.Instance.PermissionCreateTopics) == null)
                     {
                         var p = new Permission {Name = SiteConstants.Instance.PermissionCreateTopics};
                         context.Permission.Add(p);
                     }
 
                     // Attach Files
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionAttachFiles) == null)
+                    if (context.Permission.FirstOrDefault(x =>
+                            x.Name == SiteConstants.Instance.PermissionAttachFiles) == null)
                     {
                         var p = new Permission {Name = SiteConstants.Instance.PermissionAttachFiles};
                         context.Permission.Add(p);
                     }
 
                     // Deny Access
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionDenyAccess) == null)
+                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionDenyAccess) ==
+                        null)
                     {
                         var p = new Permission {Name = SiteConstants.Instance.PermissionDenyAccess};
                         context.Permission.Add(p);
@@ -302,17 +309,23 @@ namespace MVCForum.Services.Migrations
                     // === Global Permissions === //
 
                     // Deny Access
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionEditMembers) == null)
+                    if (context.Permission.FirstOrDefault(x =>
+                            x.Name == SiteConstants.Instance.PermissionEditMembers) == null)
                     {
                         var p = new Permission {Name = SiteConstants.Instance.PermissionEditMembers, IsGlobal = true};
                         context.Permission.Add(p);
                     }
 
                     // Insert Editor Images
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionInsertEditorImages) ==
+                    if (context.Permission.FirstOrDefault(x =>
+                            x.Name == SiteConstants.Instance.PermissionInsertEditorImages) ==
                         null)
                     {
-                        var p = new Permission {Name = SiteConstants.Instance.PermissionInsertEditorImages, IsGlobal = true};
+                        var p = new Permission
+                        {
+                            Name = SiteConstants.Instance.PermissionInsertEditorImages,
+                            IsGlobal = true
+                        };
                         context.Permission.Add(p);
                     }
 
@@ -397,7 +410,6 @@ namespace MVCForum.Services.Migrations
                     context.Post.Add(post);
                     context.SaveChanges();
                 }
-
             }
             else
             {
@@ -406,9 +418,14 @@ namespace MVCForum.Services.Migrations
                 // Data to update on versions v1.7+
 
                 // Insert Editor Images
-                if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionInsertEditorImages) == null)
+                if (context.Permission.FirstOrDefault(
+                        x => x.Name == SiteConstants.Instance.PermissionInsertEditorImages) == null)
                 {
-                    var p = new Permission { Name = SiteConstants.Instance.PermissionInsertEditorImages, IsGlobal = true };
+                    var p = new Permission
+                    {
+                        Name = SiteConstants.Instance.PermissionInsertEditorImages,
+                        IsGlobal = true
+                    };
                     context.Permission.Add(p);
                 }
             }

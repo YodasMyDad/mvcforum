@@ -1,4 +1,4 @@
-﻿namespace MVCForum.IOC
+﻿namespace MvcForum.Core.Ioc
 {
     using System;
     using System.Collections.Generic;

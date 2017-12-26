@@ -1,7 +1,7 @@
-﻿using System.Web.Mvc;
-
-namespace MVCForum.Website.Application
+﻿namespace MvcForum.Web.Application.CustomActionResults
 {
+    using System.Web.Mvc;
+
     /// This is used to create an html "page" that is dropped into an iframe, as part
     /// of the asynchronous server calls made during a file upload. The JSON data
     /// placed in the page is the result information following processing

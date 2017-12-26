@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace MVCForum.Domain.Interfaces
+﻿namespace MvcForum.Core.Interfaces
 {
+    using System.Collections.Generic;
+
     public partial interface IPagedList<T> : IList<T>
     {
         int PageIndex { get; }

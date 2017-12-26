@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MVCForum.Domain.DomainModel.Attributes
+namespace MvcForum.Core.DomainModel.Attributes
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class AwardsPointsAttribute : Attribute

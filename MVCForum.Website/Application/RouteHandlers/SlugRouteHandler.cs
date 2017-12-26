@@ -1,14 +1,15 @@
-﻿using System;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Routing;
-using MVCForum.Domain.Interfaces.Services;
-
-namespace MVCForum.Website.Application.RouteHandlers
+﻿namespace MvcForum.Web.Application.RouteHandlers
 {
+    using System;
+    using System.Web;
+    using System.Web.Mvc;
+    using System.Web.Routing;
+    using Core.Interfaces.Services;
+
     public class SlugRouteHandler : MvcRouteHandler
     {
         private readonly ITopicService _topicService;
+
         public SlugRouteHandler()
         {
             _topicService = ServiceFactory.Get<ITopicService>();
@@ -31,8 +32,6 @@ namespace MVCForum.Website.Application.RouteHandlers
                 //        page.ID.ToString(),
                 //        requestContext);
                 //}
-
-                
             }
 
             return base.GetHttpHandler(requestContext);

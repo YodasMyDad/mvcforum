@@ -1,18 +1,18 @@
-﻿namespace MVCForum.Website.Controllers.OAuthControllers
+﻿namespace MvcForum.Web.Controllers.OAuthControllers
 {
     using System;
     using System.Collections.Specialized;
     using System.Web.Mvc;
     using System.Web.Security;
-    using Domain.Constants;
-    using Domain.DomainModel.Enums;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
-    using Utilities;
     using Areas.Admin.ViewModels;
-    using ViewModels;
+    using Core.Constants;
+    using Core.DomainModel.Enums;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
+    using Core.Utilities;
     using Skybrud.Social.Google;
     using Skybrud.Social.Google.OAuth;
+    using ViewModels;
 
     // Google uses OAuth 2.0 for authentication and communication. In order for users to authenticate with the Google API, 
     // you must specify the ID, secret and redirect URI of your Google app. 
@@ -21,23 +21,24 @@
     public partial class GoogleOAuthController : BaseController
     {
         public GoogleOAuthController(ILoggingService loggingService,
-                                    IUnitOfWorkManager unitOfWorkManager,
-                                    IMembershipService membershipService,
-                                    ILocalizationService localizationService,
-                                    IRoleService roleService,
-                                    ISettingsService settingsService,
-                                    ICacheService cacheService)
+            IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService,
+            ILocalizationService localizationService,
+            IRoleService roleService,
+            ISettingsService settingsService,
+            ICacheService cacheService)
             : base(loggingService,
-                  unitOfWorkManager,
-                  membershipService,
-                  localizationService,
-                  roleService,
-                  settingsService,
-                  cacheService)
+                unitOfWorkManager,
+                membershipService,
+                localizationService,
+                roleService,
+                settingsService,
+                cacheService)
         {
         }
 
-        public string ReturnUrl => string.Concat(SettingsService.GetSettings().ForumUrl.TrimEnd('/'), Url.Action("GoogleLogin"));
+        public string ReturnUrl =>
+            string.Concat(SettingsService.GetSettings().ForumUrl.TrimEnd('/'), Url.Action("GoogleLogin"));
 
         public string Callback { get; private set; }
 
@@ -48,7 +49,7 @@
         public string Feature { get; private set; }
 
         /// <summary>
-        /// Gets the authorizing code from the query string (if specified).
+        ///     Gets the authorizing code from the query string (if specified).
         /// </summary>
         public string AuthCode => Request.QueryString["code"];
 
@@ -109,33 +110,38 @@
                 {
                     resultMessage.Message = AuthErrorDescription;
                     resultMessage.MessageType = GenericMessages.danger;
-                    if (AuthState != null) Session.Remove("MVCForum_" + AuthState);
+                    if (AuthState != null)
+                    {
+                        Session.Remove("MVCForum_" + AuthState);
+                    }
                 }
 
                 // Redirect the user to the Google login dialog
                 if (AuthCode == null)
                 {
-
                     // Generate a new unique/random state
                     var state = Guid.NewGuid().ToString();
 
                     // Save the state in the current user session
-                    Session["MVCForum_" + state] = new NameValueCollection {
-                    { "Callback", Callback},
-                    { "ContentTypeAlias", ContentTypeAlias},
-                    { "PropertyAlias", PropertyAlias},
-                    { "Feature", Feature}
-                };
+                    Session["MVCForum_" + state] = new NameValueCollection
+                    {
+                        {"Callback", Callback},
+                        {"ContentTypeAlias", ContentTypeAlias},
+                        {"PropertyAlias", PropertyAlias},
+                        {"Feature", Feature}
+                    };
 
                     // Declare the scope
-                    var scope = new[] {
-                    GoogleScopes.OpenId,
-                    GoogleScopes.Email,
-                    GoogleScopes.Profile
-                };
+                    var scope = new[]
+                    {
+                        GoogleScopes.OpenId,
+                        GoogleScopes.Email,
+                        GoogleScopes.Profile
+                    };
 
                     // Construct the authorization URL
-                    var url = client.GetAuthorizationUrl(state, scope, GoogleAccessType.Offline, GoogleApprovalPrompt.Force);
+                    var url = client.GetAuthorizationUrl(state, scope, GoogleAccessType.Offline,
+                        GoogleApprovalPrompt.Force);
 
                     // Redirect the user
                     return Redirect(url);
@@ -154,9 +160,9 @@
 
                 try
                 {
-
                     // Initialize the Google service
-                    var service = GoogleService.CreateFromRefreshToken(client.ClientIdFull, client.ClientSecret, info.RefreshToken);
+                    var service = GoogleService.CreateFromRefreshToken(client.ClientIdFull, client.ClientSecret,
+                        info.RefreshToken);
 
                     // Get information about the authenticated user
                     var user = service.GetUserInfo();
@@ -173,26 +179,22 @@
                             ShowMessage(resultMessage);
                             return RedirectToAction("Index", "Home");
                         }
-                        else
+                        // Not registered already so register them
+                        var viewModel = new MemberAddViewModel
                         {
-                            // Not registered already so register them
-                            var viewModel = new MemberAddViewModel
-                            {
-                                Email = user.Email,
-                                LoginType = LoginType.Google,
-                                Password = StringUtils.RandomString(8),
-                                UserName = user.Name,
-                                SocialProfileImageUrl = user.Picture,
-                                UserAccessToken = info.RefreshToken
-                            };
+                            Email = user.Email,
+                            LoginType = LoginType.Google,
+                            Password = StringUtils.RandomString(8),
+                            UserName = user.Name,
+                            SocialProfileImageUrl = user.Picture,
+                            UserAccessToken = info.RefreshToken
+                        };
 
-                            // Store the viewModel in TempData - Which we'll use in the register logic
-                            TempData[AppConstants.MemberRegisterViewModel] = viewModel;
+                        // Store the viewModel in TempData - Which we'll use in the register logic
+                        TempData[AppConstants.MemberRegisterViewModel] = viewModel;
 
-                            return RedirectToAction("SocialLoginValidator", "Members");
-                        }
+                        return RedirectToAction("SocialLoginValidator", "Members");
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -200,7 +202,6 @@
                     resultMessage.MessageType = GenericMessages.danger;
                     LoggingService.Error(ex);
                 }
-
             }
 
             ShowMessage(resultMessage);

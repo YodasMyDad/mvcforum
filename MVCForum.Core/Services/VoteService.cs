@@ -1,27 +1,28 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
-    using Domain.Constants;
     using System;
+    using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
-    using System.Collections.Generic;
-    using Domain.DomainModel;
-    using Domain.Events;
-    using Domain.Interfaces;
-    using Domain.Interfaces.Services;
+    using Constants;
     using Data.Context;
+    using DomainModel.Entities;
+    using DomainModel.Enums;
+    using Events;
+    using Interfaces;
+    using Interfaces.Services;
 
     public partial class VoteService : IVoteService
     {
         private readonly IMembershipUserPointsService _membershipUserPointsService;
-        private readonly MVCForumContext _context;
+        private readonly MvcForumContext _context;
         private readonly ICacheService _cacheService;
 
-        public VoteService(IMVCForumContext context, IMembershipUserPointsService membershipUserPointsService, ICacheService cacheService)
+        public VoteService(IMvcForumContext context, IMembershipUserPointsService membershipUserPointsService, ICacheService cacheService)
         {
             _membershipUserPointsService = membershipUserPointsService;
             _cacheService = cacheService;
-            _context = context as MVCForumContext;
+            _context = context as MvcForumContext;
         }
 
         public Vote Get(Guid id)

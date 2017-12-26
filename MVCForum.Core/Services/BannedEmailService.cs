@@ -1,24 +1,25 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
-    using Domain.Constants;
     using System;
-    using System.Linq;
     using System.Collections.Generic;
-    using Domain.DomainModel;
-    using Domain.Interfaces;
-    using Domain.Interfaces.Services;
+    using System.Linq;
+    using Constants;
     using Data.Context;
+    using DomainModel.Entities;
+    using DomainModel.General;
+    using Interfaces;
+    using Interfaces.Services;
     using Utilities;
 
     public partial class BannedEmailService : IBannedEmailService
     {
-        private readonly MVCForumContext _context;
+        private readonly MvcForumContext _context;
         private readonly ICacheService _cacheService;
 
-        public BannedEmailService(IMVCForumContext context, ICacheService cacheService)
+        public BannedEmailService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
-            _context = context as MVCForumContext;
+            _context = context as MvcForumContext;
         }
 
         public BannedEmail Add(BannedEmail bannedEmail)

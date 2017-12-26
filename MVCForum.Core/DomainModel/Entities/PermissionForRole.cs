@@ -1,4 +1,4 @@
-﻿namespace MVCForum.Domain.DomainModel
+﻿namespace MvcForum.Core.DomainModel.Entities
 {
     public class PermissionForRole
     {

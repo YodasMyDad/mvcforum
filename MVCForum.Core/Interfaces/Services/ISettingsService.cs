@@ -1,9 +1,9 @@
-﻿using System;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
-    public partial interface ISettingsService
+    using System;
+    using DomainModel.Entities;
+
+    public interface ISettingsService
     {
         Settings GetSettings(bool useCache = true);
         Settings Add(Settings settings);

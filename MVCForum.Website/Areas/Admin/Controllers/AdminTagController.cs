@@ -1,22 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Areas.Admin.ViewModels;
-
-namespace MVCForum.Website.Areas.Admin.Controllers
+﻿namespace MvcForum.Web.Areas.Admin.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Web.Mvc;
+    using Core.Constants;
+    using Core.DomainModel.Entities;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
+    using ViewModels;
+
     [Authorize(Roles = AppConstants.AdminRoleName)]
-    public partial class AdminTagController : BaseAdminController
+    public class AdminTagController : BaseAdminController
     {
         private readonly ITopicTagService _topicTagService;
 
-        public AdminTagController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
-            ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService) 
+        public AdminTagController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService,
+            ILocalizationService localizationService, ISettingsService settingsService,
+            ITopicTagService topicTagService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
             _topicTagService = topicTagService;
@@ -28,8 +30,10 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var allTags = string.IsNullOrEmpty(search) ? _topicTagService.GetPagedGroupedTags(pageIndex, SiteConstants.Instance.AdminListPageSize) :
-                            _topicTagService.SearchPagedGroupedTags(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
+                var allTags = string.IsNullOrEmpty(search)
+                    ? _topicTagService.GetPagedGroupedTags(pageIndex, SiteConstants.Instance.AdminListPageSize)
+                    : _topicTagService.SearchPagedGroupedTags(search, pageIndex,
+                        SiteConstants.Instance.AdminListPageSize);
 
                 var memberListModel = new ListTagsViewModel
                 {
@@ -41,7 +45,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
                 return View(memberListModel);
             }
-
         }
 
         private List<SelectListItem> TagsSelectList()
@@ -63,9 +66,9 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var viewModel = new MoveTagsViewModel
-                                {
-                                    Tags = TagsSelectList()
-                                };
+                {
+                    Tags = TagsSelectList()
+                };
                 return View(viewModel);
             }
         }
@@ -110,21 +113,19 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     });
                 }
 
-                return View(viewModel); 
+                return View(viewModel);
             }
         }
 
 
         public ActionResult Manage(int? p, string search)
         {
-            return RedirectToAction("Index", new { p, search });
+            return RedirectToAction("Index", new {p, search});
         }
 
 
         public ActionResult Delete(string tag)
         {
-
-
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 _topicTagService.DeleteByName(tag);
@@ -149,7 +150,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         MessageType = GenericMessages.danger
                     });
                 }
-
             }
 
             return RedirectToAction("Index");
@@ -176,7 +176,5 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 }
             }
         }
-
-
     }
 }

@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using DomainModel.Entities;
+    using DomainModel.General;
+
     public partial interface IBannedWordService
     {
         BannedWord Add(BannedWord bannedWord);

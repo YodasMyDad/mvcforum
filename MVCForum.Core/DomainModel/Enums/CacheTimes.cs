@@ -1,4 +1,4 @@
-﻿namespace MVCForum.Domain.DomainModel.Enums
+﻿namespace MvcForum.Core.DomainModel.Enums
 {
     public enum CacheTimes
     {

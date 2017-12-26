@@ -1,16 +1,17 @@
-﻿namespace MVCForum.Website.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
     using System;
     using System.IO;
     using System.Linq;
     using System.Web.Hosting;
     using System.Web.Mvc;
-    using Domain.Constants;
-    using Domain.DomainModel;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
     using Application;
     using Areas.Admin.ViewModels;
+    using Core.Constants;
+    using Core.DomainModel.Entities;
+    using Core.DomainModel.General;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
     using ViewModels;
 
     [Authorize]
@@ -20,9 +21,11 @@
         private readonly IUploadedFileService _uploadedFileService;
 
         public UploadController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
-            IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
+            IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService,
+            ISettingsService settingsService,
             IPostService postService, IUploadedFileService uploadedFileService, ICacheService cacheService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
+                settingsService, cacheService)
         {
             _postService = postService;
             _uploadedFileService = uploadedFileService;
@@ -37,7 +40,6 @@
 
                 try
                 {
-
                     // First this to do is get the post
                     var post = _postService.Get(attachFileToPostViewModel.UploadPostId);
                     if (post != null)
@@ -54,7 +56,8 @@
                             // Get the permissions for this category, and check they are allowed to update and 
                             // not trying to be a sneaky mofo
                             var permissions = RoleService.GetPermissions(category, UsersRole);
-                            if (permissions[SiteConstants.Instance.PermissionAttachFiles].IsTicked == false || LoggedOnReadOnlyUser.DisableFileUploads == true)
+                            if (permissions[SiteConstants.Instance.PermissionAttachFiles].IsTicked == false ||
+                                LoggedOnReadOnlyUser.DisableFileUploads == true)
                             {
                                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                                 {
@@ -67,7 +70,8 @@
 
                             // woot! User has permission and all seems ok
                             // Before we save anything, check the user already has an upload folder and if not create one
-                            var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, LoggedOnReadOnlyUser.Id));
+                            var uploadFolderPath = HostingEnvironment.MapPath(
+                                string.Concat(SiteConstants.Instance.UploadFolderPath, LoggedOnReadOnlyUser.Id));
                             if (!Directory.Exists(uploadFolderPath))
                             {
                                 Directory.CreateDirectory(uploadFolderPath);
@@ -79,7 +83,8 @@
                                 if (file != null)
                                 {
                                     // If successful then upload the file
-                                    var uploadResult = AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService);
+                                    var uploadResult =
+                                        AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService);
                                     if (!uploadResult.UploadSuccessful)
                                     {
                                         TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
@@ -93,13 +98,12 @@
                                     // Add the filename to the database
                                     var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
                                     var uploadedFile = new UploadedFile
-                                        {
-                                            Filename = uploadResult.UploadedFileName,
-                                            Post = post,
-                                            MembershipUser = loggedOnUser
-                                        };
+                                    {
+                                        Filename = uploadResult.UploadedFileName,
+                                        Post = post,
+                                        MembershipUser = loggedOnUser
+                                    };
                                     _uploadedFileService.Add(uploadedFile);
-
                                 }
                             }
 
@@ -114,10 +118,11 @@
                             };
 
                             return Redirect(topic.NiceUrl);
-
                         }
                         // Else return with error to home page
-                        return topic != null ? Redirect(topic.NiceUrl) : ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
+                        return topic != null
+                            ? Redirect(topic.NiceUrl)
+                            : ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }
                     // Else return with error to home page
                     return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
@@ -131,7 +136,9 @@
                         Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
                         MessageType = GenericMessages.danger
                     };
-                    return topic != null ? Redirect(topic.NiceUrl) : ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
+                    return topic != null
+                        ? Redirect(topic.NiceUrl)
+                        : ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
                 }
             }
         }
@@ -150,7 +157,8 @@
                         var post = uploadedFile.Post;
                         topic = post.Topic;
 
-                        if (UsersRole.RoleName == AppConstants.AdminRoleName || uploadedFile.MembershipUser.Id == LoggedOnReadOnlyUser.Id)
+                        if (UsersRole.RoleName == AppConstants.AdminRoleName ||
+                            uploadedFile.MembershipUser.Id == LoggedOnReadOnlyUser.Id)
                         {
                             // Ok to delete file
                             // Remove it from the post
@@ -195,12 +203,13 @@
                             Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
                             MessageType = GenericMessages.danger
                         };
-                        return topic != null ? Redirect(topic.NiceUrl) : ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
+                        return topic != null
+                            ? Redirect(topic.NiceUrl)
+                            : ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }
                 }
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
-
     }
 }

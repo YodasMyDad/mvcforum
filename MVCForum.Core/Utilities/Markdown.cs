@@ -83,14 +83,13 @@ software, even if advised of the possibility of such damage.
 
 #endregion
 
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Text;
-using System.Text.RegularExpressions;
-
-namespace MarkdownSharp
+namespace MvcForum.Core.Utilities
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Configuration;
+    using System.Text;
+    using System.Text.RegularExpressions;
 
     public class MarkdownOptions
     {

@@ -1,4 +1,4 @@
-﻿namespace MVCForum.Website.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
     using System;
     using System.Drawing.Imaging;
@@ -11,36 +11,42 @@
     using System.Web.Hosting;
     using System.Web.Mvc;
     using System.Web.Security;
-    using Domain.Constants;
-    using Domain.DomainModel;
-    using Domain.DomainModel.Enums;
-    using Domain.Events;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
-    using Utilities;
     using Application;
     using Areas.Admin.ViewModels;
+    using Core.Constants;
+    using Core.DomainModel.Entities;
+    using Core.DomainModel.Enums;
+    using Core.DomainModel.General;
+    using Core.Events;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
+    using Core.Utilities;
     using ViewModels;
     using ViewModels.Mapping;
-    using MembershipCreateStatus = Domain.DomainModel.MembershipCreateStatus;
-    using MembershipUser = Domain.DomainModel.MembershipUser;
+    using MembershipCreateStatus = Core.DomainModel.Enums.MembershipCreateStatus;
+    using MembershipUser = Core.DomainModel.Entities.MembershipUser;
 
     public partial class MembersController : BaseController
     {
-        private readonly IPostService _postService;
-        private readonly ITopicService _topicService;
-        private readonly IReportService _reportService;
-        private readonly IEmailService _emailService;
-        private readonly IPrivateMessageService _privateMessageService;
         private readonly IBannedEmailService _bannedEmailService;
         private readonly IBannedWordService _bannedWordService;
         private readonly ICategoryService _categoryService;
+        private readonly IEmailService _emailService;
+        private readonly IPostService _postService;
+        private readonly IPrivateMessageService _privateMessageService;
+        private readonly IReportService _reportService;
+        private readonly ITopicService _topicService;
 
-        public MembersController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService,
-            IRoleService roleService, ISettingsService settingsService, IPostService postService, IReportService reportService, 
-            IEmailService emailService, IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService, 
-            IBannedWordService bannedWordService, ICategoryService categoryService, ITopicService topicService, ICacheService cacheService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
+        public MembersController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService, ILocalizationService localizationService,
+            IRoleService roleService, ISettingsService settingsService, IPostService postService,
+            IReportService reportService,
+            IEmailService emailService, IPrivateMessageService privateMessageService,
+            IBannedEmailService bannedEmailService,
+            IBannedWordService bannedWordService, ICategoryService categoryService, ITopicService topicService,
+            ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
+                settingsService, cacheService)
         {
             _postService = postService;
             _reportService = reportService;
@@ -91,7 +97,6 @@
                 viewModel.AllRoles = RoleService.AllRoles();
                 return Redirect(user.NiceUrl);
             }
-
         }
 
         [Authorize]
@@ -104,7 +109,6 @@
 
                 if (permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                 {
-
                     if (!user.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
                     {
                         user.IsBanned = true;
@@ -224,7 +228,7 @@
             }
 
             // You can return anything to reset the timer.
-            return Json(new { Timer = "reset" }, JsonRequestBehavior.AllowGet);
+            return Json(new {Timer = "reset"}, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetByName(string slug)
@@ -253,7 +257,7 @@
         }
 
         /// <summary>
-        /// Add a new user
+        ///     Add a new user
         /// </summary>
         /// <returns></returns>
         public ActionResult Register()
@@ -289,7 +293,7 @@
         }
 
         /// <summary>
-        /// Add a new user
+        ///     Add a new user
         /// </summary>
         /// <param name="userModel"></param>
         /// <returns></returns>
@@ -297,7 +301,8 @@
         [ValidateAntiForgeryToken]
         public ActionResult Register(MemberAddViewModel userModel)
         {
-            if (SettingsService.GetSettings().SuspendRegistration != true && SettingsService.GetSettings().DisableStandardRegistration != true)
+            if (SettingsService.GetSettings().SuspendRegistration != true &&
+                SettingsService.GetSettings().DisableStandardRegistration != true)
             {
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
@@ -305,10 +310,12 @@
                     if (!string.IsNullOrEmpty(SettingsService.GetSettings().SpamQuestion))
                     {
                         // There is a spam question, if answer is wrong return with error
-                        if (userModel.SpamAnswer == null || userModel.SpamAnswer.Trim() != SettingsService.GetSettings().SpamAnswer)
+                        if (userModel.SpamAnswer == null ||
+                            userModel.SpamAnswer.Trim() != SettingsService.GetSettings().SpamAnswer)
                         {
                             // POTENTIAL SPAMMER!
-                            ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Error.WrongAnswerRegistration"));
+                            ModelState.AddModelError(string.Empty,
+                                LocalizationService.GetResourceString("Error.WrongAnswerRegistration"));
                             return View();
                         }
                     }
@@ -316,7 +323,8 @@
                     // Secondly see if the email is banned
                     if (_bannedEmailService.EmailIsBanned(userModel.Email))
                     {
-                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Error.EmailIsBanned"));
+                        ModelState.AddModelError(string.Empty,
+                            LocalizationService.GetResourceString("Error.EmailIsBanned"));
                         return View();
                     }
                 }
@@ -326,7 +334,6 @@
 
                 // Do the register logic
                 return MemberRegisterLogic(userModel);
-
             }
             return RedirectToAction("Index", "Home");
         }
@@ -336,13 +343,12 @@
             // Store the viewModel in TempData - Which we'll use in the register logic
             if (TempData[AppConstants.MemberRegisterViewModel] != null)
             {
-                var userModel = (TempData[AppConstants.MemberRegisterViewModel] as MemberAddViewModel);
+                var userModel = TempData[AppConstants.MemberRegisterViewModel] as MemberAddViewModel;
 
                 // Do the register logic
                 return MemberRegisterLogic(userModel);
             }
 
-            
 
             ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
             return View("Register");
@@ -357,13 +363,13 @@
                 var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
                 var homeRedirect = false;
 
-                var userToSave = new MembershipUser
+                var userToSave = new Core.DomainModel.Entities.MembershipUser
                 {
                     UserName = _bannedWordService.SanitiseBannedWords(userModel.UserName),
                     Email = userModel.Email,
                     Password = userModel.Password,
                     IsApproved = userModel.IsApproved,
-                    Comment = userModel.Comment,
+                    Comment = userModel.Comment
                 };
 
                 var createStatus = MembershipService.CreateUser(userToSave);
@@ -380,7 +386,9 @@
                         var image = AppHelpers.GetImageFromExternalUrl(userModel.SocialProfileImageUrl);
 
                         // Set upload directory - Create if it doesn't exist
-                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, userToSave.Id));
+                        var uploadFolderPath =
+                            HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath,
+                                userToSave.Id));
                         if (uploadFolderPath != null && !Directory.Exists(uploadFolderPath))
                         {
                             Directory.CreateDirectory(uploadFolderPath);
@@ -397,7 +405,8 @@
                             var fileExtension = Path.GetExtension(fileName);
 
                             // Fix invalid Illegal charactors
-                            var regexSearch = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+                            var regexSearch = new string(Path.GetInvalidFileNameChars()) +
+                                              new string(Path.GetInvalidPathChars());
                             var reg = new Regex($"[{Regex.Escape(regexSearch)}]");
                             fileName = reg.Replace(fileName, "");
 
@@ -412,7 +421,8 @@
                             HttpPostedFileBase formattedImage = new MemoryFile(stream, "image/jpeg", fileName);
 
                             // Upload the file
-                            var uploadResult = AppHelpers.UploadFile(formattedImage, uploadFolderPath, LocalizationService, true);
+                            var uploadResult = AppHelpers.UploadFile(formattedImage, uploadFolderPath,
+                                LocalizationService, true);
 
                             // Don't throw error if problem saving avatar, just don't save it.
                             if (uploadResult.UploadSuccessful)
@@ -420,7 +430,6 @@
                                 userToSave.Avatar = uploadResult.UploadedFileName;
                             }
                         }
-
                     }
 
                     // Store access token for social media account in case we want to do anything with it
@@ -466,12 +475,13 @@
 
                         if (homeRedirect)
                         {
-                            if (Url.IsLocalUrl(userModel.ReturnUrl) && userModel.ReturnUrl.Length > 1 && userModel.ReturnUrl.StartsWith("/")
-                            && !userModel.ReturnUrl.StartsWith("//") && !userModel.ReturnUrl.StartsWith("/\\"))
+                            if (Url.IsLocalUrl(userModel.ReturnUrl) && userModel.ReturnUrl.Length > 1 &&
+                                userModel.ReturnUrl.StartsWith("/")
+                                && !userModel.ReturnUrl.StartsWith("//") && !userModel.ReturnUrl.StartsWith("/\\"))
                             {
                                 return Redirect(userModel.ReturnUrl);
                             }
-                            return RedirectToAction("Index", "Home", new { area = string.Empty });
+                            return RedirectToAction("Index", "Home", new {area = string.Empty});
                         }
                     }
                     catch (Exception ex)
@@ -479,7 +489,8 @@
                         unitOfWork.Rollback();
                         LoggingService.Error(ex);
                         FormsAuthentication.SignOut();
-                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+                        ModelState.AddModelError(string.Empty,
+                            LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }
                 }
             }
@@ -487,7 +498,8 @@
             return View("Register");
         }
 
-        private void SetRegisterViewBagMessage(bool manuallyAuthoriseMembers, bool memberEmailAuthorisationNeeded, MembershipUser userToSave)
+        private void SetRegisterViewBagMessage(bool manuallyAuthoriseMembers, bool memberEmailAuthorisationNeeded,
+            Core.DomainModel.Entities.MembershipUser userToSave)
         {
             if (manuallyAuthoriseMembers)
             {
@@ -521,7 +533,7 @@
             }
         }
 
-        private void SendEmailConfirmationEmail(MembershipUser userToSave)
+        private void SendEmailConfirmationEmail(Core.DomainModel.Entities.MembershipUser userToSave)
         {
             var settings = SettingsService.GetSettings();
             var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
@@ -532,10 +544,12 @@
                 {
                     // SEND AUTHORISATION EMAIL
                     var sb = new StringBuilder();
-                    var confirmationLink = string.Concat(StringUtils.ReturnCurrentDomain(), Url.Action("EmailConfirmation", new { id = userToSave.Id }));
-                    sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.EmailBody"),
-                                                settings.ForumName,
-                                                string.Format("<p><a href=\"{0}\">{0}</a></p>", confirmationLink)));
+                    var confirmationLink = string.Concat(StringUtils.ReturnCurrentDomain(),
+                        Url.Action("EmailConfirmation", new {id = userToSave.Id}));
+                    sb.AppendFormat("<p>{0}</p>", string.Format(
+                        LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.EmailBody"),
+                        settings.ForumName,
+                        string.Format("<p><a href=\"{0}\">{0}</a></p>", confirmationLink)));
                     var email = new Email
                     {
                         EmailTo = userToSave.Email,
@@ -560,7 +574,7 @@
         }
 
         /// <summary>
-        /// Creates a hash code for the password reset cookie
+        ///     Creates a hash code for the password reset cookie
         /// </summary>
         /// <param name="userToSave"></param>
         /// <returns></returns>
@@ -599,7 +613,7 @@
         }
 
         /// <summary>
-        /// Email confirmation page from the link in the users email
+        ///     Email confirmation page from the link in the users email
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -677,7 +691,7 @@
         }
 
         /// <summary>
-        /// Log on
+        ///     Log on
         /// </summary>
         /// <returns></returns>
         public ActionResult LogOn()
@@ -696,7 +710,7 @@
         }
 
         /// <summary>
-        /// Log on post
+        ///     Log on post
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -723,7 +737,7 @@
                             UserName = model.UserName,
                             Password = model.Password,
                             RememberMe = model.RememberMe,
-                            ReturnUrl = model.ReturnUrl, 
+                            ReturnUrl = model.ReturnUrl,
                             UnitOfWork = unitOfWork
                         };
                         EventManager.Instance.FireBeforeLogin(this, e);
@@ -732,7 +746,8 @@
                         {
                             var message = new GenericMessageViewModel();
                             var user = new MembershipUser();
-                            if (MembershipService.ValidateUser(username, password, Membership.MaxInvalidPasswordAttempts))
+                            if (MembershipService.ValidateUser(username, password,
+                                Membership.MaxInvalidPasswordAttempts))
                             {
                                 // Set last login date
                                 user = MembershipService.GetUser(username);
@@ -741,7 +756,8 @@
                                     FormsAuthentication.SetAuthCookie(username, model.RememberMe);
                                     user.LastLoginDate = DateTime.UtcNow;
 
-                                    if (Url.IsLocalUrl(model.ReturnUrl) && model.ReturnUrl.Length > 1 && model.ReturnUrl.StartsWith("/")
+                                    if (Url.IsLocalUrl(model.ReturnUrl) && model.ReturnUrl.Length > 1 &&
+                                        model.ReturnUrl.StartsWith("/")
                                         && !model.ReturnUrl.StartsWith("//") && !model.ReturnUrl.StartsWith("/\\"))
                                     {
                                         return Redirect(model.ReturnUrl);
@@ -759,7 +775,7 @@
                                         UnitOfWork = unitOfWork
                                     });
 
-                                    return RedirectToAction("Index", "Home", new { area = string.Empty });
+                                    return RedirectToAction("Index", "Home", new {area = string.Empty});
                                 }
                                 //else if (!user.IsApproved && SettingsService.GetSettings().ManuallyAuthoriseNewMembers)
                                 //{
@@ -790,29 +806,36 @@
                                 {
                                     case LoginAttemptStatus.UserNotFound:
                                     case LoginAttemptStatus.PasswordIncorrect:
-                                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.PasswordIncorrect"));
+                                        ModelState.AddModelError(string.Empty,
+                                            LocalizationService.GetResourceString("Members.Errors.PasswordIncorrect"));
                                         break;
 
                                     case LoginAttemptStatus.PasswordAttemptsExceeded:
-                                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.PasswordAttemptsExceeded"));
+                                        ModelState.AddModelError(string.Empty,
+                                            LocalizationService.GetResourceString(
+                                                "Members.Errors.PasswordAttemptsExceeded"));
                                         break;
 
                                     case LoginAttemptStatus.UserLockedOut:
-                                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.UserLockedOut"));
+                                        ModelState.AddModelError(string.Empty,
+                                            LocalizationService.GetResourceString("Members.Errors.UserLockedOut"));
                                         break;
 
                                     case LoginAttemptStatus.Banned:
-                                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.NowBanned"));
+                                        ModelState.AddModelError(string.Empty,
+                                            LocalizationService.GetResourceString("Members.NowBanned"));
                                         break;
 
                                     case LoginAttemptStatus.UserNotApproved:
-                                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.UserNotApproved"));
+                                        ModelState.AddModelError(string.Empty,
+                                            LocalizationService.GetResourceString("Members.Errors.UserNotApproved"));
                                         user = MembershipService.GetUser(username);
                                         SendEmailConfirmationEmail(user);
                                         break;
 
                                     default:
-                                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.LogonGeneric"));
+                                        ModelState.AddModelError(string.Empty,
+                                            LocalizationService.GetResourceString("Members.Errors.LogonGeneric"));
                                         break;
                                 }
                             }
@@ -831,7 +854,6 @@
                         unitOfWork.Rollback();
                         LoggingService.Error(ex);
                     }
-
                 }
 
                 return View(model);
@@ -839,7 +861,7 @@
         }
 
         /// <summary>
-        /// Get: log off user
+        ///     Get: log off user
         /// </summary>
         /// <returns></returns>
         public ActionResult LogOff()
@@ -852,7 +874,7 @@
                     Message = LocalizationService.GetResourceString("Members.NowLoggedOut"),
                     MessageType = GenericMessages.success
                 };
-                return RedirectToAction("Index", "Home", new { area = string.Empty });
+                return RedirectToAction("Index", "Home", new {area = string.Empty});
             }
         }
 
@@ -869,10 +891,12 @@
                     var posts = _postService.GetByMember(id, 100, allowedCategories);
 
                     // Get the distinct topics
-                    var topics = posts.Select(x => x.Topic).Distinct().Take(6).OrderByDescending(x => x.LastPost.DateCreated).ToList();
+                    var topics = posts.Select(x => x.Topic).Distinct().Take(6)
+                        .OrderByDescending(x => x.LastPost.DateCreated).ToList();
 
                     // Get the Topic View Models
-                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
+                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole,
+                        LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
 
                     // create the view model
                     var viewModel = new ViewMemberDiscussionsViewModel
@@ -918,7 +942,8 @@
                 var permissions = RoleService.GetPermissions(null, UsersRole);
 
                 // Check is has permissions
-                if (UserIsAdmin || loggedOnUserId == id || permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
+                if (UserIsAdmin || loggedOnUserId == id ||
+                    permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                 {
                     var user = MembershipService.GetUser(id);
                     var viewModel = PopulateMemberViewModel(user);
@@ -940,7 +965,8 @@
                 var permissions = RoleService.GetPermissions(null, UsersRole);
 
                 // Check is has permissions
-                if (UserIsAdmin || loggedOnUserId == userModel.Id || permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
+                if (UserIsAdmin || loggedOnUserId == userModel.Id ||
+                    permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                 {
                     // Get the user from DB
                     var user = MembershipService.GetUser(userModel.Id);
@@ -952,13 +978,17 @@
                     // Check the fields for bad words
                     foreach (var stopWord in stopWords)
                     {
-                        if ((userModel.Facebook != null && userModel.Facebook.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
-                            (userModel.Location != null && userModel.Location.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
-                            (userModel.Signature != null && userModel.Signature.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
-                            (userModel.Twitter != null && userModel.Twitter.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0) ||
-                            (userModel.Website != null && userModel.Website.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0))
+                        if (userModel.Facebook != null &&
+                            userModel.Facebook.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
+                            userModel.Location != null && userModel.Location.IndexOf(stopWord.Word,
+                                StringComparison.CurrentCultureIgnoreCase) >= 0 ||
+                            userModel.Signature != null && userModel.Signature.IndexOf(stopWord.Word,
+                                StringComparison.CurrentCultureIgnoreCase) >= 0 ||
+                            userModel.Twitter != null && userModel.Twitter.IndexOf(stopWord.Word,
+                                StringComparison.CurrentCultureIgnoreCase) >= 0 ||
+                            userModel.Website != null && userModel.Website.IndexOf(stopWord.Word,
+                                StringComparison.CurrentCultureIgnoreCase) >= 0)
                         {
-
                             ShowMessage(new GenericMessageViewModel
                             {
                                 Message = LocalizationService.GetResourceString("StopWord.Error"),
@@ -967,7 +997,6 @@
 
                             // Ahhh found a stop word. Abandon operation captain.
                             return View(userModel);
-
                         }
                     }
 
@@ -978,7 +1007,9 @@
                     if (userModel.Files != null)
                     {
                         // Before we save anything, check the user already has an upload folder and if not create one
-                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, LoggedOnReadOnlyUser.Id));
+                        var uploadFolderPath =
+                            HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath,
+                                LoggedOnReadOnlyUser.Id));
                         if (!Directory.Exists(uploadFolderPath))
                         {
                             Directory.CreateDirectory(uploadFolderPath);
@@ -1013,7 +1044,9 @@
                     user.Age = userModel.Age;
                     user.Facebook = _bannedWordService.SanitiseBannedWords(userModel.Facebook, bannedWords);
                     user.Location = _bannedWordService.SanitiseBannedWords(userModel.Location, bannedWords);
-                    user.Signature = _bannedWordService.SanitiseBannedWords(StringUtils.ScrubHtml(userModel.Signature, true), bannedWords);
+                    user.Signature =
+                        _bannedWordService.SanitiseBannedWords(StringUtils.ScrubHtml(userModel.Signature, true),
+                            bannedWords);
                     user.Twitter = _bannedWordService.SanitiseBannedWords(userModel.Twitter, bannedWords);
                     user.Website = _bannedWordService.SanitiseBannedWords(userModel.Website, bannedWords);
                     user.DisableEmailNotifications = userModel.DisableEmailNotifications;
@@ -1027,7 +1060,8 @@
                         if (MembershipService.GetUser(sanitisedUsername) != null)
                         {
                             unitOfWork.Rollback();
-                            ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.DuplicateUserName"));
+                            ModelState.AddModelError(string.Empty,
+                                LocalizationService.GetResourceString("Members.Errors.DuplicateUserName"));
                             return View(userModel);
                         }
 
@@ -1043,7 +1077,8 @@
                         if (MembershipService.GetUserByEmail(userModel.Email) != null)
                         {
                             unitOfWork.Rollback();
-                            ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Members.Errors.DuplicateEmail"));
+                            ModelState.AddModelError(string.Empty,
+                                LocalizationService.GetResourceString("Members.Errors.DuplicateEmail"));
                             return View(userModel);
                         }
                         user.Email = userModel.Email;
@@ -1071,12 +1106,13 @@
                                 var authTicket = FormsAuthentication.Decrypt(authCookie.Value);
                                 if (authTicket != null)
                                 {
-                                    var newFormsIdentity = new FormsIdentity(new FormsAuthenticationTicket(authTicket.Version,
-                                                                                                           user.UserName,
-                                                                                                           authTicket.IssueDate,
-                                                                                                           authTicket.Expiration,
-                                                                                                           authTicket.IsPersistent,
-                                                                                                           authTicket.UserData));
+                                    var newFormsIdentity = new FormsIdentity(new FormsAuthenticationTicket(
+                                        authTicket.Version,
+                                        user.UserName,
+                                        authTicket.IssueDate,
+                                        authTicket.Expiration,
+                                        authTicket.IsPersistent,
+                                        authTicket.UserData));
                                     var roles = authTicket.UserData.Split("|".ToCharArray());
                                     var newGenericPrincipal = new GenericPrincipal(newFormsIdentity, roles);
                                     System.Web.HttpContext.Current.User = newGenericPrincipal;
@@ -1097,7 +1133,8 @@
                     {
                         unitOfWork.Rollback();
                         LoggingService.Error(ex);
-                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+                        ModelState.AddModelError(string.Empty,
+                            LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }
 
                     return View(userModel);
@@ -1112,7 +1149,7 @@
         public PartialViewResult SideAdminPanel(bool isDropDown)
         {
             var privateMessageCount = 0;
-            var moderateCount = 0;    
+            var moderateCount = 0;
             var settings = SettingsService.GetSettings();
             if (LoggedOnReadOnlyUser != null)
             {
@@ -1120,10 +1157,11 @@
                 privateMessageCount = _privateMessageService.NewPrivateMessageCount(LoggedOnReadOnlyUser.Id);
                 var pendingTopics = _topicService.GetPendingTopics(allowedCategories, UsersRole);
                 var pendingPosts = _postService.GetPendingPosts(allowedCategories, UsersRole);
-                moderateCount = (pendingTopics.Count + pendingPosts.Count);
+                moderateCount = pendingTopics.Count + pendingPosts.Count;
             }
 
-            var canViewPms = settings.EnablePrivateMessages && LoggedOnReadOnlyUser != null && LoggedOnReadOnlyUser.DisablePrivateMessages != true;
+            var canViewPms = settings.EnablePrivateMessages && LoggedOnReadOnlyUser != null &&
+                             LoggedOnReadOnlyUser.DisablePrivateMessages != true;
             var viewModel = new ViewAdminSidePanelViewModel
             {
                 CurrentUser = LoggedOnReadOnlyUser,
@@ -1132,7 +1170,7 @@
                 ModerateCount = moderateCount,
                 IsDropDown = isDropDown
             };
-            
+
             return PartialView(viewModel);
         }
 
@@ -1175,7 +1213,7 @@
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
                     var user = MembershipService.GetUser(id);
-                    return View(new ReportMemberViewModel { Id = user.Id, Username = user.UserName });
+                    return View(new ReportMemberViewModel {Id = user.Id, Username = user.UserName});
                 }
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
@@ -1191,11 +1229,11 @@
                 {
                     var user = MembershipService.GetUser(viewModel.Id);
                     var report = new Report
-                                     {
-                                         Reason = viewModel.Reason,
-                                         ReportedMember = user,
-                                         Reporter = LoggedOnReadOnlyUser
-                                     };
+                    {
+                        Reason = viewModel.Reason,
+                        ReportedMember = user,
+                        Reporter = LoggedOnReadOnlyUser
+                    };
                     _reportService.MemberReport(report);
 
                     try
@@ -1213,7 +1251,7 @@
                         Message = LocalizationService.GetResourceString("Report.ReportSent"),
                         MessageType = GenericMessages.success
                     };
-                    return View(new ReportMemberViewModel { Id = user.Id, Username = user.UserName });
+                    return View(new ReportMemberViewModel {Id = user.Id, Username = user.UserName});
                 }
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
@@ -1225,17 +1263,18 @@
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = p ?? 1;
-                var allUsers = string.IsNullOrEmpty(search) ? MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize) :
-                                    MembershipService.SearchMembers(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
+                var allUsers = string.IsNullOrEmpty(search)
+                    ? MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize)
+                    : MembershipService.SearchMembers(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
 
                 // Redisplay list of users
                 var allViewModelUsers = allUsers.Select(user => new PublicSingleMemberListViewModel
-                                                                    {
-                                                                        UserName = user.UserName,
-                                                                        NiceUrl = user.NiceUrl,
-                                                                        CreateDate = user.CreateDate,
-                                                                        TotalPoints = user.TotalPoints,
-                                                                    }).ToList();
+                {
+                    UserName = user.UserName,
+                    NiceUrl = user.NiceUrl,
+                    CreateDate = user.CreateDate,
+                    TotalPoints = user.TotalPoints
+                }).ToList();
 
                 var memberListModel = new PublicMemberListViewModel
                 {
@@ -1276,7 +1315,8 @@
                 {
                     // ChangePassword will throw an exception rather than return false in certain failure scenarios.
                     var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
-                    changePasswordSucceeded = MembershipService.ChangePassword(loggedOnUser, model.OldPassword, model.NewPassword);
+                    changePasswordSucceeded =
+                        MembershipService.ChangePassword(loggedOnUser, model.OldPassword, model.NewPassword);
 
                     try
                     {
@@ -1308,7 +1348,6 @@
                 ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ChangePassword.Error"));
                 return View(model);
             }
-
         }
 
         public ActionResult ForgotPassword()
@@ -1359,10 +1398,13 @@
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 var settings = SettingsService.GetSettings();
-                var url = new Uri(string.Concat(settings.ForumUrl.TrimEnd('/'), Url.Action("ResetPassword", "Members", new { user.Id, token = user.PasswordResetToken })));
+                var url = new Uri(string.Concat(settings.ForumUrl.TrimEnd('/'),
+                    Url.Action("ResetPassword", "Members", new {user.Id, token = user.PasswordResetToken})));
 
                 var sb = new StringBuilder();
-                sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Members.ResetPassword.EmailText"), settings.ForumName));
+                sb.AppendFormat("<p>{0}</p>",
+                    string.Format(LocalizationService.GetResourceString("Members.ResetPassword.EmailText"),
+                        settings.ForumName));
                 sb.AppendFormat("<p><a href=\"{0}\">{0}</a></p>", url);
 
                 var email = new Email
@@ -1405,9 +1447,10 @@
                 Token = token
             };
 
-            if (id == null || String.IsNullOrEmpty(token))
+            if (id == null || string.IsNullOrEmpty(token))
             {
-                ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.InvalidToken"));
+                ModelState.AddModelError("",
+                    LocalizationService.GetResourceString("Members.ResetPassword.InvalidToken"));
             }
 
             return View(model);
@@ -1430,9 +1473,11 @@
 
                     // if the user id wasn't found then we can't proceed
                     // if the token submitted is not valid then do not proceed
-                    if (user == null || user.PasswordResetToken == null || !MembershipService.IsPasswordResetTokenValid(user, postedModel.Token))
+                    if (user == null || user.PasswordResetToken == null ||
+                        !MembershipService.IsPasswordResetTokenValid(user, postedModel.Token))
                     {
-                        ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.InvalidToken"));
+                        ModelState.AddModelError("",
+                            LocalizationService.GetResourceString("Members.ResetPassword.InvalidToken"));
                         return View(postedModel);
                     }
 
@@ -1448,7 +1493,8 @@
                     {
                         unitOfWork.Rollback();
                         LoggingService.Error(ex);
-                        ModelState.AddModelError("", LocalizationService.GetResourceString("Members.ResetPassword.InvalidToken"));
+                        ModelState.AddModelError("",
+                            LocalizationService.GetResourceString("Members.ResetPassword.InvalidToken"));
                         return View(postedModel);
                     }
                 }
@@ -1462,6 +1508,5 @@
         {
             return View();
         }
-
     }
 }

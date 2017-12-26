@@ -1,52 +1,54 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
     using System;
     using System.Collections.Generic;
-    using System.Data.SqlTypes;
     using System.Data.Entity;
-    using System.Text;
+    using System.Data.SqlTypes;
+    using System.IO;
     using System.Linq;
+    using System.Text;
     using System.Web;
     using System.Web.Hosting;
     using System.Web.Security;
-    using Domain.Constants;
-    using Domain.DomainModel;
-    using Domain.DomainModel.Entities;
-    using Domain.Events;
-    using Domain.Interfaces;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
+    using Constants;
     using Data.Context;
+    using DomainModel.Entities;
+    using DomainModel.Enums;
+    using DomainModel.General;
+    using Events;
+    using Interfaces;
+    using Interfaces.Services;
+    using Interfaces.UnitOfWork;
     using Utilities;
 
     public partial class MembershipService : IMembershipService
     {
         private const int MaxHoursToResetPassword = 48;
-        private readonly MVCForumContext _context;
-        private readonly IEmailService _emailService;
-        private readonly IPostService _postService;
-        private readonly IPollVoteService _pollVoteService;
-        private readonly IPollAnswerService _pollAnswerService;
-        private readonly IFavouriteService _favouriteService;
-        private readonly ISettingsService _settingsService;
-        private readonly IPollService _pollService;
-        private readonly ITopicService _topicService;
         private readonly IActivityService _activityService;
+        private readonly IBadgeService _badgeService;
+        private readonly ICacheService _cacheService;
+        private readonly ICategoryNotificationService _categoryNotificationService;
+        private readonly ICategoryService _categoryService;
+        private readonly MvcForumContext _context;
+        private readonly IEmailService _emailService;
+        private readonly IFavouriteService _favouriteService;
         private readonly ILocalizationService _localizationService;
-        private readonly IPrivateMessageService _privateMessageService;
+        private readonly ILoggingService _loggingService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
+        private readonly IPollAnswerService _pollAnswerService;
+        private readonly IPollService _pollService;
+        private readonly IPollVoteService _pollVoteService;
+        private readonly IPostEditService _postEditService;
+        private readonly IPostService _postService;
+        private readonly IPrivateMessageService _privateMessageService;
+        private readonly ISettingsService _settingsService;
         private readonly ITopicNotificationService _topicNotificationService;
+        private readonly ITopicService _topicService;
         private readonly IUploadedFileService _uploadedFileService;
         private readonly IVoteService _voteService;
-        private readonly IBadgeService _badgeService;
-        private readonly ICategoryNotificationService _categoryNotificationService;
-        private readonly ILoggingService _loggingService;
-        private readonly ICategoryService _categoryService;
-        private readonly IPostEditService _postEditService;
-        private readonly ICacheService _cacheService;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="context"></param>
         /// <param name="settingsService"> </param>
@@ -70,11 +72,12 @@
         /// <param name="categoryService"></param>
         /// <param name="postEditService"></param>
         /// <param name="cacheService"></param>
-        public MembershipService(IMVCForumContext context, ISettingsService settingsService,
+        public MembershipService(IMvcForumContext context, ISettingsService settingsService,
             IEmailService emailService, ILocalizationService localizationService, IActivityService activityService,
             IPrivateMessageService privateMessageService, IMembershipUserPointsService membershipUserPointsService,
             ITopicNotificationService topicNotificationService, IVoteService voteService, IBadgeService badgeService,
-            ICategoryNotificationService categoryNotificationService, ILoggingService loggingService, IUploadedFileService uploadedFileService,
+            ICategoryNotificationService categoryNotificationService, ILoggingService loggingService,
+            IUploadedFileService uploadedFileService,
             IPostService postService, IPollVoteService pollVoteService, IPollAnswerService pollAnswerService,
             IPollService pollService, ITopicService topicService, IFavouriteService favouriteService,
             ICategoryService categoryService, IPostEditService postEditService, ICacheService cacheService)
@@ -100,10 +103,11 @@
             _categoryService = categoryService;
             _postEditService = postEditService;
             _cacheService = cacheService;
-            _context = context as MVCForumContext;
+            _context = context as MvcForumContext;
         }
 
         #region Status Codes
+
         public string ErrorCodeToString(MembershipCreateStatus createStatus)
         {
             // See http://go.microsoft.com/fwlink/?LinkID=177550 for
@@ -141,6 +145,7 @@
                     return _localizationService.GetResourceString("Members.Errors.Unknown");
             }
         }
+
         #endregion
 
         public MembershipUser Add(MembershipUser newUser)
@@ -164,12 +169,12 @@
         }
 
         /// <summary>
-        /// Return last login status
+        ///     Return last login status
         /// </summary>
         public LoginAttemptStatus LastLoginStatus { get; private set; } = LoginAttemptStatus.LoginSuccessful;
 
         /// <summary>
-        /// Validate a user by password
+        ///     Validate a user by password
         /// </summary>
         /// <param name="userName"></param>
         /// <param name="password"></param>
@@ -237,7 +242,7 @@
         }
 
         /// <summary>
-        /// Creates a new, unsaved user, with default (empty) values
+        ///     Creates a new, unsaved user, with default (empty) values
         /// </summary>
         /// <returns></returns>
         public MembershipUser CreateEmptyUser()
@@ -254,16 +259,16 @@
                 CreateDate = now,
                 FailedPasswordAnswerAttempt = 0,
                 FailedPasswordAttemptCount = 0,
-                LastLockoutDate = (DateTime)SqlDateTime.MinValue,
+                LastLockoutDate = (DateTime) SqlDateTime.MinValue,
                 LastPasswordChangedDate = now,
                 IsApproved = false,
                 IsLockedOut = false,
-                LastLoginDate = (DateTime)SqlDateTime.MinValue,
+                LastLoginDate = (DateTime) SqlDateTime.MinValue
             };
         }
 
         /// <summary>
-        /// Create new user
+        ///     Create new user
         /// </summary>
         /// <param name="newUser"></param>
         /// <returns></returns>
@@ -275,7 +280,7 @@
 
             var status = MembershipCreateStatus.Success;
 
-            var e = new RegisterUserEventArgs { User = newUser };
+            var e = new RegisterUserEventArgs {User = newUser};
             EventManager.Instance.FireBeforeRegisterUser(this, e);
 
             if (e.Cancel)
@@ -314,11 +319,11 @@
                     newUser.Password = hash;
                     newUser.PasswordSalt = salt;
 
-                    newUser.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
+                    newUser.Roles = new List<MembershipRole> {settings.NewMemberStartingRole};
 
                     // Set dates
                     newUser.CreateDate = newUser.LastPasswordChangedDate = DateTime.UtcNow;
-                    newUser.LastLockoutDate = (DateTime)SqlDateTime.MinValue;
+                    newUser.LastLockoutDate = (DateTime) SqlDateTime.MinValue;
                     newUser.LastLoginDate = DateTime.UtcNow;
                     newUser.IsLockedOut = false;
 
@@ -330,10 +335,12 @@
                     }
                     else
                     {
-                        newUser.IsApproved = true;}
+                        newUser.IsApproved = true;
+                    }
 
                     // url generator
-                    newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)), null);
+                    newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName,
+                        GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)), null);
 
                     try
                     {
@@ -342,7 +349,8 @@
                         if (settings.EmailAdminOnNewMemberSignUp)
                         {
                             var sb = new StringBuilder();
-                            sb.Append($"<p>{string.Format(_localizationService.GetResourceString("Members.NewMemberRegistered"), settings.ForumName, settings.ForumUrl)}</p>");
+                            sb.Append(
+                                $"<p>{string.Format(_localizationService.GetResourceString("Members.NewMemberRegistered"), settings.ForumName, settings.ForumUrl)}</p>");
                             sb.Append($"<p>{newUser.UserName} - {newUser.Email}</p>");
                             var email = new Email
                             {
@@ -356,7 +364,7 @@
 
                         _activityService.MemberJoined(newUser);
                         EventManager.Instance.FireAfterRegisterUser(this,
-                                                                    new RegisterUserEventArgs { User = newUser });
+                            new RegisterUserEventArgs {User = newUser});
                     }
                     catch (Exception)
                     {
@@ -374,14 +382,14 @@
             return _cacheService.CachePerRequest(cacheKey, () =>
             {
                 return _context.MembershipUser
-                              .Include(x => x.Roles)
-                              .FirstOrDefault(x => x.Id == id);
+                    .Include(x => x.Roles)
+                    .FirstOrDefault(x => x.Id == id);
             });
         }
 
 
         /// <summary>
-        /// Get a user by username
+        ///     Get a user by username
         /// </summary>
         /// <param name="username"></param>
         /// <param name="removeTracking"></param>
@@ -398,13 +406,15 @@
                     member = _context.MembershipUser
                         .Include(x => x.Roles)
                         .AsNoTracking()
-                        .FirstOrDefault(name => name.UserName.Equals(username, StringComparison.CurrentCultureIgnoreCase));
+                        .FirstOrDefault(name =>
+                            name.UserName.Equals(username, StringComparison.CurrentCultureIgnoreCase));
                 }
                 else
                 {
                     member = _context.MembershipUser
                         .Include(x => x.Roles)
-                        .FirstOrDefault(name => name.UserName.Equals(username, StringComparison.CurrentCultureIgnoreCase));
+                        .FirstOrDefault(name =>
+                            name.UserName.Equals(username, StringComparison.CurrentCultureIgnoreCase));
                 }
 
 
@@ -416,11 +426,11 @@
                 }
 
                 return member;
-            });                                    
+            });
         }
 
         /// <summary>
-        /// Get a user by email address
+        ///     Get a user by email address
         /// </summary>
         /// <param name="email"></param>
         /// <param name="removeTracking"></param>
@@ -432,7 +442,7 @@
             return _cacheService.CachePerRequest(cacheKey, () =>
             {
                 MembershipUser member;
-       
+
                 if (removeTracking)
                 {
                     member = _context.MembershipUser.AsNoTracking()
@@ -448,11 +458,10 @@
 
                 return member;
             });
-
         }
 
         /// <summary>
-        /// Get a user by slug
+        ///     Get a user by slug
         /// </summary>
         /// <param name="slug"></param>
         /// <returns></returns>
@@ -463,9 +472,9 @@
             return _cacheService.CachePerRequest(cacheKey, () =>
             {
                 return _context.MembershipUser
-                        .Include(x => x.Badges)
-                        .Include(x => x.Roles)
-                        .FirstOrDefault(name => name.Slug == slug);
+                    .Include(x => x.Badges)
+                    .Include(x => x.Roles)
+                    .FirstOrDefault(name => name.Slug == slug);
             });
         }
 
@@ -476,15 +485,15 @@
             return _cacheService.CachePerRequest(cacheKey, () =>
             {
                 return _context.MembershipUser
-                                    .Include(x => x.Roles)
-                                    .AsNoTracking()
-                                    .Where(name => name.Slug.ToUpper().Contains(slug.ToUpper()))
-                                    .ToList();
-            });            
+                    .Include(x => x.Roles)
+                    .AsNoTracking()
+                    .Where(name => name.Slug.ToUpper().Contains(slug.ToUpper()))
+                    .ToList();
+            });
         }
 
         /// <summary>
-        /// Gets a user by their facebook id
+        ///     Gets a user by their facebook id
         /// </summary>
         /// <param name="facebookId"></param>
         /// <returns></returns>
@@ -510,7 +519,7 @@
         }
 
         /// <summary>
-        /// Get users by openid token
+        ///     Get users by openid token
         /// </summary>
         /// <param name="openId"></param>
         /// <returns></returns>
@@ -523,7 +532,7 @@
         }
 
         /// <summary>
-        /// Get users from a list of Id's
+        ///     Get users from a list of Id's
         /// </summary>
         /// <param name="guids"></param>
         /// <returns></returns>
@@ -533,14 +542,14 @@
             return _cacheService.CachePerRequest(cacheKey, () =>
             {
                 return _context.MembershipUser
-                          .Where(x => guids.Contains(x.Id))
-                          .AsNoTracking()
-                          .ToList();
+                    .Where(x => guids.Contains(x.Id))
+                    .AsNoTracking()
+                    .ToList();
             });
         }
 
         /// <summary>
-        /// Get by posts and date
+        ///     Get by posts and date
         /// </summary>
         /// <param name="amoutOfDaysSinceRegistered"></param>
         /// <param name="amoutOfPosts"></param>
@@ -550,21 +559,22 @@
             var registerEnd = DateTime.UtcNow;
             var registerStart = registerEnd.AddDays(-amoutOfDaysSinceRegistered);
 
-            var cacheKey = string.Concat(CacheKeys.Member.StartsWith, "GetUsersByDaysPostsPoints-", amoutOfDaysSinceRegistered, "-", amoutOfPosts);
+            var cacheKey = string.Concat(CacheKeys.Member.StartsWith, "GetUsersByDaysPostsPoints-",
+                amoutOfDaysSinceRegistered, "-", amoutOfPosts);
             return _cacheService.CachePerRequest(cacheKey, () =>
             {
                 return _context.MembershipUser
                     .Where(x =>
-                            x.Posts.Count <= amoutOfPosts &&
-                            x.CreateDate > registerStart &&
-                            x.CreateDate <= registerEnd)
+                        x.Posts.Count <= amoutOfPosts &&
+                        x.CreateDate > registerStart &&
+                        x.CreateDate <= registerEnd)
                     .ToList();
             });
         }
 
 
         /// <summary>
-        /// Return the roles found for this username
+        ///     Return the roles found for this username
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
@@ -583,7 +593,7 @@
         }
 
         /// <summary>
-        /// Change the user's password
+        ///     Change the user's password
         /// </summary>
         /// <param name="user"> </param>
         /// <param name="oldPassword"></param>
@@ -617,7 +627,7 @@
         }
 
         /// <summary>
-        /// Reset a users password
+        ///     Reset a users password
         /// </summary>
         /// <param name="user"></param>
         /// <param name="newPassword"> </param>
@@ -637,7 +647,7 @@
         }
 
         /// <summary>
-        /// Get all members
+        ///     Get all members
         /// </summary>
         /// <returns></returns>
         public IList<MembershipUser> GetAll()
@@ -653,10 +663,10 @@
             {
                 var totalCount = _context.MembershipUser.Count();
                 var results = _context.MembershipUser
-                                    .OrderBy(x => x.UserName)
-                                    .Skip((pageIndex - 1) * pageSize)
-                                    .Take(pageSize)
-                                    .ToList();
+                    .OrderBy(x => x.UserName)
+                    .Skip((pageIndex - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
 
                 return new PagedList<MembershipUser>(results, pageIndex, pageSize, totalCount);
             });
@@ -666,7 +676,8 @@
         {
             search = StringUtils.SafePlainText(search);
             var query = _context.MembershipUser
-                            .Where(x => x.UserName.ToUpper().Contains(search.ToUpper()) || x.Email.ToUpper().Contains(search.ToUpper()));
+                .Where(x => x.UserName.ToUpper().Contains(search.ToUpper()) ||
+                            x.Email.ToUpper().Contains(search.ToUpper()));
 
             var results = query
                 .OrderBy(x => x.UserName)
@@ -702,7 +713,7 @@
         }
 
         /// <summary>
-        /// Get user by id
+        ///     Get user by id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -712,7 +723,7 @@
         }
 
         /// <summary>
-        /// Delete a member
+        ///     Delete a member
         /// </summary>
         /// <param name="user"></param>
         /// <param name="unitOfWork"></param>
@@ -744,9 +755,9 @@
             return _cacheService.CachePerRequest(cacheKey, () =>
             {
                 return _context.MembershipUser.Include(x => x.Roles).AsNoTracking()
-                  .OrderByDescending(x => x.CreateDate)
-                  .Take(amountToTake)
-                  .ToList();
+                    .OrderByDescending(x => x.CreateDate)
+                    .Take(amountToTake)
+                    .ToList();
             });
         }
 
@@ -756,12 +767,19 @@
             return _cacheService.CachePerRequest(cacheKey, () =>
             {
                 return _context.MembershipUser
-                     .Join(_context.MembershipUserPoints.AsNoTracking(), // The sequence to join to the first sequence.
-                            user => user.Id, // A function to extract the join key from each element of the first sequence.
-                            userPoints => userPoints.User.Id, // A function to extract the join key from each element of the second sequence
-                            (user, userPoints) => new { MembershipUser = user, UserPoints = userPoints } // A function to create a result element from two matching elements.
-                        )
-                     .AsNoTracking()
+                    .Join(_context.MembershipUserPoints.AsNoTracking(), // The sequence to join to the first sequence.
+                        user => user.Id, // A function to extract the join key from each element of the first sequence.
+                        userPoints =>
+                            userPoints.User
+                                .Id, // A function to extract the join key from each element of the second sequence
+                        (user, userPoints) =>
+                            new
+                            {
+                                MembershipUser = user,
+                                UserPoints = userPoints
+                            } // A function to create a result element from two matching elements.
+                    )
+                    .AsNoTracking()
                     .OrderBy(x => x.UserPoints)
                     .Take(amountToTake)
                     .Select(t => t.MembershipUser)
@@ -776,23 +794,23 @@
         }
 
         /// <summary>
-        /// Save user (does NOT update password data)
+        ///     Save user (does NOT update password data)
         /// </summary>
         /// <param name="user"></param>
         public void ProfileUpdated(MembershipUser user)
         {
-            var e = new UpdateProfileEventArgs { User = user };
+            var e = new UpdateProfileEventArgs {User = user};
             EventManager.Instance.FireBeforeProfileUpdated(this, e);
 
             if (!e.Cancel)
             {
-                EventManager.Instance.FireAfterProfileUpdated(this, new UpdateProfileEventArgs { User = user });
+                EventManager.Instance.FireAfterProfileUpdated(this, new UpdateProfileEventArgs {User = user});
                 _activityService.ProfileUpdated(user);
             }
         }
 
         /// <summary>
-        /// Unlock a user
+        ///     Unlock a user
         /// </summary>
         /// <param name="username"></param>
         /// <param name="resetPasswordAttempts">If true, also reset password attempts to zero</param>
@@ -822,7 +840,7 @@
         }
 
         /// <summary>
-        /// Convert all users into CSV format (e.g. for export)
+        ///     Convert all users into CSV format (e.g. for export)
         /// </summary>
         /// <returns></returns>
         public string ToCsv()
@@ -831,7 +849,8 @@
 
             foreach (var user in GetAll())
             {
-                csv.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7}", user.UserName, user.Email, user.CreateDate, user.Age,
+                csv.AppendFormat("{0},{1},{2},{3},{4},{5},{6},{7}", user.UserName, user.Email, user.CreateDate,
+                    user.Age,
                     user.Location, user.Website, user.Facebook, user.Signature);
                 csv.AppendLine();
             }
@@ -840,13 +859,13 @@
         }
 
         /// <summary>
-        /// Extract users from CSV format and import them
+        ///     Extract users from CSV format and import them
         /// </summary>
         /// <returns></returns>
         public CsvReport FromCsv(List<string> allLines)
         {
             var usersProcessed = new List<string>();
-            var commaSeparator = new[] { ',' };
+            var commaSeparator = new[] {','};
             var report = new CsvReport();
 
             if (allLines == null || allLines.Count == 0)
@@ -945,11 +964,12 @@
                     {
                         createDateStr = values[2];
                     }
-                    userToImport.CreateDate = createDateStr.IsNullEmpty() ? DateTime.UtcNow : DateTime.Parse(createDateStr);
+                    userToImport.CreateDate =
+                        createDateStr.IsNullEmpty() ? DateTime.UtcNow : DateTime.Parse(createDateStr);
 
                     if (values.Length >= 4)
                     {
-                        userToImport.Age = Int32.Parse(values[3]);
+                        userToImport.Age = int.Parse(values[3]);
                     }
                     if (values.Length >= 5)
                     {
@@ -967,12 +987,16 @@
                     {
                         userToImport.Signature = values[7];
                     }
-                    userToImport.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
+                    userToImport.Roles = new List<MembershipRole> {settings.NewMemberStartingRole};
                     Add(userToImport);
                 }
                 catch (Exception ex)
                 {
-                    report.Errors.Add(new CsvErrorWarning { ErrorWarningType = CsvErrorWarningType.GeneralError, Message = ex.Message });
+                    report.Errors.Add(new CsvErrorWarning
+                    {
+                        ErrorWarningType = CsvErrorWarningType.GeneralError,
+                        Message = ex.Message
+                    });
                 }
             }
 
@@ -1191,7 +1215,8 @@
                 var lastPostTopics = _topicService.GetTopicsByLastPost(postIds, allCategories.ToList());
                 foreach (var topic in lastPostTopics.Where(x => x.User.Id != user.Id))
                 {
-                    var lastPost = topic.Posts.Where(x => !postIds.Contains(x.Id)).OrderByDescending(x => x.DateCreated).FirstOrDefault();
+                    var lastPost = topic.Posts.Where(x => !postIds.Contains(x.Id)).OrderByDescending(x => x.DateCreated)
+                        .FirstOrDefault();
                     topic.LastPost = lastPost;
                 }
 
@@ -1219,7 +1244,7 @@
                             _uploadedFileService.Delete(file);
 
                             // And finally delete from the file system
-                            System.IO.File.Delete(HostingEnvironment.MapPath(filePath));
+                            File.Delete(HostingEnvironment.MapPath(filePath));
                         }
                         post.Files.Clear();
                     }
@@ -1236,7 +1261,7 @@
         }
 
         /// <summary>
-        /// Update the user record with a newly generated password reset security token and timestamp
+        ///     Update the user record with a newly generated password reset security token and timestamp
         /// </summary>
         public bool UpdatePasswordResetToken(MembershipUser user)
         {
@@ -1251,7 +1276,7 @@
         }
 
         /// <summary>
-        /// Remove the password reset security token and timestamp from the user record
+        ///     Remove the password reset security token and timestamp from the user record
         /// </summary>
         public bool ClearPasswordResetToken(MembershipUser user)
         {
@@ -1266,10 +1291,10 @@
         }
 
         /// <summary>
-        /// To be valid:
-        /// - The user record must contain a password reset token
-        /// - The given token must match the token in the user record
-        /// - The token timestamp must be less than 24 hours ago
+        ///     To be valid:
+        ///     - The user record must contain a password reset token
+        ///     - The given token must match the token in the user record
+        ///     - The token timestamp must be less than 24 hours ago
         /// </summary>
         public bool IsPasswordResetTokenValid(MembershipUser user, string token)
         {
@@ -1284,7 +1309,8 @@
                 return false;
             }
             // The security token is only valid for 48 hours
-            if ((DateTime.UtcNow - existingUser.PasswordResetTokenCreatedAt.Value).TotalHours >= MaxHoursToResetPassword)
+            if ((DateTime.UtcNow - existingUser.PasswordResetTokenCreatedAt.Value).TotalHours >=
+                MaxHoursToResetPassword)
             {
                 return false;
             }
@@ -1292,7 +1318,7 @@
         }
 
         /// <summary>
-        /// Generate a password reset token, a guid is sufficient
+        ///     Generate a password reset token, a guid is sufficient
         /// </summary>
         private static string CreatePasswordResetToken()
         {

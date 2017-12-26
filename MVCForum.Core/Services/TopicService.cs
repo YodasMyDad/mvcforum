@@ -1,24 +1,25 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Data.Entity;
+    using System.Linq;
     using System.Web.Mvc;
-    using Domain.Constants;
-    using Domain.DomainModel;
-    using Domain.DomainModel.General;
-    using Domain.Events;
-    using Domain.Interfaces;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
+    using Constants;
     using Data.Context;
+    using DomainModel.Entities;
+    using DomainModel.Enums;
+    using DomainModel.General;
+    using Events;
+    using Interfaces;
+    using Interfaces.Services;
+    using Interfaces.UnitOfWork;
     using Utilities;
 
     public partial class TopicService : ITopicService
     {
         private readonly ITopicNotificationService _topicNotificationService;
-        private readonly MVCForumContext _context;
+        private readonly MvcForumContext _context;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ISettingsService _settingsService;
         private readonly IPostService _postService;
@@ -28,7 +29,7 @@
         private readonly IPollAnswerService _pollAnswerService;
         private readonly ICacheService _cacheService;
 
-        public TopicService(IMVCForumContext context, IMembershipUserPointsService membershipUserPointsService,
+        public TopicService(IMvcForumContext context, IMembershipUserPointsService membershipUserPointsService,
             ISettingsService settingsService, ITopicNotificationService topicNotificationService,
             IFavouriteService favouriteService,
             IPostService postService, IRoleService roleService, IPollService pollService, IPollAnswerService pollAnswerService, ICacheService cacheService)
@@ -42,7 +43,7 @@
             _pollService = pollService;
             _pollAnswerService = pollAnswerService;
             _cacheService = cacheService;
-            _context = context as MVCForumContext;
+            _context = context as MvcForumContext;
         }
 
         public Topic SanitizeTopic(Topic topic)

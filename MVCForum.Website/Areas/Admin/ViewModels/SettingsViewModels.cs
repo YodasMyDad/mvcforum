@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Website.Areas.Admin.ViewModels
+﻿namespace MvcForum.Web.Areas.Admin.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
+    using System.Web.Mvc;
+    using Core.Constants;
+    using Core.DomainModel.Entities;
 
     public class CustomCodeViewModels
     {
@@ -40,7 +39,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public bool IsClosed { get; set; }
 
         [DisplayName("Allow Rss Feeds")]
-        [Description("Show the RSS feed icons for the Topics and Categories")]        
+        [Description("Show the RSS feed icons for the Topics and Categories")]
         public bool EnableRSSFeeds { get; set; }
 
         [DisplayName("Show Edited By Details On Posts")]
@@ -52,7 +51,8 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Allow Posts To Be Marked As Solution")]
         public bool EnableMarkAsSolution { get; set; }
 
-        [DisplayName("Timeframe in days to wait before a reminder email is sent to topic creator, for all topics that have not been marked as solution - Set to 0 to disable")]
+        [DisplayName(
+            "Timeframe in days to wait before a reminder email is sent to topic creator, for all topics that have not been marked as solution - Set to 0 to disable")]
         public int MarkAsSolutionReminderTimeFrame { get; set; }
 
         [DisplayName("Enable Spam Reporting")]
@@ -67,7 +67,8 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Allow Email Subscriptions")]
         public bool EnableEmailSubscriptions { get; set; }
 
-        [DisplayName("New Members Must Confirm Their Account Via A Link Sent In An Email - Will not work with Twitter accounts!")]
+        [DisplayName(
+            "New Members Must Confirm Their Account Via A Link Sent In An Email - Will not work with Twitter accounts!")]
         public bool NewMemberEmailConfirmation { get; set; }
 
         [DisplayName("Manually Authorise New Members")]
@@ -91,7 +92,8 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Private Message Inbox Max Size")]
         public int MaxPrivateMessagesPerMember { get; set; }
 
-        [DisplayName("Private Message Flood Control - Time In Seconds a user must wait before being allowed to message another user")]
+        [DisplayName(
+            "Private Message Flood Control - Time In Seconds a user must wait before being allowed to message another user")]
         public int PrivateMessageFloodControl { get; set; }
 
         [DisplayName("Allow Member Signatures")]
@@ -192,11 +194,12 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [DisplayName("Disable Dislike Button - Users can only Like posts")]
         public bool DisableDislikeButton { get; set; }
 
-        [DisplayName("New Members must agree to the Terms & Conditions below before using the forum")]        
+        [DisplayName("New Members must agree to the Terms & Conditions below before using the forum")]
         public bool AgreeToTermsAndConditions { get; set; }
 
         [DisplayName("Terms & Conditions of the forum")]
-        [UIHint(AppConstants.EditorType), AllowHtml]
+        [UIHint(AppConstants.EditorType)]
+        [AllowHtml]
         [StringLength(6000)]
         public string TermsAndConditions { get; set; }
     }

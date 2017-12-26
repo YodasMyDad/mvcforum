@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace MVCForum.Domain.DomainModel
+﻿namespace MvcForum.Core.DomainModel.General
 {
+    using System;
+
     public partial class RssItem
     {
         public string Title { get; set; }

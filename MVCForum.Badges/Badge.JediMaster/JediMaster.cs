@@ -1,11 +1,11 @@
-﻿using System.Web.Mvc;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Attributes;
-using MVCForum.Domain.Interfaces.Badges;
-using MVCForum.Domain.Interfaces.Services;
-
-namespace Badge.JediMaster
+﻿namespace Badge.JediMaster
 {
+    using System.Web.Mvc;
+    using MvcForum.Core.DomainModel.Attributes;
+    using MvcForum.Core.DomainModel.Entities;
+    using MvcForum.Core.Interfaces.Badges;
+    using MvcForum.Core.Interfaces.Services;
+
     [Id("4c54474b-51c2-4a52-bad2-96af5dea14d1")]
     [Name("JediMaster")]
     [DisplayName("Badge.JediMaster.Name")]
@@ -14,8 +14,8 @@ namespace Badge.JediMaster
     [AwardsPoints(50)]
     public class JediMasterBadge : IMarkAsSolutionBadge
     {
-        private readonly IPostService _postService;
         private readonly ICategoryService _categoryService;
+        private readonly IPostService _postService;
 
         public JediMasterBadge()
         {
@@ -32,7 +32,7 @@ namespace Badge.JediMaster
             var cats = _categoryService.GetAll();
             var usersSolutions = _postService.GetSolutionsByMember(user.Id, cats);
 
-            return (usersSolutions.Count >= 50);
+            return usersSolutions.Count >= 50;
         }
     }
 }

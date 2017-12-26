@@ -1,21 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Areas.Admin.ViewModels;
-
-namespace MVCForum.Website.Areas.Admin.Controllers
+﻿namespace MvcForum.Web.Areas.Admin.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Web.Mvc;
+    using Core.Constants;
+    using Core.DomainModel.General;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
+    using ViewModels;
+
     [Authorize(Roles = AppConstants.AdminRoleName)]
-    public partial class LogController : BaseAdminController
+    public class LogController : BaseAdminController
     {
-        public LogController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService, ISettingsService settingsService) :
+        public LogController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService, ILocalizationService localizationService,
+            ISettingsService settingsService) :
             base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
-
         }
 
         public ActionResult Index()
@@ -24,7 +25,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
             try
             {
-                logs = LoggingService.ListLogFile(); 
+                logs = LoggingService.ListLogFile();
             }
             catch (Exception ex)
             {
@@ -37,8 +38,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
                 LoggingService.Error(err);
             }
-                       
-            return View(new ListLogViewModel{LogFiles = logs});
+
+            return View(new ListLogViewModel {LogFiles = logs});
         }
 
         public ActionResult ClearLog()
@@ -52,6 +53,5 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             };
             return RedirectToAction("Index");
         }
-
     }
 }

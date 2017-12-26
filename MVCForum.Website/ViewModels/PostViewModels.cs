@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Entities;
-using MVCForum.Website.Application;
-
-namespace MVCForum.Website.ViewModels
+﻿namespace MvcForum.Web.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.Web.Mvc;
+    using Application;
+    using Core.Constants;
+    using Core.DomainModel.Entities;
+    using Core.DomainModel.General;
+
     public class CreateAjaxPostViewModel
     {
-        [UIHint(AppConstants.EditorType), AllowHtml]
+        [UIHint(AppConstants.EditorType)]
+        [AllowHtml]
         [StringLength(6000)]
         public string PostContent { get; set; }
+
         public Guid Topic { get; set; }
         public bool DisablePosting { get; set; }
         public Guid? InReplyTo { get; set; }
@@ -41,7 +43,7 @@ namespace MVCForum.Website.ViewModels
         public Post Post { get; set; }
         public string PermaLink { get; set; }
         public List<Vote> Votes { get; set; }
-        public List<Favourite> Favourites { get; set; } 
+        public List<Favourite> Favourites { get; set; }
         public Topic ParentTopic { get; set; }
         public PermissionSet Permissions { get; set; }
         public bool AllowedToVote { get; set; }
@@ -57,7 +59,7 @@ namespace MVCForum.Website.ViewModels
     {
         public Guid PostId { get; set; }
         public string PostCreatorUsername { get; set; }
-        
+
         [Required]
         public string Reason { get; set; }
     }
@@ -69,6 +71,7 @@ namespace MVCForum.Website.ViewModels
 
         [ForumMvcResourceDisplayName("Post.Move.Label.Topic")]
         public Guid? TopicId { get; set; }
+
         public Guid PostId { get; set; }
 
         [ForumMvcResourceDisplayName("Post.Move.Label.NewTopicTitle")]
@@ -80,6 +83,6 @@ namespace MVCForum.Website.ViewModels
 
     public class PostEditHistoryViewModel
     {
-        public IList<PostEdit> PostEdits { get; set; } 
+        public IList<PostEdit> PostEdits { get; set; }
     }
 }

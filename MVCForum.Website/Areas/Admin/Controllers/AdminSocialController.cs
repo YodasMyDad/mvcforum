@@ -1,18 +1,20 @@
-﻿using System;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Areas.Admin.ViewModels;
-
-namespace MVCForum.Website.Areas.Admin.Controllers
+﻿namespace MvcForum.Web.Areas.Admin.Controllers
 {
+    using System;
+    using System.Web.Mvc;
+    using Core.Constants;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
+    using ViewModels;
+
     [Authorize(Roles = AppConstants.AdminRoleName)]
     public class AdminSocialController : BaseAdminController
     {
         private readonly ICacheService _cacheService;
 
-        public AdminSocialController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService, ISettingsService settingsService, ICacheService cacheService)
+        public AdminSocialController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService, ILocalizationService localizationService,
+            ISettingsService settingsService, ICacheService cacheService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
             _cacheService = cacheService;
@@ -42,7 +44,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
- 
                 var settings = SettingsService.GetSettings(false);
 
                 settings.EnableSocialLogins = viewModel.EnableSocialLogins;
@@ -65,7 +66,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         Message = "Updated",
                         MessageType = GenericMessages.success
                     });
-
                 }
                 catch (Exception ex)
                 {
@@ -80,7 +80,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     });
                 }
 
-                return View(viewModel); 
+                return View(viewModel);
             }
         }
     }

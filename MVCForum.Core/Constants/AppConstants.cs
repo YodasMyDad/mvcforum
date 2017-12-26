@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MVCForum.Domain.Constants
+namespace MvcForum.Core.Constants
 {
     public static class AppConstants
     {

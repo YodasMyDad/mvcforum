@@ -1,28 +1,23 @@
-﻿using System;
-using System.Globalization;
-using System.Threading;
-using System.Web;
-using System.Web.Http;
-using System.Web.Mvc;
-using System.Web.Optimization;
-using System.Web.Routing;
-using MVCForum.Domain.Events;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.IOC;
-using MVCForum.Utilities;
-using MVCForum.Website.Application;
-using MVCForum.Website.Application.ScheduledJobs;
-using MVCForum.Website.Application.ViewEngine;
-
-namespace MVCForum.Website
+﻿namespace MvcForum.Web
 {
-    using Domain.Constants;
-    using NPoco;
+    using System;
+    using System.Globalization;
+    using System.Threading;
+    using System.Web;
+    using System.Web.Http;
+    using System.Web.Mvc;
+    using System.Web.Routing;
+    using Application;
+    using Application.ScheduledJobs;
+    using Application.ViewEngine;
+    using Core.Events;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
+    using Core.Ioc;
+    using Core.Utilities;
 
     public class MvcApplication : HttpApplication
     {
-
         public IUnitOfWorkManager UnitOfWorkManager => ServiceFactory.Get<IUnitOfWorkManager>();
         public IBadgeService BadgeService => ServiceFactory.Get<IBadgeService>();
         public ISettingsService SettingsService => ServiceFactory.Get<ISettingsService>();
@@ -42,7 +37,6 @@ namespace MVCForum.Website
 
             // Routes
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             // Store the value for use in the app
             Application["Version"] = AppHelpers.GetCurrentVersionNo();
@@ -93,8 +87,6 @@ namespace MVCForum.Website
 
         protected void Application_EndRequest(object sender, EventArgs e)
         {
-            var entityContext = HttpContext.Current.Items[SiteConstants.Instance.MvcForumContext] as IDatabase;
-            entityContext?.Dispose();
         }
 
         protected void Application_Error(object sender, EventArgs e)
@@ -106,6 +98,5 @@ namespace MVCForum.Website
                 LoggingService.Error(lastError);
             }
         }
-
     }
 }

@@ -1,23 +1,23 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Application;
-using MVCForum.Website.Areas.Admin.ViewModels;
-using MVCForum.Website.ViewModels.Mapping;
-
-namespace MVCForum.Website.Areas.Admin.Controllers
+﻿namespace MvcForum.Web.Areas.Admin.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Text;
+    using System.Web.Mvc;
+    using Application;
+    using Core.Constants;
+    using Core.DomainModel.Entities;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
+    using ViewModels;
+    using Web.ViewModels.Mapping;
+
     [Authorize(Roles = AppConstants.AdminRoleName)]
     public class SettingsController : BaseAdminController
     {
-        private readonly IRoleService _roleService;
-        private readonly IEmailService _emailService;
         private readonly ICacheService _cacheService;
+        private readonly IEmailService _emailService;
+        private readonly IRoleService _roleService;
 
         public SettingsController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
             ILocalizationService localizationService,
@@ -37,7 +37,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             {
                 var currentSettings = SettingsService.GetSettings();
                 var settingViewModel = ViewModelMapping.SettingsToSettingsViewModel(currentSettings);
-                settingViewModel.NewMemberStartingRole = _roleService.GetRole(currentSettings.NewMemberStartingRole.Id).Id;
+                settingViewModel.NewMemberStartingRole =
+                    _roleService.GetRole(currentSettings.NewMemberStartingRole.Id).Id;
                 settingViewModel.DefaultLanguage = LocalizationService.DefaultLanguage.Id;
                 settingViewModel.Roles = _roleService.AllRoles().ToList();
                 settingViewModel.Languages = LocalizationService.AllLanguages.ToList();
@@ -54,9 +55,10 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
                     try
-                    {                        
+                    {
                         var existingSettings = SettingsService.GetSettings(false);
-                        var updatedSettings = ViewModelMapping.SettingsViewModelToSettings(settingsViewModel, existingSettings);
+                        var updatedSettings =
+                            ViewModelMapping.SettingsViewModelToSettings(settingsViewModel, existingSettings);
 
                         // Map over viewModel from 
                         if (settingsViewModel.NewMemberStartingRole != null)
@@ -64,7 +66,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                             updatedSettings.NewMemberStartingRole =
                                 _roleService.GetRole(settingsViewModel.NewMemberStartingRole.Value);
                         }
-                        
+
                         if (settingsViewModel.DefaultLanguage != null)
                         {
                             updatedSettings.DefaultLanguage =
@@ -91,7 +93,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     };
                     settingsViewModel.Themes = AppHelpers.GetThemeFolders();
                     settingsViewModel.Roles = _roleService.AllRoles().ToList();
-                    settingsViewModel.Languages = LocalizationService.AllLanguages.ToList();                   
+                    settingsViewModel.Languages = LocalizationService.AllLanguages.ToList();
                 }
             }
             return View(settingsViewModel);
@@ -161,7 +163,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-
                 var settings = SettingsService.GetSettings(false);
 
                 settings.CustomFooterCode = viewModel.CustomFooterCode;
@@ -180,7 +181,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                         Message = "Updated",
                         MessageType = GenericMessages.success
                     });
-
                 }
                 catch (Exception ex)
                 {

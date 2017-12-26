@@ -1,4 +1,4 @@
-﻿namespace MVCForum.Website.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
     using System;
     using System.Collections.Generic;
@@ -8,44 +8,52 @@
     using System.Web.Hosting;
     using System.Web.Mvc;
     using System.Web.Security;
-    using Domain.Constants;
-    using Domain.DomainModel;
-    using Domain.DomainModel.Entities;
-    using Domain.DomainModel.Enums;
-    using Domain.Events;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
-    using Utilities;
     using Application;
+    using Application.Akismet;
     using Areas.Admin.ViewModels;
+    using Core.Constants;
+    using Core.DomainModel.Entities;
+    using Core.DomainModel.Enums;
+    using Core.DomainModel.General;
+    using Core.Events;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
+    using Core.Utilities;
     using ViewModels;
     using ViewModels.Mapping;
 
     public partial class TopicController : BaseController
     {
-        private readonly IFavouriteService _favouriteService;
-        private readonly ITopicService _topicService;
-        private readonly IPostService _postService;
-        private readonly ITopicTagService _topicTagService;
-        private readonly ICategoryService _categoryService;
-        private readonly ICategoryNotificationService _categoryNotificationService;
-        private readonly ITopicNotificationService _topicNotificationService;
-        private readonly ITagNotificationService _tagNotificationService;
-        private readonly IMembershipUserPointsService _membershipUserPointsService;
-        private readonly IEmailService _emailService;
-        private readonly IPollService _pollService;
-        private readonly IPollAnswerService _pollAnswerService;
         private readonly IBannedWordService _bannedWordService;
-        private readonly IVoteService _voteService;
-        private readonly IUploadedFileService _uploadedFileService;
+        private readonly ICategoryNotificationService _categoryNotificationService;
+        private readonly ICategoryService _categoryService;
+        private readonly IEmailService _emailService;
+        private readonly IFavouriteService _favouriteService;
+        private readonly IMembershipUserPointsService _membershipUserPointsService;
+        private readonly IPollAnswerService _pollAnswerService;
+        private readonly IPollService _pollService;
         private readonly IPostEditService _postEditService;
+        private readonly IPostService _postService;
+        private readonly ITagNotificationService _tagNotificationService;
+        private readonly ITopicNotificationService _topicNotificationService;
+        private readonly ITopicService _topicService;
+        private readonly ITopicTagService _topicTagService;
+        private readonly IUploadedFileService _uploadedFileService;
+        private readonly IVoteService _voteService;
 
-        public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, IRoleService roleService, ITopicService topicService, IPostService postService,
-            ICategoryService categoryService, ILocalizationService localizationService, ISettingsService settingsService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService,
-            ICategoryNotificationService categoryNotificationService, IEmailService emailService, ITopicNotificationService topicNotificationService, IPollService pollService,
-            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService, IFavouriteService favouriteService, IUploadedFileService uploadedFileService, ICacheService cacheService, 
+        public TopicController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService, IRoleService roleService, ITopicService topicService,
+            IPostService postService,
+            ICategoryService categoryService, ILocalizationService localizationService,
+            ISettingsService settingsService, ITopicTagService topicTagService,
+            IMembershipUserPointsService membershipUserPointsService,
+            ICategoryNotificationService categoryNotificationService, IEmailService emailService,
+            ITopicNotificationService topicNotificationService, IPollService pollService,
+            IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService,
+            IFavouriteService favouriteService, IUploadedFileService uploadedFileService, ICacheService cacheService,
             ITagNotificationService tagNotificationService, IPostEditService postEditService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
+                settingsService, cacheService)
         {
             _topicService = topicService;
             _postService = postService;
@@ -79,13 +87,14 @@
 
                 // Get the topics
                 var topics = _topicService.GetMembersActivity(pageIndex,
-                                                           settings.TopicsPerPage,
-                                                           SiteConstants.Instance.MembersActivityListSize,
-                                                           LoggedOnReadOnlyUser.Id,
-                                                           allowedCategories);
+                    settings.TopicsPerPage,
+                    SiteConstants.Instance.MembersActivityListSize,
+                    LoggedOnReadOnlyUser.Id,
+                    allowedCategories);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, settings);
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole,
+                    LoggedOnReadOnlyUser, allowedCategories, settings);
 
                 // create the view model
                 var viewModel = new PostedInViewModel
@@ -98,7 +107,6 @@
 
                 return PartialView("TopicsMemberHasPostedIn", viewModel);
             }
-
         }
 
         [ChildActionOnly]
@@ -115,7 +123,8 @@
                     var topics = _topicService.Get(topicIds, allowedCategories);
 
                     // Get the Topic View Models
-                    viewModel = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
+                    viewModel = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole,
+                        LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
 
                     // Show the unsubscribe link
                     foreach (var topicViewModel in viewModel)
@@ -192,6 +201,7 @@
         }
 
         #region Create / Edit Helper Methods
+
         private static CheckCreateTopicPermissions GetCheckCreateTopicPermissions(PermissionSet permissionSet)
         {
             var model = new CheckCreateTopicPermissions();
@@ -240,11 +250,13 @@
                 var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
 
                 // Is the user allowed to edit this post
-                if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                if (post.User.Id == LoggedOnReadOnlyUser.Id ||
+                    permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
                 {
                     // Get the allowed categories for this user
                     var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
-                    var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, SiteConstants.Instance.PermissionCreateTopics);
+                    var allowedCreateTopicCategories =
+                        _categoryService.GetAllowedCategories(UsersRole, SiteConstants.Instance.PermissionCreateTopics);
                     var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
 
                     // If this user hasn't got any allowed cats OR they are not allowed to post then abandon
@@ -268,14 +280,16 @@
                             allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
 
                             // See if this user is subscribed to this topic
-                            var topicNotifications = _topicNotificationService.GetByUserAndTopic(LoggedOnReadOnlyUser, topic);
+                            var topicNotifications =
+                                _topicNotificationService.GetByUserAndTopic(LoggedOnReadOnlyUser, topic);
 
                             // Populate the properties we can
                             viewModel.IsLocked = topic.IsLocked;
                             viewModel.IsSticky = topic.IsSticky;
                             viewModel.IsTopicStarter = post.IsTopicStarter;
                             viewModel.SubscribeToTopic = topicNotifications.Any();
-                            viewModel.Categories = _categoryService.GetBaseSelectListCategories(allowedAccessCategories);
+                            viewModel.Categories =
+                                _categoryService.GetBaseSelectListCategories(allowedAccessCategories);
 
                             // Tags - Populate from the topic
                             if (topic.Tags.Any())
@@ -295,7 +309,6 @@
                         // Return the edit view
                         return View(viewModel);
                     }
-
                 }
 
                 // If we get here the user has no permission to try and edit the post
@@ -320,7 +333,8 @@
                 // This is just in case the viewModel is return back to the view also sort the allowedCategories
                 // Get the allowed categories for this user
                 var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
-                var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, SiteConstants.Instance.PermissionCreateTopics);
+                var allowedCreateTopicCategories =
+                    _categoryService.GetAllowedCategories(UsersRole, SiteConstants.Instance.PermissionCreateTopics);
                 var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
                 allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
                 editPostViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
@@ -333,7 +347,6 @@
 
                 if (ModelState.IsValid)
                 {
-
                     try
                     {
                         var topicPostInModeration = false;
@@ -342,10 +355,11 @@
                         var stopWords = _bannedWordService.GetAll(true);
                         foreach (var stopWord in stopWords)
                         {
-                            if (editPostViewModel.Content.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
-                                editPostViewModel.Name.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                            if (editPostViewModel.Content.IndexOf(stopWord.Word,
+                                    StringComparison.CurrentCultureIgnoreCase) >= 0 ||
+                                editPostViewModel.Name.IndexOf(stopWord.Word,
+                                    StringComparison.CurrentCultureIgnoreCase) >= 0)
                             {
-
                                 ShowMessage(new GenericMessageViewModel
                                 {
                                     Message = LocalizationService.GetResourceString("StopWord.Error"),
@@ -361,7 +375,8 @@
                         }
 
                         // Quick check to see if user is locked out, when logged in
-                        if (LoggedOnReadOnlyUser.IsLockedOut || LoggedOnReadOnlyUser.DisablePosting == true || !LoggedOnReadOnlyUser.IsApproved)
+                        if (LoggedOnReadOnlyUser.IsLockedOut || LoggedOnReadOnlyUser.DisablePosting == true ||
+                            !LoggedOnReadOnlyUser.IsApproved)
                         {
                             FormsAuthentication.SignOut();
                             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoAccess"));
@@ -374,9 +389,9 @@
                         // Get the topic
                         var topic = post.Topic;
 
-                        if (post.User.Id == LoggedOnReadOnlyUser.Id || permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                        if (post.User.Id == LoggedOnReadOnlyUser.Id ||
+                            permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
                         {
-
                             // Get the DB user so we can use lazy loading and update
                             var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
 
@@ -413,18 +428,23 @@
                                 }
                                 topic.IsLocked = editPostViewModel.IsLocked;
                                 topic.IsSticky = editPostViewModel.IsSticky;
-                                topic.Name = StringUtils.GetSafeHtml(_bannedWordService.SanitiseBannedWords(editPostViewModel.Name));
+                                topic.Name =
+                                    StringUtils.GetSafeHtml(
+                                        _bannedWordService.SanitiseBannedWords(editPostViewModel.Name));
 
                                 // Update post edit
                                 postEdit.EditedPostTitle = topic.Name;
 
                                 // See if there is a poll
-                                if (editPostViewModel.PollAnswers != null && editPostViewModel.PollAnswers.Count(x => !string.IsNullOrEmpty(x?.Answer)) > 1 && permissions[SiteConstants.Instance.PermissionCreatePolls].IsTicked)
+                                if (editPostViewModel.PollAnswers != null &&
+                                    editPostViewModel.PollAnswers.Count(x => !string.IsNullOrEmpty(x?.Answer)) > 1 &&
+                                    permissions[SiteConstants.Instance.PermissionCreatePolls].IsTicked)
                                 {
                                     // Now sort the poll answers, what to add and what to remove
                                     // Poll answers already in this poll.
                                     //var existingAnswers = topic.Poll.PollAnswers.Where(x => postedIds.Contains(x.Id)).ToList();
-                                    var postedIds = editPostViewModel.PollAnswers.Where(x => !string.IsNullOrEmpty(x?.Answer)).Select(x => x.Id);
+                                    var postedIds = editPostViewModel.PollAnswers
+                                        .Where(x => !string.IsNullOrEmpty(x?.Answer)).Select(x => x.Id);
 
                                     // This post might not have a poll on it, if not they are creating a poll for the first time
                                     var topicPollAnswerIds = new List<Guid>();
@@ -449,14 +469,17 @@
                                     else
                                     {
                                         topicPollAnswerIds = topic.Poll.PollAnswers.Select(p => p.Id).ToList();
-                                        pollAnswersToRemove = topic.Poll.PollAnswers.Where(x => !postedIds.Contains(x.Id)).ToList();
+                                        pollAnswersToRemove = topic.Poll.PollAnswers
+                                            .Where(x => !postedIds.Contains(x.Id)).ToList();
                                     }
 
                                     // Set the amount of days to close the poll
                                     topic.Poll.ClosePollAfterDays = editPostViewModel.PollCloseAfterDays;
 
-                                    var existingAnswers = editPostViewModel.PollAnswers.Where(x => !string.IsNullOrEmpty(x.Answer) && topicPollAnswerIds.Contains(x.Id)).ToList();
-                                    var newPollAnswers = editPostViewModel.PollAnswers.Where(x => !string.IsNullOrEmpty(x.Answer) && !topicPollAnswerIds.Contains(x.Id)).ToList();
+                                    var existingAnswers = editPostViewModel.PollAnswers.Where(x =>
+                                        !string.IsNullOrEmpty(x.Answer) && topicPollAnswerIds.Contains(x.Id)).ToList();
+                                    var newPollAnswers = editPostViewModel.PollAnswers.Where(x =>
+                                        !string.IsNullOrEmpty(x.Answer) && !topicPollAnswerIds.Contains(x.Id)).ToList();
 
                                     // Loop through existing and update names if need be
                                     //TODO: Need to think about this in future versions if they change the name
@@ -632,12 +655,13 @@
         private List<Category> AllowedCreateCategories()
         {
             var allowedAccessCategories = _categoryService.GetAllowedCategories(UsersRole);
-            var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(UsersRole, SiteConstants.Instance.PermissionCreateTopics);
+            var allowedCreateTopicCategories =
+                _categoryService.GetAllowedCategories(UsersRole, SiteConstants.Instance.PermissionCreateTopics);
             var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
             if (allowedAccessCategories.Any())
             {
                 allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
-                allowedAccessCategories.RemoveAll(x =>UsersRole.RoleName != AppConstants.AdminRoleName && x.IsLocked);
+                allowedAccessCategories.RemoveAll(x => UsersRole.RoleName != AppConstants.AdminRoleName && x.IsLocked);
             }
             return allowedAccessCategories;
         }
@@ -709,7 +733,8 @@
                 }
 
                 // Quick check to see if user is locked out, when logged in
-                if (LoggedOnReadOnlyUser.IsLockedOut || LoggedOnReadOnlyUser.DisablePosting == true || !LoggedOnReadOnlyUser.IsApproved)
+                if (LoggedOnReadOnlyUser.IsLockedOut || LoggedOnReadOnlyUser.DisablePosting == true ||
+                    !LoggedOnReadOnlyUser.IsApproved)
                 {
                     FormsAuthentication.SignOut();
                     return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoAccess"));
@@ -723,10 +748,13 @@
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
                     // Check this users role has permission to create a post
-                    if (permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked || permissions[SiteConstants.Instance.PermissionReadOnly].IsTicked || !permissions[SiteConstants.Instance.PermissionCreateTopics].IsTicked)
+                    if (permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked ||
+                        permissions[SiteConstants.Instance.PermissionReadOnly].IsTicked ||
+                        !permissions[SiteConstants.Instance.PermissionCreateTopics].IsTicked)
                     {
                         // Add a model error that the user has no permissions
-                        ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.NoPermission"));
+                        ModelState.AddModelError(string.Empty,
+                            LocalizationService.GetResourceString("Errors.NoPermission"));
                     }
                     else
                     {
@@ -762,13 +790,13 @@
                         if (!string.IsNullOrEmpty(topicViewModel.Content))
                         {
                             // Check for any banned words
-                            topicViewModel.Content = _bannedWordService.SanitiseBannedWords(topicViewModel.Content, bannedWords);
+                            topicViewModel.Content =
+                                _bannedWordService.SanitiseBannedWords(topicViewModel.Content, bannedWords);
 
-                            var e = new TopicMadeEventArgs { Topic = topic };
+                            var e = new TopicMadeEventArgs {Topic = topic};
                             EventManager.Instance.FireBeforeTopicMade(this, e);
                             if (!e.Cancel)
                             {
-
                                 // See if this is a poll and add it to the topic
                                 if (topicViewModel.PollAnswers.Count(x => x != null) > 1)
                                 {
@@ -863,7 +891,8 @@
                                         // woot! User has permission and all seems ok
                                         // Before we save anything, check the user already has an upload folder and if not create one
                                         var uploadFolderPath =
-                                            HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath,
+                                            HostingEnvironment.MapPath(string.Concat(
+                                                SiteConstants.Instance.UploadFolderPath,
                                                 LoggedOnReadOnlyUser.Id));
                                         if (!Directory.Exists(uploadFolderPath))
                                         {
@@ -880,11 +909,12 @@
                                                     LocalizationService);
                                                 if (!uploadResult.UploadSuccessful)
                                                 {
-                                                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                                                    {
-                                                        Message = uploadResult.ErrorMessage,
-                                                        MessageType = GenericMessages.danger
-                                                    };
+                                                    TempData[AppConstants.MessageViewBagName] =
+                                                        new GenericMessageViewModel
+                                                        {
+                                                            Message = uploadResult.ErrorMessage,
+                                                            MessageType = GenericMessages.danger
+                                                        };
                                                     unitOfWork.Rollback();
                                                     return View(topicViewModel);
                                                 }
@@ -900,7 +930,6 @@
                                             }
                                         }
                                     }
-
                                 }
 
                                 // Add the tags if any too
@@ -947,20 +976,22 @@
                                 // Only fire this if the create topic wasn't cancelled
                                 if (!cancelledByEvent)
                                 {
-                                    EventManager.Instance.FireAfterTopicMade(this, new TopicMadeEventArgs { Topic = topic });
+                                    EventManager.Instance.FireAfterTopicMade(this,
+                                        new TopicMadeEventArgs {Topic = topic});
                                 }
                             }
                             catch (Exception ex)
                             {
                                 unitOfWork.Rollback();
                                 LoggingService.Error(ex);
-                                ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+                                ModelState.AddModelError(string.Empty,
+                                    LocalizationService.GetResourceString("Errors.GenericMessage"));
                             }
-
                         }
                         else
                         {
-                            ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+                            ModelState.AddModelError(string.Empty,
+                                LocalizationService.GetResourceString("Errors.GenericMessage"));
                         }
                     }
                 }
@@ -1012,8 +1043,9 @@
                     // statement rather than loads of sql selects
 
                     var sortQuerystring = Request.QueryString[AppConstants.PostOrderBy];
-                    var orderBy = !string.IsNullOrEmpty(sortQuerystring) ?
-                                              EnumUtils.ReturnEnumValueFromString<PostOrderBy>(sortQuerystring) : PostOrderBy.Standard;
+                    var orderBy = !string.IsNullOrEmpty(sortQuerystring)
+                        ? EnumUtils.ReturnEnumValueFromString<PostOrderBy>(sortQuerystring)
+                        : PostOrderBy.Standard;
 
                     // Store the amount per page
                     var amountPerPage = settings.PostsPerPage;
@@ -1026,10 +1058,10 @@
 
                     // Get the posts
                     var posts = _postService.GetPagedPostsByTopic(pageIndex,
-                                                                  amountPerPage,
-                                                                  int.MaxValue,
-                                                                  topic.Id,
-                                                                  orderBy);
+                        amountPerPage,
+                        int.MaxValue,
+                        topic.Id,
+                        orderBy);
 
                     // Get the topic starter post
                     var starterPost = _postService.GetTopicStarterPost(topic.Id);
@@ -1045,9 +1077,13 @@
                     }
 
                     // Set editor permissions
-                    ViewBag.ImageUploadType = permissions[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked ? "forumimageinsert" : "image";
+                    ViewBag.ImageUploadType = permissions[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked
+                        ? "forumimageinsert"
+                        : "image";
 
-                    var viewModel = ViewModelMapping.CreateTopicViewModel(topic, permissions, posts.ToList(), starterPost, posts.PageIndex, posts.TotalCount, posts.TotalPages, LoggedOnReadOnlyUser, settings, true);
+                    var viewModel = ViewModelMapping.CreateTopicViewModel(topic, permissions, posts.ToList(),
+                        starterPost, posts.PageIndex, posts.TotalCount, posts.TotalPages, LoggedOnReadOnlyUser,
+                        settings, true);
 
                     // If there is a quote querystring
                     var quote = Request["quote"];
@@ -1099,7 +1135,8 @@
                         !viewModel.Poll.Poll.IsClosed)
                     {
                         // Check the date the topic was created
-                        var endDate = viewModel.Poll.Poll.DateCreated.AddDays((int)viewModel.Poll.Poll.ClosePollAfterDays);
+                        var endDate =
+                            viewModel.Poll.Poll.DateCreated.AddDays((int) viewModel.Poll.Poll.ClosePollAfterDays);
                         if (DateTime.UtcNow > endDate)
                         {
                             topic.Poll.IsClosed = true;
@@ -1113,7 +1150,7 @@
                         if (addView)
                         {
                             // Increase the topic views
-                            topic.Views = (topic.Views + 1);
+                            topic.Views = topic.Views + 1;
                         }
 
                         try
@@ -1128,7 +1165,6 @@
 
                     return View(viewModel);
                 }
-
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
@@ -1151,16 +1187,19 @@
                     return null;
                 }
 
-                var orderBy = !string.IsNullOrEmpty(getMorePostsViewModel.Order) ?
-                                          EnumUtils.ReturnEnumValueFromString<PostOrderBy>(getMorePostsViewModel.Order) : PostOrderBy.Standard;
+                var orderBy = !string.IsNullOrEmpty(getMorePostsViewModel.Order)
+                    ? EnumUtils.ReturnEnumValueFromString<PostOrderBy>(getMorePostsViewModel.Order)
+                    : PostOrderBy.Standard;
 
-                var posts = _postService.GetPagedPostsByTopic(getMorePostsViewModel.PageIndex, settings.PostsPerPage, int.MaxValue, topic.Id, orderBy);
+                var posts = _postService.GetPagedPostsByTopic(getMorePostsViewModel.PageIndex, settings.PostsPerPage,
+                    int.MaxValue, topic.Id, orderBy);
                 var postIds = posts.Select(x => x.Id).ToList();
                 var votes = _voteService.GetVotesByPosts(postIds);
                 var favs = _favouriteService.GetAllPostFavourites(postIds);
                 var viewModel = new ShowMorePostsViewModel
                 {
-                    Posts = ViewModelMapping.CreatePostViewModels(posts, votes, permissions, topic, LoggedOnReadOnlyUser, settings, favs),
+                    Posts = ViewModelMapping.CreatePostViewModels(posts, votes, permissions, topic,
+                        LoggedOnReadOnlyUser, settings, favs),
                     Topic = topic,
                     Permissions = permissions
                 };
@@ -1182,15 +1221,17 @@
 
                 // Get the topics
                 var topics = _topicService.GetPagedTopicsByTag(pageIndex,
-                                                           settings.TopicsPerPage,
-                                                           int.MaxValue,
-                                                           tag, allowedCategories);
+                    settings.TopicsPerPage,
+                    int.MaxValue,
+                    tag, allowedCategories);
 
                 // See if the user has subscribed to this topic or not
-                var isSubscribed = UserIsAuthenticated && (_tagNotificationService.GetByUserAndTag(LoggedOnReadOnlyUser, tagModel).Any());
+                var isSubscribed = UserIsAuthenticated &&
+                                   _tagNotificationService.GetByUserAndTag(LoggedOnReadOnlyUser, tagModel).Any();
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, settings);
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole,
+                    LoggedOnReadOnlyUser, allowedCategories, settings);
 
                 // create the view model
                 var viewModel = new TagTopicsViewModel
@@ -1219,7 +1260,8 @@
                 IList<Topic> topics = null;
                 try
                 {
-                    var searchResults = _topicService.SearchTopics(SiteConstants.Instance.SimilarTopicsListSize, formattedSearchTerm, allowedCategories);
+                    var searchResults = _topicService.SearchTopics(SiteConstants.Instance.SimilarTopicsListSize,
+                        formattedSearchTerm, allowedCategories);
                     if (searchResults != null)
                     {
                         topics = searchResults;
@@ -1248,12 +1290,13 @@
 
                 // Get the topics
                 var topics = _topicService.GetRecentTopics(pageIndex,
-                                                           settings.TopicsPerPage,
-                                                           SiteConstants.Instance.ActiveTopicsListSize,
-                                                           allowedCategories);
+                    settings.TopicsPerPage,
+                    SiteConstants.Instance.ActiveTopicsListSize,
+                    allowedCategories);
 
                 // Get the Topic View Models
-                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, settings);
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole,
+                    LoggedOnReadOnlyUser, allowedCategories, settings);
 
                 // create the view model
                 var viewModel = new ActiveTopicsViewModel
@@ -1289,10 +1332,11 @@
                     var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
 
                     // Get the topics
-                    var topics = _topicService.GetPopularTopics(from, to, allowedCategories, (int)amountToShow);
+                    var topics = _topicService.GetPopularTopics(from, to, allowedCategories, (int) amountToShow);
 
                     // Get the Topic View Models
-                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService, UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
+                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService,
+                        UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
 
                     // create the view model
                     viewModel = new HotTopicsViewModel
@@ -1316,7 +1360,8 @@
             // Merge and remove duplicate ids
             if (topic.Tags != null && topic.Tags.Any())
             {
-                var tagNotifications = _tagNotificationService.GetByTag(topic.Tags.ToList()).Select(x => x.User.Id).ToList();
+                var tagNotifications = _tagNotificationService.GetByTag(topic.Tags.ToList()).Select(x => x.User.Id)
+                    .ToList();
                 notifications = notifications.Union(tagNotifications).ToList();
             }
 
@@ -1333,7 +1378,8 @@
 
                     // Create the email
                     var sb = new StringBuilder();
-                    sb.AppendFormat("<p>{0}</p>", string.Format(LocalizationService.GetResourceString("Topic.Notification.NewTopics"), cat.Name));
+                    sb.AppendFormat("<p>{0}</p>",
+                        string.Format(LocalizationService.GetResourceString("Topic.Notification.NewTopics"), cat.Name));
                     sb.Append($"<p>{topic.Name}</p>");
                     if (SiteConstants.Instance.IncludeFullPostInEmailNotifications)
                     {
@@ -1342,13 +1388,17 @@
                     sb.AppendFormat("<p><a href=\"{0}\">{0}</a></p>", string.Concat(Domain, cat.NiceUrl));
 
                     // create the emails and only send them to people who have not had notifications disabled
-                    var emails = usersToNotify.Where(x => x.DisableEmailNotifications != true && !x.IsLockedOut && x.IsBanned != true).Select(user => new Email
-                    {
-                        Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
-                        EmailTo = user.Email,
-                        NameTo = user.UserName,
-                        Subject = string.Concat(LocalizationService.GetResourceString("Topic.Notification.Subject"), settings.ForumName)
-                    }).ToList();
+                    var emails = usersToNotify
+                        .Where(x => x.DisableEmailNotifications != true && !x.IsLockedOut && x.IsBanned != true).Select(
+                            user => new Email
+                            {
+                                Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
+                                EmailTo = user.Email,
+                                NameTo = user.UserName,
+                                Subject = string.Concat(
+                                    LocalizationService.GetResourceString("Topic.Notification.Subject"),
+                                    settings.ForumName)
+                            }).ToList();
 
                     // and now pass the emails in to be sent
                     _emailService.SendMail(emails);
@@ -1365,6 +1415,5 @@
                 }
             }
         }
-
     }
 }

@@ -1,21 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using DomainModel.Entities;
+    using DomainModel.General;
+
     public partial interface IBadgeService
     {
-
         /// <summary>
-        /// Bring the database into line with the badge classes found at runtime
+        ///     Bring the database into line with the badge classes found at runtime
         /// </summary>
         /// <returns>Set of valid badge classes to use when assigning badges</returns>
         void SyncBadges(List<Assembly> assemblies);
 
         /// <summary>
-        /// Processes the user for the specified badge type
+        ///     Processes the user for the specified badge type
         /// </summary>
         /// <param name="badgeType"></param>
         /// <param name="user"></param>
@@ -23,7 +23,7 @@ namespace MVCForum.Domain.Interfaces.Services
         bool ProcessBadge(BadgeType badgeType, MembershipUser user);
 
         /// <summary>
-        /// Gets a paged list of badges
+        ///     Gets a paged list of badges
         /// </summary>
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
@@ -31,7 +31,7 @@ namespace MVCForum.Domain.Interfaces.Services
         PagedList<Badge> GetPagedGroupedBadges(int pageIndex, int pageSize);
 
         /// <summary>
-        /// Search for pages in a paged list
+        ///     Search for pages in a paged list
         /// </summary>
         /// <param name="search"></param>
         /// <param name="pageIndex"></param>
@@ -40,25 +40,25 @@ namespace MVCForum.Domain.Interfaces.Services
         PagedList<Badge> SearchPagedGroupedTags(string search, int pageIndex, int pageSize);
 
         /// <summary>
-        /// Get all Badges enabled in the applications
+        ///     Get all Badges enabled in the applications
         /// </summary>
         /// <returns></returns>
         IList<Badge> GetallBadges();
 
         /// <summary>
-        /// Delete a badge
+        ///     Delete a badge
         /// </summary>
         /// <param name="badge"></param>
         void Delete(Badge badge);
 
         /// <summary>
-        /// Deletes the last checked time
+        ///     Deletes the last checked time
         /// </summary>
         /// <param name="badgeTypeTimeLastChecked"></param>
         void DeleteTimeLastChecked(BadgeTypeTimeLastChecked badgeTypeTimeLastChecked);
 
         /// <summary>
-        /// Get a badge by name
+        ///     Get a badge by name
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -67,7 +67,7 @@ namespace MVCForum.Domain.Interfaces.Services
         Badge Get(Guid id);
 
         /// <summary>
-        /// All badges
+        ///     All badges
         /// </summary>
         /// <returns></returns>
         IEnumerable<Badge> GetAll();

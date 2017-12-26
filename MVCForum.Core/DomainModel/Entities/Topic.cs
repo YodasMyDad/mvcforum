@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using MVCForum.Utilities;
-
-namespace MVCForum.Domain.DomainModel
+﻿namespace MvcForum.Core.DomainModel.Entities
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Enums;
+    using Utilities;
+
     public partial class Topic : Entity
     {
         public Topic()

@@ -1,7 +1,7 @@
-﻿using Microsoft.Web.Infrastructure.DynamicModuleHelper;
-
-namespace MVCForum.IOC
+﻿namespace MvcForum.Core.Ioc
 {
+    using Microsoft.Web.Infrastructure.DynamicModuleHelper;
+
     public class PreApplicationStartCode
     {
         private static bool _isStarting;

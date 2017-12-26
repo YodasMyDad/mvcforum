@@ -1,37 +1,22 @@
-﻿using System;
-using System.Linq;
-using System.Collections.Generic;
-using MVCForum.Domain.DomainModel.Entities;
-using MVCForum.Utilities;
-
-namespace MVCForum.Domain.DomainModel
+﻿namespace MvcForum.Core.DomainModel.Entities
 {
-    /// <summary>
-    /// Status values returned when creating a user
-    /// </summary>
-    public enum MembershipCreateStatus
-    {
-        Success,
-        DuplicateUserName,
-        DuplicateEmail,
-        InvalidPassword,
-        InvalidEmail,
-        InvalidAnswer,
-        InvalidQuestion,
-        InvalidUserName,
-        ProviderError,
-        UserRejected
-    }
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Enums;
+    using General;
+    using Utilities;
 
     /// <summary>
-    /// A membership user 
+    ///     A membership user
     /// </summary>
-    public partial class MembershipUser : Entity
+    public class MembershipUser : Entity
     {
         public MembershipUser()
         {
             Id = GuidComb.GenerateComb();
         }
+
         public Guid Id { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
@@ -105,14 +90,11 @@ namespace MVCForum.Domain.DomainModel
         public virtual IList<Block> BlockedByOtherUsers { get; set; }
         public virtual IList<PostEdit> PostEdits { get; set; }
 
-        public int TotalPoints 
-        { 
-            get {
-                return Points?.Select(x => x.Points).Sum() ?? 0;
-            }
+        public int TotalPoints
+        {
+            get { return Points?.Select(x => x.Points).Sum() ?? 0; }
         }
 
         public string NiceUrl => UrlTypes.GenerateUrl(UrlType.Member, Slug);
     }
-
 }

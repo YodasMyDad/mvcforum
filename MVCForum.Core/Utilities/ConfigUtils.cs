@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Web;
-using System.Web.Configuration;
-using System.Web.Hosting;
-using System.Xml;
-
-namespace MVCForum.Utilities
+﻿namespace MvcForum.Core.Utilities
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Configuration;
+    using System.Web.Configuration;
+    using System.Web.Hosting;
+    using System.Xml;
+
     public static class ConfigUtils
     {
         private static string WebConfigPath

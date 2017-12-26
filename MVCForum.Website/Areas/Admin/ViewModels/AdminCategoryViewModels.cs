@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Web;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Website.Application;
-
-namespace MVCForum.Website.Areas.Admin.ViewModels
+﻿namespace MvcForum.Web.Areas.Admin.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
+    using System.Web;
+    using System.Web.Mvc;
+    using Core.Constants;
+    using Core.DomainModel.Entities;
+
     public class ListCategoriesViewModel
     {
         public IEnumerable<Category> Categories { get; set; }
@@ -27,11 +26,13 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [DisplayName("Category Description")]
         [DataType(DataType.MultilineText)]
-        [UIHint(AppConstants.EditorType), AllowHtml]
+        [UIHint(AppConstants.EditorType)]
+        [AllowHtml]
         public string Description { get; set; }
 
         [DisplayName("Category Colour")]
-        [UIHint(AppConstants.EditorTemplateColourPicker), AllowHtml]
+        [UIHint(AppConstants.EditorTemplateColourPicker)]
+        [AllowHtml]
         public string CategoryColour { get; set; }
 
         [DisplayName("Lock The Category")]
@@ -62,6 +63,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [DisplayName("Category Image")]
         public HttpPostedFileBase[] Files { get; set; }
+
         public string Image { get; set; }
     }
 
@@ -69,6 +71,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
     {
         [HiddenInput]
         public Guid Id { get; set; }
+
         public Category Category { get; set; }
         public List<Category> SubCategories { get; set; }
     }

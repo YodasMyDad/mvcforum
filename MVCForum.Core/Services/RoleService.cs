@@ -1,15 +1,15 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Data.Entity;
-    using Domain.Constants;
-    using Domain.DomainModel;
-    using Domain.Exceptions;
-    using Domain.Interfaces;
-    using Domain.Interfaces.Services;
+    using System.Linq;
+    using Constants;
     using Data.Context;
+    using DomainModel.Entities;
+    using DomainModel.General;
+    using Interfaces;
+    using Interfaces.Services;
     using Utilities;
 
     public partial class RoleService : IRoleService
@@ -17,16 +17,16 @@
         private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
         private readonly IGlobalPermissionForRoleService _globalPermissionForRoleService;
         private readonly IPermissionService _permissionService;
-        private readonly MVCForumContext _context;
+        private readonly MvcForumContext _context;
         private readonly ICacheService _cacheService;
 
-        public RoleService(IMVCForumContext context, ICategoryPermissionForRoleService categoryPermissionForRoleService, IPermissionService permissionService, IGlobalPermissionForRoleService globalPermissionForRoleService, ICacheService cacheService)
+        public RoleService(IMvcForumContext context, ICategoryPermissionForRoleService categoryPermissionForRoleService, IPermissionService permissionService, IGlobalPermissionForRoleService globalPermissionForRoleService, ICacheService cacheService)
         {
             _categoryPermissionForRoleService = categoryPermissionForRoleService;
             _permissionService = permissionService;
             _globalPermissionForRoleService = globalPermissionForRoleService;
             _cacheService = cacheService;
-            _context = context as MVCForumContext;
+            _context = context as MvcForumContext;
         }
 
         /// <summary>
@@ -121,7 +121,7 @@
             {
                 var inUseBy = new List<Entity>();
                 inUseBy.AddRange(role.Users);
-                throw new InUseUnableToDeleteException(inUseBy);
+                throw new Exception($"In use by {inUseBy.Count} entities");
             }
         }
 

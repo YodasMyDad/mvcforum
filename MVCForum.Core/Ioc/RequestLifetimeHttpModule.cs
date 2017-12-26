@@ -1,7 +1,7 @@
-﻿using System.Web;
-
-namespace MVCForum.IOC
+﻿namespace MvcForum.Core.Ioc
 {
+    using System.Web;
+
     internal class RequestLifetimeHttpModule : IHttpModule
     {
         public void Init(HttpApplication context)

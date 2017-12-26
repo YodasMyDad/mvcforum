@@ -1,19 +1,20 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
     using System;
     using System.Collections.Generic;
-    using System.Text;
-    using Domain.Constants;
-    using Domain.DomainModel;
-    using Domain.Events;
-    using Domain.Interfaces.Services;
-    using System.Linq;
     using System.Data.Entity;
-    using Domain.DomainModel.Entities;
-    using Domain.DomainModel.LinqKit;
-    using Domain.Interfaces;
-    using Domain.Interfaces.UnitOfWork;
+    using System.Linq;
+    using System.Text;
+    using Constants;
     using Data.Context;
+    using DomainModel.Entities;
+    using DomainModel.Enums;
+    using DomainModel.General;
+    using DomainModel.LinqKit;
+    using Events;
+    using Interfaces;
+    using Interfaces.Services;
+    using Interfaces.UnitOfWork;
     using Utilities;
 
     public partial class PostService : IPostService
@@ -26,11 +27,11 @@
         private readonly IUploadedFileService _uploadedFileService;
         private readonly IFavouriteService _favouriteService;
         private readonly IConfigService _configService;
-        private readonly MVCForumContext _context;
+        private readonly MvcForumContext _context;
         private readonly IPostEditService _postEditService;
         private readonly ICacheService _cacheService;
 
-        public PostService(IMVCForumContext context,IMembershipUserPointsService membershipUserPointsService,
+        public PostService(IMvcForumContext context,IMembershipUserPointsService membershipUserPointsService,
             ISettingsService settingsService, IRoleService roleService,
             ILocalizationService localizationService, IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService favouriteService, IConfigService configService, IPostEditService postEditService, ICacheService cacheService)
         {
@@ -44,7 +45,7 @@
             _configService = configService;
             _postEditService = postEditService;
             _cacheService = cacheService;
-            _context = context as MVCForumContext;
+            _context = context as MvcForumContext;
         }
 
 

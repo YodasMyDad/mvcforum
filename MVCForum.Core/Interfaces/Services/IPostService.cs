@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using DomainModel.Entities;
+    using DomainModel.Enums;
+    using DomainModel.General;
+    using UnitOfWork;
+
     public partial interface IPostService
     {
         Post SanitizePost(Post post);
@@ -17,8 +19,13 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<Post> GetReplyToPosts(Guid postId);
         IEnumerable<Post> GetPostsByFavouriteCount(Guid postsByMemberId, int minAmountOfFavourites);
         IEnumerable<Post> GetPostsFavouritedByOtherMembers(Guid postsByMemberId);
-        PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm, List<Category> allowedCategories);
-        PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId, PostOrderBy order);
+
+        PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm,
+            List<Category> allowedCategories);
+
+        PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId,
+            PostOrderBy order);
+
         PagedList<Post> GetPagedPendingPosts(int pageIndex, int pageSize, List<Category> allowedCategories);
         IList<Post> GetPendingPosts(List<Category> allowedCategories, MembershipRole usersRole);
         int GetPendingPostsCount(List<Category> allowedCategories);

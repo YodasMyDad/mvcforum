@@ -1,4 +1,4 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
     using System;
     using System.Collections.Generic;
@@ -7,23 +7,23 @@
     using System.Net;
     using System.Net.Mail;
     using System.Web.Hosting;
-    using Domain.DomainModel;
-    using Domain.Interfaces;
-    using Domain.Interfaces.Services;
     using Data.Context;
+    using DomainModel.Entities;
+    using Interfaces;
+    using Interfaces.Services;
     using Utilities;
 
     public partial class EmailService : IEmailService
     {
         private readonly ILoggingService _loggingService;
         private readonly ISettingsService _settingsService;
-        private readonly MVCForumContext _context;
+        private readonly MvcForumContext _context;
 
-        public EmailService(ILoggingService loggingService, ISettingsService settingsService, IMVCForumContext context)
+        public EmailService(ILoggingService loggingService, ISettingsService settingsService, IMvcForumContext context)
         {
             _loggingService = loggingService;
             _settingsService = settingsService;
-            _context = context as MVCForumContext;
+            _context = context as MvcForumContext;
         }
 
         public Email Add(Email email)

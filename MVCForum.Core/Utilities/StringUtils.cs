@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Web;
-using HtmlAgilityPack;
-using Microsoft.Security.Application;
-
-namespace MVCForum.Utilities
+﻿namespace MvcForum.Core.Utilities
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Net;
+    using System.Security.Cryptography;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Web;
+    using HtmlAgilityPack;
+    using Microsoft.Security.Application;
+
     public static class StringUtils
     {
 
@@ -1027,7 +1027,7 @@ namespace MVCForum.Utilities
         /// <returns></returns>
         public static string ConvertMarkDown(string str)
         {
-            var md = new MarkdownSharp.Markdown { AutoHyperlink = true, LinkEmails = false };
+            var md = new Markdown { AutoHyperlink = true, LinkEmails = false };
             return md.Transform(str);
         }
 

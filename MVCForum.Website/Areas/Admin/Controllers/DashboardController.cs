@@ -1,27 +1,30 @@
-﻿using System.Linq;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
-using MVCForum.Website.Areas.Admin.ViewModels;
-
-namespace MVCForum.Website.Areas.Admin.Controllers
+﻿namespace MvcForum.Web.Areas.Admin.Controllers
 {
+    using System.Linq;
+    using System.Web.Mvc;
+    using Core.Constants;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
+    using Core.Utilities;
+    using ViewModels;
+
     [Authorize(Roles = AppConstants.AdminRoleName)]
-    public partial class DashboardController : BaseAdminController
+    public class DashboardController : BaseAdminController
     {
-        private readonly IPostService _postService;
-        private readonly ITopicService _topicService;
-        private readonly ITopicTagService _topicTagService;
-        private readonly IPrivateMessageService _privateMessageService;
+        private const int AmountToShow = 7;
         private readonly ICategoryService _categoryService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
-        const int AmountToShow = 7;
+        private readonly IPostService _postService;
+        private readonly IPrivateMessageService _privateMessageService;
+        private readonly ITopicService _topicService;
+        private readonly ITopicTagService _topicTagService;
 
-        public DashboardController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
-            ILocalizationService localizationService, ISettingsService settingsService, IPostService postService, 
-            ITopicService topicService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService, ICategoryService categoryService, IPrivateMessageService privateMessageService)
+        public DashboardController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService,
+            ILocalizationService localizationService, ISettingsService settingsService, IPostService postService,
+            ITopicService topicService, ITopicTagService topicTagService,
+            IMembershipUserPointsService membershipUserPointsService, ICategoryService categoryService,
+            IPrivateMessageService privateMessageService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
             _membershipUserPointsService = membershipUserPointsService;
@@ -45,7 +48,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             var postsToModerate = _postService.GetPendingPostsCount(_categoryService.GetAll());
             if (topicsToModerate > 0 || postsToModerate > 0)
             {
-                moderateCount = (topicsToModerate + postsToModerate);
+                moderateCount = topicsToModerate + postsToModerate;
             }
 
             var viewModel = new MainDashboardNavViewModel
@@ -66,7 +69,10 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             {
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
-                    return PartialView(new TodaysTopics { Topics = _topicService.GetTodaysTopics(AmountToShow, allCats) });
+                    return PartialView(new TodaysTopics
+                    {
+                        Topics = _topicService.GetTodaysTopics(AmountToShow, allCats)
+                    });
                 }
             }
             return null;
@@ -79,7 +85,10 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             {
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
-                    return PartialView(new LatestUsersViewModels { Users = MembershipService.GetLatestUsers(AmountToShow) });
+                    return PartialView(new LatestUsersViewModels
+                    {
+                        Users = MembershipService.GetLatestUsers(AmountToShow)
+                    });
                 }
             }
             return null;
@@ -92,7 +101,10 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             {
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
-                    return PartialView(new LowestPointUsersViewModels { Users = _membershipUserPointsService.GetAllTimePointsNegative(AmountToShow) });
+                    return PartialView(new LowestPointUsersViewModels
+                    {
+                        Users = _membershipUserPointsService.GetAllTimePointsNegative(AmountToShow)
+                    });
                 }
             }
             return null;
@@ -105,7 +117,10 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             {
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
-                    return PartialView(new LowestPointPostsViewModels { Posts = _postService.GetLowestVotedPost(AmountToShow) });
+                    return PartialView(new LowestPointPostsViewModels
+                    {
+                        Posts = _postService.GetLowestVotedPost(AmountToShow)
+                    });
                 }
             }
             return null;
@@ -120,7 +135,10 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 var allCats = _categoryService.GetAll();
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
-                    return PartialView(new HighestViewedTopics { Topics = _topicService.GetHighestViewedTopics(AmountToShow, allCats) });
+                    return PartialView(new HighestViewedTopics
+                    {
+                        Topics = _topicService.GetHighestViewedTopics(AmountToShow, allCats)
+                    });
                 }
             }
             return null;
@@ -131,9 +149,12 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             if (Request.IsAjaxRequest())
             {
-                    var reader = new RssReader();
-                    var viewModel = new LatestNewsViewModel { RssFeed = reader.GetRssFeed("http://www.mvcforum.com/rss").Take(AmountToShow).ToList() };
-                    return PartialView(viewModel);
+                var reader = new RssReader();
+                var viewModel = new LatestNewsViewModel
+                {
+                    RssFeed = reader.GetRssFeed("http://www.mvcforum.com/rss").Take(AmountToShow).ToList()
+                };
+                return PartialView(viewModel);
             }
             return null;
         }

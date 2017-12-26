@@ -1,12 +1,12 @@
-﻿using System.Linq;
-using System.Web.Mvc;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Attributes;
-using MVCForum.Domain.Interfaces.Badges;
-using MVCForum.Domain.Interfaces.Services;
-
-namespace Badge.Grouch
+﻿namespace Badge.Grouch
 {
+    using System.Linq;
+    using System.Web.Mvc;
+    using MvcForum.Core.DomainModel.Attributes;
+    using MvcForum.Core.DomainModel.Entities;
+    using MvcForum.Core.Interfaces.Badges;
+    using MvcForum.Core.Interfaces.Services;
+
     [Id("9ea3f651-ef37-4ad5-86a2-432012ad1e74")]
     [Name("TheGrouch")]
     [DisplayName("Badge.TheGrouch.Name")]
@@ -29,5 +29,4 @@ namespace Badge.Grouch
             return downVotes.Count >= 10;
         }
     }
-
 }

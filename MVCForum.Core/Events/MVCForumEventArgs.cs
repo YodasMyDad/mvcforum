@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MVCForum.Domain.Events
+namespace MvcForum.Core.Events
 {
     public abstract class MVCForumEventArgs : EventArgs
     {

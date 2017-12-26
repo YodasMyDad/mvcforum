@@ -1,4 +1,4 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
     using System;
     using System.Collections.Generic;
@@ -6,8 +6,8 @@
     using System.Text;
     using System.Web;
     using System.Xml;
-    using Domain.DomainModel.Enums;
-    using Domain.Interfaces.Services;
+    using DomainModel.Enums;
+    using Interfaces.Services;
 
     public partial class ConfigService : IConfigService
     {
@@ -69,7 +69,7 @@
             if (emoticons == null)
             {
                 emoticons = new OrderedDictionary();
-                var root = SiteConfig.Instance.GetSiteConfig();
+                var root = SiteConfig.SiteConfig.Instance.GetSiteConfig();
                     var emoticonNodes = root?.SelectNodes("/forum/emoticons/emoticon");
                     if (emoticonNodes != null)
                     {
@@ -105,7 +105,7 @@
             if (siteConfig == null)
             {
                 siteConfig = new Dictionary<string, string>();
-                var root = SiteConfig.Instance.GetSiteConfig();
+                var root = SiteConfig.SiteConfig.Instance.GetSiteConfig();
                     var nodes = root?.SelectNodes("/forum/settings/setting");
                     if (nodes != null)
                     {
@@ -141,7 +141,7 @@
             if (siteConfig == null)
             {
                 siteConfig = new Dictionary<string, string>();
-                var root = SiteConfig.Instance.GetSiteConfig();
+                var root = SiteConfig.SiteConfig.Instance.GetSiteConfig();
                 var nodes = root?.SelectNodes("/forum/types/type");
                 if (nodes != null)
                 {

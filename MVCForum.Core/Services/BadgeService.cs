@@ -1,18 +1,20 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
-    using Domain.Constants;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using Domain.DomainModel;
-    using Domain.DomainModel.Activity;
-    using Domain.DomainModel.Attributes;
-    using Domain.Events;
-    using Domain.Interfaces;
-    using Domain.Interfaces.Badges;
-    using Domain.Interfaces.Services;
+    using Constants;
     using Data.Context;
+    using DomainModel.Activity;
+    using DomainModel.Attributes;
+    using DomainModel.Entities;
+    using DomainModel.Enums;
+    using DomainModel.General;
+    using Events;
+    using Interfaces.Badges;
+    using Interfaces.Services;
+    using Core.Interfaces;
     using Utilities;
 
     public partial class BadgeService : IBadgeService
@@ -21,7 +23,7 @@
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ILoggingService _loggingService;
         private readonly IReflectionService _reflectionService;
-        private readonly MVCForumContext _context;
+        private readonly MvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         public const int BadgeCheckIntervalMinutes = 10;
@@ -36,14 +38,14 @@
         /// <param name="context"></param>
         /// <param name="cacheService"></param>
         public BadgeService(ILoggingService loggingService, ILocalizationService localizationService,
-            IMembershipUserPointsService membershipUserPointsService, IReflectionService reflectionService, IMVCForumContext context, ICacheService cacheService)
+            IMembershipUserPointsService membershipUserPointsService, IReflectionService reflectionService, IMvcForumContext context, ICacheService cacheService)
         {
             _loggingService = loggingService;
             _localizationService = localizationService;
             _membershipUserPointsService = membershipUserPointsService;
             _reflectionService = reflectionService;
             _cacheService = cacheService;
-            _context = context as MVCForumContext;
+            _context = context as MvcForumContext;
         }
 
         #region Private static methods

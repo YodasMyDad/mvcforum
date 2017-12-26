@@ -1,20 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Website.Areas.Admin.ViewModels
+﻿namespace MvcForum.Web.Areas.Admin.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
+    using System.Web.Mvc;
+    using Core.DomainModel.Entities;
+    using Core.DomainModel.General;
+
     public class MoveTagsViewModel
     {
         [Required]
         [DisplayName("Current Tag")]
         public Guid CurrentTagId { get; set; }
+
         [Required]
         [DisplayName("Tag where everything is going")]
         public Guid NewTagId { get; set; }
+
         public List<SelectListItem> Tags { get; set; }
     }
 

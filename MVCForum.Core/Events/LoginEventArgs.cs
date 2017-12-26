@@ -1,8 +1,8 @@
-﻿using MVCForum.Domain.Interfaces.UnitOfWork;
-
-namespace MVCForum.Domain.Events
+﻿namespace MvcForum.Core.Events
 {
-    public class LoginEventArgs :  MVCForumEventArgs
+    using Interfaces.UnitOfWork;
+
+    public class LoginEventArgs : MVCForumEventArgs
     {
         public string ReturnUrl { get; set; }
         public string UserName { get; set; }

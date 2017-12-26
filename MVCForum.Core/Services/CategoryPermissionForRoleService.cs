@@ -1,18 +1,18 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
-    using Domain.Constants;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Data.Entity;
-    using Domain.DomainModel;
-    using Domain.Interfaces;
-    using Domain.Interfaces.Services;
+    using System.Linq;
+    using Constants;
     using Data.Context;
+    using DomainModel.Entities;
+    using Interfaces;
+    using Interfaces.Services;
 
     public partial class CategoryPermissionForRoleService : ICategoryPermissionForRoleService
     {
-        private readonly MVCForumContext _context;
+        private readonly MvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         /// <summary>
@@ -20,10 +20,10 @@
         /// </summary>
         /// <param name="context"></param>
         /// <param name="cacheService"></param>
-        public CategoryPermissionForRoleService(IMVCForumContext context, ICacheService cacheService)
+        public CategoryPermissionForRoleService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
-            _context = context as MVCForumContext;
+            _context = context as MvcForumContext;
         }
 
         /// <summary>

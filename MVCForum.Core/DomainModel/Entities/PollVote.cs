@@ -1,8 +1,8 @@
-﻿using System;
-using MVCForum.Utilities;
-
-namespace MVCForum.Domain.DomainModel
+﻿namespace MvcForum.Core.DomainModel.Entities
 {
+    using System;
+    using Utilities;
+
     public partial class PollVote
     {
         public PollVote()

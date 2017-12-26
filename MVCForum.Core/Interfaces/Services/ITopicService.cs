@@ -1,22 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Web.Mvc;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.General;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Web.Mvc;
+    using DomainModel.Entities;
+    using DomainModel.General;
+    using UnitOfWork;
+
     public partial interface ITopicService
     {
         Topic SanitizeTopic(Topic topic);
         IList<Topic> GetAll(List<Category> allowedCategories);
         IList<SelectListItem> GetAllSelectList(List<Category> allowedCategories, int amount);
         IList<Topic> GetHighestViewedTopics(int amountToTake, List<Category> allowedCategories);
-        IList<Topic> GetPopularTopics(DateTime? from, DateTime? to, List<Category> allowedCategories, int amountToShow = 20);
+
+        IList<Topic> GetPopularTopics(DateTime? from, DateTime? to, List<Category> allowedCategories,
+            int amountToShow = 20);
+
         Topic Add(Topic topic);
         IList<Topic> GetTodaysTopics(int amountToTake, List<Category> allowedCategories);
-        PagedList<Topic> GetRecentTopics(int pageIndex, int pageSize, int amountToTake, List<Category> allowedCategories);
+
+        PagedList<Topic> GetRecentTopics(int pageIndex, int pageSize, int amountToTake,
+            List<Category> allowedCategories);
+
         IList<Topic> GetRecentRssTopics(int amountToTake, List<Category> allowedCategories);
         IList<Topic> GetTopicsByUser(Guid memberId, List<Category> allowedCategories);
         IList<Topic> GetTopicsByLastPost(List<Guid> postIds, List<Category> allowedCategories);
@@ -25,10 +31,18 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<Topic> GetPendingTopics(List<Category> allowedCategories, MembershipRole usersRole);
         int GetPendingTopicsCount(List<Category> allowedCategories);
         IList<Topic> GetRssTopicsByCategory(int amountToTake, Guid categoryId);
-        PagedList<Topic> GetPagedTopicsByTag(int pageIndex, int pageSize, int amountToTake, string tag, List<Category> allowedCategories);
+
+        PagedList<Topic> GetPagedTopicsByTag(int pageIndex, int pageSize, int amountToTake, string tag,
+            List<Category> allowedCategories);
+
         IList<Topic> SearchTopics(int amountToTake, string searchTerm, List<Category> allowedCategories);
-        PagedList<Topic> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> topicIds, List<Category> allowedCategories);
-        PagedList<Topic> GetMembersActivity(int pageIndex, int pageSize, int amountToTake, Guid memberGuid, List<Category> allowedCategories);
+
+        PagedList<Topic> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> topicIds,
+            List<Category> allowedCategories);
+
+        PagedList<Topic> GetMembersActivity(int pageIndex, int pageSize, int amountToTake, Guid memberGuid,
+            List<Category> allowedCategories);
+
         IList<Topic> GetTopicsByCsv(int amountToTake, List<Guid> topicIds, List<Category> allowedCategories);
         IList<Topic> GetSolvedTopicsByMember(Guid memberId, List<Category> allowedCategories);
         Topic GetTopicBySlug(string slug);
@@ -38,8 +52,9 @@ namespace MVCForum.Domain.Interfaces.Services
         int TopicCount(List<Category> allowedCategories);
         Post AddLastPost(Topic topic, string postContent);
         List<MarkAsSolutionReminder> GetMarkAsSolutionReminderList(int days);
+
         /// <summary>
-        /// Mark a topic as solved
+        ///     Mark a topic as solved
         /// </summary>
         /// <param name="topic"></param>
         /// <param name="post"></param>
@@ -47,8 +62,12 @@ namespace MVCForum.Domain.Interfaces.Services
         /// <param name="solutionWriter"></param>
         /// <returns>True if topic has been marked as solved</returns>
         bool SolveTopic(Topic topic, Post post, MembershipUser marker, MembershipUser solutionWriter);
+
         IList<Topic> GetAllTopicsByCategory(Guid categoryId);
-        PagedList<Topic> GetPagedTopicsAll(int pageIndex, int pageSize, int amountToTake, List<Category> allowedCategories);
+
+        PagedList<Topic> GetPagedTopicsAll(int pageIndex, int pageSize, int amountToTake,
+            List<Category> allowedCategories);
+
         IList<Topic> GetTopicBySlugLike(string slug);
         bool PassedTopicFloodTest(string topicTitle, MembershipUser user);
     }

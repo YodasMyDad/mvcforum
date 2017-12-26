@@ -1,33 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
-using MVCForum.Website.Application;
-using MVCForum.Website.Areas.Admin.ViewModels;
-using MVCForum.Website.ViewModels.Mapping;
-using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
-
-namespace MVCForum.Website.Areas.Admin.Controllers
+﻿namespace MvcForum.Web.Areas.Admin.Controllers
 {
-    public partial class AccountController : BaseAdminController
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Web.Mvc;
+    using Core.Constants;
+    using Core.DomainModel.Entities;
+    using Core.DomainModel.Enums;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
+    using ViewModels;
+    using Web.ViewModels.Mapping;
+
+    public class AccountController : BaseAdminController
     {
-        public readonly IActivityService _activityService;    
-        private readonly IRoleService _roleService;
-        private readonly IPostService _postService;
-        private readonly ITopicService _topicService;
+        public readonly IActivityService ActivityService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
+        private readonly IPollAnswerService _pollAnswerService;
         private readonly IPollService _pollService;
         private readonly IPollVoteService _pollVoteService;
-        private readonly IPollAnswerService _pollAnswerService;
+        private readonly IPostService _postService;
+        private readonly IRoleService _roleService;
+        private readonly ITopicService _topicService;
         private readonly IUploadedFileService _uploadedFileService;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="unitOfWorkManager"> </param>
         /// <param name="membershipService"></param>
@@ -48,11 +46,13 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             IMembershipService membershipService,
             ILocalizationService localizationService,
             IRoleService roleService,
-            ISettingsService settingsService, IPostService postService, ITopicService topicService, IMembershipUserPointsService membershipUserPointsService, 
-            IActivityService activityService, IPollService pollService, IPollVoteService pollVoteService, IPollAnswerService pollAnswerService, IUploadedFileService uploadedFileService)
+            ISettingsService settingsService, IPostService postService, ITopicService topicService,
+            IMembershipUserPointsService membershipUserPointsService,
+            IActivityService activityService, IPollService pollService, IPollVoteService pollVoteService,
+            IPollAnswerService pollAnswerService, IUploadedFileService uploadedFileService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
-            _activityService = activityService;
+            ActivityService = activityService;
             _roleService = roleService;
             _postService = postService;
             _topicService = topicService;
@@ -66,7 +66,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         #region Users
 
         /// <summary>
-        /// Take a set of role names and update a user's collection of roles accordingly
+        ///     Take a set of role names and update a user's collection of roles accordingly
         /// </summary>
         /// <param name="user"></param>
         /// <param name="updatedRoles"></param>
@@ -101,15 +101,14 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
             // Replace the roles in the user's collection
             user.Roles.Clear();
-            foreach(var role in updatedRolesSet)
+            foreach (var role in updatedRolesSet)
             {
                 user.Roles.Add(role);
             }
-
         }
 
         /// <summary>
-        /// List out users and allow editing
+        ///     List out users and allow editing
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = AppConstants.AdminRoleName)]
@@ -118,8 +117,9 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = p ?? 1;
-                var allUsers = string.IsNullOrEmpty(search) ? MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize) :
-                                    MembershipService.SearchMembers(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
+                var allUsers = string.IsNullOrEmpty(search)
+                    ? MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize)
+                    : MembershipService.SearchMembers(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
 
                 // Redisplay list of users
                 var allViewModelUsers = allUsers.Select(ViewModelMapping.UserToSingleMemberListViewModel).ToList();
@@ -146,7 +146,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 var user = MembershipService.GetUser(id);
                 var viewModel = new ManageUsersPointsViewModel
                 {
-                    AllPoints = _membershipUserPointsService.GetByUser(user).OrderByDescending(x => x.DateAdded).ToList(),
+                    AllPoints = _membershipUserPointsService.GetByUser(user).OrderByDescending(x => x.DateAdded)
+                        .ToList(),
                     User = user
                 };
                 return View(viewModel);
@@ -162,7 +163,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             {
                 // Repopulate viewmodel
                 var user = MembershipService.GetUser(viewModel.Id);
-                viewModel.AllPoints = _membershipUserPointsService.GetByUser(user).OrderByDescending(x => x.DateAdded).ToList();
+                viewModel.AllPoints = _membershipUserPointsService.GetByUser(user).OrderByDescending(x => x.DateAdded)
+                    .ToList();
                 viewModel.User = user;
 
                 if (viewModel.Amount > 0)
@@ -172,7 +174,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     {
                         DateAdded = DateTime.UtcNow,
                         Notes = viewModel.Note,
-                        Points = (int)viewModel.Amount,
+                        Points = (int) viewModel.Amount,
                         PointsFor = PointsFor.Manual,
                         User = user
                     };
@@ -202,7 +204,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 }
 
 
-                return RedirectToAction("ManageUserPoints", new { id = user.Id });
+                return RedirectToAction("ManageUserPoints", new {id = user.Id});
             }
         }
 
@@ -214,7 +216,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             using (var uow = UnitOfWorkManager.NewUnitOfWork())
             {
                 var point = _membershipUserPointsService.Get(pointToRemove);
-                var user = point.User;        
+                var user = point.User;
                 _membershipUserPointsService.Delete(point);
 
                 try
@@ -238,13 +240,12 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     });
                 }
 
-                return RedirectToAction("ManageUserPoints", new {id = user.Id });
-
-            }            
+                return RedirectToAction("ManageUserPoints", new {id = user.Id});
+            }
         }
 
         /// <summary>
-        /// Manage users
+        ///     Manage users
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = AppConstants.AdminRoleName)]
@@ -310,7 +311,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 {
                     unitOfWork.Rollback();
                     LoggingService.Error(ex);
-                    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+                    ModelState.AddModelError(string.Empty,
+                        LocalizationService.GetResourceString("Errors.GenericMessage"));
                 }
 
                 return ListUsers(null, null);
@@ -383,15 +385,16 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         #endregion
 
         #region Roles
+
         [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult ListAllRoles()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var roles = new RoleListViewModel
-                        {
-                            MembershipRoles = _roleService.AllRoles()
-                        };
+                {
+                    MembershipRoles = _roleService.AllRoles()
+                };
                 return View(roles);
             }
         }
@@ -417,7 +420,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             {
                 var existingRole = _roleService.GetRole(role.Id);
                 existingRole.RoleName = role.RoleName;
-               
+
                 try
                 {
                     unitOfWork.Commit();
@@ -520,7 +523,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 viewModel.AllRoles = _roleService.AllRoles();
                 return View("Edit", viewModel);
             }
-
         }
 
         [HttpPost]
@@ -529,7 +531,6 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-
                 var newRole = ViewModelMapping.RoleViewModelToRole(role);
                 _roleService.CreateRole(newRole);
 
@@ -555,6 +556,5 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         }
 
         #endregion
-
     }
 }

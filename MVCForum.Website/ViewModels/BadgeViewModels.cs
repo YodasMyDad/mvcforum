@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Website.ViewModels
+﻿namespace MvcForum.Web.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using Core.DomainModel.Entities;
+
     public class VoteBadgeViewModel
     {
         public Guid PostId { get; set; }
@@ -31,6 +31,6 @@ namespace MVCForum.Website.ViewModels
 
     public class AllBadgesViewModel
     {
-        public IList<Domain.DomainModel.Badge> AllBadges { get; set; }
+        public IList<Badge> AllBadges { get; set; }
     }
 }

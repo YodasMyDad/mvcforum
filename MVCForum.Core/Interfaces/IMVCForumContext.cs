@@ -1,9 +1,8 @@
-﻿using System;
-
-namespace MVCForum.Domain.Interfaces
+﻿namespace MvcForum.Core.Interfaces
 {
-    public interface IMVCForumContext : IDisposable
+    using System;
+
+    public interface IMvcForumContext : IDisposable
     {
-        
     }
 }

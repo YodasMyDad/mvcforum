@@ -1,7 +1,7 @@
-﻿using System.Web.Mvc;
-
-namespace MVCForum.Website.Application.ActionFilterAttributes
+﻿namespace MvcForum.Web.Application.ActionFilterAttributes
 {
+    using System.Web.Mvc;
+
     public class NoSlash : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
@@ -14,7 +14,7 @@ namespace MVCForum.Website.Application.ActionFilterAttributes
                 if (originalUrl.Length != newUrl.Length)
                 {
                     filterContext.HttpContext.Response.Redirect(newUrl);
-                }                    
+                }
             }
         }
 
@@ -26,6 +26,5 @@ namespace MVCForum.Website.Application.ActionFilterAttributes
         //    string robots = getRobotsContent();
         //    return Content(robots, "text/plain");
         //}
-
     }
 }

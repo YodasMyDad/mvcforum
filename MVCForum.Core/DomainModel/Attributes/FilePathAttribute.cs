@@ -1,15 +1,15 @@
-﻿using System;
-
-namespace MVCForum.Domain.DomainModel.Attributes
+﻿namespace MvcForum.Core.DomainModel.Attributes
 {
+    using System;
+
     [AttributeUsage(AttributeTargets.Class)]
     public class FilePathAttribute : Attribute
     {
-        public string FilePath { get; set; }
-
         public FilePathAttribute(string filePath)
         {
             FilePath = filePath;
         }
+
+        public string FilePath { get; set; }
     }
 }

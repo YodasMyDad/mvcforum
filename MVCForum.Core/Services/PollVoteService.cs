@@ -1,24 +1,24 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Data.Entity;
-    using Domain.DomainModel;
-    using Domain.Interfaces;
-    using Domain.Interfaces.Services;
+    using System.Linq;
+    using Constants;
     using Data.Context;
-    using Domain.Constants;
+    using DomainModel.Entities;
+    using Interfaces;
+    using Interfaces.Services;
 
     public partial class PollVoteService : IPollVoteService
     {
-        private readonly MVCForumContext _context;
         private readonly ICacheService _cacheService;
+        private readonly MvcForumContext _context;
 
-        public PollVoteService(IMVCForumContext context, ICacheService cacheService)
+        public PollVoteService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
-            _context = context as MVCForumContext;
+            _context = context as MvcForumContext;
         }
 
         public List<PollVote> GetAllPollVotes()
@@ -37,10 +37,10 @@
             var cacheKey = string.Concat(CacheKeys.PollVote.StartsWith, "HasUserVotedAlready-", answerId, "-", userId);
             return _cacheService.CachePerRequest(cacheKey, () =>
             {
-                var vote = _context.PollVote.Include(x => x.PollAnswer).Include(x => x.User).FirstOrDefault(x => x.PollAnswer.Id == answerId && x.User.Id == userId);
-                return (vote != null);
+                var vote = _context.PollVote.Include(x => x.PollAnswer).Include(x => x.User)
+                    .FirstOrDefault(x => x.PollAnswer.Id == answerId && x.User.Id == userId);
+                return vote != null;
             });
-
         }
 
         public PollVote Get(Guid id)
@@ -53,6 +53,5 @@
         {
             _context.PollVote.Remove(pollVote);
         }
-
     }
 }

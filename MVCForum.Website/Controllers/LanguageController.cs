@@ -1,18 +1,18 @@
-﻿namespace MVCForum.Website.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
     using System;
     using System.Linq;
     using System.Web;
     using System.Web.Mvc;
-    using Domain.Constants;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
+    using Core.Constants;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
     using ViewModels;
 
     public partial class LanguageController : BaseController
     {
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="unitOfWorkManager"> </param>
         /// <param name="membershipService"></param>
@@ -21,16 +21,17 @@
         /// <param name="settingsService"> </param>
         /// <param name="loggingService"> </param>
         /// <param name="cacheService"></param>
-        public LanguageController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService, 
+        public LanguageController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService, ILocalizationService localizationService,
             IRoleService roleService, ISettingsService settingsService, ICacheService cacheService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
+                settingsService, cacheService)
         {
-            
         }
 
         /// <summary>
-        /// Lists out all languages in a partial view. For example, used to display list of 
-        /// available languages along the top of every page
+        ///     Lists out all languages in a partial view. For example, used to display list of
+        ///     available languages along the top of every page
         /// </summary>
         /// <returns></returns>
         [ChildActionOnly]
@@ -49,7 +50,7 @@
         }
 
         /// <summary>
-        /// Change the current language (typically called from each language link generated in this controller's index method)
+        ///     Change the current language (typically called from each language link generated in this controller's index method)
         /// </summary>
         /// <param name="lang"></param>
         /// <returns></returns>
@@ -77,7 +78,7 @@
                 //    MessageType = GenericMessages.success
                 //};
 
-                return Content("success"); 
+                return Content("success");
             }
         }
     }

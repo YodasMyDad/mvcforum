@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Activity;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using DomainModel.Activity;
+    using DomainModel.Entities;
+    using DomainModel.General;
+
     public partial interface IActivityService
     {
         /// <summary>
-        /// Gets a paged list of badges
+        ///     Gets a paged list of badges
         /// </summary>
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
@@ -16,14 +17,14 @@ namespace MVCForum.Domain.Interfaces.Services
         PagedList<ActivityBase> GetPagedGroupedActivities(int pageIndex, int pageSize);
 
         /// <summary>
-        /// Gets all activities by search data field for a Guid
+        ///     Gets all activities by search data field for a Guid
         /// </summary>
         /// <param name="guid"></param>
         /// <returns></returns>
         IEnumerable<Activity> GetDataFieldByGuid(Guid guid);
 
         /// <summary>
-        /// Get a paged list of activities by search string
+        ///     Get a paged list of activities by search string
         /// </summary>
         /// <param name="search"></param>
         /// <param name="pageIndex"></param>
@@ -34,7 +35,7 @@ namespace MVCForum.Domain.Interfaces.Services
         IEnumerable<ActivityBase> GetAll(int howMany);
 
         /// <summary>
-        /// New badge has been awarded
+        ///     New badge has been awarded
         /// </summary>
         /// <param name="badge"></param>
         /// <param name="user"> </param>
@@ -44,13 +45,13 @@ namespace MVCForum.Domain.Interfaces.Services
         void MemberJoined(MembershipUser user);
 
         /// <summary>
-        /// Profile has been updated
+        ///     Profile has been updated
         /// </summary>
         /// <param name="user"></param>
         void ProfileUpdated(MembershipUser user);
 
         /// <summary>
-        /// Delete a number of activities
+        ///     Delete a number of activities
         /// </summary>
         /// <param name="activities"></param>
         void Delete(IList<Activity> activities);

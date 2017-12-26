@@ -1,33 +1,33 @@
-﻿using System;
-using System.Linq;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Areas.Admin.ViewModels;
-
-namespace MVCForum.Website.Areas.Admin.Controllers
+﻿namespace MvcForum.Web.Areas.Admin.Controllers
 {
-    [Authorize(Roles = AppConstants.AdminRoleName)]
-    public partial class PermissionsController : BaseAdminController
-    {
-        private readonly IRoleService _roleService;
-        private readonly IPermissionService _permissionService;
-        private readonly ICategoryService _categoryService;
-        private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
-        private readonly IGlobalPermissionForRoleService _globalPermissionForRoleService;
+    using System;
+    using System.Linq;
+    using System.Web.Mvc;
+    using Core.Constants;
+    using Core.DomainModel.Entities;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
+    using ViewModels;
 
-        public PermissionsController(ILoggingService loggingService, 
-                                    IUnitOfWorkManager unitOfWorkManager, 
-                                    IRoleService roleService,
-                                    ILocalizationService localizationService,
-                                    IPermissionService permissionService,
-                                    ICategoryService categoryService,
-                                    ICategoryPermissionForRoleService categoryPermissionForRoleService,
-                                    IMembershipService membershipService,
-                                    ISettingsService settingsService, 
-                                    IGlobalPermissionForRoleService globalPermissionForRoleService)
+    [Authorize(Roles = AppConstants.AdminRoleName)]
+    public class PermissionsController : BaseAdminController
+    {
+        private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
+        private readonly ICategoryService _categoryService;
+        private readonly IGlobalPermissionForRoleService _globalPermissionForRoleService;
+        private readonly IPermissionService _permissionService;
+        private readonly IRoleService _roleService;
+
+        public PermissionsController(ILoggingService loggingService,
+            IUnitOfWorkManager unitOfWorkManager,
+            IRoleService roleService,
+            ILocalizationService localizationService,
+            IPermissionService permissionService,
+            ICategoryService categoryService,
+            ICategoryPermissionForRoleService categoryPermissionForRoleService,
+            IMembershipService membershipService,
+            ISettingsService settingsService,
+            IGlobalPermissionForRoleService globalPermissionForRoleService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
             _roleService = roleService;
@@ -38,7 +38,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         }
 
         /// <summary>
-        /// List of roles to apply permissions to
+        ///     List of roles to apply permissions to
         /// </summary>
         /// <returns></returns>
         public ActionResult Index()
@@ -46,16 +46,16 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var permViewModel = new ChoosePermissionsViewModel
-                                        {
-                                            MembershipRoles = _roleService.AllRoles().ToList(),
-                                            Permissions = _permissionService.GetAll().ToList()
-                                        };
+                {
+                    MembershipRoles = _roleService.AllRoles().ToList(),
+                    Permissions = _permissionService.GetAll().ToList()
+                };
                 return View(permViewModel);
             }
         }
 
         /// <summary>
-        /// Add / Remove permissions for a role on each category
+        ///     Add / Remove permissions for a role on each category
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -65,12 +65,12 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             {
                 var role = _roleService.GetRole(id);
                 var permViewModel = new EditPermissionsViewModel
-                                        {
-                                            MembershipRole = role,
-                                            Permissions = _permissionService.GetAll().ToList(),
-                                            Categories = _categoryService.GetAll(),
-                                            CurrentGlobalPermissions = _roleService.GetPermissions(null, role)
-                                        };
+                {
+                    MembershipRole = role,
+                    Permissions = _permissionService.GetAll().ToList(),
+                    Categories = _categoryService.GetAll(),
+                    CurrentGlobalPermissions = _roleService.GetPermissions(null, role)
+                };
 
                 return View(permViewModel);
             }
@@ -78,14 +78,15 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
         public ActionResult PermissionTypes()
         {
-            var permViewModel = new ChoosePermissionsViewModel{
+            var permViewModel = new ChoosePermissionsViewModel
+            {
                 Permissions = _permissionService.GetAll().ToList()
             };
             return View(permViewModel);
         }
 
         /// <summary>
-        /// Add a new permission type into the permission table
+        ///     Add a new permission type into the permission table
         /// </summary>
         /// <returns></returns>
         public ActionResult AddType()
@@ -101,11 +102,11 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                 try
                 {
                     var permission = new Permission
-                                         {
-                                             Name = permissionViewModel.Name,
-                                             IsGlobal = permissionViewModel.IsGlobal
-                                         };
-                        
+                    {
+                        Name = permissionViewModel.Name,
+                        IsGlobal = permissionViewModel.IsGlobal
+                    };
+
                     _permissionService.Add(permission);
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                     {
@@ -114,10 +115,10 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     };
                     unitOfWork.Commit();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     unitOfWork.Rollback();
-                    LoggingService.Error(ex); 
+                    LoggingService.Error(ex);
                     throw;
                 }
             }
@@ -161,7 +162,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                                     _permissionService.Get(ajaxEditPermissionViewModel.Permission),
                                 IsTicked = ajaxEditPermissionViewModel.HasPermission
                             };
-                            _categoryPermissionForRoleService.UpdateOrCreateNew(mappedItem);   
+                            _categoryPermissionForRoleService.UpdateOrCreateNew(mappedItem);
                         }
                     }
                     unitOfWork.Commit();
@@ -185,10 +186,10 @@ namespace MVCForum.Website.Areas.Admin.Controllers
                     _permissionService.Delete(permission);
 
                     TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                                                                {
-                                                                    Message = "Permission Deleted",
-                                                                    MessageType = GenericMessages.success
-                                                                };
+                    {
+                        Message = "Permission Deleted",
+                        MessageType = GenericMessages.success
+                    };
                     unitOfWork.Commit();
                 }
                 catch (Exception ex)
@@ -200,6 +201,5 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             }
             return RedirectToAction("Index");
         }
-
     }
 }

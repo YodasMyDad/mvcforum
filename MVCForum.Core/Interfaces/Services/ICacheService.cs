@@ -1,4 +1,4 @@
-﻿namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
     using System;
     using System.Collections.Generic;

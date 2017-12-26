@@ -1,19 +1,18 @@
-﻿using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Application;
-using MVCForum.Website.Areas.Admin.ViewModels;
-
-namespace MVCForum.Website.Areas.Admin.Controllers
+﻿namespace MvcForum.Web.Areas.Admin.Controllers
 {
+    using System.Web.Mvc;
+    using Core.Constants;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
+    using ViewModels;
+
     [Authorize(Roles = AppConstants.AdminRoleName)]
-    public partial class AdminBadgeController : BaseAdminController
+    public class AdminBadgeController : BaseAdminController
     {
         private readonly IBadgeService _badgeService;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="unitOfWorkManager"> </param>
         /// <param name="membershipService"> </param>
@@ -21,16 +20,18 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         /// <param name="settingsService"> </param>
         /// <param name="badgeService"> </param>
         /// <param name="loggingService"> </param>
-        public AdminBadgeController(IBadgeService badgeService, ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, 
-            IMembershipService membershipService, ILocalizationService localizationService, ISettingsService settingsService)
+        public AdminBadgeController(IBadgeService badgeService, ILoggingService loggingService,
+            IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService, ILocalizationService localizationService,
+            ISettingsService settingsService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
         {
             _badgeService = badgeService;
         }
 
         /// <summary>
-        /// We get here via the admin default layout (_AdminLayout). The returned view is displayed by
-        /// the @RenderBody in that layout
+        ///     We get here via the admin default layout (_AdminLayout). The returned view is displayed by
+        ///     the @RenderBody in that layout
         /// </summary>
         /// <returns></returns>
         public ActionResult Index(int? p, string search)
@@ -39,8 +40,9 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var allBadges = string.IsNullOrEmpty(search) ? _badgeService.GetPagedGroupedBadges(pageIndex, SiteConstants.Instance.AdminListPageSize) :
-                            _badgeService.SearchPagedGroupedTags(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
+                var allBadges = string.IsNullOrEmpty(search)
+                    ? _badgeService.GetPagedGroupedBadges(pageIndex, SiteConstants.Instance.AdminListPageSize)
+                    : _badgeService.SearchPagedGroupedTags(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
 
                 var badgesListModel = new ListBadgesViewModel
                 {
@@ -52,12 +54,11 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
                 return View(badgesListModel);
             }
-
         }
 
         public ActionResult Manage(int? p, string search)
         {
-            return RedirectToAction("Index", new { p, search });
+            return RedirectToAction("Index", new {p, search});
         }
     }
 }

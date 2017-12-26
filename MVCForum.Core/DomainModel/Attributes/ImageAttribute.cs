@@ -1,15 +1,15 @@
-﻿using System;
-
-namespace MVCForum.Domain.DomainModel.Attributes
+﻿namespace MvcForum.Core.DomainModel.Attributes
 {
+    using System;
+
     [AttributeUsage(AttributeTargets.Class)]
     public class ImageAttribute : Attribute
     {
-        public string Image { get; set; }
-
         public ImageAttribute(string name)
         {
             Image = name;
         }
+
+        public string Image { get; set; }
     }
 }

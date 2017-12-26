@@ -1,20 +1,21 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
     using System;
     using System.Collections.Generic;
-    using System.Data.SqlTypes;
     using System.Data.Entity;
+    using System.Data.SqlTypes;
     using System.Globalization;
     using System.Linq;
     using System.Text;
     using System.Web;
-    using Domain;
-    using Domain.Constants;
-    using Domain.DomainModel;
-    using Domain.DomainModel.Enums;
-    using Domain.Interfaces;
-    using Domain.Interfaces.Services;
+    using Constants;
+    using Core;
     using Data.Context;
+    using DomainModel.Entities;
+    using DomainModel.Enums;
+    using DomainModel.General;
+    using Interfaces;
+    using Interfaces.Services;
     using Utilities;
 
     public partial class LocalizationService : ILocalizationService
@@ -23,7 +24,7 @@
         private readonly ILoggingService _loggingService;
         private readonly ICacheService _cacheService;
         private Language _currentLanguage;
-        private readonly MVCForumContext _context;
+        private readonly MvcForumContext _context;
         private readonly Dictionary<string, string> _perRequestLanguageStrings;
 
         /// <summary>
@@ -33,12 +34,12 @@
         /// <param name="loggingService"></param>
         /// <param name="cacheService"></param>
         /// <param name="context"></param>
-        public LocalizationService(ISettingsService settingsService, ILoggingService loggingService, ICacheService cacheService, IMVCForumContext context)
+        public LocalizationService(ISettingsService settingsService, ILoggingService loggingService, ICacheService cacheService, IMvcForumContext context)
         {
             _settingsService = settingsService;
             _loggingService = loggingService;
             _cacheService = cacheService;
-            _context = context as MVCForumContext;
+            _context = context as MvcForumContext;
             _perRequestLanguageStrings = ResourceKeysByLanguage(CurrentLanguage);
         }
 

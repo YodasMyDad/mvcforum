@@ -1,29 +1,32 @@
-﻿namespace MVCForum.Website.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
     using System;
     using System.Linq;
     using System.Text;
     using System.Web.Mvc;
-    using Domain.Constants;
-    using Domain.DomainModel;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
-    using Utilities;
     using Application;
     using Areas.Admin.ViewModels;
+    using Core.Constants;
+    using Core.DomainModel.Entities;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
+    using Core.Utilities;
     using ViewModels;
 
     [Authorize]
     public partial class PrivateMessageController : BaseController
     {
-        private readonly IPrivateMessageService _privateMessageService;
-        private readonly IEmailService _emailService;
         private readonly IConfigService _configService;
+        private readonly IEmailService _emailService;
+        private readonly IPrivateMessageService _privateMessageService;
 
-        public PrivateMessageController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
-            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IPrivateMessageService privateMessageService,
+        public PrivateMessageController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService,
+            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
+            IPrivateMessageService privateMessageService,
             IEmailService emailService, IConfigService configService, ICacheService cacheService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
+                settingsService, cacheService)
         {
             _privateMessageService = privateMessageService;
             _emailService = emailService;
@@ -44,7 +47,8 @@
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = p ?? 1;
-                var pagedMessages = _privateMessageService.GetUsersPrivateMessages(pageIndex, SiteConstants.Instance.PrivateMessageListSize, LoggedOnReadOnlyUser);
+                var pagedMessages = _privateMessageService.GetUsersPrivateMessages(pageIndex,
+                    SiteConstants.Instance.PrivateMessageListSize, LoggedOnReadOnlyUser);
                 var viewModel = new ListPrivateMessageViewModel
                 {
                     Messages = pagedMessages,
@@ -82,7 +86,8 @@
                     {
                         return Content(LocalizationService.GetResourceString("PM.SentItemsOverCapcity"));
                     }
-                    if (senderCount > (settings.MaxPrivateMessagesPerMember - SiteConstants.Instance.PrivateMessageWarningAmountLessThanAllowedSize))
+                    if (senderCount > settings.MaxPrivateMessagesPerMember -
+                        SiteConstants.Instance.PrivateMessageWarningAmountLessThanAllowedSize)
                     {
                         // Send user a warning they are about to exceed 
                         var sb = new StringBuilder();
@@ -98,10 +103,11 @@
                     }
 
                     // Set editor permissions
-                    ViewBag.ImageUploadType = permissions[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked ? "forumimageinsert" : "image";
+                    ViewBag.ImageUploadType = permissions[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked
+                        ? "forumimageinsert"
+                        : "image";
 
                     unitOfWork.Commit();
-
                 }
                 catch (Exception ex)
                 {
@@ -111,7 +117,6 @@
 
                 return PartialView(viewModel);
             }
-
         }
 
         [HttpPost]
@@ -140,7 +145,8 @@
                     // If this message they are sending now, is to the same person then ignore flood control
                     if (lastMessage != null && createPrivateMessageViewModel.To != lastMessage.UserTo.Id)
                     {
-                        if (DateUtils.TimeDifferenceInSeconds(DateTime.UtcNow, lastMessage.DateSent) < settings.PrivateMessageFloodControl)
+                        if (DateUtils.TimeDifferenceInSeconds(DateTime.UtcNow, lastMessage.DateSent) <
+                            settings.PrivateMessageFloodControl)
                         {
                             return Content(PmAjaxError(LocalizationService.GetResourceString("PM.SendingToQuickly")));
                         }
@@ -153,7 +159,7 @@
                         var privateMessage = new PrivateMessage
                         {
                             UserFrom = loggedOnUser,
-                            Message = createPrivateMessageViewModel.Message,
+                            Message = createPrivateMessageViewModel.Message
                         };
 
                         // Check settings
@@ -163,21 +169,26 @@
                         }
 
                         // check the member
-                        if (!String.Equals(memberTo.UserName, LoggedOnReadOnlyUser.UserName, StringComparison.CurrentCultureIgnoreCase))
+                        if (!string.Equals(memberTo.UserName, LoggedOnReadOnlyUser.UserName,
+                            StringComparison.CurrentCultureIgnoreCase))
                         {
                             // Check in box size for both
                             var receiverCount = _privateMessageService.GetAllReceivedByUser(memberTo.Id).Count;
                             if (receiverCount > settings.MaxPrivateMessagesPerMember)
                             {
-                                return  Content(string.Format(LocalizationService.GetResourceString("PM.ReceivedItemsOverCapcity"), memberTo.UserName));
+                                return Content(string.Format(
+                                    LocalizationService.GetResourceString("PM.ReceivedItemsOverCapcity"),
+                                    memberTo.UserName));
                             }
 
                             // If the receiver is about to go over the allowance them let then know too
-                            if (receiverCount > (settings.MaxPrivateMessagesPerMember - SiteConstants.Instance.PrivateMessageWarningAmountLessThanAllowedSize))
+                            if (receiverCount > settings.MaxPrivateMessagesPerMember -
+                                SiteConstants.Instance.PrivateMessageWarningAmountLessThanAllowedSize)
                             {
                                 // Send user a warning they are about to exceed 
                                 var sb = new StringBuilder();
-                                sb.Append($"<p>{LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeBody")}</p>");
+                                sb.Append(
+                                    $"<p>{LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeBody")}</p>");
                                 var email = new Email
                                 {
                                     EmailTo = memberTo.Email,
@@ -206,7 +217,8 @@
                                     };
 
                                     var sb = new StringBuilder();
-                                    sb.Append($"<p>{string.Format(LocalizationService.GetResourceString("PM.NewPrivateMessageBody"), LoggedOnReadOnlyUser.UserName)}</p>");
+                                    sb.Append(
+                                        $"<p>{string.Format(LocalizationService.GetResourceString("PM.NewPrivateMessageBody"), LoggedOnReadOnlyUser.UserName)}</p>");
                                     sb.Append(AppHelpers.ConvertPostContent(createPrivateMessageViewModel.Message));
                                     email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
                                     _emailService.SendMail(email);
@@ -220,19 +232,14 @@
                             {
                                 unitOfWork.Rollback();
                                 LoggingService.Error(ex);
-                                return Content(PmAjaxError(LocalizationService.GetResourceString("Errors.GenericMessage")));
+                                return Content(
+                                    PmAjaxError(LocalizationService.GetResourceString("Errors.GenericMessage")));
                             }
                         }
-                        else
-                        {
-                            return Content(PmAjaxError(LocalizationService.GetResourceString("PM.TalkToSelf")));
-                        }
+                        return Content(PmAjaxError(LocalizationService.GetResourceString("PM.TalkToSelf")));
                     }
-                    else
-                    {
-                        // Error send back to user
-                        return Content(PmAjaxError(LocalizationService.GetResourceString("PM.UnableFindMember")));
-                    }
+                    // Error send back to user
+                    return Content(PmAjaxError(LocalizationService.GetResourceString("PM.UnableFindMember")));
                 }
                 return Content(PmAjaxError(LocalizationService.GetResourceString("Errors.GenericMessage")));
             }
@@ -247,7 +254,8 @@
                 if (userFrom.Id != LoggedOnReadOnlyUser.Id)
                 {
                     // Mark all messages read sent to this user from the userFrom
-                    var unreadMessages = loggedOnUser.PrivateMessagesReceived.Where(x => x.UserFrom.Id == from && !x.IsRead);
+                    var unreadMessages =
+                        loggedOnUser.PrivateMessagesReceived.Where(x => x.UserFrom.Id == from && !x.IsRead);
 
                     foreach (var message in unreadMessages)
                     {
@@ -255,7 +263,8 @@
                         message.IsRead = true;
 
                         // Get the sent version and update that too
-                        var sentMessage = _privateMessageService.GetMatchingSentPrivateMessage(message.DateSent, message.UserFrom.Id, message.UserTo.Id);
+                        var sentMessage = _privateMessageService.GetMatchingSentPrivateMessage(message.DateSent,
+                            message.UserFrom.Id, message.UserTo.Id);
                         if (sentMessage != null)
                         {
                             sentMessage.IsRead = true;
@@ -279,7 +288,8 @@
                     //var allMessages = loggedOnUser.PrivateMessagesReceived.Where(x => x.UserFrom.Id == from && x.IsSentMessage == false).ToList();
                     //allMessages.AddRange(loggedOnUser.PrivateMessagesSent.Where(x => x.UserTo.Id == from && x.IsSentMessage == true).ToList());
 
-                    var allMessages = _privateMessageService.GetUsersPrivateMessages(1, SiteConstants.Instance.PagingGroupSize, loggedOnUser, userFrom);
+                    var allMessages = _privateMessageService.GetUsersPrivateMessages(1,
+                        SiteConstants.Instance.PagingGroupSize, loggedOnUser, userFrom);
 
                     // Now order them into an order of messages
                     var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
@@ -312,7 +322,8 @@
                 if (Request.IsAjaxRequest())
                 {
                     var privateMessage = _privateMessageService.Get(deletePrivateMessageViewModel.Id);
-                    if (privateMessage.UserTo.Id == LoggedOnReadOnlyUser.Id | privateMessage.UserFrom.Id == LoggedOnReadOnlyUser.Id)
+                    if ((privateMessage.UserTo.Id == LoggedOnReadOnlyUser.Id) |
+                        (privateMessage.UserFrom.Id == LoggedOnReadOnlyUser.Id))
                     {
                         _privateMessageService.DeleteMessage(privateMessage);
                     }
@@ -353,13 +364,14 @@
                         return Content(LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }
 
-                    var allMessages = _privateMessageService.GetUsersPrivateMessages(viewModel.PageIndex, SiteConstants.Instance.PagingGroupSize, loggedOnUser, userFrom);
+                    var allMessages = _privateMessageService.GetUsersPrivateMessages(viewModel.PageIndex,
+                        SiteConstants.Instance.PagingGroupSize, loggedOnUser, userFrom);
 
                     var partialViewModel = new ViewPrivateMessageViewModel
                     {
                         From = userFrom,
                         PrivateMessages = allMessages,
-                        IsAjaxRequest = Request.IsAjaxRequest(),
+                        IsAjaxRequest = Request.IsAjaxRequest()
                     };
 
                     return PartialView(partialViewModel);

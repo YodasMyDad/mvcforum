@@ -1,25 +1,25 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
     using System;
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
-    using Domain.DomainModel;
-    using Domain.Events;
-    using Domain.Interfaces;
-    using Domain.Interfaces.Services;
+    using Constants;
     using Data.Context;
-    using Domain.Constants;
+    using DomainModel.Entities;
+    using Events;
+    using Interfaces;
+    using Interfaces.Services;
 
     public partial class FavouriteService : IFavouriteService
     {
-        private readonly MVCForumContext _context;
+        private readonly MvcForumContext _context;
         private readonly ICacheService _cacheService;
 
-        public FavouriteService(IMVCForumContext context, ICacheService cacheService)
+        public FavouriteService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
-            _context = context as MVCForumContext;
+            _context = context as MvcForumContext;
         }
 
         public Favourite Add(Favourite favourite)

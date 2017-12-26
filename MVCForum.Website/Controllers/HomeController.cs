@@ -1,29 +1,33 @@
-﻿namespace MVCForum.Website.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Web.Mvc;
-    using Domain.Constants;
-    using Domain.DomainModel;
-    using Domain.DomainModel.Activity;
-    using Domain.DomainModel.Enums;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
     using Application;
+    using Application.CustomActionResults;
+    using Application.ExtensionMethods;
+    using Core.Constants;
+    using Core.DomainModel.Activity;
+    using Core.DomainModel.Entities;
+    using Core.DomainModel.Enums;
+    using Core.DomainModel.General;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
     using ViewModels;
-    using RssItem = Domain.DomainModel.RssItem;
 
     public partial class HomeController : BaseController
     {
-        private readonly ITopicService _topicService;
-        private readonly ICategoryService _categoryService;
         private readonly IActivityService _activityService;
+        private readonly ICategoryService _categoryService;
+        private readonly ITopicService _topicService;
 
-        public HomeController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IActivityService activityService, IMembershipService membershipService,
+        public HomeController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IActivityService activityService, IMembershipService membershipService,
             ITopicService topicService, ILocalizationService localizationService, IRoleService roleService,
             ISettingsService settingsService, ICategoryService categoryService, ICacheService cacheService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
+                settingsService, cacheService)
         {
             _topicService = topicService;
             _categoryService = categoryService;
@@ -42,7 +46,6 @@
 
         public ActionResult Following()
         {
-
             return View();
         }
 
@@ -98,21 +101,23 @@
                 var pageIndex = p ?? 1;
 
                 // Get the topics
-                var activities = _activityService.GetPagedGroupedActivities(pageIndex, SettingsService.GetSettings().ActivitiesPerPage);
+                var activities =
+                    _activityService.GetPagedGroupedActivities(pageIndex,
+                        SettingsService.GetSettings().ActivitiesPerPage);
 
                 // create the view model
                 var viewModel = new AllRecentActivitiesViewModel
                 {
                     Activities = activities,
                     PageIndex = pageIndex,
-                    TotalCount = activities.TotalCount,
+                    TotalCount = activities.TotalCount
                 };
 
                 return View(viewModel);
             }
         }
 
-        [OutputCache(Duration = (int)CacheTimes.TwoHours)]
+        [OutputCache(Duration = (int) CacheTimes.TwoHours)]
         public ActionResult LatestRss()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -153,16 +158,25 @@
                         {
                             var firstOrDefault = topic.Posts.FirstOrDefault(x => x.IsTopicStarter);
                             if (firstOrDefault != null)
-                                rssTopics.Add(new RssItem { Description = firstOrDefault.PostContent, Link = topic.NiceUrl, Title = topic.Name, PublishedDate = topic.CreateDate });
+                            {
+                                rssTopics.Add(new RssItem
+                                {
+                                    Description = firstOrDefault.PostContent,
+                                    Link = topic.NiceUrl,
+                                    Title = topic.Name,
+                                    PublishedDate = topic.CreateDate
+                                });
+                            }
                         }
                     }
                 }
 
-                return new RssResult(rssTopics, LocalizationService.GetResourceString("Rss.LatestActivity.Title"), LocalizationService.GetResourceString("Rss.LatestActivity.Description"));
+                return new RssResult(rssTopics, LocalizationService.GetResourceString("Rss.LatestActivity.Title"),
+                    LocalizationService.GetResourceString("Rss.LatestActivity.Description"));
             }
         }
 
-        [OutputCache(Duration = (int)CacheTimes.TwoHours)]
+        [OutputCache(Duration = (int) CacheTimes.TwoHours)]
         public ActionResult ActivityRss()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -183,7 +197,10 @@
                         rssActivities.Add(new RssItem
                         {
                             Description = badgeActivity.Badge.Description,
-                            Title = string.Concat(badgeActivity.User.UserName, " ", LocalizationService.GetResourceString("Activity.UserAwardedBadge"), " ", badgeActivity.Badge.DisplayName, " ", LocalizationService.GetResourceString("Activity.Badge")),
+                            Title = string.Concat(badgeActivity.User.UserName, " ",
+                                LocalizationService.GetResourceString("Activity.UserAwardedBadge"), " ",
+                                badgeActivity.Badge.DisplayName, " ",
+                                LocalizationService.GetResourceString("Activity.Badge")),
                             PublishedDate = badgeActivity.ActivityMapped.Timestamp,
                             RssImage = AppHelpers.ReturnBadgeUrl(badgeActivity.Badge.Image),
                             Link = activityLink
@@ -213,14 +230,14 @@
                             Link = activityLink
                         });
                     }
-
                 }
 
-                return new RssResult(rssActivities, LocalizationService.GetResourceString("Rss.LatestActivity.Title"), LocalizationService.GetResourceString("Rss.LatestActivity.Description"));
+                return new RssResult(rssActivities, LocalizationService.GetResourceString("Rss.LatestActivity.Title"),
+                    LocalizationService.GetResourceString("Rss.LatestActivity.Description"));
             }
         }
 
-        [OutputCache(Duration = (int)CacheTimes.TwoHours)]
+        [OutputCache(Duration = (int) CacheTimes.TwoHours)]
         public ActionResult GoogleSitemap()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -243,7 +260,7 @@
                         Name = topic.Name,
                         Url = topic.NiceUrl,
                         LastUpdated = topic.LastPost.DateEdited,
-                        ChangeFrequency = SiteMapChangeFreqency.daily,
+                        ChangeFrequency = SiteMapChangeFreqency.Daily,
                         Priority = "0.6"
                     };
                     sitemap.Add(sitemapEntry);
@@ -253,7 +270,7 @@
             }
         }
 
-        [OutputCache(Duration = (int)CacheTimes.TwoHours)]
+        [OutputCache(Duration = (int) CacheTimes.TwoHours)]
         public ActionResult GoogleMemberSitemap()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -272,7 +289,7 @@
                         Name = member.UserName,
                         Url = member.NiceUrl,
                         LastUpdated = member.CreateDate,
-                        ChangeFrequency = SiteMapChangeFreqency.weekly,
+                        ChangeFrequency = SiteMapChangeFreqency.Weekly,
                         Priority = "0.4"
                     };
                     sitemap.Add(sitemapEntry);
@@ -282,7 +299,7 @@
             }
         }
 
-        [OutputCache(Duration = (int)CacheTimes.TwoHours)]
+        [OutputCache(Duration = (int) CacheTimes.TwoHours)]
         public ActionResult GoogleCategorySitemap()
         {
             using (UnitOfWorkManager.NewUnitOfWork())
@@ -304,7 +321,7 @@
                         Name = category.Name,
                         Url = category.NiceUrl,
                         LastUpdated = topic?.LastPost.DateEdited ?? category.DateCreated,
-                        ChangeFrequency = SiteMapChangeFreqency.monthly
+                        ChangeFrequency = SiteMapChangeFreqency.Monthly
                     };
                     sitemap.Add(sitemapEntry);
                 }

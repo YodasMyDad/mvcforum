@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-
-namespace MVCForum.Utilities
+﻿namespace MvcForum.Core.Utilities
 {
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+
     public static class LanguageUtils
     {
         private static SortedDictionary<string, CultureInfo> _allCultures;

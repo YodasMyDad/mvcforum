@@ -1,21 +1,24 @@
-﻿namespace MVCForum.Website.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Web.Mvc;
-    using Domain.DomainModel.Enums;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
+    using Core.DomainModel.Enums;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
     using ViewModels;
 
     public partial class TagController : BaseController
     {
-        private readonly ITopicTagService _topicTagService;
         private readonly ICategoryService _categoryService;
+        private readonly ITopicTagService _topicTagService;
 
-        public TagController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
-            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, ITopicTagService topicTagService, ICategoryService categoryService, ICacheService cacheService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
+        public TagController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService,
+            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
+            ITopicTagService topicTagService, ICategoryService categoryService, ICacheService cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
+                settingsService, cacheService)
         {
             _topicTagService = topicTagService;
             _categoryService = categoryService;
@@ -32,7 +35,7 @@
                 {
                     var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
                     var popularTags = _topicTagService.GetPopularTags(amountToTake, allowedCategories);
-                    viewModel = new PopularTagViewModel { PopularTags = popularTags };
+                    viewModel = new PopularTagViewModel {PopularTags = popularTags};
                     CacheService.Set(cacheKey, viewModel, CacheTimes.SixHours);
                 }
                 return PartialView(viewModel);
@@ -58,9 +61,7 @@
                 }
 
                 return Json(returnList, JsonRequestBehavior.AllowGet);
-                
             }
         }
-
     }
 }

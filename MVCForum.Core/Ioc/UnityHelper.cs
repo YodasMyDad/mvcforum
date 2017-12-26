@@ -1,13 +1,13 @@
-namespace MVCForum.IOC
+namespace MvcForum.Core.Ioc
 {
     using System.Web.Mvc;
-    using Domain.Interfaces;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
+    using Data.Context;
+    using Data.UnitOfWork;
+    using Interfaces;
+    using Interfaces.Services;
+    using Interfaces.UnitOfWork;
     using Quartz;
     using Services;
-    using Services.Data.Context;
-    using Services.Data.UnitOfWork;
     using Unity;
     using Unity.Lifetime;
 
@@ -45,7 +45,7 @@ namespace MVCForum.IOC
             // it is NOT necessary to register your controllers
 
             // Database context, one per request, ensure it is disposed
-            container.BindInRequestScope<IMVCForumContext, MVCForumContext>();
+            container.BindInRequestScope<IMvcForumContext, MvcForumContext>();
             container.BindInRequestScope<IUnitOfWorkManager, UnitOfWorkManager>();
 
 

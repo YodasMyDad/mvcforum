@@ -1,14 +1,13 @@
-﻿using System;
-using System.Web.Mvc;
-using MVCForum.Domain.Interfaces.Services;
-
-namespace MVCForum.Domain.DomainModel.Attributes
+﻿namespace MvcForum.Core.DomainModel.Attributes
 {
+    using System;
+    using System.Web.Mvc;
+    using Interfaces.Services;
+
     [AttributeUsage(AttributeTargets.Class)]
     public class DescriptionAttribute : Attribute
     {
         private readonly ILocalizationService _localizationService;
-        public string Description { get; set; }
 
         public DescriptionAttribute(string desc)
         {
@@ -19,5 +18,7 @@ namespace MVCForum.Domain.DomainModel.Attributes
 
             Description = _localizationService.GetResourceString(desc.Trim());
         }
+
+        public string Description { get; set; }
     }
 }

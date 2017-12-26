@@ -7,8 +7,8 @@
 
     2. Create a class. Add these references:
 
-        using MVCForum.Domain.DomainModel;
-        using MVCForum.Domain.DomainModel.Attributes;
+        using MvcForum.Core.DomainModel;
+        using MvcForum.Core.DomainModel.Attributes;
         using MVCForum.Domain.Interfaces.API;
         using MVCForum.Domain.Interfaces.Badges;
 
@@ -39,9 +39,11 @@
 
 **/
 
-using MVCForum.Domain.DomainModel;
-namespace MVCForum.Domain.Interfaces.Badges
+namespace MvcForum.Core.Interfaces.Badges
 {
+    using DomainModel;
+    using DomainModel.Entities;
+
     public interface IBadge
     {
         bool Rule(MembershipUser user);

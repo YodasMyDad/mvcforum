@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using MVCForum.Utilities;
-
-namespace MVCForum.Domain.DomainModel
+﻿namespace MvcForum.Core.DomainModel.Entities
 {
+    using System;
+    using System.Collections.Generic;
+    using Utilities;
+
     public partial class Permission : Entity
     {
         public Permission()

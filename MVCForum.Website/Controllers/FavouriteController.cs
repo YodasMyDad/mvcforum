@@ -1,25 +1,27 @@
-﻿namespace MVCForum.Website.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
     using System;
     using System.Linq;
     using System.Web.Mvc;
-    using Domain.DomainModel;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
+    using Core.DomainModel.Entities;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
     using ViewModels;
     using ViewModels.Mapping;
 
     public partial class FavouriteController : BaseController
     {
-        private readonly ITopicService _topicService;
-        private readonly IPostService _postService;
         private readonly IFavouriteService _favouriteService;
+        private readonly IPostService _postService;
+        private readonly ITopicService _topicService;
 
-        public FavouriteController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
+        public FavouriteController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService,
             IRoleService roleService, ITopicService topicService, IPostService postService,
-            ILocalizationService localizationService, ISettingsService settingsService, 
+            ILocalizationService localizationService, ISettingsService settingsService,
             IFavouriteService favouriteService, ICacheService cacheService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
+                settingsService, cacheService)
         {
             _topicService = topicService;
             _postService = postService;
@@ -45,7 +47,8 @@
                 foreach (var post in posts)
                 {
                     var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
-                    var postViewModel = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions, post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
+                    var postViewModel = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions,
+                        post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
                     postViewModel.ShowTopicName = true;
                     viewModel.Posts.Add(postViewModel);
                 }

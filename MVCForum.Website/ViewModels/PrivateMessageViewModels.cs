@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces;
-using MVCForum.Website.Application;
-
-namespace MVCForum.Website.ViewModels
+﻿namespace MvcForum.Web.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.Web.Mvc;
+    using Application;
+    using Core.Constants;
+    using Core.DomainModel.Entities;
+    using Core.Interfaces;
 
     public class ListPrivateMessageViewModel
     {
@@ -20,18 +19,18 @@ namespace MVCForum.Website.ViewModels
 
     public class CreatePrivateMessageViewModel
     {
-        [UIHint(AppConstants.EditorType), AllowHtml]
+        [UIHint(AppConstants.EditorType)]
+        [AllowHtml]
         public string Message { get; set; }
 
         [ForumMvcResourceDisplayName("PM.RecipientUsername")]
         [Required]
         public Guid To { get; set; }
-
     }
 
     public class ViewPrivateMessageViewModel
     {
-        public IPagedList<PrivateMessage> PrivateMessages { get; set; } 
+        public IPagedList<PrivateMessage> PrivateMessages { get; set; }
         public MembershipUser From { get; set; }
         public bool FromUserIsOnline { get; set; }
         public bool IsAjaxRequest { get; set; }
@@ -49,6 +48,4 @@ namespace MVCForum.Website.ViewModels
         public Guid UserId { get; set; }
         public int PageIndex { get; set; }
     }
-
-
 }

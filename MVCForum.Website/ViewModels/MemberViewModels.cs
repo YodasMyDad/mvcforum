@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Web;
-using System.Web.Mvc;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Enums;
-using MVCForum.Website.Application;
-
-namespace MVCForum.Website.ViewModels
+﻿namespace MvcForum.Web.ViewModels
 {
-    using Domain.Constants;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.Web;
+    using System.Web.Mvc;
+    using Application;
+    using Core.Constants;
+    using Core.DomainModel.Entities;
+    using Core.DomainModel.Enums;
+    using Core.DomainModel.General;
 
     public class ActiveMembersViewModel
     {
@@ -76,7 +76,8 @@ namespace MVCForum.Website.ViewModels
 
         [ForumMvcResourceDisplayName("Members.Label.Signature")]
         [StringLength(1000)]
-        [UIHint(AppConstants.EditorType), AllowHtml]
+        [UIHint(AppConstants.EditorType)]
+        [AllowHtml]
         public string Signature { get; set; }
 
         [ForumMvcResourceDisplayName("Members.Label.Age")]
@@ -113,7 +114,6 @@ namespace MVCForum.Website.ViewModels
 
 
         public int AmountOfPoints { get; set; }
-
     }
 
     public class LogOnViewModel
@@ -182,6 +182,7 @@ namespace MVCForum.Website.ViewModels
     {
         [ForumMvcResourceDisplayName("Members.Label.Users")]
         public IList<PublicSingleMemberListViewModel> Users { get; set; }
+
         public int? PageIndex { get; set; }
         public int? TotalCount { get; set; }
         public string Search { get; set; }
@@ -245,6 +246,5 @@ namespace MVCForum.Website.ViewModels
         [ForumMvcResourceDisplayName("Members.Label.ConfirmNewPassword")]
         [System.ComponentModel.DataAnnotations.Compare("NewPassword")]
         public string ConfirmPassword { get; set; }
-
     }
 }

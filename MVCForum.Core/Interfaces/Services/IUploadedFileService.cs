@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using DomainModel.General;
+
     public partial interface IUploadedFileService
     {
         UploadedFile Add(UploadedFile uploadedFile);
@@ -11,6 +11,6 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<UploadedFile> GetAll();
         IList<UploadedFile> GetAllByPost(Guid postId);
         IList<UploadedFile> GetAllByUser(Guid membershipUserId);
-        UploadedFile Get(Guid id);  
+        UploadedFile Get(Guid id);
     }
 }

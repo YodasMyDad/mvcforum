@@ -1,8 +1,10 @@
 ﻿using System;
-using MVCForum.Utilities;
 
-namespace MVCForum.Domain.DomainModel.Activity
+namespace MvcForum.Core.DomainModel.Activity
 {
+    using Entities;
+    using Utilities;
+
     public enum ActivityType
     {
         BadgeAwarded,

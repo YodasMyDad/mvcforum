@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Website.ViewModels
+﻿namespace MvcForum.Web.ViewModels
 {
+    using System.Collections.Generic;
+    using Core.DomainModel.Entities;
+    using Core.DomainModel.General;
+
     public class BreadcrumbViewModel
     {
         public List<Category> Categories { get; set; }
@@ -32,6 +33,7 @@ namespace MVCForum.Website.ViewModels
 
         // Topic info
         public Topic LatestTopic { get; set; }
+
         public int TopicCount { get; set; }
 
         // Misc
@@ -43,5 +45,4 @@ namespace MVCForum.Website.ViewModels
         public Dictionary<Category, PermissionSet> AllPermissionSets { get; set; }
         public Category ParentCategory { get; set; }
     }
-
 }

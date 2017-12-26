@@ -1,20 +1,20 @@
-﻿namespace MVCForum.Website.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
     using System;
     using System.Web.Mvc;
-    using Domain.DomainModel;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
+    using Core.DomainModel.Entities;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
     using ViewModels;
 
     public partial class BadgeController : BaseController
     {
         private readonly IBadgeService _badgeService;
-        private readonly IPostService _postService;
         private readonly IFavouriteService _favouriteService;
+        private readonly IPostService _postService;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="badgeService"> </param>
         /// <param name="loggingService"> </param>
@@ -33,7 +33,8 @@
             IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService,
             ISettingsService settingsService, IFavouriteService favouriteService, ICacheService cacheService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
+                settingsService, cacheService)
         {
             _badgeService = badgeService;
             _postService = postService;
@@ -148,7 +149,8 @@
                 try
                 {
                     var post = _postService.Get(markAsSolutionBadgeViewModel.PostId);
-                    var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.User) | _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.Topic.User);
+                    var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.User) |
+                                               _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.Topic.User);
 
                     if (databaseUpdateNeeded)
                     {
@@ -172,7 +174,8 @@
                 try
                 {
                     var favourite = _favouriteService.Get(favouriteViewModel.FavouriteId);
-                    var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Favourite, favourite.Member) | _badgeService.ProcessBadge(BadgeType.Favourite, favourite.Post.User);
+                    var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Favourite, favourite.Member) |
+                                               _badgeService.ProcessBadge(BadgeType.Favourite, favourite.Post.User);
 
                     if (databaseUpdateNeeded)
                     {
@@ -228,7 +231,6 @@
                     {
                         unitOfwork.Commit();
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -260,6 +262,5 @@
                 return View(badgesListModel);
             }
         }
-
     }
 }

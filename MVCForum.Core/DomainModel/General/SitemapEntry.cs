@@ -1,17 +1,7 @@
-﻿using System;
-
-namespace MVCForum.Domain.DomainModel
+﻿namespace MvcForum.Core.DomainModel.General
 {
-    public enum SiteMapChangeFreqency
-    {
-        always,
-        hourly,
-        daily,
-        weekly,
-        monthly,
-        yearly,
-        never,
-    }
+    using System;
+    using Enums;
 
     public class SitemapEntry
     {

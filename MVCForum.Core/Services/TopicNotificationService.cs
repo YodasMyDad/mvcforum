@@ -1,26 +1,25 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Data.Entity;
-    using Domain.DomainModel;
-    using Domain.Interfaces;
-    using Domain.Interfaces.Services;
+    using System.Linq;
     using Data.Context;
-
+    using DomainModel.Entities;
+    using Interfaces;
+    using Interfaces.Services;
 
     public partial class TopicNotificationService : ITopicNotificationService
     {
-        private readonly MVCForumContext _context;
+        private readonly MvcForumContext _context;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="context"> </param>
-        public TopicNotificationService(IMVCForumContext context)
+        public TopicNotificationService(IMvcForumContext context)
         {
-            _context = context as MVCForumContext;
+            _context = context as MvcForumContext;
         }
 
         /// <summary>

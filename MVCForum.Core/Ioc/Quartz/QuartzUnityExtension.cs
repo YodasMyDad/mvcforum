@@ -1,4 +1,4 @@
-﻿namespace MVCForum.IOC.Quartz
+﻿namespace MvcForum.Core.Ioc.Quartz
 {
     using global::Quartz;
     using Unity;

@@ -1,17 +1,18 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Data.Entity;
-    using Domain.DomainModel;
-    using Domain.Interfaces.Services;
+    using System.Linq;
     using Data.Context;
+    using DomainModel.General;
+    using Interfaces.Services;
 
     public partial class UploadedFileService : IUploadedFileService
     {
-        private readonly MVCForumContext _context;
-        public UploadedFileService(MVCForumContext context)
+        private readonly MvcForumContext _context;
+
+        public UploadedFileService(MvcForumContext context)
         {
             _context = context;
         }

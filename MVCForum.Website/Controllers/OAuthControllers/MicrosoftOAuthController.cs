@@ -1,33 +1,36 @@
-﻿namespace MVCForum.Website.Controllers.OAuthControllers
+﻿namespace MvcForum.Web.Controllers.OAuthControllers
 {
     using System;
     using System.Web.Mvc;
     using System.Web.Security;
-    using Domain.Constants;
-    using Domain.DomainModel.Enums;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
-    using Utilities;
     using Areas.Admin.ViewModels;
-    using ViewModels;
+    using Core.Constants;
+    using Core.DomainModel.Enums;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
+    using Core.Utilities;
     using Skybrud.Social.Microsoft;
     using Skybrud.Social.Microsoft.OAuth;
     using Skybrud.Social.Microsoft.Responses.Authentication;
     using Skybrud.Social.Microsoft.WindowsLive.Scopes;
+    using ViewModels;
 
     public class MicrosoftOAuthController : BaseController
     {
-
         // Create new app - https://account.live.com/developers/applications/create
         // List of existing app - https://account.live.com/developers/applications/index
 
-        public MicrosoftOAuthController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
-            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, ICacheService cacheService) :
-            base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
+        public MicrosoftOAuthController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+            IMembershipService membershipService,
+            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
+            ICacheService cacheService) :
+            base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
+                settingsService, cacheService)
         {
         }
 
-        public string ReturnUrl => string.Concat(SettingsService.GetSettings().ForumUrl.TrimEnd('/'), Url.Action("MicrosoftLogin"));
+        public string ReturnUrl => string.Concat(SettingsService.GetSettings().ForumUrl.TrimEnd('/'),
+            Url.Action("MicrosoftLogin"));
 
         public string AuthCode => Request.QueryString["code"];
 
@@ -47,7 +50,7 @@
                 State = AuthState,
                 Error = new
                 {
-                    HasError = !String.IsNullOrWhiteSpace(AuthError),
+                    HasError = !string.IsNullOrWhiteSpace(AuthError),
                     Text = AuthError,
                     ErrorDescription = AuthErrorDescription
                 }
@@ -63,7 +66,6 @@
             }
             else
             {
-
                 var client = new MicrosoftOAuthClient
                 {
                     ClientId = SiteConstants.Instance.MicrosoftAppId,
@@ -89,7 +91,6 @@
                 // Redirect the user to the Microsoft login dialog
                 if (string.IsNullOrWhiteSpace(input.Code))
                 {
-
                     // Generate a new unique/random state
                     var state = Guid.NewGuid().ToString();
 
@@ -142,7 +143,8 @@
                         var getEmail = !string.IsNullOrWhiteSpace(user.Emails?.Preferred);
                         if (!getEmail)
                         {
-                            resultMessage.Message = LocalizationService.GetResourceString("Members.UnableToGetEmailAddress");
+                            resultMessage.Message =
+                                LocalizationService.GetResourceString("Members.UnableToGetEmailAddress");
                             resultMessage.MessageType = GenericMessages.danger;
                             ShowMessage(resultMessage);
                             return RedirectToAction("LogOn", "Members");
@@ -158,7 +160,8 @@
                                 {
                                     // Users already exists, so log them in
                                     FormsAuthentication.SetAuthCookie(userExists.UserName, true);
-                                    resultMessage.Message = LocalizationService.GetResourceString("Members.NowLoggedIn");
+                                    resultMessage.Message =
+                                        LocalizationService.GetResourceString("Members.NowLoggedIn");
                                     resultMessage.MessageType = GenericMessages.success;
                                     ShowMessage(resultMessage);
                                     return RedirectToAction("Index", "Home");
@@ -199,7 +202,6 @@
                                 return RedirectToAction("SocialLoginValidator", "Members");
                             }
                         }
-
                     }
                     else
                     {
@@ -207,7 +209,6 @@
                         ShowMessage(resultMessage);
                         return RedirectToAction("LogOn", "Members");
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -215,9 +216,6 @@
                     resultMessage.MessageType = GenericMessages.danger;
                     LoggingService.Error(ex);
                 }
-
-
-
             }
 
 

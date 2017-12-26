@@ -1,22 +1,23 @@
-﻿namespace MVCForum.Website.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Web.Mvc;
     using System.Web.Security;
-    using Domain.DomainModel;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
+    using Core.DomainModel.Entities;
+    using Core.DomainModel.Enums;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
     using ViewModels;
-    using MembershipUser = Domain.DomainModel.MembershipUser;
+    using MembershipUser = Core.DomainModel.Entities.MembershipUser;
 
     public class VoteController : BaseController
     {
-        private readonly IPostService _postService;
-        private readonly IVoteService _voteService;
-        private readonly ITopicService _topicService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
+        private readonly IPostService _postService;
+        private readonly ITopicService _topicService;
+        private readonly IVoteService _voteService;
 
         public VoteController(ILoggingService loggingService,
             IUnitOfWorkManager unitOfWorkManager,
@@ -29,7 +30,8 @@
             ITopicService topicService,
             IMembershipUserPointsService membershipUserPointsService,
             ICacheService cacheService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
+            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
+                settingsService, cacheService)
         {
             _postService = postService;
             _voteService = voteService;
@@ -105,7 +107,6 @@
 
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
-
                     // Also get the user that wrote the post
                     var postWriter = post.User;
 
@@ -122,7 +123,6 @@
                         LoggingService.Error(ex);
                         throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }
-
                 }
             }
         }
@@ -146,20 +146,22 @@
                     }
 
                     // Update the post with the new points amount
-                    var newPointTotal = (postType == PostType.Negative) ? (post.VoteCount + 1) : (post.VoteCount - 1);
+                    var newPointTotal = postType == PostType.Negative ? post.VoteCount + 1 : post.VoteCount - 1;
                     post.VoteCount = newPointTotal;
                 }
                 else
                 {
                     // Points to add or subtract to a user
-                    var usersPoints = (postType == PostType.Negative) ? (-settings.PointsDeductedNagativeVote) : (settings.PointsAddedPostiveVote);
+                    var usersPoints = postType == PostType.Negative
+                        ? -settings.PointsDeductedNagativeVote
+                        : settings.PointsAddedPostiveVote;
 
                     // Update the post with the new vote of the voter
                     var vote = new Vote
                     {
                         Post = post,
                         User = postWriter,
-                        Amount = (postType == PostType.Negative) ? (-1) : (1),
+                        Amount = postType == PostType.Negative ? -1 : 1,
                         VotedByMembershipUser = voter,
                         DateVoted = DateTime.UtcNow
                     };
@@ -175,17 +177,11 @@
                     });
 
                     // Update the post with the new points amount
-                    var newPointTotal = (postType == PostType.Negative) ? (post.VoteCount - 1) : (post.VoteCount + 1);
+                    var newPointTotal = postType == PostType.Negative ? post.VoteCount - 1 : post.VoteCount + 1;
                     post.VoteCount = newPointTotal;
                 }
             }
         }
-
-        private enum PostType
-        {
-            Positive,
-            Negative,
-        };
 
         [HttpPost]
         [Authorize]
@@ -202,7 +198,6 @@
 
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
-
                     // Get a db user
                     var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
 
@@ -232,7 +227,6 @@
                         LoggingService.Error(ex);
                         throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }
-
                 }
             }
         }
@@ -245,7 +239,7 @@
             {
                 var post = _postService.Get(voteUpViewModel.Post);
                 var positiveVotes = post.Votes.Where(x => x.Amount > 0);
-                var viewModel = new ShowVotersViewModel { Votes = positiveVotes.ToList() };
+                var viewModel = new ShowVotersViewModel {Votes = positiveVotes.ToList()};
                 return PartialView(viewModel);
             }
             return null;
@@ -259,10 +253,16 @@
                 var post = _postService.Get(voteUpViewModel.Post);
                 var positiveVotes = post.Votes.Count(x => x.Amount > 0);
                 var negativeVotes = post.Votes.Count(x => x.Amount <= 0);
-                var viewModel = new ShowVotesViewModel { DownVotes = negativeVotes, UpVotes = positiveVotes};
+                var viewModel = new ShowVotesViewModel {DownVotes = negativeVotes, UpVotes = positiveVotes};
                 return PartialView(viewModel);
             }
             return null;
+        }
+
+        private enum PostType
+        {
+            Positive,
+            Negative
         }
     }
 }

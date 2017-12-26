@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using DomainModel.Entities;
+    using DomainModel.Enums;
+    using DomainModel.General;
+    using UnitOfWork;
+
     public enum LoginAttemptStatus
     {
         LoginSuccessful,
@@ -16,12 +18,12 @@ namespace MVCForum.Domain.Interfaces.Services
         Banned
     }
 
-    public partial interface IMembershipService
+    public interface IMembershipService
     {
+        LoginAttemptStatus LastLoginStatus { get; }
         MembershipUser Add(MembershipUser newUser);
         MembershipUser SanitizeUser(MembershipUser membershipUser);
         bool ValidateUser(string userName, string password, int maxInvalidPasswordAttempts);
-        LoginAttemptStatus LastLoginStatus { get; }
         string[] GetRolesForUser(string username);
         MembershipUser Get(Guid id);
         MembershipUser GetUser(string username, bool removeTracking = false);
@@ -53,9 +55,10 @@ namespace MVCForum.Domain.Interfaces.Services
         int MemberCount();
         string ToCsv();
         CsvReport FromCsv(List<string> allLines);
+
         /// <summary>
-        /// Completed scrubs a users account clean
-        /// Clears everything - Posts, polls, votes, favourites, profile etc...
+        ///     Completed scrubs a users account clean
+        ///     Clears everything - Posts, polls, votes, favourites, profile etc...
         /// </summary>
         /// <param name="user"></param>
         /// <param name="unitOfWork"></param>

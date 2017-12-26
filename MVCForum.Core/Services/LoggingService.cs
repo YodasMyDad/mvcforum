@@ -1,4 +1,4 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
     using System;
     using System.Collections.Generic;
@@ -7,8 +7,8 @@
     using System.IO;
     using System.Linq;
     using System.Text;
-    using MVCForum.Domain.DomainModel;
-    using MVCForum.Domain.Interfaces.Services;
+    using DomainModel.General;
+    using Interfaces.Services;
 
     /// <summary>
     /// A class for logging errors to a text file. Works in Partial Trust.

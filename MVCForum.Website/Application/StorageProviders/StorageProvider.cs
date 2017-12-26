@@ -1,9 +1,9 @@
-﻿using System;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.Interfaces.Providers;
-
-namespace MVCForum.Website.Application.StorageProviders
+﻿namespace MvcForum.Web.Application.StorageProviders
 {
+    using System;
+    using Core.Constants;
+    using Core.Interfaces.Providers;
+
     public static class StorageProvider
     {
         private static readonly Lazy<IStorageProvider> CurrentStorageProvider = new Lazy<IStorageProvider>(() =>

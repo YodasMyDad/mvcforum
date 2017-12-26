@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 
-namespace MVCForum.Domain.DomainModel.LinqKit
+namespace MvcForum.Core.DomainModel.LinqKit
 {
 	/// <summary>
 	/// This comes from Matt Warren's sample:

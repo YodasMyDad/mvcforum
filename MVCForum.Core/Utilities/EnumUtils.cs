@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace MVCForum.Utilities
+﻿namespace MvcForum.Core.Utilities
 {
+    using System;
+
     public static class EnumUtils
     {
         public static T ReturnEnumValueFromString<T>(string enumValueAsString)

@@ -1,18 +1,19 @@
-﻿using System;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using Quartz;
-
-namespace MVCForum.Website.Application.ScheduledJobs
+﻿namespace MvcForum.Web.Application.ScheduledJobs
 {
+    using System;
+    using Core.Interfaces.Services;
+    using Core.Interfaces.UnitOfWork;
+    using Quartz;
+
     [DisallowConcurrentExecution]
     public class EmailJob : IJob
     {
-        private readonly ILoggingService _loggingService;
         private readonly IEmailService _emailService;
+        private readonly ILoggingService _loggingService;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
 
-        public EmailJob(ILoggingService loggingService, IEmailService emailService, IUnitOfWorkManager unitOfWorkManager)
+        public EmailJob(ILoggingService loggingService, IEmailService emailService,
+            IUnitOfWorkManager unitOfWorkManager)
         {
             _loggingService = loggingService;
             _emailService = emailService;
@@ -35,9 +36,8 @@ namespace MVCForum.Website.Application.ScheduledJobs
                 {
                     unitOfWork.Rollback();
                     _loggingService.Error(ex);
-                }               
+                }
             }
-            
         }
     }
 }

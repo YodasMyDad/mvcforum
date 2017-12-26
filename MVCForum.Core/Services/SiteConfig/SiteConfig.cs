@@ -1,9 +1,10 @@
-﻿using System.Web.Hosting;
-using System.Xml;
-using MVCForum.Domain.DomainModel.Enums;
-
-namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services.SiteConfig
 {
+    using System.Web.Hosting;
+    using System.Xml;
+    using DomainModel.Enums;
+    using Services;
+
     internal class SiteConfig
     {
         private static string ConfigLocation => HostingEnvironment.MapPath("~/App_Data/forum.config");

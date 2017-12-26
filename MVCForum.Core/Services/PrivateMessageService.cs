@@ -1,20 +1,21 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Data.Entity;
-    using Domain.DomainModel;
-    using Domain.Events;
-    using Domain.Interfaces;
-    using Domain.Interfaces.Services;
+    using System.Linq;
+    using Constants;
     using Data.Context;
-    using Domain.Constants;
+    using DomainModel.Entities;
+    using DomainModel.General;
+    using Events;
+    using Interfaces;
+    using Interfaces.Services;
     using Utilities;
 
     public partial class PrivateMessageService : IPrivateMessageService
     {
-        private readonly MVCForumContext _context;
+        private readonly MvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         /// <summary>
@@ -22,10 +23,10 @@
         /// </summary>
         /// <param name="context"> </param>
         /// <param name="cacheService"></param>
-        public PrivateMessageService(IMVCForumContext context, ICacheService cacheService)
+        public PrivateMessageService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
-            _context = context as MVCForumContext;
+            _context = context as MvcForumContext;
         }
 
         public PrivateMessage SanitizeMessage(PrivateMessage privateMessage)

@@ -1,9 +1,9 @@
-﻿namespace MVCForum.Services
+﻿namespace MvcForum.Core.Services
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Domain.DomainModel;
+    using DomainModel.Entities;
     using Utilities;
 
     public static class ServiceHelpers

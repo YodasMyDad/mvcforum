@@ -1,4 +1,4 @@
-﻿namespace MVCForum.Domain.Interfaces
+﻿namespace MvcForum.Core.Interfaces
 {
     public interface IModelAttribute
     {

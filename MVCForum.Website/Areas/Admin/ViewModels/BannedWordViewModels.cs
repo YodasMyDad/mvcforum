@@ -1,9 +1,10 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Website.Areas.Admin.ViewModels
+﻿namespace MvcForum.Web.Areas.Admin.ViewModels
 {
+    using System;
+    using System.ComponentModel.DataAnnotations;
+    using Core.DomainModel.Entities;
+    using Core.DomainModel.General;
+
     public class BannedWordListViewModel
     {
         public PagedList<BannedWord> Words { get; set; }
@@ -17,6 +18,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
     {
         [Required]
         public string Word { get; set; }
+
         public bool IsStopWord { get; set; }
     }
 
