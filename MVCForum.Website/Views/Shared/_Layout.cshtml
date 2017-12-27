@@ -28,11 +28,8 @@
     @RenderSection("SocialMeta", false)
     @ViewBag.Canonical
     @Html.Partial("_StyleSheets", theme)
-    <!--[if lt IE 9]>
-            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link rel="shortcut icon" href="@Url.Content(theme.ThemePath + "/content/images/favicon.ico")">
-    <link rel="apple-touch-icon-precomposed" href="@Url.Content(theme.ThemePath + "/content/images/apple-touch-icon-57-precomposed.png")">
+    <link rel="shortcut icon" href="@Url.Content($"{theme.ThemePath}/content/images/favicon.ico")">
+    <link rel="apple-touch-icon-precomposed" href="@Url.Content($"{theme.ThemePath}/content/images/apple-touch-icon-57-precomposed.png")">
     @Html.Partial("_JavaScript", theme)
     @RenderSection("Header", false)
     @if (!string.IsNullOrEmpty(Html.Settings().CustomHeaderCode))
@@ -75,7 +72,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a class="navbar-brand" href="@Url.Action("Index", "Home")">
-                        <img src="@Url.Content(theme.ThemePath + "/content/images/logo.png")" alt="@Html.Lang("Site.MvcForum")" class="logoimg"/>                        
+                        <img src="@Url.Content($"{theme.ThemePath}/content/images/logo.png")" alt="@Html.Lang("Site.MvcForum")" class="logoimg"/>                        
                     </a>
                 </div>
 

@@ -197,7 +197,7 @@ var AjaxPrivateMessageSuccess = function () {
     postHolder.attr("id", "imtonystark");
 
     // And more finally clear the post box
-    $(".rte").val("");
+    $(".createpm").val("");
     if ($(".bbeditorholder textarea").length > 0) {
         $(".bbeditorholder textarea").data("sceditor").val("");
     }
