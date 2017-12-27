@@ -7,12 +7,12 @@
     using System.Text;
     using System.Web;
     using System.Web.Mvc;
-    using System.Web.Script.Serialization;
     using Application.CustomActionResults;
     using Core.Constants;
     using Core.DomainModel.General;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
+    using Newtonsoft.Json;
     using ViewModels;
 
     [Authorize(Roles = AppConstants.AdminRoleName)]
@@ -43,15 +43,14 @@
         /// </summary>
         /// <param name="report"></param>
         /// <returns></returns>
-        private static object ToJSON(CsvReport report)
+        private static object ToJson(CsvReport report)
         {
-            var oSerializer = new JavaScriptSerializer();
             var json = new
             {
                 HasErrors = report.Errors.Any(),
                 HasWarnings = report.Warnings.Any(),
-                Warnings = oSerializer.Serialize(report.Warnings.ExtractMessages()),
-                Errors = oSerializer.Serialize(report.Errors.ExtractMessages())
+                Warnings = JsonConvert.SerializeObject(report.Warnings.ExtractMessages()),
+                Errors = JsonConvert.SerializeObject(report.Errors.ExtractMessages())
             };
 
             return json;
@@ -132,7 +131,7 @@
                     });
                 }
 
-                return new WrappedJsonResult {Data = ToJSON(report)};
+                return new WrappedJsonResult {Data = ToJson(report)};
             }
         }
 
@@ -216,7 +215,7 @@
                     });
                 }
 
-                return new WrappedJsonResult {Data = ToJSON(report)};
+                return new WrappedJsonResult {Data = ToJson(report)};
             }
         }
 

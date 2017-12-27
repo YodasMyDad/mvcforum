@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2003
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcForum.Web", "MVCForum.Website\MvcForum.Web.csproj", "{C149AEDE-0F7A-46A5-B9D4-95ED7B775DE2}"
 EndProject
@@ -240,7 +240,7 @@ Global
 		{097883D7-6C3E-4944-B2D8-A9CC8A9356F4} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {386E92E1-7469-431E-8719-37DD8501EF25}
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35;packages\Unity.2.1.505.2\lib\NET35
+		SolutionGuid = {386E92E1-7469-431E-8719-37DD8501EF25}
 	EndGlobalSection
 EndGlobal
