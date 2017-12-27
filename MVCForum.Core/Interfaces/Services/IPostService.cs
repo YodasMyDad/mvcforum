@@ -2,9 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using DomainModel.Entities;
     using DomainModel.Enums;
     using DomainModel.General;
+    using Models.General;
     using UnitOfWork;
 
     public partial interface IPostService
@@ -20,13 +22,13 @@
         IEnumerable<Post> GetPostsByFavouriteCount(Guid postsByMemberId, int minAmountOfFavourites);
         IEnumerable<Post> GetPostsFavouritedByOtherMembers(Guid postsByMemberId);
 
-        PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm,
+        Task<PaginatedList<Post>> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm,
             List<Category> allowedCategories);
 
-        PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId,
+        Task<PaginatedList<Post>> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId,
             PostOrderBy order);
 
-        PagedList<Post> GetPagedPendingPosts(int pageIndex, int pageSize, List<Category> allowedCategories);
+        Task<PaginatedList<Post>> GetPagedPendingPosts(int pageIndex, int pageSize, List<Category> allowedCategories);
         IList<Post> GetPendingPosts(List<Category> allowedCategories, MembershipRole usersRole);
         int GetPendingPostsCount(List<Category> allowedCategories);
         Post Add(Post post);

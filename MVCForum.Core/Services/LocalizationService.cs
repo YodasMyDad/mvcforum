@@ -7,6 +7,7 @@
     using System.Globalization;
     using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
     using System.Web;
     using Constants;
     using Core;
@@ -16,6 +17,7 @@
     using DomainModel.General;
     using Interfaces;
     using Interfaces.Services;
+    using Models.General;
     using Utilities;
 
     public partial class LocalizationService : ILocalizationService
@@ -296,27 +298,15 @@
             _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
         }
 
-        public PagedList<LocaleStringResource> SearchResourceValuesForKey(Guid languageId, string search, int pageIndex, int pageSize)
+        public async Task<PaginatedList<LocaleStringResource>> SearchResourceValuesForKey(Guid languageId, string search, int pageIndex, int pageSize)
         {
-            var totalCount = _context.LocaleStringResource
-    .Join(_context.LocaleResourceKey, strRes => strRes.LocaleResourceKey.Id, resKey => resKey.Id, (strRes, resKey) =>
-        new { LocaleStringResource = strRes, LocaleResourceKey = resKey }).Count(joinResult => joinResult.LocaleStringResource.Language.Id == languageId &&
-                                                                                                                                                                                                         joinResult.LocaleResourceKey.Name.ToUpper().Contains(search.ToUpper()));
+            var query = _context.LocaleStringResource
+                .Include(x => x.LocaleResourceKey)
+                .Include(x => x.Language)
+                .Where(x => x.Language.Id == languageId && x.LocaleResourceKey.Name.ToUpper().Contains(search.ToUpper()))
+                .OrderBy(x => x.LocaleResourceKey.Name);
 
-            var results = _context.LocaleStringResource
-                .Join(_context.LocaleResourceKey, // The sequence to join to the first sequence.
-                        strRes => strRes.LocaleResourceKey.Id, // A function to extract the join key from each element of the first sequence.
-                        resKey => resKey.Id, // A function to extract the join key from each element of the second sequence
-                        (strRes, resKey) => new { LocaleStringResource = strRes, LocaleResourceKey = resKey } // A function to create a result element from two matching elements.
-                    )
-                .Where(joinResult => joinResult.LocaleStringResource.Language.Id == languageId &&
-                    joinResult.LocaleResourceKey.Name.ToUpper().Contains(search.ToUpper()))
-                .OrderBy(joinResult => joinResult.LocaleResourceKey.Name)
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize)
-                .Select(item => item.LocaleStringResource).ToList();
-
-            return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, totalCount);
+            return await PaginatedList<LocaleStringResource>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
         public void DeleteResourceKey(LocaleResourceKey resourceKey)
@@ -495,26 +485,15 @@
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public PagedList<LocaleStringResource> GetAllValues(Guid languageId, int pageIndex, int pageSize)
+        public async Task<PaginatedList<LocaleStringResource>> GetAllValues(Guid languageId, int pageIndex, int pageSize)
         {
-            var totalCount = _context.LocaleStringResource
-                .Join(_context.LocaleResourceKey, strRes => strRes.LocaleResourceKey.Id, resKey => resKey.Id,
-                      (strRes, resKey) => new { LocaleStringResource = strRes, LocaleResourceKey = resKey })
-                .Count(joinResult => joinResult.LocaleStringResource.Language.Id == languageId);
-
             var results = _context.LocaleStringResource
-                .Join(_context.LocaleResourceKey, // The sequence to join to the first sequence.
-                      strRes => strRes.LocaleResourceKey.Id, // A function to extract the join key from each element of the first sequence.
-                        resKey => resKey.Id, // A function to extract the join key from each element of the second sequence
-                        (strRes, resKey) => new { LocaleStringResource = strRes, LocaleResourceKey = resKey } // A function to create a result element from two matching elements.
-                        )
-                .Where(joinResult => joinResult.LocaleStringResource.Language.Id == languageId)
-                .OrderBy(joinResult => joinResult.LocaleResourceKey.Name)
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize)
-                .Select(item => item.LocaleStringResource).ToList();
+                .Include(x => x.Language)
+                .Include(x => x.LocaleResourceKey)
+                .Where(x => x.Language.Id == languageId)
+                .OrderBy(x => x.LocaleResourceKey.Name);
 
-            return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, totalCount);
+            return await PaginatedList<LocaleStringResource>.CreateAsync(results.AsNoTracking(), pageIndex, pageSize);
         }
 
         /// <summary>
@@ -537,18 +516,12 @@
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public PagedList<LocaleResourceKey> GetAllResourceKeys(int pageIndex, int pageSize)
+        public async Task<PaginatedList<LocaleResourceKey>> GetAllResourceKeys(int pageIndex, int pageSize)
         {
-            var totalCount = _context.LocaleResourceKey.Count();
-
             var results = _context.LocaleResourceKey
-                .OrderBy(x => x.Name)
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize)
-                .Select(item => item)
-                .ToList();
+                .OrderBy(x => x.Name);
 
-            return new PagedList<LocaleResourceKey>(results, pageIndex, pageSize, totalCount);
+            return await PaginatedList<LocaleResourceKey>.CreateAsync(results.AsNoTracking(), pageIndex, pageSize);
         }
 
         /// <summary>
@@ -586,21 +559,17 @@
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public PagedList<LocaleStringResource> SearchResourceValues(Guid languageId, string search, int pageIndex, int pageSize)
+        public async Task<PaginatedList<LocaleStringResource>> SearchResourceValues(Guid languageId, string search, int pageIndex, int pageSize)
         {
             search = StringUtils.SafePlainText(search);
-            var totalCount = _context.LocaleStringResource.Count();
             var results = _context.LocaleStringResource
                 .Include(x => x.Language)
                 .Include(x => x.LocaleResourceKey)
                 .Where(x => x.Language.Id == languageId)
                 .Where(x => x.ResourceValue.ToUpper().Contains(search.ToUpper()))
-                .OrderBy(x => x.ResourceValue)
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize)
-                .Select(item => item).ToList();
+                .OrderBy(x => x.ResourceValue);
 
-            return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, totalCount);
+            return await PaginatedList<LocaleStringResource>.CreateAsync(results.AsNoTracking(), pageIndex, pageSize);
         }
 
 
@@ -611,18 +580,14 @@
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public PagedList<LocaleResourceKey> SearchResourceKeys(string search, int pageIndex, int pageSize)
+        public async Task<PaginatedList<LocaleResourceKey>> SearchResourceKeys(string search, int pageIndex, int pageSize)
         {
             search = StringUtils.SafePlainText(search);
-            var totalCount = _context.LocaleResourceKey.Count();
             var results = _context.LocaleResourceKey
-                            .Where(resKey => resKey.Name.ToUpper().Contains(search.ToUpper()))
-                            .OrderBy(resKey => resKey.Name)
-                            .Skip((pageIndex - 1) * pageSize)
-                            .Take(pageSize)
-                            .ToList();
+                .Where(resKey => resKey.Name.ToUpper().Contains(search.ToUpper()))
+                .OrderBy(resKey => resKey.Name);
 
-            return new PagedList<LocaleResourceKey>(results, pageIndex, pageSize, totalCount);
+            return await PaginatedList<LocaleResourceKey>.CreateAsync(results.AsNoTracking(), pageIndex, pageSize);
         }
 
         /// <summary>
@@ -634,32 +599,18 @@
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public PagedList<LocaleStringResource> SearchResourceKeys(Guid languageId, string search, int pageIndex, int pageSize)
+        public async Task<PaginatedList<LocaleStringResource>> SearchResourceKeys(Guid languageId, string search, int pageIndex, int pageSize)
         {
             search = StringUtils.SafePlainText(search);
 
-            var totalCount = _context.LocaleStringResource
-    .Join(_context.LocaleResourceKey,
-          strRes => strRes.LocaleResourceKey.Id,
-          resKey => resKey.Id,
-          (strRes, resKey) => new { LocaleStringResource = strRes, LocaleResourceKey = resKey })
-          .Count(joinResult => joinResult.LocaleStringResource.Language.Id == languageId
-              && joinResult.LocaleResourceKey.Name.ToUpper().Contains(search.ToUpper()));
-
             var results = _context.LocaleStringResource
-                .Join(_context.LocaleResourceKey, // The sequence to join to the first sequence.
-                        strRes => strRes.LocaleResourceKey.Id, // A function to extract the join key from each element of the first sequence.
-                        resKey => resKey.Id, // A function to extract the join key from each element of the second sequence
-                        (strRes, resKey) => new { LocaleStringResource = strRes, LocaleResourceKey = resKey } // A function to create a result element from two matching elements.
-                    )
-                .Where(joinResult => joinResult.LocaleStringResource.Language.Id == languageId &&
-                    joinResult.LocaleResourceKey.Name.ToUpper().Contains(search.ToUpper()))
-                .OrderBy(joinResult => joinResult.LocaleResourceKey.Name)
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize)
-                .Select(item => item.LocaleStringResource).ToList();
+                .Include(x => x.Language)
+                .Include(x => x.LocaleResourceKey)
+                .Where(x => x.Language.Id == languageId &&
+                            x.LocaleResourceKey.Name.ToUpper().Contains(search.ToUpper()))
+                .OrderBy(x => x.LocaleResourceKey.Name);
 
-            return new PagedList<LocaleStringResource>(results, pageIndex, pageSize, totalCount);
+            return await PaginatedList<LocaleStringResource>.CreateAsync(results.AsNoTracking(), pageIndex, pageSize);
         }
 
         public IList<CultureInfo> LanguagesAll

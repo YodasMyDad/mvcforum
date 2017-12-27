@@ -3,13 +3,14 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using Constants;
     using Data.Context;
     using DomainModel.Activity;
     using DomainModel.Entities;
-    using DomainModel.General;
     using Interfaces;
     using Interfaces.Services;
+    using Models.General;
     using Utilities;
 
     public partial class ActivityService : IActivityService
@@ -151,14 +152,10 @@
         /// <param name="pageIndex"> </param>
         /// <param name="pageSize"> </param>
         /// <returns></returns>
-        private PagedList<ActivityBase> ConvertToSpecificActivities(PagedList<Activity> activities, int pageIndex, int pageSize)
+        private PaginatedList<ActivityBase> ConvertToSpecificActivities(PaginatedList<Activity> activities, int pageIndex, int pageSize)
         {
-            var cacheKey = string.Concat(CacheKeys.Activity.StartsWith, "ConvertToSpecificActivities-", activities.GetHashCode(), "-", pageIndex, "-", pageSize);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
-                var listedResults = ConvertToSpecificActivities(activities);
-                return new PagedList<ActivityBase>(listedResults, pageIndex, pageSize, activities.Count);
-            });
+            var listedResults = ConvertToSpecificActivities(activities);
+            return new PaginatedList<ActivityBase>(listedResults.ToList(), pageIndex, pageSize, activities.Count);
         }
 
         /// <summary>
@@ -168,45 +165,42 @@
         /// <returns></returns>
         private IEnumerable<ActivityBase> ConvertToSpecificActivities(IEnumerable<Activity> activities)
         {
-            var cacheKey = string.Concat(CacheKeys.Activity.StartsWith, "ConvertToSpecificActivities-", activities.GetHashCode());
-            return _cacheService.CachePerRequest(cacheKey, () =>
+            var listedResults = new List<ActivityBase>();
+            foreach (var activity in activities)
             {
-                var listedResults = new List<ActivityBase>();
-                foreach (var activity in activities)
+                if (activity.Type == ActivityType.BadgeAwarded.ToString())
                 {
-                    if (activity.Type == ActivityType.BadgeAwarded.ToString())
+                    var badgeActivity = GenerateBadgeActivity(activity);
+
+                    if (badgeActivity != null)
                     {
-                        var badgeActivity = GenerateBadgeActivity(activity);
-
-                        if (badgeActivity != null)
-                        {
-                            listedResults.Add(badgeActivity);
-                        }
-
+                        listedResults.Add(badgeActivity);
                     }
-                    else if (activity.Type == ActivityType.MemberJoined.ToString())
+
+                }
+                else if (activity.Type == ActivityType.MemberJoined.ToString())
+                {
+                    var memberJoinedActivity = GenerateMemberJoinedActivity(activity);
+
+                    if (memberJoinedActivity != null)
                     {
-                        var memberJoinedActivity = GenerateMemberJoinedActivity(activity);
-
-                        if (memberJoinedActivity != null)
-                        {
-                            listedResults.Add(memberJoinedActivity);
-                        }
-                    }
-                    else if (activity.Type == ActivityType.ProfileUpdated.ToString())
-                    {
-
-                        var profileUpdatedActivity = GenerateProfileUpdatedActivity(activity);
-
-                        if (profileUpdatedActivity != null)
-                        {
-                            listedResults.Add(profileUpdatedActivity);
-                        }
+                        listedResults.Add(memberJoinedActivity);
                     }
                 }
-                return listedResults;
-            });
-        } 
+                else if (activity.Type == ActivityType.ProfileUpdated.ToString())
+                {
+
+                    var profileUpdatedActivity = GenerateProfileUpdatedActivity(activity);
+
+                    if (profileUpdatedActivity != null)
+                    {
+                        listedResults.Add(profileUpdatedActivity);
+                    }
+                }
+            }
+            return listedResults;
+
+        }
         #endregion
 
         /// <summary>
@@ -215,29 +209,17 @@
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public PagedList<ActivityBase> GetPagedGroupedActivities(int pageIndex, int pageSize)
+        public async Task<PaginatedList<ActivityBase>> GetPagedGroupedActivities(int pageIndex, int pageSize)
         {
             // Read the database for all activities and convert each to a more specialised activity type
 
-            var cacheKey = string.Concat(CacheKeys.Activity.StartsWith, "GetPagedGroupedActivities-", pageIndex, "-", pageSize);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
-                var totalCount = _context.Activity.Count();
-                var results = _context.Activity
-                      .OrderByDescending(x => x.Timestamp)
-                      .Skip((pageIndex - 1) * pageSize)
-                      .Take(pageSize)
-                      .ToList();
+            var results = _context.Activity.OrderByDescending(x => x.Timestamp);
+            var activities = await PaginatedList<Activity>.CreateAsync(results, pageIndex, pageSize);
 
-                // Return a paged list
-                var activities = new PagedList<Activity>(results, pageIndex, pageSize, totalCount);
+            // Convert
+            var specificActivities = ConvertToSpecificActivities(activities, pageIndex, pageSize);
 
-                // Convert
-                var specificActivities = ConvertToSpecificActivities(activities, pageIndex, pageSize);
-
-                return specificActivities;
-            });
-
+            return specificActivities;
         }
 
         /// <summary>
@@ -251,31 +233,18 @@
             return _cacheService.CachePerRequest(cacheKey, () => _context.Activity.Where(x => x.Data.Contains(guid.ToString())));
         }
 
-        public PagedList<ActivityBase> SearchPagedGroupedActivities(string search, int pageIndex, int pageSize)
+        public async Task<PaginatedList<ActivityBase>> SearchPagedGroupedActivities(string search, int pageIndex, int pageSize)
         {
-            var cacheKey = string.Concat(CacheKeys.Activity.StartsWith, "SearchPagedGroupedActivities-", search, "-", pageIndex, "-", pageSize);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
                 // Read the database for all activities and convert each to a more specialised activity type
                 search = StringUtils.SafePlainText(search);
-                var totalCount = _context.Activity.Count(x => x.Type.ToUpper().Contains(search.ToUpper()));
 
-                // Get the topics using an efficient
-                var results = _context.Activity
-                      .Where(x => x.Type.ToUpper().Contains(search.ToUpper()))
-                      .OrderByDescending(x => x.Timestamp)
-                      .Skip((pageIndex - 1) * pageSize)
-                      .Take(pageSize)
-                      .ToList();
+            var results = _context.Activity.Where(x => x.Type.ToUpper().Contains(search.ToUpper())).OrderByDescending(x => x.Timestamp);
+            var activities = await PaginatedList<Activity>.CreateAsync(results, pageIndex, pageSize);
 
-                // Return a paged list
-                var activities = new PagedList<Activity>(results, pageIndex, pageSize, totalCount);
+            // Convert
+            var specificActivities = ConvertToSpecificActivities(activities, pageIndex, pageSize);
 
-                // Convert
-                var specificActivities = ConvertToSpecificActivities(activities, pageIndex, pageSize);
-
-                return specificActivities;
-            });
+            return specificActivities;
         }
 
         public IEnumerable<ActivityBase> GetAll(int howMany)

@@ -1,6 +1,7 @@
 ﻿namespace MvcForum.Web.Areas.Admin.Controllers
 {
     using System;
+    using System.Threading.Tasks;
     using System.Web.Mvc;
     using Core.Constants;
     using Core.DomainModel.Entities;
@@ -34,14 +35,14 @@
         }
 
 
-        public ActionResult Index(int? p, string search)
+        public async Task<ActionResult> Index(int? p, string search)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = p ?? 1;
                 var allEmails = string.IsNullOrEmpty(search)
-                    ? _bannedEmailService.GetAllPaged(pageIndex, SiteConstants.Instance.AdminListPageSize)
-                    : _bannedEmailService.GetAllPaged(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
+                    ? await _bannedEmailService.GetAllPaged(pageIndex, SiteConstants.Instance.AdminListPageSize)
+                    : await _bannedEmailService.GetAllPaged(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
 
                 var vieWModel = new BannedEmailListViewModel
                 {

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Web.Mvc;
     using Constants;
     using Data.Context;
@@ -14,6 +15,7 @@
     using Interfaces;
     using Interfaces.Services;
     using Interfaces.UnitOfWork;
+    using Models.General;
     using Utilities;
 
     public partial class TopicService : ITopicService
@@ -229,34 +231,22 @@
         /// <param name="amountToTake"></param>
         /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public PagedList<Topic> GetRecentTopics(int pageIndex, int pageSize, int amountToTake, List<Category> allowedCategories)
+        public async Task<PaginatedList<Topic>> GetRecentTopics(int pageIndex, int pageSize, int amountToTake, List<Category> allowedCategories)
         {
             // get the category ids
             var allowedCatIds = allowedCategories.Select(x => x.Id);
 
-            // We might only want to display the top 100
-            // but there might not be 100 topics
-            var total = _context.Topic.AsNoTracking().Count(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id));
-            if (amountToTake < total)
-            {
-                total = amountToTake;
-            }
-
             // Get the topics using an efficient
-            var results = _context.Topic
-                                .AsNoTracking()
-                                .Include(x => x.Category)
-                                .Include(x => x.LastPost.User)
-                                .Include(x => x.User)
-                                .Include(x => x.Poll)
-                                .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
-                                .OrderByDescending(x => x.LastPost.DateCreated)
-                                .Skip((pageIndex - 1) * pageSize)
-                                .Take(pageSize)
-                                .ToList();
+            var query = _context.Topic
+                .Include(x => x.Category)
+                .Include(x => x.LastPost.User)
+                .Include(x => x.User)
+                .Include(x => x.Poll)
+                .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
+                .OrderByDescending(x => x.LastPost.DateCreated);
 
             // Return a paged list
-            return new PagedList<Topic>(results, pageIndex, pageSize, total);
+            return await PaginatedList<Topic>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
         /// <summary>
@@ -330,33 +320,21 @@
         /// <param name="amountToTake"></param>
         /// <param name="categoryId"></param>
         /// <returns></returns>
-        public PagedList<Topic> GetPagedTopicsByCategory(int pageIndex, int pageSize, int amountToTake, Guid categoryId)
+        public async Task<PaginatedList<Topic>> GetPagedTopicsByCategory(int pageIndex, int pageSize, int amountToTake, Guid categoryId)
         {
-            // We might only want to display the top 100
-            // but there might not be 100 topics
-            var total = _context.Topic.Count(x => x.Category.Id == categoryId);
-            if (amountToTake < total)
-            {
-                total = amountToTake;
-            }
-
             // Get the topics using an efficient
-            var results = _context.Topic
-                                .Include(x => x.Category)
-                                .Include(x => x.LastPost.User)
-                                .Include(x => x.User)
-                                .Include(x => x.Poll)
-                                .AsNoTracking()
-                                .Where(x => x.Category.Id == categoryId)
-                                .Where(x => x.Pending != true)
-                                .OrderByDescending(x => x.IsSticky)
-                                .ThenByDescending(x => x.LastPost.DateCreated)
-                                .Skip((pageIndex - 1) * pageSize)
-                                .Take(pageSize)
-                                .ToList();
+            var query = _context.Topic
+                        .Include(x => x.Category)
+                        .Include(x => x.LastPost.User)
+                        .Include(x => x.User)
+                        .Include(x => x.Poll)
+                        .Where(x => x.Category.Id == categoryId)
+                        .Where(x => x.Pending != true)
+                        .OrderByDescending(x => x.IsSticky)
+                        .ThenByDescending(x => x.LastPost.DateCreated);
 
             // Return a paged list
-            return new PagedList<Topic>(results, pageIndex, pageSize, total);
+            return await PaginatedList<Topic>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
         /// <summary>
@@ -366,30 +344,23 @@
         /// <param name="pageSize"></param>
         /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public PagedList<Topic> GetPagedPendingTopics(int pageIndex, int pageSize, List<Category> allowedCategories)
+        public async Task<PaginatedList<Topic>> GetPagedPendingTopics(int pageIndex, int pageSize, List<Category> allowedCategories)
         {
             // get the category ids
             var allowedCatIds = allowedCategories.Select(x => x.Id);
 
-            // We might only want to display the top 100
-            // but there might not be 100 topics
-            var total = _context.Topic.AsNoTracking().Count(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id));
-
             // Get the topics using an efficient
-            var results = _context.Topic
-                                .Include(x => x.Category)
-                                .Include(x => x.LastPost.User)
-                                .Include(x => x.User)
-                                .Include(x => x.Poll)
-                                .AsNoTracking()
-                                .Where(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id))
-                                .OrderBy(x => x.LastPost.DateCreated)
-                                .Skip((pageIndex - 1) * pageSize)
-                                .Take(pageSize)
-                                .ToList();
+            var query = _context.Topic
+                            .Include(x => x.Category)
+                            .Include(x => x.LastPost.User)
+                            .Include(x => x.User)
+                            .Include(x => x.Poll)
+                            .AsNoTracking()
+                            .Where(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id))
+                            .OrderBy(x => x.LastPost.DateCreated);
 
             // Return a paged list
-            return new PagedList<Topic>(results, pageIndex, pageSize, total);
+            return await PaginatedList<Topic>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
         public IList<Topic> GetPendingTopics(List<Category> allowedCategories, MembershipRole usersRole)
@@ -468,37 +439,26 @@
         /// <param name="tag"></param>
         /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public PagedList<Topic> GetPagedTopicsByTag(int pageIndex, int pageSize, int amountToTake, string tag, List<Category> allowedCategories)
+        public async Task<PaginatedList<Topic>> GetPagedTopicsByTag(int pageIndex, int pageSize, int amountToTake, string tag, List<Category> allowedCategories)
         {
             // get the category ids
             var allowedCatIds = allowedCategories.Select(x => x.Id);
 
-            // We might only want to display the top 100
-            // but there might not be 100 topics
-            var total = _context.Topic.AsNoTracking().Count(e => e.Tags.Any(t => t.Slug == tag) && allowedCatIds.Contains(e.Category.Id));
-            if (amountToTake < total)
-            {
-                total = amountToTake;
-            }
-
             // Get the topics using an efficient
-            var results = _context.Topic
-                                .Include(x => x.Category)
-                                .Include(x => x.LastPost.User)
-                                .Include(x => x.User)
-                                .Include(x => x.Poll)
-                                .Include(x => x.Tags)
-                                .AsNoTracking()
-                                .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
-                                .OrderByDescending(x => x.IsSticky)
-                                .ThenByDescending(x => x.LastPost.DateCreated)
-                                .Where(e => e.Tags.Any(t => t.Slug.Equals(tag)))
-                                .Take(pageSize)
-                                .Skip((pageIndex - 1) * pageSize)
-                                .ToList();
+            var query = _context.Topic
+                .Include(x => x.Category)
+                .Include(x => x.LastPost.User)
+                .Include(x => x.User)
+                .Include(x => x.Poll)
+                .Include(x => x.Tags)
+                .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
+                .OrderByDescending(x => x.IsSticky)
+                .ThenByDescending(x => x.LastPost.DateCreated)
+                .Where(e => e.Tags.Any(t => t.Slug.Equals(tag)));
+                           
 
             // Return a paged list
-            return new PagedList<Topic>(results, pageIndex, pageSize, total);
+            return await PaginatedList<Topic>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
         /// <summary>
@@ -543,78 +503,44 @@
             return topics.Take(amountToTake).ToList();
         }
 
-        public PagedList<Topic> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> topicIds, List<Category> allowedCategories)
+        public async Task<PaginatedList<Topic>> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> topicIds, List<Category> allowedCategories)
         {
             // get the category ids
             var allowedCatIds = allowedCategories.Select(x => x.Id);
-
-            // Get the count
-            var total = _context.Topic
-                                .Join(topicIds,
-                                      topic => topic.Id,
-                                      guidFromCsv => guidFromCsv,
-                                      (topic, guidFromCsv) => new { topic, guidFromCsv }
-                                      ).Count(x => x.guidFromCsv == x.topic.Id && allowedCatIds.Contains(x.topic.Category.Id));
 
             // Now get the paged stuff
-            var results = _context.Topic
-                                .Include(x => x.Category)
-                                .Include(x => x.LastPost.User)
-                                .Include(x => x.User)
-                                .Include(x => x.Poll)
-                .Join(topicIds,
-                        topic => topic.Id,
-                        guidFromCsv => guidFromCsv,
-                        (topic, guidFromCsv) => new { topic, guidFromCsv }
-                    )
-                    .Where(x => x.guidFromCsv == x.topic.Id)
-                    .Where(x => x.topic.Pending != true && allowedCatIds.Contains(x.topic.Category.Id))
-                    .OrderByDescending(x => x.topic.LastPost.DateCreated)
-                    .Skip((pageIndex - 1) * pageSize)
-                    .Take(pageSize)
-                    .Select(x => x.topic)
-                    .ToList();
+            var query = _context.Topic
+                .Include(x => x.Category)
+                .Include(x => x.LastPost.User)
+                .Include(x => x.User)
+                .Include(x => x.Poll)           
+                .Where(x => topicIds.Contains(x.Id))
+                .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
+                .OrderByDescending(x => x.LastPost.DateCreated);
 
             // Return a paged list
-            return new PagedList<Topic>(results, pageIndex, pageSize, total);
+            return await PaginatedList<Topic>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
-        public PagedList<Topic> GetMembersActivity(int pageIndex, int pageSize, int amountToTake, Guid memberGuid, List<Category> allowedCategories)
+        public async Task<PaginatedList<Topic>> GetMembersActivity(int pageIndex, int pageSize, int amountToTake, Guid memberGuid, List<Category> allowedCategories)
         {
             // get the category ids
             var allowedCatIds = allowedCategories.Select(x => x.Id);
-
-            // We might only want to display the top 100
-            // but there might not be 100 topics
-            var total = _context.Post
-                            .Include(x => x.Topic.Category)
-                            .Include(x => x.Topic.LastPost.User)
-                            .Include(x => x.Topic.Poll)
-                            .Include(x => x.User)
-                            .AsNoTracking().Where(x => x.User.Id == memberGuid && x.Pending != true && allowedCatIds.Contains(x.Topic.Category.Id)).DistinctBy(x => x.Topic.Id).Count();
-            if (amountToTake < total)
-            {
-                total = amountToTake;
-            }
 
             // Get the Posts and then get the topics from the post
             // This is an interim solution, as its flawed due to multiple posts in one topic so the paging might
             // be incorrect if all posts are from one topic.
-            var results = _context.Post
-                            .Include(x => x.Topic.Category)
-                            .Include(x => x.Topic.LastPost.User)
-                            .Include(x => x.Topic.Poll)
-                            .Include(x => x.User)
-                            .AsNoTracking()
-                            .Where(x => x.User.Id == memberGuid && x.Pending != true && allowedCatIds.Contains(x.Topic.Category.Id))
-                            .DistinctBy(x => x.Topic.Id)
-                            .OrderByDescending(x => x.DateCreated)
-                            .Skip((pageIndex - 1) * pageSize)
-                            .Take(pageSize)
-                            .ToList();
+            var query = _context.Topic
+                .Include(x => x.Category)
+                .Include(x => x.LastPost.User)
+                .Include(x => x.Poll)
+                .Include(x => x.User)
+                .Include(x => x.Posts)
+                .Where(x => x.Posts.Any(u => u.User.Id == memberGuid && u.Pending != true) && allowedCatIds.Contains(x.Category.Id))
+                .OrderByDescending(x => x.LastPost.DateEdited);
 
             // Return a paged list
-            return new PagedList<Topic>(results.Select(x => x.Topic), pageIndex, pageSize, total);
+            return await PaginatedList<Topic>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
         public IList<Topic> GetTopicsByCsv(int amountToTake, List<Guid> topicIds, List<Category> allowedCategories)
@@ -895,35 +821,24 @@
             return results;
         }
 
-        public PagedList<Topic> GetPagedTopicsAll(int pageIndex, int pageSize, int amountToTake, List<Category> allowedCategories)
+        public async Task<PaginatedList<Topic>> GetPagedTopicsAll(int pageIndex, int pageSize, int amountToTake, List<Category> allowedCategories)
         {
             // get the category ids
             var allowedCatIds = allowedCategories.Select(x => x.Id);
 
-            // We might only want to display the top 100
-            // but there might not be 100 topics
-            var total = _context.Topic.AsNoTracking().Count(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id));
-            if (amountToTake < total)
-            {
-                total = amountToTake;
-            }
 
             // Get the topics using an efficient
-            var results = _context.Topic
-                                .Include(x => x.Category)
-                                .Include(x => x.LastPost.User)
-                                .Include(x => x.User)
-                                .Include(x => x.Poll)
-                                .AsNoTracking()
-                                .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
-                                .OrderByDescending(x => x.IsSticky)
-                                .ThenByDescending(x => x.LastPost.DateCreated)
-                                .Take(pageSize)
-                                .Skip((pageIndex - 1) * pageSize)
-                                .ToList();
+            var query = _context.Topic
+                .Include(x => x.Category)
+                .Include(x => x.LastPost.User)
+                .Include(x => x.User)
+                .Include(x => x.Poll)
+                .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
+                .OrderByDescending(x => x.IsSticky)
+                .ThenByDescending(x => x.LastPost.DateCreated);
 
             // Return a paged list
-            return new PagedList<Topic>(results, pageIndex, pageSize, total);
+            return await PaginatedList<Topic>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
         public IList<Topic> GetTopicBySlugLike(string slug)

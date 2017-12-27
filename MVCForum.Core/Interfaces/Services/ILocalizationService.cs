@@ -3,8 +3,10 @@
     using System;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Threading.Tasks;
     using DomainModel.Entities;
     using DomainModel.General;
+    using Models.General;
 
     public interface ILocalizationService
     {
@@ -126,7 +128,7 @@
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        PagedList<LocaleStringResource> SearchResourceValues(Guid languageId, string search, int pageIndex,
+        Task<PaginatedList<LocaleStringResource>> SearchResourceValues(Guid languageId, string search, int pageIndex,
             int pageSize);
 
         /// <summary>
@@ -136,7 +138,7 @@
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        PagedList<LocaleResourceKey> SearchResourceKeys(string search, int pageIndex, int pageSize);
+        Task<PaginatedList<LocaleResourceKey>> SearchResourceKeys(string search, int pageIndex, int pageSize);
 
         /// <summary>
         ///     Search through the resource values for a language looking
@@ -147,7 +149,7 @@
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        PagedList<LocaleStringResource> SearchResourceKeys(Guid languageId, string search, int pageIndex, int pageSize);
+        Task<PaginatedList<LocaleStringResource>> SearchResourceKeys(Guid languageId, string search, int pageIndex, int pageSize);
 
         /// <summary>
         ///     Get all resource values for a language - paged
@@ -156,7 +158,7 @@
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        PagedList<LocaleStringResource> GetAllValues(Guid languageId, int pageIndex, int pageSize);
+        Task<PaginatedList<LocaleStringResource>> GetAllValues(Guid languageId, int pageIndex, int pageSize);
 
         /// <summary>
         ///     Get resource values for all languages for a key
@@ -171,7 +173,7 @@
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        PagedList<LocaleResourceKey> GetAllResourceKeys(int pageIndex, int pageSize);
+        Task<PaginatedList<LocaleResourceKey>> GetAllResourceKeys(int pageIndex, int pageSize);
 
         /// <summary>
         ///     Puts the entire
@@ -252,7 +254,7 @@
         /// <param name="newName"></param>
         void UpdateResourceKey(Guid resourceKeyId, string newName);
 
-        PagedList<LocaleStringResource> SearchResourceValuesForKey(Guid languageId, string search, int pageIndex,
+        Task<PaginatedList<LocaleStringResource>> SearchResourceValuesForKey(Guid languageId, string search, int pageIndex,
             int pageSize);
 
         /// <summary>

@@ -3,8 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Reflection;
+    using System.Threading.Tasks;
     using DomainModel.Entities;
-    using DomainModel.General;
+    using Models.General;
 
     public partial interface IBadgeService
     {
@@ -28,7 +29,7 @@
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        PagedList<Badge> GetPagedGroupedBadges(int pageIndex, int pageSize);
+        Task<PaginatedList<Badge>> GetPagedGroupedBadges(int pageIndex, int pageSize);
 
         /// <summary>
         ///     Search for pages in a paged list
@@ -37,7 +38,7 @@
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        PagedList<Badge> SearchPagedGroupedTags(string search, int pageIndex, int pageSize);
+        Task<PaginatedList<Badge>> SearchPagedGroupedTags(string search, int pageIndex, int pageSize);
 
         /// <summary>
         ///     Get all Badges enabled in the applications

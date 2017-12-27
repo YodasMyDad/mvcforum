@@ -2,9 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using DomainModel.Activity;
     using DomainModel.Entities;
     using DomainModel.General;
+    using Models.General;
 
     public partial interface IActivityService
     {
@@ -14,7 +16,7 @@
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        PagedList<ActivityBase> GetPagedGroupedActivities(int pageIndex, int pageSize);
+        Task<PaginatedList<ActivityBase>> GetPagedGroupedActivities(int pageIndex, int pageSize);
 
         /// <summary>
         ///     Gets all activities by search data field for a Guid
@@ -30,7 +32,7 @@
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        PagedList<ActivityBase> SearchPagedGroupedActivities(string search, int pageIndex, int pageSize);
+        Task<PaginatedList<ActivityBase>> SearchPagedGroupedActivities(string search, int pageIndex, int pageSize);
 
         IEnumerable<ActivityBase> GetAll(int howMany);
 

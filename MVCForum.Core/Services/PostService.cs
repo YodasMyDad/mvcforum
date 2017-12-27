@@ -5,6 +5,7 @@
     using System.Data.Entity;
     using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
     using Constants;
     using Data.Context;
     using DomainModel.Entities;
@@ -15,6 +16,7 @@
     using Interfaces;
     using Interfaces.Services;
     using Interfaces.UnitOfWork;
+    using Models.General;
     using Utilities;
 
     public partial class PostService : IPostService
@@ -31,7 +33,7 @@
         private readonly IPostEditService _postEditService;
         private readonly ICacheService _cacheService;
 
-        public PostService(IMvcForumContext context,IMembershipUserPointsService membershipUserPointsService,
+        public PostService(IMvcForumContext context, IMembershipUserPointsService membershipUserPointsService,
             ISettingsService settingsService, IRoleService roleService,
             ILocalizationService localizationService, IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService favouriteService, IConfigService configService, IPostEditService postEditService, ICacheService cacheService)
         {
@@ -218,7 +220,7 @@
         /// <param name="searchTerm"></param>
         /// <param name="allowedCategories"></param>
         /// <returns></returns>
-        public PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm, List<Category> allowedCategories)
+        public async Task<PaginatedList<Post>> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm, List<Category> allowedCategories)
         {
             // Create search term
             var search = StringUtils.ReturnSearchString(searchTerm);
@@ -229,10 +231,9 @@
             // get the category ids
             var allowedCatIds = allowedCategories.Select(x => x.Id);
 
-            var query = _context.Post.AsExpandable()
+            var query = _context.Post
                             .Include(x => x.Topic.Category)
                             .Include(x => x.User)
-                            .AsNoTracking()
                             .Where(x => x.Pending != true)
                             .Where(x => allowedCatIds.Contains(x.Topic.Category.Id));
 
@@ -250,25 +251,14 @@
             // Add the predicate builder to the query
             query = query.Where(postFilter);
 
-            // Get the count
-            var total = query.Count();
-
-            if (amountToTake < total)
-            {
-                total = amountToTake;
-            }
 
             // Get the Posts and then get the topics from the post
             // This is an interim solution, as its flawed due to multiple posts in one topic so the paging might
             // be incorrect if all posts are from one topic.
             var results = query
-                        .OrderByDescending(x => x.DateCreated)
-                        .Skip((pageIndex - 1) * pageSize)
-                        .Take(pageSize)
-                        .ToList();
+                .OrderByDescending(x => x.DateCreated);
 
-            // Return a paged list
-            return new PagedList<Post>(results, pageIndex, pageSize, total);
+            return await PaginatedList<Post>.CreateAsync(results.AsNoTracking(), pageIndex, pageSize);
         }
 
         /// <summary>
@@ -280,65 +270,42 @@
         /// <param name="topicId"></param>
         /// <param name="order"></param>
         /// <returns></returns>
-        public PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId, PostOrderBy order)
+        public async Task<PaginatedList<Post>> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId, PostOrderBy order)
         {
-            var cacheKey = string.Concat(CacheKeys.Post.StartsWith, "GetPagedPostsByTopic-", pageIndex, "-", pageSize, "-", amountToTake, "-",topicId, "-", order);
-            return _cacheService.CachePerRequest(cacheKey, () =>
+            // Get the topics using an efficient
+            var results = _context.Post
+                                  .Include(x => x.User)
+                                  .Include(x => x.Topic)
+                                  .Where(x => x.Topic.Id == topicId && !x.IsTopicStarter && x.Pending != true);
+
+            // Sort what order the posts are sorted in
+            switch (order)
             {
-                // We might only want to display the top 100
-                // but there might not be 100 topics
-                var total = _context.Post.AsNoTracking().Count(x => x.Topic.Id == topicId && !x.IsTopicStarter && x.Pending != true);
-                if (amountToTake < total)
-                {
-                    total = amountToTake;
-                }
+                case PostOrderBy.Newest:
+                    results = results.OrderByDescending(x => x.DateCreated);
+                    break;
 
-                // Get the topics using an efficient
-                var results = _context.Post
-                                      .Include(x => x.User)
-                                      .Include(x => x.Topic)
-                                      .AsNoTracking()
-                                      .Where(x => x.Topic.Id == topicId && !x.IsTopicStarter && x.Pending != true);
+                case PostOrderBy.Votes:
+                    results = results.OrderByDescending(x => x.VoteCount).ThenBy(x => x.DateCreated);
+                    break;
 
-                // Sort what order the posts are sorted in
-                switch (order)
-                {
-                    case PostOrderBy.Newest:
-                        results = results.OrderByDescending(x => x.DateCreated);
-                        break;
+                default:
+                    results = results.OrderBy(x => x.DateCreated);
+                    break;
+            }
 
-                    case PostOrderBy.Votes:
-                        results = results.OrderByDescending(x => x.VoteCount).ThenBy(x => x.DateCreated);
-                        break;
-
-                    default:
-                        results = results.OrderBy(x => x.DateCreated);
-                        break;
-                }
-
-                // sort the paging out
-                var posts = results.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
-
-                // Return a paged list
-                return new PagedList<Post>(posts, pageIndex, pageSize, total);
-            });
-
-
+            return await PaginatedList<Post>.CreateAsync(results.AsNoTracking(), pageIndex, pageSize);
         }
 
-        public PagedList<Post> GetPagedPendingPosts(int pageIndex, int pageSize, List<Category> allowedCategories)
+        public async Task<PaginatedList<Post>> GetPagedPendingPosts(int pageIndex, int pageSize, List<Category> allowedCategories)
         {
             var allowedCatIds = allowedCategories.Select(x => x.Id);
-            var total = _context.Post.Count(x => x.Pending == true && allowedCatIds.Contains(x.Topic.Category.Id));
-            var results = _context.Post
+            var query = _context.Post
                 .Include(x => x.Topic.Category)
                 .Include(x => x.User)
-                .AsNoTracking()
                 .Where(x => x.Pending == true && allowedCatIds.Contains(x.Topic.Category.Id))
-                .OrderBy(x => x.DateCreated)
-                .Skip((pageIndex - 1) * pageSize).Take(pageSize);
-
-            return new PagedList<Post>(results.ToList(), pageIndex, pageSize, total);
+                .OrderBy(x => x.DateCreated);
+            return await PaginatedList<Post>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
         public IList<Post> GetPendingPosts(List<Category> allowedCategories, MembershipRole usersRole)
@@ -550,8 +517,8 @@
             #region Post Edits
 
             var postEdits = new List<PostEdit>();
-            postEdits.AddRange(post.PostEdits); 
-            _postEditService.Delete(postEdits);        
+            postEdits.AddRange(post.PostEdits);
+            _postEditService.Delete(postEdits);
             post.PostEdits.Clear();
 
             #endregion
@@ -612,14 +579,14 @@
 
             // Has permission so create the post
             var newPost = new Post
-                               {
-                                   PostContent = postContent,
-                                   User = user,
-                                   Topic = topic,
-                                   IpAddress = StringUtils.GetUsersIpAddress(),
-                                   DateCreated = DateTime.UtcNow,
-                                   DateEdited = DateTime.UtcNow
-                               };
+            {
+                PostContent = postContent,
+                User = user,
+                Topic = topic,
+                IpAddress = StringUtils.GetUsersIpAddress(),
+                DateCreated = DateTime.UtcNow,
+                DateEdited = DateTime.UtcNow
+            };
 
             // Sort the search field out
 
@@ -639,12 +606,12 @@
 
                 // Update the users points score and post count for posting
                 _membershipUserPointsService.Add(new MembershipUserPoints
-                                                     {
-                                                         Points = _settingsService.GetSettings().PointsAddedPerPost,
-                                                         User = user,
-                                                         PointsFor = PointsFor.Post,
-                                                         PointsForId = newPost.Id
-                                                     });
+                {
+                    Points = _settingsService.GetSettings().PointsAddedPerPost,
+                    User = user,
+                    PointsFor = PointsFor.Post,
+                    PointsForId = newPost.Id
+                });
 
                 // add the last post to the topic
                 topic.LastPost = newPost;

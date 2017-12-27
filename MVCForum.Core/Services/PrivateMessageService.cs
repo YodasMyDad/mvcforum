@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
+    using System.Threading.Tasks;
     using Constants;
     using Data.Context;
     using DomainModel.Entities;
@@ -11,6 +12,7 @@
     using Events;
     using Interfaces;
     using Interfaces.Services;
+    using Models.General;
     using Utilities;
 
     public partial class PrivateMessageService : IPrivateMessageService
@@ -88,7 +90,7 @@
                                                                         .FirstOrDefault(x => x.Id == id));
         }
 
-        public IPagedList<PrivateMessageListItem> GetUsersPrivateMessages(int pageIndex, int pageSize, MembershipUser user)
+        public async Task<PaginatedList<PrivateMessageListItem>> GetUsersPrivateMessages(int pageIndex, int pageSize, MembershipUser user)
         {
             var query = _context.PrivateMessage
                 .AsNoTracking()
@@ -105,18 +107,10 @@
                 .Select(x => x.OrderByDescending(d => d.Date).FirstOrDefault())
                 .OrderByDescending(x => x.Date);
 
-            var total = query.Count();
-
-            var results = query
-                            .Skip((pageIndex - 1) * pageSize)
-                            .Take(pageSize)
-                            .ToList();
-
-            // Return a paged list
-            return new PagedList<PrivateMessageListItem>(results, pageIndex, pageSize, total);
+            return await PaginatedList<PrivateMessageListItem>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
-        public IPagedList<PrivateMessage> GetUsersPrivateMessages(int pageIndex, int pageSize, MembershipUser toUser, MembershipUser fromUser)
+        public async Task<PaginatedList<PrivateMessage>> GetUsersPrivateMessages(int pageIndex, int pageSize, MembershipUser toUser, MembershipUser fromUser)
         {
             var query = _context.PrivateMessage
                .AsNoTracking()
@@ -125,15 +119,8 @@
                .Where(x => (x.UserFrom.Id == fromUser.Id && x.UserTo.Id == toUser.Id && x.IsSentMessage != true) || (x.UserFrom.Id == toUser.Id && x.UserTo.Id == fromUser.Id && x.IsSentMessage == true))
                .OrderByDescending(x => x.DateSent);
 
-            var total = query.Count();
-
-            var results = query
-                            .Skip((pageIndex - 1) * pageSize)
-                            .Take(pageSize)
-                            .ToList();
-
             // Return a paged list
-            return new PagedList<PrivateMessage>(results, pageIndex, pageSize, total);
+            return await PaginatedList<PrivateMessage>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
 

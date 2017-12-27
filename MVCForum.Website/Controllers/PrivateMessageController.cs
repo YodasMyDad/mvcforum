@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
     using System.Web.Mvc;
     using Application;
     using Areas.Admin.ViewModels;
@@ -33,7 +34,7 @@
             _configService = configService;
         }
 
-        public ActionResult Index(int? p)
+        public async Task<ActionResult> Index(int? p)
         {
             if (LoggedOnReadOnlyUser.DisablePrivateMessages == true)
             {
@@ -47,7 +48,7 @@
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = p ?? 1;
-                var pagedMessages = _privateMessageService.GetUsersPrivateMessages(pageIndex,
+                var pagedMessages = await _privateMessageService.GetUsersPrivateMessages(pageIndex,
                     SiteConstants.Instance.PrivateMessageListSize, LoggedOnReadOnlyUser);
                 var viewModel = new ListPrivateMessageViewModel
                 {
@@ -245,7 +246,7 @@
             }
         }
 
-        public ActionResult View(Guid from)
+        public async Task<ActionResult> View(Guid from)
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
@@ -288,7 +289,7 @@
                     //var allMessages = loggedOnUser.PrivateMessagesReceived.Where(x => x.UserFrom.Id == from && x.IsSentMessage == false).ToList();
                     //allMessages.AddRange(loggedOnUser.PrivateMessagesSent.Where(x => x.UserTo.Id == from && x.IsSentMessage == true).ToList());
 
-                    var allMessages = _privateMessageService.GetUsersPrivateMessages(1,
+                    var allMessages = await _privateMessageService.GetUsersPrivateMessages(1,
                         SiteConstants.Instance.PagingGroupSize, loggedOnUser, userFrom);
 
                     // Now order them into an order of messages
@@ -349,7 +350,7 @@
         }
 
         [HttpPost]
-        public ActionResult AjaxMore(GetMoreViewModel viewModel)
+        public async Task<ActionResult> AjaxMore(GetMoreViewModel viewModel)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
@@ -364,7 +365,7 @@
                         return Content(LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }
 
-                    var allMessages = _privateMessageService.GetUsersPrivateMessages(viewModel.PageIndex,
+                    var allMessages = await _privateMessageService.GetUsersPrivateMessages(viewModel.PageIndex,
                         SiteConstants.Instance.PagingGroupSize, loggedOnUser, userFrom);
 
                     var partialViewModel = new ViewPrivateMessageViewModel

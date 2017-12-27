@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Web.Mvc;
     using Core.Constants;
     using Core.DomainModel.Entities;
@@ -24,15 +25,15 @@
             _topicTagService = topicTagService;
         }
 
-        public ActionResult Index(int? p, string search)
+        public async Task<ActionResult> Index(int? p, string search)
         {
             var pageIndex = p ?? 1;
 
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var allTags = string.IsNullOrEmpty(search)
-                    ? _topicTagService.GetPagedGroupedTags(pageIndex, SiteConstants.Instance.AdminListPageSize)
-                    : _topicTagService.SearchPagedGroupedTags(search, pageIndex,
+                    ? await _topicTagService.GetPagedGroupedTags(pageIndex, SiteConstants.Instance.AdminListPageSize)
+                    : await _topicTagService.SearchPagedGroupedTags(search, pageIndex,
                         SiteConstants.Instance.AdminListPageSize);
 
                 var memberListModel = new ListTagsViewModel

@@ -7,6 +7,7 @@
     using System.Web.Mvc;
     using Core.DomainModel.Entities;
     using Core.DomainModel.General;
+    using Core.Models.General;
 
     public class MoveTagsViewModel
     {
@@ -23,7 +24,7 @@
 
     public class ListTagsViewModel
     {
-        public PagedList<TopicTag> Tags { get; set; }
+        public PaginatedList<TopicTag> Tags { get; set; }
         public int? PageIndex { get; set; }
         public int? TotalCount { get; set; }
         public string Search { get; set; }

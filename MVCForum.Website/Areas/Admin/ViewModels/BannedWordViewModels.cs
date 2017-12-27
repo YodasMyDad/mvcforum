@@ -4,10 +4,11 @@
     using System.ComponentModel.DataAnnotations;
     using Core.DomainModel.Entities;
     using Core.DomainModel.General;
+    using Core.Models.General;
 
     public class BannedWordListViewModel
     {
-        public PagedList<BannedWord> Words { get; set; }
+        public PaginatedList<BannedWord> Words { get; set; }
 
         public int? PageIndex { get; set; }
         public int? TotalCount { get; set; }

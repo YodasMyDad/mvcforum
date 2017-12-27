@@ -2,16 +2,18 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using DomainModel.Entities;
+    using Models.General;
 
     public partial interface IPrivateMessageService
     {
         PrivateMessage SanitizeMessage(PrivateMessage privateMessage);
         PrivateMessage Add(PrivateMessage message);
         PrivateMessage Get(Guid id);
-        IPagedList<PrivateMessageListItem> GetUsersPrivateMessages(int pageIndex, int pageSize, MembershipUser user);
+        Task<PaginatedList<PrivateMessageListItem>> GetUsersPrivateMessages(int pageIndex, int pageSize, MembershipUser user);
 
-        IPagedList<PrivateMessage> GetUsersPrivateMessages(int pageIndex, int pageSize, MembershipUser toUser,
+        Task<PaginatedList<PrivateMessage>> GetUsersPrivateMessages(int pageIndex, int pageSize, MembershipUser toUser,
             MembershipUser fromUser);
 
         PrivateMessage GetLastSentPrivateMessage(Guid id);

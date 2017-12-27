@@ -7,6 +7,7 @@
     using System.Security.Principal;
     using System.Text;
     using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
     using System.Web;
     using System.Web.Hosting;
     using System.Web.Mvc;
@@ -1258,14 +1259,14 @@
         }
 
         [Authorize]
-        public ActionResult Search(int? p, string search)
+        public async Task<ActionResult> Search(int? p, string search)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = p ?? 1;
                 var allUsers = string.IsNullOrEmpty(search)
-                    ? MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize)
-                    : MembershipService.SearchMembers(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
+                    ? await MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize)
+                    : await MembershipService.SearchMembers(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
 
                 // Redisplay list of users
                 var allViewModelUsers = allUsers.Select(user => new PublicSingleMemberListViewModel

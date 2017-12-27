@@ -8,6 +8,7 @@
     using Core.Constants;
     using Core.DomainModel.Entities;
     using Core.Interfaces;
+    using Core.Models.General;
 
     public class ListPrivateMessageViewModel
     {
@@ -30,7 +31,7 @@
 
     public class ViewPrivateMessageViewModel
     {
-        public IPagedList<PrivateMessage> PrivateMessages { get; set; }
+        public PaginatedList<PrivateMessage> PrivateMessages { get; set; }
         public MembershipUser From { get; set; }
         public bool FromUserIsOnline { get; set; }
         public bool IsAjaxRequest { get; set; }

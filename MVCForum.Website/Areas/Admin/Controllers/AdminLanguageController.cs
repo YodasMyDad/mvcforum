@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
     using System.Web.Mvc;
     using Core.Constants;
     using Core.DomainModel.Entities;
@@ -292,11 +293,11 @@
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = AppConstants.AdminRoleName)]
-        public ActionResult ManageLanguageResourceValues(Guid languageId, int? p, string search)
+        public async Task<ActionResult> ManageLanguageResourceValues(Guid languageId, int? p, string search)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                return GetLanguageResources(false, languageId, p, search);
+                return await GetLanguageResources(false, languageId, p, search);
             }
         }
 
@@ -305,11 +306,11 @@
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = AppConstants.AdminRoleName)]
-        public ActionResult ManageLanguageResourceKeys(Guid languageId, int? p, string search)
+        public async Task<ActionResult> ManageLanguageResourceKeys(Guid languageId, int? p, string search)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                return GetLanguageResources(true, languageId, p, search);
+                return await GetLanguageResources(true, languageId, p, search);
             }
         }
 
@@ -318,7 +319,7 @@
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = AppConstants.AdminRoleName)]
-        public ActionResult ManageResourceKeys(int? p, string search)
+        public async Task<ActionResult> ManageResourceKeys(int? p, string search)
         {
             try
             {
@@ -334,7 +335,7 @@
                         ShowErrors(errors);
                     }
 
-                    return ListResourceKeys(p, search);
+                    return await ListResourceKeys(p, search);
                 }
             }
             catch (Exception ex)
@@ -568,14 +569,14 @@
         ///     List out resource keys and allow editing
         /// </summary>
         /// <returns></returns>
-        private ActionResult ListResourceKeys(int? page, string search)
+        private async Task<ActionResult> ListResourceKeys(int? page, string search)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = page ?? 1;
                 var allResources = string.IsNullOrEmpty(search)
-                    ? LocalizationService.GetAllResourceKeys(pageIndex, SiteConstants.Instance.AdminListPageSize)
-                    : LocalizationService.SearchResourceKeys(search, pageIndex,
+                    ? await LocalizationService.GetAllResourceKeys(pageIndex, SiteConstants.Instance.AdminListPageSize)
+                    : await LocalizationService.SearchResourceKeys(search, pageIndex,
                         SiteConstants.Instance.AdminListPageSize);
 
                 // Redisplay list of resources
@@ -609,7 +610,7 @@
         /// <param name="p"></param>
         /// <param name="search"></param>
         /// <returns></returns>
-        private ActionResult GetLanguageResources(bool searchByKey, Guid languageId, int? p, string search)
+        private async Task<ActionResult> GetLanguageResources(bool searchByKey, Guid languageId, int? p, string search)
         {
             try
             {
@@ -630,14 +631,12 @@
                         var pageIndex = p ?? 1;
 
                         // Get all the resources or just the ones that match the search
-                        var allResources = string.IsNullOrEmpty(search)
-                            ? LocalizationService.GetAllValues(language.Id, pageIndex,
-                                SiteConstants.Instance.AdminListPageSize)
+                        var allResources = string.IsNullOrEmpty(search)? await LocalizationService.GetAllValues(language.Id, pageIndex, SiteConstants.Instance.AdminListPageSize)
                             : searchByKey
-                                ? LocalizationService.SearchResourceKeys(language.Id, search,
+                                ? await LocalizationService.SearchResourceKeys(language.Id, search,
                                     pageIndex,
                                     SiteConstants.Instance.AdminListPageSize)
-                                : LocalizationService.SearchResourceValues(language.Id, search,
+                                : await LocalizationService.SearchResourceValues(language.Id, search,
                                     pageIndex,
                                     SiteConstants.Instance.AdminListPageSize);
 

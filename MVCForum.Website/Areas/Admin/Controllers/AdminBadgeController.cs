@@ -1,5 +1,6 @@
 ﻿namespace MvcForum.Web.Areas.Admin.Controllers
 {
+    using System.Threading.Tasks;
     using System.Web.Mvc;
     using Core.Constants;
     using Core.Interfaces.Services;
@@ -34,15 +35,15 @@
         ///     the @RenderBody in that layout
         /// </summary>
         /// <returns></returns>
-        public ActionResult Index(int? p, string search)
+        public async Task<ActionResult> Index(int? p, string search)
         {
             var pageIndex = p ?? 1;
 
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var allBadges = string.IsNullOrEmpty(search)
-                    ? _badgeService.GetPagedGroupedBadges(pageIndex, SiteConstants.Instance.AdminListPageSize)
-                    : _badgeService.SearchPagedGroupedTags(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
+                    ? await _badgeService.GetPagedGroupedBadges(pageIndex, SiteConstants.Instance.AdminListPageSize)
+                    : await _badgeService.SearchPagedGroupedTags(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
 
                 var badgesListModel = new ListBadgesViewModel
                 {

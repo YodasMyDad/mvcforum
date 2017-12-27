@@ -2,13 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data.Entity;
     using System.Linq;
+    using System.Threading.Tasks;
     using Constants;
     using Data.Context;
     using DomainModel.Entities;
-    using DomainModel.General;
     using Interfaces;
     using Interfaces.Services;
+    using Models.General;
     using Utilities;
 
     public partial class BannedEmailService : IBannedEmailService
@@ -44,34 +46,20 @@
             return _cacheService.CachePerRequest(cacheKey, () => _context.BannedEmail.FirstOrDefault(x => x.Id == id));
         }
 
-        public PagedList<BannedEmail> GetAllPaged(int pageIndex, int pageSize)
+        public async Task<PaginatedList<BannedEmail>> GetAllPaged(int pageIndex, int pageSize)
         {
-            var cacheKey = string.Concat(CacheKeys.BannedEmail.StartsWith, "GetAllPaged-", pageIndex, "-", pageSize);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
-                var total = _context.BannedEmail.Count();
-                var results = _context.BannedEmail
-                                    .OrderByDescending(x => x.Email)
-                                    .Skip((pageIndex - 1) * pageSize)
-                                    .Take(pageSize);
-                return new PagedList<BannedEmail>(results, pageIndex, pageSize, total);
-            });
+            var query = _context.BannedEmail.OrderByDescending(x => x.Email);
+            return await PaginatedList<BannedEmail>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
-        public PagedList<BannedEmail> GetAllPaged(string search, int pageIndex, int pageSize)
+        public async Task<PaginatedList<BannedEmail>> GetAllPaged(string search, int pageIndex, int pageSize)
         {
             search = StringUtils.SafePlainText(search);
-            var cacheKey = string.Concat(CacheKeys.BannedEmail.StartsWith, "GetAllPaged-", search, "-", pageIndex, "-", pageSize);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
-                var total = _context.BannedEmail.Count(x => x.Email.ToLower().Contains(search.ToLower()));
-                var results = _context.BannedEmail
-                                    .Where(x => x.Email.ToLower().Contains(search.ToLower()))
-                                    .OrderByDescending(x => x.Email)
-                                    .Skip((pageIndex - 1) * pageSize)
-                                    .Take(pageSize);
-                return new PagedList<BannedEmail>(results, pageIndex, pageSize, total);
-            });
+
+            var query = _context.BannedEmail
+                .Where(x => x.Email.ToLower().Contains(search.ToLower()))
+                .OrderByDescending(x => x.Email);
+            return await PaginatedList<BannedEmail>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
         public IList<BannedEmail> GetAllWildCards()

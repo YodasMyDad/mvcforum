@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Web.Mvc;
     using Application;
     using Application.CustomActionResults;
@@ -93,7 +94,7 @@
             return View(viewmodel);
         }
 
-        public ActionResult Activity(int? p)
+        public async Task<ActionResult> Activity(int? p)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
@@ -101,7 +102,7 @@
                 var pageIndex = p ?? 1;
 
                 // Get the topics
-                var activities =
+                var activities = await 
                     _activityService.GetPagedGroupedActivities(pageIndex,
                         SettingsService.GetSettings().ActivitiesPerPage);
 

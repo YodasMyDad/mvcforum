@@ -5,6 +5,7 @@
     using System.IO;
     using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
     using System.Web.Hosting;
     using System.Web.Mvc;
     using System.Web.Security;
@@ -85,12 +86,13 @@
                 // Set the page index
                 var pageIndex = p ?? 1;
 
+
                 // Get the topics
-                var topics = _topicService.GetMembersActivity(pageIndex,
+                var topics = Task.Run(() => _topicService.GetMembersActivity(pageIndex,
                     settings.TopicsPerPage,
                     SiteConstants.Instance.MembersActivityListSize,
                     LoggedOnReadOnlyUser.Id,
-                    allowedCategories);
+                    allowedCategories)).Result;
 
                 // Get the Topic View Models
                 var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole,
@@ -1024,7 +1026,7 @@
             return View(topicViewModel);
         }
 
-        public ActionResult Show(string slug, int? p)
+        public async Task<ActionResult> Show(string slug, int? p)
         {
             // Set the page index
             var pageIndex = p ?? 1;
@@ -1057,7 +1059,7 @@
                     }
 
                     // Get the posts
-                    var posts = _postService.GetPagedPostsByTopic(pageIndex,
+                    var posts = await _postService.GetPagedPostsByTopic(pageIndex,
                         amountPerPage,
                         int.MaxValue,
                         topic.Id,

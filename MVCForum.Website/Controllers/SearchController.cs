@@ -1,6 +1,7 @@
 ﻿namespace MvcForum.Web.Controllers
 {
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Web.Mvc;
     using Core.Constants;
     using Core.Interfaces.Services;
@@ -30,7 +31,7 @@
         }
 
         [HttpGet]
-        public ActionResult Index(int? p, string term)
+        public async Task<ActionResult> Index(int? p, string term)
         {
             if (!string.IsNullOrEmpty(term))
             {
@@ -52,7 +53,7 @@
                     var pageIndex = p ?? 1;
 
                     // Get all the topics based on the search value
-                    var posts = _postService.SearchPosts(pageIndex,
+                    var posts = await _postService.SearchPosts(pageIndex,
                         SiteConstants.Instance.SearchListSize,
                         int.MaxValue,
                         term,

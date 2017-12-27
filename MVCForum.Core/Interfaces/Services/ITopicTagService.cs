@@ -2,8 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using DomainModel.Entities;
     using DomainModel.General;
+    using Models.General;
 
     public partial interface ITopicTagService
     {
@@ -12,8 +14,8 @@
         IList<TopicTag> GetStartsWith(string term, int amountToTake = 4);
         IList<TopicTag> GetContains(string term, int amountToTake = 4);
         IEnumerable<TopicTag> GetByTopic(Topic topic);
-        PagedList<TopicTag> GetPagedGroupedTags(int pageIndex, int pageSize);
-        PagedList<TopicTag> SearchPagedGroupedTags(string search, int pageIndex, int pageSize);
+        Task<PaginatedList<TopicTag>> GetPagedGroupedTags(int pageIndex, int pageSize);
+        Task<PaginatedList<TopicTag>> SearchPagedGroupedTags(string search, int pageIndex, int pageSize);
         TopicTag Add(TopicTag tag);
         TopicTag Get(Guid tag);
         TopicTag Get(string tag);

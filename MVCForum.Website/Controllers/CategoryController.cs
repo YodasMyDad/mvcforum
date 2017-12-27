@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Web.Mvc;
     using Application.CustomActionResults;
     using Core.Constants;
@@ -131,7 +132,7 @@
             }
         }
 
-        public ActionResult Show(string slug, int? p)
+        public async Task<ActionResult> Show(string slug, int? p)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
@@ -149,7 +150,7 @@
 
                 if (!permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
                 {
-                    var topics = _topicService.GetPagedTopicsByCategory(pageIndex,
+                    var topics = await _topicService.GetPagedTopicsByCategory(pageIndex,
                         SettingsService.GetSettings().TopicsPerPage,
                         int.MaxValue, category.Category.Id);
 

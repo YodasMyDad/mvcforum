@@ -2,9 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using System.Web.Mvc;
     using DomainModel.Entities;
     using DomainModel.General;
+    using Models.General;
     using UnitOfWork;
 
     public partial interface ITopicService
@@ -20,27 +22,27 @@
         Topic Add(Topic topic);
         IList<Topic> GetTodaysTopics(int amountToTake, List<Category> allowedCategories);
 
-        PagedList<Topic> GetRecentTopics(int pageIndex, int pageSize, int amountToTake,
+        Task<PaginatedList<Topic>> GetRecentTopics(int pageIndex, int pageSize, int amountToTake,
             List<Category> allowedCategories);
 
         IList<Topic> GetRecentRssTopics(int amountToTake, List<Category> allowedCategories);
         IList<Topic> GetTopicsByUser(Guid memberId, List<Category> allowedCategories);
         IList<Topic> GetTopicsByLastPost(List<Guid> postIds, List<Category> allowedCategories);
-        PagedList<Topic> GetPagedTopicsByCategory(int pageIndex, int pageSize, int amountToTake, Guid categoryId);
-        PagedList<Topic> GetPagedPendingTopics(int pageIndex, int pageSize, List<Category> allowedCategories);
+        Task<PaginatedList<Topic>> GetPagedTopicsByCategory(int pageIndex, int pageSize, int amountToTake, Guid categoryId);
+        Task<PaginatedList<Topic>> GetPagedPendingTopics(int pageIndex, int pageSize, List<Category> allowedCategories);
         IList<Topic> GetPendingTopics(List<Category> allowedCategories, MembershipRole usersRole);
         int GetPendingTopicsCount(List<Category> allowedCategories);
         IList<Topic> GetRssTopicsByCategory(int amountToTake, Guid categoryId);
 
-        PagedList<Topic> GetPagedTopicsByTag(int pageIndex, int pageSize, int amountToTake, string tag,
+        Task<PaginatedList<Topic>> GetPagedTopicsByTag(int pageIndex, int pageSize, int amountToTake, string tag,
             List<Category> allowedCategories);
 
         IList<Topic> SearchTopics(int amountToTake, string searchTerm, List<Category> allowedCategories);
 
-        PagedList<Topic> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> topicIds,
+        Task<PaginatedList<Topic>> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> topicIds,
             List<Category> allowedCategories);
 
-        PagedList<Topic> GetMembersActivity(int pageIndex, int pageSize, int amountToTake, Guid memberGuid,
+        Task<PaginatedList<Topic>> GetMembersActivity(int pageIndex, int pageSize, int amountToTake, Guid memberGuid,
             List<Category> allowedCategories);
 
         IList<Topic> GetTopicsByCsv(int amountToTake, List<Guid> topicIds, List<Category> allowedCategories);
@@ -65,7 +67,7 @@
 
         IList<Topic> GetAllTopicsByCategory(Guid categoryId);
 
-        PagedList<Topic> GetPagedTopicsAll(int pageIndex, int pageSize, int amountToTake,
+        Task<PaginatedList<Topic>> GetPagedTopicsAll(int pageIndex, int pageSize, int amountToTake,
             List<Category> allowedCategories);
 
         IList<Topic> GetTopicBySlugLike(string slug);

@@ -7,6 +7,7 @@
     using System.IO;
     using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
     using System.Web;
     using System.Web.Hosting;
     using System.Web.Security;
@@ -19,6 +20,7 @@
     using Interfaces;
     using Interfaces.Services;
     using Interfaces.UnitOfWork;
+    using Models.General;
     using Utilities;
 
     public partial class MembershipService : IMembershipService
@@ -656,36 +658,22 @@
             return _cacheService.CachePerRequest(cacheKey, () => _context.MembershipUser.ToList());
         }
 
-        public PagedList<MembershipUser> GetAll(int pageIndex, int pageSize)
+        public async Task<PaginatedList<MembershipUser>> GetAll(int pageIndex, int pageSize)
         {
-            var cacheKey = string.Concat(CacheKeys.Member.StartsWith, "GetAll-", pageIndex, "-", pageSize);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
-                var totalCount = _context.MembershipUser.Count();
-                var results = _context.MembershipUser
-                    .OrderBy(x => x.UserName)
-                    .Skip((pageIndex - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToList();
-
-                return new PagedList<MembershipUser>(results, pageIndex, pageSize, totalCount);
-            });
+            var query = _context.MembershipUser.OrderBy(x => x.UserName);
+            return await PaginatedList<MembershipUser>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
-        public PagedList<MembershipUser> SearchMembers(string search, int pageIndex, int pageSize)
+        public async Task<PaginatedList<MembershipUser>> SearchMembers(string search, int pageIndex, int pageSize)
         {
             search = StringUtils.SafePlainText(search);
+
             var query = _context.MembershipUser
                 .Where(x => x.UserName.ToUpper().Contains(search.ToUpper()) ||
-                            x.Email.ToUpper().Contains(search.ToUpper()));
+                            x.Email.ToUpper().Contains(search.ToUpper()))
+                .OrderBy(x => x.UserName);
 
-            var results = query
-                .OrderBy(x => x.UserName)
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-
-            return new PagedList<MembershipUser>(results, pageIndex, pageSize, query.Count());
+            return await PaginatedList<MembershipUser>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
         public IList<MembershipUser> SearchMembers(string username, int amount)

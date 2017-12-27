@@ -2,9 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using DomainModel.Entities;
     using DomainModel.Enums;
     using DomainModel.General;
+    using Models.General;
     using UnitOfWork;
 
     public enum LoginAttemptStatus
@@ -44,8 +46,8 @@
         string ErrorCodeToString(MembershipCreateStatus createStatus);
         MembershipUser CreateEmptyUser();
         IList<MembershipUser> GetAll();
-        PagedList<MembershipUser> GetAll(int pageIndex, int pageSize);
-        PagedList<MembershipUser> SearchMembers(string search, int pageIndex, int pageSize);
+        Task<PaginatedList<MembershipUser>> GetAll(int pageIndex, int pageSize);
+        Task<PaginatedList<MembershipUser>> SearchMembers(string search, int pageIndex, int pageSize);
         IList<MembershipUser> SearchMembers(string username, int amount);
         IList<MembershipUser> GetActiveMembers();
         void ProfileUpdated(MembershipUser user);

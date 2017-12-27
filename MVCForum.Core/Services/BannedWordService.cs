@@ -2,13 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data.Entity;
     using System.Linq;
+    using System.Threading.Tasks;
     using Constants;
     using Data.Context;
     using DomainModel.Entities;
-    using DomainModel.General;
     using Interfaces;
     using Interfaces.Services;
+    using Models.General;
     using Utilities;
 
     public partial class BannedWordService : IBannedWordService
@@ -51,40 +53,20 @@
             return _cacheService.CachePerRequest(cacheKey, () => _context.BannedWord.FirstOrDefault(x => x.Id == id));
         }
 
-        public PagedList<BannedWord> GetAllPaged(int pageIndex, int pageSize)
+        public async Task<PaginatedList<BannedWord>> GetAllPaged(int pageIndex, int pageSize)
         {
-            var cacheKey = string.Concat(CacheKeys.BannedWord.StartsWith, "GetAllPaged-", pageIndex, "-", pageSize);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
-                var total = _context.BannedWord.Count();
-                var results = _context.BannedWord
-                                    .AsNoTracking()
-                                    .OrderBy(x => x.Word)
-                                    .Skip((pageIndex - 1) * pageSize)
-                                    .Take(pageSize)
-                                    .ToList();
-
-                return new PagedList<BannedWord>(results, pageIndex, pageSize, total);
-            });
+            var query = _context.BannedWord.OrderBy(x => x.Word);
+            return await PaginatedList<BannedWord>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
-        public PagedList<BannedWord> GetAllPaged(string search, int pageIndex, int pageSize)
+        public async Task<PaginatedList<BannedWord>> GetAllPaged(string search, int pageIndex, int pageSize)
         {
             search = StringUtils.SafePlainText(search);
+            var query = _context.BannedWord
+                            .Where(x => x.Word.ToLower().Contains(search.ToLower()))
+                            .OrderBy(x => x.Word);
+            return await PaginatedList<BannedWord>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
 
-            var cacheKey = string.Concat(CacheKeys.BannedWord.StartsWith, "GetAllPaged-", search, "-", pageIndex, "-", pageSize);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
-                var total = _context.BannedWord.Count(x => x.Word.ToLower().Contains(search.ToLower()));
-                var results = _context.BannedWord
-                                    .Where(x => x.Word.ToLower().Contains(search.ToLower()))
-                                    .OrderBy(x => x.Word)
-                                    .Skip((pageIndex - 1) * pageSize)
-                                    .Take(pageSize)
-                                    .ToList();
-
-                return new PagedList<BannedWord>(results, pageIndex, pageSize, total);
-            });
         }
 
         public string SanitiseBannedWords(string content)

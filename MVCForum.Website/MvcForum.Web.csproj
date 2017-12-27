@@ -885,6 +885,9 @@
     <Content Include="Scripts\tinymce\themes\modern\theme.min.js" />
     <Content Include="Scripts\tinymce\tinymce.js" />
     <Content Include="Scripts\tinymce\tinymce.min.js" />
+    <Content Include="Themes\Metro\Content\Styles\Theme.css">
+      <DependentUpon>Theme.scss</DependentUpon>
+    </Content>
     <Content Include="Themes\Metro\Content\Styles\Theme.min.css" />
     <Content Include="Views\Moderate\Index.cshtml" />
     <Content Include="Views\Moderate\GetMoreTopics.cshtml" />
@@ -946,6 +949,10 @@
     <Content Include="Views\Post\GetPostEditHistory.cshtml" />
     <Content Include="Areas\Admin\Views\Account\ManageUserPoints.cshtml" />
     <Content Include="Themes\Metro\Content\Styles\Theme.css.map" />
+    <None Include="compilerconfig.json" />
+    <None Include="compilerconfig.json.defaults">
+      <DependentUpon>compilerconfig.json</DependentUpon>
+    </None>
     <None Include="Properties\PublishProfiles\Local Deployment.pubxml" />
     <Content Include="Scripts\jquery-ui.min.js" />
     <Content Include="Scripts\json2.js" />
@@ -1331,6 +1338,9 @@
     </PackageReference>
     <PackageReference Include="Antlr">
       <Version>3.5.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="BuildWebCompiler">
+      <Version>1.11.326</Version>
     </PackageReference>
     <PackageReference Include="Common.Logging">
       <Version>3.4.1</Version>

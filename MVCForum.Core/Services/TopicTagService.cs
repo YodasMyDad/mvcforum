@@ -4,12 +4,14 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
+    using System.Threading.Tasks;
     using Constants;
     using Data.Context;
     using DomainModel.Entities;
     using DomainModel.General;
     using Interfaces;
     using Interfaces.Services;
+    using Models.General;
     using Utilities;
 
     public partial class TopicTagService : ITopicTagService
@@ -90,20 +92,16 @@
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public PagedList<TopicTag> GetPagedGroupedTags(int pageIndex, int pageSize)
+        public async Task<PaginatedList<TopicTag>> GetPagedGroupedTags(int pageIndex, int pageSize)
         {
-            var totalCount = _context.TopicTag.Count();
 
             // Get the topics using an efficient
-            var results = _context.TopicTag
-                                .OrderByDescending(x => x.Tag)
-                                .Skip((pageIndex - 1) * pageSize)
-                                .Take(pageSize)
-                                .ToList();
+            var query = _context.TopicTag
+                            .OrderByDescending(x => x.Tag);
 
 
             // Return a paged list
-            return new PagedList<TopicTag>(results, pageIndex, pageSize, totalCount);
+            return await PaginatedList<TopicTag>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
         /// <summary>
@@ -113,22 +111,17 @@
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        public PagedList<TopicTag> SearchPagedGroupedTags(string search, int pageIndex, int pageSize)
+        public async Task<PaginatedList<TopicTag>> SearchPagedGroupedTags(string search, int pageIndex, int pageSize)
         {
             search = StringUtils.SafePlainText(search);
-            var totalCount = _context.TopicTag.Count(x => x.Tag.Contains(search));
 
             // Get the topics using an efficient
-            var results = _context.TopicTag
-                                .Where(x => x.Tag.Contains(search))
-                                .OrderBy(x => x.Tag)
-                                .Skip((pageIndex - 1) * pageSize)
-                                .Take(pageSize)
-                                .ToList();
-
+            var query = _context.TopicTag
+                            .Where(x => x.Tag.ToUpper().Contains(search.ToUpper()))
+                            .OrderBy(x => x.Tag);
 
             // Return a paged list
-            return new PagedList<TopicTag>(results, pageIndex, pageSize, totalCount);
+            return await PaginatedList<TopicTag>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
         /// <summary>
