@@ -36,14 +36,14 @@
         /// <returns></returns>
         public static Settings Settings(this HtmlHelper helper)
         {
-            return ServiceFactory.Get<ISettingsService>().GetSettings();
+            return DependencyResolver.Current.GetService<ISettingsService>().GetSettings();
         }
 
         public static MembershipUser CurrentMember(this HtmlHelper helper)
         {
             if (HttpContext.Current.User.Identity.IsAuthenticated)
             {
-                return ServiceFactory.Get<IMembershipService>().GetUser(HttpContext.Current.User.Identity.Name);
+                return DependencyResolver.Current.GetService<IMembershipService>().GetUser(HttpContext.Current.User.Identity.Name);
             }
             return null;
         }
@@ -82,7 +82,7 @@
 
         public static string Lang(this HtmlHelper helper, string key)
         {
-            var locService = ServiceFactory.Get<ILocalizationService>();
+            var locService = DependencyResolver.Current.GetService<ILocalizationService>();
             return locService.GetResourceString(key);
         }
 

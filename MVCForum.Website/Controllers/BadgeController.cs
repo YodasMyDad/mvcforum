@@ -3,6 +3,7 @@
     using System;
     using System.Web.Mvc;
     using Core.DomainModel.Entities;
+    using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using ViewModels;
@@ -50,7 +51,7 @@
             {
                 try
                 {
-                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.UserName);
+                    var loggedOnUser = User.GetMembershipUser(MembershipService, false);
                     var databaseUpdateNeededOne = _badgeService.ProcessBadge(BadgeType.VoteUp, loggedOnUser);
                     if (databaseUpdateNeededOne)
                     {
@@ -85,7 +86,7 @@
             {
                 try
                 {
-                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.UserName);
+                    var loggedOnUser = User.GetMembershipUser(MembershipService, false);
                     var databaseUpdateNeededOne = _badgeService.ProcessBadge(BadgeType.VoteDown, loggedOnUser);
                     if (databaseUpdateNeededOne)
                     {
@@ -123,7 +124,7 @@
                 {
                     try
                     {
-                        var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.UserName);
+                        var loggedOnUser = User.GetMembershipUser(MembershipService, false);
                         var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Post, loggedOnUser);
 
                         if (databaseUpdateNeeded)
@@ -198,9 +199,9 @@
             {
                 try
                 {
-                    if (LoggedOnReadOnlyUser != null)
+                    var loggedOnUser = User.GetMembershipUser(MembershipService, false);
+                    if (loggedOnUser != null)
                     {
-                        var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.UserName);
                         var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Profile, loggedOnUser);
 
                         if (databaseUpdateNeeded)

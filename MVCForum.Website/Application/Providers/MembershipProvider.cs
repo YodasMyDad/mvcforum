@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Specialized;
     using System.Web.Hosting;
+    using System.Web.Mvc;
     using System.Web.Security;
     using Application;
     using Core.Interfaces.Services;
@@ -29,7 +30,7 @@
         //{
         //    get { return DependencyResolver.Current.GetService<IUnitOfWorkManager>(); }
         //}
-        public IMembershipService MembershipService => ServiceFactory.Get<IMembershipService>();
+        public IMembershipService MembershipService => DependencyResolver.Current.GetService<IMembershipService>();
 
         public override int MinRequiredPasswordLength => _minRequiredPasswordLength;
 

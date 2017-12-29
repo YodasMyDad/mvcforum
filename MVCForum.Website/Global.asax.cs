@@ -18,12 +18,12 @@
 
     public class MvcApplication : HttpApplication
     {
-        public IUnitOfWorkManager UnitOfWorkManager => ServiceFactory.Get<IUnitOfWorkManager>();
-        public IBadgeService BadgeService => ServiceFactory.Get<IBadgeService>();
-        public ISettingsService SettingsService => ServiceFactory.Get<ISettingsService>();
-        public ILoggingService LoggingService => ServiceFactory.Get<ILoggingService>();
-        public ILocalizationService LocalizationService => ServiceFactory.Get<ILocalizationService>();
-        public IReflectionService ReflectionService => ServiceFactory.Get<IReflectionService>();
+        public IUnitOfWorkManager UnitOfWorkManager => DependencyResolver.Current.GetService<IUnitOfWorkManager>();
+        public IBadgeService BadgeService => DependencyResolver.Current.GetService<IBadgeService>();
+        public ISettingsService SettingsService => DependencyResolver.Current.GetService<ISettingsService>();
+        public ILoggingService LoggingService => DependencyResolver.Current.GetService<ILoggingService>();
+        public ILocalizationService LocalizationService => DependencyResolver.Current.GetService<ILocalizationService>();
+        public IReflectionService ReflectionService => DependencyResolver.Current.GetService<IReflectionService>();
 
 
         protected void Application_Start()

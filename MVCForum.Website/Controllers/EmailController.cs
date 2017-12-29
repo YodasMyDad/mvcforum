@@ -49,7 +49,7 @@
                         var isCategory = subscription.SubscriptionType.Contains("category");
                         var isTag = subscription.SubscriptionType.Contains("tag");
                         var id = subscription.Id;
-                        var dbUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                        var dbUser = MembershipService.GetUser(User.Identity.Name);
 
                         if (isCategory)
                         {
@@ -137,7 +137,7 @@
                         var isCategory = subscription.SubscriptionType.Contains("category");
                         var isTag = subscription.SubscriptionType.Contains("tag");
                         var id = subscription.Id;
-                        var dbUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                        var dbUser = MembershipService.GetUser(User.Identity.Name);
                         if (isCategory)
                         {
                             // get the category
@@ -147,7 +147,7 @@
                             {
                                 // get the notifications by user
                                 var notifications =
-                                    _categoryNotificationService.GetByUserAndCategory(LoggedOnReadOnlyUser, cat, true);
+                                    _categoryNotificationService.GetByUserAndCategory(dbUser, cat, true);
 
                                 if (notifications.Any())
                                 {
@@ -168,7 +168,7 @@
                             {
                                 // get the notifications by user
                                 var notifications =
-                                    _tagNotificationService.GetByUserAndTag(LoggedOnReadOnlyUser, tag, true);
+                                    _tagNotificationService.GetByUserAndTag(dbUser, tag, true);
 
                                 if (notifications.Any())
                                 {
@@ -189,7 +189,7 @@
                             {
                                 // get the notifications by user
                                 var notifications =
-                                    _topicNotificationService.GetByUserAndTopic(LoggedOnReadOnlyUser, topic, true);
+                                    _topicNotificationService.GetByUserAndTopic(dbUser, topic, true);
 
                                 if (notifications.Any())
                                 {

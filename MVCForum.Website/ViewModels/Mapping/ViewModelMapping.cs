@@ -237,13 +237,17 @@
             MembershipRole usersRole,
             MembershipUser loggedOnUser,
             List<Category> allowedCategories,
-            Settings settings)
+            Settings settings,
+            IPostService postService,
+            ITopicNotificationService topicNotificationService,
+            IPollAnswerService pollAnswerService,
+            IVoteService voteService,
+            IFavouriteService favouriteService)
         {
             // Get all topic Ids
             var topicIds = topics.Select(x => x.Id).ToList();
 
             // Gets posts for topics
-            var postService = ServiceFactory.Get<IPostService>();
             var posts = postService.GetPostsByTopics(topicIds, allowedCategories);
             var groupedPosts = posts.ToLookup(x => x.Topic.Id);
 
@@ -258,7 +262,7 @@
                 var permission = permissions[topic.Category];
                 var topicPosts = groupedPosts.Contains(id) ? groupedPosts[id].ToList() : new List<Post>();
                 viewModels.Add(CreateTopicViewModel(topic, permission, topicPosts, null, null, null, null, loggedOnUser,
-                    settings));
+                    settings, topicNotificationService, pollAnswerService, voteService, favouriteService));
             }
             return viewModels;
         }
@@ -271,14 +275,13 @@
             int? totalCount,
             int? totalPages,
             MembershipUser loggedOnUser,
-            Settings settings,
+            Settings settings, 
+            ITopicNotificationService topicNotificationService,
+            IPollAnswerService pollAnswerService,
+            IVoteService voteService,
+            IFavouriteService favouriteService,
             bool getExtendedData = false)
         {
-            var topicNotificationService = ServiceFactory.Get<ITopicNotificationService>();
-            var pollAnswerService = ServiceFactory.Get<IPollAnswerService>();
-            var voteService = ServiceFactory.Get<IVoteService>();
-            var favouriteService = ServiceFactory.Get<IFavouriteService>();
-
             var userIsAuthenticated = loggedOnUser != null;
 
             // Check for online status

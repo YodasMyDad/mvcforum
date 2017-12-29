@@ -13,6 +13,7 @@
     using Core.DomainModel.Entities;
     using Core.DomainModel.Enums;
     using Core.DomainModel.General;
+    using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using ViewModels;
@@ -76,7 +77,9 @@
             {
                 if (ModelState.IsValid)
                 {
-                    var user = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                    var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+
+                    var user = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
                     user.HasAgreedToTermsAndConditions = viewmodel.Agree;
                     try
                     {
@@ -123,6 +126,9 @@
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
                 // Allowed Categories for a guest - As that's all we want latest RSS to show
                 var guestRole = RoleService.GetRole(AppConstants.GuestRoleName);
                 var allowedCategories = _categoryService.GetAllowedCategories(guestRole);
@@ -142,7 +148,7 @@
                 // loop through the categories and get the permissions
                 foreach (var category in categories)
                 {
-                    var permissionSet = RoleService.GetPermissions(category, UsersRole);
+                    var permissionSet = RoleService.GetPermissions(category, loggedOnUsersRole);
                     permissions.Add(category, permissionSet);
                 }
 

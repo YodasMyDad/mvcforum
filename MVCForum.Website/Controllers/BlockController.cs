@@ -33,7 +33,7 @@
                     try
                     {
                         // Get a db user
-                        var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                        var loggedOnUser = MembershipService.GetUser(User.Identity.Name, true);
 
                         // Other member
                         var otherMember = MembershipService.GetUser(viewModel.MemberToBlockOrUnBlock);

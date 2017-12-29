@@ -1,12 +1,13 @@
 ﻿namespace MvcForum.Web.Application.Providers
 {
     using System;
+    using System.Web.Mvc;
     using Application;
     using Core.Interfaces.Services;
 
     public class RoleProvider : System.Web.Security.RoleProvider
     {
-        public IMembershipService MembershipService => ServiceFactory.Get<IMembershipService>();
+        public IMembershipService MembershipService => DependencyResolver.Current.GetService<IMembershipService>();
 
         public override string[] GetRolesForUser(string username)
         {

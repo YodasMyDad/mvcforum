@@ -3,7 +3,9 @@
     using System;
     using System.Linq;
     using System.Web.Mvc;
+    using Core.Constants;
     using Core.DomainModel.Entities;
+    using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using ViewModels;
@@ -33,8 +35,10 @@
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+
                 // Get the favourites
-                var favourites = _favouriteService.GetAllByMember(LoggedOnReadOnlyUser.Id);
+                var favourites = _favouriteService.GetAllByMember(loggedOnReadOnlyUser.Id);
 
                 // Pull out the posts
                 var posts = favourites.Select(x => x.Post);
@@ -46,9 +50,9 @@
                 // TODO - Need to improve performance of this
                 foreach (var post in posts)
                 {
-                    var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
+                    var permissions = RoleService.GetPermissions(post.Topic.Category, loggedOnReadOnlyUser.Roles.FirstOrDefault());
                     var postViewModel = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions,
-                        post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
+                        post.Topic, loggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
                     postViewModel.ShowTopicName = true;
                     viewModel.Posts.Add(postViewModel);
                 }
@@ -63,7 +67,8 @@
         public JsonResult FavouritePost(FavouritePostViewModel viewModel)
         {
             var returnValue = new FavouriteJsonReturnModel();
-            if (Request.IsAjaxRequest() && LoggedOnReadOnlyUser != null)
+            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+            if (Request.IsAjaxRequest() && loggedOnReadOnlyUser != null)
             {
                 using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
                 {
@@ -73,7 +78,7 @@
                         var topic = _topicService.Get(post.Topic.Id);
 
                         // See if this is a user adding or removing the favourite
-                        var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                        var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
                         var existingFavourite = _favouriteService.GetByMemberAndPost(loggedOnUser.Id, post.Id);
                         if (existingFavourite != null)
                         {

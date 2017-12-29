@@ -5,6 +5,7 @@
     using System.Net.Mime;
     using System.Web.Hosting;
     using System.Web.Mvc;
+    using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
 
@@ -29,19 +30,26 @@
             var uploadedFileById = _uploadedFileService.Get(id);
             if (uploadedFileById != null)
             {
-                // Check the user has permission to download this file
-                var fileCategory = uploadedFileById.Post.Topic.Category;
-                var allowedCategoryIds = _categoryService.GetAllowedCategories(UsersRole).Select(x => x.Id);
-                if (allowedCategoryIds.Contains(fileCategory.Id))
+                using (UnitOfWorkManager.NewUnitOfWork())
                 {
-                    //if(AppHelpers.FileIsImage(uploadedFileById.FilePath))
-                    //{
+                    var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                    var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
 
-                    //}
+                    // Check the user has permission to download this file
+                    var fileCategory = uploadedFileById.Post.Topic.Category;
+                    var allowedCategoryIds = _categoryService.GetAllowedCategories(loggedOnUsersRole).Select(x => x.Id);
+                    if (allowedCategoryIds.Contains(fileCategory.Id))
+                    {
+                        //if(AppHelpers.FileIsImage(uploadedFileById.FilePath))
+                        //{
 
-                    var fileBytes = System.IO.File.ReadAllBytes(HostingEnvironment.MapPath(uploadedFileById.FilePath));
-                    return File(fileBytes, MediaTypeNames.Application.Octet, uploadedFileById.Filename);
+                        //}
+
+                        var fileBytes = System.IO.File.ReadAllBytes(HostingEnvironment.MapPath(uploadedFileById.FilePath));
+                        return File(fileBytes, MediaTypeNames.Application.Octet, uploadedFileById.Filename);
+                    }
                 }
+
             }
             return null;
         }

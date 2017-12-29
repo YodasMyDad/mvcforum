@@ -7,6 +7,7 @@
     using System.Web.Security;
     using Core.DomainModel.Entities;
     using Core.DomainModel.Enums;
+    using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using ViewModels;
@@ -45,16 +46,19 @@
         {
             if (Request.IsAjaxRequest())
             {
-                // Quick check to see if user is locked out, when logged in
-                if (LoggedOnReadOnlyUser.IsLockedOut | !LoggedOnReadOnlyUser.IsApproved)
-                {
-                    FormsAuthentication.SignOut();
-                    throw new Exception(LocalizationService.GetResourceString("Errors.NoAccess"));
-                }
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
+                    var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+
+                    // Quick check to see if user is locked out, when logged in
+                    if (loggedOnReadOnlyUser.IsLockedOut | !loggedOnReadOnlyUser.IsApproved)
+                    {
+                        FormsAuthentication.SignOut();
+                        throw new Exception(LocalizationService.GetResourceString("Errors.NoAccess"));
+                    }
+
                     // Get a db user
-                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                    var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
 
                     // Firstly get the post
                     var post = _postService.Get(voteUpViewModel.Post);
@@ -66,7 +70,7 @@
                     var postWriter = post.User;
 
                     // Mark the post up or down
-                    MarkPostUpOrDown(post, postWriter, voter, PostType.Positive);
+                    MarkPostUpOrDown(post, postWriter, voter, PostType.Positive, loggedOnReadOnlyUser);
 
                     try
                     {
@@ -89,29 +93,31 @@
         {
             if (Request.IsAjaxRequest())
             {
-                // Quick check to see if user is locked out, when logged in
-                if (LoggedOnReadOnlyUser.IsLockedOut | !LoggedOnReadOnlyUser.IsApproved)
-                {
-                    FormsAuthentication.SignOut();
-                    throw new Exception(LocalizationService.GetResourceString("Errors.NoAccess"));
-                }
-
-                // Get a db user
-                var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
-
-                // Firstly get the post
-                var post = _postService.Get(voteDownViewModel.Post);
-
-                // Now get the current user
-                var voter = loggedOnUser;
-
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
+                    var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+
+                    // Quick check to see if user is locked out, when logged in
+                    if (loggedOnReadOnlyUser.IsLockedOut | !loggedOnReadOnlyUser.IsApproved)
+                    {
+                        FormsAuthentication.SignOut();
+                        throw new Exception(LocalizationService.GetResourceString("Errors.NoAccess"));
+                    }
+
+                    // Get a db user
+                    var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
+
+                    // Firstly get the post
+                    var post = _postService.Get(voteDownViewModel.Post);
+
+                    // Now get the current user
+                    var voter = loggedOnUser;
+
                     // Also get the user that wrote the post
                     var postWriter = post.User;
 
                     // Mark the post up or down
-                    MarkPostUpOrDown(post, postWriter, voter, PostType.Negative);
+                    MarkPostUpOrDown(post, postWriter, voter, PostType.Negative, loggedOnReadOnlyUser);
 
                     try
                     {
@@ -127,14 +133,14 @@
             }
         }
 
-        private void MarkPostUpOrDown(Post post, MembershipUser postWriter, MembershipUser voter, PostType postType)
+        private void MarkPostUpOrDown(Post post, MembershipUser postWriter, MembershipUser voter, PostType postType, MembershipUser loggedOnReadOnlyUser)
         {
             var settings = SettingsService.GetSettings();
             // Check this user is not the post owner
             if (voter.Id != postWriter.Id)
             {
                 // Not the same person, now check they haven't voted on this post before
-                var votes = post.Votes.Where(x => x.VotedByMembershipUser.Id == LoggedOnReadOnlyUser.Id).ToList();
+                var votes = post.Votes.Where(x => x.VotedByMembershipUser.Id == loggedOnReadOnlyUser.Id).ToList();
                 if (votes.Any())
                 {
                     // Already voted, so delete the vote and remove the points
@@ -189,17 +195,20 @@
         {
             if (Request.IsAjaxRequest())
             {
-                // Quick check to see if user is locked out, when logged in
-                if (LoggedOnReadOnlyUser.IsLockedOut | !LoggedOnReadOnlyUser.IsApproved)
-                {
-                    FormsAuthentication.SignOut();
-                    throw new Exception(LocalizationService.GetResourceString("Errors.NoAccess"));
-                }
-
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
+                    var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+
+                    // Quick check to see if user is locked out, when logged in
+                    if (loggedOnReadOnlyUser.IsLockedOut | !loggedOnReadOnlyUser.IsApproved)
+                    {
+                        FormsAuthentication.SignOut();
+                        throw new Exception(LocalizationService.GetResourceString("Errors.NoAccess"));
+                    }
+
+
                     // Get a db user
-                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                    var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
 
                     // Firstly get the post
                     var post = _postService.Get(markAsSolutionViewModel.Post);

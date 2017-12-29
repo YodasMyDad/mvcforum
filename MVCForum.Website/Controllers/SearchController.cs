@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using Core.Constants;
+    using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using ViewModels;
@@ -42,11 +43,14 @@
                         term = term.Trim();
                     }
 
+                    var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                    var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
                     // Get the global settings
                     var settings = SettingsService.GetSettings();
 
                     // Get allowed categories
-                    var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                    var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
 
 
                     // Set the page index
@@ -61,7 +65,7 @@
 
                     // Get all the permissions for these topics
                     var topicPermissions =
-                        ViewModelMapping.GetPermissionsForTopics(posts.Select(x => x.Topic), RoleService, UsersRole);
+                        ViewModelMapping.GetPermissionsForTopics(posts.Select(x => x.Topic), RoleService, loggedOnUsersRole);
 
                     // Get the post Ids
                     var postIds = posts.Select(x => x.Id).ToList();
@@ -74,7 +78,7 @@
 
                     // Create the post view models
                     var viewModels = ViewModelMapping.CreatePostViewModels(posts.ToList(), votes, topicPermissions,
-                        LoggedOnReadOnlyUser, settings, favs);
+                        loggedOnReadOnlyUser, settings, favs);
 
                     // create the view model
                     var viewModel = new SearchViewModel

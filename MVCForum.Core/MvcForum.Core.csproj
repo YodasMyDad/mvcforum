@@ -46,6 +46,7 @@
     <Compile Include="Data\LinqKit\Extensions.cs" />
     <Compile Include="Data\LinqKit\Linq.cs" />
     <Compile Include="Data\LinqKit\PredicateBuilder.cs" />
+    <Compile Include="ExtensionMethods\IdentityExtensions.cs" />
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\BadgeActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -238,7 +239,7 @@
     <Compile Include="Services\LoggingService.cs" />
     <Compile Include="Services\MembershipService.cs" />
     <Compile Include="Services\MembershipUserPointsService.cs" />
-    <Compile Include="Services\Migrations\Configuration.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Services\PermissionService.cs" />
     <Compile Include="Services\PollAnswerService.cs" />
     <Compile Include="Services\PollService.cs" />
@@ -251,7 +252,7 @@
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\ServiceHelpers.cs" />
     <Compile Include="Services\SettingsService.cs" />
-    <Compile Include="Services\SiteConfig\SiteConfig.cs" />
+    <Compile Include="SiteConfig\SiteConfig.cs" />
     <Compile Include="Services\TagNotificationService.cs" />
     <Compile Include="Services\TopicNotificationService.cs" />
     <Compile Include="Services\TopicService.cs" />
@@ -368,9 +369,7 @@
       <Version>1.5.3</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ExtensionMethods\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201712271549027_InitialCommit.resx">
       <DependentUpon>201712271549027_InitialCommit.cs</DependentUpon>

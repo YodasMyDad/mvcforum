@@ -2,6 +2,7 @@
 {
     using System;
     using System.Web;
+    using System.Web.Mvc;
     using System.Web.Security;
     using Application;
     using Core.Events;
@@ -39,7 +40,7 @@
             // Get membership service - you must create the member in MvcForum if they don't exist
             // Or you'll get an error when they have been redirected to the home page and logged in
             // this is pretty simple to do once we have the member service
-            var memberService = ServiceFactory.Get<IMembershipService>();
+            var memberService = DependencyResolver.Current.GetService<IMembershipService>();
             var user = memberService.GetUser(e.UserName);
             if (user == null)
             {

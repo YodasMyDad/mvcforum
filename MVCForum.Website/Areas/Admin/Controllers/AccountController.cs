@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Web.Mvc;
     using Core.Constants;
     using Core.DomainModel.Entities;
@@ -112,14 +113,14 @@
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = AppConstants.AdminRoleName)]
-        private ActionResult ListUsers(int? p, string search)
+        private async Task<ActionResult> ListUsers(int? p, string search)
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var pageIndex = p ?? 1;
                 var allUsers = string.IsNullOrEmpty(search)
-                    ? MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize)
-                    : MembershipService.SearchMembers(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
+                    ? await MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize)
+                    : await MembershipService.SearchMembers(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
 
                 // Redisplay list of users
                 var allViewModelUsers = allUsers.Select(ViewModelMapping.UserToSingleMemberListViewModel).ToList();
@@ -249,9 +250,9 @@
         /// </summary>
         /// <returns></returns>
         [Authorize(Roles = AppConstants.AdminRoleName)]
-        public ActionResult Manage(int? p, string search)
+        public async Task<ActionResult> Manage(int? p, string search)
         {
-            return ListUsers(p, search);
+            return await ListUsers(p, search);
         }
 
 
@@ -272,7 +273,7 @@
 
         [HttpPost]
         [Authorize(Roles = AppConstants.AdminRoleName)]
-        public ActionResult Edit(MemberEditViewModel userModel)
+        public async Task<ActionResult> Edit(MemberEditViewModel userModel)
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
@@ -315,7 +316,7 @@
                         LocalizationService.GetResourceString("Errors.GenericMessage"));
                 }
 
-                return ListUsers(null, null);
+                return await ListUsers(null, null);
             }
         }
 

@@ -79,7 +79,6 @@
     <Compile Include="Application\TypeFactory.cs" />
     <Compile Include="Application\ViewEngine\ForumViewEngine.cs" />
     <Compile Include="Application\Localization\Localizer.cs" />
-    <Compile Include="Application\ServiceFactory.cs" />
     <Compile Include="Application\CustomActionResults\WrappedJSonResult.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />

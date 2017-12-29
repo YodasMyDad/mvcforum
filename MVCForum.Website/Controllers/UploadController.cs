@@ -10,6 +10,7 @@
     using Core.Constants;
     using Core.DomainModel.Entities;
     using Core.DomainModel.General;
+    using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using ViewModels;
@@ -40,6 +41,9 @@
 
                 try
                 {
+                    var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                    var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
                     // First this to do is get the post
                     var post = _postService.Get(attachFileToPostViewModel.UploadPostId);
                     if (post != null)
@@ -55,9 +59,9 @@
 
                             // Get the permissions for this category, and check they are allowed to update and 
                             // not trying to be a sneaky mofo
-                            var permissions = RoleService.GetPermissions(category, UsersRole);
+                            var permissions = RoleService.GetPermissions(category, loggedOnUsersRole);
                             if (permissions[SiteConstants.Instance.PermissionAttachFiles].IsTicked == false ||
-                                LoggedOnReadOnlyUser.DisableFileUploads == true)
+                                loggedOnReadOnlyUser.DisableFileUploads == true)
                             {
                                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                                 {
@@ -71,7 +75,7 @@
                             // woot! User has permission and all seems ok
                             // Before we save anything, check the user already has an upload folder and if not create one
                             var uploadFolderPath = HostingEnvironment.MapPath(
-                                string.Concat(SiteConstants.Instance.UploadFolderPath, LoggedOnReadOnlyUser.Id));
+                                string.Concat(SiteConstants.Instance.UploadFolderPath, loggedOnReadOnlyUser.Id));
                             if (!Directory.Exists(uploadFolderPath))
                             {
                                 Directory.CreateDirectory(uploadFolderPath);
@@ -96,7 +100,7 @@
                                     }
 
                                     // Add the filename to the database
-                                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                                    var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
                                     var uploadedFile = new UploadedFile
                                     {
                                         Filename = uploadResult.UploadedFileName,
@@ -152,13 +156,16 @@
                     Topic topic = null;
                     try
                     {
+                        var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                        var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
                         // Get the file and associated objects we'll need
                         var uploadedFile = _uploadedFileService.Get(id);
                         var post = uploadedFile.Post;
                         topic = post.Topic;
 
-                        if (UsersRole.RoleName == AppConstants.AdminRoleName ||
-                            uploadedFile.MembershipUser.Id == LoggedOnReadOnlyUser.Id)
+                        if (loggedOnUsersRole.RoleName == AppConstants.AdminRoleName ||
+                            uploadedFile.MembershipUser.Id == loggedOnReadOnlyUser.Id)
                         {
                             // Ok to delete file
                             // Remove it from the post

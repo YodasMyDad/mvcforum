@@ -1,6 +1,7 @@
 ﻿namespace MvcForum.Web.Application
 {
     using System;
+    using System.Web.Mvc;
     using Core.Interfaces.Services;
     using Core.Utilities;
 
@@ -8,7 +9,7 @@
     {
         private static string GetLocalisedText(string key)
         {
-            var locService = ServiceFactory.Get<ILocalizationService>();
+            var locService = DependencyResolver.Current.GetService<ILocalizationService>();
             return locService.GetResourceString(key);
         }
 

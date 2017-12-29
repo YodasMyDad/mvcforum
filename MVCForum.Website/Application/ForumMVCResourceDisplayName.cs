@@ -1,6 +1,7 @@
 ﻿namespace MvcForum.Web.Application
 {
     using System.ComponentModel;
+    using System.Web.Mvc;
     using Core.Interfaces;
     using Core.Interfaces.Services;
 
@@ -13,7 +14,7 @@
             : base(resourceKey)
         {
             ResourceKey = resourceKey;
-            _localizationService = ServiceFactory.Get<ILocalizationService>();
+            _localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
         }
 
         public string ResourceKey { get; set; }

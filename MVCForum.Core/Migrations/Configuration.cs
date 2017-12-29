@@ -128,8 +128,7 @@ namespace MvcForum.Core.Services.Migrations
                 }
 
                 // Create the Standard role if it doesn't exist
-                var standardRole =
-                    context.MembershipRole.FirstOrDefault(x => x.RoleName == SiteConstants.Instance.StandardMembers);
+                var standardRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == SiteConstants.Instance.StandardMembers);
                 if (standardRole == null)
                 {
                     standardRole = new MembershipRole {RoleName = SiteConstants.Instance.StandardMembers};

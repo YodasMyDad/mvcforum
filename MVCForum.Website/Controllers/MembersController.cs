@@ -19,6 +19,7 @@
     using Core.DomainModel.Enums;
     using Core.DomainModel.General;
     using Core.Events;
+    using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using Core.Utilities;
@@ -33,10 +34,14 @@
         private readonly IBannedWordService _bannedWordService;
         private readonly ICategoryService _categoryService;
         private readonly IEmailService _emailService;
+        private readonly IFavouriteService _favouriteService;
+        private readonly IPollAnswerService _pollAnswerService;
         private readonly IPostService _postService;
         private readonly IPrivateMessageService _privateMessageService;
         private readonly IReportService _reportService;
+        private readonly ITopicNotificationService _topicNotificationService;
         private readonly ITopicService _topicService;
+        private readonly IVoteService _voteService;
 
         public MembersController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService, ILocalizationService localizationService,
@@ -45,7 +50,8 @@
             IEmailService emailService, IPrivateMessageService privateMessageService,
             IBannedEmailService bannedEmailService,
             IBannedWordService bannedWordService, ICategoryService categoryService, ITopicService topicService,
-            ICacheService cacheService)
+            ICacheService cacheService, ITopicNotificationService topicNotificationService,
+            IPollAnswerService pollAnswerService, IVoteService voteService, IFavouriteService favouriteService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
                 settingsService, cacheService)
         {
@@ -57,6 +63,10 @@
             _bannedWordService = bannedWordService;
             _categoryService = categoryService;
             _topicService = topicService;
+            _topicNotificationService = topicNotificationService;
+            _pollAnswerService = pollAnswerService;
+            _voteService = voteService;
+            _favouriteService = favouriteService;
         }
 
         [Authorize(Roles = AppConstants.AdminRoleName)]
@@ -106,7 +116,8 @@
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 var user = MembershipService.GetUser(id);
-                var permissions = RoleService.GetPermissions(null, UsersRole);
+                var currentUser = MembershipService.GetUser(User.Identity.Name, true);
+                var permissions = RoleService.GetPermissions(null, currentUser.Roles.FirstOrDefault());
 
                 if (permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                 {
@@ -146,7 +157,8 @@
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 var user = MembershipService.GetUser(id);
-                var permissions = RoleService.GetPermissions(null, UsersRole);
+                var currentUser = MembershipService.GetUser(User.Identity.Name, true);
+                var permissions = RoleService.GetPermissions(null, currentUser.Roles.FirstOrDefault());
 
                 if (permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                 {
@@ -196,20 +208,21 @@
 
         public JsonResult LastActiveCheck()
         {
-            if (UserIsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
-                var rightNow = DateTime.UtcNow;
-                var usersDate = LoggedOnReadOnlyUser.LastActivityDate ?? DateTime.UtcNow.AddDays(-1);
-
-                var span = rightNow.Subtract(usersDate);
-                var totalMins = span.TotalMinutes;
-
-                if (totalMins > AppConstants.TimeSpanInMinutesToDoCheck)
+                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
-                    using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                    var rightNow = DateTime.UtcNow;
+                    var currentUser = MembershipService.GetUser(User.Identity.Name, true);
+                    var usersDate = currentUser.LastActivityDate ?? DateTime.UtcNow.AddDays(-1);
+
+                    var span = rightNow.Subtract(usersDate);
+                    var totalMins = span.TotalMinutes;
+
+                    if (totalMins > AppConstants.TimeSpanInMinutesToDoCheck)
                     {
                         // Actually get the user, LoggedOnUser has no tracking
-                        var loggedOnUser = MembershipService.GetUser(Username);
+                        var loggedOnUser = MembershipService.GetUser(User.Identity.Name);
 
                         // Update users last activity date so we can show the latest users online
                         loggedOnUser.LastActivityDate = DateTime.UtcNow;
@@ -237,8 +250,10 @@
             using (UnitOfWorkManager.NewUnitOfWork())
             {
                 var member = MembershipService.GetUserBySlug(slug);
-                var loggedonId = UserIsAuthenticated ? LoggedOnReadOnlyUser.Id : Guid.Empty;
-                var permissions = RoleService.GetPermissions(null, UsersRole);
+                var loggedOnReadOnlyUser = User.Identity.IsAuthenticated ? MembershipService.GetUser(User.Identity.Name, true) : null;
+                var usersRole = loggedOnReadOnlyUser == null ? RoleService.GetRole(AppConstants.GuestRoleName, true) : loggedOnReadOnlyUser.Roles.FirstOrDefault();
+                var loggedonId = loggedOnReadOnlyUser?.Id ?? Guid.Empty;
+                var permissions = RoleService.GetPermissions(null, usersRole);
 
                 // Localise the badge names
                 foreach (var item in member.Badges)
@@ -364,7 +379,7 @@
                 var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
                 var homeRedirect = false;
 
-                var userToSave = new Core.DomainModel.Entities.MembershipUser
+                var userToSave = new MembershipUser
                 {
                     UserName = _bannedWordService.SanitiseBannedWords(userModel.UserName),
                     Email = userModel.Email,
@@ -500,7 +515,7 @@
         }
 
         private void SetRegisterViewBagMessage(bool manuallyAuthoriseMembers, bool memberEmailAuthorisationNeeded,
-            Core.DomainModel.Entities.MembershipUser userToSave)
+            MembershipUser userToSave)
         {
             if (manuallyAuthoriseMembers)
             {
@@ -534,7 +549,7 @@
             }
         }
 
-        private void SendEmailConfirmationEmail(Core.DomainModel.Entities.MembershipUser userToSave)
+        private void SendEmailConfirmationEmail(MembershipUser userToSave)
         {
             var settings = SettingsService.GetSettings();
             var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
@@ -886,7 +901,10 @@
             {
                 using (UnitOfWorkManager.NewUnitOfWork())
                 {
-                    var allowedCategories = _categoryService.GetAllowedCategories(UsersRole).ToList();
+                    var loggedOnReadOnlyUser = User.Identity.IsAuthenticated ? MembershipService.GetUser(User.Identity.Name, true) : null;
+                    var usersRole = loggedOnReadOnlyUser == null ? RoleService.GetRole(AppConstants.GuestRoleName, true) : loggedOnReadOnlyUser.Roles.FirstOrDefault();
+
+                    var allowedCategories = _categoryService.GetAllowedCategories(usersRole).ToList();
 
                     // Get the user discussions, only grab 100 posts
                     var posts = _postService.GetByMember(id, 100, allowedCategories);
@@ -896,8 +914,9 @@
                         .OrderByDescending(x => x.LastPost.DateCreated).ToList();
 
                     // Get the Topic View Models
-                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, UsersRole,
-                        LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
+                    var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, usersRole,
+                        loggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings(), _postService,
+                        _topicNotificationService, _pollAnswerService, _voteService, _favouriteService);
 
                     // create the view model
                     var viewModel = new ViewMemberDiscussionsViewModel
@@ -938,12 +957,14 @@
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+                var loggedOnUserId = loggedOnReadOnlyUser?.Id ?? Guid.Empty;
 
-                var permissions = RoleService.GetPermissions(null, UsersRole);
+                var permissions = RoleService.GetPermissions(null, loggedOnUsersRole);
 
                 // Check is has permissions
-                if (UserIsAdmin || loggedOnUserId == id ||
+                if (User.IsInRole(AppConstants.AdminRoleName) || loggedOnUserId == id ||
                     permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                 {
                     var user = MembershipService.GetUser(id);
@@ -962,11 +983,13 @@
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-                var loggedOnUserId = LoggedOnReadOnlyUser?.Id ?? Guid.Empty;
-                var permissions = RoleService.GetPermissions(null, UsersRole);
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+                var loggedOnUserId = loggedOnReadOnlyUser?.Id ?? Guid.Empty;
+                var permissions = RoleService.GetPermissions(null, loggedOnUsersRole);
 
                 // Check is has permissions
-                if (UserIsAdmin || loggedOnUserId == userModel.Id ||
+                if (User.IsInRole(AppConstants.AdminRoleName) || loggedOnUserId == userModel.Id ||
                     permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
                 {
                     // Get the user from DB
@@ -1010,7 +1033,7 @@
                         // Before we save anything, check the user already has an upload folder and if not create one
                         var uploadFolderPath =
                             HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath,
-                                LoggedOnReadOnlyUser.Id));
+                                loggedOnReadOnlyUser.Id));
                         if (!Directory.Exists(uploadFolderPath))
                         {
                             Directory.CreateDirectory(uploadFolderPath);
@@ -1152,20 +1175,22 @@
             var privateMessageCount = 0;
             var moderateCount = 0;
             var settings = SettingsService.GetSettings();
-            if (LoggedOnReadOnlyUser != null)
+            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+            var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+            if (loggedOnReadOnlyUser != null)
             {
-                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
-                privateMessageCount = _privateMessageService.NewPrivateMessageCount(LoggedOnReadOnlyUser.Id);
-                var pendingTopics = _topicService.GetPendingTopics(allowedCategories, UsersRole);
-                var pendingPosts = _postService.GetPendingPosts(allowedCategories, UsersRole);
+                var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
+                privateMessageCount = _privateMessageService.NewPrivateMessageCount(loggedOnReadOnlyUser.Id);
+                var pendingTopics = _topicService.GetPendingTopics(allowedCategories, loggedOnUsersRole);
+                var pendingPosts = _postService.GetPendingPosts(allowedCategories, loggedOnUsersRole);
                 moderateCount = pendingTopics.Count + pendingPosts.Count;
             }
 
-            var canViewPms = settings.EnablePrivateMessages && LoggedOnReadOnlyUser != null &&
-                             LoggedOnReadOnlyUser.DisablePrivateMessages != true;
+            var canViewPms = settings.EnablePrivateMessages && loggedOnReadOnlyUser != null &&
+                             loggedOnReadOnlyUser.DisablePrivateMessages != true;
             var viewModel = new ViewAdminSidePanelViewModel
             {
-                CurrentUser = LoggedOnReadOnlyUser,
+                CurrentUser = loggedOnReadOnlyUser,
                 NewPrivateMessageCount = canViewPms ? privateMessageCount : 0,
                 CanViewPrivateMessages = canViewPms,
                 ModerateCount = moderateCount,
@@ -1226,6 +1251,7 @@
         {
             if (SettingsService.GetSettings().EnableMemberReporting)
             {
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
                     var user = MembershipService.GetUser(viewModel.Id);
@@ -1233,7 +1259,7 @@
                     {
                         Reason = viewModel.Reason,
                         ReportedMember = user,
-                        Reporter = LoggedOnReadOnlyUser
+                        Reporter = loggedOnReadOnlyUser
                     };
                     _reportService.MemberReport(report);
 
@@ -1266,7 +1292,8 @@
                 var pageIndex = p ?? 1;
                 var allUsers = string.IsNullOrEmpty(search)
                     ? await MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize)
-                    : await MembershipService.SearchMembers(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
+                    : await MembershipService.SearchMembers(search, pageIndex,
+                        SiteConstants.Instance.AdminListPageSize);
 
                 // Redisplay list of users
                 var allViewModelUsers = allUsers.Select(user => new PublicSingleMemberListViewModel
@@ -1312,10 +1339,11 @@
             var changePasswordSucceeded = true;
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
                 if (ModelState.IsValid)
                 {
                     // ChangePassword will throw an exception rather than return false in certain failure scenarios.
-                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                    var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
                     changePasswordSucceeded =
                         MembershipService.ChangePassword(loggedOnUser, model.OldPassword, model.NewPassword);
 

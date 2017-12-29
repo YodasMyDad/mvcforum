@@ -3,6 +3,7 @@
     using System;
     using System.Web.Mvc;
     using Core.Constants;
+    using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using ViewModels;
@@ -29,15 +30,21 @@
 
         public ActionResult Index()
         {
-            // Show both pending topics and also pending posts
-            // Use ajax for paging too
-            var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
-            var viewModel = new ModerateViewModel
+            using (UnitOfWorkManager.NewUnitOfWork())
             {
-                Posts = _postService.GetPendingPosts(allowedCategories, UsersRole),
-                Topics = _topicService.GetPendingTopics(allowedCategories, UsersRole)
-            };
-            return View(viewModel);
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
+                // Show both pending topics and also pending posts
+                // Use ajax for paging too
+                var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
+                var viewModel = new ModerateViewModel
+                {
+                    Posts = _postService.GetPendingPosts(allowedCategories, loggedOnUsersRole),
+                    Topics = _topicService.GetPendingTopics(allowedCategories, loggedOnUsersRole)
+                };
+                return View(viewModel); 
+            }
         }
 
         [HttpPost]
@@ -47,8 +54,11 @@
             {
                 try
                 {
+                    var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                    var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
                     var topic = _topicService.Get(viewModel.TopicId);
-                    var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
+                    var permissions = RoleService.GetPermissions(topic.Category, loggedOnUsersRole);
 
                     // Is this user allowed to moderate - We use EditPosts for now until we change the permissions system
                     if (!permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
@@ -85,8 +95,11 @@
             {
                 try
                 {
+                    var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                    var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
                     var post = _postService.Get(viewModel.PostId);
-                    var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
+                    var permissions = RoleService.GetPermissions(post.Topic.Category, loggedOnUsersRole);
                     if (!permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
                     {
                         return Content(LocalizationService.GetResourceString("Errors.NoPermission"));

@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Web.Mvc;
     using Core.DomainModel.Enums;
+    using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using ViewModels;
@@ -29,11 +30,14 @@
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var cacheKey = string.Concat("PopularTags", amountToTake, UsersRole.Id);
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
+                var cacheKey = string.Concat("PopularTags", amountToTake, loggedOnUsersRole.Id);
                 var viewModel = CacheService.Get<PopularTagViewModel>(cacheKey);
                 if (viewModel == null)
                 {
-                    var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                    var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
                     var popularTags = _topicTagService.GetPopularTags(amountToTake, allowedCategories);
                     viewModel = new PopularTagViewModel {PopularTags = popularTags};
                     CacheService.Set(cacheKey, viewModel, CacheTimes.SixHours);

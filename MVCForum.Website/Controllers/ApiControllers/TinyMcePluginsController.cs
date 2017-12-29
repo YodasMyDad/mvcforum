@@ -6,14 +6,15 @@
     using System.Web;
     using System.Web.Hosting;
     using System.Web.Http;
+    using System.Web.Mvc;
     using Application;
     using Core.Constants;
     using Core.DomainModel.General;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
 
-    [Authorize]
-    [RoutePrefix("api/TinyMce")]
+    [System.Web.Http.Authorize]
+    [System.Web.Http.RoutePrefix("api/TinyMce")]
     public class TinyMcePluginsController : ApiController
     {
         //private void SetPrincipal(IPrincipal principal)
@@ -26,16 +27,16 @@
         //}
 
         //GET api/TinyMce/UploadImage
-        [Route("UploadImage")]
-        [HttpPost]
+        [System.Web.Http.Route("UploadImage")]
+        [System.Web.Http.HttpPost]
         public string UploadImage()
         {
-            var memberService = ServiceFactory.Get<IMembershipService>();
-            var roleService = ServiceFactory.Get<IRoleService>();
-            var localizationService = ServiceFactory.Get<ILocalizationService>();
-            var uploadService = ServiceFactory.Get<IUploadedFileService>();
-            var unitOfWorkManager = ServiceFactory.Get<IUnitOfWorkManager>();
-            var loggingService = ServiceFactory.Get<ILoggingService>();
+            var memberService = DependencyResolver.Current.GetService<IMembershipService>();
+            var roleService = DependencyResolver.Current.GetService<IRoleService>();
+            var localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
+            var uploadService = DependencyResolver.Current.GetService<IUploadedFileService>();
+            var unitOfWorkManager = DependencyResolver.Current.GetService<IUnitOfWorkManager>();
+            var loggingService = DependencyResolver.Current.GetService<ILoggingService>();
 
             using (var unitOfWork = unitOfWorkManager.NewUnitOfWork())
             {

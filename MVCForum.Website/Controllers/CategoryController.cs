@@ -9,6 +9,7 @@
     using Core.DomainModel.Entities;
     using Core.DomainModel.Enums;
     using Core.DomainModel.General;
+    using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using ViewModels;
@@ -20,6 +21,11 @@
         private readonly ICategoryService _categoryService;
         private readonly IRoleService _roleService;
         private readonly ITopicService _topicService;
+        private readonly IPostService _postService;
+        private readonly ITopicNotificationService _topicNotificationService;
+        private readonly IPollAnswerService _pollAnswerService;
+        private readonly IVoteService _voteService;
+        private readonly IFavouriteService _favouriteService;
 
         /// <summary>
         ///     Constructor
@@ -34,19 +40,27 @@
         /// <param name="topicService"> </param>
         /// <param name="categoryNotificationService"> </param>
         /// <param name="cacheService"></param>
+        /// <param name="postService"></param>
+        /// <param name="topicNotificationService"></param>
+        /// <param name="pollAnswerService"></param>
         public CategoryController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService,
             ILocalizationService localizationService,
             IRoleService roleService,
             ICategoryService categoryService,
             ISettingsService settingsService, ITopicService topicService,
-            ICategoryNotificationService categoryNotificationService, ICacheService cacheService)
+            ICategoryNotificationService categoryNotificationService, ICacheService cacheService, IPostService postService, ITopicNotificationService topicNotificationService, IPollAnswerService pollAnswerService, IVoteService voteService, IFavouriteService favouriteService)
             : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
                 settingsService, cacheService)
         {
             _categoryService = categoryService;
             _topicService = topicService;
             _categoryNotificationService = categoryNotificationService;
+            _topicNotificationService = topicNotificationService;
+            _pollAnswerService = pollAnswerService;
+            _voteService = voteService;
+            _favouriteService = favouriteService;
+            _postService = postService;
             _roleService = roleService;
         }
 
@@ -60,11 +74,13 @@
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
                 var catViewModel = new CategoryListViewModel
                 {
                     AllPermissionSets =
                         ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAllMainCategories(),
-                            _roleService, UsersRole)
+                            _roleService, loggedOnUsersRole)
                 };
                 return PartialView(catViewModel);
             }
@@ -75,10 +91,12 @@
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
                 var catViewModel = new CategoryListViewModel
                 {
                     AllPermissionSets =
-                        ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAll(), _roleService, UsersRole)
+                        ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAll(), _roleService, loggedOnUsersRole)
                 };
                 return PartialView(catViewModel);
             }
@@ -91,10 +109,12 @@
             var viewModel = new List<CategoryViewModel>();
             using (UnitOfWorkManager.NewUnitOfWork())
             {
-                var categories = LoggedOnReadOnlyUser.CategoryNotifications.Select(x => x.Category);
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+                var categories = loggedOnReadOnlyUser.CategoryNotifications.Select(x => x.Category);
                 foreach (var category in categories)
                 {
-                    var permissionSet = RoleService.GetPermissions(category, UsersRole);
+                    var permissionSet = RoleService.GetPermissions(category, loggedOnUsersRole);
                     var topicCount = category.Topics.Count;
                     var latestTopicInCategory =
                         category.Topics.OrderByDescending(x => x.LastPost.DateCreated).FirstOrDefault();
@@ -119,10 +139,11 @@
         [ChildActionOnly]
         public PartialViewResult GetCategoryBreadcrumb(Category category)
         {
-            var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
-
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+                var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
                 var viewModel = new BreadcrumbViewModel
                 {
                     Categories = _categoryService.GetCategoryParents(category, allowedCategories),
@@ -136,17 +157,20 @@
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
                 // Get the category
                 var category = _categoryService.GetBySlugWithSubCategories(slug);
 
                 // Allowed Categories for this user
-                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
 
                 // Set the page index
                 var pageIndex = p ?? 1;
 
                 // check the user has permission to this category
-                var permissions = RoleService.GetPermissions(category.Category, UsersRole);
+                var permissions = RoleService.GetPermissions(category.Category, loggedOnUsersRole);
 
                 if (!permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
                 {
@@ -155,7 +179,7 @@
                         int.MaxValue, category.Category.Id);
 
                     var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService,
-                        UsersRole, LoggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings());
+                        loggedOnUsersRole, loggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings(), _postService, _topicNotificationService, _pollAnswerService, _voteService, _favouriteService);
 
                     // Create the main view model for the category
                     var viewModel = new CategoryViewModel
@@ -166,9 +190,9 @@
                         PageIndex = pageIndex,
                         TotalCount = topics.TotalCount,
                         TotalPages = topics.TotalPages,
-                        User = LoggedOnReadOnlyUser,
-                        IsSubscribed = UserIsAuthenticated && _categoryNotificationService
-                                           .GetByUserAndCategory(LoggedOnReadOnlyUser, category.Category).Any()
+                        User = loggedOnReadOnlyUser,
+                        IsSubscribed = User.Identity.IsAuthenticated && _categoryNotificationService
+                                           .GetByUserAndCategory(loggedOnReadOnlyUser, category.Category).Any()
                     };
 
                     // If there are subcategories then add then with their permissions
@@ -180,7 +204,7 @@
                         };
                         foreach (var subCategory in category.SubCategories)
                         {
-                            var permissionSet = RoleService.GetPermissions(subCategory, UsersRole);
+                            var permissionSet = RoleService.GetPermissions(subCategory, loggedOnUsersRole);
                             subCatViewModel.AllPermissionSets.Add(subCategory, permissionSet);
                         }
                         viewModel.SubCategories = subCatViewModel;
@@ -198,6 +222,9 @@
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
                 // get an rss lit ready
                 var rssTopics = new List<RssItem>();
 
@@ -205,7 +232,7 @@
                 var category = _categoryService.Get(slug);
 
                 // check the user has permission to this category
-                var permissions = RoleService.GetPermissions(category, UsersRole);
+                var permissions = RoleService.GetPermissions(category, loggedOnUsersRole);
 
                 if (!permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
                 {

@@ -1,13 +1,10 @@
 ﻿namespace MvcForum.Web.Controllers
 {
-    using System;
-    using System.Linq;
     using System.Web.Mvc;
     using System.Web.Routing;
     using System.Web.Security;
     using Areas.Admin.ViewModels;
     using Core.Constants;
-    using Core.DomainModel.Entities;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using Core.Utilities;
@@ -25,9 +22,6 @@
         protected readonly IRoleService RoleService;
         protected readonly ISettingsService SettingsService;
         protected readonly IUnitOfWorkManager UnitOfWorkManager;
-
-        protected MembershipUser LoggedOnReadOnlyUser;
-        protected MembershipRole UsersRole;
 
         /// <summary>
         ///     Constructor
@@ -50,22 +44,9 @@
             SettingsService = settingsService;
             CacheService = cacheService;
             LoggingService = loggingService;
-
-            using (UnitOfWorkManager.NewUnitOfWork())
-            {
-                LoggedOnReadOnlyUser = UserIsAuthenticated ? MembershipService.GetUser(Username, true) : null;
-                UsersRole = LoggedOnReadOnlyUser == null
-                    ? RoleService.GetRole(AppConstants.GuestRoleName, true)
-                    : LoggedOnReadOnlyUser.Roles.FirstOrDefault();
-            }
         }
 
-        protected bool UserIsAuthenticated => System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-
-        protected bool UserIsAdmin => User.IsInRole(AppConstants.AdminRoleName);
-
         protected string Domain => CacheService.CachePerRequest(CacheKeys.Domain, StringUtils.ReturnCurrentDomain);
-        protected string Username => UserIsAuthenticated ? System.Web.HttpContext.Current.User.Identity.Name : null;
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
@@ -90,9 +71,18 @@
                 }
             }
 
+            MembershipUser loggedOnReadOnlyUser;
+
+            using (UnitOfWorkManager.NewUnitOfWork())
+            {
+                loggedOnReadOnlyUser = User.Identity.IsAuthenticated
+                    ? MembershipService.GetUser(User.Identity.Name, true)
+                    : null;
+            }
+
             // Check if they need to agree to permissions
             if (SettingsService.GetSettings().AgreeToTermsAndConditions == true && !filterContext.IsChildAction &&
-                LoggedOnReadOnlyUser != null && LoggedOnReadOnlyUser.HasAgreedToTermsAndConditions != true)
+                loggedOnReadOnlyUser != null && loggedOnReadOnlyUser.HasAgreedToTermsAndConditions != true)
             {
                 // Only redirect if its closed and user is NOT in the admin
                 if (action.ToString().ToLower() != "termsandconditions" && !area.ToString().ToLower().Contains("admin"))
@@ -107,7 +97,7 @@
             }
 
             // If the forum is new members need approving and the user is not approved, log them out
-            if (LoggedOnReadOnlyUser != null && !LoggedOnReadOnlyUser.IsApproved &&
+            if (loggedOnReadOnlyUser != null && !loggedOnReadOnlyUser.IsApproved &&
                 settings.NewMemberEmailConfirmation == true)
             {
                 FormsAuthentication.SignOut();
@@ -121,7 +111,7 @@
             }
 
             // If the user is banned - Log them out.
-            if (LoggedOnReadOnlyUser != null && LoggedOnReadOnlyUser.IsBanned)
+            if (loggedOnReadOnlyUser != null && loggedOnReadOnlyUser.IsBanned)
             {
                 FormsAuthentication.SignOut();
                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
@@ -151,9 +141,5 @@
             // Not allowed in here so
             return RedirectToAction("Index", "Home");
         }
-    }
-
-    public class UserNotLoggedOnException : Exception
-    {
     }
 }

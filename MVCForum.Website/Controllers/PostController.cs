@@ -13,10 +13,12 @@
     using Core.DomainModel.Entities;
     using Core.DomainModel.General;
     using Core.Events;
+    using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using ViewModels;
     using ViewModels.Mapping;
+    using MembershipUser = Core.DomainModel.Entities.MembershipUser;
 
     [Authorize]
     public partial class PostController : BaseController
@@ -62,12 +64,16 @@
             Post newPost;
             Topic topic;
 
+            MembershipUser loggedOnReadOnlyUser;
+
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
-                var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+
+                var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
 
                 // Flood control
-                if (!_postService.PassedPostFloodTest(LoggedOnReadOnlyUser))
+                if (!_postService.PassedPostFloodTest(loggedOnReadOnlyUser))
                 {
                     throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
                 }
@@ -130,10 +136,10 @@
             {
                 // Create the view model
                 var viewModel = ViewModelMapping.CreatePostViewModel(newPost, new List<Vote>(), permissions, topic,
-                    LoggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
+                    loggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
 
                 // Success send any notifications
-                NotifyNewTopics(topic, unitOfWork);
+                NotifyNewTopics(topic, unitOfWork, loggedOnReadOnlyUser);
 
                 // Return view
                 return PartialView("_Post", viewModel);
@@ -146,6 +152,9 @@
             Topic topic;
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
                 // Got to get a lot of things here as we have to check permissions
                 // Get the post
                 var post = _postService.Get(id);
@@ -159,9 +168,9 @@
                 var topicUrl = topic.NiceUrl;
 
                 // get the users permissions
-                var permissions = RoleService.GetPermissions(topic.Category, UsersRole);
+                var permissions = RoleService.GetPermissions(topic.Category, loggedOnUsersRole);
 
-                if (post.User.Id == LoggedOnReadOnlyUser.Id ||
+                if (post.User.Id == loggedOnReadOnlyUser.Id ||
                     permissions[SiteConstants.Instance.PermissionDeletePosts].IsTicked)
                 {
                     // Delete post / topic
@@ -234,7 +243,7 @@
             return Redirect(topic.NiceUrl);
         }
 
-        private void NotifyNewTopics(Topic topic, IUnitOfWork unitOfWork)
+        private void NotifyNewTopics(Topic topic, IUnitOfWork unitOfWork, MembershipUser loggedOnReadOnlyUser)
         {
             try
             {
@@ -245,7 +254,7 @@
                 {
                     // remove the current user from the notification, don't want to notify yourself that you 
                     // have just made a topic!
-                    notifications.Remove(LoggedOnReadOnlyUser.Id);
+                    notifications.Remove(loggedOnReadOnlyUser.Id);
 
                     if (notifications.Count > 0)
                     {
@@ -310,12 +319,14 @@
             {
                 using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
                 {
+                    var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+
                     var post = _postService.Get(viewModel.PostId);
                     var report = new Report
                     {
                         Reason = viewModel.Reason,
                         ReportedPost = post,
-                        Reporter = LoggedOnReadOnlyUser
+                        Reporter = loggedOnReadOnlyUser
                     };
                     _reportService.PostReport(report);
 
@@ -347,11 +358,13 @@
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
                 var post = _postService.Get(id);
-                var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
+                var permissions = RoleService.GetPermissions(post.Topic.Category, loggedOnUsersRole);
                 var votes = _voteService.GetVotesByPosts(new List<Guid> {id});
                 var viewModel = ViewModelMapping.CreatePostViewModel(post, votes, permissions, post.Topic,
-                    LoggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
+                    loggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
                 var upVotes = viewModel.Votes.Where(x => x.Amount > 0).ToList();
                 return View(upVotes);
             }
@@ -362,49 +375,51 @@
         {
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
+                // Firstly check if this is a post and they are allowed to move it
+                var post = _postService.Get(id);
+                if (post == null)
+                {
+                    return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
+                }
+
+                var permissions = RoleService.GetPermissions(post.Topic.Category, loggedOnUsersRole);
+                var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
+
+                // Does the user have permission to this posts category
+                var cat = allowedCategories.FirstOrDefault(x => x.Id == post.Topic.Category.Id);
+                if (cat == null)
+                {
+                    return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
+                }
+
+                // Does this user have permission to move
+                if (!permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                {
+                    return NoPermission(post.Topic);
+                }
+
+                var topics = _topicService.GetAllSelectList(allowedCategories, 30);
+                topics.Insert(0, new SelectListItem
+                {
+                    Text = LocalizationService.GetResourceString("Topic.Choose"),
+                    Value = ""
+                });
+
+                var postViewModel = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions, post.Topic,
+                    loggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
+                postViewModel.MinimalPost = true;
+                var viewModel = new MovePostViewModel
+                {
+                    Post = postViewModel,
+                    PostId = post.Id,
+                    LatestTopics = topics,
+                    MoveReplyToPosts = true
+                };
+                return View(viewModel);
             }
-
-            // Firstly check if this is a post and they are allowed to move it
-            var post = _postService.Get(id);
-            if (post == null)
-            {
-                return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
-            }
-
-            var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
-            var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
-
-            // Does the user have permission to this posts category
-            var cat = allowedCategories.FirstOrDefault(x => x.Id == post.Topic.Category.Id);
-            if (cat == null)
-            {
-                return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
-            }
-
-            // Does this user have permission to move
-            if (!permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
-            {
-                return NoPermission(post.Topic);
-            }
-
-            var topics = _topicService.GetAllSelectList(allowedCategories, 30);
-            topics.Insert(0, new SelectListItem
-            {
-                Text = LocalizationService.GetResourceString("Topic.Choose"),
-                Value = ""
-            });
-
-            var postViewModel = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions, post.Topic,
-                LoggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
-            postViewModel.MinimalPost = true;
-            var viewModel = new MovePostViewModel
-            {
-                Post = postViewModel,
-                PostId = post.Id,
-                LatestTopics = topics,
-                MoveReplyToPosts = true
-            };
-            return View(viewModel);
         }
 
         [HttpPost]
@@ -412,6 +427,9 @@
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
                 // Firstly check if this is a post and they are allowed to move it
                 var post = _postService.Get(viewModel.PostId);
                 if (post == null)
@@ -419,8 +437,8 @@
                     return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
                 }
 
-                var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
-                var allowedCategories = _categoryService.GetAllowedCategories(UsersRole);
+                var permissions = RoleService.GetPermissions(post.Topic.Category, loggedOnUsersRole);
+                var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
 
                 // Does the user have permission to this posts category
                 var cat = allowedCategories.FirstOrDefault(x => x.Id == post.Topic.Category.Id);
@@ -552,7 +570,7 @@
 
                 viewModel.LatestTopics = topics;
                 viewModel.Post = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions,
-                    post.Topic, LoggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
+                    post.Topic, loggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
                 viewModel.Post.MinimalPost = true;
                 viewModel.PostId = post.Id;
 
@@ -567,8 +585,11 @@
                 var post = _postService.Get(id);
                 if (post != null)
                 {
+                    var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                    var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
                     // Check permissions
-                    var permissions = RoleService.GetPermissions(post.Topic.Category, UsersRole);
+                    var permissions = RoleService.GetPermissions(post.Topic.Category, loggedOnUsersRole);
                     if (permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
                     {
                         // Good to go

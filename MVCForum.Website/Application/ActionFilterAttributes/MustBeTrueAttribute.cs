@@ -13,7 +13,7 @@
 
         public MustBeTrueAttribute()
         {
-            _localizationService = ServiceFactory.Get<ILocalizationService>();
+            _localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
         }
 
         public IEnumerable<ModelClientValidationRule> GetClientValidationRules(ModelMetadata metadata,

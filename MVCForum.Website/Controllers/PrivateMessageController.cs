@@ -9,6 +9,7 @@
     using Areas.Admin.ViewModels;
     using Core.Constants;
     using Core.DomainModel.Entities;
+    using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using Core.Utilities;
@@ -36,20 +37,24 @@
 
         public async Task<ActionResult> Index(int? p)
         {
-            if (LoggedOnReadOnlyUser.DisablePrivateMessages == true)
-            {
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                {
-                    Message = LocalizationService.GetResourceString("Errors.NoPermission"),
-                    MessageType = GenericMessages.danger
-                };
-                return RedirectToAction("Index", "Home");
-            }
             using (UnitOfWorkManager.NewUnitOfWork())
             {
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
+                if (loggedOnReadOnlyUser.DisablePrivateMessages == true)
+                {
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = LocalizationService.GetResourceString("Errors.NoPermission"),
+                        MessageType = GenericMessages.danger
+                    };
+                    return RedirectToAction("Index", "Home");
+                }
+
                 var pageIndex = p ?? 1;
                 var pagedMessages = await _privateMessageService.GetUsersPrivateMessages(pageIndex,
-                    SiteConstants.Instance.PrivateMessageListSize, LoggedOnReadOnlyUser);
+                    SiteConstants.Instance.PrivateMessageListSize, loggedOnReadOnlyUser);
                 var viewModel = new ListPrivateMessageViewModel
                 {
                     Messages = pagedMessages,
@@ -73,16 +78,19 @@
 
                 try
                 {
-                    var permissions = RoleService.GetPermissions(null, UsersRole);
+                    var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                    var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
+                    var permissions = RoleService.GetPermissions(null, loggedOnUsersRole);
                     var settings = SettingsService.GetSettings();
                     // Check if private messages are enabled
-                    if (!settings.EnablePrivateMessages || LoggedOnReadOnlyUser.DisablePrivateMessages == true)
+                    if (!settings.EnablePrivateMessages || loggedOnReadOnlyUser.DisablePrivateMessages == true)
                     {
                         return Content(LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }
 
                     // Check outbox size of logged in user
-                    var senderCount = _privateMessageService.GetAllSentByUser(LoggedOnReadOnlyUser.Id).Count;
+                    var senderCount = _privateMessageService.GetAllSentByUser(loggedOnReadOnlyUser.Id).Count;
                     if (senderCount > settings.MaxPrivateMessagesPerMember)
                     {
                         return Content(LocalizationService.GetResourceString("PM.SentItemsOverCapcity"));
@@ -95,8 +103,8 @@
                         sb.Append($"<p>{LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeBody")}</p>");
                         var email = new Email
                         {
-                            EmailTo = LoggedOnReadOnlyUser.Email,
-                            NameTo = LoggedOnReadOnlyUser.UserName,
+                            EmailTo = loggedOnReadOnlyUser.Email,
+                            NameTo = loggedOnReadOnlyUser.UserName,
                             Subject = LocalizationService.GetResourceString("PM.AboutToExceedInboxSizeSubject")
                         };
                         email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
@@ -123,16 +131,20 @@
         [HttpPost]
         public ActionResult Create(CreatePrivateMessageViewModel createPrivateMessageViewModel)
         {
-            var settings = SettingsService.GetSettings();
-            if (!settings.EnablePrivateMessages || LoggedOnReadOnlyUser.DisablePrivateMessages == true)
-            {
-                throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
-            }
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
                 if (ModelState.IsValid)
                 {
-                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                    var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                    var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
+                    var settings = SettingsService.GetSettings();
+                    if (!settings.EnablePrivateMessages || loggedOnReadOnlyUser.DisablePrivateMessages == true)
+                    {
+                        throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
+                    }
+
+                    var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
                     var memberTo = MembershipService.GetUser(createPrivateMessageViewModel.To);
 
                     // Check the user they are trying to message hasn't blocked them
@@ -142,7 +154,7 @@
                     }
 
                     // Check flood control
-                    var lastMessage = _privateMessageService.GetLastSentPrivateMessage(LoggedOnReadOnlyUser.Id);
+                    var lastMessage = _privateMessageService.GetLastSentPrivateMessage(loggedOnReadOnlyUser.Id);
                     // If this message they are sending now, is to the same person then ignore flood control
                     if (lastMessage != null && createPrivateMessageViewModel.To != lastMessage.UserTo.Id)
                     {
@@ -170,7 +182,7 @@
                         }
 
                         // check the member
-                        if (!string.Equals(memberTo.UserName, LoggedOnReadOnlyUser.UserName,
+                        if (!string.Equals(memberTo.UserName, loggedOnReadOnlyUser.UserName,
                             StringComparison.CurrentCultureIgnoreCase))
                         {
                             // Check in box size for both
@@ -219,7 +231,7 @@
 
                                     var sb = new StringBuilder();
                                     sb.Append(
-                                        $"<p>{string.Format(LocalizationService.GetResourceString("PM.NewPrivateMessageBody"), LoggedOnReadOnlyUser.UserName)}</p>");
+                                        $"<p>{string.Format(LocalizationService.GetResourceString("PM.NewPrivateMessageBody"), loggedOnReadOnlyUser.UserName)}</p>");
                                     sb.Append(AppHelpers.ConvertPostContent(createPrivateMessageViewModel.Message));
                                     email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
                                     _emailService.SendMail(email);
@@ -250,9 +262,11 @@
         {
             using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
             {
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+
                 var userFrom = MembershipService.GetUser(from);
-                var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
-                if (userFrom.Id != LoggedOnReadOnlyUser.Id)
+                var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
+                if (userFrom.Id != loggedOnReadOnlyUser.Id)
                 {
                     // Mark all messages read sent to this user from the userFrom
                     var unreadMessages =
@@ -322,9 +336,10 @@
             {
                 if (Request.IsAjaxRequest())
                 {
+                    var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
                     var privateMessage = _privateMessageService.Get(deletePrivateMessageViewModel.Id);
-                    if ((privateMessage.UserTo.Id == LoggedOnReadOnlyUser.Id) |
-                        (privateMessage.UserFrom.Id == LoggedOnReadOnlyUser.Id))
+                    if ((privateMessage.UserTo.Id == loggedOnReadOnlyUser.Id) |
+                        (privateMessage.UserFrom.Id == loggedOnReadOnlyUser.Id))
                     {
                         _privateMessageService.DeleteMessage(privateMessage);
                     }
@@ -356,11 +371,12 @@
             {
                 if (Request.IsAjaxRequest())
                 {
+                    var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
                     var userFrom = MembershipService.GetUser(viewModel.UserId);
-                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.Id);
+                    var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
 
                     var settings = SettingsService.GetSettings();
-                    if (!settings.EnablePrivateMessages || LoggedOnReadOnlyUser.DisablePrivateMessages == true)
+                    if (!settings.EnablePrivateMessages || loggedOnReadOnlyUser.DisablePrivateMessages == true)
                     {
                         return Content(LocalizationService.GetResourceString("Errors.GenericMessage"));
                     }

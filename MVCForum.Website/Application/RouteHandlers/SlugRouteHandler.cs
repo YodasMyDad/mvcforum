@@ -12,7 +12,7 @@
 
         public SlugRouteHandler()
         {
-            _topicService = ServiceFactory.Get<ITopicService>();
+            _topicService = DependencyResolver.Current.GetService<ITopicService>();
         }
 
         protected override IHttpHandler GetHttpHandler(RequestContext requestContext)
