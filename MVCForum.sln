@@ -49,6 +49,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{A1510FC4-7
 		readme.md = readme.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForumAutomation", "MVCForumAutomation\MVCForumAutomation.csproj", "{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -219,6 +221,18 @@ Global
 		{097883D7-6C3E-4944-B2D8-A9CC8A9356F4}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{097883D7-6C3E-4944-B2D8-A9CC8A9356F4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{097883D7-6C3E-4944-B2D8-A9CC8A9356F4}.Release|x86.ActiveCfg = Release|Any CPU
+		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Debug|x86.Build.0 = Debug|Any CPU
+		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Release|x86.ActiveCfg = Release|Any CPU
+		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
