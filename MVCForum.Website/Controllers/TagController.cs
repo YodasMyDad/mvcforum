@@ -8,6 +8,7 @@
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using ViewModels;
+    using ViewModels.Tag;
 
     public partial class TagController : BaseController
     {

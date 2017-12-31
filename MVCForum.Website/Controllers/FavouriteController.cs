@@ -3,12 +3,12 @@
     using System;
     using System.Linq;
     using System.Web.Mvc;
-    using Core.Constants;
     using Core.DomainModel.Entities;
     using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using ViewModels;
+    using ViewModels.Favourite;
     using ViewModels.Mapping;
 
     public partial class FavouriteController : BaseController
@@ -50,7 +50,8 @@
                 // TODO - Need to improve performance of this
                 foreach (var post in posts)
                 {
-                    var permissions = RoleService.GetPermissions(post.Topic.Category, loggedOnReadOnlyUser.Roles.FirstOrDefault());
+                    var permissions = RoleService.GetPermissions(post.Topic.Category,
+                        loggedOnReadOnlyUser.Roles.FirstOrDefault());
                     var postViewModel = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions,
                         post.Topic, loggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
                     postViewModel.ShowTopicName = true;
@@ -64,7 +65,7 @@
 
         [HttpPost]
         [Authorize]
-        public JsonResult FavouritePost(FavouritePostViewModel viewModel)
+        public JsonResult FavouritePost(EntityIdViewModel viewModel)
         {
             var returnValue = new FavouriteJsonReturnModel();
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
@@ -74,7 +75,7 @@
                 {
                     try
                     {
-                        var post = _postService.Get(viewModel.PostId);
+                        var post = _postService.Get(viewModel.Id);
                         var topic = _topicService.Get(post.Topic.Id);
 
                         // See if this is a user adding or removing the favourite

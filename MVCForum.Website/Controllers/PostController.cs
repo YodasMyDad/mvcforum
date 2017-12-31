@@ -18,6 +18,7 @@
     using Core.Interfaces.UnitOfWork;
     using ViewModels;
     using ViewModels.Mapping;
+    using ViewModels.Post;
     using MembershipUser = Core.DomainModel.Entities.MembershipUser;
 
     [Authorize]

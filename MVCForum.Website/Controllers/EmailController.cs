@@ -6,7 +6,7 @@
     using Core.DomainModel.Entities;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
-    using ViewModels;
+    using ViewModels.Email;
 
     public partial class EmailController : BaseController
     {
@@ -37,7 +37,7 @@
 
         [HttpPost]
         [Authorize]
-        public void Subscribe(SubscribeEmailViewModel subscription)
+        public void Subscribe(EmailSubscriptionViewModel subscription)
         {
             if (Request.IsAjaxRequest())
             {
@@ -125,7 +125,7 @@
 
         [HttpPost]
         [Authorize]
-        public void UnSubscribe(UnSubscribeEmailViewModel subscription)
+        public void UnSubscribe(EmailSubscriptionViewModel subscription)
         {
             if (Request.IsAjaxRequest())
             {

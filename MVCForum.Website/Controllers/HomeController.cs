@@ -17,6 +17,7 @@
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using ViewModels;
+    using ViewModels.Home;
 
     public partial class HomeController : BaseController
     {

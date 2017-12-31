@@ -5,6 +5,7 @@
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using ViewModels;
+    using ViewModels.Stats;
 
     public partial class StatsController : BaseController
     {

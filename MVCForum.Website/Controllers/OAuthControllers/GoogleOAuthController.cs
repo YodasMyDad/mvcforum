@@ -13,6 +13,7 @@
     using Skybrud.Social.Google;
     using Skybrud.Social.Google.OAuth;
     using ViewModels;
+    using ViewModels.Member;
 
     // Google uses OAuth 2.0 for authentication and communication. In order for users to authenticate with the Google API, 
     // you must specify the ID, secret and redirect URI of your Google app. 

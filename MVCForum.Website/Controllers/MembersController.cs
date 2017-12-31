@@ -24,7 +24,10 @@
     using Core.Interfaces.UnitOfWork;
     using Core.Utilities;
     using ViewModels;
+    using ViewModels.Admin;
     using ViewModels.Mapping;
+    using ViewModels.Member;
+    using ViewModels.Registration;
     using MembershipCreateStatus = Core.DomainModel.Enums.MembershipCreateStatus;
     using MembershipUser = Core.DomainModel.Entities.MembershipUser;
 

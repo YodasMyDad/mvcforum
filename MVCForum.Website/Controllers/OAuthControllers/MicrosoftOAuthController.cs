@@ -14,6 +14,7 @@
     using Skybrud.Social.Microsoft.Responses.Authentication;
     using Skybrud.Social.Microsoft.WindowsLive.Scopes;
     using ViewModels;
+    using ViewModels.Member;
 
     public class MicrosoftOAuthController : BaseController
     {

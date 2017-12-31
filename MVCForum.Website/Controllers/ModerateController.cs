@@ -7,6 +7,7 @@
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using ViewModels;
+    using ViewModels.Moderate;
 
     [Authorize]
     public partial class ModerateController : BaseController

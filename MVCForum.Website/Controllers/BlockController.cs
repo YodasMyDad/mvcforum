@@ -24,7 +24,7 @@
 
         [HttpPost]
         [Authorize]
-        public virtual void BlockOrUnBlock(BlockMemberViewModel viewModel)
+        public virtual void BlockOrUnBlock(EntityIdViewModel viewModel)
         {
             if (Request.IsAjaxRequest())
             {
@@ -36,7 +36,7 @@
                         var loggedOnUser = MembershipService.GetUser(User.Identity.Name, true);
 
                         // Other member
-                        var otherMember = MembershipService.GetUser(viewModel.MemberToBlockOrUnBlock);
+                        var otherMember = MembershipService.GetUser(viewModel.Id);
 
                         var block = loggedOnUser.BlockedUsers.FirstOrDefault(x => x.Blocked.Id == otherMember.Id);
                         if (block != null)

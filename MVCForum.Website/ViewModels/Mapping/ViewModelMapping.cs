@@ -9,6 +9,9 @@
     using Core.DomainModel.Entities;
     using Core.DomainModel.General;
     using Core.Interfaces.Services;
+    using Poll;
+    using Post;
+    using Topic;
 
     public static class ViewModelMapping
     {

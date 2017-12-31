@@ -22,7 +22,10 @@
     using Core.Interfaces.UnitOfWork;
     using Core.Utilities;
     using ViewModels;
+    using ViewModels.Breadcrumb;
     using ViewModels.Mapping;
+    using ViewModels.Post;
+    using ViewModels.Topic;
 
     public partial class TopicController : BaseController
     {

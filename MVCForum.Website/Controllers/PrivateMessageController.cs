@@ -14,6 +14,7 @@
     using Core.Interfaces.UnitOfWork;
     using Core.Utilities;
     using ViewModels;
+    using ViewModels.PrivateMessage;
 
     [Authorize]
     public partial class PrivateMessageController : BaseController

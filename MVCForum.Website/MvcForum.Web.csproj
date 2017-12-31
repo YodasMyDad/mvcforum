@@ -151,32 +151,74 @@
     <Compile Include="Application\Providers\RoleProvider.cs" />
     <Compile Include="Areas\Admin\ViewModels\AccountViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModels\ModerateViewModels.cs" />
+    <Compile Include="ViewModels\Admin\AdminMemberProfileToolsViewModel.cs" />
+    <Compile Include="ViewModels\Admin\ViewAdminSidePanelViewModel.cs" />
+    <Compile Include="ViewModels\AutocompleteViewModel.cs" />
+    <Compile Include="ViewModels\Badge\AllBadgesViewModel.cs" />
+    <Compile Include="ViewModels\Breadcrumb\BreadcrumbViewModel.cs" />
+    <Compile Include="ViewModels\Category\CategoryListViewModel.cs" />
+    <Compile Include="ViewModels\Category\SubCategoryViewModel.cs" />
+    <Compile Include="ViewModels\Favourite\FavouriteJsonReturnModel.cs" />
+    <Compile Include="ViewModels\Home\AllRecentActivitiesViewModel.cs" />
+    <Compile Include="ViewModels\Home\ListCategoriesViewModels.cs" />
+    <Compile Include="ViewModels\Home\TermsAndConditionsViewModel.cs" />
+    <Compile Include="ViewModels\Member\ActiveMembersViewModel.cs" />
+    <Compile Include="ViewModels\Member\ListLatestMembersViewModel.cs" />
+    <Compile Include="ViewModels\Moderate\ModerateViewModel.cs" />
+    <Compile Include="ViewModels\Poll\PollViewModel.cs" />
+    <Compile Include="ViewModels\Poll\UpdatePollViewModel.cs" />
+    <Compile Include="ViewModels\Post\CreateAjaxPostViewModel.cs" />
+    <Compile Include="ViewModels\Post\MovePostViewModel.cs" />
+    <Compile Include="ViewModels\Post\PostEditHistoryViewModel.cs" />
+    <Compile Include="ViewModels\Post\PostLikedByViewModel.cs" />
+    <Compile Include="ViewModels\Post\PostViewModel.cs" />
+    <Compile Include="ViewModels\Post\ReportPostViewModel.cs" />
+    <Compile Include="ViewModels\Post\ShowMorePostsViewModel.cs" />
+    <Compile Include="ViewModels\PrivateMessage\CreatePrivateMessageViewModel.cs" />
+    <Compile Include="ViewModels\PrivateMessage\DeletePrivateMessageViewModel.cs" />
+    <Compile Include="ViewModels\PrivateMessage\GetMoreViewModel.cs" />
+    <Compile Include="ViewModels\PrivateMessage\ListPrivateMessageViewModel.cs" />
+    <Compile Include="ViewModels\PrivateMessage\ViewPrivateMessageViewModel.cs" />
+    <Compile Include="ViewModels\Registration\ChangePasswordViewModel.cs" />
+    <Compile Include="ViewModels\Registration\ForgotPasswordViewModel.cs" />
+    <Compile Include="ViewModels\Registration\LogOnViewModel.cs" />
+    <Compile Include="ViewModels\Member\MemberAddViewModel.cs" />
+    <Compile Include="ViewModels\Member\MemberFrontEndEditViewModel.cs" />
+    <Compile Include="ViewModels\Member\PublicMemberListViewModel.cs" />
+    <Compile Include="ViewModels\Member\PublicSingleMemberListViewModel.cs" />
+    <Compile Include="ViewModels\Member\ReportMemberViewModel.cs" />
+    <Compile Include="ViewModels\Member\ViewMemberDiscussionsViewModel.cs" />
+    <Compile Include="ViewModels\Member\ViewMemberViewModel.cs" />
+    <Compile Include="ViewModels\Moderate\ModerateActionViewModel.cs" />
     <Compile Include="Application\ScheduledJobs\ScheduledRunner.cs" />
     <Compile Include="Application\ScheduledJobs\EmailJob.cs" />
-    <Compile Include="ViewModels\BlockViewModels.cs" />
-    <Compile Include="ViewModels\FavouriteViewModels.cs" />
-    <Compile Include="ViewModels\OAuth\FacebookOAuthData.cs" />
-    <Compile Include="ViewModels\OAuth\GoogleOAuthData.cs" />
+    <Compile Include="ViewModels\Favourite\MyFavouritesViewModel.cs" />
+    <Compile Include="ViewModels\Registration\ResetPasswordViewModel.cs" />
+    <Compile Include="ViewModels\Topic\ActiveTopicsViewModel.cs" />
+    <Compile Include="ViewModels\Topic\CheckCreateTopicPermissions.cs" />
+    <Compile Include="ViewModels\Topic\CreateEditTopicViewModel.cs" />
+    <Compile Include="ViewModels\Topic\CreateTopicButtonViewModel.cs" />
+    <Compile Include="ViewModels\Topic\GetMorePostsViewModel.cs" />
+    <Compile Include="ViewModels\Topic\HotTopicsViewModel.cs" />
+    <Compile Include="ViewModels\Topic\MoveTopicViewModel.cs" />
+    <Compile Include="ViewModels\Topic\NotifyNewTopicViewModel.cs" />
+    <Compile Include="ViewModels\Topic\PostedInViewModel.cs" />
+    <Compile Include="ViewModels\Topic\TagTopicsViewModel.cs" />
+    <Compile Include="ViewModels\Topic\TopicViewModel.cs" />
     <Compile Include="ViewModels\UploadViewModels.cs" />
-    <Compile Include="ViewModels\BadgeViewModels.cs" />
-    <Compile Include="ViewModels\CategoryViewModels.cs" />
-    <Compile Include="ViewModels\EmailViewModels.cs" />
-    <Compile Include="ViewModels\HomeViewModels.cs" />
-    <Compile Include="ViewModels\InstallViewModels.cs" />
-    <Compile Include="ViewModels\LanguageViewModels.cs" />
+    <Compile Include="ViewModels\EntityIdViewModel.cs" />
+    <Compile Include="ViewModels\Category\CategoryViewModel.cs" />
+    <Compile Include="ViewModels\Email\EmailSubscriptionViewModel.cs" />
+    <Compile Include="ViewModels\Language\LanguageListAllViewModel.cs" />
     <Compile Include="Application\Akismet\AkismetHelper.cs" />
     <Compile Include="ViewModels\Mapping\ViewModelMapping.cs" />
-    <Compile Include="ViewModels\MemberViewModels.cs" />
-    <Compile Include="ViewModels\PointViewModels.cs" />
-    <Compile Include="ViewModels\PostViewModels.cs" />
-    <Compile Include="ViewModels\PrivateMessageViewModels.cs" />
-    <Compile Include="ViewModels\SearchViewModels.cs" />
-    <Compile Include="ViewModels\StatsViewModels.cs" />
-    <Compile Include="ViewModels\TagViewModels.cs" />
-    <Compile Include="ViewModels\TopicViewModels.cs" />
-    <Compile Include="ViewModels\VoteViewModels.cs" />
+    <Compile Include="ViewModels\Point\HighEarnersPointViewModel.cs" />
+    <Compile Include="ViewModels\Search\SearchViewModel.cs" />
+    <Compile Include="ViewModels\Stats\MainStatsViewModel.cs" />
+    <Compile Include="ViewModels\Tag\PopularTagViewModel.cs" />
     <Compile Include="Areas\Admin\ViewModels\SettingsViewModels.cs" />
+    <Compile Include="ViewModels\Vote\ShowVotersViewModel.cs" />
+    <Compile Include="ViewModels\Vote\ShowVotesViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\NuGetBackup\Hello.txt" />
@@ -1339,7 +1381,7 @@
       <Version>3.5.0.2</Version>
     </PackageReference>
     <PackageReference Include="BuildWebCompiler">
-      <Version>1.11.326</Version>
+      <Version>1.11.375</Version>
     </PackageReference>
     <PackageReference Include="Common.Logging">
       <Version>3.4.1</Version>
@@ -1468,7 +1510,7 @@
       <Version>4.7.4</Version>
     </PackageReference>
     <PackageReference Include="Unity">
-      <Version>5.5.0</Version>
+      <Version>5.5.2</Version>
     </PackageReference>
     <PackageReference Include="WebActivator">
       <Version>1.5.3</Version>

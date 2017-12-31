@@ -7,6 +7,7 @@
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using ViewModels;
+    using ViewModels.Badge;
 
     public partial class BadgeController : BaseController
     {
@@ -45,7 +46,7 @@
 
         [HttpPost]
         [Authorize]
-        public void VoteUpPost(VoteBadgeViewModel voteUpBadgeViewModel)
+        public void VoteUpPost(EntityIdViewModel voteUpBadgeViewModel)
         {
             using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
             {
@@ -58,7 +59,7 @@
                         unitOfwork.SaveChanges();
                     }
 
-                    var post = _postService.Get(voteUpBadgeViewModel.PostId);
+                    var post = _postService.Get(voteUpBadgeViewModel.Id);
                     var databaseUpdateNeededTwo = _badgeService.ProcessBadge(BadgeType.VoteUp, post.User);
                     if (databaseUpdateNeededTwo)
                     {
@@ -80,7 +81,7 @@
 
         [HttpPost]
         [Authorize]
-        public void VoteDownPost(VoteBadgeViewModel voteUpBadgeViewModel)
+        public void VoteDownPost(EntityIdViewModel voteUpBadgeViewModel)
         {
             using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
             {
@@ -93,7 +94,7 @@
                         unitOfwork.SaveChanges();
                     }
 
-                    var post = _postService.Get(voteUpBadgeViewModel.PostId);
+                    var post = _postService.Get(voteUpBadgeViewModel.Id);
                     var databaseUpdateNeededTwo = _badgeService.ProcessBadge(BadgeType.VoteDown, post.User);
 
                     if (databaseUpdateNeededTwo)
@@ -143,13 +144,13 @@
 
         [HttpPost]
         [Authorize]
-        public void MarkAsSolution(MarkAsSolutionBadgeViewModel markAsSolutionBadgeViewModel)
+        public void MarkAsSolution(EntityIdViewModel markAsSolutionBadgeViewModel)
         {
             using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
             {
                 try
                 {
-                    var post = _postService.Get(markAsSolutionBadgeViewModel.PostId);
+                    var post = _postService.Get(markAsSolutionBadgeViewModel.Id);
                     var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.User) |
                                                _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.Topic.User);
 
@@ -168,13 +169,13 @@
 
         [HttpPost]
         [Authorize]
-        public void Favourite(FavouriteViewModel favouriteViewModel)
+        public void Favourite(EntityIdViewModel favouriteViewModel)
         {
             using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
             {
                 try
                 {
-                    var favourite = _favouriteService.Get(favouriteViewModel.FavouriteId);
+                    var favourite = _favouriteService.Get(favouriteViewModel.Id);
                     var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Favourite, favourite.Member) |
                                                _badgeService.ProcessBadge(BadgeType.Favourite, favourite.Post.User);
 
@@ -219,7 +220,7 @@
         }
 
         [HttpPost]
-        public void Time(TimeBadgeViewModel timeBadgeViewModel)
+        public void Time(EntityIdViewModel timeBadgeViewModel)
         {
             using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
             {

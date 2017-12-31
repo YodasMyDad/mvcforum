@@ -9,6 +9,7 @@
     using Core.Interfaces.UnitOfWork;
     using ViewModels;
     using ViewModels.Mapping;
+    using ViewModels.Search;
 
     public partial class SearchController : BaseController
     {

@@ -11,6 +11,7 @@
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using ViewModels;
+    using ViewModels.Vote;
     using MembershipUser = Core.DomainModel.Entities.MembershipUser;
 
     public class VoteController : BaseController
@@ -42,7 +43,7 @@
 
         [HttpPost]
         [Authorize]
-        public void VoteUpPost(VoteUpViewModel voteUpViewModel)
+        public void VoteUpPost(EntityIdViewModel voteUpViewModel)
         {
             if (Request.IsAjaxRequest())
             {
@@ -61,7 +62,7 @@
                     var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
 
                     // Firstly get the post
-                    var post = _postService.Get(voteUpViewModel.Post);
+                    var post = _postService.Get(voteUpViewModel.Id);
 
                     // Now get the current user
                     var voter = loggedOnUser;
@@ -89,7 +90,7 @@
 
         [HttpPost]
         [Authorize]
-        public void VoteDownPost(VoteDownViewModel voteDownViewModel)
+        public void VoteDownPost(EntityIdViewModel voteDownViewModel)
         {
             if (Request.IsAjaxRequest())
             {
@@ -108,7 +109,7 @@
                     var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
 
                     // Firstly get the post
-                    var post = _postService.Get(voteDownViewModel.Post);
+                    var post = _postService.Get(voteDownViewModel.Id);
 
                     // Now get the current user
                     var voter = loggedOnUser;
@@ -191,7 +192,7 @@
 
         [HttpPost]
         [Authorize]
-        public void MarkAsSolution(MarkAsSolutionViewModel markAsSolutionViewModel)
+        public void MarkAsSolution(EntityIdViewModel markAsSolutionViewModel)
         {
             if (Request.IsAjaxRequest())
             {
@@ -211,7 +212,7 @@
                     var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
 
                     // Firstly get the post
-                    var post = _postService.Get(markAsSolutionViewModel.Post);
+                    var post = _postService.Get(markAsSolutionViewModel.Id);
 
                     // Person who created the solution post
                     var solutionWriter = post.User;
@@ -242,11 +243,11 @@
 
 
         [HttpPost]
-        public PartialViewResult GetVoters(VoteUpViewModel voteUpViewModel)
+        public PartialViewResult GetVoters(EntityIdViewModel voteUpViewModel)
         {
             if (Request.IsAjaxRequest())
             {
-                var post = _postService.Get(voteUpViewModel.Post);
+                var post = _postService.Get(voteUpViewModel.Id);
                 var positiveVotes = post.Votes.Where(x => x.Amount > 0);
                 var viewModel = new ShowVotersViewModel {Votes = positiveVotes.ToList()};
                 return PartialView(viewModel);
@@ -255,11 +256,11 @@
         }
 
         [HttpPost]
-        public PartialViewResult GetVotes(VoteUpViewModel voteUpViewModel)
+        public PartialViewResult GetVotes(EntityIdViewModel voteUpViewModel)
         {
             if (Request.IsAjaxRequest())
             {
-                var post = _postService.Get(voteUpViewModel.Post);
+                var post = _postService.Get(voteUpViewModel.Id);
                 var positiveVotes = post.Votes.Count(x => x.Amount > 0);
                 var negativeVotes = post.Votes.Count(x => x.Amount <= 0);
                 var viewModel = new ShowVotesViewModel {DownVotes = negativeVotes, UpVotes = positiveVotes};
