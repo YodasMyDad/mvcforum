@@ -1,5 +1,5 @@
 ﻿@using MvcForum.Web.Application.ExtensionMethods
-@model MvcForum.Web.ViewModels.ViewPrivateMessageViewModel
+@model MvcForum.Web.ViewModels.PrivateMessage.ViewPrivateMessageViewModel
 @{
     Layout = Model.IsAjaxRequest ? "" : "~/Views/Shared/_LayoutFullWidth.cshtml";
     ViewBag.Title = string.Concat(Html.LanguageString("PM.Title"), Model.From.UserName);

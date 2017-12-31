@@ -1,4 +1,4 @@
-﻿namespace MvcForum.Web.ViewModels.Member
+﻿namespace MvcForum.Web.ViewModels.Registration
 {
     using System.ComponentModel.DataAnnotations;
     using Application;

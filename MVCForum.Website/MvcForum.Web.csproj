@@ -1067,8 +1067,6 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Views\Web.config" />
-    <Content Include="Views\Install\ManualUpgradeNeeded.cshtml" />
-    <Content Include="Views\Install\UpgradeDb.cshtml" />
     <Content Include="Views\Snippets\GetThisWeeksTopEarners.cshtml" />
     <Content Include="Views\Snippets\GetThisYearsTopEarners.cshtml" />
     <Content Include="Views\Stats\GetMainStats.cshtml" />
@@ -1366,9 +1364,6 @@
     <Content Include="Themes\Metro\Content\Fonts\mvcforumsb.ttf" />
     <Content Include="Themes\Metro\Content\Fonts\mvcforumsb.woff" />
     <Content Include="Views\Shared\customeditors\markdowneditor.cshtml" />
-    <Content Include="Views\Install\Index.cshtml" />
-    <Content Include="Views\Install\CreateDb.cshtml" />
-    <Content Include="Views\Install\Complete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AjaxMin">
