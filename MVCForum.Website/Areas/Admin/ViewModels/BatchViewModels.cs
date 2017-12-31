@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
-    using Core.DomainModel.Entities;
+    using Core.Models.Entities;
 
     #region Members
 

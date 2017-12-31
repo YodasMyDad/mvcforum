@@ -8,9 +8,9 @@
     using System.Net.Mail;
     using System.Web.Hosting;
     using Data.Context;
-    using DomainModel.Entities;
     using Interfaces;
     using Interfaces.Services;
+    using Models.Entities;
     using Utilities;
 
     public partial class EmailService : IEmailService

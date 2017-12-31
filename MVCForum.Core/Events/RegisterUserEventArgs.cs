@@ -1,7 +1,7 @@
 ﻿namespace MvcForum.Core.Events
 {
-    using DomainModel.Entities;
-    using DomainModel.Enums;
+    using Models.Entities;
+    using Models.Enums;
 
     public class RegisterUserEventArgs : MvcForumEventArgs
     {

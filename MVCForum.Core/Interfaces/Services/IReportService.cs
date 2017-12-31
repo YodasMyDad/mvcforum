@@ -1,6 +1,6 @@
 ﻿namespace MvcForum.Core.Interfaces.Services
 {
-    using DomainModel.General;
+    using Models.General;
 
     public partial interface IReportService
     {

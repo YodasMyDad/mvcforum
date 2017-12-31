@@ -1,20 +1,9 @@
-﻿namespace MvcForum.Core.DomainModel.Entities
+﻿namespace MvcForum.Core.Models.Entities
 {
     using System;
     using System.Collections.Generic;
+    using Enums;
     using Utilities;
-
-    public enum BadgeType
-    {
-        VoteUp,
-        VoteDown,
-        MarkAsSolution,
-        Time,
-        Post,
-        Profile,
-        Favourite,
-        Tag
-    }
 
     public partial class Badge : Entity
     {
@@ -23,14 +12,14 @@
         /// </summary>
         public static readonly Dictionary<BadgeType, string> BadgeClassNames = new Dictionary<BadgeType, string>
         {
-            {BadgeType.VoteUp, "MvcForum.Core.Interfaces.Badges .IVoteUpBadge"},
-            {BadgeType.MarkAsSolution, "MvcForum.Core.Interfaces.Badges .IMarkAsSolutionBadge"},
-            {BadgeType.Time, "MvcForum.Core.Interfaces.Badges .ITimeBadge"},
-            {BadgeType.Post, "MvcForum.Core.Interfaces.Badges .IPostBadge"},
-            {BadgeType.VoteDown, "MvcForum.Core.Interfaces.Badges .IVoteDownBadge"},
-            {BadgeType.Profile, "MvcForum.Core.Interfaces.Badges .IProfileBadge"},
-            {BadgeType.Favourite, "MvcForum.Core.Interfaces.Badges .IFavouriteBadge"},
-            {BadgeType.Tag, "MvcForum.Core.Interfaces.Badges .ITagBadge"}
+            {BadgeType.VoteUp, "MvcForum.Core.Interfaces.Badges.IVoteUpBadge"},
+            {BadgeType.MarkAsSolution, "MvcForum.Core.Interfaces.Badges.IMarkAsSolutionBadge"},
+            {BadgeType.Time, "MvcForum.Core.Interfaces.Badges.ITimeBadge"},
+            {BadgeType.Post, "MvcForum.Core.Interfaces.Badges.IPostBadge"},
+            {BadgeType.VoteDown, "MvcForum.Core.Interfaces.Badges.IVoteDownBadge"},
+            {BadgeType.Profile, "MvcForum.Core.Interfaces.Badges.IProfileBadge"},
+            {BadgeType.Favourite, "MvcForum.Core.Interfaces.Badges.IFavouriteBadge"},
+            {BadgeType.Tag, "MvcForum.Core.Interfaces.Badges.ITagBadge"}
         };
 
         public Badge()

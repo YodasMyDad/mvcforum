@@ -5,10 +5,10 @@
     using System.Linq;
     using Constants;
     using Data.Context;
-    using DomainModel.Entities;
-    using DomainModel.Enums;
     using Interfaces;
     using Interfaces.Services;
+    using Models.Entities;
+    using Models.Enums;
 
     public partial class SettingsService : ISettingsService
     {

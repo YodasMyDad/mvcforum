@@ -5,9 +5,9 @@
     using System.Data.Entity;
     using System.Linq;
     using Data.Context;
-    using DomainModel.Entities;
     using Interfaces;
     using Interfaces.Services;
+    using Models.Entities;
 
     public partial class TopicNotificationService : ITopicNotificationService
     {

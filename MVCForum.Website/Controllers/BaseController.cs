@@ -8,7 +8,7 @@
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
     using Core.Utilities;
-    using MembershipUser = Core.DomainModel.Entities.MembershipUser;
+    using MembershipUser = Core.Models.Entities.MembershipUser;
 
     /// <summary>
     ///     A base class for the white site controllers

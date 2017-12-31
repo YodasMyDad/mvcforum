@@ -6,10 +6,11 @@
     using System.Threading.Tasks;
     using Constants;
     using Data.Context;
-    using DomainModel.Activity;
-    using DomainModel.Entities;
     using Interfaces;
     using Interfaces.Services;
+    using Models.Activity;
+    using Models.Entities;
+    using Models.Enums;
     using Models.General;
     using Utilities;
 

@@ -4,7 +4,8 @@
     using System.Collections.Generic;
     using System.Reflection;
     using System.Threading.Tasks;
-    using DomainModel.Entities;
+    using Models.Entities;
+    using Models.Enums;
     using Models.General;
 
     public partial interface IBadgeService

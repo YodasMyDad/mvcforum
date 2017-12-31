@@ -6,10 +6,10 @@
     using System.Linq;
     using Constants;
     using Data.Context;
-    using DomainModel.Entities;
     using Events;
     using Interfaces;
     using Interfaces.Services;
+    using Models.Entities;
 
     public partial class FavouriteService : IFavouriteService
     {

@@ -3,8 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using DomainModel.Entities;
-    using DomainModel.General;
+    using Models.Entities;
     using Models.General;
 
     public partial interface ITopicTagService

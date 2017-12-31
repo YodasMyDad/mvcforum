@@ -2,11 +2,11 @@
 namespace Badge.AuthorMarkAsSolution
 {
     using MvcForum.Core.DomainModel;
-    using MvcForum.Core.DomainModel.Attributes;
     using MvcForum.Core.Interfaces.Badges;
     using MvcForum.Core.Interfaces.Services;
     using System.Web.Mvc;
-    using MvcForum.Core.DomainModel.Entities;
+    using MvcForum.Core.Models.Attributes;
+    using MvcForum.Core.Models.Entities;
 
     [Id("d68c289a-e3f7-4f55-ae4f-fc7ac2147781")]
     [Name("AuthorMarkAsSolution")]

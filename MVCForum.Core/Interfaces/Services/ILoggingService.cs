@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using DomainModel.General;
+    using Models.General;
 
     public partial interface ILoggingService
     {

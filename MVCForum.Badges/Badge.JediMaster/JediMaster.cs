@@ -1,10 +1,10 @@
 ﻿namespace Badge.JediMaster
 {
     using System.Web.Mvc;
-    using MvcForum.Core.DomainModel.Attributes;
-    using MvcForum.Core.DomainModel.Entities;
     using MvcForum.Core.Interfaces.Badges;
     using MvcForum.Core.Interfaces.Services;
+    using MvcForum.Core.Models.Attributes;
+    using MvcForum.Core.Models.Entities;
 
     [Id("4c54474b-51c2-4a52-bad2-96af5dea14d1")]
     [Name("JediMaster")]

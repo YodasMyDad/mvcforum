@@ -2,10 +2,10 @@
 {
     using System.Linq;
     using System.Web.Mvc;
-    using MvcForum.Core.DomainModel.Attributes;
-    using MvcForum.Core.DomainModel.Entities;
     using MvcForum.Core.Interfaces.Badges;
     using MvcForum.Core.Interfaces.Services;
+    using MvcForum.Core.Models.Attributes;
+    using MvcForum.Core.Models.Entities;
 
     [Id("9ea3f651-ef37-4ad5-86a2-432012ad1e74")]
     [Name("TheGrouch")]

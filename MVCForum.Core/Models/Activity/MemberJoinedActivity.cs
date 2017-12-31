@@ -1,6 +1,7 @@
-﻿namespace MvcForum.Core.DomainModel.Activity
+﻿namespace MvcForum.Core.Models.Activity
 {
     using Entities;
+    using Enums;
 
     // Seal this class to avoid "virtual member call in constructor" problem
 

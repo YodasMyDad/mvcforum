@@ -9,9 +9,9 @@
     using System.Web.Mvc;
     using Application.CustomActionResults;
     using Core.Constants;
-    using Core.DomainModel.General;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
+    using Core.Models.General;
     using Newtonsoft.Json;
     using ViewModels;
 

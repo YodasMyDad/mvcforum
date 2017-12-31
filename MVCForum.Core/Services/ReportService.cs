@@ -1,9 +1,9 @@
 ﻿namespace MvcForum.Core.Services
 {
     using System.Text;
-    using DomainModel.Entities;
-    using DomainModel.General;
     using Interfaces.Services;
+    using Models.Entities;
+    using Models.General;
 
     public partial class ReportService : IReportService
     {

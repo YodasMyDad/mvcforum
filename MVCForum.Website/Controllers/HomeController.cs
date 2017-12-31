@@ -9,13 +9,13 @@
     using Application.CustomActionResults;
     using Application.ExtensionMethods;
     using Core.Constants;
-    using Core.DomainModel.Activity;
-    using Core.DomainModel.Entities;
-    using Core.DomainModel.Enums;
-    using Core.DomainModel.General;
     using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
+    using Core.Models.Activity;
+    using Core.Models.Entities;
+    using Core.Models.Enums;
+    using Core.Models.General;
     using ViewModels;
     using ViewModels.Home;
 

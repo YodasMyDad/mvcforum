@@ -1,4 +1,4 @@
-﻿namespace MvcForum.Core.DomainModel.Enums
+﻿namespace MvcForum.Core.Models.Enums
 {
     /// <summary>
     ///     Status values returned when creating a user

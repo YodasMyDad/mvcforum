@@ -6,9 +6,9 @@
     using System.Web.Security;
     using Areas.Admin.ViewModels;
     using Core.Constants;
-    using Core.DomainModel.Enums;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
+    using Core.Models.Enums;
     using Core.Utilities;
     using Skybrud.Social.Google;
     using Skybrud.Social.Google.OAuth;

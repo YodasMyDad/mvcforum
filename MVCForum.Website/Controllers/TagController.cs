@@ -3,10 +3,10 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Web.Mvc;
-    using Core.DomainModel.Enums;
     using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
+    using Core.Models.Enums;
     using ViewModels;
     using ViewModels.Tag;
 

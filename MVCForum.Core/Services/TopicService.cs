@@ -8,13 +8,12 @@
     using System.Web.Mvc;
     using Constants;
     using Data.Context;
-    using DomainModel.Entities;
-    using DomainModel.Enums;
-    using DomainModel.General;
     using Events;
     using Interfaces;
     using Interfaces.Services;
     using Interfaces.UnitOfWork;
+    using Models.Entities;
+    using Models.Enums;
     using Models.General;
     using Utilities;
 

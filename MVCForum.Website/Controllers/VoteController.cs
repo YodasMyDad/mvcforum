@@ -5,14 +5,14 @@
     using System.Linq;
     using System.Web.Mvc;
     using System.Web.Security;
-    using Core.DomainModel.Entities;
-    using Core.DomainModel.Enums;
     using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
+    using Core.Models.Entities;
+    using Core.Models.Enums;
     using ViewModels;
     using ViewModels.Vote;
-    using MembershipUser = Core.DomainModel.Entities.MembershipUser;
+    using MembershipUser = Core.Models.Entities.MembershipUser;
 
     public class VoteController : BaseController
     {

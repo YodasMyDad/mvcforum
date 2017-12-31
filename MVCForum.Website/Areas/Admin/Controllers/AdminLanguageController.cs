@@ -7,9 +7,9 @@
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using Core.Constants;
-    using Core.DomainModel.Entities;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
+    using Core.Models.Entities;
     using Core.Utilities;
     using ViewModels;
 

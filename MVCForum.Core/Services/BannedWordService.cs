@@ -7,9 +7,9 @@
     using System.Threading.Tasks;
     using Constants;
     using Data.Context;
-    using DomainModel.Entities;
     using Interfaces;
     using Interfaces.Services;
+    using Models.Entities;
     using Models.General;
     using Utilities;
 

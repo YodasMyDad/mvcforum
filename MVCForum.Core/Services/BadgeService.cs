@@ -8,14 +8,14 @@
     using System.Threading.Tasks;
     using Constants;
     using Data.Context;
-    using DomainModel.Activity;
-    using DomainModel.Attributes;
-    using DomainModel.Entities;
-    using DomainModel.Enums;
     using Events;
     using Interfaces;
     using Interfaces.Badges;
     using Interfaces.Services;
+    using Models.Activity;
+    using Models.Attributes;
+    using Models.Entities;
+    using Models.Enums;
     using Models.General;
     using Utilities;
 

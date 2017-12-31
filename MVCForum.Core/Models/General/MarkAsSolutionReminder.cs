@@ -1,4 +1,4 @@
-﻿namespace MvcForum.Core.DomainModel.General
+﻿namespace MvcForum.Core.Models.General
 {
     using Entities;
 

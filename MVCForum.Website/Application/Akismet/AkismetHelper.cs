@@ -2,8 +2,8 @@
 {
     using System.Linq;
     using System.Web;
-    using Core.DomainModel.Entities;
     using Core.Interfaces.Services;
+    using Core.Models.Entities;
     using Core.Utilities;
 
     public class AkismetHelper

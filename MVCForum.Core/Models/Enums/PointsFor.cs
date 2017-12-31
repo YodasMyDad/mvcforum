@@ -1,4 +1,4 @@
-﻿namespace MvcForum.Core.DomainModel.Enums
+﻿namespace MvcForum.Core.Models.Enums
 {
     public enum PointsFor
     {

@@ -4,9 +4,9 @@
     using System.Linq;
     using Constants;
     using Data.Context;
-    using DomainModel.Entities;
     using Interfaces;
     using Interfaces.Services;
+    using Models.Entities;
 
     public partial class BlockService : IBlockService
     {

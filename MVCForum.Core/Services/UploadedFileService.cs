@@ -5,8 +5,8 @@
     using System.Data.Entity;
     using System.Linq;
     using Data.Context;
-    using DomainModel.General;
     using Interfaces.Services;
+    using Models.General;
 
     public partial class UploadedFileService : IUploadedFileService
     {

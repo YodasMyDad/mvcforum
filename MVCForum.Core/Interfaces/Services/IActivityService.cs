@@ -3,9 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using DomainModel.Activity;
-    using DomainModel.Entities;
-    using DomainModel.General;
+    using Models.Activity;
+    using Models.Entities;
     using Models.General;
 
     public partial interface IActivityService

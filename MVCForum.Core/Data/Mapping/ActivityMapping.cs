@@ -1,7 +1,7 @@
 ﻿namespace MvcForum.Core.Data.Mapping
 {
     using System.Data.Entity.ModelConfiguration;
-    using DomainModel.Activity;
+    using Models.Activity;
 
     public class ActivityMapping : EntityTypeConfiguration<Activity>
     {

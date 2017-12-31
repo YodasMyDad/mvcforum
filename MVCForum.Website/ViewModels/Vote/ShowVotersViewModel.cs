@@ -5,7 +5,7 @@ using System.Web;
 
 namespace MvcForum.Web.ViewModels.Vote
 {
-    using Core.DomainModel.Entities;
+    using Core.Models.Entities;
 
     public class ShowVotersViewModel
     {

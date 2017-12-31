@@ -1,4 +1,4 @@
-﻿@using MvcForum.Core.DomainModel.Entities
+﻿@using MvcForum.Core.Models.Entities
 @model MvcForum.Web.Areas.Admin.ViewModels.ListCategoriesViewModel
 @{
     var mainCategories = Model.Categories.Where(x => x.ParentCategory == null).ToList();

@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Web.Mvc;
     using System.Xml;
-    using Core.DomainModel.General;
+    using Core.Models.General;
 
     public class GoogleSitemapResult : ActionResult
     {

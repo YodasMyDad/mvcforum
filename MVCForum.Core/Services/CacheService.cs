@@ -6,8 +6,8 @@
     using System.Linq;
     using System.Runtime.Caching;
     using System.Web;
-    using DomainModel.Enums;
     using Interfaces.Services;
+    using Models.Enums;
 
     public class CacheService : ICacheService
     {

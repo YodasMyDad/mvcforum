@@ -2,8 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using Core.DomainModel.Entities;
-    using Core.DomainModel.General;
+    using Core.Models.Entities;
+    using Core.Models.General;
     using Poll;
     using Post;
 

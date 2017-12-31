@@ -1,10 +1,10 @@
 ﻿namespace MvcForum.Core.ExtensionMethods
 {
     using System.Linq;
-    using DomainModel.Entities;
     using System.Security.Principal;
     using Constants;
     using Interfaces.Services;
+    using Models.Entities;
 
     public static class IdentityExtensions
     {

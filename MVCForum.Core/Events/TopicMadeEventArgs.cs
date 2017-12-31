@@ -1,7 +1,7 @@
 ﻿namespace MvcForum.Core.Events
 {
     using DomainModel;
-    using DomainModel.Entities;
+    using Models.Entities;
 
     public class TopicMadeEventArgs : MvcForumEventArgs
     {

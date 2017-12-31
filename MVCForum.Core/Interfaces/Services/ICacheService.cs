@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using DomainModel.Enums;
+    using Models.Enums;
 
     public partial interface ICacheService
     {

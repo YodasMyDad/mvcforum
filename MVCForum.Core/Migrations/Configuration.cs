@@ -10,7 +10,7 @@ namespace MvcForum.Core.Services.Migrations
     using System.Web.Hosting;
     using Constants;
     using Data.Context;
-    using DomainModel.Entities;
+    using Models.Entities;
     using Utilities;
 
     internal sealed class Configuration : DbMigrationsConfiguration<MvcForumContext>

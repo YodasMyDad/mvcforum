@@ -7,8 +7,8 @@
     using System.IO;
     using System.Linq;
     using System.Text;
-    using DomainModel.General;
     using Interfaces.Services;
+    using Models.General;
 
     /// <summary>
     /// A class for logging errors to a text file. Works in Partial Trust.

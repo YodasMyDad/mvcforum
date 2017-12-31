@@ -7,10 +7,10 @@
     using System.Threading.Tasks;
     using Constants;
     using Data.Context;
-    using DomainModel.Entities;
-    using DomainModel.General;
     using Interfaces;
     using Interfaces.Services;
+    using Models.Entities;
+    using Models.Enums;
     using Models.General;
     using Utilities;
 

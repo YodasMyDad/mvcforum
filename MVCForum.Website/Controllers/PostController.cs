@@ -10,16 +10,16 @@
     using Application.Akismet;
     using Areas.Admin.ViewModels;
     using Core.Constants;
-    using Core.DomainModel.Entities;
-    using Core.DomainModel.General;
     using Core.Events;
     using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
+    using Core.Models.Entities;
+    using Core.Models.General;
     using ViewModels;
     using ViewModels.Mapping;
     using ViewModels.Post;
-    using MembershipUser = Core.DomainModel.Entities.MembershipUser;
+    using MembershipUser = Core.Models.Entities.MembershipUser;
 
     [Authorize]
     public partial class PostController : BaseController

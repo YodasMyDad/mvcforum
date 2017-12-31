@@ -1,4 +1,4 @@
-﻿namespace MvcForum.Core.DomainModel.Entities
+﻿namespace MvcForum.Core.Models.Entities
 {
     using System;
     using System.Collections.Generic;

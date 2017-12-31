@@ -5,8 +5,7 @@
     using System.ComponentModel;
     using System.ComponentModel.DataAnnotations;
     using System.Web.Mvc;
-    using Core.DomainModel.Entities;
-    using Core.DomainModel.General;
+    using Core.Models.Entities;
     using Core.Models.General;
 
     public class MoveTagsViewModel

@@ -1,8 +1,8 @@
 ﻿namespace Badge.UserVoteUp
 {
-    using MvcForum.Core.DomainModel.Attributes;
-    using MvcForum.Core.DomainModel.Entities;
     using MvcForum.Core.Interfaces.Badges;
+    using MvcForum.Core.Models.Attributes;
+    using MvcForum.Core.Models.Entities;
 
     [Id("c9913ee2-b8e0-4543-8930-c723497ee65c")]
     [Name("UserVoteUp")]

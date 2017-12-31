@@ -1,9 +1,9 @@
 ﻿namespace Badge.PosterVoteUp
 {
     using System.Linq;
-    using MvcForum.Core.DomainModel.Attributes;
-    using MvcForum.Core.DomainModel.Entities;
     using MvcForum.Core.Interfaces.Badges;
+    using MvcForum.Core.Models.Attributes;
+    using MvcForum.Core.Models.Entities;
 
     [Id("2ac1fc11-2f9e-4d5a-9df4-29715f10b6d1")]
     [Name("PosterVoteUp")]

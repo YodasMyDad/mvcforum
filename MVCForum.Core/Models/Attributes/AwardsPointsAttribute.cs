@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace MvcForum.Core.DomainModel.Attributes
+﻿namespace MvcForum.Core.Models.Attributes
 {
+    using System;
+
     [AttributeUsage(AttributeTargets.Class)]
     public class AwardsPointsAttribute : Attribute
     {

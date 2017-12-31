@@ -1,7 +1,7 @@
 ﻿namespace MvcForum.Web.Areas.Admin.ViewModels
 {
     using System.Collections.Generic;
-    using Core.DomainModel.General;
+    using Core.Models.General;
 
     public class ListLogViewModel
     {

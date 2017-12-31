@@ -2,10 +2,10 @@
 {
     using System;
     using System.Web.Mvc;
-    using Core.DomainModel.Entities;
     using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
+    using Core.Models.Enums;
     using ViewModels;
     using ViewModels.Badge;
 

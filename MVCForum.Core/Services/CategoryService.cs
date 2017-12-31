@@ -9,10 +9,10 @@
     using System.Web.Mvc;
     using Constants;
     using Data.Context;
-    using DomainModel.Entities;
-    using DomainModel.General;
     using Interfaces;
     using Interfaces.Services;
+    using Models.Entities;
+    using Models.General;
     using Utilities;
 
     public partial class CategoryService : ICategoryService

@@ -6,8 +6,8 @@
     using System.Text;
     using System.Web;
     using System.Xml;
-    using DomainModel.Enums;
     using Interfaces.Services;
+    using Models.Enums;
 
     public partial class ConfigService : IConfigService
     {

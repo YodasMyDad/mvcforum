@@ -1,7 +1,7 @@
 ﻿namespace MvcForum.Core.EqualityComparers
 {
     using System.Collections.Generic;
-    using DomainModel.Entities;
+    using Models.Entities;
 
     public class PermissionEqualityComparer : IEqualityComparer<Permission>
     {

@@ -3,8 +3,8 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using Application;
-    using Core.DomainModel.Entities;
-    using Core.DomainModel.Enums;
+    using Core.Models.Entities;
+    using Core.Models.Enums;
 
     public class MemberAddViewModel
     {

@@ -2,8 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using DomainModel.Entities;
-    using DomainModel.Enums;
+    using Models.Entities;
+    using Models.Enums;
 
     public partial interface IMembershipUserPointsService
     {

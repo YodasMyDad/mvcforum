@@ -1,6 +1,6 @@
 ﻿namespace MvcForum.Web.ViewModels.PrivateMessage
 {
-    using Core.DomainModel.Entities;
+    using Core.Models.Entities;
     using Core.Models.General;
 
     public class ViewPrivateMessageViewModel

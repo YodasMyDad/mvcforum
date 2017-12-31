@@ -1,10 +1,10 @@
 ﻿namespace Badge.PosterMarkAsSolution
 {
     using System.Web.Mvc;
-    using MvcForum.Core.DomainModel.Attributes;
-    using MvcForum.Core.DomainModel.Entities;
     using MvcForum.Core.Interfaces.Badges;
     using MvcForum.Core.Interfaces.Services;
+    using MvcForum.Core.Models.Attributes;
+    using MvcForum.Core.Models.Entities;
 
     [Id("8250f9f0-84d2-4dff-b651-c3df9e12bf2a")]
     [Name("PosterMarkAsSolution")]

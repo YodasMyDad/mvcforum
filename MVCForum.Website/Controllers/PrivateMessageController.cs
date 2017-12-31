@@ -8,10 +8,10 @@
     using Application;
     using Areas.Admin.ViewModels;
     using Core.Constants;
-    using Core.DomainModel.Entities;
     using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
+    using Core.Models.Entities;
     using Core.Utilities;
     using ViewModels;
     using ViewModels.PrivateMessage;

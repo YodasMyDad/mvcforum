@@ -13,19 +13,20 @@
     using Application.Akismet;
     using Areas.Admin.ViewModels;
     using Core.Constants;
-    using Core.DomainModel.Entities;
-    using Core.DomainModel.Enums;
-    using Core.DomainModel.General;
     using Core.Events;
     using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
+    using Core.Models.Entities;
+    using Core.Models.Enums;
+    using Core.Models.General;
     using Core.Utilities;
     using ViewModels;
     using ViewModels.Breadcrumb;
     using ViewModels.Mapping;
     using ViewModels.Post;
     using ViewModels.Topic;
+    using MembershipUser = Core.Models.Entities.MembershipUser;
 
     public partial class TopicController : BaseController
     {
@@ -1401,7 +1402,7 @@
             }
         }
 
-        private void NotifyNewTopics(Category cat, Topic topic, IUnitOfWork unitOfWork, Core.DomainModel.Entities.MembershipUser loggedOnReadOnlyUser)
+        private void NotifyNewTopics(Category cat, Topic topic, IUnitOfWork unitOfWork, MembershipUser loggedOnReadOnlyUser)
         {
             var settings = SettingsService.GetSettings();
 

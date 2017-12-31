@@ -1,8 +1,8 @@
 ﻿namespace Badge.Photogenic
 {
-    using MvcForum.Core.DomainModel.Attributes;
-    using MvcForum.Core.DomainModel.Entities;
     using MvcForum.Core.Interfaces.Badges;
+    using MvcForum.Core.Models.Attributes;
+    using MvcForum.Core.Models.Entities;
 
     [Id("1931b389-b2b1-481c-80fc-03f1900e113d")]
     [Name("Photogenic")]

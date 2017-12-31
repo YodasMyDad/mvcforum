@@ -1,15 +1,15 @@
 ﻿namespace MvcForum.Web.ViewModels.Category
 {
     using System.Collections.Generic;
-    using Core.DomainModel.Entities;
-    using Core.DomainModel.General;
+    using Core.Models.Entities;
+    using Core.Models.General;
     using Topic;
 
     public class CategoryViewModel
     {
         public List<TopicViewModel> Topics { get; set; }
         public PermissionSet Permissions { get; set; }
-        public Core.DomainModel.Entities.Category Category { get; set; }
+        public Category Category { get; set; }
         public CategoryListViewModel SubCategories { get; set; }
         public MembershipUser User { get; set; }
         public bool IsSubscribed { get; set; }

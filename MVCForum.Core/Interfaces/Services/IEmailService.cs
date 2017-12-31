@@ -1,7 +1,7 @@
 ﻿namespace MvcForum.Core.Interfaces.Services
 {
     using System.Collections.Generic;
-    using DomainModel.Entities;
+    using Models.Entities;
 
     public partial interface IEmailService
     {

@@ -7,7 +7,7 @@
     using System.Web.Mvc;
     using Application;
     using Core.Constants;
-    using Core.DomainModel.Entities;
+    using Core.Models.Entities;
 
     public class CreateEditTopicViewModel
     {

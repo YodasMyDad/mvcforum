@@ -1,9 +1,9 @@
 ﻿namespace Badge.ThousandPoints
 {
     using System.Linq;
-    using MvcForum.Core.DomainModel.Attributes;
-    using MvcForum.Core.DomainModel.Entities;
     using MvcForum.Core.Interfaces.Badges;
+    using MvcForum.Core.Models.Attributes;
+    using MvcForum.Core.Models.Entities;
 
     [Id("a54ec5d1-111d-4698-b2d0-78fbdaa52d1b")]
     [Name("OneThousandPoints")]

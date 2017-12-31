@@ -41,7 +41,7 @@
 
 namespace MvcForum.Core.Interfaces.Badges
 {
-    using DomainModel.Entities;
+    using Models.Entities;
 
     public interface IBadge
     {

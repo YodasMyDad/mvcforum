@@ -1,6 +1,6 @@
 ﻿namespace MvcForum.Web.ViewModels.Admin
 {
-    using Core.DomainModel.Entities;
+    using Core.Models.Entities;
 
     public class ViewAdminSidePanelViewModel
     {

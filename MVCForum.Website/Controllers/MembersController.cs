@@ -15,21 +15,21 @@
     using Application;
     using Areas.Admin.ViewModels;
     using Core.Constants;
-    using Core.DomainModel.Entities;
-    using Core.DomainModel.Enums;
-    using Core.DomainModel.General;
     using Core.Events;
     using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
+    using Core.Models.Entities;
+    using Core.Models.Enums;
+    using Core.Models.General;
     using Core.Utilities;
     using ViewModels;
     using ViewModels.Admin;
     using ViewModels.Mapping;
     using ViewModels.Member;
     using ViewModels.Registration;
-    using MembershipCreateStatus = Core.DomainModel.Enums.MembershipCreateStatus;
-    using MembershipUser = Core.DomainModel.Entities.MembershipUser;
+    using MembershipCreateStatus = Core.Models.Enums.MembershipCreateStatus;
+    using MembershipUser = Core.Models.Entities.MembershipUser;
 
     public partial class MembersController : BaseController
     {

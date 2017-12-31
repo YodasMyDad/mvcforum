@@ -6,12 +6,12 @@
     using System.Web.Mvc;
     using Application.CustomActionResults;
     using Core.Constants;
-    using Core.DomainModel.Entities;
-    using Core.DomainModel.Enums;
-    using Core.DomainModel.General;
     using Core.ExtensionMethods;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
+    using Core.Models.Entities;
+    using Core.Models.Enums;
+    using Core.Models.General;
     using ViewModels;
     using ViewModels.Breadcrumb;
     using ViewModels.Category;

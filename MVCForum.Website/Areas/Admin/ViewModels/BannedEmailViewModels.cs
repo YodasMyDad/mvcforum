@@ -2,8 +2,7 @@
 {
     using System;
     using System.ComponentModel.DataAnnotations;
-    using Core.DomainModel.Entities;
-    using Core.DomainModel.General;
+    using Core.Models.Entities;
     using Core.Models.General;
 
     public class BannedEmailListViewModel

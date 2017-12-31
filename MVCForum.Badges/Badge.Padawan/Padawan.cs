@@ -1,10 +1,10 @@
 ﻿namespace Badge.Padawan
 {
     using System.Web.Mvc;
-    using MvcForum.Core.DomainModel.Attributes;
-    using MvcForum.Core.DomainModel.Entities;
     using MvcForum.Core.Interfaces.Badges;
     using MvcForum.Core.Interfaces.Services;
+    using MvcForum.Core.Models.Attributes;
+    using MvcForum.Core.Models.Entities;
 
     [Id("A88C62B2-394F-4D89-B61E-04A7B546416B")]
     [Name("Padawan")]

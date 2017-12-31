@@ -2,7 +2,7 @@
 {
     using System.Data.Entity.ModelConfiguration;
     using DomainModel;
-    using DomainModel.General;
+    using Models.General;
 
     public class UploadedFileMapping : EntityTypeConfiguration<UploadedFile>
     {

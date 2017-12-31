@@ -1,7 +1,7 @@
 ﻿namespace MvcForum.Core.Data.Mapping
 {
     using System.Data.Entity.ModelConfiguration;
-    using DomainModel.Entities;
+    using Models.Entities;
 
     public class PostEditMapping : EntityTypeConfiguration<PostEdit>
     {

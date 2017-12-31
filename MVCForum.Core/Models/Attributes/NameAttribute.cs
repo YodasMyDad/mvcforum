@@ -1,4 +1,4 @@
-﻿namespace MvcForum.Core.DomainModel.Attributes
+﻿namespace MvcForum.Core.Models.Attributes
 {
     using System;
 

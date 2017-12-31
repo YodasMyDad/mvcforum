@@ -9,8 +9,8 @@
     using System.Web.Mvc.Html;
     using System.Web.Routing;
     using Core.Constants;
-    using Core.DomainModel.Entities;
     using Core.Interfaces.Services;
+    using Core.Models.Entities;
 
     public static class Extensions
     {

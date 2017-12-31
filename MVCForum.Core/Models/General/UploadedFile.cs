@@ -1,4 +1,4 @@
-﻿namespace MvcForum.Core.DomainModel.General
+﻿namespace MvcForum.Core.Models.General
 {
     using System;
     using Entities;
@@ -16,13 +16,8 @@
         public virtual Post Post { get; set; }
         public DateTime DateCreated { get; set; }
 
-        public string FriendlyFilename
-        {
-            get { return Filename.Split('_')[1]; }
-        }
-        public string FilePath
-        {
-            get { return string.Format("~/content/uploads/{0}/{1}", MembershipUser.Id, Filename); }
-        }
+        public string FriendlyFilename => Filename.Split('_')[1];
+
+        public string FilePath => $"~/content/uploads/{MembershipUser.Id}/{Filename}";
     }
 }

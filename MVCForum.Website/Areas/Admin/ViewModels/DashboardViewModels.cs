@@ -1,8 +1,7 @@
 ﻿namespace MvcForum.Web.Areas.Admin.ViewModels
 {
     using System.Collections.Generic;
-    using Core.DomainModel.Entities;
-    using Core.DomainModel.General;
+    using Core.Models.Entities;
 
     public class MainDashboardNavViewModel
     {

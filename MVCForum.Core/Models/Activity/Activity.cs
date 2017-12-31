@@ -1,16 +1,8 @@
-﻿using System;
-
-namespace MvcForum.Core.DomainModel.Activity
+﻿namespace MvcForum.Core.Models.Activity
 {
+    using System;
     using Entities;
     using Utilities;
-
-    public enum ActivityType
-    {
-        BadgeAwarded,
-        MemberJoined,
-        ProfileUpdated,
-    }
 
     public class Activity : Entity
     {

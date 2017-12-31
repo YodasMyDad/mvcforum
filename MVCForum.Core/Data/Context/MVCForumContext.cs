@@ -8,10 +8,10 @@
     using System.Linq;
     using System.Reflection;
     using DomainModel;
-    using DomainModel.Activity;
-    using DomainModel.Entities;
-    using DomainModel.General;
     using Interfaces;
+    using Models.Activity;
+    using Models.Entities;
+    using Models.General;
 
     public partial class MvcForumContext : DbContext, IMvcForumContext
     {

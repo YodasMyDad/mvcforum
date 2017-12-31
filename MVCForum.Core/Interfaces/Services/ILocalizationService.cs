@@ -4,8 +4,7 @@
     using System.Collections.Generic;
     using System.Globalization;
     using System.Threading.Tasks;
-    using DomainModel.Entities;
-    using DomainModel.General;
+    using Models.Entities;
     using Models.General;
 
     public interface ILocalizationService

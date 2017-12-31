@@ -2,7 +2,7 @@
 {
     using System.Web;
     using Constants;
-    using DomainModel.Enums;
+    using Models.Enums;
 
     public static class UrlTypes
     {

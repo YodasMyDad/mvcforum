@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using DomainModel.Entities;
+    using Models.Entities;
 
     public partial interface IPermissionService
     {

@@ -3,9 +3,9 @@
     using System;
     using System.Linq;
     using System.Text;
-    using Core.DomainModel.Entities;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
+    using Core.Models.Entities;
     using Quartz;
 
     [DisallowConcurrentExecution]

@@ -3,9 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using DomainModel.Entities;
-    using DomainModel.Enums;
-    using DomainModel.General;
+    using Models.Entities;
+    using Models.Enums;
     using Models.General;
     using UnitOfWork;
 

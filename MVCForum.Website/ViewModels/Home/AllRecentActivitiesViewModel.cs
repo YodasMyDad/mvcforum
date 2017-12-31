@@ -1,6 +1,6 @@
 ﻿namespace MvcForum.Web.ViewModels.Home
 {
-    using Core.DomainModel.Activity;
+    using Core.Models.Activity;
     using Core.Models.General;
 
     public class AllRecentActivitiesViewModel

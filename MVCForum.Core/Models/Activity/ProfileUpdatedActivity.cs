@@ -1,8 +1,8 @@
-﻿using System;
-
-namespace MvcForum.Core.DomainModel.Activity
+﻿namespace MvcForum.Core.Models.Activity
 {
+    using System;
     using Entities;
+    using Enums;
 
     public class ProfileUpdatedActivity : ActivityBase
     {

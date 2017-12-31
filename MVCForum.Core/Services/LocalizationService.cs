@@ -12,11 +12,10 @@
     using Constants;
     using Core;
     using Data.Context;
-    using DomainModel.Entities;
-    using DomainModel.Enums;
-    using DomainModel.General;
     using Interfaces;
     using Interfaces.Services;
+    using Models.Entities;
+    using Models.Enums;
     using Models.General;
     using Utilities;
 

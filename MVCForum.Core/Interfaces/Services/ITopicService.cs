@@ -4,8 +4,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using System.Web.Mvc;
-    using DomainModel.Entities;
-    using DomainModel.General;
+    using Models.Entities;
     using Models.General;
     using UnitOfWork;
 

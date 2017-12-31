@@ -1,7 +1,7 @@
 ﻿namespace MvcForum.Web.ViewModels.Post
 {
     using System.Collections.Generic;
-    using Core.DomainModel.Entities;
+    using Core.Models.Entities;
 
     public class PostLikedByViewModel
     {

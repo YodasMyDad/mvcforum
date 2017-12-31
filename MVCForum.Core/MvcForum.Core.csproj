@@ -67,6 +67,8 @@
     <Compile Include="Models\Activity\Activity.cs" />
     <Compile Include="Models\Entities\Block.cs" />
     <Compile Include="Models\Entities\PostEdit.cs" />
+    <Compile Include="Models\Enums\ActivityType.cs" />
+    <Compile Include="Models\Enums\BadgeType.cs" />
     <Compile Include="Models\Enums\CacheTimes.cs" />
     <Compile Include="Models\Enums\MembershipCreateStatus.cs" />
     <Compile Include="Models\Enums\PointsFor.cs" />
@@ -78,7 +80,6 @@
     <Compile Include="Models\Enums\LoginType.cs" />
     <Compile Include="Models\Entities\Favourite.cs" />
     <Compile Include="Models\Entities\GlobalPermission.cs" />
-    <Compile Include="Models\General\InstallerResult.cs" />
     <Compile Include="Models\Entities\PermissionForRole.cs" />
     <Compile Include="Models\Entities\Poll.cs" />
     <Compile Include="Models\Entities\PrivateMessage.cs" />

@@ -2,7 +2,7 @@
 {
     using System.Data.Entity.ModelConfiguration;
     using DomainModel;
-    using DomainModel.Entities;
+    using Models.Entities;
 
     public class LocaleResourceKeyMapping : EntityTypeConfiguration<LocaleResourceKey>
     {

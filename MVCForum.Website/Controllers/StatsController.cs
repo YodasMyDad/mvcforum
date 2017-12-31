@@ -1,9 +1,9 @@
 ﻿namespace MvcForum.Web.Controllers
 {
     using System.Web.Mvc;
-    using Core.DomainModel.Enums;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
+    using Core.Models.Enums;
     using ViewModels;
     using ViewModels.Stats;
 

@@ -9,9 +9,9 @@
     using System.Web.Mvc;
     using Application;
     using Core.Constants;
-    using Core.DomainModel.General;
     using Core.Interfaces.Services;
     using Core.Interfaces.UnitOfWork;
+    using Core.Models.General;
 
     [System.Web.Http.Authorize]
     [System.Web.Http.RoutePrefix("api/TinyMce")]

@@ -2,7 +2,7 @@
 {
     using System.Web.Hosting;
     using System.Xml;
-    using DomainModel.Enums;
+    using Models.Enums;
     using Services;
 
     internal class SiteConfig

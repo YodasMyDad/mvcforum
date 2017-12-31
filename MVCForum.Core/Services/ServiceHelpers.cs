@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using DomainModel.Entities;
+    using Models.Entities;
     using Utilities;
 
     public static class ServiceHelpers
