@@ -1,6 +1,7 @@
 ﻿namespace MvcForum.Web
 {
     using System;
+    using System.Data.Entity;
     using System.Globalization;
     using System.Threading;
     using System.Web;
@@ -10,10 +11,12 @@
     using Application;
     using Application.ScheduledJobs;
     using Application.ViewEngine;
+    using Core.Data.Context;
     using Core.Events;
     using Core.Interfaces;
     using Core.Interfaces.Services;
     using Core.Ioc;
+    using Core.Services.Migrations;
     using Core.Utilities;
 
     public class MvcApplication : HttpApplication
@@ -43,6 +46,9 @@
 
             // Store the value for use in the app
             Application["Version"] = AppHelpers.GetCurrentVersionNo();
+
+            // Make DB update to latest migration
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<MvcForumContext, Configuration>());
 
             // If the same carry on as normal
             LoggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));

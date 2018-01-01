@@ -42,13 +42,13 @@
             Property(x => x.Twitter).IsOptional().HasMaxLength(60);
             Property(x => x.Facebook).IsOptional().HasMaxLength(60);
             Property(x => x.Avatar).IsOptional().HasMaxLength(500);
-            Property(x => x.FacebookAccessToken).IsOptional().HasMaxLength(300);
+            Property(x => x.FacebookAccessToken).IsOptional().HasMaxLength(1000);
             Property(x => x.FacebookId).IsOptional();
-            Property(x => x.MicrosoftAccessToken).IsOptional().HasMaxLength(450);
+            Property(x => x.MicrosoftAccessToken).IsOptional().HasMaxLength(1000);
             Property(x => x.MicrosoftId).IsOptional();
-            Property(x => x.TwitterAccessToken).IsOptional().HasMaxLength(300);
+            Property(x => x.TwitterAccessToken).IsOptional().HasMaxLength(1000);
             Property(x => x.TwitterId).IsOptional().HasMaxLength(150);
-            Property(x => x.GoogleAccessToken).IsOptional().HasMaxLength(300);
+            Property(x => x.GoogleAccessToken).IsOptional().HasMaxLength(1000);
             Property(x => x.GoogleId).IsOptional().HasMaxLength(150);
             Property(x => x.IsExternalAccount).IsOptional();
             Property(x => x.TwitterShowFeed).IsOptional();

@@ -13,7 +13,7 @@ namespace MvcForum.Core.Services.Migrations
     using Models.Entities;
     using Utilities;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<MvcForumContext>
+    public class Configuration : DbMigrationsConfiguration<MvcForumContext>
     {
         public Configuration()
         {

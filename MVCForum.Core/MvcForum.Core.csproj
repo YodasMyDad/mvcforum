@@ -47,6 +47,10 @@
     <Compile Include="Data\LinqKit\Linq.cs" />
     <Compile Include="Data\LinqKit\PredicateBuilder.cs" />
     <Compile Include="ExtensionMethods\IdentityExtensions.cs" />
+    <Compile Include="Migrations\201801011815079_IncreaseAccessTokenLength.cs" />
+    <Compile Include="Migrations\201801011815079_IncreaseAccessTokenLength.Designer.cs">
+      <DependentUpon>201801011815079_IncreaseAccessTokenLength.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\BadgeActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
@@ -382,6 +386,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201712271549027_InitialCommit.resx">
       <DependentUpon>201712271549027_InitialCommit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801011815079_IncreaseAccessTokenLength.resx">
+      <DependentUpon>201801011815079_IncreaseAccessTokenLength.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

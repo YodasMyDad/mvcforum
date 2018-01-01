@@ -70,7 +70,7 @@
                                     if (msg != '') {
                                         var imageAlt = imageDesc.value;
                                         var imageSrc = msg;
-                                        var imageTag = '<img src="' + imageSrc + '?width=690&upscale=false" alt="' + imageAlt + '" />';
+                                        var imageTag = '<img src="' + app_base + imageSrc.replace(/^\//, '') + '?width=690&upscale=false" alt="' + imageAlt + '" />';
                                         editor.insertContent(imageTag), b.close();
                                     } else {
                                         alert(generalError);

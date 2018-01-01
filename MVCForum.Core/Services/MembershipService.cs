@@ -4,15 +4,12 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.SqlTypes;
-    using System.IO;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
     using System.Web;
-    using System.Web.Hosting;
     using System.Web.Security;
     using Constants;
-    using Data.Context;
     using Events;
     using Interfaces;
     using Interfaces.Services;
@@ -25,27 +22,12 @@
     {
         private const int MaxHoursToResetPassword = 48;
         private readonly IActivityService _activityService;
-        private readonly IBadgeService _badgeService;
         private readonly ICacheService _cacheService;
-        private readonly ICategoryNotificationService _categoryNotificationService;
-        private readonly ICategoryService _categoryService;
         private readonly IMvcForumContext _context;
         private readonly IEmailService _emailService;
-        private readonly IFavouriteService _favouriteService;
         private readonly ILocalizationService _localizationService;
         private readonly ILoggingService _loggingService;
-        private readonly IMembershipUserPointsService _membershipUserPointsService;
-        private readonly IPollAnswerService _pollAnswerService;
-        private readonly IPollService _pollService;
-        private readonly IPollVoteService _pollVoteService;
-        private readonly IPostEditService _postEditService;
-        private readonly IPostService _postService;
-        private readonly IPrivateMessageService _privateMessageService;
         private readonly ISettingsService _settingsService;
-        private readonly ITopicNotificationService _topicNotificationService;
-        private readonly ITopicService _topicService;
-        private readonly IUploadedFileService _uploadedFileService;
-        private readonly IVoteService _voteService;
 
         /// <summary>
         ///     Constructor
@@ -55,53 +37,17 @@
         /// <param name="emailService"> </param>
         /// <param name="localizationService"> </param>
         /// <param name="activityService"> </param>
-        /// <param name="privateMessageService"> </param>
-        /// <param name="membershipUserPointsService"> </param>
-        /// <param name="topicNotificationService"> </param>
-        /// <param name="voteService"> </param>
-        /// <param name="badgeService"> </param>
-        /// <param name="categoryNotificationService"> </param>
         /// <param name="loggingService"></param>
-        /// <param name="uploadedFileService"></param>
-        /// <param name="postService"></param>
-        /// <param name="pollVoteService"></param>
-        /// <param name="pollAnswerService"></param>
-        /// <param name="pollService"></param>
-        /// <param name="topicService"></param>
-        /// <param name="favouriteService"></param>
-        /// <param name="categoryService"></param>
-        /// <param name="postEditService"></param>
         /// <param name="cacheService"></param>
         public MembershipService(IMvcForumContext context, ISettingsService settingsService,
             IEmailService emailService, ILocalizationService localizationService, IActivityService activityService,
-            IPrivateMessageService privateMessageService, IMembershipUserPointsService membershipUserPointsService,
-            ITopicNotificationService topicNotificationService, IVoteService voteService, IBadgeService badgeService,
-            ICategoryNotificationService categoryNotificationService, ILoggingService loggingService,
-            IUploadedFileService uploadedFileService,
-            IPostService postService, IPollVoteService pollVoteService, IPollAnswerService pollAnswerService,
-            IPollService pollService, ITopicService topicService, IFavouriteService favouriteService,
-            ICategoryService categoryService, IPostEditService postEditService, ICacheService cacheService)
+            ILoggingService loggingService, ICacheService cacheService)
         {
             _settingsService = settingsService;
             _emailService = emailService;
             _localizationService = localizationService;
             _activityService = activityService;
-            _privateMessageService = privateMessageService;
-            _membershipUserPointsService = membershipUserPointsService;
-            _topicNotificationService = topicNotificationService;
-            _voteService = voteService;
-            _badgeService = badgeService;
-            _categoryNotificationService = categoryNotificationService;
             _loggingService = loggingService;
-            _uploadedFileService = uploadedFileService;
-            _postService = postService;
-            _pollVoteService = pollVoteService;
-            _pollAnswerService = pollAnswerService;
-            _pollService = pollService;
-            _topicService = topicService;
-            _favouriteService = favouriteService;
-            _categoryService = categoryService;
-            _postEditService = postEditService;
             _cacheService = cacheService;
             _context = context;
         }
@@ -378,9 +324,13 @@
 
         public MembershipUser Get(Guid id)
         {
+            var cacheKey = string.Concat(CacheKeys.Member.StartsWith, "get-", id);
+            return _cacheService.CachePerRequest(cacheKey, () =>
+            {
                 return _context.MembershipUser
                     .Include(x => x.Roles)
                     .FirstOrDefault(x => x.Id == id);
+            });
         }
 
 
@@ -935,7 +885,8 @@
 
                     userToImport = CreateEmptyUser();
                     userToImport.UserName = userName;
-                    userToImport.Slug = ServiceHelpers.GenerateSlug(userToImport.UserName, GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)), userToImport.Slug);
+                    userToImport.Slug = ServiceHelpers.GenerateSlug(userToImport.UserName,
+                        GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)), userToImport.Slug);
                     userToImport.Email = email;
                     userToImport.IsApproved = true;
                     userToImport.PasswordSalt = StringUtils.CreateSalt(AppConstants.SaltSize);
