@@ -12,12 +12,12 @@
     public partial class PollService : IPollService
     {
         private readonly ICacheService _cacheService;
-        private readonly MvcForumContext _context;
+        private readonly IMvcForumContext _context;
 
         public PollService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
-            _context = context as MvcForumContext;
+            _context = context;
         }
 
         public List<Poll> GetAllPolls()

@@ -1,10 +1,9 @@
 ﻿namespace MvcForum.Web.Controllers
 {
     using System.Web.Mvc;
+    using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Interfaces.UnitOfWork;
     using Core.Models.Enums;
-    using ViewModels;
     using ViewModels.Stats;
 
     public partial class StatsController : BaseController
@@ -13,13 +12,13 @@
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
 
-        public StatsController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
-            IMembershipService membershipService,
+        public StatsController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
-            ITopicService topicService,
-            IPostService postService, ICategoryService categoryService, ICacheService cacheService) :
-            base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
-                settingsService, cacheService)
+            ITopicService topicService, IPostService postService, ICategoryService categoryService,
+            ICacheService cacheService,
+            IMvcForumContext context) :
+            base(loggingService, membershipService, localizationService, roleService,
+                settingsService, cacheService, context)
         {
             _topicService = topicService;
             _postService = postService;

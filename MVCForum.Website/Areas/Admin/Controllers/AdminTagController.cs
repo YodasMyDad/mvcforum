@@ -6,8 +6,8 @@
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using Core.Constants;
+    using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Interfaces.UnitOfWork;
     using Core.Models.Entities;
     using ViewModels;
 
@@ -16,11 +16,10 @@
     {
         private readonly ITopicTagService _topicTagService;
 
-        public AdminTagController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
-            IMembershipService membershipService,
+        public AdminTagController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, ISettingsService settingsService,
-            ITopicTagService topicTagService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
+            ITopicTagService topicTagService, IMvcForumContext context)
+            : base(loggingService, membershipService, localizationService, settingsService, context)
         {
             _topicTagService = topicTagService;
         }
@@ -29,23 +28,21 @@
         {
             var pageIndex = p ?? 1;
 
-            using (UnitOfWorkManager.NewUnitOfWork())
+
+            var allTags = string.IsNullOrEmpty(search)
+                ? await _topicTagService.GetPagedGroupedTags(pageIndex, SiteConstants.Instance.AdminListPageSize)
+                : await _topicTagService.SearchPagedGroupedTags(search, pageIndex,
+                    SiteConstants.Instance.AdminListPageSize);
+
+            var memberListModel = new ListTagsViewModel
             {
-                var allTags = string.IsNullOrEmpty(search)
-                    ? await _topicTagService.GetPagedGroupedTags(pageIndex, SiteConstants.Instance.AdminListPageSize)
-                    : await _topicTagService.SearchPagedGroupedTags(search, pageIndex,
-                        SiteConstants.Instance.AdminListPageSize);
+                Tags = allTags,
+                PageIndex = pageIndex,
+                TotalCount = allTags.TotalCount,
+                Search = search
+            };
 
-                var memberListModel = new ListTagsViewModel
-                {
-                    Tags = allTags,
-                    PageIndex = pageIndex,
-                    TotalCount = allTags.TotalCount,
-                    Search = search
-                };
-
-                return View(memberListModel);
-            }
+            return View(memberListModel);
         }
 
         private List<SelectListItem> TagsSelectList()
@@ -64,58 +61,52 @@
 
         public ActionResult MoveTags()
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
+            var viewModel = new MoveTagsViewModel
             {
-                var viewModel = new MoveTagsViewModel
-                {
-                    Tags = TagsSelectList()
-                };
-                return View(viewModel);
-            }
+                Tags = TagsSelectList()
+            };
+            return View(viewModel);
         }
 
         [HttpPost]
         public ActionResult MoveTags(MoveTagsViewModel viewModel)
         {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            var oldTag = _topicTagService.Get(viewModel.CurrentTagId);
+            var newTag = _topicTagService.Get(viewModel.NewTagId);
+
+            // Look through the topics and add the new tag to it and remove the old!                
+            var topics = new List<Topic>();
+            topics.AddRange(oldTag.Topics);
+            foreach (var topic in topics)
             {
-                var oldTag = _topicTagService.Get(viewModel.CurrentTagId);
-                var newTag = _topicTagService.Get(viewModel.NewTagId);
-
-                // Look through the topics and add the new tag to it and remove the old!                
-                var topics = new List<Topic>();
-                topics.AddRange(oldTag.Topics);
-                foreach (var topic in topics)
-                {
-                    topic.Tags.Remove(oldTag);
-                    topic.Tags.Add(newTag);
-                }
-
-                // Reset the tags
-                viewModel.Tags = TagsSelectList();
-
-                try
-                {
-                    unitOfWork.Commit();
-                    ShowMessage(new GenericMessageViewModel
-                    {
-                        Message = $"All topics tagged with {oldTag.Tag} have been updated to {newTag.Tag}",
-                        MessageType = GenericMessages.success
-                    });
-                }
-                catch (Exception ex)
-                {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                    ShowMessage(new GenericMessageViewModel
-                    {
-                        Message = $"Error: {ex.Message}",
-                        MessageType = GenericMessages.danger
-                    });
-                }
-
-                return View(viewModel);
+                topic.Tags.Remove(oldTag);
+                topic.Tags.Add(newTag);
             }
+
+            // Reset the tags
+            viewModel.Tags = TagsSelectList();
+
+            try
+            {
+                Context.SaveChanges();
+                ShowMessage(new GenericMessageViewModel
+                {
+                    Message = $"All topics tagged with {oldTag.Tag} have been updated to {newTag.Tag}",
+                    MessageType = GenericMessages.success
+                });
+            }
+            catch (Exception ex)
+            {
+                Context.RollBack();
+                LoggingService.Error(ex);
+                ShowMessage(new GenericMessageViewModel
+                {
+                    Message = $"Error: {ex.Message}",
+                    MessageType = GenericMessages.danger
+                });
+            }
+
+            return View(viewModel);
         }
 
 
@@ -127,30 +118,27 @@
 
         public ActionResult Delete(string tag)
         {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            _topicTagService.DeleteByName(tag);
+
+            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
             {
-                _topicTagService.DeleteByName(tag);
+                Message = "Tags delete successfully",
+                MessageType = GenericMessages.success
+            };
 
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            try
+            {
+                Context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Context.RollBack();
+                LoggingService.Error(ex);
+                ShowMessage(new GenericMessageViewModel
                 {
-                    Message = "Tags delete successfully",
-                    MessageType = GenericMessages.success
-                };
-
-                try
-                {
-                    unitOfWork.Commit();
-                }
-                catch (Exception ex)
-                {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                    ShowMessage(new GenericMessageViewModel
-                    {
-                        Message = $"Delete failed: {ex.Message}",
-                        MessageType = GenericMessages.danger
-                    });
-                }
+                    Message = $"Delete failed: {ex.Message}",
+                    MessageType = GenericMessages.danger
+                });
             }
 
             return RedirectToAction("Index");
@@ -161,19 +149,16 @@
         {
             if (Request.IsAjaxRequest())
             {
-                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
-                {
-                    _topicTagService.UpdateTagNames(viewModel.NewName, viewModel.OldName);
+                _topicTagService.UpdateTagNames(viewModel.NewName, viewModel.OldName);
 
-                    try
-                    {
-                        unitOfWork.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        unitOfWork.Rollback();
-                        LoggingService.Error(ex);
-                    }
+                try
+                {
+                    Context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    Context.RollBack();
+                    LoggingService.Error(ex);
                 }
             }
         }

@@ -1,17 +1,15 @@
 ﻿namespace MvcForum.Web.Controllers
 {
     using System.Web.Mvc;
+    using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Interfaces.UnitOfWork;
 
     public partial class ClosedController : BaseController
     {
-        public ClosedController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
-            IMembershipService membershipService,
-            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
-            ICacheService cacheService) :
-            base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
-                settingsService, cacheService)
+        public ClosedController(ILoggingService loggingService, IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, ICacheService cacheService,
+            IMvcForumContext context) :
+            base(loggingService, membershipService, localizationService, roleService,
+                settingsService, cacheService, context)
         {
         }
 

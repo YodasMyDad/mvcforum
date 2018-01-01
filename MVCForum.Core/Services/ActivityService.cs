@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Constants;
-    using Data.Context;
     using Interfaces;
     using Interfaces.Services;
     using Models.Activity;
@@ -16,7 +15,7 @@
 
     public partial class ActivityService : IActivityService
     {
-        private readonly MvcForumContext _context;
+        private readonly IMvcForumContext _context;
         private readonly IBadgeService _badgeService;
         private readonly ILoggingService _loggingService;
         private readonly ICacheService _cacheService;
@@ -29,7 +28,7 @@
             _badgeService = badgeService;
             _loggingService = loggingService;
             _cacheService = cacheService;
-            _context = context as MvcForumContext;
+            _context = context;
         }
 
         #region Private Methods

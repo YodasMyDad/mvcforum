@@ -70,6 +70,7 @@
     <Compile Include="Models\Enums\ActivityType.cs" />
     <Compile Include="Models\Enums\BadgeType.cs" />
     <Compile Include="Models\Enums\CacheTimes.cs" />
+    <Compile Include="Models\Enums\LoginAttemptStatus.cs" />
     <Compile Include="Models\Enums\MembershipCreateStatus.cs" />
     <Compile Include="Models\Enums\PointsFor.cs" />
     <Compile Include="Models\Enums\PostOrderBy.cs" />
@@ -171,8 +172,6 @@
     <Compile Include="Interfaces\Services\ITopicService.cs" />
     <Compile Include="Interfaces\Services\IUploadedFileService.cs" />
     <Compile Include="Interfaces\Services\IVoteService.cs" />
-    <Compile Include="Interfaces\UnitOfWork\IUnitOfWork.cs" />
-    <Compile Include="Interfaces\UnitOfWork\IUnitOfWorkManager.cs" />
     <Compile Include="Ioc\PreApplicationStartCode.cs" />
     <Compile Include="Ioc\Quartz\QuartzUnityExtension.cs" />
     <Compile Include="Ioc\Quartz\UnityJobFactory.cs" />
@@ -233,8 +232,6 @@
     <Compile Include="Data\Mapping\TopicTagMapping.cs" />
     <Compile Include="Data\Mapping\UploadedFileMapping.cs" />
     <Compile Include="Data\Mapping\VoteMapping.cs" />
-    <Compile Include="Data\UnitOfWork\UnitOfWork.cs" />
-    <Compile Include="Data\UnitOfWork\UnitOfWorkManager.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\FavouriteService.cs" />
     <Compile Include="Services\GlobalPermissionForRoleService.cs" />
@@ -373,6 +370,9 @@
     </PackageReference>
     <PackageReference Include="Unity">
       <Version>5.5.2</Version>
+    </PackageReference>
+    <PackageReference Include="Unity.AspNet.WebApi">
+      <Version>5.0.11</Version>
     </PackageReference>
     <PackageReference Include="WebActivator">
       <Version>1.5.3</Version>

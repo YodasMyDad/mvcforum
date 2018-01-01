@@ -291,9 +291,6 @@
         void Delete(LocaleStringResource item);
         void Delete(LocaleResourceKey item);
 
-        void Update(LocaleStringResource item);
-        void Update(LocaleResourceKey item);
-
         #endregion
     }
 }

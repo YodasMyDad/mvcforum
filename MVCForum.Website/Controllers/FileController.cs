@@ -6,20 +6,20 @@
     using System.Web.Hosting;
     using System.Web.Mvc;
     using Core.ExtensionMethods;
+    using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Interfaces.UnitOfWork;
 
     public class FileController : BaseController
     {
         private readonly ICategoryService _categoryService;
         private readonly IUploadedFileService _uploadedFileService;
 
-        public FileController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
-            IMembershipService membershipService,
+        public FileController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
-            IUploadedFileService uploadedFileService, ICategoryService categoryService, ICacheService cacheService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
-                settingsService, cacheService)
+            IUploadedFileService uploadedFileService, ICategoryService categoryService, ICacheService cacheService,
+            IMvcForumContext context)
+            : base(loggingService, membershipService, localizationService, roleService,
+                settingsService, cacheService, context)
         {
             _uploadedFileService = uploadedFileService;
             _categoryService = categoryService;
@@ -30,26 +30,22 @@
             var uploadedFileById = _uploadedFileService.Get(id);
             if (uploadedFileById != null)
             {
-                using (UnitOfWorkManager.NewUnitOfWork())
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
+                // Check the user has permission to download this file
+                var fileCategory = uploadedFileById.Post.Topic.Category;
+                var allowedCategoryIds = _categoryService.GetAllowedCategories(loggedOnUsersRole).Select(x => x.Id);
+                if (allowedCategoryIds.Contains(fileCategory.Id))
                 {
-                    var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-                    var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+                    //if(AppHelpers.FileIsImage(uploadedFileById.FilePath))
+                    //{
 
-                    // Check the user has permission to download this file
-                    var fileCategory = uploadedFileById.Post.Topic.Category;
-                    var allowedCategoryIds = _categoryService.GetAllowedCategories(loggedOnUsersRole).Select(x => x.Id);
-                    if (allowedCategoryIds.Contains(fileCategory.Id))
-                    {
-                        //if(AppHelpers.FileIsImage(uploadedFileById.FilePath))
-                        //{
+                    //}
 
-                        //}
-
-                        var fileBytes = System.IO.File.ReadAllBytes(HostingEnvironment.MapPath(uploadedFileById.FilePath));
-                        return File(fileBytes, MediaTypeNames.Application.Octet, uploadedFileById.Filename);
-                    }
+                    var fileBytes = System.IO.File.ReadAllBytes(HostingEnvironment.MapPath(uploadedFileById.FilePath));
+                    return File(fileBytes, MediaTypeNames.Application.Octet, uploadedFileById.Filename);
                 }
-
             }
             return null;
         }

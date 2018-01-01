@@ -9,8 +9,8 @@
     using System.Web.Mvc;
     using Application.CustomActionResults;
     using Core.Constants;
+    using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Interfaces.UnitOfWork;
     using Core.Models.General;
     using Newtonsoft.Json;
     using ViewModels;
@@ -23,15 +23,14 @@
         /// <summary>
         ///     Constructor
         /// </summary>
-        /// <param name="unitOfWorkManager"> </param>
+        /// <param name="loggingService"> </param>
         /// <param name="membershipService"> </param>
         /// <param name="localizationService"></param>
         /// <param name="settingsService"> </param>
-        /// <param name="loggingService"> </param>
-        public ImportExportController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
-            IMembershipService membershipService, ILocalizationService localizationService,
-            ISettingsService settingsService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
+        /// <param name="context"></param>
+        public ImportExportController(ILoggingService loggingService, IMembershipService membershipService,
+            ILocalizationService localizationService, ISettingsService settingsService, IMvcForumContext context)
+            : base(loggingService, membershipService, localizationService, settingsService, context)
         {
             _localizationService = localizationService;
         }
@@ -74,10 +73,7 @@
         /// <returns></returns>
         public CsvFileResult ExportUsers()
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
-            {
-                return new CsvFileResult {FileDownloadName = "MvcForumUsers.csv", Body = MembershipService.ToCsv()};
-            }
+            return new CsvFileResult {FileDownloadName = "MvcForumUsers.csv", Body = MembershipService.ToCsv()};
         }
 
         /// <summary>
@@ -88,51 +84,48 @@
         [HttpPost]
         public WrappedJsonResult ImportUsers(HttpPostedFileBase file)
         {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            var report = new CsvReport();
+
+            //http://www.dustinhorne.com/post/2011/11/16/AJAX-File-Uploads-with-jQuery-and-MVC-3.aspx
+            try
             {
-                var report = new CsvReport();
-
-                //http://www.dustinhorne.com/post/2011/11/16/AJAX-File-Uploads-with-jQuery-and-MVC-3.aspx
-                try
+                // Verify that the user selected a file
+                if (file != null && file.ContentLength > 0)
                 {
-                    // Verify that the user selected a file
-                    if (file != null && file.ContentLength > 0)
+                    // Unpack the data
+                    var allLines = new List<string>();
+                    using (var streamReader = new StreamReader(file.InputStream, Encoding.UTF8, true))
                     {
-                        // Unpack the data
-                        var allLines = new List<string>();
-                        using (var streamReader = new StreamReader(file.InputStream, Encoding.UTF8, true))
+                        while (streamReader.Peek() >= 0)
                         {
-                            while (streamReader.Peek() >= 0)
-                            {
-                                allLines.Add(streamReader.ReadLine());
-                            }
+                            allLines.Add(streamReader.ReadLine());
                         }
+                    }
 
-                        // Read the CSV file and generate a language
-                        report = MembershipService.FromCsv(allLines);
-                        unitOfWork.Commit();
-                    }
-                    else
-                    {
-                        report.Errors.Add(new CsvErrorWarning
-                        {
-                            ErrorWarningType = CsvErrorWarningType.BadDataFormat,
-                            Message = "File does not contain any users."
-                        });
-                    }
+                    // Read the CSV file and generate a language
+                    report = MembershipService.FromCsv(allLines);
+                    Context.SaveChanges();
                 }
-                catch (Exception ex)
+                else
                 {
-                    unitOfWork.Rollback();
                     report.Errors.Add(new CsvErrorWarning
                     {
-                        ErrorWarningType = CsvErrorWarningType.GeneralError,
-                        Message = string.Format("Unable to import users: {0}", ex.Message)
+                        ErrorWarningType = CsvErrorWarningType.BadDataFormat,
+                        Message = "File does not contain any users."
                     });
                 }
-
-                return new WrappedJsonResult {Data = ToJson(report)};
             }
+            catch (Exception ex)
+            {
+                Context.RollBack();
+                report.Errors.Add(new CsvErrorWarning
+                {
+                    ErrorWarningType = CsvErrorWarningType.GeneralError,
+                    Message = $"Unable to import users: {ex.Message}"
+                });
+            }
+
+            return new WrappedJsonResult {Data = ToJson(report)};
         }
 
         /// <summary>
@@ -142,25 +135,22 @@
         /// <returns></returns>
         public CsvFileResult ExportLanguage(string languageCulture)
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
+            var csv = new CsvFileResult();
+
+            var language = _localizationService.GetLanguageByLanguageCulture(languageCulture);
+
+            if (language != null)
             {
-                var csv = new CsvFileResult();
-
-                var language = _localizationService.GetLanguageByLanguageCulture(languageCulture);
-
-                if (language != null)
-                {
-                    csv.FileDownloadName = languageCulture + ".csv";
-                    csv.Body = _localizationService.ToCsv(language);
-                }
-                else
-                {
-                    csv.Body = "No such language";
-                    LoggingService.Error("No such language when trying to export language");
-                }
-
-                return csv;
+                csv.FileDownloadName = languageCulture + ".csv";
+                csv.Body = _localizationService.ToCsv(language);
             }
+            else
+            {
+                csv.Body = "No such language";
+                LoggingService.Error("No such language when trying to export language");
+            }
+
+            return csv;
         }
 
         /// <summary>
@@ -172,69 +162,63 @@
         [HttpPost]
         public WrappedJsonResult ImportLanguage(string languageCulture, HttpPostedFileBase file)
         {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            var report = new CsvReport();
+
+            //http://www.dustinhorne.com/post/2011/11/16/AJAX-File-Uploads-with-jQuery-and-MVC-3.aspx
+            try
             {
-                var report = new CsvReport();
-
-                //http://www.dustinhorne.com/post/2011/11/16/AJAX-File-Uploads-with-jQuery-and-MVC-3.aspx
-                try
+                // Verify that the user selected a file
+                if (file != null && file.ContentLength > 0)
                 {
-                    // Verify that the user selected a file
-                    if (file != null && file.ContentLength > 0)
+                    // Unpack the data
+                    var allLines = new List<string>();
+                    using (var streamReader = new StreamReader(file.InputStream, Encoding.UTF8, true))
                     {
-                        // Unpack the data
-                        var allLines = new List<string>();
-                        using (var streamReader = new StreamReader(file.InputStream, Encoding.UTF8, true))
+                        while (streamReader.Peek() >= 0)
                         {
-                            while (streamReader.Peek() >= 0)
-                            {
-                                allLines.Add(streamReader.ReadLine());
-                            }
+                            allLines.Add(streamReader.ReadLine());
                         }
+                    }
 
-                        // Read the CSV file and generate a language
-                        report = _localizationService.FromCsv(languageCulture, allLines);
-                        unitOfWork.Commit();
-                    }
-                    else
-                    {
-                        report.Errors.Add(new CsvErrorWarning
-                        {
-                            ErrorWarningType = CsvErrorWarningType.BadDataFormat,
-                            Message = "File does not contain a language."
-                        });
-                    }
+                    // Read the CSV file and generate a language
+                    report = _localizationService.FromCsv(languageCulture, allLines);
+                    Context.SaveChanges();
                 }
-                catch (Exception ex)
+                else
                 {
-                    unitOfWork.Rollback();
                     report.Errors.Add(new CsvErrorWarning
                     {
-                        ErrorWarningType = CsvErrorWarningType.GeneralError,
-                        Message = string.Format("Unable to import language: {0}", ex.Message)
+                        ErrorWarningType = CsvErrorWarningType.BadDataFormat,
+                        Message = "File does not contain a language."
                     });
                 }
-
-                return new WrappedJsonResult {Data = ToJson(report)};
             }
+            catch (Exception ex)
+            {
+                Context.RollBack();
+                report.Errors.Add(new CsvErrorWarning
+                {
+                    ErrorWarningType = CsvErrorWarningType.GeneralError,
+                    Message = $"Unable to import language: {ex.Message}"
+                });
+            }
+
+            return new WrappedJsonResult {Data = ToJson(report)};
         }
 
         public ActionResult Languages()
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
+            var importExportViewModel = new LanguagesHomeViewModel();
+
+            // For languages we need a list of export languages and import languages
+            var languageImportExportViewModel = new LanguageImportExportViewModel
             {
-                var importExportViewModel = new LanguagesHomeViewModel();
+                ExportLanguages = _localizationService.LanguagesInDb,
+                ImportLanguages = _localizationService.LanguagesAll
+            };
+            importExportViewModel.LanguageViewModel = languageImportExportViewModel;
 
-                // For languages we need a list of export languages and import languages
-                var languageImportExportViewModel = new LanguageImportExportViewModel
-                {
-                    ExportLanguages = _localizationService.LanguagesInDb,
-                    ImportLanguages = _localizationService.LanguagesAll
-                };
-                importExportViewModel.LanguageViewModel = languageImportExportViewModel;
-
-                return View(importExportViewModel);
-            }
+            return View(importExportViewModel);
         }
 
         public ActionResult Members()

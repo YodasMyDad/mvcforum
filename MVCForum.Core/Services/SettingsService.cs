@@ -12,7 +12,7 @@
 
     public partial class SettingsService : ISettingsService
     {
-        private readonly MvcForumContext _context;
+        private readonly IMvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         /// <summary>
@@ -23,7 +23,7 @@
         public SettingsService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
-            _context = context as MvcForumContext;
+            _context = context;
         }
 
         /// <summary>

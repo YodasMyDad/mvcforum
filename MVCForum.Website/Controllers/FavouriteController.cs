@@ -4,8 +4,8 @@
     using System.Linq;
     using System.Web.Mvc;
     using Core.ExtensionMethods;
+    using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Interfaces.UnitOfWork;
     using Core.Models.Entities;
     using ViewModels;
     using ViewModels.Favourite;
@@ -17,13 +17,12 @@
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
 
-        public FavouriteController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
-            IMembershipService membershipService,
+        public FavouriteController(ILoggingService loggingService, IMembershipService membershipService,
             IRoleService roleService, ITopicService topicService, IPostService postService,
             ILocalizationService localizationService, ISettingsService settingsService,
-            IFavouriteService favouriteService, ICacheService cacheService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService,
-                settingsService, cacheService)
+            IFavouriteService favouriteService, ICacheService cacheService, IMvcForumContext context)
+            : base(loggingService, membershipService, localizationService, roleService,
+                settingsService, cacheService, context)
         {
             _topicService = topicService;
             _postService = postService;
@@ -33,33 +32,30 @@
         [Authorize]
         public ActionResult Index()
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
+            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+
+            // Get the favourites
+            var favourites = _favouriteService.GetAllByMember(loggedOnReadOnlyUser.Id);
+
+            // Pull out the posts
+            var posts = favourites.Select(x => x.Post);
+
+            // Create the view Model
+            var viewModel = new MyFavouritesViewModel();
+
+            // Map the view models
+            // TODO - Need to improve performance of this
+            foreach (var post in posts)
             {
-                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-
-                // Get the favourites
-                var favourites = _favouriteService.GetAllByMember(loggedOnReadOnlyUser.Id);
-
-                // Pull out the posts
-                var posts = favourites.Select(x => x.Post);
-
-                // Create the view Model
-                var viewModel = new MyFavouritesViewModel();
-
-                // Map the view models
-                // TODO - Need to improve performance of this
-                foreach (var post in posts)
-                {
-                    var permissions = RoleService.GetPermissions(post.Topic.Category,
-                        loggedOnReadOnlyUser.Roles.FirstOrDefault());
-                    var postViewModel = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions,
-                        post.Topic, loggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
-                    postViewModel.ShowTopicName = true;
-                    viewModel.Posts.Add(postViewModel);
-                }
-
-                return View(viewModel);
+                var permissions = RoleService.GetPermissions(post.Topic.Category,
+                    loggedOnReadOnlyUser.Roles.FirstOrDefault());
+                var postViewModel = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions,
+                    post.Topic, loggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
+                postViewModel.ShowTopicName = true;
+                viewModel.Posts.Add(postViewModel);
             }
+
+            return View(viewModel);
         }
 
 
@@ -71,44 +67,41 @@
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             if (Request.IsAjaxRequest() && loggedOnReadOnlyUser != null)
             {
-                using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
+                try
                 {
-                    try
-                    {
-                        var post = _postService.Get(viewModel.Id);
-                        var topic = _topicService.Get(post.Topic.Id);
+                    var post = _postService.Get(viewModel.Id);
+                    var topic = _topicService.Get(post.Topic.Id);
 
-                        // See if this is a user adding or removing the favourite
-                        var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
-                        var existingFavourite = _favouriteService.GetByMemberAndPost(loggedOnUser.Id, post.Id);
-                        if (existingFavourite != null)
-                        {
-                            _favouriteService.Delete(existingFavourite);
-                            returnValue.Message = LocalizationService.GetResourceString("Post.Favourite");
-                        }
-                        else
-                        {
-                            var favourite = new Favourite
-                            {
-                                DateCreated = DateTime.UtcNow,
-                                Member = loggedOnUser,
-                                Post = post,
-                                Topic = topic
-                            };
-                            _favouriteService.Add(favourite);
-                            returnValue.Message = LocalizationService.GetResourceString("Post.Favourited");
-                            returnValue.Id = favourite.Id;
-                        }
-
-                        unitOfwork.Commit();
-                        return Json(returnValue, JsonRequestBehavior.DenyGet);
-                    }
-                    catch (Exception ex)
+                    // See if this is a user adding or removing the favourite
+                    var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
+                    var existingFavourite = _favouriteService.GetByMemberAndPost(loggedOnUser.Id, post.Id);
+                    if (existingFavourite != null)
                     {
-                        unitOfwork.Rollback();
-                        LoggingService.Error(ex);
-                        throw new Exception(LocalizationService.GetResourceString("Errors.Generic"));
+                        _favouriteService.Delete(existingFavourite);
+                        returnValue.Message = LocalizationService.GetResourceString("Post.Favourite");
                     }
+                    else
+                    {
+                        var favourite = new Favourite
+                        {
+                            DateCreated = DateTime.UtcNow,
+                            Member = loggedOnUser,
+                            Post = post,
+                            Topic = topic
+                        };
+                        _favouriteService.Add(favourite);
+                        returnValue.Message = LocalizationService.GetResourceString("Post.Favourited");
+                        returnValue.Id = favourite.Id;
+                    }
+
+                    Context.SaveChanges();
+                    return Json(returnValue, JsonRequestBehavior.DenyGet);
+                }
+                catch (Exception ex)
+                {
+                    Context.RollBack();
+                    LoggingService.Error(ex);
+                    throw new Exception(LocalizationService.GetResourceString("Errors.Generic"));
                 }
             }
             return Json(returnValue);

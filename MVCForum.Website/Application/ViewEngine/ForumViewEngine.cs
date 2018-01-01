@@ -60,27 +60,27 @@ namespace MvcForum.Web.Application.ViewEngine
                 _lastEngine.PartialViewLocationFormats =
                     new[]
                     {
-                        "~/Themes/" + settingsTheme + "/Views/{1}/{0}.cshtml",
-                        "~/Themes/" + settingsTheme + "/Views/Shared/{0}.cshtml",
-                        "~/Themes/" + settingsTheme + "/Views/Shared/{1}/{0}.cshtml",
-                        "~/Themes/" + settingsTheme + "/Views/Extensions/{1}/{0}.cshtml",
+                        $"~/Themes/{settingsTheme}/Views/{{1}}/{{0}}.cshtml",
+                        $"~/Themes/{settingsTheme}/Views/Shared/{{0}}.cshtml",
+                        $"~/Themes/{settingsTheme}/Views/Shared/{{1}}/{{0}}.cshtml",
+                        $"~/Themes/{settingsTheme}/Views/Extensions/{{1}}/{{0}}.cshtml",
                         "~/Views/Extensions/{1}/{0}.cshtml"
                     }.Union(_lastEngine.PartialViewLocationFormats).ToArray();
 
                 _lastEngine.ViewLocationFormats =
                     new[]
                     {
-                        "~/Themes/" + settingsTheme + "/Views/{1}/{0}.cshtml",
-                        "~/Themes/" + settingsTheme + "/Views/Extensions/{1}/{0}.cshtml",
+                        $"~/Themes/{settingsTheme}/Views/{{1}}/{{0}}.cshtml",
+                        $"~/Themes/{settingsTheme}/Views/Extensions/{{1}}/{{0}}.cshtml",
                         "~/Views/Extensions/{1}/{0}.cshtml"
                     }.Union(_lastEngine.ViewLocationFormats).ToArray();
 
                 _lastEngine.MasterLocationFormats =
                     new[]
                     {
-                        "~/Themes/" + settingsTheme + "/Views/{1}/{0}.cshtml",
-                        "~/Themes/" + settingsTheme + "/Views/Extensions/{1}/{0}.cshtml",
-                        "~/Themes/" + settingsTheme + "/Views/Shared/{1}/{0}.cshtml",
+                        $"~/Themes/{settingsTheme}/Views/{{1}}/{{0}}.cshtml",
+                        $"~/Themes/{settingsTheme}/Views/Extensions/{{1}}/{{0}}.cshtml",
+                        $"~/Themes/{settingsTheme}/Views/Shared/{{1}}/{{0}}.cshtml",
                         "~/Themes/" + settingsTheme + "/Views/Shared/{0}.cshtml",
                         "~/Views/Extensions/{1}/{0}.cshtml"
                     }.Union(_lastEngine.MasterLocationFormats).ToArray();

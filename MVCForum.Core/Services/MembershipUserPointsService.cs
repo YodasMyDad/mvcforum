@@ -13,13 +13,13 @@
 
     public partial class MembershipUserPointsService : IMembershipUserPointsService
     {
-        private readonly MvcForumContext _context;
+        private readonly IMvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         public MembershipUserPointsService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
-            _context = context as MvcForumContext;
+            _context = context;
         }
 
         public void Delete(MembershipUserPoints points)

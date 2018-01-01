@@ -6,18 +6,6 @@
     using Models.Entities;
     using Models.Enums;
     using Models.General;
-    using UnitOfWork;
-
-    public enum LoginAttemptStatus
-    {
-        LoginSuccessful,
-        UserNotFound,
-        PasswordIncorrect,
-        PasswordAttemptsExceeded,
-        UserLockedOut,
-        UserNotApproved,
-        Banned
-    }
 
     public interface IMembershipService
     {
@@ -50,21 +38,18 @@
         IList<MembershipUser> SearchMembers(string username, int amount);
         IList<MembershipUser> GetActiveMembers();
         void ProfileUpdated(MembershipUser user);
-        bool Delete(MembershipUser user, IUnitOfWork unitOfWork);
+        bool Delete(MembershipUser user);
         IList<MembershipUser> GetLatestUsers(int amountToTake);
         IList<MembershipUser> GetLowestPointUsers(int amountToTake);
         int MemberCount();
         string ToCsv();
         CsvReport FromCsv(List<string> allLines);
-
         /// <summary>
         ///     Completed scrubs a users account clean
         ///     Clears everything - Posts, polls, votes, favourites, profile etc...
         /// </summary>
         /// <param name="user"></param>
-        /// <param name="unitOfWork"></param>
-        void ScrubUsers(MembershipUser user, IUnitOfWork unitOfWork);
-
+        void ScrubUsers(MembershipUser user);
         bool UpdatePasswordResetToken(MembershipUser user);
         bool ClearPasswordResetToken(MembershipUser user);
         bool IsPasswordResetTokenValid(MembershipUser user, string token);

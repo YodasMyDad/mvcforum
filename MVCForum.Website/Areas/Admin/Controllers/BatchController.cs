@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using System.Web.Mvc;
     using Core.Constants;
+    using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Interfaces.UnitOfWork;
     using Core.Models.Entities;
     using ViewModels;
 
@@ -16,11 +16,11 @@
         private readonly IPrivateMessageService _privateMessageService;
         private readonly ITopicService _topicService;
 
-        public BatchController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
-            IMembershipService membershipService,
+        public BatchController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, ISettingsService settingsService,
-            ICategoryService categoryService, ITopicService topicService, IPrivateMessageService privateMessageService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
+            ICategoryService categoryService, ITopicService topicService, IPrivateMessageService privateMessageService,
+            IMvcForumContext context)
+            : base(loggingService, membershipService, localizationService, settingsService, context)
         {
             _categoryService = categoryService;
             _topicService = topicService;
@@ -38,35 +38,32 @@
         [ValidateAntiForgeryToken]
         public ActionResult BatchDeleteMembers(BatchDeleteMembersViewModel viewModel)
         {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            try
             {
-                try
+                var membersToDelete = MembershipService.GetUsersByDaysPostsPoints(
+                    viewModel.AmoutOfDaysSinceRegistered,
+                    viewModel.AmoutOfPosts);
+                var count = membersToDelete.Count;
+                foreach (var membershipUser in membersToDelete)
                 {
-                    var membersToDelete = MembershipService.GetUsersByDaysPostsPoints(
-                        viewModel.AmoutOfDaysSinceRegistered,
-                        viewModel.AmoutOfPosts);
-                    var count = membersToDelete.Count;
-                    foreach (var membershipUser in membersToDelete)
-                    {
-                        MembershipService.Delete(membershipUser, unitOfWork);
-                    }
-                    unitOfWork.Commit();
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = string.Format("{0} members deleted", count),
-                        MessageType = GenericMessages.success
-                    };
+                    MembershipService.Delete(membershipUser);
                 }
-                catch (Exception ex)
+                Context.SaveChanges();
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = ex.Message,
-                        MessageType = GenericMessages.danger
-                    };
-                }
+                    Message = $"{count} members deleted",
+                    MessageType = GenericMessages.success
+                };
+            }
+            catch (Exception ex)
+            {
+                Context.RollBack();
+                LoggingService.Error(ex);
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = ex.Message,
+                    MessageType = GenericMessages.danger
+                };
             }
 
             return View();
@@ -89,46 +86,44 @@
         [ValidateAntiForgeryToken]
         public ActionResult BatchMoveTopics(BatchMoveTopicsViewModel viewModel)
         {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            try
             {
-                try
+                var categoryFrom = _categoryService.Get((Guid) viewModel.FromCategory);
+                var categoryTo = _categoryService.Get((Guid) viewModel.ToCategory);
+
+                var topicsToMove = _topicService.GetRssTopicsByCategory(int.MaxValue, categoryFrom.Id);
+                var count = topicsToMove.Count;
+
+                foreach (var topic in topicsToMove)
                 {
-                    var categoryFrom = _categoryService.Get((Guid) viewModel.FromCategory);
-                    var categoryTo = _categoryService.Get((Guid) viewModel.ToCategory);
-
-                    var topicsToMove = _topicService.GetRssTopicsByCategory(int.MaxValue, categoryFrom.Id);
-                    var count = topicsToMove.Count;
-
-                    foreach (var topic in topicsToMove)
-                    {
-                        topic.Category = categoryTo;
-                    }
-
-                    unitOfWork.SaveChanges();
-
-                    categoryFrom.Topics.Clear();
-
-                    viewModel.Categories = _categoryService.GetAll();
-
-                    unitOfWork.Commit();
-
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = string.Format("{0} topics moved", count),
-                        MessageType = GenericMessages.success
-                    };
+                    topic.Category = categoryTo;
                 }
-                catch (Exception ex)
+
+                Context.SaveChanges();
+
+                categoryFrom.Topics.Clear();
+
+                viewModel.Categories = _categoryService.GetAll();
+
+                Context.SaveChanges();
+
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = ex.Message,
-                        MessageType = GenericMessages.danger
-                    };
-                }
+                    Message = $"{count} topics moved",
+                    MessageType = GenericMessages.success
+                };
             }
+            catch (Exception ex)
+            {
+                Context.RollBack();
+                LoggingService.Error(ex);
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = ex.Message,
+                    MessageType = GenericMessages.danger
+                };
+            }
+
 
             return View(viewModel);
         }
@@ -147,37 +142,35 @@
         [ValidateAntiForgeryToken]
         public ActionResult BatchDeletePrivateMessages(BatchDeletePrivateMessagesViewModel viewModel)
         {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            try
             {
-                try
+                var pms = _privateMessageService.GetPrivateMessagesOlderThan(viewModel.Days);
+                var pmToDelete = new List<PrivateMessage>();
+                pmToDelete.AddRange(pms);
+                var count = pmToDelete.Count;
+                foreach (var pm in pmToDelete)
                 {
-                    var pms = _privateMessageService.GetPrivateMessagesOlderThan(viewModel.Days);
-                    var pmToDelete = new List<PrivateMessage>();
-                    pmToDelete.AddRange(pms);
-                    var count = pmToDelete.Count;
-                    foreach (var pm in pmToDelete)
-                    {
-                        _privateMessageService.DeleteMessage(pm);
-                    }
-                    unitOfWork.Commit();
+                    _privateMessageService.DeleteMessage(pm);
+                }
+                Context.SaveChanges();
 
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = string.Format("{0} Private Messages deleted", count),
-                        MessageType = GenericMessages.success
-                    };
-                }
-                catch (Exception ex)
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = ex.Message,
-                        MessageType = GenericMessages.danger
-                    };
-                }
+                    Message = $"{count} Private Messages deleted",
+                    MessageType = GenericMessages.success
+                };
             }
+            catch (Exception ex)
+            {
+                Context.RollBack();
+                LoggingService.Error(ex);
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = ex.Message,
+                    MessageType = GenericMessages.danger
+                };
+            }
+
 
             return View(viewModel);
         }

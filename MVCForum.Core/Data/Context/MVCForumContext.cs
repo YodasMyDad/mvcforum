@@ -7,7 +7,6 @@
     using System.Data.Entity.Validation;
     using System.Linq;
     using System.Reflection;
-    using DomainModel;
     using Interfaces;
     using Models.Activity;
     using Models.Entities;
@@ -23,38 +22,38 @@
             Configuration.LazyLoadingEnabled = true;
         }
 
-        public DbSet<Activity> Activity { get; set; }
-        public DbSet<Badge> Badge { get; set; }
-        public DbSet<Block> Block { get; set; }
-        public DbSet<BadgeTypeTimeLastChecked> BadgeTypeTimeLastChecked { get; set; }
-        public DbSet<Category> Category { get; set; }
-        public DbSet<CategoryNotification> CategoryNotification { get; set; }
-        public DbSet<CategoryPermissionForRole> CategoryPermissionForRole { get; set; }
-        public DbSet<Language> Language { get; set; }
-        public DbSet<LocaleResourceKey> LocaleResourceKey { get; set; }
-        public DbSet<LocaleStringResource> LocaleStringResource { get; set; }
-        public DbSet<MembershipRole> MembershipRole { get; set; }
-        public DbSet<MembershipUser> MembershipUser { get; set; }
-        public DbSet<MembershipUserPoints> MembershipUserPoints { get; set; }
-        public DbSet<Permission> Permission { get; set; }
-        public DbSet<Poll> Poll { get; set; }
-        public DbSet<PollAnswer> PollAnswer { get; set; }
-        public DbSet<PollVote> PollVote { get; set; }
-        public DbSet<Post> Post { get; set; }
-        public DbSet<PrivateMessage> PrivateMessage { get; set; }
-        public DbSet<Settings> Setting { get; set; }
-        public DbSet<Topic> Topic { get; set; }
-        public DbSet<TopicNotification> TopicNotification { get; set; }
-        public DbSet<TagNotification> TagNotification { get; set; }
-        public DbSet<Vote> Vote { get; set; }
-        public DbSet<TopicTag> TopicTag { get; set; }
-        public DbSet<BannedEmail> BannedEmail { get; set; }
-        public DbSet<BannedWord> BannedWord { get; set; }
-        public DbSet<UploadedFile> UploadedFile { get; set; }
-        public DbSet<Favourite> Favourite { get; set; }
-        public DbSet<GlobalPermissionForRole> GlobalPermissionForRole { get; set; }
-        public DbSet<Email> Email { get; set; }
-        public DbSet<PostEdit> PostEdit { get; set; }
+        public virtual DbSet<Activity> Activity { get; set; }
+        public virtual DbSet<Badge> Badge { get; set; }
+        public virtual DbSet<Block> Block { get; set; }
+        public virtual DbSet<BadgeTypeTimeLastChecked> BadgeTypeTimeLastChecked { get; set; }
+        public virtual DbSet<Category> Category { get; set; }
+        public virtual DbSet<CategoryNotification> CategoryNotification { get; set; }
+        public virtual DbSet<CategoryPermissionForRole> CategoryPermissionForRole { get; set; }
+        public virtual DbSet<Language> Language { get; set; }
+        public virtual DbSet<LocaleResourceKey> LocaleResourceKey { get; set; }
+        public virtual DbSet<LocaleStringResource> LocaleStringResource { get; set; }
+        public virtual DbSet<MembershipRole> MembershipRole { get; set; }
+        public virtual DbSet<MembershipUser> MembershipUser { get; set; }
+        public virtual DbSet<MembershipUserPoints> MembershipUserPoints { get; set; }
+        public virtual DbSet<Permission> Permission { get; set; }
+        public virtual DbSet<Poll> Poll { get; set; }
+        public virtual DbSet<PollAnswer> PollAnswer { get; set; }
+        public virtual DbSet<PollVote> PollVote { get; set; }
+        public virtual DbSet<Post> Post { get; set; }
+        public virtual DbSet<PrivateMessage> PrivateMessage { get; set; }
+        public virtual DbSet<Settings> Setting { get; set; }
+        public virtual DbSet<Topic> Topic { get; set; }
+        public virtual DbSet<TopicNotification> TopicNotification { get; set; }
+        public virtual DbSet<TagNotification> TagNotification { get; set; }
+        public virtual DbSet<Vote> Vote { get; set; }
+        public virtual DbSet<TopicTag> TopicTag { get; set; }
+        public virtual DbSet<BannedEmail> BannedEmail { get; set; }
+        public virtual DbSet<BannedWord> BannedWord { get; set; }
+        public virtual DbSet<UploadedFile> UploadedFile { get; set; }
+        public virtual DbSet<Favourite> Favourite { get; set; }
+        public virtual DbSet<GlobalPermissionForRole> GlobalPermissionForRole { get; set; }
+        public virtual DbSet<Email> Email { get; set; }
+        public virtual DbSet<PostEdit> PostEdit { get; set; }
 
 
         public override int SaveChanges()
@@ -81,6 +80,34 @@
             }
         }
 
+        /// <inheritdoc />
+        public void RollBack()
+        {
+            foreach (var entry in base.ChangeTracker.Entries())
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Modified:
+                        entry.State = EntityState.Unchanged;
+                        break;
+                    case EntityState.Added:
+                        entry.State = EntityState.Detached;
+                        break;
+                    case EntityState.Deleted:
+                        // Note - problem with deleted entities:
+                        // When an entity is deleted its relationships to other entities are severed. 
+                        // This includes setting FKs to null for nullable FKs or marking the FKs as conceptually null (don’t ask!) 
+                        // if the FK property is not nullable. You’ll need to reset the FK property values to 
+                        // the values that they had previously in order to re-form the relationships. 
+                        // This may include FK properties in other entities for relationships where the 
+                        // deleted entity is the principal of the relationship–e.g. has the PK 
+                        // rather than the FK. I know this is a pain–it would be great if it could be made easier in the future, but for now it is what it is.
+                        entry.State = EntityState.Unchanged;
+                        break;
+                }
+            }
+        }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             // http://stackoverflow.com/questions/7924758/entity-framework-creates-a-plural-table-name-but-the-view-expects-a-singular-ta
@@ -90,11 +117,13 @@
                 .Where(type => !string.IsNullOrEmpty(type.Namespace))
                 .Where(type => type.BaseType != null && type.BaseType.IsGenericType
                                && type.BaseType.GetGenericTypeDefinition() == typeof(EntityTypeConfiguration<>));
+
             foreach (var type in typesToRegister)
             {
                 dynamic configurationInstance = Activator.CreateInstance(type);
                 modelBuilder.Configurations.Add(configurationInstance);
             }
+
             base.OnModelCreating(modelBuilder);
         }
     }

@@ -7,11 +7,9 @@
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using Constants;
-    using Data.Context;
     using Events;
     using Interfaces;
     using Interfaces.Services;
-    using Interfaces.UnitOfWork;
     using Models.Entities;
     using Models.Enums;
     using Models.General;
@@ -20,7 +18,7 @@
     public partial class TopicService : ITopicService
     {
         private readonly ITopicNotificationService _topicNotificationService;
-        private readonly MvcForumContext _context;
+        private readonly IMvcForumContext _context;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ISettingsService _settingsService;
         private readonly IPostService _postService;
@@ -44,7 +42,7 @@
             _pollService = pollService;
             _pollAnswerService = pollAnswerService;
             _cacheService = cacheService;
-            _context = context as MvcForumContext;
+            _context = context;
         }
 
         public Topic SanitizeTopic(Topic topic)
@@ -617,14 +615,14 @@
         /// </summary>
         /// <param name="topic"></param>
         /// <param name="unitOfWork"></param>
-        public void Delete(Topic topic, IUnitOfWork unitOfWork)
+        public void Delete(Topic topic)
         {
             // First thing - Set the last post as null and clear tags
             topic.LastPost = null;
             topic.Tags.Clear();
 
             // Save here to clear the last post
-            unitOfWork.SaveChanges();
+            _context.SaveChanges();
 
             // TODO - Need to refactor as some of the code below is duplicated in the post delete
 
@@ -638,14 +636,14 @@
                 {
                     // Posts should only be deleted from this method as it clears
                     // associated data
-                    _postService.Delete(post, unitOfWork, true);
+                    _postService.Delete(post, true);
                 }
 
                 // Final clear
                 topic.Posts.Clear();
             }
 
-            unitOfWork.SaveChanges();
+            _context.SaveChanges();
 
             // Remove all notifications on this topic too
             if (topic.TopicNotifications != null)

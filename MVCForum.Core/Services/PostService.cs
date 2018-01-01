@@ -7,12 +7,10 @@
     using System.Text;
     using System.Threading.Tasks;
     using Constants;
-    using Data.Context;
     using DomainModel.LinqKit;
     using Events;
     using Interfaces;
     using Interfaces.Services;
-    using Interfaces.UnitOfWork;
     using Models.Entities;
     using Models.Enums;
     using Models.General;
@@ -28,7 +26,7 @@
         private readonly IUploadedFileService _uploadedFileService;
         private readonly IFavouriteService _favouriteService;
         private readonly IConfigService _configService;
-        private readonly MvcForumContext _context;
+        private readonly IMvcForumContext _context;
         private readonly IPostEditService _postEditService;
         private readonly ICacheService _cacheService;
 
@@ -46,7 +44,7 @@
             _configService = configService;
             _postEditService = postEditService;
             _cacheService = cacheService;
-            _context = context as MvcForumContext;
+            _context = context;
         }
 
 
@@ -408,15 +406,11 @@
         /// <returns></returns>
         public Post Get(Guid postId)
         {
-            var cacheKey = string.Concat(CacheKeys.Post.StartsWith, "Get-", postId);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
                 return _context.Post
                     .Include(x => x.Topic.Category)
                     .Include(x => x.Topic.LastPost.User)
                     .Include(x => x.User)
                     .FirstOrDefault(x => x.Id == postId);
-            });
         }
 
         public IList<Post> GetPostsByTopics(List<Guid> topicIds, List<Category> allowedCategories)
@@ -442,10 +436,9 @@
         /// Delete a post
         /// </summary>
         /// <param name="post"></param>
-        /// <param name="unitOfWork"></param>
         /// <param name="ignoreLastPost"></param>
         /// <returns>Returns true if can delete</returns>
-        public bool Delete(Post post, IUnitOfWork unitOfWork, bool ignoreLastPost)
+        public bool Delete(Post post, bool ignoreLastPost)
         {
             // Get the topic
             var topic = post.Topic;
@@ -468,7 +461,7 @@
 
             #endregion
 
-            unitOfWork.SaveChanges();
+            _context.SaveChanges();
 
             #region Deleting Votes
 
@@ -482,7 +475,7 @@
 
             #endregion
 
-            unitOfWork.SaveChanges();
+            _context.SaveChanges();
 
             #region Files
 
@@ -497,7 +490,7 @@
 
             #endregion
 
-            unitOfWork.SaveChanges();
+            _context.SaveChanges();
 
             #region Favourites
 
@@ -511,7 +504,7 @@
 
             #endregion
 
-            unitOfWork.SaveChanges();
+            _context.SaveChanges();
 
             #region Post Edits
 
@@ -522,7 +515,7 @@
 
             #endregion
 
-            unitOfWork.SaveChanges();
+            _context.SaveChanges();
 
             // Before we delete the post, we need to check if this is the last post in the topic
             // and if so update the topic
@@ -549,7 +542,7 @@
             _context.Post.Remove(post);
 
             // Save changes
-            unitOfWork.SaveChanges();
+            _context.SaveChanges();
 
             // Only the post was deleted, not the entire topic
             return false;

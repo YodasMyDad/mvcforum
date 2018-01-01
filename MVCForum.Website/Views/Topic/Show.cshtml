@@ -2,7 +2,8 @@
 @using MvcForum.Core.Utilities
 @using MvcForum.Web.Application.ExtensionMethods
 @using MvcForum.Web.ViewModels
-@model MvcForum.Web.ViewModels.TopicViewModel
+@using MvcForum.Web.ViewModels.Post
+@model MvcForum.Web.ViewModels.Topic.TopicViewModel
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = Html.Raw(AppHelpers.CreatePageTitle(Model.Topic, Html.LanguageString("Topic.TitleFallBack")));

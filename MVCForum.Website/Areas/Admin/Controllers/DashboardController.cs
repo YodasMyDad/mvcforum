@@ -3,8 +3,8 @@
     using System.Linq;
     using System.Web.Mvc;
     using Core.Constants;
+    using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Interfaces.UnitOfWork;
     using Core.Utilities;
     using ViewModels;
 
@@ -17,22 +17,20 @@
         private readonly IPostService _postService;
         private readonly IPrivateMessageService _privateMessageService;
         private readonly ITopicService _topicService;
-        private readonly ITopicTagService _topicTagService;
 
-        public DashboardController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
-            IMembershipService membershipService,
+        public DashboardController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, ISettingsService settingsService, IPostService postService,
             ITopicService topicService, ITopicTagService topicTagService,
             IMembershipUserPointsService membershipUserPointsService, ICategoryService categoryService,
-            IPrivateMessageService privateMessageService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
+            IPrivateMessageService privateMessageService,
+            IMvcForumContext context)
+            : base(loggingService, membershipService, localizationService, settingsService, context)
         {
             _membershipUserPointsService = membershipUserPointsService;
             _categoryService = categoryService;
             _privateMessageService = privateMessageService;
             _postService = postService;
             _topicService = topicService;
-            _topicTagService = topicTagService;
         }
 
         public PartialViewResult MainAdminNav()
@@ -67,13 +65,10 @@
 
             if (Request.IsAjaxRequest())
             {
-                using (UnitOfWorkManager.NewUnitOfWork())
+                return PartialView(new TodaysTopics
                 {
-                    return PartialView(new TodaysTopics
-                    {
-                        Topics = _topicService.GetTodaysTopics(AmountToShow, allCats)
-                    });
-                }
+                    Topics = _topicService.GetTodaysTopics(AmountToShow, allCats)
+                });
             }
             return null;
         }
@@ -83,13 +78,10 @@
         {
             if (Request.IsAjaxRequest())
             {
-                using (UnitOfWorkManager.NewUnitOfWork())
+                return PartialView(new LatestUsersViewModels
                 {
-                    return PartialView(new LatestUsersViewModels
-                    {
-                        Users = MembershipService.GetLatestUsers(AmountToShow)
-                    });
-                }
+                    Users = MembershipService.GetLatestUsers(AmountToShow)
+                });
             }
             return null;
         }
@@ -99,13 +91,10 @@
         {
             if (Request.IsAjaxRequest())
             {
-                using (UnitOfWorkManager.NewUnitOfWork())
+                return PartialView(new LowestPointUsersViewModels
                 {
-                    return PartialView(new LowestPointUsersViewModels
-                    {
-                        Users = _membershipUserPointsService.GetAllTimePointsNegative(AmountToShow)
-                    });
-                }
+                    Users = _membershipUserPointsService.GetAllTimePointsNegative(AmountToShow)
+                });
             }
             return null;
         }
@@ -115,13 +104,10 @@
         {
             if (Request.IsAjaxRequest())
             {
-                using (UnitOfWorkManager.NewUnitOfWork())
+                return PartialView(new LowestPointPostsViewModels
                 {
-                    return PartialView(new LowestPointPostsViewModels
-                    {
-                        Posts = _postService.GetLowestVotedPost(AmountToShow)
-                    });
-                }
+                    Posts = _postService.GetLowestVotedPost(AmountToShow)
+                });
             }
             return null;
         }
@@ -133,13 +119,11 @@
             {
                 // Get all cats as only admins can view this page
                 var allCats = _categoryService.GetAll();
-                using (UnitOfWorkManager.NewUnitOfWork())
+
+                return PartialView(new HighestViewedTopics
                 {
-                    return PartialView(new HighestViewedTopics
-                    {
-                        Topics = _topicService.GetHighestViewedTopics(AmountToShow, allCats)
-                    });
-                }
+                    Topics = _topicService.GetHighestViewedTopics(AmountToShow, allCats)
+                });
             }
             return null;
         }

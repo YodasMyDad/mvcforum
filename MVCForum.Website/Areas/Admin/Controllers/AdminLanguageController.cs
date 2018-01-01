@@ -7,8 +7,8 @@
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using Core.Constants;
+    using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Interfaces.UnitOfWork;
     using Core.Models.Entities;
     using Core.Utilities;
     using ViewModels;
@@ -19,16 +19,13 @@
         ///     Constructor
         /// </summary>
         /// <param name="loggingService"> </param>
-        /// <param name="unitOfWorkManager"> </param>
         /// <param name="membershipService"> </param>
         /// <param name="localizationService"></param>
         /// <param name="settingsService"> </param>
-        public AdminLanguageController(ILoggingService loggingService,
-            IUnitOfWorkManager unitOfWorkManager,
-            IMembershipService membershipService,
-            ILocalizationService localizationService,
-            ISettingsService settingsService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
+        /// <param name="context"></param>
+        public AdminLanguageController(ILoggingService loggingService, IMembershipService membershipService,
+            ILocalizationService localizationService, ISettingsService settingsService, IMvcForumContext context)
+            : base(loggingService, membershipService, localizationService, settingsService, context)
         {
         }
 
@@ -57,34 +54,31 @@
         [ChildActionOnly]
         public PartialViewResult GetLanguages()
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
+            var viewModel = new ListLanguagesViewModel {Languages = new List<LanguageDisplayViewModel>()};
+
+            try
             {
-                var viewModel = new ListLanguagesViewModel {Languages = new List<LanguageDisplayViewModel>()};
-
-                try
+                foreach (var language in LocalizationService.AllLanguages)
                 {
-                    foreach (var language in LocalizationService.AllLanguages)
+                    var languageViewModel = new LanguageDisplayViewModel
                     {
-                        var languageViewModel = new LanguageDisplayViewModel
-                        {
-                            Id = language.Id,
-                            IsDefault =
-                                language.Id == LocalizationService.CurrentLanguage.Id,
-                            Name = language.Name,
-                            LanguageCulture = language.LanguageCulture
-                        };
+                        Id = language.Id,
+                        IsDefault =
+                            language.Id == LocalizationService.CurrentLanguage.Id,
+                        Name = language.Name,
+                        LanguageCulture = language.LanguageCulture
+                    };
 
-                        viewModel.Languages.Add(languageViewModel);
-                    }
+                    viewModel.Languages.Add(languageViewModel);
                 }
-                catch (Exception ex)
-                {
-                    ShowError(ex.Message);
-                    LoggingService.Error(ex);
-                }
-
-                return PartialView(viewModel);
             }
+            catch (Exception ex)
+            {
+                ShowError(ex.Message);
+                LoggingService.Error(ex);
+            }
+
+            return PartialView(viewModel);
         }
 
         /// <summary>
@@ -95,31 +89,25 @@
         [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult DeleteLanguageConfirmation(Guid id)
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
+            try
             {
-                try
+                var language = LocalizationService.Get(id);
+                var languageViewModel = new LanguageDisplayViewModel
                 {
-                    using (UnitOfWorkManager.NewUnitOfWork())
-                    {
-                        var language = LocalizationService.Get(id);
-                        var languageViewModel = new LanguageDisplayViewModel
-                        {
-                            Id = language.Id,
-                            IsDefault =
-                                language.Id == LocalizationService.CurrentLanguage.Id,
-                            Name = language.Name,
-                            LanguageCulture = language.LanguageCulture
-                        };
+                    Id = language.Id,
+                    IsDefault =
+                        language.Id == LocalizationService.CurrentLanguage.Id,
+                    Name = language.Name,
+                    LanguageCulture = language.LanguageCulture
+                };
 
-                        return View(languageViewModel);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ShowError(ex.Message);
-                    LoggingService.Error("Delete confirmation not working");
-                    return View("Index");
-                }
+                return View(languageViewModel);
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex.Message);
+                LoggingService.Error("Delete confirmation not working");
+                return View("Index");
             }
         }
 
@@ -136,20 +124,17 @@
         {
             if (buttonYes != null)
             {
-                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                try
                 {
-                    try
-                    {
-                        LocalizationService.Delete(LocalizationService.Get(id));
-                        unitOfWork.Commit();
-                        ShowSuccess("Language Deleted");
-                    }
-                    catch (Exception ex)
-                    {
-                        unitOfWork.Rollback();
-                        ShowError(ex.Message);
-                        LoggingService.Error(ex);
-                    }
+                    LocalizationService.Delete(LocalizationService.Get(id));
+                    Context.SaveChanges();
+                    ShowSuccess("Language Deleted");
+                }
+                catch (Exception ex)
+                {
+                    Context.RollBack();
+                    ShowError(ex.Message);
+                    LoggingService.Error(ex);
                 }
             }
 
@@ -164,30 +149,24 @@
         [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult DeleteResourceConfirmation(Guid resourceKeyId)
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
+            try
             {
-                try
+                var resourceKey = LocalizationService.GetResourceKey(resourceKeyId);
+                var viewModel = new LocaleResourceKeyViewModel
                 {
-                    using (UnitOfWorkManager.NewUnitOfWork())
-                    {
-                        var resourceKey = LocalizationService.GetResourceKey(resourceKeyId);
-                        var viewModel = new LocaleResourceKeyViewModel
-                        {
-                            Id = resourceKey.Id,
-                            Name = resourceKey.Name,
-                            Notes = resourceKey.Notes,
-                            DateAdded = resourceKey.DateAdded
-                        };
+                    Id = resourceKey.Id,
+                    Name = resourceKey.Name,
+                    Notes = resourceKey.Notes,
+                    DateAdded = resourceKey.DateAdded
+                };
 
-                        return View(viewModel);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ShowError(ex.Message);
-                    LoggingService.Error(ex);
-                    return View("Index");
-                }
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                ShowError(ex.Message);
+                LoggingService.Error(ex);
+                return View("Index");
             }
         }
 
@@ -204,21 +183,18 @@
         {
             if (buttonYes != null)
             {
-                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                try
                 {
-                    try
-                    {
-                        var resourceKey = LocalizationService.GetResourceKey(id);
-                        LocalizationService.DeleteLocaleResourceKey(resourceKey);
-                        unitOfWork.Commit();
-                        ShowSuccess("Resource Deleted");
-                    }
-                    catch (Exception ex)
-                    {
-                        unitOfWork.Rollback();
-                        LoggingService.Error(ex);
-                        ShowError(ex.Message);
-                    }
+                    var resourceKey = LocalizationService.GetResourceKey(id);
+                    LocalizationService.DeleteLocaleResourceKey(resourceKey);
+                    Context.SaveChanges();
+                    ShowSuccess("Resource Deleted");
+                }
+                catch (Exception ex)
+                {
+                    Context.RollBack();
+                    LoggingService.Error(ex);
+                    ShowError(ex.Message);
                 }
             }
 
@@ -253,20 +229,18 @@
                     // Get the culture info
                     var cultureInfo = LanguageUtils.GetCulture(languageViewModel.Name);
 
-                    using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+
+                    try
                     {
-                        try
-                        {
-                            LocalizationService.Add(cultureInfo);
-                            unitOfWork.Commit();
-                            ShowSuccess("Language Created");
-                        }
-                        catch (Exception ex)
-                        {
-                            unitOfWork.Rollback();
-                            LoggingService.Error(ex);
-                            throw;
-                        }
+                        LocalizationService.Add(cultureInfo);
+                        Context.SaveChanges();
+                        ShowSuccess("Language Created");
+                    }
+                    catch (Exception ex)
+                    {
+                        Context.RollBack();
+                        LoggingService.Error(ex);
+                        throw;
                     }
                 }
                 else
@@ -295,10 +269,7 @@
         [Authorize(Roles = AppConstants.AdminRoleName)]
         public async Task<ActionResult> ManageLanguageResourceValues(Guid languageId, int? p, string search)
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
-            {
-                return await GetLanguageResources(false, languageId, p, search);
-            }
+            return await GetLanguageResources(false, languageId, p, search);
         }
 
         /// <summary>
@@ -308,10 +279,7 @@
         [Authorize(Roles = AppConstants.AdminRoleName)]
         public async Task<ActionResult> ManageLanguageResourceKeys(Guid languageId, int? p, string search)
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
-            {
-                return await GetLanguageResources(true, languageId, p, search);
-            }
+            return await GetLanguageResources(true, languageId, p, search);
         }
 
         /// <summary>
@@ -323,20 +291,17 @@
         {
             try
             {
-                using (UnitOfWorkManager.NewUnitOfWork())
+                if (!ModelState.IsValid)
                 {
-                    if (!ModelState.IsValid)
-                    {
-                        var errors = (from key in ModelState.Keys
-                            select ModelState[key]
-                            into state
-                            where state.Errors.Any()
-                            select state.Errors.First().ErrorMessage).ToList();
-                        ShowErrors(errors);
-                    }
-
-                    return await ListResourceKeys(p, search);
+                    var errors = (from key in ModelState.Keys
+                        select ModelState[key]
+                        into state
+                        where state.Errors.Any()
+                        select state.Errors.First().ErrorMessage).ToList();
+                    ShowErrors(errors);
                 }
+
+                return await ListResourceKeys(p, search);
             }
             catch (Exception ex)
             {
@@ -354,19 +319,16 @@
         {
             if (Request.IsAjaxRequest())
             {
-                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                try
                 {
-                    try
-                    {
-                        LocalizationService.UpdateResourceString(viewModel.LanguageId, viewModel.ResourceKey,
-                            viewModel.NewValue);
-                        unitOfWork.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        unitOfWork.Rollback();
-                        LoggingService.Error(ex);
-                    }
+                    LocalizationService.UpdateResourceString(viewModel.LanguageId, viewModel.ResourceKey,
+                        viewModel.NewValue);
+                    Context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    Context.RollBack();
+                    LoggingService.Error(ex);
                 }
             }
         }
@@ -380,18 +342,15 @@
         {
             if (Request.IsAjaxRequest())
             {
-                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                try
                 {
-                    try
-                    {
-                        LocalizationService.UpdateResourceKey(viewModel.ResourceKeyId, viewModel.NewName);
-                        unitOfWork.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        unitOfWork.Rollback();
-                        LoggingService.Error(ex);
-                    }
+                    LocalizationService.UpdateResourceKey(viewModel.ResourceKeyId, viewModel.NewName);
+                    Context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    Context.RollBack();
+                    LoggingService.Error(ex);
                 }
             }
         }
@@ -403,64 +362,61 @@
         [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult EditAll(Guid resourceKeyId)
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
+            try
             {
-                try
+                var resourceKey = LocalizationService.GetResourceKey(resourceKeyId);
+                var localeResourceKeyViewModel = new LocaleResourceKeyViewModel
                 {
-                    var resourceKey = LocalizationService.GetResourceKey(resourceKeyId);
-                    var localeResourceKeyViewModel = new LocaleResourceKeyViewModel
+                    Id = resourceKey.Id,
+                    Name = resourceKey.Name,
+                    Notes = resourceKey.Notes,
+                    DateAdded = resourceKey.DateAdded
+                };
+
+                var viewModel = new AllResourceValuesViewModel
+                {
+                    ResourceKey = localeResourceKeyViewModel,
+                    ResourceValues =
+                        new Dictionary<LanguageDisplayViewModel, LocaleResourceViewModel>()
+                };
+
+                foreach (var localeStringResource in LocalizationService.GetAllValuesForKey(resourceKeyId))
+                {
+                    var stringResourceViewModel = new LocaleResourceViewModel
                     {
-                        Id = resourceKey.Id,
-                        Name = resourceKey.Name,
-                        Notes = resourceKey.Notes,
-                        DateAdded = resourceKey.DateAdded
+                        Id = localeStringResource.Id,
+                        ResourceKeyId = localeStringResource.LocaleResourceKey.Id,
+                        LocaleResourceKey = localeStringResource.LocaleResourceKey.Name,
+                        ResourceValue = localeStringResource.ResourceValue
                     };
 
-                    var viewModel = new AllResourceValuesViewModel
+                    var languageViewModel = new LanguageDisplayViewModel
                     {
-                        ResourceKey = localeResourceKeyViewModel,
-                        ResourceValues =
-                            new Dictionary<LanguageDisplayViewModel, LocaleResourceViewModel>()
+                        Id = localeStringResource.Language.Id,
+                        IsDefault = localeStringResource.Language.Id == LocalizationService.CurrentLanguage.Id,
+                        Name = localeStringResource.Language.Name,
+                        LanguageCulture = localeStringResource.Language.LanguageCulture
                     };
 
-                    foreach (var localeStringResource in LocalizationService.GetAllValuesForKey(resourceKeyId))
+                    if (!viewModel.ResourceValues.ContainsKey(languageViewModel))
                     {
-                        var stringResourceViewModel = new LocaleResourceViewModel
-                        {
-                            Id = localeStringResource.Id,
-                            ResourceKeyId = localeStringResource.LocaleResourceKey.Id,
-                            LocaleResourceKey = localeStringResource.LocaleResourceKey.Name,
-                            ResourceValue = localeStringResource.ResourceValue
-                        };
-
-                        var languageViewModel = new LanguageDisplayViewModel
-                        {
-                            Id = localeStringResource.Language.Id,
-                            IsDefault = localeStringResource.Language.Id == LocalizationService.CurrentLanguage.Id,
-                            Name = localeStringResource.Language.Name,
-                            LanguageCulture = localeStringResource.Language.LanguageCulture
-                        };
-
-                        if (!viewModel.ResourceValues.ContainsKey(languageViewModel))
-                        {
-                            viewModel.ResourceValues.Add(languageViewModel, stringResourceViewModel);
-                        }
-                        else
-                        {
-                            viewModel.ResourceValues[languageViewModel] = stringResourceViewModel;
-                        }
+                        viewModel.ResourceValues.Add(languageViewModel, stringResourceViewModel);
                     }
+                    else
+                    {
+                        viewModel.ResourceValues[languageViewModel] = stringResourceViewModel;
+                    }
+                }
 
-                    //unitOfWork.Commit();
-                    return View("ListAllValues", viewModel);
-                }
-                catch (Exception ex)
-                {
-                    //unitOfWork.Rollback();
-                    ShowError(ex.Message);
-                    LoggingService.Error(ex);
-                    return RedirectToAction("Index");
-                }
+                //Context.SaveChanges();
+                return View("ListAllValues", viewModel);
+            }
+            catch (Exception ex)
+            {
+                //Context.RollBack();
+                ShowError(ex.Message);
+                LoggingService.Error(ex);
+                return RedirectToAction("Index");
             }
         }
 
@@ -471,19 +427,16 @@
         [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult AddResourceKey()
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
+            var resourceKey = LocalizationService.CreateEmptyLocaleResourceKey();
+            var viewModel = new LocaleResourceKeyViewModel
             {
-                var resourceKey = LocalizationService.CreateEmptyLocaleResourceKey();
-                var viewModel = new LocaleResourceKeyViewModel
-                {
-                    Id = resourceKey.Id,
-                    Name = resourceKey.Name,
-                    Notes = resourceKey.Notes,
-                    DateAdded = resourceKey.DateAdded
-                };
+                Id = resourceKey.Id,
+                Name = resourceKey.Name,
+                Notes = resourceKey.Notes,
+                DateAdded = resourceKey.DateAdded
+            };
 
-                return View(viewModel);
-            }
+            return View(viewModel);
         }
 
         //
@@ -493,30 +446,27 @@
         [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult AddResourceKey(LocaleResourceKeyViewModel newResourceKeyViewModel)
         {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            try
             {
-                try
+                var resourceKeyToSave = new LocaleResourceKey
                 {
-                    var resourceKeyToSave = new LocaleResourceKey
-                    {
-                        Name = newResourceKeyViewModel.Name,
-                        Notes = newResourceKeyViewModel.Notes,
-                        DateAdded = newResourceKeyViewModel.DateAdded
-                    };
+                    Name = newResourceKeyViewModel.Name,
+                    Notes = newResourceKeyViewModel.Notes,
+                    DateAdded = newResourceKeyViewModel.DateAdded
+                };
 
-                    LocalizationService.Add(resourceKeyToSave);
-                    unitOfWork.Commit();
-                    ShowSuccess("Resource key created successfully");
-                    var currentLanguage = SettingsService.GetSettings().DefaultLanguage.Id;
-                    return RedirectToAction("ManageLanguageResourceValues", new {languageId = currentLanguage});
-                }
-                catch (Exception ex)
-                {
-                    unitOfWork.Rollback();
-                    ShowError(ex.Message);
-                    LoggingService.Error(ex);
-                    return RedirectToAction("AddResourceKey");
-                }
+                LocalizationService.Add(resourceKeyToSave);
+                Context.SaveChanges();
+                ShowSuccess("Resource key created successfully");
+                var currentLanguage = SettingsService.GetSettings().DefaultLanguage.Id;
+                return RedirectToAction("ManageLanguageResourceValues", new {languageId = currentLanguage});
+            }
+            catch (Exception ex)
+            {
+                Context.RollBack();
+                ShowError(ex.Message);
+                LoggingService.Error(ex);
+                return RedirectToAction("AddResourceKey");
             }
         }
 
@@ -571,34 +521,31 @@
         /// <returns></returns>
         private async Task<ActionResult> ListResourceKeys(int? page, string search)
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
+            var pageIndex = page ?? 1;
+            var allResources = string.IsNullOrEmpty(search)
+                ? await LocalizationService.GetAllResourceKeys(pageIndex, SiteConstants.Instance.AdminListPageSize)
+                : await LocalizationService.SearchResourceKeys(search, pageIndex,
+                    SiteConstants.Instance.AdminListPageSize);
+
+            // Redisplay list of resources
+            var allViewModelResourceKeys = allResources.Select(resource => new LocaleResourceKeyViewModel
             {
-                var pageIndex = page ?? 1;
-                var allResources = string.IsNullOrEmpty(search)
-                    ? await LocalizationService.GetAllResourceKeys(pageIndex, SiteConstants.Instance.AdminListPageSize)
-                    : await LocalizationService.SearchResourceKeys(search, pageIndex,
-                        SiteConstants.Instance.AdminListPageSize);
+                Id = resource.Id,
+                Name = resource.Name,
+                Notes = resource.Notes,
+                DateAdded = resource.DateAdded
+            }).ToList();
 
-                // Redisplay list of resources
-                var allViewModelResourceKeys = allResources.Select(resource => new LocaleResourceKeyViewModel
-                {
-                    Id = resource.Id,
-                    Name = resource.Name,
-                    Notes = resource.Notes,
-                    DateAdded = resource.DateAdded
-                }).ToList();
+            var resourceListModel = new ResourceKeyListViewModel
+            {
+                ResourceKeys = allViewModelResourceKeys,
+                PageIndex = pageIndex,
+                TotalCount = allResources.TotalCount,
+                Search = search,
+                TotalPages = allResources.TotalPages
+            };
 
-                var resourceListModel = new ResourceKeyListViewModel
-                {
-                    ResourceKeys = allViewModelResourceKeys,
-                    PageIndex = pageIndex,
-                    TotalCount = allResources.TotalCount,
-                    Search = search,
-                    TotalPages = allResources.TotalPages
-                };
-
-                return View("ListKeys", resourceListModel);
-            }
+            return View("ListKeys", resourceListModel);
         }
 
         /// <summary>
@@ -614,53 +561,52 @@
         {
             try
             {
-                using (UnitOfWorkManager.NewUnitOfWork())
+                if (!ModelState.IsValid)
                 {
-                    if (!ModelState.IsValid)
+                    var errors = (from key in ModelState.Keys
+                        select ModelState[key]
+                        into state
+                        where state.Errors.Any()
+                        select state.Errors.First().ErrorMessage).ToList();
+                    ShowErrors(errors);
+                }
+                else
+                {
+                    var language = LocalizationService.Get(languageId);
+                    var pageIndex = p ?? 1;
+
+                    // Get all the resources or just the ones that match the search
+                    var allResources = string.IsNullOrEmpty(search)
+                        ? await LocalizationService.GetAllValues(language.Id, pageIndex,
+                            SiteConstants.Instance.AdminListPageSize)
+                        : searchByKey
+                            ? await LocalizationService.SearchResourceKeys(language.Id, search,
+                                pageIndex,
+                                SiteConstants.Instance.AdminListPageSize)
+                            : await LocalizationService.SearchResourceValues(language.Id, search,
+                                pageIndex,
+                                SiteConstants.Instance.AdminListPageSize);
+
+                    var models = allResources.Select(resource => new LocaleResourceViewModel
                     {
-                        var errors = (from key in ModelState.Keys
-                            select ModelState[key]
-                            into state
-                            where state.Errors.Any()
-                            select state.Errors.First().ErrorMessage).ToList();
-                        ShowErrors(errors);
-                    }
-                    else
+                        Id = resource.Id,
+                        ResourceKeyId = resource.LocaleResourceKey.Id,
+                        LocaleResourceKey = resource.LocaleResourceKey.Name,
+                        ResourceValue = resource.ResourceValue
+                    }).ToList();
+
+                    var resourceListModel = new LanguageListResourcesViewModel
                     {
-                        var language = LocalizationService.Get(languageId);
-                        var pageIndex = p ?? 1;
+                        LanguageId = language.Id,
+                        LanguageName = language.Name,
+                        LocaleResources = models,
+                        PageIndex = pageIndex,
+                        TotalCount = allResources.TotalCount,
+                        Search = search,
+                        TotalPages = allResources.TotalPages
+                    };
 
-                        // Get all the resources or just the ones that match the search
-                        var allResources = string.IsNullOrEmpty(search)? await LocalizationService.GetAllValues(language.Id, pageIndex, SiteConstants.Instance.AdminListPageSize)
-                            : searchByKey
-                                ? await LocalizationService.SearchResourceKeys(language.Id, search,
-                                    pageIndex,
-                                    SiteConstants.Instance.AdminListPageSize)
-                                : await LocalizationService.SearchResourceValues(language.Id, search,
-                                    pageIndex,
-                                    SiteConstants.Instance.AdminListPageSize);
-
-                        var models = allResources.Select(resource => new LocaleResourceViewModel
-                        {
-                            Id = resource.Id,
-                            ResourceKeyId = resource.LocaleResourceKey.Id,
-                            LocaleResourceKey = resource.LocaleResourceKey.Name,
-                            ResourceValue = resource.ResourceValue
-                        }).ToList();
-
-                        var resourceListModel = new LanguageListResourcesViewModel
-                        {
-                            LanguageId = language.Id,
-                            LanguageName = language.Name,
-                            LocaleResources = models,
-                            PageIndex = pageIndex,
-                            TotalCount = allResources.TotalCount,
-                            Search = search,
-                            TotalPages = allResources.TotalPages
-                        };
-
-                        return View("ListValues", resourceListModel);
-                    }
+                    return View("ListValues", resourceListModel);
                 }
             }
             catch (Exception ex)

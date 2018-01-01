@@ -131,15 +131,12 @@
                 }
                 catch (ReflectionTypeLoadException rtle)
                 {
-                    var msg =
-                        string.Format(
-                            "Unable to load assembly. Probably not an event assembly, loader exception was: '{0}':'{1}'.",
-                            rtle.LoaderExceptions[0].GetType(), rtle.LoaderExceptions[0].Message);
+                    var msg = $"Unable to load assembly. Probably not an event assembly, loader exception was: '{rtle.LoaderExceptions[0].GetType()}':'{rtle.LoaderExceptions[0].Message}'.";
                     LogError(msg);
                 }
                 catch (Exception ex)
                 {
-                    LogError(string.Format("Error reflecting over event handlers: {0}", ex.Message));
+                    LogError($"Error reflecting over event handlers: {ex.Message}");
                 }
             }
         }

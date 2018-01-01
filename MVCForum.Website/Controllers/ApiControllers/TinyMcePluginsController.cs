@@ -9,8 +9,8 @@
     using System.Web.Mvc;
     using Application;
     using Core.Constants;
+    using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Interfaces.UnitOfWork;
     using Core.Models.General;
 
     [System.Web.Http.Authorize]
@@ -35,66 +35,65 @@
             var roleService = DependencyResolver.Current.GetService<IRoleService>();
             var localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
             var uploadService = DependencyResolver.Current.GetService<IUploadedFileService>();
-            var unitOfWorkManager = DependencyResolver.Current.GetService<IUnitOfWorkManager>();
+            var context = DependencyResolver.Current.GetService<IMvcForumContext>();
             var loggingService = DependencyResolver.Current.GetService<ILoggingService>();
 
-            using (var unitOfWork = unitOfWorkManager.NewUnitOfWork())
+
+            try
             {
-                try
+                if (HttpContext.Current.Request.Files.AllKeys.Any())
                 {
-                    if (HttpContext.Current.Request.Files.AllKeys.Any())
+                    // Get the uploaded image from the Files collection
+                    var httpPostedFile = HttpContext.Current.Request.Files["file"];
+                    if (httpPostedFile != null)
                     {
-                        // Get the uploaded image from the Files collection
-                        var httpPostedFile = HttpContext.Current.Request.Files["file"];
-                        if (httpPostedFile != null)
+                        HttpPostedFileBase photo = new HttpPostedFileWrapper(httpPostedFile);
+                        var loggedOnReadOnlyUser = memberService.GetUser(HttpContext.Current.User.Identity.Name);
+                        var permissions =
+                            roleService.GetPermissions(null, loggedOnReadOnlyUser.Roles.FirstOrDefault());
+                        // Get the permissions for this category, and check they are allowed to update
+                        if (permissions[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked &&
+                            loggedOnReadOnlyUser.DisableFileUploads != true)
                         {
-                            HttpPostedFileBase photo = new HttpPostedFileWrapper(httpPostedFile);
-                            var loggedOnReadOnlyUser = memberService.GetUser(HttpContext.Current.User.Identity.Name);
-                            var permissions =
-                                roleService.GetPermissions(null, loggedOnReadOnlyUser.Roles.FirstOrDefault());
-                            // Get the permissions for this category, and check they are allowed to update
-                            if (permissions[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked &&
-                                loggedOnReadOnlyUser.DisableFileUploads != true)
+                            // woot! User has permission and all seems ok
+                            // Before we save anything, check the user already has an upload folder and if not create one
+                            var uploadFolderPath = HostingEnvironment.MapPath(
+                                string.Concat(SiteConstants.Instance.UploadFolderPath, loggedOnReadOnlyUser.Id));
+                            if (!Directory.Exists(uploadFolderPath))
                             {
-                                // woot! User has permission and all seems ok
-                                // Before we save anything, check the user already has an upload folder and if not create one
-                                var uploadFolderPath = HostingEnvironment.MapPath(
-                                    string.Concat(SiteConstants.Instance.UploadFolderPath, loggedOnReadOnlyUser.Id));
-                                if (!Directory.Exists(uploadFolderPath))
-                                {
-                                    Directory.CreateDirectory(uploadFolderPath);
-                                }
-
-                                // If successful then upload the file
-                                var uploadResult =
-                                    AppHelpers.UploadFile(photo, uploadFolderPath, localizationService, true);
-                                if (!uploadResult.UploadSuccessful)
-                                {
-                                    return string.Empty;
-                                }
-
-                                // Add the filename to the database
-                                var uploadedFile = new UploadedFile
-                                {
-                                    Filename = uploadResult.UploadedFileName,
-                                    MembershipUser = loggedOnReadOnlyUser
-                                };
-                                uploadService.Add(uploadedFile);
-
-                                // Commit the changes
-                                unitOfWork.Commit();
-
-                                return uploadResult.UploadedFileUrl;
+                                Directory.CreateDirectory(uploadFolderPath);
                             }
+
+                            // If successful then upload the file
+                            var uploadResult =
+                                AppHelpers.UploadFile(photo, uploadFolderPath, localizationService, true);
+                            if (!uploadResult.UploadSuccessful)
+                            {
+                                return string.Empty;
+                            }
+
+                            // Add the filename to the database
+                            var uploadedFile = new UploadedFile
+                            {
+                                Filename = uploadResult.UploadedFileName,
+                                MembershipUser = loggedOnReadOnlyUser
+                            };
+                            uploadService.Add(uploadedFile);
+
+                            // Commit the changes
+                            context.SaveChanges();
+
+                            return uploadResult.UploadedFileUrl;
                         }
                     }
                 }
-                catch (Exception ex)
-                {
-                    unitOfWork.Rollback();
-                    loggingService.Error(ex);
-                }
             }
+            catch (Exception ex)
+            {
+                context.RollBack();
+                loggingService.Error(ex);
+            }
+
 
             return string.Empty;
         }

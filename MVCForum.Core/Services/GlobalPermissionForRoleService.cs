@@ -12,13 +12,13 @@
 
     public partial class GlobalPermissionForRoleService : IGlobalPermissionForRoleService
     {
-        private readonly MvcForumContext _context;
+        private readonly IMvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         public GlobalPermissionForRoleService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
-            _context = context as MvcForumContext;
+            _context = context;
         }
 
         public GlobalPermissionForRole Add(GlobalPermissionForRole permissionForRole)

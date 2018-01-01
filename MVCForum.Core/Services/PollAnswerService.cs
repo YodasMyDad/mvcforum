@@ -13,13 +13,13 @@
 
     public partial class PollAnswerService : IPollAnswerService
     {
-        private readonly MvcForumContext _context;
+        private readonly IMvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         public PollAnswerService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
-            _context = context as MvcForumContext;
+            _context = context;
         }
 
         public List<PollAnswer> GetAllPollAnswers()

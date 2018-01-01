@@ -4,15 +4,15 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
-    using Data.Context;
+    using Interfaces;
     using Interfaces.Services;
     using Models.General;
 
     public partial class UploadedFileService : IUploadedFileService
     {
-        private readonly MvcForumContext _context;
+        private readonly IMvcForumContext _context;
 
-        public UploadedFileService(MvcForumContext context)
+        public UploadedFileService(IMvcForumContext context)
         {
             _context = context;
         }

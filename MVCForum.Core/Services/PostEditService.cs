@@ -13,12 +13,12 @@
     public partial class PostEditService : IPostEditService
     {
         private readonly ICacheService _cacheService;
-        private readonly MvcForumContext _context;
+        private readonly IMvcForumContext _context;
 
         public PostEditService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
-            _context = context as MvcForumContext;
+            _context = context;
         }
 
         public void Delete(IList<PostEdit> entities)

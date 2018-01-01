@@ -6,7 +6,6 @@
     using Models.Entities;
     using Models.Enums;
     using Models.General;
-    using UnitOfWork;
 
     public partial interface IPostService
     {
@@ -33,7 +32,7 @@
         Post Add(Post post);
         Post Get(Guid postId);
         IList<Post> GetPostsByTopics(List<Guid> topicIds, List<Category> allowedCategories);
-        bool Delete(Post post, IUnitOfWork unitOfWork, bool ignoreLastPost);
+        bool Delete(Post post, bool ignoreLastPost);
         IList<Post> GetSolutionsByMember(Guid memberId, List<Category> allowedCategories);
         int PostCount(List<Category> allowedCategories);
         Post AddNewPost(string postContent, Topic topic, MembershipUser user, out PermissionSet permissions);

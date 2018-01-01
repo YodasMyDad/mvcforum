@@ -11,7 +11,6 @@
     using System.Web;
     using Constants;
     using Core;
-    using Data.Context;
     using Interfaces;
     using Interfaces.Services;
     using Models.Entities;
@@ -25,7 +24,7 @@
         private readonly ILoggingService _loggingService;
         private readonly ICacheService _cacheService;
         private Language _currentLanguage;
-        private readonly MvcForumContext _context;
+        private readonly IMvcForumContext _context;
         private readonly Dictionary<string, string> _perRequestLanguageStrings;
 
         /// <summary>
@@ -40,7 +39,7 @@
             _settingsService = settingsService;
             _loggingService = loggingService;
             _cacheService = cacheService;
-            _context = context as MvcForumContext;
+            _context = context;
             _perRequestLanguageStrings = ResourceKeysByLanguage(CurrentLanguage);
         }
 
@@ -353,26 +352,6 @@
         public void Delete(LocaleResourceKey item)
         {
             _context.LocaleResourceKey.Remove(item);
-        }
-
-        public void Update(LocaleStringResource item)
-        {
-            // Check there's not an object with same identifier already in context
-            if (_context.LocaleStringResource.Local.Select(x => x.Id == item.Id).Any())
-            {
-                throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
-            }
-            _context.Entry(item).State = EntityState.Modified;
-        }
-
-        public void Update(LocaleResourceKey item)
-        {
-            // Check there's not an object with same identifier already in context
-            if (_context.LocaleResourceKey.Local.Select(x => x.Id == item.Id).Any())
-            {
-                throw new ApplicationException("Object already exists in context - you do not need to call Update. Save occurs on Commit");
-            }
-            _context.Entry(item).State = EntityState.Modified;
         }
 
         /// <summary>

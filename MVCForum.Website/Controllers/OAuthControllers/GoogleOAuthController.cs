@@ -6,13 +6,12 @@
     using System.Web.Security;
     using Areas.Admin.ViewModels;
     using Core.Constants;
+    using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Interfaces.UnitOfWork;
     using Core.Models.Enums;
     using Core.Utilities;
     using Skybrud.Social.Google;
     using Skybrud.Social.Google.OAuth;
-    using ViewModels;
     using ViewModels.Member;
 
     // Google uses OAuth 2.0 for authentication and communication. In order for users to authenticate with the Google API, 
@@ -21,20 +20,15 @@
 
     public partial class GoogleOAuthController : BaseController
     {
-        public GoogleOAuthController(ILoggingService loggingService,
-            IUnitOfWorkManager unitOfWorkManager,
-            IMembershipService membershipService,
-            ILocalizationService localizationService,
-            IRoleService roleService,
-            ISettingsService settingsService,
-            ICacheService cacheService)
+        public GoogleOAuthController(ILoggingService loggingService, IMembershipService membershipService,
+            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
+            ICacheService cacheService, IMvcForumContext context)
             : base(loggingService,
-                unitOfWorkManager,
                 membershipService,
                 localizationService,
                 roleService,
                 settingsService,
-                cacheService)
+                cacheService, context)
         {
         }
 
@@ -73,7 +67,7 @@
 
             if (AuthState != null)
             {
-                var stateValue = Session["MvcForum_" + AuthState] as NameValueCollection;
+                var stateValue = Session[$"MvcForum_{AuthState}"] as NameValueCollection;
                 if (stateValue != null)
                 {
                     Callback = stateValue["Callback"];
@@ -100,7 +94,7 @@
                 };
 
                 // Session expired?
-                if (AuthState != null && Session["MvcForum_" + AuthState] == null)
+                if (AuthState != null && Session[$"MvcForum_{AuthState}"] == null)
                 {
                     resultMessage.Message = "Session Expired";
                     resultMessage.MessageType = GenericMessages.danger;
@@ -113,7 +107,7 @@
                     resultMessage.MessageType = GenericMessages.danger;
                     if (AuthState != null)
                     {
-                        Session.Remove("MvcForum_" + AuthState);
+                        Session.Remove($"MvcForum_{AuthState}");
                     }
                 }
 
@@ -124,7 +118,7 @@
                     var state = Guid.NewGuid().ToString();
 
                     // Save the state in the current user session
-                    Session["MvcForum_" + state] = new NameValueCollection
+                    Session[$"MvcForum_{state}"] = new NameValueCollection
                     {
                         {"Callback", Callback},
                         {"ContentTypeAlias", ContentTypeAlias},
@@ -167,35 +161,33 @@
 
                     // Get information about the authenticated user
                     var user = service.GetUserInfo();
-                    using (UnitOfWorkManager.NewUnitOfWork())
+
+                    var userExists = MembershipService.GetUserByEmail(user.Email);
+
+                    if (userExists != null)
                     {
-                        var userExists = MembershipService.GetUserByEmail(user.Email);
-
-                        if (userExists != null)
-                        {
-                            // Users already exists, so log them in
-                            FormsAuthentication.SetAuthCookie(userExists.UserName, true);
-                            resultMessage.Message = LocalizationService.GetResourceString("Members.NowLoggedIn");
-                            resultMessage.MessageType = GenericMessages.success;
-                            ShowMessage(resultMessage);
-                            return RedirectToAction("Index", "Home");
-                        }
-                        // Not registered already so register them
-                        var viewModel = new MemberAddViewModel
-                        {
-                            Email = user.Email,
-                            LoginType = LoginType.Google,
-                            Password = StringUtils.RandomString(8),
-                            UserName = user.Name,
-                            SocialProfileImageUrl = user.Picture,
-                            UserAccessToken = info.RefreshToken
-                        };
-
-                        // Store the viewModel in TempData - Which we'll use in the register logic
-                        TempData[AppConstants.MemberRegisterViewModel] = viewModel;
-
-                        return RedirectToAction("SocialLoginValidator", "Members");
+                        // Users already exists, so log them in
+                        FormsAuthentication.SetAuthCookie(userExists.UserName, true);
+                        resultMessage.Message = LocalizationService.GetResourceString("Members.NowLoggedIn");
+                        resultMessage.MessageType = GenericMessages.success;
+                        ShowMessage(resultMessage);
+                        return RedirectToAction("Index", "Home");
                     }
+                    // Not registered already so register them
+                    var viewModel = new MemberAddViewModel
+                    {
+                        Email = user.Email,
+                        LoginType = LoginType.Google,
+                        Password = StringUtils.RandomString(8),
+                        UserName = user.Name,
+                        SocialProfileImageUrl = user.Picture,
+                        UserAccessToken = info.RefreshToken
+                    };
+
+                    // Store the viewModel in TempData - Which we'll use in the register logic
+                    TempData[AppConstants.MemberRegisterViewModel] = viewModel;
+
+                    return RedirectToAction("SocialLoginValidator", "Members");
                 }
                 catch (Exception ex)
                 {

@@ -1,6 +1,6 @@
 ﻿@using MvcForum.Core.Utilities
 @using MvcForum.Web.Application.ExtensionMethods
-@model MvcForum.Web.ViewModels.TopicViewModel
+@model MvcForum.Web.ViewModels.Topic.TopicViewModel
 @{
     var postToolTip = string.Concat(StringUtils.ReturnAmountWordsFromString(StringUtils.StripHtmlFromString(Model.StarterPost.Post.PostContent), 50), "....");
 }

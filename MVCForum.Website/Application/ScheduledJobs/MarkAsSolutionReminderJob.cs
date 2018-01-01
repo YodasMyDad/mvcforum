@@ -3,8 +3,8 @@
     using System;
     using System.Linq;
     using System.Text;
+    using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Interfaces.UnitOfWork;
     using Core.Models.Entities;
     using Quartz;
 
@@ -16,15 +16,15 @@
         private readonly ILoggingService _loggingService;
         private readonly ISettingsService _settingsService;
         private readonly ITopicService _topicService;
-        private readonly IUnitOfWorkManager _unitOfWorkManager;
+        private readonly IMvcForumContext _context;
 
         public MarkAsSolutionReminderJob(ILoggingService loggingService, IEmailService emailService,
-            IUnitOfWorkManager unitOfWorkManager, ITopicService topicService, ISettingsService settingsService,
+            IMvcForumContext context, ITopicService topicService, ISettingsService settingsService,
             ILocalizationService localizationService)
         {
             _loggingService = loggingService;
             _emailService = emailService;
-            _unitOfWorkManager = unitOfWorkManager;
+            _context = context;
             _topicService = topicService;
             _settingsService = settingsService;
             _localizationService = localizationService;
@@ -32,8 +32,7 @@
 
         public void Execute(IJobExecutionContext context)
         {
-            using (var unitOfWork = _unitOfWorkManager.NewUnitOfWork())
-            {
+
                 try
                 {
                     var settings = _settingsService.GetSettings(false);
@@ -85,17 +84,17 @@
                                 markAsSolutionReminder.Topic.SolvedReminderSent = true;
                             }
 
-                            unitOfWork.Commit();
+                            _context.SaveChanges();
                             _loggingService.Error($"{amount} Mark as solution reminder emails sent");
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    unitOfWork.Rollback();
+                    _context.RollBack();
                     _loggingService.Error(ex);
                 }
-            }
+      
         }
     }
 }

@@ -15,13 +15,13 @@
 
     public partial class BannedEmailService : IBannedEmailService
     {
-        private readonly MvcForumContext _context;
+        private readonly IMvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         public BannedEmailService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
-            _context = context as MvcForumContext;
+            _context = context;
         }
 
         public BannedEmail Add(BannedEmail bannedEmail)

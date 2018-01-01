@@ -1,8 +1,8 @@
 ﻿namespace MvcForum.Web.Application.ScheduledJobs
 {
     using System;
+    using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Interfaces.UnitOfWork;
     using Quartz;
 
     [DisallowConcurrentExecution]
@@ -10,34 +10,33 @@
     {
         private readonly IEmailService _emailService;
         private readonly ILoggingService _loggingService;
-        private readonly IUnitOfWorkManager _unitOfWorkManager;
+        private readonly IMvcForumContext _context;
 
         public EmailJob(ILoggingService loggingService, IEmailService emailService,
-            IUnitOfWorkManager unitOfWorkManager)
+            IMvcForumContext context)
         {
             _loggingService = loggingService;
             _emailService = emailService;
-            _unitOfWorkManager = unitOfWorkManager;
+            _context = context;
         }
 
         public void Execute(IJobExecutionContext context)
         {
-            using (var unitOfWork = _unitOfWorkManager.NewUnitOfWork())
-            {
+
                 try
                 {
                     // Process emails to send - Only send the amount per job from the siteconstants
                     _emailService.ProcessMail(5);
 
                     // Commit - Which deletes the jobs that have been sent
-                    unitOfWork.Commit();
+                    _context.SaveChanges();
                 }
                 catch (Exception ex)
                 {
-                    unitOfWork.Rollback();
+                    _context.RollBack();
                     _loggingService.Error(ex);
                 }
-            }
+         
         }
     }
 }

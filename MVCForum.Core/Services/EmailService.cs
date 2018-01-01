@@ -17,13 +17,13 @@
     {
         private readonly ILoggingService _loggingService;
         private readonly ISettingsService _settingsService;
-        private readonly MvcForumContext _context;
+        private readonly IMvcForumContext _context;
 
         public EmailService(ILoggingService loggingService, ISettingsService settingsService, IMvcForumContext context)
         {
             _loggingService = loggingService;
             _settingsService = settingsService;
-            _context = context as MvcForumContext;
+            _context = context;
         }
 
         public Email Add(Email email)

@@ -2,10 +2,8 @@ namespace MvcForum.Core.Ioc
 {
     using System.Web.Mvc;
     using Data.Context;
-    using Data.UnitOfWork;
     using Interfaces;
     using Interfaces.Services;
-    using Interfaces.UnitOfWork;
     using Quartz;
     using Services;
     using Unity;
@@ -46,14 +44,12 @@ namespace MvcForum.Core.Ioc
 
             // Database context, one per request, ensure it is disposed
             container.BindInRequestScope<IMvcForumContext, MvcForumContext>();
-            container.BindInRequestScope<IUnitOfWorkManager, UnitOfWorkManager>();
 
 
             // Quartz
             container.AddNewExtension<QuartzUnityExtension>();
 
             //Bind the various domain model services and repositories that e.g. our controllers require         
-            container.BindInRequestScope<IUnitOfWorkManager, UnitOfWorkManager>();
             container.BindInRequestScope<IRoleService, RoleService>();
             container.BindInRequestScope<ICategoryService, CategoryService>();
             container.BindInRequestScope<IMembershipService, MembershipService>();

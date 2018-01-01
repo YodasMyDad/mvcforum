@@ -125,7 +125,7 @@
         {
             if (!File.Exists(filePath))
             {
-                throw new ApplicationException(string.Format("CSV file does not exist: {0}", filePath));
+                throw new ApplicationException($"CSV file does not exist: {filePath}");
             }
 
             string[] lines = File.ReadAllLines(filePath);

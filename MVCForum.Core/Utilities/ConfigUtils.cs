@@ -96,7 +96,7 @@
                 var xDoc = GetWebConfig();
 
                 var membershipProviders = xDoc.GetElementsByTagName("membership")[0];
-                var xpathToSetting = string.Format("//add[@name='{0}']", currentAppName);
+                var xpathToSetting = $"//add[@name='{currentAppName}']";
                 var provider = membershipProviders.SelectSingleNode(xpathToSetting);
                 if (provider != null && provider.Attributes != null)
                 {
@@ -145,7 +145,7 @@
             {
                 var xDoc = GetWebConfig();
                 var connectionStrings = xDoc.GetElementsByTagName("connectionStrings")[0];
-                var xpathToConnString = string.Format("//add[@name='{0}']", name);
+                var xpathToConnString = $"//add[@name='{name}']";
                 var connectionstring = connectionStrings.SelectSingleNode(xpathToConnString);
                 if (connectionstring != null && connectionstring.Attributes != null)
                 {

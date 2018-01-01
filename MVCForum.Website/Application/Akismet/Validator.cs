@@ -87,7 +87,7 @@
             if (null != pars)
             {
                 // extract result from the request
-                return ExtractResult(PostRequest(string.Format("http://{0}.rest.akismet.com/1.1/comment-check", m_key), pars));
+                return ExtractResult(PostRequest($"http://{m_key}.rest.akismet.com/1.1/comment-check", pars));
             }
 
             // return no spam
@@ -105,7 +105,7 @@
             NameValueCollection pars = PreparePars(comment);
             if (null != pars)
             {
-                PostRequest(string.Format("http://{0}.rest.akismet.com/1.1/submit-spam", m_key), pars);
+                PostRequest($"http://{m_key}.rest.akismet.com/1.1/submit-spam", pars);
             }
         }
 
@@ -120,7 +120,7 @@
             NameValueCollection pars = PreparePars(comment);
             if (null != pars)
             {
-                PostRequest(string.Format("http://{0}.rest.akismet.com/1.1/submit-spam", m_key), pars);
+                PostRequest($"http://{m_key}.rest.akismet.com/1.1/submit-spam", pars);
             }
         }
        
@@ -145,9 +145,9 @@
             foreach (string key in pars.AllKeys)
             {
                 if (string.IsNullOrEmpty(content))
-                    content = string.Format("{0}={1}", key, pars[key]);
+                    content = $"{key}={pars[key]}";
                 else
-                    content += string.Format("&{0}={1}", key, pars[key]);
+                    content += $"&{key}={pars[key]}";
             }
 
             // initialize request

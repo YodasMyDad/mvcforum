@@ -6,8 +6,8 @@
     using System.Web.Mvc;
     using Application;
     using Core.Constants;
+    using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Interfaces.UnitOfWork;
     using Core.Models.Entities;
     using ViewModels;
     using Web.ViewModels.Mapping;
@@ -19,12 +19,10 @@
         private readonly IEmailService _emailService;
         private readonly IRoleService _roleService;
 
-        public SettingsController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
-            ILocalizationService localizationService,
-            IMembershipService membershipService,
-            IRoleService roleService,
-            ISettingsService settingsService, IEmailService emailService, ICacheService cacheService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
+        public SettingsController(ILoggingService loggingService, ILocalizationService localizationService,
+            IMembershipService membershipService, IRoleService roleService, ISettingsService settingsService,
+            IEmailService emailService, ICacheService cacheService, IMvcForumContext context)
+            : base(loggingService, membershipService, localizationService, settingsService, context)
         {
             _roleService = roleService;
             _emailService = emailService;
@@ -33,17 +31,14 @@
 
         public ActionResult Index()
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
-            {
-                var currentSettings = SettingsService.GetSettings();
-                var settingViewModel = ViewModelMapping.SettingsToSettingsViewModel(currentSettings);
-                settingViewModel.NewMemberStartingRole =
-                    _roleService.GetRole(currentSettings.NewMemberStartingRole.Id).Id;
-                settingViewModel.DefaultLanguage = LocalizationService.DefaultLanguage.Id;
-                settingViewModel.Roles = _roleService.AllRoles().ToList();
-                settingViewModel.Languages = LocalizationService.AllLanguages.ToList();
-                return View(settingViewModel);
-            }
+            var currentSettings = SettingsService.GetSettings();
+            var settingViewModel = ViewModelMapping.SettingsToSettingsViewModel(currentSettings);
+            settingViewModel.NewMemberStartingRole =
+                _roleService.GetRole(currentSettings.NewMemberStartingRole.Id).Id;
+            settingViewModel.DefaultLanguage = LocalizationService.DefaultLanguage.Id;
+            settingViewModel.Roles = _roleService.AllRoles().ToList();
+            settingViewModel.Languages = LocalizationService.AllLanguages.ToList();
+            return View(settingViewModel);
         }
 
         [HttpPost]
@@ -52,49 +47,45 @@
         {
             if (ModelState.IsValid)
             {
-                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                try
                 {
-                    try
+                    var existingSettings = SettingsService.GetSettings(false);
+                    var updatedSettings =
+                        ViewModelMapping.SettingsViewModelToSettings(settingsViewModel, existingSettings);
+
+                    // Map over viewModel from 
+                    if (settingsViewModel.NewMemberStartingRole != null)
                     {
-                        var existingSettings = SettingsService.GetSettings(false);
-                        var updatedSettings =
-                            ViewModelMapping.SettingsViewModelToSettings(settingsViewModel, existingSettings);
-
-                        // Map over viewModel from 
-                        if (settingsViewModel.NewMemberStartingRole != null)
-                        {
-                            updatedSettings.NewMemberStartingRole =
-                                _roleService.GetRole(settingsViewModel.NewMemberStartingRole.Value);
-                        }
-
-                        if (settingsViewModel.DefaultLanguage != null)
-                        {
-                            updatedSettings.DefaultLanguage =
-                                LocalizationService.Get(settingsViewModel.DefaultLanguage.Value);
-                        }
-
-                        unitOfWork.Commit();
-                        _cacheService.ClearStartsWith(CacheKeys.Settings.Main);
+                        updatedSettings.NewMemberStartingRole =
+                            _roleService.GetRole(settingsViewModel.NewMemberStartingRole.Value);
                     }
-                    catch (Exception ex)
+
+                    if (settingsViewModel.DefaultLanguage != null)
                     {
-                        unitOfWork.Rollback();
-                        LoggingService.Error(ex);
+                        updatedSettings.DefaultLanguage =
+                            LocalizationService.Get(settingsViewModel.DefaultLanguage.Value);
                     }
+
+                    Context.SaveChanges();
+                    _cacheService.ClearStartsWith(CacheKeys.Settings.Main);
                 }
+                catch (Exception ex)
+                {
+                    Context.RollBack();
+                    LoggingService.Error(ex);
+                }
+
 
                 // All good clear cache and get reliant lists
-                using (UnitOfWorkManager.NewUnitOfWork())
+
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = "Settings Updated",
-                        MessageType = GenericMessages.success
-                    };
-                    settingsViewModel.Themes = AppHelpers.GetThemeFolders();
-                    settingsViewModel.Roles = _roleService.AllRoles().ToList();
-                    settingsViewModel.Languages = LocalizationService.AllLanguages.ToList();
-                }
+                    Message = "Settings Updated",
+                    MessageType = GenericMessages.success
+                };
+                settingsViewModel.Themes = AppHelpers.GetThemeFolders();
+                settingsViewModel.Roles = _roleService.AllRoles().ToList();
+                settingsViewModel.Languages = LocalizationService.AllLanguages.ToList();
             }
             return View(settingsViewModel);
         }
@@ -107,96 +98,87 @@
         [HttpPost]
         public ActionResult SendTestEmail()
         {
-            using (var uow = UnitOfWorkManager.NewUnitOfWork())
+            var settings = SettingsService.GetSettings();
+            var sb = new StringBuilder();
+            sb.Append($"<p>{string.Concat("This is a test email from ", settings.ForumName)}</p>");
+            var email = new Email
             {
-                var settings = SettingsService.GetSettings();
-                var sb = new StringBuilder();
-                sb.Append($"<p>{string.Concat("This is a test email from ", settings.ForumName)}</p>");
-                var email = new Email
-                {
-                    EmailTo = settings.AdminEmailAddress,
-                    NameTo = "Email Test Admin",
-                    Subject = string.Concat("Email Test From ", settings.ForumName)
-                };
-                email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
-                _emailService.SendMail(email);
+                EmailTo = settings.AdminEmailAddress,
+                NameTo = "Email Test Admin",
+                Subject = string.Concat("Email Test From ", settings.ForumName)
+            };
+            email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+            _emailService.SendMail(email);
 
-                var message = new GenericMessageViewModel
-                {
-                    Message = "Test Email Sent",
-                    MessageType = GenericMessages.success
-                };
+            var message = new GenericMessageViewModel
+            {
+                Message = "Test Email Sent",
+                MessageType = GenericMessages.success
+            };
 
-                try
-                {
-                    uow.Commit();
-                }
-                catch (Exception ex)
-                {
-                    uow.Rollback();
-                    LoggingService.Error(ex);
-                    message.Message = "Error sending email";
-                    message.MessageType = GenericMessages.danger;
-                }
-                TempData[AppConstants.MessageViewBagName] = message;
-
-                return RedirectToAction("Index");
+            try
+            {
+                Context.SaveChanges();
             }
+            catch (Exception ex)
+            {
+                Context.RollBack();
+                LoggingService.Error(ex);
+                message.Message = "Error sending email";
+                message.MessageType = GenericMessages.danger;
+            }
+            TempData[AppConstants.MessageViewBagName] = message;
+
+            return RedirectToAction("Index");
         }
 
         public ActionResult CustomCode()
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
+            var settings = SettingsService.GetSettings();
+            var viewModel = new CustomCodeViewModels
             {
-                var settings = SettingsService.GetSettings();
-                var viewModel = new CustomCodeViewModels
-                {
-                    CustomFooterCode = settings.CustomFooterCode,
-                    CustomHeaderCode = settings.CustomHeaderCode
-                };
-                return View(viewModel);
-            }
+                CustomFooterCode = settings.CustomFooterCode,
+                CustomHeaderCode = settings.CustomHeaderCode
+            };
+            return View(viewModel);
         }
 
         [HttpPost]
         public ActionResult CustomCode(CustomCodeViewModels viewModel)
         {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            var settings = SettingsService.GetSettings(false);
+
+            settings.CustomFooterCode = viewModel.CustomFooterCode;
+            settings.CustomHeaderCode = viewModel.CustomHeaderCode;
+
+            try
             {
-                var settings = SettingsService.GetSettings(false);
+                Context.SaveChanges();
 
-                settings.CustomFooterCode = viewModel.CustomFooterCode;
-                settings.CustomHeaderCode = viewModel.CustomHeaderCode;
+                // Clear cache
+                _cacheService.ClearStartsWith(CacheKeys.Settings.Main);
 
-                try
+                // Show a message
+                ShowMessage(new GenericMessageViewModel
                 {
-                    unitOfWork.Commit();
-
-                    // Clear cache
-                    _cacheService.ClearStartsWith(CacheKeys.Settings.Main);
-
-                    // Show a message
-                    ShowMessage(new GenericMessageViewModel
-                    {
-                        Message = "Updated",
-                        MessageType = GenericMessages.success
-                    });
-                }
-                catch (Exception ex)
-                {
-                    LoggingService.Error(ex);
-                    unitOfWork.Rollback();
-
-                    // Show a message
-                    ShowMessage(new GenericMessageViewModel
-                    {
-                        Message = "Error, please check log",
-                        MessageType = GenericMessages.danger
-                    });
-                }
-
-                return View(viewModel);
+                    Message = "Updated",
+                    MessageType = GenericMessages.success
+                });
             }
+            catch (Exception ex)
+            {
+                LoggingService.Error(ex);
+                Context.RollBack();
+
+                // Show a message
+                ShowMessage(new GenericMessageViewModel
+                {
+                    Message = "Error, please check log",
+                    MessageType = GenericMessages.danger
+                });
+            }
+
+            return View(viewModel);
         }
     }
 }

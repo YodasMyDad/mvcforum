@@ -51,10 +51,10 @@
             if (regexPattern.StartsWith(".*?"))
             {
                 regexPattern = regexPattern.Substring(3);
-                regexPattern = @"(^\b)*?" + regexPattern;
+                regexPattern = $@"(^\b)*?{regexPattern}";
             }
 
-            regexPattern = @"\b" + regexPattern + @"\b";
+            regexPattern = $@"\b{regexPattern}\b";
 
             return regexPattern;
         }

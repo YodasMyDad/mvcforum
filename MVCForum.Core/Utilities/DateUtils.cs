@@ -36,7 +36,7 @@
             DateTime time;
             if (DateTime.TryParse(date, out time) && !string.IsNullOrEmpty(format))
             {
-                format = Regex.Replace(format, @"(?<!\\)((\\\\)*)(S)", "$1" + GetDayNumberSuffix(time));
+                format = Regex.Replace(format, @"(?<!\\)((\\\\)*)(S)", $"$1{GetDayNumberSuffix(time)}");
                 return time.ToString(format);
             }
             return string.Empty;
@@ -64,7 +64,7 @@
 
         public static string GetCurrentMonthName()
         {
-            return string.Format("{0:MMMM}", DateTime.UtcNow);
+            return $"{DateTime.UtcNow:MMMM}";
         }
 
         /// <summary>

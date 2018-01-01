@@ -11,7 +11,7 @@
 
     public partial class TopicNotificationService : ITopicNotificationService
     {
-        private readonly MvcForumContext _context;
+        private readonly IMvcForumContext _context;
 
         /// <summary>
         /// Constructor
@@ -19,7 +19,7 @@
         /// <param name="context"> </param>
         public TopicNotificationService(IMvcForumContext context)
         {
-            _context = context as MvcForumContext;
+            _context = context;
         }
 
         /// <summary>

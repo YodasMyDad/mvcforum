@@ -3,8 +3,8 @@
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using Core.Constants;
+    using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Interfaces.UnitOfWork;
     using ViewModels;
 
     [Authorize(Roles = AppConstants.AdminRoleName)]
@@ -15,17 +15,17 @@
         /// <summary>
         ///     Constructor
         /// </summary>
-        /// <param name="unitOfWorkManager"> </param>
+        /// <param name="context"></param>
         /// <param name="membershipService"> </param>
         /// <param name="localizationService"></param>
         /// <param name="settingsService"> </param>
         /// <param name="badgeService"> </param>
         /// <param name="loggingService"> </param>
         public AdminBadgeController(IBadgeService badgeService, ILoggingService loggingService,
-            IUnitOfWorkManager unitOfWorkManager,
+            IMvcForumContext context,
             IMembershipService membershipService, ILocalizationService localizationService,
             ISettingsService settingsService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
+            : base(loggingService, membershipService, localizationService, settingsService, context)
         {
             _badgeService = badgeService;
         }
@@ -39,22 +39,21 @@
         {
             var pageIndex = p ?? 1;
 
-            using (UnitOfWorkManager.NewUnitOfWork())
+
+            var allBadges = string.IsNullOrEmpty(search)
+                ? await _badgeService.GetPagedGroupedBadges(pageIndex, SiteConstants.Instance.AdminListPageSize)
+                : await _badgeService.SearchPagedGroupedTags(search, pageIndex,
+                    SiteConstants.Instance.AdminListPageSize);
+
+            var badgesListModel = new ListBadgesViewModel
             {
-                var allBadges = string.IsNullOrEmpty(search)
-                    ? await _badgeService.GetPagedGroupedBadges(pageIndex, SiteConstants.Instance.AdminListPageSize)
-                    : await _badgeService.SearchPagedGroupedTags(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
+                Badges = allBadges,
+                PageIndex = pageIndex,
+                TotalCount = allBadges.TotalCount,
+                Search = search
+            };
 
-                var badgesListModel = new ListBadgesViewModel
-                {
-                    Badges = allBadges,
-                    PageIndex = pageIndex,
-                    TotalCount = allBadges.TotalCount,
-                    Search = search
-                };
-
-                return View(badgesListModel);
-            }
+            return View(badgesListModel);
         }
 
         public ActionResult Manage(int? p, string search)

@@ -11,18 +11,21 @@
     using Application.ScheduledJobs;
     using Application.ViewEngine;
     using Core.Events;
+    using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Interfaces.UnitOfWork;
     using Core.Ioc;
     using Core.Utilities;
 
     public class MvcApplication : HttpApplication
     {
-        public IUnitOfWorkManager UnitOfWorkManager => DependencyResolver.Current.GetService<IUnitOfWorkManager>();
+        public IMvcForumContext MvcForumContext => DependencyResolver.Current.GetService<IMvcForumContext>();
         public IBadgeService BadgeService => DependencyResolver.Current.GetService<IBadgeService>();
         public ISettingsService SettingsService => DependencyResolver.Current.GetService<ISettingsService>();
         public ILoggingService LoggingService => DependencyResolver.Current.GetService<ILoggingService>();
-        public ILocalizationService LocalizationService => DependencyResolver.Current.GetService<ILocalizationService>();
+
+        public ILocalizationService LocalizationService =>
+            DependencyResolver.Current.GetService<ILocalizationService>();
+
         public IReflectionService ReflectionService => DependencyResolver.Current.GetService<IReflectionService>();
 
 
@@ -49,18 +52,17 @@
             var loadedAssemblies = ReflectionService.GetAssemblies();
 
             // Do the badge processing
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+
+            try
             {
-                try
-                {
-                    BadgeService.SyncBadges(loadedAssemblies);
-                    unitOfWork.Commit();
-                }
-                catch (Exception ex)
-                {
-                    LoggingService.Error($"Error processing badge classes: {ex.Message}");
-                }
+                BadgeService.SyncBadges(loadedAssemblies);
+                MvcForumContext.SaveChanges();
             }
+            catch (Exception ex)
+            {
+                LoggingService.Error($"Error processing badge classes: {ex.Message}");
+            }
+
 
             // Set the view engine
             ViewEngines.Engines.Clear();

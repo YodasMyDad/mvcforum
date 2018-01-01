@@ -23,7 +23,7 @@
     {
         public const int BadgeCheckIntervalMinutes = 10;
         private readonly ICacheService _cacheService;
-        private readonly MvcForumContext _context;
+        private readonly IMvcForumContext _context;
         private readonly ILocalizationService _localizationService;
         private readonly ILoggingService _loggingService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
@@ -47,7 +47,7 @@
             _membershipUserPointsService = membershipUserPointsService;
             _reflectionService = reflectionService;
             _cacheService = cacheService;
-            _context = context as MvcForumContext;
+            _context = context;
         }
 
 

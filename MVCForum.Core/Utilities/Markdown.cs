@@ -324,8 +324,8 @@ namespace MvcForum.Core.Utilities
                 string hash = GetHashKey(key, isHtmlBlock: false);
                 _escapeTable.Add(key, hash);
                 _invertedEscapeTable.Add(hash, key);
-                _backslashEscapeTable.Add(@"\" + key, hash);
-                backslashPattern += Regex.Escape(@"\" + key) + "|";
+                _backslashEscapeTable.Add($@"\{key}", hash);
+                backslashPattern += $"{Regex.Escape($@"\{key}")}|";
             }
 
             _backslashEscapes = new Regex(backslashPattern.Substring(0, backslashPattern.Length - 1), RegexOptions.Compiled);

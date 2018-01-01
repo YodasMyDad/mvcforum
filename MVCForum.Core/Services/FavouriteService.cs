@@ -13,13 +13,13 @@
 
     public partial class FavouriteService : IFavouriteService
     {
-        private readonly MvcForumContext _context;
+        private readonly IMvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         public FavouriteService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
-            _context = context as MvcForumContext;
+            _context = context;
         }
 
         public Favourite Add(Favourite favourite)

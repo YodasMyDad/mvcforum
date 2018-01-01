@@ -12,7 +12,7 @@
 
     public partial class PermissionService : IPermissionService
     {
-        private readonly MvcForumContext _context;
+        private readonly IMvcForumContext _context;
         private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
         private readonly ICacheService _cacheService;
 
@@ -20,7 +20,7 @@
         {
             _categoryPermissionForRoleService = categoryPermissionForRoleService;
             _cacheService = cacheService;
-            _context = context as MvcForumContext;
+            _context = context;
         }
 
         /// <summary>

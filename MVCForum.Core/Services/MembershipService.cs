@@ -16,7 +16,6 @@
     using Events;
     using Interfaces;
     using Interfaces.Services;
-    using Interfaces.UnitOfWork;
     using Models.Entities;
     using Models.Enums;
     using Models.General;
@@ -30,7 +29,7 @@
         private readonly ICacheService _cacheService;
         private readonly ICategoryNotificationService _categoryNotificationService;
         private readonly ICategoryService _categoryService;
-        private readonly MvcForumContext _context;
+        private readonly IMvcForumContext _context;
         private readonly IEmailService _emailService;
         private readonly IFavouriteService _favouriteService;
         private readonly ILocalizationService _localizationService;
@@ -104,7 +103,7 @@
             _categoryService = categoryService;
             _postEditService = postEditService;
             _cacheService = cacheService;
-            _context = context as MvcForumContext;
+            _context = context;
         }
 
         #region Status Codes
@@ -379,13 +378,9 @@
 
         public MembershipUser Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.Member.StartsWith, "get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
                 return _context.MembershipUser
                     .Include(x => x.Roles)
                     .FirstOrDefault(x => x.Id == id);
-            });
         }
 
 
@@ -713,13 +708,12 @@
         ///     Delete a member
         /// </summary>
         /// <param name="user"></param>
-        /// <param name="unitOfWork"></param>
-        public bool Delete(MembershipUser user, IUnitOfWork unitOfWork)
+        public bool Delete(MembershipUser user)
         {
             try
             {
                 // Scrub all member data
-                ScrubUsers(user, unitOfWork);
+                ScrubUsers(user);
 
                 // Just clear the roles, don't delete them
                 user.Roles.Clear();
@@ -990,261 +984,261 @@
             return report;
         }
 
-        public void ScrubUsers(MembershipUser user, IUnitOfWork unitOfWork)
+        public void ScrubUsers(MembershipUser user)
         {
-            // TODO - This REALLY needs to be refactored
+            //// TODO - This REALLY needs to be refactored
 
-            // PROFILE
-            user.Website = string.Empty;
-            user.Twitter = string.Empty;
-            user.Facebook = string.Empty;
-            user.Avatar = string.Empty;
-            user.Signature = string.Empty;
+            //// PROFILE
+            //user.Website = string.Empty;
+            //user.Twitter = string.Empty;
+            //user.Facebook = string.Empty;
+            //user.Avatar = string.Empty;
+            //user.Signature = string.Empty;
 
-            // User Votes
-            if (user.Votes != null)
-            {
-                var votesToDelete = new List<Vote>();
-                votesToDelete.AddRange(user.Votes);
-                foreach (var d in votesToDelete)
-                {
-                    _voteService.Delete(d);
-                }
-                user.Votes.Clear();
-            }
+            //// User Votes
+            //if (user.Votes != null)
+            //{
+            //    var votesToDelete = new List<Vote>();
+            //    votesToDelete.AddRange(user.Votes);
+            //    foreach (var d in votesToDelete)
+            //    {
+            //        _voteService.Delete(d);
+            //    }
+            //    user.Votes.Clear();
+            //}
 
-            // User Badges
-            if (user.Badges != null)
-            {
-                var toDelete = new List<Badge>();
-                toDelete.AddRange(user.Badges);
-                foreach (var obj in toDelete)
-                {
-                    _badgeService.Delete(obj);
-                }
-                user.Badges.Clear();
-            }
+            //// User Badges
+            //if (user.Badges != null)
+            //{
+            //    var toDelete = new List<Badge>();
+            //    toDelete.AddRange(user.Badges);
+            //    foreach (var obj in toDelete)
+            //    {
+            //        _badgeService.Delete(obj);
+            //    }
+            //    user.Badges.Clear();
+            //}
 
-            // User badge time checks
-            if (user.BadgeTypesTimeLastChecked != null)
-            {
-                var toDelete = new List<BadgeTypeTimeLastChecked>();
-                toDelete.AddRange(user.BadgeTypesTimeLastChecked);
-                foreach (var obj in toDelete)
-                {
-                    _badgeService.DeleteTimeLastChecked(obj);
-                }
-                user.BadgeTypesTimeLastChecked.Clear();
-            }
+            //// User badge time checks
+            //if (user.BadgeTypesTimeLastChecked != null)
+            //{
+            //    var toDelete = new List<BadgeTypeTimeLastChecked>();
+            //    toDelete.AddRange(user.BadgeTypesTimeLastChecked);
+            //    foreach (var obj in toDelete)
+            //    {
+            //        _badgeService.DeleteTimeLastChecked(obj);
+            //    }
+            //    user.BadgeTypesTimeLastChecked.Clear();
+            //}
 
-            // User category notifications
-            if (user.CategoryNotifications != null)
-            {
-                var toDelete = new List<CategoryNotification>();
-                toDelete.AddRange(user.CategoryNotifications);
-                foreach (var obj in toDelete)
-                {
-                    _categoryNotificationService.Delete(obj);
-                }
-                user.CategoryNotifications.Clear();
-            }
+            //// User category notifications
+            //if (user.CategoryNotifications != null)
+            //{
+            //    var toDelete = new List<CategoryNotification>();
+            //    toDelete.AddRange(user.CategoryNotifications);
+            //    foreach (var obj in toDelete)
+            //    {
+            //        _categoryNotificationService.Delete(obj);
+            //    }
+            //    user.CategoryNotifications.Clear();
+            //}
 
-            // User PM Received
-            var pmUpdate = false;
-            if (user.PrivateMessagesReceived != null)
-            {
-                pmUpdate = true;
-                var toDelete = new List<PrivateMessage>();
-                toDelete.AddRange(user.PrivateMessagesReceived);
-                foreach (var obj in toDelete)
-                {
-                    _privateMessageService.DeleteMessage(obj);
-                }
-                user.PrivateMessagesReceived.Clear();
-            }
+            //// User PM Received
+            //var pmUpdate = false;
+            //if (user.PrivateMessagesReceived != null)
+            //{
+            //    pmUpdate = true;
+            //    var toDelete = new List<PrivateMessage>();
+            //    toDelete.AddRange(user.PrivateMessagesReceived);
+            //    foreach (var obj in toDelete)
+            //    {
+            //        _privateMessageService.DeleteMessage(obj);
+            //    }
+            //    user.PrivateMessagesReceived.Clear();
+            //}
 
-            // User PM Sent
-            if (user.PrivateMessagesSent != null)
-            {
-                pmUpdate = true;
-                var toDelete = new List<PrivateMessage>();
-                toDelete.AddRange(user.PrivateMessagesSent);
-                foreach (var obj in toDelete)
-                {
-                    _privateMessageService.DeleteMessage(obj);
-                }
-                user.PrivateMessagesSent.Clear();
-            }
+            //// User PM Sent
+            //if (user.PrivateMessagesSent != null)
+            //{
+            //    pmUpdate = true;
+            //    var toDelete = new List<PrivateMessage>();
+            //    toDelete.AddRange(user.PrivateMessagesSent);
+            //    foreach (var obj in toDelete)
+            //    {
+            //        _privateMessageService.DeleteMessage(obj);
+            //    }
+            //    user.PrivateMessagesSent.Clear();
+            //}
 
-            if (pmUpdate)
-            {
-                unitOfWork.SaveChanges();
-            }
+            //if (pmUpdate)
+            //{
+            //    Context.SaveChanges();
+            //}
 
-            // User Favourites
-            if (user.Favourites != null)
-            {
-                var toDelete = new List<Favourite>();
-                toDelete.AddRange(user.Favourites);
-                foreach (var obj in toDelete)
-                {
-                    _favouriteService.Delete(obj);
-                }
-                user.Favourites.Clear();
-            }
+            //// User Favourites
+            //if (user.Favourites != null)
+            //{
+            //    var toDelete = new List<Favourite>();
+            //    toDelete.AddRange(user.Favourites);
+            //    foreach (var obj in toDelete)
+            //    {
+            //        _favouriteService.Delete(obj);
+            //    }
+            //    user.Favourites.Clear();
+            //}
 
-            if (user.TopicNotifications != null)
-            {
-                var notificationsToDelete = new List<TopicNotification>();
-                notificationsToDelete.AddRange(user.TopicNotifications);
-                foreach (var topicNotification in notificationsToDelete)
-                {
-                    _topicNotificationService.Delete(topicNotification);
-                }
-                user.TopicNotifications.Clear();
-            }
+            //if (user.TopicNotifications != null)
+            //{
+            //    var notificationsToDelete = new List<TopicNotification>();
+            //    notificationsToDelete.AddRange(user.TopicNotifications);
+            //    foreach (var topicNotification in notificationsToDelete)
+            //    {
+            //        _topicNotificationService.Delete(topicNotification);
+            //    }
+            //    user.TopicNotifications.Clear();
+            //}
 
-            // Also clear their points
-            var userPoints = user.Points;
-            if (userPoints.Any())
-            {
-                var pointsList = new List<MembershipUserPoints>();
-                pointsList.AddRange(userPoints);
-                foreach (var point in pointsList)
-                {
-                    point.User = null;
-                    _membershipUserPointsService.Delete(point);
-                }
-                user.Points.Clear();
-            }
+            //// Also clear their points
+            //var userPoints = user.Points;
+            //if (userPoints.Any())
+            //{
+            //    var pointsList = new List<MembershipUserPoints>();
+            //    pointsList.AddRange(userPoints);
+            //    foreach (var point in pointsList)
+            //    {
+            //        point.User = null;
+            //        _membershipUserPointsService.Delete(point);
+            //    }
+            //    user.Points.Clear();
+            //}
 
-            // Now clear all activities for this user
-            var usersActivities = _activityService.GetDataFieldByGuid(user.Id);
-            _activityService.Delete(usersActivities.ToList());
+            //// Now clear all activities for this user
+            //var usersActivities = _activityService.GetDataFieldByGuid(user.Id);
+            //_activityService.Delete(usersActivities.ToList());
 
-            // Also clear their poll votes
-            var userPollVotes = user.PollVotes;
-            if (userPollVotes.Any())
-            {
-                var pollList = new List<PollVote>();
-                pollList.AddRange(userPollVotes);
-                foreach (var vote in pollList)
-                {
-                    vote.User = null;
-                    _pollVoteService.Delete(vote);
-                }
-                user.PollVotes.Clear();
-            }
+            //// Also clear their poll votes
+            //var userPollVotes = user.PollVotes;
+            //if (userPollVotes.Any())
+            //{
+            //    var pollList = new List<PollVote>();
+            //    pollList.AddRange(userPollVotes);
+            //    foreach (var vote in pollList)
+            //    {
+            //        vote.User = null;
+            //        _pollVoteService.Delete(vote);
+            //    }
+            //    user.PollVotes.Clear();
+            //}
 
-            unitOfWork.SaveChanges();
+            //Context.SaveChanges();
 
 
-            // Also clear their polls
-            var userPolls = user.Polls;
-            if (userPolls.Any())
-            {
-                var polls = new List<Poll>();
-                polls.AddRange(userPolls);
-                foreach (var poll in polls)
-                {
-                    //Delete the poll answers
-                    var pollAnswers = poll.PollAnswers;
-                    if (pollAnswers.Any())
-                    {
-                        var pollAnswersList = new List<PollAnswer>();
-                        pollAnswersList.AddRange(pollAnswers);
-                        foreach (var answer in pollAnswersList)
-                        {
-                            answer.Poll = null;
-                            _pollAnswerService.Delete(answer);
-                        }
-                    }
+            //// Also clear their polls
+            //var userPolls = user.Polls;
+            //if (userPolls.Any())
+            //{
+            //    var polls = new List<Poll>();
+            //    polls.AddRange(userPolls);
+            //    foreach (var poll in polls)
+            //    {
+            //        //Delete the poll answers
+            //        var pollAnswers = poll.PollAnswers;
+            //        if (pollAnswers.Any())
+            //        {
+            //            var pollAnswersList = new List<PollAnswer>();
+            //            pollAnswersList.AddRange(pollAnswers);
+            //            foreach (var answer in pollAnswersList)
+            //            {
+            //                answer.Poll = null;
+            //                _pollAnswerService.Delete(answer);
+            //            }
+            //        }
 
-                    poll.PollAnswers.Clear();
-                    poll.User = null;
-                    _pollService.Delete(poll);
-                }
-                user.Polls.Clear();
-            }
+            //        poll.PollAnswers.Clear();
+            //        poll.User = null;
+            //        _pollService.Delete(poll);
+            //    }
+            //    user.Polls.Clear();
+            //}
 
-            unitOfWork.SaveChanges();
+            //Context.SaveChanges();
 
-            // ######### POSTS TOPICS ########
+            //// ######### POSTS TOPICS ########
 
-            // Delete all topics first
-            var topics = user.Topics;
-            if (topics != null && topics.Any())
-            {
-                var topicList = new List<Topic>();
-                topicList.AddRange(topics);
-                foreach (var topic in topicList)
-                {
-                    topic.LastPost = null;
-                    topic.Posts.Clear();
-                    topic.Tags.Clear();
-                    _topicService.Delete(topic, unitOfWork);
-                }
-                user.Topics.Clear();
-                unitOfWork.SaveChanges();
-            }
+            //// Delete all topics first
+            //var topics = user.Topics;
+            //if (topics != null && topics.Any())
+            //{
+            //    var topicList = new List<Topic>();
+            //    topicList.AddRange(topics);
+            //    foreach (var topic in topicList)
+            //    {
+            //        topic.LastPost = null;
+            //        topic.Posts.Clear();
+            //        topic.Tags.Clear();
+            //        _topicService.Delete(topic, unitOfWork);
+            //    }
+            //    user.Topics.Clear();
+            //    Context.SaveChanges();
+            //}
 
-            // Now sorts Last Posts on topics and delete all the users posts
-            var posts = user.Posts;
-            if (posts != null && posts.Any())
-            {
-                var postIds = posts.Select(x => x.Id).ToList();
+            //// Now sorts Last Posts on topics and delete all the users posts
+            //var posts = user.Posts;
+            //if (posts != null && posts.Any())
+            //{
+            //    var postIds = posts.Select(x => x.Id).ToList();
 
-                // Get all categories
-                var allCategories = _categoryService.GetAll();
+            //    // Get all categories
+            //    var allCategories = _categoryService.GetAll();
 
-                // Need to see if any of these are last posts on Topics
-                // If so, need to swap out last post
-                var lastPostTopics = _topicService.GetTopicsByLastPost(postIds, allCategories.ToList());
-                foreach (var topic in lastPostTopics.Where(x => x.User.Id != user.Id))
-                {
-                    var lastPost = topic.Posts.Where(x => !postIds.Contains(x.Id)).OrderByDescending(x => x.DateCreated)
-                        .FirstOrDefault();
-                    topic.LastPost = lastPost;
-                }
+            //    // Need to see if any of these are last posts on Topics
+            //    // If so, need to swap out last post
+            //    var lastPostTopics = _topicService.GetTopicsByLastPost(postIds, allCategories.ToList());
+            //    foreach (var topic in lastPostTopics.Where(x => x.User.Id != user.Id))
+            //    {
+            //        var lastPost = topic.Posts.Where(x => !postIds.Contains(x.Id)).OrderByDescending(x => x.DateCreated)
+            //            .FirstOrDefault();
+            //        topic.LastPost = lastPost;
+            //    }
 
-                unitOfWork.SaveChanges();
+            //    Context.SaveChanges();
 
-                user.UploadedFiles.Clear();
+            //    user.UploadedFiles.Clear();
 
-                // Delete all posts
+            //    // Delete all posts
 
-                var postList = new List<Post>();
-                postList.AddRange(posts);
-                foreach (var post in postList)
-                {
-                    if (post.Files != null)
-                    {
-                        var files = post.Files;
-                        var filesList = new List<UploadedFile>();
-                        filesList.AddRange(files);
-                        foreach (var file in filesList)
-                        {
-                            // store the file path as we'll need it to delete on the file system
-                            var filePath = file.FilePath;
+            //    var postList = new List<Post>();
+            //    postList.AddRange(posts);
+            //    foreach (var post in postList)
+            //    {
+            //        if (post.Files != null)
+            //        {
+            //            var files = post.Files;
+            //            var filesList = new List<UploadedFile>();
+            //            filesList.AddRange(files);
+            //            foreach (var file in filesList)
+            //            {
+            //                // store the file path as we'll need it to delete on the file system
+            //                var filePath = file.FilePath;
 
-                            // Now delete it
-                            _uploadedFileService.Delete(file);
+            //                // Now delete it
+            //                _uploadedFileService.Delete(file);
 
-                            // And finally delete from the file system
-                            File.Delete(HostingEnvironment.MapPath(filePath));
-                        }
-                        post.Files.Clear();
-                    }
-                    var postEdits = new List<PostEdit>();
-                    postEdits.AddRange(post.PostEdits);
-                    _postEditService.Delete(postEdits);
-                    post.PostEdits.Clear();
-                    _postService.Delete(post, unitOfWork, true);
-                }
-                user.Posts.Clear();
+            //                // And finally delete from the file system
+            //                File.Delete(HostingEnvironment.MapPath(filePath));
+            //            }
+            //            post.Files.Clear();
+            //        }
+            //        var postEdits = new List<PostEdit>();
+            //        postEdits.AddRange(post.PostEdits);
+            //        _postEditService.Delete(postEdits);
+            //        post.PostEdits.Clear();
+            //        _postService.Delete(post, unitOfWork, true);
+            //    }
+            //    user.Posts.Clear();
 
-                unitOfWork.SaveChanges();
-            }
+            //    Context.SaveChanges();
+            //}
         }
 
         /// <summary>

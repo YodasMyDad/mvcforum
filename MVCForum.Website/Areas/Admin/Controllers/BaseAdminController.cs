@@ -3,8 +3,8 @@
     using System;
     using System.Web.Mvc;
     using Core.Constants;
+    using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Interfaces.UnitOfWork;
     using Core.Models.Entities;
     using ViewModels;
 
@@ -17,29 +17,27 @@
         protected readonly ILoggingService LoggingService;
         protected readonly IMembershipService MembershipService;
         protected readonly ISettingsService SettingsService;
-        protected readonly IUnitOfWorkManager UnitOfWorkManager;
-
         protected MembershipUser LoggedOnReadOnlyUser;
+        protected IMvcForumContext Context;
 
         /// <summary>
         ///     Constructor
         /// </summary>
         /// <param name="loggingService"> </param>
-        /// <param name="unitOfWorkManager"> </param>
         /// <param name="membershipService"></param>
         /// <param name="localizationService"> </param>
         /// <param name="settingsService"> </param>
-        public BaseAdminController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+        /// <param name="context"></param>
+        public BaseAdminController(ILoggingService loggingService,
             IMembershipService membershipService, ILocalizationService localizationService,
-            ISettingsService settingsService)
+            ISettingsService settingsService, IMvcForumContext context)
         {
-            UnitOfWorkManager = unitOfWorkManager;
             MembershipService = membershipService;
             LocalizationService = localizationService;
             LocalizationService.CurrentLanguage = LocalizationService.DefaultLanguage;
             SettingsService = settingsService;
             LoggingService = loggingService;
-
+            Context = context;
             LoggedOnReadOnlyUser = membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
         }
 

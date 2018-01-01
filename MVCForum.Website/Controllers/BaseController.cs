@@ -5,10 +5,9 @@
     using System.Web.Security;
     using Areas.Admin.ViewModels;
     using Core.Constants;
+    using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Interfaces.UnitOfWork;
     using Core.Utilities;
-    using MembershipUser = Core.Models.Entities.MembershipUser;
 
     /// <summary>
     ///     A base class for the white site controllers
@@ -21,28 +20,28 @@
         protected readonly IMembershipService MembershipService;
         protected readonly IRoleService RoleService;
         protected readonly ISettingsService SettingsService;
-        protected readonly IUnitOfWorkManager UnitOfWorkManager;
+        protected readonly IMvcForumContext Context;
 
         /// <summary>
         ///     Constructor
         /// </summary>
         /// <param name="loggingService"> </param>
-        /// <param name="unitOfWorkManager"> </param>
         /// <param name="membershipService"></param>
         /// <param name="localizationService"> </param>
         /// <param name="roleService"> </param>
         /// <param name="settingsService"> </param>
         /// <param name="cacheService"></param>
-        public BaseController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager,
+        /// <param name="context"></param>
+        public BaseController(ILoggingService loggingService,
             IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService,
-            ISettingsService settingsService, ICacheService cacheService)
+            ISettingsService settingsService, ICacheService cacheService, IMvcForumContext context)
         {
-            UnitOfWorkManager = unitOfWorkManager;
             MembershipService = membershipService;
             LocalizationService = localizationService;
             RoleService = roleService;
             SettingsService = settingsService;
             CacheService = cacheService;
+            Context = context;
             LoggingService = loggingService;
         }
 
@@ -71,14 +70,11 @@
                 }
             }
 
-            MembershipUser loggedOnReadOnlyUser;
 
-            using (UnitOfWorkManager.NewUnitOfWork())
-            {
-                loggedOnReadOnlyUser = User.Identity.IsAuthenticated
-                    ? MembershipService.GetUser(User.Identity.Name, true)
-                    : null;
-            }
+            var loggedOnReadOnlyUser = User.Identity.IsAuthenticated
+                ? MembershipService.GetUser(User.Identity.Name, true)
+                : null;
+     
 
             // Check if they need to agree to permissions
             if (SettingsService.GetSettings().AgreeToTermsAndConditions == true && !filterContext.IsChildAction &&

@@ -6,7 +6,6 @@
     using System.Web.Mvc;
     using Models.Entities;
     using Models.General;
-    using UnitOfWork;
 
     public partial interface ITopicService
     {
@@ -49,7 +48,7 @@
         Topic GetTopicBySlug(string slug);
         Topic Get(Guid topicId);
         List<Topic> Get(List<Guid> topicIds, List<Category> allowedCategories);
-        void Delete(Topic topic, IUnitOfWork unitOfWork);
+        void Delete(Topic topic);
         int TopicCount(List<Category> allowedCategories);
         Post AddLastPost(Topic topic, string postContent);
         List<MarkAsSolutionReminder> GetMarkAsSolutionReminderList(int days);

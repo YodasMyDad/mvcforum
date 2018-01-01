@@ -4,7 +4,6 @@
     using System.Web;
     using System.Web.Mvc;
     using System.Web.Security;
-    using Application;
     using Core.Events;
     using Core.Interfaces.Events;
     using Core.Interfaces.Services;
@@ -50,14 +49,14 @@
             // Commit any changes you have made
             try
             {
-                e.UnitOfWork.Commit();
+                e.MvcForumContext.SaveChanges();
 
                 // Redirect to the home page (Or wherever)
                 HttpContext.Current.Response.Redirect("~/");
             }
             catch (Exception)
             {
-                e.UnitOfWork.Rollback();
+                e.MvcForumContext.RollBack();
             }
         }
     }

@@ -16,7 +16,7 @@
 
     public partial class PrivateMessageService : IPrivateMessageService
     {
-        private readonly MvcForumContext _context;
+        private readonly IMvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         /// <summary>
@@ -27,7 +27,7 @@
         public PrivateMessageService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
-            _context = context as MvcForumContext;
+            _context = context;
         }
 
         public PrivateMessage SanitizeMessage(PrivateMessage privateMessage)

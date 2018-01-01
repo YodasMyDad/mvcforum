@@ -2,19 +2,18 @@
 {
     using System.Web.Mvc;
     using Core.Constants;
+    using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Interfaces.UnitOfWork;
     using Core.Utilities;
 
     [Authorize(Roles = AppConstants.AdminRoleName)]
     public class AdminController : BaseAdminController
     {
         public AdminController(ILoggingService loggingService,
-            IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService,
             ILocalizationService localizationService,
-            ISettingsService settingsService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
+            ISettingsService settingsService, IMvcForumContext context)
+            : base(loggingService, membershipService, localizationService, settingsService, context)
         {
         }
 

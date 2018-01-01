@@ -84,7 +84,7 @@
         #region Social Helpers
         public static string GetGravatarImage(string email, int size)
         {
-            return IsValidEmail(email) ? string.Format("//www.gravatar.com/avatar/{0}?s={1}&d=identicon&r=PG", md5HashString(email), size) : "";
+            return IsValidEmail(email) ? $"//www.gravatar.com/avatar/{md5HashString(email)}?s={size}&d=identicon&r=PG" : "";
         }
         #endregion
 

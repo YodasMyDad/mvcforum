@@ -20,7 +20,7 @@
         private readonly IRoleService _roleService;
         private readonly ICategoryNotificationService _categoryNotificationService;
         private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
-        private readonly MvcForumContext _context;
+        private readonly IMvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         /// <summary>
@@ -37,7 +37,7 @@
             _categoryNotificationService = categoryNotificationService;
             _categoryPermissionForRoleService = categoryPermissionForRoleService;
             _cacheService = cacheService;
-            _context = context as MvcForumContext;
+            _context = context;
         }
 
         /// <summary>

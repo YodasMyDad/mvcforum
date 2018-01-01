@@ -1,6 +1,6 @@
 ﻿@using MvcForum.Web.Application.ExtensionMethods
-@using MvcForum.Web.ViewModels
-@model MvcForum.Web.ViewModels.PostViewModel
+@using MvcForum.Web.ViewModels.Post
+@model PostViewModel
 @{
     var postId = Model.Post.Id;
     var loggedOnUserId = Html.CurrentMember() != null ? Html.CurrentMember().Id : Guid.Empty;
