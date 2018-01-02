@@ -157,6 +157,7 @@
     <Compile Include="ViewModels\Badge\AllBadgesViewModel.cs" />
     <Compile Include="ViewModels\Breadcrumb\BreadcrumbViewModel.cs" />
     <Compile Include="ViewModels\Category\CategoryListViewModel.cs" />
+    <Compile Include="ViewModels\Category\EditCategoryPermissionsViewModel.cs" />
     <Compile Include="ViewModels\Category\SubCategoryViewModel.cs" />
     <Compile Include="ViewModels\Favourite\FavouriteJsonReturnModel.cs" />
     <Compile Include="ViewModels\Home\AllRecentActivitiesViewModel.cs" />
@@ -990,10 +991,12 @@
     <Content Include="Views\Post\GetPostEditHistory.cshtml" />
     <Content Include="Areas\Admin\Views\Account\ManageUserPoints.cshtml" />
     <Content Include="Themes\Metro\Content\Styles\Theme.css.map" />
+    <Content Include="Areas\Admin\Views\Permissions\EditCategoryPermissions.cshtml" />
     <None Include="compilerconfig.json" />
     <None Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
+    <Content Include="Installer\tr-TR.csv" />
     <None Include="Properties\PublishProfiles\Local Deployment.pubxml" />
     <Content Include="Scripts\jquery-ui.min.js" />
     <Content Include="Scripts\json2.js" />

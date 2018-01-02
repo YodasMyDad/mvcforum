@@ -8,6 +8,7 @@
     using Core.Interfaces.Services;
     using Core.Models.Entities;
     using ViewModels;
+    using Web.ViewModels.Category;
 
     [Authorize(Roles = AppConstants.AdminRoleName)]
     public class PermissionsController : BaseAdminController
@@ -63,6 +64,21 @@
             };
 
             return View(permViewModel);
+        }
+
+        public ActionResult EditCategoryPermissions(Guid id)
+        {
+            var category = _categoryService.Get(id);
+            var catPermissionViewModel = new EditCategoryPermissionsViewModel
+            {
+                Category = category,
+                Permissions = _permissionService.GetAll().ToList(),
+                Roles = _roleService.AllRoles()
+                    .Where(x => x.RoleName != AppConstants.AdminRoleName)
+                    .OrderBy(x => x.RoleName)
+                    .ToList()
+            };
+            return View(catPermissionViewModel);
         }
 
         public ActionResult PermissionTypes()
