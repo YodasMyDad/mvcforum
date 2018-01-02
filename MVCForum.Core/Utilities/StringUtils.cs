@@ -99,7 +99,7 @@
         #region Social Helpers
         public static string GetGravatarImage(string email, int size)
         {
-            return IsValidEmail(email) ? $"//www.gravatar.com/avatar/{md5HashString(email)}?s={size}&d=identicon&r=PG" : "";
+            return IsValidEmail(email) ? $"https://www.gravatar.com/avatar/{md5HashString(email)}?s={size}&d=identicon&r=PG" : "";
         }
         #endregion
 
