@@ -45,6 +45,7 @@
         private readonly ITopicTagService _topicTagService;
         private readonly IUploadedFileService _uploadedFileService;
         private readonly IVoteService _voteService;
+        private readonly IActivityService _activityService;
 
         public TopicController(ILoggingService loggingService, IMembershipService membershipService,
             IRoleService roleService, ITopicService topicService, IPostService postService,
@@ -55,7 +56,7 @@
             ITopicNotificationService topicNotificationService, IPollService pollService,
             IPollAnswerService pollAnswerService, IBannedWordService bannedWordService, IVoteService voteService,
             IFavouriteService favouriteService, IUploadedFileService uploadedFileService, ICacheService cacheService,
-            ITagNotificationService tagNotificationService, IPostEditService postEditService, IMvcForumContext context)
+            ITagNotificationService tagNotificationService, IPostEditService postEditService, IMvcForumContext context, IActivityService activityService)
             : base(loggingService, membershipService, localizationService, roleService,
                 settingsService, cacheService, context)
         {
@@ -75,6 +76,7 @@
             _uploadedFileService = uploadedFileService;
             _tagNotificationService = tagNotificationService;
             _postEditService = postEditService;
+            _activityService = activityService;
         }
 
 
@@ -985,6 +987,11 @@
                         {
                             cancelledByEvent = true;
                         }
+
+                        if (!topic.Pending.HasValue || !topic.Pending.Value)
+                        {
+                            _activityService.TopicCreated(topic);
+                        }                            
 
                         try
                         {

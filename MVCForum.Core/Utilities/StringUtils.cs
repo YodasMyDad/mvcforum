@@ -69,6 +69,21 @@
         }
 
         /// <summary>
+        /// Truncate long string
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="maxLength"></param>
+        /// <param name="addSuffix">Add a suffix '...' in case of truncation</param>
+        /// <returns></returns>
+        public static string TruncateLongString(this string str, int maxLength, bool addSuffix)
+        {
+            if (str.Length <= maxLength)
+                return str;
+
+            return str.Substring(0, maxLength) + (addSuffix ? "..." : "");
+        }
+
+        /// <summary>
         /// Does a case insensitive contains
         /// </summary>
         /// <param name="source"></param>
@@ -413,15 +428,15 @@
         {
             return new List<string>
                 {
-                    "the", "be",  "to",  
-                    "of",  
+                    "the", "be",  "to",
+                    "of",
                     "and",
                     "a",
-                    "in",   
-                    "that",  
+                    "in",
+                    "that",
                     "have",
                     "i",
-                    "it",   
+                    "it",
                     "for",
                     "not",
                     "on",

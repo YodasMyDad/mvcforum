@@ -32,13 +32,14 @@
         private readonly ITopicNotificationService _topicNotificationService;
         private readonly ITopicService _topicService;
         private readonly IVoteService _voteService;
+        private readonly IActivityService _activityService;
 
         public PostController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ITopicService topicService,
             IPostService postService, ISettingsService settingsService, ICategoryService categoryService,
             ITopicNotificationService topicNotificationService, IEmailService emailService,
             IReportService reportService, IBannedWordService bannedWordService, IVoteService voteService,
-            IPostEditService postEditService, ICacheService cacheService, IMvcForumContext context)
+            IPostEditService postEditService, ICacheService cacheService, IMvcForumContext context, IActivityService activityService)
             : base(loggingService, membershipService, localizationService, roleService,
                 settingsService, cacheService, context)
         {
@@ -51,6 +52,7 @@
             _bannedWordService = bannedWordService;
             _voteService = voteService;
             _postEditService = postEditService;
+            _activityService = activityService;
         }
 
 
@@ -102,6 +104,11 @@
             if (akismetHelper.IsSpam(newPost))
             {
                 newPost.Pending = true;
+            }
+
+            if (!newPost.Pending.HasValue || !newPost.Pending.Value)
+            {
+                _activityService.PostCreated(newPost);
             }
 
             try

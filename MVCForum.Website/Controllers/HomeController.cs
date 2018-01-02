@@ -94,13 +94,16 @@
 
         public async Task<ActionResult> Activity(int? p)
         {
+            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+            var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
             // Set the page index
             var pageIndex = p ?? 1;
 
             // Get the topics
             var activities = await
                 _activityService.GetPagedGroupedActivities(pageIndex,
-                    SettingsService.GetSettings().ActivitiesPerPage);
+                    SettingsService.GetSettings().ActivitiesPerPage, loggedOnUsersRole);
 
             // create the view model
             var viewModel = new AllRecentActivitiesViewModel
