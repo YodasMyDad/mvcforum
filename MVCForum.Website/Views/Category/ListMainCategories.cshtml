@@ -18,7 +18,7 @@
         var topicCount = cat.Topics.Count;
         var latestTopicInCategory = cat.Topics.OrderByDescending(x => x.LastPost.DateCreated).FirstOrDefault();
         var actualPostCount = cat.Topics.SelectMany(x => x.Posts).Count();
-        var postCount = (actualPostCount < 1 ? actualPostCount : actualPostCount - 1);
+        var postCount = actualPostCount < 1 ? actualPostCount : actualPostCount - topicCount;
 
         @Html.Partial("_Category", new CategoryViewModel
    {
