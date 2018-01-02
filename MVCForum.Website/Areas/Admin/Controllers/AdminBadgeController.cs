@@ -40,7 +40,7 @@
             var pageIndex = p ?? 1;
 
 
-            var allBadges = string.IsNullOrEmpty(search)
+            var allBadges = string.IsNullOrWhiteSpace(search)
                 ? await _badgeService.GetPagedGroupedBadges(pageIndex, SiteConstants.Instance.AdminListPageSize)
                 : await _badgeService.SearchPagedGroupedTags(search, pageIndex,
                     SiteConstants.Instance.AdminListPageSize);

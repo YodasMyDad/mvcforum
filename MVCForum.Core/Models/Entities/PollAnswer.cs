@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Utilities;
 
-    public partial class PollAnswer
+    public partial class PollAnswer : ExtendedDataEntity
     {
         public PollAnswer()
         {

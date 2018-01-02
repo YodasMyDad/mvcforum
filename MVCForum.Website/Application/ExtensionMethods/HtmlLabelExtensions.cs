@@ -176,7 +176,7 @@
         {
             var resolvedLabelText =
                 labelText ?? metadata.DisplayName ?? metadata.PropertyName ?? htmlFieldName.Split('.').Last();
-            //if (String.IsNullOrEmpty(resolvedLabelText))
+            //if (string.IsNullOrWhiteSpace(resolvedLabelText))
             //{
             //    return MvcHtmlString.Empty;
             //}
@@ -202,7 +202,7 @@
 
         internal static void EndLabel(ViewContext viewContext, string labelText)
         {
-            if (!string.IsNullOrEmpty(labelText))
+            if (!string.IsNullOrWhiteSpace(labelText))
             {
                 viewContext.Writer.Write(labelText);
             }

@@ -14,7 +14,7 @@
     {
         public bool Rule(MembershipUser user)
         {
-            return !string.IsNullOrEmpty(user.Avatar);
+            return !string.IsNullOrWhiteSpace(user.Avatar);
         }
     }
 }

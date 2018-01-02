@@ -39,7 +39,7 @@
             var isTheSame = false;
             var isEmpty = true;
             // only add if they are not the same
-            if (!string.IsNullOrEmpty(entity.EditedPostTitle) && !string.IsNullOrEmpty(entity.OriginalPostTitle))
+            if (!string.IsNullOrWhiteSpace(entity.EditedPostTitle) && !string.IsNullOrWhiteSpace(entity.OriginalPostTitle))
             {
                 if (string.Compare(entity.EditedPostTitle, entity.OriginalPostTitle,
                         StringComparison.OrdinalIgnoreCase) == 0)
@@ -48,7 +48,7 @@
                 }
                 isEmpty = false;
             }
-            if (!string.IsNullOrEmpty(entity.EditedPostContent) && !string.IsNullOrEmpty(entity.OriginalPostContent))
+            if (!string.IsNullOrWhiteSpace(entity.EditedPostContent) && !string.IsNullOrWhiteSpace(entity.OriginalPostContent))
             {
                 if (string.Compare(entity.EditedPostContent, entity.OriginalPostContent,
                         StringComparison.OrdinalIgnoreCase) == 0)

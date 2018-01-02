@@ -455,14 +455,14 @@
 
                             // See if there is a poll
                             if (editPostViewModel.PollAnswers != null &&
-                                editPostViewModel.PollAnswers.Count(x => !string.IsNullOrEmpty(x?.Answer)) > 1 &&
+                                editPostViewModel.PollAnswers.Count(x => !string.IsNullOrWhiteSpace(x?.Answer)) > 1 &&
                                 permissions[SiteConstants.Instance.PermissionCreatePolls].IsTicked)
                             {
                                 // Now sort the poll answers, what to add and what to remove
                                 // Poll answers already in this poll.
                                 //var existingAnswers = topic.Poll.PollAnswers.Where(x => postedIds.Contains(x.Id)).ToList();
                                 var postedIds = editPostViewModel.PollAnswers
-                                    .Where(x => !string.IsNullOrEmpty(x?.Answer)).Select(x => x.Id);
+                                    .Where(x => !string.IsNullOrWhiteSpace(x?.Answer)).Select(x => x.Id);
 
                                 // This post might not have a poll on it, if not they are creating a poll for the first time
                                 var topicPollAnswerIds = new List<Guid>();
@@ -495,9 +495,9 @@
                                 topic.Poll.ClosePollAfterDays = editPostViewModel.PollCloseAfterDays;
 
                                 var existingAnswers = editPostViewModel.PollAnswers.Where(x =>
-                                    !string.IsNullOrEmpty(x.Answer) && topicPollAnswerIds.Contains(x.Id)).ToList();
+                                    !string.IsNullOrWhiteSpace(x.Answer) && topicPollAnswerIds.Contains(x.Id)).ToList();
                                 var newPollAnswers = editPostViewModel.PollAnswers.Where(x =>
-                                    !string.IsNullOrEmpty(x.Answer) && !topicPollAnswerIds.Contains(x.Id)).ToList();
+                                    !string.IsNullOrWhiteSpace(x.Answer) && !topicPollAnswerIds.Contains(x.Id)).ToList();
 
                                 // Loop through existing and update names if need be
                                 //TODO: Need to think about this in future versions if they change the name
@@ -570,7 +570,7 @@
 
                             // Tags
                             topic.Tags.Clear();
-                            if (!string.IsNullOrEmpty(editPostViewModel.Tags))
+                            if (!string.IsNullOrWhiteSpace(editPostViewModel.Tags))
                             {
                                 _topicTagService.Add(editPostViewModel.Tags.ToLower(), topic);
                             }
@@ -810,7 +810,7 @@
                     }
 
                     // See if the user has actually added some content to the topic
-                    if (!string.IsNullOrEmpty(topicViewModel.Content))
+                    if (!string.IsNullOrWhiteSpace(topicViewModel.Content))
                     {
                         // Check for any banned words
                         topicViewModel.Content =
@@ -956,7 +956,7 @@
                             }
 
                             // Add the tags if any too
-                            if (!string.IsNullOrEmpty(topicViewModel.Tags))
+                            if (!string.IsNullOrWhiteSpace(topicViewModel.Tags))
                             {
                                 // Sanitise the tags
                                 topicViewModel.Tags = _bannedWordService.SanitiseBannedWords(topicViewModel.Tags,
@@ -1070,7 +1070,7 @@
                 // statement rather than loads of sql selects
 
                 var sortQuerystring = Request.QueryString[AppConstants.PostOrderBy];
-                var orderBy = !string.IsNullOrEmpty(sortQuerystring)
+                var orderBy = !string.IsNullOrWhiteSpace(sortQuerystring)
                     ? EnumUtils.ReturnEnumValueFromString<PostOrderBy>(sortQuerystring)
                     : PostOrderBy.Standard;
 
@@ -1114,7 +1114,7 @@
 
                 // If there is a quote querystring
                 var quote = Request["quote"];
-                if (!string.IsNullOrEmpty(quote))
+                if (!string.IsNullOrWhiteSpace(quote))
                 {
                     try
                     {
@@ -1131,7 +1131,7 @@
                 }
 
                 var reply = Request["reply"];
-                if (!string.IsNullOrEmpty(reply))
+                if (!string.IsNullOrWhiteSpace(reply))
                 {
                     try
                     {
@@ -1215,7 +1215,7 @@
                 return null;
             }
 
-            var orderBy = !string.IsNullOrEmpty(getMorePostsViewModel.Order)
+            var orderBy = !string.IsNullOrWhiteSpace(getMorePostsViewModel.Order)
                 ? EnumUtils.ReturnEnumValueFromString<PostOrderBy>(getMorePostsViewModel.Order)
                 : PostOrderBy.Standard;
 

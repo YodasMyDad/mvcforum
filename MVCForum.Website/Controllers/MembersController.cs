@@ -281,7 +281,7 @@
 
                 // See if a return url is present or not and add it
                 var returnUrl = Request["ReturnUrl"];
-                if (!string.IsNullOrEmpty(returnUrl))
+                if (!string.IsNullOrWhiteSpace(returnUrl))
                 {
                     viewModel.ReturnUrl = returnUrl;
                 }
@@ -304,7 +304,7 @@
                 SettingsService.GetSettings().DisableStandardRegistration != true)
             {
                 // First see if there is a spam question and if so, the answer matches
-                if (!string.IsNullOrEmpty(SettingsService.GetSettings().SpamQuestion))
+                if (!string.IsNullOrWhiteSpace(SettingsService.GetSettings().SpamQuestion))
                 {
                     // There is a spam question, if answer is wrong return with error
                     if (userModel.SpamAnswer == null ||
@@ -375,7 +375,7 @@
             else
             {
                 // See if this is a social login and we have their profile pic
-                if (!string.IsNullOrEmpty(userModel.SocialProfileImageUrl))
+                if (!string.IsNullOrWhiteSpace(userModel.SocialProfileImageUrl))
                 {
                     // We have an image url - Need to save it to their profile
                     var image = AppHelpers.GetImageFromExternalUrl(userModel.SocialProfileImageUrl);
@@ -405,7 +405,7 @@
                         var reg = new Regex($"[{Regex.Escape(regexSearch)}]");
                         fileName = reg.Replace(fileName, "");
 
-                        if (string.IsNullOrEmpty(fileExtension))
+                        if (string.IsNullOrWhiteSpace(fileExtension))
                         {
                             // no file extension so give it one
                             fileName = string.Concat(fileName, ".jpg");
@@ -535,65 +535,86 @@
             var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
             if (manuallyAuthoriseMembers == false && memberEmailAuthorisationNeeded)
             {
-                if (!string.IsNullOrEmpty(userToSave.Email))
+                if (!string.IsNullOrWhiteSpace(userToSave.Email))
                 {
+                    // Registration guid
+                    var registrationGuid = Guid.NewGuid().ToString();
+
+                    // Set a Guid in the extended data
+                    userToSave.SetExtendedDataValue(AppConstants.ExtendedDataKeys.RegistrationEmailConfirmationKey, registrationGuid);
+
                     // SEND AUTHORISATION EMAIL
                     var sb = new StringBuilder();
-                    var confirmationLink = string.Concat(StringUtils.ReturnCurrentDomain(),
-                        Url.Action("EmailConfirmation", new {id = userToSave.Id}));
+                    var confirmationLink = string.Concat(StringUtils.ReturnCurrentDomain(), Url.Action("EmailConfirmation", new {id = userToSave.Id, key = registrationGuid }));
+
                     sb.AppendFormat("<p>{0}</p>", string.Format(
                         LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.EmailBody"),
                         settings.ForumName,
                         string.Format("<p><a href=\"{0}\">{0}</a></p>", confirmationLink)));
+
                     var email = new Email
                     {
                         EmailTo = userToSave.Email,
                         NameTo = userToSave.UserName,
                         Subject = LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.Subject")
                     };
+
                     email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+
                     _emailService.SendMail(email);
 
-                    // ADD COOKIE
                     // We add a cookie for 7 days, which will display the resend email confirmation button
                     // This cookie is removed when they click the confirmation link
                     var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
                     {
-                        Value = CreateForgotPasswordCookieHas(userToSave).ToString(),
+                        Value = userToSave.UserName,
                         Expires = DateTime.UtcNow.AddDays(7)
                     };
+
                     // Add the cookie.
                     Response.Cookies.Add(myCookie);
+
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = LocalizationService.GetResourceString("Members.MemberEmailAuthorisationNeeded"),
+                        MessageType = GenericMessages.success
+                    };
                 }
             }
         }
 
         /// <summary>
-        ///     Creates a hash code for the password reset cookie
+        /// Resends the email confirmation
         /// </summary>
-        /// <param name="userToSave"></param>
+        /// <param name="username"></param>
         /// <returns></returns>
-        private static int CreateForgotPasswordCookieHas(MembershipUser userToSave)
-        {
-            var combinedData = $"{userToSave.Email}{userToSave.CreateDate.ToLongTimeString()}";
-            return combinedData.GetHashCode();
-        }
-
         public ActionResult ResendEmailConfirmation(string username)
         {
-            var user = MembershipService.GetUser(username);
-            if (user != null)
-            {
-                SendEmailConfirmationEmail(user);
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                {
-                    Message = LocalizationService.GetResourceString("Members.MemberEmailAuthorisationNeeded"),
-                    MessageType = GenericMessages.success
-                };
-            }
-
             try
             {
+                // Get the user from the username
+                var user = MembershipService.GetUser(username);
+
+                // As this is a resend, they must have the extendeddata entry
+                var registrationGuid = user.GetExtendedDataItem(AppConstants.ExtendedDataKeys.RegistrationEmailConfirmationKey);
+
+                if (user != null && !string.IsNullOrWhiteSpace(registrationGuid))
+                {
+                    SendEmailConfirmationEmail(user);
+                }
+                else
+                {
+                    // Log this
+                    LoggingService.Error("Unable to ResendEmailConfirmation as either user was null or RegistrationEmailConfirmationKey is missing");
+
+                    // There was a problem
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = LocalizationService.GetResourceString("Members.Errors.LogonGeneric"),
+                        MessageType = GenericMessages.danger
+                    };
+                }
+
                 Context.SaveChanges();
             }
             catch (Exception ex)
@@ -609,43 +630,40 @@
         ///     Email confirmation page from the link in the users email
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="key"></param>
         /// <returns></returns>
-        public ActionResult EmailConfirmation(Guid id)
+        public ActionResult EmailConfirmation(Guid id, Guid key)
         {
             // Checkconfirmation
             var user = MembershipService.GetUser(id);
             if (user != null)
             {
-                // Delete Cookie and log them in if this cookie is present
-                var cookie = Request.Cookies[AppConstants.MemberEmailConfirmationCookieName];
-                if (cookie != null)
+                // Ok, now to check the Guid key
+                var registrationGuid = user.GetExtendedDataItem(AppConstants.ExtendedDataKeys.RegistrationEmailConfirmationKey);
+
+                var everythingOk = !string.IsNullOrWhiteSpace(registrationGuid) && Guid.Parse(registrationGuid) == key;
+                if (everythingOk)
                 {
                     // Set the user to active
                     user.IsApproved = true;
 
-                    // The hashcode to check against
-                    var hashCode = CreateForgotPasswordCookieHas(user).ToString();
-                    if (cookie.Value == hashCode)
-                    {
-                        var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
-                        {
-                            Expires = DateTime.UtcNow.AddDays(-1)
-                        };
-                        Response.Cookies.Add(myCookie);
+                    // Remove the registration key
+                    user.RemoveExtendedDataItem(AppConstants.ExtendedDataKeys.RegistrationEmailConfirmationKey);
 
-                        // Login code
-                        FormsAuthentication.SetAuthCookie(user.UserName, false);
-                    }
-                    else
+                    // Remove the cookie
+                    var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName) {Expires = DateTime.UtcNow.AddDays(-1)};
+                    Response.Cookies.Add(myCookie);
+
+                    // Login code
+                    FormsAuthentication.SetAuthCookie(user.UserName, false);
+
+                    // Show a new message
+                    // We use temp data because we are doing a redirect
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                     {
-                        // Show a new message
-                        // We use temp data because we are doing a redirect
-                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                        {
-                            Message = LocalizationService.GetResourceString("Members.Errors.LogonGeneric"),
-                            MessageType = GenericMessages.danger
-                        };
-                    }
+                        Message = LocalizationService.GetResourceString("Members.NowApproved"),
+                        MessageType = GenericMessages.success
+                    };
                 }
                 else
                 {
@@ -657,14 +675,6 @@
                         MessageType = GenericMessages.danger
                     };
                 }
-
-                // Show a new message
-                // We use temp data because we are doing a redirect
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                {
-                    Message = LocalizationService.GetResourceString("Members.NowApproved"),
-                    MessageType = GenericMessages.success
-                };
             }
 
             try
@@ -676,7 +686,6 @@
                 Context.RollBack();
                 LoggingService.Error(ex);
             }
-
 
             return RedirectToAction("Index", "Home");
         }
@@ -692,7 +701,7 @@
 
             // See if a return url is present or not and add it
             var returnUrl = Request["ReturnUrl"];
-            if (!string.IsNullOrEmpty(returnUrl))
+            if (!string.IsNullOrWhiteSpace(returnUrl))
             {
                 viewModel.ReturnUrl = returnUrl;
             }
@@ -782,7 +791,7 @@
                         }
 
                         // Only show if we have something to actually show to the user
-                        if (!string.IsNullOrEmpty(message.Message))
+                        if (!string.IsNullOrWhiteSpace(message.Message))
                         {
                             TempData[AppConstants.MessageViewBagName] = message;
                         }
@@ -1172,7 +1181,7 @@
         [Authorize]
         public string AutoComplete(string term)
         {
-            if (!string.IsNullOrEmpty(term))
+            if (!string.IsNullOrWhiteSpace(term))
             {
                 var members = MembershipService.SearchMembers(term, 12);
                 var sb = new StringBuilder();
@@ -1244,7 +1253,7 @@
         public async Task<ActionResult> Search(int? p, string search)
         {
             var pageIndex = p ?? 1;
-            var allUsers = string.IsNullOrEmpty(search)
+            var allUsers = string.IsNullOrWhiteSpace(search)
                 ? await MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize)
                 : await MembershipService.SearchMembers(search, pageIndex,
                     SiteConstants.Instance.AdminListPageSize);
@@ -1414,7 +1423,7 @@
                 Token = token
             };
 
-            if (id == null || string.IsNullOrEmpty(token))
+            if (id == null || string.IsNullOrWhiteSpace(token))
             {
                 ModelState.AddModelError("",
                     LocalizationService.GetResourceString("Members.ResetPassword.InvalidToken"));

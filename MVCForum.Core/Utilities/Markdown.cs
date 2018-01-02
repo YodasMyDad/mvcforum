@@ -352,7 +352,7 @@ namespace MvcForum.Core.Utilities
         /// </remarks>
         public string Transform(string text)
         {
-            if (String.IsNullOrEmpty(text)) return "";
+            if (string.IsNullOrWhiteSpace(text)) return "";
 
             Setup();
 
@@ -935,7 +935,7 @@ namespace MvcForum.Core.Utilities
 
             result = string.Format("<a href=\"{0}\"", url);
 
-            if (!String.IsNullOrEmpty(title))
+            if (!string.IsNullOrWhiteSpace(title))
             {
                 title = AttributeEncode(title);
                 title = EscapeBoldItalic(title);
@@ -1055,7 +1055,7 @@ namespace MvcForum.Core.Utilities
             url = EncodeProblemUrlChars(url);
             url = EscapeBoldItalic(url);
             var result = string.Format("<img src=\"{0}\" alt=\"{1}\"", url, altText);
-            if (!String.IsNullOrEmpty(title))
+            if (!string.IsNullOrWhiteSpace(title))
             {
                 title = AttributeEncode(EscapeBoldItalic(title));
                 result += string.Format(" title=\"{0}\"", title);

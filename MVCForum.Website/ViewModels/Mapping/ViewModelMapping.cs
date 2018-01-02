@@ -200,7 +200,7 @@
                 NewMemberEmailConfirmation = currentSettings.NewMemberEmailConfirmation != null &&
                                              (bool) currentSettings.NewMemberEmailConfirmation,
                 Theme = currentSettings.Theme,
-                SMTPPort = string.IsNullOrEmpty(currentSettings.SMTPPort)
+                SMTPPort = string.IsNullOrWhiteSpace(currentSettings.SMTPPort)
                     ? null
                     : (int?) Convert.ToInt32(currentSettings.SMTPPort),
                 //SpamQuestion = currentSettings.SpamQuestion,

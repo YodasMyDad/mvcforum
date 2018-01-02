@@ -137,14 +137,14 @@
         protected virtual string PostRequest(string url, NameValueCollection pars)
         {
             // check input data
-            if (string.IsNullOrEmpty(url) || !Uri.IsWellFormedUriString(url, UriKind.Absolute) || (null == pars))
+            if (string.IsNullOrWhiteSpace(url) || !Uri.IsWellFormedUriString(url, UriKind.Absolute) || (null == pars))
                 return string.Empty;
 
             string content = string.Empty;
             // create content for the post request
             foreach (string key in pars.AllKeys)
             {
-                if (string.IsNullOrEmpty(content))
+                if (string.IsNullOrWhiteSpace(content))
                     content = $"{key}={pars[key]}";
                 else
                     content += $"&{key}={pars[key]}";
@@ -208,13 +208,13 @@
             result["user_ip"] = HttpUtility.UrlEncode(comment.user_ip);
             result["user_agent"] = HttpUtility.UrlEncode(comment.user_agent);
             // add optional information
-            result["referrer"] = string.IsNullOrEmpty(comment.referrer) ? string.Empty : HttpUtility.UrlEncode(comment.referrer);
-            result["permalink"] = string.IsNullOrEmpty(comment.permalink) ? string.Empty : HttpUtility.UrlEncode(comment.permalink);
-            result["comment_type"] = string.IsNullOrEmpty(comment.comment_type) ? string.Empty : HttpUtility.UrlEncode(comment.comment_type);
-            result["comment_author"] = string.IsNullOrEmpty(comment.comment_author) ? string.Empty : HttpUtility.UrlEncode(comment.comment_author);
-            result["comment_author_email"] = string.IsNullOrEmpty(comment.comment_author_email) ? string.Empty : HttpUtility.UrlEncode(comment.comment_author_email);
-            result["comment_author_url"] = string.IsNullOrEmpty(comment.comment_author_url) ? string.Empty : HttpUtility.UrlEncode(comment.comment_author_url);
-            result["comment_content"] = string.IsNullOrEmpty(comment.comment_content) ? string.Empty : HttpUtility.UrlEncode(comment.comment_content);
+            result["referrer"] = string.IsNullOrWhiteSpace(comment.referrer) ? string.Empty : HttpUtility.UrlEncode(comment.referrer);
+            result["permalink"] = string.IsNullOrWhiteSpace(comment.permalink) ? string.Empty : HttpUtility.UrlEncode(comment.permalink);
+            result["comment_type"] = string.IsNullOrWhiteSpace(comment.comment_type) ? string.Empty : HttpUtility.UrlEncode(comment.comment_type);
+            result["comment_author"] = string.IsNullOrWhiteSpace(comment.comment_author) ? string.Empty : HttpUtility.UrlEncode(comment.comment_author);
+            result["comment_author_email"] = string.IsNullOrWhiteSpace(comment.comment_author_email) ? string.Empty : HttpUtility.UrlEncode(comment.comment_author_email);
+            result["comment_author_url"] = string.IsNullOrWhiteSpace(comment.comment_author_url) ? string.Empty : HttpUtility.UrlEncode(comment.comment_author_url);
+            result["comment_content"] = string.IsNullOrWhiteSpace(comment.comment_content) ? string.Empty : HttpUtility.UrlEncode(comment.comment_content);
 
             // return result
             return result;
@@ -229,7 +229,7 @@
         protected virtual NameValueCollection PreparePars(string key, string domain)
         {
             // check the input parameters
-            if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(domain))
+            if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(domain))
                 return null;
 
             // initialize result
@@ -251,7 +251,7 @@
         protected virtual bool ExtractResult(string content)
         {
             // check the input parameters
-            if (string.IsNullOrEmpty(content))
+            if (string.IsNullOrWhiteSpace(content))
                 return false;
 
             // check for valid content

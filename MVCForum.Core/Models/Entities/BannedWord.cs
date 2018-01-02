@@ -3,7 +3,7 @@
     using System;
     using Utilities;
 
-    public partial class BannedWord
+    public partial class BannedWord : Entity
     {
         public BannedWord()
         {

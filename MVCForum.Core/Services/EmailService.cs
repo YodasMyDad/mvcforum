@@ -61,7 +61,7 @@
                     var fromEmail = settings.NotificationReplyEmail;
 
                     // If no SMTP settings then log it
-                    if (string.IsNullOrEmpty(smtp))
+                    if (string.IsNullOrWhiteSpace(smtp))
                     {
                         // Not logging as it makes the log file massive
                         //_loggingService.Error("There are no SMTP details in the settings, unable to send emails");
@@ -70,7 +70,7 @@
 
                     // Set up the SMTP Client object and settings
                     var mySmtpClient = new SmtpClient(smtp);
-                    if (!string.IsNullOrEmpty(smtpUsername) && !string.IsNullOrEmpty(smtpPassword))
+                    if (!string.IsNullOrWhiteSpace(smtpUsername) && !string.IsNullOrWhiteSpace(smtpPassword))
                     {
                         mySmtpClient.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
                     }
@@ -80,7 +80,7 @@
                         mySmtpClient.EnableSsl = (bool)smtpEnableSsl;
                     }
 
-                    if (!string.IsNullOrEmpty(smtpPort))
+                    if (!string.IsNullOrWhiteSpace(smtpPort))
                     {
                         mySmtpClient.Port = Convert.ToInt32(smtpPort);
                     }
@@ -139,7 +139,7 @@
                 sb = sb.Replace("#CONTENT#", content);
                 sb = sb.Replace("#SITENAME#", settings.ForumName);
                 sb = sb.Replace("#SITEURL#", settings.ForumUrl);
-                if (!string.IsNullOrEmpty(to))
+                if (!string.IsNullOrWhiteSpace(to))
                 {
                     to = $"<p>{to},</p>";
                     sb = sb.Replace("#TO#", to);

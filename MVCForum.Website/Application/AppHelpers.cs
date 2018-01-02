@@ -209,7 +209,7 @@
 
         public static string ConvertPostContent(string post)
         {
-            if (!string.IsNullOrEmpty(post))
+            if (!string.IsNullOrWhiteSpace(post))
             {
                 // Convert any BBCode
                 //NOTE: Decided to remove BB code
@@ -328,7 +328,7 @@
 
         public static string MemberImage(string avatar, string email, Guid userId, int size)
         {
-            if (!string.IsNullOrEmpty(avatar))
+            if (!string.IsNullOrWhiteSpace(avatar))
             {
                 // Has an avatar image
                 var storageProvider = StorageProvider.Current;
@@ -342,7 +342,7 @@
         public static string CategoryImage(string image, Guid categoryId, int size)
         {
             var sizeFormat = string.Format("?width={0}&crop=0,0,{0},{0}", size);
-            if (!string.IsNullOrEmpty(image))
+            if (!string.IsNullOrWhiteSpace(image))
             {
                 var storageProvider = StorageProvider.Current;
                 return storageProvider.BuildFileUrl(categoryId, "/", image, sizeFormat);
@@ -384,14 +384,14 @@
                     allowedFileExtensions = imageExtensions;
                 }
 
-                if (!string.IsNullOrEmpty(allowedFileExtensions))
+                if (!string.IsNullOrWhiteSpace(allowedFileExtensions))
                 {
                     // Turn into a list and strip unwanted commas as we don't trust users!
                     var allowedFileExtensionsList = allowedFileExtensions.ToLower().Trim()
                         .TrimStart(',').TrimEnd(',').Split(',').ToList();
 
                     // If can't work out extension then just error
-                    if (string.IsNullOrEmpty(fileExtension))
+                    if (string.IsNullOrWhiteSpace(fileExtension))
                     {
                         upResult.UploadSuccessful = false;
                         upResult.ErrorMessage = localizationService.GetResourceString("Errors.GenericMessage");

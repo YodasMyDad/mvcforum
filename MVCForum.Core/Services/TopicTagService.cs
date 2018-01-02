@@ -155,7 +155,7 @@
         /// <param name="topic"></param>
         public void Add(string tags, Topic topic)
         {
-            if(!string.IsNullOrEmpty(tags))
+            if(!string.IsNullOrWhiteSpace(tags))
             {
                 tags = StringUtils.SafePlainText(tags);
 

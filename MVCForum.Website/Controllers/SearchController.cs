@@ -33,9 +33,9 @@
         [HttpGet]
         public async Task<ActionResult> Index(int? p, string term)
         {
-            if (!string.IsNullOrEmpty(term))
+            if (!string.IsNullOrWhiteSpace(term))
             {
-                if (!string.IsNullOrEmpty(term))
+                if (!string.IsNullOrWhiteSpace(term))
                 {
                     term = term.Trim();
                 }

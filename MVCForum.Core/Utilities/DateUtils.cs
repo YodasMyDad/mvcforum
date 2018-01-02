@@ -34,7 +34,7 @@
         public static string FormatDateTime(string date, string format)
         {
             DateTime time;
-            if (DateTime.TryParse(date, out time) && !string.IsNullOrEmpty(format))
+            if (DateTime.TryParse(date, out time) && !string.IsNullOrWhiteSpace(format))
             {
                 format = Regex.Replace(format, @"(?<!\\)((\\\\)*)(S)", $"$1{GetDayNumberSuffix(time)}");
                 return time.ToString(format);

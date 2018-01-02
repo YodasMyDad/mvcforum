@@ -14,7 +14,7 @@
 
         protected override void WriteFile(HttpResponseBase response)
         {
-            if (!string.IsNullOrEmpty(Body))
+            if (!string.IsNullOrWhiteSpace(Body))
             {
                 var data = Encoding.UTF8.GetBytes(Body);
                 var result = Encoding.UTF8.GetPreamble().Concat(data).ToArray();

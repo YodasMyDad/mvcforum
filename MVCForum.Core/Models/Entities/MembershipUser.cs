@@ -10,7 +10,7 @@
     /// <summary>
     ///     A membership user
     /// </summary>
-    public class MembershipUser : Entity
+    public class MembershipUser : ExtendedDataEntity
     {
         public MembershipUser()
         {

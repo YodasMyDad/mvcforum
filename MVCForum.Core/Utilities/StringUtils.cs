@@ -24,7 +24,7 @@
         /// <returns></returns>
         public static bool IsNullEmpty(this string theInput)
         {
-            return string.IsNullOrEmpty(theInput);
+            return string.IsNullOrWhiteSpace(theInput);
         }
 
         /// <summary>
@@ -34,7 +34,7 @@
         /// <returns></returns>
         public static int ToInt32(this string theInput)
         {
-            return !string.IsNullOrEmpty(theInput) ? Convert.ToInt32(theInput) : 0;
+            return !string.IsNullOrWhiteSpace(theInput) ? Convert.ToInt32(theInput) : 0;
         }
 
         /// <summary>
@@ -348,7 +348,7 @@
         /// <returns></returns>
         public static int CountWordsInString(string text)
         {
-            if (string.IsNullOrEmpty(text))
+            if (string.IsNullOrWhiteSpace(text))
             {
                 return 0;
             }
@@ -368,7 +368,7 @@
         /// <returns></returns>
         public static string ReturnAmountWordsFromString(string text, int wordAmount)
         {
-            if (string.IsNullOrEmpty(text))
+            if (string.IsNullOrWhiteSpace(text))
             {
                 return text;
             }
@@ -404,7 +404,7 @@
         /// <returns></returns>
         public static string ReturnSearchString(string searchTerm)
         {
-            if (string.IsNullOrEmpty(searchTerm))
+            if (string.IsNullOrWhiteSpace(searchTerm))
             {
                 return searchTerm;
             }
@@ -569,7 +569,7 @@
                 return cfIp;
             }
             var ipList = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-            return !string.IsNullOrEmpty(ipList) ? ipList.Split(',')[0] : context.Request.ServerVariables["REMOTE_ADDR"];
+            return !string.IsNullOrWhiteSpace(ipList) ? ipList.Split(',')[0] : context.Request.ServerVariables["REMOTE_ADDR"];
         }
 
         /// <summary>
@@ -598,7 +598,7 @@
         /// <returns></returns>
         public static string ScrubHtml(string html, bool useXssSantiser = false)
         {
-            if (string.IsNullOrEmpty(html))
+            if (string.IsNullOrWhiteSpace(html))
             {
                 return html;
             }
@@ -754,7 +754,7 @@
 
         public static string RemoveUnwantedTags(string html, List<string> unwantedTagNames)
         {
-            if (string.IsNullOrEmpty(html))
+            if (string.IsNullOrWhiteSpace(html))
             {
                 return html;
             }
@@ -804,7 +804,7 @@
         /// <returns></returns>
         public static string UrlEncode(string input)
         {
-            if (!string.IsNullOrEmpty(input))
+            if (!string.IsNullOrWhiteSpace(input))
             {
                 return Microsoft.Security.Application.Encoder.UrlEncode(input);
             }
@@ -818,7 +818,7 @@
         /// <returns></returns>
         public static string UrlDecode(string input)
         {
-            if (!string.IsNullOrEmpty(input))
+            if (!string.IsNullOrWhiteSpace(input))
             {
                 return HttpUtility.UrlDecode(input);
             }
@@ -832,7 +832,7 @@
         /// <returns></returns>
         public static string HtmlDecode(string input)
         {
-            if (!string.IsNullOrEmpty(input))
+            if (!string.IsNullOrWhiteSpace(input))
             {
                 return HttpUtility.HtmlDecode(input);
             }
@@ -846,7 +846,7 @@
         /// <returns></returns>
         public static string StripHtmlFromString(string input)
         {
-            if (!string.IsNullOrEmpty(input))
+            if (!string.IsNullOrWhiteSpace(input))
             {
                 input = Regex.Replace(input, @"</?\w+((\s+\w+(\s*=\s*(?:"".*?""|'.*?'|[^'"">\s]+))?)+\s*|\s*)/?>", string.Empty, RegexOptions.Singleline);
                 input = Regex.Replace(input, @"\[[^]]+\]", "");
@@ -861,7 +861,7 @@
         /// <returns></returns>
         public static string SafePlainText(string input)
         {
-            if (!string.IsNullOrEmpty(input))
+            if (!string.IsNullOrWhiteSpace(input))
             {
                 input = StripHtmlFromString(input);
                 input = GetSafeHtml(input, true);

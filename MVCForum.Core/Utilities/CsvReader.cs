@@ -86,7 +86,7 @@
             // Extract all the data
             for (int lineIndex = 1 /* Skip first */; lineIndex < lines.Count; lineIndex++)
             {
-                if (string.IsNullOrEmpty(lines[lineIndex]))
+                if (string.IsNullOrWhiteSpace(lines[lineIndex]))
                 {
                     continue;
                 }

@@ -3,7 +3,7 @@
     using System;
     using Utilities;
 
-    public partial class Settings : Entity
+    public partial class Settings : ExtendedDataEntity
     {
         public Settings()
         {

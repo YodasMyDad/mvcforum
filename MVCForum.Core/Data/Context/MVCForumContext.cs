@@ -114,7 +114,7 @@
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 
             var typesToRegister = Assembly.GetExecutingAssembly().GetTypes()
-                .Where(type => !string.IsNullOrEmpty(type.Namespace))
+                .Where(type => !string.IsNullOrWhiteSpace(type.Namespace))
                 .Where(type => type.BaseType != null && type.BaseType.IsGenericType
                                && type.BaseType.GetGenericTypeDefinition() == typeof(EntityTypeConfiguration<>));
 

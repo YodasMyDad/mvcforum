@@ -19,7 +19,7 @@
         {
             var url = requestContext.HttpContext.Request.Path.TrimStart('/');
 
-            if (!string.IsNullOrEmpty(url))
+            if (!string.IsNullOrWhiteSpace(url))
             {
                 // See if there is a topic by slug
                 FillRequest("Topic", "Show", url, requestContext);
