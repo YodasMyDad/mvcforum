@@ -380,9 +380,6 @@
     <PackageReference Include="Unity.AspNet.WebApi">
       <Version>5.0.11</Version>
     </PackageReference>
-    <PackageReference Include="WebActivator">
-      <Version>1.5.3</Version>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
