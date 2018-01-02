@@ -53,8 +53,10 @@
     </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\BadgeActivity.cs" />
+    <Compile Include="Models\Activity\PostCreatedActivity.cs" />
     <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
     <Compile Include="Models\Activity\MemberJoinedActivity.cs" />
+    <Compile Include="Models\Activity\TopicCreatedActivity.cs" />
     <Compile Include="Models\Attributes\AwardsPointsAttribute.cs" />
     <Compile Include="Models\Attributes\DisplayNameAttribute.cs" />
     <Compile Include="Models\Attributes\ImageAttribute.cs" />

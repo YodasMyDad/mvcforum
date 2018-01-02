@@ -4,6 +4,8 @@
     {
         BadgeAwarded,
         MemberJoined,
-        ProfileUpdated
+        ProfileUpdated,
+        PostCreated,
+        TopicCreated
     }
 }

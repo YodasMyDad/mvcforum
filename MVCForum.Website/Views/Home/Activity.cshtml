@@ -1,4 +1,5 @@
 ﻿@using MvcForum.Core.Models.Activity
+@using MvcForum.Core.Utilities
 @model MvcForum.Web.ViewModels.Home.AllRecentActivitiesViewModel
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
@@ -79,7 +80,51 @@
                     <div class="activityinfo col-md-11">
                         <p class="activityinfotext"><a href="@Html.Raw(profileUpdatedActivity.User.NiceUrl)">@Html.Raw(profileUpdatedActivity.User.UserName)</a> @Html.LanguageString("Activity.ProfileUpdated")</p>
                         <p class="activitysubdate">
-                           @DatesUi.GetPrettyDate(profileUpdatedActivity.ActivityMapped.Timestamp.ToString())
+                            @DatesUi.GetPrettyDate(profileUpdatedActivity.ActivityMapped.Timestamp.ToString())
+                        </p>
+                    </div>
+                </div>
+            }
+            else if (activity is PostCreatedActivity)
+            {
+                var postCreatedActivity = activity as PostCreatedActivity;
+                <div class="row postcreatedactivity">
+                    <div class="activitybadge col-md-1">
+                        <img src="@postCreatedActivity.Post.User.MemberImage(SiteConstants.Instance.GravatarPostSize)" alt="@postCreatedActivity.Post.User.UserName" />
+                    </div>
+
+                    <div class="activityinfo col-md-11">
+                        <p class="activityinfotext">
+                            <a href="@Html.Raw(postCreatedActivity.Post.User.NiceUrl)">@Html.Raw(postCreatedActivity.Post.User.UserName)</a> replied to <a href="@Html.Raw(postCreatedActivity.Post.Topic.NiceUrl)">@Html.Raw(postCreatedActivity.Post.Topic.Name)</a> in <a href="@Html.Raw(postCreatedActivity.Post.Topic.Category.NiceUrl)">@Html.Raw(postCreatedActivity.Post.Topic.Category.Name)</a>
+                        </p>
+
+                        <div class="activitybadgedescription">
+                            @Html.Raw(StringUtils.SafePlainText(postCreatedActivity.Post.PostContent).TruncateLongString(200, true)) <a href="@Html.Raw(postCreatedActivity.Post.Topic.NiceUrl + "#comment-" + postCreatedActivity.Post.Id)">go to post</a>
+                        </div>
+                        <p class="activitysubdate">
+                            @DatesUi.GetPrettyDate(postCreatedActivity.ActivityMapped.Timestamp.ToString())
+                        </p>
+                    </div>
+                </div>
+            }
+            else if (activity is TopicCreatedActivity)
+            {
+                var topicCreatedActivity = activity as TopicCreatedActivity;
+                <div class="row topiccreatedactivity">
+                    <div class="activitybadge col-md-1">
+                        <img src="@topicCreatedActivity.Topic.User.MemberImage(SiteConstants.Instance.GravatarPostSize)" alt="@topicCreatedActivity.Topic.User.UserName" />
+                    </div>
+
+                    <div class="activityinfo col-md-11">
+                        <p class="activityinfotext">
+                            <a href="@Html.Raw(topicCreatedActivity.Topic.User.NiceUrl)">@Html.Raw(topicCreatedActivity.Topic.User.UserName)</a> started a topic <a href="@Html.Raw(topicCreatedActivity.Topic.NiceUrl)">@Html.Raw(topicCreatedActivity.Topic.Name)</a> in <a href="@Html.Raw(topicCreatedActivity.Topic.Category.NiceUrl)">@Html.Raw(topicCreatedActivity.Topic.Category.Name)</a>
+                        </p>
+
+                        <div class="activitybadgedescription">
+                            @Html.Raw(StringUtils.SafePlainText(topicCreatedActivity.Topic.Posts.First().PostContent).TruncateLongString(200, true)) <a href="@Html.Raw(topicCreatedActivity.Topic.NiceUrl)">go to topic</a>
+                        </div>
+                        <p class="activitysubdate">
+                            @DatesUi.GetPrettyDate(topicCreatedActivity.ActivityMapped.Timestamp.ToString())
                         </p>
                     </div>
                 </div>

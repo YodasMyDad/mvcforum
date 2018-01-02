@@ -19,19 +19,76 @@
         private readonly IBadgeService _badgeService;
         private readonly ILoggingService _loggingService;
         private readonly ICacheService _cacheService;
+        private readonly ITopicService _topicService;
+        private readonly IPostService _postService;
+        private readonly ICategoryService _categoryService;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public ActivityService(IBadgeService badgeService, ILoggingService loggingService, IMvcForumContext context, ICacheService cacheService)
+        public ActivityService(IBadgeService badgeService, ILoggingService loggingService, IMvcForumContext context, ICacheService cacheService, ITopicService topicService, IPostService postService, ICategoryService categoryService)
         {
             _badgeService = badgeService;
             _loggingService = loggingService;
             _cacheService = cacheService;
+            _topicService = topicService;
+            _postService = postService;
+            _categoryService = categoryService;
             _context = context;
         }
 
         #region Private Methods
+
+        /// <summary>
+        /// Make a post created activity object from the more generic database activity object
+        /// </summary>
+        /// <param name="activity"></param>
+        /// <returns></returns>
+        private PostCreatedActivity GeneratePostCreatedActivity(Activity activity)
+        {
+            var cacheKey = string.Concat(CacheKeys.Activity.StartsWith, "GeneratePostCreatedActivity-", activity.GetHashCode());
+            return _cacheService.CachePerRequest(cacheKey, () =>
+            {
+                var postGuid = Guid.Parse(activity.Data);
+
+                var post = _postService.Get(postGuid);
+
+                if (post == null)
+                {
+                    // Log the problem then skip
+                    _loggingService.Error($"A post created activity record with id '{activity.Id}' has a post id '{postGuid}' that is not found in the post table.");
+                    return null;
+                }
+
+                return new PostCreatedActivity(activity, post);
+            });
+        }
+
+        /// <summary>
+        /// Make a topic created activity object from the more generic database activity object
+        /// </summary>
+        /// <param name="activity"></param>
+        /// <returns></returns>
+        private TopicCreatedActivity GenerateTopicCreatedActivity(Activity activity)
+        {
+            var cacheKey = string.Concat(CacheKeys.Activity.StartsWith, "GenerateTopicCreatedActivity-", activity.GetHashCode());
+            return _cacheService.CachePerRequest(cacheKey, () =>
+            {
+                var topicGuid = Guid.Parse(activity.Data);
+
+                var topic = _topicService.Get(topicGuid);
+
+                if (topic == null)
+                {
+                    // Log the problem then skip
+                    _loggingService.Error($"A topic created activity record with id '{activity.Id}' has a topic id '{topicGuid}' that is not found in the topic table.");
+                    return null;
+                }
+
+                return new TopicCreatedActivity(activity, topic);
+            });
+        }
+
         /// <summary>
         /// Make a badge activity object from the more generic database activity object
         /// </summary>
@@ -197,23 +254,53 @@
                         listedResults.Add(profileUpdatedActivity);
                     }
                 }
+                else if (activity.Type == ActivityType.PostCreated.ToString())
+                {
+                    var postCreatedActivity = GeneratePostCreatedActivity(activity);
+
+                    if (postCreatedActivity != null)
+                    {
+                        listedResults.Add(postCreatedActivity);
+                    }
+                }
+                else if (activity.Type == ActivityType.TopicCreated.ToString())
+                {
+                    var topicCreatedActivity = GenerateTopicCreatedActivity(activity);
+
+                    if (topicCreatedActivity != null)
+                    {
+                        listedResults.Add(topicCreatedActivity);
+                    }
+                }
             }
             return listedResults;
 
         }
         #endregion
 
+        // TODO - This query could be a performance problem
         /// <summary>
         /// Gets a paged list of badges
         /// </summary>
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
+        /// <param name="usersRole"></param>
         /// <returns></returns>
-        public async Task<PaginatedList<ActivityBase>> GetPagedGroupedActivities(int pageIndex, int pageSize)
+        public async Task<PaginatedList<ActivityBase>> GetPagedGroupedActivities(int pageIndex, int pageSize, MembershipRole usersRole)
         {
             // Read the database for all activities and convert each to a more specialised activity type
 
-            var results = _context.Activity.OrderByDescending(x => x.Timestamp);
+            var allowedCategories = _categoryService.GetAllowedCategories(usersRole);
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+
+            var query =
+                from activity in _context.Activity
+                where (activity.Type != ActivityType.TopicCreated.ToString() || _context.Topic.Where(p => allowedCatIds.Contains(p.Category.Id)).Select(q => q.Id.ToString()).Contains(activity.Data)) &&
+                      (activity.Type != ActivityType.PostCreated.ToString() || _context.Post.Where(p => allowedCatIds.Contains(p.Topic.Category.Id)).Select(q => q.Id.ToString()).Contains(activity.Data))
+                select activity;
+
+            var results = query.OrderByDescending(x => x.Timestamp);
+
             var activities = await PaginatedList<Activity>.CreateAsync(results, pageIndex, pageSize);
 
             // Convert
@@ -235,8 +322,8 @@
 
         public async Task<PaginatedList<ActivityBase>> SearchPagedGroupedActivities(string search, int pageIndex, int pageSize)
         {
-                // Read the database for all activities and convert each to a more specialised activity type
-                search = StringUtils.SafePlainText(search);
+            // Read the database for all activities and convert each to a more specialised activity type
+            search = StringUtils.SafePlainText(search);
 
             var results = _context.Activity.Where(x => x.Type.ToUpper().Contains(search.ToUpper())).OrderByDescending(x => x.Timestamp);
             var activities = await PaginatedList<Activity>.CreateAsync(results, pageIndex, pageSize);
@@ -288,6 +375,26 @@
         {
             var profileUpdatedActivity = ProfileUpdatedActivity.GenerateMappedRecord(user, DateTime.UtcNow);
             Add(profileUpdatedActivity);
+        }
+
+        /// <summary>
+        /// Post has been created
+        /// </summary>
+        /// <param name="post"></param>
+        public void PostCreated(Post post)
+        {
+            var postCreatedActivity = PostCreatedActivity.GenerateMappedRecord(post, DateTime.UtcNow);
+            Add(postCreatedActivity);
+        }
+
+        /// <summary>
+        /// Topic has been created
+        /// </summary>
+        /// <param name="topic"></param>
+        public void TopicCreated(Topic topic)
+        {
+            var topicCreatedActivity = TopicCreatedActivity.GenerateMappedRecord(topic, DateTime.UtcNow);
+            Add(topicCreatedActivity);
         }
 
         /// <summary>
