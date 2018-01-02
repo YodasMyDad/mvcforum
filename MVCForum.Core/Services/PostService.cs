@@ -396,6 +396,7 @@
         public Post Add(Post post)
         {
             post = SanitizePost(post);
+            post.IpAddress = StringUtils.GetUsersIpAddress();
             return _context.Post.Add(post);
         }
 

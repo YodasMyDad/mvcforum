@@ -562,6 +562,12 @@
             {
                 return serverName;
             }
+            // Cloudflare IP address
+            var cfIp = context.Request.Headers["CF-Connecting-IP"];
+            if (cfIp != null)
+            {
+                return cfIp;
+            }
             var ipList = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
             return !string.IsNullOrEmpty(ipList) ? ipList.Split(',')[0] : context.Request.ServerVariables["REMOTE_ADDR"];
         }
