@@ -119,6 +119,11 @@
         // Default Storage Type
         public string StorageProviderType => GetType("StorageProviderType");
 
+        /// <summary>
+        ///     Show categories on home page instead of topics
+        /// </summary>
+        public bool CategoriesOnMain => Convert.ToBoolean(GetConfig("CategoriesOnMain"));
+
         #region Singleton
 
         private static SiteConstants _instance;
