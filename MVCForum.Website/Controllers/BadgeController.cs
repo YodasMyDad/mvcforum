@@ -137,8 +137,17 @@
             try
             {
                 var post = _postService.Get(markAsSolutionBadgeViewModel.Id);
-                var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.User) |
-                                           _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.Topic.User);
+
+                bool databaseUpdateNeeded;
+
+                if (post.User != post.Topic.User)
+                {
+                    databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.User) | _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.Topic.User);
+                }
+                else
+                {
+                    databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.User);
+                }
 
                 if (databaseUpdateNeeded)
                 {

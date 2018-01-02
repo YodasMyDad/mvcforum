@@ -14,7 +14,7 @@
     {
         public bool Rule(MembershipUser user)
         {
-            return user.Votes != null && user.Votes.Count >= 1;
+            return user.VotesGiven != null && user.VotesGiven.Count >= 1;
         }
     }
 }

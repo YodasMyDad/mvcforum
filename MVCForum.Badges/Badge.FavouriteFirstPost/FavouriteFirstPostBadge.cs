@@ -1,6 +1,5 @@
 ﻿namespace Badge.FavouriteFirstPost
 {
-    using MvcForum.Core.DomainModel;
     using MvcForum.Core.Interfaces.Badges;
     using MvcForum.Core.Models.Attributes;
     using MvcForum.Core.Models.Entities;
@@ -15,7 +14,7 @@
     {
         public bool Rule(MembershipUser user)
         {
-            return user.Favourites.Count > 1;
+            return user.Favourites.Count >= 1;
         }
     }
 }
