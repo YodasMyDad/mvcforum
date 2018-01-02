@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using Models.Entities;
+    using Models.Enums;
+    using Models.General;
+
     public partial interface IPostService
     {
         Post SanitizePost(Post post);
@@ -17,15 +19,20 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<Post> GetReplyToPosts(Guid postId);
         IEnumerable<Post> GetPostsByFavouriteCount(Guid postsByMemberId, int minAmountOfFavourites);
         IEnumerable<Post> GetPostsFavouritedByOtherMembers(Guid postsByMemberId);
-        PagedList<Post> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm, List<Category> allowedCategories);
-        PagedList<Post> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId, PostOrderBy order);
-        PagedList<Post> GetPagedPendingPosts(int pageIndex, int pageSize, List<Category> allowedCategories);
+
+        Task<PaginatedList<Post>> SearchPosts(int pageIndex, int pageSize, int amountToTake, string searchTerm,
+            List<Category> allowedCategories);
+
+        Task<PaginatedList<Post>> GetPagedPostsByTopic(int pageIndex, int pageSize, int amountToTake, Guid topicId,
+            PostOrderBy order);
+
+        Task<PaginatedList<Post>> GetPagedPendingPosts(int pageIndex, int pageSize, List<Category> allowedCategories);
         IList<Post> GetPendingPosts(List<Category> allowedCategories, MembershipRole usersRole);
         int GetPendingPostsCount(List<Category> allowedCategories);
         Post Add(Post post);
         Post Get(Guid postId);
         IList<Post> GetPostsByTopics(List<Guid> topicIds, List<Category> allowedCategories);
-        bool Delete(Post post, IUnitOfWork unitOfWork, bool ignoreLastPost);
+        bool Delete(Post post, bool ignoreLastPost);
         IList<Post> GetSolutionsByMember(Guid memberId, List<Category> allowedCategories);
         int PostCount(List<Category> allowedCategories);
         Post AddNewPost(string postContent, Topic topic, MembershipUser user, out PermissionSet permissions);

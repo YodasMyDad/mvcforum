@@ -1,8 +1,8 @@
-﻿using System;
-
-namespace MVCForum.Domain.Events
+﻿namespace MvcForum.Core.Events
 {
-    public abstract class MVCForumEventArgs : EventArgs
+    using System;
+
+    public abstract class MvcForumEventArgs : EventArgs
     {
         public bool Cancel { get; set; }
     }

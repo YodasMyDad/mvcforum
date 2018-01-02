@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Collections.Specialized;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
+    using System.Collections.Generic;
+    using System.Collections.Specialized;
+
     /// <summary>
-    /// This class deals with and supplies all config based data
+    ///     This class deals with and supplies all config based data
     /// </summary>
     public partial interface IConfigService
     {

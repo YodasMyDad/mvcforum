@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.Web.Mvc;
-
-namespace MVCForum.Website.Areas.Admin.ViewModels
+﻿namespace MvcForum.Web.Areas.Admin.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
+    using System.Globalization;
+    using System.Web.Mvc;
 
     public class LocaleResourceKeyViewModel
     {
@@ -17,7 +16,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public string Notes { get; set; }
 
         [DisplayName("Date Added")]
-        public DateTime DateAdded { get; set; } 
+        public DateTime DateAdded { get; set; }
     }
 
     public class LanguageDisplayViewModel
@@ -44,11 +43,10 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
     public class ResourceAddViewModel
     {
-        
     }
 
     /// <summary>
-    /// Creation of a new language
+    ///     Creation of a new language
     /// </summary>
     public class CreateLanguageViewModel
     {
@@ -62,14 +60,14 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
     }
 
     /// <summary>
-    /// Holds all the different language variant values for a given key
+    ///     Holds all the different language variant values for a given key
     /// </summary>
     public class AllResourceValuesViewModel
     {
         public LocaleResourceKeyViewModel ResourceKey { get; set; }
 
         [DisplayName("Value")]
-        public Dictionary<LanguageDisplayViewModel,  LocaleResourceViewModel> ResourceValues { get; set; }
+        public Dictionary<LanguageDisplayViewModel, LocaleResourceViewModel> ResourceValues { get; set; }
     }
 
     public class LocaleResourceViewModel
@@ -88,7 +86,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
     }
 
     /// <summary>
-    /// All resource values for a language
+    ///     All resource values for a language
     /// </summary>
     public class LanguageListResourcesViewModel
     {
@@ -136,7 +134,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
     public class LanguageImportExportViewModel
     {
         public IEnumerable<CultureInfo> ExportLanguages { get; set; }
-        public IEnumerable<CultureInfo> ImportLanguages { get; set; } 
+        public IEnumerable<CultureInfo> ImportLanguages { get; set; }
     }
 
     public class AjaxEditLanguageValueViewModel

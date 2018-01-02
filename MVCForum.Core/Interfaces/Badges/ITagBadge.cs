@@ -1,4 +1,4 @@
-﻿namespace MVCForum.Domain.Interfaces.Badges
+﻿namespace MvcForum.Core.Interfaces.Badges
 {
     public interface ITagBadge : IBadge
     {

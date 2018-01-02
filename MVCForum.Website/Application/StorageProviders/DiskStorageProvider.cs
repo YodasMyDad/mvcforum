@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Web;
-using System.Web.Hosting;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.Interfaces.Providers;
-
-namespace MVCForum.Website.Application.StorageProviders
+﻿namespace MvcForum.Web.Application.StorageProviders
 {
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Web;
+    using System.Web.Hosting;
+    using Core.Constants;
+    using Core.Interfaces.Providers;
+
     public class DiskStorageProvider : IStorageProvider
     {
         public string BuildFileUrl(params object[] subPath)
@@ -20,7 +20,9 @@ namespace MVCForum.Website.Application.StorageProviders
             var sf = new List<object>();
             sf.AddRange(subFolders);
 
-            var folder = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, string.Join("\\", sf)));
+            var folder =
+                HostingEnvironment.MapPath(
+                    string.Concat(SiteConstants.Instance.UploadFolderPath, string.Join("\\", sf)));
 
             if (createIfNotExist && !Directory.Exists(folder))
             {

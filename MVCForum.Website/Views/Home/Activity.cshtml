@@ -1,8 +1,5 @@
-﻿@using MVCForum.Domain.DomainModel.Activity;
-@using MVCForum.Website
-@using MVCForum.Website.Application
-@using MVCForum.Website.ViewModels
-@model AllRecentActivitiesViewModel
+﻿@using MvcForum.Core.Models.Activity
+@model MvcForum.Web.ViewModels.Home.AllRecentActivitiesViewModel
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = @Html.LanguageString("Activity.ActivityTitle");
@@ -50,7 +47,7 @@
                             }
                         </p>
                         <p class="activitysubdate">
-                            @DatesUI.GetPrettyDate(badgeActivity.ActivityMapped.Timestamp.ToString())
+                            @DatesUi.GetPrettyDate(badgeActivity.ActivityMapped.Timestamp.ToString())
                         </p>
                     </div>
                 </div>
@@ -66,7 +63,7 @@
                     <div class="activityinfo col-md-11">
                         <p class="activityinfotext"><a href="@Html.Raw(memberJoinedActivity.User.NiceUrl)">@Html.Raw(memberJoinedActivity.User.UserName)</a> @Html.LanguageString("Activity.UserJoined")</p>
                         <p class="activitysubdate">
-                            @DatesUI.GetPrettyDate(memberJoinedActivity.ActivityMapped.Timestamp.ToString())
+                            @DatesUi.GetPrettyDate(memberJoinedActivity.ActivityMapped.Timestamp.ToString())
                         </p>
                     </div>
                 </div>
@@ -82,7 +79,7 @@
                     <div class="activityinfo col-md-11">
                         <p class="activityinfotext"><a href="@Html.Raw(profileUpdatedActivity.User.NiceUrl)">@Html.Raw(profileUpdatedActivity.User.UserName)</a> @Html.LanguageString("Activity.ProfileUpdated")</p>
                         <p class="activitysubdate">
-                           @DatesUI.GetPrettyDate(profileUpdatedActivity.ActivityMapped.Timestamp.ToString())
+                           @DatesUi.GetPrettyDate(profileUpdatedActivity.ActivityMapped.Timestamp.ToString())
                         </p>
                     </div>
                 </div>

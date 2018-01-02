@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Website.Areas.Admin.ViewModels
+﻿namespace MvcForum.Web.Areas.Admin.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.ComponentModel.DataAnnotations;
+    using System.Web.Mvc;
+    using Core.Models.Entities;
+    using Core.Models.General;
+
     public class ChoosePermissionsViewModel
     {
         public List<MembershipRole> MembershipRoles { get; set; }
-        public List<Permission> Permissions { get; set; } 
+        public List<Permission> Permissions { get; set; }
     }
 
     public class EditPermissionsViewModel
@@ -53,7 +54,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [Required]
         public Guid Permission { get; set; }
-        
+
         [Required]
         public Guid MembershipRole { get; set; }
 

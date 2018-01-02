@@ -1,33 +1,35 @@
-﻿namespace MVCForum.Website.Controllers.OAuthControllers
+﻿namespace MvcForum.Web.Controllers.OAuthControllers
 {
     using System;
     using System.Web.Mvc;
     using System.Web.Security;
-    using Domain.Constants;
-    using Domain.DomainModel.Enums;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
-    using Utilities;
     using Areas.Admin.ViewModels;
-    using ViewModels;
+    using Core.Constants;
+    using Core.Interfaces;
+    using Core.Interfaces.Services;
+    using Core.Models.Enums;
+    using Core.Utilities;
     using Skybrud.Social.Microsoft;
     using Skybrud.Social.Microsoft.OAuth;
     using Skybrud.Social.Microsoft.Responses.Authentication;
     using Skybrud.Social.Microsoft.WindowsLive.Scopes;
+    using ViewModels.Member;
 
     public class MicrosoftOAuthController : BaseController
     {
-
         // Create new app - https://account.live.com/developers/applications/create
         // List of existing app - https://account.live.com/developers/applications/index
 
-        public MicrosoftOAuthController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
-            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, ICacheService cacheService) :
-            base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService, cacheService)
+        public MicrosoftOAuthController(ILoggingService loggingService, IMembershipService membershipService,
+            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
+            ICacheService cacheService, IMvcForumContext context) :
+            base(loggingService, membershipService, localizationService, roleService,
+                settingsService, cacheService, context)
         {
         }
 
-        public string ReturnUrl => string.Concat(SettingsService.GetSettings().ForumUrl.TrimEnd('/'), Url.Action("MicrosoftLogin"));
+        public string ReturnUrl => string.Concat(SettingsService.GetSettings().ForumUrl.TrimEnd('/'),
+            Url.Action("MicrosoftLogin"));
 
         public string AuthCode => Request.QueryString["code"];
 
@@ -47,7 +49,7 @@
                 State = AuthState,
                 Error = new
                 {
-                    HasError = !String.IsNullOrWhiteSpace(AuthError),
+                    HasError = !string.IsNullOrWhiteSpace(AuthError),
                     Text = AuthError,
                     ErrorDescription = AuthErrorDescription
                 }
@@ -63,7 +65,6 @@
             }
             else
             {
-
                 var client = new MicrosoftOAuthClient
                 {
                     ClientId = SiteConstants.Instance.MicrosoftAppId,
@@ -72,7 +73,7 @@
                 };
 
                 // Session expired?
-                if (input.State != null && Session["MVCForum_" + input.State] == null)
+                if (input.State != null && Session[$"MvcForum_{input.State}"] == null)
                 {
                     resultMessage.Message = "Session Expired";
                     resultMessage.MessageType = GenericMessages.danger;
@@ -81,7 +82,7 @@
                 // Check whether an error response was received from Microsoft
                 if (input.Error.HasError)
                 {
-                    Session.Remove("MVCForum_" + input.State);
+                    Session.Remove($"MvcForum_{input.State}");
                     resultMessage.Message = AuthErrorDescription;
                     resultMessage.MessageType = GenericMessages.danger;
                 }
@@ -89,12 +90,11 @@
                 // Redirect the user to the Microsoft login dialog
                 if (string.IsNullOrWhiteSpace(input.Code))
                 {
-
                     // Generate a new unique/random state
                     var state = Guid.NewGuid().ToString();
 
                     // Save the state in the current user session
-                    Session["MVCForum_" + state] = "/";
+                    Session[$"MvcForum_{state}"] = "/";
 
                     // Construct the authorization URL
                     var url = client.GetAuthorizationUrl(state, WindowsLiveScopes.Emails + WindowsLiveScopes.Birthday);
@@ -107,7 +107,7 @@
                 MicrosoftTokenResponse accessTokenResponse;
                 try
                 {
-                    Session.Remove("MVCForum_" + input.State);
+                    Session.Remove($"MvcForum_{input.State}");
                     accessTokenResponse = client.GetAccessTokenFromAuthCode(input.Code);
                 }
                 catch (Exception ex)
@@ -142,64 +142,62 @@
                         var getEmail = !string.IsNullOrWhiteSpace(user.Emails?.Preferred);
                         if (!getEmail)
                         {
-                            resultMessage.Message = LocalizationService.GetResourceString("Members.UnableToGetEmailAddress");
+                            resultMessage.Message =
+                                LocalizationService.GetResourceString("Members.UnableToGetEmailAddress");
                             resultMessage.MessageType = GenericMessages.danger;
                             ShowMessage(resultMessage);
                             return RedirectToAction("LogOn", "Members");
                         }
 
-                        using (UnitOfWorkManager.NewUnitOfWork())
+
+                        var userExists = MembershipService.GetUserByEmail(user.Emails.Preferred);
+                        if (userExists != null)
                         {
-                            var userExists = MembershipService.GetUserByEmail(user.Emails.Preferred);
-
-                            if (userExists != null)
+                            try
                             {
-                                try
-                                {
-                                    // Users already exists, so log them in
-                                    FormsAuthentication.SetAuthCookie(userExists.UserName, true);
-                                    resultMessage.Message = LocalizationService.GetResourceString("Members.NowLoggedIn");
-                                    resultMessage.MessageType = GenericMessages.success;
-                                    ShowMessage(resultMessage);
-                                    return RedirectToAction("Index", "Home");
-                                }
-                                catch (Exception ex)
-                                {
-                                    LoggingService.Error(ex);
-                                }
+                                // Users already exists, so log them in
+                                FormsAuthentication.SetAuthCookie(userExists.UserName, true);
+                                resultMessage.Message =
+                                    LocalizationService.GetResourceString("Members.NowLoggedIn");
+                                resultMessage.MessageType = GenericMessages.success;
+                                ShowMessage(resultMessage);
+                                return RedirectToAction("Index", "Home");
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                // Not registered already so register them
-                                var viewModel = new MemberAddViewModel
-                                {
-                                    Email = user.Emails.Preferred,
-                                    LoginType = LoginType.Microsoft,
-                                    Password = StringUtils.RandomString(8),
-                                    UserName = user.Name,
-                                    UserAccessToken = accessTokenResponse.Body.AccessToken,
-                                    SocialProfileImageUrl = $"https://apis.live.net/v5.0/{user.Id}/picture"
-                                };
-
-                                //var uri = string.Concat("https://apis.live.net/v5.0/me?access_token=",viewModel.UserAccessToken);
-                                //using (var dl = new WebClient())
-                                //{
-                                //    var profile = JObject.Parse(dl.DownloadString(uri));
-                                //    var pictureUrl = ;
-                                //    if (!string.IsNullOrEmpty(pictureUrl))
-                                //    {
-                                //        //viewModel.SocialProfileImageUrl = getImageUrl;
-                                //    }
-                                //}
-
-
-                                // Store the viewModel in TempData - Which we'll use in the register logic
-                                TempData[AppConstants.MemberRegisterViewModel] = viewModel;
-
-                                return RedirectToAction("SocialLoginValidator", "Members");
+                                LoggingService.Error(ex);
                             }
                         }
+                        else
+                        {
+                            // Not registered already so register them
+                            var viewModel = new MemberAddViewModel
+                            {
+                                Email = user.Emails.Preferred,
+                                LoginType = LoginType.Microsoft,
+                                Password = StringUtils.RandomString(8),
+                                UserName = user.Name,
+                                UserAccessToken = accessTokenResponse.Body.AccessToken,
+                                SocialProfileImageUrl = $"https://apis.live.net/v5.0/{user.Id}/picture"
+                            };
 
+                            //var uri = string.Concat("https://apis.live.net/v5.0/me?access_token=",viewModel.UserAccessToken);
+                            //using (var dl = new WebClient())
+                            //{
+                            //    var profile = JObject.Parse(dl.DownloadString(uri));
+                            //    var pictureUrl = ;
+                            //    if (!string.IsNullOrEmpty(pictureUrl))
+                            //    {
+                            //        //viewModel.SocialProfileImageUrl = getImageUrl;
+                            //    }
+                            //}
+
+
+                            // Store the viewModel in TempData - Which we'll use in the register logic
+                            TempData[AppConstants.MemberRegisterViewModel] = viewModel;
+
+                            return RedirectToAction("SocialLoginValidator", "Members");
+                        }
                     }
                     else
                     {
@@ -207,7 +205,6 @@
                         ShowMessage(resultMessage);
                         return RedirectToAction("LogOn", "Members");
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -215,9 +212,6 @@
                     resultMessage.MessageType = GenericMessages.danger;
                     LoggingService.Error(ex);
                 }
-
-
-
             }
 
 

@@ -1,10 +1,10 @@
-﻿using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Attributes;
-using MVCForum.Domain.Interfaces.Badges;
-
-
-namespace Badge.FavouriteFirstPost
+﻿namespace Badge.FavouriteFirstPost
 {
+    using MvcForum.Core.DomainModel;
+    using MvcForum.Core.Interfaces.Badges;
+    using MvcForum.Core.Models.Attributes;
+    using MvcForum.Core.Models.Entities;
+
     [Id("2D368A21-E62A-4158-885B-D08C002EC3BF")]
     [Name("FavouriteFirstPost")]
     [DisplayName("Badge.FavouriteFirstPost.Name")]

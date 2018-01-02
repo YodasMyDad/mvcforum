@@ -1,27 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
-    public enum LoginAttemptStatus
-    {
-        LoginSuccessful,
-        UserNotFound,
-        PasswordIncorrect,
-        PasswordAttemptsExceeded,
-        UserLockedOut,
-        UserNotApproved,
-        Banned
-    }
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using Models.Entities;
+    using Models.Enums;
+    using Models.General;
 
-    public partial interface IMembershipService
+    public interface IMembershipService
     {
+        LoginAttemptStatus LastLoginStatus { get; }
         MembershipUser Add(MembershipUser newUser);
         MembershipUser SanitizeUser(MembershipUser membershipUser);
         bool ValidateUser(string userName, string password, int maxInvalidPasswordAttempts);
-        LoginAttemptStatus LastLoginStatus { get; }
         string[] GetRolesForUser(string username);
         MembershipUser Get(Guid id);
         MembershipUser GetUser(string username, bool removeTracking = false);
@@ -42,25 +33,23 @@ namespace MVCForum.Domain.Interfaces.Services
         string ErrorCodeToString(MembershipCreateStatus createStatus);
         MembershipUser CreateEmptyUser();
         IList<MembershipUser> GetAll();
-        PagedList<MembershipUser> GetAll(int pageIndex, int pageSize);
-        PagedList<MembershipUser> SearchMembers(string search, int pageIndex, int pageSize);
+        Task<PaginatedList<MembershipUser>> GetAll(int pageIndex, int pageSize);
+        Task<PaginatedList<MembershipUser>> SearchMembers(string search, int pageIndex, int pageSize);
         IList<MembershipUser> SearchMembers(string username, int amount);
         IList<MembershipUser> GetActiveMembers();
         void ProfileUpdated(MembershipUser user);
-        bool Delete(MembershipUser user, IUnitOfWork unitOfWork);
+        bool Delete(MembershipUser user);
         IList<MembershipUser> GetLatestUsers(int amountToTake);
         IList<MembershipUser> GetLowestPointUsers(int amountToTake);
         int MemberCount();
         string ToCsv();
         CsvReport FromCsv(List<string> allLines);
         /// <summary>
-        /// Completed scrubs a users account clean
-        /// Clears everything - Posts, polls, votes, favourites, profile etc...
+        ///     Completed scrubs a users account clean
+        ///     Clears everything - Posts, polls, votes, favourites, profile etc...
         /// </summary>
         /// <param name="user"></param>
-        /// <param name="unitOfWork"></param>
-        void ScrubUsers(MembershipUser user, IUnitOfWork unitOfWork);
-
+        void ScrubUsers(MembershipUser user);
         bool UpdatePasswordResetToken(MembershipUser user);
         bool ClearPasswordResetToken(MembershipUser user);
         bool IsPasswordResetTokenValid(MembershipUser user, string token);

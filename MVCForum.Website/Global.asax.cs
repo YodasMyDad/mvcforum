@@ -1,34 +1,35 @@
-﻿using System;
-using System.Globalization;
-using System.Threading;
-using System.Web;
-using System.Web.Http;
-using System.Web.Mvc;
-using System.Web.Optimization;
-using System.Web.Routing;
-using MVCForum.Domain.Events;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.IOC;
-using MVCForum.Utilities;
-using MVCForum.Website.Application;
-using MVCForum.Website.Application.ScheduledJobs;
-using MVCForum.Website.Application.ViewEngine;
-
-namespace MVCForum.Website
+﻿namespace MvcForum.Web
 {
-    using Domain.Constants;
-    using NPoco;
+    using System;
+    using System.Data.Entity;
+    using System.Globalization;
+    using System.Threading;
+    using System.Web;
+    using System.Web.Http;
+    using System.Web.Mvc;
+    using System.Web.Routing;
+    using Application;
+    using Application.ScheduledJobs;
+    using Application.ViewEngine;
+    using Core.Data.Context;
+    using Core.Events;
+    using Core.Interfaces;
+    using Core.Interfaces.Services;
+    using Core.Ioc;
+    using Core.Services.Migrations;
+    using Core.Utilities;
 
     public class MvcApplication : HttpApplication
     {
+        public IMvcForumContext MvcForumContext => DependencyResolver.Current.GetService<IMvcForumContext>();
+        public IBadgeService BadgeService => DependencyResolver.Current.GetService<IBadgeService>();
+        public ISettingsService SettingsService => DependencyResolver.Current.GetService<ISettingsService>();
+        public ILoggingService LoggingService => DependencyResolver.Current.GetService<ILoggingService>();
 
-        public IUnitOfWorkManager UnitOfWorkManager => ServiceFactory.Get<IUnitOfWorkManager>();
-        public IBadgeService BadgeService => ServiceFactory.Get<IBadgeService>();
-        public ISettingsService SettingsService => ServiceFactory.Get<ISettingsService>();
-        public ILoggingService LoggingService => ServiceFactory.Get<ILoggingService>();
-        public ILocalizationService LocalizationService => ServiceFactory.Get<ILocalizationService>();
-        public IReflectionService ReflectionService => ServiceFactory.Get<IReflectionService>();
+        public ILocalizationService LocalizationService =>
+            DependencyResolver.Current.GetService<ILocalizationService>();
+
+        public IReflectionService ReflectionService => DependencyResolver.Current.GetService<IReflectionService>();
 
 
         protected void Application_Start()
@@ -42,10 +43,12 @@ namespace MVCForum.Website
 
             // Routes
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             // Store the value for use in the app
             Application["Version"] = AppHelpers.GetCurrentVersionNo();
+
+            // Make DB update to latest migration
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<MvcForumContext, Configuration>());
 
             // If the same carry on as normal
             LoggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
@@ -55,18 +58,17 @@ namespace MVCForum.Website
             var loadedAssemblies = ReflectionService.GetAssemblies();
 
             // Do the badge processing
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+
+            try
             {
-                try
-                {
-                    BadgeService.SyncBadges(loadedAssemblies);
-                    unitOfWork.Commit();
-                }
-                catch (Exception ex)
-                {
-                    LoggingService.Error($"Error processing badge classes: {ex.Message}");
-                }
+                BadgeService.SyncBadges(loadedAssemblies);
+                MvcForumContext.SaveChanges();
             }
+            catch (Exception ex)
+            {
+                LoggingService.Error($"Error processing badge classes: {ex.Message}");
+            }
+
 
             // Set the view engine
             ViewEngines.Engines.Clear();
@@ -93,8 +95,6 @@ namespace MVCForum.Website
 
         protected void Application_EndRequest(object sender, EventArgs e)
         {
-            var entityContext = HttpContext.Current.Items[SiteConstants.Instance.MvcForumContext] as IDatabase;
-            entityContext?.Dispose();
         }
 
         protected void Application_Error(object sender, EventArgs e)
@@ -106,6 +106,5 @@ namespace MVCForum.Website
                 LoggingService.Error(lastError);
             }
         }
-
     }
 }

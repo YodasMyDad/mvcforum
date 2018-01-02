@@ -1,4 +1,4 @@
-﻿@model MVCForum.Website.ViewModels.PostEditHistoryViewModel
+﻿@model MvcForum.Web.ViewModels.Post.PostEditHistoryViewModel
 @if (Model.PostEdits.Any())
 {
     <div class="postedithistorypanels">
@@ -10,7 +10,7 @@
                     <div class="panel-heading" role="tab" id="postedit-@postEdit.Id">
                         <h4 class="panel-title">
                             <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-@postEdit.Id" aria-expanded="true" aria-controls="collapse-@postEdit.Id">
-                                @DatesUI.GetPrettyDate(postEdit.DateEdited.ToString()) - @Html.Lang("PostEdit.EditedBy") @postEdit.EditedBy.UserName
+                                @DatesUi.GetPrettyDate(postEdit.DateEdited.ToString()) - @Html.Lang("PostEdit.EditedBy") @postEdit.EditedBy.UserName
                             </a>
                         </h4>
                     </div>

@@ -1,8 +1,9 @@
-﻿@using MVCForum.Domain.DomainModel
-@using MVCForum.Utilities
-@using MVCForum.Website.Application
-@using MVCForum.Website.ViewModels
-@model TopicViewModel
+﻿@using MvcForum.Core.Models.Enums
+@using MvcForum.Core.Utilities
+@using MvcForum.Web.Application.ExtensionMethods
+@using MvcForum.Web.ViewModels
+@using MvcForum.Web.ViewModels.Post
+@model MvcForum.Web.ViewModels.Topic.TopicViewModel
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = Html.Raw(AppHelpers.CreatePageTitle(Model.Topic, Html.LanguageString("Topic.TitleFallBack")));
@@ -98,7 +99,7 @@
                 <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Model.Views.KiloFormat() @Html.Lang("Topic.Views")
             </li>
 
-            <li><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Html.Lang("Topic.LastPost") @DatesUI.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())</li>
+            <li><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Html.Lang("Topic.LastPost") @DatesUi.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())</li>
 
             @if (Model.Topic.Solved)
             {

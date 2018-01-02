@@ -1,13 +1,13 @@
-﻿using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Website.Areas.Admin.ViewModels
+﻿namespace MvcForum.Web.Areas.Admin.ViewModels
 {
+    using Core.Models.Entities;
+    using Core.Models.General;
+
     public class ListBadgesViewModel
     {
-        public PagedList<Domain.DomainModel.Badge> Badges { get; set; }
+        public PaginatedList<Badge> Badges { get; set; }
         public int? PageIndex { get; set; }
         public int? TotalCount { get; set; }
         public string Search { get; set; }
     }
-
 }

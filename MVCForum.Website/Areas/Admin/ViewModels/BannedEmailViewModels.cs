@@ -1,12 +1,13 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Website.Areas.Admin.ViewModels
+﻿namespace MvcForum.Web.Areas.Admin.ViewModels
 {
+    using System;
+    using System.ComponentModel.DataAnnotations;
+    using Core.Models.Entities;
+    using Core.Models.General;
+
     public class BannedEmailListViewModel
     {
-        public PagedList<BannedEmail> Emails { get; set; }
+        public PaginatedList<BannedEmail> Emails { get; set; }
 
         public int? PageIndex { get; set; }
         public int? TotalCount { get; set; }

@@ -1,43 +1,42 @@
-﻿using System;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using Quartz;
-
-namespace MVCForum.Website.Application.ScheduledJobs
+﻿namespace MvcForum.Web.Application.ScheduledJobs
 {
+    using System;
+    using Core.Interfaces;
+    using Core.Interfaces.Services;
+    using Quartz;
+
     [DisallowConcurrentExecution]
     public class EmailJob : IJob
     {
-        private readonly ILoggingService _loggingService;
         private readonly IEmailService _emailService;
-        private readonly IUnitOfWorkManager _unitOfWorkManager;
+        private readonly ILoggingService _loggingService;
+        private readonly IMvcForumContext _context;
 
-        public EmailJob(ILoggingService loggingService, IEmailService emailService, IUnitOfWorkManager unitOfWorkManager)
+        public EmailJob(ILoggingService loggingService, IEmailService emailService,
+            IMvcForumContext context)
         {
             _loggingService = loggingService;
             _emailService = emailService;
-            _unitOfWorkManager = unitOfWorkManager;
+            _context = context;
         }
 
         public void Execute(IJobExecutionContext context)
         {
-            using (var unitOfWork = _unitOfWorkManager.NewUnitOfWork())
-            {
+
                 try
                 {
                     // Process emails to send - Only send the amount per job from the siteconstants
                     _emailService.ProcessMail(5);
 
                     // Commit - Which deletes the jobs that have been sent
-                    unitOfWork.Commit();
+                    _context.SaveChanges();
                 }
                 catch (Exception ex)
                 {
-                    unitOfWork.Rollback();
+                    _context.RollBack();
                     _loggingService.Error(ex);
-                }               
-            }
-            
+                }
+         
         }
     }
 }

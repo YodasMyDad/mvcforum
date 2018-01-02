@@ -1,9 +1,9 @@
-﻿using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Attributes;
-using MVCForum.Domain.Interfaces.Badges;
-
-namespace Badge.Photogenic
+﻿namespace Badge.Photogenic
 {
+    using MvcForum.Core.Interfaces.Badges;
+    using MvcForum.Core.Models.Attributes;
+    using MvcForum.Core.Models.Entities;
+
     [Id("1931b389-b2b1-481c-80fc-03f1900e113d")]
     [Name("Photogenic")]
     [DisplayName("Badge.Photogenic.Name")]
@@ -13,8 +13,8 @@ namespace Badge.Photogenic
     public class Photogenic : IProfileBadge
     {
         public bool Rule(MembershipUser user)
-        {           
-            return (!string.IsNullOrEmpty(user.Avatar));
+        {
+            return !string.IsNullOrEmpty(user.Avatar);
         }
     }
 }

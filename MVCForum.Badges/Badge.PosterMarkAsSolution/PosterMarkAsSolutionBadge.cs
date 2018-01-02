@@ -1,11 +1,11 @@
-﻿using System.Web.Mvc;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Attributes;
-using MVCForum.Domain.Interfaces.Badges;
-using MVCForum.Domain.Interfaces.Services;
-
-namespace Badge.PosterMarkAsSolution
+﻿namespace Badge.PosterMarkAsSolution
 {
+    using System.Web.Mvc;
+    using MvcForum.Core.Interfaces.Badges;
+    using MvcForum.Core.Interfaces.Services;
+    using MvcForum.Core.Models.Attributes;
+    using MvcForum.Core.Models.Entities;
+
     [Id("8250f9f0-84d2-4dff-b651-c3df9e12bf2a")]
     [Name("PosterMarkAsSolution")]
     [DisplayName("Badge.PosterMarkAsSolution.Name")]
@@ -14,8 +14,8 @@ namespace Badge.PosterMarkAsSolution
     [AwardsPoints(2)]
     public class PosterMarkAsSolutionBadge : IMarkAsSolutionBadge
     {
-        private readonly IPostService _postService;
         private readonly ICategoryService _categoryService;
+        private readonly IPostService _postService;
 
         public PosterMarkAsSolutionBadge()
         {
@@ -32,7 +32,7 @@ namespace Badge.PosterMarkAsSolution
             var cats = _categoryService.GetAll();
             var usersSolutions = _postService.GetSolutionsByMember(user.Id, cats);
 
-            return (usersSolutions.Count >= 1);
+            return usersSolutions.Count >= 1;
         }
     }
 }

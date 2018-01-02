@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Reflection;
+
     public partial interface IReflectionService
     {
         List<Assembly> GetAssemblies();
-        bool InterfaceFilter(Type typeObj, Object criteriaObj);
+        bool InterfaceFilter(Type typeObj, object criteriaObj);
     }
 }

@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace MVCForum.Website.Akismet.NET
+﻿namespace MvcForum.Web.Application.Akismet
 {
+    using System;
+
     /// <summary>
     /// It describes the public interface for the <see cref="Validator"/> class.
     /// </summary>

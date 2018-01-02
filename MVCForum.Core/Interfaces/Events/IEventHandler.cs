@@ -1,8 +1,8 @@
-﻿using MVCForum.Domain.Events;
-
-namespace MVCForum.Domain.Interfaces.Events
+﻿namespace MvcForum.Core.Interfaces.Events
 {
-    public interface IEventHandler
+    using Core.Events;
+
+    public partial interface IEventHandler
     {
         void RegisterHandlers(EventManager theEventManager);
     }

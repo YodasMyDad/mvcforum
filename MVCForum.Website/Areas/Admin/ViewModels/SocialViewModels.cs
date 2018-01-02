@@ -1,11 +1,12 @@
-﻿
-using System.ComponentModel;
-namespace MVCForum.Website.Areas.Admin.ViewModels
+﻿namespace MvcForum.Web.Areas.Admin.ViewModels
 {
+    using System.ComponentModel;
+
     public class SocialSettingsViewModel
     {
         [DisplayName("Enable Social Logins")]
         public bool EnableSocialLogins { get; set; }
+
         public string FacebookAppId { get; set; }
         public string FacebookAppSecret { get; set; }
         public string GooglePlusAppId { get; set; }

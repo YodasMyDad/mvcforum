@@ -1,8 +1,9 @@
-﻿using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Domain.Events
+﻿namespace MvcForum.Core.Events
 {
-    public class PrivateMessageEventArgs : MVCForumEventArgs
+    using DomainModel;
+    using Models.Entities;
+
+    public class PrivateMessageEventArgs : MvcForumEventArgs
     {
         public PrivateMessage PrivateMessage { get; set; }
     }

@@ -1,8 +1,9 @@
-﻿using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Domain.Events
+﻿namespace MvcForum.Core.Events
 {
-    public class TopicMadeEventArgs : MVCForumEventArgs
+    using DomainModel;
+    using Models.Entities;
+
+    public class TopicMadeEventArgs : MvcForumEventArgs
     {
         public Topic Topic { get; set; }
     }

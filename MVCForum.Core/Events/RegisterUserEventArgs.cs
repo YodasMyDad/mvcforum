@@ -1,8 +1,9 @@
-﻿using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Domain.Events
+﻿namespace MvcForum.Core.Events
 {
-    public class RegisterUserEventArgs : MVCForumEventArgs
+    using Models.Entities;
+    using Models.Enums;
+
+    public class RegisterUserEventArgs : MvcForumEventArgs
     {
         public MembershipUser User { get; set; }
         public MembershipCreateStatus CreateStatus { get; set; }

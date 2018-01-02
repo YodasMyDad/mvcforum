@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Attributes;
-using MVCForum.Domain.Interfaces.Badges;
-
-namespace Badge.PostMentionsUmbraco
+﻿namespace Badge.PostMentionsUmbraco
 {
+    using System.Linq;
+    using MvcForum.Core.Interfaces.Badges;
+    using MvcForum.Core.Models.Attributes;
+    using MvcForum.Core.Models.Entities;
+
     [Id("9a247d50-35b5-4cd2-adaa-a0cf013325ac")]
     [Name("PostMentionsUmbraco")]
     [DisplayName("Badge.PostMentionsUmbraco.Name")]

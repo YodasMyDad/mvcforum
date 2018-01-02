@@ -1,28 +1,30 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using Quartz;
-
-namespace MVCForum.Website.Application.ScheduledJobs
+﻿namespace MvcForum.Web.Application.ScheduledJobs
 {
+    using System;
+    using System.Linq;
+    using System.Text;
+    using Core.Interfaces;
+    using Core.Interfaces.Services;
+    using Core.Models.Entities;
+    using Quartz;
+
     [DisallowConcurrentExecution]
     public class MarkAsSolutionReminderJob : IJob
     {
-        private readonly ILoggingService _loggingService;
-        private readonly ILocalizationService _localizationService;
         private readonly IEmailService _emailService;
-        private readonly ITopicService _topicService;
-        private readonly IUnitOfWorkManager _unitOfWorkManager;
+        private readonly ILocalizationService _localizationService;
+        private readonly ILoggingService _loggingService;
         private readonly ISettingsService _settingsService;
+        private readonly ITopicService _topicService;
+        private readonly IMvcForumContext _context;
 
-        public MarkAsSolutionReminderJob(ILoggingService loggingService, IEmailService emailService, IUnitOfWorkManager unitOfWorkManager, ITopicService topicService, ISettingsService settingsService, ILocalizationService localizationService)
+        public MarkAsSolutionReminderJob(ILoggingService loggingService, IEmailService emailService,
+            IMvcForumContext context, ITopicService topicService, ISettingsService settingsService,
+            ILocalizationService localizationService)
         {
             _loggingService = loggingService;
             _emailService = emailService;
-            _unitOfWorkManager = unitOfWorkManager;
+            _context = context;
             _topicService = topicService;
             _settingsService = settingsService;
             _localizationService = localizationService;
@@ -30,16 +32,13 @@ namespace MVCForum.Website.Application.ScheduledJobs
 
         public void Execute(IJobExecutionContext context)
         {
-            using (var unitOfWork = _unitOfWorkManager.NewUnitOfWork())
-            {
+
                 try
                 {
                     var settings = _settingsService.GetSettings(false);
                     var timeFrame = settings.MarkAsSolutionReminderTimeFrame ?? 0;
                     if (timeFrame > 0 && settings.EnableMarkAsSolution)
                     {
-
-
                         var remindersToSend = _topicService.GetMarkAsSolutionReminderList(timeFrame);
                         if (remindersToSend.Any())
                         {
@@ -51,13 +50,15 @@ namespace MVCForum.Website.Application.ScheduledJobs
                             foreach (var markAsSolutionReminder in remindersToSend)
                             {
                                 // Topic Link
-                                var topicLink = $"<a href=\"{settings.ForumUrl.TrimEnd('/')}{markAsSolutionReminder.Topic.NiceUrl}\">{markAsSolutionReminder.Topic.Name}</a>";
+                                var topicLink =
+                                    $"<a href=\"{settings.ForumUrl.TrimEnd('/')}{markAsSolutionReminder.Topic.NiceUrl}\">{markAsSolutionReminder.Topic.Name}</a>";
 
                                 // Create the email
                                 var sb = new StringBuilder();
-                                sb.AppendFormat("<p>{0}</p>", string.Format(_localizationService.GetResourceString("Tasks.MarkAsSolutionReminderJob.EmailBody"),
-                                                                topicLink,
-                                                                settings.ForumName, markAsSolutionReminder.PostCount));
+                                sb.AppendFormat("<p>{0}</p>", string.Format(
+                                    _localizationService.GetResourceString("Tasks.MarkAsSolutionReminderJob.EmailBody"),
+                                    topicLink,
+                                    settings.ForumName, markAsSolutionReminder.PostCount));
 
                                 // create the emails and only send them to people who have not had notifications disabled
 
@@ -69,7 +70,8 @@ namespace MVCForum.Website.Application.ScheduledJobs
                                     EmailTo = user.Email,
                                     NameTo = user.UserName,
                                     Subject = string.Format(
-                                        _localizationService.GetResourceString("Tasks.MarkAsSolutionReminderJob.Subject"),
+                                        _localizationService.GetResourceString(
+                                            "Tasks.MarkAsSolutionReminderJob.Subject"),
                                         settings.ForumName)
                                 };
 
@@ -82,18 +84,17 @@ namespace MVCForum.Website.Application.ScheduledJobs
                                 markAsSolutionReminder.Topic.SolvedReminderSent = true;
                             }
 
-                            unitOfWork.Commit();
+                            _context.SaveChanges();
                             _loggingService.Error($"{amount} Mark as solution reminder emails sent");
-
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    unitOfWork.Rollback();
+                    _context.RollBack();
                     _loggingService.Error(ex);
                 }
-            }
+      
         }
     }
 }

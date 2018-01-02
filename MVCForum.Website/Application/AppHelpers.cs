@@ -1,52 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Web;
-using System.Web.Hosting;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Utilities;
-using MVCForum.Website.Application.StorageProviders;
-
-namespace MVCForum.Website.Application
+﻿namespace MvcForum.Web.Application
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.Drawing.Imaging;
+    using System.IO;
+    using System.Linq;
+    using System.Net;
+    using System.Reflection;
+    using System.Web;
+    using System.Web.Hosting;
+    using System.Web.Mvc;
+    using Core.Constants;
+    using Core.Interfaces.Services;
+    using Core.Models.Entities;
+    using Core.Models.General;
+    using Core.Utilities;
+    using StorageProviders;
+
     public static class AppHelpers
     {
-
         #region Application
 
         /// <summary>
-        /// Returns true if the requested resource is one of the typical resources that needn't be processed by the cms engine.
+        ///     Returns true if the requested resource is one of the typical resources that needn't be processed by the cms engine.
         /// </summary>
         /// <param name="request">HTTP Request</param>
         /// <returns>True if the request targets a static resource file.</returns>
         /// <remarks>
-        /// These are the file extensions considered to be static resources:
-        /// .css
-        ///	.gif
-        /// .png 
-        /// .jpg
-        /// .jpeg
-        /// .js
-        /// .axd
-        /// .ashx
+        ///     These are the file extensions considered to be static resources:
+        ///     .css
+        ///     .gif
+        ///     .png
+        ///     .jpg
+        ///     .jpeg
+        ///     .js
+        ///     .axd
+        ///     .ashx
         /// </remarks>
         public static bool IsStaticResource(HttpRequest request)
         {
             if (request == null)
+            {
                 throw new ArgumentNullException("request");
+            }
 
-            string path = request.Path;
-            string extension = VirtualPathUtility.GetExtension(path);
+            var path = request.Path;
+            var extension = VirtualPathUtility.GetExtension(path);
 
-            if (extension == null) return false;
+            if (extension == null)
+            {
+                return false;
+            }
 
             switch (extension.ToLower())
             {
@@ -75,7 +80,7 @@ namespace MVCForum.Website.Application
         #region Themes
 
         /// <summary>
-        /// Gets the theme folders currently installed
+        ///     Gets the theme folders currently installed
         /// </summary>
         /// <returns></returns>
         public static List<string> GetThemeFolders()
@@ -85,8 +90,8 @@ namespace MVCForum.Website.Application
             if (Directory.Exists(themeRootFolder))
             {
                 folders.AddRange(Directory.GetDirectories(themeRootFolder)
-                                .Select(Path.GetFileName)
-                                .Where(x => !x.ToLower().Contains("base")));
+                    .Select(Path.GetFileName)
+                    .Where(x => !x.ToLower().Contains("base")));
             }
             else
             {
@@ -94,7 +99,6 @@ namespace MVCForum.Website.Application
             }
             return folders;
         }
-
 
         #endregion
 
@@ -110,40 +114,41 @@ namespace MVCForum.Website.Application
             var currentAction = helper.ViewContext.RouteData.GetRequiredString("Action");
             var url = urlHelper.Action(currentAction, new { });
 
-            var pageCount = (int)Math.Ceiling(totalItemCount / (double)pageSize);
+            var pageCount = (int) Math.Ceiling(totalItemCount / (double) pageSize);
 
-            var nextTag = String.Empty;
-            var previousTag = String.Empty;
+            var nextTag = string.Empty;
+            var previousTag = string.Empty;
 
             var req = HttpContext.Current.Request["p"];
             var page = req != null ? Convert.ToInt32(req) : 1;
 
             // Sort the canonical tag out
-            var canonicalTag = String.Format(Canonical, page <= 1 ? url : String.Format(AppConstants.PagingUrlFormat, url, page));
+            var canonicalTag = string.Format(Canonical,
+                page <= 1 ? url : string.Format(AppConstants.PagingUrlFormat, url, page));
 
             // On the first page       
-            if (pageCount > 1 & page <= 1)
+            if ((pageCount > 1) & (page <= 1))
             {
-                nextTag = String.Format(CanonicalNext, String.Format(AppConstants.PagingUrlFormat, url, (page + 1)));
+                nextTag = string.Format(CanonicalNext, string.Format(AppConstants.PagingUrlFormat, url, page + 1));
             }
 
             // On a page greater than the first page, but not the last
-            if (pageCount > 1 & page > 1 & page < pageCount)
+            if ((pageCount > 1) & (page > 1) & (page < pageCount))
             {
-                nextTag = String.Format(CanonicalNext, String.Format(AppConstants.PagingUrlFormat, url, (page + 1)));
-                previousTag = String.Format(CanonicalPrev, String.Format(AppConstants.PagingUrlFormat, url, (page - 1)));
+                nextTag = string.Format(CanonicalNext, string.Format(AppConstants.PagingUrlFormat, url, page + 1));
+                previousTag = string.Format(CanonicalPrev, string.Format(AppConstants.PagingUrlFormat, url, page - 1));
             }
 
             // On the last page
-            if (pageCount > 1 & pageCount == page)
+            if ((pageCount > 1) & (pageCount == page))
             {
-                previousTag = String.Format(CanonicalPrev, String.Format(AppConstants.PagingUrlFormat, url, (page - 1)));
+                previousTag = string.Format(CanonicalPrev, string.Format(AppConstants.PagingUrlFormat, url, page - 1));
             }
 
             // return the canoncal tags
-            return String.Concat(canonicalTag, Environment.NewLine,
-                                    nextTag, Environment.NewLine,
-                                    previousTag);
+            return string.Concat(canonicalTag, Environment.NewLine,
+                nextTag, Environment.NewLine,
+                previousTag);
         }
 
         public static string CreatePageTitle(Entity entity, string fallBack)
@@ -177,7 +182,7 @@ namespace MVCForum.Website.Application
         {
             try
             {
-                var request = (HttpWebRequest)WebRequest.Create(url);
+                var request = (HttpWebRequest) WebRequest.Create(url);
                 request.Timeout = 3000;
                 request.AllowAutoRedirect = false; // find out if this site is up and don't follow a redirector
                 request.Method = "HEAD";
@@ -233,7 +238,7 @@ namespace MVCForum.Website.Application
         #region Installer
 
         /// <summary>
-        /// Get the previous version number if there is one from the web.config
+        ///     Get the previous version number if there is one from the web.config
         /// </summary>
         /// <returns></returns>
         public static string PreviousVersionNo()
@@ -242,7 +247,7 @@ namespace MVCForum.Website.Application
         }
 
         /// <summary>
-        /// Gets the main version number (Used by installer)
+        ///     Gets the main version number (Used by installer)
         /// </summary>
         /// <returns></returns>
         public static string GetCurrentVersionNo()
@@ -256,7 +261,7 @@ namespace MVCForum.Website.Application
         }
 
         /// <summary>
-        /// Get the full version number shown in the admin
+        ///     Get the full version number shown in the admin
         /// </summary>
         /// <returns></returns>
         public static string GetCurrentVersionNoFull()
@@ -270,8 +275,8 @@ namespace MVCForum.Website.Application
         }
 
         /// <summary>
-        /// This checks whether the installer should be called, it stops people trying to call the installer
-        /// when the application is already installed
+        ///     This checks whether the installer should be called, it stops people trying to call the installer
+        ///     when the application is already installed
         /// </summary>
         /// <returns></returns>
         public static bool ShowInstall()
@@ -284,7 +289,7 @@ namespace MVCForum.Website.Application
             var previousVersionNo = PreviousVersionNo();
 
             // If the versions are different kick the installer into play
-            return (currentVersionNo != previousVersionNo);
+            return currentVersionNo != previousVersionNo;
         }
 
         #endregion
@@ -295,20 +300,27 @@ namespace MVCForum.Website.Application
         {
             var imageFileTypes = new List<string>
             {
-                ".jpg", ".jpeg",".gif",".bmp",".png"
+                ".jpg",
+                ".jpeg",
+                ".gif",
+                ".bmp",
+                ".png"
             };
             return imageFileTypes.Any(file.Contains);
         }
 
         public static Image GetImageFromExternalUrl(string url)
         {
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+            var httpWebRequest = (HttpWebRequest) WebRequest.Create(url);
 
-            using (var httpWebReponse = (HttpWebResponse)httpWebRequest.GetResponse())
+            using (var httpWebReponse = (HttpWebResponse) httpWebRequest.GetResponse())
             {
                 using (var stream = httpWebReponse.GetResponseStream())
                 {
-                    if (stream != null) return Image.FromStream(stream);
+                    if (stream != null)
+                    {
+                        return Image.FromStream(stream);
+                    }
                 }
             }
             return null;
@@ -320,7 +332,8 @@ namespace MVCForum.Website.Application
             {
                 // Has an avatar image
                 var storageProvider = StorageProvider.Current;
-                return storageProvider.BuildFileUrl(userId, "/", avatar, string.Format("?width={0}&crop=0,0,{0},{0}", size));
+                return storageProvider.BuildFileUrl(userId, "/", avatar,
+                    string.Format("?width={0}&crop=0,0,{0},{0}", size));
             }
 
             return StringUtils.GetGravatarImage(email, size);
@@ -338,9 +351,10 @@ namespace MVCForum.Website.Application
             return null;
         }
 
-        public static UploadFileResult UploadFile(HttpPostedFileBase file, string uploadFolderPath, ILocalizationService localizationService, bool onlyImages = false)
+        public static UploadFileResult UploadFile(HttpPostedFileBase file, string uploadFolderPath,
+            ILocalizationService localizationService, bool onlyImages = false)
         {
-            var upResult = new UploadFileResult { UploadSuccessful = true };
+            var upResult = new UploadFileResult {UploadSuccessful = true};
             const string imageExtensions = "jpg,jpeg,png,gif";
             var fileName = Path.GetFileName(file.FileName);
             var storageProvider = StorageProvider.Current;
@@ -374,7 +388,7 @@ namespace MVCForum.Website.Application
                 {
                     // Turn into a list and strip unwanted commas as we don't trust users!
                     var allowedFileExtensionsList = allowedFileExtensions.ToLower().Trim()
-                                                     .TrimStart(',').TrimEnd(',').Split(',').ToList();
+                        .TrimStart(',').TrimEnd(',').Split(',').ToList();
 
                     // If can't work out extension then just error
                     if (string.IsNullOrEmpty(fileExtension))

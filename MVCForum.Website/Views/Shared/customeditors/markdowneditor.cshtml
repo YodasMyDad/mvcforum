@@ -1,4 +1,5 @@
-﻿@if (!Context.IsMobileDevice())
+﻿@using MvcForum.Web.Application.ExtensionMethods
+@if (!Context.IsMobileDevice())
 {
     <link href="@Url.Content("~/scripts/markdown/markdown.css")" rel="stylesheet" />
     <script src="@Url.Content("~/scripts/markdown/Markdown.Converter.js")"></script>

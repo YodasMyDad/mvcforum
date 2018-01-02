@@ -1,18 +1,18 @@
-﻿namespace MVCForum.Website.Controllers.OAuthControllers
+﻿namespace MvcForum.Web.Controllers.OAuthControllers
 {
     using System;
     using System.Web.Mvc;
     using System.Web.Security;
-    using Domain.Constants;
-    using Domain.DomainModel.Enums;
-    using Domain.Interfaces.Services;
-    using Domain.Interfaces.UnitOfWork;
-    using Utilities;
     using Areas.Admin.ViewModels;
-    using ViewModels;
+    using Core.Constants;
+    using Core.Interfaces;
+    using Core.Interfaces.Services;
+    using Core.Models.Enums;
+    using Core.Utilities;
     using Skybrud.Social.Facebook;
     using Skybrud.Social.Facebook.OAuth;
     using Skybrud.Social.Facebook.Options.User;
+    using ViewModels.Member;
 
     // Facebook uses OAuth 2.0 for authentication and communication. In order for users to authenticate with the Facebook API, 
     // you must specify the ID, secret and redirect URI of your Facebook app. 
@@ -20,30 +20,19 @@
 
     public partial class FacebookOAuthController : BaseController
     {
-        public FacebookOAuthController(ILoggingService loggingService, 
-                                        IUnitOfWorkManager unitOfWorkManager, 
-                                        IMembershipService membershipService, 
-                                        ILocalizationService localizationService, 
-                                        IRoleService roleService, 
-                                        ISettingsService settingsService, 
-                                        ICacheService cacheService) : base(loggingService, 
-                                                                                unitOfWorkManager, 
-                                                                                membershipService, 
-                                                                                localizationService, 
-                                                                                roleService, 
-                                                                                settingsService, 
-                                                                                cacheService)
+        public FacebookOAuthController(ILoggingService loggingService, IMembershipService membershipService,
+            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
+            ICacheService cacheService, IMvcForumContext context) : base(loggingService,
+            membershipService,
+            localizationService,
+            roleService,
+            settingsService,
+            cacheService, context)
         {
-
         }
 
-        public string ReturnUrl
-        {
-            get
-            {
-                return string.Concat(SettingsService.GetSettings().ForumUrl.TrimEnd('/'), Url.Action("FacebookLogin"));
-            }
-        }
+        public string ReturnUrl =>
+            string.Concat(SettingsService.GetSettings().ForumUrl.TrimEnd('/'), Url.Action("FacebookLogin"));
 
         public string Callback { get; private set; }
 
@@ -52,7 +41,7 @@
         public string PropertyAlias { get; private set; }
 
         /// <summary>
-        /// Gets the authorizing code from the query string (if specified).
+        ///     Gets the authorizing code from the query string (if specified).
         /// </summary>
         public string AuthCode => Request.QueryString["code"];
 
@@ -74,7 +63,7 @@
 
             if (AuthState != null)
             {
-                var stateValue = Session["MVCForum_" + AuthState] as string[];
+                var stateValue = Session[$"MvcForum_{AuthState}"] as string[];
                 if (stateValue != null && stateValue.Length == 3)
                 {
                     Callback = stateValue[0];
@@ -92,7 +81,6 @@
             }
             else
             {
-
                 // Settings valid move on
                 // Configure the OAuth client based on the options of the prevalue options
                 var client = new FacebookOAuthClient
@@ -103,7 +91,7 @@
                 };
 
                 // Session expired?
-                if (AuthState != null && Session["MVCForum_" + AuthState] == null)
+                if (AuthState != null && Session[$"MvcForum_{AuthState}"] == null)
                 {
                     resultMessage.Message = "Session Expired";
                     resultMessage.MessageType = GenericMessages.danger;
@@ -112,7 +100,7 @@
                 // Check whether an error response was received from Facebook
                 if (AuthError != null)
                 {
-                    Session.Remove("MVCForum_" + AuthState);
+                    Session.Remove($"MvcForum_{AuthState}");
                     resultMessage.Message = AuthErrorDescription;
                     resultMessage.MessageType = GenericMessages.danger;
                 }
@@ -124,7 +112,7 @@
                     var state = Guid.NewGuid().ToString();
 
                     // Save the state in the current user session
-                    Session["MVCForum_" + state] = new[] { Callback, ContentTypeAlias, PropertyAlias };
+                    Session[$"MvcForum_{state}"] = new[] {Callback, ContentTypeAlias, PropertyAlias};
 
                     // Construct the authorization URL
                     var url = client.GetAuthorizationUrl(state, "public_profile", "email"); //"user_friends"
@@ -156,7 +144,7 @@
                         var options = new FacebookGetUserOptions
                         {
                             Identifier = "me",
-                            Fields = new[] { "id", "name", "email", "first_name", "last_name", "gender" }
+                            Fields = new[] {"id", "name", "email", "first_name", "last_name", "gender"}
                         };
 
                         var user = service.Users.GetUser(options);
@@ -165,59 +153,58 @@
                         var email = user.Body.Email;
                         if (string.IsNullOrEmpty(email))
                         {
-                            resultMessage.Message = LocalizationService.GetResourceString("Members.UnableToGetEmailAddress");
+                            resultMessage.Message =
+                                LocalizationService.GetResourceString("Members.UnableToGetEmailAddress");
                             resultMessage.MessageType = GenericMessages.danger;
                             ShowMessage(resultMessage);
                             return RedirectToAction("LogOn", "Members");
                         }
 
-                        // First see if this user has registered already - Use email address
-                        using (UnitOfWorkManager.NewUnitOfWork())
+                        // First see if this user has registered already - Use email address                   
+                        var userExists = MembershipService.GetUserByEmail(email);
+
+                        if (userExists != null)
                         {
-                            var userExists = MembershipService.GetUserByEmail(email);
-
-                            if (userExists != null)
+                            try
                             {
-                                try
-                                {
-                                    // Users already exists, so log them in
-                                    FormsAuthentication.SetAuthCookie(userExists.UserName, true);
-                                    resultMessage.Message = LocalizationService.GetResourceString("Members.NowLoggedIn");
-                                    resultMessage.MessageType = GenericMessages.success;
-                                    ShowMessage(resultMessage);
-                                    return RedirectToAction("Index", "Home");
-                                }
-                                catch (Exception ex)
-                                {
-                                    LoggingService.Error(ex);
-                                }
+                                // Users already exists, so log them in
+                                FormsAuthentication.SetAuthCookie(userExists.UserName, true);
+                                resultMessage.Message =
+                                    LocalizationService.GetResourceString("Members.NowLoggedIn");
+                                resultMessage.MessageType = GenericMessages.success;
+                                ShowMessage(resultMessage);
+                                return RedirectToAction("Index", "Home");
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                // Not registered already so register them
-                                var viewModel = new MemberAddViewModel
-                                {
-                                    Email = email,
-                                    LoginType = LoginType.Facebook,
-                                    Password = StringUtils.RandomString(8),
-                                    UserName = user.Body.Name,
-                                    UserAccessToken = userAccessToken
-                                };
-
-                                // Get the image and save it
-                                var getImageUrl = $"http://graph.facebook.com/{user.Body.Id}/picture?type=square";
-                                viewModel.SocialProfileImageUrl = getImageUrl;
-
-                                //Large size photo https://graph.facebook.com/{facebookId}/picture?type=large
-                                //Medium size photo https://graph.facebook.com/{facebookId}/picture?type=normal
-                                //Small size photo https://graph.facebook.com/{facebookId}/picture?type=small
-                                //Square photo https://graph.facebook.com/{facebookId}/picture?type=square
-
-                                // Store the viewModel in TempData - Which we'll use in the register logic
-                                TempData[AppConstants.MemberRegisterViewModel] = viewModel;
-
-                                return RedirectToAction("SocialLoginValidator", "Members");
+                                LoggingService.Error(ex);
                             }
+                        }
+                        else
+                        {
+                            // Not registered already so register them
+                            var viewModel = new MemberAddViewModel
+                            {
+                                Email = email,
+                                LoginType = LoginType.Facebook,
+                                Password = StringUtils.RandomString(8),
+                                UserName = user.Body.Name,
+                                UserAccessToken = userAccessToken
+                            };
+
+                            // Get the image and save it
+                            var getImageUrl = $"http://graph.facebook.com/{user.Body.Id}/picture?type=square";
+                            viewModel.SocialProfileImageUrl = getImageUrl;
+
+                            //Large size photo https://graph.facebook.com/{facebookId}/picture?type=large
+                            //Medium size photo https://graph.facebook.com/{facebookId}/picture?type=normal
+                            //Small size photo https://graph.facebook.com/{facebookId}/picture?type=small
+                            //Square photo https://graph.facebook.com/{facebookId}/picture?type=square
+
+                            // Store the viewModel in TempData - Which we'll use in the register logic
+                            TempData[AppConstants.MemberRegisterViewModel] = viewModel;
+
+                            return RedirectToAction("SocialLoginValidator", "Members");
                         }
                     }
                 }
@@ -227,7 +214,6 @@
                     resultMessage.MessageType = GenericMessages.danger;
                     LoggingService.Error(ex);
                 }
-
             }
 
             ShowMessage(resultMessage);

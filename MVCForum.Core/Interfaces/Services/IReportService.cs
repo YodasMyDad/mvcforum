@@ -1,7 +1,7 @@
-﻿using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
+    using Models.General;
+
     public partial interface IReportService
     {
         void MemberReport(Report report);

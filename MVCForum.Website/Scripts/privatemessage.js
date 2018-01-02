@@ -92,7 +92,7 @@ var blockMember = function () {
             }
 
             var viewModel = new Object();
-            viewModel.MemberToBlockOrUnBlock = userid;
+            viewModel.Id = userid;
 
             // Ajax call to post the view model to the controller
             var strung = JSON.stringify(viewModel);
@@ -197,7 +197,7 @@ var AjaxPrivateMessageSuccess = function () {
     postHolder.attr("id", "imtonystark");
 
     // And more finally clear the post box
-    $(".rte").val("");
+    $(".createpm").val("");
     if ($(".bbeditorholder textarea").length > 0) {
         $(".bbeditorholder textarea").data("sceditor").val("");
     }

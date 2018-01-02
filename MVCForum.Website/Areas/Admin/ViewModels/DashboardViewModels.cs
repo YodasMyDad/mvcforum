@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-using RssItem = MVCForum.Utilities.RssItem;
-
-
-namespace MVCForum.Website.Areas.Admin.ViewModels
+﻿namespace MvcForum.Web.Areas.Admin.ViewModels
 {
+    using System.Collections.Generic;
+    using Core.Models.Entities;
+
     public class MainDashboardNavViewModel
     {
         public int PrivateMessageCount { get; set; }
@@ -33,7 +31,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
     public class LatestNewsViewModel
     {
-        public IList<RssItem> RssFeed { get; set; }
+        public IList<MvcForum.Core.Utilities.RssItem> RssFeed { get; set; }
     }
 
     public class TodaysTopics

@@ -1,60 +1,51 @@
-﻿using System.Linq;
-using System.Web.Mvc;
-using System.Web.Routing;
-using System.Web.Security;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Areas.Admin.ViewModels;
-using MembershipUser = MVCForum.Domain.DomainModel.MembershipUser;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
-    using Utilities;
+    using System.Web.Mvc;
+    using System.Web.Routing;
+    using System.Web.Security;
+    using Areas.Admin.ViewModels;
+    using Core.Constants;
+    using Core.Interfaces;
+    using Core.Interfaces.Services;
+    using Core.Utilities;
 
     /// <summary>
-    /// A base class for the white site controllers
+    ///     A base class for the white site controllers
     /// </summary>
     public class BaseController : Controller
     {
-        protected readonly IUnitOfWorkManager UnitOfWorkManager;
-        protected readonly IMembershipService MembershipService;
+        protected readonly ICacheService CacheService;
         protected readonly ILocalizationService LocalizationService;
+        protected readonly ILoggingService LoggingService;
+        protected readonly IMembershipService MembershipService;
         protected readonly IRoleService RoleService;
         protected readonly ISettingsService SettingsService;
-        protected readonly ILoggingService LoggingService;
-        protected readonly ICacheService CacheService;
-
-        protected MembershipUser LoggedOnReadOnlyUser;
-        protected MembershipRole UsersRole;
+        protected readonly IMvcForumContext Context;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="loggingService"> </param>
-        /// <param name="unitOfWorkManager"> </param>
         /// <param name="membershipService"></param>
         /// <param name="localizationService"> </param>
         /// <param name="roleService"> </param>
         /// <param name="settingsService"> </param>
         /// <param name="cacheService"></param>
-        public BaseController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, ICacheService cacheService)
+        /// <param name="context"></param>
+        public BaseController(ILoggingService loggingService,
+            IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService,
+            ISettingsService settingsService, ICacheService cacheService, IMvcForumContext context)
         {
-            UnitOfWorkManager = unitOfWorkManager;
             MembershipService = membershipService;
             LocalizationService = localizationService;
             RoleService = roleService;
             SettingsService = settingsService;
             CacheService = cacheService;
+            Context = context;
             LoggingService = loggingService;
-
-            using (UnitOfWorkManager.NewUnitOfWork())
-            {
-                LoggedOnReadOnlyUser = UserIsAuthenticated ? MembershipService.GetUser(Username, true) : null;
-                UsersRole = LoggedOnReadOnlyUser == null ? RoleService.GetRole(AppConstants.GuestRoleName, true) : LoggedOnReadOnlyUser.Roles.FirstOrDefault();   
-            }
         }
+
+        protected string Domain => CacheService.CachePerRequest(CacheKeys.Domain, StringUtils.ReturnCurrentDomain);
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
@@ -67,24 +58,43 @@ namespace MVCForum.Website.Controllers
             if (settings.IsClosed && !filterContext.IsChildAction)
             {
                 // Only redirect if its closed and user is NOT in the admin
-                if (controller.ToString().ToLower() != "closed" && controller.ToString().ToLower() != "members" && !area.ToString().ToLower().Contains("admin"))
+                if (controller.ToString().ToLower() != "closed" && controller.ToString().ToLower() != "members" &&
+                    !area.ToString().ToLower().Contains("admin"))
                 {
-                    filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Closed" }, { "action", "Index" } });
-                }          
+                    filterContext.Result =
+                        new RedirectToRouteResult(new RouteValueDictionary
+                        {
+                            {"controller", "Closed"},
+                            {"action", "Index"}
+                        });
+                }
             }
 
+
+            var loggedOnReadOnlyUser = User.Identity.IsAuthenticated
+                ? MembershipService.GetUser(User.Identity.Name, true)
+                : null;
+     
+
             // Check if they need to agree to permissions
-            if (SettingsService.GetSettings().AgreeToTermsAndConditions == true && !filterContext.IsChildAction && LoggedOnReadOnlyUser != null && LoggedOnReadOnlyUser.HasAgreedToTermsAndConditions != true)
+            if (SettingsService.GetSettings().AgreeToTermsAndConditions == true && !filterContext.IsChildAction &&
+                loggedOnReadOnlyUser != null && loggedOnReadOnlyUser.HasAgreedToTermsAndConditions != true)
             {
                 // Only redirect if its closed and user is NOT in the admin
                 if (action.ToString().ToLower() != "termsandconditions" && !area.ToString().ToLower().Contains("admin"))
                 {
-                    filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Home" }, { "action", "TermsAndConditions" } });
+                    filterContext.Result =
+                        new RedirectToRouteResult(new RouteValueDictionary
+                        {
+                            {"controller", "Home"},
+                            {"action", "TermsAndConditions"}
+                        });
                 }
             }
 
             // If the forum is new members need approving and the user is not approved, log them out
-            if (LoggedOnReadOnlyUser != null && !LoggedOnReadOnlyUser.IsApproved && settings.NewMemberEmailConfirmation == true)
+            if (loggedOnReadOnlyUser != null && !loggedOnReadOnlyUser.IsApproved &&
+                settings.NewMemberEmailConfirmation == true)
             {
                 FormsAuthentication.SignOut();
                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
@@ -92,11 +102,12 @@ namespace MVCForum.Website.Controllers
                     Message = LocalizationService.GetResourceString("Members.MemberEmailAuthorisationNeeded"),
                     MessageType = GenericMessages.success
                 };
-                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Home" }, { "action", "Index" } });
+                filterContext.Result =
+                    new RedirectToRouteResult(new RouteValueDictionary {{"controller", "Home"}, {"action", "Index"}});
             }
 
             // If the user is banned - Log them out.
-            if (LoggedOnReadOnlyUser != null && LoggedOnReadOnlyUser.IsBanned)
+            if (loggedOnReadOnlyUser != null && loggedOnReadOnlyUser.IsBanned)
             {
                 FormsAuthentication.SignOut();
                 TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
@@ -104,22 +115,16 @@ namespace MVCForum.Website.Controllers
                     Message = LocalizationService.GetResourceString("Members.NowBanned"),
                     MessageType = GenericMessages.danger
                 };
-                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Home" }, { "action", "Index" } });
+                filterContext.Result =
+                    new RedirectToRouteResult(new RouteValueDictionary {{"controller", "Home"}, {"action", "Index"}});
             }
         }
-
-        protected bool UserIsAuthenticated => System.Web.HttpContext.Current.User.Identity.IsAuthenticated;
-
-        protected bool UserIsAdmin => User.IsInRole(AppConstants.AdminRoleName);
-
-        protected string Domain => CacheService.CachePerRequest(CacheKeys.Domain, StringUtils.ReturnCurrentDomain);
 
         protected void ShowMessage(GenericMessageViewModel messageViewModel)
         {
             //ViewData[AppConstants.MessageViewBagName] = messageViewModel;
             TempData[AppConstants.MessageViewBagName] = messageViewModel;
         }
-        protected string Username => UserIsAuthenticated ? System.Web.HttpContext.Current.User.Identity.Name : null;
 
         internal ActionResult ErrorToHomePage(string errorMessage)
         {
@@ -132,10 +137,5 @@ namespace MVCForum.Website.Controllers
             // Not allowed in here so
             return RedirectToAction("Index", "Home");
         }
-    }
-
-    public class UserNotLoggedOnException : System.Exception
-    {
-
     }
 }

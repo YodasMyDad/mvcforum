@@ -1,9 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using Models.Entities;
+    using Models.General;
+
     public partial interface ITopicTagService
     {
         IEnumerable<TopicTag> GetAll();
@@ -11,8 +13,8 @@ namespace MVCForum.Domain.Interfaces.Services
         IList<TopicTag> GetStartsWith(string term, int amountToTake = 4);
         IList<TopicTag> GetContains(string term, int amountToTake = 4);
         IEnumerable<TopicTag> GetByTopic(Topic topic);
-        PagedList<TopicTag> GetPagedGroupedTags(int pageIndex, int pageSize);
-        PagedList<TopicTag> SearchPagedGroupedTags(string search, int pageIndex, int pageSize);
+        Task<PaginatedList<TopicTag>> GetPagedGroupedTags(int pageIndex, int pageSize);
+        Task<PaginatedList<TopicTag>> SearchPagedGroupedTags(string search, int pageIndex, int pageSize);
         TopicTag Add(TopicTag tag);
         TopicTag Get(Guid tag);
         TopicTag Get(string tag);

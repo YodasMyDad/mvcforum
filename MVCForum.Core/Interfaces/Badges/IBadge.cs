@@ -3,16 +3,16 @@
 
     1. Reference the following DLL in your assembly:
 
-        MVCForum.Domain.dll (found in e.g. "MVCForum.Core\bin\Debug")
+        MvcForum.Core.dll (found in e.g. "MvcForum.Core\bin\Debug")
 
     2. Create a class. Add these references:
 
-        using MVCForum.Domain.DomainModel;
-        using MVCForum.Domain.DomainModel.Attributes;
-        using MVCForum.Domain.Interfaces.API;
-        using MVCForum.Domain.Interfaces.Badges;
+        using MvcForum.Core.DomainModel;
+        using MvcForum.Core.DomainModel.Attributes;
+        using MvcForum.Domain.Interfaces.API;
+        using MvcForum.Domain.Interfaces.Badges;
 
-    3. Inherit from the appropriate badge type interface, e.g. MVCForum.Domain.Interfaces.Badges.IVoteUpBadge
+    3. Inherit from the appropriate badge type interface, e.g. MvcForum.Core.Interfaces.Badges.IVoteUpBadge
 
     4. Implement the interface i.e.
 
@@ -39,9 +39,10 @@
 
 **/
 
-using MVCForum.Domain.DomainModel;
-namespace MVCForum.Domain.Interfaces.Badges
+namespace MvcForum.Core.Interfaces.Badges
 {
+    using Models.Entities;
+
     public interface IBadge
     {
         bool Rule(MembershipUser user);

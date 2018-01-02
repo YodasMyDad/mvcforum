@@ -1,4 +1,4 @@
-﻿namespace MVCForum.Domain.Constants
+﻿namespace MvcForum.Core.Constants
 {
     public static class CacheKeys
     {

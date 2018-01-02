@@ -1,10 +1,10 @@
-﻿using System;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Attributes;
-using MVCForum.Domain.Interfaces.Badges;
-
-namespace Badge.MemberForAYear
+﻿namespace Badge.MemberForAYear
 {
+    using System;
+    using MvcForum.Core.Interfaces.Badges;
+    using MvcForum.Core.Models.Attributes;
+    using MvcForum.Core.Models.Entities;
+
     [Id("52284d2b-7ed6-4154-9ccc-3a7d99b18cca")]
     [Name("MemberForAYear")]
     [DisplayName("Badge.MemberForAYear.Name")]

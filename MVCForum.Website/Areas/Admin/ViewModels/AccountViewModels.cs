@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Website.Areas.Admin.ViewModels
+﻿namespace MvcForum.Web.Areas.Admin.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.Web.Mvc;
+    using Core.Constants;
+    using Core.Models.Entities;
+
     #region Users Points
 
     public class ManageUsersPointsViewModel
@@ -19,7 +19,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [Display(Name = "Notes about this point allocation")]
         [MaxLength(400)]
-        public string Note { get; set; } 
+        public string Note { get; set; }
 
         public Guid Id { get; set; }
     }
@@ -34,7 +34,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public Guid Id { get; set; }
 
         [Required]
-        [Display(Name = "User Name")]        
+        [Display(Name = "User Name")]
         public string UserName { get; set; }
 
         [Display(Name = "Locked Out")]
@@ -63,7 +63,6 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public int? TotalCount { get; set; }
         public int TotalPages { get; set; }
         public string Search { get; set; }
-
     }
 
     public class UserPointChartItem
@@ -71,9 +70,8 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public MembershipUserPoints MembershipUserPoints { get; set; }
         public Post Post { get; set; }
         public Vote Vote { get; set; }
-        public Domain.DomainModel.Badge Badge { get; set; }
+        public Badge Badge { get; set; }
         public TopicTag TopicTag { get; set; }
-
     }
 
     public class MemberEditViewModel
@@ -101,7 +99,8 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [Display(Name = "Signature")]
         [StringLength(1000)]
-        [UIHint(AppConstants.EditorType), AllowHtml]
+        [UIHint(AppConstants.EditorType)]
+        [AllowHtml]
         public string Signature { get; set; }
 
         [Display(Name = "Age")]
@@ -113,17 +112,17 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public string Location { get; set; }
 
         [Display(Name = "Website")]
-        [System.ComponentModel.DataAnnotations.Url]
+        [Url]
         [StringLength(100)]
         public string Website { get; set; }
 
         [Display(Name = "Twitter Url")]
-        [System.ComponentModel.DataAnnotations.Url]
+        [Url]
         [StringLength(60)]
         public string Twitter { get; set; }
 
         [Display(Name = "Facebook Page")]
-        [System.ComponentModel.DataAnnotations.Url]
+        [Url]
         [StringLength(60)]
         public string Facebook { get; set; }
 
@@ -132,10 +131,10 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
 
         [Display(Name = "Disable email notifications for this member")]
         public bool DisableEmailNotifications { get; set; }
-        
+
         [Display(Name = "Disable posting. The user will not be able to post or create topics")]
         public bool DisablePosting { get; set; }
-        
+
         [Display(Name = "Disable private messages for this user")]
         public bool DisablePrivateMessages { get; set; }
 
@@ -155,7 +154,6 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         public string[] Roles { get; set; }
 
         public IList<MembershipRole> AllRoles { get; set; }
-
     }
 
     #endregion
@@ -182,10 +180,7 @@ namespace MVCForum.Website.Areas.Admin.ViewModels
         [Required]
         [Display(Name = "Role Name")]
         public string RoleName { get; set; }
-
     }
 
-
     #endregion
-
 }

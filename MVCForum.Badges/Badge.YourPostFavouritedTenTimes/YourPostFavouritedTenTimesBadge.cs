@@ -1,12 +1,13 @@
-﻿using System.Linq;
-using System.Web.Mvc;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.Attributes;
-using MVCForum.Domain.Interfaces.Badges;
-using MVCForum.Domain.Interfaces.Services;
-
-namespace Badge.YourPostFavouritedTenTimes
+﻿namespace Badge.YourPostFavouritedTenTimes
 {
+    using System.Linq;
+    using System.Web.Mvc;
+    using MvcForum.Core.DomainModel;
+    using MvcForum.Core.Interfaces.Badges;
+    using MvcForum.Core.Interfaces.Services;
+    using MvcForum.Core.Models.Attributes;
+    using MvcForum.Core.Models.Entities;
+
     [Id("C34784C1-FA77-4A0A-8141-9762A4069961")]
     [Name("YourPostFavouritedTenTimes")]
     [DisplayName("Badge.YourPostFavouritedTenTimes.Name")]
@@ -28,5 +29,3 @@ namespace Badge.YourPostFavouritedTenTimes
         }
     }
 }
-
-
