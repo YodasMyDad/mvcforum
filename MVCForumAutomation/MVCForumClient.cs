@@ -5,9 +5,16 @@ namespace MVCForumAutomation
 {
     public class MVCForumClient
     {
+        private readonly ChromeDriver _webDriver;
+
         public MVCForumClient()
         {
-            var webDriver = new ChromeDriver();
+            _webDriver = new ChromeDriver();
+        }
+
+        ~MVCForumClient()
+        {
+            _webDriver.Quit();
         }
 
         public LoggedInUser RegisterNewUserAndLogin()
