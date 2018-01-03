@@ -22,7 +22,19 @@ namespace MVCForumAutomation
 
         public LoggedInUser RegisterNewUserAndLogin()
         {
-            throw new NotImplementedException();
+            var username = Guid.NewGuid().ToString();
+            const string password = "123456";
+            const string email = "abc@def.com";
+
+            var registrationPage = GoToRegistrationPage();
+            registrationPage.Username = username;
+            registrationPage.Password = password;
+            registrationPage.ConfirmPassword = password;
+            registrationPage.Email = email;
+
+            registrationPage.Register();
+
+            return new LoggedInUser();
         }
 
         public LatestDiscussions LatestDiscussions
