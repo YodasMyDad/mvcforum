@@ -1,5 +1,4 @@
-﻿@using MvcForum.Web.Application
-@using MvcForum.Web.Application.ExtensionMethods
+﻿@using MvcForum.Web.Application.ExtensionMethods
 @model MvcForum.Web.Areas.Admin.ViewModels.CategoryViewModel
 
 <div class="form-group">
@@ -25,7 +24,8 @@
     @if (!string.IsNullOrEmpty(Model.Image))
     {
         <div class="col-md-2">
-            <img src="@AppHelpers.CategoryImage(Model.Image, Model.Id,110)" alt="@Model.Name" />
+            <p><img src="@AppHelpers.CategoryImage(Model.Image, Model.Id,110)" alt="@Model.Name" class="img-responsive" /></p>
+            <p><a class="btn-mvc" href="@Url.Action("RemoveCategoryImage", "AdminCategory", new { id =  Model.Id, area = "Admin" })">Remove Image</a></p> 
         </div>
     }
 
