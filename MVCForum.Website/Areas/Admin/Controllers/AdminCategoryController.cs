@@ -44,6 +44,19 @@
             return PartialView(viewModel);
         }
 
+        /// <summary>
+        /// Removes the category image
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult RemoveCategoryImage(Guid id)
+        {
+            var category = _categoryService.Get(id);
+            category.Image = string.Empty;
+            Context.SaveChanges();
+            return RedirectToAction("EditCategory", new { id });
+        }
+
         public ActionResult CreateCategory()
         {
             var categoryViewModel = new CategoryViewModel
@@ -51,8 +64,13 @@
                 AllCategories = _categoryService.GetBaseSelectListCategories(_categoryService.GetAll())
             };
             return View(categoryViewModel);
-        }
+        }        
 
+        /// <summary>
+        /// Create category logic
+        /// </summary>
+        /// <param name="categoryViewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult CreateCategory(CategoryViewModel categoryViewModel)
