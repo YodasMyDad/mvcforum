@@ -1,14 +1,16 @@
 using System;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 
 namespace MVCForumAutomation
 {
     public class MVCForumClient
     {
-        private readonly ChromeDriver _webDriver;
+        private readonly IWebDriver _webDriver;
 
         public MVCForumClient()
         {
+            // TODO: select the type of browser and the URL from a configuration file
             _webDriver = new ChromeDriver();
             _webDriver.Url = "http://localhost:8080";
         }
