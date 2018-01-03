@@ -79,7 +79,7 @@
         /// <returns></returns>
         private static string GetConfigValue(string configValue, string defaultValue)
         {
-            return string.IsNullOrEmpty(configValue) ? defaultValue : configValue;
+            return string.IsNullOrWhiteSpace(configValue) ? defaultValue : configValue;
         }
 
         /// <summary>
@@ -94,12 +94,12 @@
                 throw new ArgumentNullException("config");
             }
 
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrWhiteSpace(name))
             {
                 name = "n3oSqlMembershipProvider";
             }
 
-            if (string.IsNullOrEmpty(config["description"]))
+            if (string.IsNullOrWhiteSpace(config["description"]))
             {
                 config.Remove("description");
                 config.Add("description", "MvcForum Standard Membership Provider");

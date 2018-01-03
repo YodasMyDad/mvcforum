@@ -35,7 +35,7 @@
         public async Task<ActionResult> Index(int? p, string search)
         {
             var pageIndex = p ?? 1;
-            var allEmails = string.IsNullOrEmpty(search)
+            var allEmails = string.IsNullOrWhiteSpace(search)
                 ? await _bannedEmailService.GetAllPaged(pageIndex, SiteConstants.Instance.AdminListPageSize)
                 : await _bannedEmailService.GetAllPaged(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
 
@@ -55,7 +55,7 @@
         {
             try
             {
-                if (!string.IsNullOrEmpty(addBannedEmailViewModel.Email))
+                if (!string.IsNullOrWhiteSpace(addBannedEmailViewModel.Email))
                 {
                     var bannedEmail = new BannedEmail
                     {

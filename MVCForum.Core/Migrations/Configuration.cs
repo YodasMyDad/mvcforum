@@ -78,13 +78,13 @@ namespace MvcForum.Core.Services.Migrations
                         var key = keyValuePair[0];
                         var value = keyValuePair[1];
 
-                        if (string.IsNullOrEmpty(key))
+                        if (string.IsNullOrWhiteSpace(key))
                         {
                             // Ignore empty keys
                             continue;
                         }
 
-                        if (string.IsNullOrEmpty(value))
+                        if (string.IsNullOrWhiteSpace(value))
                         {
                             // Ignore empty values
                             continue;

@@ -4,6 +4,14 @@ namespace MvcForum.Core.Constants
 {
     public static class AppConstants
     {
+        public class ExtendedDataKeys
+        {
+            /// <summary>
+            /// The key thats used to pull out a guid to check email confirmation during registration
+            /// </summary>
+            public const string RegistrationEmailConfirmationKey = "RegistrationEmailConfirmationKey";
+        }
+
         public const int SaltSize = 24;
         public const string EditorType = "forumeditor";
 

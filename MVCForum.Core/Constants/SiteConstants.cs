@@ -167,7 +167,7 @@
         public string GetConfig(string key)
         {
             var dict = _configService.GetForumConfig();
-            if (!string.IsNullOrEmpty(key) && dict.ContainsKey(key))
+            if (!string.IsNullOrWhiteSpace(key) && dict.ContainsKey(key))
             {
                 return dict[key];
             }
@@ -177,7 +177,7 @@
         public string GetType(string key)
         {
             var dict = _configService.GetTypes();
-            if (!string.IsNullOrEmpty(key) && dict.ContainsKey(key))
+            if (!string.IsNullOrWhiteSpace(key) && dict.ContainsKey(key))
             {
                 return dict[key];
             }

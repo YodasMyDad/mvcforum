@@ -187,7 +187,7 @@
                     // Check they are not trying to add a subcategory of this category as the parent or it will break
                     if (parentCat?.Path != null && categoryViewModel.ParentCategory != null)
                     {
-                        var parentCats = parentCat.Path.Split(',').Where(x => !string.IsNullOrEmpty(x))
+                        var parentCats = parentCat.Path.Split(',').Where(x => !string.IsNullOrWhiteSpace(x))
                             .Select(x => new Guid(x)).ToList();
                         if (parentCats.Contains(categoryViewModel.Id))
                         {
@@ -293,7 +293,7 @@
         {
             // Append the path from the parent category
             var path = string.Empty;
-            if (!string.IsNullOrEmpty(parentCategory.Path))
+            if (!string.IsNullOrWhiteSpace(parentCategory.Path))
             {
                 path = string.Concat(parentCategory.Path, ",", parentCategory.Id.ToString());
             }
@@ -374,7 +374,7 @@
                         else
                         {
                             // If past one, then we use the previous category
-                            if (string.IsNullOrEmpty(prevPath))
+                            if (string.IsNullOrWhiteSpace(prevPath))
                             {
                                 cat.Path = prevCatId;
                             }

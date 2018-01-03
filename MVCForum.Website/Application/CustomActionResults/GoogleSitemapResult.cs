@@ -34,7 +34,7 @@
                     _writer.WriteElementString("loc", string.Concat(currentUrl, x.Url));
                     _writer.WriteElementString("lastmod", string.Concat(x.LastUpdated.ToString("s"), "+00:00"));
                     _writer.WriteElementString("changefreq", x.ChangeFrequency.ToString());
-                    _writer.WriteElementString("priority", string.IsNullOrEmpty(x.Priority) ? "0.5" : x.Priority);
+                    _writer.WriteElementString("priority", string.IsNullOrWhiteSpace(x.Priority) ? "0.5" : x.Priority);
                     _writer.WriteEndElement();
                 });
 

@@ -30,6 +30,9 @@
     using MembershipCreateStatus = Core.Models.Enums.MembershipCreateStatus;
     using MembershipUser = Core.Models.Entities.MembershipUser;
 
+    /// <summary>
+    ///     Members controller
+    /// </summary>
     public partial class MembersController : BaseController
     {
         private readonly IBannedEmailService _bannedEmailService;
@@ -70,6 +73,11 @@
             _favouriteService = favouriteService;
         }
 
+        /// <summary>
+        ///     Scrubs a user and bans them
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize(Roles = AppConstants.AdminRoleName)]
         public ActionResult SrubAndBanUser(Guid id)
         {
@@ -107,6 +115,11 @@
             return Redirect(user.NiceUrl);
         }
 
+        /// <summary>
+        ///     Ban a member
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize]
         public ActionResult BanMember(Guid id)
         {
@@ -145,6 +158,11 @@
             return Redirect(user.NiceUrl);
         }
 
+        /// <summary>
+        ///     Unban a member
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize]
         public ActionResult UnBanMember(Guid id)
         {
@@ -183,7 +201,10 @@
             return Redirect(user.NiceUrl);
         }
 
-
+        /// <summary>
+        ///     Show current active members
+        /// </summary>
+        /// <returns></returns>
         [ChildActionOnly]
         public PartialViewResult GetCurrentActiveMembers()
         {
@@ -194,6 +215,10 @@
             return PartialView(viewModel);
         }
 
+        /// <summary>
+        ///     Does a last active check
+        /// </summary>
+        /// <returns></returns>
         public JsonResult LastActiveCheck()
         {
             if (User.Identity.IsAuthenticated)
@@ -230,6 +255,11 @@
             return Json(new {Timer = "reset"}, JsonRequestBehavior.AllowGet);
         }
 
+        /// <summary>
+        ///     Gets a member by slug
+        /// </summary>
+        /// <param name="slug"></param>
+        /// <returns></returns>
         public ActionResult GetByName(string slug)
         {
             var member = MembershipService.GetUserBySlug(slug);
@@ -281,7 +311,7 @@
 
                 // See if a return url is present or not and add it
                 var returnUrl = Request["ReturnUrl"];
-                if (!string.IsNullOrEmpty(returnUrl))
+                if (!string.IsNullOrWhiteSpace(returnUrl))
                 {
                     viewModel.ReturnUrl = returnUrl;
                 }
@@ -304,7 +334,7 @@
                 SettingsService.GetSettings().DisableStandardRegistration != true)
             {
                 // First see if there is a spam question and if so, the answer matches
-                if (!string.IsNullOrEmpty(SettingsService.GetSettings().SpamQuestion))
+                if (!string.IsNullOrWhiteSpace(SettingsService.GetSettings().SpamQuestion))
                 {
                     // There is a spam question, if answer is wrong return with error
                     if (userModel.SpamAnswer == null ||
@@ -335,6 +365,10 @@
             return RedirectToAction("Index", "Home");
         }
 
+        /// <summary>
+        ///     Social login validator which passes view model as temp data
+        /// </summary>
+        /// <returns></returns>
         public ActionResult SocialLoginValidator()
         {
             // Store the viewModel in TempData - Which we'll use in the register logic
@@ -351,6 +385,11 @@
             return View("Register");
         }
 
+        /// <summary>
+        ///     All the logic to regsiter a member
+        /// </summary>
+        /// <param name="userModel"></param>
+        /// <returns></returns>
         public ActionResult MemberRegisterLogic(MemberAddViewModel userModel)
         {
             var settings = SettingsService.GetSettings();
@@ -375,7 +414,7 @@
             else
             {
                 // See if this is a social login and we have their profile pic
-                if (!string.IsNullOrEmpty(userModel.SocialProfileImageUrl))
+                if (!string.IsNullOrWhiteSpace(userModel.SocialProfileImageUrl))
                 {
                     // We have an image url - Need to save it to their profile
                     var image = AppHelpers.GetImageFromExternalUrl(userModel.SocialProfileImageUrl);
@@ -405,7 +444,7 @@
                         var reg = new Regex($"[{Regex.Escape(regexSearch)}]");
                         fileName = reg.Replace(fileName, "");
 
-                        if (string.IsNullOrEmpty(fileExtension))
+                        if (string.IsNullOrWhiteSpace(fileExtension))
                         {
                             // no file extension so give it one
                             fileName = string.Concat(fileName, ".jpg");
@@ -493,6 +532,12 @@
             return View("Register");
         }
 
+        /// <summary>
+        ///     Sets a view bag message based on registration result
+        /// </summary>
+        /// <param name="manuallyAuthoriseMembers"></param>
+        /// <param name="memberEmailAuthorisationNeeded"></param>
+        /// <param name="userToSave"></param>
         private void SetRegisterViewBagMessage(bool manuallyAuthoriseMembers, bool memberEmailAuthorisationNeeded,
             MembershipUser userToSave)
         {
@@ -528,6 +573,10 @@
             }
         }
 
+        /// <summary>
+        ///     Sends registration confirmation email
+        /// </summary>
+        /// <param name="userToSave"></param>
         private void SendEmailConfirmationEmail(MembershipUser userToSave)
         {
             var settings = SettingsService.GetSettings();
@@ -535,65 +584,90 @@
             var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
             if (manuallyAuthoriseMembers == false && memberEmailAuthorisationNeeded)
             {
-                if (!string.IsNullOrEmpty(userToSave.Email))
+                if (!string.IsNullOrWhiteSpace(userToSave.Email))
                 {
+                    // Registration guid
+                    var registrationGuid = Guid.NewGuid().ToString();
+
+                    // Set a Guid in the extended data
+                    userToSave.SetExtendedDataValue(AppConstants.ExtendedDataKeys.RegistrationEmailConfirmationKey,
+                        registrationGuid);
+
                     // SEND AUTHORISATION EMAIL
                     var sb = new StringBuilder();
                     var confirmationLink = string.Concat(StringUtils.ReturnCurrentDomain(),
-                        Url.Action("EmailConfirmation", new {id = userToSave.Id}));
+                        Url.Action("EmailConfirmation", new {id = userToSave.Id, key = registrationGuid}));
+
                     sb.AppendFormat("<p>{0}</p>", string.Format(
                         LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.EmailBody"),
                         settings.ForumName,
                         string.Format("<p><a href=\"{0}\">{0}</a></p>", confirmationLink)));
+
                     var email = new Email
                     {
                         EmailTo = userToSave.Email,
                         NameTo = userToSave.UserName,
                         Subject = LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.Subject")
                     };
+
                     email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
+
                     _emailService.SendMail(email);
 
-                    // ADD COOKIE
                     // We add a cookie for 7 days, which will display the resend email confirmation button
                     // This cookie is removed when they click the confirmation link
                     var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
                     {
-                        Value = CreateForgotPasswordCookieHas(userToSave).ToString(),
+                        Value = userToSave.UserName,
                         Expires = DateTime.UtcNow.AddDays(7)
                     };
+
                     // Add the cookie.
                     Response.Cookies.Add(myCookie);
+
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = LocalizationService.GetResourceString("Members.MemberEmailAuthorisationNeeded"),
+                        MessageType = GenericMessages.success
+                    };
                 }
             }
         }
 
         /// <summary>
-        ///     Creates a hash code for the password reset cookie
+        ///     Resends the email confirmation
         /// </summary>
-        /// <param name="userToSave"></param>
+        /// <param name="username"></param>
         /// <returns></returns>
-        private static int CreateForgotPasswordCookieHas(MembershipUser userToSave)
-        {
-            var combinedData = $"{userToSave.Email}{userToSave.CreateDate.ToLongTimeString()}";
-            return combinedData.GetHashCode();
-        }
-
         public ActionResult ResendEmailConfirmation(string username)
         {
-            var user = MembershipService.GetUser(username);
-            if (user != null)
-            {
-                SendEmailConfirmationEmail(user);
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                {
-                    Message = LocalizationService.GetResourceString("Members.MemberEmailAuthorisationNeeded"),
-                    MessageType = GenericMessages.success
-                };
-            }
-
             try
             {
+                // Get the user from the username
+                var user = MembershipService.GetUser(username);
+
+                // As this is a resend, they must have the extendeddata entry
+                var registrationGuid =
+                    user.GetExtendedDataItem(AppConstants.ExtendedDataKeys.RegistrationEmailConfirmationKey);
+
+                if (user != null && !string.IsNullOrWhiteSpace(registrationGuid))
+                {
+                    SendEmailConfirmationEmail(user);
+                }
+                else
+                {
+                    // Log this
+                    LoggingService.Error(
+                        "Unable to ResendEmailConfirmation as either user was null or RegistrationEmailConfirmationKey is missing");
+
+                    // There was a problem
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = LocalizationService.GetResourceString("Members.Errors.LogonGeneric"),
+                        MessageType = GenericMessages.danger
+                    };
+                }
+
                 Context.SaveChanges();
             }
             catch (Exception ex)
@@ -609,43 +683,45 @@
         ///     Email confirmation page from the link in the users email
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="key"></param>
         /// <returns></returns>
-        public ActionResult EmailConfirmation(Guid id)
+        public ActionResult EmailConfirmation(Guid id, Guid key)
         {
             // Checkconfirmation
             var user = MembershipService.GetUser(id);
             if (user != null)
             {
-                // Delete Cookie and log them in if this cookie is present
-                var cookie = Request.Cookies[AppConstants.MemberEmailConfirmationCookieName];
-                if (cookie != null)
+                // Ok, now to check the Guid key
+                var registrationGuid =
+                    user.GetExtendedDataItem(AppConstants.ExtendedDataKeys.RegistrationEmailConfirmationKey);
+
+                var everythingOk = !string.IsNullOrWhiteSpace(registrationGuid) && Guid.Parse(registrationGuid) == key;
+                if (everythingOk)
                 {
                     // Set the user to active
                     user.IsApproved = true;
 
-                    // The hashcode to check against
-                    var hashCode = CreateForgotPasswordCookieHas(user).ToString();
-                    if (cookie.Value == hashCode)
-                    {
-                        var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
+                    // Remove the registration key
+                    user.RemoveExtendedDataItem(AppConstants.ExtendedDataKeys.RegistrationEmailConfirmationKey);
+
+                    // Remove the cookie
+                    var myCookie =
+                        new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
                         {
                             Expires = DateTime.UtcNow.AddDays(-1)
                         };
-                        Response.Cookies.Add(myCookie);
+                    Response.Cookies.Add(myCookie);
 
-                        // Login code
-                        FormsAuthentication.SetAuthCookie(user.UserName, false);
-                    }
-                    else
+                    // Login code
+                    FormsAuthentication.SetAuthCookie(user.UserName, false);
+
+                    // Show a new message
+                    // We use temp data because we are doing a redirect
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                     {
-                        // Show a new message
-                        // We use temp data because we are doing a redirect
-                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                        {
-                            Message = LocalizationService.GetResourceString("Members.Errors.LogonGeneric"),
-                            MessageType = GenericMessages.danger
-                        };
-                    }
+                        Message = LocalizationService.GetResourceString("Members.NowApproved"),
+                        MessageType = GenericMessages.success
+                    };
                 }
                 else
                 {
@@ -657,14 +733,6 @@
                         MessageType = GenericMessages.danger
                     };
                 }
-
-                // Show a new message
-                // We use temp data because we are doing a redirect
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                {
-                    Message = LocalizationService.GetResourceString("Members.NowApproved"),
-                    MessageType = GenericMessages.success
-                };
             }
 
             try
@@ -676,7 +744,6 @@
                 Context.RollBack();
                 LoggingService.Error(ex);
             }
-
 
             return RedirectToAction("Index", "Home");
         }
@@ -692,7 +759,7 @@
 
             // See if a return url is present or not and add it
             var returnUrl = Request["ReturnUrl"];
-            if (!string.IsNullOrEmpty(returnUrl))
+            if (!string.IsNullOrWhiteSpace(returnUrl))
             {
                 viewModel.ReturnUrl = returnUrl;
             }
@@ -766,23 +833,10 @@
 
                                 return RedirectToAction("Index", "Home", new {area = string.Empty});
                             }
-                            //else if (!user.IsApproved && SettingsService.GetSettings().ManuallyAuthoriseNewMembers)
-                            //{
-
-                            //    message.Message = LocalizationService.GetResourceString("Members.NowRegisteredNeedApproval");
-                            //    message.MessageType = GenericMessages.success;
-
-                            //}
-                            //else if (!user.IsApproved && SettingsService.GetSettings().NewMemberEmailConfirmation == true)
-                            //{
-
-                            //    message.Message = LocalizationService.GetResourceString("Members.MemberEmailAuthorisationNeeded");
-                            //    message.MessageType = GenericMessages.success;
-                            //}
                         }
 
                         // Only show if we have something to actually show to the user
-                        if (!string.IsNullOrEmpty(message.Message))
+                        if (!string.IsNullOrWhiteSpace(message.Message))
                         {
                             TempData[AppConstants.MessageViewBagName] = message;
                         }
@@ -901,6 +955,11 @@
             return null;
         }
 
+        /// <summary>
+        ///     Creates view model
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         private static MemberFrontEndEditViewModel PopulateMemberViewModel(MembershipUser user)
         {
             var viewModel = new MemberFrontEndEditViewModel
@@ -922,6 +981,11 @@
             return viewModel;
         }
 
+        /// <summary>
+        ///     Edit user
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize]
         public ActionResult Edit(Guid id)
         {
@@ -944,6 +1008,11 @@
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
         }
 
+        /// <summary>
+        ///     Edit user
+        /// </summary>
+        /// <param name="userModel"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize]
         public ActionResult Edit(MemberFrontEndEditViewModel userModel)
@@ -1133,6 +1202,11 @@
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
         }
 
+        /// <summary>
+        ///     The side admin panel
+        /// </summary>
+        /// <param name="isDropDown"></param>
+        /// <returns></returns>
         [Authorize]
         public PartialViewResult SideAdminPanel(bool isDropDown)
         {
@@ -1164,15 +1238,24 @@
             return PartialView(viewModel);
         }
 
+        /// <summary>
+        ///     Member profile tools
+        /// </summary>
+        /// <returns></returns>
         public PartialViewResult AdminMemberProfileTools()
         {
             return PartialView();
         }
 
+        /// <summary>
+        ///     Autocomplete
+        /// </summary>
+        /// <param name="term"></param>
+        /// <returns></returns>
         [Authorize]
         public string AutoComplete(string term)
         {
-            if (!string.IsNullOrEmpty(term))
+            if (!string.IsNullOrWhiteSpace(term))
             {
                 var members = MembershipService.SearchMembers(term, 12);
                 var sb = new StringBuilder();
@@ -1192,6 +1275,11 @@
             return null;
         }
 
+        /// <summary>
+        ///     Report a member
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [Authorize]
         public ActionResult Report(Guid id)
         {
@@ -1203,6 +1291,11 @@
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
 
+        /// <summary>
+        ///     Report a member
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize]
         public ActionResult Report(ReportMemberViewModel viewModel)
@@ -1240,11 +1333,17 @@
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
 
+        /// <summary>
+        ///     Member search
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="search"></param>
+        /// <returns></returns>
         [Authorize]
         public async Task<ActionResult> Search(int? p, string search)
         {
             var pageIndex = p ?? 1;
-            var allUsers = string.IsNullOrEmpty(search)
+            var allUsers = string.IsNullOrWhiteSpace(search)
                 ? await MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize)
                 : await MembershipService.SearchMembers(search, pageIndex,
                     SiteConstants.Instance.AdminListPageSize);
@@ -1269,6 +1368,10 @@
             return View(memberListModel);
         }
 
+        /// <summary>
+        ///     Latest members joined
+        /// </summary>
+        /// <returns></returns>
         [ChildActionOnly]
         public PartialViewResult LatestMembersJoined()
         {
@@ -1278,12 +1381,21 @@
             return PartialView(viewModel);
         }
 
+        /// <summary>
+        ///     Change password view
+        /// </summary>
+        /// <returns></returns>
         [Authorize]
         public ActionResult ChangePassword()
         {
             return View();
         }
 
+        /// <summary>
+        ///     Change password logic
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -1326,11 +1438,20 @@
             return View(model);
         }
 
+        /// <summary>
+        ///     Forgot password view
+        /// </summary>
+        /// <returns></returns>
         public ActionResult ForgotPassword()
         {
             return View();
         }
 
+        /// <summary>
+        ///     Forgot password logic
+        /// </summary>
+        /// <param name="forgotPasswordViewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ForgotPassword(ForgotPasswordViewModel forgotPasswordViewModel)
@@ -1399,12 +1520,22 @@
             return RedirectToAction("PasswordResetSent", "Members");
         }
 
+        /// <summary>
+        ///     Password resent
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public ViewResult PasswordResetSent()
         {
             return View();
         }
 
+        /// <summary>
+        ///     Password reset view
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         [HttpGet]
         public ViewResult ResetPassword(Guid? id, string token)
         {
@@ -1414,7 +1545,7 @@
                 Token = token
             };
 
-            if (id == null || string.IsNullOrEmpty(token))
+            if (id == null || string.IsNullOrWhiteSpace(token))
             {
                 ModelState.AddModelError("",
                     LocalizationService.GetResourceString("Members.ResetPassword.InvalidToken"));
@@ -1423,6 +1554,11 @@
             return View(model);
         }
 
+        /// <summary>
+        ///     Password reset logic
+        /// </summary>
+        /// <param name="postedModel"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult ResetPassword(ResetPasswordViewModel postedModel)
@@ -1439,7 +1575,8 @@
 
                 // if the user id wasn't found then we can't proceed
                 // if the token submitted is not valid then do not proceed
-                if (user?.PasswordResetToken == null || !MembershipService.IsPasswordResetTokenValid(user, postedModel.Token))
+                if (user?.PasswordResetToken == null ||
+                    !MembershipService.IsPasswordResetTokenValid(user, postedModel.Token))
                 {
                     ModelState.AddModelError("",
                         LocalizationService.GetResourceString("Members.ResetPassword.InvalidToken"));
@@ -1468,6 +1605,10 @@
             return RedirectToAction("PasswordChanged", "Members");
         }
 
+        /// <summary>
+        ///     Password changed view
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public ViewResult PasswordChanged()
         {

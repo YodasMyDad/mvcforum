@@ -5,7 +5,7 @@
     using Enums;
     using Utilities;
 
-    public partial class Badge : Entity
+    public partial class Badge : ExtendedDataEntity
     {
         /// <summary>
         ///     Specifies the target badge interface names matched to the corresponding badge type

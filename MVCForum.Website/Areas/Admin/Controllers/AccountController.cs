@@ -115,7 +115,7 @@
         private async Task<ActionResult> ListUsers(int? p, string search)
         {
             var pageIndex = p ?? 1;
-            var allUsers = string.IsNullOrEmpty(search)
+            var allUsers = string.IsNullOrWhiteSpace(search)
                 ? await MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize)
                 : await MembershipService.SearchMembers(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
 

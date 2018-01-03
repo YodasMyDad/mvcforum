@@ -33,7 +33,7 @@
 
         public static LocalizedString TextOrDefault(string text, LocalizedString defaultValue)
         {
-            return string.IsNullOrEmpty(text) ? defaultValue : new LocalizedString(text);
+            return string.IsNullOrWhiteSpace(text) ? defaultValue : new LocalizedString(text);
         }
 
         public override string ToString()

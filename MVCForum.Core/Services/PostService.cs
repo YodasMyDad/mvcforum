@@ -396,6 +396,7 @@
         public Post Add(Post post)
         {
             post = SanitizePost(post);
+            post.IpAddress = StringUtils.GetUsersIpAddress();
             return _context.Post.Add(post);
         }
 
@@ -630,7 +631,7 @@
                 {
                     sb.Append(string.Concat(topicTag.Tag, " "));
                 }
-                formattedSearchField = !string.IsNullOrEmpty(formattedSearchField) ? string.Concat(formattedSearchField, " ", sb.ToString()) : sb.ToString();
+                formattedSearchField = !string.IsNullOrWhiteSpace(formattedSearchField) ? string.Concat(formattedSearchField, " ", sb.ToString()) : sb.ToString();
             }
             return formattedSearchField.Trim();
         }

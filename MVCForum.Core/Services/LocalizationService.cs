@@ -230,7 +230,7 @@
             var resFormat = GetResource(language.Id, key);
 
             var resValue = resFormat?.ResourceValue;
-            if (!string.IsNullOrEmpty(resValue))
+            if (!string.IsNullOrWhiteSpace(resValue))
             {
                 return new LocalizedString(resValue).Text;
             }
@@ -243,7 +243,7 @@
         /// <returns></returns>
         public string GetResourceString(string key)
         {
-            if (!string.IsNullOrEmpty(key))
+            if (!string.IsNullOrWhiteSpace(key))
             {
                 var trimmedKey = key.Trim();
                 try
@@ -251,7 +251,7 @@
                     if (_perRequestLanguageStrings.ContainsKey(trimmedKey))
                     {
                         var langValue = _perRequestLanguageStrings[trimmedKey];
-                        if (!string.IsNullOrEmpty(langValue))
+                        if (!string.IsNullOrWhiteSpace(langValue))
                         {
                             return langValue;
                         }
@@ -760,7 +760,7 @@
 
                     var key = keyValuePair[0];
 
-                    if (string.IsNullOrEmpty(key))
+                    if (string.IsNullOrWhiteSpace(key))
                     {
                         // Ignore empty keys
                         continue;

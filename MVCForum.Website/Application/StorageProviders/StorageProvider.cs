@@ -9,7 +9,7 @@
         private static readonly Lazy<IStorageProvider> CurrentStorageProvider = new Lazy<IStorageProvider>(() =>
         {
             var type = SiteConstants.Instance.StorageProviderType;
-            if (string.IsNullOrEmpty(type))
+            if (string.IsNullOrWhiteSpace(type))
             {
                 return new DiskStorageProvider();
             }

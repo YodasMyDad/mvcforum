@@ -5,7 +5,7 @@
     using Enums;
     using Utilities;
 
-    public partial class TopicTag : Entity
+    public partial class TopicTag : ExtendedDataEntity
     {
         public TopicTag()
         {

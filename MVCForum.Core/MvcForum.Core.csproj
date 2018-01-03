@@ -46,10 +46,19 @@
     <Compile Include="Data\LinqKit\Extensions.cs" />
     <Compile Include="Data\LinqKit\Linq.cs" />
     <Compile Include="Data\LinqKit\PredicateBuilder.cs" />
+    <Compile Include="ExtensionMethods\ExtendedDataExtensions.cs" />
     <Compile Include="ExtensionMethods\IdentityExtensions.cs" />
     <Compile Include="Migrations\201801011815079_IncreaseAccessTokenLength.cs" />
     <Compile Include="Migrations\201801011815079_IncreaseAccessTokenLength.Designer.cs">
       <DependentUpon>201801011815079_IncreaseAccessTokenLength.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801021733452_ExtendedDataToMembershipUser.cs" />
+    <Compile Include="Migrations\201801021733452_ExtendedDataToMembershipUser.Designer.cs">
+      <DependentUpon>201801021733452_ExtendedDataToMembershipUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801021904303_ExtendedDataOnAll.cs" />
+    <Compile Include="Migrations\201801021904303_ExtendedDataOnAll.Designer.cs">
+      <DependentUpon>201801021904303_ExtendedDataOnAll.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\BadgeActivity.cs" />
@@ -72,6 +81,7 @@
     <Compile Include="Models\Entities\BadgeTypeTimeLastChecked.cs" />
     <Compile Include="Models\Activity\Activity.cs" />
     <Compile Include="Models\Entities\Block.cs" />
+    <Compile Include="Models\Entities\ExtendedDataEntity.cs" />
     <Compile Include="Models\Entities\PostEdit.cs" />
     <Compile Include="Models\Enums\ActivityType.cs" />
     <Compile Include="Models\Enums\BadgeType.cs" />
@@ -82,6 +92,7 @@
     <Compile Include="Models\Enums\PostOrderBy.cs" />
     <Compile Include="Models\Enums\SiteMapChangeFreqency.cs" />
     <Compile Include="Models\Enums\UrlType.cs" />
+    <Compile Include="Models\ExtendedDataItem.cs" />
     <Compile Include="Models\General\CategoryWithSubCategories.cs" />
     <Compile Include="Models\Entities\BannedWord.cs" />
     <Compile Include="Models\Enums\LoginType.cs" />
@@ -388,6 +399,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201801011815079_IncreaseAccessTokenLength.resx">
       <DependentUpon>201801011815079_IncreaseAccessTokenLength.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801021733452_ExtendedDataToMembershipUser.resx">
+      <DependentUpon>201801021733452_ExtendedDataToMembershipUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801021904303_ExtendedDataOnAll.resx">
+      <DependentUpon>201801021904303_ExtendedDataOnAll.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

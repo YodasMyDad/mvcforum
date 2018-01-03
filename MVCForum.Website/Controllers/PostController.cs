@@ -442,7 +442,7 @@
                 // Get the selected topic
                 topic = _topicService.Get((Guid) viewModel.TopicId);
             }
-            else if (!string.IsNullOrEmpty(viewModel.TopicTitle))
+            else if (!string.IsNullOrWhiteSpace(viewModel.TopicTitle))
             {
                 // We get the banned words here and pass them in, so its just one call
                 // instead of calling it several times and each call getting all the words back

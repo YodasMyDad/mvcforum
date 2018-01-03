@@ -522,7 +522,7 @@
         private async Task<ActionResult> ListResourceKeys(int? page, string search)
         {
             var pageIndex = page ?? 1;
-            var allResources = string.IsNullOrEmpty(search)
+            var allResources = string.IsNullOrWhiteSpace(search)
                 ? await LocalizationService.GetAllResourceKeys(pageIndex, SiteConstants.Instance.AdminListPageSize)
                 : await LocalizationService.SearchResourceKeys(search, pageIndex,
                     SiteConstants.Instance.AdminListPageSize);
@@ -576,7 +576,7 @@
                     var pageIndex = p ?? 1;
 
                     // Get all the resources or just the ones that match the search
-                    var allResources = string.IsNullOrEmpty(search)
+                    var allResources = string.IsNullOrWhiteSpace(search)
                         ? await LocalizationService.GetAllValues(language.Id, pageIndex,
                             SiteConstants.Instance.AdminListPageSize)
                         : searchByKey

@@ -77,8 +77,8 @@
                 }
             }
 
-            if (string.IsNullOrEmpty(SiteConstants.Instance.GooglePlusAppId) ||
-                string.IsNullOrEmpty(SiteConstants.Instance.GooglePlusAppSecret))
+            if (string.IsNullOrWhiteSpace(SiteConstants.Instance.GooglePlusAppId) ||
+                string.IsNullOrWhiteSpace(SiteConstants.Instance.GooglePlusAppSecret))
             {
                 resultMessage.Message = "You need to add the Google app credentials";
                 resultMessage.MessageType = GenericMessages.danger;

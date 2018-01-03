@@ -63,7 +63,7 @@
         /// <summary>
         ///     Check is current comment is valid.
         /// </summary>
-        public bool IsValid => !(string.IsNullOrEmpty(blog) || string.IsNullOrEmpty(user_ip) ||
-                                 string.IsNullOrEmpty(user_agent));
+        public bool IsValid => !(string.IsNullOrWhiteSpace(blog) || string.IsNullOrWhiteSpace(user_ip) ||
+                                 string.IsNullOrWhiteSpace(user_agent));
     }
 }

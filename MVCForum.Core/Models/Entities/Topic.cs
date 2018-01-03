@@ -6,7 +6,7 @@
     using Enums;
     using Utilities;
 
-    public partial class Topic : Entity
+    public partial class Topic : ExtendedDataEntity
     {
         public Topic()
         {

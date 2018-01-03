@@ -29,7 +29,7 @@
             var pageIndex = p ?? 1;
 
 
-            var allTags = string.IsNullOrEmpty(search)
+            var allTags = string.IsNullOrWhiteSpace(search)
                 ? await _topicTagService.GetPagedGroupedTags(pageIndex, SiteConstants.Instance.AdminListPageSize)
                 : await _topicTagService.SearchPagedGroupedTags(search, pageIndex,
                     SiteConstants.Instance.AdminListPageSize);

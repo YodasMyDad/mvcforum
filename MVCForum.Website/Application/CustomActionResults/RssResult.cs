@@ -52,7 +52,7 @@
                     _writer.WriteElementString("description", x.Description);
                     _writer.WriteElementString("pubDate", x.PublishedDate.ToString("o"));
                     _writer.WriteElementString("link", string.Concat(currentUrl, x.Link));
-                    if (!string.IsNullOrEmpty(x.RssImage))
+                    if (!string.IsNullOrWhiteSpace(x.RssImage))
                     {
                         _writer.WriteStartElement("image");
                         _writer.WriteElementString("url", string.Concat(currentUrl, x.RssImage));

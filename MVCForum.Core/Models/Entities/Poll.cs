@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Utilities;
 
-    public partial class Poll : Entity
+    public partial class Poll : ExtendedDataEntity
     {
         public Poll()
         {

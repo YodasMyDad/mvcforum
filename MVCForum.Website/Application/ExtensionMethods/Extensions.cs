@@ -125,10 +125,10 @@
             var containerdiv = new TagBuilder("nav");
             var container = new TagBuilder("ul");
             container.AddCssClass("pagination");
-            var actionName = !string.IsNullOrEmpty(actionOveride)
+            var actionName = !string.IsNullOrWhiteSpace(actionOveride)
                 ? actionOveride
                 : helper.ViewContext.RouteData.GetRequiredString("action");
-            var controllerName = !string.IsNullOrEmpty(controllerOveride)
+            var controllerName = !string.IsNullOrWhiteSpace(controllerOveride)
                 ? controllerOveride
                 : helper.ViewContext.RouteData.GetRequiredString("controller");
 

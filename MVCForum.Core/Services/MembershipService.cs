@@ -235,7 +235,7 @@
             }
             else
             {
-                if (string.IsNullOrEmpty(newUser.UserName))
+                if (string.IsNullOrWhiteSpace(newUser.UserName))
                 {
                     status = MembershipCreateStatus.InvalidUserName;
                 }
@@ -252,7 +252,7 @@
                     status = MembershipCreateStatus.DuplicateEmail;
                 }
 
-                if (string.IsNullOrEmpty(newUser.Password))
+                if (string.IsNullOrWhiteSpace(newUser.Password))
                 {
                     status = MembershipCreateStatus.InvalidPassword;
                 }
@@ -1231,7 +1231,7 @@
         public bool IsPasswordResetTokenValid(MembershipUser user, string token)
         {
             var existingUser = GetUser(user.Id);
-            if (string.IsNullOrEmpty(existingUser?.PasswordResetToken))
+            if (string.IsNullOrWhiteSpace(existingUser?.PasswordResetToken))
             {
                 return false;
             }

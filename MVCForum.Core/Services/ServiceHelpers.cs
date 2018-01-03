@@ -49,7 +49,7 @@
             }
 
             // If the previous slug is null, then it's a newly created Entity
-            if (string.IsNullOrEmpty(previousSlug))
+            if (string.IsNullOrWhiteSpace(previousSlug))
             {
                 // Now check another entity doesn't have the same one
                 if (matchingEntities.Any())

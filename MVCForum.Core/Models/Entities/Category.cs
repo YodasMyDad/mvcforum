@@ -5,7 +5,7 @@
     using Enums;
     using Utilities;
 
-    public partial class Category : Entity
+    public partial class Category : ExtendedDataEntity
     {
         public Category()
         {

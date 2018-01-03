@@ -57,8 +57,8 @@
 
 
             // Get the prevalue options
-            if (string.IsNullOrEmpty(SiteConstants.Instance.MicrosoftAppId) ||
-                string.IsNullOrEmpty(SiteConstants.Instance.MicrosoftAppSecret))
+            if (string.IsNullOrWhiteSpace(SiteConstants.Instance.MicrosoftAppId) ||
+                string.IsNullOrWhiteSpace(SiteConstants.Instance.MicrosoftAppSecret))
             {
                 resultMessage.Message = "You need to add the Microsoft app credentials to the web.config";
                 resultMessage.MessageType = GenericMessages.danger;
@@ -120,7 +120,7 @@
 
                 try
                 {
-                    if (string.IsNullOrEmpty(resultMessage.Message) || accessTokenResponse != null)
+                    if (string.IsNullOrWhiteSpace(resultMessage.Message) || accessTokenResponse != null)
                     {
                         //MicrosoftScope debug = accessTokenResponse.Body.Scope.Items;
 
@@ -186,7 +186,7 @@
                             //{
                             //    var profile = JObject.Parse(dl.DownloadString(uri));
                             //    var pictureUrl = ;
-                            //    if (!string.IsNullOrEmpty(pictureUrl))
+                            //    if (!string.IsNullOrWhiteSpace(pictureUrl))
                             //    {
                             //        //viewModel.SocialProfileImageUrl = getImageUrl;
                             //    }

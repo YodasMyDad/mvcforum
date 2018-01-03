@@ -214,7 +214,7 @@
             var updateSlug = true;
 
             // Check if slug has changed as this could be an update
-            if (!string.IsNullOrEmpty(category.Slug))
+            if (!string.IsNullOrWhiteSpace(category.Slug))
             {
                 var categoryBySlug = GetBySlugWithSubCategories(category.Slug);
                 if (categoryBySlug.Category.Id == category.Id)
@@ -329,7 +329,7 @@
             {
                 var path = category.Path;
                 var cats = new List<Category>();
-                if (!string.IsNullOrEmpty(path))
+                if (!string.IsNullOrWhiteSpace(path))
                 {
                     var catGuids = path.Trim().Split(',').Select(x => new Guid(x)).ToList();
                     if (!catGuids.Contains(category.Id))

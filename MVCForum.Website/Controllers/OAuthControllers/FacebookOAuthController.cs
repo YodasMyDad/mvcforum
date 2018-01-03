@@ -73,8 +73,8 @@
             }
 
             // Get the prevalue options
-            if (string.IsNullOrEmpty(SiteConstants.Instance.FacebookAppId) ||
-                string.IsNullOrEmpty(SiteConstants.Instance.FacebookAppSecret))
+            if (string.IsNullOrWhiteSpace(SiteConstants.Instance.FacebookAppId) ||
+                string.IsNullOrWhiteSpace(SiteConstants.Instance.FacebookAppSecret))
             {
                 resultMessage.Message = "You need to add the Facebook app credentials";
                 resultMessage.MessageType = GenericMessages.danger;
@@ -135,7 +135,7 @@
 
                 try
                 {
-                    if (string.IsNullOrEmpty(resultMessage.Message))
+                    if (string.IsNullOrWhiteSpace(resultMessage.Message))
                     {
                         // Initialize the Facebook service (no calls are made here)
                         var service = FacebookService.CreateFromAccessToken(userAccessToken);
@@ -151,7 +151,7 @@
 
                         // Try to get the email - Some FB accounts have protected passwords
                         var email = user.Body.Email;
-                        if (string.IsNullOrEmpty(email))
+                        if (string.IsNullOrWhiteSpace(email))
                         {
                             resultMessage.Message =
                                 LocalizationService.GetResourceString("Members.UnableToGetEmailAddress");
