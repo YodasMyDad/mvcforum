@@ -10,6 +10,7 @@ namespace MVCForumAutomation
         public MVCForumClient()
         {
             _webDriver = new ChromeDriver();
+            _webDriver.Url = "http://localhost:8080";
         }
 
         ~MVCForumClient()
