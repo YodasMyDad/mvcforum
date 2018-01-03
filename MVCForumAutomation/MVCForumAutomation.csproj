@@ -61,6 +61,7 @@
     <Compile Include="LoggedInUser.cs" />
     <Compile Include="MVCForumClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegistrationPage.cs" />
     <Compile Include="SanityTests.cs" />
   </ItemGroup>
   <ItemGroup>

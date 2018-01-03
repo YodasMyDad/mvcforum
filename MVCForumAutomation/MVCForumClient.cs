@@ -37,6 +37,11 @@ namespace MVCForumAutomation
             return new LoggedInUser();
         }
 
+        private RegistrationPage GoToRegistrationPage()
+        {
+            throw new NotImplementedException();
+        }
+
         public LatestDiscussions LatestDiscussions
         {
             get { throw new NotImplementedException(); }
