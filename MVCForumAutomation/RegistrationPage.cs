@@ -1,7 +1,16 @@
+using OpenQA.Selenium;
+
 namespace MVCForumAutomation
 {
     internal class RegistrationPage
     {
+        private readonly IWebDriver _webDriver;
+
+        public RegistrationPage(IWebDriver webDriver)
+        {
+            _webDriver = webDriver;
+        }
+
         public string Username
         {
             get { throw new System.NotImplementedException(); }

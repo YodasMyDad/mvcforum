@@ -39,7 +39,10 @@ namespace MVCForumAutomation
 
         private RegistrationPage GoToRegistrationPage()
         {
-            throw new NotImplementedException();
+            var registerLink = _webDriver.FindElement(By.ClassName("auto-register"));
+            registerLink.Click();
+
+            return new RegistrationPage(_webDriver);
         }
 
         public LatestDiscussions LatestDiscussions
