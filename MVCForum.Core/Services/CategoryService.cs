@@ -107,7 +107,7 @@
             if (level > 1)
             {
                 var sb = new StringBuilder();
-                for (var i = 0; i < level-1; i++)
+                for (var i = 0; i < level - 1; i++)
                 {
                     sb.Append("-");
                 }
@@ -165,22 +165,18 @@
 
         private List<Category> GetAllowedCategoriesCode(MembershipRole role, string actionType)
         {
-            var cacheKey = string.Concat(CacheKeys.Category.StartsWith, "GetAllowedCategoriesCode-", role.Id, "-", actionType);
-            return _cacheService.CachePerRequest(cacheKey, () =>
+            var filteredCats = new List<Category>();
+            var allCats = GetAll();
+            foreach (var category in allCats)
             {
-                var filteredCats = new List<Category>();
-                var allCats = GetAll();
-                foreach (var category in allCats)
+                var permissionSet = _roleService.GetPermissions(category, role);
+                if (!permissionSet[actionType].IsTicked)
                 {
-                    var permissionSet = _roleService.GetPermissions(category, role);
-                    if (!permissionSet[actionType].IsTicked)
-                    {
-                        // Only add it category is NOT locked
-                        filteredCats.Add(category);
-                    }
+                    // Only add it category is NOT locked
+                    filteredCats.Add(category);
                 }
-                return filteredCats;
-            });
+            }
+            return filteredCats;
         }
 
         /// <summary>
@@ -225,7 +221,7 @@
 
             if (updateSlug)
             {
-                category.Slug = ServiceHelpers.GenerateSlug(category.Name, GetBySlugLike(category.Slug), category.Slug);   
+                category.Slug = ServiceHelpers.GenerateSlug(category.Name, GetBySlugLike(category.Slug), category.Slug);
             }
         }
 

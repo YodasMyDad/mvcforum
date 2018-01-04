@@ -159,24 +159,26 @@
             {
                 tags = StringUtils.SafePlainText(tags);
 
-                var splitTags = tags.Replace(" ", "").Split(',');
+                var newTagNames = tags.ToLower().TrimStart().TrimEnd()
+                    .Replace(" ", "-").Split(',')
+                    .Select(tag => tag)
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Distinct();
               
                 if(topic.Tags == null)
                 {
                     topic.Tags = new List<TopicTag>();
                 }                   
 
-                var newTagNames = splitTags.Select(tag => tag);
-                var newTags = new List<TopicTag>();
-                var existingTags = new List<TopicTag>();
+                var entityTags = new List<TopicTag>();
 
-                foreach (var newTag in newTagNames.Distinct())
+                foreach (var newTag in newTagNames)
                 {
                     var tag = GetTagName(newTag);
                     if (tag != null)
                     {
                         // Exists
-                        existingTags.Add(tag);
+                        entityTags.Add(tag);
                     }
                     else
                     {
@@ -188,12 +190,11 @@
                             };
 
                         Add(nTag);
-                        newTags.Add(nTag);
+                        entityTags.Add(nTag);
                     }
                 }
 
-                newTags.AddRange(existingTags);
-                topic.Tags = newTags;
+                topic.Tags = entityTags;
 
                 // Fire the tag badge check
                 _badgeService.ProcessBadge(BadgeType.Tag, topic.User);
