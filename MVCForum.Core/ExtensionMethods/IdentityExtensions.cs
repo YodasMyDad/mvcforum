@@ -25,10 +25,11 @@
         /// </summary>
         /// <param name="user"></param>
         /// <param name="roleService"></param>
+        /// <param name="removeTracking"></param>
         /// <returns></returns>
-        public static MembershipRole GetRole(this MembershipUser user, IRoleService roleService)
+        public static MembershipRole GetRole(this MembershipUser user, IRoleService roleService, bool removeTracking = true)
         {
-            return user == null ? roleService.GetRole(AppConstants.GuestRoleName, true) : user.Roles.FirstOrDefault();
+            return user == null ? roleService.GetRole(AppConstants.GuestRoleName, removeTracking) : user.Roles.FirstOrDefault();
         }
     }
 }
