@@ -382,14 +382,6 @@
             {
                 try
                 {
-
-                    // Edit Post/Topic
-                    // Save
-                    // Edit Tags
-                    // Save
-                    // Edit Poll
-                    // -- 
-
                     // Got to get a lot of things here as we have to check permissions
                     // Get the post
                     var originalPost = _postService.Get(editPostViewModel.Id);
@@ -445,18 +437,9 @@
 
                         originalPost = _postService.SanitizePost(originalPost);
 
-                        // Update postedit content
-                        postEdit.EditedPostContent = originalPost.PostContent;
-
                         // if topic starter update the topic
                         if (originalPost.IsTopicStarter)
                         {
-                            // Update post edit
-                            postEdit.EditedPostTitle = originalTopic.Name;
-
-                            // Add the post edit too
-                            _postEditService.Add(postEdit);
-
                             // Now save the post changes and the post edit
                             Context.SaveChanges();
 
@@ -539,8 +522,7 @@
                                 var newPollAnswers = editPostViewModel.PollAnswers.Where(x => !string.IsNullOrWhiteSpace(x.Answer) && !originalPollAnswerIds.Contains(x.Id)).ToList();
 
                                 // Loop through existing and update names if need be
-                                //TODO: Need to think about this in future versions if they change the name
-                                //TODO: As they could game the system by getting votes and changing name?
+                                // If name changes remove the poll
                                 foreach (var existPollAnswer in existingAnswers)
                                 {
                                     // Get the existing answer from the current topic
@@ -659,6 +641,13 @@
                                 topicPostInModeration = true;
                             }
                         }
+
+                        // Create a post edit
+                        postEdit.EditedPostTitle = originalTopic.Name;
+                        postEdit.EditedPostContent = originalPost.PostContent;
+
+                        // Add the post edit too
+                        _postEditService.Add(postEdit);
 
                         // Commit the changes
                         Context.SaveChanges();
