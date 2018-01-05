@@ -63,6 +63,7 @@
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.User)
                                 .Include(x => x.Poll)
+                                .AsNoTracking()
                                 .Where(x => allowedCatIds.Contains(x.Category.Id) && x.Pending != true)
                                 .ToList();
         }

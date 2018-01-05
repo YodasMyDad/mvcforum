@@ -6,7 +6,6 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Constants;
-    using Data.Context;
     using Interfaces;
     using Interfaces.Services;
     using Models.Entities;
@@ -36,8 +35,7 @@
 
         public IList<BannedEmail> GetAll()
         {
-            var cacheKey = string.Concat(CacheKeys.BannedEmail.StartsWith, "GetAll");
-            return _cacheService.CachePerRequest(cacheKey, () => _context.BannedEmail.ToList());
+            return _context.BannedEmail.AsNoTracking().ToList();
         }
 
         public BannedEmail Get(Guid id)
@@ -64,23 +62,16 @@
 
         public IList<BannedEmail> GetAllWildCards()
         {
-            var cacheKey = string.Concat(CacheKeys.BannedEmail.StartsWith, "GetAllWildCards");
-            return _cacheService.CachePerRequest(cacheKey, () => _context.BannedEmail.Where(x => x.Email.StartsWith("*@")).ToList());
+            return _context.BannedEmail.AsNoTracking().Where(x => x.Email.StartsWith("*@")).ToList();
         }
 
         public IList<BannedEmail> GetAllNonWildCards()
         {
-            var cacheKey = string.Concat(CacheKeys.BannedEmail.StartsWith, "GetAllNonWildCards");
-            return _cacheService.CachePerRequest(cacheKey, () => _context.BannedEmail.Where(x => !x.Email.StartsWith("*@")).ToList());
+            return _context.BannedEmail.AsNoTracking().Where(x => !x.Email.StartsWith("*@")).ToList();
         }
 
         public bool EmailIsBanned(string email)
         {
-
-            var cacheKey = string.Concat(CacheKeys.BannedEmail.StartsWith, "EmailIsBanned-", email);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
-
                 var domainBanned = false;
 
                 // Sanitise the email
@@ -121,8 +112,6 @@
                 }
 
                 return domainBanned;
-
-            });
         }
 
         private static string ReturnDomainOnly(string email)

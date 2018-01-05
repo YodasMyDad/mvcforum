@@ -1,7 +1,6 @@
 ﻿
 namespace Badge.AuthorMarkAsSolution
 {
-    using MvcForum.Core.DomainModel;
     using MvcForum.Core.Interfaces.Badges;
     using MvcForum.Core.Interfaces.Services;
     using System.Web.Mvc;

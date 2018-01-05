@@ -27,8 +27,7 @@
         /// <returns></returns>
         public IList<CategoryNotification> GetAll()
         {
-            var cacheKey = string.Concat(CacheKeys.CategoryNotification.StartsWith, "GetAll");
-            return _cacheService.CachePerRequest(cacheKey, () => _context.CategoryNotification.ToList());
+            return _context.CategoryNotification.AsNoTracking().ToList();
         }
 
         /// <summary>
@@ -47,11 +46,9 @@
         /// <returns></returns>
         public IList<CategoryNotification> GetByCategory(Category category)
         {
-            var cacheKey = string.Concat(CacheKeys.CategoryNotification.StartsWith, "GetByCategory-", category.Id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.CategoryNotification
-                                                                        .AsNoTracking()
-                                                                        .Where(x => x.Category.Id == category.Id)
-                                                                        .ToList());
+            return _context.CategoryNotification.AsNoTracking()
+                            .Where(x => x.Category.Id == category.Id)
+                            .ToList();
         }
 
         /// <summary>
@@ -61,10 +58,9 @@
         /// <returns></returns>
         public IList<CategoryNotification> GetByUser(MembershipUser user)
         {
-            var cacheKey = string.Concat(CacheKeys.CategoryNotification.StartsWith, "GetByUser-", user.Id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.CategoryNotification
-                                                                        .Where(x => x.User.Id == user.Id)
-                                                                        .ToList());
+            return _context.CategoryNotification.AsNoTracking()
+                        .Where(x => x.User.Id == user.Id)
+                        .ToList();
         }
 
         /// <summary>
@@ -76,16 +72,12 @@
         /// <returns></returns>
         public IList<CategoryNotification> GetByUserAndCategory(MembershipUser user, Category category, bool addTracking = false)
         {
-            var cacheKey = string.Concat(CacheKeys.CategoryNotification.StartsWith, "GetByUserAndCategory-", user.Id, "-", category.Id, "-", addTracking);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
                 var notifications = _context.CategoryNotification.Where(x => x.Category.Id == category.Id && x.User.Id == user.Id);
                 if (addTracking)
                 {
                     return notifications.ToList();
                 }
-                return notifications.AsNoTracking().ToList();
-            });
+                return notifications.AsNoTracking().ToList();   
         }
 
         /// <summary>

@@ -5,7 +5,6 @@
     using System.Data.Entity;
     using System.Linq;
     using Constants;
-    using Data.Context;
     using Interfaces;
     using Interfaces.Services;
     using Models.Entities;
@@ -23,8 +22,7 @@
 
         public List<PollVote> GetAllPollVotes()
         {
-            var cacheKey = string.Concat(CacheKeys.PollVote.StartsWith, "GetAllPollVotes");
-            return _cacheService.CachePerRequest(cacheKey, () => _context.PollVote.ToList());
+            return _context.PollVote.ToList();
         }
 
         public PollVote Add(PollVote pollVote)
@@ -34,13 +32,9 @@
 
         public bool HasUserVotedAlready(Guid answerId, Guid userId)
         {
-            var cacheKey = string.Concat(CacheKeys.PollVote.StartsWith, "HasUserVotedAlready-", answerId, "-", userId);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
                 var vote = _context.PollVote.Include(x => x.PollAnswer).Include(x => x.User)
                     .FirstOrDefault(x => x.PollAnswer.Id == answerId && x.User.Id == userId);
                 return vote != null;
-            });
         }
 
         public PollVote Get(Guid id)
