@@ -4,8 +4,6 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
-    using Constants;
-    using Data.Context;
     using Interfaces;
     using Interfaces.Services;
     using Models.Entities;
@@ -81,31 +79,28 @@
 
         public PostEdit Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.PostEdit.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.PostEdit
+            return  _context.PostEdit
                 .Include(x => x.EditedBy)
                 .Include(x => x.Post.User)
-                .FirstOrDefault(x => x.Id == id));
+                .FirstOrDefault(x => x.Id == id);
         }
 
         public IList<PostEdit> GetByPost(Guid postId)
         {
-            var cacheKey = string.Concat(CacheKeys.PostEdit.StartsWith, "GetByPost-", postId);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.PostEdit.AsNoTracking()
+            return _context.PostEdit.AsNoTracking()
                 .Include(x => x.EditedBy)
                 .Include(x => x.Post.User)
                 .Where(x => x.Post.Id == postId)
-                .OrderByDescending(x => x.DateEdited).ToList());
+                .OrderByDescending(x => x.DateEdited).ToList();
         }
 
         public IList<PostEdit> GetByMember(Guid memberId)
         {
-            var cacheKey = string.Concat(CacheKeys.PostEdit.StartsWith, "GetByMember-", memberId);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.PostEdit.AsNoTracking()
+            return _context.PostEdit.AsNoTracking()
                 .Include(x => x.EditedBy)
                 .Include(x => x.Post.User)
                 .Where(x => x.EditedBy.Id == memberId)
-                .OrderByDescending(x => x.DateEdited).ToList());
+                .OrderByDescending(x => x.DateEdited).ToList();
         }
     }
 }

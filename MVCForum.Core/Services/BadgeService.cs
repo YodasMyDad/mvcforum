@@ -156,7 +156,7 @@
         {
             var databaseUpdateNeeded = false;
 
-            var e = new BadgeEventArgs {User = user, BadgeType = badgeType};
+            var e = new BadgeEventArgs { User = user, BadgeType = badgeType };
             EventManager.Instance.FireBeforeBadgeAwarded(this, e);
 
             if (!e.Cancel)
@@ -191,7 +191,7 @@
                                     {
                                         var points = new MembershipUserPoints
                                         {
-                                            Points = (int) dbBadge.AwardsPoints,
+                                            Points = (int)dbBadge.AwardsPoints,
                                             PointsFor = PointsFor.Badge,
                                             PointsForId = dbBadge.Id,
                                             User = user
@@ -298,51 +298,48 @@
         /// <returns></returns>
         private bool RecentlyProcessed(BadgeType badgeType, MembershipUser user)
         {
-            var cacheKey = string.Concat(CacheKeys.Badge.StartsWith, "RecentlyProcessed-", user.Id, "-", badgeType);
-            return _cacheService.CachePerRequest(cacheKey, () =>
+            var recentlyProcessed = false;
+            var now = DateTime.UtcNow;
+
+            BadgeTypeTimeLastChecked timeBadgeLastChecked = null;
+
+            // Go through all the badge-check time records for this user
+            foreach (var nextBadgeTypeCheckedForUser in user.BadgeTypesTimeLastChecked)
             {
-                var recentlyProcessed = false;
-                var now = DateTime.UtcNow;
+                var previouslyCheckedBadgeType = FromString(nextBadgeTypeCheckedForUser.BadgeType);
 
-                BadgeTypeTimeLastChecked timeBadgeLastChecked = null;
-
-                // Go through all the badge-check time records for this user
-                foreach (var nextBadgeTypeCheckedForUser in user.BadgeTypesTimeLastChecked)
+                if (previouslyCheckedBadgeType == null || previouslyCheckedBadgeType != badgeType)
                 {
-                    var previouslyCheckedBadgeType = FromString(nextBadgeTypeCheckedForUser.BadgeType);
-
-                    if (previouslyCheckedBadgeType == null || previouslyCheckedBadgeType != badgeType)
-                    {
-                        continue;
-                    }
-
-                    // Block the badge check if not enough time has elapsed since last check
-                    if ((now - nextBadgeTypeCheckedForUser.TimeLastChecked).TotalMinutes < BadgeCheckIntervalMinutes)
-                    {
-                        recentlyProcessed = true;
-                    }
-
-                    timeBadgeLastChecked = nextBadgeTypeCheckedForUser;
-                    timeBadgeLastChecked.TimeLastChecked = now;
-
-                    break;
+                    continue;
                 }
 
-                // If this badge type never checked for this user, add it
-                if (timeBadgeLastChecked == null)
+                // Block the badge check if not enough time has elapsed since last check
+                if ((now - nextBadgeTypeCheckedForUser.TimeLastChecked).TotalMinutes < BadgeCheckIntervalMinutes)
                 {
-                    timeBadgeLastChecked = new BadgeTypeTimeLastChecked
-                    {
-                        BadgeType = badgeType.ToString(),
-                        TimeLastChecked = now,
-                        User = user
-                    };
-
-                    user.BadgeTypesTimeLastChecked.Add(timeBadgeLastChecked);
+                    recentlyProcessed = true;
                 }
 
-                return recentlyProcessed;
-            });
+                timeBadgeLastChecked = nextBadgeTypeCheckedForUser;
+                timeBadgeLastChecked.TimeLastChecked = now;
+
+                break;
+            }
+
+            // If this badge type never checked for this user, add it
+            if (timeBadgeLastChecked == null)
+            {
+                timeBadgeLastChecked = new BadgeTypeTimeLastChecked
+                {
+                    BadgeType = badgeType.ToString(),
+                    TimeLastChecked = now,
+                    User = user
+                };
+
+                user.BadgeTypesTimeLastChecked.Add(timeBadgeLastChecked);
+            }
+
+            return recentlyProcessed;
+
         }
 
         /// <summary>
@@ -354,7 +351,7 @@
         {
             try
             {
-                return (BadgeType) Enum.Parse(typeof(BadgeType), badgeTypeStr);
+                return (BadgeType)Enum.Parse(typeof(BadgeType), badgeTypeStr);
             }
             catch (ArgumentException)
             {
@@ -415,7 +412,7 @@
                             {
                                 _badges.Add(badgeType, new List<BadgeMapping>());
                             }
-                            _badges[badgeType].Add(new BadgeMapping {BadgeClass = type, DbBadge = dbBadge});
+                            _badges[badgeType].Add(new BadgeMapping { BadgeClass = type, DbBadge = dbBadge });
                         }
                     }
                 }
@@ -540,35 +537,30 @@
         /// <returns></returns>
         private bool BadgeCanBeAwarded(MembershipUser user, BadgeMapping badgeMapping)
         {
-            var cacheKey = string.Concat(CacheKeys.Badge.StartsWith, "BadgeCanBeAwarded-", user.Id, "-",
-                badgeMapping.GetHashCode());
-            return _cacheService.CachePerRequest(cacheKey, () =>
+            if (user.Badges == null)
             {
-                if (user.Badges == null)
-                {
-                    _loggingService.Error(string.Format(_localizationService.GetResourceString("Badges.UnableToAward"),
-                        user.UserName));
-                    return false;
-                }
+                _loggingService.Error(string.Format(_localizationService.GetResourceString("Badges.UnableToAward"),
+                    user.UserName));
+                return false;
+            }
 
-                var badgeCanBeAwarded = true;
+            var badgeCanBeAwarded = true;
 
-                if (badgeMapping.BadgeClass == null || badgeMapping.DbBadge == null)
+            if (badgeMapping.BadgeClass == null || badgeMapping.DbBadge == null)
+            {
+                badgeCanBeAwarded = false;
+            }
+            else
+            {
+                var userHasBadge = user.Badges.Any(userBadge => userBadge.Name == badgeMapping.DbBadge.Name);
+
+                if (userHasBadge)
                 {
                     badgeCanBeAwarded = false;
                 }
-                else
-                {
-                    var userHasBadge = user.Badges.Any(userBadge => userBadge.Name == badgeMapping.DbBadge.Name);
+            }
 
-                    if (userHasBadge)
-                    {
-                        badgeCanBeAwarded = false;
-                    }
-                }
-
-                return badgeCanBeAwarded;
-            });
+            return badgeCanBeAwarded;
         }
 
         #endregion

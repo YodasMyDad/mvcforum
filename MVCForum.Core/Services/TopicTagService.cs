@@ -39,8 +39,7 @@
         /// <returns></returns>
         public IEnumerable<TopicTag> GetAll()
         {
-            var cacheKey = string.Concat(CacheKeys.TopicTag.StartsWith, "GetAll");
-            return _cacheService.CachePerRequest(cacheKey, () => _context.TopicTag.AsNoTracking());
+            return _context.TopicTag.AsNoTracking();
         }
 
         /// <summary>
@@ -66,12 +65,11 @@
         public IList<TopicTag> GetContains(string term, int amountToTake = 4)
         {
             term = StringUtils.SafePlainText(term);
-            var cacheKey = string.Concat(CacheKeys.TopicTag.StartsWith, "GetContains-", amountToTake, "-", term);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.TopicTag
+            return _context.TopicTag
                                                                     .AsNoTracking()
                                                                     .Where(x => x.Tag.ToUpper().Contains(term.ToUpper()))
                                                                     .Take(amountToTake)
-                                                                    .ToList());
+                                                                    .ToList();
         }
 
         /// <summary>
@@ -155,7 +153,7 @@
         /// <param name="topic"></param>
         public void Add(string tags, Topic topic)
         {
-            if(!string.IsNullOrWhiteSpace(tags))
+            if (!string.IsNullOrWhiteSpace(tags))
             {
                 tags = StringUtils.SafePlainText(tags);
 
@@ -164,11 +162,11 @@
                     .Select(tag => tag)
                     .Where(x => !string.IsNullOrWhiteSpace(x))
                     .Distinct();
-              
-                if(topic.Tags == null)
+
+                if (topic.Tags == null)
                 {
                     topic.Tags = new List<TopicTag>();
-                }                   
+                }
 
                 var entityTags = new List<TopicTag>();
 
@@ -184,10 +182,10 @@
                     {
                         // Doesn't exists
                         var nTag = new TopicTag
-                            {
-                                Tag = newTag,
-                                Slug = ServiceHelpers.CreateUrl(newTag)
-                            };
+                        {
+                            Tag = newTag,
+                            Slug = ServiceHelpers.CreateUrl(newTag)
+                        };
 
                         Add(nTag);
                         entityTags.Add(nTag);
@@ -207,16 +205,16 @@
         /// <param name="topic"></param>
         public void DeleteByTopic(Topic topic)
         {
-                var tags = topic.Tags;
-                foreach (var topicTag in tags)
+            var tags = topic.Tags;
+            foreach (var topicTag in tags)
+            {
+                // If this tag has a count of topics greater than this one topic
+                // then its tagged by more topics so don't delete
+                if (topicTag.Topics.Count <= 1)
                 {
-                    // If this tag has a count of topics greater than this one topic
-                    // then its tagged by more topics so don't delete
-                    if(topicTag.Topics.Count <= 1)
-                    {
-                        Delete(topicTag);   
-                    }
+                    Delete(topicTag);
                 }
+            }
         }
 
         /// <summary>
@@ -225,10 +223,10 @@
         /// <param name="tags"></param>
         public void DeleteTags(IEnumerable<TopicTag> tags)
         {
-                foreach (var topicTag in tags)
-                {
-                    Delete(topicTag);
-                }
+            foreach (var topicTag in tags)
+            {
+                Delete(topicTag);
+            }
         }
 
         /// <summary>
@@ -238,19 +236,19 @@
         /// <param name="oldTagName"></param>
         public void UpdateTagNames(string tagName, string oldTagName)
         {
-                // run new and old names through safe filter first
-                var safeNewName = StringUtils.SafePlainText(tagName);
-                var safeOldName = StringUtils.SafePlainText(oldTagName);
+            // run new and old names through safe filter first
+            var safeNewName = StringUtils.SafePlainText(tagName);
+            var safeOldName = StringUtils.SafePlainText(oldTagName);
 
-                // Now remove any spaces
-                safeNewName = safeNewName.Replace(" ", "-");
+            // Now remove any spaces
+            safeNewName = safeNewName.Replace(" ", "-");
 
-                // get all the old tags by name
-                var oldTag = GetTagName(safeOldName);
-                if(oldTag != null)
-                {
-                    oldTag.Tag = safeNewName;
-                }
+            // get all the old tags by name
+            var oldTag = GetTagName(safeOldName);
+            if (oldTag != null)
+            {
+                oldTag.Tag = safeNewName;
+            }
         }
 
         /// <summary>

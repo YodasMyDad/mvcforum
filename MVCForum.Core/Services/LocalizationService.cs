@@ -298,7 +298,7 @@
 
         public async Task<PaginatedList<LocaleStringResource>> SearchResourceValuesForKey(Guid languageId, string search, int pageIndex, int pageSize)
         {
-            var query = _context.LocaleStringResource
+            var query = _context.LocaleStringResource.AsNoTracking()
                 .Include(x => x.LocaleResourceKey)
                 .Include(x => x.Language)
                 .Where(x => x.Language.Id == languageId && x.LocaleResourceKey.Name.ToUpper().Contains(search.ToUpper()))
@@ -340,6 +340,8 @@
         public IList<LocaleStringResource> AllLanguageResources(Guid languageId)
         {
             return _context.LocaleStringResource
+                        .Include(x => x.LocaleResourceKey)
+                         .AsNoTracking()
                         .Where(x => x.Language.Id == languageId)
                         .ToList();
         }
@@ -465,7 +467,7 @@
         /// <returns></returns>
         public async Task<PaginatedList<LocaleStringResource>> GetAllValues(Guid languageId, int pageIndex, int pageSize)
         {
-            var results = _context.LocaleStringResource
+            var results = _context.LocaleStringResource.AsNoTracking()
                 .Include(x => x.Language)
                 .Include(x => x.LocaleResourceKey)
                 .Where(x => x.Language.Id == languageId)
@@ -496,7 +498,7 @@
         /// <returns></returns>
         public async Task<PaginatedList<LocaleResourceKey>> GetAllResourceKeys(int pageIndex, int pageSize)
         {
-            var results = _context.LocaleResourceKey
+            var results = _context.LocaleResourceKey.AsNoTracking()
                 .OrderBy(x => x.Name);
 
             return await PaginatedList<LocaleResourceKey>.CreateAsync(results.AsNoTracking(), pageIndex, pageSize);
@@ -543,6 +545,7 @@
             var results = _context.LocaleStringResource
                 .Include(x => x.Language)
                 .Include(x => x.LocaleResourceKey)
+                .AsNoTracking()
                 .Where(x => x.Language.Id == languageId)
                 .Where(x => x.ResourceValue.ToUpper().Contains(search.ToUpper()))
                 .OrderBy(x => x.ResourceValue);
@@ -561,7 +564,7 @@
         public async Task<PaginatedList<LocaleResourceKey>> SearchResourceKeys(string search, int pageIndex, int pageSize)
         {
             search = StringUtils.SafePlainText(search);
-            var results = _context.LocaleResourceKey
+            var results = _context.LocaleResourceKey.Include(x => x.LocaleStringResources).AsNoTracking()
                 .Where(resKey => resKey.Name.ToUpper().Contains(search.ToUpper()))
                 .OrderBy(resKey => resKey.Name);
 

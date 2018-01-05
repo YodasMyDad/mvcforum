@@ -9,10 +9,10 @@
     using System.Threading.Tasks;
     using System.Web.Hosting;
     using Constants;
-    using DomainModel.LinqKit;
     using Events;
     using Interfaces;
     using Interfaces.Services;
+    using LinqKit;
     using Models.Entities;
     using Models.Enums;
     using Models.General;
@@ -74,11 +74,10 @@
 
         public Post GetTopicStarterPost(Guid topicId)
         {
-            var cacheKey = string.Concat(CacheKeys.Post.StartsWith, "GetTopicStarterPost-", topicId);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.Post
+            return _context.Post
                                                                         .Include(x => x.Topic.Category)
                                                                         .Include(x => x.User)
-                                                                        .FirstOrDefault(x => x.Topic.Id == topicId && x.IsTopicStarter));
+                                                                        .FirstOrDefault(x => x.Topic.Id == topicId && x.IsTopicStarter);
         }
 
         /// <summary>
@@ -87,15 +86,12 @@
         /// <returns></returns>
         public IEnumerable<Post> GetAll(List<Category> allowedCategories)
         {
-            var cacheKey = string.Concat(CacheKeys.Post.StartsWith, "GetAll-", allowedCategories.GetHashCode());
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
                 // get the category ids
                 var allowedCatIds = allowedCategories.Select(x => x.Id);
                 return _context.Post
                         .Include(x => x.Topic.Category)
                         .Where(x => allowedCatIds.Contains(x.Topic.Category.Id));
-            });
+       
         }
 
         /// <summary>
@@ -105,9 +101,6 @@
         /// <returns></returns>
         public IList<Post> GetLowestVotedPost(int amountToTake)
         {
-            var cacheKey = string.Concat(CacheKeys.Post.StartsWith, "GetLowestVotedPost-", amountToTake);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
                 return _context.Post
                     .Include(x => x.Topic)
                     .Include(x => x.User)
@@ -115,7 +108,7 @@
                     .OrderBy(x => x.VoteCount)
                     .Take(amountToTake)
                     .ToList();
-            });
+         
         }
 
         /// <summary>
@@ -125,9 +118,7 @@
         /// <returns></returns>
         public IList<Post> GetHighestVotedPost(int amountToTake)
         {
-            var cacheKey = string.Concat(CacheKeys.Post.StartsWith, "GetHighestVotedPost-", amountToTake);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 return _context.Post
                     .Include(x => x.Topic)
                     .Include(x => x.User)
@@ -135,7 +126,6 @@
                     .OrderByDescending(x => x.VoteCount)
                     .Take(amountToTake)
                     .ToList();
-            });
 
         }
 
@@ -148,9 +138,7 @@
         /// <returns></returns>
         public IList<Post> GetByMember(Guid memberId, int amountToTake, List<Category> allowedCategories)
         {
-            var cacheKey = string.Concat(CacheKeys.Post.StartsWith, "GetByMember-", amountToTake, "-", allowedCategories.GetHashCode());
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 // get the category ids
                 var allowedCatIds = allowedCategories.Select(x => x.Id);
                 return _context.Post
@@ -162,7 +150,7 @@
                         .OrderByDescending(x => x.DateCreated)
                         .Take(amountToTake)
                         .ToList();
-            });
+ 
         }
 
         public IList<Post> GetReplyToPosts(Post post)
@@ -172,41 +160,35 @@
 
         public IList<Post> GetReplyToPosts(Guid postId)
         {
-            var cacheKey = string.Concat(CacheKeys.Post.StartsWith, "GetReplyToPosts-", postId);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 // We don't allow topic starters in the list OR solutions. As if it's marked as a solution, it's a solution for that topic
                 // and moving it wouldn't make sense.
                 return _context.Post.Where(x => x.InReplyTo != null & x.InReplyTo == postId && !x.IsTopicStarter && !x.IsSolution).ToList();
-            });
+
         }
 
         public IEnumerable<Post> GetPostsByFavouriteCount(Guid postsByMemberId, int minAmountOfFavourites)
         {
-            var cacheKey = string.Concat(CacheKeys.Post.StartsWith, "GetPostsByFavouriteCount-", postsByMemberId, "-", minAmountOfFavourites);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 return _context.Post
                        .Include(x => x.Topic.LastPost.User)
                        .Include(x => x.Topic.Category)
                        .Include(x => x.User)
                        .Include(x => x.Favourites.Select(f => f.Member))
                        .Where(x => x.User.Id == postsByMemberId && x.Favourites.Count(c => c.Member.Id != postsByMemberId) >= minAmountOfFavourites);
-            });
+       
         }
 
         public IEnumerable<Post> GetPostsFavouritedByOtherMembers(Guid postsByMemberId)
         {
-            var cacheKey = string.Concat(CacheKeys.Post.StartsWith, "GetPostsFavouritedByOtherMembers-", postsByMemberId);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 return _context.Post
                             .Include(x => x.Topic.LastPost.User)
                             .Include(x => x.Topic.Category)
                             .Include(x => x.User)
                             .Include(x => x.Favourites.Select(f => f.Member))
                             .Where(x => x.User.Id == postsByMemberId && x.Favourites.Any(c => c.Member.Id != postsByMemberId));
-            });
+  
 
         }
 
@@ -237,7 +219,7 @@
                             .Where(x => allowedCatIds.Contains(x.Topic.Category.Id));
 
             // Start the predicate builder
-            var postFilter = PredicateBuilder.False<Post>();
+            var postFilter = PredicateBuilder.New<Post>(false);
 
             // Loop through each word and see if it's in the post
             foreach (var term in splitSearch)
@@ -339,12 +321,9 @@
 
         public int GetPendingPostsCount(List<Category> allowedCategories)
         {
-            var cacheKey = string.Concat(CacheKeys.Post.StartsWith, "GetPendingPostsCount-", allowedCategories.GetHashCode());
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
                 var allowedCatIds = allowedCategories.Select(x => x.Id);
                 return _context.Post.AsNoTracking().Include(x => x.Topic.Category).Count(x => x.Pending == true && allowedCatIds.Contains(x.Topic.Category.Id));
-            });
+         
         }
 
         /// <summary>
@@ -355,9 +334,7 @@
         /// <returns></returns>
         public IList<Post> GetSolutionsByMember(Guid memberId, List<Category> allowedCategories)
         {
-            var cacheKey = string.Concat(CacheKeys.Post.StartsWith, "GetSolutionsByMember-", memberId, "-", allowedCategories.GetHashCode());
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 // get the category ids
                 var allowedCatIds = allowedCategories.Select(x => x.Id);
                 return _context.Post
@@ -369,7 +346,7 @@
                     .Where(x => allowedCatIds.Contains(x.Topic.Category.Id))
                     .OrderByDescending(x => x.DateCreated)
                     .ToList();
-            });
+  
         }
 
         /// <summary>
@@ -378,16 +355,14 @@
         /// <returns></returns>
         public int PostCount(List<Category> allowedCategories)
         {
-            var cacheKey = string.Concat(CacheKeys.Post.StartsWith, "PostCount-", allowedCategories.GetHashCode());
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+    
                 // get the category ids
                 var allowedCatIds = allowedCategories.Select(x => x.Id);
                 return _context.Post
                     .Include(x => x.Topic)
                     .AsNoTracking()
                     .Count(x => x.Pending != true && x.Topic.Pending != true && allowedCatIds.Contains(x.Topic.Category.Id));
-            });
+      
         }
 
         /// <summary>
@@ -418,9 +393,7 @@
 
         public IList<Post> GetPostsByTopics(List<Guid> topicIds, List<Category> allowedCategories)
         {
-            var cacheKey = string.Concat(CacheKeys.Post.StartsWith, "GetPostsByTopics-", topicIds.GetHashCode(), "-", allowedCategories.GetHashCode());
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 // get the category ids
                 var allowedCatIds = allowedCategories.Select(x => x.Id);
                 return _context.Post
@@ -432,7 +405,7 @@
                     .Where(x => allowedCatIds.Contains(x.Topic.Category.Id))
                     .OrderByDescending(x => x.DateCreated)
                     .ToList();
-            });
+      
         }
 
         /// <summary>
@@ -653,9 +626,7 @@
 
         public IList<Post> GetPostsByMember(Guid memberId, List<Category> allowedCategories)
         {
-            var cacheKey = string.Concat(CacheKeys.Post.StartsWith, "GetPostsByMember-", memberId, "-", allowedCategories.GetHashCode());
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 // get the category ids
                 var allowedCatIds = allowedCategories.Select(x => x.Id);
                 return _context.Post
@@ -666,14 +637,12 @@
                     .Where(x => allowedCatIds.Contains(x.Topic.Category.Id))
                     .OrderByDescending(x => x.DateCreated)
                     .ToList();
-            });
+        
         }
 
         public IList<Post> GetAllSolutionPosts(List<Category> allowedCategories)
         {
-            var cacheKey = string.Concat(CacheKeys.Post.StartsWith, "GetAllSolutionPosts-", allowedCategories.GetHashCode());
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 // get the category ids
                 var allowedCatIds = allowedCategories.Select(x => x.Id);
                 return _context.Post
@@ -684,29 +653,25 @@
                     .Where(x => allowedCatIds.Contains(x.Topic.Category.Id))
                     .OrderByDescending(x => x.DateCreated)
                     .ToList();
-            });
+
 
         }
 
         public IList<Post> GetPostsByTopic(Guid topicId)
         {
-            var cacheKey = string.Concat(CacheKeys.Post.StartsWith, "GetPostsByTopic-", topicId);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 return _context.Post
                     .Include(x => x.Topic)
                     .Include(x => x.User)
                     .Where(x => x.Topic.Id == topicId && x.Pending != true)
                     .OrderByDescending(x => x.DateCreated)
                     .ToList();
-            });
+      
         }
 
         public IEnumerable<Post> GetAllWithTopics(List<Category> allowedCategories)
         {
-            var cacheKey = string.Concat(CacheKeys.Post.StartsWith, "GetAllWithTopics-", allowedCategories.GetHashCode());
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 // get the category ids
                 var allowedCatIds = allowedCategories.Select(x => x.Id);
                 return _context.Post
@@ -714,7 +679,7 @@
                     .Include(x => x.User)
                     .Where(x => x.Pending != true)
                     .Where(x => allowedCatIds.Contains(x.Topic.Category.Id));
-            });
+   
 
         }
 
@@ -723,7 +688,7 @@
             var timeNow = DateTime.UtcNow;
             var floodWindow = timeNow.AddSeconds(-SiteConstants.Instance.PostSecondsWaitBeforeNewPost);
 
-            return _context.Post
+            return _context.Post.AsNoTracking()
                     .Include(x => x.User)
                     .Count(x => x.User.Id == user.Id && x.DateCreated >= floodWindow && !x.IsTopicStarter) <= 0;
         }

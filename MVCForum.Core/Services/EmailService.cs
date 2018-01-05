@@ -7,7 +7,6 @@
     using System.Net;
     using System.Net.Mail;
     using System.Web.Hosting;
-    using Data.Context;
     using Interfaces;
     using Interfaces.Services;
     using Models.Entities;
@@ -15,9 +14,9 @@
 
     public partial class EmailService : IEmailService
     {
+        private readonly IMvcForumContext _context;
         private readonly ILoggingService _loggingService;
         private readonly ISettingsService _settingsService;
-        private readonly IMvcForumContext _context;
 
         public EmailService(ILoggingService loggingService, ISettingsService settingsService, IMvcForumContext context)
         {
@@ -77,7 +76,7 @@
 
                     if (smtpEnableSsl != null)
                     {
-                        mySmtpClient.EnableSsl = (bool)smtpEnableSsl;
+                        mySmtpClient.EnableSsl = (bool) smtpEnableSsl;
                     }
 
                     if (!string.IsNullOrWhiteSpace(smtpPort))
@@ -88,18 +87,25 @@
                     // List to store the emails to delete after they are sent
                     var emailsToDelete = new List<Email>();
 
-                    // Loop through email email create a mailmessage and send it
+                    // Loop through email email create a mailmessage and send
                     foreach (var message in emails)
                     {
-                        var msg = new MailMessage
+                        try
                         {
-                            IsBodyHtml = true,
-                            Body = message.Body,
-                            From = new MailAddress(fromEmail),
-                            Subject = message.Subject
-                        };
-                        msg.To.Add(message.EmailTo);
-                        mySmtpClient.Send(msg);
+                            var msg = new MailMessage
+                            {
+                                IsBodyHtml = true,
+                                Body = message.Body,
+                                From = new MailAddress(fromEmail),
+                                Subject = message.Subject
+                            };
+                            msg.To.Add(message.EmailTo);
+                            mySmtpClient.Send(msg);
+                        }
+                        catch (Exception ex)
+                        {
+                            _loggingService.Error($"EXCEPTION sending mail to {message.EmailTo}: {ex.Message}");
+                        }
 
                         emailsToDelete.Add(message);
                     }
@@ -109,7 +115,6 @@
                     {
                         Delete(sentEmail);
                     }
-                   
                 }
             }
             catch (Exception ex)
@@ -119,7 +124,7 @@
         }
 
         /// <summary>
-        /// Returns the HTML email template with values replaced
+        ///     Returns the HTML email template with values replaced
         /// </summary>
         /// <param name="to"></param>
         /// <param name="content"></param>
@@ -151,20 +156,20 @@
 
         public void SendMail(Email email, Settings settings)
         {
-            SendMail(new List<Email> { email }, settings);
+            SendMail(new List<Email> {email}, settings);
         }
 
         /// <summary>
-        /// Send a single email
+        ///     Send a single email
         /// </summary>
         /// <param name="email"></param>
         public void SendMail(Email email)
         {
-            SendMail(new List<Email> { email });
+            SendMail(new List<Email> {email});
         }
 
         /// <summary>
-        /// Send multiple emails
+        ///     Send multiple emails
         /// </summary>
         /// <param name="emails"></param>
         public void SendMail(List<Email> emails)
@@ -179,7 +184,6 @@
             // They are sent every X seconds by the email sending task
             foreach (var email in emails)
             {
-
                 // Sort local images in emails
                 email.Body = StringUtils.AppendDomainToImageUrlInHtml(email.Body, settings.ForumUrl.TrimEnd('/'));
                 Add(email);

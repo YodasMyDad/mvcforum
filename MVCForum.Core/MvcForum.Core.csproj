@@ -40,12 +40,6 @@
     <Compile Include="Constants\AppConstants.cs" />
     <Compile Include="Constants\CacheKeys.cs" />
     <Compile Include="Constants\SiteConstants.cs" />
-    <Compile Include="Data\LinqKit\ExpandableQuery.cs" />
-    <Compile Include="Data\LinqKit\ExpressionExpander.cs" />
-    <Compile Include="Data\LinqKit\ExpressionVisitor.cs" />
-    <Compile Include="Data\LinqKit\Extensions.cs" />
-    <Compile Include="Data\LinqKit\Linq.cs" />
-    <Compile Include="Data\LinqKit\PredicateBuilder.cs" />
     <Compile Include="ExtensionMethods\ExtendedDataExtensions.cs" />
     <Compile Include="ExtensionMethods\IdentityExtensions.cs" />
     <Compile Include="Migrations\201801011815079_IncreaseAccessTokenLength.cs" />
@@ -319,6 +313,9 @@
     </PackageReference>
     <PackageReference Include="HtmlAgilityPack">
       <Version>1.6.11</Version>
+    </PackageReference>
+    <PackageReference Include="LinqKit.EntityFramework">
+      <Version>1.1.12</Version>
     </PackageReference>
     <PackageReference Include="MarkdownSharp">
       <Version>1.13.0</Version>

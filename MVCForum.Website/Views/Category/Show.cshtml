@@ -1,7 +1,7 @@
 ﻿@using MvcForum.Core.Utilities
-@using MvcForum.Web.ViewModels
+@using MvcForum.Web.ViewModels.Category
 
-@model MvcForum.Web.ViewModels.Category.CategoryViewModel
+@model CategoryViewModel
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = Html.Raw(Model.Category.PageTitle ?? Model.Category.Name);

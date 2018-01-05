@@ -441,14 +441,11 @@
         public MembershipUser GetUserBySlug(string slug)
         {
             slug = StringUtils.GetSafeHtml(slug);
-            var cacheKey = string.Concat(CacheKeys.Member.StartsWith, "GetUserBySlug-", slug);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 return _context.MembershipUser
                     .Include(x => x.Badges)
                     .Include(x => x.Roles)
                     .FirstOrDefault(name => name.Slug == slug);
-            });
         }
 
         public IList<MembershipUser> GetUserBySlugLike(string slug)

@@ -91,9 +91,6 @@
         /// <returns></returns>
         public Dictionary<Permission, CategoryPermissionForRole> GetCategoryRow(MembershipRole role, Category cat)
         {
-            var cacheKey = string.Concat(CacheKeys.CategoryPermissionForRole.StartsWith, "GetCategoryRow-", role.Id, "-", cat.Id);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
                 var catRowList = _context.CategoryPermissionForRole
                 .Include(x => x.MembershipRole)
                 .Include(x => x.Category)
@@ -103,7 +100,6 @@
                             x.MembershipRole.Id == role.Id)
                             .ToList();
                 return catRowList.ToDictionary(catRow => catRow.Permission);
-            });
         }
 
         /// <summary>
@@ -113,42 +109,31 @@
         /// <returns></returns>
         public IEnumerable<CategoryPermissionForRole> GetByCategory(Guid categoryId)
         {
-            var cacheKey = string.Concat(CacheKeys.CategoryPermissionForRole.StartsWith, "GetByCategory-", categoryId);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
                 return _context.CategoryPermissionForRole
                                 .Include(x => x.MembershipRole)
                                 .Include(x => x.Category)
                                 .Include(x => x.Permission)
                                 .Where(x => x.Category.Id == categoryId)
                                 .ToList();
-            });
         }
 
         public IEnumerable<CategoryPermissionForRole> GetByRole(Guid roleId)
         {
-            var cacheKey = string.Concat(CacheKeys.CategoryPermissionForRole.StartsWith, "GetByRole-", roleId);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
                 return _context.CategoryPermissionForRole
                     .Include(x => x.MembershipRole)
                     .Include(x => x.Category)
                     .Include(x => x.Permission)
                     .Where(x => x.MembershipRole.Id == roleId);
-            });
         }
 
         public IEnumerable<CategoryPermissionForRole> GetByPermission(Guid permId)
         {
-            var cacheKey = string.Concat(CacheKeys.CategoryPermissionForRole.StartsWith, "GetByPermission-", permId);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 return _context.CategoryPermissionForRole
                     .Include(x => x.MembershipRole)
                     .Include(x => x.Category)
                     .Include(x => x.Permission)
                     .Where(x => x.Permission.Id == permId);
-            });
 
         }
 
