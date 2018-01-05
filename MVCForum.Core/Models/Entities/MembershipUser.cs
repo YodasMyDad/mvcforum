@@ -10,7 +10,7 @@
     /// <summary>
     ///     A membership user
     /// </summary>
-    public class MembershipUser : ExtendedDataEntity
+    public partial class MembershipUser : ExtendedDataEntity
     {
         public MembershipUser()
         {
@@ -65,6 +65,8 @@
         public bool? DisableFileUploads { get; set; }
 
         public bool? HasAgreedToTermsAndConditions { get; set; }
+
+        public bool IsTrustedUser { get; set; }
 
         public string Latitude { get; set; }
         public string Longitude { get; set; }

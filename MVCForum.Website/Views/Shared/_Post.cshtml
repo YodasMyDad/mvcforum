@@ -27,6 +27,12 @@
                 @Html.Lang("Post.MemberIsOnline")
             </span>
         }
+        @if (Model.IsTrustedUser)
+        {
+            <span class="label label-success">
+                @Html.Lang("Post.IsTrustedUser")
+            </span>
+        }
     </div>
 
     <div class="rowdetails clearfix">

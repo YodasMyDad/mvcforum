@@ -5,7 +5,7 @@
     using General;
     using Utilities;
 
-    public class Post : ExtendedDataEntity
+    public partial class Post : ExtendedDataEntity
     {
         public Post()
         {

@@ -96,8 +96,16 @@
                 @Html.EditorFor(x => x.Signature)
                 @Html.ValidationMessageFor(x => x.Signature)
             </div>
-
+            
             <h2>Admin Specific</h2>
+
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.IsTrustedUser, new { @class = "checkbox" }))
+                {
+                    @Html.CheckBoxFor(m => m.IsTrustedUser)
+                }
+                @Html.ValidationMessageFor(m => m.IsTrustedUser)
+            </div>
 
             <div class="checkbox">
                 @using (Html.BeginLabelFor(m => m.DisableEmailNotifications, new { @class = "checkbox" }))

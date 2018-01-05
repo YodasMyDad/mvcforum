@@ -278,6 +278,7 @@
             user.DisableEmailNotifications = userModel.DisableEmailNotifications;
             user.DisablePosting = userModel.DisablePosting;
             user.DisablePrivateMessages = userModel.DisablePrivateMessages;
+            user.IsTrustedUser = userModel.IsTrustedUser;
 
             try
             {

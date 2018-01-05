@@ -3,7 +3,7 @@
     using System;
     using Utilities;
 
-    public class Block : Entity
+    public partial class Block : Entity
     {
         public Block()
         {

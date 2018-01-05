@@ -60,6 +60,10 @@
     <Compile Include="Migrations\201801021904303_ExtendedDataOnAll.Designer.cs">
       <DependentUpon>201801021904303_ExtendedDataOnAll.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201801050701512_AddedTrustedUserOption.cs" />
+    <Compile Include="Migrations\201801050701512_AddedTrustedUserOption.Designer.cs">
+      <DependentUpon>201801050701512_AddedTrustedUserOption.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\BadgeActivity.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
@@ -402,6 +406,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201801021904303_ExtendedDataOnAll.resx">
       <DependentUpon>201801021904303_ExtendedDataOnAll.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801050701512_AddedTrustedUserOption.resx">
+      <DependentUpon>201801050701512_AddedTrustedUserOption.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
