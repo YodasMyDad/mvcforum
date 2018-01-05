@@ -41,6 +41,25 @@
 
         public void Delete(Poll item)
         {
+            var pollAnswers = new List<PollAnswer>();
+            pollAnswers.AddRange(item.PollAnswers);
+            foreach (var itemPollAnswer in pollAnswers)
+            {
+                var pollVotes = new List<PollVote>();
+                pollVotes.AddRange(itemPollAnswer.PollVotes);
+                foreach (var pollVote in pollVotes)
+                {
+                    itemPollAnswer.PollVotes.Remove(pollVote);
+                    _context.PollVote.Remove(pollVote);
+                }
+
+                // Delete poll answer
+                item.PollAnswers.Remove(itemPollAnswer);
+                _context.PollAnswer.Remove(itemPollAnswer);
+            }
+
+            item.User = null;
+
             _context.Poll.Remove(item);
         }
     }

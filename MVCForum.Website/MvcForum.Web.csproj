@@ -1393,7 +1393,7 @@
       <Version>3.4.1</Version>
     </PackageReference>
     <PackageReference Include="CommonServiceLocator">
-      <Version>2.0.1</Version>
+      <Version>2.0.2</Version>
     </PackageReference>
     <PackageReference Include="EcmaScript.Net">
       <Version>1.0.1</Version>
@@ -1516,7 +1516,10 @@
       <Version>4.7.4</Version>
     </PackageReference>
     <PackageReference Include="Unity">
-      <Version>5.5.3</Version>
+      <Version>5.5.4</Version>
+    </PackageReference>
+    <PackageReference Include="Unity.Abstractions">
+      <Version>3.1.1</Version>
     </PackageReference>
     <PackageReference Include="WebGrease">
       <Version>1.6.0</Version>

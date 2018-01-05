@@ -110,7 +110,7 @@
 
                 _bannedWordService.Delete(word);
 
-                ViewBag.Message = new GenericMessageViewModel
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = "Word delete successfully",
                     MessageType = GenericMessages.success
@@ -121,7 +121,7 @@
             {
                 Context.RollBack();
                 LoggingService.Error(ex);
-                ViewBag.Message = new GenericMessageViewModel
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = $"Delete failed: {ex.Message}",
                     MessageType = GenericMessages.danger

@@ -165,27 +165,27 @@
             if (post.User.Id == loggedOnReadOnlyUser.Id ||
                 permissions[SiteConstants.Instance.PermissionDeletePosts].IsTicked)
             {
-                // Delete post / topic
-                if (post.IsTopicStarter)
-                {
-                    // Delete entire topic
-                    _topicService.Delete(topic);
-                }
-                else
-                {
-                    // Deletes single post and associated data
-                    _postService.Delete(post, false);
-
-                    // Remove in replyto's
-                    var relatedPosts = _postService.GetReplyToPosts(postId);
-                    foreach (var relatedPost in relatedPosts)
-                    {
-                        relatedPost.InReplyTo = null;
-                    }
-                }
-
                 try
                 {
+                    // Delete post / topic
+                    if (post.IsTopicStarter)
+                    {
+                        // Delete entire topic
+                        _topicService.Delete(topic);
+                    }
+                    else
+                    {
+                        // Deletes single post and associated data
+                        _postService.Delete(post, false);
+
+                        // Remove in replyto's
+                        var relatedPosts = _postService.GetReplyToPosts(postId);
+                        foreach (var relatedPost in relatedPosts)
+                        {
+                            relatedPost.InReplyTo = null;
+                        }
+                    }
+
                     Context.SaveChanges();
                 }
                 catch (Exception ex)
