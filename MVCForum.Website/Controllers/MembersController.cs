@@ -909,7 +909,7 @@
         public ActionResult LogOff()
         {
             FormsAuthentication.SignOut();
-            ViewBag.Message = new GenericMessageViewModel
+            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
             {
                 Message = LocalizationService.GetResourceString("Members.NowLoggedOut"),
                 MessageType = GenericMessages.success

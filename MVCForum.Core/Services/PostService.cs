@@ -3,9 +3,11 @@
     using System;
     using System.Collections.Generic;
     using System.Data.Entity;
+    using System.IO;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using System.Web.Hosting;
     using Constants;
     using DomainModel.LinqKit;
     using Events;
@@ -470,13 +472,12 @@
             votesToDelete.AddRange(votes);
             foreach (var vote in votesToDelete)
             {
+                post.Votes.Remove(vote);
                 _voteService.Delete(vote);
             }
             post.Votes.Clear();
 
             #endregion
-
-            _context.SaveChanges();
 
             #region Files
 
@@ -485,13 +486,21 @@
             filesToDelete.AddRange(post.Files);
             foreach (var uploadedFile in filesToDelete)
             {
+                // store the file path as we'll need it to delete on the file system
+                var filePath = uploadedFile.FilePath;
+
+                post.Files.Remove(uploadedFile);
                 _uploadedFileService.Delete(uploadedFile);
+
+                // And finally delete from the file system
+                if (!string.IsNullOrWhiteSpace(filePath))
+                {
+                    File.Delete(HostingEnvironment.MapPath(filePath));
+                }
             }
             post.Files.Clear();
 
             #endregion
-
-            _context.SaveChanges();
 
             #region Favourites
 
@@ -499,19 +508,22 @@
             postFavourites.AddRange(post.Favourites);
             foreach (var postFavourite in postFavourites)
             {
+                post.Favourites.Remove(postFavourite);
                 _favouriteService.Delete(postFavourite);
             }
             post.Favourites.Clear();
 
             #endregion
 
-            _context.SaveChanges();
-
             #region Post Edits
 
             var postEdits = new List<PostEdit>();
             postEdits.AddRange(post.PostEdits);
-            _postEditService.Delete(postEdits);
+            foreach (var postEdit in postEdits)
+            {
+                post.PostEdits.Remove(postEdit);
+                _postEditService.Delete(postEdit);
+            }
             post.PostEdits.Clear();
 
             #endregion
@@ -534,6 +546,9 @@
                 {
                     topic.Solved = false;
                 }
+
+                // Save the topic
+                _context.SaveChanges();
             }
 
             // Remove from the topic

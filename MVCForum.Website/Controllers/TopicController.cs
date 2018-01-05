@@ -589,46 +589,11 @@
                             }
                             else if (originalTopic.Poll != null)
                             {
-                                // Need to check if this topic has a poll, because if it does
-                                // All the answers have now been removed so remove the poll.
-                                //Firstly remove the answers if there are any
-                                if (originalTopic.Poll.PollAnswers != null && originalTopic.Poll.PollAnswers.Any())
-                                {
-                                    var answersToDelete = new List<PollAnswer>();
-                                    answersToDelete.AddRange(originalTopic.Poll.PollAnswers);
-
-                                    // Delete all votes first
-                                    foreach (var answer in answersToDelete)
-                                    {
-                                        foreach (var answerPollVote in answer.PollVotes)
-                                        {
-                                            answer.PollVotes.Remove(answerPollVote);
-                                            _pollVoteService.Delete(answerPollVote);                                            
-                                        }
-                                    }
-
-                                    // Save deleted votes
-                                    Context.SaveChanges();
-
-                                    foreach (var answer in answersToDelete)
-                                    {
-                                        // Remove from Poll
-                                        originalTopic.Poll.PollAnswers.Remove(answer);
-
-                                        // Delete
-                                        _pollAnswerService.Delete(answer);
-                                    }
-
-                                    // Save deleted answers
-                                    Context.SaveChanges();
-                                }
-
-                                // Now delete the poll
-                                var pollToDelete = originalTopic.Poll;
-                                _pollService.Delete(pollToDelete);
-
                                 // Remove from topic.
                                 originalTopic.Poll = null;
+
+                                // Now delete the poll
+                                _pollService.Delete(originalTopic.Poll);
                             }
                         }
                         else

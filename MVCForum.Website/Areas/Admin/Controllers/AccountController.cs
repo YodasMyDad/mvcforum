@@ -284,7 +284,7 @@
             {
                 Context.SaveChanges();
 
-                ViewBag.Message = new GenericMessageViewModel
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = "User saved",
                     MessageType = GenericMessages.success
@@ -315,7 +315,7 @@
 
                 MembershipService.Delete(user);
 
-                ViewBag.Message = new GenericMessageViewModel
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = "User delete successfully",
                     MessageType = GenericMessages.success
@@ -326,7 +326,7 @@
             {
                 Context.RollBack();
                 LoggingService.Error(ex);
-                ViewBag.Message = new GenericMessageViewModel
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = $"Delete failed: {ex.Message}",
                     MessageType = GenericMessages.danger
