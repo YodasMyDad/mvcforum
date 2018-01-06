@@ -7,5 +7,6 @@
         public bool CanLockTopic { get; set; }
         public bool CanCreatePolls { get; set; }
         public bool CanInsertImages { get; set; }
+        public bool CanCreateTags { get; set; }
     }
 }

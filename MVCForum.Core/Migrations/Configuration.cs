@@ -8,6 +8,7 @@ namespace MvcForum.Core.Services.Migrations
     using System.Linq;
     using System.Text;
     using System.Web.Hosting;
+    using System.Web.Security;
     using Constants;
     using Data.Context;
     using Models.Entities;
@@ -316,21 +317,17 @@ namespace MvcForum.Core.Services.Migrations
                     }
 
                     // Insert Editor Images
-                    if (context.Permission.FirstOrDefault(x =>
-                            x.Name == SiteConstants.Instance.PermissionInsertEditorImages) ==
-                        null)
-                    {
-                        var p = new Permission
-                        {
-                            Name = SiteConstants.Instance.PermissionInsertEditorImages,
-                            IsGlobal = true
-                        };
-                        context.Permission.Add(p);
-                    }
+                    AddPermissionInsertEditorImages(context);
+
+                    // Insert Create Tags
+                    AddPermissionCreateTags(context);
 
                     // Save to the database
                     context.SaveChanges();
                 }
+
+                // Create a temp password
+                var tempAdminPassword = Membership.GeneratePassword(8, 0);
 
                 // If the admin user exists then don't do anything else
                 const string adminUsername = "admin";
@@ -341,7 +338,7 @@ namespace MvcForum.Core.Services.Migrations
                     {
                         Email = "you@email.com",
                         UserName = adminUsername,
-                        Password = "password",
+                        Password = tempAdminPassword,
                         IsApproved = true,
                         DisableEmailNotifications = false,
                         DisablePosting = false,
@@ -383,15 +380,21 @@ namespace MvcForum.Core.Services.Migrations
                     context.Topic.Add(topic);
                     context.SaveChanges();
 
-                    const string readMeText = @"<h2>Administration</h2>
+                    var readMeText = $@"<h2>Admin Login Details</h2>
 <p>We have auto created an admin user for you to manage the site</p>
-<p>Username: <strong>admin</strong><br />Password: <strong>password</strong></p>
+<p>Username: <strong>admin</strong><br />Password: <strong>{tempAdminPassword}</strong></p>
 <p>Once you have logged in, you can manage the forum <a href=""/admin/"">through the admin section</a>. </p>
-<p><strong><font color=""#ff0000"">Important:</font> </strong>Please update the admin password (and username) before putting this site live.</p>
+<p><strong><font color=""#ff0000"">Important:</font> </strong>Please update the admin password and username before putting this site live and delete this post, or you put the security of your forum at risk.</p>
+<h2>Permissions</h2> 
+<p>You must <a href=""/admin/permissions/"">set the permissions</a> for each Role in the admin section, as <u>by default no permissions are enabled</u>. So for example, you might want to set 'Create Topics' to be 
+    allowed for the Standard Role or no one will be able to create topics.</p>
 <h2>Documentation</h2>
-<p>We have documentation on Github in the WIKI</p>
+<p>We have some documentation on Github in the WIKI</p>
 <p><a href=""https://github.com/YodasMyDad/mvcforum/wiki"">https://github.com/YodasMyDad/mvcforum/wiki</a></p>
-<p>You can also grab the source code from Github too.</p>";
+<h2>Issues & Help</h2>
+<p>If you general need help then please post on the support forums, but if you find a bug then please either raise an issue on Github or even better fix the issue and create a pull request ;)</p>
+<p><a href=""https://github.com/YodasMyDad/mvcforum/pulls"">https://github.com/YodasMyDad/mvcforum/pulls</a></p>
+<p><a href=""https://github.com/YodasMyDad/mvcforum/issues"">https://github.com/YodasMyDad/mvcforum/issues</a></p>";
 
                     var post = new Post
                     {
@@ -412,24 +415,63 @@ namespace MvcForum.Core.Services.Migrations
             }
             else
             {
-                // ---- Do Data Updates here
-
-                // Data to update on versions v1.7+
-
-                // Insert Editor Images
-                if (context.Permission.FirstOrDefault(
-                        x => x.Name == SiteConstants.Instance.PermissionInsertEditorImages) == null)
-                {
-                    var p = new Permission
-                    {
-                        Name = SiteConstants.Instance.PermissionInsertEditorImages,
-                        IsGlobal = true
-                    };
-                    context.Permission.Add(p);
-                }
+                // Do upgrades
+                UpgradeData(context);
             }
 
             #endregion
+        }
+
+        /// <summary>
+        /// Adds any new data for new versions of the forum
+        /// </summary>
+        /// <param name="context"></param>
+        private void UpgradeData(MvcForumContext context)
+        {
+            // Data to update on versions v1.7+
+
+            AddPermissionInsertEditorImages(context);
+
+            // Version 2.0 Upgrades
+
+            AddPermissionCreateTags(context);
+        }
+
+
+        /// <summary>
+        /// Adds permission for users to insert images into the editor
+        /// </summary>
+        /// <param name="context"></param>
+        private void AddPermissionInsertEditorImages(MvcForumContext context)
+        {
+            if (context.Permission.FirstOrDefault(
+                    x => x.Name == SiteConstants.Instance.PermissionInsertEditorImages) == null)
+            {
+                var p = new Permission
+                {
+                    Name = SiteConstants.Instance.PermissionInsertEditorImages,
+                    IsGlobal = true
+                };
+                context.Permission.Add(p);
+            }
+        }
+
+        /// <summary>
+        /// Adds permission for users to create tags
+        /// </summary>
+        /// <param name="context"></param>
+        private void AddPermissionCreateTags(MvcForumContext context)
+        {
+            if (context.Permission.FirstOrDefault(
+                    x => x.Name == SiteConstants.Instance.PermissionCreateTags) == null)
+            {
+                var p = new Permission
+                {
+                    Name = SiteConstants.Instance.PermissionCreateTags,
+                    IsGlobal = false
+                };
+                context.Permission.Add(p);
+            }
         }
     }
 }

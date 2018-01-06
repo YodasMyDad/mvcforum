@@ -247,6 +247,11 @@
             {
                 model.CanInsertImages = true;
             }
+
+            if (permissionSet[SiteConstants.Instance.PermissionCreateTags].IsTicked)
+            {
+                model.CanCreateTags = true;
+            }
             return model;
         }
 
@@ -446,7 +451,7 @@
                             // Sort the Tags
                             if (!string.IsNullOrWhiteSpace(editPostViewModel.Tags))
                             {
-                                _topicTagService.Add(editPostViewModel.Tags.ToLower(), originalTopic);
+                                _topicTagService.Add(editPostViewModel.Tags.ToLower(), originalTopic, permissions[SiteConstants.Instance.PermissionCreateTags].IsTicked);
                             }
 
                             // Now save the tag changes
@@ -678,7 +683,8 @@
                     CanStickyTopic = userIsAdmin,
                     CanUploadFiles = userIsAdmin,
                     CanCreatePolls = userIsAdmin,
-                    CanInsertImages = canInsertImages
+                    CanInsertImages = canInsertImages,
+                    CanCreateTags =  userIsAdmin
                 },
                 PollAnswers = new List<PollAnswer>(),
                 IsTopicStarter = true,
@@ -733,8 +739,7 @@
             // Now we have the category and permissionSet - Populate the optional permissions 
             // This is just in case the viewModel is return back to the view also sort the allowedCategories
             topicViewModel.OptionalPermissions = GetCheckCreateTopicPermissions(permissions);
-            topicViewModel.Categories =
-                _categoryService.GetBaseSelectListCategories(AllowedCreateCategories(loggedOnUsersRole));
+            topicViewModel.Categories = _categoryService.GetBaseSelectListCategories(AllowedCreateCategories(loggedOnUsersRole));
             topicViewModel.IsTopicStarter = true;
             if (topicViewModel.PollAnswers == null)
             {
@@ -975,7 +980,7 @@
                                 topicViewModel.Tags = _bannedWordService.SanitiseBannedWords(topicViewModel.Tags, bannedWords);
 
                                 // Now add the tags
-                                _topicTagService.Add(topicViewModel.Tags, topic);
+                                _topicTagService.Add(topicViewModel.Tags, topic, permissions[SiteConstants.Instance.PermissionCreateTags].IsTicked);
                             }
 
                             // After tags sort the search field for the post

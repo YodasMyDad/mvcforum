@@ -35,6 +35,8 @@ Topic.IsLocked,Konu Kilitli mi?
 Topic.CreateDiscussion,Tartışma oluştur
 Topic.TagThisTopic,Bu konuyu Etiketi
 Tags.PopularTags,Popüler Etiketler
+Tags.NoCreatePermission,
+Yeni etiketler oluşturmaya izin yok, sadece mevcut olanları kullanabilirsiniz
 Stats.FooterMainStatText,Bizim {0} tartışmalarda {1} üyesi attılar {2} kere
 PM.From,Gönderen:
 PM.Title,Mesaj:
