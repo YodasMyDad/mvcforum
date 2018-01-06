@@ -348,6 +348,7 @@ SubNav.PostedIn,Posted In
 SubscribedCats.NothingToShow,You are not following to any Categories
 SubscribedTopics.NothingToShow,You are not following to any Topics
 Tags.PopularTags,Popular Tags
+Tags.NoCreatePermission,You do not have permission to create new tags, you can only use existing ones
 Tasks.MarkAsSolutionReminderJob.EmailBody,Your topic {0} on {1} has {2} replies but has still not been marked as solved. Please check again to see if any answers are appropriate and mark them as the solution if they are.
 Tasks.MarkAsSolutionReminderJob.Subject,Your post on {0}
 TermsAndConditions.Label.Agree,I have read and agree to the site Terms and Conditions

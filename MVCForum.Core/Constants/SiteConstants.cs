@@ -101,6 +101,7 @@
         public string PermissionCreatePolls => GetConfig("PermissionCreatePolls");
         public string PermissionCreateTopics => GetConfig("PermissionCreateTopics");
         public string PermissionAttachFiles => GetConfig("PermissionAttachFiles");
+        public string PermissionCreateTags => GetConfig("PermissionCreateTags");
 
         // Global Permissions
         public string PermissionEditMembers => GetConfig("PermissionEditMembers");

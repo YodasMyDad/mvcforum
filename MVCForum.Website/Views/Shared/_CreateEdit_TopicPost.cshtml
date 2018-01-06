@@ -87,7 +87,8 @@
     <div class="form-group">
         <label>@Html.Lang("Topic.Label.Tags")</label>
         <div class="topictagholder">
-            @Html.TextAreaFor(model => model.Tags, new { @class = "tagstextarea tags", title = Html.LanguageString("Topic.TagThisTopic") })
+            <p class="createtagmessage help-block">@Html.Lang("Tags.NoCreatePermission")</p>
+            @Html.TextAreaFor(model => model.Tags, new {@class = "tagstextarea tags", title = Html.LanguageString("Topic.TagThisTopic")})
         </div>
     </div>
 }

@@ -151,7 +151,8 @@
         /// </summary>
         /// <param name="tags"></param>
         /// <param name="topic"></param>
-        public void Add(string tags, Topic topic)
+        /// <param name="isAllowedToAddTags"></param>
+        public void Add(string tags, Topic topic, bool isAllowedToAddTags)
         {
             if (!string.IsNullOrWhiteSpace(tags))
             {
@@ -178,7 +179,7 @@
                         // Exists
                         entityTags.Add(tag);
                     }
-                    else
+                    else if(isAllowedToAddTags)
                     {
                         // Doesn't exists
                         var nTag = new TopicTag

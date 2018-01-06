@@ -18,7 +18,7 @@
         TopicTag Add(TopicTag tag);
         TopicTag Get(Guid tag);
         TopicTag Get(string tag);
-        void Add(string tags, Topic tag);
+        void Add(string tags, Topic tag, bool isAllowedToAddTags);
         void DeleteByTopic(Topic tag);
         void DeleteTags(IEnumerable<TopicTag> tags);
         void UpdateTagNames(string tagName, string oldTagName);
