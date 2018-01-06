@@ -8,6 +8,7 @@ namespace MvcForum.Core.Services.Migrations
     using System.Linq;
     using System.Text;
     using System.Web.Hosting;
+    using System.Web.Security;
     using Constants;
     using Data.Context;
     using Models.Entities;
@@ -332,6 +333,9 @@ namespace MvcForum.Core.Services.Migrations
                     context.SaveChanges();
                 }
 
+                // Create a temp password
+                var tempAdminPassword = Membership.GeneratePassword(8, 0);
+
                 // If the admin user exists then don't do anything else
                 const string adminUsername = "admin";
                 if (context.MembershipUser.FirstOrDefault(x => x.UserName == adminUsername) == null)
@@ -341,7 +345,7 @@ namespace MvcForum.Core.Services.Migrations
                     {
                         Email = "you@email.com",
                         UserName = adminUsername,
-                        Password = "password",
+                        Password = tempAdminPassword,
                         IsApproved = true,
                         DisableEmailNotifications = false,
                         DisablePosting = false,
@@ -383,11 +387,11 @@ namespace MvcForum.Core.Services.Migrations
                     context.Topic.Add(topic);
                     context.SaveChanges();
 
-                    const string readMeText = @"<h2>Administration</h2>
+                    var readMeText = $@"<h2>Administration</h2>
 <p>We have auto created an admin user for you to manage the site</p>
-<p>Username: <strong>admin</strong><br />Password: <strong>password</strong></p>
+<p>Username: <strong>admin</strong><br />Password: <strong>{tempAdminPassword}</strong></p>
 <p>Once you have logged in, you can manage the forum <a href=""/admin/"">through the admin section</a>. </p>
-<p><strong><font color=""#ff0000"">Important:</font> </strong>Please update the admin password (and username) before putting this site live.</p>
+<p><strong><font color=""#ff0000"">Important:</font> </strong>Please update the admin password and username before putting this site live and delete this post, or you put the security of your forum at risk.</p>
 <h2>Documentation</h2>
 <p>We have documentation on Github in the WIKI</p>
 <p><a href=""https://github.com/YodasMyDad/mvcforum/wiki"">https://github.com/YodasMyDad/mvcforum/wiki</a></p>
@@ -412,24 +416,34 @@ namespace MvcForum.Core.Services.Migrations
             }
             else
             {
-                // ---- Do Data Updates here
-
-                // Data to update on versions v1.7+
-
-                // Insert Editor Images
-                if (context.Permission.FirstOrDefault(
-                        x => x.Name == SiteConstants.Instance.PermissionInsertEditorImages) == null)
-                {
-                    var p = new Permission
-                    {
-                        Name = SiteConstants.Instance.PermissionInsertEditorImages,
-                        IsGlobal = true
-                    };
-                    context.Permission.Add(p);
-                }
+                // Do upgrades
+                UpgradeData(context);
             }
 
             #endregion
+        }
+
+        /// <summary>
+        /// Adds any new data for new versions of the forum
+        /// </summary>
+        /// <param name="context"></param>
+        private void UpgradeData(MvcForumContext context)
+        {
+            // ---- Do Data Updates here
+
+            // Data to update on versions v1.7+
+
+            // Insert Editor Images
+            if (context.Permission.FirstOrDefault(
+                    x => x.Name == SiteConstants.Instance.PermissionInsertEditorImages) == null)
+            {
+                var p = new Permission
+                {
+                    Name = SiteConstants.Instance.PermissionInsertEditorImages,
+                    IsGlobal = true
+                };
+                context.Permission.Add(p);
+            }
         }
     }
 }
