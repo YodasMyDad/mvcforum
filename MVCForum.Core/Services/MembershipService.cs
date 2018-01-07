@@ -13,6 +13,7 @@
     using Events;
     using Interfaces;
     using Interfaces.Services;
+    using Models;
     using Models.Entities;
     using Models.Enums;
     using Models.General;

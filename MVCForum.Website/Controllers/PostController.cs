@@ -14,6 +14,7 @@
     using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Services;
+    using Core.Models;
     using Core.Models.Entities;
     using Core.Models.General;
     using ViewModels.Mapping;

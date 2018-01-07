@@ -52,7 +52,7 @@
         public virtual DbSet<UploadedFile> UploadedFile { get; set; }
         public virtual DbSet<Favourite> Favourite { get; set; }
         public virtual DbSet<GlobalPermissionForRole> GlobalPermissionForRole { get; set; }
-        public virtual DbSet<Email> Email { get; set; }
+
         public virtual DbSet<PostEdit> PostEdit { get; set; }
 
 
