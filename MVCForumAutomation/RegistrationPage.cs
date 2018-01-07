@@ -14,7 +14,11 @@ namespace MVCForumAutomation
         public string Username
         {
             get { throw new System.NotImplementedException(); }
-            set { throw new System.NotImplementedException(); }
+            set
+            {
+                var usernameInput = _webDriver.FindElement(By.Id("UserName"));
+                usernameInput.SendKeys(value);
+            }
         }
 
         public string Password
