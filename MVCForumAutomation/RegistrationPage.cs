@@ -46,7 +46,8 @@ namespace MVCForumAutomation
 
         public void Register()
         {
-            throw new System.NotImplementedException();
+            var form = _webDriver.FindElement(By.ClassName("form-register"));
+            form.Submit();
         }
 
         private void FillInputElement(string id, string value)
