@@ -14,11 +14,7 @@ namespace MVCForumAutomation
         public string Username
         {
             get { throw new System.NotImplementedException(); }
-            set
-            {
-                var usernameInput = _webDriver.FindElement(By.Id("UserName"));
-                usernameInput.SendKeys(value);
-            }
+            set { FillInputElement("UserName", value); }
         }
 
         public string Password
@@ -26,8 +22,7 @@ namespace MVCForumAutomation
             get { throw new System.NotImplementedException(); }
             set
             {
-                var passwordInput = _webDriver.FindElement(By.Id("Password"));
-                passwordInput.SendKeys(value);
+                FillInputElement("Password", value);
             }
         }
 
@@ -36,8 +31,7 @@ namespace MVCForumAutomation
             get { throw new System.NotImplementedException(); }
             set
             {
-                var confirmPasswordInput = _webDriver.FindElement(By.Id("ConfirmPassword"));
-                confirmPasswordInput.SendKeys(value);
+                FillInputElement("ConfirmPassword", value);
             }
         }
 
@@ -46,14 +40,19 @@ namespace MVCForumAutomation
             get { throw new System.NotImplementedException(); }
             set
             {
-                var emailInput = _webDriver.FindElement(By.Id("Email"));
-                emailInput.SendKeys(value);
+                FillInputElement("Email", value);
             }
         }
 
         public void Register()
         {
             throw new System.NotImplementedException();
+        }
+
+        private void FillInputElement(string id, string value)
+        {
+            var input = _webDriver.FindElement(By.Id(id));
+            input.SendKeys(value);
         }
     }
 }
