@@ -24,19 +24,31 @@ namespace MVCForumAutomation
         public string Password
         {
             get { throw new System.NotImplementedException(); }
-            set { throw new System.NotImplementedException(); }
+            set
+            {
+                var passwordInput = _webDriver.FindElement(By.Id("Password"));
+                passwordInput.SendKeys(value);
+            }
         }
 
         public string ConfirmPassword
         {
             get { throw new System.NotImplementedException(); }
-            set { throw new System.NotImplementedException(); }
+            set
+            {
+                var confirmPasswordInput = _webDriver.FindElement(By.Id("ConfirmPassword"));
+                confirmPasswordInput.SendKeys(value);
+            }
         }
 
         public string Email
         {
             get { throw new System.NotImplementedException(); }
-            set { throw new System.NotImplementedException(); }
+            set
+            {
+                var emailInput = _webDriver.FindElement(By.Id("Email"));
+                emailInput.SendKeys(value);
+            }
         }
 
         public void Register()
