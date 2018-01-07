@@ -105,7 +105,7 @@
     <Compile Include="Models\General\SitemapEntry.cs" />
     <Compile Include="Models\Entities\TagNotification.cs" />
     <Compile Include="Models\Entities\TopicNotification.cs" />
-    <Compile Include="Models\Entities\Email.cs" />
+    <Compile Include="Models\Email.cs" />
     <Compile Include="Models\General\LogEntry.cs" />
     <Compile Include="Models\General\RssItem.cs" />
     <Compile Include="Models\Entities\TopicTag.cs" />
@@ -187,11 +187,6 @@
     <Compile Include="Interfaces\Services\ITopicService.cs" />
     <Compile Include="Interfaces\Services\IUploadedFileService.cs" />
     <Compile Include="Interfaces\Services\IVoteService.cs" />
-    <Compile Include="Ioc\PreApplicationStartCode.cs" />
-    <Compile Include="Ioc\Quartz\QuartzUnityExtension.cs" />
-    <Compile Include="Ioc\Quartz\UnityJobFactory.cs" />
-    <Compile Include="Ioc\Quartz\UnitySchedulerFactory.cs" />
-    <Compile Include="Ioc\RequestLifetimeHttpModule.cs" />
     <Compile Include="Ioc\UnityDependencyResolver.cs" />
     <Compile Include="Ioc\UnityHelper.cs" />
     <Compile Include="LocalizedString.cs" />
@@ -224,7 +219,6 @@
     <Compile Include="Data\Mapping\CategoryMapping.cs" />
     <Compile Include="Data\Mapping\CategoryNotificationMapping.cs" />
     <Compile Include="Data\Mapping\CategoryPermissionForRoleMapping.cs" />
-    <Compile Include="Data\Mapping\EmailMapping.cs" />
     <Compile Include="Data\Mapping\FavouriteMapping.cs" />
     <Compile Include="Data\Mapping\GlobalPermissionForRoleMapping.cs" />
     <Compile Include="Data\Mapping\LanguageMapping.cs" />
@@ -262,6 +256,7 @@
     <Compile Include="Services\PostEditService.cs" />
     <Compile Include="Services\PostService.cs" />
     <Compile Include="Services\PrivateMessageService.cs" />
+    <Compile Include="Services\RecurringJobService.cs" />
     <Compile Include="Services\ReflectionService.cs" />
     <Compile Include="Services\ReportService.cs" />
     <Compile Include="Services\RoleService.cs" />
@@ -281,7 +276,7 @@
     <Compile Include="Utilities\CsvReader.cs" />
     <Compile Include="Utilities\DateUtils.cs" />
     <Compile Include="Utilities\EnumUtils.cs" />
-    <Compile Include="Utilities\ExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\IEnumerableExtensions.cs" />
     <Compile Include="Utilities\GuidComb.cs" />
     <Compile Include="Utilities\InstallerHelper.cs" />
     <Compile Include="Utilities\LanguageUtils.cs" />
@@ -349,9 +344,6 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>10.0.3</Version>
-    </PackageReference>
-    <PackageReference Include="Quartz">
-      <Version>2.6.1</Version>
     </PackageReference>
     <PackageReference Include="Skybrud.Social">
       <Version>0.9.6</Version>

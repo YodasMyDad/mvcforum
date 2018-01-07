@@ -2,6 +2,7 @@
 {
     using System.Text;
     using Interfaces.Services;
+    using Models;
     using Models.Entities;
     using Models.General;
 

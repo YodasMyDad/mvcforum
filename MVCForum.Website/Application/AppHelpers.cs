@@ -235,16 +235,7 @@
 
         #endregion
 
-        #region Installer
-
-        /// <summary>
-        ///     Get the previous version number if there is one from the web.config
-        /// </summary>
-        /// <returns></returns>
-        public static string PreviousVersionNo()
-        {
-            return SiteConstants.Instance.MvcForumVersion;
-        }
+        #region Version
 
         /// <summary>
         ///     Gets the main version number (Used by installer)
@@ -272,24 +263,6 @@
 
             // Store the value for use in the app
             return $"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
-        }
-
-        /// <summary>
-        ///     This checks whether the installer should be called, it stops people trying to call the installer
-        ///     when the application is already installed
-        /// </summary>
-        /// <returns></returns>
-        public static bool ShowInstall()
-        {
-            //Installer for new versions and first startup
-            // Store the value for use in the app
-            var currentVersionNo = GetCurrentVersionNo();
-
-            // Now check the version in the web.config
-            var previousVersionNo = PreviousVersionNo();
-
-            // If the versions are different kick the installer into play
-            return currentVersionNo != previousVersionNo;
         }
 
         #endregion

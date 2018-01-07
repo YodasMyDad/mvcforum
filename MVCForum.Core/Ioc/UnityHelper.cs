@@ -4,7 +4,6 @@ namespace MvcForum.Core.Ioc
     using Data.Context;
     using Interfaces;
     using Interfaces.Services;
-    using Quartz;
     using Services;
     using Unity;
     using Unity.Lifetime;
@@ -44,10 +43,6 @@ namespace MvcForum.Core.Ioc
 
             // Database context, one per request, ensure it is disposed
             container.BindInRequestScope<IMvcForumContext, MvcForumContext>();
-
-
-            // Quartz
-            container.AddNewExtension<QuartzUnityExtension>();
 
             //Bind the various domain model services and repositories that e.g. our controllers require         
             container.BindInRequestScope<IRoleService, RoleService>();

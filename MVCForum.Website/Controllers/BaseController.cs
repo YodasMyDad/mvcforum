@@ -1,5 +1,7 @@
 ﻿namespace MvcForum.Web.Controllers
 {
+    using System.Globalization;
+    using System.Threading;
     using System.Web.Mvc;
     using System.Web.Routing;
     using System.Web.Security;
@@ -43,6 +45,19 @@
             CacheService = cacheService;
             Context = context;
             LoggingService = loggingService;
+        }
+
+        protected override void Initialize(RequestContext requestContext)
+        {
+            base.Initialize(requestContext);
+
+            if (Session != null)
+            {
+                // Set the culture per request
+                var ci = new CultureInfo(LocalizationService.CurrentLanguage.LanguageCulture);
+                Thread.CurrentThread.CurrentUICulture = ci;
+                Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(ci.Name);
+            }
         }
 
         protected string Domain => CacheService.CachePerRequest(CacheKeys.Domain, StringUtils.ReturnCurrentDomain);
@@ -136,6 +151,17 @@
             };
             // Not allowed in here so
             return RedirectToAction("Index", "Home");
+        }
+
+        /// <summary>
+        ///     The on exception.
+        /// </summary>
+        /// <param name="filterContext">
+        ///     The filter context.
+        /// </param>
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            LoggingService.Error(filterContext.Exception);
         }
     }
 }
