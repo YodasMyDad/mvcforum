@@ -69,6 +69,7 @@
     <Compile Include="Role.cs" />
     <Compile Include="RolePermissionsPage.cs" />
     <Compile Include="SanityTests.cs" />
+    <Compile Include="TestDefaults.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config">

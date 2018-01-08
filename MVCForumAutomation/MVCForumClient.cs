@@ -6,10 +6,12 @@ namespace MVCForumAutomation
 {
     public class MVCForumClient
     {
+        private readonly TestDefaults _testDefaults;
         private readonly IWebDriver _webDriver;
 
-        public MVCForumClient()
+        public MVCForumClient(TestDefaults testDefaults)
         {
+            _testDefaults = testDefaults;
             // TODO: select the type of browser and the URL from a configuration file
             _webDriver = new ChromeDriver();
             _webDriver.Url = "http://localhost:8080";
@@ -51,6 +53,12 @@ namespace MVCForumAutomation
         }
 
         public LoggedInAdmin LoginAsAdmin()
+        {
+            return LoginAs<LoggedInAdmin>(_testDefaults.AdminUsername, _testDefaults.AdminPassword);
+        }
+
+        private TLoggedInUser LoginAs<TLoggedInUser>(string username, string password)
+            where TLoggedInUser : LoggedInUser
         {
             throw new NotImplementedException();
         }

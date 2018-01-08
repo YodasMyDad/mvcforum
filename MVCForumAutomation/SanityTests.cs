@@ -6,6 +6,11 @@ namespace MVCForumAutomation
     [TestClass]
     public class SanityTests
     {
+        public SanityTests()
+        {
+            MVCForum = new MVCForumClient(TestDefaults);
+        }
+
         [TestInitialize]
         public void TestInitialize()
         {
@@ -28,7 +33,7 @@ namespace MVCForumAutomation
             var userA = MVCForum.RegisterNewUserAndLogin();
             var createdDiscussion = userA.CreateDiscussion(Discussion.With.Body(body));
 
-            var anonymousUser = new MVCForumClient();
+            var anonymousUser = OpenNewMVCForumClient();
             var latestHeader = anonymousUser.LatestDiscussions.Top;
             Assert.AreEqual(createdDiscussion.Title, latestHeader.Title,
                 "The title of the latest discussion should match the one we created");
@@ -37,19 +42,11 @@ namespace MVCForumAutomation
                 "The body of the latest discussion should match the one we created");
         }
 
-        public MVCForumClient MVCForum { get; } = new MVCForumClient();
-    }
+        private MVCForumClient OpenNewMVCForumClient()
+        {
+            return new MVCForumClient(TestDefaults);
+        }
 
-    public class TestDefaults
-    {
-        public Role StandardMembers
-        {
-            get { throw new NotImplementedException(); }
-        }
-        
-        public Category ExampleCategory
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public MVCForumClient MVCForum { get; }
     }
 }
