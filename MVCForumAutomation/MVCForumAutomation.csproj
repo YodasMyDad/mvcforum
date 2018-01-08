@@ -61,6 +61,7 @@
     <Compile Include="DiscussionHeader.cs" />
     <Compile Include="LatestDiscussions.cs" />
     <Compile Include="LoggedInAdmin.cs" />
+    <Compile Include="LoggedInPage.cs" />
     <Compile Include="LoggedInUser.cs" />
     <Compile Include="MVCForumClient.cs" />
     <Compile Include="PermissionTypes.cs" />

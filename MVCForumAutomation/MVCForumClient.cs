@@ -58,7 +58,17 @@ namespace MVCForumAutomation
         }
 
         private TLoggedInUser LoginAs<TLoggedInUser>(string username, string password)
-            where TLoggedInUser : LoggedInUser
+            where TLoggedInUser : LoggedInUser, new()
+        {
+            var loginPage = GoToLoginPage();
+            loginPage.Username = username;
+            loginPage.Password = password;
+            loginPage.LogOn();
+
+            return new TLoggedInUser();
+        }
+
+        private LoggedInPage GoToLoginPage()
         {
             throw new NotImplementedException();
         }
