@@ -6,6 +6,16 @@ namespace MVCForumAutomation
     [TestClass]
     public class SanityTests
     {
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            var adminUser = MVCForum.LoginAsAdmin();
+            var adminPage = adminUser.GoToAdminPage();
+            var permissions = adminPage.GetPermissionsFor(TestDefaults.StandardMembers);
+            permissions.AddToCategory(TestDefaults.ExampleCategory, PermissionTypes.CreateTopics);
+            adminUser.Logout();
+        }
+
         [TestMethod]
         public void WhenARegisteredUserStartsADiscussionOtherAnonymousUsersCanSeeIt()
         {
