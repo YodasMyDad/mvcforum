@@ -47,6 +47,14 @@ namespace MVCForumAutomation
             return new RegistrationPage(_webDriver);
         }
 
+        private LoggedInPage GoToLoginPage()
+        {
+            var logonLink = _webDriver.FindElement(By.ClassName("auto-logon"));
+            logonLink.Click();
+
+            return new LoggedInPage(_webDriver);
+        }
+
         public LatestDiscussions LatestDiscussions
         {
             get { throw new NotImplementedException(); }
@@ -66,11 +74,6 @@ namespace MVCForumAutomation
             loginPage.LogOn();
 
             return new TLoggedInUser();
-        }
-
-        private LoggedInPage GoToLoginPage()
-        {
-            throw new NotImplementedException();
         }
     }
 }

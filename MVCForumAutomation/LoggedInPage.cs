@@ -1,7 +1,16 @@
+using OpenQA.Selenium;
+
 namespace MVCForumAutomation
 {
     internal class LoggedInPage
     {
+        private readonly IWebDriver _webDriver;
+
+        public LoggedInPage(IWebDriver webDriver)
+        {
+            _webDriver = webDriver;
+        }
+
         public string Username
         {
             get { throw new System.NotImplementedException(); }
