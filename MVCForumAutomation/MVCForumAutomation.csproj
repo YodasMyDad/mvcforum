@@ -55,13 +55,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminPage.cs" />
+    <Compile Include="Category.cs" />
     <Compile Include="Discussion.cs" />
     <Compile Include="DiscussionHeader.cs" />
     <Compile Include="LatestDiscussions.cs" />
+    <Compile Include="LoggedInAdmin.cs" />
     <Compile Include="LoggedInUser.cs" />
     <Compile Include="MVCForumClient.cs" />
+    <Compile Include="PermissionTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrationPage.cs" />
+    <Compile Include="Role.cs" />
+    <Compile Include="RolePermissionsPage.cs" />
     <Compile Include="SanityTests.cs" />
   </ItemGroup>
   <ItemGroup>

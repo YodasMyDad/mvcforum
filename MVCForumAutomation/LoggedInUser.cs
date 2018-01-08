@@ -8,5 +8,10 @@ namespace MVCForumAutomation
         {
             throw new NotImplementedException();
         }
+
+        public void Logout()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

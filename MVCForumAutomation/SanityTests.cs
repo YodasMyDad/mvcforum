@@ -16,6 +16,11 @@ namespace MVCForumAutomation
             adminUser.Logout();
         }
 
+        public TestDefaults TestDefaults
+        {
+            get { throw new NotImplementedException(); }
+        }
+        
         [TestMethod]
         public void WhenARegisteredUserStartsADiscussionOtherAnonymousUsersCanSeeIt()
         {
@@ -33,5 +38,18 @@ namespace MVCForumAutomation
         }
 
         public MVCForumClient MVCForum { get; } = new MVCForumClient();
+    }
+
+    public class TestDefaults
+    {
+        public Role StandardMembers
+        {
+            get { throw new NotImplementedException(); }
+        }
+        
+        public Category ExampleCategory
+        {
+            get { throw new NotImplementedException(); }
+        }
     }
 }

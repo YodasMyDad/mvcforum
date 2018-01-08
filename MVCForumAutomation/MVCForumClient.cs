@@ -49,5 +49,10 @@ namespace MVCForumAutomation
         {
             get { throw new NotImplementedException(); }
         }
+
+        public LoggedInAdmin LoginAsAdmin()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
