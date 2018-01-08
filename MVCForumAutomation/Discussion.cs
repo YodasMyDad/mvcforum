@@ -6,7 +6,7 @@ namespace MVCForumAutomation
     {
         public static DiscussionBuilder With
         {
-            get { throw new NotImplementedException(); }
+            get { return new DiscussionBuilder(); }
         }
 
         public string Title
@@ -21,9 +21,12 @@ namespace MVCForumAutomation
 
         public class DiscussionBuilder
         {
+            private string _body;
+
             public DiscussionBuilder Body(string body)
             {
-                throw new NotImplementedException();
+                _body = body;
+                return this;
             }
         }
     }
