@@ -116,8 +116,10 @@
         }
 
 
-        public ActionResult Delete(string tag)
+        public ActionResult Delete(string tag, int? p)
         {
+            var page = p ?? 1;
+
             _topicTagService.DeleteByName(tag);
 
             TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
@@ -140,8 +142,8 @@
                     MessageType = GenericMessages.danger
                 });
             }
-
-            return RedirectToAction("Index");
+                        
+            return RedirectToAction("Index",  new { p = page });
         }
 
         [HttpPost]
