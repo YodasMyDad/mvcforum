@@ -223,7 +223,9 @@
     <Content Include="App_Data\NuGetBackup\Hello.txt" />
     <Content Include="Config\imageprocessor\cache.config" />
     <Content Include="Config\imageprocessor\processing.config" />
-    <None Include="Config\imageprocessor\security.config" />
+    <None Include="Config\imageprocessor\security.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Content Include="Content\admin\Admin.css">
       <DependentUpon>Admin.scss</DependentUpon>
     </Content>
@@ -1002,6 +1004,7 @@
       <DependentUpon>compilerconfig.json</DependentUpon>
     </None>
     <Content Include="Installer\tr-TR.csv" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\Local Deployment.pubxml" />
     <Content Include="Scripts\jquery-ui.min.js" />
     <Content Include="Scripts\json2.js" />

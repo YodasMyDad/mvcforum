@@ -22,7 +22,7 @@
         private const string DateTimeFormat = @"dd/MM/yyyy HH:mm:ss";
         private static readonly Object LogLock = new Object();
         private static string _logFileFolder;
-        private static int _maxLogSize = 10000;
+        private static int _maxLogSize = 10000000; // 10mb
         private static string _logFileName;
 
         /// <summary>

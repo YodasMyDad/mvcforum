@@ -265,3 +265,4 @@ __pycache__/
 /MVCForum.Website/Content/uploads/*
 /MVCForum.Website/App_Data/cache/*
 /MVCForum.Website/Notes.txt
+/MVCForum.Website/Properties/PublishProfiles/*
