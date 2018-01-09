@@ -62,18 +62,18 @@ namespace MVCForumAutomation
 
         public LoggedInAdmin LoginAsAdmin()
         {
-            return LoginAs<LoggedInAdmin>(_testDefaults.AdminUsername, _testDefaults.AdminPassword);
+            return LoginAs(_testDefaults.AdminUsername, _testDefaults.AdminPassword, () => new LoggedInAdmin(_webDriver));
         }
 
-        private TLoggedInUser LoginAs<TLoggedInUser>(string username, string password)
-            where TLoggedInUser : LoggedInUser, new()
+        private TLoggedInUser LoginAs<TLoggedInUser>(string username, string password, Func<TLoggedInUser> createLoggedInUser)
+            where TLoggedInUser : LoggedInUser
         {
             var loginPage = GoToLoginPage();
             loginPage.Username = username;
             loginPage.Password = password;
             loginPage.LogOn();
 
-            return new TLoggedInUser();
+            return createLoggedInUser();
         }
     }
 }

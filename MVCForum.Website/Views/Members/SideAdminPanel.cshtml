@@ -37,7 +37,7 @@ else
 {
     if (User.IsInRole(AppConstants.AdminRoleName))
     {
-        <li><a href="@Url.Action("Index", "Admin", new {area = "Admin"}, null)">@Html.LanguageString("Layout.Nav.Admin")</a></li>
+        <li><a class="auto-admin" href="@Url.Action("Index", "Admin", new {area = "Admin"}, null)">@Html.LanguageString("Layout.Nav.Admin")</a></li>
     }
     <li>@Html.ActionLink(Html.LanguageString("Members.SearchMembers"), "Search", "Members")</li>
     <li>
