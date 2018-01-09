@@ -2,6 +2,15 @@
 {
     public enum PermissionTypes
     {
-        CreateTopics
+        AttachFiles,
+        CreatePolls,
+        CreateTopics,
+        DeletePosts,
+        DenyAccess,
+        EditPosts,
+        LockTopics,
+        ReadOnly,
+        StickyTopics,
+        VoteInPolls
     }
 }
