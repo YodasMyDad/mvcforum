@@ -36,7 +36,7 @@ namespace MVCForumAutomation
 
             registrationPage.Register();
 
-            return new LoggedInUser();
+            return new LoggedInUser(_webDriver);
         }
 
         private RegistrationPage GoToRegistrationPage()

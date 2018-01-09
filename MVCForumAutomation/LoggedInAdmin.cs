@@ -4,22 +4,20 @@ namespace MVCForumAutomation
 {
     public class LoggedInAdmin : LoggedInUser
     {
-        private readonly IWebDriver _webDriver;
-
         public LoggedInAdmin(IWebDriver webDriver)
+            :base(webDriver)
         {
-            _webDriver = webDriver;
         }
 
         public AdminPage GoToAdminPage()
         {
-            var myToolsMenu = _webDriver.FindElement(By.ClassName("mytoolslink"));
+            var myToolsMenu = WebDriver.FindElement(By.ClassName("mytoolslink"));
             myToolsMenu.Click();
 
-            var adminLink = _webDriver.FindElement(By.CssSelector(".dropdown .auto-admin"));
+            var adminLink = WebDriver.FindElement(By.CssSelector(".dropdown .auto-admin"));
             adminLink.Click();
 
-            return new AdminPage(_webDriver);
+            return new AdminPage(WebDriver);
         }
     }
 }
