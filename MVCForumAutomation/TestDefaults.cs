@@ -2,10 +2,7 @@
 {
     public class TestDefaults
     {
-        public Role StandardMembers
-        {
-            get { throw new System.NotImplementedException(); }
-        }
+        public Role StandardMembers { get; } = new Role("Standard Members");
 
         public Category ExampleCategory
         {

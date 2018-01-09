@@ -74,7 +74,7 @@
             </a>
             <ul id="permissions" class="collapse">
                 <li>
-                    <a href="@Url.Action("Index", "Permissions", new { area = "Admin" }, null)" class="@(currentController == "permissions" && currentAction == "index" ? "active" : "")">Manage Permissions</a>
+                    <a class="auto-managePermissions" href="@Url.Action("Index", "Permissions", new { area = "Admin" }, null)" class="@(currentController == "permissions" && currentAction == "index" ? "active" : "")">Manage Permissions</a>
                 </li>
                 <li>
                     <a href="@Url.Action("PermissionTypes", "Permissions", new { area = "Admin" }, null)" class="@(currentController == "permissions" && currentAction == "permissiontypes" ? "active" : "")">Add/Remove Permission Types</a>
