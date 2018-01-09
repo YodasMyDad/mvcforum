@@ -1173,6 +1173,7 @@
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.woff" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Data\Plugins\" />
     <Folder Include="Content\languagepacks\" />
   </ItemGroup>
   <ItemGroup>

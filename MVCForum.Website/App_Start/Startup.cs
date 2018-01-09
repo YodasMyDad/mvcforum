@@ -28,6 +28,9 @@ namespace MvcForum.Web
             System.Web.Http.GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
 
+            // Make DB update to latest migration
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<MvcForumContext, Configuration>());
+
             // Start unity
             var unityContainer = UnityHelper.Start();
 
@@ -42,15 +45,13 @@ namespace MvcForum.Web
             //app.UseHangfireDashboard();
             app.UseHangfireServer();
 
-            // Make DB update to latest migration
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<MvcForumContext, Configuration>());
-
             // Get services needed
             var mvcForumContext = DependencyResolver.Current.GetService<IMvcForumContext>();
             var badgeService = DependencyResolver.Current.GetService<IBadgeService>();
             var settingsService = DependencyResolver.Current.GetService<ISettingsService>();
             var loggingService = DependencyResolver.Current.GetService<ILoggingService>();
             var reflectionService = DependencyResolver.Current.GetService<IReflectionService>();
+            //var assemblyProvider = DependencyResolver.Current.GetService<IAssemblyProvider>();
 
             // Routes
             RouteConfig.RegisterRoutes(RouteTable.Routes);
@@ -79,6 +80,11 @@ namespace MvcForum.Web
 
             // Initialise the events
             EventManager.Instance.Initialize(loggingService, loadedAssemblies);
+
+            // Find the plugin, pipeline and badge assemblies
+            //var assemblies = assemblyProvider.GetAssemblies(gabSettings.LibrarySearchLocations);
+            //InterfaceManager.SetAssemblies(assemblies);
+ 
 
             // Finally trigger any Cron jobs
             RecurringJob.AddOrUpdate<RecurringJobService>(x => x.SendMarkAsSolutionReminders(), Cron.HourInterval(6), queue: "solutionreminders");

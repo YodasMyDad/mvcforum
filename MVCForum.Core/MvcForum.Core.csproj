@@ -42,6 +42,8 @@
     <Compile Include="Constants\SiteConstants.cs" />
     <Compile Include="ExtensionMethods\ExtendedDataExtensions.cs" />
     <Compile Include="ExtensionMethods\IdentityExtensions.cs" />
+    <Compile Include="ExtensionMethods\VersionExtensionMethods.cs" />
+    <Compile Include="Interfaces\IAssemblyProvider.cs" />
     <Compile Include="Migrations\201801011815079_IncreaseAccessTokenLength.cs" />
     <Compile Include="Migrations\201801011815079_IncreaseAccessTokenLength.Designer.cs">
       <DependentUpon>201801011815079_IncreaseAccessTokenLength.cs</DependentUpon>
@@ -199,6 +201,8 @@
     <Compile Include="Models\OAuth\FacebookOAuthData.cs" />
     <Compile Include="Models\OAuth\GoogleOAuthData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reflection\AssemblyProvider.cs" />
+    <Compile Include="Reflection\InterfaceManager.cs" />
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\BadgeService.cs" />
     <Compile Include="Services\BannedEmailService.cs" />

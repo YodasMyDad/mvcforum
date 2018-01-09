@@ -235,38 +235,6 @@
 
         #endregion
 
-        #region Version
-
-        /// <summary>
-        ///     Gets the main version number (Used by installer)
-        /// </summary>
-        /// <returns></returns>
-        public static string GetCurrentVersionNo()
-        {
-            //Installer for new versions and first startup
-            // Get the current version
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-
-            // Store the value for use in the app
-            return $"{version.Major}.{version.Minor}";
-        }
-
-        /// <summary>
-        ///     Get the full version number shown in the admin
-        /// </summary>
-        /// <returns></returns>
-        public static string GetCurrentVersionNoFull()
-        {
-            //Installer for new versions and first startup
-            // Get the current version
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-
-            // Store the value for use in the app
-            return $"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
-        }
-
-        #endregion
-
         #region Files
 
         public static bool FileIsImage(string file)

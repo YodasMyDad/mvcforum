@@ -4,6 +4,7 @@ namespace MvcForum.Core.Ioc
     using Data.Context;
     using Interfaces;
     using Interfaces.Services;
+    using Reflection;
     using Services;
     using Unity;
     using Unity.Lifetime;
@@ -79,6 +80,7 @@ namespace MvcForum.Core.Ioc
             container.BindInRequestScope<IBlockService, BlockService>();
             container.BindInRequestScope<IConfigService, ConfigService>();
             container.BindInRequestScope<IPostEditService, PostEditService>();
+            container.BindInRequestScope<IAssemblyProvider, AssemblyProvider>();
 
             return container;
         }
