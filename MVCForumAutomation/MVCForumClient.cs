@@ -27,7 +27,7 @@ namespace MVCForumAutomation
         {
             var username = Guid.NewGuid().ToString();
             const string password = "123456";
-            const string email = "abc@def.com";
+            var email = $"abc@{Guid.NewGuid()}.com";
 
             var registrationPage = GoToRegistrationPage();
             registrationPage.Username = username;
