@@ -1,12 +1,26 @@
 ﻿namespace MvcForum.Core.Constants
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Web.Mvc;
     using Interfaces.Services;
 
     public class SiteConstants
     {
-        public string MvcForumVersion => GetConfig("MvcForumVersion");
+        private string _mvcForumVersion;
+
+        public string MvcForumVersion
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_mvcForumVersion))
+                {
+                    _mvcForumVersion = GetConfig("MvcForumVersion");
+                }
+                return _mvcForumVersion;
+            }
+        }
 
 
         // This is just the initial standard role
@@ -31,8 +45,7 @@
         public string FileUploadMaximumFileSizeInBytes => GetConfig("FileUploadMaximumFileSizeInBytes");
         public string UploadFolderPath => GetConfig("UploadFolderPath");
 
-        public int PrivateMessageWarningAmountLessThanAllowedSize =>
-            Convert.ToInt32(GetConfig("PrivateMessageWarningAmountLessThanAllowedSize"));
+        public int PrivateMessageWarningAmountLessThanAllowedSize => Convert.ToInt32(GetConfig("PrivateMessageWarningAmountLessThanAllowedSize"));
 
         /// <summary>
         ///     Paging options - Amount per page on different pages.
@@ -124,6 +137,29 @@
         ///     Show categories on home page instead of topics
         /// </summary>
         public bool CategoriesOnMain => Convert.ToBoolean(GetConfig("CategoriesOnMain"));
+
+
+        /// <summary>
+        /// Plugin locations
+        /// </summary>
+        private List<string> _pluginSearchLocations;
+        public List<string> PluginSearchLocations
+        {
+            get
+            {
+                if (_pluginSearchLocations == null)
+                {
+                    var pluginStringLocations = GetConfig("PluginSearchLocations");
+                    if (!string.IsNullOrWhiteSpace(pluginStringLocations))
+                    {
+                        _pluginSearchLocations = pluginStringLocations
+                                                    .TrimStart(',').TrimEnd(',')
+                                                    .Split(',').ToList();
+                    }
+                }
+                return _pluginSearchLocations;                
+            }
+        }
 
         #region Singleton
 

@@ -7,6 +7,7 @@ namespace MvcForum.Web
 {
     using System;
     using System.Data.Entity;
+    using System.Linq;
     using System.Web.Mvc;
     using System.Web.Routing;
     using Application.ViewEngine;
@@ -18,6 +19,7 @@ namespace MvcForum.Web
     using Core.Services.Migrations;
     using Core.Utilities;
     using Core.Interfaces.Services;
+    using Core.Reflection;
     using Core.Services;
 
     public class Startup
@@ -50,8 +52,7 @@ namespace MvcForum.Web
             var badgeService = DependencyResolver.Current.GetService<IBadgeService>();
             var settingsService = DependencyResolver.Current.GetService<ISettingsService>();
             var loggingService = DependencyResolver.Current.GetService<ILoggingService>();
-            var reflectionService = DependencyResolver.Current.GetService<IReflectionService>();
-            //var assemblyProvider = DependencyResolver.Current.GetService<IAssemblyProvider>();
+            var assemblyProvider = DependencyResolver.Current.GetService<IAssemblyProvider>();
 
             // Routes
             RouteConfig.RegisterRoutes(RouteTable.Routes);
@@ -60,13 +61,14 @@ namespace MvcForum.Web
             loggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
             loggingService.Error("START APP");
 
-            // Get assemblies for badges, events etc...
-            var loadedAssemblies = reflectionService.GetAssemblies();
+            // Find the plugin, pipeline and badge assemblies
+            var assemblies = assemblyProvider.GetAssemblies(SiteConstants.Instance.PluginSearchLocations).ToList();
+            InterfaceManager.SetAssemblies(assemblies);
 
             // Do the badge processing
             try
             {
-                badgeService.SyncBadges(loadedAssemblies);
+                badgeService.SyncBadges(assemblies);
                 mvcForumContext.SaveChanges();
             }
             catch (Exception ex)
@@ -79,12 +81,7 @@ namespace MvcForum.Web
             ViewEngines.Engines.Add(new ForumViewEngine(settingsService.GetSettings().Theme));
 
             // Initialise the events
-            EventManager.Instance.Initialize(loggingService, loadedAssemblies);
-
-            // Find the plugin, pipeline and badge assemblies
-            //var assemblies = assemblyProvider.GetAssemblies(gabSettings.LibrarySearchLocations);
-            //InterfaceManager.SetAssemblies(assemblies);
- 
+            EventManager.Instance.Initialize(loggingService, assemblies);
 
             // Finally trigger any Cron jobs
             RecurringJob.AddOrUpdate<RecurringJobService>(x => x.SendMarkAsSolutionReminders(), Cron.HourInterval(6), queue: "solutionreminders");

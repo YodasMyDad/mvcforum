@@ -5,6 +5,7 @@
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Web.Hosting;
     using Interfaces;
     using Interfaces.Services;
 
@@ -18,14 +19,14 @@
         public AssemblyProvider(ILoggingService loggingService)
         {
             _loggingService = loggingService;
-            IsGabCandidateAssembly = assembly => assembly != null && assembly.FullName.StartsWith("Gab.");
+            IsMvcForumCandidateAssembly = assembly => assembly != null;
         }
 
         /// <summary>
         ///     Gets or sets the predicate that is used to filter discovered assemblies from a specific folder
         ///     before thay have been added to the resulting assemblies set.
         /// </summary>
-        public Func<Assembly, bool> IsGabCandidateAssembly { get; set; }
+        public Func<Assembly, bool> IsMvcForumCandidateAssembly { get; set; }
 
 
         /// <inheritdoc />
@@ -58,7 +59,7 @@
 
             if (!string.IsNullOrEmpty(path))
             {
-                var folderPath = new DirectoryInfo(path);
+                var folderPath = new DirectoryInfo(HostingEnvironment.MapPath(path));
                 foreach (var file in folderPath.GetFileSystemInfos("*.dll", SearchOption.AllDirectories))
                 {
                     Assembly assembly = null;
@@ -92,7 +93,7 @@
                 // Empty path so just grab the assemblies from the application
                 foreach (var assembly in Assembly.GetEntryAssembly().GetReferencedAssemblies().Select(Assembly.Load))
                 {
-                    if (IsGabCandidateAssembly(assembly))
+                    if (IsMvcForumCandidateAssembly(assembly))
                     {
                         try
                         {

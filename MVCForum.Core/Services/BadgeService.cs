@@ -55,7 +55,7 @@
         ///     Bring the database into line with the badge classes found at runtime
         /// </summary>
         /// <returns>Set of valid badge classes to use when assigning badges</returns>
-        public void SyncBadges(List<Assembly> assemblies)
+        public void SyncBadges(IEnumerable<Assembly> assemblies)
         {
             try
             {
