@@ -21,6 +21,19 @@ namespace MVCForumAutomation
             adminUser.Logout();
         }
 
+        public TestContext TestContext { get; set; }
+
+        [TestCleanup]
+        public void TestCleanup()
+        {
+            if (TestContext.CurrentTestOutcome != UnitTestOutcome.Passed)
+            {
+                var screenshotFilename = $"Screenshot.{TestContext.TestName}.jpg";
+                MVCForum.TakeScreenshot(screenshotFilename);
+                TestContext.AddResultFile(screenshotFilename);
+            }
+        }
+
         [TestMethod]
         public void WhenARegisteredUserStartsADiscussionOtherAnonymousUsersCanSeeIt()
         {

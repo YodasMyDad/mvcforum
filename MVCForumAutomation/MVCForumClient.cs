@@ -1,6 +1,7 @@
 using System;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.Extensions;
 
 namespace MVCForumAutomation
 {
@@ -74,6 +75,11 @@ namespace MVCForumAutomation
             loginPage.LogOn();
 
             return createLoggedInUser();
+        }
+
+        public void TakeScreenshot(string screenshotFilename)
+        {
+            _webDriver.TakeScreenshot().SaveAsFile(screenshotFilename);
         }
     }
 }
