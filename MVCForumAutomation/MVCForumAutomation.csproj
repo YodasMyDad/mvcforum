@@ -65,6 +65,7 @@
     <Compile Include="LoggedInPage.cs" />
     <Compile Include="LoggedInUser.cs" />
     <Compile Include="MVCForumClient.cs" />
+    <Compile Include="CreateDiscussionPage.cs" />
     <Compile Include="PermissionTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrationPage.cs" />

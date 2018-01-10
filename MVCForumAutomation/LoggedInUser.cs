@@ -14,7 +14,14 @@ namespace MVCForumAutomation
 
         public Discussion CreateDiscussion(Discussion.DiscussionBuilder builder)
         {
-            throw new NotImplementedException();
+            var newDiscussionButton = WebDriver.FindElement(By.ClassName("createtopicbutton"));
+            newDiscussionButton.Click();
+
+            var createDisucssionPage = new CreateDiscussionPage(WebDriver);
+            builder.Fill(createDisucssionPage);
+            createDisucssionPage.CreateDiscussion();
+
+            return new Discussion(WebDriver);
         }
 
         public void Logout()

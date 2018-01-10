@@ -1,9 +1,17 @@
 using System;
+using OpenQA.Selenium;
 
 namespace MVCForumAutomation
 {
     public class Discussion
     {
+        private readonly IWebDriver _webDriver;
+
+        public Discussion(IWebDriver webDriver)
+        {
+            _webDriver = webDriver;
+        }
+
         public static DiscussionBuilder With
         {
             get { return new DiscussionBuilder(); }
@@ -27,6 +35,11 @@ namespace MVCForumAutomation
             {
                 _body = body;
                 return this;
+            }
+
+            public void Fill(CreateDiscussionPage createDiscussionPage)
+            {
+                throw new System.NotImplementedException();
             }
         }
     }
