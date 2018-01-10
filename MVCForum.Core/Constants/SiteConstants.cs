@@ -154,10 +154,34 @@
                     {
                         _pluginSearchLocations = pluginStringLocations
                                                     .TrimStart(',').TrimEnd(',')
-                                                    .Split(',').ToList();
+                                                    .Split(',')
+                                                    .Select(x => x.Trim()).ToList();
                     }
                 }
                 return _pluginSearchLocations;                
+            }
+        }
+
+        /// <summary>
+        /// Get a list of badges
+        /// </summary>
+        private List<string> _badges;
+        public List<string> Badges
+        {
+            get
+            {
+                if (_badges == null)
+                {
+                    var allBadges = GetConfig("Badges");
+                    if (!string.IsNullOrWhiteSpace(allBadges))
+                    {
+                        _badges = allBadges
+                            .TrimStart(',').TrimEnd(',')
+                            .Split(',')
+                            .Select(x=> x.Trim()).ToList();
+                    }
+                }
+                return _badges;
             }
         }
 

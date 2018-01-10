@@ -42,7 +42,6 @@
     <Compile Include="Badges\Photogenic.cs" />
     <Compile Include="Badges\PosterMarkAsSolutionBadge.cs" />
     <Compile Include="Badges\PosterVoteUpBadge.cs" />
-    <Compile Include="Badges\PostMentionsUmbraco.cs" />
     <Compile Include="Badges\UserVoteUpBadge.cs" />
     <Compile Include="Badges\YourPostFavouritedBadge.cs" />
     <Compile Include="Badges\YourPostFavouritedTenTimesBadge.cs" />

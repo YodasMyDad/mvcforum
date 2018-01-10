@@ -17,6 +17,7 @@
     using Models.Entities;
     using Models.Enums;
     using Models.General;
+    using Reflection;
     using Utilities;
 
     public partial class BadgeService : IBadgeService
@@ -59,7 +60,7 @@
         {
             try
             {
-                GetBadgesByReflection(assemblies);
+                GetBadgesByReflection();
 
                 // Turn the badge classes into a set of domain objects
                 var badgesFromClasses = new Dictionary<Guid, Badge>();
@@ -365,68 +366,100 @@
         /// <summary>
         ///     Iterates over the runtime folder looking for classes that implement the badge interface
         /// </summary>
-        private void GetBadgesByReflection(IEnumerable<Assembly> assemblies)
+        private void GetBadgesByReflection()
         {
             _badges = new Dictionary<BadgeType, List<BadgeMapping>>();
 
-            var interfaceFilter = new TypeFilter(_reflectionService.InterfaceFilter);
+            //var interfaceFilter = new TypeFilter(_reflectionService.InterfaceFilter);
 
-            // Get all the dlls
-            foreach (var nextAssembly in assemblies)
+            // All the allowed badges
+            var allowedBadges = SiteConstants.Instance.Badges;
+
+            // Get all the badges
+            var voteUpBadges = InterfaceManager.GetInstances<IVoteUpBadge>();
+            var solutionBadges = InterfaceManager.GetInstances<IMarkAsSolutionBadge>();
+            var postBadges = InterfaceManager.GetInstances<IPostBadge>();
+            var voteDownBadges = InterfaceManager.GetInstances<IVoteDownBadge>();
+            var profileBadges = InterfaceManager.GetInstances<IProfileBadge>();
+            var favouriteBadges = InterfaceManager.GetInstances<IFavouriteBadge>();
+            var tagBadges = InterfaceManager.GetInstances<ITagBadge>();
+
+            foreach (var allowedBadge in allowedBadges)
             {
-                try
+                if (voteUpBadges.ContainsKey(allowedBadge))
                 {
-                    foreach (var type in nextAssembly.GetTypes())
+                    var classType = voteUpBadges[allowedBadge].GetType();
+
+                    // Create a domain model version
+                    var dbBadge = CreateDbBadgeFromClass(BadgeType.VoteUp, classType);
+
+                    if (!_badges.ContainsKey(BadgeType.VoteUp))
                     {
-                        if (type.IsInterface)
-                        {
-                            continue;
-                        }
-
-                        // See if this type is one of the badge interfaces
-                        foreach (BadgeType badgeType in Enum.GetValues(typeof(BadgeType)))
-                        {
-                            // Look for the target badge class type
-                            if (!Badge.BadgeClassNames.ContainsKey(badgeType))
-                            {
-                                throw new ApplicationException(
-                                    string.Format(_localizationService.GetResourceString("Badge.BadegEnumNoClass"),
-                                        badgeType));
-                            }
-
-                            var interfaceType = Badge.BadgeClassNames[badgeType];
-
-                            var myInterfaces = type.FindInterfaces(interfaceFilter, interfaceType);
-                            if (myInterfaces.Length <= 0)
-                            {
-                                // Not a match
-                                continue;
-                            }
-
-                            // This class implements the interface
-
-                            // Create a domain model version
-                            var dbBadge = CreateDbBadgeFromClass(badgeType, type);
-
-                            if (!_badges.ContainsKey(badgeType))
-                            {
-                                _badges.Add(badgeType, new List<BadgeMapping>());
-                            }
-                            _badges[badgeType].Add(new BadgeMapping { BadgeClass = type, DbBadge = dbBadge });
-                        }
+                        _badges.Add(BadgeType.VoteUp, new List<BadgeMapping>());
                     }
-                }
-                catch (ReflectionTypeLoadException rtle)
-                {
-                    var msg =
-                        $"Unable to load assembly. Probably not an event assembly, loader exception was: '{rtle.LoaderExceptions[0].GetType()}':'{rtle.LoaderExceptions[0].Message}'.";
-                    _loggingService.Error(msg);
-                }
-                catch (Exception ex)
-                {
-                    _loggingService.Error(ex);
+                    _badges[BadgeType.VoteUp].Add(new BadgeMapping { BadgeClass = classType, DbBadge = dbBadge });
                 }
             }
+
+
+            //// Get all the dlls
+            //foreach (var nextAssembly in assemblies)
+            //{
+            //    try
+            //    {
+            //        foreach (var type in nextAssembly.GetTypes())
+            //        {
+            //            if (type.IsInterface)
+            //            {
+            //                continue;
+            //            }
+
+            //            // See if this type is one of the badge interfaces
+            //            foreach (BadgeType badgeType in Enum.GetValues(typeof(BadgeType)))
+            //            {
+            //                // Look for the target badge class type
+            //                if (!Badge.BadgeClassNames.ContainsKey(badgeType))
+            //                {
+            //                    throw new ApplicationException(
+            //                        string.Format(_localizationService.GetResourceString("Badge.BadegEnumNoClass"),
+            //                            badgeType));
+            //                }
+
+            //                var interfaceType = Badge.BadgeClassNames[badgeType];
+
+            //                var myInterfaces = type.FindInterfaces(interfaceFilter, interfaceType);
+            //                if (myInterfaces.Length <= 0)
+            //                {
+            //                    // Not a match
+            //                    continue;
+            //                }
+
+            //                // This class implements the interface
+
+            //                //TODO - Check this is allowed from the config
+
+            //                // Create a domain model version
+            //                var dbBadge = CreateDbBadgeFromClass(badgeType, type);
+
+            //                if (!_badges.ContainsKey(badgeType))
+            //                {
+            //                    _badges.Add(badgeType, new List<BadgeMapping>());
+            //                }
+            //                _badges[badgeType].Add(new BadgeMapping { BadgeClass = type, DbBadge = dbBadge });
+            //            }
+            //        }
+            //    }
+            //    catch (ReflectionTypeLoadException rtle)
+            //    {
+            //        var msg =
+            //            $"Unable to load assembly. Probably not an event assembly, loader exception was: '{rtle.LoaderExceptions[0].GetType()}':'{rtle.LoaderExceptions[0].Message}'.";
+            //        _loggingService.Error(msg);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        _loggingService.Error(ex);
+            //    }
+            //}
         }
 
         #region Private static methods
