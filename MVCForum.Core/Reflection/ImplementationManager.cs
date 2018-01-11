@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Reflection;
 
-    public static class InterfaceManager
+    public static class ImplementationManager
     {
         /// <summary>
         ///     Gets the cached assemblies that has been set by the <c>SetAssemblies</c> method.
@@ -187,6 +187,35 @@
             }
 
             return instances;
+        }
+
+        /// <summary>
+        /// Callback used when comparing objects to see if they implement an interface
+        /// </summary>
+        /// <param name="typeObj"></param>
+        /// <param name="criteriaObj"></param>
+        /// <returns></returns>
+        public static bool InterfaceFilter(Type typeObj, Object criteriaObj)
+        {
+            return typeObj.ToString() == criteriaObj.ToString();
+        }
+
+        /// <summary>
+        ///     Get the specified attribute off a badge class
+        /// </summary>
+        /// <param name="type">The class type</param>
+        /// <returns>The attribute class instance</returns>
+        public static T GetAttribute<T>(Type type) where T : class
+        {
+            foreach (var attribute in type.GetCustomAttributes(false))
+            {
+                if (attribute is T)
+                {
+                    return attribute as T;
+                }
+            }
+
+            throw new Exception("Attribute not found");
         }
 
         private static IEnumerable<Assembly> GetAssemblies(Func<Assembly, bool> predicate)

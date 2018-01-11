@@ -168,7 +168,6 @@
     <Compile Include="Interfaces\Services\IActivityService.cs" />
     <Compile Include="Interfaces\Services\IPostEditService.cs" />
     <Compile Include="Interfaces\Services\IPrivateMessageService.cs" />
-    <Compile Include="Interfaces\Services\IReflectionService.cs" />
     <Compile Include="Interfaces\Services\IReportService.cs" />
     <Compile Include="Interfaces\Services\ITagNotificationService.cs" />
     <Compile Include="Interfaces\Services\ITopicNotificationService.cs" />
@@ -202,7 +201,7 @@
     <Compile Include="Models\OAuth\GoogleOAuthData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reflection\AssemblyProvider.cs" />
-    <Compile Include="Reflection\InterfaceManager.cs" />
+    <Compile Include="Reflection\ImplementationManager.cs" />
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\BadgeService.cs" />
     <Compile Include="Services\BannedEmailService.cs" />
@@ -261,7 +260,6 @@
     <Compile Include="Services\PostService.cs" />
     <Compile Include="Services\PrivateMessageService.cs" />
     <Compile Include="Services\RecurringJobService.cs" />
-    <Compile Include="Services\ReflectionService.cs" />
     <Compile Include="Services\ReportService.cs" />
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\ServiceHelpers.cs" />

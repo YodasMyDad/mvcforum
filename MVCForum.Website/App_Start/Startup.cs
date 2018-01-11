@@ -63,7 +63,7 @@ namespace MvcForum.Web
 
             // Find the plugin, pipeline and badge assemblies
             var assemblies = assemblyProvider.GetAssemblies(SiteConstants.Instance.PluginSearchLocations).ToList();
-            InterfaceManager.SetAssemblies(assemblies);
+            ImplementationManager.SetAssemblies(assemblies);
 
             // Do the badge processing
             try
