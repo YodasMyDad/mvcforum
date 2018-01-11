@@ -331,7 +331,7 @@
             }
             else
             {
-                var inUseBy = new List<Entity>();
+                var inUseBy = new List<IBaseEntity>();
                 inUseBy.AddRange(category.Topics);
                 throw new Exception($"In use by {inUseBy.Count} entities");
             }

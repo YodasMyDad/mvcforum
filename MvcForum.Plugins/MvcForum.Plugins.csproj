@@ -45,6 +45,8 @@
     <Compile Include="Badges\UserVoteUpBadge.cs" />
     <Compile Include="Badges\YourPostFavouritedBadge.cs" />
     <Compile Include="Badges\YourPostFavouritedTenTimesBadge.cs" />
+    <Compile Include="Pipelines\User\CheckBannedWordsPipe.cs" />
+    <Compile Include="Pipelines\User\CreateNewUserPipe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -145,9 +147,7 @@
       <Version>5.0.11</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Pipelines\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\MVCForum.Core\MvcForum.Core.csproj">
       <Project>{20ad3d3c-153e-47ac-ba9c-3e4db876990e}</Project>

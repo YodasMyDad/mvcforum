@@ -3,7 +3,7 @@
     using System;
     using Utilities;
 
-    public partial class CategoryNotification : Entity
+    public partial class CategoryNotification : IBaseEntity
     {
         public CategoryNotification()
         {

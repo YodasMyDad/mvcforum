@@ -23,7 +23,6 @@
         public EventHandler<MarkedAsSolutionEventArgs> AfterMarkedAsSolution;
         public EventHandler<PostMadeEventArgs> AfterPostMade;
         public EventHandler<PrivateMessageEventArgs> AfterPrivateMessage;
-        public EventHandler<RegisterUserEventArgs> AfterRegisterUser;
         public EventHandler<TopicMadeEventArgs> AfterTopicMade;
         public EventHandler<UpdateProfileEventArgs> AfterUpdateProfile;
         public EventHandler<VoteEventArgs> AfterVoteMade;
@@ -33,7 +32,6 @@
         public EventHandler<MarkedAsSolutionEventArgs> BeforeMarkedAsSolution;
         public EventHandler<PostMadeEventArgs> BeforePostMade;
         public EventHandler<PrivateMessageEventArgs> BeforePrivateMessage;
-        public EventHandler<RegisterUserEventArgs> BeforeRegisterUser;
         public EventHandler<TopicMadeEventArgs> BeforeTopicMade;
         public EventHandler<UpdateProfileEventArgs> BeforeUpdateProfile;
         public EventHandler<VoteEventArgs> BeforeVoteMade;
@@ -239,30 +237,6 @@
         public void FireAfterProfileUpdated(object sender, UpdateProfileEventArgs eventArgs)
         {
             var handler = AfterUpdateProfile;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        }
-
-        #endregion
-
-        #region Register
-
-        public void FireBeforeRegisterUser(object sender, RegisterUserEventArgs eventArgs)
-        {
-            var handler = BeforeRegisterUser;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        }
-
-        public void FireAfterRegisterUser(object sender, RegisterUserEventArgs eventArgs)
-        {
-            var handler = AfterRegisterUser;
 
             if (handler != null)
             {

@@ -34,7 +34,7 @@
             return StringUtils.CreateUrl(name, "-");
         }
 
-        public static string GenerateSlug(string stringToSlug, IEnumerable<Entity> similarList, string previousSlug)
+        public static string GenerateSlug(string stringToSlug, IEnumerable<IBaseEntity> similarList, string previousSlug)
         {
             // url generator
             var slug = CreateUrl(stringToSlug);

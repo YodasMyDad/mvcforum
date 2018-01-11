@@ -3,7 +3,7 @@
     using System;
     using Utilities;
 
-    public partial class TagNotification : Entity
+    public partial class TagNotification : IBaseEntity
     {
         public TagNotification()
         {

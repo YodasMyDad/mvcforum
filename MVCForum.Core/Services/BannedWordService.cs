@@ -88,5 +88,21 @@
             }
             return content;
         }
+
+        /// <inheritdoc />
+        public bool ContainsStopWords(string content, IList<string> words)
+        {
+            if (words != null && words.Any())
+            {
+                foreach (var word in words)
+                {
+                    if (content.ContainsCaseInsensitive(word))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
     }
 }

@@ -3,7 +3,7 @@
     using System;
     using Utilities;
 
-    public partial class TopicNotification : Entity
+    public partial class TopicNotification : IBaseEntity
     {
         public TopicNotification()
         {

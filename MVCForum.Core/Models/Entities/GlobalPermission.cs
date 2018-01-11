@@ -3,7 +3,7 @@
     using System;
     using Utilities;
 
-    public partial class GlobalPermissionForRole : Entity
+    public partial class GlobalPermissionForRole : IBaseEntity
     {
         public GlobalPermissionForRole()
         {

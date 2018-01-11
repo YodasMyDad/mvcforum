@@ -3,7 +3,7 @@
     using System;
     using Utilities;
 
-    public partial class PrivateMessage : Entity
+    public partial class PrivateMessage : IBaseEntity
     {
         public PrivateMessage()
         {

@@ -3,7 +3,7 @@
     using System;
     using Utilities;
 
-    public partial class PostEdit : Entity
+    public partial class PostEdit : IBaseEntity
     {
         public PostEdit()
         {

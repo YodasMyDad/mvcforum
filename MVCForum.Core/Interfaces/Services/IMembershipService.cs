@@ -6,6 +6,7 @@
     using Models.Entities;
     using Models.Enums;
     using Models.General;
+    using Pipeline;
 
     public interface IMembershipService
     {
@@ -29,7 +30,7 @@
         bool ChangePassword(MembershipUser user, string oldPassword, string newPassword);
         bool ResetPassword(MembershipUser user, string newPassword);
         void UnlockUser(string username, bool resetPasswordAttempts);
-        MembershipCreateStatus CreateUser(MembershipUser newUser);
+        Task<IPipelineProcess<MembershipUser>> CreateUser(MembershipUser newUser, LoginType loginType);
         string ErrorCodeToString(MembershipCreateStatus createStatus);
         MembershipUser CreateEmptyUser();
         IList<MembershipUser> GetAll();

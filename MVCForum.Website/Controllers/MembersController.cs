@@ -18,6 +18,7 @@
     using Core.Events;
     using Core.ExtensionMethods;
     using Core.Interfaces;
+    using Core.Interfaces.Pipeline;
     using Core.Interfaces.Services;
     using Core.Models;
     using Core.Models.Entities;
@@ -25,6 +26,7 @@
     using Core.Models.General;
     using Core.Utilities;
     using ViewModels.Admin;
+    using ViewModels.ExtensionMethods;
     using ViewModels.Mapping;
     using ViewModels.Member;
     using ViewModels.Registration;
@@ -329,7 +331,7 @@
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Register(MemberAddViewModel userModel)
+        public async Task<ActionResult> Register(MemberAddViewModel userModel)
         {
             if (SettingsService.GetSettings().SuspendRegistration != true &&
                 SettingsService.GetSettings().DisableStandardRegistration != true)
@@ -348,39 +350,46 @@
                     }
                 }
 
-                // Secondly see if the email is banned
-                if (_bannedEmailService.EmailIsBanned(userModel.Email))
+                // Get the user model
+                var user = userModel.ToMembershipUser();
+
+                var pipeline = await MembershipService.CreateUser(user, LoginType.Standard);
+                if (!pipeline.Successful)
                 {
-                    ModelState.AddModelError(string.Empty,
-                        LocalizationService.GetResourceString("Error.EmailIsBanned"));
+                    ModelState.AddModelError(string.Empty, pipeline.ProcessLog.FirstOrDefault());
                     return View();
                 }
 
-
-                // Standard Login
-                userModel.LoginType = LoginType.Standard;
-
                 // Do the register logic
-                return MemberRegisterLogic(userModel);
+                return MemberRegisterLogic(pipeline);
             }
-            return RedirectToAction("Index", "Home");
+            return  RedirectToAction("Index", "Home");      
         }
 
         /// <summary>
         ///     Social login validator which passes view model as temp data
         /// </summary>
         /// <returns></returns>
-        public ActionResult SocialLoginValidator()
+        public async Task<ActionResult> SocialLoginValidator()
         {
             // Store the viewModel in TempData - Which we'll use in the register logic
             if (TempData[AppConstants.MemberRegisterViewModel] != null)
             {
                 var userModel = TempData[AppConstants.MemberRegisterViewModel] as MemberAddViewModel;
 
-                // Do the register logic
-                return MemberRegisterLogic(userModel);
-            }
+                // Get the user model
+                var user = userModel.ToMembershipUser();
 
+                var pipeline = await MembershipService.CreateUser(user, userModel.LoginType);
+                if (!pipeline.Successful)
+                {
+                    ModelState.AddModelError(string.Empty, pipeline.ProcessLog.FirstOrDefault());
+                    return View("Register");
+                }
+
+                // Do the register logic
+                return MemberRegisterLogic(pipeline);
+            }
 
             ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
             return View("Register");
@@ -389,109 +398,23 @@
         /// <summary>
         ///     All the logic to regsiter a member
         /// </summary>
-        /// <param name="userModel"></param>
         /// <returns></returns>
-        public ActionResult MemberRegisterLogic(MemberAddViewModel userModel)
+        public ActionResult MemberRegisterLogic(IPipelineProcess<MembershipUser> user)
         {
             var settings = SettingsService.GetSettings();
             var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
             var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
             var homeRedirect = false;
 
-            var userToSave = new MembershipUser
+            var pipeline = MembershipService.CreateUser(userToSave);
+            if (!pipeline.Successful)
             {
-                UserName = _bannedWordService.SanitiseBannedWords(userModel.UserName),
-                Email = userModel.Email,
-                Password = userModel.Password,
-                IsApproved = userModel.IsApproved,
-                Comment = userModel.Comment
-            };
-
-            var createStatus = MembershipService.CreateUser(userToSave);
-            if (createStatus != MembershipCreateStatus.Success)
-            {
-                ModelState.AddModelError(string.Empty, MembershipService.ErrorCodeToString(createStatus));
+                ModelState.AddModelError(string.Empty, pipeline.ProcessLog.FirstOrDefault());
             }
             else
             {
-                // See if this is a social login and we have their profile pic
-                if (!string.IsNullOrWhiteSpace(userModel.SocialProfileImageUrl))
-                {
-                    // We have an image url - Need to save it to their profile
-                    var image = AppHelpers.GetImageFromExternalUrl(userModel.SocialProfileImageUrl);
 
-                    // Set upload directory - Create if it doesn't exist
-                    var uploadFolderPath =
-                        HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath,
-                            userToSave.Id));
-                    if (uploadFolderPath != null && !Directory.Exists(uploadFolderPath))
-                    {
-                        Directory.CreateDirectory(uploadFolderPath);
-                    }
 
-                    // Get the file name
-                    var fileName = Path.GetFileName(userModel.SocialProfileImageUrl);
-
-                    // Create a HttpPostedFileBase image from the C# Image
-                    using (var stream = new MemoryStream())
-                    {
-                        // Microsoft doesn't give you a file extension - See if it has a file extension
-                        // Get the file extension
-                        var fileExtension = Path.GetExtension(fileName);
-
-                        // Fix invalid Illegal charactors
-                        var regexSearch = new string(Path.GetInvalidFileNameChars()) +
-                                          new string(Path.GetInvalidPathChars());
-                        var reg = new Regex($"[{Regex.Escape(regexSearch)}]");
-                        fileName = reg.Replace(fileName, "");
-
-                        if (string.IsNullOrWhiteSpace(fileExtension))
-                        {
-                            // no file extension so give it one
-                            fileName = string.Concat(fileName, ".jpg");
-                        }
-
-                        image.Save(stream, ImageFormat.Jpeg);
-                        stream.Position = 0;
-                        HttpPostedFileBase formattedImage = new MemoryFile(stream, "image/jpeg", fileName);
-
-                        // Upload the file
-                        var uploadResult = AppHelpers.UploadFile(formattedImage, uploadFolderPath,
-                            LocalizationService, true);
-
-                        // Don't throw error if problem saving avatar, just don't save it.
-                        if (uploadResult.UploadSuccessful)
-                        {
-                            userToSave.Avatar = uploadResult.UploadedFileName;
-                        }
-                    }
-                }
-
-                // Store access token for social media account in case we want to do anything with it
-                var isSocialLogin = false;
-                if (userModel.LoginType == LoginType.Facebook)
-                {
-                    userToSave.FacebookAccessToken = userModel.UserAccessToken;
-                    isSocialLogin = true;
-                }
-                if (userModel.LoginType == LoginType.Google)
-                {
-                    userToSave.GoogleAccessToken = userModel.UserAccessToken;
-                    isSocialLogin = true;
-                }
-                if (userModel.LoginType == LoginType.Microsoft)
-                {
-                    userToSave.MicrosoftAccessToken = userModel.UserAccessToken;
-                    isSocialLogin = true;
-                }
-
-                // If this is a social login, and memberEmailAuthorisationNeeded is true then we need to ignore it
-                // and set memberEmailAuthorisationNeeded to false because the email addresses are validated by the social media providers
-                if (isSocialLogin && !manuallyAuthoriseMembers)
-                {
-                    memberEmailAuthorisationNeeded = false;
-                    userToSave.IsApproved = true;
-                }
 
                 // Set the view bag message here
                 SetRegisterViewBagMessage(manuallyAuthoriseMembers, memberEmailAuthorisationNeeded, userToSave);
@@ -503,8 +426,7 @@
 
                 try
                 {
-                    // Only send the email if the admin is not manually authorising emails or it's pointless
-                    SendEmailConfirmationEmail(userToSave);
+
 
                     Context.SaveChanges();
 

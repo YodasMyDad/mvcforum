@@ -1,0 +1,44 @@
+﻿namespace MvcForum.Web.ViewModels.ExtensionMethods
+{
+    using Core.Constants;
+    using Core.ExtensionMethods;
+    using Core.Models.Entities;
+    using Core.Models.Enums;
+    using Member;
+
+    public static class MemberAddViewModelExtensions
+    {
+        public static MembershipUser ToMembershipUser(this MemberAddViewModel viewModel)
+        {
+            var userToSave = new MembershipUser
+            {
+                UserName = viewModel.UserName,
+                Email = viewModel.Email,
+                Password = viewModel.Password,
+                IsApproved = viewModel.IsApproved,
+                Comment = viewModel.Comment
+            };
+
+            if (viewModel.LoginType == LoginType.Facebook)
+            {
+                userToSave.FacebookAccessToken = viewModel.UserAccessToken;
+            }
+            if (viewModel.LoginType == LoginType.Google)
+            {
+                userToSave.GoogleAccessToken = viewModel.UserAccessToken;
+            }
+            if (viewModel.LoginType == LoginType.Microsoft)
+            {
+                userToSave.MicrosoftAccessToken = viewModel.UserAccessToken;
+            }
+
+            if (!string.IsNullOrWhiteSpace(viewModel.SocialProfileImageUrl))
+            {
+                // Save the SocialProfileImageUrl in ExtendedData as we'll need it
+                userToSave.SetExtendedDataValue(AppConstants.ExtendedDataKeys.SocialProfileImageUrl, viewModel.SocialProfileImageUrl);
+            }
+
+            return userToSave;
+        }
+    }
+}

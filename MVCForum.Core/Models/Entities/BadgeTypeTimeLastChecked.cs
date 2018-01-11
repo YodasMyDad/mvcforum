@@ -3,7 +3,7 @@
     using System;
     using Utilities;
 
-    public partial class BadgeTypeTimeLastChecked : Entity
+    public partial class BadgeTypeTimeLastChecked : IBaseEntity
     {
         public BadgeTypeTimeLastChecked()
         {

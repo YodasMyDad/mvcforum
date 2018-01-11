@@ -142,8 +142,8 @@
         /// <summary>
         /// Plugin locations
         /// </summary>
-        private List<string> _pluginSearchLocations;
-        public List<string> PluginSearchLocations
+        private IList<string> _pluginSearchLocations;
+        public IList<string> PluginSearchLocations
         {
             get
             {
@@ -152,10 +152,7 @@
                     var pluginStringLocations = GetConfig("PluginSearchLocations");
                     if (!string.IsNullOrWhiteSpace(pluginStringLocations))
                     {
-                        _pluginSearchLocations = pluginStringLocations
-                                                    .TrimStart(',').TrimEnd(',')
-                                                    .Split(',')
-                                                    .Select(x => x.Trim()).ToList();
+                        _pluginSearchLocations = ConfigToListString(pluginStringLocations);
                     }
                 }
                 return _pluginSearchLocations;                
@@ -165,8 +162,8 @@
         /// <summary>
         /// Get a list of badges
         /// </summary>
-        private List<string> _badges;
-        public List<string> Badges
+        private IList<string> _badges;
+        public IList<string> Badges
         {
             get
             {
@@ -175,14 +172,45 @@
                     var allBadges = GetConfig("Badges");
                     if (!string.IsNullOrWhiteSpace(allBadges))
                     {
-                        _badges = allBadges
-                            .TrimStart(',').TrimEnd(',')
-                            .Split(',')
-                            .Select(x=> x.Trim()).ToList();
+                        _badges = ConfigToListString(allBadges);
                     }
                 }
                 return _badges;
             }
+        }
+
+        /// <summary>
+        /// Gets the User Create Pipes from the config
+        /// </summary>
+        private IList<string> _userCreatePipes;
+        public IList<string> UserCreatePipes
+        {
+            get
+            {
+                if (_userCreatePipes == null)
+                {
+                    var pipes = GetConfig("UserCreatePipes");
+                    if (!string.IsNullOrWhiteSpace(pipes))
+                    {
+                        _userCreatePipes = ConfigToListString(pipes);
+                    }
+                }
+                return _userCreatePipes;
+            }
+        }
+
+        /// <summary>
+        /// Turns a string config into a list
+        /// </summary>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        private static IList<string> ConfigToListString(string config)
+        {
+            return config.TrimStart(',')
+                        .TrimEnd(',')
+                        .Split(',')
+                        .Select(x => x.Trim())
+                        .ToList();
         }
 
         #region Singleton

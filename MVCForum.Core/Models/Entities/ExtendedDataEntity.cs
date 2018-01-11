@@ -4,7 +4,7 @@
     using System.ComponentModel.DataAnnotations.Schema;
     using Newtonsoft.Json;
 
-    public class ExtendedDataEntity : Entity
+    public class ExtendedDataEntity : IBaseEntity
     {
         /// <summary>
         /// The extended data backing field

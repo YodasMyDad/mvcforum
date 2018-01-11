@@ -118,7 +118,7 @@
             }
             else
             {
-                var inUseBy = new List<Entity>();
+                var inUseBy = new List<IBaseEntity>();
                 inUseBy.AddRange(role.Users);
                 throw new Exception($"In use by {inUseBy.Count} entities");
             }

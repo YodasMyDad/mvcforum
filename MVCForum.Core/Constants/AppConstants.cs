@@ -10,6 +10,16 @@ namespace MvcForum.Core.Constants
             /// The key thats used to pull out a guid to check email confirmation during registration
             /// </summary>
             public const string RegistrationEmailConfirmationKey = "RegistrationEmailConfirmationKey";
+
+            /// <summary>
+            /// Gets the login type out the extended data
+            /// </summary>
+            public const string LoginType = "LoginType";
+
+            /// <summary>
+            /// Key for the SocialProfileImageUrl
+            /// </summary>
+            public const string SocialProfileImageUrl = "SocialProfileImageUrl";
         }
 
         public const int SaltSize = 24;

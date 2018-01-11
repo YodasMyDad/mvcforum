@@ -159,6 +159,7 @@
     <Compile Include="ViewModels\Category\CategoryListViewModel.cs" />
     <Compile Include="ViewModels\Category\EditCategoryPermissionsViewModel.cs" />
     <Compile Include="ViewModels\Category\SubCategoryViewModel.cs" />
+    <Compile Include="ViewModels\ExtensionMethods\MemberAddViewModelExtensions.cs" />
     <Compile Include="ViewModels\Favourite\FavouriteJsonReturnModel.cs" />
     <Compile Include="ViewModels\Home\AllRecentActivitiesViewModel.cs" />
     <Compile Include="ViewModels\Home\ListCategoriesViewModels.cs" />

@@ -3,7 +3,7 @@
     using System;
     using Utilities;
 
-    public partial class BannedWord : Entity
+    public partial class BannedWord : IBaseEntity
     {
         public BannedWord()
         {

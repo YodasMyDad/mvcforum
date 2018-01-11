@@ -151,7 +151,7 @@
                 previousTag);
         }
 
-        public static string CreatePageTitle(Entity entity, string fallBack)
+        public static string CreatePageTitle(IBaseEntity entity, string fallBack)
         {
             if (entity != null)
             {
@@ -169,7 +169,7 @@
             return fallBack;
         }
 
-        public static string CreateMetaDesc(Entity entity)
+        public static string CreateMetaDesc(IBaseEntity entity)
         {
             return "";
         }

@@ -196,10 +196,10 @@
                             var getImageUrl = $"http://graph.facebook.com/{user.Body.Id}/picture?type=square";
                             viewModel.SocialProfileImageUrl = getImageUrl;
 
-                            //Large size photo https://graph.facebook.com/{facebookId}/picture?type=large
-                            //Medium size photo https://graph.facebook.com/{facebookId}/picture?type=normal
-                            //Small size photo https://graph.facebook.com/{facebookId}/picture?type=small
-                            //Square photo https://graph.facebook.com/{facebookId}/picture?type=square
+                            // Large size photo https://graph.facebook.com/{facebookId}/picture?type=large
+                            // Medium size photo https://graph.facebook.com/{facebookId}/picture?type=normal
+                            // Small size photo https://graph.facebook.com/{facebookId}/picture?type=small
+                            // Square photo https://graph.facebook.com/{facebookId}/picture?type=square
 
                             // Store the viewModel in TempData - Which we'll use in the register logic
                             TempData[AppConstants.MemberRegisterViewModel] = viewModel;
