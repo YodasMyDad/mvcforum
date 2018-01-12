@@ -1,8 +1,8 @@
-﻿namespace MvcForum.Web.Application.StorageProviders
+﻿namespace MvcForum.Core.Providers.Storage
 {
     using System;
-    using Core.Constants;
-    using Core.Interfaces.Providers;
+    using Constants;
+    using Interfaces.Providers;
 
     public static class StorageProvider
     {
@@ -16,7 +16,7 @@
 
             try
             {
-                return TypeFactory.GetInstanceOf<IStorageProvider>(type);
+                return (IStorageProvider)Activator.CreateInstance(Type.GetType(type));
             }
             catch (Exception)
             {

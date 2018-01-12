@@ -1,8 +1,16 @@
 ﻿namespace MvcForum.Plugins.Pipelines.User
 {
+    using System.Drawing.Imaging;
+    using System.IO;
     using System.Text;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+    using System.Web;
+    using System.Web.Hosting;
     using System.Web.Mvc;
+    using Core;
+    using Core.Constants;
+    using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Pipeline;
     using Core.Interfaces.Services;
@@ -75,13 +83,12 @@
 
             // If this is a social login, and memberEmailAuthorisationNeeded is true then we need to ignore it
             // and set memberEmailAuthorisationNeeded to false because the email addresses are validated by the social media providers
-            if (isSocialLogin && !manuallyAuthoriseMembers)
+            if (isSocialLogin && manuallyAuthoriseMembers == false)
             {
                 memberEmailAuthorisationNeeded = false;
                 input.EntityToProcess.IsApproved = true;
             }
-
-            if (manuallyAuthoriseMembers || memberEmailAuthorisationNeeded)
+            else if (manuallyAuthoriseMembers == true || memberEmailAuthorisationNeeded == true)
             {
                 input.EntityToProcess.IsApproved = false;
             }
@@ -90,61 +97,55 @@
                 input.EntityToProcess.IsApproved = true;
             }
 
-            //TODO Is this a social login
             // See if this is a social login and we have their profile pic
-            //if (!string.IsNullOrWhiteSpace(userModel.SocialProfileImageUrl))
-            //{
-            //    // We have an image url - Need to save it to their profile
-            //    var image = AppHelpers.GetImageFromExternalUrl(userModel.SocialProfileImageUrl);
+            var socialProfileImageUrl = input.EntityToProcess.GetExtendedDataItem(AppConstants.ExtendedDataKeys.SocialProfileImageUrl);
+            if (!string.IsNullOrWhiteSpace(socialProfileImageUrl))
+            {
+                // We have an image url - Need to save it to their profile
+                var image = socialProfileImageUrl.GetImageFromExternalUrl();
 
-            //    // Set upload directory - Create if it doesn't exist
-            //    var uploadFolderPath =
-            //        HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath,
-            //            userToSave.Id));
-            //    if (uploadFolderPath != null && !Directory.Exists(uploadFolderPath))
-            //    {
-            //        Directory.CreateDirectory(uploadFolderPath);
-            //    }
+                // Set upload directory - Create if it doesn't exist
+                var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, input.EntityToProcess.Id));
+                if (uploadFolderPath != null && !Directory.Exists(uploadFolderPath))
+                {
+                    Directory.CreateDirectory(uploadFolderPath);
+                }
 
-            //    // Get the file name
-            //    var fileName = Path.GetFileName(userModel.SocialProfileImageUrl);
+                // Get the file name
+                var fileName = Path.GetFileName(socialProfileImageUrl);
 
-            //    // Create a HttpPostedFileBase image from the C# Image
-            //    using (var stream = new MemoryStream())
-            //    {
-            //        // Microsoft doesn't give you a file extension - See if it has a file extension
-            //        // Get the file extension
-            //        var fileExtension = Path.GetExtension(fileName);
+                // Create a HttpPostedFileBase image from the C# Image
+                using (var stream = new MemoryStream())
+                {
+                    // Microsoft doesn't give you a file extension - See if it has a file extension
+                    // Get the file extension
+                    var fileExtension = Path.GetExtension(fileName);
 
-            //        // Fix invalid Illegal charactors
-            //        var regexSearch = new string(Path.GetInvalidFileNameChars()) +
-            //                          new string(Path.GetInvalidPathChars());
-            //        var reg = new Regex($"[{Regex.Escape(regexSearch)}]");
-            //        fileName = reg.Replace(fileName, "");
+                    // Fix invalid Illegal charactors
+                    var regexSearch = $"{new string(Path.GetInvalidFileNameChars())}{new string(Path.GetInvalidPathChars())}";
+                    var reg = new Regex($"[{Regex.Escape(regexSearch)}]");
+                    fileName = reg.Replace(fileName, "");
 
-            //        if (string.IsNullOrWhiteSpace(fileExtension))
-            //        {
-            //            // no file extension so give it one
-            //            fileName = string.Concat(fileName, ".jpg");
-            //        }
+                    if (string.IsNullOrWhiteSpace(fileExtension))
+                    {
+                        // no file extension so give it one
+                        fileName = string.Concat(fileName, ".jpg");
+                    }
 
-            //        image.Save(stream, ImageFormat.Jpeg);
-            //        stream.Position = 0;
-            //        HttpPostedFileBase formattedImage = new MemoryFile(stream, "image/jpeg", fileName);
+                    image.Save(stream, ImageFormat.Jpeg);
+                    stream.Position = 0;
+                    HttpPostedFileBase formattedImage = new MemoryFile(stream, "image/jpeg", fileName);
 
-            //        // Upload the file
-            //        var uploadResult = AppHelpers.UploadFile(formattedImage, uploadFolderPath,
-            //            LocalizationService, true);
+                    // Upload the file
+                    var uploadResult = formattedImage.UploadFile(uploadFolderPath, _localizationService, true);
 
-            //        // Don't throw error if problem saving avatar, just don't save it.
-            //        if (uploadResult.UploadSuccessful)
-            //        {
-            //            userToSave.Avatar = uploadResult.UploadedFileName;
-            //        }
-            //    }
-            //}
-
-
+                    // Don't throw error if problem saving avatar, just don't save it.
+                    if (uploadResult.UploadSuccessful)
+                    {
+                        input.EntityToProcess.Avatar = uploadResult.UploadedFileName;
+                    }
+                }
+            }
 
             try
             {
@@ -173,7 +174,7 @@
                 }
 
                 // Only send the email if the admin is not manually authorising emails or it's pointless
-                SendEmailConfirmationEmail(userToSave);
+                _emailService.SendEmailConfirmationEmail(input.EntityToProcess, manuallyAuthoriseMembers, memberEmailAuthorisationNeeded);                
 
                 // Now add a memberjoined activity
                 _activityService.MemberJoined(input.EntityToProcess);

@@ -41,11 +41,14 @@
     <Compile Include="Constants\CacheKeys.cs" />
     <Compile Include="Constants\SiteConstants.cs" />
     <Compile Include="ExtensionMethods\ExtendedDataExtensions.cs" />
+    <Compile Include="ExtensionMethods\HttpExtensionMethods.cs" />
     <Compile Include="ExtensionMethods\IdentityExtensions.cs" />
+    <Compile Include="ExtensionMethods\StringExtensionMethods.cs" />
     <Compile Include="ExtensionMethods\VersionExtensionMethods.cs" />
     <Compile Include="Interfaces\IAssemblyProvider.cs" />
     <Compile Include="Interfaces\Pipeline\IPipe.cs" />
     <Compile Include="Interfaces\Pipeline\IPipelineProcess.cs" />
+    <Compile Include="MemoryFile.cs" />
     <Compile Include="Migrations\201801011815079_IncreaseAccessTokenLength.cs" />
     <Compile Include="Migrations\201801011815079_IncreaseAccessTokenLength.Designer.cs">
       <DependentUpon>201801011815079_IncreaseAccessTokenLength.cs</DependentUpon>
@@ -203,6 +206,8 @@
     <Compile Include="Pipeline\Pipeline.cs" />
     <Compile Include="Pipeline\PipelineProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\Storage\DiskStorageProvider.cs" />
+    <Compile Include="Providers\Storage\StorageProvider.cs" />
     <Compile Include="Reflection\AssemblyProvider.cs" />
     <Compile Include="Reflection\ImplementationManager.cs" />
     <Compile Include="Services\ActivityService.cs" />

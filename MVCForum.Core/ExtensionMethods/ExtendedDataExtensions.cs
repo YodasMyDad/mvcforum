@@ -2,6 +2,7 @@
 {
     using Models;
     using Models.Entities;
+    using Newtonsoft.Json;
 
     public static class ExtendedDataExtensions
     {
@@ -44,6 +45,24 @@
             // We have to reset the data to trigger the set
             entity.ExtendedData = extendedData;
         }
+
+        /// <summary>
+        /// Sets extended data
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TTwo"></typeparam>
+        /// <param name="entity"></param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public static void SetExtendedDataValue<T, TTwo>(this T entity, string key, TTwo value)
+            where T : ExtendedDataEntity
+        {
+            // Converted value
+            var convertedValue = JsonConvert.SerializeObject(value);
+
+            entity.SetExtendedDataValue(key, convertedValue);
+        }
+
 
         /// <summary>
         ///     Removes an extended data item by key
@@ -94,6 +113,28 @@
             }
 
             return string.Empty;
+        }
+
+        /// <summary>
+        /// Gets an extended data item and convert it to a type
+        /// </summary>
+        /// <typeparam name="TOne"></typeparam>
+        /// <typeparam name="TTwo"></typeparam>
+        /// <param name="entity"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static TTwo GetExtendedDataItem<TOne, TTwo>(this TOne entity, string key)
+            where TOne : ExtendedDataEntity
+        {
+            foreach (var extendedDataItem in entity.ExtendedData)
+            {
+                if (extendedDataItem.Key == key)
+                {
+                    return JsonConvert.DeserializeObject<TTwo>(extendedDataItem.Value);
+                }
+            }
+
+            return default(TTwo);
         }
     }
 }

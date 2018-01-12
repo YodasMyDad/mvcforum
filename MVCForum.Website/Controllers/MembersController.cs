@@ -401,23 +401,22 @@
         /// <returns></returns>
         public ActionResult MemberRegisterLogic(IPipelineProcess<MembershipUser> user)
         {
+
+            //TODO - Need to set manuallyAuthoriseMembers, memberEmailAuthorisationNeeded and ReturnUrl in extendeddata
+
             var settings = SettingsService.GetSettings();
+
+            // Get from ExtendedData
             var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
+            
+            // Get from ExtendedData
             var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
+
             var homeRedirect = false;
-
-            var pipeline = MembershipService.CreateUser(userToSave);
-            if (!pipeline.Successful)
-            {
-                ModelState.AddModelError(string.Empty, pipeline.ProcessLog.FirstOrDefault());
-            }
-            else
-            {
-
 
 
                 // Set the view bag message here
-                SetRegisterViewBagMessage(manuallyAuthoriseMembers, memberEmailAuthorisationNeeded, userToSave);
+                SetRegisterViewBagMessage(manuallyAuthoriseMembers, memberEmailAuthorisationNeeded, user.EntityToProcess);
 
                 if (!manuallyAuthoriseMembers && !memberEmailAuthorisationNeeded)
                 {
@@ -426,8 +425,7 @@
 
                 try
                 {
-
-
+                    // Save any outstanding changes
                     Context.SaveChanges();
 
                     if (homeRedirect)
@@ -446,10 +444,9 @@
                     Context.RollBack();
                     LoggingService.Error(ex);
                     FormsAuthentication.SignOut();
-                    ModelState.AddModelError(string.Empty,
-                        LocalizationService.GetResourceString("Errors.GenericMessage"));
+                    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
                 }
-            }
+         
 
 
             return View("Register");
@@ -461,8 +458,7 @@
         /// <param name="manuallyAuthoriseMembers"></param>
         /// <param name="memberEmailAuthorisationNeeded"></param>
         /// <param name="userToSave"></param>
-        private void SetRegisterViewBagMessage(bool manuallyAuthoriseMembers, bool memberEmailAuthorisationNeeded,
-            MembershipUser userToSave)
+        private void SetRegisterViewBagMessage(bool manuallyAuthoriseMembers, bool memberEmailAuthorisationNeeded, MembershipUser userToSave)
         {
             if (manuallyAuthoriseMembers)
             {
@@ -497,72 +493,13 @@
         }
 
         /// <summary>
-        ///     Sends registration confirmation email
-        /// </summary>
-        /// <param name="userToSave"></param>
-        private void SendEmailConfirmationEmail(MembershipUser userToSave)
-        {
-            var settings = SettingsService.GetSettings();
-            var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
-            var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
-            if (manuallyAuthoriseMembers == false && memberEmailAuthorisationNeeded)
-            {
-                if (!string.IsNullOrWhiteSpace(userToSave.Email))
-                {
-                    // Registration guid
-                    var registrationGuid = Guid.NewGuid().ToString();
-
-                    // Set a Guid in the extended data
-                    userToSave.SetExtendedDataValue(AppConstants.ExtendedDataKeys.RegistrationEmailConfirmationKey,
-                        registrationGuid);
-
-                    // SEND AUTHORISATION EMAIL
-                    var sb = new StringBuilder();
-                    var confirmationLink = string.Concat(StringUtils.ReturnCurrentDomain(),
-                        Url.Action("EmailConfirmation", new {id = userToSave.Id, key = registrationGuid}));
-
-                    sb.AppendFormat("<p>{0}</p>", string.Format(
-                        LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.EmailBody"),
-                        settings.ForumName,
-                        string.Format("<p><a href=\"{0}\">{0}</a></p>", confirmationLink)));
-
-                    var email = new Email
-                    {
-                        EmailTo = userToSave.Email,
-                        NameTo = userToSave.UserName,
-                        Subject = LocalizationService.GetResourceString("Members.MemberEmailAuthorisation.Subject")
-                    };
-
-                    email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
-
-                    _emailService.SendMail(email);
-
-                    // We add a cookie for 7 days, which will display the resend email confirmation button
-                    // This cookie is removed when they click the confirmation link
-                    var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
-                    {
-                        Value = userToSave.UserName,
-                        Expires = DateTime.UtcNow.AddDays(7)
-                    };
-
-                    // Add the cookie.
-                    Response.Cookies.Add(myCookie);
-
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = LocalizationService.GetResourceString("Members.MemberEmailAuthorisationNeeded"),
-                        MessageType = GenericMessages.success
-                    };
-                }
-            }
-        }
-
-        /// <summary>
         ///     Resends the email confirmation
         /// </summary>
         /// <param name="username"></param>
+        /// <param name="manuallyAuthoriseMembers"></param>
+        /// <param name="memberEmailAuthorisationNeeded"></param>
         /// <returns></returns>
-        public ActionResult ResendEmailConfirmation(string username)
+        public ActionResult ResendEmailConfirmation(string username, bool manuallyAuthoriseMembers, bool memberEmailAuthorisationNeeded)
         {
             try
             {
@@ -575,7 +512,13 @@
 
                 if (user != null && !string.IsNullOrWhiteSpace(registrationGuid))
                 {
-                    SendEmailConfirmationEmail(user);
+                    _emailService.SendEmailConfirmationEmail(user, manuallyAuthoriseMembers, memberEmailAuthorisationNeeded);
+
+                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = LocalizationService.GetResourceString("Members.MemberEmailAuthorisationNeeded"),
+                        MessageType = GenericMessages.success
+                    };
                 }
                 else
                 {
@@ -796,7 +739,7 @@
                                     ModelState.AddModelError(string.Empty,
                                         LocalizationService.GetResourceString("Members.Errors.UserNotApproved"));
                                     user = MembershipService.GetUser(username);
-                                    SendEmailConfirmationEmail(user);
+                                    _emailService.SendEmailConfirmationEmail(user);
                                     break;
 
                                 default:
@@ -1001,7 +944,7 @@
                     if (file != null)
                     {
                         // If successful then upload the file
-                        var uploadResult = AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService, true);
+                        var uploadResult = file.UploadFile(uploadFolderPath, LocalizationService, true);
 
                         if (!uploadResult.UploadSuccessful)
                         {

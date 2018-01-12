@@ -67,15 +67,11 @@
     <Compile Include="Application\ExtensionMethods\HtmlLabelExtensions.cs" />
     <Compile Include="Application\ForumMVCResourceDisplayName.cs" />
     <Compile Include="Application\CustomActionResults\GoogleSitemapResult.cs" />
-    <Compile Include="Application\MemoryFile.cs" />
     <Compile Include="Application\MobileExtensions.cs" />
     <Compile Include="Application\RouteHandlers\SlugRouteHandler.cs" />
     <Compile Include="Application\CustomActionResults\RssResult.cs" />
     <Compile Include="Application\CustomActionResults\CsvFileResult.cs" />
     <Compile Include="Application\ExtensionMethods\Extensions.cs" />
-    <Compile Include="Application\StorageProviders\DiskStorageProvider.cs" />
-    <Compile Include="Application\StorageProviders\StorageProvider.cs" />
-    <Compile Include="Application\TypeFactory.cs" />
     <Compile Include="Application\ViewEngine\ForumViewEngine.cs" />
     <Compile Include="Application\Localization\Localizer.cs" />
     <Compile Include="Application\CustomActionResults\WrappedJSonResult.cs" />
@@ -1177,6 +1173,7 @@
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.woff" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Application\StorageProviders\" />
     <Folder Include="App_Data\Plugins\" />
     <Folder Include="Content\languagepacks\" />
   </ItemGroup>

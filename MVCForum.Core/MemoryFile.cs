@@ -1,9 +1,9 @@
-﻿namespace MvcForum.Web.Application
+﻿namespace MvcForum.Core
 {
     using System.IO;
     using System.Web;
 
-    internal class MemoryFile : HttpPostedFileBase
+    public class MemoryFile : HttpPostedFileBase
     {
         private readonly Stream _stream;
 
