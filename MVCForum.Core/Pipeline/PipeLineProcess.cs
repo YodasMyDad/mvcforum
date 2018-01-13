@@ -9,11 +9,13 @@
     public class PipelineProcess<T> : IPipelineProcess<T>
         where T : IBaseEntity
     {
+
         public PipelineProcess(T entity)
         {
             // Set up the pipeline process
             EntityToProcess = entity;
             ProcessLog = new List<string>();
+            ExtendedData = new List<ExtendedDataItem>();
             Successful = true;
         }
 

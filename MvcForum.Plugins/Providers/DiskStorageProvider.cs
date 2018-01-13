@@ -1,11 +1,11 @@
-﻿namespace MvcForum.Core.Providers.Storage
+﻿namespace MvcForum.Plugins.Providers
 {
     using System.Collections.Generic;
     using System.IO;
     using System.Web;
     using System.Web.Hosting;
-    using Constants;
-    using Interfaces.Providers;
+    using Core;
+    using Core.Interfaces.Providers;
 
     public class DiskStorageProvider : IStorageProvider
     {

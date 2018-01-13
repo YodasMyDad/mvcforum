@@ -399,12 +399,8 @@
         public ActionResult MemberRegisterLogic(IPipelineProcess<MembershipUser> pipelineProcess)
         {
             // We get these from the pipelineprocess and not from the settings as they can be changed during the process (i.e. Social login)
-            var manuallyAuthoriseMembers =
-                Convert.ToBoolean(pipelineProcess.ExtendedData.FirstOrDefault(x =>
-                    x.Key == Constants.ExtendedDataKeys.ManuallyAuthoriseMembers));
-            var memberEmailAuthorisationNeeded = Convert.ToBoolean(
-                pipelineProcess.ExtendedData.FirstOrDefault(x =>
-                    x.Key == Constants.ExtendedDataKeys.MemberEmailAuthorisationNeeded));
+            var manuallyAuthoriseMembers = Convert.ToBoolean(pipelineProcess.ExtendedData.GetExtendedDataItem(Constants.ExtendedDataKeys.ManuallyAuthoriseMembers));
+            var memberEmailAuthorisationNeeded = Convert.ToBoolean(pipelineProcess.ExtendedData.GetExtendedDataItem(Constants.ExtendedDataKeys.MemberEmailAuthorisationNeeded));
 
             // Set the view bag message here
             SetRegisterViewBagMessage(manuallyAuthoriseMembers, memberEmailAuthorisationNeeded,

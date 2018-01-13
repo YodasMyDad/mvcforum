@@ -81,7 +81,7 @@
 
         public string SanitiseBannedWords(string content, IList<string> words)
         {
-            if (words != null && words.Any())
+            if (words != null && words.Any() && !string.IsNullOrWhiteSpace(content))
             {
                 var censor = new CensorUtils(words);
                 return censor.CensorText(content);
@@ -92,7 +92,7 @@
         /// <inheritdoc />
         public bool ContainsStopWords(string content, IList<string> words)
         {
-            if (words != null && words.Any())
+            if (words != null && words.Any() && !string.IsNullOrWhiteSpace(content))
             {
                 foreach (var word in words)
                 {

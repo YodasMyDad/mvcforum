@@ -1,8 +1,8 @@
 ﻿namespace MvcForum.Core.Providers.Storage
 {
     using System;
-    using Constants;
     using Interfaces.Providers;
+    using Reflection;
 
     public static class StorageProvider
     {
@@ -11,16 +11,20 @@
             var type = ForumConfiguration.Instance.StorageProviderType;
             if (string.IsNullOrWhiteSpace(type))
             {
-                return new DiskStorageProvider();
+                throw new Exception(
+                    "Unable to find storage provider instance, check StorageProviderType is correct in forum.config");
             }
 
             try
             {
-                return (IStorageProvider)Activator.CreateInstance(Type.GetType(type));
+                var storageProviders = ImplementationManager.GetInstances<IStorageProvider>();
+                return storageProviders[type];
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return new DiskStorageProvider();
+                throw new Exception(
+                    "Unable to create storage provider instance, check StorageProviderType is correct in forum.config",
+                    ex);
             }
         });
 

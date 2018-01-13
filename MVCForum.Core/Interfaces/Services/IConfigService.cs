@@ -13,7 +13,7 @@
         string Emotify(string inputText);
         OrderedDictionary GetEmoticonHashTable();
         Dictionary<string, string> GetForumConfig();
-        Dictionary<string, string> GetTypes();
+        Dictionary<string, string> GetPlugins();
 
         #endregion
     }

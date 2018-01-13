@@ -1,5 +1,6 @@
 ﻿namespace MvcForum.Core.ExtensionMethods
 {
+    using System.Collections.Generic;
     using Models;
     using Models.Entities;
     using Newtonsoft.Json;
@@ -78,13 +79,14 @@
 
             // Get the one to remove
             var toRemoveAt = 0;
-            foreach (var extendedDataItem in entity.ExtendedData)
+            for (var index = 0; index < entity.ExtendedData.Count; index++)
             {
+                toRemoveAt = index;
+                var extendedDataItem = entity.ExtendedData[index];
                 if (extendedDataItem.Key == key)
                 {
                     break;
                 }
-                toRemoveAt++;
             }
 
             // Remove it
@@ -136,5 +138,46 @@
 
             return default(TTwo);
         }
+
+
+        /// <summary>
+        ///     Gets an extended data value by key.
+        /// </summary>
+        /// <param name="extendedDataItems"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static string GetExtendedDataItem(this IList<ExtendedDataItem> extendedDataItems, string key)
+        {
+            foreach (var extendedDataItem in extendedDataItems)
+            {
+                if (extendedDataItem.Key == key)
+                {
+                    return extendedDataItem.Value;
+                }
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Gets an extended data item and convert it to a type
+        /// </summary>
+        /// <param name="extendedDataItems"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static T GetExtendedDataItem<T>(this IList<ExtendedDataItem> extendedDataItems, string key)
+        {
+            foreach (var extendedDataItem in extendedDataItems)
+            {
+                if (extendedDataItem.Key == key)
+                {
+                    return JsonConvert.DeserializeObject<T>(extendedDataItem.Value);
+                }
+            }
+
+            return default(T);
+        }
     }
+
+
 }

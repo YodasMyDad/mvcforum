@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MvcForum.Core.ExtensionMethods
+﻿namespace MvcForum.Core.ExtensionMethods
 {
-    using System.Data.Entity.ModelConfiguration.Conventions;
+    using System;
     using System.Drawing;
     using System.Drawing.Imaging;
     using System.IO;
+    using System.Linq;
     using System.Web;
-    using Constants;
     using Interfaces.Services;
     using Models.General;
     using Providers.Storage;
@@ -20,7 +14,7 @@ namespace MvcForum.Core.ExtensionMethods
     public static class HttpExtensionMethods
     {
         /// <summary>
-        /// Uploads a file from a posted file
+        ///     Uploads a file from a posted file
         /// </summary>
         /// <param name="file"></param>
         /// <param name="uploadFolderPath"></param>
@@ -28,9 +22,9 @@ namespace MvcForum.Core.ExtensionMethods
         /// <param name="onlyImages"></param>
         /// <returns></returns>
         public static UploadFileResult UploadFile(this HttpPostedFileBase file, string uploadFolderPath,
-                                ILocalizationService localizationService, bool onlyImages = false)
+            ILocalizationService localizationService, bool onlyImages = false)
         {
-            var upResult = new UploadFileResult { UploadSuccessful = true };
+            var upResult = new UploadFileResult {UploadSuccessful = true};
             const string imageExtensions = "jpg,jpeg,png,gif";
             var fileName = Path.GetFileName(file.FileName);
             var storageProvider = StorageProvider.Current;
@@ -85,8 +79,7 @@ namespace MvcForum.Core.ExtensionMethods
                 }
 
                 // Store these here as we may change the values within the image manipulation
-                var newFileName = string.Empty;
-                var path = string.Empty;
+                string newFileName;
 
                 if (imageExtensions.Split(',').ToList().Contains(fileExtension))
                 {

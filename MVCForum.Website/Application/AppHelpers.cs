@@ -2,20 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Drawing;
-    using System.Drawing.Imaging;
     using System.IO;
     using System.Linq;
     using System.Net;
-    using System.Reflection;
     using System.Web;
     using System.Web.Hosting;
     using System.Web.Mvc;
     using Core;
     using Core.Constants;
-    using Core.Interfaces.Services;
     using Core.Models.Entities;
-    using Core.Models.General;
     using Core.Providers.Storage;
     using Core.Utilities;
 

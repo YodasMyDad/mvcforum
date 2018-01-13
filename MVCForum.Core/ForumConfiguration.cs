@@ -131,9 +131,6 @@
         // Themes
         public string ThemeRootFolderName => GetConfig("ThemeRootFolderName");
 
-        // Default Storage Type
-        public string StorageProviderType => GetType("StorageProviderType");
-
         /// <summary>
         ///     Show categories on home page instead of topics
         /// </summary>
@@ -161,6 +158,11 @@
         }
 
         /// <summary>
+        /// Get the storage provider for the website
+        /// </summary>
+        public string StorageProviderType => GetPlugin("StorageProviderType");
+
+        /// <summary>
         /// Get a list of badges
         /// </summary>
         private IList<string> _badges;
@@ -170,7 +172,7 @@
             {
                 if (_badges == null)
                 {
-                    var allBadges = GetConfig("Badges");
+                    var allBadges = GetPlugin("Badges");
                     if (!string.IsNullOrWhiteSpace(allBadges))
                     {
                         _badges = ConfigToListString(allBadges);
@@ -190,7 +192,7 @@
             {
                 if (_userCreatePipes == null)
                 {
-                    var pipes = GetConfig("UserCreatePipes");
+                    var pipes = GetPlugin("UserCreatePipes");
                     if (!string.IsNullOrWhiteSpace(pipes))
                     {
                         _userCreatePipes = ConfigToListString(pipes);
@@ -264,9 +266,9 @@
             return string.Empty;
         }
 
-        public string GetType(string key)
+        public string GetPlugin(string key)
         {
-            var dict = _configService.GetTypes();
+            var dict = _configService.GetPlugins();
             if (!string.IsNullOrWhiteSpace(key) && dict.ContainsKey(key))
             {
                 return dict[key];

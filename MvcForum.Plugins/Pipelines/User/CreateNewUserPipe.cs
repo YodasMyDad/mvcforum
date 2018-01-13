@@ -45,6 +45,7 @@
         {
             if (string.IsNullOrWhiteSpace(input.EntityToProcess.UserName))
             {
+                input.ProcessLog.Clear();
                 input.ProcessLog.Add(_membershipService.ErrorCodeToString(MembershipCreateStatus.InvalidUserName));
                 input.Successful = false;
                 return input;
@@ -53,6 +54,7 @@
             // get by username
             if (_membershipService.GetUser(input.EntityToProcess.UserName, true) != null)
             {
+                input.ProcessLog.Clear();
                 input.ProcessLog.Add(_membershipService.ErrorCodeToString(MembershipCreateStatus.DuplicateUserName));
                 input.Successful = false;
                 return input;
@@ -61,6 +63,7 @@
             // Add get by email address
             if (_membershipService.GetUserByEmail(input.EntityToProcess.Email, true) != null)
             {
+                input.ProcessLog.Clear();
                 input.ProcessLog.Add(_membershipService.ErrorCodeToString(MembershipCreateStatus.DuplicateEmail));
                 input.Successful = false;
                 return input;
@@ -68,6 +71,7 @@
 
             if (string.IsNullOrWhiteSpace(input.EntityToProcess.Password))
             {
+                input.ProcessLog.Clear();
                 input.ProcessLog.Add(_membershipService.ErrorCodeToString(MembershipCreateStatus.InvalidPassword));
                 input.Successful = false;
                 return input;
