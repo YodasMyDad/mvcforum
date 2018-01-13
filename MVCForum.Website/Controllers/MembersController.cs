@@ -836,6 +836,7 @@
                 permissions[ForumConfiguration.Instance.PermissionEditMembers].IsTicked)
             {
                 // Get the user from DB
+                // TODO - Store this in extendedData
                 var user = MembershipService.GetUser(userModel.Id);
 
                 // Before we do anything - Check stop words
@@ -877,10 +878,6 @@
                     var uploadFolderPath =
                         HostingEnvironment.MapPath(string.Concat(ForumConfiguration.Instance.UploadFolderPath,
                             loggedOnReadOnlyUser.Id));
-                    if (!Directory.Exists(uploadFolderPath))
-                    {
-                        Directory.CreateDirectory(uploadFolderPath);
-                    }
 
                     // Loop through each file and get the file info and save to the users folder and Db
                     var file = userModel.Files[0];
@@ -911,9 +908,7 @@
                 user.Age = userModel.Age;
                 user.Facebook = _bannedWordService.SanitiseBannedWords(userModel.Facebook, bannedWords);
                 user.Location = _bannedWordService.SanitiseBannedWords(userModel.Location, bannedWords);
-                user.Signature =
-                    _bannedWordService.SanitiseBannedWords(StringUtils.ScrubHtml(userModel.Signature, true),
-                        bannedWords);
+                user.Signature = _bannedWordService.SanitiseBannedWords(StringUtils.ScrubHtml(userModel.Signature, true), bannedWords);
                 user.Twitter = _bannedWordService.SanitiseBannedWords(userModel.Twitter, bannedWords);
                 user.Website = _bannedWordService.SanitiseBannedWords(userModel.Website, bannedWords);
                 user.DisableEmailNotifications = userModel.DisableEmailNotifications;

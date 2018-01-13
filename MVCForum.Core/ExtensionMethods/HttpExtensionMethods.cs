@@ -31,6 +31,10 @@
 
             if (fileName != null)
             {
+                if (!Directory.Exists(uploadFolderPath))
+                {
+                    Directory.CreateDirectory(uploadFolderPath);
+                }
                 // Lower case
                 fileName = fileName.ToLower();
 

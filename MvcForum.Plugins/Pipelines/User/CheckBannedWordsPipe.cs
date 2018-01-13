@@ -59,13 +59,36 @@
                         }
                     }
 
-                    // Check signature
-                    if (_bannedWordService.ContainsStopWords(input.EntityToProcess.Signature, allStopWords))
+                    // Loop all stop words
+                    foreach (var allStopWord in allStopWords)
                     {
-                        input.Successful = false;
-                        input.ProcessLog.Clear();
-                        input.ProcessLog.Add($"The Username {userName} contains a stop word");
+                        // Check for stop words
+                        if (input.EntityToProcess.Facebook != null &&
+                            input.EntityToProcess.Facebook.IndexOf(allStopWord, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
+                            input.EntityToProcess.Location != null && input.EntityToProcess.Location.IndexOf(allStopWord,
+                                StringComparison.CurrentCultureIgnoreCase) >= 0 ||
+                            input.EntityToProcess.Signature != null && input.EntityToProcess.Signature.IndexOf(allStopWord,
+                                StringComparison.CurrentCultureIgnoreCase) >= 0 ||
+                            input.EntityToProcess.Twitter != null && input.EntityToProcess.Twitter.IndexOf(allStopWord,
+                                StringComparison.CurrentCultureIgnoreCase) >= 0 ||
+                            input.EntityToProcess.Website != null && input.EntityToProcess.Website.IndexOf(allStopWord,
+                                StringComparison.CurrentCultureIgnoreCase) >= 0)
+                        {
+                            input.Successful = false;
+                            input.ProcessLog.Clear();
+                            input.ProcessLog.Add($"The Username {userName} contains a stop word");
+                        }
                     }
+
+                    // Santise the fields now 
+                    var justBannedWord = allBannedWords.Where(x => x.IsStopWord == false).Select(x => x.Word).ToArray();
+                   
+                    // Sanitised
+                    input.EntityToProcess.Facebook = _bannedWordService.SanitiseBannedWords(input.EntityToProcess.Facebook, justBannedWord);
+                    input.EntityToProcess.Location = _bannedWordService.SanitiseBannedWords(input.EntityToProcess.Location, justBannedWord);
+                    input.EntityToProcess.Signature = _bannedWordService.SanitiseBannedWords(StringUtils.ScrubHtml(input.EntityToProcess.Signature, true), justBannedWord);
+                    input.EntityToProcess.Twitter = _bannedWordService.SanitiseBannedWords(input.EntityToProcess.Twitter, justBannedWord);
+                    input.EntityToProcess.Website = _bannedWordService.SanitiseBannedWords(input.EntityToProcess.Website, justBannedWord);
                 }
                 else
                 {
