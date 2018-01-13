@@ -12,7 +12,7 @@
         public string BuildFileUrl(params object[] subPath)
         {
             var joinString = string.Join("", subPath);
-            return VirtualPathUtility.ToAbsolute(string.Concat(SiteConstants.Instance.UploadFolderPath, joinString));
+            return VirtualPathUtility.ToAbsolute(string.Concat(ForumConfiguration.Instance.UploadFolderPath, joinString));
         }
 
         public string GetUploadFolderPath(bool createIfNotExist, params object[] subFolders)
@@ -22,7 +22,7 @@
 
             var folder =
                 HostingEnvironment.MapPath(
-                    string.Concat(SiteConstants.Instance.UploadFolderPath, string.Join("\\", sf)));
+                    string.Concat(ForumConfiguration.Instance.UploadFolderPath, string.Join("\\", sf)));
 
             if (createIfNotExist && !Directory.Exists(folder))
             {

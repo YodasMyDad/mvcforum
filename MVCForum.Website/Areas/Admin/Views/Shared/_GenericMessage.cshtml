@@ -2,9 +2,9 @@
 @using MvcForum.Web.Areas.Admin.ViewModels
 @{
     var genericMessage = new GenericMessageViewModel();
-    if (TempData[AppConstants.MessageViewBagName] != null)
+    if (TempData[Constants.MessageViewBagName] != null)
     {
-        genericMessage = (GenericMessageViewModel)TempData[AppConstants.MessageViewBagName];
+        genericMessage = (GenericMessageViewModel)TempData[Constants.MessageViewBagName];
     }
     else if (ViewBag.Message != null)
     {

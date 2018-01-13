@@ -260,7 +260,7 @@
             newUser = SanitizeUser(newUser);
 
             // Hash the password
-            var salt = StringUtils.CreateSalt(AppConstants.SaltSize);
+            var salt = StringUtils.CreateSalt(Constants.SaltSize);
             var hash = StringUtils.GenerateSaltedHash(newUser.Password, salt);
             newUser.Password = hash;
             newUser.PasswordSalt = salt;
@@ -276,7 +276,7 @@
             newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)), null);
 
             // Get the pipelines
-            var userCreatePipes = SiteConstants.Instance.UserCreatePipes;
+            var userCreatePipes = ForumConfiguration.Instance.UserCreatePipes;
 
             // The model to process
             var piplineModel = new PipelineProcess<MembershipUser>(newUser);
@@ -284,7 +284,7 @@
             // Add the login type to 
             piplineModel.ExtendedData.Add(new ExtendedDataItem
             {
-                Key = AppConstants.ExtendedDataKeys.LoginType,
+                Key = Constants.ExtendedDataKeys.LoginType,
                 Value =  JsonConvert.SerializeObject(loginType)
             });
 
@@ -544,7 +544,7 @@
             }
 
             // Cleared to go ahead with new password
-            salt = StringUtils.CreateSalt(AppConstants.SaltSize);
+            salt = StringUtils.CreateSalt(Constants.SaltSize);
             var newHash = StringUtils.GenerateSaltedHash(newPassword, salt);
 
             existingUser.Password = newHash;
@@ -564,7 +564,7 @@
         {
             var existingUser = Get(user.Id);
 
-            var salt = StringUtils.CreateSalt(AppConstants.SaltSize);
+            var salt = StringUtils.CreateSalt(Constants.SaltSize);
             var newHash = StringUtils.GenerateSaltedHash(newPassword, salt);
 
             existingUser.Password = newHash;
@@ -618,7 +618,7 @@
             return _cacheService.CachePerRequest(cacheKey, () =>
             {
                 // Get members that last activity date is valid
-                var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
+                var date = DateTime.UtcNow.AddMinutes(-Constants.TimeSpanInMinutesToShowMembers);
                 return _context.MembershipUser
                     .Where(x => x.LastActivityDate > date)
                     .AsNoTracking()
@@ -871,7 +871,7 @@
                         GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)), userToImport.Slug);
                     userToImport.Email = email;
                     userToImport.IsApproved = true;
-                    userToImport.PasswordSalt = StringUtils.CreateSalt(AppConstants.SaltSize);
+                    userToImport.PasswordSalt = StringUtils.CreateSalt(Constants.SaltSize);
 
                     string createDateStr = null;
                     if (values.Length >= 3)

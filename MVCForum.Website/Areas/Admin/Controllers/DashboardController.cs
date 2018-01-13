@@ -8,7 +8,7 @@
     using Core.Utilities;
     using ViewModels;
 
-    [Authorize(Roles = AppConstants.AdminRoleName)]
+    [Authorize(Roles = Constants.AdminRoleName)]
     public class DashboardController : BaseAdminController
     {
         private const int AmountToShow = 7;

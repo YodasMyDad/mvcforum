@@ -9,7 +9,7 @@
     using Core.Models.General;
     using ViewModels;
 
-    [Authorize(Roles = AppConstants.AdminRoleName)]
+    [Authorize(Roles = Constants.AdminRoleName)]
     public class LogController : BaseAdminController
     {
         public LogController(ILoggingService loggingService, IMembershipService membershipService,
@@ -29,7 +29,7 @@
             catch (Exception ex)
             {
                 var err = $"Unable to access logs: {ex.Message}";
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = err,
                     MessageType = GenericMessages.danger
@@ -45,7 +45,7 @@
         {
             LoggingService.ClearLogFiles();
 
-            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
             {
                 Message = "Log File Cleared",
                 MessageType = GenericMessages.success

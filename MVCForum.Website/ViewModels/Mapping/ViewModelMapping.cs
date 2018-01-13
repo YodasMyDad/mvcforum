@@ -5,6 +5,7 @@
     using System.Linq;
     using Application;
     using Areas.Admin.ViewModels;
+    using Core;
     using Core.Constants;
     using Core.Interfaces.Services;
     using Core.Models.Entities;
@@ -289,7 +290,7 @@
             var userIsAuthenticated = loggedOnUser != null;
 
             // Check for online status
-            var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
+            var date = DateTime.UtcNow.AddMinutes(-Constants.TimeSpanInMinutesToShowMembers);
 
             var viewModel = new TopicViewModel
             {
@@ -300,8 +301,8 @@
                 PageIndex = pageIndex,
                 TotalCount = totalCount,
                 TotalPages = totalPages,
-                LastPostPermaLink = string.Concat(topic.NiceUrl, "?", AppConstants.PostOrderBy, "=",
-                    AppConstants.AllPosts, "#comment-", topic.LastPost.Id),
+                LastPostPermaLink = string.Concat(topic.NiceUrl, "?", Constants.PostOrderBy, "=",
+                    Constants.AllPosts, "#comment-", topic.LastPost.Id),
                 MemberIsOnline = topic.User.LastActivityDate > date
             };
 
@@ -355,7 +356,7 @@
                     viewModel.Poll = new PollViewModel
                     {
                         Poll = topic.Poll,
-                        UserAllowedToVote = permission[SiteConstants.Instance.PermissionVoteInPolls].IsTicked
+                        UserAllowedToVote = permission[ForumConfiguration.Instance.PermissionVoteInPolls].IsTicked
                     };
 
                     var answers = pollAnswerService.GetAllPollAnswersByPoll(topic.Poll);
@@ -402,7 +403,7 @@
             }
 
             // Check for online status
-            var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
+            var date = DateTime.UtcNow.AddMinutes(-Constants.TimeSpanInMinutesToShowMembers);
 
             return new PostViewModel
             {
@@ -413,7 +414,7 @@
                 AllowedToVote = allowedToVote,
                 MemberHasFavourited = hasFavourited,
                 Favourites = favourites,
-                PermaLink = string.Concat(topic.NiceUrl, "?", AppConstants.PostOrderBy, "=", AppConstants.AllPosts,
+                PermaLink = string.Concat(topic.NiceUrl, "?", Constants.PostOrderBy, "=", Constants.AllPosts,
                     "#comment-", post.Id),
                 MemberIsOnline = post.User.LastActivityDate > date,
                 HasVotedDown = hasVotedDown,

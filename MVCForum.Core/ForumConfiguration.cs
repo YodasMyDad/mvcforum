@@ -1,12 +1,13 @@
-﻿namespace MvcForum.Core.Constants
+﻿namespace MvcForum.Core
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Web.Mvc;
     using Interfaces.Services;
+    using Ioc;
+    using Unity;
 
-    public class SiteConstants
+    public class ForumConfiguration
     {
         private string _mvcForumVersion;
 
@@ -215,16 +216,16 @@
 
         #region Singleton
 
-        private static SiteConstants _instance;
+        private static ForumConfiguration _instance;
         private static readonly object InstanceLock = new object();
         private static IConfigService _configService;
 
-        private SiteConstants(IConfigService configService)
+        private ForumConfiguration(IConfigService configService)
         {
             _configService = configService;
         }
 
-        public static SiteConstants Instance
+        public static ForumConfiguration Instance
         {
             get
             {
@@ -234,8 +235,8 @@
                     {
                         if (_instance == null)
                         {
-                            var configService = DependencyResolver.Current.GetService<IConfigService>();
-                            _instance = new SiteConstants(configService);
+                            var configService = UnityHelper.Container.Resolve<IConfigService>();
+                            _instance = new ForumConfiguration(configService);
                         }
                     }
                 }

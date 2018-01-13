@@ -1,5 +1,6 @@
 ﻿namespace MvcForum.Plugins.Pipelines.User
 {
+    using System;
     using System.Drawing.Imaging;
     using System.IO;
     using System.Text;
@@ -7,7 +8,6 @@
     using System.Threading.Tasks;
     using System.Web;
     using System.Web.Hosting;
-    using System.Web.Mvc;
     using Core;
     using Core.Constants;
     using Core.ExtensionMethods;
@@ -20,21 +20,23 @@
 
     public class CreateNewUserPipe : IPipe<IPipelineProcess<MembershipUser>>
     {
-        private readonly IMembershipService _membershipService;
-        private readonly ILoggingService _loggingService;
-        private readonly ISettingsService _settingsService;
-        private readonly ILocalizationService _localizationService;
-        private readonly IEmailService _emailService;
         private readonly IActivityService _activityService;
+        private readonly IEmailService _emailService;
+        private readonly ILocalizationService _localizationService;
+        private readonly ILoggingService _loggingService;
+        private readonly IMembershipService _membershipService;
+        private readonly ISettingsService _settingsService;
 
-        public CreateNewUserPipe()
+        public CreateNewUserPipe(IMembershipService membershipService, ILoggingService loggingService,
+            ISettingsService settingsService, ILocalizationService localizationService, IEmailService emailService,
+            IActivityService activityService)
         {
-            _membershipService = DependencyResolver.Current.GetService<IMembershipService>();
-            _loggingService = DependencyResolver.Current.GetService<ILoggingService>();
-            _settingsService = DependencyResolver.Current.GetService<ISettingsService>();
-            _localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
-            _emailService = DependencyResolver.Current.GetService<IEmailService>();
-            _activityService = DependencyResolver.Current.GetService<IActivityService>();
+            _membershipService = membershipService;
+            _loggingService = loggingService;
+            _settingsService = settingsService;
+            _localizationService = localizationService;
+            _emailService = emailService;
+            _activityService = activityService;
         }
 
         /// <inheritdoc />
@@ -88,7 +90,7 @@
                 memberEmailAuthorisationNeeded = false;
                 input.EntityToProcess.IsApproved = true;
             }
-            else if (manuallyAuthoriseMembers == true || memberEmailAuthorisationNeeded == true)
+            else if (manuallyAuthoriseMembers || memberEmailAuthorisationNeeded)
             {
                 input.EntityToProcess.IsApproved = false;
             }
@@ -98,14 +100,17 @@
             }
 
             // See if this is a social login and we have their profile pic
-            var socialProfileImageUrl = input.EntityToProcess.GetExtendedDataItem(AppConstants.ExtendedDataKeys.SocialProfileImageUrl);
+            var socialProfileImageUrl =
+                input.EntityToProcess.GetExtendedDataItem(Constants.ExtendedDataKeys.SocialProfileImageUrl);
             if (!string.IsNullOrWhiteSpace(socialProfileImageUrl))
             {
                 // We have an image url - Need to save it to their profile
                 var image = socialProfileImageUrl.GetImageFromExternalUrl();
 
                 // Set upload directory - Create if it doesn't exist
-                var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath, input.EntityToProcess.Id));
+                var uploadFolderPath =
+                    HostingEnvironment.MapPath(string.Concat(ForumConfiguration.Instance.UploadFolderPath,
+                        input.EntityToProcess.Id));
                 if (uploadFolderPath != null && !Directory.Exists(uploadFolderPath))
                 {
                     Directory.CreateDirectory(uploadFolderPath);
@@ -122,7 +127,8 @@
                     var fileExtension = Path.GetExtension(fileName);
 
                     // Fix invalid Illegal charactors
-                    var regexSearch = $"{new string(Path.GetInvalidFileNameChars())}{new string(Path.GetInvalidPathChars())}";
+                    var regexSearch =
+                        $"{new string(Path.GetInvalidFileNameChars())}{new string(Path.GetInvalidPathChars())}";
                     var reg = new Regex($"[{Regex.Escape(regexSearch)}]");
                     fileName = reg.Replace(fileName, "");
 
@@ -161,7 +167,8 @@
                 if (settings.EmailAdminOnNewMemberSignUp)
                 {
                     var sb = new StringBuilder();
-                    sb.Append($"<p>{string.Format(_localizationService.GetResourceString("Members.NewMemberRegistered"), settings.ForumName, settings.ForumUrl)}</p>");
+                    sb.Append(
+                        $"<p>{string.Format(_localizationService.GetResourceString("Members.NewMemberRegistered"), settings.ForumName, settings.ForumUrl)}</p>");
                     sb.Append($"<p>{input.EntityToProcess.UserName} - {input.EntityToProcess.Email}</p>");
                     var email = new Email
                     {
@@ -174,12 +181,13 @@
                 }
 
                 // Only send the email if the admin is not manually authorising emails or it's pointless
-                _emailService.SendEmailConfirmationEmail(input.EntityToProcess, manuallyAuthoriseMembers, memberEmailAuthorisationNeeded);                
+                _emailService.SendEmailConfirmationEmail(input.EntityToProcess, manuallyAuthoriseMembers,
+                    memberEmailAuthorisationNeeded);
 
                 // Now add a memberjoined activity
                 _activityService.MemberJoined(input.EntityToProcess);
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 input.ProcessLog.Add(_membershipService.ErrorCodeToString(MembershipCreateStatus.UserRejected));
                 input.Successful = false;
@@ -190,6 +198,18 @@
             {
                 input.ProcessLog.Add("CreateNewUserPipe Successful");
             }
+
+            // Set manuallyAuthoriseMembers, memberEmailAuthorisationNeeded in extendeddata
+            input.ExtendedData.Add(new ExtendedDataItem
+            {
+                Key = Constants.ExtendedDataKeys.ManuallyAuthoriseMembers,
+                Value = $"{manuallyAuthoriseMembers}"
+            });
+            input.ExtendedData.Add(new ExtendedDataItem
+            {
+                Key = Constants.ExtendedDataKeys.MemberEmailAuthorisationNeeded,
+                Value = $"{memberEmailAuthorisationNeeded}"
+            });
 
             return input;
         }

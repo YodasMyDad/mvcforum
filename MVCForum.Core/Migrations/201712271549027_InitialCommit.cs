@@ -16,7 +16,7 @@ namespace MvcForum.Core.Services.Migrations
         private bool TableExists(string table)
         {
             const string command = "select * from sys.tables";
-            using (var con = new SqlConnection(ConfigurationManager.ConnectionStrings[SiteConstants.Instance.MvcForumContext].ConnectionString))
+            using (var con = new SqlConnection(ConfigurationManager.ConnectionStrings[ForumConfiguration.Instance.MvcForumContext].ConnectionString))
             using (var com = new SqlCommand(command, con))
             {
                 con.Open();

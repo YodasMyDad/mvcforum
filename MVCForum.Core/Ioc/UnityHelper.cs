@@ -25,13 +25,21 @@ namespace MvcForum.Core.Ioc
     /// </summary>
     public static class UnityHelper
     {
+
+        private static IUnityContainer _unityContainer;
+
         public static IUnityContainer Start()
         {
             var container = new UnityContainer();
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
-            var buildUnity = BuildUnityContainer(container);
-            return buildUnity;
+            _unityContainer = BuildUnityContainer(container);
+            return _unityContainer;
         }
+
+        /// <summary>
+        /// Return Container if needed
+        /// </summary>
+        public static IUnityContainer Container => _unityContainer;
 
         /// <summary>
         ///     Inject

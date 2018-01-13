@@ -140,7 +140,7 @@
         /// <returns></returns>
         public List<Category> GetAllowedCategories(MembershipRole role)
         {
-            return GetAllowedCategories(role, SiteConstants.Instance.PermissionDenyAccess);
+            return GetAllowedCategories(role, ForumConfiguration.Instance.PermissionDenyAccess);
         }
 
         public List<Category> GetAllowedCategories(MembershipRole role, string actionType)

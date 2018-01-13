@@ -1,15 +1,16 @@
 ﻿namespace MvcForum.Web.Application
 {
     using System;
-    using System.Web.Mvc;
     using Core.Interfaces.Services;
+    using Core.Ioc;
     using Core.Utilities;
+    using Unity;
 
     public static class DatesUi
     {
         private static string GetLocalisedText(string key)
         {
-            var locService = DependencyResolver.Current.GetService<ILocalizationService>();
+            var locService = UnityHelper.Container.Resolve<ILocalizationService>();
             return locService.GetResourceString(key);
         }
 

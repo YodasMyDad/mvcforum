@@ -1,7 +1,6 @@
 ﻿namespace MvcForum.Plugins.Badges
 {
     using System.Linq;
-    using System.Web.Mvc;
     using Core.Interfaces.Badges;
     using Core.Interfaces.Services;
     using Core.Models.Attributes;
@@ -17,9 +16,9 @@
     {
         private readonly IVoteService _voteService;
 
-        public GrouchBadge()
+        public GrouchBadge(IVoteService voteService)
         {
-            _voteService = DependencyResolver.Current.GetService<IVoteService>();
+            _voteService = voteService;
         }
 
         public bool Rule(MembershipUser user)

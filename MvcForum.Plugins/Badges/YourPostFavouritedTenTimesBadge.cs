@@ -1,7 +1,6 @@
 ﻿namespace MvcForum.Plugins.Badges
 {
     using System.Linq;
-    using System.Web.Mvc;
     using Core.Interfaces.Badges;
     using Core.Interfaces.Services;
     using Core.Models.Attributes;
@@ -17,9 +16,9 @@
     {
         private readonly IPostService _postService;
 
-        public YourPostFavouritedTenTimesBadge()
+        public YourPostFavouritedTenTimesBadge(IPostService postService)
         {
-            _postService = DependencyResolver.Current.GetService<IPostService>();
+            _postService = postService;
         }
 
         public bool Rule(MembershipUser user)

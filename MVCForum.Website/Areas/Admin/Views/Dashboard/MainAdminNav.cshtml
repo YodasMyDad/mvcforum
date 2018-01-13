@@ -2,8 +2,8 @@
 @using MvcForum.Core.Constants
 @model MvcForum.Web.Areas.Admin.ViewModels.MainDashboardNavViewModel
 @{
-    var currentController = TempData[AppConstants.CurrentController].ToString();
-    var currentAction = TempData[AppConstants.CurrentAction].ToString();
+    var currentController = TempData[Constants.CurrentController].ToString();
+    var currentAction = TempData[Constants.CurrentAction].ToString();
 }
 <ul class="nav navbar-right top-nav">
     <li class="dropdown">

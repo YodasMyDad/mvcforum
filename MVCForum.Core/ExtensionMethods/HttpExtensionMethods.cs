@@ -44,7 +44,7 @@ namespace MvcForum.Core.ExtensionMethods
                 var fileExtension = Path.GetExtension(fileName);
 
                 //Before we do anything, check file size
-                if (file.ContentLength > Convert.ToInt32(SiteConstants.Instance.FileUploadMaximumFileSizeInBytes))
+                if (file.ContentLength > Convert.ToInt32(ForumConfiguration.Instance.FileUploadMaximumFileSizeInBytes))
                 {
                     //File is too big
                     upResult.UploadSuccessful = false;
@@ -53,7 +53,7 @@ namespace MvcForum.Core.ExtensionMethods
                 }
 
                 // now check allowed extensions
-                var allowedFileExtensions = SiteConstants.Instance.FileUploadAllowedExtensions;
+                var allowedFileExtensions = ForumConfiguration.Instance.FileUploadAllowedExtensions;
 
                 if (onlyImages)
                 {

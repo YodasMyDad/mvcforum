@@ -1,7 +1,5 @@
-﻿
-namespace MvcForum.Plugins.Badges
+﻿namespace MvcForum.Plugins.Badges
 {
-    using System.Web.Mvc;
     using Core.Interfaces.Badges;
     using Core.Interfaces.Services;
     using Core.Models.Attributes;
@@ -18,10 +16,10 @@ namespace MvcForum.Plugins.Badges
         private readonly ITopicService _topicService;
         private readonly ICategoryService _categoryService;
 
-        public AuthorMarkAsSolutionBadge()
+        public AuthorMarkAsSolutionBadge(ITopicService topicService, ICategoryService categoryService)
         {
-            _topicService = DependencyResolver.Current.GetService<ITopicService>();
-            _categoryService = DependencyResolver.Current.GetService<ICategoryService>();
+            _topicService = topicService;
+            _categoryService = categoryService;
         }
 
         /// <summary>

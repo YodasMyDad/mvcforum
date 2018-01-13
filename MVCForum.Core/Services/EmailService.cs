@@ -137,8 +137,7 @@
         /// <param name="userToSave">The user being created</param>
         /// <param name="manuallyAuthoriseMembers"></param>
         /// <param name="memberEmailAuthorisationNeeded"></param>
-        public void SendEmailConfirmationEmail(MembershipUser userToSave, 
-                                                    bool manuallyAuthoriseMembers, bool memberEmailAuthorisationNeeded)
+        public void SendEmailConfirmationEmail(MembershipUser userToSave,  bool manuallyAuthoriseMembers, bool memberEmailAuthorisationNeeded)
         {
             var settings = _settingsService.GetSettings();
             if (manuallyAuthoriseMembers == false && memberEmailAuthorisationNeeded == true)
@@ -149,7 +148,7 @@
                     var registrationGuid = Guid.NewGuid().ToString();
 
                     // Set a Guid in the extended data
-                    userToSave.SetExtendedDataValue(AppConstants.ExtendedDataKeys.RegistrationEmailConfirmationKey,
+                    userToSave.SetExtendedDataValue(Constants.ExtendedDataKeys.RegistrationEmailConfirmationKey,
                         registrationGuid);
 
                     // SEND AUTHORISATION EMAIL
@@ -176,7 +175,7 @@
 
                     // We add a cookie for 7 days, which will display the resend email confirmation button
                     // This cookie is removed when they click the confirmation link
-                    var myCookie = new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
+                    var myCookie = new HttpCookie(Constants.MemberEmailConfirmationCookieName)
                     {
                         Value = userToSave.UserName,
                         Expires = DateTime.UtcNow.AddDays(7)

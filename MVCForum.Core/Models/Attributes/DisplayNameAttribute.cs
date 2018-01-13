@@ -1,8 +1,9 @@
 ﻿namespace MvcForum.Core.Models.Attributes
 {
     using System;
-    using System.Web.Mvc;
     using Interfaces.Services;
+    using Ioc;
+    using Unity;
 
     [AttributeUsage(AttributeTargets.Class)]
     public class DisplayNameAttribute : Attribute
@@ -13,7 +14,7 @@
         {
             if (_localizationService == null)
             {
-                _localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
+                _localizationService = UnityHelper.Container.Resolve<ILocalizationService>();
             }
             DisplayName = _localizationService.GetResourceString(desc.Trim());
         }

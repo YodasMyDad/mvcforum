@@ -8,7 +8,7 @@
     {
         private static readonly Lazy<IStorageProvider> CurrentStorageProvider = new Lazy<IStorageProvider>(() =>
         {
-            var type = SiteConstants.Instance.StorageProviderType;
+            var type = ForumConfiguration.Instance.StorageProviderType;
             if (string.IsNullOrWhiteSpace(type))
             {
                 return new DiskStorageProvider();

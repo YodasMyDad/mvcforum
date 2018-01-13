@@ -3,6 +3,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Web.Mvc;
+    using Core;
     using Core.Constants;
     using Core.ExtensionMethods;
     using Core.Interfaces;
@@ -55,7 +56,7 @@
 
                 // Get all the topics based on the search value
                 var posts = await _postService.SearchPosts(pageIndex,
-                    SiteConstants.Instance.SearchListSize,
+                    ForumConfiguration.Instance.SearchListSize,
                     int.MaxValue,
                     term,
                     allowedCategories);

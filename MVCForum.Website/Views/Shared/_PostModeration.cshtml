@@ -6,6 +6,6 @@
         Message = Html.LanguageString("Moderate.AwaitingModeration"),
         MessageType = GenericMessages.info
     };
-    TempData[AppConstants.MessageViewBagName] = viewModel;
+    TempData[Constants.MessageViewBagName] = viewModel;
 }
 @Html.Partial("_GenericMessage")

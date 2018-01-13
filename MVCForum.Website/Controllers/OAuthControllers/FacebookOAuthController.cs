@@ -4,6 +4,7 @@
     using System.Web.Mvc;
     using System.Web.Security;
     using Areas.Admin.ViewModels;
+    using Core;
     using Core.Constants;
     using Core.Interfaces;
     using Core.Interfaces.Services;
@@ -73,8 +74,8 @@
             }
 
             // Get the prevalue options
-            if (string.IsNullOrWhiteSpace(SiteConstants.Instance.FacebookAppId) ||
-                string.IsNullOrWhiteSpace(SiteConstants.Instance.FacebookAppSecret))
+            if (string.IsNullOrWhiteSpace(ForumConfiguration.Instance.FacebookAppId) ||
+                string.IsNullOrWhiteSpace(ForumConfiguration.Instance.FacebookAppSecret))
             {
                 resultMessage.Message = "You need to add the Facebook app credentials";
                 resultMessage.MessageType = GenericMessages.danger;
@@ -85,8 +86,8 @@
                 // Configure the OAuth client based on the options of the prevalue options
                 var client = new FacebookOAuthClient
                 {
-                    AppId = SiteConstants.Instance.FacebookAppId,
-                    AppSecret = SiteConstants.Instance.FacebookAppSecret,
+                    AppId = ForumConfiguration.Instance.FacebookAppId,
+                    AppSecret = ForumConfiguration.Instance.FacebookAppSecret,
                     RedirectUri = ReturnUrl
                 };
 
@@ -202,7 +203,7 @@
                             // Square photo https://graph.facebook.com/{facebookId}/picture?type=square
 
                             // Store the viewModel in TempData - Which we'll use in the register logic
-                            TempData[AppConstants.MemberRegisterViewModel] = viewModel;
+                            TempData[Constants.MemberRegisterViewModel] = viewModel;
 
                             return RedirectToAction("SocialLoginValidator", "Members");
                         }

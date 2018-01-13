@@ -380,7 +380,7 @@
                 _badges = new Dictionary<BadgeType, List<BadgeMapping>>();
 
                 // All the allowed badges
-                var allowedBadges = SiteConstants.Instance.Badges;
+                var allowedBadges = ForumConfiguration.Instance.Badges;
 
                 // Get all the badges
                 var badges = ImplementationManager.GetInstances<IBadge>();

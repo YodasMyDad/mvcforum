@@ -9,6 +9,7 @@
     using Application;
     using Application.Akismet;
     using Areas.Admin.ViewModels;
+    using Core;
     using Core.Constants;
     using Core.Events;
     using Core.ExtensionMethods;
@@ -164,7 +165,7 @@
             var permissions = RoleService.GetPermissions(topic.Category, loggedOnUsersRole);
 
             if (post.User.Id == loggedOnReadOnlyUser.Id ||
-                permissions[SiteConstants.Instance.PermissionDeletePosts].IsTicked)
+                permissions[ForumConfiguration.Instance.PermissionDeletePosts].IsTicked)
             {
                 try
                 {
@@ -206,7 +207,7 @@
             if (isTopicStarter)
             {
                 // Redirect to root as this was a topic and deleted
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = LocalizationService.GetResourceString("Topic.Deleted"),
                     MessageType = GenericMessages.success
@@ -215,7 +216,7 @@
             }
 
             // Show message that post is deleted
-            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
             {
                 Message = LocalizationService.GetResourceString("Post.Deleted"),
                 MessageType = GenericMessages.success
@@ -227,7 +228,7 @@
         private ActionResult NoPermission(Topic topic)
         {
             // Trying to be a sneaky mo fo, so tell them
-            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
             {
                 Message = LocalizationService.GetResourceString("Errors.NoPermission"),
                 MessageType = GenericMessages.danger
@@ -258,7 +259,7 @@
                         sb.AppendFormat("<p>{0}</p>",
                             string.Format(LocalizationService.GetResourceString("Post.Notification.NewPosts"),
                                 topic.Name));
-                        if (SiteConstants.Instance.IncludeFullPostInEmailNotifications)
+                        if (ForumConfiguration.Instance.IncludeFullPostInEmailNotifications)
                         {
                             sb.Append(AppHelpers.ConvertPostContent(topic.LastPost.PostContent));
                         }
@@ -327,7 +328,7 @@
                     LoggingService.Error(ex);
                 }
 
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = LocalizationService.GetResourceString("Report.ReportSent"),
                     MessageType = GenericMessages.success
@@ -377,7 +378,7 @@
             }
 
             // Does this user have permission to move
-            if (!permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+            if (!permissions[ForumConfiguration.Instance.PermissionEditPosts].IsTicked)
             {
                 return NoPermission(post.Topic);
             }
@@ -426,7 +427,7 @@
             }
 
             // Does this user have permission to move
-            if (!permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+            if (!permissions[ForumConfiguration.Instance.PermissionEditPosts].IsTicked)
             {
                 return NoPermission(post.Topic);
             }
@@ -565,7 +566,7 @@
 
                 // Check permissions
                 var permissions = RoleService.GetPermissions(post.Topic.Category, loggedOnUsersRole);
-                if (permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                if (permissions[ForumConfiguration.Instance.PermissionEditPosts].IsTicked)
                 {
                     // Good to go
                     var postEdits = _postEditService.GetByPost(id);

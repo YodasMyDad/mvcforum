@@ -99,7 +99,7 @@
 
         [Display(Name = "Signature")]
         [StringLength(1000)]
-        [UIHint(AppConstants.EditorType)]
+        [UIHint(Constants.EditorType)]
         [AllowHtml]
         public string Signature { get; set; }
 

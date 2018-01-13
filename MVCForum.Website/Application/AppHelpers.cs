@@ -11,6 +11,7 @@
     using System.Web;
     using System.Web.Hosting;
     using System.Web.Mvc;
+    using Core;
     using Core.Constants;
     using Core.Interfaces.Services;
     using Core.Models.Entities;
@@ -86,7 +87,7 @@
         public static List<string> GetThemeFolders()
         {
             var folders = new List<string>();
-            var themeRootFolder = HostingEnvironment.MapPath($"~/{SiteConstants.Instance.ThemeRootFolderName}");
+            var themeRootFolder = HostingEnvironment.MapPath($"~/{ForumConfiguration.Instance.ThemeRootFolderName}");
             if (Directory.Exists(themeRootFolder))
             {
                 folders.AddRange(Directory.GetDirectories(themeRootFolder)
@@ -124,25 +125,25 @@
 
             // Sort the canonical tag out
             var canonicalTag = string.Format(Canonical,
-                page <= 1 ? url : string.Format(AppConstants.PagingUrlFormat, url, page));
+                page <= 1 ? url : string.Format(Constants.PagingUrlFormat, url, page));
 
             // On the first page       
             if ((pageCount > 1) & (page <= 1))
             {
-                nextTag = string.Format(CanonicalNext, string.Format(AppConstants.PagingUrlFormat, url, page + 1));
+                nextTag = string.Format(CanonicalNext, string.Format(Constants.PagingUrlFormat, url, page + 1));
             }
 
             // On a page greater than the first page, but not the last
             if ((pageCount > 1) & (page > 1) & (page < pageCount))
             {
-                nextTag = string.Format(CanonicalNext, string.Format(AppConstants.PagingUrlFormat, url, page + 1));
-                previousTag = string.Format(CanonicalPrev, string.Format(AppConstants.PagingUrlFormat, url, page - 1));
+                nextTag = string.Format(CanonicalNext, string.Format(Constants.PagingUrlFormat, url, page + 1));
+                previousTag = string.Format(CanonicalPrev, string.Format(Constants.PagingUrlFormat, url, page - 1));
             }
 
             // On the last page
             if ((pageCount > 1) & (pageCount == page))
             {
-                previousTag = string.Format(CanonicalPrev, string.Format(AppConstants.PagingUrlFormat, url, page - 1));
+                previousTag = string.Format(CanonicalPrev, string.Format(Constants.PagingUrlFormat, url, page - 1));
             }
 
             // return the canoncal tags
@@ -200,7 +201,7 @@
 
         public static string CategoryRssUrls(string slug)
         {
-            return $"/{SiteConstants.Instance.CategoryUrlIdentifier}/rss/{slug}";
+            return $"/{ForumConfiguration.Instance.CategoryUrlIdentifier}/rss/{slug}";
         }
 
         #endregion

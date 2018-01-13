@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using Application.CustomActionResults;
+    using Core;
     using Core.Constants;
     using Core.ExtensionMethods;
     using Core.Interfaces;
@@ -164,7 +165,7 @@
             // check the user has permission to this category
             var permissions = RoleService.GetPermissions(category.Category, loggedOnUsersRole);
 
-            if (!permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
+            if (!permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
             {
                 var topics = await _topicService.GetPagedTopicsByCategory(pageIndex,
                     SettingsService.GetSettings().TopicsPerPage,
@@ -224,7 +225,7 @@
             // check the user has permission to this category
             var permissions = RoleService.GetPermissions(category, loggedOnUsersRole);
 
-            if (!permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
+            if (!permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
             {
                 var topics = _topicService.GetRssTopicsByCategory(50, category.Id);
 

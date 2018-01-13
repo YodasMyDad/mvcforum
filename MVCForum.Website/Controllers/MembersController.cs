@@ -1,19 +1,17 @@
 ﻿namespace MvcForum.Web.Controllers
 {
     using System;
-    using System.Drawing.Imaging;
     using System.IO;
     using System.Linq;
     using System.Security.Principal;
     using System.Text;
-    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using System.Web;
     using System.Web.Hosting;
     using System.Web.Mvc;
     using System.Web.Security;
-    using Application;
     using Areas.Admin.ViewModels;
+    using Core;
     using Core.Constants;
     using Core.Events;
     using Core.ExtensionMethods;
@@ -21,7 +19,6 @@
     using Core.Interfaces.Pipeline;
     using Core.Interfaces.Services;
     using Core.Models;
-    using Core.Models.Entities;
     using Core.Models.Enums;
     using Core.Models.General;
     using Core.Utilities;
@@ -30,7 +27,6 @@
     using ViewModels.Mapping;
     using ViewModels.Member;
     using ViewModels.Registration;
-    using MembershipCreateStatus = Core.Models.Enums.MembershipCreateStatus;
     using MembershipUser = Core.Models.Entities.MembershipUser;
 
     /// <summary>
@@ -81,20 +77,20 @@
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult SrubAndBanUser(Guid id)
         {
             var user = MembershipService.GetUser(id);
 
 
-            if (!user.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
+            if (!user.Roles.Any(x => x.RoleName.Contains(Constants.AdminRoleName)))
             {
                 MembershipService.ScrubUsers(user);
 
                 try
                 {
                     Context.SaveChanges();
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = LocalizationService.GetResourceString("Members.SuccessfulSrub"),
                         MessageType = GenericMessages.success
@@ -104,7 +100,7 @@
                 {
                     Context.RollBack();
                     LoggingService.Error(ex);
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = LocalizationService.GetResourceString("Members.UnSuccessfulSrub"),
                         MessageType = GenericMessages.danger
@@ -130,16 +126,16 @@
             var currentUser = MembershipService.GetUser(User.Identity.Name, true);
             var permissions = RoleService.GetPermissions(null, currentUser.Roles.FirstOrDefault());
 
-            if (permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
+            if (permissions[ForumConfiguration.Instance.PermissionEditMembers].IsTicked)
             {
-                if (!user.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
+                if (!user.Roles.Any(x => x.RoleName.Contains(Constants.AdminRoleName)))
                 {
                     user.IsBanned = true;
 
                     try
                     {
                         Context.SaveChanges();
-                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                         {
                             Message = LocalizationService.GetResourceString("Members.NowBanned"),
                             MessageType = GenericMessages.success
@@ -149,7 +145,7 @@
                     {
                         Context.RollBack();
                         LoggingService.Error(ex);
-                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                         {
                             Message = LocalizationService.GetResourceString("Error.UnableToBanMember"),
                             MessageType = GenericMessages.danger
@@ -173,16 +169,16 @@
             var currentUser = MembershipService.GetUser(User.Identity.Name, true);
             var permissions = RoleService.GetPermissions(null, currentUser.Roles.FirstOrDefault());
 
-            if (permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
+            if (permissions[ForumConfiguration.Instance.PermissionEditMembers].IsTicked)
             {
-                if (!user.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
+                if (!user.Roles.Any(x => x.RoleName.Contains(Constants.AdminRoleName)))
                 {
                     user.IsBanned = false;
 
                     try
                     {
                         Context.SaveChanges();
-                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                         {
                             Message = LocalizationService.GetResourceString("Members.NowUnBanned"),
                             MessageType = GenericMessages.success
@@ -192,7 +188,7 @@
                     {
                         Context.RollBack();
                         LoggingService.Error(ex);
-                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                         {
                             Message = LocalizationService.GetResourceString("Error.UnableToUnBanMember"),
                             MessageType = GenericMessages.danger
@@ -233,7 +229,7 @@
                 var span = rightNow.Subtract(usersDate);
                 var totalMins = span.TotalMinutes;
 
-                if (totalMins > AppConstants.TimeSpanInMinutesToDoCheck)
+                if (totalMins > Constants.TimeSpanInMinutesToDoCheck)
                 {
                     // Actually get the user, LoggedOnUser has no tracking
                     var loggedOnUser = MembershipService.GetUser(User.Identity.Name);
@@ -270,7 +266,7 @@
                 ? MembershipService.GetUser(User.Identity.Name, true)
                 : null;
             var usersRole = loggedOnReadOnlyUser == null
-                ? RoleService.GetRole(AppConstants.GuestRoleName, true)
+                ? RoleService.GetRole(Constants.GuestRoleName, true)
                 : loggedOnReadOnlyUser.Roles.FirstOrDefault();
             var loggedonId = loggedOnReadOnlyUser?.Id ?? Guid.Empty;
             var permissions = RoleService.GetPermissions(null, usersRole);
@@ -333,15 +329,16 @@
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(MemberAddViewModel userModel)
         {
-            if (SettingsService.GetSettings().SuspendRegistration != true &&
-                SettingsService.GetSettings().DisableStandardRegistration != true)
+            var settings = SettingsService.GetSettings();
+            if (settings.SuspendRegistration != true &&
+                settings.DisableStandardRegistration != true)
             {
                 // First see if there is a spam question and if so, the answer matches
-                if (!string.IsNullOrWhiteSpace(SettingsService.GetSettings().SpamQuestion))
+                if (!string.IsNullOrWhiteSpace(settings.SpamQuestion))
                 {
                     // There is a spam question, if answer is wrong return with error
                     if (userModel.SpamAnswer == null ||
-                        userModel.SpamAnswer.Trim() != SettingsService.GetSettings().SpamAnswer)
+                        userModel.SpamAnswer.Trim() != settings.SpamAnswer)
                     {
                         // POTENTIAL SPAMMER!
                         ModelState.AddModelError(string.Empty,
@@ -363,7 +360,7 @@
                 // Do the register logic
                 return MemberRegisterLogic(pipeline);
             }
-            return  RedirectToAction("Index", "Home");      
+            return RedirectToAction("Index", "Home");
         }
 
         /// <summary>
@@ -373,9 +370,9 @@
         public async Task<ActionResult> SocialLoginValidator()
         {
             // Store the viewModel in TempData - Which we'll use in the register logic
-            if (TempData[AppConstants.MemberRegisterViewModel] != null)
+            if (TempData[Constants.MemberRegisterViewModel] != null)
             {
-                var userModel = TempData[AppConstants.MemberRegisterViewModel] as MemberAddViewModel;
+                var userModel = TempData[Constants.MemberRegisterViewModel] as MemberAddViewModel;
 
                 // Get the user model
                 var user = userModel.ToMembershipUser();
@@ -399,55 +396,51 @@
         ///     All the logic to regsiter a member
         /// </summary>
         /// <returns></returns>
-        public ActionResult MemberRegisterLogic(IPipelineProcess<MembershipUser> user)
+        public ActionResult MemberRegisterLogic(IPipelineProcess<MembershipUser> pipelineProcess)
         {
+            // We get these from the pipelineprocess and not from the settings as they can be changed during the process (i.e. Social login)
+            var manuallyAuthoriseMembers =
+                Convert.ToBoolean(pipelineProcess.ExtendedData.FirstOrDefault(x =>
+                    x.Key == Constants.ExtendedDataKeys.ManuallyAuthoriseMembers));
+            var memberEmailAuthorisationNeeded = Convert.ToBoolean(
+                pipelineProcess.ExtendedData.FirstOrDefault(x =>
+                    x.Key == Constants.ExtendedDataKeys.MemberEmailAuthorisationNeeded));
 
-            //TODO - Need to set manuallyAuthoriseMembers, memberEmailAuthorisationNeeded and ReturnUrl in extendeddata
+            // Set the view bag message here
+            SetRegisterViewBagMessage(manuallyAuthoriseMembers, memberEmailAuthorisationNeeded,
+                pipelineProcess.EntityToProcess);
 
-            var settings = SettingsService.GetSettings();
+            // Should we redirect to the home page
+            var homeRedirect = !manuallyAuthoriseMembers && !memberEmailAuthorisationNeeded;
 
-            // Get from ExtendedData
-            var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
-            
-            // Get from ExtendedData
-            var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
+            // Get the return url
+            var returnUrl = pipelineProcess.EntityToProcess.GetExtendedDataItem(Constants.ExtendedDataKeys.ReturnUrl);
 
-            var homeRedirect = false;
+            try
+            {
+                // Remove the ReturnUrl from the user
+                pipelineProcess.EntityToProcess.RemoveExtendedDataItem(Constants.ExtendedDataKeys.ReturnUrl);
 
+                // Save any outstanding changes
+                Context.SaveChanges();
 
-                // Set the view bag message here
-                SetRegisterViewBagMessage(manuallyAuthoriseMembers, memberEmailAuthorisationNeeded, user.EntityToProcess);
-
-                if (!manuallyAuthoriseMembers && !memberEmailAuthorisationNeeded)
+                if (homeRedirect)
                 {
-                    homeRedirect = true;
-                }
-
-                try
-                {
-                    // Save any outstanding changes
-                    Context.SaveChanges();
-
-                    if (homeRedirect)
+                    if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 &&
+                        returnUrl.StartsWith("/") && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
                     {
-                        if (Url.IsLocalUrl(userModel.ReturnUrl) && userModel.ReturnUrl.Length > 1 &&
-                            userModel.ReturnUrl.StartsWith("/")
-                            && !userModel.ReturnUrl.StartsWith("//") && !userModel.ReturnUrl.StartsWith("/\\"))
-                        {
-                            return Redirect(userModel.ReturnUrl);
-                        }
-                        return RedirectToAction("Index", "Home", new {area = string.Empty});
+                        return Redirect(returnUrl);
                     }
+                    return RedirectToAction("Index", "Home", new {area = string.Empty});
                 }
-                catch (Exception ex)
-                {
-                    Context.RollBack();
-                    LoggingService.Error(ex);
-                    FormsAuthentication.SignOut();
-                    ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
-                }
-         
-
+            }
+            catch (Exception ex)
+            {
+                Context.RollBack();
+                LoggingService.Error(ex);
+                FormsAuthentication.SignOut();
+                ModelState.AddModelError(string.Empty, LocalizationService.GetResourceString("Errors.GenericMessage"));
+            }
 
             return View("Register");
         }
@@ -458,11 +451,12 @@
         /// <param name="manuallyAuthoriseMembers"></param>
         /// <param name="memberEmailAuthorisationNeeded"></param>
         /// <param name="userToSave"></param>
-        private void SetRegisterViewBagMessage(bool manuallyAuthoriseMembers, bool memberEmailAuthorisationNeeded, MembershipUser userToSave)
+        private void SetRegisterViewBagMessage(bool manuallyAuthoriseMembers, bool memberEmailAuthorisationNeeded,
+            MembershipUser userToSave)
         {
             if (manuallyAuthoriseMembers)
             {
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = LocalizationService.GetResourceString("Members.NowRegisteredNeedApproval"),
                     MessageType = GenericMessages.success
@@ -470,7 +464,7 @@
             }
             else if (memberEmailAuthorisationNeeded)
             {
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = LocalizationService.GetResourceString("Members.MemberEmailAuthorisationNeeded"),
                     MessageType = GenericMessages.success
@@ -479,12 +473,12 @@
             else
             {
                 // If not manually authorise then log the user in
-                if (SiteConstants.Instance.AutoLoginAfterRegister)
+                if (ForumConfiguration.Instance.AutoLoginAfterRegister)
                 {
                     FormsAuthentication.SetAuthCookie(userToSave.UserName, false);
                 }
 
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = LocalizationService.GetResourceString("Members.NowRegistered"),
                     MessageType = GenericMessages.success
@@ -499,7 +493,8 @@
         /// <param name="manuallyAuthoriseMembers"></param>
         /// <param name="memberEmailAuthorisationNeeded"></param>
         /// <returns></returns>
-        public ActionResult ResendEmailConfirmation(string username, bool manuallyAuthoriseMembers, bool memberEmailAuthorisationNeeded)
+        public ActionResult ResendEmailConfirmation(string username, bool manuallyAuthoriseMembers,
+            bool memberEmailAuthorisationNeeded)
         {
             try
             {
@@ -508,13 +503,14 @@
 
                 // As this is a resend, they must have the extendeddata entry
                 var registrationGuid =
-                    user.GetExtendedDataItem(AppConstants.ExtendedDataKeys.RegistrationEmailConfirmationKey);
+                    user.GetExtendedDataItem(Constants.ExtendedDataKeys.RegistrationEmailConfirmationKey);
 
                 if (user != null && !string.IsNullOrWhiteSpace(registrationGuid))
                 {
-                    _emailService.SendEmailConfirmationEmail(user, manuallyAuthoriseMembers, memberEmailAuthorisationNeeded);
+                    _emailService.SendEmailConfirmationEmail(user, manuallyAuthoriseMembers,
+                        memberEmailAuthorisationNeeded);
 
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = LocalizationService.GetResourceString("Members.MemberEmailAuthorisationNeeded"),
                         MessageType = GenericMessages.success
@@ -527,7 +523,7 @@
                         "Unable to ResendEmailConfirmation as either user was null or RegistrationEmailConfirmationKey is missing");
 
                     // There was a problem
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = LocalizationService.GetResourceString("Members.Errors.LogonGeneric"),
                         MessageType = GenericMessages.danger
@@ -559,7 +555,7 @@
             {
                 // Ok, now to check the Guid key
                 var registrationGuid =
-                    user.GetExtendedDataItem(AppConstants.ExtendedDataKeys.RegistrationEmailConfirmationKey);
+                    user.GetExtendedDataItem(Constants.ExtendedDataKeys.RegistrationEmailConfirmationKey);
 
                 var everythingOk = !string.IsNullOrWhiteSpace(registrationGuid) && Guid.Parse(registrationGuid) == key;
                 if (everythingOk)
@@ -568,11 +564,11 @@
                     user.IsApproved = true;
 
                     // Remove the registration key
-                    user.RemoveExtendedDataItem(AppConstants.ExtendedDataKeys.RegistrationEmailConfirmationKey);
+                    user.RemoveExtendedDataItem(Constants.ExtendedDataKeys.RegistrationEmailConfirmationKey);
 
                     // Remove the cookie
                     var myCookie =
-                        new HttpCookie(AppConstants.MemberEmailConfirmationCookieName)
+                        new HttpCookie(Constants.MemberEmailConfirmationCookieName)
                         {
                             Expires = DateTime.UtcNow.AddDays(-1)
                         };
@@ -583,7 +579,7 @@
 
                     // Show a new message
                     // We use temp data because we are doing a redirect
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = LocalizationService.GetResourceString("Members.NowApproved"),
                         MessageType = GenericMessages.success
@@ -593,7 +589,7 @@
                 {
                     // Show a new message
                     // We use temp data because we are doing a redirect
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = LocalizationService.GetResourceString("Members.Errors.LogonGeneric"),
                         MessageType = GenericMessages.danger
@@ -653,6 +649,7 @@
                     // You can do manual lookups to check users based on a webservice and validate a user
                     // Then log them in if they exist or create them and log them in - Have passed in a UnitOfWork
                     // To allow database changes.
+                    var settings = SettingsService.GetSettings();
 
                     var e = new LoginEventArgs
                     {
@@ -667,7 +664,7 @@
                     if (!e.Cancel)
                     {
                         var message = new GenericMessageViewModel();
-                        var user = new MembershipUser();
+                        MembershipUser user;
                         if (MembershipService.ValidateUser(username, password,
                             Membership.MaxInvalidPasswordAttempts))
                         {
@@ -704,7 +701,7 @@
                         // Only show if we have something to actually show to the user
                         if (!string.IsNullOrWhiteSpace(message.Message))
                         {
-                            TempData[AppConstants.MessageViewBagName] = message;
+                            TempData[Constants.MessageViewBagName] = message;
                         }
                         else
                         {
@@ -739,7 +736,8 @@
                                     ModelState.AddModelError(string.Empty,
                                         LocalizationService.GetResourceString("Members.Errors.UserNotApproved"));
                                     user = MembershipService.GetUser(username);
-                                    _emailService.SendEmailConfirmationEmail(user);
+                                    _emailService.SendEmailConfirmationEmail(user, settings.ManuallyAuthoriseNewMembers,
+                                        settings.NewMemberEmailConfirmation == true);
                                     break;
 
                                 default:
@@ -775,7 +773,7 @@
         public ActionResult LogOff()
         {
             FormsAuthentication.SignOut();
-            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
             {
                 Message = LocalizationService.GetResourceString("Members.NowLoggedOut"),
                 MessageType = GenericMessages.success
@@ -792,7 +790,7 @@
                     ? MembershipService.GetUser(User.Identity.Name, true)
                     : null;
                 var usersRole = loggedOnReadOnlyUser == null
-                    ? RoleService.GetRole(AppConstants.GuestRoleName, true)
+                    ? RoleService.GetRole(Constants.GuestRoleName, true)
                     : loggedOnReadOnlyUser.Roles.FirstOrDefault();
 
                 var allowedCategories = _categoryService.GetAllowedCategories(usersRole).ToList();
@@ -862,8 +860,8 @@
             var permissions = RoleService.GetPermissions(null, loggedOnUsersRole);
 
             // Check is has permissions
-            if (User.IsInRole(AppConstants.AdminRoleName) || loggedOnUserId == id ||
-                permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
+            if (User.IsInRole(Constants.AdminRoleName) || loggedOnUserId == id ||
+                permissions[ForumConfiguration.Instance.PermissionEditMembers].IsTicked)
             {
                 var user = MembershipService.GetUser(id);
                 var viewModel = PopulateMemberViewModel(user);
@@ -889,8 +887,8 @@
             var permissions = RoleService.GetPermissions(null, loggedOnUsersRole);
 
             // Check is has permissions
-            if (User.IsInRole(AppConstants.AdminRoleName) || loggedOnUserId == userModel.Id ||
-                permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
+            if (User.IsInRole(Constants.AdminRoleName) || loggedOnUserId == userModel.Id ||
+                permissions[ForumConfiguration.Instance.PermissionEditMembers].IsTicked)
             {
                 // Get the user from DB
                 var user = MembershipService.GetUser(userModel.Id);
@@ -932,7 +930,7 @@
                 {
                     // Before we save anything, check the user already has an upload folder and if not create one
                     var uploadFolderPath =
-                        HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath,
+                        HostingEnvironment.MapPath(string.Concat(ForumConfiguration.Instance.UploadFolderPath,
                             loggedOnReadOnlyUser.Id));
                     if (!Directory.Exists(uploadFolderPath))
                     {
@@ -948,7 +946,7 @@
 
                         if (!uploadResult.UploadSuccessful)
                         {
-                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                             {
                                 Message = uploadResult.ErrorMessage,
                                 MessageType = GenericMessages.danger
@@ -1189,7 +1187,7 @@
                     LoggingService.Error(ex);
                 }
 
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = LocalizationService.GetResourceString("Report.ReportSent"),
                     MessageType = GenericMessages.success
@@ -1210,9 +1208,9 @@
         {
             var pageIndex = p ?? 1;
             var allUsers = string.IsNullOrWhiteSpace(search)
-                ? await MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize)
+                ? await MembershipService.GetAll(pageIndex, ForumConfiguration.Instance.AdminListPageSize)
                 : await MembershipService.SearchMembers(search, pageIndex,
-                    SiteConstants.Instance.AdminListPageSize);
+                    ForumConfiguration.Instance.AdminListPageSize);
 
             // Redisplay list of users
             var allViewModelUsers = allUsers.Select(user => new PublicSingleMemberListViewModel
@@ -1292,7 +1290,7 @@
             if (changePasswordSucceeded)
             {
                 // We use temp data because we are doing a redirect
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = LocalizationService.GetResourceString("Members.ChangePassword.Success"),
                     MessageType = GenericMessages.success

@@ -2,12 +2,13 @@
 {
     using System;
     using System.Web.Mvc;
+    using Core;
     using Core.Constants;
     using Core.Interfaces;
     using Core.Interfaces.Services;
     using ViewModels;
 
-    [Authorize(Roles = AppConstants.AdminRoleName)]
+    [Authorize(Roles = Constants.AdminRoleName)]
     public class AdminSocialController : BaseAdminController
     {
         private readonly ICacheService _cacheService;
@@ -26,12 +27,12 @@
             var viewModel = new SocialSettingsViewModel
             {
                 EnableSocialLogins = settings.EnableSocialLogins == true,
-                FacebookAppId = SiteConstants.Instance.FacebookAppId,
-                FacebookAppSecret = SiteConstants.Instance.FacebookAppSecret,
-                GooglePlusAppId = SiteConstants.Instance.GooglePlusAppId,
-                GooglePlusAppSecret = SiteConstants.Instance.GooglePlusAppSecret,
-                MicrosoftAppId = SiteConstants.Instance.MicrosoftAppId,
-                MicrosoftAppSecret = SiteConstants.Instance.MicrosoftAppSecret
+                FacebookAppId = ForumConfiguration.Instance.FacebookAppId,
+                FacebookAppSecret = ForumConfiguration.Instance.FacebookAppSecret,
+                GooglePlusAppId = ForumConfiguration.Instance.GooglePlusAppId,
+                GooglePlusAppSecret = ForumConfiguration.Instance.GooglePlusAppSecret,
+                MicrosoftAppId = ForumConfiguration.Instance.MicrosoftAppId,
+                MicrosoftAppSecret = ForumConfiguration.Instance.MicrosoftAppSecret
             };
             return View(viewModel);
         }
@@ -44,12 +45,12 @@
             settings.EnableSocialLogins = viewModel.EnableSocialLogins;
 
             // Repopulate the view model
-            viewModel.FacebookAppId = SiteConstants.Instance.FacebookAppId;
-            viewModel.FacebookAppSecret = SiteConstants.Instance.FacebookAppSecret;
-            viewModel.GooglePlusAppId = SiteConstants.Instance.GooglePlusAppId;
-            viewModel.GooglePlusAppSecret = SiteConstants.Instance.GooglePlusAppSecret;
-            viewModel.MicrosoftAppId = SiteConstants.Instance.MicrosoftAppId;
-            viewModel.MicrosoftAppSecret = SiteConstants.Instance.MicrosoftAppSecret;
+            viewModel.FacebookAppId = ForumConfiguration.Instance.FacebookAppId;
+            viewModel.FacebookAppSecret = ForumConfiguration.Instance.FacebookAppSecret;
+            viewModel.GooglePlusAppId = ForumConfiguration.Instance.GooglePlusAppId;
+            viewModel.GooglePlusAppSecret = ForumConfiguration.Instance.GooglePlusAppSecret;
+            viewModel.MicrosoftAppId = ForumConfiguration.Instance.MicrosoftAppId;
+            viewModel.MicrosoftAppSecret = ForumConfiguration.Instance.MicrosoftAppSecret;
 
             try
             {

@@ -198,7 +198,7 @@
         public bool AgreeToTermsAndConditions { get; set; }
 
         [DisplayName("Terms & Conditions of the forum")]
-        [UIHint(AppConstants.EditorType)]
+        [UIHint(Constants.EditorType)]
         [AllowHtml]
         [StringLength(6000)]
         public string TermsAndConditions { get; set; }

@@ -7,6 +7,7 @@
     using System.Web.Mvc;
     using Application;
     using Areas.Admin.ViewModels;
+    using Core;
     using Core.Constants;
     using Core.ExtensionMethods;
     using Core.Interfaces;
@@ -42,7 +43,7 @@
 
             if (loggedOnReadOnlyUser.DisablePrivateMessages == true)
             {
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = LocalizationService.GetResourceString("Errors.NoPermission"),
                     MessageType = GenericMessages.danger
@@ -52,7 +53,7 @@
 
             var pageIndex = p ?? 1;
             var pagedMessages = await _privateMessageService.GetUsersPrivateMessages(pageIndex,
-                SiteConstants.Instance.PrivateMessageListSize, loggedOnReadOnlyUser);
+                ForumConfiguration.Instance.PrivateMessageListSize, loggedOnReadOnlyUser);
             var viewModel = new ListPrivateMessageViewModel
             {
                 Messages = pagedMessages,
@@ -91,7 +92,7 @@
                     return Content(LocalizationService.GetResourceString("PM.SentItemsOverCapcity"));
                 }
                 if (senderCount > settings.MaxPrivateMessagesPerMember -
-                    SiteConstants.Instance.PrivateMessageWarningAmountLessThanAllowedSize)
+                    ForumConfiguration.Instance.PrivateMessageWarningAmountLessThanAllowedSize)
                 {
                     // Send user a warning they are about to exceed 
                     var sb = new StringBuilder();
@@ -107,7 +108,7 @@
                 }
 
                 // Set editor permissions
-                ViewBag.ImageUploadType = permissions[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked
+                ViewBag.ImageUploadType = permissions[ForumConfiguration.Instance.PermissionInsertEditorImages].IsTicked
                     ? "forumimageinsert"
                     : "image";
 
@@ -188,7 +189,7 @@
 
                         // If the receiver is about to go over the allowance them let then know too
                         if (receiverCount > settings.MaxPrivateMessagesPerMember -
-                            SiteConstants.Instance.PrivateMessageWarningAmountLessThanAllowedSize)
+                            ForumConfiguration.Instance.PrivateMessageWarningAmountLessThanAllowedSize)
                         {
                             // Send user a warning they are about to exceed 
                             var sb = new StringBuilder();
@@ -293,10 +294,10 @@
                 //allMessages.AddRange(loggedOnUser.PrivateMessagesSent.Where(x => x.UserTo.Id == from && x.IsSentMessage == true).ToList());
 
                 var allMessages = await _privateMessageService.GetUsersPrivateMessages(1,
-                    SiteConstants.Instance.PagingGroupSize, loggedOnUser, userFrom);
+                    ForumConfiguration.Instance.PagingGroupSize, loggedOnUser, userFrom);
 
                 // Now order them into an order of messages
-                var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
+                var date = DateTime.UtcNow.AddMinutes(-Constants.TimeSpanInMinutesToShowMembers);
 
                 var viewModel = new ViewPrivateMessageViewModel
                 {
@@ -366,7 +367,7 @@
                 }
 
                 var allMessages = await _privateMessageService.GetUsersPrivateMessages(viewModel.PageIndex,
-                    SiteConstants.Instance.PagingGroupSize, loggedOnUser, userFrom);
+                    ForumConfiguration.Instance.PagingGroupSize, loggedOnUser, userFrom);
 
                 var partialViewModel = new ViewPrivateMessageViewModel
                 {
@@ -388,7 +389,7 @@
         internal ActionResult ErrorToInbox(string errorMessage)
         {
             // Use temp data as its a redirect
-            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
             {
                 Message = errorMessage,
                 MessageType = GenericMessages.danger

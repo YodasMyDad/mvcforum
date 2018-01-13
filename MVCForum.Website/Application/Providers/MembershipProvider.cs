@@ -3,10 +3,10 @@
     using System;
     using System.Collections.Specialized;
     using System.Web.Hosting;
-    using System.Web.Mvc;
     using System.Web.Security;
-    using Application;
     using Core.Interfaces.Services;
+    using Core.Ioc;
+    using Unity;
 
     public class MvcForumMembershipProvider : MembershipProvider
     {
@@ -28,9 +28,9 @@
         // Use Dependency Resolver
         //public IUnitOfWorkManager UnitOfWorkManager
         //{
-        //    get { return DependencyResolver.Current.GetService<IUnitOfWorkManager>(); }
+        //    get { return UnityHelper.Container.Resolve<IUnitOfWorkManager>(); }
         //}
-        public IMembershipService MembershipService => DependencyResolver.Current.GetService<IMembershipService>();
+        public IMembershipService MembershipService => UnityHelper.Container.Resolve<IMembershipService>();
 
         public override int MinRequiredPasswordLength => _minRequiredPasswordLength;
 

@@ -5,6 +5,7 @@
     using System.Web.Mvc;
     using System.Web.Security;
     using Areas.Admin.ViewModels;
+    using Core;
     using Core.Constants;
     using Core.Interfaces;
     using Core.Interfaces.Services;
@@ -77,8 +78,8 @@
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(SiteConstants.Instance.GooglePlusAppId) ||
-                string.IsNullOrWhiteSpace(SiteConstants.Instance.GooglePlusAppSecret))
+            if (string.IsNullOrWhiteSpace(ForumConfiguration.Instance.GooglePlusAppId) ||
+                string.IsNullOrWhiteSpace(ForumConfiguration.Instance.GooglePlusAppSecret))
             {
                 resultMessage.Message = "You need to add the Google app credentials";
                 resultMessage.MessageType = GenericMessages.danger;
@@ -88,8 +89,8 @@
                 // Configure the OAuth client based on the options of the prevalue options
                 var client = new GoogleOAuthClient
                 {
-                    ClientId = SiteConstants.Instance.GooglePlusAppId,
-                    ClientSecret = SiteConstants.Instance.GooglePlusAppSecret,
+                    ClientId = ForumConfiguration.Instance.GooglePlusAppId,
+                    ClientSecret = ForumConfiguration.Instance.GooglePlusAppSecret,
                     RedirectUri = ReturnUrl
                 };
 
@@ -185,7 +186,7 @@
                     };
 
                     // Store the viewModel in TempData - Which we'll use in the register logic
-                    TempData[AppConstants.MemberRegisterViewModel] = viewModel;
+                    TempData[Constants.MemberRegisterViewModel] = viewModel;
 
                     return RedirectToAction("SocialLoginValidator", "Members");
                 }

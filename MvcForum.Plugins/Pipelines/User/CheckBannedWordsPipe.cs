@@ -4,7 +4,6 @@
     using System.Data.Entity;
     using System.Linq;
     using System.Threading.Tasks;
-    using System.Web.Mvc;
     using Core.Interfaces;
     using Core.Interfaces.Pipeline;
     using Core.Interfaces.Services;
@@ -14,10 +13,9 @@
     public class CheckBannedWordsPipe : IPipe<IPipelineProcess<MembershipUser>>
     {
         private readonly IBannedWordService _bannedWordService;
-        public CheckBannedWordsPipe()
+        public CheckBannedWordsPipe(IBannedWordService bannedWordService)
         {
-            // TODO - Would be nice for IOC work via constructor
-            _bannedWordService = DependencyResolver.Current.GetService<IBannedWordService>();
+            _bannedWordService = bannedWordService;
         }
 
         /// <inheritdoc />

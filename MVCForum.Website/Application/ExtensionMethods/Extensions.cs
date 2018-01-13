@@ -8,9 +8,12 @@
     using System.Web.Mvc;
     using System.Web.Mvc.Html;
     using System.Web.Routing;
+    using Core;
     using Core.Constants;
     using Core.Interfaces.Services;
+    using Core.Ioc;
     using Core.Models.Entities;
+    using Unity;
 
     public static class Extensions
     {
@@ -36,14 +39,14 @@
         /// <returns></returns>
         public static Settings Settings(this HtmlHelper helper)
         {
-            return DependencyResolver.Current.GetService<ISettingsService>().GetSettings();
+            return UnityHelper.Container.Resolve<ISettingsService>().GetSettings();
         }
 
         public static MembershipUser CurrentMember(this HtmlHelper helper)
         {
             if (HttpContext.Current.User.Identity.IsAuthenticated)
             {
-                return DependencyResolver.Current.GetService<IMembershipService>().GetUser(HttpContext.Current.User.Identity.Name);
+                return UnityHelper.Container.Resolve<IMembershipService>().GetUser(HttpContext.Current.User.Identity.Name);
             }
             return null;
         }
@@ -82,7 +85,7 @@
 
         public static string Lang(this HtmlHelper helper, string key)
         {
-            var locService = DependencyResolver.Current.GetService<ILocalizationService>();
+            var locService = UnityHelper.Container.Resolve<ILocalizationService>();
             return locService.GetResourceString(key);
         }
 
@@ -109,7 +112,7 @@
             object routeValues, string actionOveride = null, string controllerOveride = null)
         {
             // how many pages to display in each page group const  	
-            var cGroupSize = SiteConstants.Instance.PagingGroupSize;
+            var cGroupSize = ForumConfiguration.Instance.PagingGroupSize;
             var pageCount = (int) Math.Ceiling(totalItemCount / (double) pageSize);
 
             if (pageCount <= 0)

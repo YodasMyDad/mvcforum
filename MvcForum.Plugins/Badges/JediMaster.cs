@@ -1,6 +1,5 @@
 ﻿namespace MvcForum.Plugins.Badges
 {
-    using System.Web.Mvc;
     using Core.Interfaces.Badges;
     using Core.Interfaces.Services;
     using Core.Models.Attributes;
@@ -17,10 +16,10 @@
         private readonly ICategoryService _categoryService;
         private readonly IPostService _postService;
 
-        public JediMasterBadge()
+        public JediMasterBadge(ICategoryService categoryService, IPostService postService)
         {
-            _postService = DependencyResolver.Current.GetService<IPostService>();
-            _categoryService = DependencyResolver.Current.GetService<ICategoryService>();
+            _categoryService = categoryService;
+            _postService = postService;
         }
 
         public bool Rule(MembershipUser user)

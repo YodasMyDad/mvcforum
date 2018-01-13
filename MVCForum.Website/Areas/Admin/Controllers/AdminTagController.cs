@@ -5,13 +5,14 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Web.Mvc;
+    using Core;
     using Core.Constants;
     using Core.Interfaces;
     using Core.Interfaces.Services;
     using Core.Models.Entities;
     using ViewModels;
 
-    [Authorize(Roles = AppConstants.AdminRoleName)]
+    [Authorize(Roles = Constants.AdminRoleName)]
     public class AdminTagController : BaseAdminController
     {
         private readonly ITopicTagService _topicTagService;
@@ -30,9 +31,9 @@
 
 
             var allTags = string.IsNullOrWhiteSpace(search)
-                ? await _topicTagService.GetPagedGroupedTags(pageIndex, SiteConstants.Instance.AdminListPageSize)
+                ? await _topicTagService.GetPagedGroupedTags(pageIndex, ForumConfiguration.Instance.AdminListPageSize)
                 : await _topicTagService.SearchPagedGroupedTags(search, pageIndex,
-                    SiteConstants.Instance.AdminListPageSize);
+                    ForumConfiguration.Instance.AdminListPageSize);
 
             var memberListModel = new ListTagsViewModel
             {
@@ -122,7 +123,7 @@
 
             _topicTagService.DeleteByName(tag);
 
-            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
             {
                 Message = "Tags delete successfully",
                 MessageType = GenericMessages.success

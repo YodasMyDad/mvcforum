@@ -8,7 +8,7 @@
     using Core.Models.Entities;
     using ViewModels;
 
-    [Authorize(Roles = AppConstants.AdminRoleName)]
+    [Authorize(Roles = Constants.AdminRoleName)]
     public class AdminSpamController : BaseAdminController
     {
         private readonly ICacheService _cacheService;

@@ -43,8 +43,7 @@
 
         protected void ShowMessage(GenericMessageViewModel messageViewModel)
         {
-            //ViewData[AppConstants.MessageViewBagName] = messageViewModel;
-            TempData[AppConstants.MessageViewBagName] = messageViewModel;
+            TempData[Constants.MessageViewBagName] = messageViewModel;
         }
     }
 

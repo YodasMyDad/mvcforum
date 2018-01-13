@@ -11,6 +11,7 @@ namespace MvcForum.Web
     using System.Web.Mvc;
     using System.Web.Routing;
     using Application.ViewEngine;
+    using Core;
     using Core.Constants;
     using Core.Data.Context;
     using Core.Events;
@@ -21,6 +22,7 @@ namespace MvcForum.Web
     using Core.Interfaces.Services;
     using Core.Reflection;
     using Core.Services;
+    using Unity;
 
     public class Startup
     {
@@ -37,7 +39,7 @@ namespace MvcForum.Web
             var unityContainer = UnityHelper.Start();
 
             // Set Hangfire to use SQL Server and the connection string
-            GlobalConfiguration.Configuration.UseSqlServerStorage(SiteConstants.Instance.MvcForumContext);
+            GlobalConfiguration.Configuration.UseSqlServerStorage(ForumConfiguration.Instance.MvcForumContext);
 
             // Make hangfire use unity container
             GlobalConfiguration.Configuration.UseUnityActivator(unityContainer);
@@ -48,11 +50,11 @@ namespace MvcForum.Web
             app.UseHangfireServer();
 
             // Get services needed
-            var mvcForumContext = DependencyResolver.Current.GetService<IMvcForumContext>();
-            var badgeService = DependencyResolver.Current.GetService<IBadgeService>();
-            var settingsService = DependencyResolver.Current.GetService<ISettingsService>();
-            var loggingService = DependencyResolver.Current.GetService<ILoggingService>();
-            var assemblyProvider = DependencyResolver.Current.GetService<IAssemblyProvider>();
+            var mvcForumContext = unityContainer.Resolve<IMvcForumContext>();
+            var badgeService = unityContainer.Resolve<IBadgeService>();
+            var settingsService = unityContainer.Resolve<ISettingsService>();
+            var loggingService = unityContainer.Resolve<ILoggingService>();
+            var assemblyProvider = unityContainer.Resolve<IAssemblyProvider>();
 
             // Routes
             RouteConfig.RegisterRoutes(RouteTable.Routes);
@@ -62,7 +64,7 @@ namespace MvcForum.Web
             loggingService.Error("START APP");
 
             // Find the plugin, pipeline and badge assemblies
-            var assemblies = assemblyProvider.GetAssemblies(SiteConstants.Instance.PluginSearchLocations).ToList();
+            var assemblies = assemblyProvider.GetAssemblies(ForumConfiguration.Instance.PluginSearchLocations).ToList();
             ImplementationManager.SetAssemblies(assemblies);
 
             // Do the badge processing
@@ -84,7 +86,7 @@ namespace MvcForum.Web
             EventManager.Instance.Initialize(loggingService, assemblies);
 
             // Finally trigger any Cron jobs
-            RecurringJob.AddOrUpdate<RecurringJobService>(x => x.SendMarkAsSolutionReminders(), Cron.HourInterval(6), queue: "solutionreminders");
+            RecurringJob.AddOrUpdate<RecurringJobService>(x => x.SendMarkAsSolutionReminders(), Cron.HourInterval(6), queue: "solutionreminders");            
         }
     }
 }
