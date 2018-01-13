@@ -21,7 +21,10 @@
     using Core.Models;
     using Core.Models.Enums;
     using Core.Models.General;
+    using Core.Pipeline;
+    using Core.Reflection;
     using Core.Utilities;
+    using Newtonsoft.Json;
     using ViewModels.Admin;
     using ViewModels.ExtensionMethods;
     using ViewModels.Mapping;
@@ -251,7 +254,7 @@
             }
 
             // You can return anything to reset the timer.
-            return Json(new {Timer = "reset"}, JsonRequestBehavior.AllowGet);
+            return Json(new { Timer = "reset" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -427,7 +430,7 @@
                     {
                         return Redirect(returnUrl);
                     }
-                    return RedirectToAction("Index", "Home", new {area = string.Empty});
+                    return RedirectToAction("Index", "Home", new { area = string.Empty });
                 }
             }
             catch (Exception ex)
@@ -632,131 +635,77 @@
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult LogOn(LogOnViewModel model)
+        public async Task<ActionResult> LogOn(LogOnViewModel model)
         {
-            var username = model.UserName;
-            var password = model.Password;
-
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                var message = new GenericMessageViewModel();
+                var user = MembershipService.CreateEmptyUser();
+
+                // Get the pipelines
+                var userLoginPipes = ForumConfiguration.Instance.PipelinesUserLogin;
+
+                // The model to process
+                var piplineModel = new PipelineProcess<MembershipUser>(user);
+
+                // Add the username and password
+                piplineModel.ExtendedData.Add(new ExtendedDataItem
                 {
-                    // We have an event here to help with Single Sign Ons
-                    // You can do manual lookups to check users based on a webservice and validate a user
-                    // Then log them in if they exist or create them and log them in - Have passed in a UnitOfWork
-                    // To allow database changes.
-                    var settings = SettingsService.GetSettings();
+                    Key = Constants.ExtendedDataKeys.Username,
+                    Value = model.UserName
+                });
 
-                    var e = new LoginEventArgs
+                piplineModel.ExtendedData.Add(new ExtendedDataItem
+                {
+                    Key = Constants.ExtendedDataKeys.Password,
+                    Value = model.Password
+                });
+
+                // Get instance of the pipeline to use
+                var createUserPipeline = new Pipeline<IPipelineProcess<MembershipUser>, MembershipUser>(Context);
+
+                // Register the pipes 
+                var allMembershipUserPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<MembershipUser>>>();
+
+                // Loop through the pipes and add the ones we want
+                foreach (var pipe in userLoginPipes)
+                {
+                    if (allMembershipUserPipes.ContainsKey(pipe))
                     {
-                        UserName = model.UserName,
-                        Password = model.Password,
-                        RememberMe = model.RememberMe,
-                        ReturnUrl = model.ReturnUrl,
-                        MvcForumContext = Context
-                    };
-                    EventManager.Instance.FireBeforeLogin(this, e);
-
-                    if (!e.Cancel)
-                    {
-                        var message = new GenericMessageViewModel();
-                        MembershipUser user;
-                        if (MembershipService.ValidateUser(username, password,
-                            Membership.MaxInvalidPasswordAttempts))
-                        {
-                            // Set last login date
-                            user = MembershipService.GetUser(username);
-                            if (user.IsApproved && !user.IsLockedOut && !user.IsBanned)
-                            {
-                                FormsAuthentication.SetAuthCookie(username, model.RememberMe);
-                                user.LastLoginDate = DateTime.UtcNow;
-
-                                if (Url.IsLocalUrl(model.ReturnUrl) && model.ReturnUrl.Length > 1 &&
-                                    model.ReturnUrl.StartsWith("/")
-                                    && !model.ReturnUrl.StartsWith("//") && !model.ReturnUrl.StartsWith("/\\"))
-                                {
-                                    return Redirect(model.ReturnUrl);
-                                }
-
-                                message.Message = LocalizationService.GetResourceString("Members.NowLoggedIn");
-                                message.MessageType = GenericMessages.success;
-
-                                EventManager.Instance.FireAfterLogin(this, new LoginEventArgs
-                                {
-                                    UserName = model.UserName,
-                                    Password = model.Password,
-                                    RememberMe = model.RememberMe,
-                                    ReturnUrl = model.ReturnUrl,
-                                    MvcForumContext = Context
-                                });
-
-                                return RedirectToAction("Index", "Home", new {area = string.Empty});
-                            }
-                        }
-
-                        // Only show if we have something to actually show to the user
-                        if (!string.IsNullOrWhiteSpace(message.Message))
-                        {
-                            TempData[Constants.MessageViewBagName] = message;
-                        }
-                        else
-                        {
-                            // get here Login failed, check the login status
-                            var loginStatus = MembershipService.LastLoginStatus;
-
-                            switch (loginStatus)
-                            {
-                                case LoginAttemptStatus.UserNotFound:
-                                case LoginAttemptStatus.PasswordIncorrect:
-                                    ModelState.AddModelError(string.Empty,
-                                        LocalizationService.GetResourceString("Members.Errors.PasswordIncorrect"));
-                                    break;
-
-                                case LoginAttemptStatus.PasswordAttemptsExceeded:
-                                    ModelState.AddModelError(string.Empty,
-                                        LocalizationService.GetResourceString(
-                                            "Members.Errors.PasswordAttemptsExceeded"));
-                                    break;
-
-                                case LoginAttemptStatus.UserLockedOut:
-                                    ModelState.AddModelError(string.Empty,
-                                        LocalizationService.GetResourceString("Members.Errors.UserLockedOut"));
-                                    break;
-
-                                case LoginAttemptStatus.Banned:
-                                    ModelState.AddModelError(string.Empty,
-                                        LocalizationService.GetResourceString("Members.NowBanned"));
-                                    break;
-
-                                case LoginAttemptStatus.UserNotApproved:
-                                    ModelState.AddModelError(string.Empty,
-                                        LocalizationService.GetResourceString("Members.Errors.UserNotApproved"));
-                                    user = MembershipService.GetUser(username);
-                                    _emailService.SendEmailConfirmationEmail(user, settings.ManuallyAuthoriseNewMembers,
-                                        settings.NewMemberEmailConfirmation == true);
-                                    break;
-
-                                default:
-                                    ModelState.AddModelError(string.Empty,
-                                        LocalizationService.GetResourceString("Members.Errors.LogonGeneric"));
-                                    break;
-                            }
-                        }
+                        createUserPipeline.Register(allMembershipUserPipes[pipe]);
                     }
                 }
-            }
 
-            finally
-            {
-                try
+                // Process the pipeline
+                var loginResult = await createUserPipeline.Process(piplineModel);
+
+                // See if it was successful
+                if (loginResult.Successful)
                 {
+                    // Save outstanding Changes
                     Context.SaveChanges();
+
+                    // Login the user
+                    FormsAuthentication.SetAuthCookie(model.UserName, model.RememberMe);
+
+                    // Set the message
+                    message.Message = LocalizationService.GetResourceString("Members.NowLoggedIn");
+                    message.MessageType = GenericMessages.success;
+
+                    // See if we have a return url
+                    if (Url.IsLocalUrl(model.ReturnUrl) && model.ReturnUrl.Length > 1 &&
+                        model.ReturnUrl.StartsWith("/")
+                        && !model.ReturnUrl.StartsWith("//") && !model.ReturnUrl.StartsWith("/\\"))
+                    {
+                        return Redirect(model.ReturnUrl);
+                    }
+
+                    // If not just go to home page
+                    return RedirectToAction("Index", "Home", new { area = string.Empty });
                 }
-                catch (Exception ex)
-                {
-                    Context.RollBack();
-                    LoggingService.Error(ex);
-                }
+
+                // Add the error if we get here
+                ModelState.AddModelError(string.Empty, loginResult.ProcessLog.FirstOrDefault());
             }
 
             return View(model);
@@ -774,7 +723,7 @@
                 Message = LocalizationService.GetResourceString("Members.NowLoggedOut"),
                 MessageType = GenericMessages.success
             };
-            return RedirectToAction("Index", "Home", new {area = string.Empty});
+            return RedirectToAction("Index", "Home", new { area = string.Empty });
         }
 
         [HttpPost]
@@ -1146,7 +1095,7 @@
             if (SettingsService.GetSettings().EnableMemberReporting)
             {
                 var user = MembershipService.GetUser(id);
-                return View(new ReportMemberViewModel {Id = user.Id, Username = user.UserName});
+                return View(new ReportMemberViewModel { Id = user.Id, Username = user.UserName });
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
@@ -1188,7 +1137,7 @@
                     Message = LocalizationService.GetResourceString("Report.ReportSent"),
                     MessageType = GenericMessages.success
                 };
-                return View(new ReportMemberViewModel {Id = user.Id, Username = user.UserName});
+                return View(new ReportMemberViewModel { Id = user.Id, Username = user.UserName });
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
@@ -1347,7 +1296,7 @@
 
             var settings = SettingsService.GetSettings();
             var url = new Uri(string.Concat(settings.ForumUrl.TrimEnd('/'),
-                Url.Action("ResetPassword", "Members", new {user.Id, token = user.PasswordResetToken})));
+                Url.Action("ResetPassword", "Members", new { user.Id, token = user.PasswordResetToken })));
 
             var sb = new StringBuilder();
             sb.AppendFormat("<p>{0}</p>",

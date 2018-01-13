@@ -276,7 +276,7 @@
             newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)), null);
 
             // Get the pipelines
-            var userCreatePipes = ForumConfiguration.Instance.UserCreatePipes;
+            var userCreatePipes = ForumConfiguration.Instance.PipelinesUserCreate;
 
             // The model to process
             var piplineModel = new PipelineProcess<MembershipUser>(newUser);

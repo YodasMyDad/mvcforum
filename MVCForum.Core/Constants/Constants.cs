@@ -79,6 +79,9 @@
             public const string ManuallyAuthoriseMembers = "ManuallyAuthoriseMembers";
             public const string MemberEmailAuthorisationNeeded = "MemberEmailAuthorisationNeeded";
             public const string ReturnUrl = "ReturnUrl";
+
+            public const string Username = "Username";
+            public const string Password = "Password";
         }
     }
 }

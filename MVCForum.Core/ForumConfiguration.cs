@@ -185,14 +185,34 @@
         /// <summary>
         /// Gets the User Create Pipes from the config
         /// </summary>
+        private IList<string> _userLoginPipes;
+        public IList<string> PipelinesUserLogin
+        {
+            get
+            {
+                if (_userLoginPipes == null)
+                {
+                    var pipes = GetPlugin("PipelinesUserLogin");
+                    if (!string.IsNullOrWhiteSpace(pipes))
+                    {
+                        _userLoginPipes = ConfigToListString(pipes);
+                    }
+                }
+                return _userLoginPipes;
+            }
+        }
+
+        /// <summary>
+        /// Gets the User Create Pipes from the config
+        /// </summary>
         private IList<string> _userCreatePipes;
-        public IList<string> UserCreatePipes
+        public IList<string> PipelinesUserCreate
         {
             get
             {
                 if (_userCreatePipes == null)
                 {
-                    var pipes = GetPlugin("UserCreatePipes");
+                    var pipes = GetPlugin("PipelinesUserCreate");
                     if (!string.IsNullOrWhiteSpace(pipes))
                     {
                         _userCreatePipes = ConfigToListString(pipes);
