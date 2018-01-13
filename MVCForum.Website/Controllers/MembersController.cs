@@ -662,7 +662,7 @@
                 });
 
                 // Get instance of the pipeline to use
-                var createUserPipeline = new Pipeline<IPipelineProcess<MembershipUser>, MembershipUser>(Context);
+                var loginUserPipeline = new Pipeline<IPipelineProcess<MembershipUser>, MembershipUser>(Context);
 
                 // Register the pipes 
                 var allMembershipUserPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<MembershipUser>>>();
@@ -672,12 +672,12 @@
                 {
                     if (allMembershipUserPipes.ContainsKey(pipe))
                     {
-                        createUserPipeline.Register(allMembershipUserPipes[pipe]);
+                        loginUserPipeline.Register(allMembershipUserPipes[pipe]);
                     }
                 }
 
                 // Process the pipeline
-                var loginResult = await createUserPipeline.Process(piplineModel);
+                var loginResult = await loginUserPipeline.Process(piplineModel);
 
                 // See if it was successful
                 if (loginResult.Successful)
