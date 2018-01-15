@@ -11,6 +11,18 @@ namespace MVCForumAutomation
             _webDriver = webDriver;
         }
 
+        public string Title
+        {
+            get { throw new System.NotImplementedException(); }
+            set { throw new System.NotImplementedException(); }
+        }
+
+        public string Body
+        {
+            get { throw new System.NotImplementedException(); }
+            set { throw new System.NotImplementedException(); }
+        }
+
         public void CreateDiscussion()
         {
             throw new System.NotImplementedException();

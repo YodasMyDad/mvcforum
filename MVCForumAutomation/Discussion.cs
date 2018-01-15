@@ -39,7 +39,10 @@ namespace MVCForumAutomation
 
             public void Fill(CreateDiscussionPage createDiscussionPage)
             {
-                throw new System.NotImplementedException();
+                createDiscussionPage.Title = Guid.NewGuid().ToString();
+                createDiscussionPage.Body = _body;
+
+                createDiscussionPage.CreateDiscussion();
             }
         }
     }
