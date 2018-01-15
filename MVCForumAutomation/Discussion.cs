@@ -21,9 +21,14 @@ namespace MVCForumAutomation
             }
         }
 
+
         public string Body
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                var bodyElement = _webDriver.FindElement(By.ClassName("postcontent"));
+                return bodyElement.Text;
+            }
         }
 
         public class DiscussionBuilder
