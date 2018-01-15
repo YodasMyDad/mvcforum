@@ -1,4 +1,5 @@
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 
 namespace MVCForumAutomation
 {
@@ -48,7 +49,9 @@ namespace MVCForumAutomation
 
         public void SelectCategory(Category category)
         {
-            throw new System.NotImplementedException();
+            var categoryCombo = _webDriver.FindElement(By.Id("Category"));
+            var select = new SelectElement(categoryCombo);
+            select.SelectByText(category.Name);
         }
     }
 }
