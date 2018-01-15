@@ -23,7 +23,8 @@ namespace MVCForumAutomation
 
         private void Activate()
         {
-            throw new System.NotImplementedException();
+            var latestMenuItem = _webDriver.FindElement(By.CssSelector(".sub-nav-container .auto-latest"));
+            latestMenuItem.Click();
         }
     }
 }
