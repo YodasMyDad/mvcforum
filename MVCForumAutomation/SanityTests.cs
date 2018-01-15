@@ -39,7 +39,7 @@ namespace MVCForumAutomation
         {
             const string body = "dummy body";
             var userA = MVCForum.RegisterNewUserAndLogin();
-            var createdDiscussion = userA.CreateDiscussion(Discussion.With.Body(body));
+            var createdDiscussion = userA.CreateDiscussion(DiscussionWith.Body(body));
 
             var anonymousUser = OpenNewMVCForumClient();
             var latestHeader = anonymousUser.LatestDiscussions.Top;
@@ -48,6 +48,11 @@ namespace MVCForumAutomation
             var viewedDiscussion = latestHeader.OpenDiscussion();
             Assert.AreEqual(body, viewedDiscussion.Body, 
                 "The body of the latest discussion should match the one we created");
+        }
+
+        public Discussion.DiscussionBuilder DiscussionWith
+        {
+            get { return new Discussion.DiscussionBuilder(TestDefaults); }
         }
 
         private MVCForumClient OpenNewMVCForumClient()

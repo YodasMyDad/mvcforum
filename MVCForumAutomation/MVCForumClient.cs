@@ -37,7 +37,7 @@ namespace MVCForumAutomation
 
             registrationPage.Register();
 
-            return new LoggedInUser(_webDriver);
+            return new LoggedInUser(_webDriver, _testDefaults);
         }
 
         private RegistrationPage GoToRegistrationPage()
@@ -63,7 +63,7 @@ namespace MVCForumAutomation
 
         public LoggedInAdmin LoginAsAdmin()
         {
-            return LoginAs(_testDefaults.AdminUsername, _testDefaults.AdminPassword, () => new LoggedInAdmin(_webDriver));
+            return LoginAs(_testDefaults.AdminUsername, _testDefaults.AdminPassword, () => new LoggedInAdmin(_webDriver, _testDefaults));
         }
 
         private TLoggedInUser LoginAs<TLoggedInUser>(string username, string password, Func<TLoggedInUser> createLoggedInUser)

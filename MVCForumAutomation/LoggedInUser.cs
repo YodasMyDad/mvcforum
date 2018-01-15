@@ -1,4 +1,3 @@
-using System;
 using OpenQA.Selenium;
 
 namespace MVCForumAutomation
@@ -6,10 +5,12 @@ namespace MVCForumAutomation
     public class LoggedInUser
     {
         protected readonly IWebDriver WebDriver;
+        private readonly TestDefaults _testDefaults;
 
-        public LoggedInUser(IWebDriver webDriver)
+        public LoggedInUser(IWebDriver webDriver, TestDefaults testDefaults)
         {
             WebDriver = webDriver;
+            _testDefaults = testDefaults;
         }
 
         public Discussion CreateDiscussion(Discussion.DiscussionBuilder builder)
@@ -21,7 +22,7 @@ namespace MVCForumAutomation
             builder.Fill(createDisucssionPage);
             createDisucssionPage.CreateDiscussion();
 
-            return new Discussion(WebDriver);
+            return new Discussion();
         }
 
         public void Logout()

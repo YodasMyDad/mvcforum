@@ -4,8 +4,8 @@ namespace MVCForumAutomation
 {
     public class LoggedInAdmin : LoggedInUser
     {
-        public LoggedInAdmin(IWebDriver webDriver)
-            :base(webDriver)
+        public LoggedInAdmin(IWebDriver webDriver, TestDefaults testDefaults)
+            :base(webDriver, testDefaults)
         {
         }
 

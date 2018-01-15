@@ -45,5 +45,10 @@ namespace MVCForumAutomation
             var submitButton = _webDriver.FindElement(By.CssSelector("[type=submit]"));
             submitButton.Click();
         }
+
+        public void SelectCategory(Category category)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
