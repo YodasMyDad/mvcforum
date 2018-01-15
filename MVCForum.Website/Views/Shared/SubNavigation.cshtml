@@ -1,5 +1,5 @@
 ﻿@using MvcForum.Web.Application.ExtensionMethods
-@*<li><a href="//www.mvcforum.com"><span class="glyphicon glyphicon glyphicon-menu-left" aria-hidden="true"></span> Main Website</a></li>*@<li><a href="@Url.Action("Index", "Home")" class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "index" ? "active" : "")">@Html.Lang("SubNav.Latest")</a></li><!--
+@*<li><a href="//www.mvcforum.com"><span class="glyphicon glyphicon glyphicon-menu-left" aria-hidden="true"></span> Main Website</a></li>*@<li><a class="auto-latest" href="@Url.Action("Index", "Home")" class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "index" ? "active" : "")">@Html.Lang("SubNav.Latest")</a></li><!--
 -->@if (User.Identity.IsAuthenticated)
 {<!--
     --><li><a href="@Url.Action("Following", "Home")" class="@(TempData[AppConstants.CurrentController].ToString() == "home" && TempData[AppConstants.CurrentAction].ToString() == "following" ? "active" : "")">@Html.Lang("SubNav.Following")</a></li><!--

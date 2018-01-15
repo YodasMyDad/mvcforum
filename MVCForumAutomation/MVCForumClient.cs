@@ -58,7 +58,7 @@ namespace MVCForumAutomation
 
         public LatestDiscussions LatestDiscussions
         {
-            get { throw new NotImplementedException(); }
+            get { return new LatestDiscussions(_webDriver); }
         }
 
         public LoggedInAdmin LoginAsAdmin()
