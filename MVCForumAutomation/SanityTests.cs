@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MVCForumAutomation
 {
@@ -8,6 +7,7 @@ namespace MVCForumAutomation
     {
         public SanityTests()
         {
+            TestDefaults = new TestDefaults();
             MVCForum = new MVCForumClient(TestDefaults);
         }
 
@@ -21,11 +21,6 @@ namespace MVCForumAutomation
             adminUser.Logout();
         }
 
-        public TestDefaults TestDefaults
-        {
-            get { throw new NotImplementedException(); }
-        }
-        
         [TestMethod]
         public void WhenARegisteredUserStartsADiscussionOtherAnonymousUsersCanSeeIt()
         {
@@ -46,6 +41,8 @@ namespace MVCForumAutomation
         {
             return new MVCForumClient(TestDefaults);
         }
+
+        public TestDefaults TestDefaults { get; }
 
         public MVCForumClient MVCForum { get; }
     }

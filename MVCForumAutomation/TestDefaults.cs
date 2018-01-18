@@ -12,14 +12,7 @@
             get { throw new System.NotImplementedException(); }
         }
 
-        public string AdminUsername
-        {
-            get { throw new System.NotImplementedException(); }
-        }
-
-        public string AdminPassword
-        {
-            get { throw new System.NotImplementedException(); }
-        }
+        public string AdminUsername { get; } = "admin";
+        public string AdminPassword { get; } = "password";
     }
 }
