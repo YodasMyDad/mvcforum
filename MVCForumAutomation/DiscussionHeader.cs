@@ -14,7 +14,11 @@ namespace MVCForumAutomation
 
         public string Title
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                var titleElement = _topicRow.FindElement(By.TagName("h3"));
+                return titleElement.Text;
+            }
         }
 
         public Discussion OpenDiscussion()
