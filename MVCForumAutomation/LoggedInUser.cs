@@ -22,7 +22,7 @@ namespace MVCForumAutomation
             builder.Fill(createDisucssionPage);
             createDisucssionPage.CreateDiscussion();
 
-            return new Discussion();
+            return new Discussion(WebDriver);
         }
 
         public void Logout()

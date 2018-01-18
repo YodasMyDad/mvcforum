@@ -1,12 +1,24 @@
 using System;
+using OpenQA.Selenium;
 
 namespace MVCForumAutomation
 {
     public class Discussion
     {
+        private readonly IWebDriver _webDriver;
+
+        public Discussion(IWebDriver webDriver)
+        {
+            _webDriver = webDriver;
+        }
+
         public string Title
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                var titleElement = _webDriver.FindElement(By.CssSelector(".topicheading h1"));
+                return titleElement.Text;
+            }
         }
 
         public string Body
