@@ -11,6 +11,11 @@
 
     public class CreateEditTopicViewModel
     {
+        public CreateEditTopicViewModel()
+        {
+            PollAnswers = new List<PollAnswer>();
+        }
+
         [Required]
         [StringLength(100)]
         [ForumMvcResourceDisplayName("Topic.Label.TopicTitle")]
@@ -36,15 +41,8 @@
         [ForumMvcResourceDisplayName("Topic.Label.PollCloseAfterDays")]
         public int PollCloseAfterDays { get; set; }
 
-        public List<SelectListItem> Categories { get; set; }
-
-        public IList<PollAnswer> PollAnswers { get; set; }
-
         [ForumMvcResourceDisplayName("Topic.Label.SubscribeToTopic")]
         public bool SubscribeToTopic { get; set; }
-
-        [ForumMvcResourceDisplayName("Topic.Label.UploadFiles")]
-        public HttpPostedFileBase[] Files { get; set; }
 
         // Permissions stuff
         public CheckCreateTopicPermissions OptionalPermissions { get; set; }
@@ -57,5 +55,14 @@
         public Guid TopicId { get; set; }
 
         public bool IsTopicStarter { get; set; }
+
+        // Collections
+
+        public List<SelectListItem> Categories { get; set; }
+
+        public IList<PollAnswer> PollAnswers { get; set; }
+
+        [ForumMvcResourceDisplayName("Topic.Label.UploadFiles")]
+        public HttpPostedFileBase[] Files { get; set; }
     }
 }

@@ -2,7 +2,6 @@
 {
     using System.Linq;
     using System.Web.Mvc;
-    using MvcForum.Core.DomainModel;
     using MvcForum.Core.Interfaces.Badges;
     using MvcForum.Core.Interfaces.Services;
     using MvcForum.Core.Models.Attributes;

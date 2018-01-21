@@ -1,6 +1,6 @@
 ﻿namespace MvcForum.Core.Models.Entities
 {
-    public class PermissionForRole
+    public partial class PermissionForRole
     {
         public Permission Permission { get; set; }
         public MembershipRole MembershipRole { get; set; }

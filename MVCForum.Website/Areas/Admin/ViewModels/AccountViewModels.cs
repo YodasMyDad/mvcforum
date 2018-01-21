@@ -138,6 +138,9 @@
         [Display(Name = "Disable private messages for this user")]
         public bool DisablePrivateMessages { get; set; }
 
+        [Display(Name = "Is Trusted User?")]
+        public bool IsTrustedUser { get; set; }
+
         [Display(Name = "Disable file uploading on posts and topics for this user")]
         public bool DisableFileUploads { get; set; }
 

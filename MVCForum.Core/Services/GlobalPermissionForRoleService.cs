@@ -5,7 +5,6 @@
     using System.Data.Entity;
     using System.Linq;
     using Constants;
-    using Data.Context;
     using Interfaces;
     using Interfaces.Services;
     using Models.Entities;
@@ -43,22 +42,16 @@
 
         public Dictionary<Permission, GlobalPermissionForRole> GetAll(MembershipRole role)
         {
-            var cacheKey = string.Concat(CacheKeys.GlobalPermissionForRole.StartsWith, "GetAll-", role.Id);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
-                var catRowList = _context.GlobalPermissionForRole.Include(x => x.MembershipRole).Where(x => x.MembershipRole.Id == role.Id).ToList();
+
+                var catRowList = _context.GlobalPermissionForRole.AsNoTracking().Include(x => x.MembershipRole).Where(x => x.MembershipRole.Id == role.Id).ToList();
                 return catRowList.ToDictionary(catRow => catRow.Permission);
-            });
+       
         }
 
         public Dictionary<Permission, GlobalPermissionForRole> GetAll()
         {
-            var cacheKey = string.Concat(CacheKeys.GlobalPermissionForRole.StartsWith, "GetAll");
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
-                var catRowList = _context.GlobalPermissionForRole.Include(x => x.MembershipRole).ToList();
-                return catRowList.ToDictionary(catRow => catRow.Permission);
-            });
+                var catRowList = _context.GlobalPermissionForRole.AsNoTracking().Include(x => x.MembershipRole).ToList();
+                return catRowList.ToDictionary(catRow => catRow.Permission);   
         }
 
         public GlobalPermissionForRole Get(Guid permId, Guid roleId)

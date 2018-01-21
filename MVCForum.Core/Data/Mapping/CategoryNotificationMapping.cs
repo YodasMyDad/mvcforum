@@ -1,7 +1,6 @@
 ﻿namespace MvcForum.Core.Data.Mapping
 {
     using System.Data.Entity.ModelConfiguration;
-    using DomainModel;
     using Models.Entities;
 
     public class CategoryNotificationMapping : EntityTypeConfiguration<CategoryNotification>

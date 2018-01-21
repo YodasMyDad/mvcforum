@@ -5,7 +5,6 @@
     using System.Data.Entity;
     using System.Linq;
     using Constants;
-    using Data.Context;
     using Interfaces;
     using Interfaces.Services;
     using Models.Entities;
@@ -24,8 +23,7 @@
 
         public List<PollAnswer> GetAllPollAnswers()
         {
-            var cacheKey = string.Concat(CacheKeys.PollAnswer.StartsWith, "GetAllPollAnswers");
-            return _cacheService.CachePerRequest(cacheKey, () => _context.PollAnswer.Include(x => x.Poll).ToList());
+            return _context.PollAnswer.Include(x => x.Poll).ToList();
         }
 
         public PollAnswer Add(PollAnswer pollAnswer)
@@ -36,11 +34,10 @@
 
         public List<PollAnswer> GetAllPollAnswersByPoll(Poll poll)
         {
-            var cacheKey = string.Concat(CacheKeys.PollAnswer.StartsWith, "GetAllPollAnswersByPoll-", poll.Id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.PollAnswer
-                                                                    .Include(x => x.Poll)
-                                                                    .AsNoTracking()
-                                                                    .Where(x => x.Poll.Id == poll.Id).ToList());            
+            return _context.PollAnswer
+                            .Include(x => x.Poll)
+                            .AsNoTracking()
+                            .Where(x => x.Poll.Id == poll.Id).ToList();            
         }
 
         public PollAnswer Get(Guid id)

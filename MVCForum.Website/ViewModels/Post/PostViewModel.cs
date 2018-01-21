@@ -19,5 +19,6 @@
         public bool MemberIsOnline { get; set; }
         public bool ShowTopicName { get; set; }
         public bool MinimalPost { get; set; }
+        public bool IsTrustedUser { get; set; }
     }
 }

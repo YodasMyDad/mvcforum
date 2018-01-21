@@ -50,7 +50,7 @@
                             foreach (var pollAnswer in Model.PollAnswers.OrderBy(x => x.Answer))
                             {
                                 <li id="answer@(count)">
-                                    <input type="text" name="PollAnswers[@(count)].Answer" id="PollAnswers_@(count)_Answer" value="@pollAnswer.Answer" class="form-control" placeholder="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")" @Html.Raw(pollAnswer.PollVotes.Any() ? "disabled" : "") />
+                                    <input type="text" name="PollAnswers[@(count)].Answer" id="PollAnswers_@(count)_Answer" value="@pollAnswer.Answer" class="form-control" placeholder="@Html.LanguageString("Poll.Placeholder.TypeAnswerHere")" />
                                     <input type="hidden" value="@pollAnswer.Id" name="PollAnswers[@(count)].Id" id="PollAnswers_@(count)Id" />
                                 </li>
 
@@ -87,7 +87,8 @@
     <div class="form-group">
         <label>@Html.Lang("Topic.Label.Tags")</label>
         <div class="topictagholder">
-            @Html.TextAreaFor(model => model.Tags, new { @class = "tagstextarea tags", title = Html.LanguageString("Topic.TagThisTopic") })
+            <p class="createtagmessage help-block">@Html.Lang("Tags.NoCreatePermission")</p>
+            @Html.TextAreaFor(model => model.Tags, new {@class = "tagstextarea tags", title = Html.LanguageString("Topic.TagThisTopic")})
         </div>
     </div>
 }

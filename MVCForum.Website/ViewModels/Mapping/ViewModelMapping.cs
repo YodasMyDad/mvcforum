@@ -72,7 +72,8 @@
                 DisablePosting = user.DisablePosting == true,
                 DisablePrivateMessages = user.DisablePrivateMessages == true,
                 DisableFileUploads = user.DisableFileUploads == true,
-                Avatar = user.Avatar
+                Avatar = user.Avatar,
+                IsTrustedUser = user.IsTrustedUser
             };
             return viewModel;
         }
@@ -416,7 +417,8 @@
                     "#comment-", post.Id),
                 MemberIsOnline = post.User.LastActivityDate > date,
                 HasVotedDown = hasVotedDown,
-                HasVotedUp = hasVotedUp
+                HasVotedUp = hasVotedUp,
+                IsTrustedUser = post.User.IsTrustedUser
             };
         }
 

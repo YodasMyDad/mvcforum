@@ -108,7 +108,7 @@
 
                 _bannedEmailService.Delete(email);
 
-                ViewBag.Message = new GenericMessageViewModel
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = "Email delete successfully",
                     MessageType = GenericMessages.success
@@ -119,7 +119,7 @@
             {
                 Context.RollBack();
                 LoggingService.Error(ex);
-                ViewBag.Message = new GenericMessageViewModel
+                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = $"Delete failed: {ex.Message}",
                     MessageType = GenericMessages.danger

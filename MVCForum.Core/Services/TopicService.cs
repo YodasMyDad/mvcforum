@@ -63,6 +63,7 @@
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.User)
                                 .Include(x => x.Poll)
+                                .AsNoTracking()
                                 .Where(x => allowedCatIds.Contains(x.Category.Id) && x.Pending != true)
                                 .ToList();
         }
@@ -614,37 +615,8 @@
         /// Delete a topic
         /// </summary>
         /// <param name="topic"></param>
-        /// <param name="unitOfWork"></param>
         public void Delete(Topic topic)
         {
-            // First thing - Set the last post as null and clear tags
-            topic.LastPost = null;
-            topic.Tags.Clear();
-
-            // Save here to clear the last post
-            _context.SaveChanges();
-
-            // TODO - Need to refactor as some of the code below is duplicated in the post delete
-
-            // Loop through all the posts and clear the associated entities
-            // then delete the posts
-            if (topic.Posts != null)
-            {
-                var postsToDelete = new List<Post>();
-                postsToDelete.AddRange(topic.Posts);
-                foreach (var post in postsToDelete)
-                {
-                    // Posts should only be deleted from this method as it clears
-                    // associated data
-                    _postService.Delete(post, true);
-                }
-
-                // Final clear
-                topic.Posts.Clear();
-            }
-
-            _context.SaveChanges();
-
             // Remove all notifications on this topic too
             if (topic.TopicNotifications != null)
             {
@@ -652,6 +624,7 @@
                 notificationsToDelete.AddRange(topic.TopicNotifications);
                 foreach (var topicNotification in notificationsToDelete)
                 {
+                    topic.TopicNotifications.Remove(topicNotification);
                     _topicNotificationService.Delete(topicNotification);
                 }
 
@@ -666,6 +639,7 @@
                 toDelete.AddRange(topic.Favourites);
                 foreach (var entity in toDelete)
                 {
+                    topic.Favourites.Remove(entity);
                     _favouriteService.Delete(entity);
                 }
 
@@ -676,25 +650,39 @@
             // Poll
             if (topic.Poll != null)
             {
-                //Delete the poll answers
-                var pollAnswers = topic.Poll.PollAnswers;
-                if (pollAnswers.Any())
-                {
-                    var pollAnswersList = new List<PollAnswer>();
-                    pollAnswersList.AddRange(pollAnswers);
-                    foreach (var answer in pollAnswersList)
-                    {
-                        answer.Poll = null;
-                        _pollAnswerService.Delete(answer);
-                    }
-                }
-
-                topic.Poll.PollAnswers.Clear();
-                topic.Poll.User = null;
-                _pollService.Delete(topic.Poll);
+                var pollToDelete = topic.Poll;
 
                 // Final Clear
                 topic.Poll = null;
+
+                // Delete the poll 
+                _pollService.Delete(pollToDelete);
+            }
+
+            // First thing - Set the last post as null and clear tags
+            topic.Tags.Clear();
+
+            // Save here to clear the last post
+            _context.SaveChanges();
+
+            // Loop through all the posts and clear the associated entities
+            // then delete the posts
+            if (topic.Posts != null)
+            {
+                var postsToDelete = new List<Post>();
+                postsToDelete.AddRange(topic.Posts);
+
+                foreach (var post in postsToDelete)
+                {
+                    // Posts should only be deleted from this method as it clears
+                    // associated data
+                    _postService.Delete(post, true);
+                }
+
+                topic.Posts.Clear();
+
+                // Clear last post
+                topic.LastPost = null;
             }
 
             // Finally delete the topic

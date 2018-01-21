@@ -73,7 +73,6 @@
     <Compile Include="Application\CustomActionResults\RssResult.cs" />
     <Compile Include="Application\CustomActionResults\CsvFileResult.cs" />
     <Compile Include="Application\ExtensionMethods\Extensions.cs" />
-    <Compile Include="Application\ScheduledJobs\MarkAsSolutionReminderJob.cs" />
     <Compile Include="Application\StorageProviders\DiskStorageProvider.cs" />
     <Compile Include="Application\StorageProviders\StorageProvider.cs" />
     <Compile Include="Application\TypeFactory.cs" />
@@ -82,6 +81,7 @@
     <Compile Include="Application\CustomActionResults\WrappedJSonResult.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\Startup.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AccountController.cs" />
@@ -144,12 +144,12 @@
     <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="Controllers\VoteController.cs" />
     <Compile Include="Events\ExampleBeforeLogin.cs" />
-    <Compile Include="Global.asax.cs">
-      <DependentUpon>Global.asax</DependentUpon>
-    </Compile>
     <Compile Include="Application\Providers\MembershipProvider.cs" />
     <Compile Include="Application\Providers\RoleProvider.cs" />
     <Compile Include="Areas\Admin\ViewModels\AccountViewModels.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\Admin\AdminMemberProfileToolsViewModel.cs" />
     <Compile Include="ViewModels\Admin\ViewAdminSidePanelViewModel.cs" />
@@ -191,8 +191,6 @@
     <Compile Include="ViewModels\Member\ViewMemberDiscussionsViewModel.cs" />
     <Compile Include="ViewModels\Member\ViewMemberViewModel.cs" />
     <Compile Include="ViewModels\Moderate\ModerateActionViewModel.cs" />
-    <Compile Include="Application\ScheduledJobs\ScheduledRunner.cs" />
-    <Compile Include="Application\ScheduledJobs\EmailJob.cs" />
     <Compile Include="ViewModels\Favourite\MyFavouritesViewModel.cs" />
     <Compile Include="ViewModels\Registration\ResetPasswordViewModel.cs" />
     <Compile Include="ViewModels\Topic\ActiveTopicsViewModel.cs" />
@@ -654,9 +652,11 @@
     <Content Include="Content\spectrum\spectrum.js" />
     <Content Include="Content\tinymce.css" />
     <Content Include="Content\uploads\readme.txt" />
+    <Content Include="Global.asax" />
     <Content Include="Installer\ru-RU.csv" />
     <None Include="Installer\en-US.csv" />
     <Content Include="Installer\ManualSql\manualVersionOneSevenToOneEight.sql" />
+    <Content Include="Notes.txt" />
     <Content Include="Scripts\badges.js" />
     <Content Include="Scripts\bbeditor\emoticons\alien.png" />
     <Content Include="Scripts\bbeditor\emoticons\angel.png" />
@@ -1061,7 +1061,6 @@
     <Content Include="Scripts\fancybox\jquery.fancybox.css" />
     <Content Include="Scripts\fancybox\jquery.fancybox.js" />
     <Content Include="Scripts\fancybox\jquery.fancybox.pack.js" />
-    <Content Include="Global.asax" />
     <Content Include="Scripts\admin\Admin.js" />
     <Content Include="Scripts\admin\FadeOutMessage.js" />
     <Content Include="Content\slideoutpanel.css" />
@@ -1087,7 +1086,6 @@
     <Content Include="Views\Topic\TopicsByTag.cshtml" />
     <Content Include="Views\Vote\GetVoters.cshtml" />
     <Content Include="Views\Vote\GetVotes.cshtml" />
-    <Content Include="Views\Shared\_Install.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_GenericMessage.cshtml" />
     <Content Include="Views\Badge\AllBadges.cshtml" />
@@ -1393,13 +1391,19 @@
       <Version>3.4.1</Version>
     </PackageReference>
     <PackageReference Include="CommonServiceLocator">
-      <Version>2.0.1</Version>
+      <Version>2.0.2</Version>
     </PackageReference>
     <PackageReference Include="EcmaScript.Net">
       <Version>1.0.1</Version>
     </PackageReference>
     <PackageReference Include="EntityFramework">
       <Version>6.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="Hangfire">
+      <Version>1.6.17</Version>
+    </PackageReference>
+    <PackageReference Include="Hangfire.Unity">
+      <Version>1.4.0</Version>
     </PackageReference>
     <PackageReference Include="ImageProcessor.Web">
       <Version>4.8.7</Version>
@@ -1461,6 +1465,9 @@
     <PackageReference Include="Microsoft.jQuery.Unobtrusive.Validation">
       <Version>3.2.3</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.Owin.Host.SystemWeb">
+      <Version>3.1.0</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.SqlServer.Compact">
       <Version>4.0.8876.1</Version>
     </PackageReference>
@@ -1469,9 +1476,6 @@
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>10.0.3</Version>
-    </PackageReference>
-    <PackageReference Include="Quartz">
-      <Version>2.6.1</Version>
     </PackageReference>
     <PackageReference Include="Skybrud.Social">
       <Version>0.9.6</Version>
@@ -1516,7 +1520,10 @@
       <Version>4.7.4</Version>
     </PackageReference>
     <PackageReference Include="Unity">
-      <Version>5.5.3</Version>
+      <Version>5.5.4</Version>
+    </PackageReference>
+    <PackageReference Include="Unity.Abstractions">
+      <Version>3.1.1</Version>
     </PackageReference>
     <PackageReference Include="WebGrease">
       <Version>1.6.0</Version>

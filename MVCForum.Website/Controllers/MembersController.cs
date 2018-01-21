@@ -19,6 +19,7 @@
     using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Services;
+    using Core.Models;
     using Core.Models.Entities;
     using Core.Models.Enums;
     using Core.Models.General;
@@ -909,7 +910,7 @@
         public ActionResult LogOff()
         {
             FormsAuthentication.SignOut();
-            ViewBag.Message = new GenericMessageViewModel
+            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
             {
                 Message = LocalizationService.GetResourceString("Members.NowLoggedOut"),
                 MessageType = GenericMessages.success

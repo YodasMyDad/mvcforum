@@ -264,3 +264,4 @@ __pycache__/
 /MVCForum.Services/MVCForum.Services.csproj.DotSettings
 /MVCForum.Website/Content/uploads/*
 /MVCForum.Website/App_Data/cache/*
+/MVCForum.Website/Notes.txt

@@ -39,6 +39,7 @@ Topic.CreateDiscussion,Начать тему
 Topic.TagThisTopic,Пометить тему
 Topic.Choose,Выберите существующую тему
 Tags.PopularTags,Популярные метки
+Tags.NoCreatePermission,У вас нет разрешения на создание новых тегов, вы можете использовать только существующие
 Stats.FooterMainStatText,{0} пользователей добавили {1} сообщений в {2} темах
 Stats.LatestMembers,Новые пользователи:
 PM.Title,Сообщение:
@@ -399,3 +400,5 @@ Moderate.NothingHere,На данный момент пусто
 Moderate.Topics,Темы
 Moderate.Posts,Сообщение
 Moderate.NavText,Темы/сообщения, ожидающие проверку
+Post.Trusted,Надежный
+Post.TrustedUser,Надежный пользователь

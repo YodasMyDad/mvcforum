@@ -2,6 +2,7 @@
 {
     using System;
     using System.Data.Entity;
+    using Models;
     using Models.Activity;
     using Models.Entities;
     using Models.General;
@@ -38,7 +39,6 @@
         DbSet<UploadedFile> UploadedFile { get; set; }
         DbSet<Favourite> Favourite { get; set; }
         DbSet<GlobalPermissionForRole> GlobalPermissionForRole { get; set; }
-        DbSet<Email> Email { get; set; }
         DbSet<PostEdit> PostEdit { get; set; }
 
         int SaveChanges();
