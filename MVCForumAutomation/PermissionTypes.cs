@@ -4,6 +4,7 @@
     {
         AttachFiles,
         CreatePolls,
+        CreateTags,
         CreateTopics,
         DeletePosts,
         DenyAccess,

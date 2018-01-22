@@ -61,9 +61,9 @@ namespace MVCForumAutomation
             get { return new LatestDiscussions(_webDriver); }
         }
 
-        public LoggedInAdmin LoginAsAdmin()
+        public LoggedInAdmin LoginAsAdmin(string password)
         {
-            return LoginAs(_testDefaults.AdminUsername, _testDefaults.AdminPassword, () => new LoggedInAdmin(_webDriver, _testDefaults));
+            return LoginAs(_testDefaults.AdminUsername, password, () => new LoggedInAdmin(_webDriver, _testDefaults));
         }
 
         private TLoggedInUser LoginAs<TLoggedInUser>(string username, string password, Func<TLoggedInUser> createLoggedInUser)

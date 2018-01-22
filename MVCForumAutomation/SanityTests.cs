@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OpenQA.Selenium;
 
 namespace MVCForumAutomation
 {
@@ -14,11 +15,21 @@ namespace MVCForumAutomation
         [TestInitialize]
         public void TestInitialize()
         {
-            var adminUser = MVCForum.LoginAsAdmin();
+            var adminPassword = GetAdminPassword();
+            var adminUser = MVCForum.LoginAsAdmin(adminPassword);
             var adminPage = adminUser.GoToAdminPage();
             var permissions = adminPage.GetPermissionsFor(TestDefaults.StandardMembers);
             permissions.AddToCategory(TestDefaults.ExampleCategory, PermissionTypes.CreateTopics);
             adminUser.Logout();
+        }
+
+        private string GetAdminPassword()
+        {
+            var readMeHeader = MVCForum.LatestDiscussions.Top;
+            var readmeTopic = readMeHeader.OpenDiscussion();
+            var body = readmeTopic.BodyElement;
+            var password = body.FindElement(By.XPath(".//strong[2]"));
+            return password.Text;
         }
 
         public TestContext TestContext { get; set; }
