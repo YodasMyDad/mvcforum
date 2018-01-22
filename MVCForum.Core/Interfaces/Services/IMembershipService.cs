@@ -2,7 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Drawing;
+    using System.Security.Principal;
     using System.Threading.Tasks;
+    using System.Web;
     using Models.Entities;
     using Models.Enums;
     using Models.General;
@@ -20,19 +23,16 @@
         MembershipUser GetUserByEmail(string email, bool removeTracking = false);
         MembershipUser GetUserBySlug(string slug);
         IList<MembershipUser> GetUserBySlugLike(string slug);
-        MembershipUser GetUserByFacebookId(long facebookId);
-        MembershipUser GetUserByTwitterId(string twitterId);
-        MembershipUser GetUserByGoogleId(string googleId);
-        MembershipUser GetUserByOpenIdToken(string openId);
         IList<MembershipUser> GetUsersById(List<Guid> guids);
         IList<MembershipUser> GetUsersByDaysPostsPoints(int amoutOfDaysSinceRegistered, int amoutOfPosts);
         MembershipUser GetUser(Guid id);
         bool ChangePassword(MembershipUser user, string oldPassword, string newPassword);
         bool ResetPassword(MembershipUser user, string newPassword);
         void UnlockUser(string username, bool resetPasswordAttempts);
-        Task<IPipelineProcess<MembershipUser>> CreateUser(MembershipUser newUser, LoginType loginType);
-        string ErrorCodeToString(MembershipCreateStatus createStatus);
         MembershipUser CreateEmptyUser();
+        Task<IPipelineProcess<MembershipUser>> CreateUser(MembershipUser newUser, LoginType loginType);
+        Task<IPipelineProcess<MembershipUser>> EditUser(MembershipUser userToEdit, IPrincipal loggedInUser, Image image);
+        string ErrorCodeToString(MembershipCreateStatus createStatus);
         IList<MembershipUser> GetAll();
         Task<PaginatedList<MembershipUser>> GetAll(int pageIndex, int pageSize);
         Task<PaginatedList<MembershipUser>> SearchMembers(string search, int pageIndex, int pageSize);

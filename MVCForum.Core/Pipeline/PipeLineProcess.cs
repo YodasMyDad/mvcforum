@@ -15,7 +15,7 @@
             // Set up the pipeline process
             EntityToProcess = entity;
             ProcessLog = new List<string>();
-            ExtendedData = new List<ExtendedDataItem>();
+            ExtendedData = new Dictionary<string, string>();
             Successful = true;
         }
 
@@ -26,7 +26,7 @@
         public bool Successful { get; set; }
 
         /// <inheritdoc />
-        public IList<ExtendedDataItem> ExtendedData { get; set; }
+        public Dictionary<string, string> ExtendedData { get; set; }
 
         /// <inheritdoc />
         public List<string> ProcessLog { get; set; }

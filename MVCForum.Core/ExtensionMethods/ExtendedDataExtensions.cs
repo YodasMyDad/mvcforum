@@ -146,16 +146,12 @@
         /// <param name="extendedDataItems"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static string GetExtendedDataItem(this IList<ExtendedDataItem> extendedDataItems, string key)
+        public static string GetExtendedDataItem(this Dictionary<string, string> extendedDataItems, string key)
         {
-            foreach (var extendedDataItem in extendedDataItems)
+            if (extendedDataItems.ContainsKey(key))
             {
-                if (extendedDataItem.Key == key)
-                {
-                    return extendedDataItem.Value;
-                }
-            }
-
+                return extendedDataItems[key];
+            }           
             return string.Empty;
         }
 
@@ -165,16 +161,12 @@
         /// <param name="extendedDataItems"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static T GetExtendedDataItem<T>(this IList<ExtendedDataItem> extendedDataItems, string key)
+        public static T GetExtendedDataItem<T>(this Dictionary<string, string> extendedDataItems, string key)
         {
-            foreach (var extendedDataItem in extendedDataItems)
+            if (extendedDataItems.ContainsKey(key))
             {
-                if (extendedDataItem.Key == key)
-                {
-                    return JsonConvert.DeserializeObject<T>(extendedDataItem.Value);
-                }
+                return JsonConvert.DeserializeObject<T>(extendedDataItems[key]);
             }
-
             return default(T);
         }
     }

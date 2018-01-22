@@ -8,6 +8,11 @@
 
     public static class MemberAddViewModelExtensions
     {
+        /// <summary>
+        /// Converts a add view model to a membershipuser
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
         public static MembershipUser ToMembershipUser(this MemberAddViewModel viewModel)
         {
             var userToSave = new MembershipUser

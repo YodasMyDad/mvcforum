@@ -1,7 +1,6 @@
 ﻿namespace MvcForum.Core.ExtensionMethods
 {
     using System;
-    using System.Drawing;
     using System.Drawing.Imaging;
     using System.IO;
     using System.Linq;
@@ -14,6 +13,80 @@
     public static class HttpExtensionMethods
     {
         /// <summary>
+        /// Checks whether this 
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="localizationService"></param>
+        /// <param name="mustBeImage"></param>
+        /// <returns></returns>
+        public static FileCheckResult CanBeUploaded(this HttpPostedFileBase file, ILocalizationService localizationService, bool mustBeImage = false)
+        {
+            var result = new FileCheckResult { IsOk = true};
+
+            var fileName = Path.GetFileName(file.FileName);
+            if (fileName == null)
+            {
+                result.IsOk = false;
+                result.Message = localizationService.GetResourceString("Errors.GenericMessage");
+                return result;
+            }
+
+            // Get the file extension
+            var fileExtension = Path.GetExtension(fileName);
+
+            // If can't work out extension then just error
+            if (string.IsNullOrWhiteSpace(fileExtension))
+            {
+                result.IsOk = false;
+                result.Message = localizationService.GetResourceString("Errors.GenericMessage");
+                return result;
+            }
+
+            //Before we do anything, check file size
+            if (file.ContentLength > Convert.ToInt32(ForumConfiguration.Instance.FileUploadMaximumFileSizeInBytes))
+            {
+                result.IsOk = false;
+                result.Message = localizationService.GetResourceString("Post.UploadFileTooBig");
+                return result;
+            }
+
+            // now check allowed extensions
+            var allowedFileExtensions = ForumConfiguration.Instance.FileUploadAllowedExtensions;
+
+            if (mustBeImage)
+            {
+                allowedFileExtensions = Constants.Constants.ImageExtensions;
+                result.IsImage = true;
+            }
+
+            if (!string.IsNullOrWhiteSpace(allowedFileExtensions))
+            {
+                // Turn into a list and strip unwanted commas as we don't trust users!
+                var allowedFileExtensionsList = allowedFileExtensions.ToArray(',', true);
+
+                // Remove the dot then check against the extensions in the web.config settings
+                fileExtension = fileExtension.TrimStart('.');
+                if (!allowedFileExtensionsList.Contains(fileExtension))
+                {
+                    result.IsOk = false;
+                    result.Message = localizationService.GetResourceString("Post.UploadBannedFileExtension");
+                    return result;
+                }
+            }
+            else
+            {
+                result.IsOk = false;
+                result.Message = "Unable to get allowed extensions";
+                return result;
+            }
+
+            //  All Good if here
+            result.FileName = fileName;
+            result.FileExtension = fileExtension;
+            return result;
+        }
+
+        /// <summary>
         ///     Uploads a file from a posted file
         /// </summary>
         /// <param name="file"></param>
@@ -24,130 +97,57 @@
         public static UploadFileResult UploadFile(this HttpPostedFileBase file, string uploadFolderPath,
             ILocalizationService localizationService, bool onlyImages = false)
         {
-            var upResult = new UploadFileResult {UploadSuccessful = true};
-            const string imageExtensions = "jpg,jpeg,png,gif";
-            var fileName = Path.GetFileName(file.FileName);
+            var upResult = new UploadFileResult { UploadSuccessful = true };
             var storageProvider = StorageProvider.Current;
 
-            if (fileName != null)
+            var fileOkResult = file.CanBeUploaded(localizationService);
+
+            if (fileOkResult.IsOk)
             {
                 if (!Directory.Exists(uploadFolderPath))
                 {
                     Directory.CreateDirectory(uploadFolderPath);
                 }
-                // Lower case
-                fileName = fileName.ToLower();
 
-                // Get the file extension
-                var fileExtension = Path.GetExtension(fileName);
-
-                //Before we do anything, check file size
-                if (file.ContentLength > Convert.ToInt32(ForumConfiguration.Instance.FileUploadMaximumFileSizeInBytes))
-                {
-                    //File is too big
-                    upResult.UploadSuccessful = false;
-                    upResult.ErrorMessage = localizationService.GetResourceString("Post.UploadFileTooBig");
-                    return upResult;
-                }
-
-                // now check allowed extensions
-                var allowedFileExtensions = ForumConfiguration.Instance.FileUploadAllowedExtensions;
-
-                if (onlyImages)
-                {
-                    allowedFileExtensions = imageExtensions;
-                }
-
-                if (!string.IsNullOrWhiteSpace(allowedFileExtensions))
-                {
-                    // Turn into a list and strip unwanted commas as we don't trust users!
-                    var allowedFileExtensionsList = allowedFileExtensions.ToLower().Trim()
-                        .TrimStart(',').TrimEnd(',').Split(',').ToList();
-
-                    // If can't work out extension then just error
-                    if (string.IsNullOrWhiteSpace(fileExtension))
-                    {
-                        upResult.UploadSuccessful = false;
-                        upResult.ErrorMessage = localizationService.GetResourceString("Errors.GenericMessage");
-                        return upResult;
-                    }
-
-                    // Remove the dot then check against the extensions in the web.config settings
-                    fileExtension = fileExtension.TrimStart('.');
-                    if (!allowedFileExtensionsList.Contains(fileExtension))
-                    {
-                        upResult.UploadSuccessful = false;
-                        upResult.ErrorMessage = localizationService.GetResourceString("Post.UploadBannedFileExtension");
-                        return upResult;
-                    }
-                }
+                var fileName = fileOkResult.FileName;
+                var fileExtension = fileOkResult.FileExtension;
 
                 // Store these here as we may change the values within the image manipulation
                 string newFileName;
 
-                if (imageExtensions.Split(',').ToList().Contains(fileExtension))
+                // See if this is an image, if so then do some extra checks
+                if (fileOkResult.IsImage)
                 {
                     // Rotate image if wrong want around
-                    using (var sourceimage = Image.FromStream(file.InputStream))
-                    {
-                        if (sourceimage.PropertyIdList.Contains(0x0112))
-                        {
-                            int rotationValue = sourceimage.GetPropertyItem(0x0112).Value[0];
-                            switch (rotationValue)
-                            {
-                                case 1: // landscape, do nothing
-                                    break;
+                    var sourceimage = file.ToImage();
 
-                                case 8: // rotated 90 right
-                                    // de-rotate:
-                                    sourceimage.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                                    break;
+                    // Change the extension to jpg as that's what we are saving it as
+                    fileName = fileName.Replace(fileExtension, "");
+                    fileName = string.Concat(fileName, "jpg");
 
-                                case 3: // bottoms up
-                                    sourceimage.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                                    break;
+                    // Sort the file name
+                    newFileName = fileName.CreateFilename();
 
-                                case 6: // rotated 90 left
-                                    sourceimage.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                                    break;
-                            }
-                        }
-
-                        using (var stream = new MemoryStream())
-                        {
-                            // Save the image as a Jpeg only
-                            sourceimage.Save(stream, ImageFormat.Jpeg);
-                            stream.Position = 0;
-
-                            // Change the extension to jpg as that's what we are saving it as
-                            fileName = fileName.Replace(fileExtension, "");
-                            fileName = string.Concat(fileName, "jpg");
-                            file = new MemoryFile(stream, "image/jpeg", fileName);
-
-                            // Sort the file name
-                            newFileName = CreateNewFileName(fileName);
-
-                            // Get the storage provider and save file
-                            upResult.UploadedFileUrl = storageProvider.SaveAs(uploadFolderPath, newFileName, file);
-                        }
-                    }
+                    // Upload the image
+                    upResult.UploadedFileUrl = sourceimage.Upload(uploadFolderPath, newFileName);
                 }
                 else
                 {
                     // Sort the file name
-                    newFileName = CreateNewFileName(fileName);
+                    newFileName = fileName.CreateFilename();
                     upResult.UploadedFileUrl = storageProvider.SaveAs(uploadFolderPath, newFileName, file);
                 }
 
                 upResult.UploadedFileName = newFileName;
+
+            }
+            else
+            {
+                upResult.UploadSuccessful = false;
+                upResult.ErrorMessage = fileOkResult.Message;
             }
 
             return upResult;
-        }
-
-        private static string CreateNewFileName(string fileName)
-        {
-            return $"{GuidComb.GenerateComb()}_{fileName.Trim(' ').Replace("_", "-").Replace(" ", "-").ToLower()}";
         }
     }
 }

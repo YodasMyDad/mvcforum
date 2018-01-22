@@ -4,13 +4,16 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.SqlTypes;
+    using System.Drawing;
     using System.Linq;
+    using System.Security.Principal;
     using System.Text;
     using System.Threading.Tasks;
     using System.Web;
     using System.Web.Security;
     using Constants;
     using Events;
+    using ExtensionMethods;
     using Interfaces;
     using Interfaces.Pipeline;
     using Interfaces.Services;
@@ -282,11 +285,7 @@
             var piplineModel = new PipelineProcess<MembershipUser>(newUser);
 
             // Add the login type to 
-            piplineModel.ExtendedData.Add(new ExtendedDataItem
-            {
-                Key = Constants.ExtendedDataKeys.LoginType,
-                Value =  JsonConvert.SerializeObject(loginType)
-            });
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.LoginType, JsonConvert.SerializeObject(loginType));
 
             // Get instance of the pipeline to use
             var createUserPipeline = new Pipeline<IPipelineProcess<MembershipUser>, MembershipUser>(_context);
@@ -306,6 +305,44 @@
             // Process the pipeline
             return await createUserPipeline.Process(piplineModel);
         }
+
+        /// <inheritdoc />
+        public async Task<IPipelineProcess<MembershipUser>> EditUser(MembershipUser userToEdit, IPrincipal loggedInUser, Image image)
+        {
+            // Get the pipelines
+            var pipes = ForumConfiguration.Instance.PipelinesUserEdit;
+
+            // The model to process
+            var piplineModel = new PipelineProcess<MembershipUser>(userToEdit);
+
+            // Add the user object
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.UserObject, JsonConvert.SerializeObject(loggedInUser));
+
+            // Add the Image as a base 64 image so we can grab it back out
+            if (image != null)
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.ImageBase64, image.ImageToBase64());
+            }
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<MembershipUser>, MembershipUser>(_context);
+
+            // Register the pipes 
+            var allMembershipUserPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<MembershipUser>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in pipes)
+            {
+                if (allMembershipUserPipes.ContainsKey(pipe))
+                {
+                    pipeline.Register(allMembershipUserPipes[pipe]);
+                }
+            }
+
+            // Process the pipeline
+            return await pipeline.Process(piplineModel);
+        }
+
 
         public MembershipUser Get(Guid id)
         {
@@ -418,45 +455,6 @@
                     .Where(name => name.Slug.ToUpper().Contains(slug.ToUpper()))
                     .ToList();
             });
-        }
-
-        /// <summary>
-        ///     Gets a user by their facebook id
-        /// </summary>
-        /// <param name="facebookId"></param>
-        /// <returns></returns>
-        public MembershipUser GetUserByFacebookId(long facebookId)
-        {
-            return _context.MembershipUser
-                .Include(x => x.Roles)
-                .FirstOrDefault(name => name.FacebookId == facebookId);
-        }
-
-        public MembershipUser GetUserByTwitterId(string twitterId)
-        {
-            return _context.MembershipUser
-                .Include(x => x.Roles)
-                .FirstOrDefault(name => name.TwitterAccessToken == twitterId);
-        }
-
-        public MembershipUser GetUserByGoogleId(string googleId)
-        {
-            return _context.MembershipUser
-                .Include(x => x.Roles)
-                .FirstOrDefault(name => name.GoogleAccessToken == googleId);
-        }
-
-        /// <summary>
-        ///     Get users by openid token
-        /// </summary>
-        /// <param name="openId"></param>
-        /// <returns></returns>
-        public MembershipUser GetUserByOpenIdToken(string openId)
-        {
-            openId = StringUtils.GetSafeHtml(openId);
-            return _context.MembershipUser
-                .Include(x => x.Roles)
-                .FirstOrDefault(name => name.MiscAccessToken == openId);
         }
 
         /// <summary>

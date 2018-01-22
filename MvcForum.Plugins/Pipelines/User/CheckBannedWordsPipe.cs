@@ -29,7 +29,6 @@
 
                 // Grab the email from the banned list
                 var emailIsBanned = await context.BannedEmail.AnyAsync(x => x.Email == email);
-
                 if (emailIsBanned == false)
                 {
                     // Email is ok, now check for banned words
@@ -65,14 +64,14 @@
                         // Check for stop words
                         if (input.EntityToProcess.Facebook != null &&
                             input.EntityToProcess.Facebook.IndexOf(allStopWord, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
-                            input.EntityToProcess.Location != null && input.EntityToProcess.Location.IndexOf(allStopWord,
-                                StringComparison.CurrentCultureIgnoreCase) >= 0 ||
-                            input.EntityToProcess.Signature != null && input.EntityToProcess.Signature.IndexOf(allStopWord,
-                                StringComparison.CurrentCultureIgnoreCase) >= 0 ||
-                            input.EntityToProcess.Twitter != null && input.EntityToProcess.Twitter.IndexOf(allStopWord,
-                                StringComparison.CurrentCultureIgnoreCase) >= 0 ||
-                            input.EntityToProcess.Website != null && input.EntityToProcess.Website.IndexOf(allStopWord,
-                                StringComparison.CurrentCultureIgnoreCase) >= 0)
+                            input.EntityToProcess.Location != null && 
+                            input.EntityToProcess.Location.IndexOf(allStopWord, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
+                            input.EntityToProcess.Signature != null && 
+                            input.EntityToProcess.Signature.IndexOf(allStopWord, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
+                            input.EntityToProcess.Twitter != null && 
+                            input.EntityToProcess.Twitter.IndexOf(allStopWord, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
+                            input.EntityToProcess.Website != null && 
+                            input.EntityToProcess.Website.IndexOf(allStopWord, StringComparison.CurrentCultureIgnoreCase) >= 0)
                         {
                             input.Successful = false;
                             input.ProcessLog.Clear();

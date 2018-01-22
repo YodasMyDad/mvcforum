@@ -39,6 +39,8 @@
   <ItemGroup>
     <Compile Include="Constants\Constants.cs" />
     <Compile Include="Constants\CacheKeys.cs" />
+    <Compile Include="ExtensionMethods\ImageExtensions.cs" />
+    <Compile Include="ExtensionMethods\PipelineExtensions.cs" />
     <Compile Include="ForumConfiguration.cs" />
     <Compile Include="ExtensionMethods\ExtendedDataExtensions.cs" />
     <Compile Include="ExtensionMethods\HttpExtensionMethods.cs" />
@@ -106,6 +108,7 @@
     <Compile Include="Models\Entities\PermissionForRole.cs" />
     <Compile Include="Models\Entities\Poll.cs" />
     <Compile Include="Models\Entities\PrivateMessage.cs" />
+    <Compile Include="Models\General\FileCheckResult.cs" />
     <Compile Include="Models\General\MarkAsSolutionReminder.cs" />
     <Compile Include="Models\General\PaginatedList.cs" />
     <Compile Include="Models\General\Report.cs" />

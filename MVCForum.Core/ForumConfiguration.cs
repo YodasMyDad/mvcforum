@@ -223,6 +223,46 @@
         }
 
         /// <summary>
+        /// Gets the User Edit Pipes from the config
+        /// </summary>
+        private IList<string> _userEditPipes;
+        public IList<string> PipelinesUserEdit
+        {
+            get
+            {
+                if (_userEditPipes == null)
+                {
+                    var pipes = GetPlugin("PipelinesUserEdit");
+                    if (!string.IsNullOrWhiteSpace(pipes))
+                    {
+                        _userEditPipes = ConfigToListString(pipes);
+                    }
+                }
+                return _userEditPipes;
+            }
+        }
+
+        /// <summary>
+        /// Gets the User Delete Pipes from the config
+        /// </summary>
+        private IList<string> _userDeletePipes;
+        public IList<string> PipelinesUserDelete
+        {
+            get
+            {
+                if (_userDeletePipes == null)
+                {
+                    var pipes = GetPlugin("PipelinesUserDelete");
+                    if (!string.IsNullOrWhiteSpace(pipes))
+                    {
+                        _userDeletePipes = ConfigToListString(pipes);
+                    }
+                }
+                return _userDeletePipes;
+            }
+        }
+
+        /// <summary>
         /// Turns a string config into a list
         /// </summary>
         /// <param name="config"></param>

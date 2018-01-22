@@ -47,6 +47,9 @@
     <Compile Include="Badges\YourPostFavouritedTenTimesBadge.cs" />
     <Compile Include="Pipelines\User\CheckBannedWordsPipe.cs" />
     <Compile Include="Pipelines\User\CreateNewUserPipe.cs" />
+    <Compile Include="Pipelines\User\DeleteUserPipe.cs" />
+    <Compile Include="Pipelines\User\EditUserPermissionsPipe.cs" />
+    <Compile Include="Pipelines\User\EditUserPipe.cs" />
     <Compile Include="Pipelines\User\LoginUserPipe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\DiskStorageProvider.cs" />

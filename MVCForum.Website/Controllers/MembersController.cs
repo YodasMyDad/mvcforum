@@ -1,6 +1,7 @@
 ﻿namespace MvcForum.Web.Controllers
 {
     using System;
+    using System.Drawing;
     using System.IO;
     using System.Linq;
     using System.Security.Principal;
@@ -649,17 +650,8 @@
                 var piplineModel = new PipelineProcess<MembershipUser>(user);
 
                 // Add the username and password
-                piplineModel.ExtendedData.Add(new ExtendedDataItem
-                {
-                    Key = Constants.ExtendedDataKeys.Username,
-                    Value = model.UserName
-                });
-
-                piplineModel.ExtendedData.Add(new ExtendedDataItem
-                {
-                    Key = Constants.ExtendedDataKeys.Password,
-                    Value = model.Password
-                });
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, model.UserName);
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Password, model.Password);
 
                 // Get instance of the pipeline to use
                 var loginUserPipeline = new Pipeline<IPipelineProcess<MembershipUser>, MembershipUser>(Context);
@@ -765,32 +757,6 @@
         }
 
         /// <summary>
-        ///     Creates view model
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        private static MemberFrontEndEditViewModel PopulateMemberViewModel(MembershipUser user)
-        {
-            var viewModel = new MemberFrontEndEditViewModel
-            {
-                Id = user.Id,
-                UserName = user.UserName,
-                Email = user.Email,
-                Signature = user.Signature,
-                Age = user.Age,
-                Location = user.Location,
-                Website = user.Website,
-                Twitter = user.Twitter,
-                Facebook = user.Facebook,
-                DisableFileUploads = user.DisableFileUploads == true,
-                Avatar = user.Avatar,
-                DisableEmailNotifications = user.DisableEmailNotifications == true,
-                AmountOfPoints = user.TotalPoints
-            };
-            return viewModel;
-        }
-
-        /// <summary>
         ///     Edit user
         /// </summary>
         /// <param name="id"></param>
@@ -809,7 +775,7 @@
                 permissions[ForumConfiguration.Instance.PermissionEditMembers].IsTicked)
             {
                 var user = MembershipService.GetUser(id);
-                var viewModel = PopulateMemberViewModel(user);
+                var viewModel = user.PopulateMemberViewModel();
 
                 return View(viewModel);
             }
@@ -824,8 +790,58 @@
         /// <returns></returns>
         [HttpPost]
         [Authorize]
-        public ActionResult Edit(MemberFrontEndEditViewModel userModel)
+        public async Task<ActionResult> Edit(MemberFrontEndEditViewModel userModel)
         {
+            // Get the user to edit from the database            
+            var dbUser = MembershipService.GetUser(userModel.Id);
+
+            // Map across the viewmodel to the user
+            var user = userModel.ToMembershipUser(dbUser);
+
+            // Repopulate any viewmodel data
+            userModel.AmountOfPoints = user.TotalPoints;
+
+            // Avatar holding image
+            Image avatar = null;
+
+            // Check image for upload
+            if (userModel.Files.Any())
+            {
+                // See if file is ok and then convert to image
+                var avatarFile = userModel.Files[0];
+                var fileOkResult = avatarFile.CanBeUploaded(LocalizationService);
+                if (fileOkResult.IsOk)
+                {
+                    avatar = avatarFile.ToImage();
+                }
+                else
+                {
+                    // If there is a problem with the file then return the message
+                    ModelState.AddModelError(string.Empty, fileOkResult.Message);
+                    return View(userModel);
+                }
+            }
+
+            // Edit the user via the pipelines
+            var pipeline = await MembershipService.EditUser(user, User, avatar);
+            if (!pipeline.Successful)
+            {
+                ModelState.AddModelError(string.Empty, pipeline.ProcessLog.FirstOrDefault());
+                return View();
+            }
+
+            // Repopulate any viewmodel data
+            userModel.AmountOfPoints = user.TotalPoints;
+
+            ShowMessage(new GenericMessageViewModel
+            {
+                Message = LocalizationService.GetResourceString("Member.ProfileUpdated"),
+                MessageType = GenericMessages.success
+            });
+
+            return View(userModel);
+
+
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
             var loggedOnUserId = loggedOnReadOnlyUser?.Id ?? Guid.Empty;
@@ -839,44 +855,11 @@
                 // TODO - Store this in extendedData
                 var user = MembershipService.GetUser(userModel.Id);
 
-                // Before we do anything - Check stop words
-                var stopWords = _bannedWordService.GetAll(true);
-                var bannedWords = _bannedWordService.GetAll().Select(x => x.Word).ToList();
-
-                // Check the fields for bad words
-                foreach (var stopWord in stopWords)
-                {
-                    if (userModel.Facebook != null &&
-                        userModel.Facebook.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
-                        userModel.Location != null && userModel.Location.IndexOf(stopWord.Word,
-                            StringComparison.CurrentCultureIgnoreCase) >= 0 ||
-                        userModel.Signature != null && userModel.Signature.IndexOf(stopWord.Word,
-                            StringComparison.CurrentCultureIgnoreCase) >= 0 ||
-                        userModel.Twitter != null && userModel.Twitter.IndexOf(stopWord.Word,
-                            StringComparison.CurrentCultureIgnoreCase) >= 0 ||
-                        userModel.Website != null && userModel.Website.IndexOf(stopWord.Word,
-                            StringComparison.CurrentCultureIgnoreCase) >= 0)
-                    {
-                        ShowMessage(new GenericMessageViewModel
-                        {
-                            Message = LocalizationService.GetResourceString("StopWord.Error"),
-                            MessageType = GenericMessages.danger
-                        });
-
-                        // Ahhh found a stop word. Abandon operation captain.
-                        return View(userModel);
-                    }
-                }
-
-                // Repopulate any viewmodel data
-                userModel.AmountOfPoints = user.TotalPoints;
-
                 // Sort image out first
                 if (userModel.Files != null)
                 {
                     // Before we save anything, check the user already has an upload folder and if not create one
-                    var uploadFolderPath =
-                        HostingEnvironment.MapPath(string.Concat(ForumConfiguration.Instance.UploadFolderPath,
+                    var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(ForumConfiguration.Instance.UploadFolderPath,
                             loggedOnReadOnlyUser.Id));
 
                     // Loop through each file and get the file info and save to the users folder and Db
@@ -900,18 +883,6 @@
                         user.Avatar = uploadResult.UploadedFileName;
                     }
                 }
-
-                // Set the users Avatar for the confirmation page
-                userModel.Avatar = user.Avatar;
-
-                // Update other users properties
-                user.Age = userModel.Age;
-                user.Facebook = _bannedWordService.SanitiseBannedWords(userModel.Facebook, bannedWords);
-                user.Location = _bannedWordService.SanitiseBannedWords(userModel.Location, bannedWords);
-                user.Signature = _bannedWordService.SanitiseBannedWords(StringUtils.ScrubHtml(userModel.Signature, true), bannedWords);
-                user.Twitter = _bannedWordService.SanitiseBannedWords(userModel.Twitter, bannedWords);
-                user.Website = _bannedWordService.SanitiseBannedWords(userModel.Website, bannedWords);
-                user.DisableEmailNotifications = userModel.DisableEmailNotifications;
 
                 // User is trying to change username, need to check if a user already exists
                 // with the username they are trying to change to

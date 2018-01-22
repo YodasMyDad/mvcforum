@@ -59,6 +59,8 @@
 
         public static string LanguageStrings = string.Concat(LocalisationCacheName, "LangStrings-");
 
+        public const string ImageExtensions = "jpg,jpeg,png,gif";
+
         public class ExtendedDataKeys
         {
             /// <summary>
@@ -82,6 +84,12 @@
 
             public const string Username = "Username";
             public const string Password = "Password";
+
+            public const string UserObject = "UserObject";
+
+            public const string ImageBase64 = "ImageBase64";
+
+            public const string ImagesBase64 = "ImagesBase64";
         }
     }
 }
