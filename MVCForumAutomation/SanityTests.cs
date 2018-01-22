@@ -25,8 +25,7 @@ namespace MVCForumAutomation
 
         private string GetAdminPassword()
         {
-            var readMeHeader = MVCForum.LatestDiscussions.Top;
-            var readmeTopic = readMeHeader.OpenDiscussion();
+            var readmeTopic = MVCForum.HotTopics.Open("Read Me");
             var body = readmeTopic.BodyElement;
             var password = body.FindElement(By.XPath(".//strong[2]"));
             return password.Text;

@@ -24,7 +24,7 @@ namespace MVCForumAutomation
 
         public Discussion OpenDiscussion()
         {
-            var link = _topicRow.FindElement(By.CssSelector("h3 a"));
+            var link = _topicRow.FindElement(By.TagName("h3"));
             link.Click();
 
             var driver = ((IWrapsDriver) _topicRow).WrappedDriver;

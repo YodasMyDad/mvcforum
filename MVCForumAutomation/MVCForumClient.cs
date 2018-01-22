@@ -61,6 +61,11 @@ namespace MVCForumAutomation
             get { return new LatestDiscussions(_webDriver); }
         }
 
+        public HotTopicsPane HotTopics
+        {
+            get { return new HotTopicsPane(_webDriver); }
+        }
+
         public LoggedInAdmin LoginAsAdmin(string password)
         {
             return LoginAs(_testDefaults.AdminUsername, password, () => new LoggedInAdmin(_webDriver, _testDefaults));

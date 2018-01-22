@@ -60,6 +60,7 @@
     <Compile Include="Discussion.cs" />
     <Compile Include="DiscussionHeader.cs" />
     <Compile Include="FormPage.cs" />
+    <Compile Include="HotTopicsPane.cs" />
     <Compile Include="LatestDiscussions.cs" />
     <Compile Include="LoggedInAdmin.cs" />
     <Compile Include="LoggedInPage.cs" />
