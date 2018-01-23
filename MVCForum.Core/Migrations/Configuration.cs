@@ -11,15 +11,31 @@ namespace MvcForum.Core.Services.Migrations
     using System.Web.Security;
     using Constants;
     using Data.Context;
+    using ExtensionMethods;
     using Models.Entities;
     using Utilities;
 
     public class Configuration : DbMigrationsConfiguration<MvcForumContext>
     {
+        private readonly bool _pendingMigrations;
+
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
             AutomaticMigrationDataLossAllowed = true;
+
+            // Check if there are migrations pending to run, this can happen if database doesn't exists or if there was any
+            //  change in the schema
+            var migrator = new DbMigrator(this);
+            _pendingMigrations = migrator.GetPendingMigrations().Any();
+
+            // If there are pending migrations run migrator.Update() to create/update the database then run the Seed() method to populate
+            //  the data if necessary
+            if (_pendingMigrations)
+            {
+                migrator.Update();
+                Seed(new MvcForumContext());
+            }
         }
 
         protected override void Seed(MvcForumContext context)
@@ -327,7 +343,7 @@ namespace MvcForum.Core.Services.Migrations
                 }
 
                 // Create a temp password
-                var tempAdminPassword = Membership.GeneratePassword(8, 0);
+                var tempAdminPassword = "mvc".AppendUniqueIdentifier();
 
                 // If the admin user exists then don't do anything else
                 const string adminUsername = "admin";

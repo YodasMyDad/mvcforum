@@ -4,7 +4,6 @@ namespace MvcForum.Core.Services.Migrations
     using System.Configuration;
     using System.Data.Entity.Migrations;
     using System.Data.SqlClient;
-    using Constants;
 
     public partial class InitialCommit : DbMigration
     {

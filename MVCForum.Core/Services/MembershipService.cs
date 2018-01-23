@@ -17,6 +17,7 @@
     using Interfaces;
     using Interfaces.Pipeline;
     using Interfaces.Services;
+    using Microsoft.Security.Application;
     using Models.Entities;
     using Models.Enums;
     using Models.General;
@@ -139,8 +140,8 @@
         {
             membershipUser.Avatar = StringUtils.SafePlainText(membershipUser.Avatar);
             membershipUser.Comment = StringUtils.SafePlainText(membershipUser.Comment);
-            membershipUser.Email = StringUtils.SafePlainText(membershipUser.Email);
-            membershipUser.Password = StringUtils.SafePlainText(membershipUser.Password);
+            membershipUser.Email = Sanitizer.GetSafeHtmlFragment(membershipUser.Email);
+            membershipUser.Password = Sanitizer.GetSafeHtmlFragment(membershipUser.Password);
             membershipUser.PasswordAnswer = StringUtils.SafePlainText(membershipUser.PasswordAnswer);
             membershipUser.PasswordQuestion = StringUtils.SafePlainText(membershipUser.PasswordQuestion);
             membershipUser.Signature = StringUtils.GetSafeHtml(membershipUser.Signature, true);
@@ -164,8 +165,8 @@
         /// <returns></returns>
         public bool ValidateUser(string userName, string password, int maxInvalidPasswordAttempts)
         {
-            userName = StringUtils.SafePlainText(userName);
-            password = StringUtils.SafePlainText(password);
+            userName = Sanitizer.GetSafeHtmlFragment(userName);
+            password = Sanitizer.GetSafeHtmlFragment(password);
 
             LastLoginStatus = LoginAttemptStatus.LoginSuccessful;
 
