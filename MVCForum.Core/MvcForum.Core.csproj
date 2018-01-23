@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MvcForum.Core</RootNamespace>
     <AssemblyName>MvcForum.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
@@ -37,11 +37,20 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Constants\AppConstants.cs" />
+    <Compile Include="Constants\Constants.cs" />
     <Compile Include="Constants\CacheKeys.cs" />
-    <Compile Include="Constants\SiteConstants.cs" />
+    <Compile Include="ExtensionMethods\ImageExtensions.cs" />
+    <Compile Include="ExtensionMethods\PipelineExtensions.cs" />
+    <Compile Include="ForumConfiguration.cs" />
     <Compile Include="ExtensionMethods\ExtendedDataExtensions.cs" />
+    <Compile Include="ExtensionMethods\HttpExtensionMethods.cs" />
     <Compile Include="ExtensionMethods\IdentityExtensions.cs" />
+    <Compile Include="ExtensionMethods\StringExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\VersionExtensionMethods.cs" />
+    <Compile Include="Interfaces\IAssemblyProvider.cs" />
+    <Compile Include="Interfaces\Pipeline\IPipe.cs" />
+    <Compile Include="Interfaces\Pipeline\IPipelineProcess.cs" />
+    <Compile Include="MemoryFile.cs" />
     <Compile Include="Migrations\201801011815079_IncreaseAccessTokenLength.cs" />
     <Compile Include="Migrations\201801011815079_IncreaseAccessTokenLength.Designer.cs">
       <DependentUpon>201801011815079_IncreaseAccessTokenLength.cs</DependentUpon>
@@ -99,6 +108,7 @@
     <Compile Include="Models\Entities\PermissionForRole.cs" />
     <Compile Include="Models\Entities\Poll.cs" />
     <Compile Include="Models\Entities\PrivateMessage.cs" />
+    <Compile Include="Models\General\FileCheckResult.cs" />
     <Compile Include="Models\General\MarkAsSolutionReminder.cs" />
     <Compile Include="Models\General\PaginatedList.cs" />
     <Compile Include="Models\General\Report.cs" />
@@ -135,7 +145,6 @@
     <Compile Include="Events\MVCForumEventArgs.cs" />
     <Compile Include="Events\PostMadeEventArgs.cs" />
     <Compile Include="Events\PrivateMessageEventArgs.cs" />
-    <Compile Include="Events\RegisterUserEventArgs.cs" />
     <Compile Include="Events\TopicMadeEventArgs.cs" />
     <Compile Include="Events\UpdateProfileEventArgs.cs" />
     <Compile Include="Events\VoteEventArgs.cs" />
@@ -166,7 +175,6 @@
     <Compile Include="Interfaces\Services\IActivityService.cs" />
     <Compile Include="Interfaces\Services\IPostEditService.cs" />
     <Compile Include="Interfaces\Services\IPrivateMessageService.cs" />
-    <Compile Include="Interfaces\Services\IReflectionService.cs" />
     <Compile Include="Interfaces\Services\IReportService.cs" />
     <Compile Include="Interfaces\Services\ITagNotificationService.cs" />
     <Compile Include="Interfaces\Services\ITopicNotificationService.cs" />
@@ -198,7 +206,12 @@
     </Compile>
     <Compile Include="Models\OAuth\FacebookOAuthData.cs" />
     <Compile Include="Models\OAuth\GoogleOAuthData.cs" />
+    <Compile Include="Pipeline\Pipeline.cs" />
+    <Compile Include="Pipeline\PipelineProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\Storage\StorageProvider.cs" />
+    <Compile Include="Reflection\AssemblyProvider.cs" />
+    <Compile Include="Reflection\ImplementationManager.cs" />
     <Compile Include="Services\ActivityService.cs" />
     <Compile Include="Services\BadgeService.cs" />
     <Compile Include="Services\BannedEmailService.cs" />
@@ -257,7 +270,6 @@
     <Compile Include="Services\PostService.cs" />
     <Compile Include="Services\PrivateMessageService.cs" />
     <Compile Include="Services\RecurringJobService.cs" />
-    <Compile Include="Services\ReflectionService.cs" />
     <Compile Include="Services\ReportService.cs" />
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\ServiceHelpers.cs" />
@@ -310,7 +322,7 @@
       <Version>1.6.17</Version>
     </PackageReference>
     <PackageReference Include="HtmlAgilityPack">
-      <Version>1.6.11</Version>
+      <Version>1.6.13</Version>
     </PackageReference>
     <PackageReference Include="LinqKit.EntityFramework">
       <Version>1.1.12</Version>
@@ -376,16 +388,15 @@
       <Version>1.0.0</Version>
     </PackageReference>
     <PackageReference Include="Unity">
-      <Version>5.5.4</Version>
+      <Version>5.5.5</Version>
     </PackageReference>
     <PackageReference Include="Unity.Abstractions">
-      <Version>3.1.1</Version>
+      <Version>3.1.2</Version>
     </PackageReference>
     <PackageReference Include="Unity.AspNet.WebApi">
       <Version>5.0.11</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201712271549027_InitialCommit.resx">
       <DependentUpon>201712271549027_InitialCommit.cs</DependentUpon>
@@ -411,6 +422,10 @@
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PreBuildEvent>tasklist /FI "IMAGENAME eq VBCSCompiler.exe" 2&gt;NUL | find /I /N "VBCSCompiler.exe"&gt;NUL
+if "%25ERRORLEVEL%25"=="0" (taskkill /IM VBCSCompiler.exe /F) else (verify &gt;NUL)</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

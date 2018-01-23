@@ -26,12 +26,12 @@
 
         [DisplayName("Category Description")]
         [DataType(DataType.MultilineText)]
-        [UIHint(AppConstants.EditorType)]
+        [UIHint(Constants.EditorType)]
         [AllowHtml]
         public string Description { get; set; }
 
         [DisplayName("Category Colour")]
-        [UIHint(AppConstants.EditorTemplateColourPicker)]
+        [UIHint(Constants.EditorTemplateColourPicker)]
         [AllowHtml]
         public string CategoryColour { get; set; }
 

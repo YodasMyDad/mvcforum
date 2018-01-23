@@ -1,6 +1,6 @@
 ﻿@using MvcForum.Web.Application.ExtensionMethods
 @{
-    var emailCookie = Request.Cookies[AppConstants.MemberEmailConfirmationCookieName];
+    var emailCookie = Request.Cookies[Constants.MemberEmailConfirmationCookieName];
     if (emailCookie != null)
     {
         <div class="alert alert-block alert-info">

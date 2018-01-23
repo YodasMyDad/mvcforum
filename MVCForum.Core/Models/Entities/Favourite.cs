@@ -3,7 +3,7 @@
     using System;
     using Utilities;
 
-    public partial class Favourite : Entity
+    public partial class Favourite : IBaseEntity
     {
         public Favourite()
         {

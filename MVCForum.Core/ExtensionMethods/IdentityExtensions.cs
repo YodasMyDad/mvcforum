@@ -29,7 +29,7 @@
         /// <returns></returns>
         public static MembershipRole GetRole(this MembershipUser user, IRoleService roleService, bool removeTracking = true)
         {
-            return user == null ? roleService.GetRole(AppConstants.GuestRoleName, removeTracking) : user.Roles.FirstOrDefault();
+            return user == null ? roleService.GetRole(Constants.GuestRoleName, removeTracking) : user.Roles.FirstOrDefault();
         }
     }
 }

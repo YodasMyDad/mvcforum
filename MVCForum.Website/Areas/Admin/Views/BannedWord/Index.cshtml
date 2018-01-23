@@ -93,7 +93,7 @@
 
             if (Model.Words.TotalPages > 1)
             {
-                @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
+                @Html.Pager(Convert.ToInt32(Model.PageIndex), ForumConfiguration.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
             }
         }
 

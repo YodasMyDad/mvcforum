@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Utilities;
 
-    public partial class Permission : Entity
+    public partial class Permission : IBaseEntity
     {
         public Permission()
         {

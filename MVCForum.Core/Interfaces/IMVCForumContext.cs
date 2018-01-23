@@ -2,6 +2,7 @@
 {
     using System;
     using System.Data.Entity;
+    using System.Threading.Tasks;
     using Models;
     using Models.Activity;
     using Models.Entities;
@@ -42,6 +43,7 @@
         DbSet<PostEdit> PostEdit { get; set; }
 
         int SaveChanges();
+        Task<int> SaveChangesAsync();
 
         void RollBack();
     }

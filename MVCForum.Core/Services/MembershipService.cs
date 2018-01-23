@@ -4,19 +4,26 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.SqlTypes;
+    using System.Drawing;
     using System.Linq;
+    using System.Security.Principal;
     using System.Text;
     using System.Threading.Tasks;
     using System.Web;
     using System.Web.Security;
     using Constants;
     using Events;
+    using ExtensionMethods;
     using Interfaces;
+    using Interfaces.Pipeline;
     using Interfaces.Services;
     using Models;
     using Models.Entities;
     using Models.Enums;
     using Models.General;
+    using Newtonsoft.Json;
+    using Pipeline;
+    using Reflection;
     using Utilities;
 
     public partial class MembershipService : IMembershipService
@@ -233,11 +240,11 @@
                 CreateDate = now,
                 FailedPasswordAnswerAttempt = 0,
                 FailedPasswordAttemptCount = 0,
-                LastLockoutDate = (DateTime) SqlDateTime.MinValue,
+                LastLockoutDate = (DateTime)SqlDateTime.MinValue,
                 LastPasswordChangedDate = now,
                 IsApproved = false,
                 IsLockedOut = false,
-                LastLoginDate = (DateTime) SqlDateTime.MinValue
+                LastLoginDate = (DateTime)SqlDateTime.MinValue
             };
         }
 
@@ -245,110 +252,98 @@
         ///     Create new user
         /// </summary>
         /// <param name="newUser"></param>
+        /// <param name="loginType"></param>
         /// <returns></returns>
-        public MembershipCreateStatus CreateUser(MembershipUser newUser)
+        public async Task<IPipelineProcess<MembershipUser>> CreateUser(MembershipUser newUser, LoginType loginType)
         {
-            newUser = SanitizeUser(newUser);
+            // Get the site settings
             var settings = _settingsService.GetSettings(false);
 
+            // Santise the user fields
+            newUser = SanitizeUser(newUser);
 
-            var status = MembershipCreateStatus.Success;
+            // Hash the password
+            var salt = StringUtils.CreateSalt(Constants.SaltSize);
+            var hash = StringUtils.GenerateSaltedHash(newUser.Password, salt);
+            newUser.Password = hash;
+            newUser.PasswordSalt = salt;
 
-            var e = new RegisterUserEventArgs {User = newUser};
-            EventManager.Instance.FireBeforeRegisterUser(this, e);
+            // Add the roles
+            newUser.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
 
-            if (e.Cancel)
+            // Set dates
+            newUser.CreateDate = newUser.LastPasswordChangedDate = DateTime.UtcNow;
+            newUser.LastLockoutDate = (DateTime)SqlDateTime.MinValue;
+            newUser.LastLoginDate = DateTime.UtcNow;
+            newUser.IsLockedOut = false;
+            newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)), null);
+
+            // Get the pipelines
+            var userCreatePipes = ForumConfiguration.Instance.PipelinesUserCreate;
+
+            // The model to process
+            var piplineModel = new PipelineProcess<MembershipUser>(newUser);
+
+            // Add the login type to 
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.LoginType, JsonConvert.SerializeObject(loginType));
+
+            // Get instance of the pipeline to use
+            var createUserPipeline = new Pipeline<IPipelineProcess<MembershipUser>, MembershipUser>(_context);
+
+            // Register the pipes 
+            var allMembershipUserPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<MembershipUser>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in userCreatePipes)
             {
-                status = e.CreateStatus;
-            }
-            else
-            {
-                if (string.IsNullOrWhiteSpace(newUser.UserName))
+                if (allMembershipUserPipes.ContainsKey(pipe))
                 {
-                    status = MembershipCreateStatus.InvalidUserName;
-                }
-
-                // get by username
-                if (GetUser(newUser.UserName, true) != null)
-                {
-                    status = MembershipCreateStatus.DuplicateUserName;
-                }
-
-                // Add get by email address
-                if (GetUserByEmail(newUser.Email, true) != null)
-                {
-                    status = MembershipCreateStatus.DuplicateEmail;
-                }
-
-                if (string.IsNullOrWhiteSpace(newUser.Password))
-                {
-                    status = MembershipCreateStatus.InvalidPassword;
-                }
-
-                if (status == MembershipCreateStatus.Success)
-                {
-                    // Hash the password
-                    var salt = StringUtils.CreateSalt(AppConstants.SaltSize);
-                    var hash = StringUtils.GenerateSaltedHash(newUser.Password, salt);
-                    newUser.Password = hash;
-                    newUser.PasswordSalt = salt;
-
-                    newUser.Roles = new List<MembershipRole> {settings.NewMemberStartingRole};
-
-                    // Set dates
-                    newUser.CreateDate = newUser.LastPasswordChangedDate = DateTime.UtcNow;
-                    newUser.LastLockoutDate = (DateTime) SqlDateTime.MinValue;
-                    newUser.LastLoginDate = DateTime.UtcNow;
-                    newUser.IsLockedOut = false;
-
-                    var manuallyAuthoriseMembers = settings.ManuallyAuthoriseNewMembers;
-                    var memberEmailAuthorisationNeeded = settings.NewMemberEmailConfirmation == true;
-                    if (manuallyAuthoriseMembers || memberEmailAuthorisationNeeded)
-                    {
-                        newUser.IsApproved = false;
-                    }
-                    else
-                    {
-                        newUser.IsApproved = true;
-                    }
-
-                    // url generator
-                    newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName,
-                        GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)), null);
-
-                    try
-                    {
-                        Add(newUser);
-
-                        if (settings.EmailAdminOnNewMemberSignUp)
-                        {
-                            var sb = new StringBuilder();
-                            sb.Append(
-                                $"<p>{string.Format(_localizationService.GetResourceString("Members.NewMemberRegistered"), settings.ForumName, settings.ForumUrl)}</p>");
-                            sb.Append($"<p>{newUser.UserName} - {newUser.Email}</p>");
-                            var email = new Email
-                            {
-                                EmailTo = settings.AdminEmailAddress,
-                                NameTo = _localizationService.GetResourceString("Members.Admin"),
-                                Subject = _localizationService.GetResourceString("Members.NewMemberSubject")
-                            };
-                            email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
-                            _emailService.SendMail(email);
-                        }
-
-                        _activityService.MemberJoined(newUser);
-                        EventManager.Instance.FireAfterRegisterUser(this,
-                            new RegisterUserEventArgs {User = newUser});
-                    }
-                    catch (Exception)
-                    {
-                        status = MembershipCreateStatus.UserRejected;
-                    }
+                    createUserPipeline.Register(allMembershipUserPipes[pipe]);
                 }
             }
 
-            return status;
+            // Process the pipeline
+            return await createUserPipeline.Process(piplineModel);
         }
+
+        /// <inheritdoc />
+        public async Task<IPipelineProcess<MembershipUser>> EditUser(MembershipUser userToEdit, IPrincipal loggedInUser, Image image)
+        {
+            // Get the pipelines
+            var pipes = ForumConfiguration.Instance.PipelinesUserUpdate;
+
+            // The model to process
+            var piplineModel = new PipelineProcess<MembershipUser>(userToEdit);
+
+            // Add the user object
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, loggedInUser.Identity.Name);
+
+            // Add the Image as a base 64 image so we can grab it back out
+            if (image != null)
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.ImageBase64, image.ImageToBase64());
+                image.Dispose();
+            }
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<MembershipUser>, MembershipUser>(_context);
+
+            // Register the pipes 
+            var allMembershipUserPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<MembershipUser>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in pipes)
+            {
+                if (allMembershipUserPipes.ContainsKey(pipe))
+                {
+                    pipeline.Register(allMembershipUserPipes[pipe]);
+                }
+            }
+
+            // Process the pipeline
+            return await pipeline.Process(piplineModel);
+        }
+
 
         public MembershipUser Get(Guid id)
         {
@@ -443,10 +438,10 @@
         {
             slug = StringUtils.GetSafeHtml(slug);
 
-                return _context.MembershipUser
-                    .Include(x => x.Badges)
-                    .Include(x => x.Roles)
-                    .FirstOrDefault(name => name.Slug == slug);
+            return _context.MembershipUser
+                .Include(x => x.Badges)
+                .Include(x => x.Roles)
+                .FirstOrDefault(name => name.Slug == slug);
         }
 
         public IList<MembershipUser> GetUserBySlugLike(string slug)
@@ -461,45 +456,6 @@
                     .Where(name => name.Slug.ToUpper().Contains(slug.ToUpper()))
                     .ToList();
             });
-        }
-
-        /// <summary>
-        ///     Gets a user by their facebook id
-        /// </summary>
-        /// <param name="facebookId"></param>
-        /// <returns></returns>
-        public MembershipUser GetUserByFacebookId(long facebookId)
-        {
-            return _context.MembershipUser
-                .Include(x => x.Roles)
-                .FirstOrDefault(name => name.FacebookId == facebookId);
-        }
-
-        public MembershipUser GetUserByTwitterId(string twitterId)
-        {
-            return _context.MembershipUser
-                .Include(x => x.Roles)
-                .FirstOrDefault(name => name.TwitterAccessToken == twitterId);
-        }
-
-        public MembershipUser GetUserByGoogleId(string googleId)
-        {
-            return _context.MembershipUser
-                .Include(x => x.Roles)
-                .FirstOrDefault(name => name.GoogleAccessToken == googleId);
-        }
-
-        /// <summary>
-        ///     Get users by openid token
-        /// </summary>
-        /// <param name="openId"></param>
-        /// <returns></returns>
-        public MembershipUser GetUserByOpenIdToken(string openId)
-        {
-            openId = StringUtils.GetSafeHtml(openId);
-            return _context.MembershipUser
-                .Include(x => x.Roles)
-                .FirstOrDefault(name => name.MiscAccessToken == openId);
         }
 
         /// <summary>
@@ -587,7 +543,7 @@
             }
 
             // Cleared to go ahead with new password
-            salt = StringUtils.CreateSalt(AppConstants.SaltSize);
+            salt = StringUtils.CreateSalt(Constants.SaltSize);
             var newHash = StringUtils.GenerateSaltedHash(newPassword, salt);
 
             existingUser.Password = newHash;
@@ -607,7 +563,7 @@
         {
             var existingUser = Get(user.Id);
 
-            var salt = StringUtils.CreateSalt(AppConstants.SaltSize);
+            var salt = StringUtils.CreateSalt(Constants.SaltSize);
             var newHash = StringUtils.GenerateSaltedHash(newPassword, salt);
 
             existingUser.Password = newHash;
@@ -661,7 +617,7 @@
             return _cacheService.CachePerRequest(cacheKey, () =>
             {
                 // Get members that last activity date is valid
-                var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
+                var date = DateTime.UtcNow.AddMinutes(-Constants.TimeSpanInMinutesToShowMembers);
                 return _context.MembershipUser
                     .Where(x => x.LastActivityDate > date)
                     .AsNoTracking()
@@ -755,12 +711,12 @@
         /// <param name="user"></param>
         public void ProfileUpdated(MembershipUser user)
         {
-            var e = new UpdateProfileEventArgs {User = user};
+            var e = new UpdateProfileEventArgs { User = user };
             EventManager.Instance.FireBeforeProfileUpdated(this, e);
 
             if (!e.Cancel)
             {
-                EventManager.Instance.FireAfterProfileUpdated(this, new UpdateProfileEventArgs {User = user});
+                EventManager.Instance.FireAfterProfileUpdated(this, new UpdateProfileEventArgs { User = user });
                 _activityService.ProfileUpdated(user);
             }
         }
@@ -821,7 +777,7 @@
         public CsvReport FromCsv(List<string> allLines)
         {
             var usersProcessed = new List<string>();
-            var commaSeparator = new[] {','};
+            var commaSeparator = new[] { ',' };
             var report = new CsvReport();
 
             if (allLines == null || allLines.Count == 0)
@@ -914,7 +870,7 @@
                         GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)), userToImport.Slug);
                     userToImport.Email = email;
                     userToImport.IsApproved = true;
-                    userToImport.PasswordSalt = StringUtils.CreateSalt(AppConstants.SaltSize);
+                    userToImport.PasswordSalt = StringUtils.CreateSalt(Constants.SaltSize);
 
                     string createDateStr = null;
                     if (values.Length >= 3)
@@ -944,7 +900,7 @@
                     {
                         userToImport.Signature = values[7];
                     }
-                    userToImport.Roles = new List<MembershipRole> {settings.NewMemberStartingRole};
+                    userToImport.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
                     Add(userToImport);
                 }
                 catch (Exception ex)

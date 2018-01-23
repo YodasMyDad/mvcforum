@@ -19,7 +19,7 @@
                             var externalUrl = b.getContentWindow().document.getElementById('external');
                             var externalRow = b.getContentWindow().document.getElementById('externalrow');
                             var uploadrow = b.getContentWindow().document.getElementById('uploadrow');
-                            var waitNotice = b.getContentWindow().document.getElementById('waiting');;
+                            var waitNotice = b.getContentWindow().document.getElementById('waiting');
                             if (externalUrl.value != '') {
                                 // We have an external url so use that
                                 // Check for http

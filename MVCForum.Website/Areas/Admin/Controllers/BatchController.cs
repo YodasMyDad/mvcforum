@@ -9,7 +9,7 @@
     using Core.Models.Entities;
     using ViewModels;
 
-    [Authorize(Roles = AppConstants.AdminRoleName)]
+    [Authorize(Roles = Constants.AdminRoleName)]
     public class BatchController : BaseAdminController
     {
         private readonly ICategoryService _categoryService;
@@ -49,7 +49,7 @@
                     MembershipService.Delete(membershipUser);
                 }
                 Context.SaveChanges();
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = $"{count} members deleted",
                     MessageType = GenericMessages.success
@@ -59,7 +59,7 @@
             {
                 Context.RollBack();
                 LoggingService.Error(ex);
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = ex.Message,
                     MessageType = GenericMessages.danger
@@ -107,7 +107,7 @@
 
                 Context.SaveChanges();
 
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = $"{count} topics moved",
                     MessageType = GenericMessages.success
@@ -117,7 +117,7 @@
             {
                 Context.RollBack();
                 LoggingService.Error(ex);
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = ex.Message,
                     MessageType = GenericMessages.danger
@@ -154,7 +154,7 @@
                 }
                 Context.SaveChanges();
 
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = $"{count} Private Messages deleted",
                     MessageType = GenericMessages.success
@@ -164,7 +164,7 @@
             {
                 Context.RollBack();
                 LoggingService.Error(ex);
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = ex.Message,
                     MessageType = GenericMessages.danger

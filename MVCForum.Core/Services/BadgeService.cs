@@ -7,7 +7,6 @@
     using System.Reflection;
     using System.Threading.Tasks;
     using Constants;
-    using Data.Context;
     using Events;
     using Interfaces;
     using Interfaces.Badges;
@@ -17,6 +16,7 @@
     using Models.Entities;
     using Models.Enums;
     using Models.General;
+    using Reflection;
     using Utilities;
 
     public partial class BadgeService : IBadgeService
@@ -27,7 +27,6 @@
         private readonly ILocalizationService _localizationService;
         private readonly ILoggingService _loggingService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
-        private readonly IReflectionService _reflectionService;
 
         /// <summary>
         ///     Constructor
@@ -35,17 +34,15 @@
         /// <param name="loggingService"> </param>
         /// <param name="localizationService"> </param>
         /// <param name="membershipUserPointsService"></param>
-        /// <param name="reflectionService"></param>
         /// <param name="context"></param>
         /// <param name="cacheService"></param>
         public BadgeService(ILoggingService loggingService, ILocalizationService localizationService,
-            IMembershipUserPointsService membershipUserPointsService, IReflectionService reflectionService,
+            IMembershipUserPointsService membershipUserPointsService,
             IMvcForumContext context, ICacheService cacheService)
         {
             _loggingService = loggingService;
             _localizationService = localizationService;
             _membershipUserPointsService = membershipUserPointsService;
-            _reflectionService = reflectionService;
             _cacheService = cacheService;
             _context = context;
         }
@@ -55,11 +52,11 @@
         ///     Bring the database into line with the badge classes found at runtime
         /// </summary>
         /// <returns>Set of valid badge classes to use when assigning badges</returns>
-        public void SyncBadges(List<Assembly> assemblies)
+        public void SyncBadges(IEnumerable<Assembly> assemblies)
         {
             try
             {
-                GetBadgesByReflection(assemblies);
+                GetBadgesByReflection();
 
                 // Turn the badge classes into a set of domain objects
                 var badgesFromClasses = new Dictionary<Guid, Badge>();
@@ -362,70 +359,85 @@
             return null;
         }
 
+        private void AddBadgeRelection(BadgeType badeType, Type classType)
+        {
+            var dbBadge = CreateDbBadgeFromClass(badeType, classType);
+
+            if (!_badges.ContainsKey(badeType))
+            {
+                _badges.Add(badeType, new List<BadgeMapping>());
+            }
+            _badges[badeType].Add(new BadgeMapping { BadgeClass = classType, DbBadge = dbBadge });
+        }
+
         /// <summary>
         ///     Iterates over the runtime folder looking for classes that implement the badge interface
         /// </summary>
-        private void GetBadgesByReflection(IEnumerable<Assembly> assemblies)
+        private void GetBadgesByReflection()
         {
-            _badges = new Dictionary<BadgeType, List<BadgeMapping>>();
-
-            var interfaceFilter = new TypeFilter(_reflectionService.InterfaceFilter);
-
-            // Get all the dlls
-            foreach (var nextAssembly in assemblies)
+            try
             {
-                try
+                _badges = new Dictionary<BadgeType, List<BadgeMapping>>();
+
+                // All the allowed badges
+                var allowedBadges = ForumConfiguration.Instance.Badges;
+
+                // Get all the badges
+                var badges = ImplementationManager.GetInstances<IBadge>();
+
+                foreach (var allowedBadge in allowedBadges)
                 {
-                    foreach (var type in nextAssembly.GetTypes())
+                    if (badges.ContainsKey(allowedBadge))
                     {
-                        if (type.IsInterface)
+                        var badgeClass = badges[allowedBadge];
+                        var classType = badgeClass.GetType();
+
+                        if (badgeClass is IVoteUpBadge)
                         {
-                            continue;
-                        }
-
-                        // See if this type is one of the badge interfaces
-                        foreach (BadgeType badgeType in Enum.GetValues(typeof(BadgeType)))
-                        {
-                            // Look for the target badge class type
-                            if (!Badge.BadgeClassNames.ContainsKey(badgeType))
-                            {
-                                throw new ApplicationException(
-                                    string.Format(_localizationService.GetResourceString("Badge.BadegEnumNoClass"),
-                                        badgeType));
-                            }
-
-                            var interfaceType = Badge.BadgeClassNames[badgeType];
-
-                            var myInterfaces = type.FindInterfaces(interfaceFilter, interfaceType);
-                            if (myInterfaces.Length <= 0)
-                            {
-                                // Not a match
-                                continue;
-                            }
-
-                            // This class implements the interface
-
                             // Create a domain model version
-                            var dbBadge = CreateDbBadgeFromClass(badgeType, type);
-
-                            if (!_badges.ContainsKey(badgeType))
-                            {
-                                _badges.Add(badgeType, new List<BadgeMapping>());
-                            }
-                            _badges[badgeType].Add(new BadgeMapping { BadgeClass = type, DbBadge = dbBadge });
+                            AddBadgeRelection(BadgeType.VoteUp, classType);
+                        }
+                        if (badgeClass is IMarkAsSolutionBadge)
+                        {
+                            // Create a domain model version
+                            AddBadgeRelection(BadgeType.MarkAsSolution, classType);
+                        }
+                        if (badgeClass is IPostBadge)
+                        {
+                            // Create a domain model version
+                            AddBadgeRelection(BadgeType.Post, classType);
+                        }
+                        if (badgeClass is IVoteDownBadge)
+                        {
+                            // Create a domain model version
+                            AddBadgeRelection(BadgeType.VoteDown, classType);
+                        }
+                        if (badgeClass is IProfileBadge)
+                        {
+                            // Create a domain model version
+                            AddBadgeRelection(BadgeType.Profile, classType);
+                        }
+                        if (badgeClass is IFavouriteBadge)
+                        {
+                            // Create a domain model version
+                            AddBadgeRelection(BadgeType.Favourite, classType);
+                        }
+                        if (badgeClass is ITagBadge)
+                        {
+                            // Create a domain model version
+                            AddBadgeRelection(BadgeType.Tag, classType);
                         }
                     }
                 }
-                catch (ReflectionTypeLoadException rtle)
-                {
-                    var msg =
-                        $"Unable to load assembly. Probably not an event assembly, loader exception was: '{rtle.LoaderExceptions[0].GetType()}':'{rtle.LoaderExceptions[0].Message}'.";
-                    _loggingService.Error(msg);
-                }
-                catch (Exception ex)
-                {
-                    _loggingService.Error(ex);
-                }
+            }
+            catch (ReflectionTypeLoadException rtle)
+            {
+                var msg = $"Unable to load assembly. Probably not a a badge assembly, loader exception was: '{rtle.LoaderExceptions[0].GetType()}':'{rtle.LoaderExceptions[0].Message}'.";
+                _loggingService.Error(msg);
+            }
+            catch (Exception ex)
+            {
+                _loggingService.Error(ex);
             }
         }
 
@@ -465,45 +477,41 @@
         /// <returns></returns>
         private static Badge CreateDbBadgeFromClass(BadgeType badgeType, Type classType)
         {
-            var idAtt = GetAttribute<IdAttribute>(classType);
-            var nameAtt = GetAttribute<NameAttribute>(classType);
-            var descAtt = GetAttribute<DescriptionAttribute>(classType);
-            var imageAtt = GetAttribute<ImageAttribute>(classType);
-            var displayNameAtt = GetAttribute<DisplayNameAttribute>(classType);
-            var awardsPointsAtt = GetAttribute<AwardsPointsAttribute>(classType);
-
             var badge = new Badge
             {
-                Id = idAtt.Id,
-                Name = nameAtt.Name,
-                Description = descAtt.Description,
-                Image = imageAtt.Image,
-                DisplayName = displayNameAtt.DisplayName,
                 Users = new List<MembershipUser>(),
-                Type = badgeType.ToString().TrimEnd(),
-                AwardsPoints = awardsPointsAtt?.Points ?? 0
+                Type = badgeType.ToString().TrimEnd()
             };
-            return badge;
-        }
 
-
-        /// <summary>
-        ///     Get the specified attribute off a badge class
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns>The attribute class instance</returns>
-        /// <exception cref="BadgeAttributeNotFoundException">Class does not have the attribute</exception>
-        private static T GetAttribute<T>(Type type) where T : class
-        {
-            foreach (var attribute in type.GetCustomAttributes(false))
+            foreach (var attribute in classType.GetCustomAttributes(false))
             {
-                if (attribute is T)
+                if (attribute is IdAttribute)
                 {
-                    return attribute as T;
+                    badge.Id = (attribute as IdAttribute).Id;
+                }
+                if (attribute is NameAttribute)
+                {
+                    badge.Name = (attribute as NameAttribute).Name;
+                }
+                if (attribute is DescriptionAttribute)
+                {
+                    badge.Description = (attribute as DescriptionAttribute).Description;
+                }
+                if (attribute is ImageAttribute)
+                {
+                    badge.Image = (attribute as ImageAttribute).Image;
+                }
+                if (attribute is DisplayNameAttribute)
+                {
+                    badge.DisplayName = (attribute as DisplayNameAttribute).DisplayName;
+                }
+                if (attribute is AwardsPointsAttribute)
+                {
+                    badge.AwardsPoints = (attribute as AwardsPointsAttribute).Points;
                 }
             }
 
-            throw new BadgeAttributeNotFoundException();
+            return badge;
         }
 
         /// <summary>

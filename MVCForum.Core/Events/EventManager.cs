@@ -4,9 +4,9 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using System.Web.Mvc;
     using Interfaces.Events;
     using Interfaces.Services;
+    using Reflection;
     using Utilities;
 
     public sealed class EventManager : IEventManager
@@ -14,46 +14,27 @@
         private const string InterfaceTargetName = @"MvcForum.Core.Interfaces.Events.IEventHandler";
 
         private static volatile EventManager _instance;
+
         private static readonly object SyncRoot = new object();
-        private readonly IReflectionService _reflectionService;
+
         public EventHandler<BadgeEventArgs> AfterBadgeAwarded;
         public EventHandler<FavouriteEventArgs> AfterFavourite;
         public EventHandler<LoginEventArgs> AfterLogin;
         public EventHandler<MarkedAsSolutionEventArgs> AfterMarkedAsSolution;
         public EventHandler<PostMadeEventArgs> AfterPostMade;
         public EventHandler<PrivateMessageEventArgs> AfterPrivateMessage;
-        public EventHandler<RegisterUserEventArgs> AfterRegisterUser;
         public EventHandler<TopicMadeEventArgs> AfterTopicMade;
         public EventHandler<UpdateProfileEventArgs> AfterUpdateProfile;
         public EventHandler<VoteEventArgs> AfterVoteMade;
-
         public EventHandler<BadgeEventArgs> BeforeBadgeAwarded;
-
         public EventHandler<FavouriteEventArgs> BeforeFavourite;
-
         public EventHandler<LoginEventArgs> BeforeLogin;
-
         public EventHandler<MarkedAsSolutionEventArgs> BeforeMarkedAsSolution;
-
         public EventHandler<PostMadeEventArgs> BeforePostMade;
-
         public EventHandler<PrivateMessageEventArgs> BeforePrivateMessage;
-
-        public EventHandler<RegisterUserEventArgs> BeforeRegisterUser;
-
         public EventHandler<TopicMadeEventArgs> BeforeTopicMade;
-
         public EventHandler<UpdateProfileEventArgs> BeforeUpdateProfile;
-
         public EventHandler<VoteEventArgs> BeforeVoteMade;
-
-        /// <summary>
-        ///     Constructor - hidden
-        /// </summary>
-        private EventManager()
-        {
-            _reflectionService = DependencyResolver.Current.GetService<IReflectionService>();
-        }
 
         public ILoggingService Logger { get; set; }
 
@@ -79,18 +60,6 @@
             }
         }
 
-        /// <summary>
-        ///     Log errors
-        /// </summary>
-        /// <param name="msg"></param>
-        public void LogError(string msg)
-        {
-            if (Logger != null)
-            {
-                Logger.Error(msg);
-            }
-        }
-
         #region Initialise Code
 
         /// <summary>
@@ -100,7 +69,7 @@
         {
             Logger = loggingService;
 
-            var interfaceFilter = new TypeFilter(_reflectionService.InterfaceFilter);
+            var interfaceFilter = new TypeFilter(ImplementationManager.InterfaceFilter);
 
             foreach (var nextAssembly in assemblies)
             {
@@ -131,7 +100,8 @@
                 }
                 catch (ReflectionTypeLoadException rtle)
                 {
-                    var msg = $"Unable to load assembly. Probably not an event assembly, loader exception was: '{rtle.LoaderExceptions[0].GetType()}':'{rtle.LoaderExceptions[0].Message}'.";
+                    var msg =
+                        $"Unable to load assembly. Probably not an event assembly, loader exception was: '{rtle.LoaderExceptions[0].GetType()}':'{rtle.LoaderExceptions[0].Message}'.";
                     LogError(msg);
                 }
                 catch (Exception ex)
@@ -143,26 +113,25 @@
 
         #endregion
 
+        /// <summary>
+        ///     Log errors
+        /// </summary>
+        /// <param name="msg"></param>
+        public void LogError(string msg)
+        {
+            Logger?.Error(msg);
+        }
+
         #region Badges
 
         public void FireAfterBadgeAwarded(object sender, BadgeEventArgs eventArgs)
         {
-            var handler = AfterBadgeAwarded;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
+            AfterBadgeAwarded?.Invoke(this, eventArgs);
         }
 
         public void FireBeforeBadgeAwarded(object sender, BadgeEventArgs eventArgs)
         {
-            var handler = BeforeBadgeAwarded;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
+            BeforeBadgeAwarded?.Invoke(this, eventArgs);
         }
 
         #endregion
@@ -171,22 +140,12 @@
 
         public void FireBeforeVoteMade(object sender, VoteEventArgs eventArgs)
         {
-            var handler = BeforeVoteMade;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
+            BeforeVoteMade?.Invoke(this, eventArgs);
         }
 
         public void FireAfterVoteMade(object sender, VoteEventArgs eventArgs)
         {
-            var handler = AfterVoteMade;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
+            AfterVoteMade?.Invoke(this, eventArgs);
         }
 
         #endregion
@@ -278,30 +237,6 @@
         public void FireAfterProfileUpdated(object sender, UpdateProfileEventArgs eventArgs)
         {
             var handler = AfterUpdateProfile;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        }
-
-        #endregion
-
-        #region Register
-
-        public void FireBeforeRegisterUser(object sender, RegisterUserEventArgs eventArgs)
-        {
-            var handler = BeforeRegisterUser;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        }
-
-        public void FireAfterRegisterUser(object sender, RegisterUserEventArgs eventArgs)
-        {
-            var handler = AfterRegisterUser;
 
             if (handler != null)
             {

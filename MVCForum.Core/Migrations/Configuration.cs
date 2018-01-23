@@ -120,28 +120,28 @@ namespace MvcForum.Core.Services.Migrations
 
                 var saveRoles = false;
                 // Create the admin role if it doesn't exist
-                var adminRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == AppConstants.AdminRoleName);
+                var adminRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.AdminRoleName);
                 if (adminRole == null)
                 {
-                    adminRole = new MembershipRole {RoleName = AppConstants.AdminRoleName};
+                    adminRole = new MembershipRole {RoleName = Constants.AdminRoleName};
                     context.MembershipRole.Add(adminRole);
                     saveRoles = true;
                 }
 
                 // Create the Standard role if it doesn't exist
-                var standardRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == SiteConstants.Instance.StandardMembers);
+                var standardRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == ForumConfiguration.Instance.StandardMembers);
                 if (standardRole == null)
                 {
-                    standardRole = new MembershipRole {RoleName = SiteConstants.Instance.StandardMembers};
+                    standardRole = new MembershipRole {RoleName = ForumConfiguration.Instance.StandardMembers};
                     context.MembershipRole.Add(standardRole);
                     saveRoles = true;
                 }
 
                 // Create the Guest role if it doesn't exist
-                var guestRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == AppConstants.GuestRoleName);
+                var guestRole = context.MembershipRole.FirstOrDefault(x => x.RoleName == Constants.GuestRoleName);
                 if (guestRole == null)
                 {
-                    guestRole = new MembershipRole {RoleName = AppConstants.GuestRoleName};
+                    guestRole = new MembershipRole {RoleName = Constants.GuestRoleName};
                     context.MembershipRole.Add(guestRole);
                     saveRoles = true;
                 }
@@ -225,84 +225,84 @@ namespace MvcForum.Core.Services.Migrations
                 // Create the initial category permissions
 
                 // Edit Posts
-                if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionEditPosts) ==
+                if (context.Permission.FirstOrDefault(x => x.Name == ForumConfiguration.Instance.PermissionEditPosts) ==
                     null)
                 {
-                    var permission = new Permission {Name = SiteConstants.Instance.PermissionEditPosts};
+                    var permission = new Permission {Name = ForumConfiguration.Instance.PermissionEditPosts};
                     context.Permission.Add(permission);
 
                     // NOTE: Because this is null - We assumed it's a new install so carry on checking and adding the other permissions
 
                     // Read Only
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionReadOnly) ==
+                    if (context.Permission.FirstOrDefault(x => x.Name == ForumConfiguration.Instance.PermissionReadOnly) ==
                         null)
                     {
-                        var p = new Permission {Name = SiteConstants.Instance.PermissionReadOnly};
+                        var p = new Permission {Name = ForumConfiguration.Instance.PermissionReadOnly};
                         context.Permission.Add(p);
                     }
 
                     // Delete Posts
                     if (context.Permission.FirstOrDefault(x =>
-                            x.Name == SiteConstants.Instance.PermissionDeletePosts) == null)
+                            x.Name == ForumConfiguration.Instance.PermissionDeletePosts) == null)
                     {
-                        var p = new Permission {Name = SiteConstants.Instance.PermissionDeletePosts};
+                        var p = new Permission {Name = ForumConfiguration.Instance.PermissionDeletePosts};
                         context.Permission.Add(p);
                     }
 
                     // Sticky Topics
                     if (context.Permission.FirstOrDefault(x =>
-                            x.Name == SiteConstants.Instance.PermissionCreateStickyTopics) ==
+                            x.Name == ForumConfiguration.Instance.PermissionCreateStickyTopics) ==
                         null)
                     {
-                        var p = new Permission {Name = SiteConstants.Instance.PermissionCreateStickyTopics};
+                        var p = new Permission {Name = ForumConfiguration.Instance.PermissionCreateStickyTopics};
                         context.Permission.Add(p);
                     }
 
                     // Lock Topics
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionLockTopics) ==
+                    if (context.Permission.FirstOrDefault(x => x.Name == ForumConfiguration.Instance.PermissionLockTopics) ==
                         null)
                     {
-                        var p = new Permission {Name = SiteConstants.Instance.PermissionLockTopics};
+                        var p = new Permission {Name = ForumConfiguration.Instance.PermissionLockTopics};
                         context.Permission.Add(p);
                     }
 
                     // Vote In Polls
                     if (context.Permission.FirstOrDefault(x =>
-                            x.Name == SiteConstants.Instance.PermissionVoteInPolls) == null)
+                            x.Name == ForumConfiguration.Instance.PermissionVoteInPolls) == null)
                     {
-                        var p = new Permission {Name = SiteConstants.Instance.PermissionVoteInPolls};
+                        var p = new Permission {Name = ForumConfiguration.Instance.PermissionVoteInPolls};
                         context.Permission.Add(p);
                     }
 
                     // Create Polls
                     if (context.Permission.FirstOrDefault(x =>
-                            x.Name == SiteConstants.Instance.PermissionCreatePolls) == null)
+                            x.Name == ForumConfiguration.Instance.PermissionCreatePolls) == null)
                     {
-                        var p = new Permission {Name = SiteConstants.Instance.PermissionCreatePolls};
+                        var p = new Permission {Name = ForumConfiguration.Instance.PermissionCreatePolls};
                         context.Permission.Add(p);
                     }
 
                     // Create Topics
                     if (context.Permission.FirstOrDefault(x =>
-                            x.Name == SiteConstants.Instance.PermissionCreateTopics) == null)
+                            x.Name == ForumConfiguration.Instance.PermissionCreateTopics) == null)
                     {
-                        var p = new Permission {Name = SiteConstants.Instance.PermissionCreateTopics};
+                        var p = new Permission {Name = ForumConfiguration.Instance.PermissionCreateTopics};
                         context.Permission.Add(p);
                     }
 
                     // Attach Files
                     if (context.Permission.FirstOrDefault(x =>
-                            x.Name == SiteConstants.Instance.PermissionAttachFiles) == null)
+                            x.Name == ForumConfiguration.Instance.PermissionAttachFiles) == null)
                     {
-                        var p = new Permission {Name = SiteConstants.Instance.PermissionAttachFiles};
+                        var p = new Permission {Name = ForumConfiguration.Instance.PermissionAttachFiles};
                         context.Permission.Add(p);
                     }
 
                     // Deny Access
-                    if (context.Permission.FirstOrDefault(x => x.Name == SiteConstants.Instance.PermissionDenyAccess) ==
+                    if (context.Permission.FirstOrDefault(x => x.Name == ForumConfiguration.Instance.PermissionDenyAccess) ==
                         null)
                     {
-                        var p = new Permission {Name = SiteConstants.Instance.PermissionDenyAccess};
+                        var p = new Permission {Name = ForumConfiguration.Instance.PermissionDenyAccess};
                         context.Permission.Add(p);
                     }
 
@@ -310,9 +310,9 @@ namespace MvcForum.Core.Services.Migrations
 
                     // Deny Access
                     if (context.Permission.FirstOrDefault(x =>
-                            x.Name == SiteConstants.Instance.PermissionEditMembers) == null)
+                            x.Name == ForumConfiguration.Instance.PermissionEditMembers) == null)
                     {
-                        var p = new Permission {Name = SiteConstants.Instance.PermissionEditMembers, IsGlobal = true};
+                        var p = new Permission {Name = ForumConfiguration.Instance.PermissionEditMembers, IsGlobal = true};
                         context.Permission.Add(p);
                     }
 
@@ -353,7 +353,7 @@ namespace MvcForum.Core.Services.Migrations
                     };
 
                     // Hash the password
-                    var salt = StringUtils.CreateSalt(AppConstants.SaltSize);
+                    var salt = StringUtils.CreateSalt(Constants.SaltSize);
                     var hash = StringUtils.GenerateSaltedHash(admin.Password, salt);
                     admin.Password = hash;
                     admin.PasswordSalt = salt;
@@ -445,11 +445,11 @@ namespace MvcForum.Core.Services.Migrations
         private void AddPermissionInsertEditorImages(MvcForumContext context)
         {
             if (context.Permission.FirstOrDefault(
-                    x => x.Name == SiteConstants.Instance.PermissionInsertEditorImages) == null)
+                    x => x.Name == ForumConfiguration.Instance.PermissionInsertEditorImages) == null)
             {
                 var p = new Permission
                 {
-                    Name = SiteConstants.Instance.PermissionInsertEditorImages,
+                    Name = ForumConfiguration.Instance.PermissionInsertEditorImages,
                     IsGlobal = true
                 };
                 context.Permission.Add(p);
@@ -463,11 +463,11 @@ namespace MvcForum.Core.Services.Migrations
         private void AddPermissionCreateTags(MvcForumContext context)
         {
             if (context.Permission.FirstOrDefault(
-                    x => x.Name == SiteConstants.Instance.PermissionCreateTags) == null)
+                    x => x.Name == ForumConfiguration.Instance.PermissionCreateTags) == null)
             {
                 var p = new Permission
                 {
-                    Name = SiteConstants.Instance.PermissionCreateTags,
+                    Name = ForumConfiguration.Instance.PermissionCreateTags,
                     IsGlobal = false
                 };
                 context.Permission.Add(p);

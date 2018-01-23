@@ -5,6 +5,8 @@
     using System.ComponentModel.DataAnnotations;
     using System.Web.Mvc;
     using Core.Interfaces.Services;
+    using Core.Ioc;
+    using Unity;
 
     [AttributeUsage(AttributeTargets.Property)]
     public class MustBeTrueAttribute : ValidationAttribute, IClientValidatable
@@ -13,7 +15,7 @@
 
         public MustBeTrueAttribute()
         {
-            _localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
+            _localizationService = UnityHelper.Container.Resolve<ILocalizationService>();
         }
 
         public IEnumerable<ModelClientValidationRule> GetClientValidationRules(ModelMetadata metadata,

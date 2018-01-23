@@ -62,7 +62,7 @@
 
         public List<Favourite> GetAllByMember(Guid memberId)
         {
-            return _context.Favourite.AsNoTracking()
+            return _context.Favourite
                 .Include(x => x.Post)
                 .Include(x => x.Topic.Category)
                 .Include(x => x.Member)

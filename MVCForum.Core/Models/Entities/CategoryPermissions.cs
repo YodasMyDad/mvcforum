@@ -3,7 +3,7 @@
     using System;
     using Utilities;
 
-    public partial class CategoryPermissionForRole : Entity
+    public partial class CategoryPermissionForRole : IBaseEntity
     {
         public CategoryPermissionForRole()
         {

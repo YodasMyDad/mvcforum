@@ -2,12 +2,13 @@
 {
     using System.Threading.Tasks;
     using System.Web.Mvc;
+    using Core;
     using Core.Constants;
     using Core.Interfaces;
     using Core.Interfaces.Services;
     using ViewModels;
 
-    [Authorize(Roles = AppConstants.AdminRoleName)]
+    [Authorize(Roles = Constants.AdminRoleName)]
     public class AdminBadgeController : BaseAdminController
     {
         private readonly IBadgeService _badgeService;
@@ -41,9 +42,9 @@
 
 
             var allBadges = string.IsNullOrWhiteSpace(search)
-                ? await _badgeService.GetPagedGroupedBadges(pageIndex, SiteConstants.Instance.AdminListPageSize)
+                ? await _badgeService.GetPagedGroupedBadges(pageIndex, ForumConfiguration.Instance.AdminListPageSize)
                 : await _badgeService.SearchPagedGroupedTags(search, pageIndex,
-                    SiteConstants.Instance.AdminListPageSize);
+                    ForumConfiguration.Instance.AdminListPageSize);
 
             var badgesListModel = new ListBadgesViewModel
             {

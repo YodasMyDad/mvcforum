@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Utilities;
 
-    public partial class MembershipRole : Entity
+    public partial class MembershipRole : IBaseEntity
     {
         public MembershipRole()
         {

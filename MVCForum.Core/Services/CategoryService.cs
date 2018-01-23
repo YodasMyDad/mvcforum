@@ -140,7 +140,7 @@
         /// <returns></returns>
         public List<Category> GetAllowedCategories(MembershipRole role)
         {
-            return GetAllowedCategories(role, SiteConstants.Instance.PermissionDenyAccess);
+            return GetAllowedCategories(role, ForumConfiguration.Instance.PermissionDenyAccess);
         }
 
         public List<Category> GetAllowedCategories(MembershipRole role, string actionType)
@@ -331,7 +331,7 @@
             }
             else
             {
-                var inUseBy = new List<Entity>();
+                var inUseBy = new List<IBaseEntity>();
                 inUseBy.AddRange(category.Topics);
                 throw new Exception($"In use by {inUseBy.Count} entities");
             }

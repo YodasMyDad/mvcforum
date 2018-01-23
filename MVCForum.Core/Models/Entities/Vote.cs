@@ -3,7 +3,7 @@
     using System;
     using Utilities;
 
-    public partial class Vote : Entity
+    public partial class Vote : IBaseEntity
     {
         public Vote()
         {

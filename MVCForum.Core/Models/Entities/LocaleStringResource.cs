@@ -3,7 +3,7 @@
     using System;
     using Utilities;
 
-    public partial class LocaleStringResource : Entity
+    public partial class LocaleStringResource : IBaseEntity
     {
         public LocaleStringResource()
         {

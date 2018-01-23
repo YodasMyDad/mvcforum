@@ -4,7 +4,7 @@
 @{
     var postId = Model.Post.Id;
     var loggedOnUserId = Html.CurrentMember() != null ? Html.CurrentMember().Id : Guid.Empty;
-    var isAdmin = User.IsInRole(AppConstants.AdminRoleName);
+    var isAdmin = User.IsInRole(Constants.AdminRoleName);
     var downVotes = Model.Votes.Where(x => x.Amount < 0).ToList();
     var upVotes = Model.Votes.Where(x => x.Amount > 0).ToList();
 }
@@ -13,9 +13,9 @@
     <div class="rowcreater hidden-xs">
         <a id="comment-@postId"></a>
         <a href="@Model.Post.User.NiceUrl">
-            <img src="@Model.Post.User.MemberImage(SiteConstants.Instance.GravatarPostSize)" alt="@Model.Post.User.UserName">
+            <img src="@Model.Post.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize)" alt="@Model.Post.User.UserName">
         </a>
-        @if (Model.Post.User.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
+        @if (Model.Post.User.Roles.Any(x => x.RoleName.Contains(Constants.AdminRoleName)))
         {
             <span class="label label-default">
                 @Html.Lang("Admin")
@@ -58,7 +58,7 @@
                         </li>
                     }
 
-                    @if (Model.Post.User.Id == loggedOnUserId || Model.Permissions[SiteConstants.Instance.PermissionDeletePosts].IsTicked)
+                    @if (Model.Post.User.Id == loggedOnUserId || Model.Permissions[ForumConfiguration.Instance.PermissionDeletePosts].IsTicked)
                     {
                         <li>
                             <a class="btn-mvc btn-mvc-small btn-mvc-fullwidth" onclick="return confirm('@(Html.LanguageString("Post.DeleteConfirmation"))')" href="@Url.Action("DeletePost", "Post", new { id = Model.Post.Id })">
@@ -67,7 +67,7 @@
                         </li>
                     }
 
-                    @if (Model.Post.User.Id == loggedOnUserId || Model.Permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                    @if (Model.Post.User.Id == loggedOnUserId || Model.Permissions[ForumConfiguration.Instance.PermissionEditPosts].IsTicked)
                     {
                         <li>
                             <a class="btn-mvc btn-mvc-small btn-mvc-fullwidth" href="@Url.Action("EditPostTopic", "Topic", new { id = Model.Post.Id })">
@@ -76,7 +76,7 @@
                         </li>
                     }
 
-                    @if (!Model.Post.IsTopicStarter && Model.Permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                    @if (!Model.Post.IsTopicStarter && Model.Permissions[ForumConfiguration.Instance.PermissionEditPosts].IsTicked)
                     {
                         <li>
                             <a class="btn-mvc btn-mvc-small btn-mvc-fullwidth" href="@Url.Action("MovePost", "Post", new { id = Model.Post.Id })">
@@ -85,7 +85,7 @@
                         </li>
                     }
 
-                    @if ((Model.Post.User.Id == loggedOnUserId && Model.Post.User.DisableFileUploads != true || User.IsInRole(AppConstants.AdminRoleName)) && Model.Permissions[SiteConstants.Instance.PermissionAttachFiles].IsTicked)
+                    @if ((Model.Post.User.Id == loggedOnUserId && Model.Post.User.DisableFileUploads != true || User.IsInRole(Constants.AdminRoleName)) && Model.Permissions[ForumConfiguration.Instance.PermissionAttachFiles].IsTicked)
                     {
                         <li>
                             <a class="btn-mvc btn-mvc-small btn-mvc-fullwidth postshowattach" href="#">
@@ -114,7 +114,7 @@
                 <span class="hidden-xs">
                     @if (Html.Settings().DisplayEditedBy && Model.Post.DateEdited > Model.Post.DateCreated)
                     {
-                        if (Model.Permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                        if (Model.Permissions[ForumConfiguration.Instance.PermissionEditPosts].IsTicked)
                         {
                             <text> - <a href="@Url.Action("GetPostEditHistory", "Post", new {id = Model.Post.Id})" class="showpostedithistory" data-name="@Html.Lang("PostEdit.Panel.Name")">@Html.LanguageString("Post.LastEdited")  @DatesUi.GetPrettyDate(Model.Post.DateEdited.ToString())</a></text>
                         }
@@ -193,7 +193,7 @@
                                     <span class="glyphicon glyphicon-ok green-colour" aria-hidden="true"></span>
                                 </li>
                             }
-                            else if (!Model.ParentTopic.Solved && !Model.Post.IsTopicStarter && Html.CurrentMember() != null && (Model.ParentTopic.User.Id == loggedOnUserId || User.IsInRole(AppConstants.AdminRoleName)))
+                            else if (!Model.ParentTopic.Solved && !Model.Post.IsTopicStarter && Html.CurrentMember() != null && (Model.ParentTopic.User.Id == loggedOnUserId || User.IsInRole(Constants.AdminRoleName)))
                             {
                                 <li>
                                     <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
@@ -247,7 +247,7 @@
                                         <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
                                     }
                                 </a>
-                                @if (Model.Post.User.Id == loggedOnUserId || User.IsInRole(AppConstants.AdminRoleName))
+                                @if (Model.Post.User.Id == loggedOnUserId || User.IsInRole(Constants.AdminRoleName))
                                 {
                                     <a href="@Url.Action("DeleteUploadedFile", "Upload", new { file.Id })" class="deleteupload" title="@Html.LanguageString("Post.Delete")">
                                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
@@ -259,7 +259,7 @@
                 </div>
             }
 
-            @if (Model.Permissions[SiteConstants.Instance.PermissionAttachFiles].IsTicked && Model.Post.User.DisableFileUploads != true)
+            @if (Model.Permissions[ForumConfiguration.Instance.PermissionAttachFiles].IsTicked && Model.Post.User.DisableFileUploads != true)
             {
                 <div class="postuploadholder">
                     @using (Html.BeginForm("UploadPostFiles", "Upload", FormMethod.Post, new { enctype = "multipart/form-data" }))

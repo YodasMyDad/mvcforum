@@ -10,7 +10,7 @@
     using ViewModels;
     using Web.ViewModels.Category;
 
-    [Authorize(Roles = AppConstants.AdminRoleName)]
+    [Authorize(Roles = Constants.AdminRoleName)]
     public class PermissionsController : BaseAdminController
     {
         private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
@@ -74,7 +74,7 @@
                 Category = category,
                 Permissions = _permissionService.GetAll().ToList(),
                 Roles = _roleService.AllRoles()
-                    .Where(x => x.RoleName != AppConstants.AdminRoleName)
+                    .Where(x => x.RoleName != Constants.AdminRoleName)
                     .OrderBy(x => x.RoleName)
                     .ToList()
             };
@@ -111,7 +111,7 @@
                 };
 
                 _permissionService.Add(permission);
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = "Permission Added",
                     MessageType = GenericMessages.success
@@ -183,7 +183,7 @@
                 var permission = _permissionService.Get(id);
                 _permissionService.Delete(permission);
 
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = "Permission Deleted",
                     MessageType = GenericMessages.success

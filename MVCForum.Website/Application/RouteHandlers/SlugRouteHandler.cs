@@ -4,17 +4,9 @@
     using System.Web;
     using System.Web.Mvc;
     using System.Web.Routing;
-    using Core.Interfaces.Services;
 
     public class SlugRouteHandler : MvcRouteHandler
     {
-        private readonly ITopicService _topicService;
-
-        public SlugRouteHandler()
-        {
-            _topicService = DependencyResolver.Current.GetService<ITopicService>();
-        }
-
         protected override IHttpHandler GetHttpHandler(RequestContext requestContext)
         {
             var url = requestContext.HttpContext.Request.Path.TrimStart('/');

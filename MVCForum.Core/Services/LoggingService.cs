@@ -22,7 +22,7 @@
         private const string DateTimeFormat = @"dd/MM/yyyy HH:mm:ss";
         private static readonly Object LogLock = new Object();
         private static string _logFileFolder;
-        private static int _maxLogSize = 10000;
+        private static int _maxLogSize = 10000000; // 10mb
         private static string _logFileName;
 
         /// <summary>
@@ -182,6 +182,7 @@
 
         #endregion
 
+       
         /// <summary>
         /// Initialise the logging. Checks to see if file exists, so best 
         /// called ONCE from an application entry point to avoid threading issues
@@ -219,11 +220,35 @@
         /// <param name="ex"></param>
         public void Error(Exception ex)
         {
+            Write(GetExceptionToString(ex));
+        }
+
+        /// <summary>
+        /// Logs and exception with a custom message
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <param name="message"></param>
+        public void Error(Exception ex, string message)
+        {
+            var sb = new StringBuilder(message);
+
+            sb.Append(GetExceptionToString(ex));
+
+            Write(sb.ToString());
+        }
+
+
+        /// <summary>
+        /// Gets the exception message to a string
+        /// </summary>
+        /// <returns></returns>
+        private string GetExceptionToString(Exception ex)
+        {
             const int maxExceptionDepth = 5;
 
             if (ex == null)
             {
-                return;
+                return string.Empty;
             }
 
             var message = new StringBuilder(ex.Message);
@@ -232,12 +257,13 @@
             var depthCounter = 0;
             while (inner != null && depthCounter++ < maxExceptionDepth)
             {
+                message.AppendLine();
                 message.Append(" INNER EXCEPTION: ");
                 message.Append(inner.Message);
                 inner = inner.InnerException;
             }
 
-            Write(message.ToString());
+            return message.ToString();
         }
 
         /// <summary>

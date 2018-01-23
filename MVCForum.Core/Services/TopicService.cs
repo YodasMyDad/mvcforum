@@ -383,7 +383,7 @@
                         if (permissionSets.ContainsKey(pendingTopic.Category.Id))
                         {
                             var permissions = permissionSets[pendingTopic.Category.Id];
-                            if (permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                            if (permissions[ForumConfiguration.Instance.PermissionEditPosts].IsTicked)
                             {
                                 pendingTopics.Add(pendingTopic);
                             }
@@ -754,7 +754,7 @@
             {
                 // Make sure this user owns the topic or this is an admin, if not do nothing
 
-                if (topic.User.Id == marker.Id || marker.Roles.Any(x => x.RoleName == AppConstants.AdminRoleName))
+                if (topic.User.Id == marker.Id || marker.Roles.Any(x => x.RoleName == Constants.AdminRoleName))
                 {
                     // Update the post
                     post.IsSolution = true;

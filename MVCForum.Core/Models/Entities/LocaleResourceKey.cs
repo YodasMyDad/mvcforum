@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Utilities;
 
-    public partial class LocaleResourceKey : Entity
+    public partial class LocaleResourceKey : IBaseEntity
     {
         public LocaleResourceKey()
         {

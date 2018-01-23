@@ -7,9 +7,11 @@ namespace MvcForum.Web
 {
     using System;
     using System.Data.Entity;
+    using System.Linq;
     using System.Web.Mvc;
     using System.Web.Routing;
     using Application.ViewEngine;
+    using Core;
     using Core.Constants;
     using Core.Data.Context;
     using Core.Events;
@@ -18,7 +20,9 @@ namespace MvcForum.Web
     using Core.Services.Migrations;
     using Core.Utilities;
     using Core.Interfaces.Services;
+    using Core.Reflection;
     using Core.Services;
+    using Unity;
 
     public class Startup
     {
@@ -28,11 +32,14 @@ namespace MvcForum.Web
             System.Web.Http.GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
 
+            // Make DB update to latest migration
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<MvcForumContext, Configuration>());
+
             // Start unity
             var unityContainer = UnityHelper.Start();
 
             // Set Hangfire to use SQL Server and the connection string
-            GlobalConfiguration.Configuration.UseSqlServerStorage(SiteConstants.Instance.MvcForumContext);
+            GlobalConfiguration.Configuration.UseSqlServerStorage(ForumConfiguration.Instance.MvcForumContext);
 
             // Make hangfire use unity container
             GlobalConfiguration.Configuration.UseUnityActivator(unityContainer);
@@ -42,15 +49,12 @@ namespace MvcForum.Web
             //app.UseHangfireDashboard();
             app.UseHangfireServer();
 
-            // Make DB update to latest migration
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<MvcForumContext, Configuration>());
-
             // Get services needed
-            var mvcForumContext = DependencyResolver.Current.GetService<IMvcForumContext>();
-            var badgeService = DependencyResolver.Current.GetService<IBadgeService>();
-            var settingsService = DependencyResolver.Current.GetService<ISettingsService>();
-            var loggingService = DependencyResolver.Current.GetService<ILoggingService>();
-            var reflectionService = DependencyResolver.Current.GetService<IReflectionService>();
+            var mvcForumContext = unityContainer.Resolve<IMvcForumContext>();
+            var badgeService = unityContainer.Resolve<IBadgeService>();
+            var settingsService = unityContainer.Resolve<ISettingsService>();
+            var loggingService = unityContainer.Resolve<ILoggingService>();
+            var assemblyProvider = unityContainer.Resolve<IAssemblyProvider>();
 
             // Routes
             RouteConfig.RegisterRoutes(RouteTable.Routes);
@@ -59,13 +63,14 @@ namespace MvcForum.Web
             loggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
             loggingService.Error("START APP");
 
-            // Get assemblies for badges, events etc...
-            var loadedAssemblies = reflectionService.GetAssemblies();
+            // Find the plugin, pipeline and badge assemblies
+            var assemblies = assemblyProvider.GetAssemblies(ForumConfiguration.Instance.PluginSearchLocations).ToList();
+            ImplementationManager.SetAssemblies(assemblies);
 
             // Do the badge processing
             try
             {
-                badgeService.SyncBadges(loadedAssemblies);
+                badgeService.SyncBadges(assemblies);
                 mvcForumContext.SaveChanges();
             }
             catch (Exception ex)
@@ -78,10 +83,10 @@ namespace MvcForum.Web
             ViewEngines.Engines.Add(new ForumViewEngine(settingsService.GetSettings().Theme));
 
             // Initialise the events
-            EventManager.Instance.Initialize(loggingService, loadedAssemblies);
+            EventManager.Instance.Initialize(loggingService, assemblies);
 
             // Finally trigger any Cron jobs
-            RecurringJob.AddOrUpdate<RecurringJobService>(x => x.SendMarkAsSolutionReminders(), Cron.HourInterval(6), queue: "solutionreminders");
+            RecurringJob.AddOrUpdate<RecurringJobService>(x => x.SendMarkAsSolutionReminders(), Cron.HourInterval(6), queue: "solutionreminders");            
         }
     }
 }

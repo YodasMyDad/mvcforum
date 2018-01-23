@@ -3,13 +3,14 @@
     using System;
     using System.Threading.Tasks;
     using System.Web.Mvc;
+    using Core;
     using Core.Constants;
     using Core.Interfaces;
     using Core.Interfaces.Services;
     using Core.Models.Entities;
     using ViewModels;
 
-    [Authorize(Roles = AppConstants.AdminRoleName)]
+    [Authorize(Roles = Constants.AdminRoleName)]
     public class BannedEmailController : BaseAdminController
     {
         private readonly IBannedEmailService _bannedEmailService;
@@ -36,8 +37,8 @@
         {
             var pageIndex = p ?? 1;
             var allEmails = string.IsNullOrWhiteSpace(search)
-                ? await _bannedEmailService.GetAllPaged(pageIndex, SiteConstants.Instance.AdminListPageSize)
-                : await _bannedEmailService.GetAllPaged(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
+                ? await _bannedEmailService.GetAllPaged(pageIndex, ForumConfiguration.Instance.AdminListPageSize)
+                : await _bannedEmailService.GetAllPaged(search, pageIndex, ForumConfiguration.Instance.AdminListPageSize);
 
             var vieWModel = new BannedEmailListViewModel
             {
@@ -65,7 +66,7 @@
 
                     _bannedEmailService.Add(bannedEmail);
 
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = "Email added",
                         MessageType = GenericMessages.success
@@ -75,7 +76,7 @@
                 }
                 else
                 {
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = "Please add an email address",
                         MessageType = GenericMessages.danger
@@ -86,7 +87,7 @@
             {
                 Context.RollBack();
                 LoggingService.Error(ex);
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
                     MessageType = GenericMessages.danger
@@ -108,7 +109,7 @@
 
                 _bannedEmailService.Delete(email);
 
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = "Email delete successfully",
                     MessageType = GenericMessages.success
@@ -119,7 +120,7 @@
             {
                 Context.RollBack();
                 LoggingService.Error(ex);
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = $"Delete failed: {ex.Message}",
                     MessageType = GenericMessages.danger

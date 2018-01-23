@@ -15,7 +15,7 @@
     using Newtonsoft.Json;
     using ViewModels;
 
-    [Authorize(Roles = AppConstants.AdminRoleName)]
+    [Authorize(Roles = Constants.AdminRoleName)]
     public class ImportExportController : BaseAdminController
     {
         private readonly ILocalizationService _localizationService;

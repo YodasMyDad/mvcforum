@@ -3,7 +3,7 @@
     using System;
     using Utilities;
 
-    public partial class BannedEmail : Entity
+    public partial class BannedEmail : IBaseEntity
     {
         public BannedEmail()
         {

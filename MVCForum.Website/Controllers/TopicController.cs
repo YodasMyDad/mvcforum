@@ -12,6 +12,7 @@
     using Application;
     using Application.Akismet;
     using Areas.Admin.ViewModels;
+    using Core;
     using Core.Constants;
     using Core.Events;
     using Core.ExtensionMethods;
@@ -98,7 +99,7 @@
             // Get the topics
             var topics = Task.Run(() => _topicService.GetMembersActivity(pageIndex,
                 settings.TopicsPerPage,
-                SiteConstants.Instance.MembersActivityListSize,
+                ForumConfiguration.Instance.MembersActivityListSize,
                 loggedOnReadOnlyUser.Id,
                 allowedCategories)).Result;
 
@@ -192,7 +193,7 @@
                     // if so, check they are allowed to create topics - If no to either set to false
                     viewModel.UserCanPostTopics = false;
                     var permissionSet = RoleService.GetPermissions(category, loggedOnloggedOnUsersRole);
-                    if (permissionSet[SiteConstants.Instance.PermissionCreateTopics].IsTicked)
+                    if (permissionSet[ForumConfiguration.Instance.PermissionCreateTopics].IsTicked)
                     {
                         viewModel.UserCanPostTopics = true;
                         break;
@@ -224,32 +225,32 @@
         {
             var model = new CheckCreateTopicPermissions();
 
-            if (permissionSet[SiteConstants.Instance.PermissionCreateStickyTopics].IsTicked)
+            if (permissionSet[ForumConfiguration.Instance.PermissionCreateStickyTopics].IsTicked)
             {
                 model.CanStickyTopic = true;
             }
 
-            if (permissionSet[SiteConstants.Instance.PermissionLockTopics].IsTicked)
+            if (permissionSet[ForumConfiguration.Instance.PermissionLockTopics].IsTicked)
             {
                 model.CanLockTopic = true;
             }
 
-            if (permissionSet[SiteConstants.Instance.PermissionAttachFiles].IsTicked)
+            if (permissionSet[ForumConfiguration.Instance.PermissionAttachFiles].IsTicked)
             {
                 model.CanUploadFiles = true;
             }
 
-            if (permissionSet[SiteConstants.Instance.PermissionCreatePolls].IsTicked)
+            if (permissionSet[ForumConfiguration.Instance.PermissionCreatePolls].IsTicked)
             {
                 model.CanCreatePolls = true;
             }
 
-            if (permissionSet[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked)
+            if (permissionSet[ForumConfiguration.Instance.PermissionInsertEditorImages].IsTicked)
             {
                 model.CanInsertImages = true;
             }
 
-            if (permissionSet[SiteConstants.Instance.PermissionCreateTags].IsTicked)
+            if (permissionSet[ForumConfiguration.Instance.PermissionCreateTags].IsTicked)
             {
                 model.CanCreateTags = true;
             }
@@ -276,13 +277,13 @@
 
             // Is the user allowed to edit this post
             if (post.User.Id == loggedOnReadOnlyUser.Id ||
-                permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                permissions[ForumConfiguration.Instance.PermissionEditPosts].IsTicked)
             {
                 // Get the allowed categories for this user
                 var allowedAccessCategories = _categoryService.GetAllowedCategories(loggedOnloggedOnUsersRole);
                 var allowedCreateTopicCategories =
                     _categoryService.GetAllowedCategories(loggedOnloggedOnUsersRole,
-                        SiteConstants.Instance.PermissionCreateTopics);
+                        ForumConfiguration.Instance.PermissionCreateTopics);
                 var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
 
                 // If this user hasn't got any allowed cats OR they are not allowed to post then abandon
@@ -360,7 +361,7 @@
             // This is just in case the viewModel is return back to the view also sort the allowedCategories
             // Get the allowed categories for this user
             var allowedAccessCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
-            var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole, SiteConstants.Instance.PermissionCreateTopics);
+            var allowedCreateTopicCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole, ForumConfiguration.Instance.PermissionCreateTopics);
             var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
 
             // TODO ??? Is this correct ??
@@ -397,7 +398,7 @@
 
                     // Is this user allowed to edit this post/topic
                     if (originalPost.User.Id == loggedOnUser.Id ||
-                        permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                        permissions[ForumConfiguration.Instance.PermissionEditPosts].IsTicked)
                     {
 
                         // Is this topic or post awaiting moderations
@@ -452,7 +453,7 @@
                             // Sort the Tags
                             if (!string.IsNullOrWhiteSpace(editPostViewModel.Tags))
                             {
-                                _topicTagService.Add(editPostViewModel.Tags.ToLower(), originalTopic, permissions[SiteConstants.Instance.PermissionCreateTags].IsTicked);
+                                _topicTagService.Add(editPostViewModel.Tags.ToLower(), originalTopic, permissions[ForumConfiguration.Instance.PermissionCreateTags].IsTicked);
                             }
 
                             // Now save the tag changes
@@ -485,7 +486,7 @@
                             // See if there is a poll and can we edit/update it
                             if (editPostViewModel.PollAnswers != null &&
                                 editPostViewModel.PollAnswers.Count(x => !string.IsNullOrWhiteSpace(x?.Answer)) > 1 &&
-                                permissions[SiteConstants.Instance.PermissionCreatePolls].IsTicked)
+                                permissions[ForumConfiguration.Instance.PermissionCreatePolls].IsTicked)
                             {
 
                                 // Now sort the poll answers, what to add and what to remove
@@ -626,7 +627,7 @@
                         if (topicPostInModeration)
                         {
                             // If in moderation then let the user now
-                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                             {
                                 Message = LocalizationService.GetResourceString("Moderate.AwaitingModeration"),
                                 MessageType = GenericMessages.info
@@ -634,7 +635,7 @@
                         }
                         else
                         {
-                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                             {
                                 Message = LocalizationService.GetResourceString("Post.Updated"),
                                 MessageType = GenericMessages.success
@@ -649,7 +650,7 @@
                 {
                     Context.RollBack();
                     LoggingService.Error(ex);
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = LocalizationService.GetResourceString("Errors.GenericError"),
                         MessageType = GenericMessages.danger
@@ -665,14 +666,14 @@
 
         private CreateEditTopicViewModel PrePareCreateEditTopicViewModel(List<Category> allowedCategories)
         {
-            var userIsAdmin = User.IsInRole(AppConstants.AdminRoleName);
+            var userIsAdmin = User.IsInRole(Constants.AdminRoleName);
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
             var permissions = RoleService.GetPermissions(null, loggedOnUsersRole);
             var canInsertImages = userIsAdmin;
             if (!canInsertImages)
             {
-                canInsertImages = permissions[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked;
+                canInsertImages = permissions[ForumConfiguration.Instance.PermissionInsertEditorImages].IsTicked;
             }
             return new CreateEditTopicViewModel
             {
@@ -697,13 +698,13 @@
         {
             var allowedAccessCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
             var allowedCreateTopicCategories =
-                _categoryService.GetAllowedCategories(loggedOnUsersRole, SiteConstants.Instance.PermissionCreateTopics);
+                _categoryService.GetAllowedCategories(loggedOnUsersRole, ForumConfiguration.Instance.PermissionCreateTopics);
             var allowedCreateTopicCategoryIds = allowedCreateTopicCategories.Select(x => x.Id);
             if (allowedAccessCategories.Any())
             {
                 allowedAccessCategories.RemoveAll(x => allowedCreateTopicCategoryIds.Contains(x.Id));
                 allowedAccessCategories.RemoveAll(x =>
-                    loggedOnUsersRole.RoleName != AppConstants.AdminRoleName && x.IsLocked);
+                    loggedOnUsersRole.RoleName != Constants.AdminRoleName && x.IsLocked);
             }
             return allowedAccessCategories;
         }
@@ -791,9 +792,9 @@
 
 
                 // Check this users role has permission to create a post
-                if (permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked ||
-                    permissions[SiteConstants.Instance.PermissionReadOnly].IsTicked ||
-                    !permissions[SiteConstants.Instance.PermissionCreateTopics].IsTicked)
+                if (permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked ||
+                    permissions[ForumConfiguration.Instance.PermissionReadOnly].IsTicked ||
+                    !permissions[ForumConfiguration.Instance.PermissionCreateTopics].IsTicked)
                 {
                     // Add a model error that the user has no permissions
                     ModelState.AddModelError(string.Empty,
@@ -820,11 +821,11 @@
                     };
 
                     // Check Permissions for topic topions
-                    if (permissions[SiteConstants.Instance.PermissionLockTopics].IsTicked)
+                    if (permissions[ForumConfiguration.Instance.PermissionLockTopics].IsTicked)
                     {
                         topic.IsLocked = topicViewModel.IsLocked;
                     }
-                    if (permissions[SiteConstants.Instance.PermissionCreateStickyTopics].IsTicked)
+                    if (permissions[ForumConfiguration.Instance.PermissionCreateStickyTopics].IsTicked)
                     {
                         topic.IsSticky = topicViewModel.IsSticky;
                     }
@@ -844,7 +845,7 @@
                             if (topicViewModel.PollAnswers.Count(x => x != null) > 1)
                             {
                                 // Do they have permission to create a new poll
-                                if (permissions[SiteConstants.Instance.PermissionCreatePolls].IsTicked)
+                                if (permissions[ForumConfiguration.Instance.PermissionCreatePolls].IsTicked)
                                 {
                                     // Create a new Poll
                                     var newPoll = new Poll
@@ -883,7 +884,7 @@
                                 else
                                 {
                                     //No permission to create a Poll so show a message but create the topic
-                                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                                     {
                                         Message = LocalizationService.GetResourceString("Errors.NoPermissionPolls"),
                                         MessageType = GenericMessages.info
@@ -927,14 +928,14 @@
                             if (topicViewModel.Files != null)
                             {
                                 // Get the permissions for this category, and check they are allowed to update
-                                if (permissions[SiteConstants.Instance.PermissionAttachFiles].IsTicked &&
+                                if (permissions[ForumConfiguration.Instance.PermissionAttachFiles].IsTicked &&
                                     loggedOnReadOnlyUser.DisableFileUploads != true)
                                 {
                                     // woot! User has permission and all seems ok
                                     // Before we save anything, check the user already has an upload folder and if not create one
                                     var uploadFolderPath =
                                         HostingEnvironment.MapPath(string.Concat(
-                                            SiteConstants.Instance.UploadFolderPath,
+                                            ForumConfiguration.Instance.UploadFolderPath,
                                             loggedOnReadOnlyUser.Id));
                                     if (!Directory.Exists(uploadFolderPath))
                                     {
@@ -947,11 +948,10 @@
                                         if (file != null)
                                         {
                                             // If successful then upload the file
-                                            var uploadResult = AppHelpers.UploadFile(file, uploadFolderPath,
-                                                LocalizationService);
+                                            var uploadResult = file.UploadFile(uploadFolderPath, LocalizationService);
                                             if (!uploadResult.UploadSuccessful)
                                             {
-                                                TempData[AppConstants.MessageViewBagName] =
+                                                TempData[Constants.MessageViewBagName] =
                                                     new GenericMessageViewModel
                                                     {
                                                         Message = uploadResult.ErrorMessage,
@@ -981,7 +981,7 @@
                                 topicViewModel.Tags = _bannedWordService.SanitiseBannedWords(topicViewModel.Tags, bannedWords);
 
                                 // Now add the tags
-                                _topicTagService.Add(topicViewModel.Tags, topic, permissions[SiteConstants.Instance.PermissionCreateTags].IsTicked);
+                                _topicTagService.Add(topicViewModel.Tags, topic, permissions[ForumConfiguration.Instance.PermissionCreateTags].IsTicked);
                             }
 
                             // After tags sort the search field for the post
@@ -1053,7 +1053,7 @@
                 {
                     // Moderation needed
                     // Tell the user the topic is awaiting moderation
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = LocalizationService.GetResourceString("Moderate.AwaitingModeration"),
                         MessageType = GenericMessages.info
@@ -1086,7 +1086,7 @@
                 // Use the post service to get them as it includes other used entities in one
                 // statement rather than loads of sql selects
 
-                var sortQuerystring = Request.QueryString[AppConstants.PostOrderBy];
+                var sortQuerystring = Request.QueryString[Constants.PostOrderBy];
                 var orderBy = !string.IsNullOrWhiteSpace(sortQuerystring)
                     ? EnumUtils.ReturnEnumValueFromString<PostOrderBy>(sortQuerystring)
                     : PostOrderBy.Standard;
@@ -1094,7 +1094,7 @@
                 // Store the amount per page
                 var amountPerPage = settings.PostsPerPage;
 
-                if (sortQuerystring == AppConstants.AllPosts)
+                if (sortQuerystring == Constants.AllPosts)
                 {
                     // Overide to show all posts
                     amountPerPage = int.MaxValue;
@@ -1115,13 +1115,13 @@
 
                 // If this user doesn't have access to this topic then
                 // redirect with message
-                if (permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
+                if (permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
                 {
                     return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
                 }
 
                 // Set editor permissions
-                ViewBag.ImageUploadType = permissions[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked
+                ViewBag.ImageUploadType = permissions[ForumConfiguration.Instance.PermissionInsertEditorImages].IsTicked
                     ? "forumimageinsert"
                     : "image";
 
@@ -1227,7 +1227,7 @@
             var permissions = RoleService.GetPermissions(topic.Category, loggedOnUsersRole);
 
             // If this user doesn't have access to this topic then just return nothing
-            if (permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
+            if (permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
             {
                 return null;
             }
@@ -1306,7 +1306,7 @@
             IList<Topic> topics = null;
             try
             {
-                var searchResults = _topicService.SearchTopics(SiteConstants.Instance.SimilarTopicsListSize,
+                var searchResults = _topicService.SearchTopics(ForumConfiguration.Instance.SimilarTopicsListSize,
                     formattedSearchTerm, allowedCategories);
                 if (searchResults != null)
                 {
@@ -1337,7 +1337,7 @@
             // Get the topics
             var topics = Task.Run(() => _topicService.GetRecentTopics(pageIndex,
                 settings.TopicsPerPage,
-                SiteConstants.Instance.ActiveTopicsListSize,
+                ForumConfiguration.Instance.ActiveTopicsListSize,
                 allowedCategories)).Result;
 
             // Get the Topic View Models
@@ -1428,7 +1428,7 @@
                     sb.AppendFormat("<p>{0}</p>",
                         string.Format(LocalizationService.GetResourceString("Topic.Notification.NewTopics"), cat.Name));
                     sb.Append($"<p>{topic.Name}</p>");
-                    if (SiteConstants.Instance.IncludeFullPostInEmailNotifications)
+                    if (ForumConfiguration.Instance.IncludeFullPostInEmailNotifications)
                     {
                         sb.Append(AppHelpers.ConvertPostContent(topic.LastPost.PostContent));
                     }

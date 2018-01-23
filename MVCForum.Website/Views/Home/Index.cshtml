@@ -15,5 +15,5 @@
 @* ### Remove ME - Not needed, just for our forum ### *@
 
 @* Check forum.config to change this *@
-@(SiteConstants.Instance.CategoriesOnMain ? Html.Action("ListMainCategories", "Category") : Html.Action("LatestTopics", "Topic"))
+@(ForumConfiguration.Instance.CategoriesOnMain ? Html.Action("ListMainCategories", "Category") : Html.Action("LatestTopics", "Topic"))
 

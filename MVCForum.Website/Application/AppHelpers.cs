@@ -2,21 +2,17 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Drawing;
-    using System.Drawing.Imaging;
     using System.IO;
     using System.Linq;
     using System.Net;
-    using System.Reflection;
     using System.Web;
     using System.Web.Hosting;
     using System.Web.Mvc;
+    using Core;
     using Core.Constants;
-    using Core.Interfaces.Services;
     using Core.Models.Entities;
-    using Core.Models.General;
+    using Core.Providers.Storage;
     using Core.Utilities;
-    using StorageProviders;
 
     public static class AppHelpers
     {
@@ -86,7 +82,7 @@
         public static List<string> GetThemeFolders()
         {
             var folders = new List<string>();
-            var themeRootFolder = HostingEnvironment.MapPath($"~/{SiteConstants.Instance.ThemeRootFolderName}");
+            var themeRootFolder = HostingEnvironment.MapPath($"~/{ForumConfiguration.Instance.ThemeRootFolderName}");
             if (Directory.Exists(themeRootFolder))
             {
                 folders.AddRange(Directory.GetDirectories(themeRootFolder)
@@ -124,25 +120,25 @@
 
             // Sort the canonical tag out
             var canonicalTag = string.Format(Canonical,
-                page <= 1 ? url : string.Format(AppConstants.PagingUrlFormat, url, page));
+                page <= 1 ? url : string.Format(Constants.PagingUrlFormat, url, page));
 
             // On the first page       
             if ((pageCount > 1) & (page <= 1))
             {
-                nextTag = string.Format(CanonicalNext, string.Format(AppConstants.PagingUrlFormat, url, page + 1));
+                nextTag = string.Format(CanonicalNext, string.Format(Constants.PagingUrlFormat, url, page + 1));
             }
 
             // On a page greater than the first page, but not the last
             if ((pageCount > 1) & (page > 1) & (page < pageCount))
             {
-                nextTag = string.Format(CanonicalNext, string.Format(AppConstants.PagingUrlFormat, url, page + 1));
-                previousTag = string.Format(CanonicalPrev, string.Format(AppConstants.PagingUrlFormat, url, page - 1));
+                nextTag = string.Format(CanonicalNext, string.Format(Constants.PagingUrlFormat, url, page + 1));
+                previousTag = string.Format(CanonicalPrev, string.Format(Constants.PagingUrlFormat, url, page - 1));
             }
 
             // On the last page
             if ((pageCount > 1) & (pageCount == page))
             {
-                previousTag = string.Format(CanonicalPrev, string.Format(AppConstants.PagingUrlFormat, url, page - 1));
+                previousTag = string.Format(CanonicalPrev, string.Format(Constants.PagingUrlFormat, url, page - 1));
             }
 
             // return the canoncal tags
@@ -151,7 +147,7 @@
                 previousTag);
         }
 
-        public static string CreatePageTitle(Entity entity, string fallBack)
+        public static string CreatePageTitle(IBaseEntity entity, string fallBack)
         {
             if (entity != null)
             {
@@ -169,7 +165,7 @@
             return fallBack;
         }
 
-        public static string CreateMetaDesc(Entity entity)
+        public static string CreateMetaDesc(IBaseEntity entity)
         {
             return "";
         }
@@ -200,7 +196,7 @@
 
         public static string CategoryRssUrls(string slug)
         {
-            return $"/{SiteConstants.Instance.CategoryUrlIdentifier}/rss/{slug}";
+            return $"/{ForumConfiguration.Instance.CategoryUrlIdentifier}/rss/{slug}";
         }
 
         #endregion
@@ -235,38 +231,6 @@
 
         #endregion
 
-        #region Version
-
-        /// <summary>
-        ///     Gets the main version number (Used by installer)
-        /// </summary>
-        /// <returns></returns>
-        public static string GetCurrentVersionNo()
-        {
-            //Installer for new versions and first startup
-            // Get the current version
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-
-            // Store the value for use in the app
-            return $"{version.Major}.{version.Minor}";
-        }
-
-        /// <summary>
-        ///     Get the full version number shown in the admin
-        /// </summary>
-        /// <returns></returns>
-        public static string GetCurrentVersionNoFull()
-        {
-            //Installer for new versions and first startup
-            // Get the current version
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-
-            // Store the value for use in the app
-            return $"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
-        }
-
-        #endregion
-
         #region Files
 
         public static bool FileIsImage(string file)
@@ -280,23 +244,6 @@
                 ".png"
             };
             return imageFileTypes.Any(file.Contains);
-        }
-
-        public static Image GetImageFromExternalUrl(string url)
-        {
-            var httpWebRequest = (HttpWebRequest) WebRequest.Create(url);
-
-            using (var httpWebReponse = (HttpWebResponse) httpWebRequest.GetResponse())
-            {
-                using (var stream = httpWebReponse.GetResponseStream())
-                {
-                    if (stream != null)
-                    {
-                        return Image.FromStream(stream);
-                    }
-                }
-            }
-            return null;
         }
 
         public static string MemberImage(string avatar, string email, Guid userId, int size)
@@ -322,132 +269,6 @@
             }
             //TODO - Return default image for category
             return null;
-        }
-
-        public static UploadFileResult UploadFile(HttpPostedFileBase file, string uploadFolderPath,
-            ILocalizationService localizationService, bool onlyImages = false)
-        {
-            var upResult = new UploadFileResult {UploadSuccessful = true};
-            const string imageExtensions = "jpg,jpeg,png,gif";
-            var fileName = Path.GetFileName(file.FileName);
-            var storageProvider = StorageProvider.Current;
-
-            if (fileName != null)
-            {
-                // Lower case
-                fileName = fileName.ToLower();
-
-                // Get the file extension
-                var fileExtension = Path.GetExtension(fileName);
-
-                //Before we do anything, check file size
-                if (file.ContentLength > Convert.ToInt32(SiteConstants.Instance.FileUploadMaximumFileSizeInBytes))
-                {
-                    //File is too big
-                    upResult.UploadSuccessful = false;
-                    upResult.ErrorMessage = localizationService.GetResourceString("Post.UploadFileTooBig");
-                    return upResult;
-                }
-
-                // now check allowed extensions
-                var allowedFileExtensions = SiteConstants.Instance.FileUploadAllowedExtensions;
-
-                if (onlyImages)
-                {
-                    allowedFileExtensions = imageExtensions;
-                }
-
-                if (!string.IsNullOrWhiteSpace(allowedFileExtensions))
-                {
-                    // Turn into a list and strip unwanted commas as we don't trust users!
-                    var allowedFileExtensionsList = allowedFileExtensions.ToLower().Trim()
-                        .TrimStart(',').TrimEnd(',').Split(',').ToList();
-
-                    // If can't work out extension then just error
-                    if (string.IsNullOrWhiteSpace(fileExtension))
-                    {
-                        upResult.UploadSuccessful = false;
-                        upResult.ErrorMessage = localizationService.GetResourceString("Errors.GenericMessage");
-                        return upResult;
-                    }
-
-                    // Remove the dot then check against the extensions in the web.config settings
-                    fileExtension = fileExtension.TrimStart('.');
-                    if (!allowedFileExtensionsList.Contains(fileExtension))
-                    {
-                        upResult.UploadSuccessful = false;
-                        upResult.ErrorMessage = localizationService.GetResourceString("Post.UploadBannedFileExtension");
-                        return upResult;
-                    }
-                }
-
-                // Store these here as we may change the values within the image manipulation
-                var newFileName = string.Empty;
-                var path = string.Empty;
-
-                if (imageExtensions.Split(',').ToList().Contains(fileExtension))
-                {
-                    // Rotate image if wrong want around
-                    using (var sourceimage = Image.FromStream(file.InputStream))
-                    {
-                        if (sourceimage.PropertyIdList.Contains(0x0112))
-                        {
-                            int rotationValue = sourceimage.GetPropertyItem(0x0112).Value[0];
-                            switch (rotationValue)
-                            {
-                                case 1: // landscape, do nothing
-                                    break;
-
-                                case 8: // rotated 90 right
-                                    // de-rotate:
-                                    sourceimage.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                                    break;
-
-                                case 3: // bottoms up
-                                    sourceimage.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                                    break;
-
-                                case 6: // rotated 90 left
-                                    sourceimage.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                                    break;
-                            }
-                        }
-
-                        using (var stream = new MemoryStream())
-                        {
-                            // Save the image as a Jpeg only
-                            sourceimage.Save(stream, ImageFormat.Jpeg);
-                            stream.Position = 0;
-
-                            // Change the extension to jpg as that's what we are saving it as
-                            fileName = fileName.Replace(fileExtension, "");
-                            fileName = string.Concat(fileName, "jpg");
-                            file = new MemoryFile(stream, "image/jpeg", fileName);
-
-                            // Sort the file name
-                            newFileName = CreateNewFileName(fileName);
-
-                            // Get the storage provider and save file
-                            upResult.UploadedFileUrl = storageProvider.SaveAs(uploadFolderPath, newFileName, file);
-                        }
-                    }
-                }
-                else
-                {
-                    // Sort the file name
-                    newFileName = CreateNewFileName(fileName);
-                    upResult.UploadedFileUrl = storageProvider.SaveAs(uploadFolderPath, newFileName, file);
-                }
-
-                upResult.UploadedFileName = newFileName;
-            }
-
-            return upResult;
-        }
-
-        private static string CreateNewFileName(string fileName)
-        {
-            return $"{GuidComb.GenerateComb()}_{fileName.Trim(' ').Replace("_", "-").Replace(" ", "-").ToLower()}";
         }
 
         #endregion

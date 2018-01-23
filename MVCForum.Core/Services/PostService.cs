@@ -53,7 +53,7 @@
         #region Private / Helpers Methods
         private MembershipRole UsersRole(MembershipUser user)
         {
-            return user == null ? _roleService.GetRole(AppConstants.GuestRoleName) : user.Roles.FirstOrDefault();
+            return user == null ? _roleService.GetRole(Constants.GuestRoleName) : user.Roles.FirstOrDefault();
         }
 
         public Post SanitizePost(Post post)
@@ -308,7 +308,7 @@
                     if (permissionSets.ContainsKey(pendingPost.Topic.Category.Id))
                     {
                         var permissions = permissionSets[pendingPost.Topic.Category.Id];
-                        if (permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                        if (permissions[ForumConfiguration.Instance.PermissionEditPosts].IsTicked)
                         {
                             pendingPosts.Add(pendingPost);
                         }
@@ -552,7 +552,7 @@
             permissions = _roleService.GetPermissions(topic.Category, UsersRole(user));
 
             // Check this users role has permission to create a post
-            if (permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked || permissions[SiteConstants.Instance.PermissionReadOnly].IsTicked)
+            if (permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked || permissions[ForumConfiguration.Instance.PermissionReadOnly].IsTicked)
             {
                 // Throw exception so Ajax caller picks it up
                 throw new ApplicationException(_localizationService.GetResourceString("Errors.NoPermission"));
@@ -686,7 +686,7 @@
         public bool PassedPostFloodTest(MembershipUser user)
         {
             var timeNow = DateTime.UtcNow;
-            var floodWindow = timeNow.AddSeconds(-SiteConstants.Instance.PostSecondsWaitBeforeNewPost);
+            var floodWindow = timeNow.AddSeconds(-ForumConfiguration.Instance.PostSecondsWaitBeforeNewPost);
 
             return _context.Post.AsNoTracking()
                     .Include(x => x.User)

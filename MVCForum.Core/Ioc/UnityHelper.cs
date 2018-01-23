@@ -4,6 +4,7 @@ namespace MvcForum.Core.Ioc
     using Data.Context;
     using Interfaces;
     using Interfaces.Services;
+    using Reflection;
     using Services;
     using Unity;
     using Unity.Lifetime;
@@ -24,13 +25,21 @@ namespace MvcForum.Core.Ioc
     /// </summary>
     public static class UnityHelper
     {
+
+        private static IUnityContainer _unityContainer;
+
         public static IUnityContainer Start()
         {
             var container = new UnityContainer();
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
-            var buildUnity = BuildUnityContainer(container);
-            return buildUnity;
+            _unityContainer = BuildUnityContainer(container);
+            return _unityContainer;
         }
+
+        /// <summary>
+        /// Return Container if needed
+        /// </summary>
+        public static IUnityContainer Container => _unityContainer;
 
         /// <summary>
         ///     Inject
@@ -75,10 +84,10 @@ namespace MvcForum.Core.Ioc
             container.BindInRequestScope<IGlobalPermissionForRoleService, GlobalPermissionForRoleService>();
             container.BindInRequestScope<ICacheService, CacheService>();
             container.BindInRequestScope<ITagNotificationService, TagNotificationService>();
-            container.BindInRequestScope<IReflectionService, ReflectionService>();
             container.BindInRequestScope<IBlockService, BlockService>();
             container.BindInRequestScope<IConfigService, ConfigService>();
             container.BindInRequestScope<IPostEditService, PostEditService>();
+            container.BindInRequestScope<IAssemblyProvider, AssemblyProvider>();
 
             return container;
         }

@@ -21,7 +21,7 @@
         [ForumMvcResourceDisplayName("Topic.Label.TopicTitle")]
         public string Name { get; set; }
 
-        [UIHint(AppConstants.EditorType)]
+        [UIHint(Constants.EditorType)]
         [AllowHtml]
         [StringLength(6000)]
         public string Content { get; set; }

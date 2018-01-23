@@ -8,6 +8,7 @@
     using Application;
     using Application.CustomActionResults;
     using Application.ExtensionMethods;
+    using Core;
     using Core.Constants;
     using Core.ExtensionMethods;
     using Core.Interfaces;
@@ -123,7 +124,7 @@
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
 
             // Allowed Categories for a guest - As that's all we want latest RSS to show
-            var guestRole = RoleService.GetRole(AppConstants.GuestRoleName);
+            var guestRole = RoleService.GetRole(Constants.GuestRoleName);
             var allowedCategories = _categoryService.GetAllowedCategories(guestRole);
 
             // get an rss lit ready
@@ -152,7 +153,7 @@
                 var permission = permissions[topic.Category];
 
                 // Add only topics user has permission to
-                if (!permission[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
+                if (!permission[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
                 {
                     if (topic.Posts.Any())
                     {
@@ -211,7 +212,7 @@
                         Description = string.Empty,
                         Title = LocalizationService.GetResourceString("Activity.UserJoined"),
                         PublishedDate = memberJoinedActivity.ActivityMapped.Timestamp,
-                        RssImage = memberJoinedActivity.User.MemberImage(SiteConstants.Instance.GravatarPostSize),
+                        RssImage = memberJoinedActivity.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize),
                         Link = activityLink
                     });
                 }
@@ -223,7 +224,7 @@
                         Description = string.Empty,
                         Title = LocalizationService.GetResourceString("Activity.ProfileUpdated"),
                         PublishedDate = profileUpdatedActivity.ActivityMapped.Timestamp,
-                        RssImage = profileUpdatedActivity.User.MemberImage(SiteConstants.Instance.GravatarPostSize),
+                        RssImage = profileUpdatedActivity.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize),
                         Link = activityLink
                     });
                 }
@@ -237,7 +238,7 @@
         public ActionResult GoogleSitemap()
         {
             // Allowed Categories for a guest
-            var guestRole = RoleService.GetRole(AppConstants.GuestRoleName);
+            var guestRole = RoleService.GetRole(Constants.GuestRoleName);
             var allowedCategories = _categoryService.GetAllowedCategories(guestRole);
 
             // Get all topics that a guest has access to
@@ -293,7 +294,7 @@
         public ActionResult GoogleCategorySitemap()
         {
             // Allowed Categories for a guest
-            var guestRole = RoleService.GetRole(AppConstants.GuestRoleName);
+            var guestRole = RoleService.GetRole(Constants.GuestRoleName);
             var allowedCategories = _categoryService.GetAllowedCategories(guestRole);
 
             // Sitemap holder

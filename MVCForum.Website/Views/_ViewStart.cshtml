@@ -10,7 +10,7 @@
     var currentTheme = DependencyResolver.Current.GetService<ISettingsService>().GetSettings().Theme;
 
     // Set if this is a mobile device
-    PageData[AppConstants.IsMobileDevice] = Context.IsMobileDevice();
+    PageData[Constants.IsMobileDevice] = Context.IsMobileDevice();
 
     // Set the Layout view
     //const string layoutName = "_Layout";

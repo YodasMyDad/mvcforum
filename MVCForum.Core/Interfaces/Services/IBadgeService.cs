@@ -14,7 +14,7 @@
         ///     Bring the database into line with the badge classes found at runtime
         /// </summary>
         /// <returns>Set of valid badge classes to use when assigning badges</returns>
-        void SyncBadges(List<Assembly> assemblies);
+        void SyncBadges(IEnumerable<Assembly> assemblies);
 
         /// <summary>
         ///     Processes the user for the specified badge type

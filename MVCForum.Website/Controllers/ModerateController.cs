@@ -2,6 +2,7 @@
 {
     using System;
     using System.Web.Mvc;
+    using Core;
     using Core.Constants;
     using Core.ExtensionMethods;
     using Core.Interfaces;
@@ -58,7 +59,7 @@
                 var permissions = RoleService.GetPermissions(topic.Category, loggedOnUsersRole);
 
                 // Is this user allowed to moderate - We use EditPosts for now until we change the permissions system
-                if (!permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                if (!permissions[ForumConfiguration.Instance.PermissionEditPosts].IsTicked)
                 {
                     return Content(LocalizationService.GetResourceString("Errors.NoPermission"));
                 }
@@ -96,7 +97,7 @@
 
                 var post = _postService.Get(viewModel.PostId);
                 var permissions = RoleService.GetPermissions(post.Topic.Category, loggedOnUsersRole);
-                if (!permissions[SiteConstants.Instance.PermissionEditPosts].IsTicked)
+                if (!permissions[ForumConfiguration.Instance.PermissionEditPosts].IsTicked)
                 {
                     return Content(LocalizationService.GetResourceString("Errors.NoPermission"));
                 }

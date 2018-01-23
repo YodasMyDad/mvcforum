@@ -118,7 +118,7 @@
             }
             else
             {
-                var inUseBy = new List<Entity>();
+                var inUseBy = new List<IBaseEntity>();
                 inUseBy.AddRange(role.Users);
                 throw new Exception($"In use by {inUseBy.Count} entities");
             }
@@ -148,7 +148,7 @@
                     categoryPermissions.Add(new CategoryPermissionForRole
                     {
                         Category = category,
-                        IsTicked = (permission.Name != SiteConstants.Instance.PermissionDenyAccess && permission.Name != SiteConstants.Instance.PermissionReadOnly),
+                        IsTicked = (permission.Name != ForumConfiguration.Instance.PermissionDenyAccess && permission.Name != ForumConfiguration.Instance.PermissionReadOnly),
                         MembershipRole = role,
                         Permission = permission
                     });
@@ -193,7 +193,7 @@
                     categoryPermissions.Add(new CategoryPermissionForRole
                     {
                         Category = category,
-                        IsTicked = permission.Name == SiteConstants.Instance.PermissionReadOnly,
+                        IsTicked = permission.Name == ForumConfiguration.Instance.PermissionReadOnly,
                         MembershipRole = role,
                         Permission = permission
                     });
@@ -202,11 +202,11 @@
                 // Deny Access may have been set (or left null) for guest for the category, so need to read for it
                 var denyAccessPermission = role.CategoryPermissionForRoles
                                    .FirstOrDefault(x => x.Category.Id == category.Id &&
-                                                        x.Permission.Name == SiteConstants.Instance.PermissionDenyAccess &&
+                                                        x.Permission.Name == ForumConfiguration.Instance.PermissionDenyAccess &&
                                                         x.MembershipRole.Id == role.Id);
 
                 // Set the Deny Access value in the results. If it's null for this role/category, record it as false in the results
-                var categoryPermissionForRole = categoryPermissions.FirstOrDefault(x => x.Permission.Name == SiteConstants.Instance.PermissionDenyAccess);
+                var categoryPermissionForRole = categoryPermissions.FirstOrDefault(x => x.Permission.Name == ForumConfiguration.Instance.PermissionDenyAccess);
                 if (categoryPermissionForRole != null)
                 {
                     categoryPermissionForRole.IsTicked = denyAccessPermission != null && denyAccessPermission.IsTicked;
@@ -300,10 +300,10 @@
 
                 switch (role.RoleName)
                 {
-                    case AppConstants.AdminRoleName:
+                    case Constants.AdminRoleName:
                         permissions = GetAdminPermissions(category, role);
                         break;
-                    case AppConstants.GuestRoleName:
+                    case Constants.GuestRoleName:
                         permissions = GetGuestPermissions(category, role);
                         break;
                     default:

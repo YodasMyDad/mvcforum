@@ -6,7 +6,7 @@
     using Core.Interfaces.Services;
     using Core.Utilities;
 
-    [Authorize(Roles = AppConstants.AdminRoleName)]
+    [Authorize(Roles = Constants.AdminRoleName)]
     public class AdminController : BaseAdminController
     {
         public AdminController(ILoggingService loggingService,

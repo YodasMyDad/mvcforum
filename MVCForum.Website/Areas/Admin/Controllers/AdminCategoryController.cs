@@ -7,13 +7,15 @@
     using System.Web.Hosting;
     using System.Web.Mvc;
     using Application;
+    using Core;
     using Core.Constants;
+    using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Services;
     using Core.Models.Entities;
     using ViewModels;
 
-    [Authorize(Roles = AppConstants.AdminRoleName)]
+    [Authorize(Roles = Constants.AdminRoleName)]
     public class AdminCategoryController : BaseAdminController
     {
         private readonly ICategoryService _categoryService;
@@ -97,7 +99,7 @@
                     {
                         // Before we save anything, check the user already has an upload folder and if not create one
                         var uploadFolderPath =
-                            HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath,
+                            HostingEnvironment.MapPath(string.Concat(ForumConfiguration.Instance.UploadFolderPath,
                                 category.Id));
                         if (!Directory.Exists(uploadFolderPath))
                         {
@@ -109,12 +111,11 @@
                         if (file != null)
                         {
                             // If successful then upload the file
-                            var uploadResult =
-                                AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService, true);
+                            var uploadResult = file.UploadFile(uploadFolderPath, LocalizationService, true);
 
                             if (!uploadResult.UploadSuccessful)
                             {
-                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                                 {
                                     Message = uploadResult.ErrorMessage,
                                     MessageType = GenericMessages.danger
@@ -137,7 +138,7 @@
                     _categoryService.Add(category);
 
                     // We use temp data because we are doing a redirect
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = "Category Created",
                         MessageType =
@@ -219,7 +220,7 @@
                     {
                         // Before we save anything, check the user already has an upload folder and if not create one
                         var uploadFolderPath = HostingEnvironment.MapPath(
-                            string.Concat(SiteConstants.Instance.UploadFolderPath, categoryViewModel.Id));
+                            string.Concat(ForumConfiguration.Instance.UploadFolderPath, categoryViewModel.Id));
                         if (!Directory.Exists(uploadFolderPath))
                         {
                             Directory.CreateDirectory(uploadFolderPath);
@@ -230,12 +231,11 @@
                         if (file != null)
                         {
                             // If successful then upload the file
-                            var uploadResult =
-                                AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService, true);
+                            var uploadResult = file.UploadFile(uploadFolderPath, LocalizationService, true);
 
                             if (!uploadResult.UploadSuccessful)
                             {
-                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                                 {
                                     Message = uploadResult.ErrorMessage,
                                     MessageType = GenericMessages.danger
@@ -280,7 +280,7 @@
 
                     _categoryService.UpdateSlugFromName(category);
 
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = "Category Updated",
                         MessageType = GenericMessages.success
@@ -295,7 +295,7 @@
                     LoggingService.Error(ex);
                     Context.RollBack();
 
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = "Category Update Failed",
                         MessageType = GenericMessages.danger
@@ -343,7 +343,7 @@
             {
                 var cat = _categoryService.Get(id);
                 _categoryService.Delete(cat);
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = "Category Deleted",
                     MessageType = GenericMessages.success
@@ -411,7 +411,7 @@
                 }
 
 
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = "Category Paths Synced",
                     MessageType = GenericMessages.success
@@ -421,7 +421,7 @@
             catch (Exception)
             {
                 Context.RollBack();
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = "Error syncing paths",
                     MessageType = GenericMessages.danger
