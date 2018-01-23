@@ -17,7 +17,6 @@
     using Interfaces;
     using Interfaces.Pipeline;
     using Interfaces.Services;
-    using Models;
     using Models.Entities;
     using Models.Enums;
     using Models.General;
@@ -32,9 +31,7 @@
         private readonly IActivityService _activityService;
         private readonly ICacheService _cacheService;
         private readonly IMvcForumContext _context;
-        private readonly IEmailService _emailService;
         private readonly ILocalizationService _localizationService;
-        private readonly ILoggingService _loggingService;
         private readonly ISettingsService _settingsService;
         private readonly IVoteService _voteService;
         private readonly IBadgeService _badgeService;
@@ -53,25 +50,29 @@
         /// </summary>
         /// <param name="context"></param>
         /// <param name="settingsService"> </param>
-        /// <param name="emailService"> </param>
         /// <param name="localizationService"> </param>
         /// <param name="activityService"> </param>
-        /// <param name="loggingService"></param>
         /// <param name="cacheService"></param>
         /// <param name="voteService"></param>
         /// <param name="badgeService"></param>
         /// <param name="categoryNotificationService"></param>
         /// <param name="privateMessageService"></param>
         /// <param name="favouriteService"></param>
-        public MembershipService(IMvcForumContext context, ISettingsService settingsService,
-            IEmailService emailService, ILocalizationService localizationService, IActivityService activityService,
-            ILoggingService loggingService, ICacheService cacheService, IVoteService voteService, IBadgeService badgeService, ICategoryNotificationService categoryNotificationService, IPrivateMessageService privateMessageService, IFavouriteService favouriteService, ITopicNotificationService topicNotificationService, IMembershipUserPointsService membershipUserPointsService, IPollVoteService pollVoteService, ITopicService topicService, ICategoryService categoryService, IPostService postService)
+        /// <param name="topicNotificationService"></param>
+        /// <param name="membershipUserPointsService"></param>
+        /// <param name="pollVoteService"></param>
+        /// <param name="topicService"></param>
+        /// <param name="categoryService"></param>
+        /// <param name="postService"></param>
+        public MembershipService(IMvcForumContext context, ISettingsService settingsService, ILocalizationService localizationService, 
+            IActivityService activityService, ICacheService cacheService, IVoteService voteService, IBadgeService badgeService, 
+            ICategoryNotificationService categoryNotificationService, IPrivateMessageService privateMessageService, 
+            IFavouriteService favouriteService, ITopicNotificationService topicNotificationService, IMembershipUserPointsService membershipUserPointsService, 
+            IPollVoteService pollVoteService, ITopicService topicService, ICategoryService categoryService, IPostService postService)
         {
             _settingsService = settingsService;
-            _emailService = emailService;
             _localizationService = localizationService;
             _activityService = activityService;
-            _loggingService = loggingService;
             _cacheService = cacheService;
             _voteService = voteService;
             _badgeService = badgeService;
@@ -344,7 +345,42 @@
             return await pipeline.Process(piplineModel);
         }
 
+        /// <summary>
+        ///     Delete a member
+        /// </summary>
+        /// <param name="user"></param>
+        public async Task<IPipelineProcess<MembershipUser>> Delete(MembershipUser user)
+        {
+            // Get the pipelines
+            var pipes = ForumConfiguration.Instance.PipelinesUserDelete;
 
+            // The model to process
+            var piplineModel = new PipelineProcess<MembershipUser>(user);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<MembershipUser>, MembershipUser>(_context);
+
+            // Register the pipes 
+            var allMembershipUserPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<MembershipUser>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in pipes)
+            {
+                if (allMembershipUserPipes.ContainsKey(pipe))
+                {
+                    pipeline.Register(allMembershipUserPipes[pipe]);
+                }
+            }
+
+            // Process the pipeline
+            return await pipeline.Process(piplineModel);
+        }
+
+        /// <summary>
+        /// Get the member by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public MembershipUser Get(Guid id)
         {
             var cacheKey = string.Concat(CacheKeys.Member.StartsWith, "get-", id);
@@ -355,7 +391,6 @@
                     .FirstOrDefault(x => x.Id == id);
             });
         }
-
 
         /// <summary>
         ///     Get a user by username
@@ -635,32 +670,6 @@
             return Get(id);
         }
 
-        /// <summary>
-        ///     Delete a member
-        /// </summary>
-        /// <param name="user"></param>
-        public bool Delete(MembershipUser user)
-        {
-            try
-            {
-                // Scrub all member data
-                ScrubUsers(user);
-
-                // Just clear the roles, don't delete them
-                user.Roles.Clear();
-
-                // Now delete the member
-                _context.MembershipUser.Remove(user);
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _loggingService.Error(ex);
-            }
-            return false;
-        }
-
         public IList<MembershipUser> GetLatestUsers(int amountToTake)
         {
             var cacheKey = string.Concat(CacheKeys.Member.StartsWith, "GetLatestUsers-", amountToTake);
@@ -916,10 +925,12 @@
             return report;
         }
 
+        /// <summary>
+        /// Scrubs a user, removes everything from points to posts and topics.
+        /// </summary>
+        /// <param name="user"></param>
         public void ScrubUsers(MembershipUser user)
         {
-            //// TODO - This REALLY needs to be refactored
-
             // PROFILE
             user.Website = string.Empty;
             user.Twitter = string.Empty;

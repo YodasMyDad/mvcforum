@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
     using System.Web.Mvc;
     using Core.Constants;
     using Core.Interfaces;
@@ -31,40 +33,43 @@
 
         public ActionResult BatchDeleteMembers()
         {
-            return View(new BatchDeleteMembersViewModel {AmoutOfDaysSinceRegistered = 0, AmoutOfPosts = 0});
+            return View(new BatchDeleteMembersViewModel { AmoutOfDaysSinceRegistered = 0, AmoutOfPosts = 0 });
         }
 
+        /// <summary>
+        /// Batch delete members
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult BatchDeleteMembers(BatchDeleteMembersViewModel viewModel)
+        public async Task<ActionResult> BatchDeleteMembers(BatchDeleteMembersViewModel viewModel)
         {
-            try
+
+            var membersToDelete = MembershipService.GetUsersByDaysPostsPoints(
+                viewModel.AmoutOfDaysSinceRegistered,
+                viewModel.AmoutOfPosts);
+
+            var count = membersToDelete.Count;
+            foreach (var membershipUser in membersToDelete)
             {
-                var membersToDelete = MembershipService.GetUsersByDaysPostsPoints(
-                    viewModel.AmoutOfDaysSinceRegistered,
-                    viewModel.AmoutOfPosts);
-                var count = membersToDelete.Count;
-                foreach (var membershipUser in membersToDelete)
+                var pipelineResult = await MembershipService.Delete(membershipUser);
+                if (!pipelineResult.Successful)
                 {
-                    MembershipService.Delete(membershipUser);
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                    {
+                        Message = pipelineResult.ProcessLog.FirstOrDefault(),
+                        MessageType = GenericMessages.danger
+                    };
+                    return View();
                 }
-                Context.SaveChanges();
-                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
-                {
-                    Message = $"{count} members deleted",
-                    MessageType = GenericMessages.success
-                };
             }
-            catch (Exception ex)
+
+            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
             {
-                Context.RollBack();
-                LoggingService.Error(ex);
-                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
-                {
-                    Message = ex.Message,
-                    MessageType = GenericMessages.danger
-                };
-            }
+                Message = $"{count} members deleted",
+                MessageType = GenericMessages.success
+            };
 
             return View();
         }
@@ -88,8 +93,8 @@
         {
             try
             {
-                var categoryFrom = _categoryService.Get((Guid) viewModel.FromCategory);
-                var categoryTo = _categoryService.Get((Guid) viewModel.ToCategory);
+                var categoryFrom = _categoryService.Get((Guid)viewModel.FromCategory);
+                var categoryTo = _categoryService.Get((Guid)viewModel.ToCategory);
 
                 var topicsToMove = _topicService.GetRssTopicsByCategory(int.MaxValue, categoryFrom.Id);
                 var count = topicsToMove.Count;

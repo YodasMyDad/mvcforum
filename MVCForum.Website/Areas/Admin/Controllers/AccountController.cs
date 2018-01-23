@@ -167,7 +167,7 @@
                 {
                     DateAdded = DateTime.UtcNow,
                     Notes = viewModel.Note,
-                    Points = (int) viewModel.Amount,
+                    Points = (int)viewModel.Amount,
                     PointsFor = PointsFor.Manual,
                     User = user
                 };
@@ -196,7 +196,7 @@
                 }
             }
 
-            return RedirectToAction("ManageUserPoints", new {id = user.Id});
+            return RedirectToAction("ManageUserPoints", new { id = user.Id });
         }
 
         [Authorize(Roles = Constants.AdminRoleName)]
@@ -229,7 +229,7 @@
                 });
             }
 
-            return RedirectToAction("ManageUserPoints", new {id = user.Id});
+            return RedirectToAction("ManageUserPoints", new { id = user.Id });
         }
 
         /// <summary>
@@ -304,36 +304,34 @@
 
 
         [Authorize(Roles = Constants.AdminRoleName)]
-        public ActionResult Delete(Guid id, int? p, string search)
+        public async Task<ActionResult> Delete(Guid id, int? p, string search)
         {
-            try
+
+            var user = MembershipService.GetUser(id);
+            if (user == null)
             {
-                var user = MembershipService.GetUser(id);
-                if (user == null)
-                {
-                    throw new ApplicationException("Cannot delete user - user does not exist");
-                }
+                throw new ApplicationException("Cannot delete user - user does not exist");
+            }
 
-                MembershipService.Delete(user);
-
+            var piplineReslt = await MembershipService.Delete(user);
+            if (piplineReslt.Successful)
+            {
                 TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = "User delete successfully",
                     MessageType = GenericMessages.success
                 };
-                Context.SaveChanges();
             }
-            catch (Exception ex)
+            else
             {
-                Context.RollBack();
-                LoggingService.Error(ex);
                 TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
-                    Message = $"Delete failed: {ex.Message}",
+                    Message = piplineReslt.ProcessLog.FirstOrDefault(),
                     MessageType = GenericMessages.danger
                 };
             }
-            return RedirectToAction("Manage", new {p, search});
+
+            return RedirectToAction("Manage", new { p, search });
         }
 
         [HttpPost]
