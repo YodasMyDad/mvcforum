@@ -5,7 +5,6 @@
     using System.Drawing;
     using System.Security.Principal;
     using System.Threading.Tasks;
-    using System.Web;
     using Models.Entities;
     using Models.Enums;
     using Models.General;
@@ -39,7 +38,7 @@
         IList<MembershipUser> SearchMembers(string username, int amount);
         IList<MembershipUser> GetActiveMembers();
         void ProfileUpdated(MembershipUser user);
-        bool Delete(MembershipUser user);
+        Task<IPipelineProcess<MembershipUser>> Delete(MembershipUser user);
         IList<MembershipUser> GetLatestUsers(int amountToTake);
         IList<MembershipUser> GetLowestPointUsers(int amountToTake);
         int MemberCount();
