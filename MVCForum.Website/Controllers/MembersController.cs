@@ -830,6 +830,44 @@
                 return View();
             }
 
+            if (pipeline.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.UsernameChanged))
+            {
+                var usernameChanged =
+                    pipeline.ExtendedData.GetExtendedDataItem<bool>(Constants.ExtendedDataKeys.UsernameChanged);
+                if (usernameChanged)
+                {
+                    // User has changed their username so need to log them in
+                    // as there new username of 
+                    var authCookie = Request.Cookies[FormsAuthentication.FormsCookieName];
+                    if (authCookie != null)
+                    {
+                        var authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+                        if (authTicket != null)
+                        {
+                            var newFormsIdentity = new FormsIdentity(new FormsAuthenticationTicket(
+                                authTicket.Version,
+                                user.UserName,
+                                authTicket.IssueDate,
+                                authTicket.Expiration,
+                                authTicket.IsPersistent,
+                                authTicket.UserData));
+                            var roles = authTicket.UserData.Split("|".ToCharArray());
+                            var newGenericPrincipal = new GenericPrincipal(newFormsIdentity, roles);
+                            System.Web.HttpContext.Current.User = newGenericPrincipal;
+                        }
+                    }
+
+                    // sign out current user
+                    FormsAuthentication.SignOut();
+
+                    // Abandon the session
+                    Session.Abandon();
+
+                    // Sign in new user
+                    FormsAuthentication.SetAuthCookie(user.UserName, false);
+                }
+            }
+
             // Repopulate any viewmodel data
             userModel.AmountOfPoints = user.TotalPoints;
 
@@ -840,141 +878,6 @@
             });
 
             return View(userModel);
-
-
-            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-            var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
-            var loggedOnUserId = loggedOnReadOnlyUser?.Id ?? Guid.Empty;
-            var permissions = RoleService.GetPermissions(null, loggedOnUsersRole);
-
-            // Check is has permissions
-            if (User.IsInRole(Constants.AdminRoleName) || loggedOnUserId == userModel.Id ||
-                permissions[ForumConfiguration.Instance.PermissionEditMembers].IsTicked)
-            {
-                // Get the user from DB
-                // TODO - Store this in extendedData
-                var user = MembershipService.GetUser(userModel.Id);
-
-                // Sort image out first
-                if (userModel.Files != null)
-                {
-                    // Before we save anything, check the user already has an upload folder and if not create one
-                    var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(ForumConfiguration.Instance.UploadFolderPath,
-                            loggedOnReadOnlyUser.Id));
-
-                    // Loop through each file and get the file info and save to the users folder and Db
-                    var file = userModel.Files[0];
-                    if (file != null)
-                    {
-                        // If successful then upload the file
-                        var uploadResult = file.UploadFile(uploadFolderPath, LocalizationService, true);
-
-                        if (!uploadResult.UploadSuccessful)
-                        {
-                            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
-                            {
-                                Message = uploadResult.ErrorMessage,
-                                MessageType = GenericMessages.danger
-                            };
-                            return View(userModel);
-                        }
-
-                        // Save avatar to user
-                        user.Avatar = uploadResult.UploadedFileName;
-                    }
-                }
-
-                // User is trying to change username, need to check if a user already exists
-                // with the username they are trying to change to
-                var changedUsername = false;
-                var sanitisedUsername = _bannedWordService.SanitiseBannedWords(userModel.UserName, bannedWords);
-                if (sanitisedUsername != user.UserName)
-                {
-                    if (MembershipService.GetUser(sanitisedUsername) != null)
-                    {
-                        Context.RollBack();
-                        ModelState.AddModelError(string.Empty,
-                            LocalizationService.GetResourceString("Members.Errors.DuplicateUserName"));
-                        return View(userModel);
-                    }
-
-                    user.UserName = sanitisedUsername;
-                    changedUsername = true;
-                }
-
-                // User is trying to update their email address, need to 
-                // check the email is not already in use
-                if (userModel.Email != user.Email)
-                {
-                    // Add get by email address
-                    if (MembershipService.GetUserByEmail(userModel.Email) != null)
-                    {
-                        Context.RollBack();
-                        ModelState.AddModelError(string.Empty,
-                            LocalizationService.GetResourceString("Members.Errors.DuplicateEmail"));
-                        return View(userModel);
-                    }
-                    user.Email = userModel.Email;
-                }
-
-                MembershipService.ProfileUpdated(user);
-
-                ShowMessage(new GenericMessageViewModel
-                {
-                    Message = LocalizationService.GetResourceString("Member.ProfileUpdated"),
-                    MessageType = GenericMessages.success
-                });
-
-                try
-                {
-                    Context.SaveChanges();
-
-                    if (changedUsername)
-                    {
-                        // User has changed their username so need to log them in
-                        // as there new username of 
-                        var authCookie = Request.Cookies[FormsAuthentication.FormsCookieName];
-                        if (authCookie != null)
-                        {
-                            var authTicket = FormsAuthentication.Decrypt(authCookie.Value);
-                            if (authTicket != null)
-                            {
-                                var newFormsIdentity = new FormsIdentity(new FormsAuthenticationTicket(
-                                    authTicket.Version,
-                                    user.UserName,
-                                    authTicket.IssueDate,
-                                    authTicket.Expiration,
-                                    authTicket.IsPersistent,
-                                    authTicket.UserData));
-                                var roles = authTicket.UserData.Split("|".ToCharArray());
-                                var newGenericPrincipal = new GenericPrincipal(newFormsIdentity, roles);
-                                System.Web.HttpContext.Current.User = newGenericPrincipal;
-                            }
-                        }
-
-                        // sign out current user
-                        FormsAuthentication.SignOut();
-
-                        // Abandon the session
-                        Session.Abandon();
-
-                        // Sign in new user
-                        FormsAuthentication.SetAuthCookie(user.UserName, false);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Context.RollBack();
-                    LoggingService.Error(ex);
-                    ModelState.AddModelError(string.Empty,
-                        LocalizationService.GetResourceString("Errors.GenericMessage"));
-                }
-
-                return View(userModel);
-            }
-
-
-            return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
         }
 
         /// <summary>

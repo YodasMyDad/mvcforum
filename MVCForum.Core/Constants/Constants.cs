@@ -90,6 +90,8 @@
             public const string ImageBase64 = "ImageBase64";
 
             public const string ImagesBase64 = "ImagesBase64";
+
+            public const string UsernameChanged = "UsernameChanged";
         }
     }
 }

@@ -6,6 +6,7 @@
     using System.IO;
     using System.Linq;
     using System.Web;
+    using Models.General;
     using Providers.Storage;
     using Utilities;
 
@@ -87,32 +88,45 @@
         /// <param name="fileName"></param>
         /// <param name="uploadFolderPath"></param>
         /// <returns></returns>
-        public static string Upload(this Image image, string uploadFolderPath, string fileName)
+        public static UploadFileResult Upload(this Image image, string uploadFolderPath, string fileName)
         {
-            // Create directory if it doesn't exist
-            if (!Directory.Exists(uploadFolderPath))
+            var upResult = new UploadFileResult { UploadSuccessful = true };
+
+            try
             {
-                Directory.CreateDirectory(uploadFolderPath);
+                // Create directory if it doesn't exist
+                if (!Directory.Exists(uploadFolderPath))
+                {
+                    Directory.CreateDirectory(uploadFolderPath);
+                }
+
+                // If no file name make one
+                if (string.IsNullOrWhiteSpace(fileName))
+                {
+                    fileName = "I".AppendUniqueIdentifier();
+                    fileName = $"{fileName.ToLower()}.jpg";
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    // Save the image as a Jpeg only
+                    image.Save(stream, ImageFormat.Jpeg);
+                    stream.Position = 0;
+
+                    var file = new MemoryFile(stream, "image/jpeg", fileName);
+
+                    // Get the storage provider and save file
+                    upResult.UploadedFileName = fileName;
+                    upResult.UploadedFileUrl = StorageProvider.Current.SaveAs(uploadFolderPath, fileName, file);
+                }
+            }
+            catch (Exception ex)
+            {
+                upResult.UploadSuccessful = false;
+                upResult.ErrorMessage = ex.Message;
             }
 
-            // If no file name make one
-            if (string.IsNullOrWhiteSpace(fileName))
-            {
-                fileName = "I".AppendUniqueIdentifier();
-                fileName = $"{fileName.ToLower()}.jpg";
-            }
-
-            using (var stream = new MemoryStream())
-            {
-                // Save the image as a Jpeg only
-                image.Save(stream, ImageFormat.Jpeg);
-                stream.Position = 0;
-
-                var file = new MemoryFile(stream, "image/jpeg", fileName);
-
-                // Get the storage provider and save file
-                return StorageProvider.Current.SaveAs(uploadFolderPath, fileName, file);
-            }
+            return upResult;
         }
 
     }

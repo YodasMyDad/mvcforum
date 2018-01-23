@@ -49,12 +49,15 @@
         /// <param name="minutesToCache">How many minutes to cache them for</param>
         public void Set(string key, object data, CacheTimes minutesToCache)
         {
-            var policy = new CacheItemPolicy
+            if (data != null)
             {
-                AbsoluteExpiration = DateTime.UtcNow + TimeSpan.FromMinutes((int) minutesToCache)
-            };
+                var policy = new CacheItemPolicy
+                {
+                    AbsoluteExpiration = DateTime.UtcNow + TimeSpan.FromMinutes((int)minutesToCache)
+                };
 
-            Cache.Add(new CacheItem(key, data), policy);
+                Cache.Add(new CacheItem(key, data), policy);
+            }
         }
 
         public bool IsSet(string key)

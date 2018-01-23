@@ -1,27 +1,27 @@
 ﻿namespace MvcForum.Core.ExtensionMethods
 {
     using System;
-    using System.Drawing.Imaging;
     using System.IO;
     using System.Linq;
     using System.Web;
+    using Constants;
     using Interfaces.Services;
     using Models.General;
     using Providers.Storage;
-    using Utilities;
 
     public static class HttpExtensionMethods
     {
         /// <summary>
-        /// Checks whether this 
+        ///     Checks whether this
         /// </summary>
         /// <param name="file"></param>
         /// <param name="localizationService"></param>
         /// <param name="mustBeImage"></param>
         /// <returns></returns>
-        public static FileCheckResult CanBeUploaded(this HttpPostedFileBase file, ILocalizationService localizationService, bool mustBeImage = false)
+        public static FileCheckResult CanBeUploaded(this HttpPostedFileBase file,
+            ILocalizationService localizationService, bool mustBeImage = false)
         {
-            var result = new FileCheckResult { IsOk = true};
+            var result = new FileCheckResult {IsOk = true};
 
             var fileName = Path.GetFileName(file.FileName);
             if (fileName == null)
@@ -55,7 +55,7 @@
 
             if (mustBeImage)
             {
-                allowedFileExtensions = Constants.Constants.ImageExtensions;
+                allowedFileExtensions = Constants.ImageExtensions;
                 result.IsImage = true;
             }
 
@@ -97,7 +97,7 @@
         public static UploadFileResult UploadFile(this HttpPostedFileBase file, string uploadFolderPath,
             ILocalizationService localizationService, bool onlyImages = false)
         {
-            var upResult = new UploadFileResult { UploadSuccessful = true };
+            var upResult = new UploadFileResult {UploadSuccessful = true};
             var storageProvider = StorageProvider.Current;
 
             var fileOkResult = file.CanBeUploaded(localizationService);
@@ -129,7 +129,7 @@
                     newFileName = fileName.CreateFilename();
 
                     // Upload the image
-                    upResult.UploadedFileUrl = sourceimage.Upload(uploadFolderPath, newFileName);
+                    upResult = sourceimage.Upload(uploadFolderPath, newFileName);
                 }
                 else
                 {
@@ -139,7 +139,6 @@
                 }
 
                 upResult.UploadedFileName = newFileName;
-
             }
             else
             {

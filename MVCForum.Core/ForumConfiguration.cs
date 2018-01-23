@@ -226,13 +226,13 @@
         /// Gets the User Edit Pipes from the config
         /// </summary>
         private IList<string> _userEditPipes;
-        public IList<string> PipelinesUserEdit
+        public IList<string> PipelinesUserUpdate
         {
             get
             {
                 if (_userEditPipes == null)
                 {
-                    var pipes = GetPlugin("PipelinesUserEdit");
+                    var pipes = GetPlugin("PipelinesUserUpdate");
                     if (!string.IsNullOrWhiteSpace(pipes))
                     {
                         _userEditPipes = ConfigToListString(pipes);

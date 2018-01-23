@@ -310,7 +310,7 @@
         public async Task<IPipelineProcess<MembershipUser>> EditUser(MembershipUser userToEdit, IPrincipal loggedInUser, Image image)
         {
             // Get the pipelines
-            var pipes = ForumConfiguration.Instance.PipelinesUserEdit;
+            var pipes = ForumConfiguration.Instance.PipelinesUserUpdate;
 
             // The model to process
             var piplineModel = new PipelineProcess<MembershipUser>(userToEdit);
