@@ -130,6 +130,9 @@
 
                     // Upload the image
                     upResult = sourceimage.Upload(uploadFolderPath, newFileName);
+
+                    // Remove now
+                    sourceimage.Dispose();
                 }
                 else
                 {

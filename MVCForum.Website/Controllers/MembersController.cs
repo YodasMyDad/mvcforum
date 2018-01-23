@@ -805,7 +805,7 @@
             Image avatar = null;
 
             // Check image for upload
-            if (userModel.Files.Any())
+            if (userModel.Files.Any(x => x != null))
             {
                 // See if file is ok and then convert to image
                 var avatarFile = userModel.Files[0];
@@ -827,13 +827,12 @@
             if (!pipeline.Successful)
             {
                 ModelState.AddModelError(string.Empty, pipeline.ProcessLog.FirstOrDefault());
-                return View();
+                return View(userModel);
             }
 
             if (pipeline.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.UsernameChanged))
             {
-                var usernameChanged =
-                    pipeline.ExtendedData.GetExtendedDataItem<bool>(Constants.ExtendedDataKeys.UsernameChanged);
+                var usernameChanged = Convert.ToBoolean(pipeline.ExtendedData.GetExtendedDataItem(Constants.ExtendedDataKeys.UsernameChanged));
                 if (usernameChanged)
                 {
                     // User has changed their username so need to log them in
@@ -870,6 +869,9 @@
 
             // Repopulate any viewmodel data
             userModel.AmountOfPoints = user.TotalPoints;
+
+            // Set the users Avatar for the confirmation page
+            userModel.Avatar = user.Avatar;
 
             ShowMessage(new GenericMessageViewModel
             {

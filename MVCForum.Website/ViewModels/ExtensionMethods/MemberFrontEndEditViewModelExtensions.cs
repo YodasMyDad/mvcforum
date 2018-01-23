@@ -25,10 +25,11 @@
             user.Website = viewModel.Website;
             user.Twitter = viewModel.Twitter;
             user.Facebook = viewModel.Facebook;
-            user.DisableFileUploads = viewModel.DisableFileUploads;
-            user.Avatar = viewModel.Avatar;
-            user.DisableEmailNotifications = viewModel.DisableEmailNotifications;
-      
+            if (!string.IsNullOrWhiteSpace(viewModel.Avatar))
+            {
+                user.Avatar = viewModel.Avatar;
+            }           
+            user.DisableEmailNotifications = viewModel.DisableEmailNotifications;      
             return user;
         }
 

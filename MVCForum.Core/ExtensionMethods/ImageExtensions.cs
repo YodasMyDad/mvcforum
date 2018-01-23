@@ -8,7 +8,6 @@
     using System.Web;
     using Models.General;
     using Providers.Storage;
-    using Utilities;
 
     public static class ImageExtensions
     {
@@ -53,32 +52,32 @@
         public static Image ToImage(this HttpPostedFileBase httpPostedFile)
         {
             // Rotate image if wrong want around
-            using (var sourceimage = Image.FromStream(httpPostedFile.InputStream))
+            var sourceimage = Image.FromStream(httpPostedFile.InputStream, true, true);
+
+            if (sourceimage.PropertyIdList.Contains(0x0112))
             {
-                if (sourceimage.PropertyIdList.Contains(0x0112))
+                int rotationValue = sourceimage.GetPropertyItem(0x0112).Value[0];
+                switch (rotationValue)
                 {
-                    int rotationValue = sourceimage.GetPropertyItem(0x0112).Value[0];
-                    switch (rotationValue)
-                    {
-                        case 1: // landscape, do nothing
-                            break;
+                    case 1: // landscape, do nothing
+                        break;
 
-                        case 8: // rotated 90 right
-                                // de-rotate:
-                            sourceimage.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                            break;
+                    case 8: // rotated 90 right
+                            // de-rotate:
+                        sourceimage.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                        break;
 
-                        case 3: // bottoms up
-                            sourceimage.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                            break;
+                    case 3: // bottoms up
+                        sourceimage.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                        break;
 
-                        case 6: // rotated 90 left
-                            sourceimage.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                            break;
-                    }
+                    case 6: // rotated 90 left
+                        sourceimage.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                        break;
                 }
-                return sourceimage;
             }
+
+            return sourceimage;
         }
 
         /// <summary>
@@ -110,7 +109,8 @@
                 using (var stream = new MemoryStream())
                 {
                     // Save the image as a Jpeg only
-                    image.Save(stream, ImageFormat.Jpeg);
+                    var bmp = new Bitmap(image);
+                    bmp.Save(stream, ImageFormat.Jpeg);
                     stream.Position = 0;
 
                     var file = new MemoryFile(stream, "image/jpeg", fileName);

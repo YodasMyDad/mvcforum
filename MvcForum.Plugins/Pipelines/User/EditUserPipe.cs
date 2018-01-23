@@ -1,7 +1,6 @@
 ﻿namespace MvcForum.Plugins.Pipelines.User
 {
     using System.Data.Entity;
-    using System.Security.Principal;
     using System.Threading.Tasks;
     using System.Web.Hosting;
     using Core;
@@ -29,10 +28,6 @@
         public async Task<IPipelineProcess<MembershipUser>> Process(IPipelineProcess<MembershipUser> input,
             IMvcForumContext context)
         {
-            // Grab the logged in user (This should always be there)
-            var principal = input.ExtendedData.GetExtendedDataItem<IPrincipal>(Constants.ExtendedDataKeys.UserObject);
-            var loggedOnUser = principal.GetMembershipUser(_membershipService);
-
             // Grab out the image if we have one
             if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.ImageBase64))
             {
@@ -42,7 +37,7 @@
                 if (avatar != null)
                 {
                     // Before we save anything, check the user already has an upload folder and if not create one
-                    var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(ForumConfiguration.Instance.UploadFolderPath, loggedOnUser.Id));
+                    var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(ForumConfiguration.Instance.UploadFolderPath, input.EntityToProcess.Id));
 
                     // If successful then upload the file                    
                     var uploadResult = avatar.Upload(uploadFolderPath, string.Empty);
@@ -53,6 +48,9 @@
                         input.AddError(uploadResult.ErrorMessage);
                         return input;
                     }
+
+                    // Save avatar
+                    input.EntityToProcess.Avatar = uploadResult.UploadedFileName;
                 }
             }
 

@@ -316,12 +316,13 @@
             var piplineModel = new PipelineProcess<MembershipUser>(userToEdit);
 
             // Add the user object
-            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.UserObject, JsonConvert.SerializeObject(loggedInUser));
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, loggedInUser.Identity.Name);
 
             // Add the Image as a base 64 image so we can grab it back out
             if (image != null)
             {
                 piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.ImageBase64, image.ImageToBase64());
+                image.Dispose();
             }
 
             // Get instance of the pipeline to use

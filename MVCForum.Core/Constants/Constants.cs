@@ -35,10 +35,14 @@
 
         //------------ End Permissions ----------
 
-        // Paging options
+        /// <summary>
+        ///  Paging format
+        /// </summary>
         public const string PagingUrlFormat = "{0}?p={1}";
 
-        // How long 
+        /// <summary>
+        /// How long in minutes to show members
+        /// </summary>
         public const int TimeSpanInMinutesToShowMembers = 12;
 
         /// <summary>
@@ -46,19 +50,34 @@
         /// </summary>
         public const int TimeSpanInMinutesToDoCheck = 3;
 
-
+        /// <summary>
+        /// Editor template for colour picker
+        /// </summary>
         public const string EditorTemplateColourPicker = "colourpicker";
 
-        //Querystring names
+        /// <summary>
+        /// Order posts querystring
+        /// </summary>
         public const string PostOrderBy = "order";
 
+        /// <summary>
+        /// All posts querystring
+        /// </summary>
         public const string AllPosts = "all";
 
-        //Mobile Check Name
+        /// <summary>
+        /// Mobile check key
+        /// </summary>
         public const string IsMobileDevice = "IsMobileDevice";
 
+        /// <summary>
+        /// Lanaguage strings
+        /// </summary>
         public static string LanguageStrings = string.Concat(LocalisationCacheName, "LangStrings-");
 
+        /// <summary>
+        /// Image extensions
+        /// </summary>
         public const string ImageExtensions = "jpg,jpeg,png,gif";
 
         public class ExtendedDataKeys
@@ -78,19 +97,39 @@
             /// </summary>
             public const string SocialProfileImageUrl = "SocialProfileImageUrl";
 
+            /// <summary>
+            /// Key for whether to manually authorise members
+            /// </summary>
             public const string ManuallyAuthoriseMembers = "ManuallyAuthoriseMembers";
+
+            /// <summary>
+            /// Key for MemberEmailAuthorisationNeeded
+            /// </summary>
             public const string MemberEmailAuthorisationNeeded = "MemberEmailAuthorisationNeeded";
+
+            /// <summary>
+            /// Key for the return url
+            /// </summary>
             public const string ReturnUrl = "ReturnUrl";
 
+            /// <summary>
+            /// Key for the username
+            /// </summary>
             public const string Username = "Username";
+
+            /// <summary>
+            /// Key for the password
+            /// </summary>
             public const string Password = "Password";
 
-            public const string UserObject = "UserObject";
-
+            /// <summary>
+            /// Key for a Image string base 64
+            /// </summary>
             public const string ImageBase64 = "ImageBase64";
 
-            public const string ImagesBase64 = "ImagesBase64";
-
+            /// <summary>
+            /// Key for whether username has changes
+            /// </summary>
             public const string UsernameChanged = "UsernameChanged";
         }
     }
