@@ -26,70 +26,64 @@ namespace MvcForum.Core.Ioc
     public static class UnityHelper
     {
 
-        private static IUnityContainer _unityContainer;
+        public static IUnityContainer Container;
 
-        public static IUnityContainer Start()
+        public static void InitialiseUnityContainer()
         {
-            var container = new UnityContainer();
-            DependencyResolver.SetResolver(new UnityDependencyResolver(container));
-            _unityContainer = BuildUnityContainer(container);
-            return _unityContainer;
+            Container = new UnityContainer();
+            DependencyResolver.SetResolver(new UnityDependencyResolver(Container));
+
+            // Bit annoying having just this here but we need this early in the startup for seed method
+            Container.BindInRequestScope<IConfigService, ConfigService>();
+            Container.BindInRequestScope<ICacheService, CacheService>();
         }
 
-        /// <summary>
-        /// Return Container if needed
-        /// </summary>
-        public static IUnityContainer Container => _unityContainer;
 
         /// <summary>
         ///     Inject
         /// </summary>
         /// <returns></returns>
-        private static IUnityContainer BuildUnityContainer(UnityContainer container)
+        public static void BuildUnityContainer()
         {
             // register all your components with the container here
             // it is NOT necessary to register your controllers
 
             // Database context, one per request, ensure it is disposed
-            container.BindInRequestScope<IMvcForumContext, MvcForumContext>();
+            Container.BindInRequestScope<IMvcForumContext, MvcForumContext>();
 
             //Bind the various domain model services and repositories that e.g. our controllers require         
-            container.BindInRequestScope<IRoleService, RoleService>();
-            container.BindInRequestScope<ICategoryService, CategoryService>();
-            container.BindInRequestScope<IMembershipService, MembershipService>();
-            container.BindInRequestScope<IPermissionService, PermissionService>();
-            container.BindInRequestScope<ISettingsService, SettingsService>();
-            container.BindInRequestScope<ITopicService, TopicService>();
-            container.BindInRequestScope<ITopicTagService, TopicTagService>();
-            container.BindInRequestScope<IPostService, PostService>();
-            container.BindInRequestScope<ILocalizationService, LocalizationService>();
-            container.BindInRequestScope<IVoteService, VoteService>();
-            container.BindInRequestScope<IBadgeService, BadgeService>();
-            container.BindInRequestScope<IMembershipUserPointsService, MembershipUserPointsService>();
-            container.BindInRequestScope<ICategoryPermissionForRoleService, CategoryPermissionForRoleService>();
-            container.BindInRequestScope<ICategoryNotificationService, CategoryNotificationService>();
-            container.BindInRequestScope<ITopicNotificationService, TopicNotificationService>();
-            container.BindInRequestScope<IPrivateMessageService, PrivateMessageService>();
-            container.BindInRequestScope<ILoggingService, LoggingService>();
-            container.BindInRequestScope<IEmailService, EmailService>();
-            container.BindInRequestScope<IReportService, ReportService>();
-            container.BindInRequestScope<IActivityService, ActivityService>();
-            container.BindInRequestScope<IPollService, PollService>();
-            container.BindInRequestScope<IPollVoteService, PollVoteService>();
-            container.BindInRequestScope<IPollAnswerService, PollAnswerService>();
-            container.BindInRequestScope<IBannedEmailService, BannedEmailService>();
-            container.BindInRequestScope<IBannedWordService, BannedWordService>();
-            container.BindInRequestScope<IUploadedFileService, UploadedFileService>();
-            container.BindInRequestScope<IFavouriteService, FavouriteService>();
-            container.BindInRequestScope<IGlobalPermissionForRoleService, GlobalPermissionForRoleService>();
-            container.BindInRequestScope<ICacheService, CacheService>();
-            container.BindInRequestScope<ITagNotificationService, TagNotificationService>();
-            container.BindInRequestScope<IBlockService, BlockService>();
-            container.BindInRequestScope<IConfigService, ConfigService>();
-            container.BindInRequestScope<IPostEditService, PostEditService>();
-            container.BindInRequestScope<IAssemblyProvider, AssemblyProvider>();
-
-            return container;
+            Container.BindInRequestScope<IRoleService, RoleService>();
+            Container.BindInRequestScope<ICategoryService, CategoryService>();
+            Container.BindInRequestScope<IMembershipService, MembershipService>();
+            Container.BindInRequestScope<IPermissionService, PermissionService>();
+            Container.BindInRequestScope<ISettingsService, SettingsService>();
+            Container.BindInRequestScope<ITopicService, TopicService>();
+            Container.BindInRequestScope<ITopicTagService, TopicTagService>();
+            Container.BindInRequestScope<IPostService, PostService>();
+            Container.BindInRequestScope<ILocalizationService, LocalizationService>();
+            Container.BindInRequestScope<IVoteService, VoteService>();
+            Container.BindInRequestScope<IBadgeService, BadgeService>();
+            Container.BindInRequestScope<IMembershipUserPointsService, MembershipUserPointsService>();
+            Container.BindInRequestScope<ICategoryPermissionForRoleService, CategoryPermissionForRoleService>();
+            Container.BindInRequestScope<ICategoryNotificationService, CategoryNotificationService>();
+            Container.BindInRequestScope<ITopicNotificationService, TopicNotificationService>();
+            Container.BindInRequestScope<IPrivateMessageService, PrivateMessageService>();
+            Container.BindInRequestScope<ILoggingService, LoggingService>();
+            Container.BindInRequestScope<IEmailService, EmailService>();
+            Container.BindInRequestScope<IReportService, ReportService>();
+            Container.BindInRequestScope<IActivityService, ActivityService>();
+            Container.BindInRequestScope<IPollService, PollService>();
+            Container.BindInRequestScope<IPollVoteService, PollVoteService>();
+            Container.BindInRequestScope<IPollAnswerService, PollAnswerService>();
+            Container.BindInRequestScope<IBannedEmailService, BannedEmailService>();
+            Container.BindInRequestScope<IBannedWordService, BannedWordService>();
+            Container.BindInRequestScope<IUploadedFileService, UploadedFileService>();
+            Container.BindInRequestScope<IFavouriteService, FavouriteService>();
+            Container.BindInRequestScope<IGlobalPermissionForRoleService, GlobalPermissionForRoleService>();            
+            Container.BindInRequestScope<ITagNotificationService, TagNotificationService>();
+            Container.BindInRequestScope<IBlockService, BlockService>();            
+            Container.BindInRequestScope<IPostEditService, PostEditService>();
+            Container.BindInRequestScope<IAssemblyProvider, AssemblyProvider>();
         }
     }
 

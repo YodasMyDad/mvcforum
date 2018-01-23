@@ -12,7 +12,6 @@ namespace MvcForum.Web
     using System.Web.Routing;
     using Application.ViewEngine;
     using Core;
-    using Core.Constants;
     using Core.Data.Context;
     using Core.Events;
     using Core.Interfaces;
@@ -32,11 +31,17 @@ namespace MvcForum.Web
             System.Web.Http.GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
 
+            // Start unity
+            UnityHelper.InitialiseUnityContainer();
+
             // Make DB update to latest migration
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<MvcForumContext, Configuration>());
 
-            // Start unity
-            var unityContainer = UnityHelper.Start();
+            // Set the rest of the Ioc
+            UnityHelper.BuildUnityContainer();
+
+            // Grab the container as we will need to use it
+            var unityContainer = UnityHelper.Container;
 
             // Set Hangfire to use SQL Server and the connection string
             GlobalConfiguration.Configuration.UseSqlServerStorage(ForumConfiguration.Instance.MvcForumContext);
@@ -52,7 +57,6 @@ namespace MvcForum.Web
             // Get services needed
             var mvcForumContext = unityContainer.Resolve<IMvcForumContext>();
             var badgeService = unityContainer.Resolve<IBadgeService>();
-            var settingsService = unityContainer.Resolve<ISettingsService>();
             var loggingService = unityContainer.Resolve<ILoggingService>();
             var assemblyProvider = unityContainer.Resolve<IAssemblyProvider>();
 
@@ -78,9 +82,16 @@ namespace MvcForum.Web
                 loggingService.Error($"Error processing badge classes: {ex.Message}");
             }
 
+            var theme = "Metro";
+            var settings = mvcForumContext.Setting.FirstOrDefault();
+            if (settings != null)
+            {
+                theme = settings.Theme;
+            }
+
             // Set the view engine
             ViewEngines.Engines.Clear();
-            ViewEngines.Engines.Add(new ForumViewEngine(settingsService.GetSettings().Theme));
+            ViewEngines.Engines.Add(new ForumViewEngine(theme));
 
             // Initialise the events
             EventManager.Instance.Initialize(loggingService, assemblies);
