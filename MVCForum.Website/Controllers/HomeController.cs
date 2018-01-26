@@ -37,27 +37,27 @@
             _activityService = activityService;
         }
 
-        public ActionResult Index()
+        public virtual ActionResult Index()
         {
             return View();
         }
 
-        public ActionResult Leaderboard()
+        public virtual ActionResult Leaderboard()
         {
             return View();
         }
 
-        public ActionResult Following()
+        public virtual ActionResult Following()
         {
             return View();
         }
 
-        public ActionResult PostedIn()
+        public virtual ActionResult PostedIn()
         {
             return View();
         }
 
-        public ActionResult TermsAndConditions()
+        public virtual ActionResult TermsAndConditions()
         {
             var settings = SettingsService.GetSettings();
             var viewModel = new TermsAndConditionsViewModel
@@ -69,7 +69,7 @@
         }
 
         [HttpPost]
-        public ActionResult TermsAndConditions(TermsAndConditionsViewModel viewmodel)
+        public virtual ActionResult TermsAndConditions(TermsAndConditionsViewModel viewmodel)
         {
             if (ModelState.IsValid)
             {
@@ -93,7 +93,7 @@
             return View(viewmodel);
         }
 
-        public async Task<ActionResult> Activity(int? p)
+        public virtual async Task<ActionResult> Activity(int? p)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -118,7 +118,7 @@
         }
 
         [OutputCache(Duration = (int) CacheTimes.TwoHours)]
-        public ActionResult LatestRss()
+        public virtual ActionResult LatestRss()
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -177,7 +177,7 @@
         }
 
         [OutputCache(Duration = (int) CacheTimes.TwoHours)]
-        public ActionResult ActivityRss()
+        public virtual ActionResult ActivityRss()
         {
             // get an rss lit ready
             var rssActivities = new List<RssItem>();
@@ -235,7 +235,7 @@
         }
 
         [OutputCache(Duration = (int) CacheTimes.TwoHours)]
-        public ActionResult GoogleSitemap()
+        public virtual ActionResult GoogleSitemap()
         {
             // Allowed Categories for a guest
             var guestRole = RoleService.GetRole(Constants.GuestRoleName);
@@ -265,7 +265,7 @@
         }
 
         [OutputCache(Duration = (int) CacheTimes.TwoHours)]
-        public ActionResult GoogleMemberSitemap()
+        public virtual ActionResult GoogleMemberSitemap()
         {
             // get all members profiles
             var members = MembershipService.GetAll();
@@ -291,7 +291,7 @@
         }
 
         [OutputCache(Duration = (int) CacheTimes.TwoHours)]
-        public ActionResult GoogleCategorySitemap()
+        public virtual ActionResult GoogleCategorySitemap()
         {
             // Allowed Categories for a guest
             var guestRole = RoleService.GetRole(Constants.GuestRoleName);

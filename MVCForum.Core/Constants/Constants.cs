@@ -123,14 +123,24 @@
             public const string Password = "Password";
 
             /// <summary>
-            /// Key for a Image string base 64
+            /// Key for a PostedFiles
             /// </summary>
-            public const string ImageBase64 = "ImageBase64";
+            public const string PostedFiles = "PostedFiles";
 
             /// <summary>
             /// Key for whether username has changes
             /// </summary>
             public const string UsernameChanged = "UsernameChanged";
+
+            /// <summary>
+            /// Key for whether something needs moderating
+            /// </summary>
+            public const string Moderate = "Moderate";
+
+            /// <summary>
+            /// Key for the permission set
+            /// </summary>
+            public const string PermissionSet = "PermissionSet";
         }
     }
 }

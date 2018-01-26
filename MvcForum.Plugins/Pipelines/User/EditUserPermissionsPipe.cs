@@ -28,7 +28,7 @@
             IMvcForumContext context)
         {
             // Get the Current user from ExtendedData
-            var username = input.ExtendedData.GetExtendedDataItem(Constants.ExtendedDataKeys.Username);
+            var username = input.ExtendedData[Constants.ExtendedDataKeys.Username] as string;
 
             // See if we can get the username
             if (!string.IsNullOrWhiteSpace(username))

@@ -337,6 +337,7 @@ Side.Search.SearchFor,Search for...
 SideBox.MyTools,My Tools
 Site.MvcForum,MvcForum
 SlidePanel.CloseConfirmation,Are you sure you want to close?
+Spam.FloodTestFailed,You are posting too quickly
 Stats.FooterActiveUsersText,Members Currently Online:
 Stats.FooterMainStatText,Our {0} members have posted {1} times in {2} discussions
 Stats.LatestMembers,Latest Members:

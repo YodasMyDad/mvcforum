@@ -204,8 +204,8 @@
             }
 
             // Set manuallyAuthoriseMembers, memberEmailAuthorisationNeeded in extendeddata
-            input.ExtendedData.Add(Constants.ExtendedDataKeys.ManuallyAuthoriseMembers, $"{manuallyAuthoriseMembers}");
-            input.ExtendedData.Add(Constants.ExtendedDataKeys.MemberEmailAuthorisationNeeded,$"{memberEmailAuthorisationNeeded}");
+            input.ExtendedData.Add(Constants.ExtendedDataKeys.ManuallyAuthoriseMembers, manuallyAuthoriseMembers);
+            input.ExtendedData.Add(Constants.ExtendedDataKeys.MemberEmailAuthorisationNeeded, memberEmailAuthorisationNeeded);
 
             return input;
         }

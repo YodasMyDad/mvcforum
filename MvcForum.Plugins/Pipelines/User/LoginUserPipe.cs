@@ -5,7 +5,6 @@
     using System.Threading.Tasks;
     using System.Web.Security;
     using Core.Constants;
-    using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Pipeline;
     using Core.Interfaces.Services;
@@ -31,8 +30,8 @@
             IMvcForumContext context)
         {
 
-            var username = input.ExtendedData.GetExtendedDataItem(Constants.ExtendedDataKeys.Username);
-            var password = input.ExtendedData.GetExtendedDataItem(Constants.ExtendedDataKeys.Password);
+            var username = input.ExtendedData[Constants.ExtendedDataKeys.Username] as string;
+            var password = input.ExtendedData[Constants.ExtendedDataKeys.Password] as string;
 
             // Validate login
             if (_membershipService.ValidateUser(username, password, Membership.MaxInvalidPasswordAttempts))

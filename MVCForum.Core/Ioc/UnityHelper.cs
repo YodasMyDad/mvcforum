@@ -84,6 +84,7 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IBlockService, BlockService>();            
             Container.BindInRequestScope<IPostEditService, PostEditService>();
             Container.BindInRequestScope<IAssemblyProvider, AssemblyProvider>();
+            Container.BindInRequestScope<ISpamService, SpamService>();
         }
     }
 

@@ -5,6 +5,7 @@
     using System.Drawing;
     using System.Security.Principal;
     using System.Threading.Tasks;
+    using System.Web;
     using Models.Entities;
     using Models.Enums;
     using Models.General;
@@ -30,7 +31,7 @@
         void UnlockUser(string username, bool resetPasswordAttempts);
         MembershipUser CreateEmptyUser();
         Task<IPipelineProcess<MembershipUser>> CreateUser(MembershipUser newUser, LoginType loginType);
-        Task<IPipelineProcess<MembershipUser>> EditUser(MembershipUser userToEdit, IPrincipal loggedInUser, Image image);
+        Task<IPipelineProcess<MembershipUser>> EditUser(MembershipUser userToEdit, IPrincipal loggedInUser, HttpPostedFileBase image);
         string ErrorCodeToString(MembershipCreateStatus createStatus);
         IList<MembershipUser> GetAll();
         Task<PaginatedList<MembershipUser>> GetAll(int pageIndex, int pageSize);

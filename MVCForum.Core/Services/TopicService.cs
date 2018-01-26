@@ -147,7 +147,7 @@
             topic.CreateDate = DateTime.UtcNow;
 
             // url slug generator
-            topic.Slug = ServiceHelpers.GenerateSlug(topic.Name, GetTopicBySlugLike(ServiceHelpers.CreateUrl(topic.Name)), null);
+            topic.Slug = ServiceHelpers.GenerateSlug(topic.Name, GetTopicBySlugLike(ServiceHelpers.CreateUrl(topic.Name)).Select(x => x.Slug).ToList(), null);
 
             return _context.Topic.Add(topic);
         }

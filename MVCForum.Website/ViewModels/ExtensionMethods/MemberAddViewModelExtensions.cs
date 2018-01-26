@@ -6,7 +6,7 @@
     using Core.Models.Enums;
     using Member;
 
-    public static class MemberAddViewModelExtensions
+    public static partial class MemberAddViewModelExtensions
     {
         /// <summary>
         /// Converts a add view model to a membershipuser

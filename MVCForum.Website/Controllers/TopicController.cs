@@ -10,7 +10,7 @@
     using System.Web.Mvc;
     using System.Web.Security;
     using Application;
-    using Application.Akismet;
+    //using Application.Akismet;
     using Areas.Admin.ViewModels;
     using Core;
     using Core.Constants;
@@ -834,8 +834,7 @@
                     if (!string.IsNullOrWhiteSpace(topicViewModel.Content))
                     {
                         // Check for any banned words
-                        topicViewModel.Content =
-                            _bannedWordService.SanitiseBannedWords(topicViewModel.Content, bannedWords);
+                        topicViewModel.Content = _bannedWordService.SanitiseBannedWords(topicViewModel.Content, bannedWords);
 
                         var e = new TopicMadeEventArgs { Topic = topic };
                         EventManager.Instance.FireBeforeTopicMade(this, e);
@@ -917,13 +916,14 @@
                                 PointsForId = topicPost.Id
                             });
 
-                            // Now check its not spam
-                            var akismetHelper = new AkismetHelper(SettingsService);
-                            if (akismetHelper.IsSpam(topic))
-                            {
-                                topic.Pending = true;
-                                moderate = true;
-                            }
+                            //// Now check its not spam
+                            //var akismetHelper = new AkismetHelper(SettingsService);
+                            //if (akismetHelper.IsSpam(topic))
+                            //{
+                            //    topic.Pending = true;
+                            //    moderate = true;
+
+                            //}
 
                             if (topicViewModel.Files != null)
                             {

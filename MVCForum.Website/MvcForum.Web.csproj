@@ -58,9 +58,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Application\ActionFilterAttributes\MustBeTrueAttribute.cs" />
-    <Compile Include="Application\Akismet\Comment.cs" />
-    <Compile Include="Application\Akismet\IValidator.cs" />
-    <Compile Include="Application\Akismet\Validator.cs" />
     <Compile Include="Application\ActionFilterAttributes\NoSlash.cs" />
     <Compile Include="Application\AppHelpers.cs" />
     <Compile Include="Application\DatesUI.cs" />
@@ -157,6 +154,7 @@
     <Compile Include="ViewModels\Category\SubCategoryViewModel.cs" />
     <Compile Include="ViewModels\ExtensionMethods\MemberAddViewModelExtensions.cs" />
     <Compile Include="ViewModels\ExtensionMethods\MemberFrontEndEditViewModelExtensions.cs" />
+    <Compile Include="ViewModels\ExtensionMethods\TopicViewModelExtensions.cs" />
     <Compile Include="ViewModels\Favourite\FavouriteJsonReturnModel.cs" />
     <Compile Include="ViewModels\Home\AllRecentActivitiesViewModel.cs" />
     <Compile Include="ViewModels\Home\ListCategoriesViewModels.cs" />
@@ -207,7 +205,6 @@
     <Compile Include="ViewModels\Category\CategoryViewModel.cs" />
     <Compile Include="ViewModels\Email\EmailSubscriptionViewModel.cs" />
     <Compile Include="ViewModels\Language\LanguageListAllViewModel.cs" />
-    <Compile Include="Application\Akismet\AkismetHelper.cs" />
     <Compile Include="ViewModels\Mapping\ViewModelMapping.cs" />
     <Compile Include="ViewModels\Point\HighEarnersPointViewModel.cs" />
     <Compile Include="ViewModels\Search\SearchViewModel.cs" />

@@ -6,7 +6,7 @@
     /// <summary>
     /// Extension methods for the member edit view model
     /// </summary>
-    public static class MemberFrontEndEditViewModelExtensions
+    public static partial class MemberFrontEndEditViewModelExtensions
     {
         /// <summary>
         /// Creates a MembershipUser from the view model

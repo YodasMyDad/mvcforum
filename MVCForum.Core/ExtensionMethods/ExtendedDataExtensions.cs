@@ -1,6 +1,5 @@
 ﻿namespace MvcForum.Core.ExtensionMethods
 {
-    using System.Collections.Generic;
     using Models;
     using Models.Entities;
     using Newtonsoft.Json;
@@ -139,36 +138,6 @@
             return default(TTwo);
         }
 
-
-        /// <summary>
-        ///     Gets an extended data value by key.
-        /// </summary>
-        /// <param name="extendedDataItems"></param>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public static string GetExtendedDataItem(this Dictionary<string, string> extendedDataItems, string key)
-        {
-            if (extendedDataItems.ContainsKey(key))
-            {
-                return extendedDataItems[key];
-            }           
-            return string.Empty;
-        }
-
-        /// <summary>
-        /// Gets an extended data item and convert it to a type
-        /// </summary>
-        /// <param name="extendedDataItems"></param>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public static T GetExtendedDataItem<T>(this Dictionary<string, string> extendedDataItems, string key)
-        {
-            if (extendedDataItems.ContainsKey(key))
-            {
-                return JsonConvert.DeserializeObject<T>(extendedDataItems[key]);
-            }
-            return default(T);
-        }
     }
 
 

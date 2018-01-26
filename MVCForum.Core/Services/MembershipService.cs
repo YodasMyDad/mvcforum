@@ -278,7 +278,7 @@
             newUser.LastLockoutDate = (DateTime)SqlDateTime.MinValue;
             newUser.LastLoginDate = DateTime.UtcNow;
             newUser.IsLockedOut = false;
-            newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)), null);
+            newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)).Select(x => x.Slug).ToList(), null);
 
             // Get the pipelines
             var userCreatePipes = ForumConfiguration.Instance.PipelinesUserCreate;
@@ -287,7 +287,7 @@
             var piplineModel = new PipelineProcess<MembershipUser>(newUser);
 
             // Add the login type to 
-            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.LoginType, JsonConvert.SerializeObject(loginType));
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.LoginType, loginType);
 
             // Get instance of the pipeline to use
             var createUserPipeline = new Pipeline<IPipelineProcess<MembershipUser>, MembershipUser>(_context);
@@ -309,7 +309,7 @@
         }
 
         /// <inheritdoc />
-        public async Task<IPipelineProcess<MembershipUser>> EditUser(MembershipUser userToEdit, IPrincipal loggedInUser, Image image)
+        public async Task<IPipelineProcess<MembershipUser>> EditUser(MembershipUser userToEdit, IPrincipal loggedInUser, HttpPostedFileBase image)
         {
             // Get the pipelines
             var pipes = ForumConfiguration.Instance.PipelinesUserUpdate;
@@ -320,11 +320,10 @@
             // Add the user object
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, loggedInUser.Identity.Name);
 
-            // Add the Image as a base 64 image so we can grab it back out
+            // Add the file to the extended data
             if (image != null)
             {
-                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.ImageBase64, image.ImageToBase64());
-                image.Dispose();
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, image);
             }
 
             // Get instance of the pipeline to use
@@ -877,7 +876,7 @@
                     userToImport = CreateEmptyUser();
                     userToImport.UserName = userName;
                     userToImport.Slug = ServiceHelpers.GenerateSlug(userToImport.UserName,
-                        GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)), userToImport.Slug);
+                        GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)).Select(x => x.Slug).ToList(), userToImport.Slug);
                     userToImport.Email = email;
                     userToImport.IsApproved = true;
                     userToImport.PasswordSalt = StringUtils.CreateSalt(Constants.SaltSize);

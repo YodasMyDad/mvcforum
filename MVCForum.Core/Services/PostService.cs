@@ -626,7 +626,6 @@
 
         public IList<Post> GetPostsByMember(Guid memberId, List<Category> allowedCategories)
         {
-
                 // get the category ids
                 var allowedCatIds = allowedCategories.Select(x => x.Id);
                 return _context.Post

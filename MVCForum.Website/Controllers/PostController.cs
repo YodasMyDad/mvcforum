@@ -7,7 +7,6 @@
     using System.Web.Mvc;
     using System.Web.Security;
     using Application;
-    using Application.Akismet;
     using Areas.Admin.ViewModels;
     using Core;
     using Core.Constants;
@@ -95,7 +94,7 @@
 
             var postContent = _bannedWordService.SanitiseBannedWords(post.PostContent);
 
-            var akismetHelper = new AkismetHelper(SettingsService);
+            //var akismetHelper = new AkismetHelper(SettingsService);
 
             var newPost = _postService.AddNewPost(postContent, topic, loggedOnUser, out permissions);
 
@@ -103,10 +102,10 @@
             newPost.InReplyTo = post.InReplyTo;
 
 
-            if (akismetHelper.IsSpam(newPost))
-            {
-                newPost.Pending = true;
-            }
+            //if (akismetHelper.IsSpam(newPost))
+            //{
+            //    newPost.Pending = true;
+            //}
 
             if (!newPost.Pending.HasValue || !newPost.Pending.Value)
             {

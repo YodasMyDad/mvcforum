@@ -41,6 +41,7 @@
     <Compile Include="Constants\CacheKeys.cs" />
     <Compile Include="ExtensionMethods\ImageExtensions.cs" />
     <Compile Include="ExtensionMethods\PipelineExtensions.cs" />
+    <Compile Include="ExternalServices\AkismetValidator.cs" />
     <Compile Include="ForumConfiguration.cs" />
     <Compile Include="ExtensionMethods\ExtendedDataExtensions.cs" />
     <Compile Include="ExtensionMethods\HttpExtensionMethods.cs" />
@@ -50,6 +51,7 @@
     <Compile Include="Interfaces\IAssemblyProvider.cs" />
     <Compile Include="Interfaces\Pipeline\IPipe.cs" />
     <Compile Include="Interfaces\Pipeline\IPipelineProcess.cs" />
+    <Compile Include="Interfaces\Services\ISpamService.cs" />
     <Compile Include="MemoryFile.cs" />
     <Compile Include="Migrations\201801011815079_IncreaseAccessTokenLength.cs" />
     <Compile Include="Migrations\201801011815079_IncreaseAccessTokenLength.Designer.cs">
@@ -206,6 +208,7 @@
     </Compile>
     <Compile Include="Models\OAuth\FacebookOAuthData.cs" />
     <Compile Include="Models\OAuth\GoogleOAuthData.cs" />
+    <Compile Include="Models\Spam\Comment.cs" />
     <Compile Include="Pipeline\Pipeline.cs" />
     <Compile Include="Pipeline\PipelineProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -274,6 +277,7 @@
     <Compile Include="Services\RoleService.cs" />
     <Compile Include="Services\ServiceHelpers.cs" />
     <Compile Include="Services\SettingsService.cs" />
+    <Compile Include="Services\SpamService.cs" />
     <Compile Include="SiteConfig\SiteConfig.cs" />
     <Compile Include="Services\TagNotificationService.cs" />
     <Compile Include="Services\TopicNotificationService.cs" />

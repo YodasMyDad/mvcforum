@@ -45,6 +45,14 @@
     <Compile Include="Badges\UserVoteUpBadge.cs" />
     <Compile Include="Badges\YourPostFavouritedBadge.cs" />
     <Compile Include="Badges\YourPostFavouritedTenTimesBadge.cs" />
+    <Compile Include="Pipelines\Post\FilesPipe.cs" />
+    <Compile Include="Pipelines\Post\PostPermissionsPipe.cs" />
+    <Compile Include="Pipelines\Post\SpamCheckPipe.cs" />
+    <Compile Include="Pipelines\Post\CreateNewPostPipe.cs" />
+    <Compile Include="Pipelines\Topic\TopicCreatePipe.cs" />
+    <Compile Include="Pipelines\Topic\TopicNotificationsAndBadgesPipe.cs" />
+    <Compile Include="Pipelines\Topic\TopicSpamPipe.cs" />
+    <Compile Include="Pipelines\Topic\TopicPermissionsPipe.cs" />
     <Compile Include="Pipelines\User\CheckBannedWordsPipe.cs" />
     <Compile Include="Pipelines\User\CreateNewUserPipe.cs" />
     <Compile Include="Pipelines\User\DeleteUserPipe.cs" />
@@ -152,7 +160,9 @@
       <Version>5.0.11</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Pipelines\Category\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MVCForum.Core\MvcForum.Core.csproj">
       <Project>{20ad3d3c-153e-47ac-ba9c-3e4db876990e}</Project>

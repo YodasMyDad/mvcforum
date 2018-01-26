@@ -162,7 +162,7 @@
 
             // url slug generator
             category.Slug = ServiceHelpers.GenerateSlug(category.Name,
-                GetBySlugLike(ServiceHelpers.CreateUrl(category.Name)), null);
+                GetBySlugLike(ServiceHelpers.CreateUrl(category.Name)).Select(x => x.Slug).ToList(), null);
 
             // Add the category
             return _context.Category.Add(category);
@@ -191,7 +191,7 @@
 
             if (updateSlug)
             {
-                category.Slug = ServiceHelpers.GenerateSlug(category.Name, GetBySlugLike(category.Slug), category.Slug);
+                category.Slug = ServiceHelpers.GenerateSlug(category.Name, GetBySlugLike(category.Slug).Select(x => x.Slug).ToList(), category.Slug);
             }
         }
 

@@ -1,4 +1,4 @@
-﻿namespace MvcForum.Web.Application.Akismet
+﻿namespace MvcForum.Core.Models.Spam
 {
     /// <summary>
     ///     This class defines an Akismet's comment format.

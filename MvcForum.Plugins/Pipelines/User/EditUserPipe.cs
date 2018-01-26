@@ -2,6 +2,7 @@
 {
     using System.Data.Entity;
     using System.Threading.Tasks;
+    using System.Web;
     using System.Web.Hosting;
     using Core;
     using Core.Constants;
@@ -29,18 +30,16 @@
             IMvcForumContext context)
         {
             // Grab out the image if we have one
-            if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.ImageBase64))
+            if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.PostedFiles))
             {
-                var avatar = input.ExtendedData[Constants.ExtendedDataKeys.ImageBase64].Base64ToImage();
-
                 // Check we're good
-                if (avatar != null)
+                if (input.ExtendedData[Constants.ExtendedDataKeys.PostedFiles] is HttpPostedFileBase avatar)
                 {
                     // Before we save anything, check the user already has an upload folder and if not create one
                     var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(ForumConfiguration.Instance.UploadFolderPath, input.EntityToProcess.Id));
 
                     // If successful then upload the file                    
-                    var uploadResult = avatar.Upload(uploadFolderPath, string.Empty);
+                    var uploadResult = avatar.UploadFile(uploadFolderPath, _localizationService, true);
 
                     // throw error if unsuccessful
                     if (!uploadResult.UploadSuccessful)
@@ -71,7 +70,7 @@
             }
 
             // Add username changed to extended data
-            input.ExtendedData.Add(Constants.ExtendedDataKeys.UsernameChanged, changedUsername.ToString());
+            input.ExtendedData.Add(Constants.ExtendedDataKeys.UsernameChanged, changedUsername);
 
             // User is trying to update their email address, need to 
             // check the email is not already in use

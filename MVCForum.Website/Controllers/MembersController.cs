@@ -403,15 +403,15 @@
         public ActionResult MemberRegisterLogic(IPipelineProcess<MembershipUser> pipelineProcess)
         {
             // We get these from the pipelineprocess and not from the settings as they can be changed during the process (i.e. Social login)
-            var manuallyAuthoriseMembers = Convert.ToBoolean(pipelineProcess.ExtendedData.GetExtendedDataItem(Constants.ExtendedDataKeys.ManuallyAuthoriseMembers));
-            var memberEmailAuthorisationNeeded = Convert.ToBoolean(pipelineProcess.ExtendedData.GetExtendedDataItem(Constants.ExtendedDataKeys.MemberEmailAuthorisationNeeded));
+            var manuallyAuthoriseMembers = pipelineProcess.ExtendedData[Constants.ExtendedDataKeys.ManuallyAuthoriseMembers] as bool?;
+            var memberEmailAuthorisationNeeded = pipelineProcess.ExtendedData[Constants.ExtendedDataKeys.MemberEmailAuthorisationNeeded] as bool?;
 
             // Set the view bag message here
-            SetRegisterViewBagMessage(manuallyAuthoriseMembers, memberEmailAuthorisationNeeded,
+            SetRegisterViewBagMessage(manuallyAuthoriseMembers == true, memberEmailAuthorisationNeeded == true,
                 pipelineProcess.EntityToProcess);
 
             // Should we redirect to the home page
-            var homeRedirect = !manuallyAuthoriseMembers && !memberEmailAuthorisationNeeded;
+            var homeRedirect = manuallyAuthoriseMembers != true && memberEmailAuthorisationNeeded != true;
 
             // Get the return url
             var returnUrl = pipelineProcess.EntityToProcess.GetExtendedDataItem(Constants.ExtendedDataKeys.ReturnUrl);
@@ -802,24 +802,13 @@
             userModel.AmountOfPoints = user.TotalPoints;
 
             // Avatar holding image
-            Image avatar = null;
+            HttpPostedFileBase avatar = null;
 
             // Check image for upload
             if (userModel.Files.Any(x => x != null))
             {
                 // See if file is ok and then convert to image
-                var avatarFile = userModel.Files[0];
-                var fileOkResult = avatarFile.CanBeUploaded(LocalizationService);
-                if (fileOkResult.IsOk)
-                {
-                    avatar = avatarFile.ToImage();
-                }
-                else
-                {
-                    // If there is a problem with the file then return the message
-                    ModelState.AddModelError(string.Empty, fileOkResult.Message);
-                    return View(userModel);
-                }
+                avatar = userModel.Files[0];
             }
 
             // Edit the user via the pipelines
@@ -832,7 +821,8 @@
 
             if (pipeline.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.UsernameChanged))
             {
-                var usernameChanged = Convert.ToBoolean(pipeline.ExtendedData.GetExtendedDataItem(Constants.ExtendedDataKeys.UsernameChanged));
+                var test = pipeline.ExtendedData[Constants.ExtendedDataKeys.UsernameChanged] as bool?;
+                var usernameChanged = test == true;
                 if (usernameChanged)
                 {
                     // User has changed their username so need to log them in
