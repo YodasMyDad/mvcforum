@@ -5,14 +5,18 @@
     using System.Data.Entity;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Web;
     using System.Web.Mvc;
     using Constants;
     using Events;
     using Interfaces;
+    using Interfaces.Pipeline;
     using Interfaces.Services;
     using Models.Entities;
     using Models.Enums;
     using Models.General;
+    using Pipeline;
+    using Reflection;
     using Utilities;
 
     public partial class TopicService : ITopicService
@@ -139,17 +143,46 @@
         /// Create a new topic and also the topic starter post
         /// </summary>
         /// <param name="topic"></param>
+        /// <param name="files"></param>
+        /// <param name="tags"></param>
+        /// <param name="subscribe"></param>
         /// <returns></returns>
-        public Topic Add(Topic topic)
+        public async Task<IPipelineProcess<Topic>> Create(Topic topic, HttpPostedFileBase[] files, string tags, bool subscribe)
         {
-            topic = SanitizeTopic(topic);
-
-            topic.CreateDate = DateTime.UtcNow;
-
             // url slug generator
-            topic.Slug = ServiceHelpers.GenerateSlug(topic.Name, GetTopicBySlugLike(ServiceHelpers.CreateUrl(topic.Name)).Select(x => x.Slug).ToList(), null);
+            topic.Slug = ServiceHelpers.GenerateSlug(topic.Name, 
+                                    GetTopicBySlugLike(ServiceHelpers.CreateUrl(topic.Name))
+                                    .Select(x => x.Slug).ToList(), null);
 
-            return _context.Topic.Add(topic);
+            // Get the pipelines
+            var userCreatePipes = ForumConfiguration.Instance.PipelinesTopicCreate;
+
+            // The model to process
+            var piplineModel = new PipelineProcess<Topic>(topic);
+
+            // Add the extended data we need
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Subscribe, subscribe);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, files);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Tags, tags);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.IsEdit, false);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<Topic>, Topic>(_context);
+
+            // Register the pipes 
+            var allMembershipUserPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Topic>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in userCreatePipes)
+            {
+                if (allMembershipUserPipes.ContainsKey(pipe))
+                {
+                    pipeline.Register(allMembershipUserPipes[pipe]);
+                }
+            }
+
+            // Process the pipeline
+            return await pipeline.Process(piplineModel);
         }
 
         /// <summary>

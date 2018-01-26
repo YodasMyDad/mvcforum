@@ -16,12 +16,14 @@
         private readonly IRoleService _roleService;
         private readonly ITopicService _topicService;
         private readonly ILocalizationService _localizationService;
+        private readonly ITopicTagService _topicTagService;
 
-        public TopicPermissionsPipe(IRoleService roleService, ITopicService topicService, ILocalizationService localizationService)
+        public TopicPermissionsPipe(IRoleService roleService, ITopicService topicService, ILocalizationService localizationService, ITopicTagService topicTagService)
         {
             _roleService = roleService;
             _topicService = topicService;
             _localizationService = localizationService;
+            _topicTagService = topicTagService;
         }
 
         /// <inheritdoc />
@@ -29,6 +31,9 @@
         {
             // Get the Current user from ExtendedData
             var username = input.ExtendedData[Constants.ExtendedDataKeys.Username] as string;
+
+            // Is this an edit
+            var isTopicEdit = input.ExtendedData[Constants.ExtendedDataKeys.IsEdit] as bool? == true;
 
             // IS this an existing topic
             var existingTopic = await context.Topic.FirstOrDefaultAsync(x => x.Id == input.EntityToProcess.Id);
@@ -125,7 +130,13 @@
                         }
                     }
 
-                    // TODO - Check for permission to add tags
+                    // Sort out tags so we can check permission for any new ones added
+                    var tags = _topicTagService.CreateTagsFromCsv(input.ExtendedData["Constants.ExtendedDataKeys.Tags"] as string);
+                    
+                    // Add the tags they are allowed to
+                    _topicTagService.Add(tags, input.EntityToProcess, permissions[ForumConfiguration.Instance.PermissionCreateTags].IsTicked);
+
+                    // TODO %%% SEARCH FIELD?? %%%
                 }
                 else
                 {

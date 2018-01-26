@@ -3,9 +3,11 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using System.Web;
     using System.Web.Mvc;
     using Models.Entities;
     using Models.General;
+    using Pipeline;
 
     public partial interface ITopicService
     {
@@ -17,7 +19,8 @@
         IList<Topic> GetPopularTopics(DateTime? from, DateTime? to, List<Category> allowedCategories,
             int amountToShow = 20);
 
-        Topic Add(Topic topic);
+        Task<IPipelineProcess<Topic>> Create(Topic topic, HttpPostedFileBase[] files, bool subscribe);
+
         IList<Topic> GetTodaysTopics(int amountToTake, List<Category> allowedCategories);
 
         Task<PaginatedList<Topic>> GetRecentTopics(int pageIndex, int pageSize, int amountToTake,

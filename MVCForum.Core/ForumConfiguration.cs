@@ -263,6 +263,186 @@
         }
 
         /// <summary>
+        /// Gets the Topic Create Pipes from the config
+        /// </summary>
+        private IList<string> _pipelineTopicCreate;
+        public IList<string> PipelinesTopicCreate
+        {
+            get
+            {
+                if (_pipelineTopicCreate == null)
+                {
+                    var pipes = GetPlugin("PipelinesTopicCreate");
+                    if (!string.IsNullOrWhiteSpace(pipes))
+                    {
+                        _pipelineTopicCreate = ConfigToListString(pipes);
+                    }
+                }
+                return _pipelineTopicCreate;
+            }
+        }
+
+        /// <summary>
+        /// Gets the pipes for the topic update
+        /// </summary>
+        private IList<string> _pipelineTopicUpdate;
+        public IList<string> PipelinesTopicUpdate
+        {
+            get
+            {
+                if (_pipelineTopicUpdate == null)
+                {
+                    var pipes = GetPlugin("PipelinesTopicUpdate");
+                    if (!string.IsNullOrWhiteSpace(pipes))
+                    {
+                        _pipelineTopicUpdate = ConfigToListString(pipes);
+                    }
+                }
+                return _pipelineTopicUpdate;
+            }
+        }
+
+        /// <summary>
+        /// Gets the pipes for the topic delete
+        /// </summary>
+        private IList<string> _pipelineTopicDelete;
+        public IList<string> PipelinesTopicDelete
+        {
+            get
+            {
+                if (_pipelineTopicDelete == null)
+                {
+                    var pipes = GetPlugin("PipelinesTopicDelete");
+                    if (!string.IsNullOrWhiteSpace(pipes))
+                    {
+                        _pipelineTopicDelete = ConfigToListString(pipes);
+                    }
+                }
+                return _pipelineTopicDelete;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Post Create Pipes from the config
+        /// </summary>
+        private IList<string> _pipelinePostCreate;
+        public IList<string> PipelinesPostCreate
+        {
+            get
+            {
+                if (_pipelinePostCreate == null)
+                {
+                    var pipes = GetPlugin("PipelinesPostCreate");
+                    if (!string.IsNullOrWhiteSpace(pipes))
+                    {
+                        _pipelinePostCreate = ConfigToListString(pipes);
+                    }
+                }
+                return _pipelinePostCreate;
+            }
+        }
+
+        /// <summary>
+        /// Gets the pipes for the Post update
+        /// </summary>
+        private IList<string> _pipelinePostUpdate;
+        public IList<string> PipelinesPostUpdate
+        {
+            get
+            {
+                if (_pipelinePostUpdate == null)
+                {
+                    var pipes = GetPlugin("PipelinesPostUpdate");
+                    if (!string.IsNullOrWhiteSpace(pipes))
+                    {
+                        _pipelinePostUpdate = ConfigToListString(pipes);
+                    }
+                }
+                return _pipelinePostUpdate;
+            }
+        }
+
+        /// <summary>
+        /// Gets the pipes for the Post delete
+        /// </summary>
+        private IList<string> _pipelinePostDelete;
+        public IList<string> PipelinesPostDelete
+        {
+            get
+            {
+                if (_pipelinePostDelete == null)
+                {
+                    var pipes = GetPlugin("PipelinesPostDelete");
+                    if (!string.IsNullOrWhiteSpace(pipes))
+                    {
+                        _pipelinePostDelete = ConfigToListString(pipes);
+                    }
+                }
+                return _pipelinePostDelete;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Category Create Pipes from the config
+        /// </summary>
+        private IList<string> _pipelineCategoryCreate;
+        public IList<string> PipelinesCategoryCreate
+        {
+            get
+            {
+                if (_pipelineCategoryCreate == null)
+                {
+                    var pipes = GetPlugin("PipelinesCategoryCreate");
+                    if (!string.IsNullOrWhiteSpace(pipes))
+                    {
+                        _pipelineCategoryCreate = ConfigToListString(pipes);
+                    }
+                }
+                return _pipelineCategoryCreate;
+            }
+        }
+
+        /// <summary>
+        /// Gets the pipes for the Category update
+        /// </summary>
+        private IList<string> _pipelineCategoryUpdate;
+        public IList<string> PipelinesCategoryUpdate
+        {
+            get
+            {
+                if (_pipelineCategoryUpdate == null)
+                {
+                    var pipes = GetPlugin("PipelinesCategoryUpdate");
+                    if (!string.IsNullOrWhiteSpace(pipes))
+                    {
+                        _pipelineCategoryUpdate = ConfigToListString(pipes);
+                    }
+                }
+                return _pipelineCategoryUpdate;
+            }
+        }
+
+        /// <summary>
+        /// Gets the pipes for the Category delete
+        /// </summary>
+        private IList<string> _pipelineCategoryDelete;
+        public IList<string> PipelinesCategoryDelete
+        {
+            get
+            {
+                if (_pipelineCategoryDelete == null)
+                {
+                    var pipes = GetPlugin("PipelinesCategoryDelete");
+                    if (!string.IsNullOrWhiteSpace(pipes))
+                    {
+                        _pipelineCategoryDelete = ConfigToListString(pipes);
+                    }
+                }
+                return _pipelineCategoryDelete;
+            }
+        }
+
+        /// <summary>
         /// Turns a string config into a list
         /// </summary>
         /// <param name="config"></param>

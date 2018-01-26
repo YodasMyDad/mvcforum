@@ -128,6 +128,11 @@
             public const string PostedFiles = "PostedFiles";
 
             /// <summary>
+            /// Key for tags
+            /// </summary>
+            public const string Tags = "Tags";
+
+            /// <summary>
             /// Key for whether username has changes
             /// </summary>
             public const string UsernameChanged = "UsernameChanged";
@@ -141,6 +146,16 @@
             /// Key for the permission set
             /// </summary>
             public const string PermissionSet = "PermissionSet";
+
+            /// <summary>
+            /// Key for whether entity is being edited
+            /// </summary>
+            public const string IsEdit = "IsEdit";
+
+            /// <summary>
+            /// Key for whether to subscribe
+            /// </summary>
+            public const string Subscribe = "Subscribe";
         }
     }
 }

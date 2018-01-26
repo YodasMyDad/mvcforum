@@ -49,22 +49,6 @@
                 topic.Poll = newPoll;
             }
 
-            // TODO - See if we have any files
-            if (viewModel.Files.Any(x => x != null))
-            {
-                // TODO - How are we storing them???
-            }
-
-            // TODO - See if we have any tags
-            if (!string.IsNullOrWhiteSpace(viewModel.Tags))
-            {
-                
-            }
-
-            // TODO - Search Field
-
-            // TODO - Subscribe to topic ()
-
             return topic;
         }
     }

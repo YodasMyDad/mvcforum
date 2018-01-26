@@ -1,6 +1,7 @@
 ﻿namespace MvcForum.Core.Services
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
@@ -147,39 +148,42 @@
         }
 
         /// <summary>
-        /// Add new tags to a topic, ignore existing ones
+        /// Add new tags to a topic if they are allowed, ignore existing ones
         /// </summary>
         /// <param name="tags"></param>
         /// <param name="topic"></param>
         /// <param name="isAllowedToAddTags"></param>
-        public void Add(string tags, Topic topic, bool isAllowedToAddTags)
+        public void Add(IEnumerable<string> tags, Topic topic, bool isAllowedToAddTags)
         {
-            if (!string.IsNullOrWhiteSpace(tags))
+            if (topic.Tags == null)
             {
-                tags = StringUtils.SafePlainText(tags);
+                topic.Tags = new List<TopicTag>();
+            }
 
-                var newTagNames = tags.ToLower().TrimStart().TrimEnd()
-                    .Replace(" ", "-").Split(',')
-                    .Select(tag => tag)
-                    .Where(x => !string.IsNullOrWhiteSpace(x))
-                    .Distinct();
+            foreach (var newTag in tags)
+            {
+                var tagExists = false;
 
-                if (topic.Tags == null)
+                // Check it's not already in the list
+                foreach (var topicTag in topic.Tags)
                 {
-                    topic.Tags = new List<TopicTag>();
+                    if (topicTag.Tag == newTag)
+                    {
+                        tagExists = true;
+                        break;
+                    }
                 }
 
-                var entityTags = new List<TopicTag>();
-
-                foreach (var newTag in newTagNames)
+                // Continue if tag doesn't already exist on topic
+                if (!tagExists)
                 {
                     var tag = GetTagName(newTag);
                     if (tag != null)
                     {
                         // Exists
-                        entityTags.Add(tag);
+                        topic.Tags.Add(tag);
                     }
-                    else if(isAllowedToAddTags)
+                    else if (isAllowedToAddTags)
                     {
                         // Doesn't exists
                         var nTag = new TopicTag
@@ -188,16 +192,34 @@
                             Slug = ServiceHelpers.CreateUrl(newTag)
                         };
 
-                        Add(nTag);
-                        entityTags.Add(nTag);
+                        //Add(nTag);
+                        topic.Tags.Add(nTag);
                     }
                 }
-
-                topic.Tags = entityTags;
-
-                // Fire the tag badge check
-                _badgeService.ProcessBadge(BadgeType.Tag, topic.User);
             }
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<string> CreateTagsFromCsv(string tags)
+        {
+            if (!string.IsNullOrWhiteSpace(tags))
+            {
+                tags = StringUtils.SafePlainText(tags);
+
+                return tags.ToLower().TrimStart().TrimEnd()
+                    .Replace(" ", "-").Split(',')
+                    .Select(tag => tag)
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Distinct();
+            }
+            return Enumerable.Empty<string>();
+        }
+
+        /// <inheritdoc />
+        public bool HasNewTags(IEnumerable<string> tags)
+        {
+            var existingTags = _context.TopicTag.AsNoTracking().Where(x => tags.Contains(x.Tag));
+            return existingTags.Count() != tags.Count();
         }
 
         /// <summary>
