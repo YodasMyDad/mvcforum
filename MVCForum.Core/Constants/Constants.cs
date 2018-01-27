@@ -156,6 +156,11 @@
             /// Key for whether to subscribe
             /// </summary>
             public const string Subscribe = "Subscribe";
+
+            /// <summary>
+            /// Key for getting post content
+            /// </summary>
+            public const string Content = "Content";
         }
     }
 }

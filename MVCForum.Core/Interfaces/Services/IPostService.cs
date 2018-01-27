@@ -3,9 +3,11 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using System.Web;
     using Models.Entities;
     using Models.Enums;
     using Models.General;
+    using Pipeline;
 
     public partial interface IPostService
     {
@@ -29,13 +31,16 @@
         Task<PaginatedList<Post>> GetPagedPendingPosts(int pageIndex, int pageSize, List<Category> allowedCategories);
         IList<Post> GetPendingPosts(List<Category> allowedCategories, MembershipRole usersRole);
         int GetPendingPostsCount(List<Category> allowedCategories);
-        Post Add(Post post);
+
+        Task<IPipelineProcess<Post>> Create(string postContent, Topic topic, MembershipUser user,
+            HttpPostedFileBase[] files, bool isTopicStarter);
+        Task<IPipelineProcess<Post>> Create(Post post, HttpPostedFileBase[] files, bool isTopicStarter);
+        Post Initialise(string postContent, Topic topic, MembershipUser user);
         Post Get(Guid postId);
         IList<Post> GetPostsByTopics(List<Guid> topicIds, List<Category> allowedCategories);
         bool Delete(Post post, bool ignoreLastPost);
         IList<Post> GetSolutionsByMember(Guid memberId, List<Category> allowedCategories);
         int PostCount(List<Category> allowedCategories);
-        Post AddNewPost(string postContent, Topic topic, MembershipUser user, out PermissionSet permissions);
         IList<Post> GetPostsByMember(Guid memberId, List<Category> allowedCategories);
         IList<Post> GetAllSolutionPosts(List<Category> allowedCategories);
         IList<Post> GetPostsByTopic(Guid topicId);

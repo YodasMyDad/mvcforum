@@ -146,8 +146,9 @@
         /// <param name="files"></param>
         /// <param name="tags"></param>
         /// <param name="subscribe"></param>
+        /// <param name="postContent"></param>
         /// <returns></returns>
-        public async Task<IPipelineProcess<Topic>> Create(Topic topic, HttpPostedFileBase[] files, string tags, bool subscribe)
+        public async Task<IPipelineProcess<Topic>> Create(Topic topic, HttpPostedFileBase[] files, string tags, bool subscribe, string postContent)
         {
             // url slug generator
             topic.Slug = ServiceHelpers.GenerateSlug(topic.Name, 
@@ -155,7 +156,7 @@
                                     .Select(x => x.Slug).ToList(), null);
 
             // Get the pipelines
-            var userCreatePipes = ForumConfiguration.Instance.PipelinesTopicCreate;
+            var topicCreatePipes = ForumConfiguration.Instance.PipelinesTopicCreate;
 
             // The model to process
             var piplineModel = new PipelineProcess<Topic>(topic);
@@ -165,19 +166,20 @@
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, files);
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Tags, tags);
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.IsEdit, false);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Content, postContent);
 
             // Get instance of the pipeline to use
             var pipeline = new Pipeline<IPipelineProcess<Topic>, Topic>(_context);
 
             // Register the pipes 
-            var allMembershipUserPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Topic>>>();
+            var allTopicPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Topic>>>();
 
             // Loop through the pipes and add the ones we want
-            foreach (var pipe in userCreatePipes)
+            foreach (var pipe in topicCreatePipes)
             {
-                if (allMembershipUserPipes.ContainsKey(pipe))
+                if (allTopicPipes.ContainsKey(pipe))
                 {
-                    pipeline.Register(allMembershipUserPipes[pipe]);
+                    pipeline.Register(allTopicPipes[pipe]);
                 }
             }
 

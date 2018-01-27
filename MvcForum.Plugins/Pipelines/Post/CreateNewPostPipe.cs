@@ -17,10 +17,12 @@
     public class CreateNewPostPipe : IPipe<IPipelineProcess<Post>>
     {
         private readonly ILocalizationService _localizationService;
+        private readonly IUploadedFileService _uploadedFileService;
 
-        public CreateNewPostPipe(ILocalizationService localizationService)
+        public CreateNewPostPipe(ILocalizationService localizationService, IUploadedFileService uploadedFileService)
         {
             _localizationService = localizationService;
+            _uploadedFileService = uploadedFileService;
         }
 
         /// <inheritdoc />
@@ -54,14 +56,8 @@
                             var uploadResult = file.UploadFile(uploadFolderPath, _localizationService);
                             if (!uploadResult.UploadSuccessful)
                             {
-                                //TempData[Constants.MessageViewBagName] =
-                                //    new GenericMessageViewModel
-                                //    {
-                                //        Message = uploadResult.ErrorMessage,
-                                //        MessageType = GenericMessages.danger
-                                //    };
-                                //Context.RollBack();
-                                //return View(topicViewModel);
+                                input.AddError(uploadResult.ErrorMessage);
+                                return input;
                             }
 
                             // Add the filename to the database
@@ -69,8 +65,9 @@
                             {
                                 Filename = uploadResult.UploadedFileName,
                                 Post = input.EntityToProcess,
-                                MembershipUser = loggedOnUser
+                                MembershipUser = input.EntityToProcess.User
                             };
+
                             _uploadedFileService.Add(uploadedFile);
                         }
                     }
@@ -84,6 +81,15 @@
                 input.AddError(_localizationService.GetResourceString("Errors.GenericMessage"));
                 return input;
             }
+
+            //// Update the users points score and post count for posting
+            //_membershipUserPointsService.Add(new MembershipUserPoints
+            //{
+            //    Points = _settingsService.GetSettings().PointsAddedPerPost,
+            //    User = user,
+            //    PointsFor = PointsFor.Post,
+            //    PointsForId = newPost.Id
+            //});
 
             input.ProcessLog.Add("Post created successfully");
             return input;

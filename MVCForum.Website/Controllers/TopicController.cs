@@ -23,6 +23,7 @@
     using Core.Models.General;
     using Core.Utilities;
     using ViewModels.Breadcrumb;
+    using ViewModels.ExtensionMethods;
     using ViewModels.Mapping;
     using ViewModels.Post;
     using ViewModels.Topic;
@@ -682,7 +683,7 @@
                     CanUploadFiles = userIsAdmin,
                     CanCreatePolls = userIsAdmin,
                     CanInsertImages = canInsertImages,
-                    CanCreateTags =  userIsAdmin
+                    CanCreateTags = userIsAdmin
                 },
                 PollAnswers = new List<PollAnswer>(),
                 IsTopicStarter = true,
@@ -705,6 +706,10 @@
             return allowedAccessCategories;
         }
 
+        /// <summary>
+        /// Create topic view
+        /// </summary>
+        /// <returns></returns>
         [Authorize]
         public ActionResult Create()
         {
@@ -720,13 +725,19 @@
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
         }
 
+        /// <summary>
+        /// Creates a topic via the pipeline system
+        /// </summary>
+        /// <param name="topicViewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(CreateEditTopicViewModel topicViewModel)
+        public async Task<ActionResult> Create(CreateEditTopicViewModel topicViewModel)
         {
-            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-            var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+            // Get the user and roles
+            var loggedOnUser = User.GetMembershipUser(MembershipService, false);
+            var loggedOnUsersRole = loggedOnUser.GetRole(RoleService);
 
             // Get the category
             var category = _categoryService.Get(topicViewModel.Category);
@@ -743,316 +754,44 @@
             {
                 topicViewModel.PollAnswers = new List<PollAnswer>();
             }
-            /*---- End Re-populate ViewModel ----*/
 
             if (ModelState.IsValid)
             {
-                // Check posting flood control
-                // Flood control test
-                if (!_topicService.PassedTopicFloodTest(topicViewModel.Name, loggedOnReadOnlyUser))
+                // See if the user has actually added some content to the topic
+                if (string.IsNullOrWhiteSpace(topicViewModel.Content))
                 {
-                    // Failed test so don't post topic
-                    return View(topicViewModel);
-                }
-
-                // Check stop words
-                var stopWords = _bannedWordService.GetAll(true);
-                foreach (var stopWord in stopWords)
-                {
-                    if (topicViewModel.Content.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
-                        topicViewModel.Name.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0)
-                    {
-                        ShowMessage(new GenericMessageViewModel
-                        {
-                            Message = LocalizationService.GetResourceString("StopWord.Error"),
-                            MessageType = GenericMessages.danger
-                        });
-
-                        // Ahhh found a stop word. Abandon operation captain.
-                        return View(topicViewModel);
-                    }
-                }
-
-                // Quick check to see if user is locked out, when logged in
-                if (loggedOnReadOnlyUser.IsLockedOut || loggedOnReadOnlyUser.DisablePosting == true ||
-                    !loggedOnReadOnlyUser.IsApproved)
-                {
-                    FormsAuthentication.SignOut();
-                    return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoAccess"));
-                }
-
-                var successfullyCreated = false;
-                var cancelledByEvent = false;
-                var moderate = false;
-                var topic = new Topic();
-
-
-                // Check this users role has permission to create a post
-                if (permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked ||
-                    permissions[ForumConfiguration.Instance.PermissionReadOnly].IsTicked ||
-                    !permissions[ForumConfiguration.Instance.PermissionCreateTopics].IsTicked)
-                {
-                    // Add a model error that the user has no permissions
                     ModelState.AddModelError(string.Empty,
-                        LocalizationService.GetResourceString("Errors.NoPermission"));
+                        LocalizationService.GetResourceString("Errors.GenericMessage"));
                 }
                 else
                 {
-                    // We get the banned words here and pass them in, so its just one call
-                    // instead of calling it several times and each call getting all the words back
-                    var bannedWordsList = _bannedWordService.GetAll();
-                    List<string> bannedWords = null;
-                    if (bannedWordsList.Any())
+                    // Map the new topic
+                    var topic = topicViewModel.ToTopic(category, loggedOnUser);
+
+                    // Run the create pipeline
+                    var createPipeLine = await _topicService.Create(topic, topicViewModel.Files, topicViewModel.Tags, topicViewModel.SubscribeToTopic, topicViewModel.Content);
+                    if (createPipeLine.Successful == false)
                     {
-                        bannedWords = bannedWordsList.Select(x => x.Word).ToList();
+                        // Tell the user the topic is awaiting moderation
+                        ModelState.AddModelError(string.Empty, createPipeLine.ProcessLog.FirstOrDefault());
+                        return View(topicViewModel);
                     }
 
-                    // Create the topic model
-                    var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
-                    topic = new Topic
+                    var moderate = createPipeLine.ExtendedData[Constants.ExtendedDataKeys.Moderate] as bool?;
+                    if (moderate == true)
                     {
-                        Name = _bannedWordService.SanitiseBannedWords(topicViewModel.Name, bannedWords),
-                        Category = category,
-                        User = loggedOnUser
-                    };
+                        // Tell the user the topic is awaiting moderation
+                        TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = LocalizationService.GetResourceString("Moderate.AwaitingModeration"),
+                            MessageType = GenericMessages.info
+                        };
 
-                    // Check Permissions for topic topions
-                    if (permissions[ForumConfiguration.Instance.PermissionLockTopics].IsTicked)
-                    {
-                        topic.IsLocked = topicViewModel.IsLocked;
+                        return RedirectToAction("Index", "Home");
                     }
-                    if (permissions[ForumConfiguration.Instance.PermissionCreateStickyTopics].IsTicked)
-                    {
-                        topic.IsSticky = topicViewModel.IsSticky;
-                    }
-
-                    // See if the user has actually added some content to the topic
-                    if (!string.IsNullOrWhiteSpace(topicViewModel.Content))
-                    {
-                        // Check for any banned words
-                        topicViewModel.Content = _bannedWordService.SanitiseBannedWords(topicViewModel.Content, bannedWords);
-
-                        var e = new TopicMadeEventArgs { Topic = topic };
-                        EventManager.Instance.FireBeforeTopicMade(this, e);
-                        if (!e.Cancel)
-                        {
-                            // See if this is a poll and add it to the topic
-                            if (topicViewModel.PollAnswers.Count(x => x != null) > 1)
-                            {
-                                // Do they have permission to create a new poll
-                                if (permissions[ForumConfiguration.Instance.PermissionCreatePolls].IsTicked)
-                                {
-                                    // Create a new Poll
-                                    var newPoll = new Poll
-                                    {
-                                        User = loggedOnUser,
-                                        ClosePollAfterDays = topicViewModel.PollCloseAfterDays
-                                    };
-
-                                    // Create the poll
-                                    _pollService.Add(newPoll);
-
-                                    // Save the poll in the context so we can add answers
-                                    Context.SaveChanges();
-
-                                    // Now sort the answers
-                                    var newPollAnswers = new List<PollAnswer>();
-                                    foreach (var pollAnswer in topicViewModel.PollAnswers)
-                                    {
-                                        if (pollAnswer.Answer != null)
-                                        {
-                                            // Attach newly created poll to each answer
-                                            pollAnswer.Poll = newPoll;
-                                            _pollAnswerService.Add(pollAnswer);
-                                            newPollAnswers.Add(pollAnswer);
-                                        }
-                                    }
-                                    // Attach answers to poll
-                                    newPoll.PollAnswers = newPollAnswers;
-
-                                    // Save the new answers in the context
-                                    Context.SaveChanges();
-
-                                    // Add the poll to the topic
-                                    topic.Poll = newPoll;
-                                }
-                                else
-                                {
-                                    //No permission to create a Poll so show a message but create the topic
-                                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
-                                    {
-                                        Message = LocalizationService.GetResourceString("Errors.NoPermissionPolls"),
-                                        MessageType = GenericMessages.info
-                                    };
-                                }
-                            }
-
-                            // Check for moderation
-                            if (category.ModerateTopics == true)
-                            {
-                                topic.Pending = true;
-                                moderate = true;
-                            }
-
-                            // Create the topic
-                            topic = _topicService.Add(topic);
-
-                            // Save the changes
-                            Context.SaveChanges();
-
-                            // Now create and add the post to the topic
-                            var topicPost = _topicService.AddLastPost(topic, topicViewModel.Content);
-
-                            // Update the users points score for posting
-                            _membershipUserPointsService.Add(new MembershipUserPoints
-                            {
-                                Points = SettingsService.GetSettings().PointsAddedPerPost,
-                                User = loggedOnUser,
-                                PointsFor = PointsFor.Post,
-                                PointsForId = topicPost.Id
-                            });
-
-                            //// Now check its not spam
-                            //var akismetHelper = new AkismetHelper(SettingsService);
-                            //if (akismetHelper.IsSpam(topic))
-                            //{
-                            //    topic.Pending = true;
-                            //    moderate = true;
-
-                            //}
-
-                            if (topicViewModel.Files != null)
-                            {
-                                // Get the permissions for this category, and check they are allowed to update
-                                if (permissions[ForumConfiguration.Instance.PermissionAttachFiles].IsTicked &&
-                                    loggedOnReadOnlyUser.DisableFileUploads != true)
-                                {
-                                    // woot! User has permission and all seems ok
-                                    // Before we save anything, check the user already has an upload folder and if not create one
-                                    var uploadFolderPath =
-                                        HostingEnvironment.MapPath(string.Concat(
-                                            ForumConfiguration.Instance.UploadFolderPath,
-                                            loggedOnReadOnlyUser.Id));
-                                    if (!Directory.Exists(uploadFolderPath))
-                                    {
-                                        Directory.CreateDirectory(uploadFolderPath);
-                                    }
-
-                                    // Loop through each file and get the file info and save to the users folder and Db
-                                    foreach (var file in topicViewModel.Files)
-                                    {
-                                        if (file != null)
-                                        {
-                                            // If successful then upload the file
-                                            var uploadResult = file.UploadFile(uploadFolderPath, LocalizationService);
-                                            if (!uploadResult.UploadSuccessful)
-                                            {
-                                                TempData[Constants.MessageViewBagName] =
-                                                    new GenericMessageViewModel
-                                                    {
-                                                        Message = uploadResult.ErrorMessage,
-                                                        MessageType = GenericMessages.danger
-                                                    };
-                                                Context.RollBack();
-                                                return View(topicViewModel);
-                                            }
-
-                                            // Add the filename to the database
-                                            var uploadedFile = new UploadedFile
-                                            {
-                                                Filename = uploadResult.UploadedFileName,
-                                                Post = topicPost,
-                                                MembershipUser = loggedOnUser
-                                            };
-                                            _uploadedFileService.Add(uploadedFile);
-                                        }
-                                    }
-                                }
-                            }
-
-                            // Add the tags if any too
-                            if (!string.IsNullOrWhiteSpace(topicViewModel.Tags))
-                            {
-                                // Sanitise the tags
-                                topicViewModel.Tags = _bannedWordService.SanitiseBannedWords(topicViewModel.Tags, bannedWords);
-
-                                // Now add the tags
-                                _topicTagService.Add(topicViewModel.Tags, topic, permissions[ForumConfiguration.Instance.PermissionCreateTags].IsTicked);
-                            }
-
-                            // Subscribe the user to the topic as they have checked the checkbox
-                            if (topicViewModel.SubscribeToTopic)
-                            {
-                                // Create the notification
-                                var topicNotification = new TopicNotification
-                                {
-                                    Topic = topic,
-                                    User = loggedOnUser
-                                };
-                                //save
-                                _topicNotificationService.Add(topicNotification);
-                            }
-                        }
-                        else
-                        {
-                            cancelledByEvent = true;
-                        }
-
-                        if (!topic.Pending.HasValue || !topic.Pending.Value)
-                        {
-                            _activityService.TopicCreated(topic);
-                        }
-
-                        try
-                        {
-                            Context.SaveChanges();
-                            if (!moderate)
-                            {
-                                successfullyCreated = true;
-                            }
-
-                            // Only fire this if the create topic wasn't cancelled
-                            if (!cancelledByEvent)
-                            {
-                                EventManager.Instance.FireAfterTopicMade(this,
-                                    new TopicMadeEventArgs { Topic = topic });
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Context.RollBack();
-                            LoggingService.Error(ex);
-                            ModelState.AddModelError(string.Empty,
-                                LocalizationService.GetResourceString("Errors.GenericMessage"));
-                        }
-                    }
-                    else
-                    {
-                        ModelState.AddModelError(string.Empty,
-                            LocalizationService.GetResourceString("Errors.GenericMessage"));
-                    }
-                }
-
-
-                if (successfullyCreated && !cancelledByEvent)
-                {
-                    // Success so now send the emails
-                    NotifyNewTopics(category, topic, loggedOnReadOnlyUser);
 
                     // Redirect to the newly created topic
                     return Redirect($"{topic.NiceUrl}?postbadges=true");
-                }
-                if (moderate)
-                {
-                    // Moderation needed
-                    // Tell the user the topic is awaiting moderation
-                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = LocalizationService.GetResourceString("Moderate.AwaitingModeration"),
-                        MessageType = GenericMessages.info
-                    };
-
-                    return RedirectToAction("Index", "Home");
                 }
             }
 
@@ -1063,7 +802,6 @@
         {
             // Set the page index
             var pageIndex = p ?? 1;
-
 
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
