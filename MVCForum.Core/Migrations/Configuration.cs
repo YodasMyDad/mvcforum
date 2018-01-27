@@ -419,8 +419,7 @@ namespace MvcForum.Core.Services.Migrations
                         Topic = topic,
                         IsTopicStarter = true,
                         User = admin,
-                        PostContent = readMeText,
-                        SearchField = name
+                        PostContent = readMeText
                     };
 
                     topic.LastPost = post;

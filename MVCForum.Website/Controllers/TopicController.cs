@@ -10,7 +10,6 @@
     using System.Web.Mvc;
     using System.Web.Security;
     using Application;
-    //using Application.Akismet;
     using Areas.Admin.ViewModels;
     using Core;
     using Core.Constants;
@@ -476,9 +475,6 @@
                                 originalTopic.Pending = true;
                                 topicPostInModeration = true;
                             }
-
-                            // Sort the post search field
-                            originalPost.SearchField = _postService.SortSearchField(originalPost.IsTopicStarter, originalTopic, originalTopic.Tags);
 
                             // Now save the main topic content changes
                             Context.SaveChanges();
@@ -983,9 +979,6 @@
                                 // Now add the tags
                                 _topicTagService.Add(topicViewModel.Tags, topic, permissions[ForumConfiguration.Instance.PermissionCreateTags].IsTicked);
                             }
-
-                            // After tags sort the search field for the post
-                            topicPost.SearchField = _postService.SortSearchField(topicPost.IsTopicStarter, topic, topic.Tags);
 
                             // Subscribe the user to the topic as they have checked the checkbox
                             if (topicViewModel.SubscribeToTopic)

@@ -1,6 +1,7 @@
 ﻿namespace MvcForum.Plugins.Pipelines.Topic
 {
     using System.Data.Entity;
+    using System.Linq;
     using System.Threading.Tasks;
     using System.Web.Security;
     using Core;
@@ -31,9 +32,6 @@
         {
             // Get the Current user from ExtendedData
             var username = input.ExtendedData[Constants.ExtendedDataKeys.Username] as string;
-
-            // Is this an edit
-            var isTopicEdit = input.ExtendedData[Constants.ExtendedDataKeys.IsEdit] as bool? == true;
 
             // IS this an existing topic
             var existingTopic = await context.Topic.FirstOrDefaultAsync(x => x.Id == input.EntityToProcess.Id);
@@ -121,7 +119,7 @@
                     }
 
                     // Finally check for a poll
-                    if (input.EntityToProcess.Poll != null)
+                    if (input.EntityToProcess.Poll != null && input.EntityToProcess.Poll.PollAnswers.Any())
                     {
                         if (permissions[ForumConfiguration.Instance.PermissionCreatePolls].IsTicked == false)
                         {
@@ -135,8 +133,6 @@
                     
                     // Add the tags they are allowed to
                     _topicTagService.Add(tags, input.EntityToProcess, permissions[ForumConfiguration.Instance.PermissionCreateTags].IsTicked);
-
-                    // TODO %%% SEARCH FIELD?? %%%
                 }
                 else
                 {

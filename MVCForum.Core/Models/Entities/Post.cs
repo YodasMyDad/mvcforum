@@ -22,7 +22,6 @@
         public bool? FlaggedAsSpam { get; set; }
         public string IpAddress { get; set; }
         public bool? Pending { get; set; }
-        public string SearchField { get; set; }
         public Guid? InReplyTo { get; set; }
         public virtual Topic Topic { get; set; }
         public virtual MembershipUser User { get; set; }

@@ -19,7 +19,7 @@
         IList<Topic> GetPopularTopics(DateTime? from, DateTime? to, List<Category> allowedCategories,
             int amountToShow = 20);
 
-        Task<IPipelineProcess<Topic>> Create(Topic topic, HttpPostedFileBase[] files, bool subscribe);
+        Task<IPipelineProcess<Topic>> Create(Topic topic, HttpPostedFileBase[] files, string tags, bool subscribe);
 
         IList<Topic> GetTodaysTopics(int amountToTake, List<Category> allowedCategories);
 

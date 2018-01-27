@@ -226,7 +226,7 @@
             {
                 var sTerm = term.Trim();
                 //query = query.Where(x => x.PostContent.ToUpper().Contains(sTerm) || x.SearchField.ToUpper().Contains(sTerm));
-                postFilter = postFilter.Or(x => x.PostContent.ToUpper().Contains(sTerm) || x.SearchField.ToUpper().Contains(sTerm));
+                postFilter = postFilter.Or(x => x.PostContent.ToUpper().Contains(sTerm) || x.IsTopicStarter && x.Topic.Name.ToUpper().Contains(sTerm));
             }
 
             // Add the predicate builder to the query
@@ -603,25 +603,6 @@
             }
 
             return newPost;
-        }
-
-        public string SortSearchField(bool isTopicStarter, Topic topic, IList<TopicTag> tags)
-        {
-            var formattedSearchField = string.Empty;
-            if (isTopicStarter)
-            {
-                formattedSearchField = topic.Name;
-            }
-            if (tags != null && tags.Any())
-            {
-                var sb = new StringBuilder();
-                foreach (var topicTag in tags)
-                {
-                    sb.Append(string.Concat(topicTag.Tag, " "));
-                }
-                formattedSearchField = !string.IsNullOrWhiteSpace(formattedSearchField) ? string.Concat(formattedSearchField, " ", sb.ToString()) : sb.ToString();
-            }
-            return formattedSearchField.Trim();
         }
 
         public IList<Post> GetPostsByMember(Guid memberId, List<Category> allowedCategories)
