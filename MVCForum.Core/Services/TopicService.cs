@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
+    using System.Runtime.Remoting.Contexts;
+    using System.Text;
     using System.Threading.Tasks;
     using System.Web;
     using System.Web.Mvc;
@@ -12,6 +14,7 @@
     using Interfaces;
     using Interfaces.Pipeline;
     using Interfaces.Services;
+    using Models;
     using Models.Entities;
     using Models.Enums;
     using Models.General;
@@ -29,13 +32,15 @@
         private readonly IFavouriteService _favouriteService;
         private readonly IRoleService _roleService;
         private readonly IPollService _pollService;
-        private readonly IPollAnswerService _pollAnswerService;
         private readonly ICacheService _cacheService;
+        private readonly IEmailService _emailService;
+        private readonly ICategoryNotificationService _categoryNotificationService;
+        private readonly ITagNotificationService _tagNotificationService;
 
         public TopicService(IMvcForumContext context, IMembershipUserPointsService membershipUserPointsService,
             ISettingsService settingsService, ITopicNotificationService topicNotificationService,
             IFavouriteService favouriteService,
-            IPostService postService, IRoleService roleService, IPollService pollService, IPollAnswerService pollAnswerService, ICacheService cacheService)
+            IPostService postService, IRoleService roleService, IPollService pollService, ICacheService cacheService, IEmailService emailService, ICategoryNotificationService categoryNotificationService, ITagNotificationService tagNotificationService, IMembershipService membershipService)
         {
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
@@ -44,8 +49,10 @@
             _postService = postService;
             _roleService = roleService;
             _pollService = pollService;
-            _pollAnswerService = pollAnswerService;
             _cacheService = cacheService;
+            _emailService = emailService;
+            _categoryNotificationService = categoryNotificationService;
+            _tagNotificationService = tagNotificationService;
             _context = context;
         }
 
@@ -176,6 +183,50 @@
 
             // Loop through the pipes and add the ones we want
             foreach (var pipe in topicCreatePipes)
+            {
+                if (allTopicPipes.ContainsKey(pipe))
+                {
+                    pipeline.Register(allTopicPipes[pipe]);
+                }
+            }
+
+            // Process the pipeline
+            return await pipeline.Process(piplineModel);
+        }
+
+        /// <inheritdoc />
+        public async Task<IPipelineProcess<Topic>> Edit(Topic topic, HttpPostedFileBase[] files, string tags, bool subscribe, 
+            string postContent, string originalTopicName, List<PollAnswer> pollAnswers, int closePollAfterDays)
+        {
+            // url slug generator
+            topic.Slug = ServiceHelpers.GenerateSlug(topic.Name,
+                GetTopicBySlugLike(ServiceHelpers.CreateUrl(topic.Name))
+                    .Select(x => x.Slug).ToList(), null);
+
+            // Get the pipelines
+            var topicPipes = ForumConfiguration.Instance.PipelinesTopicUpdate;
+
+            // The model to process
+            var piplineModel = new PipelineProcess<Topic>(topic);
+
+            // Add the extended data we need
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Subscribe, subscribe);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, files);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Tags, tags);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.IsEdit, true);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Content, postContent);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PollNewAnswers, pollAnswers);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PollCloseAfterDays, closePollAfterDays);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Name, originalTopicName);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<Topic>, Topic>(_context);
+
+            // Register the pipes 
+            var allTopicPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Topic>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in topicPipes)
             {
                 if (allTopicPipes.ContainsKey(pipe))
                 {
@@ -886,6 +937,73 @@
                 .Count(x => x.User.Id == user.Id && x.Name.Equals(topicTitle) && x.CreateDate >= floodWindow);
 
             return matchingTopicTitles <= 0;
+        }
+
+        /// <inheritdoc />
+        public void NotifyNewTopics(Category cat, Topic topic, MembershipUser loggedOnReadOnlyUser, List<MembershipUser> usersToNotify)
+        {
+            var settings = _settingsService.GetSettings();
+
+            // Get all notifications for this category and for the tags on the topic
+            var notifications = _categoryNotificationService.GetByCategory(cat).Select(x => x.User.Id).ToList();
+
+            // Merge and remove duplicate ids
+            if (topic.Tags != null && topic.Tags.Any())
+            {
+                var tagNotifications = _tagNotificationService.GetByTag(topic.Tags.ToList()).Select(x => x.User.Id)
+                    .ToList();
+                notifications = notifications.Union(tagNotifications).ToList();
+            }
+
+            if (notifications.Any())
+            {
+                // remove the current user from the notification, don't want to notify yourself that you 
+                // have just made a topic!
+                notifications.Remove(loggedOnReadOnlyUser.Id);
+
+                if (notifications.Count > 0)
+                {
+                    // Now get all the users that need notifying
+                    //var usersToNotify = MembershipService.GetUsersById(notifications);
+
+                    // Create the email
+                    var sb = new StringBuilder();
+                    sb.AppendFormat("<p>{0}</p>",
+                        string.Format(_localizationService.GetResourceString("Topic.Notification.NewTopics"), cat.Name));
+                    sb.Append($"<p>{topic.Name}</p>");
+                    if (ForumConfiguration.Instance.IncludeFullPostInEmailNotifications)
+                    {
+                        sb.Append(AppHelpers.ConvertPostContent(topic.LastPost.PostContent));
+                    }
+                    sb.AppendFormat("<p><a href=\"{0}\">{0}</a></p>", string.Concat(Domain, cat.NiceUrl));
+
+                    // create the emails and only send them to people who have not had notifications disabled
+                    var emails = usersToNotify
+                        .Where(x => x.DisableEmailNotifications != true && !x.IsLockedOut && x.IsBanned != true).Select(
+                            user => new Email
+                            {
+                                Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
+                                EmailTo = user.Email,
+                                NameTo = user.UserName,
+                                Subject = string.Concat(
+                                    _localizationService.GetResourceString("Topic.Notification.Subject"),
+                                    settings.ForumName)
+                            }).ToList();
+
+                    // and now pass the emails in to be sent
+                    _emailService.SendMail(emails);
+
+                    try
+                    {
+                        _context.SaveChanges();
+                    }
+                    catch (Exception ex)
+                    {
+                        _context.RollBack();
+                        _loggingService.Error(ex);
+                    }
+                }
+            }
         }
     }
 }

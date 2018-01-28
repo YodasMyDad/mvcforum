@@ -8,23 +8,27 @@
 
     public static partial class TopicViewModelExtensions
     {
-        public static Topic ToTopic(this CreateEditTopicViewModel viewModel, Category category, MembershipUser user)
+        public static Topic ToTopic(this CreateEditTopicViewModel viewModel, Category category, MembershipUser user, Topic existingTopic)
         {
-            // Create the topic
-            var topic = new Topic
+            if (existingTopic == null)
             {
-                Name = viewModel.Name,
-                Category = category,
-                User = user,
-                CreateDate = DateTime.UtcNow,
-                IsLocked = viewModel.IsLocked,
-                IsSticky = viewModel.IsSticky
-            };
+                existingTopic = new Topic
+                {
+                    CreateDate = DateTime.UtcNow,
+                    User = user
+                };
+            }
 
-            // See if we have a poll and add it
-            if (viewModel.PollAnswers.Any(x => x != null))
+            existingTopic.Name = viewModel.Name;
+            existingTopic.Category = category;
+            existingTopic.IsLocked = viewModel.IsLocked;
+            existingTopic.IsSticky = viewModel.IsSticky;
+
+            // See if we have a poll and add it unless there is already one, as we'll need to refresh
+            // The poll in a later pipeline
+            if (viewModel.PollAnswers.Any(x => x != null) && existingTopic.Poll == null)
             {
-                // Create a new Poll
+                // Create a new Poll as one does not already exist
                 var newPoll = new Poll
                 {
                     User = user,
@@ -46,10 +50,10 @@
                 newPoll.PollAnswers = newPollAnswers;
 
                 // Add the poll to the topic
-                topic.Poll = newPoll;
+                existingTopic.Poll = newPoll;
             }
 
-            return topic;
+            return existingTopic;
         }
     }
 }

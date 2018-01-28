@@ -14,12 +14,11 @@
     using Core.Models.Entities;
     using Core.Models.General;
 
-    public class CreateNewPostPipe : IPipe<IPipelineProcess<Post>>
+    public class PostFilesPipe : IPipe<IPipelineProcess<Post>>
     {
         private readonly ILocalizationService _localizationService;
         private readonly IUploadedFileService _uploadedFileService;
-
-        public CreateNewPostPipe(ILocalizationService localizationService, IUploadedFileService uploadedFileService)
+        public PostFilesPipe(ILocalizationService localizationService, IUploadedFileService uploadedFileService)
         {
             _localizationService = localizationService;
             _uploadedFileService = uploadedFileService;
@@ -41,7 +40,9 @@
                     var loggedOnUser = await context.MembershipUser.FirstOrDefaultAsync(x => x.UserName == username);
 
                     // Before we save anything, check the user already has an upload folder and if not create one
-                    var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(ForumConfiguration.Instance.UploadFolderPath, loggedOnUser.Id));
+                    var uploadFolderPath =
+                        HostingEnvironment.MapPath(string.Concat(ForumConfiguration.Instance.UploadFolderPath,
+                            loggedOnUser.Id));
                     if (!Directory.Exists(uploadFolderPath))
                     {
                         Directory.CreateDirectory(uploadFolderPath);
@@ -74,24 +75,6 @@
                 }
             }
 
-            // Now save
-            var saved = await context.SaveChangesAsync();
-            if (saved <= 0)
-            {
-                input.AddError(_localizationService.GetResourceString("Errors.GenericMessage"));
-                return input;
-            }
-
-            //// Update the users points score and post count for posting
-            //_membershipUserPointsService.Add(new MembershipUserPoints
-            //{
-            //    Points = _settingsService.GetSettings().PointsAddedPerPost,
-            //    User = user,
-            //    PointsFor = PointsFor.Post,
-            //    PointsForId = newPost.Id
-            //});
-
-            input.ProcessLog.Add("Post created successfully");
             return input;
         }
     }

@@ -158,9 +158,24 @@
             public const string Subscribe = "Subscribe";
 
             /// <summary>
-            /// Key for getting post content
+            /// Key for getting entity content
             /// </summary>
             public const string Content = "Content";
+
+            /// <summary>
+            /// Keys for getting entity name
+            /// </summary>
+            public const string Name = "Name";
+
+            /// <summary>
+            /// Keys for new poll answers
+            /// </summary>
+            public const string PollNewAnswers = "PollNewAnswers";
+
+            /// <summary>
+            /// Key for poll close after days
+            /// </summary>
+            public const string PollCloseAfterDays = "PollCloseAfterDays";
         }
     }
 }

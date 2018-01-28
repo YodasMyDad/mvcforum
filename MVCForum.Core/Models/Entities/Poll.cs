@@ -16,6 +16,6 @@
         public int? ClosePollAfterDays { get; set; }
 
         public virtual MembershipUser User { get; set; }
-        public virtual IList<PollAnswer> PollAnswers { get; set; } 
+        public virtual List<PollAnswer> PollAnswers { get; set; } 
     }
 }

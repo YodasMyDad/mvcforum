@@ -32,9 +32,10 @@
         IList<Post> GetPendingPosts(List<Category> allowedCategories, MembershipRole usersRole);
         int GetPendingPostsCount(List<Category> allowedCategories);
 
-        Task<IPipelineProcess<Post>> Create(string postContent, Topic topic, MembershipUser user,
-            HttpPostedFileBase[] files, bool isTopicStarter);
+        Task<IPipelineProcess<Post>> Create(string postContent, Topic topic, MembershipUser user, HttpPostedFileBase[] files, bool isTopicStarter);
         Task<IPipelineProcess<Post>> Create(Post post, HttpPostedFileBase[] files, bool isTopicStarter);
+        Task<IPipelineProcess<Post>> Edit(Post post, HttpPostedFileBase[] files, bool isTopicStarter, string originalTopicName);
+
         Post Initialise(string postContent, Topic topic, MembershipUser user);
         Post Get(Guid postId);
         IList<Post> GetPostsByTopics(List<Guid> topicIds, List<Category> allowedCategories);

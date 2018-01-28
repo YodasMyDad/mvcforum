@@ -1,6 +1,7 @@
 ﻿namespace MvcForum.Plugins.Pipelines.Topic
 {
     using System;
+    using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
     using System.Threading.Tasks;
@@ -33,6 +34,13 @@
             // Get the all the words I need
             var allWords = await context.BannedWord.ToListAsync();
 
+            var hasPollAnswers = input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.PollNewAnswers);
+            var newPollAnswers = new List<PollAnswer>();
+            if (hasPollAnswers)
+            {
+                newPollAnswers = input.ExtendedData[Constants.ExtendedDataKeys.PollNewAnswers] as List<PollAnswer>;
+            }
+
             // Do the stop words first
             foreach (var stopWord in allWords.Where(x => x.IsStopWord == true).Select(x => x.Word).ToArray())
             {
@@ -43,7 +51,7 @@
                     return input;
                 }
 
-                // Check poll answers
+                // Check poll answers on entity or ones we are waiting to update
                 if (input.EntityToProcess.Poll != null && input.EntityToProcess.Poll.PollAnswers.Any())
                 {
                     foreach (var pollAnswer in input.EntityToProcess.Poll.PollAnswers)
@@ -52,6 +60,22 @@
                         {
                             input.AddError(_localizationService.GetResourceString("StopWord.Error"));
                             return input;
+                        }
+                    }
+                }
+
+                if (hasPollAnswers)
+                {
+                    if (newPollAnswers != null)
+                    {
+                        foreach (var pollAnswer in newPollAnswers)
+                        {
+                            if (input.EntityToProcess.Name.IndexOf(pollAnswer.Answer,
+                                    StringComparison.CurrentCultureIgnoreCase) >= 0)
+                            {
+                                input.AddError(_localizationService.GetResourceString("StopWord.Error"));
+                                return input;
+                            }
                         }
                     }
                 }
@@ -92,6 +116,21 @@
                 }
             }
 
+            // Santise new poll answers
+            if (hasPollAnswers)
+            {
+                if (newPollAnswers != null)
+                {
+                    foreach (var pollAnswer in newPollAnswers)
+                    {
+                        pollAnswer.Answer = _bannedWordService.SanitiseBannedWords(pollAnswer.Answer, bannedWords);
+                    }
+
+                    // Now re-assign them
+                    input.ExtendedData[Constants.ExtendedDataKeys.PollNewAnswers] = newPollAnswers;
+                }
+            }
+
             // Sanitise Tags
             if (input.EntityToProcess.Tags != null && input.EntityToProcess.Tags.Any())
             {
@@ -100,6 +139,8 @@
                     topicTag.Tag = _bannedWordService.SanitiseBannedWords(topicTag.Tag, bannedWords);
                 }
             }
+
+            // Sanit
 
             return input;
         }

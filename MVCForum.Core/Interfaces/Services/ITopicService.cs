@@ -21,6 +21,8 @@
 
         Task<IPipelineProcess<Topic>> Create(Topic topic, HttpPostedFileBase[] files, string tags, bool subscribe, string postContent);
 
+        Task<IPipelineProcess<Topic>> Edit(Topic topic, HttpPostedFileBase[] files, string tags, bool subscribe, string postContent, string originalTopicName, List<PollAnswer> pollAnswers, int closePollAfterDays);
+
         IList<Topic> GetTodaysTopics(int amountToTake, List<Category> allowedCategories);
 
         Task<PaginatedList<Topic>> GetRecentTopics(int pageIndex, int pageSize, int amountToTake,
@@ -73,5 +75,6 @@
 
         IList<Topic> GetTopicBySlugLike(string slug);
         bool PassedTopicFloodTest(string topicTitle, MembershipUser user);
+        void NotifyNewTopics(Category cat, Topic topic, MembershipUser loggedOnReadOnlyUser, List<MembershipUser> usersToNotify);
     }
 }

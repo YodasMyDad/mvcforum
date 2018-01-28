@@ -171,8 +171,6 @@
     <Compile Include="Interfaces\Services\IConfigService.cs" />
     <Compile Include="Interfaces\Services\IGlobalPermissionForRoleService.cs" />
     <Compile Include="Interfaces\Services\IFavouriteService.cs" />
-    <Compile Include="Interfaces\Services\IPollAnswerService.cs" />
-    <Compile Include="Interfaces\Services\IPollVoteService.cs" />
     <Compile Include="Interfaces\Services\IPollService.cs" />
     <Compile Include="Interfaces\Services\IActivityService.cs" />
     <Compile Include="Interfaces\Services\IPostEditService.cs" />
@@ -266,9 +264,7 @@
     <Compile Include="Services\MembershipUserPointsService.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Services\PermissionService.cs" />
-    <Compile Include="Services\PollAnswerService.cs" />
     <Compile Include="Services\PollService.cs" />
-    <Compile Include="Services\PollVoteService.cs" />
     <Compile Include="Services\PostEditService.cs" />
     <Compile Include="Services\PostService.cs" />
     <Compile Include="Services\PrivateMessageService.cs" />

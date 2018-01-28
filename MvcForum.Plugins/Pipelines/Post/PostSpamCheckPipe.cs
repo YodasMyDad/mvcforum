@@ -11,13 +11,13 @@
     using Core.Interfaces.Services;
     using Core.Models.Entities;
 
-    public class SpamCheckPipe : IPipe<IPipelineProcess<Post>>
+    public class PostSpamCheckPipe : IPipe<IPipelineProcess<Post>>
     {
         private readonly IBannedWordService _bannedWordService;
         private readonly ILocalizationService _localizationService;
         private readonly ISpamService _spamService;
 
-        public SpamCheckPipe(IBannedWordService bannedWordService, ILocalizationService localizationService, ISpamService spamService)
+        public PostSpamCheckPipe(IBannedWordService bannedWordService, ILocalizationService localizationService, ISpamService spamService)
         {
             _bannedWordService = bannedWordService;
             _localizationService = localizationService;

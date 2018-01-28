@@ -35,6 +35,7 @@
 
             // IS this an existing topic
             var existingTopic = await context.Topic.FirstOrDefaultAsync(x => x.Id == input.EntityToProcess.Id);
+            input.ExtendedData.Add(Constants.ExtendedDataKeys.IsEdit, (existingTopic != null));
 
             // See if we can get the username
             if (!string.IsNullOrWhiteSpace(username))

@@ -421,6 +421,41 @@
         }
 
         /// <inheritdoc />
+        public async Task<IPipelineProcess<Post>> Edit(Post post, HttpPostedFileBase[] files, bool isTopicStarter, string originalTopicName)
+        {
+            // Get the pipelines
+            var postCreatePipes = ForumConfiguration.Instance.PipelinesPostUpdate;
+
+            // Set the post to topic starter
+            post.IsTopicStarter = isTopicStarter;
+
+            // The model to process
+            var piplineModel = new PipelineProcess<Post>(post);
+
+            // Add the files for the post
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, files);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Name, originalTopicName);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<Post>, Post>(_context);
+
+            // Register the pipes 
+            var allPostPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Post>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in postCreatePipes)
+            {
+                if (allPostPipes.ContainsKey(pipe))
+                {
+                    pipeline.Register(allPostPipes[pipe]);
+                }
+            }
+
+            // Process the pipeline
+            return await pipeline.Process(piplineModel);
+        }
+
+        /// <inheritdoc />
         public Post Initialise(string postContent, Topic topic, MembershipUser user)
         {
             // Has permission so create the post

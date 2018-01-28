@@ -73,8 +73,6 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IReportService, ReportService>();
             Container.BindInRequestScope<IActivityService, ActivityService>();
             Container.BindInRequestScope<IPollService, PollService>();
-            Container.BindInRequestScope<IPollVoteService, PollVoteService>();
-            Container.BindInRequestScope<IPollAnswerService, PollAnswerService>();
             Container.BindInRequestScope<IBannedEmailService, BannedEmailService>();
             Container.BindInRequestScope<IBannedWordService, BannedWordService>();
             Container.BindInRequestScope<IUploadedFileService, UploadedFileService>();

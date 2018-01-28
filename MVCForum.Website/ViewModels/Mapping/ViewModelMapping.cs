@@ -245,7 +245,7 @@
             Settings settings,
             IPostService postService,
             ITopicNotificationService topicNotificationService,
-            IPollAnswerService pollAnswerService,
+            IPollService pollService,
             IVoteService voteService,
             IFavouriteService favouriteService)
         {
@@ -267,7 +267,7 @@
                 var permission = permissions[topic.Category];
                 var topicPosts = groupedPosts.Contains(id) ? groupedPosts[id].ToList() : new List<Post>();
                 viewModels.Add(CreateTopicViewModel(topic, permission, topicPosts, null, null, null, null, loggedOnUser,
-                    settings, topicNotificationService, pollAnswerService, voteService, favouriteService));
+                    settings, topicNotificationService, pollService, voteService, favouriteService));
             }
             return viewModels;
         }
@@ -282,7 +282,7 @@
             MembershipUser loggedOnUser,
             Settings settings, 
             ITopicNotificationService topicNotificationService,
-            IPollAnswerService pollAnswerService,
+            IPollService pollService,
             IVoteService voteService,
             IFavouriteService favouriteService,
             bool getExtendedData = false)
@@ -359,7 +359,7 @@
                         UserAllowedToVote = permission[ForumConfiguration.Instance.PermissionVoteInPolls].IsTicked
                     };
 
-                    var answers = pollAnswerService.GetAllPollAnswersByPoll(topic.Poll);
+                    var answers = pollService.GetAllPollAnswersByPoll(topic.Poll);
                     if (answers.Any())
                     {
                         var pollvotes = answers.SelectMany(x => x.PollVotes).ToList();

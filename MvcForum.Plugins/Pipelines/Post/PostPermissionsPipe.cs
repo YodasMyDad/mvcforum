@@ -29,7 +29,10 @@
             var username = input.ExtendedData[Constants.ExtendedDataKeys.Username] as string;
 
             // IS this an existing topic
-            var existingPost = await context.Post.FirstOrDefaultAsync(x => x.Id == input.EntityToProcess.Id);
+            var existingPost = await context.Post.Include(x => x.User)
+                                .FirstOrDefaultAsync(x => x.Id == input.EntityToProcess.Id);
+
+            input.ExtendedData.Add(Constants.ExtendedDataKeys.IsEdit, (existingPost != null));
 
             // See if we can get the username
             if (!string.IsNullOrWhiteSpace(username))
@@ -64,10 +67,16 @@
                         }
                     }
 
-                    // TODO - What if this is an edit
+                    // What if this is an edit
                     if (existingPost != null)
                     {
-                        // Check edit permissions???
+                        if (existingPost.User.Id != loggedOnUser.Id &&
+                            !permissions[ForumConfiguration.Instance.PermissionEditPosts].IsTicked)
+                        {
+                            // Not allowed to edit this post
+                            input.AddError(_localizationService.GetResourceString("Errors.NoPermission"));
+                            return input;
+                        }
                     }
                 }
                 else

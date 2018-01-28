@@ -60,7 +60,7 @@
 
         public List<SelectListItem> Categories { get; set; }
 
-        public IList<PollAnswer> PollAnswers { get; set; }
+        public List<PollAnswer> PollAnswers { get; set; }
 
         [ForumMvcResourceDisplayName("Topic.Label.UploadFiles")]
         public HttpPostedFileBase[] Files { get; set; }

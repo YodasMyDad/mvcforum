@@ -41,7 +41,6 @@
         private readonly IFavouriteService _favouriteService;
         private readonly ITopicNotificationService _topicNotificationService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
-        private readonly IPollVoteService _pollVoteService;
         private readonly ITopicService _topicService;
         private readonly ICategoryService _categoryService;
         private readonly IPostService _postService;
