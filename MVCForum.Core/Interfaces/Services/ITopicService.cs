@@ -11,7 +11,6 @@
 
     public partial interface ITopicService
     {
-        Topic SanitizeTopic(Topic topic);
         IList<Topic> GetAll(List<Category> allowedCategories);
         IList<SelectListItem> GetAllSelectList(List<Category> allowedCategories, int amount);
         IList<Topic> GetHighestViewedTopics(int amountToTake, List<Category> allowedCategories);
@@ -55,7 +54,7 @@
         List<Topic> Get(List<Guid> topicIds, List<Category> allowedCategories);
         void Delete(Topic topic);
         int TopicCount(List<Category> allowedCategories);
-        Post AddLastPost(Topic topic, string postContent);
+
         List<MarkAsSolutionReminder> GetMarkAsSolutionReminderList(int days);
 
         /// <summary>
@@ -75,6 +74,5 @@
 
         IList<Topic> GetTopicBySlugLike(string slug);
         bool PassedTopicFloodTest(string topicTitle, MembershipUser user);
-        void NotifyNewTopics(Category cat, Topic topic, MembershipUser loggedOnReadOnlyUser, List<MembershipUser> usersToNotify);
     }
 }

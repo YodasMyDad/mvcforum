@@ -24,7 +24,7 @@
 
     public partial class TopicService : ITopicService
     {
-        private readonly ITopicNotificationService _topicNotificationService;
+        private readonly INotificationService _notificationService;
         private readonly IMvcForumContext _context;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ISettingsService _settingsService;
@@ -34,32 +34,23 @@
         private readonly IPollService _pollService;
         private readonly ICacheService _cacheService;
         private readonly IEmailService _emailService;
-        private readonly ICategoryNotificationService _categoryNotificationService;
-        private readonly ITagNotificationService _tagNotificationService;
 
         public TopicService(IMvcForumContext context, IMembershipUserPointsService membershipUserPointsService,
-            ISettingsService settingsService, ITopicNotificationService topicNotificationService,
+            ISettingsService settingsService, INotificationService notificationService,
             IFavouriteService favouriteService,
-            IPostService postService, IRoleService roleService, IPollService pollService, ICacheService cacheService, IEmailService emailService, ICategoryNotificationService categoryNotificationService, ITagNotificationService tagNotificationService, IMembershipService membershipService)
+            IPostService postService, IRoleService roleService, IPollService pollService, ICacheService cacheService, IEmailService emailService, 
+            IMembershipService membershipService)
         {
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
-            _topicNotificationService = topicNotificationService;
+            _notificationService = notificationService;
             _favouriteService = favouriteService;
             _postService = postService;
             _roleService = roleService;
             _pollService = pollService;
             _cacheService = cacheService;
             _emailService = emailService;
-            _categoryNotificationService = categoryNotificationService;
-            _tagNotificationService = tagNotificationService;
             _context = context;
-        }
-
-        public Topic SanitizeTopic(Topic topic)
-        {
-            topic.Name = StringUtils.SafePlainText(topic.Name);
-            return topic;
         }
 
         /// <summary>
@@ -258,37 +249,6 @@
                         .OrderByDescending(x => x.CreateDate)
                         .Take(amountToTake)
                         .ToList();
-        }
-
-        /// <summary>
-        /// Add a last post to a topic. Must be part of a separate database update
-        /// in EF because of circular dependencies. So save the topic before calling this.
-        /// </summary>
-        /// <param name="topic"></param>
-        /// <param name="postContent"></param>
-        /// <returns></returns>
-        public Post AddLastPost(Topic topic, string postContent)
-        {
-
-            topic = SanitizeTopic(topic);
-
-            // Create the post
-            var post = new Post
-            {
-                DateCreated = DateTime.UtcNow,
-                IsTopicStarter = true,
-                DateEdited = DateTime.UtcNow,
-                PostContent = postContent,
-                User = topic.User,
-                Topic = topic
-            };
-
-            // Add the post
-            _postService.Add(post);
-
-            topic.LastPost = post;
-
-            return post;
         }
 
         public List<MarkAsSolutionReminder> GetMarkAsSolutionReminderList(int days)
@@ -711,7 +671,7 @@
                 foreach (var topicNotification in notificationsToDelete)
                 {
                     topic.TopicNotifications.Remove(topicNotification);
-                    _topicNotificationService.Delete(topicNotification);
+                    _notificationService.Delete(topicNotification);
                 }
 
                 // Final Clear
@@ -939,71 +899,5 @@
             return matchingTopicTitles <= 0;
         }
 
-        /// <inheritdoc />
-        public void NotifyNewTopics(Category cat, Topic topic, MembershipUser loggedOnReadOnlyUser, List<MembershipUser> usersToNotify)
-        {
-            var settings = _settingsService.GetSettings();
-
-            // Get all notifications for this category and for the tags on the topic
-            var notifications = _categoryNotificationService.GetByCategory(cat).Select(x => x.User.Id).ToList();
-
-            // Merge and remove duplicate ids
-            if (topic.Tags != null && topic.Tags.Any())
-            {
-                var tagNotifications = _tagNotificationService.GetByTag(topic.Tags.ToList()).Select(x => x.User.Id)
-                    .ToList();
-                notifications = notifications.Union(tagNotifications).ToList();
-            }
-
-            if (notifications.Any())
-            {
-                // remove the current user from the notification, don't want to notify yourself that you 
-                // have just made a topic!
-                notifications.Remove(loggedOnReadOnlyUser.Id);
-
-                if (notifications.Count > 0)
-                {
-                    // Now get all the users that need notifying
-                    //var usersToNotify = MembershipService.GetUsersById(notifications);
-
-                    // Create the email
-                    var sb = new StringBuilder();
-                    sb.AppendFormat("<p>{0}</p>",
-                        string.Format(_localizationService.GetResourceString("Topic.Notification.NewTopics"), cat.Name));
-                    sb.Append($"<p>{topic.Name}</p>");
-                    if (ForumConfiguration.Instance.IncludeFullPostInEmailNotifications)
-                    {
-                        sb.Append(AppHelpers.ConvertPostContent(topic.LastPost.PostContent));
-                    }
-                    sb.AppendFormat("<p><a href=\"{0}\">{0}</a></p>", string.Concat(Domain, cat.NiceUrl));
-
-                    // create the emails and only send them to people who have not had notifications disabled
-                    var emails = usersToNotify
-                        .Where(x => x.DisableEmailNotifications != true && !x.IsLockedOut && x.IsBanned != true).Select(
-                            user => new Email
-                            {
-                                Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
-                                EmailTo = user.Email,
-                                NameTo = user.UserName,
-                                Subject = string.Concat(
-                                    _localizationService.GetResourceString("Topic.Notification.Subject"),
-                                    settings.ForumName)
-                            }).ToList();
-
-                    // and now pass the emails in to be sent
-                    _emailService.SendMail(emails);
-
-                    try
-                    {
-                        _context.SaveChanges();
-                    }
-                    catch (Exception ex)
-                    {
-                        _context.RollBack();
-                        _loggingService.Error(ex);
-                    }
-                }
-            }
-        }
     }
 }

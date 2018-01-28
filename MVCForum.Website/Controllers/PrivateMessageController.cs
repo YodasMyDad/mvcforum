@@ -225,7 +225,7 @@
                                 var sb = new StringBuilder();
                                 sb.Append(
                                     $"<p>{string.Format(LocalizationService.GetResourceString("PM.NewPrivateMessageBody"), loggedOnReadOnlyUser.UserName)}</p>");
-                                sb.Append(AppHelpers.ConvertPostContent(createPrivateMessageViewModel.Message));
+                                sb.Append(createPrivateMessageViewModel.Message.ConvertPostContent());
                                 email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
                                 _emailService.SendMail(email);
                             }

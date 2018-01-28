@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.SqlTypes;
-    using System.Drawing;
     using System.Linq;
     using System.Security.Principal;
     using System.Text;
@@ -13,7 +12,6 @@
     using System.Web.Security;
     using Constants;
     using Events;
-    using ExtensionMethods;
     using Interfaces;
     using Interfaces.Pipeline;
     using Interfaces.Services;
@@ -21,7 +19,6 @@
     using Models.Entities;
     using Models.Enums;
     using Models.General;
-    using Newtonsoft.Json;
     using Pipeline;
     using Reflection;
     using Utilities;
@@ -30,20 +27,20 @@
     {
         private const int MaxHoursToResetPassword = 48;
         private readonly IActivityService _activityService;
-        private readonly ICacheService _cacheService;
-        private readonly IMvcForumContext _context;
-        private readonly ILocalizationService _localizationService;
-        private readonly ISettingsService _settingsService;
-        private readonly IVoteService _voteService;
         private readonly IBadgeService _badgeService;
-        private readonly ICategoryNotificationService _categoryNotificationService;
-        private readonly IPrivateMessageService _privateMessageService;
-        private readonly IFavouriteService _favouriteService;
-        private readonly ITopicNotificationService _topicNotificationService;
-        private readonly IMembershipUserPointsService _membershipUserPointsService;
-        private readonly ITopicService _topicService;
+        private readonly ICacheService _cacheService;
         private readonly ICategoryService _categoryService;
+        private readonly IMvcForumContext _context;
+        private readonly IFavouriteService _favouriteService;
+        private readonly ILocalizationService _localizationService;
+        private readonly IMembershipUserPointsService _membershipUserPointsService;
+        private readonly INotificationService _notificationService;
+        private readonly IPollService _pollService;
         private readonly IPostService _postService;
+        private readonly IPrivateMessageService _privateMessageService;
+        private readonly ISettingsService _settingsService;
+        private readonly ITopicService _topicService;
+        private readonly IVoteService _voteService;
 
         /// <summary>
         ///     Constructor
@@ -55,20 +52,22 @@
         /// <param name="cacheService"></param>
         /// <param name="voteService"></param>
         /// <param name="badgeService"></param>
-        /// <param name="categoryNotificationService"></param>
         /// <param name="privateMessageService"></param>
         /// <param name="favouriteService"></param>
-        /// <param name="topicNotificationService"></param>
         /// <param name="membershipUserPointsService"></param>
-        /// <param name="pollVoteService"></param>
         /// <param name="topicService"></param>
         /// <param name="categoryService"></param>
         /// <param name="postService"></param>
-        public MembershipService(IMvcForumContext context, ISettingsService settingsService, ILocalizationService localizationService, 
-            IActivityService activityService, ICacheService cacheService, IVoteService voteService, IBadgeService badgeService, 
-            ICategoryNotificationService categoryNotificationService, IPrivateMessageService privateMessageService, 
-            IFavouriteService favouriteService, ITopicNotificationService topicNotificationService, IMembershipUserPointsService membershipUserPointsService, 
-            IPollVoteService pollVoteService, ITopicService topicService, ICategoryService categoryService, IPostService postService)
+        /// <param name="notificationService"></param>
+        /// <param name="pollService"></param>
+        public MembershipService(IMvcForumContext context, ISettingsService settingsService,
+            ILocalizationService localizationService,
+            IActivityService activityService, ICacheService cacheService, IVoteService voteService,
+            IBadgeService badgeService,
+            IPrivateMessageService privateMessageService,
+            IFavouriteService favouriteService, IMembershipUserPointsService membershipUserPointsService,
+            ITopicService topicService, ICategoryService categoryService, IPostService postService,
+            INotificationService notificationService, IPollService pollService)
         {
             _settingsService = settingsService;
             _localizationService = localizationService;
@@ -76,15 +75,14 @@
             _cacheService = cacheService;
             _voteService = voteService;
             _badgeService = badgeService;
-            _categoryNotificationService = categoryNotificationService;
             _privateMessageService = privateMessageService;
             _favouriteService = favouriteService;
-            _topicNotificationService = topicNotificationService;
             _membershipUserPointsService = membershipUserPointsService;
-            _pollVoteService = pollVoteService;
             _topicService = topicService;
             _categoryService = categoryService;
             _postService = postService;
+            _notificationService = notificationService;
+            _pollService = pollService;
             _context = context;
         }
 
@@ -241,11 +239,11 @@
                 CreateDate = now,
                 FailedPasswordAnswerAttempt = 0,
                 FailedPasswordAttemptCount = 0,
-                LastLockoutDate = (DateTime)SqlDateTime.MinValue,
+                LastLockoutDate = (DateTime) SqlDateTime.MinValue,
                 LastPasswordChangedDate = now,
                 IsApproved = false,
                 IsLockedOut = false,
-                LastLoginDate = (DateTime)SqlDateTime.MinValue
+                LastLoginDate = (DateTime) SqlDateTime.MinValue
             };
         }
 
@@ -270,14 +268,15 @@
             newUser.PasswordSalt = salt;
 
             // Add the roles
-            newUser.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
+            newUser.Roles = new List<MembershipRole> {settings.NewMemberStartingRole};
 
             // Set dates
             newUser.CreateDate = newUser.LastPasswordChangedDate = DateTime.UtcNow;
-            newUser.LastLockoutDate = (DateTime)SqlDateTime.MinValue;
+            newUser.LastLockoutDate = (DateTime) SqlDateTime.MinValue;
             newUser.LastLoginDate = DateTime.UtcNow;
             newUser.IsLockedOut = false;
-            newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)).Select(x => x.Slug).ToList(), null);
+            newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName,
+                GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)).Select(x => x.Slug).ToList(), null);
 
             // Get the pipelines
             var userCreatePipes = ForumConfiguration.Instance.PipelinesUserCreate;
@@ -308,7 +307,8 @@
         }
 
         /// <inheritdoc />
-        public async Task<IPipelineProcess<MembershipUser>> EditUser(MembershipUser userToEdit, IPrincipal loggedInUser, HttpPostedFileBase image)
+        public async Task<IPipelineProcess<MembershipUser>> EditUser(MembershipUser userToEdit, IPrincipal loggedInUser,
+            HttpPostedFileBase image)
         {
             // Get the pipelines
             var pipes = ForumConfiguration.Instance.PipelinesUserUpdate;
@@ -376,7 +376,7 @@
         }
 
         /// <summary>
-        /// Get the member by id
+        ///     Get the member by id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -719,12 +719,12 @@
         /// <param name="user"></param>
         public void ProfileUpdated(MembershipUser user)
         {
-            var e = new UpdateProfileEventArgs { User = user };
+            var e = new UpdateProfileEventArgs {User = user};
             EventManager.Instance.FireBeforeProfileUpdated(this, e);
 
             if (!e.Cancel)
             {
-                EventManager.Instance.FireAfterProfileUpdated(this, new UpdateProfileEventArgs { User = user });
+                EventManager.Instance.FireAfterProfileUpdated(this, new UpdateProfileEventArgs {User = user});
                 _activityService.ProfileUpdated(user);
             }
         }
@@ -785,7 +785,7 @@
         public CsvReport FromCsv(List<string> allLines)
         {
             var usersProcessed = new List<string>();
-            var commaSeparator = new[] { ',' };
+            var commaSeparator = new[] {','};
             var report = new CsvReport();
 
             if (allLines == null || allLines.Count == 0)
@@ -875,7 +875,8 @@
                     userToImport = CreateEmptyUser();
                     userToImport.UserName = userName;
                     userToImport.Slug = ServiceHelpers.GenerateSlug(userToImport.UserName,
-                        GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)).Select(x => x.Slug).ToList(), userToImport.Slug);
+                        GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)).Select(x => x.Slug).ToList(),
+                        userToImport.Slug);
                     userToImport.Email = email;
                     userToImport.IsApproved = true;
                     userToImport.PasswordSalt = StringUtils.CreateSalt(Constants.SaltSize);
@@ -908,7 +909,7 @@
                     {
                         userToImport.Signature = values[7];
                     }
-                    userToImport.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
+                    userToImport.Roles = new List<MembershipRole> {settings.NewMemberStartingRole};
                     Add(userToImport);
                 }
                 catch (Exception ex)
@@ -925,7 +926,7 @@
         }
 
         /// <summary>
-        /// Scrubs a user, removes everything from points to posts and topics.
+        ///     Scrubs a user, removes everything from points to posts and topics.
         /// </summary>
         /// <param name="user"></param>
         public void ScrubUsers(MembershipUser user)
@@ -985,7 +986,7 @@
                 toDelete.AddRange(user.CategoryNotifications);
                 foreach (var obj in toDelete)
                 {
-                    _categoryNotificationService.Delete(obj);
+                    _notificationService.Delete(obj);
                 }
                 user.CategoryNotifications.Clear();
                 _context.SaveChanges();
@@ -1036,7 +1037,7 @@
                 notificationsToDelete.AddRange(user.TopicNotifications);
                 foreach (var topicNotification in notificationsToDelete)
                 {
-                    _topicNotificationService.Delete(topicNotification);
+                    _notificationService.Delete(topicNotification);
                 }
                 user.TopicNotifications.Clear();
             }
@@ -1069,7 +1070,7 @@
                 foreach (var vote in pollList)
                 {
                     vote.User = null;
-                    _pollVoteService.Delete(vote);
+                    _pollService.Delete(vote);
                 }
                 user.PollVotes.Clear();
                 _context.SaveChanges();
@@ -1106,7 +1107,8 @@
                 var lastPostTopics = _topicService.GetTopicsByLastPost(postIds, allCategories.ToList());
                 foreach (var topic in lastPostTopics.Where(x => x.User.Id != user.Id))
                 {
-                    var lastPost = topic.Posts.Where(x => !postIds.Contains(x.Id)).OrderByDescending(x => x.DateCreated).FirstOrDefault();
+                    var lastPost = topic.Posts.Where(x => !postIds.Contains(x.Id)).OrderByDescending(x => x.DateCreated)
+                        .FirstOrDefault();
                     topic.LastPost = lastPost;
                 }
 

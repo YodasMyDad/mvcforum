@@ -1,20 +1,16 @@
 ﻿namespace MvcForum.Web.Controllers
 {
     using System;
-    using System.Drawing;
-    using System.IO;
     using System.Linq;
     using System.Security.Principal;
     using System.Text;
     using System.Threading.Tasks;
     using System.Web;
-    using System.Web.Hosting;
     using System.Web.Mvc;
     using System.Web.Security;
     using Areas.Admin.ViewModels;
     using Core;
     using Core.Constants;
-    using Core.Events;
     using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Pipeline;
@@ -24,8 +20,6 @@
     using Core.Models.General;
     using Core.Pipeline;
     using Core.Reflection;
-    using Core.Utilities;
-    using Newtonsoft.Json;
     using ViewModels.Admin;
     using ViewModels.ExtensionMethods;
     using ViewModels.Mapping;
@@ -43,21 +37,43 @@
         private readonly ICategoryService _categoryService;
         private readonly IEmailService _emailService;
         private readonly IFavouriteService _favouriteService;
-        private readonly IPollAnswerService _pollAnswerService;
+        private readonly INotificationService _notificationService;
+        private readonly IPollService _pollService;
         private readonly IPostService _postService;
         private readonly IPrivateMessageService _privateMessageService;
         private readonly IReportService _reportService;
-        private readonly ITopicNotificationService _topicNotificationService;
         private readonly ITopicService _topicService;
         private readonly IVoteService _voteService;
 
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="loggingService"></param>
+        /// <param name="membershipService"></param>
+        /// <param name="localizationService"></param>
+        /// <param name="roleService"></param>
+        /// <param name="settingsService"></param>
+        /// <param name="postService"></param>
+        /// <param name="reportService"></param>
+        /// <param name="emailService"></param>
+        /// <param name="privateMessageService"></param>
+        /// <param name="bannedEmailService"></param>
+        /// <param name="bannedWordService"></param>
+        /// <param name="categoryService"></param>
+        /// <param name="topicService"></param>
+        /// <param name="cacheService"></param>
+        /// <param name="notificationService"></param>
+        /// <param name="pollService"></param>
+        /// <param name="voteService"></param>
+        /// <param name="favouriteService"></param>
+        /// <param name="context"></param>
         public MembersController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
             IPostService postService, IReportService reportService, IEmailService emailService,
             IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService,
             IBannedWordService bannedWordService, ICategoryService categoryService, ITopicService topicService,
-            ICacheService cacheService, ITopicNotificationService topicNotificationService,
-            IPollAnswerService pollAnswerService, IVoteService voteService, IFavouriteService favouriteService,
+            ICacheService cacheService, INotificationService notificationService,
+            IPollService pollService, IVoteService voteService, IFavouriteService favouriteService,
             IMvcForumContext context)
             : base(loggingService, membershipService, localizationService, roleService,
                 settingsService, cacheService, context)
@@ -70,8 +86,8 @@
             _bannedWordService = bannedWordService;
             _categoryService = categoryService;
             _topicService = topicService;
-            _topicNotificationService = topicNotificationService;
-            _pollAnswerService = pollAnswerService;
+            _notificationService = notificationService;
+            _pollService = pollService;
             _voteService = voteService;
             _favouriteService = favouriteService;
         }
@@ -255,7 +271,7 @@
             }
 
             // You can return anything to reset the timer.
-            return Json(new { Timer = "reset" }, JsonRequestBehavior.AllowGet);
+            return Json(new {Timer = "reset"}, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -403,8 +419,10 @@
         public ActionResult MemberRegisterLogic(IPipelineProcess<MembershipUser> pipelineProcess)
         {
             // We get these from the pipelineprocess and not from the settings as they can be changed during the process (i.e. Social login)
-            var manuallyAuthoriseMembers = pipelineProcess.ExtendedData[Constants.ExtendedDataKeys.ManuallyAuthoriseMembers] as bool?;
-            var memberEmailAuthorisationNeeded = pipelineProcess.ExtendedData[Constants.ExtendedDataKeys.MemberEmailAuthorisationNeeded] as bool?;
+            var manuallyAuthoriseMembers =
+                pipelineProcess.ExtendedData[Constants.ExtendedDataKeys.ManuallyAuthoriseMembers] as bool?;
+            var memberEmailAuthorisationNeeded =
+                pipelineProcess.ExtendedData[Constants.ExtendedDataKeys.MemberEmailAuthorisationNeeded] as bool?;
 
             // Set the view bag message here
             SetRegisterViewBagMessage(manuallyAuthoriseMembers == true, memberEmailAuthorisationNeeded == true,
@@ -431,7 +449,7 @@
                     {
                         return Redirect(returnUrl);
                     }
-                    return RedirectToAction("Index", "Home", new { area = string.Empty });
+                    return RedirectToAction("Index", "Home", new {area = string.Empty});
                 }
             }
             catch (Exception ex)
@@ -657,7 +675,8 @@
                 var loginUserPipeline = new Pipeline<IPipelineProcess<MembershipUser>, MembershipUser>(Context);
 
                 // Register the pipes 
-                var allMembershipUserPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<MembershipUser>>>();
+                var allMembershipUserPipes =
+                    ImplementationManager.GetInstances<IPipe<IPipelineProcess<MembershipUser>>>();
 
                 // Loop through the pipes and add the ones we want
                 foreach (var pipe in userLoginPipes)
@@ -693,7 +712,7 @@
                     }
 
                     // If not just go to home page
-                    return RedirectToAction("Index", "Home", new { area = string.Empty });
+                    return RedirectToAction("Index", "Home", new {area = string.Empty});
                 }
 
                 // Add the error if we get here
@@ -715,7 +734,7 @@
                 Message = LocalizationService.GetResourceString("Members.NowLoggedOut"),
                 MessageType = GenericMessages.success
             };
-            return RedirectToAction("Index", "Home", new { area = string.Empty });
+            return RedirectToAction("Index", "Home", new {area = string.Empty});
         }
 
         [HttpPost]
@@ -742,7 +761,7 @@
                 // Get the Topic View Models
                 var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, usersRole,
                     loggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings(), _postService,
-                    _topicNotificationService, _pollAnswerService, _voteService, _favouriteService);
+                    _notificationService, _pollService, _voteService, _favouriteService);
 
                 // create the view model
                 var viewModel = new ViewMemberDiscussionsViewModel
@@ -956,7 +975,7 @@
             if (SettingsService.GetSettings().EnableMemberReporting)
             {
                 var user = MembershipService.GetUser(id);
-                return View(new ReportMemberViewModel { Id = user.Id, Username = user.UserName });
+                return View(new ReportMemberViewModel {Id = user.Id, Username = user.UserName});
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
@@ -998,7 +1017,7 @@
                     Message = LocalizationService.GetResourceString("Report.ReportSent"),
                     MessageType = GenericMessages.success
                 };
-                return View(new ReportMemberViewModel { Id = user.Id, Username = user.UserName });
+                return View(new ReportMemberViewModel {Id = user.Id, Username = user.UserName});
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
@@ -1157,7 +1176,7 @@
 
             var settings = SettingsService.GetSettings();
             var url = new Uri(string.Concat(settings.ForumUrl.TrimEnd('/'),
-                Url.Action("ResetPassword", "Members", new { user.Id, token = user.PasswordResetToken })));
+                Url.Action("ResetPassword", "Members", new {user.Id, token = user.PasswordResetToken})));
 
             var sb = new StringBuilder();
             sb.AppendFormat("<p>{0}</p>",

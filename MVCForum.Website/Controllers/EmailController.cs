@@ -10,28 +10,24 @@
 
     public partial class EmailController : BaseController
     {
-        private readonly ICategoryNotificationService _categoryNotificationService;
+        private readonly INotificationService _notificationService;
         private readonly ICategoryService _categoryService;
-        private readonly ITagNotificationService _tagNotificationService;
-        private readonly ITopicNotificationService _topicNotificationService;
         private readonly ITopicService _topicService;
         private readonly ITopicTagService _topicTagService;
 
         public EmailController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
-            ITopicNotificationService topicNotificationService,
-            ICategoryNotificationService categoryNotificationService, ICategoryService categoryService,
+            INotificationService notificationService,
+            ICategoryService categoryService,
             ITopicService topicService, ITopicTagService topicTagService,
-            ITagNotificationService tagNotificationService, ICacheService cacheService, IMvcForumContext context)
+            ICacheService cacheService, IMvcForumContext context)
             : base(loggingService, membershipService, localizationService, roleService,
                 settingsService, cacheService, context)
         {
-            _topicNotificationService = topicNotificationService;
-            _categoryNotificationService = categoryNotificationService;
             _categoryService = categoryService;
             _topicService = topicService;
             _topicTagService = topicTagService;
-            _tagNotificationService = tagNotificationService;
+            _notificationService = notificationService;
         }
 
         [HttpPost]
@@ -63,7 +59,7 @@
                             };
                             //save
 
-                            _categoryNotificationService.Add(categoryNotification);
+                            _notificationService.Add(categoryNotification);
                         }
                     }
                     else if (isTag)
@@ -81,7 +77,7 @@
                             };
                             //save
 
-                            _tagNotificationService.Add(tagNotification);
+                            _notificationService.Add(tagNotification);
                         }
                     }
                     else
@@ -100,7 +96,7 @@
                             };
                             //save
 
-                            _topicNotificationService.Add(topicNotification);
+                            _notificationService.Add(topicNotification);
                         }
                     }
 
@@ -141,14 +137,14 @@
                         {
                             // get the notifications by user
                             var notifications =
-                                _categoryNotificationService.GetByUserAndCategory(dbUser, cat, true);
+                                _notificationService.GetCategoryNotificationsByUserAndCategory(dbUser, cat, true);
 
                             if (notifications.Any())
                             {
                                 foreach (var categoryNotification in notifications)
                                 {
                                     // Delete
-                                    _categoryNotificationService.Delete(categoryNotification);
+                                    _notificationService.Delete(categoryNotification);
                                 }
                             }
                         }
@@ -162,14 +158,14 @@
                         {
                             // get the notifications by user
                             var notifications =
-                                _tagNotificationService.GetByUserAndTag(dbUser, tag, true);
+                                _notificationService.GetTagNotificationsByUserAndTag(dbUser, tag, true);
 
                             if (notifications.Any())
                             {
                                 foreach (var n in notifications)
                                 {
                                     // Delete
-                                    _tagNotificationService.Delete(n);
+                                    _notificationService.Delete(n);
                                 }
                             }
                         }
@@ -183,14 +179,14 @@
                         {
                             // get the notifications by user
                             var notifications =
-                                _topicNotificationService.GetByUserAndTopic(dbUser, topic, true);
+                                _notificationService.GetTopicNotificationsByUserAndTopic(dbUser, topic, true);
 
                             if (notifications.Any())
                             {
                                 foreach (var topicNotification in notifications)
                                 {
                                     // Delete
-                                    _topicNotificationService.Delete(topicNotification);
+                                    _notificationService.Delete(topicNotification);
                                 }
                             }
                         }

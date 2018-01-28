@@ -16,10 +16,10 @@
     using Core.Interfaces.Services;
     using Core.Models;
     using Core.Models.Entities;
+    using Core.Models.Enums;
     using Core.Models.General;
     using ViewModels.Mapping;
     using ViewModels.Post;
-    using MembershipUser = Core.Models.Entities.MembershipUser;
 
     [Authorize]
     public partial class PostController : BaseController
@@ -30,7 +30,7 @@
         private readonly IPostEditService _postEditService;
         private readonly IPostService _postService;
         private readonly IReportService _reportService;
-        private readonly ITopicNotificationService _topicNotificationService;
+        private readonly INotificationService _notificationService;
         private readonly ITopicService _topicService;
         private readonly IVoteService _voteService;
         private readonly IActivityService _activityService;
@@ -38,7 +38,7 @@
         public PostController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ITopicService topicService,
             IPostService postService, ISettingsService settingsService, ICategoryService categoryService,
-            ITopicNotificationService topicNotificationService, IEmailService emailService,
+            INotificationService notificationService, IEmailService emailService,
             IReportService reportService, IBannedWordService bannedWordService, IVoteService voteService,
             IPostEditService postEditService, ICacheService cacheService, IMvcForumContext context, IActivityService activityService)
             : base(loggingService, membershipService, localizationService, roleService,
@@ -47,7 +47,7 @@
             _topicService = topicService;
             _postService = postService;
             _categoryService = categoryService;
-            _topicNotificationService = topicNotificationService;
+            _notificationService = notificationService;
             _emailService = emailService;
             _reportService = reportService;
             _bannedWordService = bannedWordService;
@@ -137,7 +137,7 @@
                 loggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
 
             // Success send any notifications
-            NotifyNewTopics(topic, loggedOnReadOnlyUser);
+            _notificationService.Notify(topic, loggedOnReadOnlyUser, NotificationType.Post);
 
             // Return view
             return PartialView("_Post", viewModel);
@@ -233,62 +233,6 @@
                 MessageType = GenericMessages.danger
             };
             return Redirect(topic.NiceUrl);
-        }
-
-        private void NotifyNewTopics(Topic topic, MembershipUser loggedOnReadOnlyUser)
-        {
-            try
-            {
-                // Get all notifications for this category
-                var notifications = _topicNotificationService.GetByTopic(topic).Select(x => x.User.Id).ToList();
-
-                if (notifications.Any())
-                {
-                    // remove the current user from the notification, don't want to notify yourself that you 
-                    // have just made a topic!
-                    notifications.Remove(loggedOnReadOnlyUser.Id);
-
-                    if (notifications.Count > 0)
-                    {
-                        // Now get all the users that need notifying
-                        var usersToNotify = MembershipService.GetUsersById(notifications);
-
-                        // Create the email
-                        var sb = new StringBuilder();
-                        sb.AppendFormat("<p>{0}</p>",
-                            string.Format(LocalizationService.GetResourceString("Post.Notification.NewPosts"),
-                                topic.Name));
-                        if (ForumConfiguration.Instance.IncludeFullPostInEmailNotifications)
-                        {
-                            sb.Append(AppHelpers.ConvertPostContent(topic.LastPost.PostContent));
-                        }
-                        sb.AppendFormat("<p><a href=\"{0}\">{0}</a></p>", string.Concat(Domain, topic.NiceUrl));
-
-                        // create the emails only to people who haven't had notifications disabled
-                        var emails = usersToNotify
-                            .Where(x => x.DisableEmailNotifications != true && !x.IsLockedOut && x.IsBanned != true)
-                            .Select(user => new Email
-                            {
-                                Body = _emailService.EmailTemplate(user.UserName, sb.ToString()),
-                                EmailTo = user.Email,
-                                NameTo = user.UserName,
-                                Subject = string.Concat(
-                                    LocalizationService.GetResourceString("Post.Notification.Subject"),
-                                    SettingsService.GetSettings().ForumName)
-                            }).ToList();
-
-                        // and now pass the emails in to be sent
-                        _emailService.SendMail(emails);
-
-                        Context.SaveChanges();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Context.RollBack();
-                LoggingService.Error(ex);
-            }
         }
 
         public ActionResult Report(Guid id)
@@ -436,7 +380,7 @@
             var postCreator = post.User;
 
             Topic topic;
-            var cancelledByEvent = false;
+
             // If the dropdown has a value, then we choose that first
             if (viewModel.TopicId != null)
             {
@@ -470,19 +414,6 @@
 
                 // Set the post to be a topic starter
                 post.IsTopicStarter = true;
-
-                // Check the Events
-                var e = new TopicMadeEventArgs {Topic = topic};
-                EventManager.Instance.FireBeforeTopicMade(this, e);
-                if (e.Cancel)
-                {
-                    cancelledByEvent = true;
-                    ShowMessage(new GenericMessageViewModel
-                    {
-                        MessageType = GenericMessages.warning,
-                        Message = LocalizationService.GetResourceString("Errors.GenericMessage")
-                    });
-                }
             }
             else
             {

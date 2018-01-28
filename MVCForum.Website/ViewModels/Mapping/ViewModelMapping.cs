@@ -244,7 +244,7 @@
             List<Category> allowedCategories,
             Settings settings,
             IPostService postService,
-            ITopicNotificationService topicNotificationService,
+            INotificationService topicNotificationService,
             IPollService pollService,
             IVoteService voteService,
             IFavouriteService favouriteService)
@@ -281,7 +281,7 @@
             int? totalPages,
             MembershipUser loggedOnUser,
             Settings settings, 
-            ITopicNotificationService topicNotificationService,
+            INotificationService topicNotificationService,
             IPollService pollService,
             IVoteService voteService,
             IFavouriteService favouriteService,
@@ -332,7 +332,7 @@
             // Map data from the starter post viewmodel
             viewModel.VotesUp = startPostVotes.Count(x => x.Amount > 0);
             viewModel.VotesDown = startPostVotes.Count(x => x.Amount < 0);
-            viewModel.Answers = totalCount != null ? (int) totalCount : posts.Count() - 1;
+            viewModel.Answers = totalCount ?? posts.Count - 1;
 
             // Create the ALL POSTS view models
             viewModel.Posts =
@@ -344,7 +344,7 @@
             {
                 // See if the user has subscribed to this topic or not
                 var isSubscribed = userIsAuthenticated &&
-                                   topicNotificationService.GetByUserAndTopic(loggedOnUser, topic).Any();
+                                   topicNotificationService.GetTopicNotificationsByUserAndTopic(loggedOnUser, topic).Any();
                 viewModel.IsSubscribed = isSubscribed;
 
                 // See if the topic has a poll, and if so see if this user viewing has already voted

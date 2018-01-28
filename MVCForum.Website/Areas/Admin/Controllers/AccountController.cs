@@ -17,9 +17,7 @@
     public class AccountController : BaseAdminController
     {
         private readonly IMembershipUserPointsService _membershipUserPointsService;
-        private readonly IPollAnswerService _pollAnswerService;
         private readonly IPollService _pollService;
-        private readonly IPollVoteService _pollVoteService;
         private readonly IPostService _postService;
         private readonly IRoleService _roleService;
         private readonly ITopicService _topicService;
@@ -40,8 +38,6 @@
         /// <param name="membershipUserPointsService"> </param>
         /// <param name="activityService"> </param>
         /// <param name="pollService"> </param>
-        /// <param name="pollVoteService"> </param>
-        /// <param name="pollAnswerService"> </param>
         /// <param name="uploadedFileService"></param>
         public AccountController(ILoggingService loggingService, IMvcForumContext context,
             IMembershipService membershipService,
@@ -49,8 +45,8 @@
             IRoleService roleService,
             ISettingsService settingsService, IPostService postService, ITopicService topicService,
             IMembershipUserPointsService membershipUserPointsService,
-            IActivityService activityService, IPollService pollService, IPollVoteService pollVoteService,
-            IPollAnswerService pollAnswerService, IUploadedFileService uploadedFileService)
+            IActivityService activityService, IPollService pollService, 
+            IUploadedFileService uploadedFileService)
             : base(loggingService, membershipService, localizationService, settingsService, context)
         {
             ActivityService = activityService;
@@ -59,8 +55,6 @@
             _topicService = topicService;
             _membershipUserPointsService = membershipUserPointsService;
             _pollService = pollService;
-            _pollVoteService = pollVoteService;
-            _pollAnswerService = pollAnswerService;
             _uploadedFileService = uploadedFileService;
         }
 

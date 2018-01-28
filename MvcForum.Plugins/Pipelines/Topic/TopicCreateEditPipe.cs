@@ -41,7 +41,7 @@
                 var post = input.EntityToProcess.Posts.FirstOrDefault(x => x.IsTopicStarter);
 
                 // Pass to edit
-                postPipelineResult = await _postService.Edit(post, files, true);
+                postPipelineResult = await _postService.Edit(post, files, true, input.ExtendedData[Constants.ExtendedDataKeys.Name] as string);
             }
             else
             {
@@ -73,6 +73,7 @@
                 var pollCloseafterDays = input.ExtendedData[Constants.ExtendedDataKeys.PollCloseAfterDays] as int?;
                 _pollService.RefreshEditedPoll(input.EntityToProcess, newPollAnswers, pollCloseafterDays ?? 0);
             }
+            
 
             return input;
         }

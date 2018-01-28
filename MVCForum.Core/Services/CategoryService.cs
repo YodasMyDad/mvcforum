@@ -17,7 +17,7 @@
     public partial class CategoryService : ICategoryService
     {
         private readonly ICacheService _cacheService;
-        private readonly ICategoryNotificationService _categoryNotificationService;
+        private readonly INotificationService _notificationService;
         private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
         private readonly IMvcForumContext _context;
         private readonly IRoleService _roleService;
@@ -27,15 +27,15 @@
         /// </summary>
         /// <param name="context"></param>
         /// <param name="roleService"> </param>
-        /// <param name="categoryNotificationService"> </param>
+        /// <param name="notificationService"> </param>
         /// <param name="categoryPermissionForRoleService"></param>
         /// <param name="cacheService"></param>
         public CategoryService(IMvcForumContext context, IRoleService roleService,
-            ICategoryNotificationService categoryNotificationService,
+            INotificationService notificationService,
             ICategoryPermissionForRoleService categoryPermissionForRoleService, ICacheService cacheService)
         {
             _roleService = roleService;
-            _categoryNotificationService = categoryNotificationService;
+            _notificationService = notificationService;
             _categoryPermissionForRoleService = categoryPermissionForRoleService;
             _cacheService = cacheService;
             _context = context;
@@ -324,7 +324,7 @@
                 categoryNotificationsToDelete.AddRange(category.CategoryNotifications);
                 foreach (var categoryNotification in categoryNotificationsToDelete)
                 {
-                    _categoryNotificationService.Delete(categoryNotification);
+                    _notificationService.Delete(categoryNotification);
                 }
 
                 _context.Category.Remove(category);

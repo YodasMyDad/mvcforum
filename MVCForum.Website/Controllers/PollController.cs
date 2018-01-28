@@ -12,20 +12,15 @@
     [Authorize]
     public partial class PollController : BaseController
     {
-        private readonly IPollAnswerService _pollAnswerService;
         private readonly IPollService _pollService;
-        private readonly IPollVoteService _pollVoteService;
 
         public PollController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
-            IPollService pollService, IPollVoteService pollVoteService, IPollAnswerService pollAnswerService,
-            ICacheService cacheService, IMvcForumContext context)
+            IPollService pollService, ICacheService cacheService, IMvcForumContext context)
             : base(loggingService, membershipService, localizationService, roleService,
                 settingsService, cacheService, context)
         {
             _pollService = pollService;
-            _pollAnswerService = pollAnswerService;
-            _pollVoteService = pollVoteService;
         }
 
         [HttpPost]
@@ -36,18 +31,18 @@
                 var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
 
                 // Fist need to check this user hasn't voted already and is trying to fudge the system
-                if (!_pollVoteService.HasUserVotedAlready(updatePollViewModel.AnswerId, loggedOnReadOnlyUser.Id))
+                if (!_pollService.HasUserVotedAlready(updatePollViewModel.AnswerId, loggedOnReadOnlyUser.Id))
                 {
                     var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
 
                     // Get the answer
-                    var pollAnswer = _pollAnswerService.Get(updatePollViewModel.AnswerId);
+                    var pollAnswer = _pollService.GetPollAnswer(updatePollViewModel.AnswerId);
 
                     // create a new vote
                     var pollVote = new PollVote {PollAnswer = pollAnswer, User = loggedOnUser};
 
                     // Add it
-                    _pollVoteService.Add(pollVote);
+                    _pollService.Add(pollVote);
 
                     // Update the context so the changes are reflected in the viewmodel below
                     Context.SaveChanges();

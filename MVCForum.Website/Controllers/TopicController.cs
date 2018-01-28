@@ -3,17 +3,14 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
     using System.Web.Mvc;
-    using Application;
     using Areas.Admin.ViewModels;
     using Core;
     using Core.Constants;
     using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Models;
     using Core.Models.Entities;
     using Core.Models.Enums;
     using Core.Models.General;
@@ -26,14 +23,11 @@
 
     public partial class TopicController : BaseController
     {
-        private readonly ICategoryNotificationService _categoryNotificationService;
         private readonly ICategoryService _categoryService;
-        private readonly IEmailService _emailService;
         private readonly IFavouriteService _favouriteService;
+        private readonly INotificationService _notificationService;
         private readonly IPollService _pollService;
         private readonly IPostService _postService;
-        private readonly ITagNotificationService _tagNotificationService;
-        private readonly ITopicNotificationService _topicNotificationService;
         private readonly ITopicService _topicService;
         private readonly ITopicTagService _topicTagService;
         private readonly IVoteService _voteService;
@@ -42,11 +36,8 @@
             IRoleService roleService, ITopicService topicService, IPostService postService,
             ICategoryService categoryService, ILocalizationService localizationService,
             ISettingsService settingsService, ITopicTagService topicTagService,
-            ICategoryNotificationService categoryNotificationService, IEmailService emailService,
-            ITopicNotificationService topicNotificationService, IPollService pollService,
-            IVoteService voteService,
-            IFavouriteService favouriteService, ICacheService cacheService,
-            ITagNotificationService tagNotificationService, IMvcForumContext context)
+            IPollService pollService, IVoteService voteService, IFavouriteService favouriteService, ICacheService cacheService,
+            IMvcForumContext context, INotificationService notificationService)
             : base(loggingService, membershipService, localizationService, roleService,
                 settingsService, cacheService, context)
         {
@@ -54,13 +45,10 @@
             _postService = postService;
             _categoryService = categoryService;
             _topicTagService = topicTagService;
-            _categoryNotificationService = categoryNotificationService;
-            _emailService = emailService;
-            _topicNotificationService = topicNotificationService;
             _pollService = pollService;
             _voteService = voteService;
             _favouriteService = favouriteService;
-            _tagNotificationService = tagNotificationService;
+            _notificationService = notificationService;
         }
 
 
@@ -85,7 +73,7 @@
 
             // Get the Topic View Models
             var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, loggedOnloggedOnUsersRole,
-                loggedOnReadOnlyUser, allowedCategories, settings, _postService, _topicNotificationService,
+                loggedOnReadOnlyUser, allowedCategories, settings, _postService, _notificationService,
                 _pollService, _voteService, _favouriteService);
 
             // create the view model
@@ -119,7 +107,7 @@
                 // Get the Topic View Models
                 viewModel = ViewModelMapping.CreateTopicViewModels(topics, RoleService, loggedOnloggedOnUsersRole,
                     loggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings(), _postService,
-                    _topicNotificationService, _pollService, _voteService, _favouriteService);
+                    _notificationService, _pollService, _voteService, _favouriteService);
 
                 // Show the unsubscribe link
                 foreach (var topicViewModel in viewModel)
@@ -429,7 +417,7 @@
 
                         // See if this user is subscribed to this topic
                         var topicNotifications =
-                            _topicNotificationService.GetByUserAndTopic(loggedOnReadOnlyUser, topic);
+                            _notificationService.GetTopicNotificationsByUserAndTopic(loggedOnReadOnlyUser, topic);
 
                         // Populate the properties we can
                         viewModel.IsLocked = topic.IsLocked;
@@ -522,9 +510,10 @@
 
                     // Run the create pipeline
                     var editPipeLine = await _topicService.Edit(originalTopic, editPostViewModel.Files,
-                        editPostViewModel.Tags,
-                        editPostViewModel.SubscribeToTopic, editPostViewModel.Content, editPostViewModel.Name,
-                        editPostViewModel.PollAnswers, editPostViewModel.PollCloseAfterDays);
+                        editPostViewModel.Tags, editPostViewModel.SubscribeToTopic, editPostViewModel.Content, 
+                        editPostViewModel.Name, editPostViewModel.PollAnswers, editPostViewModel.PollCloseAfterDays);
+
+                    // Check if successful
                     if (editPipeLine.Successful == false)
                     {
                         // Tell the user the topic is awaiting moderation
@@ -876,7 +865,7 @@
 
                 var viewModel = ViewModelMapping.CreateTopicViewModel(topic, permissions, posts.ToList(),
                     starterPost, posts.PageIndex, posts.TotalCount, posts.TotalPages, loggedOnReadOnlyUser,
-                    settings, _topicNotificationService, _pollService, _voteService, _favouriteService, true);
+                    settings, _notificationService, _pollService, _voteService, _favouriteService, true);
 
                 // If there is a quote querystring
                 var quote = Request["quote"];
@@ -1021,11 +1010,12 @@
 
             // See if the user has subscribed to this topic or not
             var isSubscribed = User.Identity.IsAuthenticated &&
-                               _tagNotificationService.GetByUserAndTag(loggedOnReadOnlyUser, tagModel).Any();
+                               _notificationService.GetTagNotificationsByUserAndTag(loggedOnReadOnlyUser, tagModel)
+                                   .Any();
 
             // Get the Topic View Models
             var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, loggedOnUsersRole,
-                loggedOnReadOnlyUser, allowedCategories, settings, _postService, _topicNotificationService,
+                loggedOnReadOnlyUser, allowedCategories, settings, _postService, _notificationService,
                 _pollService, _voteService, _favouriteService);
 
             // create the view model
@@ -1091,7 +1081,7 @@
 
             // Get the Topic View Models
             var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, loggedOnUsersRole,
-                loggedOnReadOnlyUser, allowedCategories, settings, _postService, _topicNotificationService,
+                loggedOnReadOnlyUser, allowedCategories, settings, _postService, _notificationService,
                 _pollService, _voteService, _favouriteService);
 
             // create the view model
@@ -1133,7 +1123,7 @@
                 // Get the Topic View Models
                 var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService,
                     loggedOnUsersRole, loggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings(),
-                    _postService, _topicNotificationService, _pollService, _voteService, _favouriteService);
+                    _postService, _notificationService, _pollService, _voteService, _favouriteService);
 
                 // create the view model
                 viewModel = new HotTopicsViewModel

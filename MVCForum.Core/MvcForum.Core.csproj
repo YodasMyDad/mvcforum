@@ -51,6 +51,7 @@
     <Compile Include="Interfaces\IAssemblyProvider.cs" />
     <Compile Include="Interfaces\Pipeline\IPipe.cs" />
     <Compile Include="Interfaces\Pipeline\IPipelineProcess.cs" />
+    <Compile Include="Interfaces\Services\INotificationService.cs" />
     <Compile Include="Interfaces\Services\ISpamService.cs" />
     <Compile Include="MemoryFile.cs" />
     <Compile Include="Migrations\201801011815079_IncreaseAccessTokenLength.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Models\Enums\CacheTimes.cs" />
     <Compile Include="Models\Enums\LoginAttemptStatus.cs" />
     <Compile Include="Models\Enums\MembershipCreateStatus.cs" />
+    <Compile Include="Models\Enums\NotificationType.cs" />
     <Compile Include="Models\Enums\PointsFor.cs" />
     <Compile Include="Models\Enums\PostOrderBy.cs" />
     <Compile Include="Models\Enums\SiteMapChangeFreqency.cs" />
@@ -176,9 +178,6 @@
     <Compile Include="Interfaces\Services\IPostEditService.cs" />
     <Compile Include="Interfaces\Services\IPrivateMessageService.cs" />
     <Compile Include="Interfaces\Services\IReportService.cs" />
-    <Compile Include="Interfaces\Services\ITagNotificationService.cs" />
-    <Compile Include="Interfaces\Services\ITopicNotificationService.cs" />
-    <Compile Include="Interfaces\Services\ICategoryNotificationService.cs" />
     <Compile Include="Interfaces\Services\IEmailService.cs" />
     <Compile Include="Interfaces\Services\ILoggingService.cs" />
     <Compile Include="Interfaces\Services\IMembershipUserPointsService.cs" />
@@ -219,7 +218,6 @@
     <Compile Include="Services\BannedWordService.cs" />
     <Compile Include="Services\BlockService.cs" />
     <Compile Include="Services\CacheService.cs" />
-    <Compile Include="Services\CategoryNotificationService.cs" />
     <Compile Include="Services\CategoryPermissionForRoleService.cs" />
     <Compile Include="Services\CategoryService.cs" />
     <Compile Include="Services\ConfigService.cs" />
@@ -263,6 +261,7 @@
     <Compile Include="Services\MembershipService.cs" />
     <Compile Include="Services\MembershipUserPointsService.cs" />
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\PermissionService.cs" />
     <Compile Include="Services\PollService.cs" />
     <Compile Include="Services\PostEditService.cs" />
@@ -275,8 +274,6 @@
     <Compile Include="Services\SettingsService.cs" />
     <Compile Include="Services\SpamService.cs" />
     <Compile Include="SiteConfig\SiteConfig.cs" />
-    <Compile Include="Services\TagNotificationService.cs" />
-    <Compile Include="Services\TopicNotificationService.cs" />
     <Compile Include="Services\TopicService.cs" />
     <Compile Include="Services\TopicTagService.cs" />
     <Compile Include="Services\UploadedFileService.cs" />

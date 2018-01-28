@@ -203,27 +203,6 @@
 
         #region String
 
-        public static string ConvertPostContent(string post)
-        {
-            if (!string.IsNullOrWhiteSpace(post))
-            {
-                // Convert any BBCode
-                //NOTE: Decided to remove BB code
-                //post = StringUtils.ConvertBbCodeToHtml(post, false);
-
-                // If using the PageDown/MarkDown Editor uncomment this line
-                post = StringUtils.ConvertMarkDown(post);
-
-                // Allow video embeds
-                post = StringUtils.EmbedVideosInPosts(post);
-
-                // Add Google prettify code snippets
-                post = post.Replace("<pre>", "<pre class='prettyprint'>");
-            }
-
-            return post;
-        }
-
         public static string ReturnBadgeUrl(string badgeFile)
         {
             return string.Concat("~/content/badges/", badgeFile);

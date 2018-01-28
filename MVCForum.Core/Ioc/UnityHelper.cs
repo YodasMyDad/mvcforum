@@ -65,8 +65,6 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IBadgeService, BadgeService>();
             Container.BindInRequestScope<IMembershipUserPointsService, MembershipUserPointsService>();
             Container.BindInRequestScope<ICategoryPermissionForRoleService, CategoryPermissionForRoleService>();
-            Container.BindInRequestScope<ICategoryNotificationService, CategoryNotificationService>();
-            Container.BindInRequestScope<ITopicNotificationService, TopicNotificationService>();
             Container.BindInRequestScope<IPrivateMessageService, PrivateMessageService>();
             Container.BindInRequestScope<ILoggingService, LoggingService>();
             Container.BindInRequestScope<IEmailService, EmailService>();
@@ -78,7 +76,7 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IUploadedFileService, UploadedFileService>();
             Container.BindInRequestScope<IFavouriteService, FavouriteService>();
             Container.BindInRequestScope<IGlobalPermissionForRoleService, GlobalPermissionForRoleService>();            
-            Container.BindInRequestScope<ITagNotificationService, TagNotificationService>();
+            Container.BindInRequestScope<INotificationService, NotificationService>();
             Container.BindInRequestScope<IBlockService, BlockService>();            
             Container.BindInRequestScope<IPostEditService, PostEditService>();
             Container.BindInRequestScope<IAssemblyProvider, AssemblyProvider>();
