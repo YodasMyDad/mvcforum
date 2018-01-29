@@ -363,6 +363,26 @@
         }
 
         /// <summary>
+        /// Gets the pipes for the Post update
+        /// </summary>
+        private IList<string> _pipelinePostMove;
+        public IList<string> PipelinesPostMove
+        {
+            get
+            {
+                if (_pipelinePostMove == null)
+                {
+                    var pipes = GetPlugin("PipelinesPostMove");
+                    if (!string.IsNullOrWhiteSpace(pipes))
+                    {
+                        _pipelinePostMove = ConfigToListString(pipes);
+                    }
+                }
+                return _pipelinePostMove;
+            }
+        }
+
+        /// <summary>
         /// Gets the pipes for the Post delete
         /// </summary>
         private IList<string> _pipelinePostDelete;

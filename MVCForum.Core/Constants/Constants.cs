@@ -176,6 +176,21 @@
             /// Key for poll close after days
             /// </summary>
             public const string PollCloseAfterDays = "PollCloseAfterDays";
+
+            /// <summary>
+            /// Key for getting a stored topic ID
+            /// </summary>
+            public const string TopicId = "TopicId";
+
+            /// <summary>
+            /// Key for whether to move posts
+            /// </summary>
+            public const string MovePosts = "MovePosts";
+
+            /// <summary>
+            /// Key to get existing post
+            /// </summary>
+            public const string Post = "Post";
         }
     }
 }

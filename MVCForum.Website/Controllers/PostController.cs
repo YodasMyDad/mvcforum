@@ -65,10 +65,7 @@
             var loggedOnUsersRole = loggedOnUser.GetRole(RoleService);
             var permissions = RoleService.GetPermissions(topic.Category, loggedOnUsersRole);
 
-            // TODO Set the reply to? Pass into service?
-            //newPost.InReplyTo = post.InReplyTo;
-
-            var postPipelineResult = await _postService.Create(post.PostContent, topic, loggedOnUser, null, false);
+            var postPipelineResult = await _postService.Create(post.PostContent, topic, loggedOnUser, null, false, post.InReplyTo);
             if (!postPipelineResult.Successful)
             {
                 // TODO - This is shit. We need to return an object to process
@@ -186,7 +183,7 @@
             if (SettingsService.GetSettings().EnableSpamReporting)
             {
                 var post = _postService.Get(id);
-                return View(new ReportPostViewModel {PostId = post.Id, PostCreatorUsername = post.User.UserName});
+                return View(new ReportPostViewModel { PostId = post.Id, PostCreatorUsername = post.User.UserName });
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
@@ -222,7 +219,7 @@
                     Message = LocalizationService.GetResourceString("Report.ReportSent"),
                     MessageType = GenericMessages.success
                 };
-                return View(new ReportPostViewModel {PostId = post.Id, PostCreatorUsername = post.User.UserName});
+                return View(new ReportPostViewModel { PostId = post.Id, PostCreatorUsername = post.User.UserName });
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
@@ -236,7 +233,7 @@
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
             var post = _postService.Get(id);
             var permissions = RoleService.GetPermissions(post.Topic.Category, loggedOnUsersRole);
-            var votes = _voteService.GetVotesByPosts(new List<Guid> {id});
+            var votes = _voteService.GetVotesByPosts(new List<Guid> { id });
             var viewModel = ViewModelMapping.CreatePostViewModel(post, votes, permissions, post.Topic,
                 loggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
             var upVotes = viewModel.Votes.Where(x => x.Amount > 0).ToList();
@@ -293,11 +290,8 @@
         }
 
         [HttpPost]
-        public ActionResult MovePost(MovePostViewModel viewModel)
+        public async Task<ActionResult> MovePost(MovePostViewModel viewModel)
         {
-            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-            var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
-
             // Firstly check if this is a post and they are allowed to move it
             var post = _postService.Get(viewModel.PostId);
             if (post == null)
@@ -305,115 +299,22 @@
                 return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
             }
 
+            var moveResult = await _postService.Move(post, viewModel.TopicId, viewModel.TopicTitle,
+                viewModel.MoveReplyToPosts);
+            if (moveResult.Successful)
+            {
+                // On Update redirect to the topic
+                return RedirectToAction("Show", "Topic", new { slug = moveResult.EntityToProcess.Topic.Slug });
+            }
+
+            // Add a model error to show issue
+            ModelState.AddModelError("", moveResult.ProcessLog.FirstOrDefault());
+
+            // Sort the view model before sending back
+            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+            var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
             var permissions = RoleService.GetPermissions(post.Topic.Category, loggedOnUsersRole);
             var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
-
-            // Does the user have permission to this posts category
-            var cat = allowedCategories.FirstOrDefault(x => x.Id == post.Topic.Category.Id);
-            if (cat == null)
-            {
-                return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
-            }
-
-            // Does this user have permission to move
-            if (!permissions[ForumConfiguration.Instance.PermissionEditPosts].IsTicked)
-            {
-                return NoPermission(post.Topic);
-            }
-
-            var previousTopic = post.Topic;
-            var category = post.Topic.Category;
-            var postCreator = post.User;
-
-            Topic topic;
-
-            // If the dropdown has a value, then we choose that first
-            if (viewModel.TopicId != null)
-            {
-                // Get the selected topic
-                topic = _topicService.Get((Guid) viewModel.TopicId);
-            }
-            else if (!string.IsNullOrWhiteSpace(viewModel.TopicTitle))
-            {
-                // We get the banned words here and pass them in, so its just one call
-                // instead of calling it several times and each call getting all the words back
-                var bannedWordsList = _bannedWordService.GetAll();
-                List<string> bannedWords = null;
-                if (bannedWordsList.Any())
-                {
-                    bannedWords = bannedWordsList.Select(x => x.Word).ToList();
-                }
-
-                // Create the topic
-                topic = new Topic
-                {
-                    Name = _bannedWordService.SanitiseBannedWords(viewModel.TopicTitle, bannedWords),
-                    Category = category,
-                    User = postCreator
-                };
-
-                // Create the topic
-                topic = _topicService.Add(topic);
-
-                // Save the changes
-                Context.SaveChanges();
-
-                // Set the post to be a topic starter
-                post.IsTopicStarter = true;
-            }
-            else
-            {
-                // No selected topic OR topic title, just redirect back to the topic
-                return Redirect(post.Topic.NiceUrl);
-            }
-
-            // If this create was cancelled by an event then don't continue
-            if (!cancelledByEvent)
-            {
-                // Now update the post to the new topic
-                post.Topic = topic;
-
-                // Also move any posts, which were in reply to this post
-                if (viewModel.MoveReplyToPosts)
-                {
-                    var relatedPosts = _postService.GetReplyToPosts(viewModel.PostId);
-                    foreach (var relatedPost in relatedPosts)
-                    {
-                        relatedPost.Topic = topic;
-                    }
-                }
-
-                Context.SaveChanges();
-
-                // Update Last post..  As we have done a save, we should get all posts including the added ones
-                var lastPost = topic.Posts.OrderByDescending(x => x.DateCreated).FirstOrDefault();
-                topic.LastPost = lastPost;
-
-                // If any of the posts we are moving, were the last post - We need to update the old Topic
-                var previousTopicLastPost =
-                    previousTopic.Posts.OrderByDescending(x => x.DateCreated).FirstOrDefault();
-                previousTopic.LastPost = previousTopicLastPost;
-
-                try
-                {
-                    Context.SaveChanges();
-
-                    EventManager.Instance.FireAfterTopicMade(this, new TopicMadeEventArgs {Topic = topic});
-
-                    // On Update redirect to the topic
-                    return RedirectToAction("Show", "Topic", new {slug = topic.Slug});
-                }
-                catch (Exception ex)
-                {
-                    Context.RollBack();
-                    LoggingService.Error(ex);
-                    ShowMessage(new GenericMessageViewModel
-                    {
-                        Message = ex.Message,
-                        MessageType = GenericMessages.danger
-                    });
-                }
-            }
 
             // Repopulate the topics
             var topics = _topicService.GetAllSelectList(allowedCategories, 30);
@@ -424,8 +325,8 @@
             });
 
             viewModel.LatestTopics = topics;
-            viewModel.Post = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions,
-                post.Topic, loggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
+            viewModel.Post = ViewModelMapping.CreatePostViewModel(post, post.Votes.ToList(), permissions, 
+                            post.Topic, loggedOnReadOnlyUser, SettingsService.GetSettings(), post.Favourites.ToList());
             viewModel.Post.MinimalPost = true;
             viewModel.PostId = post.Id;
 

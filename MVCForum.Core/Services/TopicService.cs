@@ -145,8 +145,9 @@
         /// <param name="tags"></param>
         /// <param name="subscribe"></param>
         /// <param name="postContent"></param>
+        /// <param name="post">Optional Post: Used for moving a existing post into a new topic</param>
         /// <returns></returns>
-        public async Task<IPipelineProcess<Topic>> Create(Topic topic, HttpPostedFileBase[] files, string tags, bool subscribe, string postContent)
+        public async Task<IPipelineProcess<Topic>> Create(Topic topic, HttpPostedFileBase[] files, string tags, bool subscribe, string postContent, Post post)
         {
             // url slug generator
             topic.Slug = ServiceHelpers.GenerateSlug(topic.Name, 
@@ -165,6 +166,8 @@
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Tags, tags);
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.IsEdit, false);
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Content, postContent);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Post, post);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
 
             // Get instance of the pipeline to use
             var pipeline = new Pipeline<IPipelineProcess<Topic>, Topic>(_context);
@@ -209,6 +212,7 @@
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PollNewAnswers, pollAnswers);
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PollCloseAfterDays, closePollAfterDays);
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Name, originalTopicName);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
 
             // Get instance of the pipeline to use
             var pipeline = new Pipeline<IPipelineProcess<Topic>, Topic>(_context);

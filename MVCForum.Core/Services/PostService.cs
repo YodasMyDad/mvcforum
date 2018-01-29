@@ -374,10 +374,10 @@
         /// <param name="files"></param>
         /// <param name="isTopicStarter"></param>
         /// <returns></returns>
-        public async Task<IPipelineProcess<Post>> Create(string postContent, Topic topic, MembershipUser user, HttpPostedFileBase[] files, bool isTopicStarter)
+        public async Task<IPipelineProcess<Post>> Create(string postContent, Topic topic, MembershipUser user, HttpPostedFileBase[] files, bool isTopicStarter, Guid? replyTo)
         {
             var post = Initialise(postContent, topic, user);
-            return await Create(post, files, isTopicStarter);
+            return await Create(post, files, isTopicStarter, replyTo);
         }
 
         /// <summary>
@@ -386,14 +386,21 @@
         /// <param name="post"></param>
         /// <param name="files"></param>
         /// <param name="isTopicStarter"></param>
+        /// <param name="replyTo"></param>
         /// <returns></returns>
-        public async Task<IPipelineProcess<Post>> Create(Post post, HttpPostedFileBase[] files, bool isTopicStarter)
+        public async Task<IPipelineProcess<Post>> Create(Post post, HttpPostedFileBase[] files, bool isTopicStarter, Guid? replyTo)
         {
             // Get the pipelines
             var postCreatePipes = ForumConfiguration.Instance.PipelinesPostCreate;
 
             // Set the post to topic starter
             post.IsTopicStarter = isTopicStarter;
+
+            // If this is a reply to someone
+            if (replyTo != null)
+            {
+                post.InReplyTo = replyTo;
+            }
 
             // The model to process
             var piplineModel = new PipelineProcess<Post>(post);
@@ -402,7 +409,9 @@
             if(files != null)
             {
                 piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, files);
-            }            
+            }
+
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
 
             // Get instance of the pipeline to use
             var pipeline = new Pipeline<IPipelineProcess<Post>, Post>(_context);
@@ -438,6 +447,7 @@
             // Add the files for the post
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, files);
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Name, originalTopicName);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
 
             // Get instance of the pipeline to use
             var pipeline = new Pipeline<IPipelineProcess<Post>, Post>(_context);
@@ -447,6 +457,46 @@
 
             // Loop through the pipes and add the ones we want
             foreach (var pipe in postCreatePipes)
+            {
+                if (allPostPipes.ContainsKey(pipe))
+                {
+                    pipeline.Register(allPostPipes[pipe]);
+                }
+            }
+
+            // Process the pipeline
+            return await pipeline.Process(piplineModel);
+        }
+
+        /// <inheritdoc />
+        public async Task<IPipelineProcess<Post>> Move(Post post, Guid? newTopicId, string newTopicTitle, bool moveReplyToPosts)
+        {
+            // Get the pipelines
+            var postPipes = ForumConfiguration.Instance.PipelinesPostMove;
+
+            // The model to process
+            var piplineModel = new PipelineProcess<Post>(post);
+
+            // Add the files for the post
+            if (newTopicId != null)
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.TopicId, newTopicId);
+            }
+            if (!string.IsNullOrWhiteSpace(newTopicTitle))
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Name, newTopicTitle);
+            }
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.MovePosts, moveReplyToPosts);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<Post>, Post>(_context);
+
+            // Register the pipes 
+            var allPostPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Post>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in postPipes)
             {
                 if (allPostPipes.ContainsKey(pipe))
                 {

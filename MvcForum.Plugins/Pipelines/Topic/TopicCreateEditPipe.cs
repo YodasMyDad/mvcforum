@@ -37,12 +37,14 @@
             // Are we in an edit mode
             var isEdit = input.ExtendedData[Constants.ExtendedDataKeys.IsEdit] as bool? == true;
 
+            Post post = null;
+
             // Get the correct pipeline
             IPipelineProcess<Post> postPipelineResult;
             if (isEdit)
             {
                 // Get the topic starter post
-                var post = input.EntityToProcess.Posts.FirstOrDefault(x => x.IsTopicStarter);
+                post = input.EntityToProcess.Posts.FirstOrDefault(x => x.IsTopicStarter);
 
                 // Pass to edit
                 postPipelineResult = await _postService.Edit(post, files, true, input.ExtendedData[Constants.ExtendedDataKeys.Name] as string);
@@ -51,7 +53,7 @@
             {
                 postPipelineResult = await _postService.Create(
                     input.ExtendedData[Constants.ExtendedDataKeys.Content] as string,
-                    input.EntityToProcess, input.EntityToProcess.User, files, true);
+                    input.EntityToProcess, input.EntityToProcess.User, files, true, null);
             }
 
             if (!postPipelineResult.Successful)

@@ -46,6 +46,7 @@
     <Compile Include="Badges\YourPostFavouritedBadge.cs" />
     <Compile Include="Badges\YourPostFavouritedTenTimesBadge.cs" />
     <Compile Include="Pipelines\Post\PostFilesPipe.cs" />
+    <Compile Include="Pipelines\Post\PostMovePipe.cs" />
     <Compile Include="Pipelines\Post\PostPermissionsPipe.cs" />
     <Compile Include="Pipelines\Post\PostSpamCheckPipe.cs" />
     <Compile Include="Pipelines\Post\PostCreateEditPipe.cs" />
