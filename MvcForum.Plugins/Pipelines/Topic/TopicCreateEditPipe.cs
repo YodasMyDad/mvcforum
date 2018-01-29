@@ -28,7 +28,11 @@
         public async Task<IPipelineProcess<Topic>> Process(IPipelineProcess<Topic> input, IMvcForumContext context)
         {
             // Create the post
-            var files = input.ExtendedData[Constants.ExtendedDataKeys.PostedFiles] as HttpPostedFileBase[];
+            HttpPostedFileBase[] files = null;
+            if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.PostedFiles))
+            {
+                files = input.ExtendedData[Constants.ExtendedDataKeys.PostedFiles] as HttpPostedFileBase[];
+            }            
 
             // Are we in an edit mode
             var isEdit = input.ExtendedData[Constants.ExtendedDataKeys.IsEdit] as bool? == true;

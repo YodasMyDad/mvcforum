@@ -17,13 +17,17 @@
         private readonly IPostEditService _postEditService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ISettingsService _settingsService;
+        private readonly IActivityService _activityService;
+        private readonly INotificationService _notificationService;
 
-        public PostCreateEditPipe(ILocalizationService localizationService, IPostEditService postEditService, IMembershipUserPointsService membershipUserPointsService, ISettingsService settingsService)
+        public PostCreateEditPipe(ILocalizationService localizationService, IPostEditService postEditService, IMembershipUserPointsService membershipUserPointsService, ISettingsService settingsService, IActivityService activityService, INotificationService notificationService)
         {
             _localizationService = localizationService;
             _postEditService = postEditService;
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
+            _activityService = activityService;
+            _notificationService = notificationService;
         }
 
         /// <inheritdoc />
@@ -80,7 +84,14 @@
                     PointsFor = PointsFor.Post,
                     PointsForId = input.EntityToProcess.Id
                 });
+
+                // Add post activity if it's not an edit, or topic starter and it's not pending
+                if (input.EntityToProcess.IsTopicStarter == false && input.EntityToProcess.Pending != true)
+                {
+                    _activityService.PostCreated(input.EntityToProcess);
+                }
             }
+
 
             // Now do a final save
             saved = await context.SaveChangesAsync();
@@ -88,6 +99,12 @@
             {
                 input.AddError(_localizationService.GetResourceString("Errors.GenericMessage"));
                 return input;
+            }
+
+            if (input.EntityToProcess.IsTopicStarter == false && input.EntityToProcess.Pending != true)
+            {
+                // Send notifications
+                _notificationService.Notify(input.EntityToProcess.Topic, loggedOnUser, NotificationType.Post);
             }
 
             input.ProcessLog.Add("Post created successfully");

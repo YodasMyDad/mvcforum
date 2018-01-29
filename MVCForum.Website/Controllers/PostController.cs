@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
     using System.Web.Mvc;
     using System.Web.Security;
     using Application;
@@ -56,88 +57,33 @@
             _activityService = activityService;
         }
 
-
         [HttpPost]
-        public ActionResult CreatePost(CreateAjaxPostViewModel post)
+        public async Task<ActionResult> CreatePost(CreateAjaxPostViewModel post)
         {
-            PermissionSet permissions;
-
-
-            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
-
-            var loggedOnUser = MembershipService.GetUser(loggedOnReadOnlyUser.Id);
-
-            // Flood control
-            if (!_postService.PassedPostFloodTest(loggedOnReadOnlyUser))
-            {
-                throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
-            }
-
-            // Check stop words
-            var stopWords = _bannedWordService.GetAll(true);
-            foreach (var stopWord in stopWords)
-            {
-                if (post.PostContent.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0)
-                {
-                    throw new Exception(LocalizationService.GetResourceString("StopWord.Error"));
-                }
-            }
-
-            // Quick check to see if user is locked out, when logged in
-            if (loggedOnUser.IsLockedOut || !loggedOnUser.IsApproved)
-            {
-                FormsAuthentication.SignOut();
-                throw new Exception(LocalizationService.GetResourceString("Errors.NoAccess"));
-            }
-
             var topic = _topicService.Get(post.Topic);
+            var loggedOnUser = User.GetMembershipUser(MembershipService, false);
+            var loggedOnUsersRole = loggedOnUser.GetRole(RoleService);
+            var permissions = RoleService.GetPermissions(topic.Category, loggedOnUsersRole);
 
-            var postContent = _bannedWordService.SanitiseBannedWords(post.PostContent);
+            // TODO Set the reply to? Pass into service?
+            //newPost.InReplyTo = post.InReplyTo;
 
-            //var akismetHelper = new AkismetHelper(SettingsService);
-
-            var newPost = _postService.AddNewPost(postContent, topic, loggedOnUser, out permissions);
-
-            // Set the reply to
-            newPost.InReplyTo = post.InReplyTo;
-
-
-            //if (akismetHelper.IsSpam(newPost))
-            //{
-            //    newPost.Pending = true;
-            //}
-
-            if (!newPost.Pending.HasValue || !newPost.Pending.Value)
+            var postPipelineResult = await _postService.Create(post.PostContent, topic, loggedOnUser, null, false);
+            if (!postPipelineResult.Successful)
             {
-                _activityService.PostCreated(newPost);
-            }
-
-            try
-            {
-                Context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                Context.RollBack();
-                LoggingService.Error(ex);
-                throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
+                // TODO - This is shit. We need to return an object to process
+                throw new Exception(postPipelineResult.ProcessLog.FirstOrDefault());
             }
 
             //Check for moderation
-            if (newPost.Pending == true)
+            if (postPipelineResult.EntityToProcess.Pending == true)
             {
                 return PartialView("_PostModeration");
             }
 
-            // All good send the notifications and send the post back
-
-
             // Create the view model
-            var viewModel = ViewModelMapping.CreatePostViewModel(newPost, new List<Vote>(), permissions, topic,
-                loggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
-
-            // Success send any notifications
-            _notificationService.Notify(topic, loggedOnReadOnlyUser, NotificationType.Post);
+            var viewModel = ViewModelMapping.CreatePostViewModel(postPipelineResult.EntityToProcess, new List<Vote>(), permissions, topic,
+                loggedOnUser, SettingsService.GetSettings(), new List<Favourite>());
 
             // Return view
             return PartialView("_Post", viewModel);

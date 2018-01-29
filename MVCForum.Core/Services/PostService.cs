@@ -399,7 +399,10 @@
             var piplineModel = new PipelineProcess<Post>(post);
 
             // Add the files for the post
-            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, files);
+            if(files != null)
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, files);
+            }            
 
             // Get instance of the pipeline to use
             var pipeline = new Pipeline<IPipelineProcess<Post>, Post>(_context);
