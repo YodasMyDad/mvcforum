@@ -40,9 +40,8 @@
                     var loggedOnUser = await context.MembershipUser.FirstOrDefaultAsync(x => x.UserName == username);
 
                     // Before we save anything, check the user already has an upload folder and if not create one
-                    var uploadFolderPath =
-                        HostingEnvironment.MapPath(string.Concat(ForumConfiguration.Instance.UploadFolderPath,
-                            loggedOnUser.Id));
+                    var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(ForumConfiguration.Instance.UploadFolderPath,
+                                                                            loggedOnUser.Id));
                     if (!Directory.Exists(uploadFolderPath))
                     {
                         Directory.CreateDirectory(uploadFolderPath);
@@ -71,6 +70,13 @@
 
                             _uploadedFileService.Add(uploadedFile);
                         }
+                    }
+
+                    // Was the post successful
+                    if (await context.SaveChangesAsync() <= 0)
+                    {
+                        // Problem
+                        input.AddError(_localizationService.GetResourceString("Errors.GenericMessage"));
                     }
                 }
             }

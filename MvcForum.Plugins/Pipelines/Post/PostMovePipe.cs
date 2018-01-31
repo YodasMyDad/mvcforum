@@ -1,11 +1,8 @@
 ﻿namespace MvcForum.Plugins.Pipelines.Post
 {
     using System;
-    using System.Collections.Generic;
-    using System.Data.Entity;
     using System.Linq;
     using System.Threading.Tasks;
-    using Core;
     using Core.Constants;
     using Core.ExtensionMethods;
     using Core.Interfaces;
@@ -15,16 +12,12 @@
 
     public class PostMovePipe : IPipe<IPipelineProcess<Post>>
     {
-        private readonly IRoleService _roleService;
-        private readonly ICategoryService _categoryService;
         private readonly ILocalizationService _localizationService;
         private readonly ITopicService _topicService;
         private readonly IPostService _postService;
 
-        public PostMovePipe(IRoleService roleService, ICategoryService categoryService, ILocalizationService localizationService, ITopicService topicService, IPostService postService)
+        public PostMovePipe(ILocalizationService localizationService, ITopicService topicService, IPostService postService)
         {
-            _roleService = roleService;
-            _categoryService = categoryService;
             _localizationService = localizationService;
             _topicService = topicService;
             _postService = postService;
@@ -33,33 +26,34 @@
         /// <inheritdoc />
         public async Task<IPipelineProcess<Post>> Process(IPipelineProcess<Post> input, IMvcForumContext context)
         {
+            // Do we have a topic title in the extended data
             var newTopicTitle = string.Empty;
             if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.Name))
             {
                 newTopicTitle = input.ExtendedData[Constants.ExtendedDataKeys.Name] as string;
             }
 
+            // Do we have a topic id in the extended data
             Guid? newTopicId = null;
             if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.TopicId))
             {
                 newTopicId = input.ExtendedData[Constants.ExtendedDataKeys.TopicId] as Guid?;
             }
 
+            // Flag whether we should also move any reply to posts
             var moveReplayPosts = input.ExtendedData[Constants.ExtendedDataKeys.MovePosts] as bool?;
 
-            var username = input.ExtendedData[Constants.ExtendedDataKeys.Username] as string;
-
-            var loggedOnUser = await context.MembershipUser.FirstOrDefaultAsync(x => x.UserName == username);
-            var loggedOnUsersRole = loggedOnUser.GetRole(_roleService);
-            var permissions = _roleService.GetPermissions(input.EntityToProcess.Topic.Category, loggedOnUsersRole);
-            var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
-
+            // Hold the previous topic
             var previousTopic = input.EntityToProcess.Topic;
+
+            // Hold the previous category
             var category = input.EntityToProcess.Topic.Category;
+
+            // Hold the post creator
             var postCreator = input.EntityToProcess.User;
 
             // Hold the topic
-            Topic topic = null;
+            Topic topic;
 
             // If the dropdown has a value, then we choose that first
             if (newTopicId != null)
@@ -69,33 +63,32 @@
             }
             else if (!string.IsNullOrWhiteSpace(newTopicTitle))
             {
-                // TODO - If we get here, we should really use the topic create pipeline!!
+                // If we get here, we use the topic create pipeline!!
+                // Create the topic
+                topic = new Topic
+                {
+                    Name = newTopicTitle,
+                    Category = category,
+                    User = postCreator
+                };
 
-                //// We get the banned words here and pass them in, so its just one call
-                //// instead of calling it several times and each call getting all the words back
-                //var bannedWordsList = _bannedWordService.GetAll();
-                //List<string> bannedWords = null;
-                //if (bannedWordsList.Any())
-                //{
-                //    bannedWords = bannedWordsList.Select(x => x.Word).ToList();
-                //}
+                // Run the create pipeline
+                var createPipeLine = await _topicService.Create(topic, null, string.Empty, true, input.EntityToProcess.PostContent, null);
+                if (createPipeLine.Successful == false)
+                {
+                    // Tell the user the topic is awaiting moderation
+                    input.AddError(createPipeLine.ProcessLog.FirstOrDefault());
+                    return input;
+                }
 
-                //// Create the topic
-                //topic = new Topic
-                //{
-                //    Name = _bannedWordService.SanitiseBannedWords(viewModel.TopicTitle, bannedWords),
-                //    Category = category,
-                //    User = postCreator
-                //};
+                // Set the post to be a topic starter
+                input.EntityToProcess.IsTopicStarter = true;
 
-                //// Create the topic
-                //topic = _topicService.Add(topic);
+                // Save the changes
+                await context.SaveChangesAsync();
 
-                //// Save the changes
-                //await context.SaveChangesAsync();
-
-                //// Set the post to be a topic starter
-                //input.EntityToProcess.IsTopicStarter = true;
+                // Set the topic
+                topic = createPipeLine.EntityToProcess;
             }
             else
             {
@@ -116,7 +109,13 @@
                 }
             }
 
-            await context.SaveChangesAsync();
+            var saveChanges = await context.SaveChangesAsync();
+            if (saveChanges <= 0)
+            {
+                // Nothing was saved so throw error message
+                input.AddError(_localizationService.GetResourceString("Errors.GenericMessage"));
+                return input;
+            }
 
             // Update Last post..  As we have done a save, we should get all posts including the added ones
             var lastPost = topic.Posts.OrderByDescending(x => x.DateCreated).FirstOrDefault();
@@ -127,7 +126,14 @@
                 previousTopic.Posts.OrderByDescending(x => x.DateCreated).FirstOrDefault();
             previousTopic.LastPost = previousTopicLastPost;
 
-            await context.SaveChangesAsync();
+            // Do a final save
+            saveChanges = await context.SaveChangesAsync();
+            if (saveChanges <= 0)
+            {
+                // Nothing was saved so throw error message
+                input.AddError(_localizationService.GetResourceString("Errors.GenericMessage"));
+                return input;
+            }
 
             return input;
         }

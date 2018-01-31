@@ -37,33 +37,69 @@
             // Are we in an edit mode
             var isEdit = input.ExtendedData[Constants.ExtendedDataKeys.IsEdit] as bool? == true;
 
+            // Add a variable for the post
             Post post = null;
 
-            // Get the correct pipeline
-            IPipelineProcess<Post> postPipelineResult;
-            if (isEdit)
-            {
-                // Get the topic starter post
-                post = input.EntityToProcess.Posts.FirstOrDefault(x => x.IsTopicStarter);
+            var isNew = false;
 
-                // Pass to edit
-                postPipelineResult = await _postService.Edit(post, files, true, input.ExtendedData[Constants.ExtendedDataKeys.Name] as string);
+            // See if we have a post already (i.e. for when we move)
+            if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.Post))
+            {
+                // We have a post so set it
+                post = input.ExtendedData[Constants.ExtendedDataKeys.Post] as Post;
+            }
+
+            // If the post is not null and we are not editing
+            if (post != null && !isEdit)
+            {
+                // Set the topic
+                post.Topic = input.EntityToProcess;
             }
             else
             {
-                postPipelineResult = await _postService.Create(
-                    input.ExtendedData[Constants.ExtendedDataKeys.Content] as string,
-                    input.EntityToProcess, input.EntityToProcess.User, files, true, null);
-            }
+                // We are editing as existing post
 
-            if (!postPipelineResult.Successful)
-            {
-                input.AddError(postPipelineResult.ProcessLog.FirstOrDefault());
-                return input;
-            }
+                // Get the correct pipeline
+                IPipelineProcess<Post> postPipelineResult;
 
-            // make it last post
-            input.EntityToProcess.LastPost = postPipelineResult.EntityToProcess;
+                // Is this an edit
+                if (isEdit)
+                {
+                    // Get the topic starter post
+                    post = input.EntityToProcess.Posts.FirstOrDefault(x => x.IsTopicStarter);
+
+                    // Pass to edit
+                    postPipelineResult = await _postService.Edit(post, files, true,
+                        input.ExtendedData[Constants.ExtendedDataKeys.Name] as string);
+                }
+                else
+                {
+
+                    // We are creating a new post
+                    postPipelineResult = await _postService.Create(
+                        input.ExtendedData[Constants.ExtendedDataKeys.Content] as string,
+                        input.EntityToProcess, input.EntityToProcess.User, files, true, null);
+
+                    // Set the new post flag
+                    isNew = true;
+                }
+
+                // If there is an issue return the pipeline
+                if (!postPipelineResult.Successful)
+                {
+                    input.AddError(postPipelineResult.ProcessLog.FirstOrDefault());
+                    return input;
+                }
+
+                // Set the post as the post from the pipeline
+                post = postPipelineResult.EntityToProcess;
+
+                if (isNew)
+                {
+                    // make it last post if this is a new post
+                    input.EntityToProcess.LastPost = post;
+                }
+            }
 
             // Was the post successful
             if (await context.SaveChangesAsync() <= 0)
@@ -80,7 +116,6 @@
                 _pollService.RefreshEditedPoll(input.EntityToProcess, newPollAnswers, pollCloseafterDays ?? 0);
             }
             
-
             return input;
         }
     }

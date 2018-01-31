@@ -338,7 +338,7 @@
 
                     // Run the create pipeline
                     var createPipeLine = await _topicService.Create(topic, topicViewModel.Files, topicViewModel.Tags,
-                        topicViewModel.SubscribeToTopic, topicViewModel.Content);
+                        topicViewModel.SubscribeToTopic, topicViewModel.Content, null);
                     if (createPipeLine.Successful == false)
                     {
                         // Tell the user the topic is awaiting moderation

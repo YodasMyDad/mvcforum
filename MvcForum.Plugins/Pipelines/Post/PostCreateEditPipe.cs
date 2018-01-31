@@ -45,7 +45,6 @@
                 return input;
             }
 
-
             // Is this an edit? If so, create a post edit
             var isEdit = input.ExtendedData[Constants.ExtendedDataKeys.IsEdit] as bool? == true;
             if (isEdit)
@@ -72,7 +71,6 @@
                 // Add the post edit too
                 _postEditService.Add(postEdit);
             }
-
 
             // Update the users points score and post count for posting a new post
             if (!isEdit)

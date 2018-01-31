@@ -160,13 +160,28 @@
             // The model to process
             var piplineModel = new PipelineProcess<Topic>(topic);
 
+            // See if we have any files
+            if (files != null && files.Any())
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, files);
+            }
+
+            // See if we have any tags
+            if (!string.IsNullOrWhiteSpace(tags))
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Tags, tags);
+            }
+
+            // See if we have a post
+            if (post != null)
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Post, post);
+            }
+
             // Add the extended data we need
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Subscribe, subscribe);
-            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, files);
-            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Tags, tags);
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.IsEdit, false);
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Content, postContent);
-            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Post, post);
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
 
             // Get instance of the pipeline to use
