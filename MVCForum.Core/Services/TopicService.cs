@@ -4,8 +4,6 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
-    using System.Runtime.Remoting.Contexts;
-    using System.Text;
     using System.Threading.Tasks;
     using System.Web;
     using System.Web.Mvc;
@@ -14,7 +12,6 @@
     using Interfaces;
     using Interfaces.Pipeline;
     using Interfaces.Services;
-    using Models;
     using Models.Entities;
     using Models.Enums;
     using Models.General;
@@ -33,13 +30,11 @@
         private readonly IRoleService _roleService;
         private readonly IPollService _pollService;
         private readonly ICacheService _cacheService;
-        private readonly IEmailService _emailService;
 
         public TopicService(IMvcForumContext context, IMembershipUserPointsService membershipUserPointsService,
             ISettingsService settingsService, INotificationService notificationService,
             IFavouriteService favouriteService,
-            IPostService postService, IRoleService roleService, IPollService pollService, ICacheService cacheService, IEmailService emailService, 
-            IMembershipService membershipService)
+            IPostService postService, IRoleService roleService, IPollService pollService, ICacheService cacheService)
         {
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
@@ -49,7 +44,6 @@
             _roleService = roleService;
             _pollService = pollService;
             _cacheService = cacheService;
-            _emailService = emailService;
             _context = context;
         }
 

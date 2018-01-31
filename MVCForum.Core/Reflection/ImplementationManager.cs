@@ -133,7 +133,7 @@
                 if (!implementation.GetTypeInfo().IsAbstract)
                 {
                     var fullName = implementation.FullName ?? "MissingFullName";
-                    var instance = (T)UnityHelper.Container.Resolve(implementation);                   
+                    var instance = (T)UnityHelper.Container.Resolve(implementation);    
                     instances.Add(fullName, instance);
                 }
             }

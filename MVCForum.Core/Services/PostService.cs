@@ -5,12 +5,10 @@
     using System.Data.Entity;
     using System.IO;
     using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
     using System.Web;
     using System.Web.Hosting;
     using Constants;
-    using Events;
     using Interfaces;
     using Interfaces.Pipeline;
     using Interfaces.Services;
@@ -27,29 +25,27 @@
         private readonly IRoleService _roleService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ISettingsService _settingsService;
-        private readonly ILocalizationService _localizationService;
         private readonly IVoteService _voteService;
         private readonly IUploadedFileService _uploadedFileService;
         private readonly IFavouriteService _favouriteService;
         private readonly IConfigService _configService;
         private readonly IMvcForumContext _context;
         private readonly IPostEditService _postEditService;
-        private readonly ICacheService _cacheService;
 
         public PostService(IMvcForumContext context, IMembershipUserPointsService membershipUserPointsService,
             ISettingsService settingsService, IRoleService roleService,
-            ILocalizationService localizationService, IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService favouriteService, IConfigService configService, IPostEditService postEditService, ICacheService cacheService)
+            IVoteService voteService, 
+            IUploadedFileService uploadedFileService, IFavouriteService favouriteService, 
+            IConfigService configService, IPostEditService postEditService)
         {
             _roleService = roleService;
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
-            _localizationService = localizationService;
             _voteService = voteService;
             _uploadedFileService = uploadedFileService;
             _favouriteService = favouriteService;
             _configService = configService;
             _postEditService = postEditService;
-            _cacheService = cacheService;
             _context = context;
         }
 
