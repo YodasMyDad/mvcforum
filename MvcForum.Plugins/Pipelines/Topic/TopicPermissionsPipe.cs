@@ -35,7 +35,14 @@
 
             // IS this an existing topic
             var existingTopic = await context.Topic.FirstOrDefaultAsync(x => x.Id == input.EntityToProcess.Id);
-            input.ExtendedData.Add(Constants.ExtendedDataKeys.IsEdit, (existingTopic != null));
+            if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.IsEdit))
+            {
+                input.ExtendedData[Constants.ExtendedDataKeys.IsEdit] = existingTopic != null;
+            }
+            else
+            {
+                input.ExtendedData.Add(Constants.ExtendedDataKeys.IsEdit, existingTopic != null);
+            }
 
             // See if we can get the username
             if (!string.IsNullOrWhiteSpace(username))
@@ -130,10 +137,13 @@
                     }
 
                     // Sort out tags so we can check permission for any new ones added
-                    var tags = _topicTagService.CreateTagsFromCsv(input.ExtendedData["Constants.ExtendedDataKeys.Tags"] as string);
-                    
-                    // Add the tags they are allowed to
-                    _topicTagService.Add(tags, input.EntityToProcess, permissions[ForumConfiguration.Instance.PermissionCreateTags].IsTicked);
+                    if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.Tags))
+                    {
+                        var tags = _topicTagService.CreateTagsFromCsv(input.ExtendedData[Constants.ExtendedDataKeys.Tags] as string);
+
+                        // Add the tags they are allowed to
+                        _topicTagService.Add(tags, input.EntityToProcess, permissions[ForumConfiguration.Instance.PermissionCreateTags].IsTicked);
+                    }
                 }
                 else
                 {

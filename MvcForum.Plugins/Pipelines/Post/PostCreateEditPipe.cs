@@ -37,16 +37,13 @@
             var username = input.ExtendedData[Constants.ExtendedDataKeys.Username] as string;
             var loggedOnUser = await context.MembershipUser.FirstOrDefaultAsync(x => x.UserName == username);
 
-            // Now save
-            var saved = await context.SaveChangesAsync();
-            if (saved <= 0)
+            // Is this an edit? If so, create a post edit
+            var isEdit = false;
+            if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.IsEdit))
             {
-                input.AddError(_localizationService.GetResourceString("Errors.GenericMessage"));
-                return input;
+                isEdit = input.ExtendedData[Constants.ExtendedDataKeys.IsEdit] as bool? == true;
             }
 
-            // Is this an edit? If so, create a post edit
-            var isEdit = input.ExtendedData[Constants.ExtendedDataKeys.IsEdit] as bool? == true;
             if (isEdit)
             {
                 // Get the original post
@@ -72,6 +69,15 @@
                 _postEditService.Add(postEdit);
             }
 
+            // Now do a save
+            var saved = await context.SaveChangesAsync();
+            if (saved <= 0)
+            {
+                input.AddError(_localizationService.GetResourceString("Errors.GenericMessage"));
+                return input;
+            }
+
+
             // Update the users points score and post count for posting a new post
             if (!isEdit)
             {
@@ -91,18 +97,18 @@
             }
 
 
+            if (input.EntityToProcess.IsTopicStarter == false && input.EntityToProcess.Pending != true)
+            {
+                // Send notifications
+                _notificationService.Notify(input.EntityToProcess.Topic, loggedOnUser, NotificationType.Post);
+            }
+
             // Now do a final save
             saved = await context.SaveChangesAsync();
             if (saved <= 0)
             {
                 input.AddError(_localizationService.GetResourceString("Errors.GenericMessage"));
                 return input;
-            }
-
-            if (input.EntityToProcess.IsTopicStarter == false && input.EntityToProcess.Pending != true)
-            {
-                // Send notifications
-                _notificationService.Notify(input.EntityToProcess.Topic, loggedOnUser, NotificationType.Post);
             }
 
             input.ProcessLog.Add("Post created successfully");

@@ -155,7 +155,7 @@
             var piplineModel = new PipelineProcess<Topic>(topic);
 
             // See if we have any files
-            if (files != null && files.Any())
+            if (files != null && files.Any(x => x != null))
             {
                 piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, files);
             }
