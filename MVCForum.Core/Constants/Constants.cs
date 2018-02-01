@@ -191,6 +191,11 @@
             /// Key to get existing post
             /// </summary>
             public const string Post = "Post";
+
+            /// <summary>
+            /// Key to whether to igniore last post
+            /// </summary>
+            public const string IgnoreLastPost = "IgnoreLastPost";
         }
     }
 }

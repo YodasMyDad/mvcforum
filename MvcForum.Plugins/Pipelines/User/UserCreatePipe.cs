@@ -18,7 +18,7 @@
     using Core.Models.Entities;
     using Core.Models.Enums;
 
-    public class CreateNewUserPipe : IPipe<IPipelineProcess<MembershipUser>>
+    public class UserCreatePipe : IPipe<IPipelineProcess<MembershipUser>>
     {
         private readonly IActivityService _activityService;
         private readonly IEmailService _emailService;
@@ -27,7 +27,7 @@
         private readonly IMembershipService _membershipService;
         private readonly ISettingsService _settingsService;
 
-        public CreateNewUserPipe(IMembershipService membershipService, ILoggingService loggingService,
+        public UserCreatePipe(IMembershipService membershipService, ILoggingService loggingService,
             ISettingsService settingsService, ILocalizationService localizationService, IEmailService emailService,
             IActivityService activityService)
         {

@@ -12,12 +12,12 @@
     using Core.Models.Entities;
 
 
-    public class EditUserPermissionsPipe : IPipe<IPipelineProcess<MembershipUser>>
+    public class UserEditPermissionsPipe : IPipe<IPipelineProcess<MembershipUser>>
     {
         private readonly IRoleService _roleService;
         private readonly ILocalizationService _localizationService;
 
-        public EditUserPermissionsPipe(IRoleService roleService, ILocalizationService localizationService)
+        public UserEditPermissionsPipe(IRoleService roleService, ILocalizationService localizationService)
         {
             _roleService = roleService;
             _localizationService = localizationService;

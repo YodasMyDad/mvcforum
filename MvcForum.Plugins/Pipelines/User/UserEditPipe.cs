@@ -12,14 +12,14 @@
     using Core.Interfaces.Services;
     using Core.Models.Entities;
 
-    public class EditUserPipe : IPipe<IPipelineProcess<MembershipUser>>
+    public class UserEditPipe : IPipe<IPipelineProcess<MembershipUser>>
     {
         private readonly IMembershipService _membershipService;
         private readonly ILocalizationService _localizationService;
         private readonly IActivityService _activityService;
         private readonly ILoggingService _loggingService;
 
-        public EditUserPipe(IMembershipService membershipService, ILocalizationService localizationService, IActivityService activityService, ILoggingService loggingService)
+        public UserEditPipe(IMembershipService membershipService, ILocalizationService localizationService, IActivityService activityService, ILoggingService loggingService)
         {
             _membershipService = membershipService;
             _localizationService = localizationService;

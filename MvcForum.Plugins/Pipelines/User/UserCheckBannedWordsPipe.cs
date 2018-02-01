@@ -11,12 +11,12 @@
     using Core.Models.Entities;
     using Core.Utilities;
 
-    public class CheckBannedWordsPipe : IPipe<IPipelineProcess<MembershipUser>>
+    public class UserCheckBannedWordsPipe : IPipe<IPipelineProcess<MembershipUser>>
     {
         private readonly IBannedWordService _bannedWordService;
         private readonly ILoggingService _loggingService;
 
-        public CheckBannedWordsPipe(IBannedWordService bannedWordService, ILoggingService loggingService)
+        public UserCheckBannedWordsPipe(IBannedWordService bannedWordService, ILoggingService loggingService)
         {
             _bannedWordService = bannedWordService;
             _loggingService = loggingService;

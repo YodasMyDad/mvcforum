@@ -45,6 +45,7 @@
     <Compile Include="Badges\UserVoteUpBadge.cs" />
     <Compile Include="Badges\YourPostFavouritedBadge.cs" />
     <Compile Include="Badges\YourPostFavouritedTenTimesBadge.cs" />
+    <Compile Include="Pipelines\Post\PostDeletePipe.cs" />
     <Compile Include="Pipelines\Post\PostFilesPipe.cs" />
     <Compile Include="Pipelines\Post\PostMovePipe.cs" />
     <Compile Include="Pipelines\Post\PostPermissionsPipe.cs" />
@@ -54,12 +55,13 @@
     <Compile Include="Pipelines\Topic\TopicNotificationsAndBadgesPipe.cs" />
     <Compile Include="Pipelines\Topic\TopicSpamPipe.cs" />
     <Compile Include="Pipelines\Topic\TopicPermissionsPipe.cs" />
-    <Compile Include="Pipelines\User\CheckBannedWordsPipe.cs" />
-    <Compile Include="Pipelines\User\CreateNewUserPipe.cs" />
-    <Compile Include="Pipelines\User\DeleteUserPipe.cs" />
-    <Compile Include="Pipelines\User\EditUserPermissionsPipe.cs" />
-    <Compile Include="Pipelines\User\EditUserPipe.cs" />
-    <Compile Include="Pipelines\User\LoginUserPipe.cs" />
+    <Compile Include="Pipelines\User\UserCheckBannedWordsPipe.cs" />
+    <Compile Include="Pipelines\User\UserCreatePipe.cs" />
+    <Compile Include="Pipelines\User\UserDeletePipe.cs" />
+    <Compile Include="Pipelines\User\UserEditPermissionsPipe.cs" />
+    <Compile Include="Pipelines\User\UserEditPipe.cs" />
+    <Compile Include="Pipelines\User\UserLoginPipe.cs" />
+    <Compile Include="Pipelines\User\UserScrubPipe.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\DiskStorageProvider.cs" />
   </ItemGroup>

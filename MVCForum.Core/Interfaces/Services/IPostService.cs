@@ -40,7 +40,7 @@
         Post Initialise(string postContent, Topic topic, MembershipUser user);
         Post Get(Guid postId);
         IList<Post> GetPostsByTopics(List<Guid> topicIds, List<Category> allowedCategories);
-        bool Delete(Post post, bool ignoreLastPost);
+        Task<IPipelineProcess<Post>> Delete(Post post, bool ignoreLastPost);
         IList<Post> GetSolutionsByMember(Guid memberId, List<Category> allowedCategories);
         int PostCount(List<Category> allowedCategories);
         IList<Post> GetPostsByMember(Guid memberId, List<Category> allowedCategories);

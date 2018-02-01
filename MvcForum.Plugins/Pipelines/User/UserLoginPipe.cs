@@ -15,13 +15,13 @@
     /// <summary>
     /// Pipe to login a member
     /// </summary>
-    public class LoginUserPipe : IPipe<IPipelineProcess<MembershipUser>>
+    public class UserLoginPipe : IPipe<IPipelineProcess<MembershipUser>>
     {
         private readonly ILocalizationService _localizationService;
         private readonly IMembershipService _membershipService;
         private readonly ILoggingService _loggingService;
 
-        public LoginUserPipe(ILocalizationService localizationService, IMembershipService membershipService, ILoggingService loggingService)
+        public UserLoginPipe(ILocalizationService localizationService, IMembershipService membershipService, ILoggingService loggingService)
         {
             _localizationService = localizationService;
             _membershipService = membershipService;

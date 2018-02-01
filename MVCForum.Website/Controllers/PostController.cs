@@ -86,7 +86,7 @@
             return PartialView("_Post", viewModel);
         }
 
-        public ActionResult DeletePost(Guid id)
+        public async Task<ActionResult> DeletePost(Guid id)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -120,7 +120,17 @@
                     else
                     {
                         // Deletes single post and associated data
-                        _postService.Delete(post, false);
+                        var result = await _postService.Delete(post, false);
+                        if (!result.Successful)
+                        {
+                            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                            {
+                                Message = result.ProcessLog.FirstOrDefault(),
+                                MessageType = GenericMessages.success
+                            };
+
+                            return Redirect(topic.NiceUrl);
+                        }
 
                         // Remove in replyto's
                         var relatedPosts = _postService.GetReplyToPosts(postId);

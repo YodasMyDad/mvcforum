@@ -754,6 +754,7 @@
                 {
                     // Posts should only be deleted from this method as it clears
                     // associated data
+                    // TODO - This is a pipeline!! 
                     _postService.Delete(post, true);
                 }
 

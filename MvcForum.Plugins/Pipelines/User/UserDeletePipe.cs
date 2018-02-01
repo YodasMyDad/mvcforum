@@ -8,13 +8,13 @@
     using Core.Interfaces.Services;
     using Core.Models.Entities;
 
-    public class DeleteUserPipe : IPipe<IPipelineProcess<MembershipUser>>
+    public class UserDeletePipe : IPipe<IPipelineProcess<MembershipUser>>
     {
         private readonly ILocalizationService _localizationService;
         private readonly IMembershipService _membershipService;
         private readonly ILoggingService _loggingService;
 
-        public DeleteUserPipe(IMembershipService membershipService, ILoggingService loggingService, ILocalizationService localizationService)
+        public UserDeletePipe(IMembershipService membershipService, ILoggingService loggingService, ILocalizationService localizationService)
         {
             _membershipService = membershipService;
             _loggingService = loggingService;

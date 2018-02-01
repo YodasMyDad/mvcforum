@@ -439,46 +439,6 @@
             return View(role);
         }
 
-        [Authorize(Roles = Constants.AdminRoleName)]
-        public ActionResult DeleteUsersPosts(Guid id, bool profileClick = false)
-        {
-            var user = MembershipService.GetUser(id);
-
-
-            if (!user.Roles.Any(x => x.RoleName.Contains(Constants.AdminRoleName)))
-            {
-                MembershipService.ScrubUsers(user);
-
-                try
-                {
-                    Context.SaveChanges();
-                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = "All posts and topics deleted",
-                        MessageType = GenericMessages.success
-                    };
-                }
-                catch (Exception ex)
-                {
-                    Context.RollBack();
-                    LoggingService.Error(ex);
-                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = "Error trying to delete posts and topics",
-                        MessageType = GenericMessages.danger
-                    };
-                }
-            }
-
-            if (profileClick)
-            {
-                return Redirect(user.NiceUrl);
-            }
-            var viewModel = ViewModelMapping.UserToMemberEditViewModel(user);
-            viewModel.AllRoles = _roleService.AllRoles();
-            return View("Edit", viewModel);
-        }
-
         [HttpPost]
         [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult AddRole(RoleViewModel role)

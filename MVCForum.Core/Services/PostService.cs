@@ -579,127 +579,34 @@
         /// <param name="post"></param>
         /// <param name="ignoreLastPost"></param>
         /// <returns>Returns true if can delete</returns>
-        public bool Delete(Post post, bool ignoreLastPost)
+        public async Task<IPipelineProcess<Post>> Delete(Post post, bool ignoreLastPost)
         {
-            // Get the topic
-            var topic = post.Topic;
+            // Get the pipelines
+            var postPipes = ForumConfiguration.Instance.PipelinesPostDelete;
 
-            var votes = _voteService.GetVotesByPost(post.Id);
+            // The model to process
+            var piplineModel = new PipelineProcess<Post>(post);
 
-            #region Deleting Points
+            // Add extended data
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.IgnoreLastPost, ignoreLastPost);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
 
-            // Remove the points the user got for this post
-            _membershipUserPointsService.Delete(post.User, PointsFor.Post, post.Id);
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<Post>, Post>(_context);
 
-            // Also get all the votes and delete anything to do with those
-            foreach (var postVote in votes)
+            // Register the pipes 
+            var allPostPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Post>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in postPipes)
             {
-                _membershipUserPointsService.Delete(PointsFor.Vote, postVote.Id);
-            }
-
-            // Also the mark as solution
-            _membershipUserPointsService.Delete(PointsFor.Solution, post.Id);
-
-            #endregion
-
-            _context.SaveChanges();
-
-            #region Deleting Votes
-
-            var votesToDelete = new List<Vote>();
-            votesToDelete.AddRange(votes);
-            foreach (var vote in votesToDelete)
-            {
-                post.Votes.Remove(vote);
-                _voteService.Delete(vote);
-            }
-            post.Votes.Clear();
-
-            #endregion
-
-            #region Files
-
-            // Clear files attached to post
-            var filesToDelete = new List<UploadedFile>();
-            filesToDelete.AddRange(post.Files);
-            foreach (var uploadedFile in filesToDelete)
-            {
-                // store the file path as we'll need it to delete on the file system
-                var filePath = uploadedFile.FilePath;
-
-                post.Files.Remove(uploadedFile);
-                _uploadedFileService.Delete(uploadedFile);
-
-                // And finally delete from the file system
-                if (!string.IsNullOrWhiteSpace(filePath))
+                if (allPostPipes.ContainsKey(pipe))
                 {
-                    File.Delete(HostingEnvironment.MapPath(filePath));
+                    pipeline.Register(allPostPipes[pipe]);
                 }
             }
-            post.Files.Clear();
 
-            #endregion
-
-            #region Favourites
-
-            var postFavourites = new List<Favourite>();
-            postFavourites.AddRange(post.Favourites);
-            foreach (var postFavourite in postFavourites)
-            {
-                post.Favourites.Remove(postFavourite);
-                _favouriteService.Delete(postFavourite);
-            }
-            post.Favourites.Clear();
-
-            #endregion
-
-            #region Post Edits
-
-            var postEdits = new List<PostEdit>();
-            postEdits.AddRange(post.PostEdits);
-            foreach (var postEdit in postEdits)
-            {
-                post.PostEdits.Remove(postEdit);
-                _postEditService.Delete(postEdit);
-            }
-            post.PostEdits.Clear();
-
-            #endregion
-
-            _context.SaveChanges();
-
-            // Before we delete the post, we need to check if this is the last post in the topic
-            // and if so update the topic
-            if (!ignoreLastPost)
-            {
-                var lastPost = topic.Posts.OrderByDescending(x => x.DateCreated).FirstOrDefault();
-
-                if (lastPost != null && lastPost.Id == post.Id)
-                {
-                    // Get the new last post and update the topic
-                    topic.LastPost = topic.Posts.Where(x => x.Id != post.Id).OrderByDescending(x => x.DateCreated).FirstOrDefault();
-                }
-
-                if (topic.Solved && post.IsSolution)
-                {
-                    topic.Solved = false;
-                }
-
-                // Save the topic
-                _context.SaveChanges();
-            }
-
-            // Remove from the topic
-            topic.Posts.Remove(post);
-
-            // now delete the post
-            _context.Post.Remove(post);
-
-            // Save changes
-            _context.SaveChanges();
-
-            // Only the post was deleted, not the entire topic
-            return false;
+            return await pipeline.Process(piplineModel);
         }
 
         public IList<Post> GetPostsByMember(Guid memberId, List<Category> allowedCategories)
