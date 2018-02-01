@@ -387,6 +387,7 @@
         /// <param name="user"></param>
         /// <param name="files"></param>
         /// <param name="isTopicStarter"></param>
+        /// <param name="replyTo"></param>
         /// <returns></returns>
         public async Task<IPipelineProcess<Post>> Create(string postContent, Topic topic, MembershipUser user, HttpPostedFileBase[] files, bool isTopicStarter, Guid? replyTo)
         {
@@ -447,7 +448,7 @@
         }
 
         /// <inheritdoc />
-        public async Task<IPipelineProcess<Post>> Edit(Post post, HttpPostedFileBase[] files, bool isTopicStarter, string originalTopicName)
+        public async Task<IPipelineProcess<Post>> Edit(Post post, HttpPostedFileBase[] files, bool isTopicStarter, string postedTopicName, string postedContent)
         {
             // Get the pipelines
             var postCreatePipes = ForumConfiguration.Instance.PipelinesPostUpdate;
@@ -460,7 +461,8 @@
 
             // Add the files for the post
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, files);
-            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Name, originalTopicName);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Name, postedTopicName);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Content, postedContent);
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
 
             // Get instance of the pipeline to use

@@ -76,7 +76,7 @@
 
                         // Pass to edit
                         postPipelineResult = await _postService.Edit(post, files, true,
-                            input.ExtendedData[Constants.ExtendedDataKeys.Name] as string);
+                            input.ExtendedData[Constants.ExtendedDataKeys.Name] as string, input.ExtendedData[Constants.ExtendedDataKeys.Content] as string);
                     }
                     else
                     {

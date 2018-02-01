@@ -56,26 +56,32 @@
                 if (isEdit)
                 {
                     // Get the original post
-                    var originalPost = await context.Post.FirstOrDefaultAsync(x => x.Id == input.EntityToProcess.Id);
+                    var originalPost = await context.Post.Include(x => x.Topic).FirstOrDefaultAsync(x => x.Id == input.EntityToProcess.Id);
+
+                    // Get content from Extended data
+                    var postedContent = input.ExtendedData[Constants.ExtendedDataKeys.Content] as string;
+                    input.EntityToProcess.PostContent = postedContent;
 
                     // This is an edit of a post
                     input.EntityToProcess.DateEdited = DateTime.UtcNow;
 
                     // Grab the original name out the extended data
-                    var originalTopicName = input.ExtendedData[Constants.ExtendedDataKeys.Name] as string;
-
-                    // Create a post edit
-                    var postEdit = new PostEdit
+                    var topicName = input.ExtendedData[Constants.ExtendedDataKeys.Name] as string;
+                    if (!originalPost.PostContent.Equals(postedContent, StringComparison.OrdinalIgnoreCase) || !originalPost.Topic.Name.Equals(topicName, StringComparison.OrdinalIgnoreCase))
                     {
-                        Post = input.EntityToProcess,
-                        DateEdited = input.EntityToProcess.DateEdited,
-                        EditedBy = loggedOnUser,
-                        OriginalPostContent = originalPost.PostContent,
-                        OriginalPostTitle = originalPost.IsTopicStarter ? originalTopicName : string.Empty
-                    };
+                        // Create a post edit
+                        var postEdit = new PostEdit
+                        {
+                            Post = input.EntityToProcess,
+                            DateEdited = input.EntityToProcess.DateEdited,
+                            EditedBy = loggedOnUser,
+                            OriginalPostContent = originalPost.PostContent,
+                            OriginalPostTitle = originalPost.IsTopicStarter ? originalPost.Topic.Name : string.Empty
+                        };
 
-                    // Add the post edit too
-                    _postEditService.Add(postEdit);
+                        // Add the post edit too
+                        _postEditService.Add(postEdit);
+                    }
                 }
                 else
                 {

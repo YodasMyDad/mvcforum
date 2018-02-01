@@ -18,7 +18,7 @@
         TopicTag Add(TopicTag tag);
         TopicTag Get(Guid tag);
         TopicTag Get(string tag);
-        void Add(IEnumerable<string> tags, Topic tag, bool isAllowedToAddTags);
+        void Add(string[] tags, Topic tag, bool isAllowedToAddTags);
         IEnumerable<string> CreateTagsFromCsv(string tags);
         bool HasNewTags(IEnumerable<string> tags);
         void DeleteByTopic(Topic tag);

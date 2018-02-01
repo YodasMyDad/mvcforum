@@ -218,7 +218,7 @@
 
         /// <inheritdoc />
         public async Task<IPipelineProcess<Topic>> Edit(Topic topic, HttpPostedFileBase[] files, string tags, bool subscribe, 
-            string postContent, string originalTopicName, List<PollAnswer> pollAnswers, int closePollAfterDays)
+            string postContent, string topicName, List<PollAnswer> pollAnswers, int closePollAfterDays)
         {
             // url slug generator
             topic.Slug = ServiceHelpers.GenerateSlug(topic.Name,
@@ -239,7 +239,7 @@
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Content, postContent);
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PollNewAnswers, pollAnswers);
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PollCloseAfterDays, closePollAfterDays);
-            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Name, originalTopicName);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Name, topicName);
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
 
             // Get instance of the pipeline to use

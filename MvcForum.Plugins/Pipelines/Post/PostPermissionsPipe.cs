@@ -38,7 +38,7 @@
                 var existingPost = await context.Post.Include(x => x.User)
                                     .FirstOrDefaultAsync(x => x.Id == input.EntityToProcess.Id);
 
-                input.ExtendedData.Add(Constants.ExtendedDataKeys.IsEdit, (existingPost != null));
+                input.ExtendedData.Add(Constants.ExtendedDataKeys.IsEdit, existingPost != null);
 
                 // See if we can get the username
                 if (!string.IsNullOrWhiteSpace(username))

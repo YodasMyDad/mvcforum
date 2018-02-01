@@ -154,13 +154,13 @@
         }
 
         /// <summary>
-        ///     Add new tags to a topic if they are allowed, ignore existing ones
+        ///     Add new tags to a topic if they are allowed, ignore existing ones, remove ones that have been deleted
         /// </summary>
         /// <param name="tags"></param>
         /// <param name="topic"></param>
         /// <param name="isAllowedToAddTags"></param>
-        public void Add(IEnumerable<string> tags, Topic topic, bool isAllowedToAddTags)
-        {
+        public void Add(string[] tags, Topic topic, bool isAllowedToAddTags)
+        {        
             if (topic.Tags == null)
             {
                 topic.Tags = new List<TopicTag>();
@@ -202,6 +202,33 @@
                         topic.Tags.Add(nTag);
                     }
                 }
+            }
+
+            // Find tags that don't exist now
+            var tagsRemoved = new List<TopicTag>();
+            foreach (var topicTag in topic.Tags)
+            {
+                var hasTag = false;
+
+                // Finally check for removed tags
+                foreach (var tag in tags)
+                {
+                    if (topicTag.Tag == tag)
+                    {
+                        hasTag = true;
+                    }
+                }
+
+                if (hasTag == false)
+                {
+                    tagsRemoved.Add(topicTag);
+                }
+            }
+
+            // Now remove from Topic
+            foreach (var topicTag in tagsRemoved)
+            {
+                topic.Tags.Remove(topicTag);
             }
         }
 

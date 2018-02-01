@@ -151,7 +151,7 @@
                             var tags = _topicTagService.CreateTagsFromCsv(input.ExtendedData[Constants.ExtendedDataKeys.Tags] as string);
 
                             // Add the tags they are allowed to
-                            _topicTagService.Add(tags, input.EntityToProcess, permissions[ForumConfiguration.Instance.PermissionCreateTags].IsTicked);
+                            _topicTagService.Add(tags.ToArray(), input.EntityToProcess, permissions[ForumConfiguration.Instance.PermissionCreateTags].IsTicked);
                         }
                     }
                     else

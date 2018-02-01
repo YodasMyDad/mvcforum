@@ -503,7 +503,6 @@
                 // Get the topic
                 var originalTopic = originalPost.Topic;
 
-
                 // See if the user has actually added some content to the topic
                 if (string.IsNullOrWhiteSpace(editPostViewModel.Content))
                 {
@@ -528,17 +527,20 @@
                         return View(editPostViewModel);
                     }
 
-                    var moderate = editPipeLine.ExtendedData[Constants.ExtendedDataKeys.Moderate] as bool?;
-                    if (moderate == true)
+                    if (editPipeLine.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.Moderate))
                     {
-                        // Tell the user the topic is awaiting moderation
-                        TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                        var moderate = editPipeLine.ExtendedData[Constants.ExtendedDataKeys.Moderate] as bool?;
+                        if (moderate == true)
                         {
-                            Message = LocalizationService.GetResourceString("Moderate.AwaitingModeration"),
-                            MessageType = GenericMessages.info
-                        };
+                            // Tell the user the topic is awaiting moderation
+                            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                            {
+                                Message = LocalizationService.GetResourceString("Moderate.AwaitingModeration"),
+                                MessageType = GenericMessages.info
+                            };
 
-                        return RedirectToAction("Index", "Home");
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
 
                     // Redirect to the newly created topic
