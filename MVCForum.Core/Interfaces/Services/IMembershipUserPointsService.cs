@@ -5,7 +5,7 @@
     using Models.Entities;
     using Models.Enums;
 
-    public partial interface IMembershipUserPointsService
+    public partial interface IMembershipUserPointsService : IContextService
     {
         /// <summary>
         ///     Delete a specific point

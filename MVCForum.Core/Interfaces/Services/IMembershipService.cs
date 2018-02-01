@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Drawing;
     using System.Security.Principal;
     using System.Threading.Tasks;
     using System.Web;
@@ -11,7 +10,7 @@
     using Models.General;
     using Pipeline;
 
-    public interface IMembershipService
+    public interface IMembershipService : IContextService
     {
         LoginAttemptStatus LastLoginStatus { get; }
         MembershipUser Add(MembershipUser newUser);

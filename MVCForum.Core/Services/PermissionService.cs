@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
     using Constants;
-    using Data.Context;
     using Interfaces;
     using Interfaces.Services;
     using Models.Entities;
@@ -12,7 +11,7 @@
 
     public partial class PermissionService : IPermissionService
     {
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
         private readonly ICacheService _cacheService;
 
@@ -21,6 +20,13 @@
             _categoryPermissionForRoleService = categoryPermissionForRoleService;
             _cacheService = cacheService;
             _context = context;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+            _categoryPermissionForRoleService.RefreshContext(context);
         }
 
         /// <summary>

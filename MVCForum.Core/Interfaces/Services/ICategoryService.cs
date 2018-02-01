@@ -6,7 +6,7 @@
     using Models.Entities;
     using Models.General;
 
-    public partial interface ICategoryService
+    public partial interface ICategoryService : IContextService
     {
         List<Category> GetAll();
         IEnumerable<Category> GetAllMainCategories();

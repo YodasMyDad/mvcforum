@@ -14,7 +14,7 @@
     public partial class VoteService : IVoteService
     {
         private readonly IMembershipUserPointsService _membershipUserPointsService;
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         public VoteService(IMvcForumContext context, IMembershipUserPointsService membershipUserPointsService, ICacheService cacheService)
@@ -22,6 +22,13 @@
             _membershipUserPointsService = membershipUserPointsService;
             _cacheService = cacheService;
             _context = context;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+            _membershipUserPointsService.RefreshContext(context);
         }
 
         public Vote Get(Guid id)

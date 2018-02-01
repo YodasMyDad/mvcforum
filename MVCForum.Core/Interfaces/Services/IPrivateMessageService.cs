@@ -6,7 +6,7 @@
     using Models.Entities;
     using Models.General;
 
-    public partial interface IPrivateMessageService
+    public partial interface IPrivateMessageService : IContextService
     {
         PrivateMessage SanitizeMessage(PrivateMessage privateMessage);
         PrivateMessage Add(PrivateMessage message);

@@ -4,7 +4,6 @@
     using System.Data.Entity;
     using System.Threading.Tasks;
     using Core.Constants;
-    using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Pipeline;
     using Core.Interfaces.Services;
@@ -13,16 +12,14 @@
 
     public class PostCreateEditPipe : IPipe<IPipelineProcess<Post>>
     {
-        private readonly ILocalizationService _localizationService;
         private readonly IPostEditService _postEditService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ISettingsService _settingsService;
         private readonly IActivityService _activityService;
         private readonly INotificationService _notificationService;
 
-        public PostCreateEditPipe(ILocalizationService localizationService, IPostEditService postEditService, IMembershipUserPointsService membershipUserPointsService, ISettingsService settingsService, IActivityService activityService, INotificationService notificationService)
+        public PostCreateEditPipe(IPostEditService postEditService, IMembershipUserPointsService membershipUserPointsService, ISettingsService settingsService, IActivityService activityService, INotificationService notificationService)
         {
-            _localizationService = localizationService;
             _postEditService = postEditService;
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
@@ -33,6 +30,13 @@
         /// <inheritdoc />
         public async Task<IPipelineProcess<Post>> Process(IPipelineProcess<Post> input, IMvcForumContext context)
         {
+            // Refresh contexts for all services
+            _postEditService.RefreshContext(context);
+            _membershipUserPointsService.RefreshContext(context);
+            _settingsService.RefreshContext(context);
+            _activityService.RefreshContext(context);
+            _notificationService.RefreshContext(context);
+
             // Get the Current user from ExtendedData
             var username = input.ExtendedData[Constants.ExtendedDataKeys.Username] as string;
             var loggedOnUser = await context.MembershipUser.FirstOrDefaultAsync(x => x.UserName == username);
@@ -68,14 +72,14 @@
                 // Add the post edit too
                 _postEditService.Add(postEdit);
             }
+            else
+            {
+                // Add the post
+                context.Post.Add(input.EntityToProcess);
+            }
 
             // Now do a save
-            var saved = await context.SaveChangesAsync();
-            if (saved <= 0)
-            {
-                input.AddError(_localizationService.GetResourceString("Errors.GenericMessage"));
-                return input;
-            }
+            await context.SaveChangesAsync();
 
 
             // Update the users points score and post count for posting a new post
@@ -104,12 +108,7 @@
             }
 
             // Now do a final save
-            saved = await context.SaveChangesAsync();
-            if (saved <= 0)
-            {
-                input.AddError(_localizationService.GetResourceString("Errors.GenericMessage"));
-                return input;
-            }
+            await context.SaveChangesAsync();
 
             input.ProcessLog.Add("Post created successfully");
             return input;

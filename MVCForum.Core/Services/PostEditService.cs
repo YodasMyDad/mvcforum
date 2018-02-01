@@ -10,12 +10,16 @@
 
     public partial class PostEditService : IPostEditService
     {
-        private readonly ICacheService _cacheService;
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
 
-        public PostEditService(IMvcForumContext context, ICacheService cacheService)
+        public PostEditService(IMvcForumContext context)
         {
-            _cacheService = cacheService;
+            _context = context;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
             _context = context;
         }
 

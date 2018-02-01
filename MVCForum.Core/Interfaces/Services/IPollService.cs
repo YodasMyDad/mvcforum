@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Models.Entities;
 
-    public partial interface IPollService
+    public partial interface IPollService : IContextService
     {
         #region Poll
 

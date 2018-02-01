@@ -8,7 +8,7 @@
     using Models.Enums;
     using Models.General;
 
-    public partial interface IBadgeService
+    public partial interface IBadgeService : IContextService
     {
         /// <summary>
         ///     Bring the database into line with the badge classes found at runtime

@@ -11,12 +11,18 @@
 
     public partial class GlobalPermissionForRoleService : IGlobalPermissionForRoleService
     {
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         public GlobalPermissionForRoleService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
+            _context = context;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
             _context = context;
         }
 

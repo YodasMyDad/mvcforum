@@ -29,7 +29,7 @@
         private readonly IUploadedFileService _uploadedFileService;
         private readonly IFavouriteService _favouriteService;
         private readonly IConfigService _configService;
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly IPostEditService _postEditService;
 
         public PostService(IMvcForumContext context, IMembershipUserPointsService membershipUserPointsService,
@@ -49,6 +49,18 @@
             _context = context;
         }
 
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+            _roleService.RefreshContext(context);
+            _membershipUserPointsService.RefreshContext(context);
+            _settingsService.RefreshContext(context);
+            _voteService.RefreshContext(context);
+            _uploadedFileService.RefreshContext(context);
+            _favouriteService.RefreshContext(context);
+            _postEditService.RefreshContext(context);
+        }
 
         #region Private / Helpers Methods
 

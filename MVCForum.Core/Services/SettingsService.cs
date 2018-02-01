@@ -11,7 +11,7 @@
 
     public partial class SettingsService : ISettingsService
     {
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         /// <summary>
@@ -22,6 +22,11 @@
         public SettingsService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
+            _context = context;
+        }
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
             _context = context;
         }
 

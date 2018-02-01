@@ -2,7 +2,7 @@
 {
     using Models.Entities;
 
-    public partial interface ISpamService
+    public partial interface ISpamService : IContextService
     {
         bool IsSpam(Post post);
         bool IsSpam(Topic topic);

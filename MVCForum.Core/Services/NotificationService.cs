@@ -15,7 +15,7 @@
 
     public class NotificationService : INotificationService
     {
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly ILocalizationService _localizationService;
         private readonly IEmailService _emailService;
         private readonly ISettingsService _settingsService;
@@ -28,6 +28,15 @@
             _emailService = emailService;
             _settingsService = settingsService;
             _loggingService = loggingService;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+            _localizationService.RefreshContext(context);
+            _emailService.RefreshContext(context);
+            _settingsService.RefreshContext(context);
         }
 
         #region Category Notifications

@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Models.Entities;
 
-    public partial interface ICategoryPermissionForRoleService
+    public partial interface ICategoryPermissionForRoleService : IContextService
     {
         /// <summary>
         ///     Add new category permission for role

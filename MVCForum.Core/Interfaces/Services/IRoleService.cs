@@ -5,7 +5,7 @@
     using Models.Entities;
     using Models.General;
 
-    public partial interface IRoleService
+    public partial interface IRoleService : IContextService
     {
         IList<MembershipRole> AllRoles();
         void Delete(MembershipRole role);

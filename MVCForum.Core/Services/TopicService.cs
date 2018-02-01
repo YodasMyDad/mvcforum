@@ -22,7 +22,7 @@
     public partial class TopicService : ITopicService
     {
         private readonly INotificationService _notificationService;
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ISettingsService _settingsService;
         private readonly IPostService _postService;
@@ -45,6 +45,19 @@
             _pollService = pollService;
             _cacheService = cacheService;
             _context = context;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+            _membershipUserPointsService.RefreshContext(context);
+            _settingsService.RefreshContext(context);
+            _notificationService.RefreshContext(context);
+            _favouriteService.RefreshContext(context);
+            _postService.RefreshContext(context);
+            _roleService.RefreshContext(context);
+            _pollService.RefreshContext(context);
         }
 
         /// <summary>

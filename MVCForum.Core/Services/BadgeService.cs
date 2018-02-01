@@ -23,7 +23,7 @@
     {
         public const int BadgeCheckIntervalMinutes = 10;
         private readonly ICacheService _cacheService;
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly ILocalizationService _localizationService;
         private readonly ILoggingService _loggingService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
@@ -47,6 +47,13 @@
             _context = context;
         }
 
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+            _localizationService.RefreshContext(context);
+            _membershipUserPointsService.RefreshContext(context);
+        }
 
         /// <summary>
         ///     Bring the database into line with the badge classes found at runtime

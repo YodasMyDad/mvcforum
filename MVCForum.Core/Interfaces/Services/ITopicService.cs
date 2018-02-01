@@ -9,7 +9,7 @@
     using Models.General;
     using Pipeline;
 
-    public partial interface ITopicService
+    public partial interface ITopicService : IContextService
     {
         IList<Topic> GetAll(List<Category> allowedCategories);
         IList<SelectListItem> GetAllSelectList(List<Category> allowedCategories, int amount);

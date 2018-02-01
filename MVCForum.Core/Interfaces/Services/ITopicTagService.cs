@@ -6,7 +6,7 @@
     using Models.Entities;
     using Models.General;
 
-    public partial interface ITopicTagService
+    public partial interface ITopicTagService : IContextService
     {
         IEnumerable<TopicTag> GetAll();
         void DeleteByName(string tagName);

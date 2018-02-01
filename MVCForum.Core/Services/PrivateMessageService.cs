@@ -16,7 +16,7 @@
     public partial class PrivateMessageService : IPrivateMessageService
     {
         private readonly ICacheService _cacheService;
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
 
         /// <summary>
         ///     Constructor
@@ -26,6 +26,12 @@
         public PrivateMessageService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
+            _context = context;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
             _context = context;
         }
 

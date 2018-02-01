@@ -19,7 +19,7 @@
         private readonly ICacheService _cacheService;
         private readonly INotificationService _notificationService;
         private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly IRoleService _roleService;
 
         /// <summary>
@@ -39,6 +39,15 @@
             _categoryPermissionForRoleService = categoryPermissionForRoleService;
             _cacheService = cacheService;
             _context = context;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+            _roleService.RefreshContext(context);
+            _notificationService.RefreshContext(context);
+            _categoryPermissionForRoleService.RefreshContext(context);
         }
 
         /// <summary>

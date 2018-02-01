@@ -9,7 +9,7 @@
     using Models.General;
     using Pipeline;
 
-    public partial interface IPostService
+    public partial interface IPostService : IContextService
     {
         Post SanitizePost(Post post);
         Post GetTopicStarterPost(Guid topicId);

@@ -27,6 +27,8 @@
         /// <inheritdoc />
         public async Task<IPipelineProcess<Post>> Process(IPipelineProcess<Post> input, IMvcForumContext context)
         {
+            // TODO - Should I pass context via IoC??
+
             // Files
             if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.PostedFiles))
             {

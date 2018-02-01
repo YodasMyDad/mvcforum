@@ -51,6 +51,7 @@
     <Compile Include="Interfaces\IAssemblyProvider.cs" />
     <Compile Include="Interfaces\Pipeline\IPipe.cs" />
     <Compile Include="Interfaces\Pipeline\IPipelineProcess.cs" />
+    <Compile Include="Interfaces\Services\IBaseService.cs" />
     <Compile Include="Interfaces\Services\INotificationService.cs" />
     <Compile Include="Interfaces\Services\ISpamService.cs" />
     <Compile Include="MemoryFile.cs" />

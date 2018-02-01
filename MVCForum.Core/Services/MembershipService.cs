@@ -30,7 +30,7 @@
         private readonly IBadgeService _badgeService;
         private readonly ICacheService _cacheService;
         private readonly ICategoryService _categoryService;
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly IFavouriteService _favouriteService;
         private readonly ILocalizationService _localizationService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
@@ -84,6 +84,25 @@
             _notificationService = notificationService;
             _pollService = pollService;
             _context = context;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+            _settingsService.RefreshContext(context);
+            _localizationService.RefreshContext(context);
+            _activityService.RefreshContext(context);
+            _voteService.RefreshContext(context);
+            _badgeService.RefreshContext(context);
+            _privateMessageService.RefreshContext(context);
+            _favouriteService.RefreshContext(context);
+            _membershipUserPointsService.RefreshContext(context);
+            _topicService.RefreshContext(context);
+            _categoryService.RefreshContext(context);
+            _postService.RefreshContext(context);
+            _notificationService.RefreshContext(context);
+            _pollService.RefreshContext(context);
         }
 
         #region Status Codes

@@ -3,6 +3,7 @@
     using System.Linq;
     using System.Web;
     using ExternalServices;
+    using Interfaces;
     using Interfaces.Services;
     using Models.Entities;
     using Models.Spam;
@@ -10,11 +11,20 @@
 
     public partial class SpamService : ISpamService
     {
-        private readonly Settings _settings;
+        private Settings _settings;
+        private readonly ISettingsService _settingsService;
 
         public SpamService(ISettingsService settingsService)
         {
+            _settingsService = settingsService;
             _settings = settingsService.GetSettings();
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _settingsService.RefreshContext(context);
+            _settings = _settingsService.GetSettings();
         }
 
         /// <inheritdoc />

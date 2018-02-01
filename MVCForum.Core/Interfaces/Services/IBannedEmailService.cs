@@ -6,7 +6,7 @@
     using Models.Entities;
     using Models.General;
 
-    public partial interface IBannedEmailService
+    public partial interface IBannedEmailService : IContextService
     {
         BannedEmail Add(BannedEmail bannedEmail);
         void Delete(BannedEmail bannedEmail);

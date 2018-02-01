@@ -4,7 +4,7 @@
     using Models;
     using Models.Entities;
 
-    public partial interface IEmailService
+    public partial interface IEmailService : IContextService
     {
         void SendMail(Email email, Settings settings);
         void SendMail(Email email);
