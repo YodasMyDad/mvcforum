@@ -1,6 +1,7 @@
 ﻿namespace MvcForum.Core.Services
 {
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Web;
     using ExternalServices;
     using Interfaces;
@@ -25,6 +26,12 @@
         {
             _settingsService.RefreshContext(context);
             _settings = _settingsService.GetSettings();
+        }
+
+        /// <inheritdoc />
+        public Task<int> SaveChanges()
+        {
+            throw new System.NotImplementedException();
         }
 
         /// <inheritdoc />

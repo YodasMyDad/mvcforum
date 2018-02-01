@@ -105,6 +105,12 @@
             _pollService.RefreshContext(context);
         }
 
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
         #region Status Codes
 
         public string ErrorCodeToString(MembershipCreateStatus createStatus)

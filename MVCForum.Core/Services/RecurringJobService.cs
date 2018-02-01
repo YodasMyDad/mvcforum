@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
     using Hangfire;
     using Interfaces;
     using Interfaces.Services;
@@ -29,6 +30,12 @@
             _localizationService = localizationService;
             _context = context;
             _emailService = emailService;
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         /// <summary>

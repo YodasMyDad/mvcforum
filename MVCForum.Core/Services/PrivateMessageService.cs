@@ -35,6 +35,12 @@
             _context = context;
         }
 
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
         public PrivateMessage SanitizeMessage(PrivateMessage privateMessage)
         {
             privateMessage.Message = StringUtils.GetSafeHtml(privateMessage.Message);

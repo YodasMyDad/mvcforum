@@ -32,7 +32,8 @@
                 var newPoll = new Poll
                 {
                     User = user,
-                    ClosePollAfterDays = viewModel.PollCloseAfterDays
+                    ClosePollAfterDays = viewModel.PollCloseAfterDays,
+                    DateCreated = DateTime.UtcNow
                 };
 
                 // Now sort the answers

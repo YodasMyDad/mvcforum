@@ -34,6 +34,12 @@
             _context = context;
         }
 
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
         /// <summary>
         ///     Get all topic tags
         /// </summary>

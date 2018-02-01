@@ -17,81 +17,95 @@
         private readonly IMembershipService _membershipService;
         private readonly ILocalizationService _localizationService;
         private readonly IActivityService _activityService;
+        private readonly ILoggingService _loggingService;
 
-        public EditUserPipe(IMembershipService membershipService, ILocalizationService localizationService, IActivityService activityService)
+        public EditUserPipe(IMembershipService membershipService, ILocalizationService localizationService, IActivityService activityService, ILoggingService loggingService)
         {
             _membershipService = membershipService;
             _localizationService = localizationService;
             _activityService = activityService;
+            _loggingService = loggingService;
         }
 
         /// <inheritdoc />
         public async Task<IPipelineProcess<MembershipUser>> Process(IPipelineProcess<MembershipUser> input,
             IMvcForumContext context)
         {
-            // Grab out the image if we have one
-            if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.PostedFiles))
+            _membershipService.RefreshContext(context);
+            _localizationService.RefreshContext(context);
+            _activityService.RefreshContext(context);
+
+            try
             {
-                // Check we're good
-                if (input.ExtendedData[Constants.ExtendedDataKeys.PostedFiles] is HttpPostedFileBase avatar)
+                // Grab out the image if we have one
+                if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.PostedFiles))
                 {
-                    // Before we save anything, check the user already has an upload folder and if not create one
-                    var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(ForumConfiguration.Instance.UploadFolderPath, input.EntityToProcess.Id));
-
-                    // If successful then upload the file                    
-                    var uploadResult = avatar.UploadFile(uploadFolderPath, _localizationService, true);
-
-                    // throw error if unsuccessful
-                    if (!uploadResult.UploadSuccessful)
+                    // Check we're good
+                    if (input.ExtendedData[Constants.ExtendedDataKeys.PostedFiles] is HttpPostedFileBase avatar)
                     {
-                        input.AddError(uploadResult.ErrorMessage);
+                        // Before we save anything, check the user already has an upload folder and if not create one
+                        var uploadFolderPath = HostingEnvironment.MapPath(string.Concat(ForumConfiguration.Instance.UploadFolderPath, input.EntityToProcess.Id));
+
+                        // If successful then upload the file                    
+                        var uploadResult = avatar.UploadFile(uploadFolderPath, _localizationService, true);
+
+                        // throw error if unsuccessful
+                        if (!uploadResult.UploadSuccessful)
+                        {
+                            input.AddError(uploadResult.ErrorMessage);
+                            return input;
+                        }
+
+                        // Save avatar
+                        input.EntityToProcess.Avatar = uploadResult.UploadedFileName;
+                    }
+                }
+
+                // Edit the user now - Get the original from the database
+                var dbUser = await context.MembershipUser.FirstOrDefaultAsync(x => x.Id == input.EntityToProcess.Id);
+
+                // User is trying to change username, need to check if a user already exists
+                // with the username they are trying to change to
+                var changedUsername = false;
+                if (dbUser.UserName != input.EntityToProcess.UserName)
+                {
+                    if (_membershipService.GetUser(input.EntityToProcess.UserName) != null)
+                    {
+                        input.AddError(_localizationService.GetResourceString("Members.Errors.DuplicateUserName"));
                         return input;
                     }
-
-                    // Save avatar
-                    input.EntityToProcess.Avatar = uploadResult.UploadedFileName;
+                    changedUsername = true;
                 }
-            }
 
-            // Edit the user now - Get the original from the database
-            var dbUser = await context.MembershipUser.FirstOrDefaultAsync(x => x.Id == input.EntityToProcess.Id);
+                // Add username changed to extended data
+                input.ExtendedData.Add(Constants.ExtendedDataKeys.UsernameChanged, changedUsername);
 
-            // User is trying to change username, need to check if a user already exists
-            // with the username they are trying to change to
-            var changedUsername = false;
-            if (dbUser.UserName != input.EntityToProcess.UserName)
-            {
-                if (_membershipService.GetUser(input.EntityToProcess.UserName) != null)
+                // User is trying to update their email address, need to 
+                // check the email is not already in use
+                if (dbUser.Email != input.EntityToProcess.Email)
                 {
-                    input.AddError(_localizationService.GetResourceString("Members.Errors.DuplicateUserName"));
-                    return input;
+                    // Add get by email address
+                    if (_membershipService.GetUserByEmail(input.EntityToProcess.Email) != null)
+                    {
+                        input.AddError(_localizationService.GetResourceString("Members.Errors.DuplicateEmail"));
+                        return input;
+                    }
                 }
-                changedUsername = true;
-            }
 
-            // Add username changed to extended data
-            input.ExtendedData.Add(Constants.ExtendedDataKeys.UsernameChanged, changedUsername);
+                // Add an activity
+                _activityService.ProfileUpdated(input.EntityToProcess);
 
-            // User is trying to update their email address, need to 
-            // check the email is not already in use
-            if (dbUser.Email != input.EntityToProcess.Email)
-            {
-                // Add get by email address
-                if (_membershipService.GetUserByEmail(input.EntityToProcess.Email) != null)
+                // Save the user
+                var saved = await context.SaveChangesAsync();
+                if (saved <= 0)
                 {
-                    input.AddError(_localizationService.GetResourceString("Members.Errors.DuplicateEmail"));
-                    return input;
+                    input.AddError(_localizationService.GetResourceString("Errors.GenericMessage"));
                 }
             }
-
-            // Add an activity
-            _activityService.ProfileUpdated(input.EntityToProcess);
-
-            // Save the user
-            var saved = await context.SaveChangesAsync();
-            if (saved <= 0)
+            catch (System.Exception ex)
             {
-                input.AddError(_localizationService.GetResourceString("Errors.GenericMessage"));
+                input.AddError(ex.Message);
+                _loggingService.Error(ex);
             }
 
             return input;

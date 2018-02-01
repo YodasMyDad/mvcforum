@@ -5,6 +5,7 @@
     using System.Data.Entity;
     using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
     using ExtensionMethods;
     using Interfaces;
     using Interfaces.Services;
@@ -37,6 +38,12 @@
             _localizationService.RefreshContext(context);
             _emailService.RefreshContext(context);
             _settingsService.RefreshContext(context);
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         #region Category Notifications

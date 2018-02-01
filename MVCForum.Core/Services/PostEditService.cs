@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
+    using System.Threading.Tasks;
     using Interfaces;
     using Interfaces.Services;
     using Models.Entities;
@@ -21,6 +22,12 @@
         public void RefreshContext(IMvcForumContext context)
         {
             _context = context;
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         public void Delete(IList<PostEdit> entities)

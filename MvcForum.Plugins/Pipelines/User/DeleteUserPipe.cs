@@ -25,6 +25,9 @@
         public async Task<IPipelineProcess<MembershipUser>> Process(IPipelineProcess<MembershipUser> input,
             IMvcForumContext context)
         {
+            _membershipService.RefreshContext(context);
+            _localizationService.RefreshContext(context);
+
             try
             {
                 // Scrub all member data

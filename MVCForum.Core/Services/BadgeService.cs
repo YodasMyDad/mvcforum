@@ -55,6 +55,12 @@
             _membershipUserPointsService.RefreshContext(context);
         }
 
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
         /// <summary>
         ///     Bring the database into line with the badge classes found at runtime
         /// </summary>

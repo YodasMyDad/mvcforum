@@ -341,22 +341,29 @@
                         topicViewModel.SubscribeToTopic, topicViewModel.Content, null);
                     if (createPipeLine.Successful == false)
                     {
+                        // Remove the topic if unsuccessful, as we may have saved some items.
+                        _topicService.Delete(createPipeLine.EntityToProcess);
+                        await _topicService.SaveChanges();
+
                         // Tell the user the topic is awaiting moderation
                         ModelState.AddModelError(string.Empty, createPipeLine.ProcessLog.FirstOrDefault());
                         return View(topicViewModel);
                     }
 
-                    var moderate = createPipeLine.ExtendedData[Constants.ExtendedDataKeys.Moderate] as bool?;
-                    if (moderate == true)
+                    if (createPipeLine.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.Moderate))
                     {
-                        // Tell the user the topic is awaiting moderation
-                        TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                        var moderate = createPipeLine.ExtendedData[Constants.ExtendedDataKeys.Moderate] as bool?;
+                        if (moderate == true)
                         {
-                            Message = LocalizationService.GetResourceString("Moderate.AwaitingModeration"),
-                            MessageType = GenericMessages.info
-                        };
+                            // Tell the user the topic is awaiting moderation
+                            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                            {
+                                Message = LocalizationService.GetResourceString("Moderate.AwaitingModeration"),
+                                MessageType = GenericMessages.info
+                            };
 
-                        return RedirectToAction("Index", "Home");
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
 
                     // Redirect to the newly created topic

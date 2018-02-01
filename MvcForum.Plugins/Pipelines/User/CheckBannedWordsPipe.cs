@@ -4,6 +4,7 @@
     using System.Data.Entity;
     using System.Linq;
     using System.Threading.Tasks;
+    using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Pipeline;
     using Core.Interfaces.Services;
@@ -13,15 +14,20 @@
     public class CheckBannedWordsPipe : IPipe<IPipelineProcess<MembershipUser>>
     {
         private readonly IBannedWordService _bannedWordService;
-        public CheckBannedWordsPipe(IBannedWordService bannedWordService)
+        private readonly ILoggingService _loggingService;
+
+        public CheckBannedWordsPipe(IBannedWordService bannedWordService, ILoggingService loggingService)
         {
             _bannedWordService = bannedWordService;
+            _loggingService = loggingService;
         }
 
         /// <inheritdoc />
         public async Task<IPipelineProcess<MembershipUser>> Process(IPipelineProcess<MembershipUser> input,
             IMvcForumContext context)
         {
+            _bannedWordService.RefreshContext(context);
+
             try
             {
                 var email = input.EntityToProcess.Email;
@@ -98,15 +104,15 @@
             }
             catch (Exception ex)
             {
-                input.Successful = false;
-                input.ProcessLog.Clear();
-                input.ProcessLog.Add(ex.Message);
+                input.AddError(ex.Message);
+                _loggingService.Error(ex);
             }
 
             if (input.Successful)
             {
                 input.ProcessLog.Add("CheckBannedWordsPipe completed successfully");
             }
+
             return input;
         }
     }

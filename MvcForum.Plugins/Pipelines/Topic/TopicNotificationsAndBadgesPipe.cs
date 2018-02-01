@@ -17,78 +17,89 @@
         private readonly INotificationService _notificationService;
         private readonly IActivityService _activityService;
         private readonly ILocalizationService _localizationService;
+        private readonly ILoggingService _loggingService;
 
         public TopicNotificationsAndBadgesPipe(IBadgeService badgeService, INotificationService notificationService, 
-            IActivityService activityService, ILocalizationService localizationService)
+            IActivityService activityService, ILocalizationService localizationService, ILoggingService loggingService)
         {
             _badgeService = badgeService;
             _notificationService = notificationService;
             _activityService = activityService;
             _localizationService = localizationService;
+            _loggingService = loggingService;
         }
 
         /// <inheritdoc />
         public async Task<IPipelineProcess<Topic>> Process(IPipelineProcess<Topic> input, IMvcForumContext context)
         {
-            // Get the Current user from ExtendedData
-            var username = input.ExtendedData[Constants.ExtendedDataKeys.Username] as string;
-            var loggedOnUser = await context.MembershipUser.FirstOrDefaultAsync(x => x.UserName == username);
+            _badgeService.RefreshContext(context);
+            _notificationService.RefreshContext(context);
+            _activityService.RefreshContext(context);
+            _localizationService.RefreshContext(context);
 
-            // Are we in an edit mode
-            var isEdit = input.ExtendedData[Constants.ExtendedDataKeys.IsEdit] as bool? == true;
-
-            // If the topic has tags then process
-            if (input.EntityToProcess.Tags.Any())
+            try
             {
-                _badgeService.ProcessBadge(BadgeType.Tag, input.EntityToProcess.User);   
-            }
+                // Get the Current user from ExtendedData
+                var username = input.ExtendedData[Constants.ExtendedDataKeys.Username] as string;
+                var loggedOnUser = await context.MembershipUser.FirstOrDefaultAsync(x => x.UserName == username);
 
-            if (isEdit == false)
-            {
-                // Subscribe the user to the topic as they have checked the checkbox
-                if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.Subscribe))
+                // Are we in an edit mode
+                var isEdit = input.ExtendedData[Constants.ExtendedDataKeys.IsEdit] as bool? == true;
+
+                // If the topic has tags then process
+                if (input.EntityToProcess.Tags != null && input.EntityToProcess.Tags.Any())
                 {
-                    var subscribe = input.ExtendedData[Constants.ExtendedDataKeys.Subscribe] as bool?;
-                    if (subscribe == true)
+                    _badgeService.ProcessBadge(BadgeType.Tag, input.EntityToProcess.User);
+                }
+
+                if (isEdit == false)
+                {
+                    // Subscribe the user to the topic as they have checked the checkbox
+                    if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.Subscribe))
                     {
-                        var alreadyHasNotification = await context.TopicNotification
-                            .Include(x => x.Topic)
-                            .Include(x => x.User)
-                            .AnyAsync(x =>
-                                x.Topic.Id == input.EntityToProcess.Id && x.User.Id == loggedOnUser.Id);
-
-                        if (alreadyHasNotification == false)
+                        var subscribe = input.ExtendedData[Constants.ExtendedDataKeys.Subscribe] as bool?;
+                        if (subscribe == true)
                         {
-                            // Create the notification
-                            var topicNotification = new TopicNotification
-                            {
-                                Topic = input.EntityToProcess,
-                                User = loggedOnUser
-                            };
+                            var alreadyHasNotification = await context.TopicNotification
+                                .Include(x => x.Topic)
+                                .Include(x => x.User)
+                                .AnyAsync(x =>
+                                    x.Topic.Id == input.EntityToProcess.Id && x.User.Id == loggedOnUser.Id);
 
-                            //save
-                            _notificationService.Add(topicNotification);
+                            if (alreadyHasNotification == false)
+                            {
+                                // Create the notification
+                                var topicNotification = new TopicNotification
+                                {
+                                    Topic = input.EntityToProcess,
+                                    User = loggedOnUser
+                                };
+
+                                //save
+                                _notificationService.Add(topicNotification);
+                            }
                         }
                     }
+
+                    // Should we add the topic created activity
+                    if (input.EntityToProcess.Pending != true)
+                    {
+                        _activityService.TopicCreated(input.EntityToProcess);
+                    }
+
+                    // finally notify 
+                    _notificationService.Notify(input.EntityToProcess, loggedOnUser, NotificationType.Topic);
                 }
 
-                // Should we add the topic created activity
-                if (input.EntityToProcess.Pending != true)
-                {
-                    _activityService.TopicCreated(input.EntityToProcess);
-                }
+                // Was the post successful
+                await context.SaveChangesAsync();
 
-                // finally notify 
-                _notificationService.Notify(input.EntityToProcess, loggedOnUser, NotificationType.Topic);
             }
-
-            // Was the post successful
-            if (await context.SaveChangesAsync() <= 0)
+            catch (System.Exception ex)
             {
-                // Problem
-                input.AddError(_localizationService.GetResourceString("Errors.GenericMessage"));
+                input.AddError(ex.Message);
+                _loggingService.Error(ex);
             }
-
             return input;
         }
     }

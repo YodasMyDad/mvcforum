@@ -50,6 +50,12 @@
             _categoryService.RefreshContext(context);
         }
 
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
         // TODO - This query could be a performance problem
         /// <summary>
         ///     Gets a paged list of badges

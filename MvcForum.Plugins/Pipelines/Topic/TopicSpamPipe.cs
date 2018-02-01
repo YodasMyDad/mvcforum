@@ -20,58 +20,80 @@
         private readonly IBannedWordService _bannedWordService;
         private readonly ILocalizationService _localizationService;
         private readonly ISpamService _spamService;
+        private readonly ILoggingService _loggingService;
 
-        public TopicSpamPipe(IBannedWordService bannedWordService, ILocalizationService localizationService, ISpamService spamService)
+        public TopicSpamPipe(IBannedWordService bannedWordService, ILocalizationService localizationService, ISpamService spamService, ILoggingService loggingService)
         {
             _bannedWordService = bannedWordService;
             _localizationService = localizationService;
             _spamService = spamService;
+            _loggingService = loggingService;
         }
 
         /// <inheritdoc />
         public async Task<IPipelineProcess<Topic>> Process(IPipelineProcess<Topic> input, IMvcForumContext context)
         {
-            // Get the all the words I need
-            var allWords = await context.BannedWord.ToListAsync();
+            _bannedWordService.RefreshContext(context);
+            _localizationService.RefreshContext(context);
+            _spamService.RefreshContext(context);
 
-            var hasPollAnswers = input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.PollNewAnswers);
-            var newPollAnswers = new List<PollAnswer>();
-            if (hasPollAnswers)
+            try
             {
-                newPollAnswers = input.ExtendedData[Constants.ExtendedDataKeys.PollNewAnswers] as List<PollAnswer>;
-            }
+                // Get the all the words I need
+                var allWords = await context.BannedWord.ToListAsync();
 
-            // Do the stop words first
-            foreach (var stopWord in allWords.Where(x => x.IsStopWord == true).Select(x => x.Word).ToArray())
-            {
-                // Check name
-                if (input.EntityToProcess.Name.IndexOf(stopWord, StringComparison.CurrentCultureIgnoreCase) >= 0)
-                {
-                    input.AddError(_localizationService.GetResourceString("StopWord.Error"));
-                    return input;
-                }
-
-                // Check poll answers on entity or ones we are waiting to update
-                if (input.EntityToProcess.Poll != null && input.EntityToProcess.Poll.PollAnswers.Any())
-                {
-                    foreach (var pollAnswer in input.EntityToProcess.Poll.PollAnswers)
-                    {
-                        if (input.EntityToProcess.Name.IndexOf(pollAnswer.Answer, StringComparison.CurrentCultureIgnoreCase) >= 0)
-                        {
-                            input.AddError(_localizationService.GetResourceString("StopWord.Error"));
-                            return input;
-                        }
-                    }
-                }
-
+                var hasPollAnswers = input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.PollNewAnswers);
+                var newPollAnswers = new List<PollAnswer>();
                 if (hasPollAnswers)
                 {
-                    if (newPollAnswers != null)
+                    newPollAnswers = input.ExtendedData[Constants.ExtendedDataKeys.PollNewAnswers] as List<PollAnswer>;
+                }
+
+                // Do the stop words first
+                foreach (var stopWord in allWords.Where(x => x.IsStopWord == true).Select(x => x.Word).ToArray())
+                {
+                    // Check name
+                    if (input.EntityToProcess.Name.IndexOf(stopWord, StringComparison.CurrentCultureIgnoreCase) >= 0)
                     {
-                        foreach (var pollAnswer in newPollAnswers)
+                        input.AddError(_localizationService.GetResourceString("StopWord.Error"));
+                        return input;
+                    }
+
+                    // Check poll answers on entity or ones we are waiting to update
+                    if (input.EntityToProcess.Poll != null && input.EntityToProcess.Poll.PollAnswers.Any())
+                    {
+                        foreach (var pollAnswer in input.EntityToProcess.Poll.PollAnswers)
                         {
-                            if (input.EntityToProcess.Name.IndexOf(pollAnswer.Answer,
-                                    StringComparison.CurrentCultureIgnoreCase) >= 0)
+                            if (input.EntityToProcess.Name.IndexOf(pollAnswer.Answer, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                            {
+                                input.AddError(_localizationService.GetResourceString("StopWord.Error"));
+                                return input;
+                            }
+                        }
+                    }
+
+                    if (hasPollAnswers)
+                    {
+                        if (newPollAnswers != null)
+                        {
+                            foreach (var pollAnswer in newPollAnswers)
+                            {
+                                if (input.EntityToProcess.Name.IndexOf(pollAnswer.Answer,
+                                        StringComparison.CurrentCultureIgnoreCase) >= 0)
+                                {
+                                    input.AddError(_localizationService.GetResourceString("StopWord.Error"));
+                                    return input;
+                                }
+                            }
+                        }
+                    }
+
+                    // Check tags
+                    if (input.EntityToProcess.Tags != null && input.EntityToProcess.Tags.Any())
+                    {
+                        foreach (var topicTag in input.EntityToProcess.Tags)
+                        {
+                            if (input.EntityToProcess.Name.IndexOf(topicTag.Tag, StringComparison.CurrentCultureIgnoreCase) >= 0)
                             {
                                 input.AddError(_localizationService.GetResourceString("StopWord.Error"));
                                 return input;
@@ -80,67 +102,57 @@
                     }
                 }
 
-                // Check tags
+                // Check Akismet
+                if (_spamService.IsSpam(input.EntityToProcess))
+                {
+                    input.EntityToProcess.Pending = true;
+                    input.ExtendedData.Add(Constants.ExtendedDataKeys.Moderate, true);
+                }
+
+                // Sanitise the banned words
+                var bannedWords = allWords.Where(x => x.IsStopWord != true).Select(x => x.Word).ToArray();
+
+                // Topic name
+                input.EntityToProcess.Name = _bannedWordService.SanitiseBannedWords(input.EntityToProcess.Name, bannedWords);
+
+                // Sanitise Poll
+                if (input.EntityToProcess.Poll != null && input.EntityToProcess.Poll.PollAnswers.Any())
+                {
+                    foreach (var pollAnswer in input.EntityToProcess.Poll.PollAnswers)
+                    {
+                        pollAnswer.Answer = _bannedWordService.SanitiseBannedWords(pollAnswer.Answer, bannedWords);
+                    }
+                }
+
+                // Santise new poll answers
+                if (hasPollAnswers)
+                {
+                    if (newPollAnswers != null)
+                    {
+                        foreach (var pollAnswer in newPollAnswers)
+                        {
+                            pollAnswer.Answer = _bannedWordService.SanitiseBannedWords(pollAnswer.Answer, bannedWords);
+                        }
+
+                        // Now re-assign them
+                        input.ExtendedData[Constants.ExtendedDataKeys.PollNewAnswers] = newPollAnswers;
+                    }
+                }
+
+                // Sanitise Tags
                 if (input.EntityToProcess.Tags != null && input.EntityToProcess.Tags.Any())
                 {
                     foreach (var topicTag in input.EntityToProcess.Tags)
                     {
-                        if (input.EntityToProcess.Name.IndexOf(topicTag.Tag, StringComparison.CurrentCultureIgnoreCase) >= 0)
-                        {
-                            input.AddError(_localizationService.GetResourceString("StopWord.Error"));
-                            return input;
-                        }
+                        topicTag.Tag = _bannedWordService.SanitiseBannedWords(topicTag.Tag, bannedWords);
                     }
                 }
             }
-
-            // Check Akismet
-            if (_spamService.IsSpam(input.EntityToProcess))
+            catch (Exception ex)
             {
-                input.EntityToProcess.Pending = true;
-                input.ExtendedData.Add(Constants.ExtendedDataKeys.Moderate, true);
+                input.AddError(ex.Message);
+                _loggingService.Error(ex);
             }
-
-            // Sanitise the banned words
-            var bannedWords = allWords.Where(x => x.IsStopWord != true).Select(x => x.Word).ToArray();
-
-            // Topic name
-            input.EntityToProcess.Name = _bannedWordService.SanitiseBannedWords(input.EntityToProcess.Name, bannedWords);
-
-            // Sanitise Poll
-            if (input.EntityToProcess.Poll != null && input.EntityToProcess.Poll.PollAnswers.Any())
-            {
-                foreach (var pollAnswer in input.EntityToProcess.Poll.PollAnswers)
-                {
-                    pollAnswer.Answer = _bannedWordService.SanitiseBannedWords(pollAnswer.Answer, bannedWords);
-                }
-            }
-
-            // Santise new poll answers
-            if (hasPollAnswers)
-            {
-                if (newPollAnswers != null)
-                {
-                    foreach (var pollAnswer in newPollAnswers)
-                    {
-                        pollAnswer.Answer = _bannedWordService.SanitiseBannedWords(pollAnswer.Answer, bannedWords);
-                    }
-
-                    // Now re-assign them
-                    input.ExtendedData[Constants.ExtendedDataKeys.PollNewAnswers] = newPollAnswers;
-                }
-            }
-
-            // Sanitise Tags
-            if (input.EntityToProcess.Tags != null && input.EntityToProcess.Tags.Any())
-            {
-                foreach (var topicTag in input.EntityToProcess.Tags)
-                {
-                    topicTag.Tag = _bannedWordService.SanitiseBannedWords(topicTag.Tag, bannedWords);
-                }
-            }
-
-            // Sanit
 
             return input;
         }

@@ -1,5 +1,7 @@
 ﻿namespace MvcForum.Core.Interfaces.Services
 {
+    using System.Threading.Tasks;
+
     public interface IContextService
     {
         /// <summary>
@@ -11,5 +13,6 @@
         /// </summary>
         /// <param name="context"></param>
         void RefreshContext(IMvcForumContext context);
+        Task<int> SaveChanges();
     }
 }

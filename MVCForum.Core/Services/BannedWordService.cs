@@ -29,6 +29,12 @@
             _context = context;
         }
 
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
         public BannedWord Add(BannedWord bannedWord)
         {
             return _context.BannedWord.Add(bannedWord);

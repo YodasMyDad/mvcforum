@@ -29,6 +29,12 @@
             _context = context;
         }
 
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
         public BannedEmail Add(BannedEmail bannedEmail)
         {
             return _context.BannedEmail.Add(bannedEmail);

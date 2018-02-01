@@ -62,6 +62,12 @@
             _postEditService.RefreshContext(context);
         }
 
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
         #region Private / Helpers Methods
 
         public Post SanitizePost(Post post)

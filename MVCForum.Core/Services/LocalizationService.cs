@@ -50,6 +50,12 @@
             _settingsService.RefreshContext(context);
         }
 
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
         #region Sanitizing
 
         public Language SanitizeLanguage(Language language)

@@ -4,6 +4,7 @@
     using System.Data.Entity;
     using System.Threading.Tasks;
     using Core.Constants;
+    using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Pipeline;
     using Core.Interfaces.Services;
@@ -17,14 +18,16 @@
         private readonly ISettingsService _settingsService;
         private readonly IActivityService _activityService;
         private readonly INotificationService _notificationService;
+        private readonly ILoggingService _loggingService;
 
-        public PostCreateEditPipe(IPostEditService postEditService, IMembershipUserPointsService membershipUserPointsService, ISettingsService settingsService, IActivityService activityService, INotificationService notificationService)
+        public PostCreateEditPipe(IPostEditService postEditService, IMembershipUserPointsService membershipUserPointsService, ISettingsService settingsService, IActivityService activityService, INotificationService notificationService, ILoggingService loggingService)
         {
             _postEditService = postEditService;
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
             _activityService = activityService;
             _notificationService = notificationService;
+            _loggingService = loggingService;
         }
 
         /// <inheritdoc />
@@ -37,80 +40,89 @@
             _activityService.RefreshContext(context);
             _notificationService.RefreshContext(context);
 
-            // Get the Current user from ExtendedData
-            var username = input.ExtendedData[Constants.ExtendedDataKeys.Username] as string;
-            var loggedOnUser = await context.MembershipUser.FirstOrDefaultAsync(x => x.UserName == username);
-
-            // Is this an edit? If so, create a post edit
-            var isEdit = false;
-            if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.IsEdit))
+            try
             {
-                isEdit = input.ExtendedData[Constants.ExtendedDataKeys.IsEdit] as bool? == true;
-            }
+                // Get the Current user from ExtendedData
+                var username = input.ExtendedData[Constants.ExtendedDataKeys.Username] as string;
+                var loggedOnUser = await context.MembershipUser.FirstOrDefaultAsync(x => x.UserName == username);
 
-            if (isEdit)
-            {
-                // Get the original post
-                var originalPost = await context.Post.FirstOrDefaultAsync(x => x.Id == input.EntityToProcess.Id);
-
-                // This is an edit of a post
-                input.EntityToProcess.DateEdited = DateTime.UtcNow;
-
-                // Grab the original name out the extended data
-                var originalTopicName = input.ExtendedData[Constants.ExtendedDataKeys.Name] as string;
-
-                // Create a post edit
-                var postEdit = new PostEdit
+                // Is this an edit? If so, create a post edit
+                var isEdit = false;
+                if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.IsEdit))
                 {
-                    Post = input.EntityToProcess,
-                    DateEdited = input.EntityToProcess.DateEdited,
-                    EditedBy = loggedOnUser,
-                    OriginalPostContent = originalPost.PostContent,
-                    OriginalPostTitle = originalPost.IsTopicStarter ? originalTopicName : string.Empty
-                };
+                    isEdit = input.ExtendedData[Constants.ExtendedDataKeys.IsEdit] as bool? == true;
+                }
 
-                // Add the post edit too
-                _postEditService.Add(postEdit);
-            }
-            else
-            {
-                // Add the post
-                context.Post.Add(input.EntityToProcess);
-            }
-
-            // Now do a save
-            await context.SaveChangesAsync();
-
-
-            // Update the users points score and post count for posting a new post
-            if (!isEdit)
-            {
-                _membershipUserPointsService.Add(new MembershipUserPoints
+                if (isEdit)
                 {
-                    Points = _settingsService.GetSettings().PointsAddedPerPost,
-                    User = input.EntityToProcess.User,
-                    PointsFor = PointsFor.Post,
-                    PointsForId = input.EntityToProcess.Id
-                });
+                    // Get the original post
+                    var originalPost = await context.Post.FirstOrDefaultAsync(x => x.Id == input.EntityToProcess.Id);
 
-                // Add post activity if it's not an edit, or topic starter and it's not pending
+                    // This is an edit of a post
+                    input.EntityToProcess.DateEdited = DateTime.UtcNow;
+
+                    // Grab the original name out the extended data
+                    var originalTopicName = input.ExtendedData[Constants.ExtendedDataKeys.Name] as string;
+
+                    // Create a post edit
+                    var postEdit = new PostEdit
+                    {
+                        Post = input.EntityToProcess,
+                        DateEdited = input.EntityToProcess.DateEdited,
+                        EditedBy = loggedOnUser,
+                        OriginalPostContent = originalPost.PostContent,
+                        OriginalPostTitle = originalPost.IsTopicStarter ? originalTopicName : string.Empty
+                    };
+
+                    // Add the post edit too
+                    _postEditService.Add(postEdit);
+                }
+                else
+                {
+                    // Add the post
+                    context.Post.Add(input.EntityToProcess);
+                }
+
+                // Now do a save
+                await context.SaveChangesAsync();
+
+
+                // Update the users points score and post count for posting a new post
+                if (!isEdit)
+                {
+                    _membershipUserPointsService.Add(new MembershipUserPoints
+                    {
+                        Points = _settingsService.GetSettings().PointsAddedPerPost,
+                        User = input.EntityToProcess.User,
+                        PointsFor = PointsFor.Post,
+                        PointsForId = input.EntityToProcess.Id
+                    });
+
+                    // Add post activity if it's not an edit, or topic starter and it's not pending
+                    if (input.EntityToProcess.IsTopicStarter == false && input.EntityToProcess.Pending != true)
+                    {
+                        _activityService.PostCreated(input.EntityToProcess);
+                    }
+                }
+
+
                 if (input.EntityToProcess.IsTopicStarter == false && input.EntityToProcess.Pending != true)
                 {
-                    _activityService.PostCreated(input.EntityToProcess);
+                    // Send notifications
+                    _notificationService.Notify(input.EntityToProcess.Topic, loggedOnUser, NotificationType.Post);
                 }
+
+                // Now do a final save
+                await context.SaveChangesAsync();
+
+                input.ProcessLog.Add("Post created successfully");
             }
-
-
-            if (input.EntityToProcess.IsTopicStarter == false && input.EntityToProcess.Pending != true)
+            catch (Exception ex)
             {
-                // Send notifications
-                _notificationService.Notify(input.EntityToProcess.Topic, loggedOnUser, NotificationType.Post);
+                input.AddError(ex.Message);
+                _loggingService.Error(ex);
             }
 
-            // Now do a final save
-            await context.SaveChangesAsync();
-
-            input.ProcessLog.Add("Post created successfully");
             return input;
         }
     }

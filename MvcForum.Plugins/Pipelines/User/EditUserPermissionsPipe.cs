@@ -27,6 +27,9 @@
         public async Task<IPipelineProcess<MembershipUser>> Process(IPipelineProcess<MembershipUser> input,
             IMvcForumContext context)
         {
+            _roleService.RefreshContext(context);
+            _localizationService.RefreshContext(context);
+
             // Get the Current user from ExtendedData
             var username = input.ExtendedData[Constants.ExtendedDataKeys.Username] as string;
 

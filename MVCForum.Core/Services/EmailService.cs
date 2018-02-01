@@ -7,6 +7,7 @@
     using System.Net;
     using System.Net.Mail;
     using System.Text;
+    using System.Threading.Tasks;
     using System.Web;
     using System.Web.Hosting;
     using System.Web.Mvc;
@@ -37,6 +38,12 @@
         {
             _settingsService.RefreshContext(context);
             _localizationService.RefreshContext(context);
+        }
+
+        /// <inheritdoc />
+        public Task<int> SaveChanges()
+        {
+            throw new NotImplementedException();
         }
 
         public void ProcessMail(List<Email> emails)

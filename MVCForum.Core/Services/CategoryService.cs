@@ -5,6 +5,7 @@
     using System.Data.Entity;
     using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
     using System.Web;
     using System.Web.Mvc;
     using Constants;
@@ -48,6 +49,12 @@
             _roleService.RefreshContext(context);
             _notificationService.RefreshContext(context);
             _categoryPermissionForRoleService.RefreshContext(context);
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         /// <summary>

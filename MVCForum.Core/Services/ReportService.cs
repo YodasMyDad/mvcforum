@@ -1,6 +1,7 @@
 ﻿namespace MvcForum.Core.Services
 {
     using System.Text;
+    using System.Threading.Tasks;
     using Interfaces;
     using Interfaces.Services;
     using Models;
@@ -25,6 +26,12 @@
             _emailService.RefreshContext(context);
             _settingsService.RefreshContext(context);
             _localizationService.RefreshContext(context);
+        }
+
+        /// <inheritdoc />
+        public Task<int> SaveChanges()
+        {
+            throw new System.NotImplementedException();
         }
 
         /// <summary>
