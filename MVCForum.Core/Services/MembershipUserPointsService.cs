@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using Constants;
     using Interfaces;
+    using Interfaces.Pipeline;
     using Interfaces.Services;
     using Models.Entities;
     using Models.Enums;
@@ -34,7 +35,7 @@
             return await _context.SaveChangesAsync();
         }
 
-        public void Delete(MembershipUserPoints points)
+        public async Task<IPipelineProcess<MembershipUserPoints>> Delete(MembershipUserPoints points)
         {
             _context.MembershipUserPoints.Remove(points);
         }
@@ -96,7 +97,7 @@
         /// </summary>
         /// <param name="points"></param>
         /// <returns></returns>
-        public MembershipUserPoints Add(MembershipUserPoints points)
+        public async Task<IPipelineProcess<MembershipUserPoints>> Add(MembershipUserPoints points)
         {
             if (points.Points != 0)
             {
@@ -253,7 +254,7 @@
             return _cacheService.CachePerRequest(cacheKey, () => _context.MembershipUserPoints.AsNoTracking().Include(x => x.User).AsNoTracking().Where(x => x.User.Id == user.Id).Sum(x => x.Points));
         }
 
-        public void Delete(IEnumerable<MembershipUserPoints> points)
+        public async Task<IPipelineProcess<MembershipUserPoints>> Delete(IEnumerable<MembershipUserPoints> points)
         {
             foreach (var membershipUserPoint in points)
             {

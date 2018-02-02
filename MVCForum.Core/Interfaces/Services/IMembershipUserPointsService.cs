@@ -2,8 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Models.Entities;
     using Models.Enums;
+    using Pipeline;
 
     public partial interface IMembershipUserPointsService : IContextService
     {
@@ -11,7 +13,7 @@
         ///     Delete a specific point
         /// </summary>
         /// <param name="points"></param>
-        void Delete(MembershipUserPoints points);
+        Task<IPipelineProcess<MembershipUserPoints>> Delete(MembershipUserPoints points);
 
         /// <summary>
         ///     Delete a certain amount of points - Just finds closest one to the amount and then deletes
@@ -43,7 +45,7 @@
         void Delete(MembershipUser user, PointsFor type);
 
         IEnumerable<MembershipUserPoints> GetByUser(MembershipUser user, bool removeTracking = true);
-        MembershipUserPoints Add(MembershipUserPoints points);
+        Task<IPipelineProcess<MembershipUserPoints>> Add(MembershipUserPoints points);
         Dictionary<MembershipUser, int> GetCurrentWeeksPoints(int? amountToTake);
         Dictionary<MembershipUser, int> GetThisYearsPoints(int? amountToTake);
         Dictionary<MembershipUser, int> GetAllTimePoints(int? amountToTake);
@@ -66,6 +68,6 @@
 
         MembershipUserPoints Get(Guid id);
         int UserPoints(MembershipUser user);
-        void Delete(IEnumerable<MembershipUserPoints> points);
+        Task<IPipelineProcess<MembershipUserPoints>> Delete(IEnumerable<MembershipUserPoints> points);
     }
 }
