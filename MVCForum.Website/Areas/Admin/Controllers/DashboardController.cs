@@ -6,7 +6,7 @@
     using Core.Interfaces;
     using Core.Interfaces.Services;
     using Core.Utilities;
-    using ViewModels;
+    using Web.ViewModels.Admin;
 
     [Authorize(Roles = Constants.AdminRoleName)]
     public class DashboardController : BaseAdminController

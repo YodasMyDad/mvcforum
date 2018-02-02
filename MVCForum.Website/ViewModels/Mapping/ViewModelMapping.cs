@@ -3,8 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Admin;
     using Application;
-    using Areas.Admin.ViewModels;
     using Core;
     using Core.Constants;
     using Core.Interfaces.Services;

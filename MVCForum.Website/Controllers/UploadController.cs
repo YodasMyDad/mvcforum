@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Web.Hosting;
     using System.Web.Mvc;
-    using Areas.Admin.ViewModels;
     using Core;
     using Core.Constants;
     using Core.ExtensionMethods;
@@ -14,6 +13,7 @@
     using Core.Models.Entities;
     using Core.Models.General;
     using ViewModels;
+    using ViewModels.Admin;
 
     [Authorize]
     public partial class UploadController : BaseController

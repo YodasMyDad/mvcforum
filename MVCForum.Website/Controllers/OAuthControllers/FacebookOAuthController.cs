@@ -3,7 +3,6 @@
     using System;
     using System.Web.Mvc;
     using System.Web.Security;
-    using Areas.Admin.ViewModels;
     using Core;
     using Core.Constants;
     using Core.Interfaces;
@@ -13,6 +12,8 @@
     using Skybrud.Social.Facebook;
     using Skybrud.Social.Facebook.OAuth;
     using Skybrud.Social.Facebook.Options.User;
+    using ViewModels;
+    using ViewModels.Admin;
     using ViewModels.Member;
 
     // Facebook uses OAuth 2.0 for authentication and communication. In order for users to authenticate with the Facebook API, 

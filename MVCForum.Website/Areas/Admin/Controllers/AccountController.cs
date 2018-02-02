@@ -11,7 +11,8 @@
     using Core.Interfaces.Services;
     using Core.Models.Entities;
     using Core.Models.Enums;
-    using ViewModels;
+    using Web.ViewModels;
+    using Web.ViewModels.Admin;
     using Web.ViewModels.Mapping;
 
     public class AccountController : BaseAdminController

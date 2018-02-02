@@ -3,7 +3,6 @@
     using System;
     using System.Web.Mvc;
     using System.Web.Security;
-    using Areas.Admin.ViewModels;
     using Core;
     using Core.Constants;
     using Core.Interfaces;
@@ -14,6 +13,8 @@
     using Skybrud.Social.Microsoft.OAuth;
     using Skybrud.Social.Microsoft.Responses.Authentication;
     using Skybrud.Social.Microsoft.WindowsLive.Scopes;
+    using ViewModels;
+    using ViewModels.Admin;
     using ViewModels.Member;
 
     public class MicrosoftOAuthController : BaseController

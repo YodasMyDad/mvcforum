@@ -1,4 +1,4 @@
-﻿namespace MvcForum.Web.Areas.Admin.ViewModels
+﻿namespace MvcForum.Web.ViewModels.Admin
 {
     using System.ComponentModel;
 

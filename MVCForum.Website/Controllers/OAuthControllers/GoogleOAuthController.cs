@@ -4,7 +4,6 @@
     using System.Collections.Specialized;
     using System.Web.Mvc;
     using System.Web.Security;
-    using Areas.Admin.ViewModels;
     using Core;
     using Core.Constants;
     using Core.Interfaces;
@@ -13,6 +12,8 @@
     using Core.Utilities;
     using Skybrud.Social.Google;
     using Skybrud.Social.Google.OAuth;
+    using ViewModels;
+    using ViewModels.Admin;
     using ViewModels.Member;
 
     // Google uses OAuth 2.0 for authentication and communication. In order for users to authenticate with the Google API, 

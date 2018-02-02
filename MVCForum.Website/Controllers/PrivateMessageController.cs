@@ -6,7 +6,6 @@
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using Application;
-    using Areas.Admin.ViewModels;
     using Core;
     using Core.Constants;
     using Core.ExtensionMethods;
@@ -15,6 +14,8 @@
     using Core.Models;
     using Core.Models.Entities;
     using Core.Utilities;
+    using ViewModels;
+    using ViewModels.Admin;
     using ViewModels.PrivateMessage;
 
     [Authorize]

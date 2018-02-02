@@ -2,7 +2,7 @@
 @using MvcForum.Core.Constants
 @using MvcForum.Web.Application
 @using MvcForum.Web.Application.ExtensionMethods
-@model MvcForum.Web.Areas.Admin.ViewModels.MemberEditViewModel
+@model MvcForum.Web.ViewModels.Admin.MemberEditViewModel
 @{
     ViewBag.Title = (Model.Id == Guid.Empty) ? "Add User" : "Edit User";
     var buttonText = (Model.Id == Guid.Empty) ? "Create" : "Save";

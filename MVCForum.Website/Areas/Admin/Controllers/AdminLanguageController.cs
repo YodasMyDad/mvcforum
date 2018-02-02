@@ -12,7 +12,8 @@
     using Core.Interfaces.Services;
     using Core.Models.Entities;
     using Core.Utilities;
-    using ViewModels;
+    using Web.ViewModels;
+    using Web.ViewModels.Admin;
 
     public class AdminLanguageController : BaseAdminController
     {

@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Web.Mvc;
-    using Areas.Admin.ViewModels;
     using Core;
     using Core.Constants;
     using Core.ExtensionMethods;
@@ -15,6 +14,8 @@
     using Core.Models.Enums;
     using Core.Models.General;
     using Core.Utilities;
+    using ViewModels;
+    using ViewModels.Admin;
     using ViewModels.Breadcrumb;
     using ViewModels.ExtensionMethods;
     using ViewModels.Mapping;

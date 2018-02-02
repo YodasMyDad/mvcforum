@@ -13,7 +13,8 @@
     using Core.Interfaces;
     using Core.Interfaces.Services;
     using Core.Models.Entities;
-    using ViewModels;
+    using Web.ViewModels;
+    using Web.ViewModels.Admin;
 
     [Authorize(Roles = Constants.AdminRoleName)]
     public class AdminCategoryController : BaseAdminController

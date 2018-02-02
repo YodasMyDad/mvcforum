@@ -8,7 +8,6 @@
     using System.Web;
     using System.Web.Mvc;
     using System.Web.Security;
-    using Areas.Admin.ViewModels;
     using Core;
     using Core.Constants;
     using Core.ExtensionMethods;
@@ -20,6 +19,7 @@
     using Core.Models.General;
     using Core.Pipeline;
     using Core.Reflection;
+    using ViewModels;
     using ViewModels.Admin;
     using ViewModels.ExtensionMethods;
     using ViewModels.Mapping;

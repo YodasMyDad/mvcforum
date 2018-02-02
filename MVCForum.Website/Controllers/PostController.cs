@@ -8,7 +8,6 @@
     using System.Web.Mvc;
     using System.Web.Security;
     using Application;
-    using Areas.Admin.ViewModels;
     using Core;
     using Core.Constants;
     using Core.Events;
@@ -19,6 +18,8 @@
     using Core.Models.Entities;
     using Core.Models.Enums;
     using Core.Models.General;
+    using ViewModels;
+    using ViewModels.Admin;
     using ViewModels.Mapping;
     using ViewModels.Post;
 
