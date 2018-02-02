@@ -111,28 +111,6 @@
             return View(categoryViewModel);
         }
 
-
-        //private CategoryEditViewModel CreateEditCategoryViewModel(Category category)
-        //{
-        //    var categoryViewModel = new CategoryEditViewModel
-        //    {
-        //        Name = category.Name,
-        //        Description = category.Description,
-        //        IsLocked = category.IsLocked,
-        //        ModeratePosts = category.ModeratePosts == true,
-        //        ModerateTopics = category.ModerateTopics == true,
-        //        SortOrder = category.SortOrder,
-        //        Id = category.Id,
-        //        PageTitle = category.PageTitle,
-        //        MetaDesc = category.MetaDescription,
-        //        Image = category.Image,
-        //        CategoryColour = category.Colour,
-        //        ParentCategory = category.ParentCategory == null ? Guid.Empty : category.ParentCategory.Id,
-        //        AllCategories = 
-        //    };
-        //    return categoryViewModel;
-        //}
-
         public ActionResult EditCategory(Guid id)
         {
             var category = _categoryService.Get(id);
@@ -148,6 +126,11 @@
         {
             if (ModelState.IsValid)
             {
+                // Reset the select list
+                categoryViewModel.AllCategories = _categoryService.GetBaseSelectListCategories(_categoryService.GetAll()
+                    .Where(x => x.Id != categoryViewModel.Id)
+                    .ToList());
+
                 var categoryToEdit = _categoryService.Get(categoryViewModel.Id);
 
                 var category = categoryViewModel.ToCategory(categoryToEdit);
@@ -165,13 +148,14 @@
                         Message = "Category Edited",
                         MessageType = GenericMessages.success
                     };
+
+                    // Set the view model
+                    categoryViewModel = categoryResult.EntityToProcess.ToEditViewModel(
+                        _categoryService.GetBaseSelectListCategories(_categoryService.GetAll()
+                            .Where(x => x.Id != categoryViewModel.Id)
+                            .ToList()));
                 }
             }
-
-            // Reset the select list
-            categoryViewModel.AllCategories = _categoryService.GetBaseSelectListCategories(_categoryService.GetAll()
-                .Where(x => x.Id != categoryViewModel.Id)
-                .ToList());
 
             return View(categoryViewModel);
         }
