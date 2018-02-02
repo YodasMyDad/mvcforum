@@ -140,7 +140,7 @@
                 var start = date.Date.AddDays(-(int)date.DayOfWeek);
                 var end = start.AddDays(7);
 
-                var results = _context.MembershipUserPoints
+                var results = _context.MembershipUserPoints.AsNoTracking()
                     .Include(x => x.User)
                     .Where(x => x.DateAdded >= start && x.DateAdded < end)
                     .ToList();
@@ -166,7 +166,7 @@
                 amountToTake = amountToTake ?? int.MaxValue;
                 var thisYear = DateTime.UtcNow.Year;
 
-                var results = _context.MembershipUserPoints
+                var results = _context.MembershipUserPoints.AsNoTracking()
                     .Include(x => x.User)
                     .Where(x => x.DateAdded.Year == thisYear)
                     .ToList();
@@ -191,7 +191,7 @@
             {
                 amountToTake = amountToTake ?? int.MaxValue;
 
-                var results = _context.MembershipUserPoints
+                var results = _context.MembershipUserPoints.AsNoTracking()
                     .Include(x => x.User)
                     .ToList();
 
@@ -210,7 +210,7 @@
             {
                 amountToTake = amountToTake ?? int.MaxValue;
 
-                var results = _context.MembershipUserPoints
+                var results = _context.MembershipUserPoints.AsNoTracking()
                             .Include(x => x.User)
                             .ToList();
 
@@ -250,7 +250,7 @@
         public int UserPoints(MembershipUser user)
         {
             var cacheKey = string.Concat(CacheKeys.MembershipUserPoints.StartsWith, "UserPoints-", user.Id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.MembershipUserPoints.Include(x => x.User).AsNoTracking().Where(x => x.User.Id == user.Id).Sum(x => x.Points));
+            return _cacheService.CachePerRequest(cacheKey, () => _context.MembershipUserPoints.AsNoTracking().Include(x => x.User).AsNoTracking().Where(x => x.User.Id == user.Id).Sum(x => x.Points));
         }
 
         public void Delete(IEnumerable<MembershipUserPoints> points)

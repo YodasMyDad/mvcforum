@@ -45,10 +45,13 @@
     <Compile Include="Badges\UserVoteUpBadge.cs" />
     <Compile Include="Badges\YourPostFavouritedBadge.cs" />
     <Compile Include="Badges\YourPostFavouritedTenTimesBadge.cs" />
-    <Compile Include="Pipelines\Category\CategoryCreatePipe.cs" />
+    <Compile Include="Pipelines\Category\CategoryCreateEditPipe.cs" />
     <Compile Include="Pipelines\Category\CategoryDeletePipe.cs" />
-    <Compile Include="Pipelines\Category\CategoryEditPipe.cs" />
+    <Compile Include="Pipelines\Category\CategoryFilesPipe.cs" />
+    <Compile Include="Pipelines\Category\CategoryPermissionsPipe.cs" />
     <Compile Include="Pipelines\Category\CategorySpamPipe.cs" />
+    <Compile Include="Pipelines\Points\PointsAddPipe.cs" />
+    <Compile Include="Pipelines\Points\PointsDeletePipe.cs" />
     <Compile Include="Pipelines\Post\PostDeletePipe.cs" />
     <Compile Include="Pipelines\Post\PostFilesPipe.cs" />
     <Compile Include="Pipelines\Post\PostMovePipe.cs" />

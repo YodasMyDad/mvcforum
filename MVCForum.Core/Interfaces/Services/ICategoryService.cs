@@ -2,9 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using System.Web;
     using System.Web.Mvc;
     using Models.Entities;
     using Models.General;
+    using Pipeline;
 
     public partial interface ICategoryService : IContextService
     {
@@ -28,7 +31,6 @@
         /// </param>
         /// <returns></returns>
         List<Category> GetAllowedCategories(MembershipRole role, string actionType);
-
         IEnumerable<Category> GetAllSubCategories(Guid parentId);
         Category Get(Guid id);
         IList<Category> Get(IList<Guid> ids, bool fullGraph = false);
@@ -36,7 +38,8 @@
         Category Get(string slug);
         List<Category> GetCategoryParents(Category category, List<Category> allowedCategories);
         void Delete(Category category);
-        Category Add(Category category);
+        Task<IPipelineProcess<Category>> Create(Category category, HttpPostedFileBase[] postedFiles, Guid? parentCategory);
+        Task<IPipelineProcess<Category>> Edit(Category category, HttpPostedFileBase[] postedFiles, Guid? parentCategory);
         void UpdateSlugFromName(Category category);
         Category SanitizeCategory(Category category);
         List<Category> GetSubCategories(Category category, List<Category> allCategories, int level = 2);
@@ -44,5 +47,6 @@
         Category GetBySlug(string slug);
         IList<Category> GetBySlugLike(string slug);
         IList<Category> GetAllDeepSubCategories(Category category);
+        void SortPath(Category category, Category parentCategory);
     }
 }

@@ -14,7 +14,7 @@
         public IEnumerable<Category> Categories { get; set; }
     }
 
-    public class CategoryViewModel
+    public class CategoryEditViewModel
     {
         [HiddenInput]
         public Guid Id { get; set; }

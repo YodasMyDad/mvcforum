@@ -196,6 +196,11 @@
             /// Key to whether to igniore last post
             /// </summary>
             public const string IgnoreLastPost = "IgnoreLastPost";
+
+            /// <summary>
+            /// Parent Category
+            /// </summary>
+            public const string ParentCategory = "ParentCategory";
         }
     }
 }

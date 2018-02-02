@@ -10,9 +10,12 @@
     using System.Web.Mvc;
     using Constants;
     using Interfaces;
+    using Interfaces.Pipeline;
     using Interfaces.Services;
     using Models.Entities;
     using Models.General;
+    using Pipeline;
+    using Reflection;
     using Utilities;
 
     public partial class CategoryService : ICategoryService
@@ -168,20 +171,88 @@
         ///     Add a new category
         /// </summary>
         /// <param name="category"></param>
-        public Category Add(Category category)
+        /// <param name="postedFiles"></param>
+        /// <param name="parentCategory"></param>
+        public async Task<IPipelineProcess<Category>> Create(Category category, HttpPostedFileBase[] postedFiles, Guid? parentCategory)
         {
-            // Sanitize
-            category = SanitizeCategory(category);
+            // Get the pipelines
+            var categoryPipes = ForumConfiguration.Instance.PipelinesCategoryCreate;
 
-            // Set the create date
-            category.DateCreated = DateTime.UtcNow;
+            // The model to process
+            var piplineModel = new PipelineProcess<Category>(category);
 
-            // url slug generator
-            category.Slug = ServiceHelpers.GenerateSlug(category.Name,
-                GetBySlugLike(ServiceHelpers.CreateUrl(category.Name)).Select(x => x.Slug).ToList(), null);
+            // Add parent category
+            if (parentCategory != null)
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.ParentCategory, parentCategory);
+            }
 
-            // Add the category
-            return _context.Category.Add(category);
+            // Add posted files
+            if (postedFiles != null && postedFiles.Any(x => x != null))
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, postedFiles);
+            }
+
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<Category>, Category>(_context);
+
+            // Register the pipes 
+            var allCategoryPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Category>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in categoryPipes)
+            {
+                if (allCategoryPipes.ContainsKey(pipe))
+                {
+                    pipeline.Register(allCategoryPipes[pipe]);
+                }
+            }
+
+            return await pipeline.Process(piplineModel);
+        }
+
+        /// <inheritdoc />
+        public async Task<IPipelineProcess<Category>> Edit(Category category, HttpPostedFileBase[] postedFiles, Guid? parentCategory)
+        {
+            // Get the pipelines
+            var categoryPipes = ForumConfiguration.Instance.PipelinesCategoryUpdate;
+
+            // The model to process
+            var piplineModel = new PipelineProcess<Category>(category);
+
+            // Add parent category
+            if (parentCategory != null)
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.ParentCategory, parentCategory);
+            }
+
+            // Add posted files
+            if (postedFiles != null && postedFiles.Any(x => x != null))
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, postedFiles);
+            }
+
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.IsEdit, true);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<Category>, Category>(_context);
+
+            // Register the pipes 
+            var allCategoryPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Category>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in categoryPipes)
+            {
+                if (allCategoryPipes.ContainsKey(pipe))
+                {
+                    pipeline.Register(allCategoryPipes[pipe]);
+                }
+            }
+
+            return await pipeline.Process(piplineModel);
         }
 
         /// <summary>
@@ -380,6 +451,17 @@
                 .Where(x => x.Path != null && x.Path.ToLower().Contains(catGuid))
                 .OrderBy(x => x.SortOrder)
                 .ToList();
+        }
+
+        /// <inheritdoc />
+        public void SortPath(Category category, Category parentCategory)
+        {
+            // Append the path from the parent category
+            var path = !string.IsNullOrWhiteSpace(parentCategory.Path) ? 
+                string.Concat(parentCategory.Path, ",", parentCategory.Id.ToString()) : 
+                parentCategory.Id.ToString();
+
+            category.Path = path;
         }
 
         private static string LevelDashes(int level)
