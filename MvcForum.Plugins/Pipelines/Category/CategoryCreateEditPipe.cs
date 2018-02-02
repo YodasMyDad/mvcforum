@@ -30,6 +30,7 @@
             IMvcForumContext context)
         {
             _localizationService.RefreshContext(context);
+            _categoryService.RefreshContext(context);
 
             try
             {

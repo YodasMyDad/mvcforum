@@ -37,7 +37,7 @@
         CategoryWithSubCategories GetBySlugWithSubCategories(string slug);
         Category Get(string slug);
         List<Category> GetCategoryParents(Category category, List<Category> allowedCategories);
-        void Delete(Category category);
+        Task<IPipelineProcess<Category>> Delete(Category category);
         Task<IPipelineProcess<Category>> Create(Category category, HttpPostedFileBase[] postedFiles, Guid? parentCategory);
         Task<IPipelineProcess<Category>> Edit(Category category, HttpPostedFileBase[] postedFiles, Guid? parentCategory);
         void UpdateSlugFromName(Category category);

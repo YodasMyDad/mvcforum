@@ -392,36 +392,30 @@
         ///     Delete a category
         /// </summary>
         /// <param name="category"></param>
-        public void Delete(Category category)
+        public async Task<IPipelineProcess<Category>> Delete(Category category)
         {
-            // Check if anyone else if using this role
-            var okToDelete = !category.Topics.Any();
+            // Get the pipelines
+            var categoryPipes = ForumConfiguration.Instance.PipelinesCategoryDelete;
 
-            if (okToDelete)
+            // The model to process
+            var piplineModel = new PipelineProcess<Category>(category);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<Category>, Category>(_context);
+
+            // Register the pipes 
+            var allCategoryPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Category>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in categoryPipes)
             {
-                // Get any categorypermissionforoles and delete these first
-                var rolesToDelete = _categoryPermissionForRoleService.GetByCategory(category.Id);
-
-                foreach (var categoryPermissionForRole in rolesToDelete)
+                if (allCategoryPipes.ContainsKey(pipe))
                 {
-                    _categoryPermissionForRoleService.Delete(categoryPermissionForRole);
+                    pipeline.Register(allCategoryPipes[pipe]);
                 }
-
-                var categoryNotificationsToDelete = new List<CategoryNotification>();
-                categoryNotificationsToDelete.AddRange(category.CategoryNotifications);
-                foreach (var categoryNotification in categoryNotificationsToDelete)
-                {
-                    _notificationService.Delete(categoryNotification);
-                }
-
-                _context.Category.Remove(category);
             }
-            else
-            {
-                var inUseBy = new List<IBaseEntity>();
-                inUseBy.AddRange(category.Topics);
-                throw new Exception($"In use by {inUseBy.Count} entities");
-            }
+
+            return await pipeline.Process(piplineModel);
         }
 
         public Category GetBySlug(string slug)

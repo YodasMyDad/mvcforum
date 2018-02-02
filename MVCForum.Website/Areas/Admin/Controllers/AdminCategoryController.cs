@@ -69,7 +69,7 @@
                 AllCategories = _categoryService.GetBaseSelectListCategories(_categoryService.GetAll())
             };
             return View(categoryViewModel);
-        }        
+        }
 
         /// <summary>
         /// Create category logic
@@ -174,22 +174,26 @@
             return View(viewModel);
         }
 
-        public ActionResult DeleteCategory(Guid id)
+        public async Task<ActionResult> DeleteCategory(Guid id)
         {
-            try
+            var cat = _categoryService.Get(id);
+            var categoryResult = await _categoryService.Delete(cat);
+
+            if (!categoryResult.Successful)
             {
-                var cat = _categoryService.Get(id);
-                _categoryService.Delete(cat);
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = categoryResult.ProcessLog.FirstOrDefault(),
+                    MessageType = GenericMessages.danger
+                };
+            }
+            else
+            {
                 TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = "Category Deleted",
                     MessageType = GenericMessages.success
                 };
-                Context.SaveChanges();
-            }
-            catch (Exception)
-            {
-                Context.RollBack();
             }
 
             return RedirectToAction("Index");
