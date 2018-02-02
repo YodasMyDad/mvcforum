@@ -693,79 +693,30 @@
         /// Delete a topic
         /// </summary>
         /// <param name="topic"></param>
-        public void Delete(Topic topic)
+        public async Task<IPipelineProcess<Topic>> Delete(Topic topic)
         {
-            // Remove all notifications on this topic too
-            if (topic.TopicNotifications != null)
+            // Get the pipelines
+            var topicPipes = ForumConfiguration.Instance.PipelinesTopicDelete;
+
+            // The model to process
+            var piplineModel = new PipelineProcess<Topic>(topic);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<Topic>, Topic>(_context);
+
+            // Register the pipes 
+            var allTopicPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Topic>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in topicPipes)
             {
-                var notificationsToDelete = new List<TopicNotification>();
-                notificationsToDelete.AddRange(topic.TopicNotifications);
-                foreach (var topicNotification in notificationsToDelete)
+                if (allTopicPipes.ContainsKey(pipe))
                 {
-                    topic.TopicNotifications.Remove(topicNotification);
-                    _notificationService.Delete(topicNotification);
+                    pipeline.Register(allTopicPipes[pipe]);
                 }
-
-                // Final Clear
-                topic.TopicNotifications.Clear();
             }
 
-            // Remove all favourites on this topic too
-            if (topic.Favourites != null)
-            {
-                var toDelete = new List<Favourite>();
-                toDelete.AddRange(topic.Favourites);
-                foreach (var entity in toDelete)
-                {
-                    topic.Favourites.Remove(entity);
-                    _favouriteService.Delete(entity);
-                }
-
-                // Final Clear
-                topic.Favourites.Clear();
-            }
-
-            // Poll
-            if (topic.Poll != null)
-            {
-                var pollToDelete = topic.Poll;
-
-                // Final Clear
-                topic.Poll = null;
-
-                // Delete the poll 
-                _pollService.Delete(pollToDelete);
-            }
-
-            // First thing - Set the last post as null and clear tags
-            topic.Tags.Clear();
-
-            // Save here to clear the last post
-            _context.SaveChanges();
-
-            // Loop through all the posts and clear the associated entities
-            // then delete the posts
-            if (topic.Posts != null)
-            {
-                var postsToDelete = new List<Post>();
-                postsToDelete.AddRange(topic.Posts);
-
-                foreach (var post in postsToDelete)
-                {
-                    // Posts should only be deleted from this method as it clears
-                    // associated data
-                    // TODO - This is a pipeline!! 
-                    _postService.Delete(post, true);
-                }
-
-                topic.Posts.Clear();
-
-                // Clear last post
-                topic.LastPost = null;
-            }
-
-            // Finally delete the topic
-            _context.Topic.Remove(topic);
+            return await pipeline.Process(piplineModel);
         }
 
         public int TopicCount(List<Category> allowedCategories)

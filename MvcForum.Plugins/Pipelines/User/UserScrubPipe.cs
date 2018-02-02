@@ -78,8 +78,12 @@
                     topicList.AddRange(topics);
                     foreach (var topic in topicList)
                     {
-                        // TODO - This is a pipeline!
-                        _topicService.Delete(topic);
+                        var topicDeleteResult = await _topicService.Delete(topic);
+                        if (!topicDeleteResult.Successful)
+                        {
+                            input.AddError(topicDeleteResult.ProcessLog.FirstOrDefault());
+                            return input;
+                        }
                     }
                     input.EntityToProcess.Topics.Clear();
                     await context.SaveChangesAsync();

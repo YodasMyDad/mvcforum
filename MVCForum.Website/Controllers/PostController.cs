@@ -115,7 +115,17 @@
                     if (post.IsTopicStarter)
                     {
                         // Delete entire topic
-                        _topicService.Delete(topic);
+                        var result = await _topicService.Delete(topic);
+                        if (!result.Successful)
+                        {
+                            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                            {
+                                Message = result.ProcessLog.FirstOrDefault(),
+                                MessageType = GenericMessages.success
+                            };
+
+                            return Redirect(topic.NiceUrl);
+                        }
                     }
                     else
                     {

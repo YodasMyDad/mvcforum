@@ -52,6 +52,7 @@
     <Compile Include="Pipelines\Post\PostSpamCheckPipe.cs" />
     <Compile Include="Pipelines\Post\PostCreateEditPipe.cs" />
     <Compile Include="Pipelines\Topic\TopicCreateEditPipe.cs" />
+    <Compile Include="Pipelines\Topic\TopicDeletePipe.cs" />
     <Compile Include="Pipelines\Topic\TopicNotificationsAndBadgesPipe.cs" />
     <Compile Include="Pipelines\Topic\TopicSpamPipe.cs" />
     <Compile Include="Pipelines\Topic\TopicPermissionsPipe.cs" />

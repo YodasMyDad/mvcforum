@@ -52,7 +52,7 @@
         Topic GetTopicBySlug(string slug);
         Topic Get(Guid topicId);
         List<Topic> Get(List<Guid> topicIds, List<Category> allowedCategories);
-        void Delete(Topic topic);
+        Task<IPipelineProcess<Topic>> Delete(Topic topic);
         int TopicCount(List<Category> allowedCategories);
 
         List<MarkAsSolutionReminder> GetMarkAsSolutionReminderList(int days);

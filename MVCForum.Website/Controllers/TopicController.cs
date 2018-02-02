@@ -341,9 +341,9 @@
                         topicViewModel.SubscribeToTopic, topicViewModel.Content, null);
                     if (createPipeLine.Successful == false)
                     {
+                        // TODO - Not sure on this?
                         // Remove the topic if unsuccessful, as we may have saved some items.
-                        _topicService.Delete(createPipeLine.EntityToProcess);
-                        await _topicService.SaveChanges();
+                        await _topicService.Delete(createPipeLine.EntityToProcess);
 
                         // Tell the user the topic is awaiting moderation
                         ModelState.AddModelError(string.Empty, createPipeLine.ProcessLog.FirstOrDefault());

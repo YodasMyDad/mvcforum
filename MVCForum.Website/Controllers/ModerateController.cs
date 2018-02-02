@@ -1,6 +1,8 @@
 ﻿namespace MvcForum.Web.Controllers
 {
     using System;
+    using System.Linq;
+    using System.Threading.Tasks;
     using System.Web.Mvc;
     using Core;
     using Core.Constants;
@@ -48,7 +50,7 @@
         }
 
         [HttpPost]
-        public ActionResult ModerateTopic(ModerateActionViewModel viewModel)
+        public async Task<ActionResult> ModerateTopic(ModerateActionViewModel viewModel)
         {
             try
             {
@@ -71,7 +73,11 @@
                 }
                 else
                 {
-                    _topicService.Delete(topic);
+                    var topicResult = await _topicService.Delete(topic);
+                    if (!topicResult.Successful)
+                    {
+                        return Content(topicResult.ProcessLog.FirstOrDefault());
+                    }
                 }
 
                 Context.SaveChanges();
