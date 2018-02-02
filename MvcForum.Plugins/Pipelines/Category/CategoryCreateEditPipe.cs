@@ -105,12 +105,7 @@
                     context.Category.Add(input.EntityToProcess);
                 }
 
-                var saved = await context.SaveChangesAsync();
-                if (saved <= 0)
-                {
-                    input.AddError("Category not saved");
-                    return input;
-                }
+                await context.SaveChangesAsync();
 
             }
             catch (Exception ex)
