@@ -32,8 +32,6 @@
     /// </summary>
     public partial class MembersController : BaseController
     {
-        private readonly IBannedEmailService _bannedEmailService;
-        private readonly IBannedWordService _bannedWordService;
         private readonly ICategoryService _categoryService;
         private readonly IEmailService _emailService;
         private readonly IFavouriteService _favouriteService;
@@ -57,8 +55,6 @@
         /// <param name="reportService"></param>
         /// <param name="emailService"></param>
         /// <param name="privateMessageService"></param>
-        /// <param name="bannedEmailService"></param>
-        /// <param name="bannedWordService"></param>
         /// <param name="categoryService"></param>
         /// <param name="topicService"></param>
         /// <param name="cacheService"></param>
@@ -70,8 +66,7 @@
         public MembersController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
             IPostService postService, IReportService reportService, IEmailService emailService,
-            IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService,
-            IBannedWordService bannedWordService, ICategoryService categoryService, ITopicService topicService,
+            IPrivateMessageService privateMessageService, ICategoryService categoryService, ITopicService topicService,
             ICacheService cacheService, INotificationService notificationService,
             IPollService pollService, IVoteService voteService, IFavouriteService favouriteService,
             IMvcForumContext context)
@@ -82,8 +77,6 @@
             _reportService = reportService;
             _emailService = emailService;
             _privateMessageService = privateMessageService;
-            _bannedEmailService = bannedEmailService;
-            _bannedWordService = bannedWordService;
             _categoryService = categoryService;
             _topicService = topicService;
             _notificationService = notificationService;
@@ -98,37 +91,32 @@
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize(Roles = Constants.AdminRoleName)]
-        public ActionResult SrubAndBanUser(Guid id)
+        public async Task<ActionResult> SrubAndBanUser(Guid id)
         {
             var user = MembershipService.GetUser(id);
-
-
-            if (!user.Roles.Any(x => x.RoleName.Contains(Constants.AdminRoleName)))
+            var scrubResult = await MembershipService.ScrubUsers(user);
+            if (!scrubResult.Successful)
             {
-                MembershipService.ScrubUsers(user);
-
-                try
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
-                    Context.SaveChanges();
-                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = LocalizationService.GetResourceString("Members.SuccessfulSrub"),
-                        MessageType = GenericMessages.success
-                    };
-                }
-                catch (Exception ex)
-                {
-                    Context.RollBack();
-                    LoggingService.Error(ex);
-                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = LocalizationService.GetResourceString("Members.UnSuccessfulSrub"),
-                        MessageType = GenericMessages.danger
-                    };
-                }
+                    Message = LocalizationService.GetResourceString("Members.UnSuccessfulSrub"),
+                    MessageType = GenericMessages.danger
+                };
             }
+            else
+            {
+                // Set the user to banned
+                scrubResult.EntityToProcess.IsBanned = true;
 
+                // Save
+                await Context.SaveChangesAsync();
 
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = LocalizationService.GetResourceString("Members.SuccessfulSrub"),
+                    MessageType = GenericMessages.success
+                };
+            }
             var viewModel = ViewModelMapping.UserToMemberEditViewModel(user);
             viewModel.AllRoles = RoleService.AllRoles();
             return Redirect(user.NiceUrl);
@@ -271,7 +259,7 @@
             }
 
             // You can return anything to reset the timer.
-            return Json(new {Timer = "reset"}, JsonRequestBehavior.AllowGet);
+            return Json(new { Timer = "reset" }, JsonRequestBehavior.AllowGet);
         }
 
         /// <summary>
@@ -449,7 +437,7 @@
                     {
                         return Redirect(returnUrl);
                     }
-                    return RedirectToAction("Index", "Home", new {area = string.Empty});
+                    return RedirectToAction("Index", "Home", new { area = string.Empty });
                 }
             }
             catch (Exception ex)
@@ -712,7 +700,7 @@
                     }
 
                     // If not just go to home page
-                    return RedirectToAction("Index", "Home", new {area = string.Empty});
+                    return RedirectToAction("Index", "Home", new { area = string.Empty });
                 }
 
                 // Add the error if we get here
@@ -734,7 +722,7 @@
                 Message = LocalizationService.GetResourceString("Members.NowLoggedOut"),
                 MessageType = GenericMessages.success
             };
-            return RedirectToAction("Index", "Home", new {area = string.Empty});
+            return RedirectToAction("Index", "Home", new { area = string.Empty });
         }
 
         [HttpPost]
@@ -975,7 +963,7 @@
             if (SettingsService.GetSettings().EnableMemberReporting)
             {
                 var user = MembershipService.GetUser(id);
-                return View(new ReportMemberViewModel {Id = user.Id, Username = user.UserName});
+                return View(new ReportMemberViewModel { Id = user.Id, Username = user.UserName });
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
@@ -1017,7 +1005,7 @@
                     Message = LocalizationService.GetResourceString("Report.ReportSent"),
                     MessageType = GenericMessages.success
                 };
-                return View(new ReportMemberViewModel {Id = user.Id, Username = user.UserName});
+                return View(new ReportMemberViewModel { Id = user.Id, Username = user.UserName });
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
@@ -1176,7 +1164,7 @@
 
             var settings = SettingsService.GetSettings();
             var url = new Uri(string.Concat(settings.ForumUrl.TrimEnd('/'),
-                Url.Action("ResetPassword", "Members", new {user.Id, token = user.PasswordResetToken})));
+                Url.Action("ResetPassword", "Members", new { user.Id, token = user.PasswordResetToken })));
 
             var sb = new StringBuilder();
             sb.AppendFormat("<p>{0}</p>",

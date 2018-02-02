@@ -263,6 +263,26 @@
         }
 
         /// <summary>
+        /// Gets the User Scrub Pipes from the config
+        /// </summary>
+        private IList<string> _userScrubPipes;
+        public IList<string> PipelinesUserScrub
+        {
+            get
+            {
+                if (_userScrubPipes == null)
+                {
+                    var pipes = GetPlugin("PipelinesUserScrub");
+                    if (!string.IsNullOrWhiteSpace(pipes))
+                    {
+                        _userScrubPipes = ConfigToListString(pipes);
+                    }
+                }
+                return _userScrubPipes;
+            }
+        }
+
+        /// <summary>
         /// Gets the Topic Create Pipes from the config
         /// </summary>
         private IList<string> _pipelineTopicCreate;

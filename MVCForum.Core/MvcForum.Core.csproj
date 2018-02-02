@@ -40,6 +40,7 @@
     <Compile Include="Constants\Constants.cs" />
     <Compile Include="Constants\CacheKeys.cs" />
     <Compile Include="ExtensionMethods\ImageExtensions.cs" />
+    <Compile Include="ExtensionMethods\MembershipUserExtensions.cs" />
     <Compile Include="ExtensionMethods\PipelineExtensions.cs" />
     <Compile Include="ExternalServices\AkismetValidator.cs" />
     <Compile Include="ForumConfiguration.cs" />

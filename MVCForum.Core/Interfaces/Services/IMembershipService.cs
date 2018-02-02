@@ -49,7 +49,7 @@
         ///     Clears everything - Posts, polls, votes, favourites, profile etc...
         /// </summary>
         /// <param name="user"></param>
-        void ScrubUsers(MembershipUser user);
+        Task<IPipelineProcess<MembershipUser>> ScrubUsers(MembershipUser user);
         bool UpdatePasswordResetToken(MembershipUser user);
         bool ClearPasswordResetToken(MembershipUser user);
         bool IsPasswordResetTokenValid(MembershipUser user, string token);

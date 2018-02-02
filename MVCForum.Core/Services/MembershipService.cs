@@ -950,14 +950,35 @@
             return report;
         }
 
-        // TODO - Make this into it's own pipe
         /// <summary>
         ///     Scrubs a user, removes everything from points to posts and topics.
         /// </summary>
         /// <param name="user"></param>
-        public void ScrubUsers(MembershipUser user)
+        public async Task<IPipelineProcess<MembershipUser>> ScrubUsers(MembershipUser user)
         {
+            // Get the pipelines
+            var pipes = ForumConfiguration.Instance.PipelinesUserScrub;
 
+            // The model to process
+            var piplineModel = new PipelineProcess<MembershipUser>(user);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<MembershipUser>, MembershipUser>(_context);
+
+            // Register the pipes 
+            var allMembershipUserPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<MembershipUser>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in pipes)
+            {
+                if (allMembershipUserPipes.ContainsKey(pipe))
+                {
+                    pipeline.Register(allMembershipUserPipes[pipe]);
+                }
+            }
+
+            // Process the pipeline
+            return await pipeline.Process(piplineModel);
         }
 
         /// <summary>

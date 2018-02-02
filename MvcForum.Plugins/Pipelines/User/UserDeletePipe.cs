@@ -1,6 +1,7 @@
 ﻿namespace MvcForum.Plugins.Pipelines.User
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
     using Core.ExtensionMethods;
     using Core.Interfaces;
@@ -31,7 +32,12 @@
             try
             {
                 // Scrub all member data
-                _membershipService.ScrubUsers(input.EntityToProcess);
+                var scrubResult = await _membershipService.ScrubUsers(input.EntityToProcess);
+                if (!scrubResult.Successful)
+                {
+                    input.AddError(scrubResult.ProcessLog.FirstOrDefault());
+                    return input;
+                }
 
                 // Just clear the roles, don't delete them
                 input.EntityToProcess.Roles.Clear();
