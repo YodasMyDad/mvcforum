@@ -20,7 +20,7 @@
         /// </summary>
         /// <param name="amount"></param>
         /// <param name="user"></param>
-        void Delete(int amount, MembershipUser user);
+        Task<IPipelineProcess<MembershipUserPoints>> Delete(int amount, MembershipUser user);
 
         /// <summary>
         ///     Delete point for a specific type and for the associated object if (Post.Id, Vote.Id etc...)
@@ -28,21 +28,21 @@
         /// <param name="user"></param>
         /// <param name="type"></param>
         /// <param name="referenceId"></param>
-        void Delete(MembershipUser user, PointsFor type, Guid referenceId);
+        Task<IPipelineProcess<MembershipUserPoints>> Delete(MembershipUser user, PointsFor type, Guid referenceId);
 
         /// <summary>
         ///     Delete all points by action/type and the reference ID
         /// </summary>
         /// <param name="type"></param>
         /// <param name="referenceId"></param>
-        void Delete(PointsFor type, Guid referenceId);
+        Task<IPipelineProcess<MembershipUserPoints>> Delete(PointsFor type, Guid referenceId);
 
         /// <summary>
         ///     Delete all points for a type - So delete all points a user has gained for voting, or for badges
         /// </summary>
         /// <param name="user"></param>
         /// <param name="type"></param>
-        void Delete(MembershipUser user, PointsFor type);
+        Task<IPipelineProcess<MembershipUserPoints>> Delete(MembershipUser user, PointsFor type);
 
         IEnumerable<MembershipUserPoints> GetByUser(MembershipUser user, bool removeTracking = true);
         Task<IPipelineProcess<MembershipUserPoints>> Add(MembershipUserPoints points);

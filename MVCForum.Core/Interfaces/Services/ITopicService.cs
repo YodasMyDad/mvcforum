@@ -65,7 +65,7 @@
         /// <param name="marker"></param>
         /// <param name="solutionWriter"></param>
         /// <returns>True if topic has been marked as solved</returns>
-        bool SolveTopic(Topic topic, Post post, MembershipUser marker, MembershipUser solutionWriter);
+        Task<bool> SolveTopic(Topic topic, Post post, MembershipUser marker, MembershipUser solutionWriter);
 
         IList<Topic> GetAllTopicsByCategory(Guid categoryId);
 

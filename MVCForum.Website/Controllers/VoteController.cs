@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Web.Mvc;
     using System.Web.Security;
     using Core.ExtensionMethods;
@@ -37,7 +38,7 @@
 
         [HttpPost]
         [Authorize]
-        public void VoteUpPost(EntityIdViewModel voteUpViewModel)
+        public async Task<ActionResult> VoteUpPost(EntityIdViewModel voteUpViewModel)
         {
             if (Request.IsAjaxRequest())
             {
@@ -63,7 +64,7 @@
                 var postWriter = post.User;
 
                 // Mark the post up or down
-                MarkPostUpOrDown(post, postWriter, voter, PostType.Positive, loggedOnReadOnlyUser);
+                await MarkPostUpOrDown(post, postWriter, voter, PostType.Positive, loggedOnReadOnlyUser);
 
                 try
                 {
@@ -77,11 +78,14 @@
                     throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
                 }
             }
+
+            // TODO - need to return something more meaningful
+            return Content(string.Empty);
         }
 
         [HttpPost]
         [Authorize]
-        public void VoteDownPost(EntityIdViewModel voteDownViewModel)
+        public async Task<ActionResult> VoteDownPost(EntityIdViewModel voteDownViewModel)
         {
             if (Request.IsAjaxRequest())
             {
@@ -107,7 +111,7 @@
                 var postWriter = post.User;
 
                 // Mark the post up or down
-                MarkPostUpOrDown(post, postWriter, voter, PostType.Negative, loggedOnReadOnlyUser);
+                await MarkPostUpOrDown(post, postWriter, voter, PostType.Negative, loggedOnReadOnlyUser);
 
                 try
                 {
@@ -120,9 +124,12 @@
                     throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
                 }
             }
+
+            // TODO - need to return something more meaningful
+            return Content(string.Empty);
         }
 
-        private void MarkPostUpOrDown(Post post, MembershipUser postWriter, MembershipUser voter, PostType postType,
+        private async Task<bool> MarkPostUpOrDown(Post post, MembershipUser postWriter, MembershipUser voter, PostType postType,
             MembershipUser loggedOnReadOnlyUser)
         {
             var settings = SettingsService.GetSettings();
@@ -164,7 +171,7 @@
                     _voteService.Add(vote);
 
                     // Update the users points who wrote the post
-                    _membershipUserPointsService.Add(new MembershipUserPoints
+                    await _membershipUserPointsService.Add(new MembershipUserPoints
                     {
                         Points = usersPoints,
                         User = postWriter,
@@ -177,11 +184,13 @@
                     post.VoteCount = newPointTotal;
                 }
             }
+
+            return true;
         }
 
         [HttpPost]
         [Authorize]
-        public void MarkAsSolution(EntityIdViewModel markAsSolutionViewModel)
+        public async Task<ActionResult> MarkAsSolution(EntityIdViewModel markAsSolutionViewModel)
         {
             if (Request.IsAjaxRequest())
             {
@@ -211,8 +220,7 @@
                 var marker = loggedOnUser;
                 try
                 {
-                    var solved = _topicService.SolveTopic(topic, post, marker, solutionWriter);
-
+                    var solved = await _topicService.SolveTopic(topic, post, marker, solutionWriter);
                     if (solved)
                     {
                         Context.SaveChanges();
@@ -225,6 +233,9 @@
                     throw new Exception(LocalizationService.GetResourceString("Errors.GenericMessage"));
                 }
             }
+
+            // TODO - Should be returning something more meaningful
+            return Content(string.Empty);
         }
 
 

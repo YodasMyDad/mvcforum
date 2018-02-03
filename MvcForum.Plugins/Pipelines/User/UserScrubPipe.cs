@@ -244,7 +244,7 @@
                     foreach (var point in pointsList)
                     {
                         point.User = null;
-                        _membershipUserPointsService.Delete(point);
+                        await _membershipUserPointsService.Delete(point);
                     }
                     input.EntityToProcess.Points.Clear();
                 }

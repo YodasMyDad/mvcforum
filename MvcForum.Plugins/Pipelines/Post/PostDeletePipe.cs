@@ -70,16 +70,16 @@
                     #region Deleting Points
 
                     // Remove the points the user got for this post
-                    _membershipUserPointsService.Delete(input.EntityToProcess.User, PointsFor.Post, input.EntityToProcess.Id);
+                    await _membershipUserPointsService.Delete(input.EntityToProcess.User, PointsFor.Post, input.EntityToProcess.Id);
 
                     // Also get all the votes and delete anything to do with those
                     foreach (var postVote in votes)
                     {
-                        _membershipUserPointsService.Delete(PointsFor.Vote, postVote.Id);
+                        await _membershipUserPointsService.Delete(PointsFor.Vote, postVote.Id);
                     }
 
                     // Also the mark as solution
-                    _membershipUserPointsService.Delete(PointsFor.Solution, input.EntityToProcess.Id);
+                    await _membershipUserPointsService.Delete(PointsFor.Solution, input.EntityToProcess.Id);
 
                     #endregion
 

@@ -162,7 +162,7 @@
         /// <param name="badgeType"></param>
         /// <param name="user"></param>
         /// <returns>True if badge was awarded</returns>
-        public bool ProcessBadge(BadgeType badgeType, MembershipUser user)
+        public async Task<bool> ProcessBadge(BadgeType badgeType, MembershipUser user)
         {
             var databaseUpdateNeeded = false;
 
@@ -171,66 +171,79 @@
 
             if (!e.Cancel)
             {
-                if (_badges.ContainsKey(badgeType))
+                try
                 {
-                    if (!RecentlyProcessed(badgeType, user))
+                    if (_badges.ContainsKey(badgeType))
                     {
-                        databaseUpdateNeeded = true;
-
-                        var badgeSet = _badges[badgeType];
-
-                        foreach (var badgeMapping in badgeSet)
+                        if (!RecentlyProcessed(badgeType, user))
                         {
-                            if (!BadgeCanBeAwarded(user, badgeMapping))
+                            databaseUpdateNeeded = true;
+
+                            var badgeSet = _badges[badgeType];
+
+                            foreach (var badgeMapping in badgeSet)
                             {
-                                continue;
-                            }
-
-                            // Instantiate the badge and execute the rule
-                            var badge = GetInstance<IBadge>(badgeMapping);
-
-                            if (badge != null)
-                            {
-                                var dbBadge = Get(badgeMapping.DbBadge.Id);
-
-                                // Award badge?
-                                if (badge.Rule(user))
+                                if (!BadgeCanBeAwarded(user, badgeMapping))
                                 {
-                                    // Re-fetch the badge otherwise system will try and create new badges!                                
-                                    if (dbBadge.AwardsPoints != null && dbBadge.AwardsPoints > 0)
-                                    {
-                                        var points = new MembershipUserPoints
-                                        {
-                                            Points = (int)dbBadge.AwardsPoints,
-                                            PointsFor = PointsFor.Badge,
-                                            PointsForId = dbBadge.Id,
-                                            User = user
-                                        };
-                                        _membershipUserPointsService.Add(points);
-                                    }
-                                    user.Badges.Add(dbBadge);
-                                    //_activityService.BadgeAwarded(badgeMapping.DbBadge, user, DateTime.UtcNow);
-                                    var badgeActivity =
-                                        BadgeActivity.GenerateMappedRecord(badgeMapping.DbBadge, user, DateTime.UtcNow);
-                                    _context.Activity.Add(badgeActivity);
-                                    EventManager.Instance.FireAfterBadgeAwarded(this,
-                                        new BadgeEventArgs
-                                        {
-                                            User = user,
-                                            BadgeType = badgeType
-                                        });
+                                    continue;
                                 }
-                                //else
-                                //{
-                                //    // If we get here the user should not have the badge
-                                //    // Remove the badge if the user no longer has the criteria to be awarded it
-                                //    // and also remove any points associated with it.
-                                //    user.Badges.Remove(dbBadge);
-                                //    _membershipUserPointsService.Delete(user, PointsFor.Badge, dbBadge.Id);
-                                //}
+
+                                // Instantiate the badge and execute the rule
+                                var badge = GetInstance<IBadge>(badgeMapping);
+
+                                if (badge != null)
+                                {
+                                    var dbBadge = Get(badgeMapping.DbBadge.Id);
+
+                                    // Award badge?
+                                    if (badge.Rule(user))
+                                    {
+                                        // Re-fetch the badge otherwise system will try and create new badges!                                
+                                        if (dbBadge.AwardsPoints != null && dbBadge.AwardsPoints > 0)
+                                        {
+                                            var points = new MembershipUserPoints
+                                            {
+                                                Points = (int)dbBadge.AwardsPoints,
+                                                PointsFor = PointsFor.Badge,
+                                                PointsForId = dbBadge.Id,
+                                                User = user
+                                            };
+                                            var pointsAddResult = await _membershipUserPointsService.Add(points);
+                                            if (!pointsAddResult.Successful)
+                                            {
+                                                _loggingService.Error(pointsAddResult.ProcessLog.FirstOrDefault());
+                                                return false;
+                                            }
+
+                                        }
+                                        user.Badges.Add(dbBadge);
+                                        //_activityService.BadgeAwarded(badgeMapping.DbBadge, user, DateTime.UtcNow);
+                                        var badgeActivity =
+                                            BadgeActivity.GenerateMappedRecord(badgeMapping.DbBadge, user, DateTime.UtcNow);
+                                        _context.Activity.Add(badgeActivity);
+                                        EventManager.Instance.FireAfterBadgeAwarded(this,
+                                            new BadgeEventArgs
+                                            {
+                                                User = user,
+                                                BadgeType = badgeType
+                                            });
+                                    }
+                                    //else
+                                    //{
+                                    //    // If we get here the user should not have the badge
+                                    //    // Remove the badge if the user no longer has the criteria to be awarded it
+                                    //    // and also remove any points associated with it.
+                                    //    user.Badges.Remove(dbBadge);
+                                    //    _membershipUserPointsService.Delete(user, PointsFor.Badge, dbBadge.Id);
+                                    //}
+                                }
                             }
                         }
                     }
+                }
+                catch (Exception ex)
+                {
+                    _loggingService.Error(ex);
                 }
             }
             return databaseUpdateNeeded;

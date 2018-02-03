@@ -50,7 +50,7 @@
     <Compile Include="Pipelines\Category\CategoryFilesPipe.cs" />
     <Compile Include="Pipelines\Category\CategoryPermissionsPipe.cs" />
     <Compile Include="Pipelines\Category\CategorySpamPipe.cs" />
-    <Compile Include="Pipelines\Points\PointsAddPipe.cs" />
+    <Compile Include="Pipelines\Points\PointsCreatePipe.cs" />
     <Compile Include="Pipelines\Points\PointsDeletePipe.cs" />
     <Compile Include="Pipelines\Post\PostDeletePipe.cs" />
     <Compile Include="Pipelines\Post\PostFilesPipe.cs" />

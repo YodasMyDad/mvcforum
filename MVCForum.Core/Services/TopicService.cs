@@ -30,11 +30,12 @@
         private readonly IRoleService _roleService;
         private readonly IPollService _pollService;
         private readonly ICacheService _cacheService;
+        private readonly ILoggingService _loggingService;
 
         public TopicService(IMvcForumContext context, IMembershipUserPointsService membershipUserPointsService,
             ISettingsService settingsService, INotificationService notificationService,
             IFavouriteService favouriteService,
-            IPostService postService, IRoleService roleService, IPollService pollService, ICacheService cacheService)
+            IPostService postService, IRoleService roleService, IPollService pollService, ICacheService cacheService, ILoggingService loggingService)
         {
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
@@ -44,6 +45,7 @@
             _roleService = roleService;
             _pollService = pollService;
             _cacheService = cacheService;
+            _loggingService = loggingService;
             _context = context;
         }
 
@@ -767,7 +769,7 @@
         /// <param name="marker"></param>
         /// <param name="solutionWriter"></param>
         /// <returns>True if topic has been marked as solved</returns>
-        public bool SolveTopic(Topic topic, Post post, MembershipUser marker, MembershipUser solutionWriter)
+        public async Task<bool> SolveTopic(Topic topic, Post post, MembershipUser marker, MembershipUser solutionWriter)
         {
             var solved = false;
 
@@ -798,13 +800,18 @@
                     // Do not give points to the user if they are marking their own post as the solution
                     if (marker.Id != solutionWriter.Id)
                     {
-                        _membershipUserPointsService.Add(new MembershipUserPoints
+                        var result = await _membershipUserPointsService.Add(new MembershipUserPoints
                         {
                             Points = _settingsService.GetSettings().PointsAddedForSolution,
                             User = solutionWriter,
                             PointsFor = PointsFor.Solution,
                             PointsForId = post.Id
                         });
+                        if (!result.Successful)
+                        {
+                            // Just log don't throw
+                            _loggingService.Error(result.ProcessLog.FirstOrDefault());
+                        }
                     }
 
                     EventManager.Instance.FireAfterMarkedAsSolution(this, new MarkedAsSolutionEventArgs

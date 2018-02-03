@@ -96,7 +96,7 @@
                 // Update the users points score and post count for posting a new post
                 if (!isEdit)
                 {
-                    _membershipUserPointsService.Add(new MembershipUserPoints
+                    await _membershipUserPointsService.Add(new MembershipUserPoints
                     {
                         Points = _settingsService.GetSettings().PointsAddedPerPost,
                         User = input.EntityToProcess.User,

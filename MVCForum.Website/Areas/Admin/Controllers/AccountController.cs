@@ -147,7 +147,7 @@
         [Authorize(Roles = Constants.AdminRoleName)]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ManageUserPoints(ManageUsersPointsViewModel viewModel)
+        public async Task<ActionResult> ManageUserPoints(ManageUsersPointsViewModel viewModel)
         {
             // Repopulate viewmodel
             var user = MembershipService.GetUser(viewModel.Id);
@@ -167,7 +167,7 @@
                     User = user
                 };
 
-                _membershipUserPointsService.Add(newPoints);
+                await _membershipUserPointsService.Add(newPoints);
 
                 try
                 {

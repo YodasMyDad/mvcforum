@@ -5,12 +5,15 @@
     using System.Data.Entity;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Web;
     using Constants;
     using Interfaces;
     using Interfaces.Pipeline;
     using Interfaces.Services;
     using Models.Entities;
     using Models.Enums;
+    using Pipeline;
+    using Reflection;
 
     public partial class MembershipUserPointsService : IMembershipUserPointsService
     {
@@ -37,39 +40,63 @@
 
         public async Task<IPipelineProcess<MembershipUserPoints>> Delete(MembershipUserPoints points)
         {
-            _context.MembershipUserPoints.Remove(points);
+            // Get the pipelines
+            var pointsPipes = ForumConfiguration.Instance.PipelinesPointsDelete;
+
+            // The model to process
+            var piplineModel = new PipelineProcess<MembershipUserPoints>(points);
+
+            // Add extended data
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<MembershipUserPoints>, MembershipUserPoints>(_context);
+
+            // Register the pipes 
+            var allPointsPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<MembershipUserPoints>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in pointsPipes)
+            {
+                if (allPointsPipes.ContainsKey(pipe))
+                {
+                    pipeline.Register(allPointsPipes[pipe]);
+                }
+            }
+
+            return await pipeline.Process(piplineModel);
         }
 
-        public void Delete(int amount, MembershipUser user)
+        public async Task<IPipelineProcess<MembershipUserPoints>> Delete(int amount, MembershipUser user)
         {
             var points = _context.MembershipUserPoints.Include(x => x.User).FirstOrDefault(x => x.Points == amount && x.User.Id == user.Id);
-            Delete(points);
+            return await Delete(points);
         }
 
-        public void Delete(MembershipUser user, PointsFor type, Guid referenceId)
+        public async Task<IPipelineProcess<MembershipUserPoints>> Delete(MembershipUser user, PointsFor type, Guid referenceId)
         {
             var mp = _context.MembershipUserPoints.Include(x => x.User).Where(x => x.User.Id == user.Id && x.PointsFor == type && x.PointsForId == referenceId);
             var mpoints = new List<MembershipUserPoints>();
             mpoints.AddRange(mp);
-            Delete(mpoints);
+            return await Delete(mpoints);
         }
 
-        public void Delete(PointsFor type, Guid referenceId)
+        public async Task<IPipelineProcess<MembershipUserPoints>> Delete(PointsFor type, Guid referenceId)
         {
             var mp = _context.MembershipUserPoints.Where(x => x.PointsFor == type && x.PointsForId == referenceId);
             var mpoints = new List<MembershipUserPoints>();
             mpoints.AddRange(mp);
-            Delete(mpoints);
+            return await Delete(mpoints);
         }
 
-        public void Delete(MembershipUser user, PointsFor type)
+        public async Task<IPipelineProcess<MembershipUserPoints>> Delete(MembershipUser user, PointsFor type)
         {
             var mp = _context.MembershipUserPoints
                             .Include(x => x.User)
                             .Where(x => x.User.Id == user.Id && x.PointsFor == type);
             var mpoints = new List<MembershipUserPoints>();
             mpoints.AddRange(mp);
-            Delete(mpoints);
+            return await Delete(mpoints);
         }
 
         /// <summary>
@@ -99,30 +126,31 @@
         /// <returns></returns>
         public async Task<IPipelineProcess<MembershipUserPoints>> Add(MembershipUserPoints points)
         {
-            if (points.Points != 0)
+            // Get the pipelines
+            var pointsPipes = ForumConfiguration.Instance.PipelinesPointsCreate;
+
+            // The model to process
+            var piplineModel = new PipelineProcess<MembershipUserPoints>(points);
+
+            // Add extended data
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<MembershipUserPoints>, MembershipUserPoints>(_context);
+
+            // Register the pipes 
+            var allPointsPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<MembershipUserPoints>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in pointsPipes)
             {
-                // Add Date
-                points.DateAdded = DateTime.UtcNow;
-
-                // Check this point has not already been awarded
-                var canAddPoints = true;
-
-                // Check to see if this has an id
-                if (points.PointsForId != null)
+                if (allPointsPipes.ContainsKey(pipe))
                 {
-                    var alreadyHasThisPoint = GetByUser(points.User).Any(x => x.PointsFor == points.PointsFor && x.PointsForId == points.PointsForId);
-                    canAddPoints = (alreadyHasThisPoint == false);
-                }
-
-                // If they can ad points let them
-                if (canAddPoints)
-                {
-                    return _context.MembershipUserPoints.Add(points);
+                    pipeline.Register(allPointsPipes[pipe]);
                 }
             }
 
-            // If not just return the same one back
-            return points;
+            return await pipeline.Process(piplineModel);
         }
 
         /// <summary>
@@ -256,10 +284,20 @@
 
         public async Task<IPipelineProcess<MembershipUserPoints>> Delete(IEnumerable<MembershipUserPoints> points)
         {
-            foreach (var membershipUserPoint in points)
+            if (points != null)
             {
-                _context.MembershipUserPoints.Remove(membershipUserPoint);
+                IPipelineProcess<MembershipUserPoints> result = null;
+                foreach (var membershipUserPoint in points)
+                {
+                    result = await Delete(membershipUserPoint);
+                    if (!result.Successful)
+                    {
+                        return result;
+                    }
+                }
+                return result;
             }
+            return null;
         }
     }
 }

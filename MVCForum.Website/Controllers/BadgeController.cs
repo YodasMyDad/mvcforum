@@ -1,6 +1,7 @@
 ﻿namespace MvcForum.Web.Controllers
 {
     using System;
+    using System.Threading.Tasks;
     using System.Web.Mvc;
     using Core.ExtensionMethods;
     using Core.Interfaces;
@@ -43,27 +44,22 @@
 
         [HttpPost]
         [Authorize]
-        public void VoteUpPost(EntityIdViewModel voteUpBadgeViewModel)
+        public async Task<ActionResult> VoteUpPost(EntityIdViewModel voteUpBadgeViewModel)
         {
             try
             {
                 var loggedOnUser = User.GetMembershipUser(MembershipService, false);
-                var databaseUpdateNeededOne = _badgeService.ProcessBadge(BadgeType.VoteUp, loggedOnUser);
+                var databaseUpdateNeededOne = await _badgeService.ProcessBadge(BadgeType.VoteUp, loggedOnUser);
                 if (databaseUpdateNeededOne)
                 {
-                    Context.SaveChanges();
+                    await Context.SaveChangesAsync();
                 }
 
                 var post = _postService.Get(voteUpBadgeViewModel.Id);
-                var databaseUpdateNeededTwo = _badgeService.ProcessBadge(BadgeType.VoteUp, post.User);
+                var databaseUpdateNeededTwo = await _badgeService.ProcessBadge(BadgeType.VoteUp, post.User);
                 if (databaseUpdateNeededTwo)
                 {
-                    Context.SaveChanges();
-                }
-
-                if (databaseUpdateNeededOne || databaseUpdateNeededTwo)
-                {
-                    Context.SaveChanges();
+                    await Context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)
@@ -71,32 +67,29 @@
                 Context.RollBack();
                 LoggingService.Error(ex);
             }
+
+            // TODO - Should be returning something meaningful!
+            return Content(string.Empty);
         }
 
         [HttpPost]
         [Authorize]
-        public void VoteDownPost(EntityIdViewModel voteUpBadgeViewModel)
+        public async Task<ActionResult> VoteDownPost(EntityIdViewModel voteUpBadgeViewModel)
         {
             try
             {
                 var loggedOnUser = User.GetMembershipUser(MembershipService, false);
-                var databaseUpdateNeededOne = _badgeService.ProcessBadge(BadgeType.VoteDown, loggedOnUser);
+                var databaseUpdateNeededOne = await _badgeService.ProcessBadge(BadgeType.VoteDown, loggedOnUser);
                 if (databaseUpdateNeededOne)
                 {
-                    Context.SaveChanges();
+                    await Context.SaveChangesAsync();
                 }
 
                 var post = _postService.Get(voteUpBadgeViewModel.Id);
-                var databaseUpdateNeededTwo = _badgeService.ProcessBadge(BadgeType.VoteDown, post.User);
-
+                var databaseUpdateNeededTwo = await _badgeService.ProcessBadge(BadgeType.VoteDown, post.User);
                 if (databaseUpdateNeededTwo)
                 {
-                    Context.SaveChanges();
-                }
-
-                if (databaseUpdateNeededOne || databaseUpdateNeededTwo)
-                {
-                    Context.SaveChanges();
+                    await Context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)
@@ -104,22 +97,25 @@
                 Context.RollBack();
                 LoggingService.Error(ex);
             }
+
+            // TODO - Should be returning something meaningful!
+            return Content(string.Empty);
         }
 
         [HttpPost]
         [Authorize]
-        public void Post()
+        public async Task<ActionResult> Post()
         {
             if (Request.IsAjaxRequest())
             {
                 try
                 {
                     var loggedOnUser = User.GetMembershipUser(MembershipService, false);
-                    var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Post, loggedOnUser);
+                    var databaseUpdateNeeded = await _badgeService.ProcessBadge(BadgeType.Post, loggedOnUser);
 
                     if (databaseUpdateNeeded)
                     {
-                        Context.SaveChanges();
+                        await Context.SaveChangesAsync();
                     }
                 }
                 catch (Exception ex)
@@ -128,11 +124,15 @@
                     LoggingService.Error(ex);
                 }
             }
+
+
+            // TODO - Should be returning something meaningful!
+            return Content(string.Empty);
         }
 
         [HttpPost]
         [Authorize]
-        public void MarkAsSolution(EntityIdViewModel markAsSolutionBadgeViewModel)
+        public async Task<ActionResult> MarkAsSolution(EntityIdViewModel markAsSolutionBadgeViewModel)
         {
             try
             {
@@ -142,16 +142,16 @@
 
                 if (post.User != post.Topic.User)
                 {
-                    databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.User) | _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.Topic.User);
+                    databaseUpdateNeeded = await _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.User) | await _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.Topic.User);
                 }
                 else
                 {
-                    databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.User);
+                    databaseUpdateNeeded = await _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.User);
                 }
 
                 if (databaseUpdateNeeded)
                 {
-                    Context.SaveChanges();
+                    await Context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)
@@ -159,21 +159,24 @@
                 Context.RollBack();
                 LoggingService.Error(ex);
             }
+
+            // TODO - Should be returning something meaningful!
+            return Content(string.Empty);
         }
 
         [HttpPost]
         [Authorize]
-        public void Favourite(EntityIdViewModel favouriteViewModel)
+        public async Task<ActionResult> Favourite(EntityIdViewModel favouriteViewModel)
         {
             try
             {
                 var favourite = _favouriteService.Get(favouriteViewModel.Id);
-                var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Favourite, favourite.Member) |
-                                           _badgeService.ProcessBadge(BadgeType.Favourite, favourite.Post.User);
+                var databaseUpdateNeeded = await _badgeService.ProcessBadge(BadgeType.Favourite, favourite.Member) |
+                                           await _badgeService.ProcessBadge(BadgeType.Favourite, favourite.Post.User);
 
                 if (databaseUpdateNeeded)
                 {
-                    Context.SaveChanges();
+                    await Context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)
@@ -181,22 +184,25 @@
                 Context.RollBack();
                 LoggingService.Error(ex);
             }
+
+            // TODO - Should be returning something meaningful!
+            return Content(string.Empty);
         }
 
         [HttpPost]
         [Authorize]
-        public void ProfileBadgeCheck()
+        public async Task<ActionResult> ProfileBadgeCheck()
         {
             try
             {
                 var loggedOnUser = User.GetMembershipUser(MembershipService, false);
                 if (loggedOnUser != null)
                 {
-                    var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Profile, loggedOnUser);
+                    var databaseUpdateNeeded = await _badgeService.ProcessBadge(BadgeType.Profile, loggedOnUser);
 
                     if (databaseUpdateNeeded)
                     {
-                        Context.SaveChanges();
+                        await Context.SaveChangesAsync();
                     }
                 }
             }
@@ -205,19 +211,22 @@
                 Context.RollBack();
                 LoggingService.Error(ex);
             }
+
+            // TODO - Should be returning something meaningful!
+            return Content(string.Empty);
         }
 
         [HttpPost]
-        public void Time(EntityIdViewModel timeBadgeViewModel)
+        public async Task<ActionResult> Time(EntityIdViewModel timeBadgeViewModel)
         {
             try
             {
                 var user = MembershipService.GetUser(timeBadgeViewModel.Id);
-                var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Time, user);
+                var databaseUpdateNeeded = await _badgeService.ProcessBadge(BadgeType.Time, user);
 
                 if (databaseUpdateNeeded)
                 {
-                    Context.SaveChanges();
+                    await Context.SaveChangesAsync();
                 }
             }
             catch (Exception ex)
@@ -225,6 +234,9 @@
                 Context.RollBack();
                 LoggingService.Error(ex);
             }
+
+            // TODO - Should be returning something meaningful!
+            return Content(string.Empty);
         }
 
         public ActionResult AllBadges()

@@ -483,6 +483,46 @@
         }
 
         /// <summary>
+        /// Gets the pipes for the points delete
+        /// </summary>
+        private IList<string> _pipelinePointsDelete;
+        public IList<string> PipelinesPointsDelete
+        {
+            get
+            {
+                if (_pipelinePointsDelete == null)
+                {
+                    var pipes = GetPlugin("PipelinesPointsDelete");
+                    if (!string.IsNullOrWhiteSpace(pipes))
+                    {
+                        _pipelinePointsDelete = ConfigToListString(pipes);
+                    }
+                }
+                return _pipelinePointsDelete;
+            }
+        }
+
+        /// <summary>
+        /// Gets the pipes for the points create
+        /// </summary>
+        private IList<string> _pipelinePointsCreate;
+        public IList<string> PipelinesPointsCreate
+        {
+            get
+            {
+                if (_pipelinePointsCreate == null)
+                {
+                    var pipes = GetPlugin("PipelinesPointsCreate");
+                    if (!string.IsNullOrWhiteSpace(pipes))
+                    {
+                        _pipelinePointsCreate = ConfigToListString(pipes);
+                    }
+                }
+                return _pipelinePointsCreate;
+            }
+        }
+
+        /// <summary>
         /// Turns a string config into a list
         /// </summary>
         /// <param name="config"></param>

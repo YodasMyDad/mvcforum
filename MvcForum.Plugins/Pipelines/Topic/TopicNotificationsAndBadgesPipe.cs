@@ -49,7 +49,8 @@
                 // If the topic has tags then process
                 if (input.EntityToProcess.Tags != null && input.EntityToProcess.Tags.Any())
                 {
-                    _badgeService.ProcessBadge(BadgeType.Tag, input.EntityToProcess.User);
+                    // Don't throw if badge fails as it's logged
+                    await _badgeService.ProcessBadge(BadgeType.Tag, input.EntityToProcess.User);
                 }
 
                 if (isEdit == false)

@@ -22,7 +22,7 @@
         /// <param name="badgeType"></param>
         /// <param name="user"></param>
         /// <returns>True if badge was awarded</returns>
-        bool ProcessBadge(BadgeType badgeType, MembershipUser user);
+        Task<bool> ProcessBadge(BadgeType badgeType, MembershipUser user);
 
         /// <summary>
         ///     Gets a paged list of badges
