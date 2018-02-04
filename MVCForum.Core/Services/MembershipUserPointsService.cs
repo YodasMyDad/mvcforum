@@ -160,26 +160,27 @@
         /// <returns></returns>
         public Dictionary<MembershipUser, int> GetCurrentWeeksPoints(int? amountToTake)
         {
-            var cacheKey = string.Concat(CacheKeys.MembershipUserPoints.StartsWith, "GetCurrentWeeksPoints-", amountToTake);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+            //var cacheKey = string.Concat(CacheKeys.MembershipUserPoints.StartsWith, "GetCurrentWeeksPoints-", amountToTake);
+            //return _cacheService.CachePerRequest(cacheKey, () =>
+            //{
 
                 amountToTake = amountToTake ?? int.MaxValue;
                 var date = DateTime.UtcNow;
                 var start = date.Date.AddDays(-(int)date.DayOfWeek);
                 var end = start.AddDays(7);
 
-                var results = _context.MembershipUserPoints.AsNoTracking()
+                return _context.MembershipUserPoints.AsNoTracking()
                     .Include(x => x.User)
                     .Where(x => x.DateAdded >= start && x.DateAdded < end)
-                    .ToList();
-
-                return results.GroupBy(x => x.User)
-                            .ToDictionary(x => x.Key, x => x.Select(p => p.Points).Sum())
-                            .OrderByDescending(x => x.Value)
-                            .Take((int)amountToTake)
-                            .ToDictionary(x => x.Key, x => x.Value);
-            });
+                    .GroupBy(x => x.User)
+                    .Select(x => new
+                    {
+                        User =  x.Key,
+                        Points = x.Select(p => p.Points).Sum()
+                    })
+                    .OrderByDescending(x => x.Points)
+                    .Take((int)amountToTake)
+                    .ToDictionary(x => x.User, x => x.Points);           
         }
 
         /// <summary>
@@ -195,16 +196,18 @@
                 amountToTake = amountToTake ?? int.MaxValue;
                 var thisYear = DateTime.UtcNow.Year;
 
-                var results = _context.MembershipUserPoints.AsNoTracking()
+                return _context.MembershipUserPoints.AsNoTracking()
                     .Include(x => x.User)
                     .Where(x => x.DateAdded.Year == thisYear)
-                    .ToList();
-
-                return results.GroupBy(x => x.User)
-                            .ToDictionary(x => x.Key, x => x.Select(p => p.Points).Sum())
-                            .OrderByDescending(x => x.Value)
-                            .Take((int)amountToTake)
-                            .ToDictionary(x => x.Key, x => x.Value);
+                    .GroupBy(x => x.User)
+                    .Select(x => new
+                    {
+                        User = x.Key,
+                        Points = x.Select(p => p.Points).Sum()
+                    })
+                    .OrderByDescending(x => x.Points)
+                    .Take((int)amountToTake)
+                    .ToDictionary(x => x.User, x => x.Points);
             });
         }
 
@@ -220,15 +223,17 @@
             {
                 amountToTake = amountToTake ?? int.MaxValue;
 
-                var results = _context.MembershipUserPoints.AsNoTracking()
+                return _context.MembershipUserPoints.AsNoTracking()
                     .Include(x => x.User)
-                    .ToList();
-
-                return results.GroupBy(x => x.User)
-                            .ToDictionary(x => x.Key, x => x.Select(p => p.Points).Sum())
-                            .OrderByDescending(x => x.Value)
-                            .Take((int)amountToTake)
-                            .ToDictionary(x => x.Key, x => x.Value);
+                    .GroupBy(x => x.User)
+                    .Select(x => new
+                    {
+                        User = x.Key,
+                        Points = x.Select(p => p.Points).Sum()
+                    })
+                    .OrderByDescending(x => x.Points)
+                    .Take((int)amountToTake)
+                    .ToDictionary(x => x.User, x => x.Points);
             });
         }
 
@@ -239,15 +244,17 @@
             {
                 amountToTake = amountToTake ?? int.MaxValue;
 
-                var results = _context.MembershipUserPoints.AsNoTracking()
-                            .Include(x => x.User)
-                            .ToList();
-
-                return results.GroupBy(x => x.User)
-                            .ToDictionary(x => x.Key, x => x.Select(p => p.Points).Sum())
-                            .OrderBy(x => x.Value)
-                            .Take((int)amountToTake)
-                            .ToDictionary(x => x.Key, x => x.Value);
+                return _context.MembershipUserPoints.AsNoTracking()
+                    .Include(x => x.User)
+                    .GroupBy(x => x.User)
+                    .Select(x => new
+                    {
+                        User = x.Key,
+                        Points = x.Select(p => p.Points).Sum()
+                    })
+                    .OrderBy(x => x.Points)
+                    .Take((int)amountToTake)
+                    .ToDictionary(x => x.User, x => x.Points);
             });
         }
 

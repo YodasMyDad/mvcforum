@@ -73,26 +73,29 @@
         public static void RemoveExtendedDataItem<T>(this T entity, string key)
             where T : ExtendedDataEntity
         {
-            // Hold everything
-            var extendedData = entity.ExtendedData;
-
-            // Get the one to remove
-            var toRemoveAt = 0;
-            for (var index = 0; index < entity.ExtendedData.Count; index++)
+            if (entity.ExtendedData.Count > 0)
             {
-                toRemoveAt = index;
-                var extendedDataItem = entity.ExtendedData[index];
-                if (extendedDataItem.Key == key)
+                // Hold everything
+                var extendedData = entity.ExtendedData;
+
+                // Get the one to remove
+                var toRemoveAt = 0;
+                for (var index = 0; index < entity.ExtendedData.Count; index++)
                 {
-                    break;
+                    toRemoveAt = index;
+                    var extendedDataItem = entity.ExtendedData[index];
+                    if (extendedDataItem.Key == key)
+                    {
+                        break;
+                    }
                 }
+
+                // Remove it
+                extendedData.RemoveAt(toRemoveAt);
+
+                // We have to reset the data to trigger the set
+                entity.ExtendedData = extendedData;
             }
-
-            // Remove it
-            extendedData.RemoveAt(toRemoveAt);
-
-            // We have to reset the data to trigger the set
-            entity.ExtendedData = extendedData;
         }
 
         /// <summary>

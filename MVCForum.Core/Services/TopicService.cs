@@ -663,9 +663,7 @@
         /// <returns></returns>
         public Topic Get(Guid topicId)
         {
-            var cacheKey = string.Concat(CacheKeys.Topic.StartsWith, "Get-", topicId);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 var topic = _context.Topic
                                     .Include(x => x.Category)
                                     .Include(x => x.LastPost.User)
@@ -674,7 +672,7 @@
                                 .FirstOrDefault(x => x.Id == topicId);
 
                 return topic;
-            });
+         
         }
 
         public List<Topic> Get(List<Guid> topicIds, List<Category> allowedCategories)

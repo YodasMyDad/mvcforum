@@ -122,7 +122,7 @@
 
         public IEnumerable<ActivityBase> GetAll(int howMany)
         {
-            var activities = _context.Activity.Take(howMany);
+            var activities = _context.Activity.Take(howMany).ToList();
             var specificActivities = ConvertToSpecificActivities(activities);
             return specificActivities;
         }
