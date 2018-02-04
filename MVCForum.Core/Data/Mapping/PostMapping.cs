@@ -22,12 +22,12 @@
 
             HasMany(x => x.Votes).WithRequired(x => x.Post)
                 .Map(x => x.MapKey("Post_Id"))
-                .WillCascadeOnDelete(true);
+                .WillCascadeOnDelete(false);
 
             HasMany(x => x.PostEdits)
                 .WithRequired(x => x.Post)
                 .Map(x => x.MapKey("Post_Id"))
-                .WillCascadeOnDelete(true);
+                .WillCascadeOnDelete(false);
 
             //ToTable("CustomTableName");
             //Property(t => t.TopicId).HasColumnName("Topic_Id");
