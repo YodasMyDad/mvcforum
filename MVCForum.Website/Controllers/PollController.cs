@@ -24,7 +24,7 @@
         }
 
         [HttpPost]
-        public PartialViewResult UpdatePoll(UpdatePollViewModel updatePollViewModel)
+        public virtual PartialViewResult UpdatePoll(UpdatePollViewModel updatePollViewModel)
         {
             try
             {

@@ -207,6 +207,7 @@
     </Compile>
     <Compile Include="Models\OAuth\FacebookOAuthData.cs" />
     <Compile Include="Models\OAuth\GoogleOAuthData.cs" />
+    <Compile Include="Models\PostType.cs" />
     <Compile Include="Models\Spam\Comment.cs" />
     <Compile Include="Pipeline\Pipeline.cs" />
     <Compile Include="Pipeline\PipelineProcess.cs" />
@@ -321,7 +322,7 @@
       <Version>1.6.17</Version>
     </PackageReference>
     <PackageReference Include="HtmlAgilityPack">
-      <Version>1.6.15</Version>
+      <Version>1.6.16</Version>
     </PackageReference>
     <PackageReference Include="LinqKit.EntityFramework">
       <Version>1.1.13</Version>

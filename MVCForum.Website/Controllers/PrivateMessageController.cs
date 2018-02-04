@@ -5,7 +5,6 @@
     using System.Text;
     using System.Threading.Tasks;
     using System.Web.Mvc;
-    using Application;
     using Core;
     using Core.Constants;
     using Core.ExtensionMethods;
@@ -15,7 +14,6 @@
     using Core.Models.Entities;
     using Core.Utilities;
     using ViewModels;
-    using ViewModels.Admin;
     using ViewModels.PrivateMessage;
 
     [Authorize]
@@ -37,7 +35,7 @@
             _configService = configService;
         }
 
-        public async Task<ActionResult> Index(int? p)
+        public virtual async Task<ActionResult> Index(int? p)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -66,7 +64,7 @@
         }
 
         [ChildActionOnly]
-        public ActionResult Create(Guid to)
+        public virtual ActionResult Create(Guid to)
         {
             var viewModel = new CreatePrivateMessageViewModel
             {
@@ -125,7 +123,7 @@
         }
 
         [HttpPost]
-        public ActionResult Create(CreatePrivateMessageViewModel createPrivateMessageViewModel)
+        public virtual ActionResult Create(CreatePrivateMessageViewModel createPrivateMessageViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -251,7 +249,7 @@
             return Content(PmAjaxError(LocalizationService.GetResourceString("Errors.GenericMessage")));
         }
 
-        public async Task<ActionResult> View(Guid from)
+        public virtual async Task<ActionResult> View(Guid from)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
 
@@ -320,7 +318,7 @@
         }
 
         [HttpPost]
-        public ActionResult Delete(DeletePrivateMessageViewModel deletePrivateMessageViewModel)
+        public virtual ActionResult Delete(DeletePrivateMessageViewModel deletePrivateMessageViewModel)
         {
             if (Request.IsAjaxRequest())
             {
@@ -353,7 +351,7 @@
         }
 
         [HttpPost]
-        public async Task<ActionResult> AjaxMore(GetMoreViewModel viewModel)
+        public virtual async Task<ActionResult> AjaxMore(GetMoreViewModel viewModel)
         {
             if (Request.IsAjaxRequest())
             {
@@ -387,7 +385,7 @@
             return $"<p class=\"pmerrormessage\">{message}</p>";
         }
 
-        internal ActionResult ErrorToInbox(string errorMessage)
+        internal virtual ActionResult ErrorToInbox(string errorMessage)
         {
             // Use temp data as its a redirect
             TempData[Constants.MessageViewBagName] = new GenericMessageViewModel

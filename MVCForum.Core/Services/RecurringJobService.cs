@@ -13,7 +13,7 @@
     /// <summary>
     /// A class that deals with recurring jobs and are all called by hangfire
     /// </summary>
-    public class RecurringJobService
+    public partial class RecurringJobService
     {
         private readonly ILoggingService _loggingService;
         private readonly ISettingsService _settingsService;

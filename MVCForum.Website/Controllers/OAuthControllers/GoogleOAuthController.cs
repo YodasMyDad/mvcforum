@@ -58,7 +58,7 @@
 
         public string AuthErrorDescription => Request.QueryString["error_description"];
 
-        public ActionResult GoogleLogin()
+        public virtual ActionResult GoogleLogin()
         {
             var resultMessage = new GenericMessageViewModel();
 

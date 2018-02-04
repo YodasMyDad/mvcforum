@@ -91,7 +91,7 @@
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize(Roles = Constants.AdminRoleName)]
-        public async Task<ActionResult> SrubAndBanUser(Guid id)
+        public virtual async Task<ActionResult> SrubAndBanUser(Guid id)
         {
             var user = MembershipService.GetUser(id);
             var scrubResult = await MembershipService.ScrubUsers(user);
@@ -128,7 +128,7 @@
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize]
-        public ActionResult BanMember(Guid id)
+        public virtual ActionResult BanMember(Guid id)
         {
             var user = MembershipService.GetUser(id);
             var currentUser = MembershipService.GetUser(User.Identity.Name, true);
@@ -171,7 +171,7 @@
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize]
-        public ActionResult UnBanMember(Guid id)
+        public virtual ActionResult UnBanMember(Guid id)
         {
             var user = MembershipService.GetUser(id);
             var currentUser = MembershipService.GetUser(User.Identity.Name, true);
@@ -213,7 +213,7 @@
         /// </summary>
         /// <returns></returns>
         [ChildActionOnly]
-        public PartialViewResult GetCurrentActiveMembers()
+        public virtual PartialViewResult GetCurrentActiveMembers()
         {
             var viewModel = new ActiveMembersViewModel
             {
@@ -226,7 +226,7 @@
         ///     Does a last active check
         /// </summary>
         /// <returns></returns>
-        public JsonResult LastActiveCheck()
+        public virtual JsonResult LastActiveCheck()
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -267,7 +267,7 @@
         /// </summary>
         /// <param name="slug"></param>
         /// <returns></returns>
-        public ActionResult GetByName(string slug)
+        public virtual ActionResult GetByName(string slug)
         {
             var member = MembershipService.GetUserBySlug(slug);
             var loggedOnReadOnlyUser = User.Identity.IsAuthenticated
@@ -299,7 +299,7 @@
         ///     Add a new user
         /// </summary>
         /// <returns></returns>
-        public ActionResult Register()
+        public virtual ActionResult Register()
         {
             if (SettingsService.GetSettings().SuspendRegistration != true)
             {
@@ -335,7 +335,7 @@
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(MemberAddViewModel userModel)
+        public virtual async Task<ActionResult> Register(MemberAddViewModel userModel)
         {
             var settings = SettingsService.GetSettings();
             if (settings.SuspendRegistration != true &&
@@ -375,7 +375,7 @@
         ///     Social login validator which passes view model as temp data
         /// </summary>
         /// <returns></returns>
-        public async Task<ActionResult> SocialLoginValidator()
+        public virtual async Task<ActionResult> SocialLoginValidator()
         {
             // Store the viewModel in TempData - Which we'll use in the register logic
             if (TempData[Constants.MemberRegisterViewModel] != null)
@@ -404,7 +404,7 @@
         ///     All the logic to regsiter a member
         /// </summary>
         /// <returns></returns>
-        public ActionResult MemberRegisterLogic(IPipelineProcess<MembershipUser> pipelineProcess)
+        public virtual ActionResult MemberRegisterLogic(IPipelineProcess<MembershipUser> pipelineProcess)
         {
             // We get these from the pipelineprocess and not from the settings as they can be changed during the process (i.e. Social login)
             var manuallyAuthoriseMembers =
@@ -499,7 +499,7 @@
         /// <param name="manuallyAuthoriseMembers"></param>
         /// <param name="memberEmailAuthorisationNeeded"></param>
         /// <returns></returns>
-        public ActionResult ResendEmailConfirmation(string username, bool manuallyAuthoriseMembers,
+        public virtual ActionResult ResendEmailConfirmation(string username, bool manuallyAuthoriseMembers,
             bool memberEmailAuthorisationNeeded)
         {
             try
@@ -553,7 +553,7 @@
         /// <param name="id"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public ActionResult EmailConfirmation(Guid id, Guid key)
+        public virtual ActionResult EmailConfirmation(Guid id, Guid key)
         {
             // Checkconfirmation
             var user = MembershipService.GetUser(id);
@@ -620,7 +620,7 @@
         ///     Log on
         /// </summary>
         /// <returns></returns>
-        public ActionResult LogOn()
+        public virtual ActionResult LogOn()
         {
             // Create the empty view model
             var viewModel = new LogOnViewModel();
@@ -642,7 +642,7 @@
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> LogOn(LogOnViewModel model)
+        public virtual async Task<ActionResult> LogOn(LogOnViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -714,7 +714,7 @@
         ///     Get: log off user
         /// </summary>
         /// <returns></returns>
-        public ActionResult LogOff()
+        public virtual ActionResult LogOff()
         {
             FormsAuthentication.SignOut();
             TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
@@ -726,7 +726,7 @@
         }
 
         [HttpPost]
-        public PartialViewResult GetMemberDiscussions(Guid id)
+        public virtual PartialViewResult GetMemberDiscussions(Guid id)
         {
             if (Request.IsAjaxRequest())
             {
@@ -769,7 +769,7 @@
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize]
-        public ActionResult Edit(Guid id)
+        public virtual ActionResult Edit(Guid id)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -797,7 +797,7 @@
         /// <returns></returns>
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> Edit(MemberFrontEndEditViewModel userModel)
+        public virtual async Task<ActionResult> Edit(MemberFrontEndEditViewModel userModel)
         {
             // Get the user to edit from the database            
             var dbUser = MembershipService.GetUser(userModel.Id);
@@ -885,7 +885,7 @@
         /// <param name="isDropDown"></param>
         /// <returns></returns>
         [Authorize]
-        public PartialViewResult SideAdminPanel(bool isDropDown)
+        public virtual PartialViewResult SideAdminPanel(bool isDropDown)
         {
             var privateMessageCount = 0;
             var moderateCount = 0;
@@ -919,7 +919,7 @@
         ///     Member profile tools
         /// </summary>
         /// <returns></returns>
-        public PartialViewResult AdminMemberProfileTools()
+        public virtual PartialViewResult AdminMemberProfileTools()
         {
             return PartialView();
         }
@@ -930,7 +930,7 @@
         /// <param name="term"></param>
         /// <returns></returns>
         [Authorize]
-        public string AutoComplete(string term)
+        public virtual string AutoComplete(string term)
         {
             if (!string.IsNullOrWhiteSpace(term))
             {
@@ -958,7 +958,7 @@
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize]
-        public ActionResult Report(Guid id)
+        public virtual ActionResult Report(Guid id)
         {
             if (SettingsService.GetSettings().EnableMemberReporting)
             {
@@ -975,7 +975,7 @@
         /// <returns></returns>
         [HttpPost]
         [Authorize]
-        public ActionResult Report(ReportMemberViewModel viewModel)
+        public virtual ActionResult Report(ReportMemberViewModel viewModel)
         {
             if (SettingsService.GetSettings().EnableMemberReporting)
             {
@@ -1017,7 +1017,7 @@
         /// <param name="search"></param>
         /// <returns></returns>
         [Authorize]
-        public async Task<ActionResult> Search(int? p, string search)
+        public virtual async Task<ActionResult> Search(int? p, string search)
         {
             var pageIndex = p ?? 1;
             var allUsers = string.IsNullOrWhiteSpace(search)
@@ -1050,7 +1050,7 @@
         /// </summary>
         /// <returns></returns>
         [ChildActionOnly]
-        public PartialViewResult LatestMembersJoined()
+        public virtual PartialViewResult LatestMembersJoined()
         {
             var viewModel = new ListLatestMembersViewModel();
             var users = MembershipService.GetLatestUsers(10).ToDictionary(o => o.UserName, o => o.NiceUrl);
@@ -1063,7 +1063,7 @@
         /// </summary>
         /// <returns></returns>
         [Authorize]
-        public ActionResult ChangePassword()
+        public virtual ActionResult ChangePassword()
         {
             return View();
         }
@@ -1076,7 +1076,7 @@
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult ChangePassword(ChangePasswordViewModel model)
+        public virtual ActionResult ChangePassword(ChangePasswordViewModel model)
         {
             var changePasswordSucceeded = true;
 
@@ -1119,7 +1119,7 @@
         ///     Forgot password view
         /// </summary>
         /// <returns></returns>
-        public ActionResult ForgotPassword()
+        public virtual ActionResult ForgotPassword()
         {
             return View();
         }
@@ -1131,7 +1131,7 @@
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ForgotPassword(ForgotPasswordViewModel forgotPasswordViewModel)
+        public virtual ActionResult ForgotPassword(ForgotPasswordViewModel forgotPasswordViewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -1202,7 +1202,7 @@
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ViewResult PasswordResetSent()
+        public virtual ViewResult PasswordResetSent()
         {
             return View();
         }
@@ -1214,7 +1214,7 @@
         /// <param name="token"></param>
         /// <returns></returns>
         [HttpGet]
-        public ViewResult ResetPassword(Guid? id, string token)
+        public virtual ViewResult ResetPassword(Guid? id, string token)
         {
             var model = new ResetPasswordViewModel
             {
@@ -1238,7 +1238,7 @@
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ResetPassword(ResetPasswordViewModel postedModel)
+        public virtual ActionResult ResetPassword(ResetPasswordViewModel postedModel)
         {
             if (!ModelState.IsValid)
             {
@@ -1287,7 +1287,7 @@
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ViewResult PasswordChanged()
+        public virtual ViewResult PasswordChanged()
         {
             return View();
         }

@@ -16,7 +16,7 @@
 
     [Authorize]
     [RoutePrefix("api/TinyMce")]
-    public class TinyMcePluginsController : ApiController
+    public partial class TinyMcePluginsController : ApiController
     {
         //private void SetPrincipal(IPrincipal principal)
         //{
@@ -30,7 +30,7 @@
         //GET api/TinyMce/UploadImage
         [Route("UploadImage")]
         [HttpPost]
-        public string UploadImage()
+        public virtual string UploadImage()
         {
             var memberService = UnityHelper.Container.Resolve<IMembershipService>();
             var roleService = UnityHelper.Container.Resolve<IRoleService>();

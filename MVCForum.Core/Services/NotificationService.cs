@@ -14,7 +14,7 @@
     using Models.Enums;
     using Utilities;
 
-    public class NotificationService : INotificationService
+    public partial class NotificationService : INotificationService
     {
         private IMvcForumContext _context;
         private readonly ILocalizationService _localizationService;

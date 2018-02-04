@@ -10,7 +10,7 @@
     using Models.General;
     using Pipeline;
 
-    public interface IMembershipService : IContextService
+    public partial interface IMembershipService : IContextService
     {
         LoginAttemptStatus LastLoginStatus { get; }
         MembershipUser Add(MembershipUser newUser);

@@ -30,7 +30,7 @@
         }
 
         [Authorize]
-        public ActionResult Index()
+        public virtual ActionResult Index()
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
 
@@ -61,7 +61,7 @@
 
         [HttpPost]
         [Authorize]
-        public JsonResult FavouritePost(EntityIdViewModel viewModel)
+        public virtual JsonResult FavouritePost(EntityIdViewModel viewModel)
         {
             var returnValue = new FavouriteJsonReturnModel();
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);

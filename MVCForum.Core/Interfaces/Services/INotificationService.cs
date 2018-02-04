@@ -4,7 +4,7 @@
     using Models.Entities;
     using Models.Enums;
 
-    public interface INotificationService : IContextService
+    public partial interface INotificationService : IContextService
     {
         #region Categories
 

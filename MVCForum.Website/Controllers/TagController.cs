@@ -26,7 +26,7 @@
         }
 
         [ChildActionOnly]
-        public PartialViewResult PopularTags(int amountToTake)
+        public virtual PartialViewResult PopularTags(int amountToTake)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -44,7 +44,7 @@
         }
 
         [HttpGet]
-        public JsonResult AutoCompleteTags(string term)
+        public virtual JsonResult AutoCompleteTags(string term)
         {
             var returnList = new List<string>();
             var tags = _topicTagService.GetContains(term);

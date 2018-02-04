@@ -32,7 +32,7 @@
 
         [HttpPost]
         [Authorize]
-        public void Subscribe(EmailSubscriptionViewModel subscription)
+        public virtual void Subscribe(EmailSubscriptionViewModel subscription)
         {
             if (Request.IsAjaxRequest())
             {
@@ -117,7 +117,7 @@
 
         [HttpPost]
         [Authorize]
-        public void UnSubscribe(EmailSubscriptionViewModel subscription)
+        public virtual void UnSubscribe(EmailSubscriptionViewModel subscription)
         {
             if (Request.IsAjaxRequest())
             {

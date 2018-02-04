@@ -13,7 +13,6 @@
     using Core.Models.Entities;
     using Core.Models.General;
     using ViewModels;
-    using ViewModels.Admin;
 
     [Authorize]
     public partial class UploadController : BaseController
@@ -33,7 +32,7 @@
         }
 
         [HttpPost]
-        public ActionResult UploadPostFiles(AttachFileToPostViewModel attachFileToPostViewModel)
+        public virtual ActionResult UploadPostFiles(AttachFileToPostViewModel attachFileToPostViewModel)
         {
             var topic = new Topic();
 
@@ -143,7 +142,7 @@
             }
         }
 
-        public ActionResult DeleteUploadedFile(Guid id)
+        public virtual ActionResult DeleteUploadedFile(Guid id)
         {
             if (id != Guid.Empty)
             {

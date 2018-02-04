@@ -44,7 +44,7 @@
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> VoteUpPost(EntityIdViewModel voteUpBadgeViewModel)
+        public virtual async Task<ActionResult> VoteUpPost(EntityIdViewModel voteUpBadgeViewModel)
         {
             try
             {
@@ -74,7 +74,7 @@
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> VoteDownPost(EntityIdViewModel voteUpBadgeViewModel)
+        public virtual async Task<ActionResult> VoteDownPost(EntityIdViewModel voteUpBadgeViewModel)
         {
             try
             {
@@ -104,7 +104,7 @@
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> Post()
+        public virtual async Task<ActionResult> Post()
         {
             if (Request.IsAjaxRequest())
             {
@@ -132,7 +132,7 @@
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> MarkAsSolution(EntityIdViewModel markAsSolutionBadgeViewModel)
+        public virtual async Task<ActionResult> MarkAsSolution(EntityIdViewModel markAsSolutionBadgeViewModel)
         {
             try
             {
@@ -166,7 +166,7 @@
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> Favourite(EntityIdViewModel favouriteViewModel)
+        public virtual async Task<ActionResult> Favourite(EntityIdViewModel favouriteViewModel)
         {
             try
             {
@@ -191,7 +191,7 @@
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> ProfileBadgeCheck()
+        public virtual async Task<ActionResult> ProfileBadgeCheck()
         {
             try
             {
@@ -217,7 +217,7 @@
         }
 
         [HttpPost]
-        public async Task<ActionResult> Time(EntityIdViewModel timeBadgeViewModel)
+        public virtual async Task<ActionResult> Time(EntityIdViewModel timeBadgeViewModel)
         {
             try
             {

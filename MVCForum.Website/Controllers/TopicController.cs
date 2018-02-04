@@ -15,7 +15,6 @@
     using Core.Models.General;
     using Core.Utilities;
     using ViewModels;
-    using ViewModels.Admin;
     using ViewModels.Breadcrumb;
     using ViewModels.ExtensionMethods;
     using ViewModels.Mapping;
@@ -55,7 +54,7 @@
 
         [ChildActionOnly]
         [Authorize]
-        public PartialViewResult TopicsMemberHasPostedIn(int? p)
+        public virtual PartialViewResult TopicsMemberHasPostedIn(int? p)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnloggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -91,7 +90,7 @@
 
         [ChildActionOnly]
         [Authorize]
-        public PartialViewResult GetSubscribedTopics()
+        public virtual PartialViewResult GetSubscribedTopics()
         {
             var viewModel = new List<TopicViewModel>();
 
@@ -121,7 +120,7 @@
         }
 
         [ChildActionOnly]
-        public PartialViewResult GetTopicBreadcrumb(Topic topic)
+        public virtual PartialViewResult GetTopicBreadcrumb(Topic topic)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnloggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -141,7 +140,7 @@
             return PartialView("GetCategoryBreadcrumb", viewModel);
         }
 
-        public PartialViewResult CreateTopicButton()
+        public virtual PartialViewResult CreateTopicButton()
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnloggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -174,7 +173,7 @@
 
         [HttpPost]
         [Authorize]
-        public JsonResult CheckTopicCreatePermissions(Guid catId)
+        public virtual JsonResult CheckTopicCreatePermissions(Guid catId)
         {
             if (Request.IsAjaxRequest())
             {
@@ -279,7 +278,7 @@
         /// </summary>
         /// <returns></returns>
         [Authorize]
-        public ActionResult Create()
+        public virtual ActionResult Create()
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -301,7 +300,7 @@
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(CreateEditTopicViewModel topicViewModel)
+        public virtual async Task<ActionResult> Create(CreateEditTopicViewModel topicViewModel)
         {
             // Get the user and roles
             var loggedOnUser = User.GetMembershipUser(MembershipService, false);
@@ -377,7 +376,7 @@
 
 
         [Authorize]
-        public ActionResult EditPostTopic(Guid id)
+        public virtual ActionResult EditPostTopic(Guid id)
         {
             // Get the post
             var post = _postService.Get(id);
@@ -462,7 +461,7 @@
         [HttpPost]
         [ValidateInput(false)]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> EditPostTopic(CreateEditTopicViewModel editPostViewModel)
+        public virtual async Task<ActionResult> EditPostTopic(CreateEditTopicViewModel editPostViewModel)
         {
             // Get the current user and role
             var loggedOnUser = User.GetMembershipUser(MembershipService, false);
@@ -549,273 +548,10 @@
                 }
             }
 
-
-            //        // Is this user allowed to edit this post/topic
-            //        if (originalPost.User.Id == loggedOnUser.Id ||
-            //            permissions[ForumConfiguration.Instance.PermissionEditPosts].IsTicked)
-            //        {
-
-            //            // Is this topic or post awaiting moderations
-            //            var topicPostInModeration = false;
-
-            //            // Check stop words
-            //            var stopWords = _bannedWordService.GetAll(true);
-            //            foreach (var stopWord in stopWords)
-            //            {
-            //                if (editPostViewModel.Content.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0 ||
-            //                    editPostViewModel.Name.IndexOf(stopWord.Word, StringComparison.CurrentCultureIgnoreCase) >= 0)
-            //                {
-            //                    ShowMessage(new GenericMessageViewModel
-            //                    {
-            //                        Message = LocalizationService.GetResourceString("StopWord.Error"),
-            //                        MessageType = GenericMessages.danger
-            //                    });
-
-            //                    var p = _postService.Get(editPostViewModel.Id);
-            //                    var t = p.Topic;
-
-            //                    // Ahhh found a stop word. Abandon operation captain.
-            //                    return Redirect(t.NiceUrl);
-            //                }
-            //            }
-
-            //            // Want the same edit date on both post and postedit
-            //            var dateEdited = DateTime.UtcNow;
-
-            //            // Create a post edit
-            //            var postEdit = new PostEdit
-            //            {
-            //                Post = originalPost,
-            //                DateEdited = dateEdited,
-            //                EditedBy = loggedOnUser,
-            //                OriginalPostContent = originalPost.PostContent,
-            //                OriginalPostTitle = originalPost.IsTopicStarter ? originalTopic.Name : string.Empty
-            //            };
-
-            //            // User has permission so update the post
-            //            originalPost.PostContent = _bannedWordService.SanitiseBannedWords(editPostViewModel.Content);
-            //            originalPost.DateEdited = dateEdited;
-
-            //            originalPost = _postService.SanitizePost(originalPost);
-
-            //            // if topic starter update the topic
-            //            if (originalPost.IsTopicStarter)
-            //            {
-            //                // Now save the post changes and the post edit
-            //                Context.SaveChanges();
-
-            //                // Sort the Tags
-            //                if (!string.IsNullOrWhiteSpace(editPostViewModel.Tags))
-            //                {
-            //                    _topicTagService.Add(editPostViewModel.Tags.ToLower(), originalTopic, permissions[ForumConfiguration.Instance.PermissionCreateTags].IsTicked);
-            //                }
-
-            //                // Now save the tag changes
-            //                Context.SaveChanges();
-
-            //                // if category has changed then update it
-            //                if (originalTopic.Category.Id != editPostViewModel.Category)
-            //                {
-            //                    var cat = _categoryService.Get(editPostViewModel.Category);
-            //                    originalTopic.Category = cat;
-            //                }
-            //                originalTopic.IsLocked = editPostViewModel.IsLocked;
-            //                originalTopic.IsSticky = editPostViewModel.IsSticky;
-            //                originalTopic.Name = StringUtils.GetSafeHtml(_bannedWordService.SanitiseBannedWords(editPostViewModel.Name));
-
-            //                // if the Category has moderation marked then the topic needs to 
-            //                // go back into moderation
-            //                if (originalTopic.Category.ModerateTopics == true)
-            //                {
-            //                    originalTopic.Pending = true;
-            //                    topicPostInModeration = true;
-            //                }
-
-            //                // Now save the main topic content changes
-            //                Context.SaveChanges();
-
-            //                // See if there is a poll and can we edit/update it
-            //                if (editPostViewModel.PollAnswers != null &&
-            //                    editPostViewModel.PollAnswers.Count(x => !string.IsNullOrWhiteSpace(x?.Answer)) > 1 &&
-            //                    permissions[ForumConfiguration.Instance.PermissionCreatePolls].IsTicked)
-            //                {
-
-            //                    // Now sort the poll answers, what to add and what to remove
-            //                    // Poll answers already in this poll.
-            //                    var newPollAnswerIds = editPostViewModel.PollAnswers.Where(x => !string.IsNullOrWhiteSpace(x?.Answer)).Select(x => x.Id);
-
-            //                    // This post might not have a poll on it, if not they are creating a poll for the first time
-            //                    var originalPollAnswerIds = new List<Guid>();
-            //                    var pollAnswersToRemove = new List<PollAnswer>();
-            //                    if (originalTopic.Poll == null)
-            //                    {
-            //                        // Create a new Poll
-            //                        var newPoll = new Poll
-            //                        {
-            //                            User = loggedOnUser
-            //                        };
-
-            //                        // Create the poll
-            //                        _pollService.Add(newPoll);
-
-            //                        // Save the poll in the context so we can add answers
-            //                        Context.SaveChanges();
-
-            //                        // Add the poll to the topic
-            //                        originalTopic.Poll = newPoll;
-            //                    }
-            //                    else
-            //                    {
-            //                        originalPollAnswerIds = originalTopic.Poll.PollAnswers.Select(p => p.Id).ToList();
-            //                        pollAnswersToRemove = originalTopic.Poll.PollAnswers.Where(x => !newPollAnswerIds.Contains(x.Id)).ToList();
-            //                    }
-
-            //                    // Set the amount of days to close the poll
-            //                    originalTopic.Poll.ClosePollAfterDays = editPostViewModel.PollCloseAfterDays;
-
-            //                    // Get existing answers
-            //                    var existingAnswers = editPostViewModel.PollAnswers.Where(x => !string.IsNullOrWhiteSpace(x.Answer) && originalPollAnswerIds.Contains(x.Id)).ToList();
-
-            //                    // Get new poll answers to add
-            //                    var newPollAnswers = editPostViewModel.PollAnswers.Where(x => !string.IsNullOrWhiteSpace(x.Answer) && !originalPollAnswerIds.Contains(x.Id)).ToList();
-
-            //                    // Loop through existing and update names if need be
-            //                    // If name changes remove the poll
-            //                    foreach (var existPollAnswer in existingAnswers)
-            //                    {
-            //                        // Get the existing answer from the current topic
-            //                        var pa = originalTopic.Poll.PollAnswers.FirstOrDefault(x => x.Id == existPollAnswer.Id);
-            //                        if (pa != null && pa.Answer != existPollAnswer.Answer)
-            //                        {
-            //                            var pollVotestToRemove = new List<PollVote>();
-            //                            pollVotestToRemove.AddRange(pa.PollVotes);
-            //                            // Remove all the poll votes, as the answer has changed
-            //                            foreach (var answerPollVote in pollVotestToRemove)
-            //                            {
-            //                                pa.PollVotes.Remove(answerPollVote);
-            //                                _pollVoteService.Delete(answerPollVote);
-            //                            }
-            //                            pa.PollVotes.Clear();
-            //                            Context.SaveChanges();
-
-            //                            // If the answer has changed then update it
-            //                            pa.Answer = existPollAnswer.Answer;
-            //                        }
-            //                    }
-
-            //                    // Save existing
-            //                    Context.SaveChanges();
-
-            //                    // Loop through and remove the old poll answers and delete
-            //                    foreach (var oldPollAnswer in pollAnswersToRemove)
-            //                    {
-            //                        // Clear poll votes if it's changed
-            //                        var pollVotestToRemove = new List<PollVote>();
-            //                        pollVotestToRemove.AddRange(oldPollAnswer.PollVotes);
-            //                        foreach (var answerPollVote in pollVotestToRemove)
-            //                        {
-            //                            oldPollAnswer.PollVotes.Remove(answerPollVote);
-            //                            _pollVoteService.Delete(answerPollVote);
-            //                        }
-            //                        oldPollAnswer.PollVotes.Clear();
-            //                        Context.SaveChanges();
-
-            //                        // Remove from Poll
-            //                        originalTopic.Poll.PollAnswers.Remove(oldPollAnswer);
-
-            //                        // Delete
-            //                        _pollAnswerService.Delete(oldPollAnswer);
-            //                    }
-
-            //                    // Save removed
-            //                    Context.SaveChanges();
-
-            //                    // Poll answers to add
-            //                    foreach (var newPollAnswer in newPollAnswers)
-            //                    {
-            //                        if (newPollAnswer != null)
-            //                        {
-            //                            var npa = new PollAnswer
-            //                            {
-            //                                Poll = originalTopic.Poll,
-            //                                Answer = newPollAnswer.Answer
-            //                            };
-            //                            _pollAnswerService.Add(npa);
-            //                            originalTopic.Poll.PollAnswers.Add(npa);
-            //                        }
-            //                    }
-            //                }
-            //                else if (originalTopic.Poll != null)
-            //                {
-            //                    // Remove from topic.
-            //                    originalTopic.Poll = null;
-
-            //                    // Now delete the poll
-            //                    _pollService.Delete(originalTopic.Poll);
-            //                }
-            //            }
-            //            else
-            //            {
-            //                // if the Category has moderation marked then the post needs to 
-            //                // go back into moderation
-            //                if (originalTopic.Category.ModeratePosts == true)
-            //                {
-            //                    originalPost.Pending = true;
-            //                    topicPostInModeration = true;
-            //                }
-            //            }
-
-            //            // Create a post edit
-            //            postEdit.EditedPostTitle = originalTopic.Name;
-            //            postEdit.EditedPostContent = originalPost.PostContent;
-
-            //            // Add the post edit too
-            //            _postEditService.Add(postEdit);
-
-            //            // Commit the changes
-            //            Context.SaveChanges();
-
-            //            if (topicPostInModeration)
-            //            {
-            //                // If in moderation then let the user now
-            //                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
-            //                {
-            //                    Message = LocalizationService.GetResourceString("Moderate.AwaitingModeration"),
-            //                    MessageType = GenericMessages.info
-            //                };
-            //            }
-            //            else
-            //            {
-            //                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
-            //                {
-            //                    Message = LocalizationService.GetResourceString("Post.Updated"),
-            //                    MessageType = GenericMessages.success
-            //                };
-            //            }
-
-            //            // redirect back to topic
-            //            return Redirect($"{originalTopic.NiceUrl}?postbadges=true");
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Context.RollBack();
-            //        LoggingService.Error(ex);
-            //        TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
-            //        {
-            //            Message = LocalizationService.GetResourceString("Errors.GenericError"),
-            //            MessageType = GenericMessages.danger
-            //        };
-            //    }
-
-
-            //    return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
-            //}
-
             return View(editPostViewModel);
         }
 
-        public async Task<ActionResult> Show(string slug, int? p)
+        public virtual async Task<ActionResult> Show(string slug, int? p)
         {
             // Set the page index
             var pageIndex = p ?? 1;
@@ -962,7 +698,7 @@
         }
 
         [HttpPost]
-        public PartialViewResult AjaxMorePosts(GetMorePostsViewModel getMorePostsViewModel)
+        public virtual PartialViewResult AjaxMorePosts(GetMorePostsViewModel getMorePostsViewModel)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -1000,7 +736,7 @@
             return PartialView(viewModel);
         }
 
-        public async Task<ActionResult> TopicsByTag(string tag, int? p)
+        public virtual async Task<ActionResult> TopicsByTag(string tag, int? p)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -1044,7 +780,7 @@
         }
 
         [HttpPost]
-        public PartialViewResult GetSimilarTopics(string searchTerm)
+        public virtual PartialViewResult GetSimilarTopics(string searchTerm)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -1072,7 +808,7 @@
         }
 
         [ChildActionOnly]
-        public ActionResult LatestTopics(int? p)
+        public virtual ActionResult LatestTopics(int? p)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -1107,7 +843,7 @@
         }
 
         [ChildActionOnly]
-        public ActionResult HotTopics(DateTime? from, DateTime? to, int? amountToShow)
+        public virtual ActionResult HotTopics(DateTime? from, DateTime? to, int? amountToShow)
         {
             if (amountToShow == null)
             {

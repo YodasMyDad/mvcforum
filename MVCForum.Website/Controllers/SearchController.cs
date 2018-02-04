@@ -4,7 +4,6 @@
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using Core;
-    using Core.Constants;
     using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Services;
@@ -32,7 +31,7 @@
         }
 
         [HttpGet]
-        public async Task<ActionResult> Index(int? p, string term)
+        public virtual async Task<ActionResult> Index(int? p, string term)
         {
             if (!string.IsNullOrWhiteSpace(term))
             {
@@ -97,7 +96,7 @@
 
 
         [ChildActionOnly]
-        public PartialViewResult SideSearch()
+        public virtual PartialViewResult SideSearch()
         {
             return PartialView();
         }

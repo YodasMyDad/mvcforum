@@ -10,12 +10,11 @@
     using Core.Interfaces.Services;
     using Core.Utilities;
     using ViewModels;
-    using ViewModels.Admin;
 
     /// <summary>
     ///     A base class for the white site controllers
     /// </summary>
-    public class BaseController : Controller
+    public partial class BaseController : Controller
     {
         protected readonly ICacheService CacheService;
         protected readonly ILocalizationService LocalizationService;

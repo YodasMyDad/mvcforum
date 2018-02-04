@@ -9,13 +9,14 @@
     using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Services;
+    using Core.Models;
     using Core.Models.Entities;
     using Core.Models.Enums;
     using ViewModels;
     using ViewModels.Vote;
     using MembershipUser = Core.Models.Entities.MembershipUser;
 
-    public class VoteController : BaseController
+    public partial class VoteController : BaseController
     {
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly IPostService _postService;
@@ -38,7 +39,7 @@
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> VoteUpPost(EntityIdViewModel voteUpViewModel)
+        public virtual async Task<ActionResult> VoteUpPost(EntityIdViewModel voteUpViewModel)
         {
             if (Request.IsAjaxRequest())
             {
@@ -85,7 +86,7 @@
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> VoteDownPost(EntityIdViewModel voteDownViewModel)
+        public virtual async Task<ActionResult> VoteDownPost(EntityIdViewModel voteDownViewModel)
         {
             if (Request.IsAjaxRequest())
             {
@@ -190,7 +191,7 @@
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> MarkAsSolution(EntityIdViewModel markAsSolutionViewModel)
+        public virtual async Task<ActionResult> MarkAsSolution(EntityIdViewModel markAsSolutionViewModel)
         {
             if (Request.IsAjaxRequest())
             {
@@ -240,7 +241,7 @@
 
 
         [HttpPost]
-        public PartialViewResult GetVoters(EntityIdViewModel voteUpViewModel)
+        public virtual PartialViewResult GetVoters(EntityIdViewModel voteUpViewModel)
         {
             if (Request.IsAjaxRequest())
             {
@@ -253,7 +254,7 @@
         }
 
         [HttpPost]
-        public PartialViewResult GetVotes(EntityIdViewModel voteUpViewModel)
+        public virtual PartialViewResult GetVotes(EntityIdViewModel voteUpViewModel)
         {
             if (Request.IsAjaxRequest())
             {
@@ -266,10 +267,5 @@
             return null;
         }
 
-        private enum PostType
-        {
-            Positive,
-            Negative
-        }
     }
 }

@@ -13,7 +13,6 @@
     using Skybrud.Social.Facebook.OAuth;
     using Skybrud.Social.Facebook.Options.User;
     using ViewModels;
-    using ViewModels.Admin;
     using ViewModels.Member;
 
     // Facebook uses OAuth 2.0 for authentication and communication. In order for users to authenticate with the Facebook API, 
@@ -55,7 +54,7 @@
 
         public string AuthErrorDescription => Request.QueryString["error_description"];
 
-        public ActionResult FacebookLogin()
+        public virtual ActionResult FacebookLogin()
         {
             var resultMessage = new GenericMessageViewModel();
 

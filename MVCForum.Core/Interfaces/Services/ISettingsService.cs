@@ -3,7 +3,7 @@
     using System;
     using Models.Entities;
 
-    public interface ISettingsService : IContextService
+    public partial interface ISettingsService : IContextService
     {
         Settings GetSettings(bool useCache = true);
         Settings Add(Settings settings);

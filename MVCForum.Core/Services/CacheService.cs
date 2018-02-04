@@ -9,7 +9,7 @@
     using Interfaces.Services;
     using Models.Enums;
 
-    public class CacheService : ICacheService
+    public partial class CacheService : ICacheService
     {
         #region Long Cache
 

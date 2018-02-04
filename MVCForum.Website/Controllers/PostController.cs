@@ -3,63 +3,47 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
     using System.Web.Mvc;
-    using System.Web.Security;
-    using Application;
     using Core;
     using Core.Constants;
-    using Core.Events;
     using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Services;
-    using Core.Models;
     using Core.Models.Entities;
-    using Core.Models.Enums;
     using Core.Models.General;
     using ViewModels;
-    using ViewModels.Admin;
     using ViewModels.Mapping;
     using ViewModels.Post;
 
     [Authorize]
     public partial class PostController : BaseController
     {
-        private readonly IBannedWordService _bannedWordService;
         private readonly ICategoryService _categoryService;
-        private readonly IEmailService _emailService;
         private readonly IPostEditService _postEditService;
         private readonly IPostService _postService;
         private readonly IReportService _reportService;
-        private readonly INotificationService _notificationService;
         private readonly ITopicService _topicService;
         private readonly IVoteService _voteService;
-        private readonly IActivityService _activityService;
 
         public PostController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ITopicService topicService,
             IPostService postService, ISettingsService settingsService, ICategoryService categoryService,
-            INotificationService notificationService, IEmailService emailService,
-            IReportService reportService, IBannedWordService bannedWordService, IVoteService voteService,
-            IPostEditService postEditService, ICacheService cacheService, IMvcForumContext context, IActivityService activityService)
+            IReportService reportService, IVoteService voteService,
+            IPostEditService postEditService, ICacheService cacheService, IMvcForumContext context)
             : base(loggingService, membershipService, localizationService, roleService,
                 settingsService, cacheService, context)
         {
             _topicService = topicService;
             _postService = postService;
             _categoryService = categoryService;
-            _notificationService = notificationService;
-            _emailService = emailService;
             _reportService = reportService;
-            _bannedWordService = bannedWordService;
             _voteService = voteService;
             _postEditService = postEditService;
-            _activityService = activityService;
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreatePost(CreateAjaxPostViewModel post)
+        public virtual async Task<ActionResult> CreatePost(CreateAjaxPostViewModel post)
         {
             var topic = _topicService.Get(post.Topic);
             var loggedOnUser = User.GetMembershipUser(MembershipService, false);
@@ -87,7 +71,7 @@
             return PartialView("_Post", viewModel);
         }
 
-        public async Task<ActionResult> DeletePost(Guid id)
+        public virtual async Task<ActionResult> DeletePost(Guid id)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -199,7 +183,7 @@
             return Redirect(topic.NiceUrl);
         }
 
-        public ActionResult Report(Guid id)
+        public virtual ActionResult Report(Guid id)
         {
             if (SettingsService.GetSettings().EnableSpamReporting)
             {
@@ -210,7 +194,7 @@
         }
 
         [HttpPost]
-        public ActionResult Report(ReportPostViewModel viewModel)
+        public virtual ActionResult Report(ReportPostViewModel viewModel)
         {
             if (SettingsService.GetSettings().EnableSpamReporting)
             {
@@ -248,7 +232,7 @@
 
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult GetAllPostLikes(Guid id)
+        public virtual ActionResult GetAllPostLikes(Guid id)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -262,7 +246,7 @@
         }
 
 
-        public ActionResult MovePost(Guid id)
+        public virtual ActionResult MovePost(Guid id)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -311,7 +295,7 @@
         }
 
         [HttpPost]
-        public async Task<ActionResult> MovePost(MovePostViewModel viewModel)
+        public virtual async Task<ActionResult> MovePost(MovePostViewModel viewModel)
         {
             // Firstly check if this is a post and they are allowed to move it
             var post = _postService.Get(viewModel.PostId);
@@ -354,7 +338,7 @@
             return View(viewModel);
         }
 
-        public ActionResult GetPostEditHistory(Guid id)
+        public virtual ActionResult GetPostEditHistory(Guid id)
         {
             var post = _postService.Get(id);
             if (post != null)

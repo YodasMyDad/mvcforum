@@ -2,7 +2,7 @@
 {
     using System.Threading.Tasks;
 
-    public interface IContextService
+    public partial interface IContextService
     {
         /// <summary>
         ///     When using pipelines, we need to make sure we are using the same context throughout, or we'll end up with an error

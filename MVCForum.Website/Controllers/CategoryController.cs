@@ -70,7 +70,7 @@
         }
 
         [ChildActionOnly]
-        public PartialViewResult ListMainCategories()
+        public virtual PartialViewResult ListMainCategories()
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -84,7 +84,7 @@
         }
 
         [ChildActionOnly]
-        public PartialViewResult ListCategorySideMenu()
+        public virtual PartialViewResult ListCategorySideMenu()
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -99,7 +99,7 @@
 
         [Authorize]
         [ChildActionOnly]
-        public PartialViewResult GetSubscribedCategories()
+        public virtual PartialViewResult GetSubscribedCategories()
         {
             var viewModel = new List<CategoryViewModel>();
 
@@ -131,7 +131,7 @@
 
 
         [ChildActionOnly]
-        public PartialViewResult GetCategoryBreadcrumb(Category category)
+        public virtual PartialViewResult GetCategoryBreadcrumb(Category category)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -144,7 +144,7 @@
             return PartialView("GetCategoryBreadcrumb", viewModel);
         }
 
-        public async Task<ActionResult> Show(string slug, int? p)
+        public virtual async Task<ActionResult> Show(string slug, int? p)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -207,7 +207,7 @@
         }
 
         [OutputCache(Duration = (int) CacheTimes.TwoHours)]
-        public ActionResult CategoryRss(string slug)
+        public virtual ActionResult CategoryRss(string slug)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);

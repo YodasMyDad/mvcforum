@@ -17,7 +17,7 @@
         ///     This is called when the forum is closed
         /// </summary>
         /// <returns></returns>
-        public ActionResult Index()
+        public virtual ActionResult Index()
         {
             return View();
         }

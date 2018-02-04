@@ -5,7 +5,6 @@
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using Core;
-    using Core.Constants;
     using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Services;
@@ -33,7 +32,7 @@
             _activityService = activityService;
         }
 
-        public ActionResult Index()
+        public virtual ActionResult Index()
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -50,7 +49,7 @@
         }
 
         [HttpPost]
-        public async Task<ActionResult> ModerateTopic(ModerateActionViewModel viewModel)
+        public virtual async Task<ActionResult> ModerateTopic(ModerateActionViewModel viewModel)
         {
             try
             {
@@ -94,7 +93,7 @@
         }
 
         [HttpPost]
-        public ActionResult ModeratePost(ModerateActionViewModel viewModel)
+        public virtual ActionResult ModeratePost(ModerateActionViewModel viewModel)
         {
             try
             {
