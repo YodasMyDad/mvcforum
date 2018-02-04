@@ -24,6 +24,6 @@
         /// <summary>
         ///     Extended data list to store any extra data we need to use through the pipelines
         /// </summary>
-        Dictionary<string, string> ExtendedData { get; set; }
+        Dictionary<string, object> ExtendedData { get; set; }
     }
 }

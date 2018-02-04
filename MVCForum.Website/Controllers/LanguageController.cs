@@ -35,7 +35,7 @@
         /// </summary>
         /// <returns></returns>
         [ChildActionOnly]
-        public ActionResult Index()
+        public virtual ActionResult Index()
         {
             var viewModel = new LanguageListAllViewModel
             {
@@ -55,7 +55,7 @@
         /// <param name="lang"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult ChangeLanguage(Guid lang)
+        public virtual ActionResult ChangeLanguage(Guid lang)
         {
             var language = LocalizationService.Get(lang);
             LocalizationService.CurrentLanguage = language;

@@ -402,3 +402,4 @@ Moderate.Posts,Сообщение
 Moderate.NavText,Темы/сообщения, ожидающие проверку
 Post.Trusted,Надежный
 Post.TrustedUser,Надежный пользователь
+Spam.FloodTestFailed,You are posting too quickly

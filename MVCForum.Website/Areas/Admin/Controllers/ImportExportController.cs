@@ -13,7 +13,7 @@
     using Core.Interfaces.Services;
     using Core.Models.General;
     using Newtonsoft.Json;
-    using ViewModels;
+    using Web.ViewModels.Admin;
 
     [Authorize(Roles = Constants.AdminRoleName)]
     public class ImportExportController : BaseAdminController

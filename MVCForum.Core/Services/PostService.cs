@@ -5,17 +5,19 @@
     using System.Data.Entity;
     using System.IO;
     using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
+    using System.Web;
     using System.Web.Hosting;
     using Constants;
-    using Events;
     using Interfaces;
+    using Interfaces.Pipeline;
     using Interfaces.Services;
     using LinqKit;
     using Models.Entities;
     using Models.Enums;
     using Models.General;
+    using Pipeline;
+    using Reflection;
     using Utilities;
 
     public partial class PostService : IPostService
@@ -23,38 +25,50 @@
         private readonly IRoleService _roleService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ISettingsService _settingsService;
-        private readonly ILocalizationService _localizationService;
         private readonly IVoteService _voteService;
         private readonly IUploadedFileService _uploadedFileService;
         private readonly IFavouriteService _favouriteService;
         private readonly IConfigService _configService;
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly IPostEditService _postEditService;
-        private readonly ICacheService _cacheService;
 
         public PostService(IMvcForumContext context, IMembershipUserPointsService membershipUserPointsService,
             ISettingsService settingsService, IRoleService roleService,
-            ILocalizationService localizationService, IVoteService voteService, IUploadedFileService uploadedFileService, IFavouriteService favouriteService, IConfigService configService, IPostEditService postEditService, ICacheService cacheService)
+            IVoteService voteService, 
+            IUploadedFileService uploadedFileService, IFavouriteService favouriteService, 
+            IConfigService configService, IPostEditService postEditService)
         {
             _roleService = roleService;
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
-            _localizationService = localizationService;
             _voteService = voteService;
             _uploadedFileService = uploadedFileService;
             _favouriteService = favouriteService;
             _configService = configService;
             _postEditService = postEditService;
-            _cacheService = cacheService;
             _context = context;
         }
 
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+            _roleService.RefreshContext(context);
+            _membershipUserPointsService.RefreshContext(context);
+            _settingsService.RefreshContext(context);
+            _voteService.RefreshContext(context);
+            _uploadedFileService.RefreshContext(context);
+            _favouriteService.RefreshContext(context);
+            _postEditService.RefreshContext(context);
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
+        }
 
         #region Private / Helpers Methods
-        private MembershipRole UsersRole(MembershipUser user)
-        {
-            return user == null ? _roleService.GetRole(Constants.GuestRoleName) : user.Roles.FirstOrDefault();
-        }
 
         public Post SanitizePost(Post post)
         {
@@ -75,9 +89,9 @@
         public Post GetTopicStarterPost(Guid topicId)
         {
             return _context.Post
-                                                                        .Include(x => x.Topic.Category)
-                                                                        .Include(x => x.User)
-                                                                        .FirstOrDefault(x => x.Topic.Id == topicId && x.IsTopicStarter);
+                            .Include(x => x.Topic.Category)
+                            .Include(x => x.User)
+                            .FirstOrDefault(x => x.Topic.Id == topicId && x.IsTopicStarter);
         }
 
         /// <summary>
@@ -86,12 +100,12 @@
         /// <returns></returns>
         public IEnumerable<Post> GetAll(List<Category> allowedCategories)
         {
-                // get the category ids
-                var allowedCatIds = allowedCategories.Select(x => x.Id);
-                return _context.Post
-                        .Include(x => x.Topic.Category)
-                        .Where(x => allowedCatIds.Contains(x.Topic.Category.Id));
-       
+            // get the category ids
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            return _context.Post
+                    .Include(x => x.Topic.Category)
+                    .Where(x => allowedCatIds.Contains(x.Topic.Category.Id));
+
         }
 
         /// <summary>
@@ -101,14 +115,14 @@
         /// <returns></returns>
         public IList<Post> GetLowestVotedPost(int amountToTake)
         {
-                return _context.Post
-                    .Include(x => x.Topic)
-                    .Include(x => x.User)
-                    .Where(x => x.VoteCount < 0 && x.Pending != true)
-                    .OrderBy(x => x.VoteCount)
-                    .Take(amountToTake)
-                    .ToList();
-         
+            return _context.Post
+                .Include(x => x.Topic)
+                .Include(x => x.User)
+                .Where(x => x.VoteCount < 0 && x.Pending != true)
+                .OrderBy(x => x.VoteCount)
+                .Take(amountToTake)
+                .ToList();
+
         }
 
         /// <summary>
@@ -119,13 +133,13 @@
         public IList<Post> GetHighestVotedPost(int amountToTake)
         {
 
-                return _context.Post
-                    .Include(x => x.Topic)
-                    .Include(x => x.User)
-                    .Where(x => x.VoteCount > 0 && x.Pending != true)
-                    .OrderByDescending(x => x.VoteCount)
-                    .Take(amountToTake)
-                    .ToList();
+            return _context.Post
+                .Include(x => x.Topic)
+                .Include(x => x.User)
+                .Where(x => x.VoteCount > 0 && x.Pending != true)
+                .OrderByDescending(x => x.VoteCount)
+                .Take(amountToTake)
+                .ToList();
 
         }
 
@@ -139,18 +153,18 @@
         public IList<Post> GetByMember(Guid memberId, int amountToTake, List<Category> allowedCategories)
         {
 
-                // get the category ids
-                var allowedCatIds = allowedCategories.Select(x => x.Id);
-                return _context.Post
-                        .Include(x => x.Topic.LastPost.User)
-                        .Include(x => x.Topic.Category)
-                        .Include(x => x.User)
-                        .Where(x => x.User.Id == memberId && x.Pending != true)
-                        .Where(x => allowedCatIds.Contains(x.Topic.Category.Id))
-                        .OrderByDescending(x => x.DateCreated)
-                        .Take(amountToTake)
-                        .ToList();
- 
+            // get the category ids
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            return _context.Post
+                    .Include(x => x.Topic.LastPost.User)
+                    .Include(x => x.Topic.Category)
+                    .Include(x => x.User)
+                    .Where(x => x.User.Id == memberId && x.Pending != true)
+                    .Where(x => allowedCatIds.Contains(x.Topic.Category.Id))
+                    .OrderByDescending(x => x.DateCreated)
+                    .Take(amountToTake)
+                    .ToList();
+
         }
 
         public IList<Post> GetReplyToPosts(Post post)
@@ -161,34 +175,34 @@
         public IList<Post> GetReplyToPosts(Guid postId)
         {
 
-                // We don't allow topic starters in the list OR solutions. As if it's marked as a solution, it's a solution for that topic
-                // and moving it wouldn't make sense.
-                return _context.Post.Where(x => x.InReplyTo != null & x.InReplyTo == postId && !x.IsTopicStarter && !x.IsSolution).ToList();
+            // We don't allow topic starters in the list OR solutions. As if it's marked as a solution, it's a solution for that topic
+            // and moving it wouldn't make sense.
+            return _context.Post.Where(x => x.InReplyTo != null & x.InReplyTo == postId && !x.IsTopicStarter && !x.IsSolution).ToList();
 
         }
 
         public IEnumerable<Post> GetPostsByFavouriteCount(Guid postsByMemberId, int minAmountOfFavourites)
         {
 
-                return _context.Post
-                       .Include(x => x.Topic.LastPost.User)
-                       .Include(x => x.Topic.Category)
-                       .Include(x => x.User)
-                       .Include(x => x.Favourites.Select(f => f.Member))
-                       .Where(x => x.User.Id == postsByMemberId && x.Favourites.Count(c => c.Member.Id != postsByMemberId) >= minAmountOfFavourites);
-       
+            return _context.Post
+                   .Include(x => x.Topic.LastPost.User)
+                   .Include(x => x.Topic.Category)
+                   .Include(x => x.User)
+                   .Include(x => x.Favourites.Select(f => f.Member))
+                   .Where(x => x.User.Id == postsByMemberId && x.Favourites.Count(c => c.Member.Id != postsByMemberId) >= minAmountOfFavourites);
+
         }
 
         public IEnumerable<Post> GetPostsFavouritedByOtherMembers(Guid postsByMemberId)
         {
 
-                return _context.Post
-                            .Include(x => x.Topic.LastPost.User)
-                            .Include(x => x.Topic.Category)
-                            .Include(x => x.User)
-                            .Include(x => x.Favourites.Select(f => f.Member))
-                            .Where(x => x.User.Id == postsByMemberId && x.Favourites.Any(c => c.Member.Id != postsByMemberId));
-  
+            return _context.Post
+                        .Include(x => x.Topic.LastPost.User)
+                        .Include(x => x.Topic.Category)
+                        .Include(x => x.User)
+                        .Include(x => x.Favourites.Select(f => f.Member))
+                        .Where(x => x.User.Id == postsByMemberId && x.Favourites.Any(c => c.Member.Id != postsByMemberId));
+
 
         }
 
@@ -226,7 +240,7 @@
             {
                 var sTerm = term.Trim();
                 //query = query.Where(x => x.PostContent.ToUpper().Contains(sTerm) || x.SearchField.ToUpper().Contains(sTerm));
-                postFilter = postFilter.Or(x => x.PostContent.ToUpper().Contains(sTerm) || x.SearchField.ToUpper().Contains(sTerm));
+                postFilter = postFilter.Or(x => x.PostContent.ToUpper().Contains(sTerm) || x.IsTopicStarter && x.Topic.Name.ToUpper().Contains(sTerm));
             }
 
             // Add the predicate builder to the query
@@ -321,9 +335,9 @@
 
         public int GetPendingPostsCount(List<Category> allowedCategories)
         {
-                var allowedCatIds = allowedCategories.Select(x => x.Id);
-                return _context.Post.AsNoTracking().Include(x => x.Topic.Category).Count(x => x.Pending == true && allowedCatIds.Contains(x.Topic.Category.Id));
-         
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            return _context.Post.AsNoTracking().Include(x => x.Topic.Category).Count(x => x.Pending == true && allowedCatIds.Contains(x.Topic.Category.Id));
+
         }
 
         /// <summary>
@@ -335,18 +349,18 @@
         public IList<Post> GetSolutionsByMember(Guid memberId, List<Category> allowedCategories)
         {
 
-                // get the category ids
-                var allowedCatIds = allowedCategories.Select(x => x.Id);
-                return _context.Post
-                    .Include(x => x.Topic.Category)
-                    .Include(x => x.Topic.LastPost.User)
-                    .Include(x => x.User)
-                    .Where(x => x.User.Id == memberId)
-                    .Where(x => x.IsSolution && x.Pending != true)
-                    .Where(x => allowedCatIds.Contains(x.Topic.Category.Id))
-                    .OrderByDescending(x => x.DateCreated)
-                    .ToList();
-  
+            // get the category ids
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            return _context.Post
+                .Include(x => x.Topic.Category)
+                .Include(x => x.Topic.LastPost.User)
+                .Include(x => x.User)
+                .Where(x => x.User.Id == memberId)
+                .Where(x => x.IsSolution && x.Pending != true)
+                .Where(x => allowedCatIds.Contains(x.Topic.Category.Id))
+                .OrderByDescending(x => x.DateCreated)
+                .ToList();
+
         }
 
         /// <summary>
@@ -355,26 +369,177 @@
         /// <returns></returns>
         public int PostCount(List<Category> allowedCategories)
         {
-    
-                // get the category ids
-                var allowedCatIds = allowedCategories.Select(x => x.Id);
-                return _context.Post
-                    .Include(x => x.Topic)
-                    .AsNoTracking()
-                    .Count(x => x.Pending != true && x.Topic.Pending != true && allowedCatIds.Contains(x.Topic.Category.Id));
-      
+
+            // get the category ids
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            return _context.Post
+                .Include(x => x.Topic)
+                .AsNoTracking()
+                .Count(x => x.Pending != true && x.Topic.Pending != true && allowedCatIds.Contains(x.Topic.Category.Id));
+
+        }
+
+        /// <summary>
+        /// Create a new post
+        /// </summary>
+        /// <param name="postContent"></param>
+        /// <param name="topic"></param>
+        /// <param name="user"></param>
+        /// <param name="files"></param>
+        /// <param name="isTopicStarter"></param>
+        /// <param name="replyTo"></param>
+        /// <returns></returns>
+        public async Task<IPipelineProcess<Post>> Create(string postContent, Topic topic, MembershipUser user, HttpPostedFileBase[] files, bool isTopicStarter, Guid? replyTo)
+        {
+            var post = Initialise(postContent, topic, user);
+            return await Create(post, files, isTopicStarter, replyTo);
         }
 
         /// <summary>
         /// Create a new post
         /// </summary>
         /// <param name="post"></param>
+        /// <param name="files"></param>
+        /// <param name="isTopicStarter"></param>
+        /// <param name="replyTo"></param>
         /// <returns></returns>
-        public Post Add(Post post)
+        public async Task<IPipelineProcess<Post>> Create(Post post, HttpPostedFileBase[] files, bool isTopicStarter, Guid? replyTo)
         {
-            post = SanitizePost(post);
-            post.IpAddress = StringUtils.GetUsersIpAddress();
-            return _context.Post.Add(post);
+            // Get the pipelines
+            var postCreatePipes = ForumConfiguration.Instance.PipelinesPostCreate;
+
+            // Set the post to topic starter
+            post.IsTopicStarter = isTopicStarter;
+
+            // If this is a reply to someone
+            if (replyTo != null)
+            {
+                post.InReplyTo = replyTo;
+            }
+
+            // The model to process
+            var piplineModel = new PipelineProcess<Post>(post);
+
+            // Add the files for the post
+            if(files != null)
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, files);
+            }
+
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<Post>, Post>(_context);
+
+            // Register the pipes 
+            var allPostPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Post>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in postCreatePipes)
+            {
+                if (allPostPipes.ContainsKey(pipe))
+                {
+                    pipeline.Register(allPostPipes[pipe]);
+                }
+            }
+
+            // Process the pipeline
+            return await pipeline.Process(piplineModel);
+        }
+
+        /// <inheritdoc />
+        public async Task<IPipelineProcess<Post>> Edit(Post post, HttpPostedFileBase[] files, bool isTopicStarter, string postedTopicName, string postedContent)
+        {
+            // Get the pipelines
+            var postCreatePipes = ForumConfiguration.Instance.PipelinesPostUpdate;
+
+            // Set the post to topic starter
+            post.IsTopicStarter = isTopicStarter;
+
+            // The model to process
+            var piplineModel = new PipelineProcess<Post>(post);
+
+            // Add the files for the post
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, files);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Name, postedTopicName);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Content, postedContent);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<Post>, Post>(_context);
+
+            // Register the pipes 
+            var allPostPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Post>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in postCreatePipes)
+            {
+                if (allPostPipes.ContainsKey(pipe))
+                {
+                    pipeline.Register(allPostPipes[pipe]);
+                }
+            }
+
+            // Process the pipeline
+            return await pipeline.Process(piplineModel);
+        }
+
+        /// <inheritdoc />
+        public async Task<IPipelineProcess<Post>> Move(Post post, Guid? newTopicId, string newTopicTitle, bool moveReplyToPosts)
+        {
+            // Get the pipelines
+            var postPipes = ForumConfiguration.Instance.PipelinesPostMove;
+
+            // The model to process
+            var piplineModel = new PipelineProcess<Post>(post);
+
+            // Add the files for the post
+            if (newTopicId != null)
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.TopicId, newTopicId);
+            }
+            if (!string.IsNullOrWhiteSpace(newTopicTitle))
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Name, newTopicTitle);
+            }
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.MovePosts, moveReplyToPosts);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<Post>, Post>(_context);
+
+            // Register the pipes 
+            var allPostPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Post>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in postPipes)
+            {
+                if (allPostPipes.ContainsKey(pipe))
+                {
+                    pipeline.Register(allPostPipes[pipe]);
+                }
+            }
+
+            // Process the pipeline
+            return await pipeline.Process(piplineModel);
+        }
+
+        /// <inheritdoc />
+        public Post Initialise(string postContent, Topic topic, MembershipUser user)
+        {
+            // Has permission so create the post
+            var newPost = new Post
+            {
+                PostContent = postContent,
+                User = user,
+                Topic = topic,
+                IpAddress = StringUtils.GetUsersIpAddress(),
+                DateCreated = DateTime.UtcNow,
+                DateEdited = DateTime.UtcNow,
+                Pending = topic.Category.ModeratePosts == true
+            };
+
+            return SanitizePost(newPost);
         }
 
         /// <summary>
@@ -384,28 +549,28 @@
         /// <returns></returns>
         public Post Get(Guid postId)
         {
-                return _context.Post
-                    .Include(x => x.Topic.Category)
-                    .Include(x => x.Topic.LastPost.User)
-                    .Include(x => x.User)
-                    .FirstOrDefault(x => x.Id == postId);
+            return _context.Post
+                .Include(x => x.Topic.Category)
+                .Include(x => x.Topic.LastPost.User)
+                .Include(x => x.User)
+                .FirstOrDefault(x => x.Id == postId);
         }
 
         public IList<Post> GetPostsByTopics(List<Guid> topicIds, List<Category> allowedCategories)
         {
 
-                // get the category ids
-                var allowedCatIds = allowedCategories.Select(x => x.Id);
-                return _context.Post
-                    .Include(x => x.Topic.Category)
-                    .Include(x => x.Topic.LastPost)
-                    .Include(x => x.User)
-                    .AsNoTracking()
-                    .Where(x => topicIds.Contains(x.Topic.Id) && x.Pending != true)
-                    .Where(x => allowedCatIds.Contains(x.Topic.Category.Id))
-                    .OrderByDescending(x => x.DateCreated)
-                    .ToList();
-      
+            // get the category ids
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            return _context.Post
+                .Include(x => x.Topic.Category)
+                .Include(x => x.Topic.LastPost)
+                .Include(x => x.User)
+                .AsNoTracking()
+                .Where(x => topicIds.Contains(x.Topic.Id) && x.Pending != true)
+                .Where(x => allowedCatIds.Contains(x.Topic.Category.Id))
+                .OrderByDescending(x => x.DateCreated)
+                .ToList();
+
         }
 
         /// <summary>
@@ -414,245 +579,64 @@
         /// <param name="post"></param>
         /// <param name="ignoreLastPost"></param>
         /// <returns>Returns true if can delete</returns>
-        public bool Delete(Post post, bool ignoreLastPost)
+        public async Task<IPipelineProcess<Post>> Delete(Post post, bool ignoreLastPost)
         {
-            // Get the topic
-            var topic = post.Topic;
+            // Get the pipelines
+            var postPipes = ForumConfiguration.Instance.PipelinesPostDelete;
 
-            var votes = _voteService.GetVotesByPost(post.Id);
+            // The model to process
+            var piplineModel = new PipelineProcess<Post>(post);
 
-            #region Deleting Points
+            // Add extended data
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.IgnoreLastPost, ignoreLastPost);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
 
-            // Remove the points the user got for this post
-            _membershipUserPointsService.Delete(post.User, PointsFor.Post, post.Id);
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<Post>, Post>(_context);
 
-            // Also get all the votes and delete anything to do with those
-            foreach (var postVote in votes)
+            // Register the pipes 
+            var allPostPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Post>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in postPipes)
             {
-                _membershipUserPointsService.Delete(PointsFor.Vote, postVote.Id);
-            }
-
-            // Also the mark as solution
-            _membershipUserPointsService.Delete(PointsFor.Solution, post.Id);
-
-            #endregion
-
-            _context.SaveChanges();
-
-            #region Deleting Votes
-
-            var votesToDelete = new List<Vote>();
-            votesToDelete.AddRange(votes);
-            foreach (var vote in votesToDelete)
-            {
-                post.Votes.Remove(vote);
-                _voteService.Delete(vote);
-            }
-            post.Votes.Clear();
-
-            #endregion
-
-            #region Files
-
-            // Clear files attached to post
-            var filesToDelete = new List<UploadedFile>();
-            filesToDelete.AddRange(post.Files);
-            foreach (var uploadedFile in filesToDelete)
-            {
-                // store the file path as we'll need it to delete on the file system
-                var filePath = uploadedFile.FilePath;
-
-                post.Files.Remove(uploadedFile);
-                _uploadedFileService.Delete(uploadedFile);
-
-                // And finally delete from the file system
-                if (!string.IsNullOrWhiteSpace(filePath))
+                if (allPostPipes.ContainsKey(pipe))
                 {
-                    File.Delete(HostingEnvironment.MapPath(filePath));
+                    pipeline.Register(allPostPipes[pipe]);
                 }
             }
-            post.Files.Clear();
 
-            #endregion
-
-            #region Favourites
-
-            var postFavourites = new List<Favourite>();
-            postFavourites.AddRange(post.Favourites);
-            foreach (var postFavourite in postFavourites)
-            {
-                post.Favourites.Remove(postFavourite);
-                _favouriteService.Delete(postFavourite);
-            }
-            post.Favourites.Clear();
-
-            #endregion
-
-            #region Post Edits
-
-            var postEdits = new List<PostEdit>();
-            postEdits.AddRange(post.PostEdits);
-            foreach (var postEdit in postEdits)
-            {
-                post.PostEdits.Remove(postEdit);
-                _postEditService.Delete(postEdit);
-            }
-            post.PostEdits.Clear();
-
-            #endregion
-
-            _context.SaveChanges();
-
-            // Before we delete the post, we need to check if this is the last post in the topic
-            // and if so update the topic
-            if (!ignoreLastPost)
-            {
-                var lastPost = topic.Posts.OrderByDescending(x => x.DateCreated).FirstOrDefault();
-
-                if (lastPost != null && lastPost.Id == post.Id)
-                {
-                    // Get the new last post and update the topic
-                    topic.LastPost = topic.Posts.Where(x => x.Id != post.Id).OrderByDescending(x => x.DateCreated).FirstOrDefault();
-                }
-
-                if (topic.Solved && post.IsSolution)
-                {
-                    topic.Solved = false;
-                }
-
-                // Save the topic
-                _context.SaveChanges();
-            }
-
-            // Remove from the topic
-            topic.Posts.Remove(post);
-
-            // now delete the post
-            _context.Post.Remove(post);
-
-            // Save changes
-            _context.SaveChanges();
-
-            // Only the post was deleted, not the entire topic
-            return false;
-        }
-
-
-        /// <summary>
-        /// Add a new post
-        /// </summary>
-        /// <param name="postContent"> </param>
-        /// <param name="topic"> </param>
-        /// <param name="user"></param>
-        /// <param name="permissions"> </param>
-        /// <returns>True if post added</returns>
-        public Post AddNewPost(string postContent, Topic topic, MembershipUser user, out PermissionSet permissions)
-        {
-            // Get the permissions for the category that this topic is in
-            permissions = _roleService.GetPermissions(topic.Category, UsersRole(user));
-
-            // Check this users role has permission to create a post
-            if (permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked || permissions[ForumConfiguration.Instance.PermissionReadOnly].IsTicked)
-            {
-                // Throw exception so Ajax caller picks it up
-                throw new ApplicationException(_localizationService.GetResourceString("Errors.NoPermission"));
-            }
-
-            // Has permission so create the post
-            var newPost = new Post
-            {
-                PostContent = postContent,
-                User = user,
-                Topic = topic,
-                IpAddress = StringUtils.GetUsersIpAddress(),
-                DateCreated = DateTime.UtcNow,
-                DateEdited = DateTime.UtcNow
-            };
-
-            // Sort the search field out
-
-            var category = topic.Category;
-            if (category.ModeratePosts == true)
-            {
-                newPost.Pending = true;
-            }
-
-            var e = new PostMadeEventArgs { Post = newPost };
-            EventManager.Instance.FireBeforePostMade(this, e);
-
-            if (!e.Cancel)
-            {
-                // create the post
-                Add(newPost);
-
-                // Update the users points score and post count for posting
-                _membershipUserPointsService.Add(new MembershipUserPoints
-                {
-                    Points = _settingsService.GetSettings().PointsAddedPerPost,
-                    User = user,
-                    PointsFor = PointsFor.Post,
-                    PointsForId = newPost.Id
-                });
-
-                // add the last post to the topic
-                topic.LastPost = newPost;
-
-                EventManager.Instance.FireAfterPostMade(this, new PostMadeEventArgs { Post = newPost });
-
-                return newPost;
-            }
-
-            return newPost;
-        }
-
-        public string SortSearchField(bool isTopicStarter, Topic topic, IList<TopicTag> tags)
-        {
-            var formattedSearchField = string.Empty;
-            if (isTopicStarter)
-            {
-                formattedSearchField = topic.Name;
-            }
-            if (tags != null && tags.Any())
-            {
-                var sb = new StringBuilder();
-                foreach (var topicTag in tags)
-                {
-                    sb.Append(string.Concat(topicTag.Tag, " "));
-                }
-                formattedSearchField = !string.IsNullOrWhiteSpace(formattedSearchField) ? string.Concat(formattedSearchField, " ", sb.ToString()) : sb.ToString();
-            }
-            return formattedSearchField.Trim();
+            return await pipeline.Process(piplineModel);
         }
 
         public IList<Post> GetPostsByMember(Guid memberId, List<Category> allowedCategories)
         {
+            // get the category ids
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            return _context.Post
+                .Include(x => x.Topic.Category)
+                .Include(x => x.User)
+                .AsNoTracking()
+                .Where(x => x.User.Id == memberId && x.Pending != true)
+                .Where(x => allowedCatIds.Contains(x.Topic.Category.Id))
+                .OrderByDescending(x => x.DateCreated)
+                .ToList();
 
-                // get the category ids
-                var allowedCatIds = allowedCategories.Select(x => x.Id);
-                return _context.Post
-                    .Include(x => x.Topic.Category)
-                    .Include(x => x.User)
-                    .AsNoTracking()
-                    .Where(x => x.User.Id == memberId && x.Pending != true)
-                    .Where(x => allowedCatIds.Contains(x.Topic.Category.Id))
-                    .OrderByDescending(x => x.DateCreated)
-                    .ToList();
-        
         }
 
         public IList<Post> GetAllSolutionPosts(List<Category> allowedCategories)
         {
 
-                // get the category ids
-                var allowedCatIds = allowedCategories.Select(x => x.Id);
-                return _context.Post
-                    .Include(x => x.Topic.Category)
-                    .Include(x => x.User)
-                    .AsNoTracking()
-                    .Where(x => x.IsSolution && x.Pending != true)
-                    .Where(x => allowedCatIds.Contains(x.Topic.Category.Id))
-                    .OrderByDescending(x => x.DateCreated)
-                    .ToList();
+            // get the category ids
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            return _context.Post
+                .Include(x => x.Topic.Category)
+                .Include(x => x.User)
+                .AsNoTracking()
+                .Where(x => x.IsSolution && x.Pending != true)
+                .Where(x => allowedCatIds.Contains(x.Topic.Category.Id))
+                .OrderByDescending(x => x.DateCreated)
+                .ToList();
 
 
         }
@@ -660,26 +644,26 @@
         public IList<Post> GetPostsByTopic(Guid topicId)
         {
 
-                return _context.Post
-                    .Include(x => x.Topic)
-                    .Include(x => x.User)
-                    .Where(x => x.Topic.Id == topicId && x.Pending != true)
-                    .OrderByDescending(x => x.DateCreated)
-                    .ToList();
-      
+            return _context.Post
+                .Include(x => x.Topic)
+                .Include(x => x.User)
+                .Where(x => x.Topic.Id == topicId && x.Pending != true)
+                .OrderByDescending(x => x.DateCreated)
+                .ToList();
+
         }
 
         public IEnumerable<Post> GetAllWithTopics(List<Category> allowedCategories)
         {
 
-                // get the category ids
-                var allowedCatIds = allowedCategories.Select(x => x.Id);
-                return _context.Post
-                    .Include(x => x.Topic.Category)
-                    .Include(x => x.User)
-                    .Where(x => x.Pending != true)
-                    .Where(x => allowedCatIds.Contains(x.Topic.Category.Id));
-   
+            // get the category ids
+            var allowedCatIds = allowedCategories.Select(x => x.Id);
+            return _context.Post
+                .Include(x => x.Topic.Category)
+                .Include(x => x.User)
+                .Where(x => x.Pending != true)
+                .Where(x => allowedCatIds.Contains(x.Topic.Category.Id));
+
 
         }
 

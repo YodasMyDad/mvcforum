@@ -27,7 +27,7 @@
 
         [ChildActionOnly]
         [OutputCache(Duration = (int) CacheTimes.OneHour)]
-        public PartialViewResult GetMainStats()
+        public virtual PartialViewResult GetMainStats()
         {
             var allCats = _categoryService.GetAll();
             var viewModel = new MainStatsViewModel

@@ -6,7 +6,7 @@
     using Models.Entities;
     using Models.General;
 
-    public partial interface ITopicTagService
+    public partial interface ITopicTagService : IContextService
     {
         IEnumerable<TopicTag> GetAll();
         void DeleteByName(string tagName);
@@ -18,7 +18,9 @@
         TopicTag Add(TopicTag tag);
         TopicTag Get(Guid tag);
         TopicTag Get(string tag);
-        void Add(string tags, Topic tag, bool isAllowedToAddTags);
+        void Add(string[] tags, Topic tag, bool isAllowedToAddTags);
+        IEnumerable<string> CreateTagsFromCsv(string tags);
+        bool HasNewTags(IEnumerable<string> tags);
         void DeleteByTopic(Topic tag);
         void DeleteTags(IEnumerable<TopicTag> tags);
         void UpdateTagNames(string tagName, string oldTagName);

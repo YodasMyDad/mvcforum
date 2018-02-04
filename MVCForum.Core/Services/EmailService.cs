@@ -7,12 +7,14 @@
     using System.Net;
     using System.Net.Mail;
     using System.Text;
+    using System.Threading.Tasks;
     using System.Web;
     using System.Web.Hosting;
     using System.Web.Mvc;
     using Constants;
     using ExtensionMethods;
     using Hangfire;
+    using Interfaces;
     using Interfaces.Services;
     using Models;
     using Models.Entities;
@@ -29,6 +31,19 @@
             _loggingService = loggingService;
             _settingsService = settingsService;
             _localizationService = localizationService;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _settingsService.RefreshContext(context);
+            _localizationService.RefreshContext(context);
+        }
+
+        /// <inheritdoc />
+        public Task<int> SaveChanges()
+        {
+            throw new NotImplementedException();
         }
 
         public void ProcessMail(List<Email> emails)

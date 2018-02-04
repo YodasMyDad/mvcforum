@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
+    using System.Threading.Tasks;
     using Constants;
     using Interfaces;
     using Interfaces.Services;
@@ -11,13 +12,25 @@
 
     public partial class GlobalPermissionForRoleService : IGlobalPermissionForRoleService
     {
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         public GlobalPermissionForRoleService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
             _context = context;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         public GlobalPermissionForRole Add(GlobalPermissionForRole permissionForRole)

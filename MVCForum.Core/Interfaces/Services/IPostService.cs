@@ -3,11 +3,13 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using System.Web;
     using Models.Entities;
     using Models.Enums;
     using Models.General;
+    using Pipeline;
 
-    public partial interface IPostService
+    public partial interface IPostService : IContextService
     {
         Post SanitizePost(Post post);
         Post GetTopicStarterPost(Guid topicId);
@@ -29,14 +31,18 @@
         Task<PaginatedList<Post>> GetPagedPendingPosts(int pageIndex, int pageSize, List<Category> allowedCategories);
         IList<Post> GetPendingPosts(List<Category> allowedCategories, MembershipRole usersRole);
         int GetPendingPostsCount(List<Category> allowedCategories);
-        Post Add(Post post);
+
+        Task<IPipelineProcess<Post>> Create(string postContent, Topic topic, MembershipUser user, HttpPostedFileBase[] files, bool isTopicStarter, Guid? replyTo);
+        Task<IPipelineProcess<Post>> Create(Post post, HttpPostedFileBase[] files, bool isTopicStarter, Guid? replyTo);
+        Task<IPipelineProcess<Post>> Edit(Post post, HttpPostedFileBase[] files, bool isTopicStarter, string postedTopicName, string postedContent);
+        Task<IPipelineProcess<Post>> Move(Post post, Guid? newTopicId, string newTopicTitle, bool moveReplyToPosts);
+
+        Post Initialise(string postContent, Topic topic, MembershipUser user);
         Post Get(Guid postId);
         IList<Post> GetPostsByTopics(List<Guid> topicIds, List<Category> allowedCategories);
-        bool Delete(Post post, bool ignoreLastPost);
+        Task<IPipelineProcess<Post>> Delete(Post post, bool ignoreLastPost);
         IList<Post> GetSolutionsByMember(Guid memberId, List<Category> allowedCategories);
         int PostCount(List<Category> allowedCategories);
-        Post AddNewPost(string postContent, Topic topic, MembershipUser user, out PermissionSet permissions);
-        string SortSearchField(bool isTopicStarter, Topic topic, IList<TopicTag> tags);
         IList<Post> GetPostsByMember(Guid memberId, List<Category> allowedCategories);
         IList<Post> GetAllSolutionPosts(List<Category> allowedCategories);
         IList<Post> GetPostsByTopic(Guid topicId);

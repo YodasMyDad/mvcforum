@@ -123,14 +123,84 @@
             public const string Password = "Password";
 
             /// <summary>
-            /// Key for a Image string base 64
+            /// Key for a PostedFiles
             /// </summary>
-            public const string ImageBase64 = "ImageBase64";
+            public const string PostedFiles = "PostedFiles";
+
+            /// <summary>
+            /// Key for tags
+            /// </summary>
+            public const string Tags = "Tags";
 
             /// <summary>
             /// Key for whether username has changes
             /// </summary>
             public const string UsernameChanged = "UsernameChanged";
+
+            /// <summary>
+            /// Key for whether something needs moderating
+            /// </summary>
+            public const string Moderate = "Moderate";
+
+            /// <summary>
+            /// Key for the permission set
+            /// </summary>
+            public const string PermissionSet = "PermissionSet";
+
+            /// <summary>
+            /// Key for whether entity is being edited
+            /// </summary>
+            public const string IsEdit = "IsEdit";
+
+            /// <summary>
+            /// Key for whether to subscribe
+            /// </summary>
+            public const string Subscribe = "Subscribe";
+
+            /// <summary>
+            /// Key for getting entity content
+            /// </summary>
+            public const string Content = "Content";
+
+            /// <summary>
+            /// Keys for getting entity name
+            /// </summary>
+            public const string Name = "Name";
+
+            /// <summary>
+            /// Keys for new poll answers
+            /// </summary>
+            public const string PollNewAnswers = "PollNewAnswers";
+
+            /// <summary>
+            /// Key for poll close after days
+            /// </summary>
+            public const string PollCloseAfterDays = "PollCloseAfterDays";
+
+            /// <summary>
+            /// Key for getting a stored topic ID
+            /// </summary>
+            public const string TopicId = "TopicId";
+
+            /// <summary>
+            /// Key for whether to move posts
+            /// </summary>
+            public const string MovePosts = "MovePosts";
+
+            /// <summary>
+            /// Key to get existing post
+            /// </summary>
+            public const string Post = "Post";
+
+            /// <summary>
+            /// Key to whether to igniore last post
+            /// </summary>
+            public const string IgnoreLastPost = "IgnoreLastPost";
+
+            /// <summary>
+            /// Parent Category
+            /// </summary>
+            public const string ParentCategory = "ParentCategory";
         }
     }
 }

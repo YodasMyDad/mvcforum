@@ -6,7 +6,8 @@
     using Core.Constants;
     using Core.Interfaces;
     using Core.Interfaces.Services;
-    using ViewModels;
+    using Web.ViewModels;
+    using Web.ViewModels.Admin;
 
     [Authorize(Roles = Constants.AdminRoleName)]
     public class AdminSocialController : BaseAdminController

@@ -1,4 +1,5 @@
-﻿@using MvcForum.Web.Application.ExtensionMethods
+﻿@using MvcForum.Core.ExtensionMethods
+@using MvcForum.Web.Application.ExtensionMethods
 @using MvcForum.Web.ViewModels.Post
 @model PostViewModel
 @{
@@ -127,11 +128,11 @@
             </div>
 
             <div id="postcontent-@postId" class="postcontent">
-                <p>@Html.Raw(AppHelpers.ConvertPostContent(Model.Post.PostContent))</p>
+                <p>@Html.Raw(Model.Post.PostContent.ConvertPostContent())</p>
 
                 @if (Html.Settings().EnableSignatures && !string.IsNullOrEmpty(Model.Post.User.Signature))
                 {
-                    <div class="userpostsignature">@Html.Raw(AppHelpers.ConvertPostContent(Model.Post.User.Signature))</div>
+                    <div class="userpostsignature">@Html.Raw(Model.Post.User.Signature.ConvertPostContent())</div>
                 }
             </div>
 
@@ -237,7 +238,7 @@
                         @foreach (var file in Model.Post.Files.OrderByDescending(o => o.DateCreated))
                         {
                             <li>
-                                <a class="fileupload" href="@Url.Action("Download", "File", new { id = file.Id})" title="@file.FriendlyFilename">
+                                <a class="fileupload" href="@Url.Action("Download", "File", new { id = file.Id})" title="@file.Filename">
                                     @if (AppHelpers.FileIsImage(file.FilePath))
                                     {
                                         <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>

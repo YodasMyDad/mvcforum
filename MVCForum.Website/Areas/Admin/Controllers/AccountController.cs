@@ -11,15 +11,14 @@
     using Core.Interfaces.Services;
     using Core.Models.Entities;
     using Core.Models.Enums;
-    using ViewModels;
+    using Web.ViewModels;
+    using Web.ViewModels.Admin;
     using Web.ViewModels.Mapping;
 
     public class AccountController : BaseAdminController
     {
         private readonly IMembershipUserPointsService _membershipUserPointsService;
-        private readonly IPollAnswerService _pollAnswerService;
         private readonly IPollService _pollService;
-        private readonly IPollVoteService _pollVoteService;
         private readonly IPostService _postService;
         private readonly IRoleService _roleService;
         private readonly ITopicService _topicService;
@@ -40,8 +39,6 @@
         /// <param name="membershipUserPointsService"> </param>
         /// <param name="activityService"> </param>
         /// <param name="pollService"> </param>
-        /// <param name="pollVoteService"> </param>
-        /// <param name="pollAnswerService"> </param>
         /// <param name="uploadedFileService"></param>
         public AccountController(ILoggingService loggingService, IMvcForumContext context,
             IMembershipService membershipService,
@@ -49,8 +46,8 @@
             IRoleService roleService,
             ISettingsService settingsService, IPostService postService, ITopicService topicService,
             IMembershipUserPointsService membershipUserPointsService,
-            IActivityService activityService, IPollService pollService, IPollVoteService pollVoteService,
-            IPollAnswerService pollAnswerService, IUploadedFileService uploadedFileService)
+            IActivityService activityService, IPollService pollService, 
+            IUploadedFileService uploadedFileService)
             : base(loggingService, membershipService, localizationService, settingsService, context)
         {
             ActivityService = activityService;
@@ -59,8 +56,6 @@
             _topicService = topicService;
             _membershipUserPointsService = membershipUserPointsService;
             _pollService = pollService;
-            _pollVoteService = pollVoteService;
-            _pollAnswerService = pollAnswerService;
             _uploadedFileService = uploadedFileService;
         }
 
@@ -152,7 +147,7 @@
         [Authorize(Roles = Constants.AdminRoleName)]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ManageUserPoints(ManageUsersPointsViewModel viewModel)
+        public async Task<ActionResult> ManageUserPoints(ManageUsersPointsViewModel viewModel)
         {
             // Repopulate viewmodel
             var user = MembershipService.GetUser(viewModel.Id);
@@ -172,7 +167,7 @@
                     User = user
                 };
 
-                _membershipUserPointsService.Add(newPoints);
+                await _membershipUserPointsService.Add(newPoints);
 
                 try
                 {
@@ -443,46 +438,6 @@
             var role = new RoleViewModel();
 
             return View(role);
-        }
-
-        [Authorize(Roles = Constants.AdminRoleName)]
-        public ActionResult DeleteUsersPosts(Guid id, bool profileClick = false)
-        {
-            var user = MembershipService.GetUser(id);
-
-
-            if (!user.Roles.Any(x => x.RoleName.Contains(Constants.AdminRoleName)))
-            {
-                MembershipService.ScrubUsers(user);
-
-                try
-                {
-                    Context.SaveChanges();
-                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = "All posts and topics deleted",
-                        MessageType = GenericMessages.success
-                    };
-                }
-                catch (Exception ex)
-                {
-                    Context.RollBack();
-                    LoggingService.Error(ex);
-                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = "Error trying to delete posts and topics",
-                        MessageType = GenericMessages.danger
-                    };
-                }
-            }
-
-            if (profileClick)
-            {
-                return Redirect(user.NiceUrl);
-            }
-            var viewModel = ViewModelMapping.UserToMemberEditViewModel(user);
-            viewModel.AllRoles = _roleService.AllRoles();
-            return View("Edit", viewModel);
         }
 
         [HttpPost]

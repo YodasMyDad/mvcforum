@@ -1,9 +1,10 @@
 ﻿namespace MvcForum.Core.Services
 {
     using System.Text;
+    using System.Threading.Tasks;
+    using Interfaces;
     using Interfaces.Services;
     using Models;
-    using Models.Entities;
     using Models.General;
 
     public partial class ReportService : IReportService
@@ -17,6 +18,20 @@
             _emailService = emailService;
             _settingsService = settingsService;
             _localizationService = localizationService;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _emailService.RefreshContext(context);
+            _settingsService.RefreshContext(context);
+            _localizationService.RefreshContext(context);
+        }
+
+        /// <inheritdoc />
+        public Task<int> SaveChanges()
+        {
+            throw new System.NotImplementedException();
         }
 
         /// <summary>

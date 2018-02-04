@@ -6,7 +6,6 @@
     using System.Web.Mvc;
     using Application.CustomActionResults;
     using Core;
-    using Core.Constants;
     using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Services;
@@ -19,13 +18,12 @@
 
     public partial class CategoryController : BaseController
     {
-        private readonly ICategoryNotificationService _categoryNotificationService;
+        private readonly INotificationService _notificationService;
         private readonly ICategoryService _categoryService;
         private readonly IFavouriteService _favouriteService;
-        private readonly IPollAnswerService _pollAnswerService;
+        private readonly IPollService _pollAnswerService;
         private readonly IPostService _postService;
         private readonly IRoleService _roleService;
-        private readonly ITopicNotificationService _topicNotificationService;
         private readonly ITopicService _topicService;
         private readonly IVoteService _voteService;
 
@@ -39,31 +37,29 @@
         /// <param name="categoryService"></param>
         /// <param name="settingsService"> </param>
         /// <param name="topicService"> </param>
-        /// <param name="categoryNotificationService"> </param>
         /// <param name="cacheService"></param>
         /// <param name="postService"></param>
-        /// <param name="topicNotificationService"></param>
-        /// <param name="pollAnswerService"></param>
+        /// <param name="pollService"></param>
         /// <param name="voteService"></param>
         /// <param name="favouriteService"></param>
         /// <param name="context"></param>
+        /// <param name="notificationService"></param>
         public CategoryController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ICategoryService categoryService,
             ISettingsService settingsService, ITopicService topicService,
-            ICategoryNotificationService categoryNotificationService, ICacheService cacheService,
-            IPostService postService, ITopicNotificationService topicNotificationService,
-            IPollAnswerService pollAnswerService, IVoteService voteService, IFavouriteService favouriteService,
-            IMvcForumContext context)
+            ICacheService cacheService,
+            IPostService postService, 
+            IPollService pollService, IVoteService voteService, IFavouriteService favouriteService,
+            IMvcForumContext context, INotificationService notificationService)
             : base(loggingService, membershipService, localizationService, roleService,
                 settingsService, cacheService, context)
         {
             _categoryService = categoryService;
             _topicService = topicService;
-            _categoryNotificationService = categoryNotificationService;
-            _topicNotificationService = topicNotificationService;
-            _pollAnswerService = pollAnswerService;
+            _pollAnswerService = pollService;
             _voteService = voteService;
             _favouriteService = favouriteService;
+            _notificationService = notificationService;
             _postService = postService;
             _roleService = roleService;
         }
@@ -74,7 +70,7 @@
         }
 
         [ChildActionOnly]
-        public PartialViewResult ListMainCategories()
+        public virtual PartialViewResult ListMainCategories()
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -88,7 +84,7 @@
         }
 
         [ChildActionOnly]
-        public PartialViewResult ListCategorySideMenu()
+        public virtual PartialViewResult ListCategorySideMenu()
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -103,7 +99,7 @@
 
         [Authorize]
         [ChildActionOnly]
-        public PartialViewResult GetSubscribedCategories()
+        public virtual PartialViewResult GetSubscribedCategories()
         {
             var viewModel = new List<CategoryViewModel>();
 
@@ -135,7 +131,7 @@
 
 
         [ChildActionOnly]
-        public PartialViewResult GetCategoryBreadcrumb(Category category)
+        public virtual PartialViewResult GetCategoryBreadcrumb(Category category)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -148,7 +144,7 @@
             return PartialView("GetCategoryBreadcrumb", viewModel);
         }
 
-        public async Task<ActionResult> Show(string slug, int? p)
+        public virtual async Task<ActionResult> Show(string slug, int? p)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -173,7 +169,7 @@
 
                 var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService,
                     loggedOnUsersRole, loggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings(),
-                    _postService, _topicNotificationService, _pollAnswerService, _voteService, _favouriteService);
+                    _postService, _notificationService, _pollAnswerService, _voteService, _favouriteService);
 
                 // Create the main view model for the category
                 var viewModel = new CategoryViewModel
@@ -185,8 +181,8 @@
                     TotalCount = topics.TotalCount,
                     TotalPages = topics.TotalPages,
                     User = loggedOnReadOnlyUser,
-                    IsSubscribed = User.Identity.IsAuthenticated && _categoryNotificationService
-                                       .GetByUserAndCategory(loggedOnReadOnlyUser, category.Category).Any()
+                    IsSubscribed = User.Identity.IsAuthenticated && _notificationService
+                                       .GetCategoryNotificationsByUserAndCategory(loggedOnReadOnlyUser, category.Category).Any()
                 };
 
                 // If there are subcategories then add then with their permissions
@@ -211,7 +207,7 @@
         }
 
         [OutputCache(Duration = (int) CacheTimes.TwoHours)]
-        public ActionResult CategoryRss(string slug)
+        public virtual ActionResult CategoryRss(string slug)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);

@@ -65,25 +65,22 @@ namespace MvcForum.Core.Ioc
             Container.BindInRequestScope<IBadgeService, BadgeService>();
             Container.BindInRequestScope<IMembershipUserPointsService, MembershipUserPointsService>();
             Container.BindInRequestScope<ICategoryPermissionForRoleService, CategoryPermissionForRoleService>();
-            Container.BindInRequestScope<ICategoryNotificationService, CategoryNotificationService>();
-            Container.BindInRequestScope<ITopicNotificationService, TopicNotificationService>();
             Container.BindInRequestScope<IPrivateMessageService, PrivateMessageService>();
             Container.BindInRequestScope<ILoggingService, LoggingService>();
             Container.BindInRequestScope<IEmailService, EmailService>();
             Container.BindInRequestScope<IReportService, ReportService>();
             Container.BindInRequestScope<IActivityService, ActivityService>();
             Container.BindInRequestScope<IPollService, PollService>();
-            Container.BindInRequestScope<IPollVoteService, PollVoteService>();
-            Container.BindInRequestScope<IPollAnswerService, PollAnswerService>();
             Container.BindInRequestScope<IBannedEmailService, BannedEmailService>();
             Container.BindInRequestScope<IBannedWordService, BannedWordService>();
             Container.BindInRequestScope<IUploadedFileService, UploadedFileService>();
             Container.BindInRequestScope<IFavouriteService, FavouriteService>();
             Container.BindInRequestScope<IGlobalPermissionForRoleService, GlobalPermissionForRoleService>();            
-            Container.BindInRequestScope<ITagNotificationService, TagNotificationService>();
+            Container.BindInRequestScope<INotificationService, NotificationService>();
             Container.BindInRequestScope<IBlockService, BlockService>();            
             Container.BindInRequestScope<IPostEditService, PostEditService>();
             Container.BindInRequestScope<IAssemblyProvider, AssemblyProvider>();
+            Container.BindInRequestScope<ISpamService, SpamService>();
         }
     }
 

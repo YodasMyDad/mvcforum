@@ -5,50 +5,67 @@
     using System.Data.Entity;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Web;
     using System.Web.Mvc;
     using Constants;
     using Events;
     using Interfaces;
+    using Interfaces.Pipeline;
     using Interfaces.Services;
     using Models.Entities;
     using Models.Enums;
     using Models.General;
+    using Pipeline;
+    using Reflection;
     using Utilities;
 
     public partial class TopicService : ITopicService
     {
-        private readonly ITopicNotificationService _topicNotificationService;
-        private readonly IMvcForumContext _context;
+        private readonly INotificationService _notificationService;
+        private IMvcForumContext _context;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private readonly ISettingsService _settingsService;
         private readonly IPostService _postService;
         private readonly IFavouriteService _favouriteService;
         private readonly IRoleService _roleService;
         private readonly IPollService _pollService;
-        private readonly IPollAnswerService _pollAnswerService;
         private readonly ICacheService _cacheService;
+        private readonly ILoggingService _loggingService;
 
         public TopicService(IMvcForumContext context, IMembershipUserPointsService membershipUserPointsService,
-            ISettingsService settingsService, ITopicNotificationService topicNotificationService,
+            ISettingsService settingsService, INotificationService notificationService,
             IFavouriteService favouriteService,
-            IPostService postService, IRoleService roleService, IPollService pollService, IPollAnswerService pollAnswerService, ICacheService cacheService)
+            IPostService postService, IRoleService roleService, IPollService pollService, ICacheService cacheService, ILoggingService loggingService)
         {
             _membershipUserPointsService = membershipUserPointsService;
             _settingsService = settingsService;
-            _topicNotificationService = topicNotificationService;
+            _notificationService = notificationService;
             _favouriteService = favouriteService;
             _postService = postService;
             _roleService = roleService;
             _pollService = pollService;
-            _pollAnswerService = pollAnswerService;
             _cacheService = cacheService;
+            _loggingService = loggingService;
             _context = context;
         }
 
-        public Topic SanitizeTopic(Topic topic)
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
         {
-            topic.Name = StringUtils.SafePlainText(topic.Name);
-            return topic;
+            _context = context;
+            _membershipUserPointsService.RefreshContext(context);
+            _settingsService.RefreshContext(context);
+            _notificationService.RefreshContext(context);
+            _favouriteService.RefreshContext(context);
+            _postService.RefreshContext(context);
+            _roleService.RefreshContext(context);
+            _pollService.RefreshContext(context);
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         /// <summary>
@@ -139,17 +156,111 @@
         /// Create a new topic and also the topic starter post
         /// </summary>
         /// <param name="topic"></param>
+        /// <param name="files"></param>
+        /// <param name="tags"></param>
+        /// <param name="subscribe"></param>
+        /// <param name="postContent"></param>
+        /// <param name="post">Optional Post: Used for moving a existing post into a new topic</param>
         /// <returns></returns>
-        public Topic Add(Topic topic)
+        public async Task<IPipelineProcess<Topic>> Create(Topic topic, HttpPostedFileBase[] files, string tags, bool subscribe, string postContent, Post post)
         {
-            topic = SanitizeTopic(topic);
-
-            topic.CreateDate = DateTime.UtcNow;
-
             // url slug generator
-            topic.Slug = ServiceHelpers.GenerateSlug(topic.Name, GetTopicBySlugLike(ServiceHelpers.CreateUrl(topic.Name)), null);
+            topic.Slug = ServiceHelpers.GenerateSlug(topic.Name, 
+                                    GetTopicBySlugLike(ServiceHelpers.CreateUrl(topic.Name))
+                                    .Select(x => x.Slug).ToList(), null);
 
-            return _context.Topic.Add(topic);
+            // Get the pipelines
+            var topicCreatePipes = ForumConfiguration.Instance.PipelinesTopicCreate;
+
+            // The model to process
+            var piplineModel = new PipelineProcess<Topic>(topic);
+
+            // See if we have any files
+            if (files != null && files.Any(x => x != null))
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, files);
+            }
+
+            // See if we have any tags
+            if (!string.IsNullOrWhiteSpace(tags))
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Tags, tags);
+            }
+
+            // See if we have a post
+            if (post != null)
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Post, post);
+            }
+
+            // Add the extended data we need
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Subscribe, subscribe);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.IsEdit, false);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Content, postContent);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<Topic>, Topic>(_context);
+
+            // Register the pipes 
+            var allTopicPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Topic>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in topicCreatePipes)
+            {
+                if (allTopicPipes.ContainsKey(pipe))
+                {
+                    pipeline.Register(allTopicPipes[pipe]);
+                }
+            }
+
+            // Process the pipeline
+            return await pipeline.Process(piplineModel);
+        }
+
+        /// <inheritdoc />
+        public async Task<IPipelineProcess<Topic>> Edit(Topic topic, HttpPostedFileBase[] files, string tags, bool subscribe, 
+            string postContent, string topicName, List<PollAnswer> pollAnswers, int closePollAfterDays)
+        {
+            // url slug generator
+            topic.Slug = ServiceHelpers.GenerateSlug(topic.Name,
+                GetTopicBySlugLike(ServiceHelpers.CreateUrl(topic.Name))
+                    .Select(x => x.Slug).ToList(), null);
+
+            // Get the pipelines
+            var topicPipes = ForumConfiguration.Instance.PipelinesTopicUpdate;
+
+            // The model to process
+            var piplineModel = new PipelineProcess<Topic>(topic);
+
+            // Add the extended data we need
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Subscribe, subscribe);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, files);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Tags, tags);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.IsEdit, true);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Content, postContent);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PollNewAnswers, pollAnswers);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PollCloseAfterDays, closePollAfterDays);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Name, topicName);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<Topic>, Topic>(_context);
+
+            // Register the pipes 
+            var allTopicPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Topic>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in topicPipes)
+            {
+                if (allTopicPipes.ContainsKey(pipe))
+                {
+                    pipeline.Register(allTopicPipes[pipe]);
+                }
+            }
+
+            // Process the pipeline
+            return await pipeline.Process(piplineModel);
         }
 
         /// <summary>
@@ -172,37 +283,6 @@
                         .OrderByDescending(x => x.CreateDate)
                         .Take(amountToTake)
                         .ToList();
-        }
-
-        /// <summary>
-        /// Add a last post to a topic. Must be part of a separate database update
-        /// in EF because of circular dependencies. So save the topic before calling this.
-        /// </summary>
-        /// <param name="topic"></param>
-        /// <param name="postContent"></param>
-        /// <returns></returns>
-        public Post AddLastPost(Topic topic, string postContent)
-        {
-
-            topic = SanitizeTopic(topic);
-
-            // Create the post
-            var post = new Post
-            {
-                DateCreated = DateTime.UtcNow,
-                IsTopicStarter = true,
-                DateEdited = DateTime.UtcNow,
-                PostContent = postContent,
-                User = topic.User,
-                Topic = topic
-            };
-
-            // Add the post
-            _postService.Add(post);
-
-            topic.LastPost = post;
-
-            return post;
         }
 
         public List<MarkAsSolutionReminder> GetMarkAsSolutionReminderList(int days)
@@ -583,9 +663,7 @@
         /// <returns></returns>
         public Topic Get(Guid topicId)
         {
-            var cacheKey = string.Concat(CacheKeys.Topic.StartsWith, "Get-", topicId);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 var topic = _context.Topic
                                     .Include(x => x.Category)
                                     .Include(x => x.LastPost.User)
@@ -594,7 +672,7 @@
                                 .FirstOrDefault(x => x.Id == topicId);
 
                 return topic;
-            });
+         
         }
 
         public List<Topic> Get(List<Guid> topicIds, List<Category> allowedCategories)
@@ -615,78 +693,30 @@
         /// Delete a topic
         /// </summary>
         /// <param name="topic"></param>
-        public void Delete(Topic topic)
+        public async Task<IPipelineProcess<Topic>> Delete(Topic topic)
         {
-            // Remove all notifications on this topic too
-            if (topic.TopicNotifications != null)
+            // Get the pipelines
+            var topicPipes = ForumConfiguration.Instance.PipelinesTopicDelete;
+
+            // The model to process
+            var piplineModel = new PipelineProcess<Topic>(topic);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<Topic>, Topic>(_context);
+
+            // Register the pipes 
+            var allTopicPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Topic>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in topicPipes)
             {
-                var notificationsToDelete = new List<TopicNotification>();
-                notificationsToDelete.AddRange(topic.TopicNotifications);
-                foreach (var topicNotification in notificationsToDelete)
+                if (allTopicPipes.ContainsKey(pipe))
                 {
-                    topic.TopicNotifications.Remove(topicNotification);
-                    _topicNotificationService.Delete(topicNotification);
+                    pipeline.Register(allTopicPipes[pipe]);
                 }
-
-                // Final Clear
-                topic.TopicNotifications.Clear();
             }
 
-            // Remove all favourites on this topic too
-            if (topic.Favourites != null)
-            {
-                var toDelete = new List<Favourite>();
-                toDelete.AddRange(topic.Favourites);
-                foreach (var entity in toDelete)
-                {
-                    topic.Favourites.Remove(entity);
-                    _favouriteService.Delete(entity);
-                }
-
-                // Final Clear
-                topic.Favourites.Clear();
-            }
-
-            // Poll
-            if (topic.Poll != null)
-            {
-                var pollToDelete = topic.Poll;
-
-                // Final Clear
-                topic.Poll = null;
-
-                // Delete the poll 
-                _pollService.Delete(pollToDelete);
-            }
-
-            // First thing - Set the last post as null and clear tags
-            topic.Tags.Clear();
-
-            // Save here to clear the last post
-            _context.SaveChanges();
-
-            // Loop through all the posts and clear the associated entities
-            // then delete the posts
-            if (topic.Posts != null)
-            {
-                var postsToDelete = new List<Post>();
-                postsToDelete.AddRange(topic.Posts);
-
-                foreach (var post in postsToDelete)
-                {
-                    // Posts should only be deleted from this method as it clears
-                    // associated data
-                    _postService.Delete(post, true);
-                }
-
-                topic.Posts.Clear();
-
-                // Clear last post
-                topic.LastPost = null;
-            }
-
-            // Finally delete the topic
-            _context.Topic.Remove(topic);
+            return await pipeline.Process(piplineModel);
         }
 
         public int TopicCount(List<Category> allowedCategories)
@@ -737,7 +767,7 @@
         /// <param name="marker"></param>
         /// <param name="solutionWriter"></param>
         /// <returns>True if topic has been marked as solved</returns>
-        public bool SolveTopic(Topic topic, Post post, MembershipUser marker, MembershipUser solutionWriter)
+        public async Task<bool> SolveTopic(Topic topic, Post post, MembershipUser marker, MembershipUser solutionWriter)
         {
             var solved = false;
 
@@ -768,13 +798,18 @@
                     // Do not give points to the user if they are marking their own post as the solution
                     if (marker.Id != solutionWriter.Id)
                     {
-                        _membershipUserPointsService.Add(new MembershipUserPoints
+                        var result = await _membershipUserPointsService.Add(new MembershipUserPoints
                         {
                             Points = _settingsService.GetSettings().PointsAddedForSolution,
                             User = solutionWriter,
                             PointsFor = PointsFor.Solution,
                             PointsForId = post.Id
                         });
+                        if (!result.Successful)
+                        {
+                            // Just log don't throw
+                            _loggingService.Error(result.ProcessLog.FirstOrDefault());
+                        }
                     }
 
                     EventManager.Instance.FireAfterMarkedAsSolution(this, new MarkedAsSolutionEventArgs
@@ -852,5 +887,6 @@
 
             return matchingTopicTitles <= 0;
         }
+
     }
 }

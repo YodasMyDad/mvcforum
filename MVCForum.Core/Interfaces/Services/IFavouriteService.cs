@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Models.Entities;
 
-    public partial interface IFavouriteService
+    public partial interface IFavouriteService : IContextService
     {
         Favourite Add(Favourite dialogueFavourite);
         Favourite Delete(Favourite dialogueFavourite);

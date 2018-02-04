@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Data.SqlTypes;
-    using System.Drawing;
     using System.Linq;
     using System.Security.Principal;
     using System.Text;
@@ -13,7 +12,6 @@
     using System.Web.Security;
     using Constants;
     using Events;
-    using ExtensionMethods;
     using Interfaces;
     using Interfaces.Pipeline;
     using Interfaces.Services;
@@ -21,7 +19,6 @@
     using Models.Entities;
     using Models.Enums;
     using Models.General;
-    using Newtonsoft.Json;
     using Pipeline;
     using Reflection;
     using Utilities;
@@ -30,21 +27,20 @@
     {
         private const int MaxHoursToResetPassword = 48;
         private readonly IActivityService _activityService;
-        private readonly ICacheService _cacheService;
-        private readonly IMvcForumContext _context;
-        private readonly ILocalizationService _localizationService;
-        private readonly ISettingsService _settingsService;
-        private readonly IVoteService _voteService;
         private readonly IBadgeService _badgeService;
-        private readonly ICategoryNotificationService _categoryNotificationService;
-        private readonly IPrivateMessageService _privateMessageService;
-        private readonly IFavouriteService _favouriteService;
-        private readonly ITopicNotificationService _topicNotificationService;
-        private readonly IMembershipUserPointsService _membershipUserPointsService;
-        private readonly IPollVoteService _pollVoteService;
-        private readonly ITopicService _topicService;
+        private readonly ICacheService _cacheService;
         private readonly ICategoryService _categoryService;
+        private IMvcForumContext _context;
+        private readonly IFavouriteService _favouriteService;
+        private readonly ILocalizationService _localizationService;
+        private readonly IMembershipUserPointsService _membershipUserPointsService;
+        private readonly INotificationService _notificationService;
+        private readonly IPollService _pollService;
         private readonly IPostService _postService;
+        private readonly IPrivateMessageService _privateMessageService;
+        private readonly ISettingsService _settingsService;
+        private readonly ITopicService _topicService;
+        private readonly IVoteService _voteService;
 
         /// <summary>
         ///     Constructor
@@ -56,20 +52,22 @@
         /// <param name="cacheService"></param>
         /// <param name="voteService"></param>
         /// <param name="badgeService"></param>
-        /// <param name="categoryNotificationService"></param>
         /// <param name="privateMessageService"></param>
         /// <param name="favouriteService"></param>
-        /// <param name="topicNotificationService"></param>
         /// <param name="membershipUserPointsService"></param>
-        /// <param name="pollVoteService"></param>
         /// <param name="topicService"></param>
         /// <param name="categoryService"></param>
         /// <param name="postService"></param>
-        public MembershipService(IMvcForumContext context, ISettingsService settingsService, ILocalizationService localizationService, 
-            IActivityService activityService, ICacheService cacheService, IVoteService voteService, IBadgeService badgeService, 
-            ICategoryNotificationService categoryNotificationService, IPrivateMessageService privateMessageService, 
-            IFavouriteService favouriteService, ITopicNotificationService topicNotificationService, IMembershipUserPointsService membershipUserPointsService, 
-            IPollVoteService pollVoteService, ITopicService topicService, ICategoryService categoryService, IPostService postService)
+        /// <param name="notificationService"></param>
+        /// <param name="pollService"></param>
+        public MembershipService(IMvcForumContext context, ISettingsService settingsService,
+            ILocalizationService localizationService,
+            IActivityService activityService, ICacheService cacheService, IVoteService voteService,
+            IBadgeService badgeService,
+            IPrivateMessageService privateMessageService,
+            IFavouriteService favouriteService, IMembershipUserPointsService membershipUserPointsService,
+            ITopicService topicService, ICategoryService categoryService, IPostService postService,
+            INotificationService notificationService, IPollService pollService)
         {
             _settingsService = settingsService;
             _localizationService = localizationService;
@@ -77,16 +75,40 @@
             _cacheService = cacheService;
             _voteService = voteService;
             _badgeService = badgeService;
-            _categoryNotificationService = categoryNotificationService;
             _privateMessageService = privateMessageService;
             _favouriteService = favouriteService;
-            _topicNotificationService = topicNotificationService;
             _membershipUserPointsService = membershipUserPointsService;
-            _pollVoteService = pollVoteService;
             _topicService = topicService;
             _categoryService = categoryService;
             _postService = postService;
+            _notificationService = notificationService;
+            _pollService = pollService;
             _context = context;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+            _settingsService.RefreshContext(context);
+            _localizationService.RefreshContext(context);
+            _activityService.RefreshContext(context);
+            _voteService.RefreshContext(context);
+            _badgeService.RefreshContext(context);
+            _privateMessageService.RefreshContext(context);
+            _favouriteService.RefreshContext(context);
+            _membershipUserPointsService.RefreshContext(context);
+            _topicService.RefreshContext(context);
+            _categoryService.RefreshContext(context);
+            _postService.RefreshContext(context);
+            _notificationService.RefreshContext(context);
+            _pollService.RefreshContext(context);
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         #region Status Codes
@@ -242,11 +264,11 @@
                 CreateDate = now,
                 FailedPasswordAnswerAttempt = 0,
                 FailedPasswordAttemptCount = 0,
-                LastLockoutDate = (DateTime)SqlDateTime.MinValue,
+                LastLockoutDate = (DateTime) SqlDateTime.MinValue,
                 LastPasswordChangedDate = now,
                 IsApproved = false,
                 IsLockedOut = false,
-                LastLoginDate = (DateTime)SqlDateTime.MinValue
+                LastLoginDate = (DateTime) SqlDateTime.MinValue
             };
         }
 
@@ -271,14 +293,15 @@
             newUser.PasswordSalt = salt;
 
             // Add the roles
-            newUser.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
+            newUser.Roles = new List<MembershipRole> {settings.NewMemberStartingRole};
 
             // Set dates
             newUser.CreateDate = newUser.LastPasswordChangedDate = DateTime.UtcNow;
-            newUser.LastLockoutDate = (DateTime)SqlDateTime.MinValue;
+            newUser.LastLockoutDate = (DateTime) SqlDateTime.MinValue;
             newUser.LastLoginDate = DateTime.UtcNow;
             newUser.IsLockedOut = false;
-            newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName, GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)), null);
+            newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName,
+                GetUserBySlugLike(ServiceHelpers.CreateUrl(newUser.UserName)).Select(x => x.Slug).ToList(), null);
 
             // Get the pipelines
             var userCreatePipes = ForumConfiguration.Instance.PipelinesUserCreate;
@@ -287,7 +310,7 @@
             var piplineModel = new PipelineProcess<MembershipUser>(newUser);
 
             // Add the login type to 
-            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.LoginType, JsonConvert.SerializeObject(loginType));
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.LoginType, loginType);
 
             // Get instance of the pipeline to use
             var createUserPipeline = new Pipeline<IPipelineProcess<MembershipUser>, MembershipUser>(_context);
@@ -309,7 +332,8 @@
         }
 
         /// <inheritdoc />
-        public async Task<IPipelineProcess<MembershipUser>> EditUser(MembershipUser userToEdit, IPrincipal loggedInUser, Image image)
+        public async Task<IPipelineProcess<MembershipUser>> EditUser(MembershipUser userToEdit, IPrincipal loggedInUser,
+            HttpPostedFileBase image)
         {
             // Get the pipelines
             var pipes = ForumConfiguration.Instance.PipelinesUserUpdate;
@@ -320,11 +344,10 @@
             // Add the user object
             piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, loggedInUser.Identity.Name);
 
-            // Add the Image as a base 64 image so we can grab it back out
+            // Add the file to the extended data
             if (image != null)
             {
-                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.ImageBase64, image.ImageToBase64());
-                image.Dispose();
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, image);
             }
 
             // Get instance of the pipeline to use
@@ -378,7 +401,7 @@
         }
 
         /// <summary>
-        /// Get the member by id
+        ///     Get the member by id
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -721,12 +744,12 @@
         /// <param name="user"></param>
         public void ProfileUpdated(MembershipUser user)
         {
-            var e = new UpdateProfileEventArgs { User = user };
+            var e = new UpdateProfileEventArgs {User = user};
             EventManager.Instance.FireBeforeProfileUpdated(this, e);
 
             if (!e.Cancel)
             {
-                EventManager.Instance.FireAfterProfileUpdated(this, new UpdateProfileEventArgs { User = user });
+                EventManager.Instance.FireAfterProfileUpdated(this, new UpdateProfileEventArgs {User = user});
                 _activityService.ProfileUpdated(user);
             }
         }
@@ -787,7 +810,7 @@
         public CsvReport FromCsv(List<string> allLines)
         {
             var usersProcessed = new List<string>();
-            var commaSeparator = new[] { ',' };
+            var commaSeparator = new[] {','};
             var report = new CsvReport();
 
             if (allLines == null || allLines.Count == 0)
@@ -877,7 +900,8 @@
                     userToImport = CreateEmptyUser();
                     userToImport.UserName = userName;
                     userToImport.Slug = ServiceHelpers.GenerateSlug(userToImport.UserName,
-                        GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)), userToImport.Slug);
+                        GetUserBySlugLike(ServiceHelpers.CreateUrl(userToImport.UserName)).Select(x => x.Slug).ToList(),
+                        userToImport.Slug);
                     userToImport.Email = email;
                     userToImport.IsApproved = true;
                     userToImport.PasswordSalt = StringUtils.CreateSalt(Constants.SaltSize);
@@ -910,7 +934,7 @@
                     {
                         userToImport.Signature = values[7];
                     }
-                    userToImport.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
+                    userToImport.Roles = new List<MembershipRole> {settings.NewMemberStartingRole};
                     Add(userToImport);
                 }
                 catch (Exception ex)
@@ -927,206 +951,34 @@
         }
 
         /// <summary>
-        /// Scrubs a user, removes everything from points to posts and topics.
+        ///     Scrubs a user, removes everything from points to posts and topics.
         /// </summary>
         /// <param name="user"></param>
-        public void ScrubUsers(MembershipUser user)
+        public async Task<IPipelineProcess<MembershipUser>> ScrubUsers(MembershipUser user)
         {
-            // PROFILE
-            user.Website = string.Empty;
-            user.Twitter = string.Empty;
-            user.Facebook = string.Empty;
-            user.Avatar = string.Empty;
-            user.Signature = string.Empty;
+            // Get the pipelines
+            var pipes = ForumConfiguration.Instance.PipelinesUserScrub;
 
-            //// User Votes
-            if (user.Votes != null)
+            // The model to process
+            var piplineModel = new PipelineProcess<MembershipUser>(user);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<MembershipUser>, MembershipUser>(_context);
+
+            // Register the pipes 
+            var allMembershipUserPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<MembershipUser>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in pipes)
             {
-                var votesToDelete = new List<Vote>();
-                votesToDelete.AddRange(user.Votes);
-                votesToDelete.AddRange(user.VotesGiven);
-                foreach (var d in votesToDelete)
+                if (allMembershipUserPipes.ContainsKey(pipe))
                 {
-                    _voteService.Delete(d);
+                    pipeline.Register(allMembershipUserPipes[pipe]);
                 }
-                user.Votes.Clear();
-                user.VotesGiven.Clear();
-                _context.SaveChanges();
             }
 
-            // User badge time checks
-            if (user.BadgeTypesTimeLastChecked != null)
-            {
-                var toDelete = new List<BadgeTypeTimeLastChecked>();
-                toDelete.AddRange(user.BadgeTypesTimeLastChecked);
-                foreach (var obj in toDelete)
-                {
-                    _badgeService.DeleteTimeLastChecked(obj);
-                }
-                user.BadgeTypesTimeLastChecked.Clear();
-                _context.SaveChanges();
-            }
-
-            // User Badges
-            if (user.Badges != null)
-            {
-                var toDelete = new List<Badge>();
-                toDelete.AddRange(user.Badges);
-                foreach (var obj in toDelete)
-                {
-                    _badgeService.Delete(obj);
-                }
-                user.Badges.Clear();
-                _context.SaveChanges();
-            }
-
-            // User category notifications
-            if (user.CategoryNotifications != null)
-            {
-                var toDelete = new List<CategoryNotification>();
-                toDelete.AddRange(user.CategoryNotifications);
-                foreach (var obj in toDelete)
-                {
-                    _categoryNotificationService.Delete(obj);
-                }
-                user.CategoryNotifications.Clear();
-                _context.SaveChanges();
-            }
-
-            // User PM Received
-            if (user.PrivateMessagesReceived != null)
-            {
-                var toDelete = new List<PrivateMessage>();
-                toDelete.AddRange(user.PrivateMessagesReceived);
-                foreach (var obj in toDelete)
-                {
-                    _privateMessageService.DeleteMessage(obj);
-                }
-                user.PrivateMessagesReceived.Clear();
-                _context.SaveChanges();
-            }
-
-            // User PM Sent
-            if (user.PrivateMessagesSent != null)
-            {
-                var toDelete = new List<PrivateMessage>();
-                toDelete.AddRange(user.PrivateMessagesSent);
-                foreach (var obj in toDelete)
-                {
-                    _privateMessageService.DeleteMessage(obj);
-                }
-                user.PrivateMessagesSent.Clear();
-                _context.SaveChanges();
-            }
-
-            // User Favourites
-            if (user.Favourites != null)
-            {
-                var toDelete = new List<Favourite>();
-                toDelete.AddRange(user.Favourites);
-                foreach (var obj in toDelete)
-                {
-                    _favouriteService.Delete(obj);
-                }
-                user.Favourites.Clear();
-                _context.SaveChanges();
-            }
-
-            if (user.TopicNotifications != null)
-            {
-                var notificationsToDelete = new List<TopicNotification>();
-                notificationsToDelete.AddRange(user.TopicNotifications);
-                foreach (var topicNotification in notificationsToDelete)
-                {
-                    _topicNotificationService.Delete(topicNotification);
-                }
-                user.TopicNotifications.Clear();
-            }
-
-            // Also clear their points
-            var userPoints = user.Points;
-            if (userPoints.Any())
-            {
-                var pointsList = new List<MembershipUserPoints>();
-                pointsList.AddRange(userPoints);
-                foreach (var point in pointsList)
-                {
-                    point.User = null;
-                    _membershipUserPointsService.Delete(point);
-                }
-                user.Points.Clear();
-            }
-
-            // Now clear all activities for this user
-            var usersActivities = _activityService.GetDataFieldByGuid(user.Id);
-            _activityService.Delete(usersActivities.ToList());
-            _context.SaveChanges();
-
-            // Also clear their poll votes
-            var userPollVotes = user.PollVotes;
-            if (userPollVotes.Any())
-            {
-                var pollList = new List<PollVote>();
-                pollList.AddRange(userPollVotes);
-                foreach (var vote in pollList)
-                {
-                    vote.User = null;
-                    _pollVoteService.Delete(vote);
-                }
-                user.PollVotes.Clear();
-                _context.SaveChanges();
-            }
-
-            //// ######### POSTS TOPICS ########
-
-            // Delete all topics first
-            // This will get rid of everyone elses posts associated with this users topic too
-            var topics = user.Topics;
-            if (topics != null && topics.Any())
-            {
-                var topicList = new List<Topic>();
-                topicList.AddRange(topics);
-                foreach (var topic in topicList)
-                {
-                    _topicService.Delete(topic);
-                }
-                user.Topics.Clear();
-                _context.SaveChanges();
-            }
-
-            // Now sorts Last Posts on topics and delete all the users posts
-            var posts = user.Posts;
-            if (posts != null && posts.Any())
-            {
-                var postIds = posts.Select(x => x.Id).ToList();
-
-                // Get all categories
-                var allCategories = _categoryService.GetAll();
-
-                // Need to see if any of these are last posts on Topics
-                // If so, need to swap out last post
-                var lastPostTopics = _topicService.GetTopicsByLastPost(postIds, allCategories.ToList());
-                foreach (var topic in lastPostTopics.Where(x => x.User.Id != user.Id))
-                {
-                    var lastPost = topic.Posts.Where(x => !postIds.Contains(x.Id)).OrderByDescending(x => x.DateCreated).FirstOrDefault();
-                    topic.LastPost = lastPost;
-                }
-
-                _context.SaveChanges();
-
-                // Delete all posts
-                var postList = new List<Post>();
-                postList.AddRange(posts);
-                foreach (var post in postList)
-                {
-                    _postService.Delete(post, true);
-                }
-
-                user.UploadedFiles.Clear();
-                user.Posts.Clear();
-
-                _context.SaveChanges();
-            }
+            // Process the pipeline
+            return await pipeline.Process(piplineModel);
         }
 
         /// <summary>

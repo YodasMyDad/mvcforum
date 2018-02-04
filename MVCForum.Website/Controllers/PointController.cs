@@ -22,7 +22,7 @@
 
         [ChildActionOnly]
         [OutputCache(Duration = (int) CacheTimes.TwoHours)]
-        public PartialViewResult CurrentWeekHighPointUsers()
+        public virtual PartialViewResult CurrentWeekHighPointUsers()
         {
             var highEarners = _membershipUserPointsService.GetCurrentWeeksPoints(10);
             var viewModel = new HighEarnersPointViewModel {HighEarners = highEarners};

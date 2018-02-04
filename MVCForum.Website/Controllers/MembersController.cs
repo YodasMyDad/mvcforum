@@ -1,20 +1,15 @@
 ﻿namespace MvcForum.Web.Controllers
 {
     using System;
-    using System.Drawing;
-    using System.IO;
     using System.Linq;
     using System.Security.Principal;
     using System.Text;
     using System.Threading.Tasks;
     using System.Web;
-    using System.Web.Hosting;
     using System.Web.Mvc;
     using System.Web.Security;
-    using Areas.Admin.ViewModels;
     using Core;
     using Core.Constants;
-    using Core.Events;
     using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Pipeline;
@@ -24,8 +19,7 @@
     using Core.Models.General;
     using Core.Pipeline;
     using Core.Reflection;
-    using Core.Utilities;
-    using Newtonsoft.Json;
+    using ViewModels;
     using ViewModels.Admin;
     using ViewModels.ExtensionMethods;
     using ViewModels.Mapping;
@@ -38,26 +32,43 @@
     /// </summary>
     public partial class MembersController : BaseController
     {
-        private readonly IBannedEmailService _bannedEmailService;
-        private readonly IBannedWordService _bannedWordService;
         private readonly ICategoryService _categoryService;
         private readonly IEmailService _emailService;
         private readonly IFavouriteService _favouriteService;
-        private readonly IPollAnswerService _pollAnswerService;
+        private readonly INotificationService _notificationService;
+        private readonly IPollService _pollService;
         private readonly IPostService _postService;
         private readonly IPrivateMessageService _privateMessageService;
         private readonly IReportService _reportService;
-        private readonly ITopicNotificationService _topicNotificationService;
         private readonly ITopicService _topicService;
         private readonly IVoteService _voteService;
 
+        /// <summary>
+        ///     Constructor
+        /// </summary>
+        /// <param name="loggingService"></param>
+        /// <param name="membershipService"></param>
+        /// <param name="localizationService"></param>
+        /// <param name="roleService"></param>
+        /// <param name="settingsService"></param>
+        /// <param name="postService"></param>
+        /// <param name="reportService"></param>
+        /// <param name="emailService"></param>
+        /// <param name="privateMessageService"></param>
+        /// <param name="categoryService"></param>
+        /// <param name="topicService"></param>
+        /// <param name="cacheService"></param>
+        /// <param name="notificationService"></param>
+        /// <param name="pollService"></param>
+        /// <param name="voteService"></param>
+        /// <param name="favouriteService"></param>
+        /// <param name="context"></param>
         public MembersController(ILoggingService loggingService, IMembershipService membershipService,
             ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
             IPostService postService, IReportService reportService, IEmailService emailService,
-            IPrivateMessageService privateMessageService, IBannedEmailService bannedEmailService,
-            IBannedWordService bannedWordService, ICategoryService categoryService, ITopicService topicService,
-            ICacheService cacheService, ITopicNotificationService topicNotificationService,
-            IPollAnswerService pollAnswerService, IVoteService voteService, IFavouriteService favouriteService,
+            IPrivateMessageService privateMessageService, ICategoryService categoryService, ITopicService topicService,
+            ICacheService cacheService, INotificationService notificationService,
+            IPollService pollService, IVoteService voteService, IFavouriteService favouriteService,
             IMvcForumContext context)
             : base(loggingService, membershipService, localizationService, roleService,
                 settingsService, cacheService, context)
@@ -66,12 +77,10 @@
             _reportService = reportService;
             _emailService = emailService;
             _privateMessageService = privateMessageService;
-            _bannedEmailService = bannedEmailService;
-            _bannedWordService = bannedWordService;
             _categoryService = categoryService;
             _topicService = topicService;
-            _topicNotificationService = topicNotificationService;
-            _pollAnswerService = pollAnswerService;
+            _notificationService = notificationService;
+            _pollService = pollService;
             _voteService = voteService;
             _favouriteService = favouriteService;
         }
@@ -82,37 +91,32 @@
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize(Roles = Constants.AdminRoleName)]
-        public ActionResult SrubAndBanUser(Guid id)
+        public virtual async Task<ActionResult> SrubAndBanUser(Guid id)
         {
             var user = MembershipService.GetUser(id);
-
-
-            if (!user.Roles.Any(x => x.RoleName.Contains(Constants.AdminRoleName)))
+            var scrubResult = await MembershipService.ScrubUsers(user);
+            if (!scrubResult.Successful)
             {
-                MembershipService.ScrubUsers(user);
-
-                try
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
-                    Context.SaveChanges();
-                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = LocalizationService.GetResourceString("Members.SuccessfulSrub"),
-                        MessageType = GenericMessages.success
-                    };
-                }
-                catch (Exception ex)
-                {
-                    Context.RollBack();
-                    LoggingService.Error(ex);
-                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = LocalizationService.GetResourceString("Members.UnSuccessfulSrub"),
-                        MessageType = GenericMessages.danger
-                    };
-                }
+                    Message = LocalizationService.GetResourceString("Members.UnSuccessfulSrub"),
+                    MessageType = GenericMessages.danger
+                };
             }
+            else
+            {
+                // Set the user to banned
+                scrubResult.EntityToProcess.IsBanned = true;
 
+                // Save
+                await Context.SaveChangesAsync();
 
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = LocalizationService.GetResourceString("Members.SuccessfulSrub"),
+                    MessageType = GenericMessages.success
+                };
+            }
             var viewModel = ViewModelMapping.UserToMemberEditViewModel(user);
             viewModel.AllRoles = RoleService.AllRoles();
             return Redirect(user.NiceUrl);
@@ -124,7 +128,7 @@
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize]
-        public ActionResult BanMember(Guid id)
+        public virtual ActionResult BanMember(Guid id)
         {
             var user = MembershipService.GetUser(id);
             var currentUser = MembershipService.GetUser(User.Identity.Name, true);
@@ -167,7 +171,7 @@
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize]
-        public ActionResult UnBanMember(Guid id)
+        public virtual ActionResult UnBanMember(Guid id)
         {
             var user = MembershipService.GetUser(id);
             var currentUser = MembershipService.GetUser(User.Identity.Name, true);
@@ -209,7 +213,7 @@
         /// </summary>
         /// <returns></returns>
         [ChildActionOnly]
-        public PartialViewResult GetCurrentActiveMembers()
+        public virtual PartialViewResult GetCurrentActiveMembers()
         {
             var viewModel = new ActiveMembersViewModel
             {
@@ -222,7 +226,7 @@
         ///     Does a last active check
         /// </summary>
         /// <returns></returns>
-        public JsonResult LastActiveCheck()
+        public virtual JsonResult LastActiveCheck()
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -263,7 +267,7 @@
         /// </summary>
         /// <param name="slug"></param>
         /// <returns></returns>
-        public ActionResult GetByName(string slug)
+        public virtual ActionResult GetByName(string slug)
         {
             var member = MembershipService.GetUserBySlug(slug);
             var loggedOnReadOnlyUser = User.Identity.IsAuthenticated
@@ -295,7 +299,7 @@
         ///     Add a new user
         /// </summary>
         /// <returns></returns>
-        public ActionResult Register()
+        public virtual ActionResult Register()
         {
             if (SettingsService.GetSettings().SuspendRegistration != true)
             {
@@ -331,7 +335,7 @@
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(MemberAddViewModel userModel)
+        public virtual async Task<ActionResult> Register(MemberAddViewModel userModel)
         {
             var settings = SettingsService.GetSettings();
             if (settings.SuspendRegistration != true &&
@@ -371,7 +375,7 @@
         ///     Social login validator which passes view model as temp data
         /// </summary>
         /// <returns></returns>
-        public async Task<ActionResult> SocialLoginValidator()
+        public virtual async Task<ActionResult> SocialLoginValidator()
         {
             // Store the viewModel in TempData - Which we'll use in the register logic
             if (TempData[Constants.MemberRegisterViewModel] != null)
@@ -400,18 +404,20 @@
         ///     All the logic to regsiter a member
         /// </summary>
         /// <returns></returns>
-        public ActionResult MemberRegisterLogic(IPipelineProcess<MembershipUser> pipelineProcess)
+        public virtual ActionResult MemberRegisterLogic(IPipelineProcess<MembershipUser> pipelineProcess)
         {
             // We get these from the pipelineprocess and not from the settings as they can be changed during the process (i.e. Social login)
-            var manuallyAuthoriseMembers = Convert.ToBoolean(pipelineProcess.ExtendedData.GetExtendedDataItem(Constants.ExtendedDataKeys.ManuallyAuthoriseMembers));
-            var memberEmailAuthorisationNeeded = Convert.ToBoolean(pipelineProcess.ExtendedData.GetExtendedDataItem(Constants.ExtendedDataKeys.MemberEmailAuthorisationNeeded));
+            var manuallyAuthoriseMembers =
+                pipelineProcess.ExtendedData[Constants.ExtendedDataKeys.ManuallyAuthoriseMembers] as bool?;
+            var memberEmailAuthorisationNeeded =
+                pipelineProcess.ExtendedData[Constants.ExtendedDataKeys.MemberEmailAuthorisationNeeded] as bool?;
 
             // Set the view bag message here
-            SetRegisterViewBagMessage(manuallyAuthoriseMembers, memberEmailAuthorisationNeeded,
+            SetRegisterViewBagMessage(manuallyAuthoriseMembers == true, memberEmailAuthorisationNeeded == true,
                 pipelineProcess.EntityToProcess);
 
             // Should we redirect to the home page
-            var homeRedirect = !manuallyAuthoriseMembers && !memberEmailAuthorisationNeeded;
+            var homeRedirect = manuallyAuthoriseMembers != true && memberEmailAuthorisationNeeded != true;
 
             // Get the return url
             var returnUrl = pipelineProcess.EntityToProcess.GetExtendedDataItem(Constants.ExtendedDataKeys.ReturnUrl);
@@ -493,7 +499,7 @@
         /// <param name="manuallyAuthoriseMembers"></param>
         /// <param name="memberEmailAuthorisationNeeded"></param>
         /// <returns></returns>
-        public ActionResult ResendEmailConfirmation(string username, bool manuallyAuthoriseMembers,
+        public virtual ActionResult ResendEmailConfirmation(string username, bool manuallyAuthoriseMembers,
             bool memberEmailAuthorisationNeeded)
         {
             try
@@ -547,7 +553,7 @@
         /// <param name="id"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public ActionResult EmailConfirmation(Guid id, Guid key)
+        public virtual ActionResult EmailConfirmation(Guid id, Guid key)
         {
             // Checkconfirmation
             var user = MembershipService.GetUser(id);
@@ -614,7 +620,7 @@
         ///     Log on
         /// </summary>
         /// <returns></returns>
-        public ActionResult LogOn()
+        public virtual ActionResult LogOn()
         {
             // Create the empty view model
             var viewModel = new LogOnViewModel();
@@ -636,7 +642,7 @@
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> LogOn(LogOnViewModel model)
+        public virtual async Task<ActionResult> LogOn(LogOnViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -657,7 +663,8 @@
                 var loginUserPipeline = new Pipeline<IPipelineProcess<MembershipUser>, MembershipUser>(Context);
 
                 // Register the pipes 
-                var allMembershipUserPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<MembershipUser>>>();
+                var allMembershipUserPipes =
+                    ImplementationManager.GetInstances<IPipe<IPipelineProcess<MembershipUser>>>();
 
                 // Loop through the pipes and add the ones we want
                 foreach (var pipe in userLoginPipes)
@@ -707,7 +714,7 @@
         ///     Get: log off user
         /// </summary>
         /// <returns></returns>
-        public ActionResult LogOff()
+        public virtual ActionResult LogOff()
         {
             FormsAuthentication.SignOut();
             TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
@@ -719,7 +726,7 @@
         }
 
         [HttpPost]
-        public PartialViewResult GetMemberDiscussions(Guid id)
+        public virtual PartialViewResult GetMemberDiscussions(Guid id)
         {
             if (Request.IsAjaxRequest())
             {
@@ -742,7 +749,7 @@
                 // Get the Topic View Models
                 var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, usersRole,
                     loggedOnReadOnlyUser, allowedCategories, SettingsService.GetSettings(), _postService,
-                    _topicNotificationService, _pollAnswerService, _voteService, _favouriteService);
+                    _notificationService, _pollService, _voteService, _favouriteService);
 
                 // create the view model
                 var viewModel = new ViewMemberDiscussionsViewModel
@@ -762,7 +769,7 @@
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize]
-        public ActionResult Edit(Guid id)
+        public virtual ActionResult Edit(Guid id)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -790,7 +797,7 @@
         /// <returns></returns>
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> Edit(MemberFrontEndEditViewModel userModel)
+        public virtual async Task<ActionResult> Edit(MemberFrontEndEditViewModel userModel)
         {
             // Get the user to edit from the database            
             var dbUser = MembershipService.GetUser(userModel.Id);
@@ -802,24 +809,13 @@
             userModel.AmountOfPoints = user.TotalPoints;
 
             // Avatar holding image
-            Image avatar = null;
+            HttpPostedFileBase avatar = null;
 
             // Check image for upload
             if (userModel.Files.Any(x => x != null))
             {
                 // See if file is ok and then convert to image
-                var avatarFile = userModel.Files[0];
-                var fileOkResult = avatarFile.CanBeUploaded(LocalizationService);
-                if (fileOkResult.IsOk)
-                {
-                    avatar = avatarFile.ToImage();
-                }
-                else
-                {
-                    // If there is a problem with the file then return the message
-                    ModelState.AddModelError(string.Empty, fileOkResult.Message);
-                    return View(userModel);
-                }
+                avatar = userModel.Files[0];
             }
 
             // Edit the user via the pipelines
@@ -832,7 +828,8 @@
 
             if (pipeline.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.UsernameChanged))
             {
-                var usernameChanged = Convert.ToBoolean(pipeline.ExtendedData.GetExtendedDataItem(Constants.ExtendedDataKeys.UsernameChanged));
+                var test = pipeline.ExtendedData[Constants.ExtendedDataKeys.UsernameChanged] as bool?;
+                var usernameChanged = test == true;
                 if (usernameChanged)
                 {
                     // User has changed their username so need to log them in
@@ -888,7 +885,7 @@
         /// <param name="isDropDown"></param>
         /// <returns></returns>
         [Authorize]
-        public PartialViewResult SideAdminPanel(bool isDropDown)
+        public virtual PartialViewResult SideAdminPanel(bool isDropDown)
         {
             var privateMessageCount = 0;
             var moderateCount = 0;
@@ -922,7 +919,7 @@
         ///     Member profile tools
         /// </summary>
         /// <returns></returns>
-        public PartialViewResult AdminMemberProfileTools()
+        public virtual PartialViewResult AdminMemberProfileTools()
         {
             return PartialView();
         }
@@ -933,7 +930,7 @@
         /// <param name="term"></param>
         /// <returns></returns>
         [Authorize]
-        public string AutoComplete(string term)
+        public virtual string AutoComplete(string term)
         {
             if (!string.IsNullOrWhiteSpace(term))
             {
@@ -961,7 +958,7 @@
         /// <param name="id"></param>
         /// <returns></returns>
         [Authorize]
-        public ActionResult Report(Guid id)
+        public virtual ActionResult Report(Guid id)
         {
             if (SettingsService.GetSettings().EnableMemberReporting)
             {
@@ -978,7 +975,7 @@
         /// <returns></returns>
         [HttpPost]
         [Authorize]
-        public ActionResult Report(ReportMemberViewModel viewModel)
+        public virtual ActionResult Report(ReportMemberViewModel viewModel)
         {
             if (SettingsService.GetSettings().EnableMemberReporting)
             {
@@ -1020,7 +1017,7 @@
         /// <param name="search"></param>
         /// <returns></returns>
         [Authorize]
-        public async Task<ActionResult> Search(int? p, string search)
+        public virtual async Task<ActionResult> Search(int? p, string search)
         {
             var pageIndex = p ?? 1;
             var allUsers = string.IsNullOrWhiteSpace(search)
@@ -1053,7 +1050,7 @@
         /// </summary>
         /// <returns></returns>
         [ChildActionOnly]
-        public PartialViewResult LatestMembersJoined()
+        public virtual PartialViewResult LatestMembersJoined()
         {
             var viewModel = new ListLatestMembersViewModel();
             var users = MembershipService.GetLatestUsers(10).ToDictionary(o => o.UserName, o => o.NiceUrl);
@@ -1066,7 +1063,7 @@
         /// </summary>
         /// <returns></returns>
         [Authorize]
-        public ActionResult ChangePassword()
+        public virtual ActionResult ChangePassword()
         {
             return View();
         }
@@ -1079,7 +1076,7 @@
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult ChangePassword(ChangePasswordViewModel model)
+        public virtual ActionResult ChangePassword(ChangePasswordViewModel model)
         {
             var changePasswordSucceeded = true;
 
@@ -1122,7 +1119,7 @@
         ///     Forgot password view
         /// </summary>
         /// <returns></returns>
-        public ActionResult ForgotPassword()
+        public virtual ActionResult ForgotPassword()
         {
             return View();
         }
@@ -1134,7 +1131,7 @@
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ForgotPassword(ForgotPasswordViewModel forgotPasswordViewModel)
+        public virtual ActionResult ForgotPassword(ForgotPasswordViewModel forgotPasswordViewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -1205,7 +1202,7 @@
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ViewResult PasswordResetSent()
+        public virtual ViewResult PasswordResetSent()
         {
             return View();
         }
@@ -1217,7 +1214,7 @@
         /// <param name="token"></param>
         /// <returns></returns>
         [HttpGet]
-        public ViewResult ResetPassword(Guid? id, string token)
+        public virtual ViewResult ResetPassword(Guid? id, string token)
         {
             var model = new ResetPasswordViewModel
             {
@@ -1241,7 +1238,7 @@
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ResetPassword(ResetPasswordViewModel postedModel)
+        public virtual ActionResult ResetPassword(ResetPasswordViewModel postedModel)
         {
             if (!ModelState.IsValid)
             {
@@ -1290,7 +1287,7 @@
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public ViewResult PasswordChanged()
+        public virtual ViewResult PasswordChanged()
         {
             return View();
         }

@@ -7,7 +7,8 @@
     using Core.Interfaces;
     using Core.Interfaces.Services;
     using Core.Models.General;
-    using ViewModels;
+    using Web.ViewModels;
+    using Web.ViewModels.Admin;
 
     [Authorize(Roles = Constants.AdminRoleName)]
     public class LogController : BaseAdminController

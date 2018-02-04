@@ -8,7 +8,7 @@
     using Models.Enums;
     using Models.General;
 
-    public partial interface IBadgeService
+    public partial interface IBadgeService : IContextService
     {
         /// <summary>
         ///     Bring the database into line with the badge classes found at runtime
@@ -22,7 +22,7 @@
         /// <param name="badgeType"></param>
         /// <param name="user"></param>
         /// <returns>True if badge was awarded</returns>
-        bool ProcessBadge(BadgeType badgeType, MembershipUser user);
+        Task<bool> ProcessBadge(BadgeType badgeType, MembershipUser user);
 
         /// <summary>
         ///     Gets a paged list of badges

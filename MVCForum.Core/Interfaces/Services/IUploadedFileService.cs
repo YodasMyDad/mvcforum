@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Models.General;
 
-    public partial interface IUploadedFileService
+    public partial interface IUploadedFileService : IContextService
     {
         UploadedFile Add(UploadedFile uploadedFile);
         void Delete(UploadedFile uploadedFile);

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
+    using System.Threading.Tasks;
     using Constants;
     using Events;
     using Interfaces;
@@ -13,12 +14,24 @@
     public partial class FavouriteService : IFavouriteService
     {
         private readonly ICacheService _cacheService;
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
 
         public FavouriteService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
             _context = context;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         public Favourite Add(Favourite favourite)

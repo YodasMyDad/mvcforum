@@ -24,7 +24,7 @@
         private readonly ILoggingService _loggingService;
         private readonly ICacheService _cacheService;
         private Language _currentLanguage;
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly Dictionary<string, string> _perRequestLanguageStrings;
 
         /// <summary>
@@ -43,6 +43,18 @@
             _perRequestLanguageStrings = ResourceKeysByLanguage(CurrentLanguage);
         }
 
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+            _settingsService.RefreshContext(context);
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
+        }
 
         #region Sanitizing
 

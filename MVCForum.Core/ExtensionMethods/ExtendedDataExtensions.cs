@@ -1,6 +1,5 @@
 ﻿namespace MvcForum.Core.ExtensionMethods
 {
-    using System.Collections.Generic;
     using Models;
     using Models.Entities;
     using Newtonsoft.Json;
@@ -74,26 +73,29 @@
         public static void RemoveExtendedDataItem<T>(this T entity, string key)
             where T : ExtendedDataEntity
         {
-            // Hold everything
-            var extendedData = entity.ExtendedData;
-
-            // Get the one to remove
-            var toRemoveAt = 0;
-            for (var index = 0; index < entity.ExtendedData.Count; index++)
+            if (entity.ExtendedData.Count > 0)
             {
-                toRemoveAt = index;
-                var extendedDataItem = entity.ExtendedData[index];
-                if (extendedDataItem.Key == key)
+                // Hold everything
+                var extendedData = entity.ExtendedData;
+
+                // Get the one to remove
+                var toRemoveAt = 0;
+                for (var index = 0; index < entity.ExtendedData.Count; index++)
                 {
-                    break;
+                    toRemoveAt = index;
+                    var extendedDataItem = entity.ExtendedData[index];
+                    if (extendedDataItem.Key == key)
+                    {
+                        break;
+                    }
                 }
+
+                // Remove it
+                extendedData.RemoveAt(toRemoveAt);
+
+                // We have to reset the data to trigger the set
+                entity.ExtendedData = extendedData;
             }
-
-            // Remove it
-            extendedData.RemoveAt(toRemoveAt);
-
-            // We have to reset the data to trigger the set
-            entity.ExtendedData = extendedData;
         }
 
         /// <summary>
@@ -139,36 +141,6 @@
             return default(TTwo);
         }
 
-
-        /// <summary>
-        ///     Gets an extended data value by key.
-        /// </summary>
-        /// <param name="extendedDataItems"></param>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public static string GetExtendedDataItem(this Dictionary<string, string> extendedDataItems, string key)
-        {
-            if (extendedDataItems.ContainsKey(key))
-            {
-                return extendedDataItems[key];
-            }           
-            return string.Empty;
-        }
-
-        /// <summary>
-        /// Gets an extended data item and convert it to a type
-        /// </summary>
-        /// <param name="extendedDataItems"></param>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public static T GetExtendedDataItem<T>(this Dictionary<string, string> extendedDataItems, string key)
-        {
-            if (extendedDataItems.ContainsKey(key))
-            {
-                return JsonConvert.DeserializeObject<T>(extendedDataItems[key]);
-            }
-            return default(T);
-        }
     }
 
 

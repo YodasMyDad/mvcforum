@@ -2,15 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Drawing;
     using System.Security.Principal;
     using System.Threading.Tasks;
+    using System.Web;
     using Models.Entities;
     using Models.Enums;
     using Models.General;
     using Pipeline;
 
-    public interface IMembershipService
+    public partial interface IMembershipService : IContextService
     {
         LoginAttemptStatus LastLoginStatus { get; }
         MembershipUser Add(MembershipUser newUser);
@@ -30,7 +30,7 @@
         void UnlockUser(string username, bool resetPasswordAttempts);
         MembershipUser CreateEmptyUser();
         Task<IPipelineProcess<MembershipUser>> CreateUser(MembershipUser newUser, LoginType loginType);
-        Task<IPipelineProcess<MembershipUser>> EditUser(MembershipUser userToEdit, IPrincipal loggedInUser, Image image);
+        Task<IPipelineProcess<MembershipUser>> EditUser(MembershipUser userToEdit, IPrincipal loggedInUser, HttpPostedFileBase image);
         string ErrorCodeToString(MembershipCreateStatus createStatus);
         IList<MembershipUser> GetAll();
         Task<PaginatedList<MembershipUser>> GetAll(int pageIndex, int pageSize);
@@ -49,7 +49,7 @@
         ///     Clears everything - Posts, polls, votes, favourites, profile etc...
         /// </summary>
         /// <param name="user"></param>
-        void ScrubUsers(MembershipUser user);
+        Task<IPipelineProcess<MembershipUser>> ScrubUsers(MembershipUser user);
         bool UpdatePasswordResetToken(MembershipUser user);
         bool ClearPasswordResetToken(MembershipUser user);
         bool IsPasswordResetTokenValid(MembershipUser user, string token);

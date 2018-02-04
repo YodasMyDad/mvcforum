@@ -3,8 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Admin;
     using Application;
-    using Areas.Admin.ViewModels;
     using Core;
     using Core.Constants;
     using Core.Interfaces.Services;
@@ -244,8 +244,8 @@
             List<Category> allowedCategories,
             Settings settings,
             IPostService postService,
-            ITopicNotificationService topicNotificationService,
-            IPollAnswerService pollAnswerService,
+            INotificationService topicNotificationService,
+            IPollService pollService,
             IVoteService voteService,
             IFavouriteService favouriteService)
         {
@@ -267,7 +267,7 @@
                 var permission = permissions[topic.Category];
                 var topicPosts = groupedPosts.Contains(id) ? groupedPosts[id].ToList() : new List<Post>();
                 viewModels.Add(CreateTopicViewModel(topic, permission, topicPosts, null, null, null, null, loggedOnUser,
-                    settings, topicNotificationService, pollAnswerService, voteService, favouriteService));
+                    settings, topicNotificationService, pollService, voteService, favouriteService));
             }
             return viewModels;
         }
@@ -281,8 +281,8 @@
             int? totalPages,
             MembershipUser loggedOnUser,
             Settings settings, 
-            ITopicNotificationService topicNotificationService,
-            IPollAnswerService pollAnswerService,
+            INotificationService topicNotificationService,
+            IPollService pollService,
             IVoteService voteService,
             IFavouriteService favouriteService,
             bool getExtendedData = false)
@@ -332,7 +332,7 @@
             // Map data from the starter post viewmodel
             viewModel.VotesUp = startPostVotes.Count(x => x.Amount > 0);
             viewModel.VotesDown = startPostVotes.Count(x => x.Amount < 0);
-            viewModel.Answers = totalCount != null ? (int) totalCount : posts.Count() - 1;
+            viewModel.Answers = totalCount ?? posts.Count - 1;
 
             // Create the ALL POSTS view models
             viewModel.Posts =
@@ -344,7 +344,7 @@
             {
                 // See if the user has subscribed to this topic or not
                 var isSubscribed = userIsAuthenticated &&
-                                   topicNotificationService.GetByUserAndTopic(loggedOnUser, topic).Any();
+                                   topicNotificationService.GetTopicNotificationsByUserAndTopic(loggedOnUser, topic).Any();
                 viewModel.IsSubscribed = isSubscribed;
 
                 // See if the topic has a poll, and if so see if this user viewing has already voted
@@ -359,7 +359,7 @@
                         UserAllowedToVote = permission[ForumConfiguration.Instance.PermissionVoteInPolls].IsTicked
                     };
 
-                    var answers = pollAnswerService.GetAllPollAnswersByPoll(topic.Poll);
+                    var answers = pollService.GetAllPollAnswersByPoll(topic.Poll);
                     if (answers.Any())
                     {
                         var pollvotes = answers.SelectMany(x => x.PollVotes).ToList();

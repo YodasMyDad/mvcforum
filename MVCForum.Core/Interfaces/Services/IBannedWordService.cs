@@ -6,7 +6,7 @@
     using Models.Entities;
     using Models.General;
 
-    public partial interface IBannedWordService
+    public partial interface IBannedWordService : IContextService
     {
         BannedWord Add(BannedWord bannedWord);
         void Delete(BannedWord bannedWord);

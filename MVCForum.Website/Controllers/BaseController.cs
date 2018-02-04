@@ -5,16 +5,16 @@
     using System.Web.Mvc;
     using System.Web.Routing;
     using System.Web.Security;
-    using Areas.Admin.ViewModels;
     using Core.Constants;
     using Core.Interfaces;
     using Core.Interfaces.Services;
     using Core.Utilities;
+    using ViewModels;
 
     /// <summary>
     ///     A base class for the white site controllers
     /// </summary>
-    public class BaseController : Controller
+    public partial class BaseController : Controller
     {
         protected readonly ICacheService CacheService;
         protected readonly ILocalizationService LocalizationService;

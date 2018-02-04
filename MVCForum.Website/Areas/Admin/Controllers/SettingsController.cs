@@ -10,7 +10,8 @@
     using Core.Interfaces.Services;
     using Core.Models;
     using Core.Models.Entities;
-    using ViewModels;
+    using Web.ViewModels;
+    using Web.ViewModels.Admin;
     using Web.ViewModels.Mapping;
 
     [Authorize(Roles = Constants.AdminRoleName)]

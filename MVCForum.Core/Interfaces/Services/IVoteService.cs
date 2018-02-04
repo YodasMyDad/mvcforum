@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Models.Entities;
 
-    public partial interface IVoteService
+    public partial interface IVoteService : IContextService
     {
         Vote Add(Vote vote);
         Vote Get(Guid id);

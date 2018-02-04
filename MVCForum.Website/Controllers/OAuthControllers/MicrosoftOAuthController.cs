@@ -3,7 +3,6 @@
     using System;
     using System.Web.Mvc;
     using System.Web.Security;
-    using Areas.Admin.ViewModels;
     using Core;
     using Core.Constants;
     using Core.Interfaces;
@@ -14,9 +13,10 @@
     using Skybrud.Social.Microsoft.OAuth;
     using Skybrud.Social.Microsoft.Responses.Authentication;
     using Skybrud.Social.Microsoft.WindowsLive.Scopes;
+    using ViewModels;
     using ViewModels.Member;
 
-    public class MicrosoftOAuthController : BaseController
+    public partial class MicrosoftOAuthController : BaseController
     {
         // Create new app - https://account.live.com/developers/applications/create
         // List of existing app - https://account.live.com/developers/applications/index
@@ -40,7 +40,7 @@
 
         public string AuthErrorDescription => Request.QueryString["error_description"];
 
-        public ActionResult MicrosoftLogin()
+        public virtual ActionResult MicrosoftLogin()
         {
             var resultMessage = new GenericMessageViewModel();
 

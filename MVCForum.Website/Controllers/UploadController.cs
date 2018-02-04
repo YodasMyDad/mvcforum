@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Web.Hosting;
     using System.Web.Mvc;
-    using Areas.Admin.ViewModels;
     using Core;
     using Core.Constants;
     using Core.ExtensionMethods;
@@ -33,7 +32,7 @@
         }
 
         [HttpPost]
-        public ActionResult UploadPostFiles(AttachFileToPostViewModel attachFileToPostViewModel)
+        public virtual ActionResult UploadPostFiles(AttachFileToPostViewModel attachFileToPostViewModel)
         {
             var topic = new Topic();
 
@@ -143,7 +142,7 @@
             }
         }
 
-        public ActionResult DeleteUploadedFile(Guid id)
+        public virtual ActionResult DeleteUploadedFile(Guid id)
         {
             if (id != Guid.Empty)
             {

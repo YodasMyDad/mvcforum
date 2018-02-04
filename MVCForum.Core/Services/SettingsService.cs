@@ -3,8 +3,8 @@
     using System;
     using System.Data.Entity;
     using System.Linq;
+    using System.Threading.Tasks;
     using Constants;
-    using Data.Context;
     using Interfaces;
     using Interfaces.Services;
     using Models.Entities;
@@ -12,7 +12,7 @@
 
     public partial class SettingsService : ISettingsService
     {
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         /// <summary>
@@ -24,6 +24,17 @@
         {
             _cacheService = cacheService;
             _context = context;
+        }
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         /// <summary>

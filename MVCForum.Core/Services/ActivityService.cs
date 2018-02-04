@@ -18,7 +18,7 @@
         private readonly IBadgeService _badgeService;
         private readonly ICacheService _cacheService;
         private readonly ICategoryService _categoryService;
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly ILoggingService _loggingService;
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
@@ -37,6 +37,23 @@
             _postService = postService;
             _categoryService = categoryService;
             _context = context;
+        }
+
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+            _badgeService.RefreshContext(context);
+            _topicService.RefreshContext(context);
+            _postService.RefreshContext(context);
+            _categoryService.RefreshContext(context);
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         // TODO - This query could be a performance problem
@@ -105,7 +122,7 @@
 
         public IEnumerable<ActivityBase> GetAll(int howMany)
         {
-            var activities = _context.Activity.Take(howMany);
+            var activities = _context.Activity.Take(howMany).ToList();
             var specificActivities = ConvertToSpecificActivities(activities);
             return specificActivities;
         }

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
+    using System.Threading.Tasks;
     using Constants;
     using Interfaces;
     using Interfaces.Services;
@@ -16,7 +17,7 @@
         private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
         private readonly IGlobalPermissionForRoleService _globalPermissionForRoleService;
         private readonly IPermissionService _permissionService;
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         public RoleService(IMvcForumContext context, ICategoryPermissionForRoleService categoryPermissionForRoleService, IPermissionService permissionService, IGlobalPermissionForRoleService globalPermissionForRoleService, ICacheService cacheService)
@@ -26,6 +27,21 @@
             _globalPermissionForRoleService = globalPermissionForRoleService;
             _cacheService = cacheService;
             _context = context;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+            _categoryPermissionForRoleService.RefreshContext(context);
+            _permissionService.RefreshContext(context);
+            _globalPermissionForRoleService.RefreshContext(context);
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         /// <summary>

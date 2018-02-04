@@ -7,7 +7,7 @@
     using Models.Entities;
     using Models.General;
 
-    public partial interface IActivityService
+    public partial interface IActivityService  : IContextService
     {
         /// <summary>
         ///     Gets a paged list of badges

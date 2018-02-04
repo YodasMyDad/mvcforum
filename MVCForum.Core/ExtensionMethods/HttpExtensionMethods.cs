@@ -66,7 +66,7 @@
 
                 // Remove the dot then check against the extensions in the web.config settings
                 fileExtension = fileExtension.TrimStart('.');
-                if (!allowedFileExtensionsList.Contains(fileExtension))
+                if (!allowedFileExtensionsList.Contains(fileExtension, StringComparer.OrdinalIgnoreCase))
                 {
                     result.IsOk = false;
                     result.Message = localizationService.GetResourceString("Post.UploadBannedFileExtension");
