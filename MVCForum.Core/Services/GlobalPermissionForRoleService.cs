@@ -69,18 +69,16 @@
 
         public GlobalPermissionForRole Get(Guid permId, Guid roleId)
         {
-            var cacheKey = string.Concat(CacheKeys.GlobalPermissionForRole.StartsWith, "Get-", permId, "-", roleId);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.GlobalPermissionForRole
+            return _context.GlobalPermissionForRole
                                                                             .Include(x => x.MembershipRole)
-                                                                            .FirstOrDefault(x => x.Permission.Id == permId && x.MembershipRole.Id == roleId));
+                                                                            .FirstOrDefault(x => x.Permission.Id == permId && x.MembershipRole.Id == roleId);
         }
 
         public GlobalPermissionForRole Get(Guid permId)
         {
-            var cacheKey = string.Concat(CacheKeys.GlobalPermissionForRole.StartsWith, "Get-", permId);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.GlobalPermissionForRole
+            return _context.GlobalPermissionForRole
                                                                              .Include(x => x.MembershipRole)
-                                                                             .FirstOrDefault(x => x.Id == permId));
+                                                                             .FirstOrDefault(x => x.Id == permId);
         }
 
         public void UpdateOrCreateNew(GlobalPermissionForRole globalPermissionForRole)

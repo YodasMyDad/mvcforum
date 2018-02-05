@@ -54,9 +54,7 @@
         /// <returns></returns>
         public CategoryPermissionForRole CheckExists(CategoryPermissionForRole categoryPermissionForRole)
         {
-            var cacheKey = string.Concat(CacheKeys.CategoryPermissionForRole.StartsWith, "CheckExists-", categoryPermissionForRole.Id);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+ 
                 if (categoryPermissionForRole.Permission != null &&
                     categoryPermissionForRole.Category != null &&
                     categoryPermissionForRole.MembershipRole != null)
@@ -71,7 +69,7 @@
                 }
 
                 return null;
-            });
+         
         }
 
         /// <summary>
@@ -151,15 +149,13 @@
 
         public CategoryPermissionForRole Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.CategoryPermissionForRole.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 return _context.CategoryPermissionForRole
                         .Include(x => x.MembershipRole)
                         .Include(x => x.Category)
                         .Include(x => x.Permission)
                         .FirstOrDefault(cat => cat.Id == id);
-            });
+      
 
         }
 

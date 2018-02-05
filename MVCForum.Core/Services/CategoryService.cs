@@ -66,9 +66,7 @@
         /// <returns></returns>
         public List<Category> GetAll()
         {
-            var cacheKey = string.Concat(CacheKeys.Category.StartsWith, "GetAll");
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 var orderedCategories = new List<Category>();
                 var allCats = _context.Category
                     .Include(x => x.ParentCategory)
@@ -86,15 +84,12 @@
                     orderedCategories.AddRange(GetSubCategories(parentCategory, allCats));
                 }
                 return orderedCategories;
-            });
+        
         }
 
         public List<Category> GetSubCategories(Category category, List<Category> allCategories, int level = 2)
         {
-            var cacheKey = string.Concat(CacheKeys.Category.StartsWith, "GetSubCategories", "-", category.GetHashCode(),
-                "-", level);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 var catsToReturn = new List<Category>();
                 var cats = allCategories.Where(x => x.ParentCategory != null && x.ParentCategory.Id == category.Id)
                     .OrderBy(x => x.SortOrder);
@@ -106,15 +101,11 @@
                 }
 
                 return catsToReturn;
-            });
+    
         }
 
         public List<SelectListItem> GetBaseSelectListCategories(List<Category> allowedCategories)
         {
-            var cacheKey = string.Concat(CacheKeys.Category.StartsWith, "GetBaseSelectListCategories", "-",
-                allowedCategories.GetHashCode());
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
                 var cats = new List<SelectListItem> {new SelectListItem {Text = "", Value = ""}};
                 foreach (var cat in allowedCategories)
                 {
@@ -122,7 +113,7 @@
                     cats.Add(new SelectListItem {Text = catName, Value = cat.Id.ToString()});
                 }
                 return cats;
-            });
+        
         }
 
         /// <summary>
@@ -302,8 +293,7 @@
         /// <returns></returns>
         public Category Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.Category.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.Category.FirstOrDefault(x => x.Id == id));
+            return _context.Category.FirstOrDefault(x => x.Id == id);
         }
 
         public IList<Category> Get(IList<Guid> ids, bool fullGraph = false)

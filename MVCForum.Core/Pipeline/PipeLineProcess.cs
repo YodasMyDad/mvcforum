@@ -1,6 +1,7 @@
 ﻿namespace MvcForum.Core.Pipeline
 {
     using System.Collections.Generic;
+    using Interfaces;
     using Interfaces.Pipeline;
     using Models.Entities;
 

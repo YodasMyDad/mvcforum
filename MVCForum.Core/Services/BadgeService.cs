@@ -272,12 +272,6 @@
             return await PaginatedList<Badge>.CreateAsync(query.AsNoTracking(), pageIndex, pageSize);
         }
 
-        public IList<Badge> GetallBadges()
-        {
-            var cacheKey = string.Concat(CacheKeys.Badge.StartsWith, "GetallBadges");
-            return _cacheService.CachePerRequest(cacheKey, () => GetAll().ToList());
-        }
-
         public void DeleteTimeLastChecked(BadgeTypeTimeLastChecked badgeTypeTimeLastChecked)
         {
             _context.BadgeTypeTimeLastChecked.Remove(badgeTypeTimeLastChecked);
@@ -285,21 +279,17 @@
 
         public Badge GetBadge(string name)
         {
-            var cacheKey = string.Concat(CacheKeys.Badge.StartsWith, "GetBadge-", name);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.Badge.FirstOrDefault(x => x.Name == name));
+            return _context.Badge.FirstOrDefault(x => x.Name == name);
         }
 
         public Badge Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.Badge.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey,
-                () => _context.Badge.FirstOrDefault(badge => badge.Id == id));
+            return _context.Badge.FirstOrDefault(badge => badge.Id == id);
         }
 
         public IEnumerable<Badge> GetAll()
         {
-            var cacheKey = string.Concat(CacheKeys.Badge.StartsWith, "GetAll");
-            return _cacheService.CachePerRequest(cacheKey, () => _context.Badge.ToList());
+            return _context.Badge.ToList();
         }
 
         public Badge Add(Badge newBadge)

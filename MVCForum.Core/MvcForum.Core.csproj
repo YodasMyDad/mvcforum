@@ -130,7 +130,7 @@
     <Compile Include="Models\Entities\LocaleStringResource.cs" />
     <Compile Include="Models\Entities\LocaleResourceKey.cs" />
     <Compile Include="Models\Entities\MembershipRole.cs" />
-    <Compile Include="Models\Entities\Entity.cs" />
+    <Compile Include="Interfaces\IBaseEntity.cs" />
     <Compile Include="Models\Entities\MembershipUser.cs" />
     <Compile Include="Models\Entities\MembershipUserPoints.cs" />
     <Compile Include="Models\Entities\Permission.cs" />
@@ -142,7 +142,7 @@
     <Compile Include="Models\General\UploadedFile.cs" />
     <Compile Include="Models\General\UploadFileResult.cs" />
     <Compile Include="Models\Entities\Vote.cs" />
-    <Compile Include="EqualityComparers\PermissionEqualityComparers.cs" />
+    <Compile Include="EqualityComparers\IEntityEqualityComparers.cs" />
     <Compile Include="Events\BadgeEventArgs.cs" />
     <Compile Include="Events\EventManager.cs" />
     <Compile Include="Events\FavouriteEventArgs.cs" />

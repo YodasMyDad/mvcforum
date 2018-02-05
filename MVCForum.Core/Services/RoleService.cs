@@ -50,10 +50,9 @@
         /// <returns></returns>
         public IList<MembershipRole> AllRoles()
         {
-            var cacheKey = string.Concat(CacheKeys.Role.StartsWith, "AllRoles");
-            return _cacheService.CachePerRequest(cacheKey, () => _context.MembershipRole
+            return _context.MembershipRole
                                                                     .OrderByDescending(x => x.RoleName)
-                                                                    .ToList());
+                                                                    .ToList();
         }
 
         /// <summary>
@@ -64,9 +63,7 @@
         /// <returns></returns>
         public MembershipRole GetRole(string rolename, bool removeTracking = false)
         {
-            var cacheKey = string.Concat(CacheKeys.Role.StartsWith, "GetRole-", rolename, "-", removeTracking);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+ 
                 if (removeTracking)
                 {
                     return _context.MembershipRole
@@ -77,7 +74,7 @@
                         .FirstOrDefault(y => y.RoleName.Contains(rolename));
                 }
                 return _context.MembershipRole.FirstOrDefault(y => y.RoleName.Contains(rolename));
-            });
+         
         }
 
         /// <summary>
@@ -87,8 +84,7 @@
         /// <returns></returns>
         public MembershipRole GetRole(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.Role.StartsWith, "GetRole-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.MembershipRole.FirstOrDefault(x => x.Id == id));
+            return _context.MembershipRole.FirstOrDefault(x => x.Id == id);
         }
 
         /// <summary>
@@ -302,16 +298,6 @@
             // Pass the role in to see select which permissions to apply
             // Going to cache this per request, just to help with performance
 
-            // We pass in an empty guid if the category is null
-            var categoryId = Guid.Empty;
-            if (category != null)
-            {
-                categoryId = category.Id;
-            }
-
-            var cacheKey = string.Concat(CacheKeys.Role.StartsWith, "GetPermissions-", categoryId, "-", role.Id);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
                 PermissionSet permissions;
 
                 switch (role.RoleName)
@@ -328,8 +314,6 @@
                 }
 
                 return permissions;
-
-            });
         }
 
         #endregion

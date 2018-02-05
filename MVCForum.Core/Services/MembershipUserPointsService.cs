@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using System.Web;
     using Constants;
+    using EqualityComparers;
     using Interfaces;
     using Interfaces.Pipeline;
     using Interfaces.Services;
@@ -107,16 +108,9 @@
         /// <returns></returns>
         public IEnumerable<MembershipUserPoints> GetByUser(MembershipUser user, bool removeTracking = true)
         {
-            var cacheKey = string.Concat(CacheKeys.MembershipUserPoints.StartsWith, "GetByUser-", user.Id, "-", removeTracking);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
-                var users = _context.MembershipUserPoints.Include(x => x.User).Where(x => x.User.Id == user.Id);
-                if (removeTracking)
-                {
-                    return users.AsNoTracking();
-                }
-                return users;
-            });
+
+            var users = _context.MembershipUserPoints.Include(x => x.User).Where(x => x.User.Id == user.Id);
+            return removeTracking ? users.AsNoTracking() : users;
         }
 
         /// <summary>
@@ -160,27 +154,28 @@
         /// <returns></returns>
         public Dictionary<MembershipUser, int> GetCurrentWeeksPoints(int? amountToTake)
         {
-            //var cacheKey = string.Concat(CacheKeys.MembershipUserPoints.StartsWith, "GetCurrentWeeksPoints-", amountToTake);
-            //return _cacheService.CachePerRequest(cacheKey, () =>
-            //{
 
-                amountToTake = amountToTake ?? int.MaxValue;
-                var date = DateTime.UtcNow;
-                var start = date.Date.AddDays(-(int)date.DayOfWeek);
-                var end = start.AddDays(7);
+            var comparer = new EntityEqualityComparer<MembershipUser>();
 
-                return _context.MembershipUserPoints.AsNoTracking()
-                    .Include(x => x.User)
-                    .Where(x => x.DateAdded >= start && x.DateAdded < end)
-                    .GroupBy(x => x.User)
+            amountToTake = amountToTake ?? int.MaxValue;
+            var date = DateTime.UtcNow;
+            var start = date.Date.AddDays(-(int)date.DayOfWeek);
+            var end = start.AddDays(7);
+
+            // We tolist here as GroupBy is expensive operation on the DB with EF
+            var points = _context.MembershipUserPoints.AsNoTracking()
+                .Include(x => x.User)
+                .Where(x => x.DateAdded >= start && x.DateAdded < end).ToList();
+
+            return points.GroupBy(x => x.User, comparer)
                     .Select(x => new
                     {
-                        User =  x.Key,
+                        User = x.Key,
                         Points = x.Select(p => p.Points).Sum()
                     })
                     .OrderByDescending(x => x.Points)
                     .Take((int)amountToTake)
-                    .ToDictionary(x => x.User, x => x.Points);           
+                    .ToDictionary(x => x.User, x => x.Points);
         }
 
         /// <summary>
@@ -190,25 +185,26 @@
         /// <returns></returns>
         public Dictionary<MembershipUser, int> GetThisYearsPoints(int? amountToTake)
         {
-            var cacheKey = string.Concat(CacheKeys.MembershipUserPoints.StartsWith, "GetThisYearsPoints-", amountToTake);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
-                amountToTake = amountToTake ?? int.MaxValue;
-                var thisYear = DateTime.UtcNow.Year;
+            var comparer = new EntityEqualityComparer<MembershipUser>();
 
-                return _context.MembershipUserPoints.AsNoTracking()
-                    .Include(x => x.User)
-                    .Where(x => x.DateAdded.Year == thisYear)
-                    .GroupBy(x => x.User)
-                    .Select(x => new
-                    {
-                        User = x.Key,
-                        Points = x.Select(p => p.Points).Sum()
-                    })
-                    .OrderByDescending(x => x.Points)
-                    .Take((int)amountToTake)
-                    .ToDictionary(x => x.User, x => x.Points);
-            });
+            amountToTake = amountToTake ?? int.MaxValue;
+            var thisYear = DateTime.UtcNow.Year;
+
+            // We tolist here as GroupBy is expensive operation on the DB with EF
+            var points = _context.MembershipUserPoints.AsNoTracking()
+                .Include(x => x.User)
+                .Where(x => x.DateAdded.Year == thisYear)
+                .ToList();
+
+            return points.GroupBy(x => x.User, comparer)
+                .Select(x => new
+                {
+                    User = x.Key,
+                    Points = x.Select(p => p.Points).Sum()
+                })
+                .OrderByDescending(x => x.Points)
+                .Take((int)amountToTake)
+                .ToDictionary(x => x.User, x => x.Points);
         }
 
         /// <summary>
@@ -218,44 +214,42 @@
         /// <returns></returns>
         public Dictionary<MembershipUser, int> GetAllTimePoints(int? amountToTake)
         {
-            var cacheKey = string.Concat(CacheKeys.MembershipUserPoints.StartsWith, "GetAllTimePoints-", amountToTake);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
-                amountToTake = amountToTake ?? int.MaxValue;
+            var comparer = new EntityEqualityComparer<MembershipUser>();
 
-                return _context.MembershipUserPoints.AsNoTracking()
-                    .Include(x => x.User)
-                    .GroupBy(x => x.User)
-                    .Select(x => new
-                    {
-                        User = x.Key,
-                        Points = x.Select(p => p.Points).Sum()
-                    })
-                    .OrderByDescending(x => x.Points)
-                    .Take((int)amountToTake)
-                    .ToDictionary(x => x.User, x => x.Points);
-            });
+            amountToTake = amountToTake ?? int.MaxValue;
+
+            var points = _context.MembershipUserPoints.AsNoTracking()
+                .Include(x => x.User).ToList();
+
+            return points.GroupBy(x => x.User, comparer)
+                .Select(x => new
+                {
+                    User = x.Key,
+                    Points = x.Select(p => p.Points).Sum()
+                })
+                .OrderByDescending(x => x.Points)
+                .Take((int)amountToTake)
+                .ToDictionary(x => x.User, x => x.Points);
         }
 
         public Dictionary<MembershipUser, int> GetAllTimePointsNegative(int? amountToTake)
         {
-            var cacheKey = string.Concat(CacheKeys.MembershipUserPoints.StartsWith, "GetAllTimePointsNegative-", amountToTake);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
-                amountToTake = amountToTake ?? int.MaxValue;
+            var comparer = new EntityEqualityComparer<MembershipUser>();
 
-                return _context.MembershipUserPoints.AsNoTracking()
-                    .Include(x => x.User)
-                    .GroupBy(x => x.User)
-                    .Select(x => new
-                    {
-                        User = x.Key,
-                        Points = x.Select(p => p.Points).Sum()
-                    })
-                    .OrderBy(x => x.Points)
-                    .Take((int)amountToTake)
-                    .ToDictionary(x => x.User, x => x.Points);
-            });
+            amountToTake = amountToTake ?? int.MaxValue;
+
+            var points = _context.MembershipUserPoints.AsNoTracking()
+                .Include(x => x.User).ToList();
+
+            return points.GroupBy(x => x.User, comparer)
+                .Select(x => new
+                {
+                    User = x.Key,
+                    Points = x.Select(p => p.Points).Sum()
+                })
+                .OrderBy(x => x.Points)
+                .Take((int)amountToTake)
+                .ToDictionary(x => x.User, x => x.Points);
         }
 
         public bool SyncUserPoints(MembershipUser user)
@@ -279,14 +273,12 @@
 
         public MembershipUserPoints Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.MembershipUserPoints.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.MembershipUserPoints.FirstOrDefault(x => x.Id == id));
+            return _context.MembershipUserPoints.FirstOrDefault(x => x.Id == id);
         }
 
         public int UserPoints(MembershipUser user)
         {
-            var cacheKey = string.Concat(CacheKeys.MembershipUserPoints.StartsWith, "UserPoints-", user.Id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.MembershipUserPoints.AsNoTracking().Include(x => x.User).AsNoTracking().Where(x => x.User.Id == user.Id).Sum(x => x.Points));
+            return _context.MembershipUserPoints.AsNoTracking().Include(x => x.User).AsNoTracking().Where(x => x.User.Id == user.Id).Sum(x => x.Points);
         }
 
         public async Task<IPipelineProcess<MembershipUserPoints>> Delete(IEnumerable<MembershipUserPoints> points)

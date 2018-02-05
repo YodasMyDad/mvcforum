@@ -59,16 +59,14 @@
 
         public List<Vote> GetVotesByPosts(List<Guid> postIds)
         {
-            var cacheKey = string.Concat(CacheKeys.BannedEmail.StartsWith, "GetVotesByPosts-", postIds.GetHashCode());
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 return _context.Vote
                             .Include(x => x.VotedByMembershipUser)
                             .Include(x => x.User)
                             .Include(x => x.Post)
                             .AsNoTracking()
                             .Where(x => postIds.Contains(x.Post.Id)).ToList();
-            });
+     
         }
 
         public List<Vote> GetVotesByPost(Guid postId)

@@ -42,11 +42,10 @@
         /// <returns></returns>
         public IEnumerable<Permission> GetAll()
         {
-            var cacheKey = string.Concat(CacheKeys.Permission.StartsWith, "GetAll");
-            return _cacheService.CachePerRequest(cacheKey, () => _context.Permission
+            return _context.Permission
                                                                             .AsNoTracking()
                                                                             .OrderBy(x => x.Name)
-                                                                            .ToList());
+                                                                            .ToList();
         }
 
         /// <summary>
@@ -81,8 +80,8 @@
         /// <returns></returns>
         public Permission Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.Permission.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.Permission.FirstOrDefault(x => x.Id == id));
+
+            return _context.Permission.FirstOrDefault(x => x.Id == id);
         }
     }
 }

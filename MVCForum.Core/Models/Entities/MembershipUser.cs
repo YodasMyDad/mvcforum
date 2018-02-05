@@ -5,12 +5,13 @@
     using System.Linq;
     using Enums;
     using General;
+    using Interfaces;
     using Utilities;
 
     /// <summary>
     ///     A membership user
     /// </summary>
-    public partial class MembershipUser : ExtendedDataEntity
+    public partial class MembershipUser : ExtendedDataEntity, IBaseEntity
     {
         public MembershipUser()
         {

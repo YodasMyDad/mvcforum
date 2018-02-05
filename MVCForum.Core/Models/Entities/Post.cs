@@ -3,9 +3,10 @@
     using System;
     using System.Collections.Generic;
     using General;
+    using Interfaces;
     using Utilities;
 
-    public partial class Post : ExtendedDataEntity
+    public partial class Post : ExtendedDataEntity, IBaseEntity
     {
         public Post()
         {

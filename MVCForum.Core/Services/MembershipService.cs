@@ -407,13 +407,11 @@
         /// <returns></returns>
         public MembershipUser Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.Member.StartsWith, "get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 return _context.MembershipUser
                     .Include(x => x.Roles)
                     .FirstOrDefault(x => x.Id == id);
-            });
+
         }
 
         /// <summary>
@@ -424,9 +422,7 @@
         /// <returns></returns>
         public MembershipUser GetUser(string username, bool removeTracking = false)
         {
-            var cacheKey = string.Concat(CacheKeys.Member.StartsWith, "GetUser-", username, "-", removeTracking);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 MembershipUser member;
 
                 if (removeTracking)
@@ -454,7 +450,6 @@
                 }
 
                 return member;
-            });
         }
 
         /// <summary>
@@ -466,9 +461,7 @@
         public MembershipUser GetUserByEmail(string email, bool removeTracking = false)
         {
             email = StringUtils.SafePlainText(email);
-            var cacheKey = string.Concat(CacheKeys.Member.StartsWith, "GetUserByEmail-", email, "-", removeTracking);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 MembershipUser member;
 
                 if (removeTracking)
@@ -485,7 +478,7 @@
                 }
 
                 return member;
-            });
+       
         }
 
         /// <summary>
@@ -506,15 +499,13 @@
         public IList<MembershipUser> GetUserBySlugLike(string slug)
         {
             slug = StringUtils.GetSafeHtml(slug);
-            var cacheKey = string.Concat(CacheKeys.Member.StartsWith, "GetUserBySlugLike-", slug);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 return _context.MembershipUser
                     .Include(x => x.Roles)
                     .AsNoTracking()
                     .Where(name => name.Slug.ToUpper().Contains(slug.ToUpper()))
                     .ToList();
-            });
+       
         }
 
         /// <summary>
@@ -524,14 +515,12 @@
         /// <returns></returns>
         public IList<MembershipUser> GetUsersById(List<Guid> guids)
         {
-            var cacheKey = string.Concat(CacheKeys.Member.StartsWith, "GetUsersById-", guids.GetHashCode());
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 return _context.MembershipUser
                     .Where(x => guids.Contains(x.Id))
                     .AsNoTracking()
                     .ToList();
-            });
+        
         }
 
         /// <summary>
@@ -545,17 +534,14 @@
             var registerEnd = DateTime.UtcNow;
             var registerStart = registerEnd.AddDays(-amoutOfDaysSinceRegistered);
 
-            var cacheKey = string.Concat(CacheKeys.Member.StartsWith, "GetUsersByDaysPostsPoints-",
-                amoutOfDaysSinceRegistered, "-", amoutOfPosts);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 return _context.MembershipUser
                     .Where(x =>
                         x.Posts.Count <= amoutOfPosts &&
                         x.CreateDate > registerStart &&
                         x.CreateDate <= registerEnd)
                     .ToList();
-            });
+        
         }
 
 
@@ -638,8 +624,7 @@
         /// <returns></returns>
         public IList<MembershipUser> GetAll()
         {
-            var cacheKey = string.Concat(CacheKeys.Member.StartsWith, "GetAll");
-            return _cacheService.CachePerRequest(cacheKey, () => _context.MembershipUser.ToList());
+            return _context.MembershipUser.ToList();
         }
 
         public async Task<PaginatedList<MembershipUser>> GetAll(int pageIndex, int pageSize)
@@ -672,16 +657,14 @@
 
         public IList<MembershipUser> GetActiveMembers()
         {
-            var cacheKey = string.Concat(CacheKeys.Member.StartsWith, "GetActiveMembers");
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 // Get members that last activity date is valid
                 var date = DateTime.UtcNow.AddMinutes(-Constants.TimeSpanInMinutesToShowMembers);
                 return _context.MembershipUser
                     .Where(x => x.LastActivityDate > date)
                     .AsNoTracking()
                     .ToList();
-            });
+    
         }
 
         /// <summary>
@@ -696,21 +679,17 @@
 
         public IList<MembershipUser> GetLatestUsers(int amountToTake)
         {
-            var cacheKey = string.Concat(CacheKeys.Member.StartsWith, "GetLatestUsers-", amountToTake);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+   
                 return _context.MembershipUser.Include(x => x.Roles).AsNoTracking()
                     .OrderByDescending(x => x.CreateDate)
                     .Take(amountToTake)
                     .ToList();
-            });
+         
         }
 
         public IList<MembershipUser> GetLowestPointUsers(int amountToTake)
         {
-            var cacheKey = string.Concat(CacheKeys.Member.StartsWith, "GetLowestPointUsers-", amountToTake);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 return _context.MembershipUser
                     .Join(_context.MembershipUserPoints.AsNoTracking(), // The sequence to join to the first sequence.
                         user => user.Id, // A function to extract the join key from each element of the first sequence.
@@ -729,13 +708,12 @@
                     .Take(amountToTake)
                     .Select(t => t.MembershipUser)
                     .ToList();
-            });
+      
         }
 
         public int MemberCount()
         {
-            var cacheKey = string.Concat(CacheKeys.Member.StartsWith, "MemberCount");
-            return _cacheService.CachePerRequest(cacheKey, () => _context.MembershipUser.AsNoTracking().Count());
+            return _context.MembershipUser.AsNoTracking().Count();
         }
 
         /// <summary>

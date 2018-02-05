@@ -2,6 +2,7 @@
 {
     using System;
     using Entities;
+    using Interfaces;
     using Utilities;
 
     public class Activity : IBaseEntity

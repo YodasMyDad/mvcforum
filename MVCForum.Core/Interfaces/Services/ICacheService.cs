@@ -20,7 +20,7 @@
         void Clear();
         void ClearStartsWith(string keyStartsWith);
         void ClearStartsWith(List<string> keysStartsWith);
-        T CachePerRequest<T>(string cacheKey, Func<T> getCacheItem);
-        void SetPerRequest(string cacheKey, object objectToCache);
+        //T CachePerRequest<T>(string cacheKey, Func<T> getCacheItem);
+        //void SetPerRequest(string cacheKey, object objectToCache);
     }
 }

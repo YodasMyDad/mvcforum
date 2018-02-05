@@ -60,7 +60,7 @@
             }
         }
 
-        protected string Domain => CacheService.CachePerRequest(CacheKeys.Domain, StringUtils.ReturnCurrentDomain);
+        protected string Domain => StringUtils.ReturnCurrentDomain();
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {

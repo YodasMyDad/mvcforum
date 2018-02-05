@@ -3,9 +3,10 @@
     using System;
     using System.Collections.Generic;
     using Enums;
+    using Interfaces;
     using Utilities;
 
-    public partial class Category : ExtendedDataEntity
+    public partial class Category : ExtendedDataEntity, IBaseEntity
     {
         public Category()
         {

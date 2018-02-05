@@ -94,11 +94,10 @@
         /// <returns></returns>
         public PrivateMessage Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.PrivateMessage.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.PrivateMessage
+            return _context.PrivateMessage
                 .Include(x => x.UserTo)
                 .Include(x => x.UserFrom)
-                .FirstOrDefault(x => x.Id == id));
+                .FirstOrDefault(x => x.Id == id);
         }
 
         public async Task<PaginatedList<PrivateMessageListItem>> GetUsersPrivateMessages(int pageIndex, int pageSize,

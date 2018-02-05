@@ -87,9 +87,7 @@
 
         public IList<SelectListItem> GetAllSelectList(List<Category> allowedCategories, int amount)
         {
-            var cacheKey = string.Concat(CacheKeys.Topic.StartsWith, "GetAllSelectList-", allowedCategories.GetHashCode(), "-", amount);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 // get the category ids
                 var allowedCatIds = allowedCategories.Select(x => x.Id);
                 return _context.Topic.AsNoTracking()
@@ -102,7 +100,7 @@
                                         Text = x.Name,
                                         Value = x.Id.ToString()
                                     }).ToList();
-            });
+         
         }
 
         public IList<Topic> GetHighestViewedTopics(int amountToTake, List<Category> allowedCategories)
@@ -443,9 +441,7 @@
 
         public IList<Topic> GetPendingTopics(List<Category> allowedCategories, MembershipRole usersRole)
         {
-            var cacheKey = string.Concat(CacheKeys.Topic.StartsWith, "GetPendingTopics-", allowedCategories.GetHashCode(), "-", usersRole.Id);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 var allowedCatIds = allowedCategories.Select(x => x.Id);
                 var allPendingTopics = _context.Topic.AsNoTracking().Include(x => x.Category).Where(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id)).ToList();
                 if (usersRole != null)
@@ -472,17 +468,15 @@
                     return pendingTopics;
                 }
                 return allPendingTopics;
-            });
+           
         }
 
         public int GetPendingTopicsCount(List<Category> allowedCategories)
         {
-            var cacheKey = string.Concat(CacheKeys.Topic.StartsWith, "GetPendingTopicsCount-", allowedCategories.GetHashCode());
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 var allowedCatIds = allowedCategories.Select(x => x.Id);
                 return _context.Topic.AsNoTracking().Include(x => x.Category).Count(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id));
-            });
+        
 
         }
 
@@ -721,16 +715,14 @@
 
         public int TopicCount(List<Category> allowedCategories)
         {
-            var cacheKey = string.Concat(CacheKeys.Topic.StartsWith, "TopicCount-", allowedCategories.GetHashCode());
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+ 
                 // get the category ids
                 var allowedCatIds = allowedCategories.Select(x => x.Id);
                 return _context.Topic
                     .Include(x => x.Category)
                     .AsNoTracking()
                     .Count(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id));
-            });
+      
 
         }
 

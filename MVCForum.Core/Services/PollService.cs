@@ -39,8 +39,7 @@
         /// <inheritdoc />
         public List<Poll> GetAllPolls()
         {
-            var cacheKey = string.Concat(CacheKeys.Poll.StartsWith, "GetAllPolls");
-            return _cacheService.CachePerRequest(cacheKey, () => _context.Poll.ToList());
+            return _context.Poll.ToList();
         }
 
         /// <inheritdoc />
@@ -54,8 +53,7 @@
         /// <inheritdoc />
         public Poll Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.Poll.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.Poll.FirstOrDefault(x => x.Id == id));
+            return _context.Poll.FirstOrDefault(x => x.Id == id);
         }
 
         /// <inheritdoc />
@@ -214,8 +212,7 @@
         /// <inheritdoc />
         public PollAnswer GetPollAnswer(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.PollAnswer.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.PollAnswer.FirstOrDefault(x => x.Id == id));
+            return _context.PollAnswer.FirstOrDefault(x => x.Id == id);
         }
 
         /// <inheritdoc />
@@ -251,8 +248,7 @@
         /// <inheritdoc />
         public PollVote GetPollVote(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.PollVote.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.PollVote.FirstOrDefault(x => x.Id == id));
+            return _context.PollVote.FirstOrDefault(x => x.Id == id);
         }
 
         /// <inheritdoc />

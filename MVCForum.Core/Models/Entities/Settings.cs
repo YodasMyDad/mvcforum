@@ -1,9 +1,10 @@
 ﻿namespace MvcForum.Core.Models.Entities
 {
     using System;
+    using Interfaces;
     using Utilities;
 
-    public partial class Settings : ExtendedDataEntity
+    public partial class Settings : ExtendedDataEntity, IBaseEntity
     {
         public Settings()
         {

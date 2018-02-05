@@ -2,6 +2,7 @@
 {
     using System;
     using Enums;
+    using Interfaces;
     using Utilities;
 
     public partial class MembershipUserPoints : IBaseEntity
