@@ -892,5 +892,30 @@
             return matchingTopicTitles <= 0;
         }
 
+        //public IEnumerable<Record> PerformBatchJoinWithIds(IEnumerable<int> ids)
+        //{
+        //    var context = GetContext<MyDatabaseContext>();
+        //    // Disable auto detection of changes; much faster for batch edits/inserts
+        //    context.Configuration.AutoDetectChangesEnabled = false;
+        //    // A GUID will keep track of this batch operation
+        //    var uniqueId = Guid.NewGuid();
+        //    // Insert the batchquery objects for each id
+        //    foreach (var id in ids)
+        //    {
+        //        context.BatchQueries.Add(new BatchQuery { Id = uniqueId, IdToQuery = id });
+        //    }
+        //    // Detect all changes in one shot and then save them
+        //    context.ChangeTracker.DetectChanges();
+        //    context.SaveChanges();
+        //    // Now we can re-enable auto detection of changes (in case we use this context elsewhere)
+        //    context.Configuration.AutoDetectChangesEnabled = true;
+        //    // Join the batch queries table with the records we're trying to get
+        //    var entities = context.Records.Join(context.BatchQueries, x => x.Id, y => y.IdToQuery, (x, y) => x)
+        //        .ToList();
+        //    // Finally, we can delete all of the BatchQuery records matching the GUID
+        //    context.Database.ExecuteSqlCommand("DELETE FROM BatchQueries WHERE ID = {0}", uniqueId);
+        //    return entities;
+        //}
+
     }
 }

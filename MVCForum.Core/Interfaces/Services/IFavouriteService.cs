@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Models.Entities;
 
     public partial interface IFavouriteService : IContextService

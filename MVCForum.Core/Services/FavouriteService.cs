@@ -122,12 +122,11 @@
                 .Include(x => x.Member)
                 .Where(x => topicIds.Contains(x.Topic.Id))
                 .ToList()
-                .GroupBy(x => x.Post.Id)
-                .ToDictionary(x => x.Key, x => x);
+                .ToLookup(x => x.Post.Id);
 
             foreach (var vgbtid in votesGroupedByTopicId)
             {
-                var votesGroupedByPostId = vgbtid.Value
+                var votesGroupedByPostId = vgbtid
                     .GroupBy(x => x.Post.Id)
                     .ToDictionary(x => x.Key, x => x.ToList());
 
