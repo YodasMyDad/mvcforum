@@ -5,7 +5,6 @@
     using System.Data.Entity;
     using System.Linq;
     using System.Threading.Tasks;
-    using Constants;
     using Events;
     using Interfaces;
     using Interfaces.Services;
@@ -13,12 +12,10 @@
 
     public partial class FavouriteService : IFavouriteService
     {
-        private readonly ICacheService _cacheService;
         private IMvcForumContext _context;
 
-        public FavouriteService(IMvcForumContext context, ICacheService cacheService)
+        public FavouriteService(IMvcForumContext context)
         {
-            _cacheService = cacheService;
             _context = context;
         }
 
@@ -100,13 +97,56 @@
                 .Where(x => x.Topic.Id == topicId).ToList();
         }
 
-        public List<Favourite> GetAllPostFavourites(List<Guid> postIds)
+        /// <inheritdoc />
+        public Dictionary<Guid, List<Favourite>> GetByTopicGroupedByPost(Guid topicId)
+        {
+            return _context.Favourite
+                .Include(x => x.Post)
+                .Include(x => x.Topic.Category)
+                .Include(x => x.Member)
+                .AsNoTracking()
+                .Where(x => x.Topic.Id == topicId)
+                .ToList()
+                .GroupBy(x => x.Post.Id)
+                .ToDictionary(x => x.Key, x => x.ToList());
+        }
+
+        /// <inheritdoc />
+        public Dictionary<Guid, Dictionary<Guid, List<Favourite>>> GetByTopicsGroupedIntoPosts(List<Guid> topicIds)
+        {
+            var dict = new Dictionary<Guid, Dictionary<Guid, List<Favourite>>>();
+
+            var votesGroupedByTopicId = _context.Favourite.AsNoTracking()
+                .Include(x => x.Topic)
+                .Include(x => x.Post)
+                .Include(x => x.Member)
+                .Where(x => topicIds.Contains(x.Topic.Id))
+                .ToList()
+                .GroupBy(x => x.Post.Id)
+                .ToDictionary(x => x.Key, x => x);
+
+            foreach (var vgbtid in votesGroupedByTopicId)
+            {
+                var votesGroupedByPostId = vgbtid.Value
+                    .GroupBy(x => x.Post.Id)
+                    .ToDictionary(x => x.Key, x => x.ToList());
+
+                dict.Add(vgbtid.Key, votesGroupedByPostId);
+            }
+
+            return dict;
+        }
+
+        public Dictionary<Guid, List<Favourite>> GetAllPostFavourites(List<Guid> postIds)
         {
             return _context.Favourite.AsNoTracking()
                 .Include(x => x.Post)
                 .Include(x => x.Topic.Category)
                 .Include(x => x.Member)
-                .Where(x => postIds.Contains(x.Post.Id)).ToList();
+                .Where(x => postIds.Contains(x.Post.Id))
+                .ToList()
+                .GroupBy(x => x.Post.Id)
+                .ToDictionary(x => x.Key, x => x.ToList()); ;
         }
     }
 }

@@ -240,7 +240,7 @@
             var post = _postService.Get(id);
             var permissions = RoleService.GetPermissions(post.Topic.Category, loggedOnUsersRole);
             var votes = _voteService.GetVotesByPosts(new List<Guid> { id });
-            var viewModel = ViewModelMapping.CreatePostViewModel(post, votes, permissions, post.Topic,
+            var viewModel = ViewModelMapping.CreatePostViewModel(post, votes[id], permissions, post.Topic,
                 loggedOnReadOnlyUser, SettingsService.GetSettings(), new List<Favourite>());
             var upVotes = viewModel.Votes.Where(x => x.Amount > 0).ToList();
             return View(upVotes);

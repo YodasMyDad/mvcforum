@@ -244,25 +244,20 @@
         /// <returns></returns>
         private string GetExceptionToString(Exception ex)
         {
-            const int maxExceptionDepth = 5;
-
             if (ex == null)
             {
                 return string.Empty;
             }
 
-            var message = new StringBuilder(ex.Message);
-
-            var inner = ex.InnerException;
-            var depthCounter = 0;
-            while (inner != null && depthCounter++ < maxExceptionDepth)
+            var message = new StringBuilder();
+            message.Append(ex.Message);
+            message.AppendLine();
+            message.Append(" INNER EXCEPTION: ");
+            message.AppendLine();
+            if (ex.InnerException != null)
             {
-                message.AppendLine();
-                message.Append(" INNER EXCEPTION: ");
-                message.Append(inner.Message);
-                inner = inner.InnerException;
+                message.Append(ex.InnerException.Message);
             }
-
             return message.ToString();
         }
 

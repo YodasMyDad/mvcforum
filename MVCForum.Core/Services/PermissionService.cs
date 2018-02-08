@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Web;
     using Constants;
     using Interfaces;
     using Interfaces.Services;
@@ -42,10 +43,16 @@
         /// <returns></returns>
         public IEnumerable<Permission> GetAll()
         {
-            return _context.Permission
-                                                                            .AsNoTracking()
-                                                                            .OrderBy(x => x.Name)
-                                                                            .ToList();
+            // Request Cache these as it gets called quite a lot
+            var allPermissions = HttpContext.Current.Items["AllPermissions"];
+            if (allPermissions == null)
+            {
+                HttpContext.Current.Items["AllPermissions"] = _context.Permission
+                    .AsNoTracking()
+                    .OrderBy(x => x.Name)
+                    .ToList();
+            }
+            return (IEnumerable<Permission>)HttpContext.Current.Items["AllPermissions"];
         }
 
         /// <summary>

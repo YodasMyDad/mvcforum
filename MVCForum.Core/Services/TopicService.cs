@@ -318,6 +318,7 @@
                 .Include(x => x.LastPost.User)
                 .Include(x => x.User)
                 .Include(x => x.Poll)
+                .Include(x => x.Tags)
                 .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
                 .OrderByDescending(x => x.LastPost.DateCreated);
 
@@ -367,6 +368,7 @@
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.User)
                                 .Include(x => x.Poll)
+                                .Include(x => x.Tags)
                                 .AsNoTracking()
                                 .Where(x => x.User.Id == memberId)
                                 .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
@@ -404,6 +406,7 @@
                         .Include(x => x.LastPost.User)
                         .Include(x => x.User)
                         .Include(x => x.Poll)
+                        .Include(x => x.Tags)
                         .Where(x => x.Category.Id == categoryId)
                         .Where(x => x.Pending != true)
                         .OrderByDescending(x => x.IsSticky)
@@ -431,6 +434,7 @@
                             .Include(x => x.LastPost.User)
                             .Include(x => x.User)
                             .Include(x => x.Poll)
+                            .Include(x => x.Tags)
                             .AsNoTracking()
                             .Where(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id))
                             .OrderBy(x => x.LastPost.DateCreated);
@@ -560,6 +564,7 @@
                             .Include(x => x.Category)
                             .Include(x => x.LastPost.User)
                             .Include(x => x.User)
+                            .Include(x => x.Tags)
                             .AsNoTracking()
                             .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
                             .Where(x => x.Posts.Any(p => p.Pending != true));
@@ -585,7 +590,8 @@
                 .Include(x => x.Category)
                 .Include(x => x.LastPost.User)
                 .Include(x => x.User)
-                .Include(x => x.Poll)           
+                .Include(x => x.Poll)
+                .Include(x => x.Tags)
                 .Where(x => topicIds.Contains(x.Id))
                 .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
                 .OrderByDescending(x => x.LastPost.DateCreated);
@@ -608,6 +614,7 @@
                 .Include(x => x.Poll)
                 .Include(x => x.User)
                 .Include(x => x.Posts)
+                .Include(x => x.Tags)
                 .Where(x => x.Posts.Any(u => u.User.Id == memberGuid && u.Pending != true) && allowedCatIds.Contains(x.Category.Id))
                 .OrderByDescending(x => x.LastPost.DateEdited);
 
@@ -625,6 +632,7 @@
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.User)
                                 .Include(x => x.Poll)
+                                .Include(x => x.Tags)
                             .Where(x => topicIds.Contains(x.Id))
                             .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
                             .OrderByDescending(x => x.LastPost.DateCreated)
@@ -647,6 +655,7 @@
                     .Include(x => x.LastPost.User)
                     .Include(x => x.User)
                     .Include(x => x.Poll)
+                    .Include(x => x.Tags)
                     .FirstOrDefault(x => x.Slug == slug);
         }
 
@@ -663,6 +672,7 @@
                                     .Include(x => x.LastPost.User)
                                     .Include(x => x.User)
                                     .Include(x => x.Poll)
+                                    .Include(x => x.Tags)
                                 .FirstOrDefault(x => x.Id == topicId);
 
                 return topic;
@@ -678,6 +688,7 @@
                 .Include(x => x.LastPost.User)
                 .Include(x => x.User)
                 .Include(x => x.Poll)
+                .Include(x => x.Tags)
                 .Where(x => topicIds.Contains(x.Id) && allowedCatIds.Contains(x.Category.Id))
                 .OrderByDescending(x => x.LastPost.DateCreated)
                 .ToList();
@@ -743,6 +754,7 @@
                                 .Include(x => x.User)
                                 .Include(x => x.Poll)
                                 .Include(x => x.Posts)
+                                .Include(x => x.Tags)
                                 .AsNoTracking()
                             .Where(x => x.User.Id == memberId)
                             .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))

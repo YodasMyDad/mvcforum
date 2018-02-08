@@ -13,6 +13,8 @@
         List<Favourite> GetAllByMember(Guid memberId);
         Favourite GetByMemberAndPost(Guid memberId, Guid postId);
         List<Favourite> GetByTopic(Guid topicId);
-        List<Favourite> GetAllPostFavourites(List<Guid> postIds);
+        Dictionary<Guid, List<Favourite>> GetByTopicGroupedByPost(Guid topicId);
+        Dictionary<Guid, Dictionary<Guid, List<Favourite>>> GetByTopicsGroupedIntoPosts(List<Guid> topicIds);
+        Dictionary<Guid, List<Favourite>> GetAllPostFavourites(List<Guid> postIds);
     }
 }

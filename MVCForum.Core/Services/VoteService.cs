@@ -5,7 +5,6 @@
     using System.Data.Entity;
     using System.Linq;
     using System.Threading.Tasks;
-    using Constants;
     using Events;
     using Interfaces;
     using Interfaces.Services;
@@ -16,12 +15,10 @@
     {
         private readonly IMembershipUserPointsService _membershipUserPointsService;
         private IMvcForumContext _context;
-        private readonly ICacheService _cacheService;
 
-        public VoteService(IMvcForumContext context, IMembershipUserPointsService membershipUserPointsService, ICacheService cacheService)
+        public VoteService(IMvcForumContext context, IMembershipUserPointsService membershipUserPointsService)
         {
             _membershipUserPointsService = membershipUserPointsService;
-            _cacheService = cacheService;
             _context = context;
         }
 
@@ -57,16 +54,41 @@
             return _context.Vote.Where(x => x.VotedByMembershipUser.Id == membershipId).ToList();
         }
 
-        public List<Vote> GetVotesByPosts(List<Guid> postIds)
+        public Dictionary<Guid, List<Vote>> GetVotesByPosts(List<Guid> postIds)
         {
+            return _context.Vote.AsNoTracking()
+                         .Include(x => x.VotedByMembershipUser)
+                         .Include(x => x.User)
+                         .Include(x => x.Post)
+                         .Where(x => postIds.Contains(x.Post.Id))
+                         .ToList()
+                         .GroupBy(x => x.Post.Id)
+                         .ToDictionary(x => x.Key, x => x.ToList());
+        }
 
-                return _context.Vote
-                            .Include(x => x.VotedByMembershipUser)
-                            .Include(x => x.User)
-                            .Include(x => x.Post)
-                            .AsNoTracking()
-                            .Where(x => postIds.Contains(x.Post.Id)).ToList();
-     
+        public Dictionary<Guid, Dictionary<Guid, List<Vote>>> GetVotesByTopicsGroupedIntoPosts(List<Guid> topicIds)
+        {
+            var dict = new Dictionary<Guid, Dictionary<Guid, List<Vote>>>();
+
+            var votesGroupedByTopicId = _context.Vote.AsNoTracking()
+                .Include(x => x.VotedByMembershipUser)
+                .Include(x => x.User)
+                .Include(x => x.Post.Topic)
+                .Where(x => topicIds.Contains(x.Post.Topic.Id))
+                .ToList()
+                .GroupBy(x => x.Post.Id)
+                .ToDictionary(x => x.Key, x => x);
+
+            foreach (var vgbtid in votesGroupedByTopicId)
+            {
+                var votesGroupedByPostId = vgbtid.Value
+                                            .GroupBy(x => x.Post.Id)
+                                            .ToDictionary(x => x.Key, x => x.ToList());
+
+                dict.Add(vgbtid.Key, votesGroupedByPostId);
+            }
+
+            return dict;
         }
 
         public List<Vote> GetVotesByPost(Guid postId)
@@ -86,14 +108,14 @@
         public Vote Add(Vote vote)
         {
 
-            var e = new VoteEventArgs {Vote = vote};
+            var e = new VoteEventArgs { Vote = vote };
             EventManager.Instance.FireBeforeVoteMade(this, e);
 
             if (!e.Cancel)
             {
                 _context.Vote.Add(vote);
 
-                EventManager.Instance.FireAfterVoteMade(this, new VoteEventArgs {Vote = vote});
+                EventManager.Instance.FireAfterVoteMade(this, new VoteEventArgs { Vote = vote });
             }
 
             return vote;
