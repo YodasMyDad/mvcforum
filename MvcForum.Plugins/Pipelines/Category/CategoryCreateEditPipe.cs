@@ -17,12 +17,14 @@
         private readonly ILocalizationService _localizationService;
         private readonly ILoggingService _loggingService;
         private readonly ICategoryService _categoryService;
+        private readonly ICacheService _cacheService;
 
-        public CategoryCreateEditPipe(ILocalizationService localizationService, ILoggingService loggingService, ICategoryService categoryService)
+        public CategoryCreateEditPipe(ILocalizationService localizationService, ILoggingService loggingService, ICategoryService categoryService, ICacheService cacheService)
         {
             _localizationService = localizationService;
             _loggingService = loggingService;
             _categoryService = categoryService;
+            _cacheService = cacheService;
         }
 
         /// <inheritdoc />
@@ -107,6 +109,8 @@
                 }
 
                 await context.SaveChangesAsync();
+
+                _cacheService.ClearStartsWith("CategoryList");
 
             }
             catch (Exception ex)

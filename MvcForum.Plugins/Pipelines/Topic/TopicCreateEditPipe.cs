@@ -17,13 +17,15 @@
         private readonly IPollService _pollService;
         private readonly ILocalizationService _localizationService;
         private readonly ILoggingService _loggingService;
+        private readonly ICacheService _cacheService;
 
-        public TopicCreateEditPipe(IPostService postService, ILocalizationService localizationService, IPollService pollService, ILoggingService loggingService)
+        public TopicCreateEditPipe(IPostService postService, ILocalizationService localizationService, IPollService pollService, ILoggingService loggingService, ICacheService cacheService)
         {
             _postService = postService;
             _localizationService = localizationService;
             _pollService = pollService;
             _loggingService = loggingService;
+            _cacheService = cacheService;
         }
 
         /// <inheritdoc />
@@ -111,6 +113,10 @@
                     var pollCloseafterDays = input.ExtendedData[Constants.ExtendedDataKeys.PollCloseAfterDays] as int?;
                     _pollService.RefreshEditedPoll(input.EntityToProcess, newPollAnswers, pollCloseafterDays ?? 0);
                 }
+            
+                    // Clear some caches
+                    _cacheService.ClearStartsWith("HotTopics");
+               
             }
             catch (System.Exception ex)
             {

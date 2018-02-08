@@ -90,8 +90,7 @@
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
             var catViewModel = new CategoryListViewModel
             {
-                AllPermissionSets =
-                    ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAll(), _roleService,
+                AllPermissionSets = ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAll(), _roleService,
                         loggedOnUsersRole)
             };
             return PartialView(catViewModel);

@@ -15,13 +15,15 @@
         private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
         private readonly INotificationService _notificationService;
         private readonly ILoggingService _loggingService;
+        private readonly ICacheService _cacheService;
 
         public CategoryDeletePipe(ICategoryPermissionForRoleService categoryPermissionForRoleService, 
-            INotificationService notificationService, ILoggingService loggingService)
+            INotificationService notificationService, ILoggingService loggingService, ICacheService cacheService)
         {
             _categoryPermissionForRoleService = categoryPermissionForRoleService;
             _notificationService = notificationService;
             _loggingService = loggingService;
+            _cacheService = cacheService;
         }
 
         /// <inheritdoc />
@@ -56,6 +58,8 @@
                     context.Category.Remove(input.EntityToProcess);
 
                     await context.SaveChangesAsync();
+
+                    _cacheService.ClearStartsWith("CategoryList");
                 }
                 else
                 {

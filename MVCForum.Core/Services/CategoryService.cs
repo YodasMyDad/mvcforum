@@ -66,7 +66,9 @@
         /// <returns></returns>
         public List<Category> GetAll()
         {
-
+            var cachedCategories = _cacheService.Get<List<Category>>("CategoryList.GetAll");
+            if (cachedCategories == null)
+            {
                 var orderedCategories = new List<Category>();
                 var allCats = _context.Category
                     .Include(x => x.ParentCategory)
@@ -83,8 +85,9 @@
                     // Add subcategories under this
                     orderedCategories.AddRange(GetSubCategories(parentCategory, allCats));
                 }
-                return orderedCategories;
-        
+                cachedCategories = orderedCategories;
+            }
+            return cachedCategories;
         }
 
         public List<Category> GetSubCategories(Category category, List<Category> allCategories, int level = 2)

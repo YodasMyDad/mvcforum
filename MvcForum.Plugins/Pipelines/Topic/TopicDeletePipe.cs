@@ -17,14 +17,16 @@
         private readonly IPostService _postService;
         private readonly INotificationService _notificationService;
         private readonly ILoggingService _loggingService;
+        private readonly ICacheService _cacheService;
 
-        public TopicDeletePipe(IFavouriteService favouriteService, IPollService pollService, IPostService postService, INotificationService notificationService, ILoggingService loggingService)
+        public TopicDeletePipe(IFavouriteService favouriteService, IPollService pollService, IPostService postService, INotificationService notificationService, ILoggingService loggingService, ICacheService cacheService)
         {
             _favouriteService = favouriteService;
             _pollService = pollService;
             _postService = postService;
             _notificationService = notificationService;
             _loggingService = loggingService;
+            _cacheService = cacheService;
         }
 
         /// <inheritdoc />
@@ -115,6 +117,9 @@
 
                 // Save here to clear the last post
                 await context.SaveChangesAsync();
+
+                // Clear some caches
+                _cacheService.ClearStartsWith("HotTopics");
             }
             catch (Exception ex)
             {
