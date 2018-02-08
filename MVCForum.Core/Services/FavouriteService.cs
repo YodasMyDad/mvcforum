@@ -5,7 +5,6 @@
     using System.Data.Entity;
     using System.Linq;
     using System.Threading.Tasks;
-    using Constants;
     using Events;
     using Interfaces;
     using Interfaces.Services;
@@ -13,12 +12,10 @@
 
     public partial class FavouriteService : IFavouriteService
     {
-        private readonly ICacheService _cacheService;
         private IMvcForumContext _context;
 
-        public FavouriteService(IMvcForumContext context, ICacheService cacheService)
+        public FavouriteService(IMvcForumContext context)
         {
-            _cacheService = cacheService;
             _context = context;
         }
 
@@ -65,12 +62,11 @@
 
         public Favourite Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.Favourite.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.Favourite
+            return _context.Favourite
                 .Include(x => x.Post.User)
                 .Include(x => x.Topic.Category)
                 .Include(x => x.Member)
-                .FirstOrDefault(x => x.Id == id));
+                .FirstOrDefault(x => x.Id == id);
         }
 
         public List<Favourite> GetAllByMember(Guid memberId)
@@ -84,32 +80,72 @@
 
         public Favourite GetByMemberAndPost(Guid memberId, Guid postId)
         {
-            var cacheKey = string.Concat(CacheKeys.Favourite.StartsWith, "GetByMemberAndPost-", memberId, "-", postId);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.Favourite
+            return _context.Favourite
                 .Include(x => x.Post)
                 .Include(x => x.Topic.Category)
                 .Include(x => x.Member)
-                .FirstOrDefault(x => x.Member.Id == memberId && x.Post.Id == postId));
+                .FirstOrDefault(x => x.Member.Id == memberId && x.Post.Id == postId);
         }
 
         public List<Favourite> GetByTopic(Guid topicId)
         {
-            var cacheKey = string.Concat(CacheKeys.Favourite.StartsWith, "GetByTopic-", topicId);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.Favourite
+            return _context.Favourite
                 .Include(x => x.Post)
                 .Include(x => x.Topic.Category)
                 .Include(x => x.Member)
                 .AsNoTracking()
-                .Where(x => x.Topic.Id == topicId).ToList());
+                .Where(x => x.Topic.Id == topicId).ToList();
         }
 
-        public List<Favourite> GetAllPostFavourites(List<Guid> postIds)
+        /// <inheritdoc />
+        public Dictionary<Guid, List<Favourite>> GetByTopicGroupedByPost(Guid topicId)
+        {
+            return _context.Favourite
+                .Include(x => x.Post)
+                .Include(x => x.Topic.Category)
+                .Include(x => x.Member)
+                .AsNoTracking()
+                .Where(x => x.Topic.Id == topicId)
+                .ToList()
+                .GroupBy(x => x.Post.Id)
+                .ToDictionary(x => x.Key, x => x.ToList());
+        }
+
+        /// <inheritdoc />
+        public Dictionary<Guid, Dictionary<Guid, List<Favourite>>> GetByTopicsGroupedIntoPosts(List<Guid> topicIds)
+        {
+            var dict = new Dictionary<Guid, Dictionary<Guid, List<Favourite>>>();
+
+            var votesGroupedByTopicId = _context.Favourite.AsNoTracking()
+                .Include(x => x.Topic)
+                .Include(x => x.Post)
+                .Include(x => x.Member)
+                .Where(x => topicIds.Contains(x.Topic.Id))
+                .ToList()
+                .ToLookup(x => x.Post.Id);
+
+            foreach (var vgbtid in votesGroupedByTopicId)
+            {
+                var votesGroupedByPostId = vgbtid
+                    .GroupBy(x => x.Post.Id)
+                    .ToDictionary(x => x.Key, x => x.ToList());
+
+                dict.Add(vgbtid.Key, votesGroupedByPostId);
+            }
+
+            return dict;
+        }
+
+        public Dictionary<Guid, List<Favourite>> GetAllPostFavourites(List<Guid> postIds)
         {
             return _context.Favourite.AsNoTracking()
                 .Include(x => x.Post)
                 .Include(x => x.Topic.Category)
                 .Include(x => x.Member)
-                .Where(x => postIds.Contains(x.Post.Id)).ToList();
+                .Where(x => postIds.Contains(x.Post.Id))
+                .ToList()
+                .GroupBy(x => x.Post.Id)
+                .ToDictionary(x => x.Key, x => x.ToList()); ;
         }
     }
 }

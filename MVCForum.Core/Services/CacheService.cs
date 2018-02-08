@@ -125,32 +125,32 @@
 
         #region Short Per Request Cache
 
-        public T CachePerRequest<T>(string cacheKey, Func<T> getCacheItem)
-        {
-            if (HttpContext.Current != null)
-            {
-                if (!HttpContext.Current.Items.Contains(cacheKey))
-                {
-                    var result = getCacheItem();
-                    if (result != null)
-                    {
-                        SetPerRequest(cacheKey, result);
-                        return result;
-                    }
-                    return default(T);
-                }
-                return (T) HttpContext.Current.Items[cacheKey];
-            }
-            return getCacheItem();
-        }
+        //public T CachePerRequest<T>(string cacheKey, Func<T> getCacheItem)
+        //{
+        //    if (HttpContext.Current != null)
+        //    {
+        //        if (!HttpContext.Current.Items.Contains(cacheKey))
+        //        {
+        //            var result = getCacheItem();
+        //            if (result != null)
+        //            {
+        //                SetPerRequest(cacheKey, result);
+        //                return result;
+        //            }
+        //            return default(T);
+        //        }
+        //        return (T) HttpContext.Current.Items[cacheKey];
+        //    }
+        //    return getCacheItem();
+        //}
 
-        public void SetPerRequest(string cacheKey, object objectToCache)
-        {
-            if (HttpContext.Current != null)
-            {
-                HttpContext.Current.Items.Add(cacheKey, objectToCache);
-            }
-        }
+        //public void SetPerRequest(string cacheKey, object objectToCache)
+        //{
+        //    if (HttpContext.Current != null)
+        //    {
+        //        HttpContext.Current.Items.Add(cacheKey, objectToCache);
+        //    }
+        //}
 
         #endregion
     }

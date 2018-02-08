@@ -609,9 +609,15 @@
                     ? "forumimageinsert"
                     : "image";
 
-                var viewModel = ViewModelMapping.CreateTopicViewModel(topic, permissions, posts.ToList(),
+                var postIds = posts.Select(x => x.Id).ToList();
+
+                var votes = _voteService.GetVotesByPosts(postIds);
+
+                var favourites = _favouriteService.GetAllPostFavourites(postIds);
+
+                var viewModel = ViewModelMapping.CreateTopicViewModel(topic, permissions, posts, postIds,
                     starterPost, posts.PageIndex, posts.TotalCount, posts.TotalPages, loggedOnReadOnlyUser,
-                    settings, _notificationService, _pollService, _voteService, _favouriteService, true);
+                    settings, _notificationService, _pollService, votes, favourites, true);
 
                 // If there is a quote querystring
                 var quote = Request["quote"];

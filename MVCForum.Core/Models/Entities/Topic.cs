@@ -4,9 +4,10 @@
     using System.Collections.Generic;
     using System.Linq;
     using Enums;
+    using Interfaces;
     using Utilities;
 
-    public partial class Topic : ExtendedDataEntity
+    public partial class Topic : ExtendedDataEntity, IBaseEntity
     {
         public Topic()
         {

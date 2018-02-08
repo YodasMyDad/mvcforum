@@ -2,9 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using Interfaces;
     using Utilities;
 
-    public partial class PollAnswer : ExtendedDataEntity
+    public partial class PollAnswer : ExtendedDataEntity, IBaseEntity
     {
         public PollAnswer()
         {

@@ -87,9 +87,7 @@
 
         public IList<SelectListItem> GetAllSelectList(List<Category> allowedCategories, int amount)
         {
-            var cacheKey = string.Concat(CacheKeys.Topic.StartsWith, "GetAllSelectList-", allowedCategories.GetHashCode(), "-", amount);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 // get the category ids
                 var allowedCatIds = allowedCategories.Select(x => x.Id);
                 return _context.Topic.AsNoTracking()
@@ -102,7 +100,7 @@
                                         Text = x.Name,
                                         Value = x.Id.ToString()
                                     }).ToList();
-            });
+         
         }
 
         public IList<Topic> GetHighestViewedTopics(int amountToTake, List<Category> allowedCategories)
@@ -320,6 +318,7 @@
                 .Include(x => x.LastPost.User)
                 .Include(x => x.User)
                 .Include(x => x.Poll)
+                .Include(x => x.Tags)
                 .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
                 .OrderByDescending(x => x.LastPost.DateCreated);
 
@@ -369,6 +368,7 @@
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.User)
                                 .Include(x => x.Poll)
+                                .Include(x => x.Tags)
                                 .AsNoTracking()
                                 .Where(x => x.User.Id == memberId)
                                 .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
@@ -406,6 +406,7 @@
                         .Include(x => x.LastPost.User)
                         .Include(x => x.User)
                         .Include(x => x.Poll)
+                        .Include(x => x.Tags)
                         .Where(x => x.Category.Id == categoryId)
                         .Where(x => x.Pending != true)
                         .OrderByDescending(x => x.IsSticky)
@@ -433,6 +434,7 @@
                             .Include(x => x.LastPost.User)
                             .Include(x => x.User)
                             .Include(x => x.Poll)
+                            .Include(x => x.Tags)
                             .AsNoTracking()
                             .Where(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id))
                             .OrderBy(x => x.LastPost.DateCreated);
@@ -443,9 +445,7 @@
 
         public IList<Topic> GetPendingTopics(List<Category> allowedCategories, MembershipRole usersRole)
         {
-            var cacheKey = string.Concat(CacheKeys.Topic.StartsWith, "GetPendingTopics-", allowedCategories.GetHashCode(), "-", usersRole.Id);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 var allowedCatIds = allowedCategories.Select(x => x.Id);
                 var allPendingTopics = _context.Topic.AsNoTracking().Include(x => x.Category).Where(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id)).ToList();
                 if (usersRole != null)
@@ -472,17 +472,15 @@
                     return pendingTopics;
                 }
                 return allPendingTopics;
-            });
+           
         }
 
         public int GetPendingTopicsCount(List<Category> allowedCategories)
         {
-            var cacheKey = string.Concat(CacheKeys.Topic.StartsWith, "GetPendingTopicsCount-", allowedCategories.GetHashCode());
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 var allowedCatIds = allowedCategories.Select(x => x.Id);
                 return _context.Topic.AsNoTracking().Include(x => x.Category).Count(x => x.Pending == true && allowedCatIds.Contains(x.Category.Id));
-            });
+        
 
         }
 
@@ -566,6 +564,7 @@
                             .Include(x => x.Category)
                             .Include(x => x.LastPost.User)
                             .Include(x => x.User)
+                            .Include(x => x.Tags)
                             .AsNoTracking()
                             .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
                             .Where(x => x.Posts.Any(p => p.Pending != true));
@@ -591,7 +590,8 @@
                 .Include(x => x.Category)
                 .Include(x => x.LastPost.User)
                 .Include(x => x.User)
-                .Include(x => x.Poll)           
+                .Include(x => x.Poll)
+                .Include(x => x.Tags)
                 .Where(x => topicIds.Contains(x.Id))
                 .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
                 .OrderByDescending(x => x.LastPost.DateCreated);
@@ -614,6 +614,7 @@
                 .Include(x => x.Poll)
                 .Include(x => x.User)
                 .Include(x => x.Posts)
+                .Include(x => x.Tags)
                 .Where(x => x.Posts.Any(u => u.User.Id == memberGuid && u.Pending != true) && allowedCatIds.Contains(x.Category.Id))
                 .OrderByDescending(x => x.LastPost.DateEdited);
 
@@ -631,6 +632,7 @@
                                 .Include(x => x.LastPost.User)
                                 .Include(x => x.User)
                                 .Include(x => x.Poll)
+                                .Include(x => x.Tags)
                             .Where(x => topicIds.Contains(x.Id))
                             .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
                             .OrderByDescending(x => x.LastPost.DateCreated)
@@ -653,6 +655,7 @@
                     .Include(x => x.LastPost.User)
                     .Include(x => x.User)
                     .Include(x => x.Poll)
+                    .Include(x => x.Tags)
                     .FirstOrDefault(x => x.Slug == slug);
         }
 
@@ -669,6 +672,7 @@
                                     .Include(x => x.LastPost.User)
                                     .Include(x => x.User)
                                     .Include(x => x.Poll)
+                                    .Include(x => x.Tags)
                                 .FirstOrDefault(x => x.Id == topicId);
 
                 return topic;
@@ -684,6 +688,7 @@
                 .Include(x => x.LastPost.User)
                 .Include(x => x.User)
                 .Include(x => x.Poll)
+                .Include(x => x.Tags)
                 .Where(x => topicIds.Contains(x.Id) && allowedCatIds.Contains(x.Category.Id))
                 .OrderByDescending(x => x.LastPost.DateCreated)
                 .ToList();
@@ -721,16 +726,14 @@
 
         public int TopicCount(List<Category> allowedCategories)
         {
-            var cacheKey = string.Concat(CacheKeys.Topic.StartsWith, "TopicCount-", allowedCategories.GetHashCode());
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+ 
                 // get the category ids
                 var allowedCatIds = allowedCategories.Select(x => x.Id);
                 return _context.Topic
                     .Include(x => x.Category)
                     .AsNoTracking()
                     .Count(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id));
-            });
+      
 
         }
 
@@ -751,6 +754,7 @@
                                 .Include(x => x.User)
                                 .Include(x => x.Poll)
                                 .Include(x => x.Posts)
+                                .Include(x => x.Tags)
                                 .AsNoTracking()
                             .Where(x => x.User.Id == memberId)
                             .Where(x => x.Pending != true && allowedCatIds.Contains(x.Category.Id))
@@ -887,6 +891,31 @@
 
             return matchingTopicTitles <= 0;
         }
+
+        //public IEnumerable<Record> PerformBatchJoinWithIds(IEnumerable<int> ids)
+        //{
+        //    var context = GetContext<MyDatabaseContext>();
+        //    // Disable auto detection of changes; much faster for batch edits/inserts
+        //    context.Configuration.AutoDetectChangesEnabled = false;
+        //    // A GUID will keep track of this batch operation
+        //    var uniqueId = Guid.NewGuid();
+        //    // Insert the batchquery objects for each id
+        //    foreach (var id in ids)
+        //    {
+        //        context.BatchQueries.Add(new BatchQuery { Id = uniqueId, IdToQuery = id });
+        //    }
+        //    // Detect all changes in one shot and then save them
+        //    context.ChangeTracker.DetectChanges();
+        //    context.SaveChanges();
+        //    // Now we can re-enable auto detection of changes (in case we use this context elsewhere)
+        //    context.Configuration.AutoDetectChangesEnabled = true;
+        //    // Join the batch queries table with the records we're trying to get
+        //    var entities = context.Records.Join(context.BatchQueries, x => x.Id, y => y.IdToQuery, (x, y) => x)
+        //        .ToList();
+        //    // Finally, we can delete all of the BatchQuery records matching the GUID
+        //    context.Database.ExecuteSqlCommand("DELETE FROM BatchQueries WHERE ID = {0}", uniqueId);
+        //    return entities;
+        //}
 
     }
 }

@@ -92,10 +92,12 @@
                 // Now do a save
                 await context.SaveChangesAsync();
 
-
                 // Update the users points score and post count for posting a new post
                 if (!isEdit)
                 {
+                    // make it last post if this is a new post
+                    input.EntityToProcess.Topic.LastPost = input.EntityToProcess;
+
                     await _membershipUserPointsService.Add(new MembershipUserPoints
                     {
                         Points = _settingsService.GetSettings().PointsAddedPerPost,

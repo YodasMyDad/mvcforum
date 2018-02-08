@@ -3,9 +3,10 @@
     using System;
     using System.Collections.Generic;
     using Enums;
+    using Interfaces;
     using Utilities;
 
-    public partial class Badge : ExtendedDataEntity
+    public partial class Badge : ExtendedDataEntity, IBaseEntity
     {
         /// <summary>
         ///     Specifies the target badge interface names matched to the corresponding badge type

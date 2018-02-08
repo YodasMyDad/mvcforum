@@ -17,13 +17,15 @@
         private readonly IPollService _pollService;
         private readonly ILocalizationService _localizationService;
         private readonly ILoggingService _loggingService;
+        private readonly ICacheService _cacheService;
 
-        public TopicCreateEditPipe(IPostService postService, ILocalizationService localizationService, IPollService pollService, ILoggingService loggingService)
+        public TopicCreateEditPipe(IPostService postService, ILocalizationService localizationService, IPollService pollService, ILoggingService loggingService, ICacheService cacheService)
         {
             _postService = postService;
             _localizationService = localizationService;
             _pollService = pollService;
             _loggingService = loggingService;
+            _cacheService = cacheService;
         }
 
         /// <inheritdoc />
@@ -47,8 +49,6 @@
 
                 // Add a variable for the post
                 Post post = null;
-
-                var isNew = false;
 
                 // See if we have a post already (i.e. for when we move)
                 if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.Post))
@@ -93,8 +93,6 @@
                             input.ExtendedData[Constants.ExtendedDataKeys.Content] as string,
                             input.EntityToProcess, input.EntityToProcess.User, files, true, null);
 
-                        // Set the new post flag
-                        isNew = true;
                     }
 
                     // If there is an issue return the pipeline
@@ -102,15 +100,6 @@
                     {
                         input.AddError(postPipelineResult.ProcessLog.FirstOrDefault());
                         return input;
-                    }
-
-                    // Set the post as the post from the pipeline
-                    post = postPipelineResult.EntityToProcess;
-
-                    if (isNew)
-                    {
-                        // make it last post if this is a new post
-                        input.EntityToProcess.LastPost = post;
                     }
                 }
 
@@ -124,6 +113,10 @@
                     var pollCloseafterDays = input.ExtendedData[Constants.ExtendedDataKeys.PollCloseAfterDays] as int?;
                     _pollService.RefreshEditedPoll(input.EntityToProcess, newPollAnswers, pollCloseafterDays ?? 0);
                 }
+            
+                    // Clear some caches
+                    _cacheService.ClearStartsWith("HotTopics");
+               
             }
             catch (System.Exception ex)
             {

@@ -47,21 +47,18 @@
 
         public IList<BannedWord> GetAll(bool onlyStopWords = false)
         {
-            var cacheKey = string.Concat(CacheKeys.BannedWord.StartsWith, "GetAll-", onlyStopWords);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 if (onlyStopWords)
                 {
                     return _context.BannedWord.AsNoTracking().Where(x => x.IsStopWord == true).OrderByDescending(x => x.DateAdded).ToList();
                 }
                 return _context.BannedWord.AsNoTracking().Where(x => x.IsStopWord != true).OrderByDescending(x => x.DateAdded).ToList();
-            });
+      
         }
 
         public BannedWord Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.BannedWord.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.BannedWord.FirstOrDefault(x => x.Id == id));
+            return _context.BannedWord.Find(id);
         }
 
         public async Task<PaginatedList<BannedWord>> GetAllPaged(int pageIndex, int pageSize)

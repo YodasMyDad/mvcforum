@@ -63,8 +63,9 @@ namespace MvcForum.Web
             // Routes
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
-            // If the same carry on as normal
-            loggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
+            // If the same carry on as normal            
+            var logFileSize = ForumConfiguration.Instance.LogFileMaxSizeBytes;
+            loggingService.Initialise(logFileSize > 100000 ? logFileSize : 100000);
             loggingService.Error("START APP");
 
             // Find the plugin, pipeline and badge assemblies

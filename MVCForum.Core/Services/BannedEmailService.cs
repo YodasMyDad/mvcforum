@@ -52,8 +52,7 @@
 
         public BannedEmail Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.BannedEmail.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.BannedEmail.FirstOrDefault(x => x.Id == id));
+            return _context.BannedEmail.Find(id);
         }
 
         public async Task<PaginatedList<BannedEmail>> GetAllPaged(int pageIndex, int pageSize)

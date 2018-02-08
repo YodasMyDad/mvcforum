@@ -99,9 +99,7 @@
         /// <returns></returns>
         public IEnumerable<Activity> GetDataFieldByGuid(Guid guid)
         {
-            var cacheKey = string.Concat(CacheKeys.Activity.StartsWith, "GetDataFieldByGuid-", guid);
-            return _cacheService.CachePerRequest(cacheKey,
-                () => _context.Activity.Where(x => x.Data.Contains(guid.ToString())));
+            return _context.Activity.Where(x => x.Data.Contains(guid.ToString()));
         }
 
         public async Task<PaginatedList<ActivityBase>> SearchPagedGroupedActivities(string search, int pageIndex,
@@ -198,8 +196,7 @@
 
         public Activity Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.Activity.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.Activity.FirstOrDefault(x => x.Id == id));
+            return _context.Activity.Find(id);
         }
 
         public void Delete(Activity item)

@@ -44,8 +44,7 @@
 
         public Block Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.Block.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.Block.FirstOrDefault(x => x.Id == id));
+            return _context.Block.Find(id);
         }
     }
 }

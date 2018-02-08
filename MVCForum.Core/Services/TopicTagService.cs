@@ -141,16 +141,13 @@
 
         public TopicTag Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.TopicTag.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.TopicTag.FirstOrDefault(x => x.Id == id));
+            return  _context.TopicTag.FirstOrDefault(x => x.Id == id);
         }
 
         public TopicTag Get(string tag)
         {
             tag = StringUtils.SafePlainText(tag);
-            var cacheKey = string.Concat(CacheKeys.TopicTag.StartsWith, "Get-", tag);
-            return _cacheService.CachePerRequest(cacheKey,
-                () => _context.TopicTag.FirstOrDefault(x => x.Slug.Equals(tag)));
+            return _context.TopicTag.FirstOrDefault(x => x.Slug.Equals(tag));
         }
 
         /// <summary>

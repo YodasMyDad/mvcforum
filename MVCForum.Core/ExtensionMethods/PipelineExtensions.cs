@@ -1,5 +1,6 @@
 ﻿namespace MvcForum.Core.ExtensionMethods
 {
+    using Interfaces;
     using Interfaces.Pipeline;
     using Models.Entities;
 

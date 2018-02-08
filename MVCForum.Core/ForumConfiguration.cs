@@ -47,6 +47,7 @@
         public string UploadFolderPath => GetConfig("UploadFolderPath");
 
         public int PrivateMessageWarningAmountLessThanAllowedSize => Convert.ToInt32(GetConfig("PrivateMessageWarningAmountLessThanAllowedSize"));
+        public int LogFileMaxSizeBytes => Convert.ToInt32(GetConfig("LogFileMaxSizeBytes"));
 
         /// <summary>
         ///     Paging options - Amount per page on different pages.

@@ -10,6 +10,7 @@
     using System.Web.Mvc;
     using Core;
     using Core.Constants;
+    using Core.Interfaces;
     using Core.Models.Entities;
     using Core.Providers.Storage;
     using Core.Utilities;

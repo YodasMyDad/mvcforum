@@ -42,12 +42,6 @@
         Task<PaginatedList<Badge>> SearchPagedGroupedTags(string search, int pageIndex, int pageSize);
 
         /// <summary>
-        ///     Get all Badges enabled in the applications
-        /// </summary>
-        /// <returns></returns>
-        IList<Badge> GetallBadges();
-
-        /// <summary>
         ///     Delete a badge
         /// </summary>
         /// <param name="badge"></param>

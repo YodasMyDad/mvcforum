@@ -1,6 +1,7 @@
 ﻿namespace MvcForum.Web.Controllers
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using Core.ExtensionMethods;
@@ -241,7 +242,7 @@
 
         public ActionResult AllBadges()
         {
-            var allBadges = _badgeService.GetallBadges();
+            var allBadges = _badgeService.GetAll().ToList();
 
             // Localise the badge names
             foreach (var item in allBadges)
