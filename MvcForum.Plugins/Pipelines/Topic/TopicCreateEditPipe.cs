@@ -48,8 +48,6 @@
                 // Add a variable for the post
                 Post post = null;
 
-                var isNew = false;
-
                 // See if we have a post already (i.e. for when we move)
                 if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.Post))
                 {
@@ -93,8 +91,6 @@
                             input.ExtendedData[Constants.ExtendedDataKeys.Content] as string,
                             input.EntityToProcess, input.EntityToProcess.User, files, true, null);
 
-                        // Set the new post flag
-                        isNew = true;
                     }
 
                     // If there is an issue return the pipeline
@@ -102,15 +98,6 @@
                     {
                         input.AddError(postPipelineResult.ProcessLog.FirstOrDefault());
                         return input;
-                    }
-
-                    // Set the post as the post from the pipeline
-                    post = postPipelineResult.EntityToProcess;
-
-                    if (isNew)
-                    {
-                        // make it last post if this is a new post
-                        input.EntityToProcess.LastPost = post;
                     }
                 }
 

@@ -71,6 +71,7 @@
             return PartialView("_Post", viewModel);
         }
 
+        [HttpPost]
         public virtual async Task<ActionResult> DeletePost(Guid id)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);

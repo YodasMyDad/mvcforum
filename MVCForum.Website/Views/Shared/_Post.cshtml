@@ -62,9 +62,14 @@
                     @if (Model.Post.User.Id == loggedOnUserId || Model.Permissions[ForumConfiguration.Instance.PermissionDeletePosts].IsTicked)
                     {
                         <li>
-                            <a class="btn-mvc btn-mvc-small btn-mvc-fullwidth" onclick="return confirm('@(Html.LanguageString("Post.DeleteConfirmation"))')" href="@Url.Action("DeletePost", "Post", new { id = Model.Post.Id })">
+                                @using (Html.BeginForm("DeletePost", "Post", FormMethod.Post, new {@class = "form-login"}))
+                                {
+                                    <button class="btn-mvc btn-mvc-small btn-mvc-fullwidth" onclick="return confirm('@(Html.LanguageString("Post.DeleteConfirmation"))')" type="submit">@Html.LanguageString("Post.Delete")</button>
+                                    @Html.Hidden("id", Model.Post.Id)
+                                }
+                            @*<a class="btn-mvc btn-mvc-small btn-mvc-fullwidth" onclick="return confirm('@(Html.LanguageString("Post.DeleteConfirmation"))')" href="@Url.Action("DeletePost", "Post", new {id = Model.Post.Id})">
                                 @Html.LanguageString("Post.Delete")
-                            </a>
+                            </a>*@
                         </li>
                     }
 

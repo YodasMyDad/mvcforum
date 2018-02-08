@@ -13,7 +13,7 @@
             HasMany(x => x.PollVotes)
                 .WithRequired(t => t.PollAnswer)
                 .Map(x => x.MapKey("PollAnswer_Id"))
-                .WillCascadeOnDelete(true);
+                .WillCascadeOnDelete(false);
         }
     }
 }
