@@ -64,7 +64,7 @@
                     {
                         foreach (var pollAnswer in input.EntityToProcess.Poll.PollAnswers)
                         {
-                            if (input.EntityToProcess.Name.IndexOf(pollAnswer.Answer, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                            if (pollAnswer.Answer.IndexOf(stopWord, StringComparison.CurrentCultureIgnoreCase) >= 0)
                             {
                                 input.AddError(_localizationService.GetResourceString("StopWord.Error"));
                                 return input;
@@ -78,8 +78,7 @@
                         {
                             foreach (var pollAnswer in newPollAnswers)
                             {
-                                if (input.EntityToProcess.Name.IndexOf(pollAnswer.Answer,
-                                        StringComparison.CurrentCultureIgnoreCase) >= 0)
+                                if (pollAnswer.Answer.IndexOf(stopWord, StringComparison.CurrentCultureIgnoreCase) >= 0)
                                 {
                                     input.AddError(_localizationService.GetResourceString("StopWord.Error"));
                                     return input;
@@ -93,7 +92,7 @@
                     {
                         foreach (var topicTag in input.EntityToProcess.Tags)
                         {
-                            if (input.EntityToProcess.Name.IndexOf(topicTag.Tag, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                            if (topicTag.Tag.IndexOf(stopWord, StringComparison.CurrentCultureIgnoreCase) >= 0)
                             {
                                 input.AddError(_localizationService.GetResourceString("StopWord.Error"));
                                 return input;

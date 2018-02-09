@@ -146,8 +146,12 @@
 
         public TopicTag Get(string tag)
         {
-            tag = StringUtils.SafePlainText(tag);
-            return _context.TopicTag.FirstOrDefault(x => x.Slug.Equals(tag));
+            if (!string.IsNullOrWhiteSpace(tag))
+            {
+                tag = StringUtils.SafePlainText(tag);
+                return _context.TopicTag.FirstOrDefault(x => x.Slug.Equals(tag));
+            }
+            return null;
         }
 
         /// <summary>

@@ -750,39 +750,42 @@
             var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
             var settings = SettingsService.GetSettings();
             var tagModel = _topicTagService.Get(tag);
-
-            // Set the page index
-            var pageIndex = p ?? 1;
-
-            // Get the topics
-            var topics = await _topicService.GetPagedTopicsByTag(pageIndex,
-                settings.TopicsPerPage,
-                int.MaxValue,
-                tag, allowedCategories);
-
-            // See if the user has subscribed to this topic or not
-            var isSubscribed = User.Identity.IsAuthenticated &&
-                               _notificationService.GetTagNotificationsByUserAndTag(loggedOnReadOnlyUser, tagModel)
-                                   .Any();
-
-            // Get the Topic View Models
-            var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, loggedOnUsersRole,
-                loggedOnReadOnlyUser, allowedCategories, settings, _postService, _notificationService,
-                _pollService, _voteService, _favouriteService);
-
-            // create the view model
-            var viewModel = new TagTopicsViewModel
+            if (tag != null)
             {
-                Topics = topicViewModels,
-                PageIndex = pageIndex,
-                TotalCount = topics.TotalCount,
-                TotalPages = topics.TotalPages,
-                Tag = tag,
-                IsSubscribed = isSubscribed,
-                TagId = tagModel.Id
-            };
+                // Set the page index
+                var pageIndex = p ?? 1;
 
-            return View(viewModel);
+                // Get the topics
+                var topics = await _topicService.GetPagedTopicsByTag(pageIndex,
+                    settings.TopicsPerPage,
+                    int.MaxValue,
+                    tag, allowedCategories);
+
+                // See if the user has subscribed to this topic or not
+                var isSubscribed = User.Identity.IsAuthenticated &&
+                                   _notificationService.GetTagNotificationsByUserAndTag(loggedOnReadOnlyUser, tagModel)
+                                       .Any();
+
+                // Get the Topic View Models
+                var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics, RoleService, loggedOnUsersRole,
+                    loggedOnReadOnlyUser, allowedCategories, settings, _postService, _notificationService,
+                    _pollService, _voteService, _favouriteService);
+
+                // create the view model
+                var viewModel = new TagTopicsViewModel();
+                viewModel.Topics = topicViewModels;
+                viewModel.PageIndex = pageIndex;
+                viewModel.TotalCount = topics.TotalCount;
+                viewModel.TotalPages = topics.TotalPages;
+                viewModel.Tag = tag;
+                viewModel.IsSubscribed = isSubscribed;
+                viewModel.TagId = tagModel.Id;
+             
+
+                return View(viewModel);
+            }
+
+            return ErrorToHomePage("No Such Tag");
         }
 
         [HttpPost]
