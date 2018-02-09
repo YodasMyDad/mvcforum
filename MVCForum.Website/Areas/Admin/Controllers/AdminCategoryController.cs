@@ -2,21 +2,16 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-    using System.Web.Hosting;
     using System.Web.Mvc;
-    using Application;
-    using Core;
     using Core.Constants;
-    using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Services;
     using Core.Models.Entities;
     using ExtensionMethods;
-    using Web.ViewModels;
-    using Web.ViewModels.Admin;
+    using ViewModels;
+    using ViewModels.Admin;
 
     [Authorize(Roles = Constants.AdminRoleName)]
     public class AdminCategoryController : BaseAdminController
@@ -50,7 +45,7 @@
         }
 
         /// <summary>
-        /// Removes the category image
+        ///     Removes the category image
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -59,7 +54,7 @@
             var category = _categoryService.Get(id);
             category.Image = string.Empty;
             Context.SaveChanges();
-            return RedirectToAction("EditCategory", new { id });
+            return RedirectToAction("EditCategory", new {id});
         }
 
         public ActionResult CreateCategory()
@@ -72,7 +67,7 @@
         }
 
         /// <summary>
-        /// Create category logic
+        ///     Create category logic
         /// </summary>
         /// <param name="categoryViewModel"></param>
         /// <returns></returns>
@@ -84,7 +79,8 @@
             {
                 var category = categoryViewModel.ToCategory();
 
-                var categoryResult = await _categoryService.Create(category, categoryViewModel.Files, categoryViewModel.ParentCategory);
+                var categoryResult = await _categoryService.Create(category, categoryViewModel.Files,
+                    categoryViewModel.ParentCategory);
                 if (!categoryResult.Successful)
                 {
                     ModelState.AddModelError("", categoryResult.ProcessLog.FirstOrDefault());
@@ -114,9 +110,10 @@
         public ActionResult EditCategory(Guid id)
         {
             var category = _categoryService.Get(id);
-            var categoryViewModel = category.ToEditViewModel(_categoryService.GetBaseSelectListCategories(_categoryService.GetAll()
-            .Where(x => x.Id != category.Id)
-            .ToList()));
+            var categoryViewModel = category.ToEditViewModel(_categoryService.GetBaseSelectListCategories(
+                _categoryService.GetAll()
+                    .Where(x => x.Id != category.Id)
+                    .ToList()));
 
             return View(categoryViewModel);
         }
@@ -135,7 +132,8 @@
 
                 var category = categoryViewModel.ToCategory(categoryToEdit);
 
-                var categoryResult = await _categoryService.Edit(category, categoryViewModel.Files, categoryViewModel.ParentCategory);
+                var categoryResult = await _categoryService.Edit(category, categoryViewModel.Files,
+                    categoryViewModel.ParentCategory);
                 if (!categoryResult.Successful)
                 {
                     ModelState.AddModelError("", categoryResult.ProcessLog.FirstOrDefault());

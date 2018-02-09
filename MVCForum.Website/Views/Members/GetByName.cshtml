@@ -122,6 +122,24 @@
 
             @if (User.IsInRole(Constants.AdminRoleName))
             {
+                if (Model.User.IsApproved == false)
+                {
+                    <p>
+                        @Html.LanguageString("Members.Errors.UserNotApproved")
+                    </p>
+                }
+                if (Model.User.IsBanned == true)
+                {
+                    <p>
+                        @Html.LanguageString("Members.NowBanned")
+                    </p>
+                }
+                if (Model.User.IsLockedOut == true)
+                {
+                    <p>
+                        @Html.LanguageString("Members.Errors.UserLockedOut")
+                    </p>
+                }
                 <div class="membersection adminpublicomments">
                     @Html.Raw(Model.User.Comment)
                 </div>

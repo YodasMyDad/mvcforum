@@ -48,5 +48,6 @@
         IList<Category> GetBySlugLike(string slug);
         IList<Category> GetAllDeepSubCategories(Category category);
         void SortPath(Category category, Category parentCategory);
+        IList<Section> GetAllSections();
     }
 }

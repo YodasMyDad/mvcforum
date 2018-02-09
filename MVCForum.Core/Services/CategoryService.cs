@@ -451,6 +451,12 @@
             category.Path = path;
         }
 
+        /// <inheritdoc />
+        public IList<Section> GetAllSections()
+        {
+            return _context.Section.AsNoTracking().Include(x => x.Categories).ToList();
+        }
+
         private static string LevelDashes(int level)
         {
             if (level > 1)
