@@ -15,7 +15,7 @@
             Property(x => x.CreateDate).IsRequired();
             Property(x => x.Solved).IsRequired();
             Property(x => x.SolvedReminderSent).IsOptional();
-            Property(x => x.Slug).IsRequired().HasMaxLength(450).HasColumnAnnotation("Index",
+            Property(x => x.Slug).IsRequired().HasMaxLength(450).HasColumnAnnotation(IndexAnnotation.AnnotationName,
                                     new IndexAnnotation(new IndexAttribute("IX_Topic_Slug", 1) { IsUnique = true }));
             Property(x => x.Views).IsOptional();
             Property(x => x.IsSticky).IsRequired();

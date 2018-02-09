@@ -15,7 +15,7 @@
             Property(x => x.Description).IsOptional();
             Property(x => x.DateCreated).IsRequired();
             Property(x => x.Slug).IsRequired().HasMaxLength(450)
-                .HasColumnAnnotation("Index",
+                .HasColumnAnnotation(IndexAnnotation.AnnotationName,
                     new IndexAnnotation(new IndexAttribute("IX_Category_Slug", 1) {IsUnique = true}));
             Property(x => x.SortOrder).IsRequired();
             Property(x => x.IsLocked).IsRequired();
@@ -31,6 +31,10 @@
                 .WithMany()
                 .Map(x => x.MapKey("Category_Id"));
 
+            HasOptional(x => x.Section)
+                .WithMany(x => x.Categories)
+                .Map(x => x.MapKey("Section_Id"))
+                .WillCascadeOnDelete(false);
 
             HasMany(x => x.CategoryNotifications)
                 .WithRequired(x => x.Category)

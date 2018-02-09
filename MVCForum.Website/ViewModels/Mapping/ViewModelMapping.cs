@@ -8,6 +8,7 @@
     using Core;
     using Core.Constants;
     using Core.Interfaces.Services;
+    using Core.Models;
     using Core.Models.Entities;
     using Core.Models.General;
     using Poll;
@@ -17,6 +18,32 @@
     public static class ViewModelMapping
     {
         #region Category
+
+
+        public static Dictionary<CategorySummary, PermissionSet> GetPermissionsForCategories(IEnumerable<CategorySummary> categories,
+            IRoleService roleService, MembershipRole usersRole, bool removeIfDenyAccess = false)
+        {
+            // Permissions
+            // loop through the categories and get the permissions
+            var permissions = new Dictionary<CategorySummary, PermissionSet>();
+            foreach (var summary in categories)
+            {
+                var permissionSet = roleService.GetPermissions(summary.Category, usersRole);
+
+                // Should we add if deny access is ticked
+                if (removeIfDenyAccess)
+                {
+                    // See if deny access is ticked
+                    if (permissionSet[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
+                    {
+                        continue;
+                    }
+                }
+
+                permissions.Add(summary, permissionSet);
+            }
+            return permissions;
+        }
 
         public static Dictionary<Category, PermissionSet> GetPermissionsForCategories(IEnumerable<Category> categories,
             IRoleService roleService, MembershipRole usersRole)

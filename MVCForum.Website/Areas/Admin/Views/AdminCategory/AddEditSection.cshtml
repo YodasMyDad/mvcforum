@@ -1,0 +1,49 @@
+﻿@model MvcForum.Web.ViewModels.Admin.SectionAddEditViewModel
+@{
+    ViewBag.Title = "Create / Edit Section";
+}
+
+@Html.Partial("_SectionNavButtons")
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5>@ViewBag.Title</h5>
+    </div>
+    <div class="panel-content">
+        @using (Html.BeginForm("AddEditSection", "AdminCategory", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.ValidationSummary(false)
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name)
+                @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Name)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Description)
+                @Html.EditorFor(model => model.Description)
+                @Html.ValidationMessageFor(model => model.Description)
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.SortOrder)
+                @Html.TextBoxFor(model => model.SortOrder, new { @class = "form-control", type = "number" })
+                @Html.ValidationMessageFor(model => model.SortOrder)
+            </div>
+
+            @Html.HiddenFor(x => x.Id)
+            @Html.HiddenFor(x => x.IsEdit)
+
+            <div class="submit-holder">
+                <input type="submit" class="btn-mvc-green btn-mvc-large" value="@(Model.IsEdit ? "Update" : "Create")" />
+                @if (Model.IsEdit)
+                {
+                    <a href="@Url.Action("DeleteSection", new { id = Model.Id })" class="btn-mvc btn-mvc-large" role="button">Delete</a>   
+                }
+            </div>
+        }
+    </div>
+</div>
+

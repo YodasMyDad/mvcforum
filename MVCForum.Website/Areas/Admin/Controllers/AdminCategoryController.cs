@@ -2,21 +2,17 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
-    using System.Web.Hosting;
     using System.Web.Mvc;
-    using Application;
-    using Core;
     using Core.Constants;
     using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Services;
     using Core.Models.Entities;
     using ExtensionMethods;
-    using Web.ViewModels;
-    using Web.ViewModels.Admin;
+    using ViewModels;
+    using ViewModels.Admin;
 
     [Authorize(Roles = Constants.AdminRoleName)]
     public class AdminCategoryController : BaseAdminController
@@ -50,7 +46,7 @@
         }
 
         /// <summary>
-        /// Removes the category image
+        ///     Removes the category image
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -59,20 +55,21 @@
             var category = _categoryService.Get(id);
             category.Image = string.Empty;
             Context.SaveChanges();
-            return RedirectToAction("EditCategory", new { id });
+            return RedirectToAction("EditCategory", new {id});
         }
 
         public ActionResult CreateCategory()
         {
             var categoryViewModel = new CategoryEditViewModel
             {
-                AllCategories = _categoryService.GetBaseSelectListCategories(_categoryService.GetAll())
+                AllCategories = _categoryService.GetBaseSelectListCategories(_categoryService.GetAll()),
+                AllSections = _categoryService.GetAllSections().ToSelectList()
             };
             return View(categoryViewModel);
         }
 
         /// <summary>
-        /// Create category logic
+        ///     Create category logic
         /// </summary>
         /// <param name="categoryViewModel"></param>
         /// <returns></returns>
@@ -84,7 +81,8 @@
             {
                 var category = categoryViewModel.ToCategory();
 
-                var categoryResult = await _categoryService.Create(category, categoryViewModel.Files, categoryViewModel.ParentCategory);
+                var categoryResult = await _categoryService.Create(category, categoryViewModel.Files,
+                    categoryViewModel.ParentCategory, categoryViewModel.Section);
                 if (!categoryResult.Successful)
                 {
                     ModelState.AddModelError("", categoryResult.ProcessLog.FirstOrDefault());
@@ -107,6 +105,7 @@
             }
 
             categoryViewModel.AllCategories = _categoryService.GetBaseSelectListCategories(_categoryService.GetAll());
+            categoryViewModel.AllSections = _categoryService.GetAllSections().ToSelectList();
 
             return View(categoryViewModel);
         }
@@ -114,9 +113,7 @@
         public ActionResult EditCategory(Guid id)
         {
             var category = _categoryService.Get(id);
-            var categoryViewModel = category.ToEditViewModel(_categoryService.GetBaseSelectListCategories(_categoryService.GetAll()
-            .Where(x => x.Id != category.Id)
-            .ToList()));
+            var categoryViewModel = category.ToEditViewModel(_categoryService.GetBaseSelectListCategories(_categoryService.GetAll().Where(x => x.Id != category.Id).ToList()), _categoryService.GetAllSections().ToSelectList());
 
             return View(categoryViewModel);
         }
@@ -135,7 +132,8 @@
 
                 var category = categoryViewModel.ToCategory(categoryToEdit);
 
-                var categoryResult = await _categoryService.Edit(category, categoryViewModel.Files, categoryViewModel.ParentCategory);
+                var categoryResult = await _categoryService.Edit(category, categoryViewModel.Files,
+                    categoryViewModel.ParentCategory, categoryViewModel.Section);
                 if (!categoryResult.Successful)
                 {
                     ModelState.AddModelError("", categoryResult.ProcessLog.FirstOrDefault());
@@ -153,7 +151,7 @@
                     categoryViewModel = categoryResult.EntityToProcess.ToEditViewModel(
                         _categoryService.GetBaseSelectListCategories(_categoryService.GetAll()
                             .Where(x => x.Id != categoryViewModel.Id)
-                            .ToList()));
+                            .ToList()), _categoryService.GetAllSections().ToSelectList());
                 }
             }
 
@@ -285,5 +283,108 @@
             }
             return subCats;
         }
+
+        #region Sections
+
+        /// <summary>
+        /// Sections page
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Sections()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// List sections
+        /// </summary>
+        /// <returns></returns>
+        [ChildActionOnly]
+        public PartialViewResult GetSections()
+        {
+            var viewModel = new SectionListViewModel
+            {
+                Sections = _categoryService.GetAllSections()
+            };
+            return PartialView(viewModel);
+        }
+
+        /// <summary>
+        /// Create edit section view
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult AddEditSection(Guid? id)
+        {
+            var categoryViewModel = new SectionAddEditViewModel();
+
+            if (id != null)
+            {
+                var section = _categoryService.GetSection(id.Value);
+
+                categoryViewModel.IsEdit = true;
+                categoryViewModel.Id = section.Id;
+                categoryViewModel.Name = section.Name;
+                categoryViewModel.Description = section.Description;
+                categoryViewModel.SortOrder = section.SortOrder;
+            }
+
+            return View(categoryViewModel);
+        }
+
+        /// <summary>
+        ///     Create / Edit a section logic
+        /// </summary>
+        /// <param name="sectionAddEditViewModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddEditSection(SectionAddEditViewModel sectionAddEditViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var section = sectionAddEditViewModel.IsEdit ? _categoryService.GetSection(sectionAddEditViewModel.Id) 
+                                                                : new Section{DateCreated = DateTime.UtcNow};
+
+                section.Name = sectionAddEditViewModel.Name;
+                section.Description = sectionAddEditViewModel.Description;
+                section.SortOrder = sectionAddEditViewModel.SortOrder;
+
+                // TODO - This should all be in the service!!!
+                if (!sectionAddEditViewModel.IsEdit)
+                {
+                    Context.Section.Add(section);
+                }
+
+                Context.SaveChanges();
+
+
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = "Successful",
+                    MessageType = GenericMessages.success
+                };
+
+                return RedirectToAction("Sections");
+            }
+
+            return View(sectionAddEditViewModel);
+        }
+
+        public ActionResult DeleteSection(Guid id)
+        {
+            _categoryService.DeleteSection(id);
+
+            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+            {
+                Message = "Successful",
+                MessageType = GenericMessages.success
+            };
+
+            return RedirectToAction("Sections");
+        }
+
+        #endregion
+
     }
 }

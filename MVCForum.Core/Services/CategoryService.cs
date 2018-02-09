@@ -12,6 +12,7 @@
     using Interfaces;
     using Interfaces.Pipeline;
     using Interfaces.Services;
+    using Models;
     using Models.Entities;
     using Models.General;
     using Pipeline;
@@ -139,11 +140,46 @@
         {
             return _context.Category.AsNoTracking()
                 .Include(x => x.ParentCategory)
-                .Include(x => x.Topics.Select(l => l.LastPost))
-                .Include(x => x.Topics.Select(l => l.Posts))
                 .Where(cat => cat.ParentCategory == null)
                 .OrderBy(x => x.SortOrder)
                 .ToList();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<CategorySummary> GetAllMainCategoriesInSummary()
+        {
+            return _context.Category.AsNoTracking()
+                .Include(x => x.ParentCategory)
+                .Include(x => x.Section)
+                .Where(cat => cat.ParentCategory == null)
+                .OrderBy(x => x.SortOrder)
+                .Select(x => new CategorySummary
+                {
+                    Category = x,
+                    TopicCount = x.Topics.Count,
+                    PostCount = x.Topics.SelectMany(p => p.Posts).Count(), // TODO - Should this be a seperate call?
+                    MostRecentTopic = x.Topics.OrderByDescending(t => t.LastPost.DateCreated).FirstOrDefault() // TODO - Should this be a seperate call?
+                })
+                .ToList();
+        }
+
+        /// <inheritdoc />
+        public ILookup<Guid, CategorySummary> GetAllMainCategoriesInSummaryGroupedBySection()
+        {
+            return _context.Category.AsNoTracking()
+                .Include(x => x.ParentCategory)
+                .Include(x => x.Section)
+                .Where(x => x.ParentCategory == null && x.Section != null)
+                .OrderBy(x => x.SortOrder)
+                .Select(x => new CategorySummary
+                {
+                    Category = x,
+                    TopicCount = x.Topics.Count,
+                    PostCount = x.Topics.SelectMany(p => p.Posts).Count(), // TODO - Should this be a seperate call?
+                    MostRecentTopic = x.Topics.OrderByDescending(t => t.LastPost.DateCreated).FirstOrDefault() // TODO - Should this be a seperate call?
+                })
+                .ToList()
+                .ToLookup(x => x.Category.Section.Id);
         }
 
         /// <summary>
@@ -167,7 +203,8 @@
         /// <param name="category"></param>
         /// <param name="postedFiles"></param>
         /// <param name="parentCategory"></param>
-        public async Task<IPipelineProcess<Category>> Create(Category category, HttpPostedFileBase[] postedFiles, Guid? parentCategory)
+        /// <param name="section"></param>
+        public async Task<IPipelineProcess<Category>> Create(Category category, HttpPostedFileBase[] postedFiles, Guid? parentCategory, Guid? section)
         {
             // Get the pipelines
             var categoryPipes = ForumConfiguration.Instance.PipelinesCategoryCreate;
@@ -179,6 +216,12 @@
             if (parentCategory != null)
             {
                 piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.ParentCategory, parentCategory);
+            }
+
+            // Add section
+            if (section != null)
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Section, section);
             }
 
             // Add posted files
@@ -208,7 +251,7 @@
         }
 
         /// <inheritdoc />
-        public async Task<IPipelineProcess<Category>> Edit(Category category, HttpPostedFileBase[] postedFiles, Guid? parentCategory)
+        public async Task<IPipelineProcess<Category>> Edit(Category category, HttpPostedFileBase[] postedFiles, Guid? parentCategory, Guid? section)
         {
             // Get the pipelines
             var categoryPipes = ForumConfiguration.Instance.PipelinesCategoryUpdate;
@@ -220,6 +263,12 @@
             if (parentCategory != null)
             {
                 piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.ParentCategory, parentCategory);
+            }
+
+            // Add section
+            if (section != null)
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Section, section);
             }
 
             // Add posted files
@@ -449,6 +498,29 @@
                 parentCategory.Id.ToString();
 
             category.Path = path;
+        }
+
+        /// <inheritdoc />
+        public List<Section> GetAllSections()
+        {
+            return _context.Section.AsNoTracking().Include(x => x.Categories).OrderBy(x => x.SortOrder).ToList();
+        }
+
+        /// <inheritdoc />
+        public Section GetSection(Guid id)
+        {
+            return _context.Section.Find(id);
+        }
+
+        /// <inheritdoc />
+        public void DeleteSection(Guid id)
+        {
+            var section = _context.Section.Find(id);
+            if (section != null)
+            {
+                _context.Section.Remove(section);
+                _context.SaveChanges();
+            }
         }
 
         private static string LevelDashes(int level)

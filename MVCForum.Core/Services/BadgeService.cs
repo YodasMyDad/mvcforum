@@ -11,12 +11,14 @@
     using Interfaces;
     using Interfaces.Badges;
     using Interfaces.Services;
+    using Ioc;
     using Models.Activity;
     using Models.Attributes;
     using Models.Entities;
     using Models.Enums;
     using Models.General;
     using Reflection;
+    using Unity;
     using Utilities;
 
     public partial class BadgeService : IBadgeService
@@ -189,7 +191,16 @@
                                 }
 
                                 // Instantiate the badge and execute the rule
-                                var badge = GetInstance<IBadge>(badgeMapping);
+                                IBadge badge;
+                                if (badgeMapping.BadgeClassInstance != null)
+                                {
+                                    badge = badgeMapping.BadgeClassInstance;
+                                }
+                                else
+                                {
+                                    badgeMapping.BadgeClassInstance = UnityHelper.Container.Resolve(badgeMapping.BadgeClass) as IBadge;
+                                    badge = badgeMapping.BadgeClassInstance;
+                                }
 
                                 if (badge != null)
                                 {
@@ -528,29 +539,6 @@
             }
 
             return badge;
-        }
-
-        /// <summary>
-        ///     Get an instance from a badge class (instantiate it)
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="badgeMapping"></param>
-        /// <returns></returns>
-        private static IBadge GetInstance<T>(BadgeMapping badgeMapping)
-        {
-            // If we've previously instantiated this class then return the instance
-            if (badgeMapping.BadgeClassInstance != null)
-            {
-                return badgeMapping.BadgeClassInstance;
-            }
-
-            var ctor = badgeMapping.BadgeClass.GetConstructors().First();
-            var createdActivator = ReflectionUtilities.GetActivator<T>(ctor);
-
-            // Create an instance:
-            badgeMapping.BadgeClassInstance = createdActivator() as IBadge;
-
-            return badgeMapping.BadgeClassInstance;
         }
 
         /// <summary>
