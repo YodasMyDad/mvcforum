@@ -46,6 +46,11 @@
             </a>
         </li>
         <li>
+            <a href="@Url.Action("Sections", "AdminCategory", new { area = "Admin" }, null)" class="@(currentController == "admincategory" && currentAction == "sections" ? "active" : "")">
+                <i class="fa fa-fw fa-folder-open-o"></i> Sections
+            </a>
+        </li>
+        <li>
             <a href="#" data-toggle="collapse" data-target="#tags">
                 <i class="fa fa-fw fa-tags"></i> Tags <i class="fa fa-fw fa-caret-down"></i>
             </a>

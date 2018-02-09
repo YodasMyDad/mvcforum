@@ -135,7 +135,7 @@
         /// <summary>
         ///     Show categories on home page instead of topics
         /// </summary>
-        public bool CategoriesOnMain => Convert.ToBoolean(GetConfig("CategoriesOnMain"));
+        public string ForumIndexView => GetConfig("ForumIndexView");
 
 
         /// <summary>

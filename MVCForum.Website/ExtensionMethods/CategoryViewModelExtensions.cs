@@ -58,8 +58,9 @@
         /// </summary>
         /// <param name="category"></param>
         /// <param name="allCategorySelectListItems"></param>
+        /// <param name="sections"></param>
         /// <returns></returns>
-        public static CategoryEditViewModel ToEditViewModel(this Category category, List<SelectListItem> allCategorySelectListItems)
+        public static CategoryEditViewModel ToEditViewModel(this Category category, List<SelectListItem> allCategorySelectListItems, IEnumerable<SelectListItem> sections)
         {
             var categoryViewModel = new CategoryEditViewModel
             {
@@ -75,7 +76,9 @@
                 Image = category.Image,
                 CategoryColour = category.Colour,
                 ParentCategory = category.ParentCategory?.Id ?? Guid.Empty,
-                AllCategories = allCategorySelectListItems
+                Section = category.Section?.Id ?? Guid.Empty,
+                AllCategories = allCategorySelectListItems,
+                AllSections = sections
             };
             return categoryViewModel;
         }

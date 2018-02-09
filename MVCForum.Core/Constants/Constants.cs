@@ -201,6 +201,11 @@
             /// Parent Category
             /// </summary>
             public const string ParentCategory = "ParentCategory";
+
+            /// <summary>
+            /// Section 
+            /// </summary>
+            public const string Section = "Section";
         }
     }
 }

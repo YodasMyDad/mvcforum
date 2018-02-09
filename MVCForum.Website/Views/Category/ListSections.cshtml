@@ -1,0 +1,36 @@
+﻿@using MvcForum.Web.ViewModels
+@using MvcForum.Web.ViewModels.Category
+@model List<SectionListViewModel>
+@{
+    Layout = null;
+}
+
+<div class="categoryindex">
+   
+    @foreach (var sectionItem in Model.OrderBy(x => x.Section.SortOrder))
+    {
+        if (sectionItem.AllPermissionSets.Any())
+        {
+            <div class="panel panel-mvc">
+                <div class="panel-heading">@(sectionItem.Section.Name)</div>
+                <div class="panel-body">
+                        
+                    @foreach (var cat in sectionItem.AllPermissionSets.Keys)
+                    {
+                        var permissions = sectionItem.AllPermissionSets[cat];
+
+                        @Html.Partial("_Category", new CategoryViewModel {
+                            Category = cat.Category,
+                            LatestTopic = cat.MostRecentTopic,
+                            Permissions = permissions,
+                            PostCount = cat.PostCount,
+                            TopicCount = cat.TopicCount
+                        })
+
+                    }
+                </div>
+            </div>   
+        }
+    }
+
+</div>

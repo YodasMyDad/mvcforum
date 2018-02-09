@@ -5,13 +5,9 @@
     using Core.Models.Entities;
     using Core.Models.General;
 
-    public class CategoryListViewModel
+    public class SectionListViewModel
     {
-        public Dictionary<Category, PermissionSet> AllPermissionSets { get; set; }
-    }
-
-    public class CategoryListSummaryViewModel
-    {
+        public Section Section { get; set; }
         public Dictionary<CategorySummary, PermissionSet> AllPermissionSets { get; set; }
     }
 }

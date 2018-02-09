@@ -95,6 +95,8 @@
     <Compile Include="ViewModels\Admin\BatchViewModels.cs" />
     <Compile Include="ViewModels\Admin\BannedWordViewModels.cs" />
     <Compile Include="ViewModels\Admin\DashboardViewModels.cs" />
+    <Compile Include="ViewModels\Admin\SectionAddEditViewModel.cs" />
+    <Compile Include="ViewModels\Admin\SectionListViewModel.cs" />
     <Compile Include="ViewModels\Admin\SocialViewModels.cs" />
     <Compile Include="ViewModels\Admin\SpamViewModels.cs" />
     <Compile Include="Controllers\ApiControllers\TinyMcePluginsController.cs" />
@@ -109,6 +111,7 @@
     <Compile Include="ViewModels\Admin\AdminCategoryViewModels.cs" />
     <Compile Include="ViewModels\Admin\AdminLanguageViewModels.cs" />
     <Compile Include="ViewModels\Admin\AdminViewModels.cs" />
+    <Compile Include="ViewModels\Category\SectionListViewModel.cs" />
     <Compile Include="ViewModels\GenericMessageViewModel.cs" />
     <Compile Include="ViewModels\Admin\LogViewModels.cs" />
     <Compile Include="ViewModels\Admin\PermissionsViewModels.cs" />
@@ -219,6 +222,10 @@
     <Content Include="App_Data\NuGetBackup\Hello.txt" />
     <Content Include="Config\imageprocessor\cache.config" />
     <Content Include="Config\imageprocessor\processing.config" />
+    <Content Include="Areas\Admin\Views\AdminCategory\Sections.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminCategory\_SectionNavButtons.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminCategory\GetSections.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminCategory\AddEditSection.cshtml" />
     <None Include="Config\imageprocessor\security.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -1170,6 +1177,7 @@
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.json" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.ttf" />
     <Content Include="Scripts\tinymce\skins\lightgray\fonts\tinymce.woff" />
+    <Content Include="Views\Category\ListSections.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Application\StorageProviders\" />

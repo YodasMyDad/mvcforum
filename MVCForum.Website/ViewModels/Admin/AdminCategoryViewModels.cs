@@ -16,6 +16,12 @@
 
     public class CategoryEditViewModel
     {
+        public CategoryEditViewModel()
+        {
+            AllCategories = new List<SelectListItem>();
+            AllSections = new List<SelectListItem>();
+        }
+
         [HiddenInput]
         public Guid Id { get; set; }
 
@@ -51,7 +57,12 @@
         [DisplayName("Parent Category")]
         public Guid? ParentCategory { get; set; }
 
+        [DisplayName("Section")]
+        public Guid? Section { get; set; }
+
         public List<SelectListItem> AllCategories { get; set; }
+
+        public IEnumerable<SelectListItem> AllSections { get; set; }
 
         [DisplayName("Page Title")]
         [MaxLength(80)]

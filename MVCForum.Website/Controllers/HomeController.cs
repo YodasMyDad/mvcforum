@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Web;
     using System.Web.Mvc;
     using Application;
     using Application.CustomActionResults;
@@ -315,7 +316,11 @@
                 sitemap.Add(sitemapEntry);
             }
 
+            //HttpResponse.RemoveOutputCacheItem(Url.Action("details", "product", new { id = 1234 }));
+
             return new GoogleSitemapResult(sitemap);
         }
+
+        
     }
 }

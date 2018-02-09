@@ -42,6 +42,19 @@
                     parentCategoryGuid = input.ExtendedData[Constants.ExtendedDataKeys.ParentCategory] as Guid?;
                 }
 
+                // Sort if this is a section
+                Section section = null;
+                if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.Section))
+                {
+                    if (input.ExtendedData[Constants.ExtendedDataKeys.Section] is Guid guid)
+                    {
+                        section = _categoryService.GetSection(guid);
+                    }
+                }
+
+                // Sort the section - If it's null remove it
+                input.EntityToProcess.Section = section ?? null;
+
                 var isEdit = false;
                 if (input.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.IsEdit))
                 {

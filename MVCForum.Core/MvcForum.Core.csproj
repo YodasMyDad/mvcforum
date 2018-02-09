@@ -43,6 +43,7 @@
     <Compile Include="ExtensionMethods\ImageExtensions.cs" />
     <Compile Include="ExtensionMethods\MembershipUserExtensions.cs" />
     <Compile Include="ExtensionMethods\PipelineExtensions.cs" />
+    <Compile Include="ExtensionMethods\SectionExtentions.cs" />
     <Compile Include="ExternalServices\AkismetValidator.cs" />
     <Compile Include="ForumConfiguration.cs" />
     <Compile Include="ExtensionMethods\ExtendedDataExtensions.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="Models\Attributes\DescriptionAttribute.cs" />
     <Compile Include="Models\Attributes\NameAttribute.cs" />
     <Compile Include="Models\Attributes\IdAttribute.cs" />
+    <Compile Include="Models\CategoriesSummary.cs" />
     <Compile Include="Models\Entities\Badge.cs" />
     <Compile Include="Models\Entities\BannedEmail.cs" />
     <Compile Include="Models\Entities\Category.cs" />
@@ -214,6 +216,7 @@
     <Compile Include="Models\OAuth\FacebookOAuthData.cs" />
     <Compile Include="Models\OAuth\GoogleOAuthData.cs" />
     <Compile Include="Models\PostType.cs" />
+    <Compile Include="Models\SectionsSummary.cs" />
     <Compile Include="Models\Spam\Comment.cs" />
     <Compile Include="Pipeline\Pipeline.cs" />
     <Compile Include="Pipeline\PipelineProcess.cs" />

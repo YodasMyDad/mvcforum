@@ -48,7 +48,7 @@
             ILocalizationService localizationService, IRoleService roleService, ICategoryService categoryService,
             ISettingsService settingsService, ITopicService topicService,
             ICacheService cacheService,
-            IPostService postService, 
+            IPostService postService,
             IPollService pollService, IVoteService voteService, IFavouriteService favouriteService,
             IMvcForumContext context, INotificationService notificationService)
             : base(loggingService, membershipService, localizationService, roleService,
@@ -72,15 +72,53 @@
         [ChildActionOnly]
         public virtual PartialViewResult ListMainCategories()
         {
+            // TODO - OutputCache and add clear to post/topic/category delete/create/edit
+
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
-            var catViewModel = new CategoryListViewModel
+            var catViewModel = new CategoryListSummaryViewModel
             {
                 AllPermissionSets =
-                    ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAllMainCategories(),
+                    ViewModelMapping.GetPermissionsForCategories(_categoryService.GetAllMainCategoriesInSummary(),
                         _roleService, loggedOnUsersRole)
             };
             return PartialView(catViewModel);
+        }
+
+
+        [ChildActionOnly]
+        public virtual PartialViewResult ListSections()
+        {
+            // TODO - How can we cache this effectively??
+            // Get all sections, and include all Categories
+
+            var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+            var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
+            // Model for the sections
+            var allSections = new List<SectionListViewModel>();
+
+            // Get sections from the DB
+            var dbSections = _categoryService.GetAllSections();
+
+            // Get all categories grouped by section
+            var groupedCategories = _categoryService.GetAllMainCategoriesInSummaryGroupedBySection();
+
+            // Loop sections
+            foreach (var dbSection in dbSections)
+            {
+                var categoriesInSection = groupedCategories[dbSection.Id];
+                var allPermissionSets = ViewModelMapping.GetPermissionsForCategories(categoriesInSection, _roleService, loggedOnUsersRole, true);
+
+                allSections.Add(new SectionListViewModel
+                {
+                    Section = dbSection,
+                    AllPermissionSets = allPermissionSets
+                });
+
+            }
+
+            return PartialView(allSections);
         }
 
         [ChildActionOnly]
@@ -205,7 +243,7 @@
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.NoPermission"));
         }
 
-        [OutputCache(Duration = (int) CacheTimes.TwoHours)]
+        [OutputCache(Duration = (int)CacheTimes.TwoHours)]
         public virtual ActionResult CategoryRss(string slug)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);

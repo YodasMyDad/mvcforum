@@ -15,5 +15,18 @@
 @* ### Remove ME - Not needed, just for our forum ### *@
 
 @* Check forum.config to change this *@
-@(ForumConfiguration.Instance.CategoriesOnMain ? Html.Action("ListMainCategories", "Category") : Html.Action("LatestTopics", "Topic"))
 
+@{
+    switch (ForumConfiguration.Instance.ForumIndexView)
+    {
+        case "Categories":
+            @Html.Action("ListMainCategories", "Category")
+            break;
+        case "Sections":
+            @Html.Action("ListSections", "Category")
+            break;
+        case "Topics":
+            @Html.Action("LatestTopics", "Topic")
+            break;
+    }
+}

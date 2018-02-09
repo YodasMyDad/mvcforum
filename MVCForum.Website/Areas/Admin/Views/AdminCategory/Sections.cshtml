@@ -1,0 +1,12 @@
+﻿@{
+    ViewBag.Title = "Manage Sections";
+}
+
+@section AdminHeader
+{
+
+}
+
+@Html.Partial("_SectionNavButtons")
+<p>Sections are a way to group your Categories, to make them more manageable.</p>
+@Html.Action("GetSections")
