@@ -14,9 +14,9 @@
             Property(x => x.Points).IsRequired();
             Property(x => x.DateAdded).IsRequired();
             Property(x => x.Notes).IsOptional().HasMaxLength(400);
-            Property(x => x.PointsFor).HasColumnAnnotation("Index",
+            Property(x => x.PointsFor).HasColumnAnnotation(IndexAnnotation.AnnotationName,
                                     new IndexAnnotation(new IndexAttribute("IX_MembershipUserPoints_PointsFor", 1) { IsUnique = false }));
-            Property(x => x.PointsForId).IsOptional().HasColumnAnnotation("Index",
+            Property(x => x.PointsForId).IsOptional().HasColumnAnnotation(IndexAnnotation.AnnotationName,
                                     new IndexAnnotation(new IndexAttribute("IX_MembershipUserPoints_PointsForId", 1) { IsUnique = false }));
         }
     }

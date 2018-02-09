@@ -39,6 +39,7 @@
   <ItemGroup>
     <Compile Include="Constants\Constants.cs" />
     <Compile Include="Constants\CacheKeys.cs" />
+    <Compile Include="Data\Mapping\SectionMapping.cs" />
     <Compile Include="ExtensionMethods\ImageExtensions.cs" />
     <Compile Include="ExtensionMethods\MembershipUserExtensions.cs" />
     <Compile Include="ExtensionMethods\PipelineExtensions.cs" />
@@ -72,6 +73,10 @@
     <Compile Include="Migrations\201801050701512_AddedTrustedUserOption.Designer.cs">
       <DependentUpon>201801050701512_AddedTrustedUserOption.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201802090649239_Sections.cs" />
+    <Compile Include="Migrations\201802090649239_Sections.Designer.cs">
+      <DependentUpon>201802090649239_Sections.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity\ActivityBase.cs" />
     <Compile Include="Models\Activity\BadgeActivity.cs" />
     <Compile Include="Models\Activity\PostCreatedActivity.cs" />
@@ -95,6 +100,7 @@
     <Compile Include="Models\Entities\Block.cs" />
     <Compile Include="Models\Entities\ExtendedDataEntity.cs" />
     <Compile Include="Models\Entities\PostEdit.cs" />
+    <Compile Include="Models\Entities\Section.cs" />
     <Compile Include="Models\Enums\ActivityType.cs" />
     <Compile Include="Models\Enums\BadgeType.cs" />
     <Compile Include="Models\Enums\CacheTimes.cs" />
@@ -412,6 +418,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201801050701512_AddedTrustedUserOption.resx">
       <DependentUpon>201801050701512_AddedTrustedUserOption.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802090649239_Sections.resx">
+      <DependentUpon>201802090649239_Sections.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

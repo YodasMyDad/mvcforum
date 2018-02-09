@@ -27,6 +27,7 @@
         public string Colour { get; set; }
         public string Image { get; set; }
         public virtual Category ParentCategory { get; set; }
+        public virtual Section Section { get; set; }
         public virtual IList<Topic> Topics { get; set; }
         public virtual IList<CategoryNotification> CategoryNotifications { get; set; }
         public virtual IList<CategoryPermissionForRole> CategoryPermissionForRoles { get; set; }
