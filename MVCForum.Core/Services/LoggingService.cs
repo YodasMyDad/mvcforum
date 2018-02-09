@@ -250,14 +250,16 @@
             }
 
             var message = new StringBuilder();
-            message.Append(ex.Message);
-            message.AppendLine();
-            message.Append(" INNER EXCEPTION: ");
-            message.AppendLine();
+            message.Append(ex.Message);            
             if (ex.InnerException != null)
             {
+                message.AppendLine();
+                message.Append(" INNER EXCEPTION: ");
+                message.AppendLine();
                 message.Append(ex.InnerException.Message);
             }
+            message.AppendLine();
+            message.Append(ex.StackTrace);
             return message.ToString();
         }
 
