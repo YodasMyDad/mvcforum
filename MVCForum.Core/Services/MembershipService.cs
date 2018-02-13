@@ -264,11 +264,11 @@
                 CreateDate = now,
                 FailedPasswordAnswerAttempt = 0,
                 FailedPasswordAttemptCount = 0,
-                LastLockoutDate = (DateTime) SqlDateTime.MinValue,
+                LastLockoutDate = (DateTime)SqlDateTime.MinValue,
                 LastPasswordChangedDate = now,
                 IsApproved = false,
                 IsLockedOut = false,
-                LastLoginDate = (DateTime) SqlDateTime.MinValue
+                LastLoginDate = (DateTime)SqlDateTime.MinValue
             };
         }
 
@@ -293,11 +293,11 @@
             newUser.PasswordSalt = salt;
 
             // Add the roles
-            newUser.Roles = new List<MembershipRole> {settings.NewMemberStartingRole};
+            newUser.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
 
             // Set dates
             newUser.CreateDate = newUser.LastPasswordChangedDate = DateTime.UtcNow;
-            newUser.LastLockoutDate = (DateTime) SqlDateTime.MinValue;
+            newUser.LastLockoutDate = (DateTime)SqlDateTime.MinValue;
             newUser.LastLoginDate = DateTime.UtcNow;
             newUser.IsLockedOut = false;
             newUser.Slug = ServiceHelpers.GenerateSlug(newUser.UserName,
@@ -408,9 +408,9 @@
         public MembershipUser Get(Guid id)
         {
 
-                return _context.MembershipUser
-                    .Include(x => x.Roles)
-                    .FirstOrDefault(x => x.Id == id);
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .FirstOrDefault(x => x.Id == id);
 
         }
 
@@ -422,34 +422,41 @@
         /// <returns></returns>
         public MembershipUser GetUser(string username, bool removeTracking = false)
         {
+            if (removeTracking)
+            {
+                var cacheKey = $"GetUser.{username}";
 
-                MembershipUser member;
-
-                if (removeTracking)
+                // Try and get out of cache
+                if (!HttpContext.Current.Items.Contains(cacheKey))
                 {
-                    member = _context.MembershipUser
-                        .Include(x => x.Roles)
-                        .AsNoTracking()
-                        .FirstOrDefault(name =>
-                            name.UserName.Equals(username, StringComparison.CurrentCultureIgnoreCase));
-                }
-                else
-                {
-                    member = _context.MembershipUser
-                        .Include(x => x.Roles)
-                        .FirstOrDefault(name =>
-                            name.UserName.Equals(username, StringComparison.CurrentCultureIgnoreCase));
+                    HttpContext.Current.Items[cacheKey] = GetUserBase(username, true);
                 }
 
+                return HttpContext.Current.Items[cacheKey] as MembershipUser;
+            }
 
-                // Do a check to log out the user if they are logged in and have been deleted
-                if (member == null && HttpContext.Current.User.Identity.Name == username)
-                {
-                    // Member is null so doesn't exist, yet they are logged in with that username - Log them out
-                    FormsAuthentication.SignOut();
-                }
+            return GetUserBase(username);
+        }
 
-                return member;
+        private MembershipUser GetUserBase(string username, bool removeTracking = false)
+        {
+            var memberQuery = _context.MembershipUser.Include(x => x.Roles);
+
+            if (removeTracking)
+            {
+                memberQuery = memberQuery.AsNoTracking();
+            }
+
+            var member = memberQuery.FirstOrDefault(name => name.UserName.Equals(username, StringComparison.CurrentCultureIgnoreCase));
+
+            // Do a check to log out the user if they are logged in and have been deleted
+            if (member == null && HttpContext.Current.User.Identity.Name == username)
+            {
+                // Member is null so doesn't exist, yet they are logged in with that username - Log them out
+                FormsAuthentication.SignOut();
+            }
+
+            return member;
         }
 
         /// <summary>
@@ -462,23 +469,23 @@
         {
             email = StringUtils.SafePlainText(email);
 
-                MembershipUser member;
+            MembershipUser member;
 
-                if (removeTracking)
-                {
-                    member = _context.MembershipUser.AsNoTracking()
-                        .Include(x => x.Roles)
-                        .FirstOrDefault(name => name.Email == email);
-                }
-                else
-                {
-                    member = _context.MembershipUser
-                        .Include(x => x.Roles)
-                        .FirstOrDefault(name => name.Email == email);
-                }
+            if (removeTracking)
+            {
+                member = _context.MembershipUser.AsNoTracking()
+                    .Include(x => x.Roles)
+                    .FirstOrDefault(name => name.Email == email);
+            }
+            else
+            {
+                member = _context.MembershipUser
+                    .Include(x => x.Roles)
+                    .FirstOrDefault(name => name.Email == email);
+            }
 
-                return member;
-       
+            return member;
+
         }
 
         /// <summary>
@@ -500,12 +507,12 @@
         {
             slug = StringUtils.GetSafeHtml(slug);
 
-                return _context.MembershipUser
-                    .Include(x => x.Roles)
-                    .AsNoTracking()
-                    .Where(name => name.Slug.ToUpper().Contains(slug.ToUpper()))
-                    .ToList();
-       
+            return _context.MembershipUser
+                .Include(x => x.Roles)
+                .AsNoTracking()
+                .Where(name => name.Slug.ToUpper().Contains(slug.ToUpper()))
+                .ToList();
+
         }
 
         /// <summary>
@@ -516,11 +523,11 @@
         public IList<MembershipUser> GetUsersById(List<Guid> guids)
         {
 
-                return _context.MembershipUser
-                    .Where(x => guids.Contains(x.Id))
-                    .AsNoTracking()
-                    .ToList();
-        
+            return _context.MembershipUser
+                .Where(x => guids.Contains(x.Id))
+                .AsNoTracking()
+                .ToList();
+
         }
 
         /// <summary>
@@ -535,13 +542,13 @@
             var registerStart = registerEnd.AddDays(-amoutOfDaysSinceRegistered);
 
 
-                return _context.MembershipUser
-                    .Where(x =>
-                        x.Posts.Count <= amoutOfPosts &&
-                        x.CreateDate > registerStart &&
-                        x.CreateDate <= registerEnd)
-                    .ToList();
-        
+            return _context.MembershipUser
+                .Where(x =>
+                    x.Posts.Count <= amoutOfPosts &&
+                    x.CreateDate > registerStart &&
+                    x.CreateDate <= registerEnd)
+                .ToList();
+
         }
 
 
@@ -658,13 +665,13 @@
         public IList<MembershipUser> GetActiveMembers()
         {
 
-                // Get members that last activity date is valid
-                var date = DateTime.UtcNow.AddMinutes(-Constants.TimeSpanInMinutesToShowMembers);
-                return _context.MembershipUser
-                    .Where(x => x.LastActivityDate > date)
-                    .AsNoTracking()
-                    .ToList();
-    
+            // Get members that last activity date is valid
+            var date = DateTime.UtcNow.AddMinutes(-Constants.TimeSpanInMinutesToShowMembers);
+            return _context.MembershipUser
+                .Where(x => x.LastActivityDate > date)
+                .AsNoTracking()
+                .ToList();
+
         }
 
         /// <summary>
@@ -679,36 +686,36 @@
 
         public IList<MembershipUser> GetLatestUsers(int amountToTake)
         {
-   
-                return _context.MembershipUser.Include(x => x.Roles).AsNoTracking()
-                    .OrderByDescending(x => x.CreateDate)
-                    .Take(amountToTake)
-                    .ToList();
-         
+
+            return _context.MembershipUser.Include(x => x.Roles).AsNoTracking()
+                .OrderByDescending(x => x.CreateDate)
+                .Take(amountToTake)
+                .ToList();
+
         }
 
         public IList<MembershipUser> GetLowestPointUsers(int amountToTake)
         {
 
-                return _context.MembershipUser
-                    .Join(_context.MembershipUserPoints.AsNoTracking(), // The sequence to join to the first sequence.
-                        user => user.Id, // A function to extract the join key from each element of the first sequence.
-                        userPoints =>
-                            userPoints.User
-                                .Id, // A function to extract the join key from each element of the second sequence
-                        (user, userPoints) =>
-                            new
-                            {
-                                MembershipUser = user,
-                                UserPoints = userPoints
-                            } // A function to create a result element from two matching elements.
-                    )
-                    .AsNoTracking()
-                    .OrderBy(x => x.UserPoints)
-                    .Take(amountToTake)
-                    .Select(t => t.MembershipUser)
-                    .ToList();
-      
+            return _context.MembershipUser
+                .Join(_context.MembershipUserPoints.AsNoTracking(), // The sequence to join to the first sequence.
+                    user => user.Id, // A function to extract the join key from each element of the first sequence.
+                    userPoints =>
+                        userPoints.User
+                            .Id, // A function to extract the join key from each element of the second sequence
+                    (user, userPoints) =>
+                        new
+                        {
+                            MembershipUser = user,
+                            UserPoints = userPoints
+                        } // A function to create a result element from two matching elements.
+                )
+                .AsNoTracking()
+                .OrderBy(x => x.UserPoints)
+                .Take(amountToTake)
+                .Select(t => t.MembershipUser)
+                .ToList();
+
         }
 
         public int MemberCount()
@@ -722,12 +729,12 @@
         /// <param name="user"></param>
         public void ProfileUpdated(MembershipUser user)
         {
-            var e = new UpdateProfileEventArgs {User = user};
+            var e = new UpdateProfileEventArgs { User = user };
             EventManager.Instance.FireBeforeProfileUpdated(this, e);
 
             if (!e.Cancel)
             {
-                EventManager.Instance.FireAfterProfileUpdated(this, new UpdateProfileEventArgs {User = user});
+                EventManager.Instance.FireAfterProfileUpdated(this, new UpdateProfileEventArgs { User = user });
                 _activityService.ProfileUpdated(user);
             }
         }
@@ -788,7 +795,7 @@
         public CsvReport FromCsv(List<string> allLines)
         {
             var usersProcessed = new List<string>();
-            var commaSeparator = new[] {','};
+            var commaSeparator = new[] { ',' };
             var report = new CsvReport();
 
             if (allLines == null || allLines.Count == 0)
@@ -912,7 +919,7 @@
                     {
                         userToImport.Signature = values[7];
                     }
-                    userToImport.Roles = new List<MembershipRole> {settings.NewMemberStartingRole};
+                    userToImport.Roles = new List<MembershipRole> { settings.NewMemberStartingRole };
                     Add(userToImport);
                 }
                 catch (Exception ex)

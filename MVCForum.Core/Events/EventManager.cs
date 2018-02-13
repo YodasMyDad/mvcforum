@@ -174,54 +174,6 @@
 
         #endregion
 
-        #region Posts
-
-        public void FireBeforePostMade(object sender, PostMadeEventArgs eventArgs)
-        {
-            var handler = BeforePostMade;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        }
-
-        public void FireAfterPostMade(object sender, PostMadeEventArgs eventArgs)
-        {
-            var handler = AfterPostMade;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        }
-
-        #endregion
-
-        #region Topics
-
-        public void FireBeforeTopicMade(object sender, TopicMadeEventArgs eventArgs)
-        {
-            var handler = BeforeTopicMade;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        }
-
-        public void FireAfterTopicMade(object sender, TopicMadeEventArgs eventArgs)
-        {
-            var handler = AfterTopicMade;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        }
-
-        #endregion
-
         #region Profile
 
         public void FireBeforeProfileUpdated(object sender, UpdateProfileEventArgs eventArgs)
@@ -294,28 +246,5 @@
 
         #endregion
 
-        #region Login
-
-        public void FireBeforeLogin(object sender, LoginEventArgs eventArgs)
-        {
-            var handler = BeforeLogin;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        }
-
-        public void FireAfterLogin(object sender, LoginEventArgs eventArgs)
-        {
-            var handler = AfterLogin;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        }
-
-        #endregion
     }
 }

@@ -9,7 +9,6 @@
     using System.Web.Mvc.Html;
     using System.Web.Routing;
     using Core;
-    using Core.Constants;
     using Core.Interfaces.Services;
     using Core.Ioc;
     using Core.Models.Entities;
@@ -46,7 +45,7 @@
         {
             if (HttpContext.Current.User.Identity.IsAuthenticated)
             {
-                return UnityHelper.Container.Resolve<IMembershipService>().GetUser(HttpContext.Current.User.Identity.Name);
+                return UnityHelper.Container.Resolve<IMembershipService>().GetUser(HttpContext.Current.User.Identity.Name, true);
             }
             return null;
         }

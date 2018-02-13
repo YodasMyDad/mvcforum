@@ -2,27 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
-    using Enums;
     using Interfaces;
     using Utilities;
 
     public partial class Badge : ExtendedDataEntity, IBaseEntity
     {
-        /// <summary>
-        ///     Specifies the target badge interface names matched to the corresponding badge type
-        /// </summary>
-        public static readonly Dictionary<BadgeType, string> BadgeClassNames = new Dictionary<BadgeType, string>
-        {
-            {BadgeType.VoteUp, "MvcForum.Core.Interfaces.Badges.IVoteUpBadge"},
-            {BadgeType.MarkAsSolution, "MvcForum.Core.Interfaces.Badges.IMarkAsSolutionBadge"},
-            {BadgeType.Time, "MvcForum.Core.Interfaces.Badges.ITimeBadge"},
-            {BadgeType.Post, "MvcForum.Core.Interfaces.Badges.IPostBadge"},
-            {BadgeType.VoteDown, "MvcForum.Core.Interfaces.Badges.IVoteDownBadge"},
-            {BadgeType.Profile, "MvcForum.Core.Interfaces.Badges.IProfileBadge"},
-            {BadgeType.Favourite, "MvcForum.Core.Interfaces.Badges.IFavouriteBadge"},
-            {BadgeType.Tag, "MvcForum.Core.Interfaces.Badges.ITagBadge"}
-        };
-
         public Badge()
         {
             Id = GuidComb.GenerateComb();
