@@ -20,7 +20,7 @@
             </li>
             <li class="divider"></li>
             <li>
-                <a href="@Url.Action("LogOff", "Members", new { area = "" })"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                <a class="auto-logoff" href="@Url.Action("LogOff", "Members", new { area = "" })"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
             </li>
         </ul>
     </li>
@@ -79,7 +79,7 @@
             </a>
             <ul id="permissions" class="collapse">
                 <li>
-                    <a href="@Url.Action("Index", "Permissions", new { area = "Admin" }, null)" class="@(currentController == "permissions" && currentAction == "index" ? "active" : "")">Manage Permissions</a>
+                    <a class="auto-managePermissions" href="@Url.Action("Index", "Permissions", new { area = "Admin" }, null)" class="@(currentController == "permissions" && currentAction == "index" ? "active" : "")">Manage Permissions</a>
                 </li>
                 <li>
                     <a href="@Url.Action("PermissionTypes", "Permissions", new { area = "Admin" }, null)" class="@(currentController == "permissions" && currentAction == "permissiontypes" ? "active" : "")">Add/Remove Permission Types</a>
