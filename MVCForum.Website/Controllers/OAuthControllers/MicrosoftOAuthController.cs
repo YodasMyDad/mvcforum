@@ -3,7 +3,7 @@
     using System;
     using System.Web.Mvc;
     using System.Web.Security;
-    using Areas.Admin.ViewModels;
+    using Core;
     using Core.Constants;
     using Core.Interfaces;
     using Core.Interfaces.Services;
@@ -13,9 +13,10 @@
     using Skybrud.Social.Microsoft.OAuth;
     using Skybrud.Social.Microsoft.Responses.Authentication;
     using Skybrud.Social.Microsoft.WindowsLive.Scopes;
+    using ViewModels;
     using ViewModels.Member;
 
-    public class MicrosoftOAuthController : BaseController
+    public partial class MicrosoftOAuthController : BaseController
     {
         // Create new app - https://account.live.com/developers/applications/create
         // List of existing app - https://account.live.com/developers/applications/index
@@ -39,7 +40,7 @@
 
         public string AuthErrorDescription => Request.QueryString["error_description"];
 
-        public ActionResult MicrosoftLogin()
+        public virtual ActionResult MicrosoftLogin()
         {
             var resultMessage = new GenericMessageViewModel();
 
@@ -57,8 +58,8 @@
 
 
             // Get the prevalue options
-            if (string.IsNullOrWhiteSpace(SiteConstants.Instance.MicrosoftAppId) ||
-                string.IsNullOrWhiteSpace(SiteConstants.Instance.MicrosoftAppSecret))
+            if (string.IsNullOrWhiteSpace(ForumConfiguration.Instance.MicrosoftAppId) ||
+                string.IsNullOrWhiteSpace(ForumConfiguration.Instance.MicrosoftAppSecret))
             {
                 resultMessage.Message = "You need to add the Microsoft app credentials to the web.config";
                 resultMessage.MessageType = GenericMessages.danger;
@@ -67,8 +68,8 @@
             {
                 var client = new MicrosoftOAuthClient
                 {
-                    ClientId = SiteConstants.Instance.MicrosoftAppId,
-                    ClientSecret = SiteConstants.Instance.MicrosoftAppSecret,
+                    ClientId = ForumConfiguration.Instance.MicrosoftAppId,
+                    ClientSecret = ForumConfiguration.Instance.MicrosoftAppSecret,
                     RedirectUri = ReturnUrl
                 };
 
@@ -194,7 +195,7 @@
 
 
                             // Store the viewModel in TempData - Which we'll use in the register logic
-                            TempData[AppConstants.MemberRegisterViewModel] = viewModel;
+                            TempData[Constants.MemberRegisterViewModel] = viewModel;
 
                             return RedirectToAction("SocialLoginValidator", "Members");
                         }

@@ -1,6 +1,6 @@
 ﻿@using MvcForum.Core.Constants
 @using MvcForum.Web.Application.ExtensionMethods
-@model MvcForum.Web.Areas.Admin.ViewModels.BannedEmailListViewModel
+@model MvcForum.Web.ViewModels.Admin.BannedEmailListViewModel
 @{
     ViewBag.Title = "Banned Email";
 }
@@ -84,7 +84,7 @@
 
             if (Model.Emails.TotalPages > 1)
             {
-                @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
+                @Html.Pager(Convert.ToInt32(Model.PageIndex), ForumConfiguration.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
             }
 
         }

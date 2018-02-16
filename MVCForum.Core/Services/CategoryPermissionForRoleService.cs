@@ -4,15 +4,15 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
+    using System.Threading.Tasks;
     using Constants;
-    using Data.Context;
     using Interfaces;
     using Interfaces.Services;
     using Models.Entities;
 
     public partial class CategoryPermissionForRoleService : ICategoryPermissionForRoleService
     {
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         /// <summary>
@@ -24,6 +24,18 @@
         {
             _cacheService = cacheService;
             _context = context;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         /// <summary>
@@ -42,9 +54,7 @@
         /// <returns></returns>
         public CategoryPermissionForRole CheckExists(CategoryPermissionForRole categoryPermissionForRole)
         {
-            var cacheKey = string.Concat(CacheKeys.CategoryPermissionForRole.StartsWith, "CheckExists-", categoryPermissionForRole.Id);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+ 
                 if (categoryPermissionForRole.Permission != null &&
                     categoryPermissionForRole.Category != null &&
                     categoryPermissionForRole.MembershipRole != null)
@@ -59,7 +69,7 @@
                 }
 
                 return null;
-            });
+         
         }
 
         /// <summary>
@@ -139,15 +149,13 @@
 
         public CategoryPermissionForRole Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.CategoryPermissionForRole.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 return _context.CategoryPermissionForRole
                         .Include(x => x.MembershipRole)
                         .Include(x => x.Category)
                         .Include(x => x.Permission)
                         .FirstOrDefault(cat => cat.Id == id);
-            });
+      
 
         }
 

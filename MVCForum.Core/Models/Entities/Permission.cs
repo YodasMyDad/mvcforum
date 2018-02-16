@@ -2,9 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using Interfaces;
     using Utilities;
 
-    public partial class Permission : Entity
+    public partial class Permission : IBaseEntity
     {
         public Permission()
         {

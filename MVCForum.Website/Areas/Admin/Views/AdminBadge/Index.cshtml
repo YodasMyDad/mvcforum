@@ -1,7 +1,8 @@
-﻿@using MvcForum.Core.Constants
+﻿@using MvcForum.Core
+@using MvcForum.Core.Constants
 @using MvcForum.Web.Application
 @using MvcForum.Web.Application.ExtensionMethods
-@model MvcForum.Web.Areas.Admin.ViewModels.ListBadgesViewModel
+@model MvcForum.Web.ViewModels.Admin.ListBadgesViewModel
 @{
     ViewBag.Title = "Badges";
 }
@@ -59,7 +60,7 @@
 
             if (Model.Badges.TotalPages > 1)
             {
-                @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
+                @Html.Pager(Convert.ToInt32(Model.PageIndex), ForumConfiguration.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
             }
         }
     </div>

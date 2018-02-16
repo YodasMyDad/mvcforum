@@ -2,18 +2,19 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
-    using System.Web.Hosting;
+    using System.Threading.Tasks;
     using System.Web.Mvc;
-    using Application;
     using Core.Constants;
+    using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Services;
     using Core.Models.Entities;
+    using ExtensionMethods;
     using ViewModels;
+    using ViewModels.Admin;
 
-    [Authorize(Roles = AppConstants.AdminRoleName)]
+    [Authorize(Roles = Constants.AdminRoleName)]
     public class AdminCategoryController : BaseAdminController
     {
         private readonly ICategoryService _categoryService;
@@ -45,7 +46,7 @@
         }
 
         /// <summary>
-        /// Removes the category image
+        ///     Removes the category image
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -54,100 +55,48 @@
             var category = _categoryService.Get(id);
             category.Image = string.Empty;
             Context.SaveChanges();
-            return RedirectToAction("EditCategory", new { id });
+            return RedirectToAction("EditCategory", new {id});
         }
 
         public ActionResult CreateCategory()
         {
-            var categoryViewModel = new CategoryViewModel
+            var categoryViewModel = new CategoryEditViewModel
             {
-                AllCategories = _categoryService.GetBaseSelectListCategories(_categoryService.GetAll())
+                AllCategories = _categoryService.GetBaseSelectListCategories(_categoryService.GetAll()),
+                AllSections = _categoryService.GetAllSections().ToSelectList()
             };
             return View(categoryViewModel);
-        }        
+        }
 
         /// <summary>
-        /// Create category logic
+        ///     Create category logic
         /// </summary>
         /// <param name="categoryViewModel"></param>
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult CreateCategory(CategoryViewModel categoryViewModel)
+        public async Task<ActionResult> CreateCategory(CategoryEditViewModel categoryViewModel)
         {
             if (ModelState.IsValid)
             {
-                try
+                var category = categoryViewModel.ToCategory();
+
+                var categoryResult = await _categoryService.Create(category, categoryViewModel.Files,
+                    categoryViewModel.ParentCategory, categoryViewModel.Section);
+                if (!categoryResult.Successful)
                 {
-                    var category = new Category
-                    {
-                        Name = categoryViewModel.Name,
-                        Description = categoryViewModel.Description,
-                        IsLocked = categoryViewModel.IsLocked,
-                        ModeratePosts = categoryViewModel.ModeratePosts,
-                        ModerateTopics = categoryViewModel.ModerateTopics,
-                        SortOrder = categoryViewModel.SortOrder,
-                        PageTitle = categoryViewModel.PageTitle,
-                        MetaDescription = categoryViewModel.MetaDesc,
-                        Colour = categoryViewModel.CategoryColour
-                    };
-
-                    // Sort image out first
-                    if (categoryViewModel.Files != null)
-                    {
-                        // Before we save anything, check the user already has an upload folder and if not create one
-                        var uploadFolderPath =
-                            HostingEnvironment.MapPath(string.Concat(SiteConstants.Instance.UploadFolderPath,
-                                category.Id));
-                        if (!Directory.Exists(uploadFolderPath))
-                        {
-                            Directory.CreateDirectory(uploadFolderPath);
-                        }
-
-                        // Loop through each file and get the file info and save to the users folder and Db
-                        var file = categoryViewModel.Files[0];
-                        if (file != null)
-                        {
-                            // If successful then upload the file
-                            var uploadResult =
-                                AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService, true);
-
-                            if (!uploadResult.UploadSuccessful)
-                            {
-                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                                {
-                                    Message = uploadResult.ErrorMessage,
-                                    MessageType = GenericMessages.danger
-                                };
-                                return View(categoryViewModel);
-                            }
-
-                            // Save avatar to user
-                            category.Image = uploadResult.UploadedFileName;
-                        }
-                    }
-
-                    if (categoryViewModel.ParentCategory != null)
-                    {
-                        var parentCategory = _categoryService.Get(categoryViewModel.ParentCategory.Value);
-                        category.ParentCategory = parentCategory;
-                        SortPath(category, parentCategory);
-                    }
-
-                    _categoryService.Add(category);
-
+                    ModelState.AddModelError("", categoryResult.ProcessLog.FirstOrDefault());
+                }
+                else
+                {
                     // We use temp data because we are doing a redirect
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = "Category Created",
                         MessageType =
                             GenericMessages.success
                     };
-                    Context.SaveChanges();
-                }
-                catch (Exception)
-                {
-                    Context.RollBack();
+                    return RedirectToAction("Index");
                 }
             }
             else
@@ -155,172 +104,58 @@
                 ModelState.AddModelError("", "There was an error creating the category");
             }
 
-            return RedirectToAction("Index");
-        }
+            categoryViewModel.AllCategories = _categoryService.GetBaseSelectListCategories(_categoryService.GetAll());
+            categoryViewModel.AllSections = _categoryService.GetAllSections().ToSelectList();
 
-
-        private CategoryViewModel CreateEditCategoryViewModel(Category category)
-        {
-            var categoryViewModel = new CategoryViewModel
-            {
-                Name = category.Name,
-                Description = category.Description,
-                IsLocked = category.IsLocked,
-                ModeratePosts = category.ModeratePosts == true,
-                ModerateTopics = category.ModerateTopics == true,
-                SortOrder = category.SortOrder,
-                Id = category.Id,
-                PageTitle = category.PageTitle,
-                MetaDesc = category.MetaDescription,
-                Image = category.Image,
-                CategoryColour = category.Colour,
-                ParentCategory = category.ParentCategory == null ? Guid.Empty : category.ParentCategory.Id,
-                AllCategories = _categoryService.GetBaseSelectListCategories(_categoryService.GetAll()
-                    .Where(x => x.Id != category.Id)
-                    .ToList())
-            };
-            return categoryViewModel;
+            return View(categoryViewModel);
         }
 
         public ActionResult EditCategory(Guid id)
         {
             var category = _categoryService.Get(id);
-            var categoryViewModel = CreateEditCategoryViewModel(category);
+            var categoryViewModel = category.ToEditViewModel(_categoryService.GetBaseSelectListCategories(_categoryService.GetAll().Where(x => x.Id != category.Id).ToList()), _categoryService.GetAllSections().ToSelectList());
 
             return View(categoryViewModel);
         }
 
         [HttpPost]
-        public ActionResult EditCategory(CategoryViewModel categoryViewModel)
+        public async Task<ActionResult> EditCategory(CategoryEditViewModel categoryViewModel)
         {
             if (ModelState.IsValid)
             {
-                try
+                // Reset the select list
+                categoryViewModel.AllCategories = _categoryService.GetBaseSelectListCategories(_categoryService.GetAll()
+                    .Where(x => x.Id != categoryViewModel.Id)
+                    .ToList());
+
+                var categoryToEdit = _categoryService.Get(categoryViewModel.Id);
+
+                var category = categoryViewModel.ToCategory(categoryToEdit);
+
+                var categoryResult = await _categoryService.Edit(category, categoryViewModel.Files,
+                    categoryViewModel.ParentCategory, categoryViewModel.Section);
+                if (!categoryResult.Successful)
                 {
-                    var category = _categoryService.Get(categoryViewModel.Id);
-                    var parentCat = categoryViewModel.ParentCategory != null
-                        ? _categoryService.Get(categoryViewModel.ParentCategory.Value)
-                        : null;
-
-                    // Check they are not trying to add a subcategory of this category as the parent or it will break
-                    if (parentCat?.Path != null && categoryViewModel.ParentCategory != null)
+                    ModelState.AddModelError("", categoryResult.ProcessLog.FirstOrDefault());
+                }
+                else
+                {
+                    // We use temp data because we are doing a redirect
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
-                        var parentCats = parentCat.Path.Split(',').Where(x => !string.IsNullOrWhiteSpace(x))
-                            .Select(x => new Guid(x)).ToList();
-                        if (parentCats.Contains(categoryViewModel.Id))
-                        {
-                            // Remove the parent category, but still let them create the catgory
-                            categoryViewModel.ParentCategory = null;
-                        }
-                    }
-
-                    // Sort image out first
-                    if (categoryViewModel.Files != null)
-                    {
-                        // Before we save anything, check the user already has an upload folder and if not create one
-                        var uploadFolderPath = HostingEnvironment.MapPath(
-                            string.Concat(SiteConstants.Instance.UploadFolderPath, categoryViewModel.Id));
-                        if (!Directory.Exists(uploadFolderPath))
-                        {
-                            Directory.CreateDirectory(uploadFolderPath);
-                        }
-
-                        // Loop through each file and get the file info and save to the users folder and Db
-                        var file = categoryViewModel.Files[0];
-                        if (file != null)
-                        {
-                            // If successful then upload the file
-                            var uploadResult =
-                                AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService, true);
-
-                            if (!uploadResult.UploadSuccessful)
-                            {
-                                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                                {
-                                    Message = uploadResult.ErrorMessage,
-                                    MessageType = GenericMessages.danger
-                                };
-                                return View(categoryViewModel);
-                            }
-
-                            // Save avatar to user
-                            category.Image = uploadResult.UploadedFileName;
-                        }
-                    }
-
-
-                    category.Description = categoryViewModel.Description;
-                    category.IsLocked = categoryViewModel.IsLocked;
-                    category.ModeratePosts = categoryViewModel.ModeratePosts;
-                    category.ModerateTopics = categoryViewModel.ModerateTopics;
-                    category.Name = categoryViewModel.Name;
-                    category.SortOrder = categoryViewModel.SortOrder;
-                    category.PageTitle = categoryViewModel.PageTitle;
-                    category.MetaDescription = categoryViewModel.MetaDesc;
-                    category.Colour = categoryViewModel.CategoryColour;
-
-                    if (categoryViewModel.ParentCategory != null)
-                    {
-                        // Set the parent category
-                        var parentCategory = _categoryService.Get(categoryViewModel.ParentCategory.Value);
-                        category.ParentCategory = parentCategory;
-
-                        // Append the path from the parent category
-                        SortPath(category, parentCategory);
-                    }
-                    else
-                    {
-                        // Must access property (trigger lazy-loading) before we can set it to null (Entity Framework bug!!!)
-                        var triggerEfLoad = category.ParentCategory;
-                        category.ParentCategory = null;
-
-                        // Also clear the path
-                        category.Path = null;
-                    }
-
-                    _categoryService.UpdateSlugFromName(category);
-
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = "Category Updated",
+                        Message = "Category Edited",
                         MessageType = GenericMessages.success
                     };
 
-                    categoryViewModel = CreateEditCategoryViewModel(category);
-
-                    Context.SaveChanges();
-                }
-                catch (Exception ex)
-                {
-                    LoggingService.Error(ex);
-                    Context.RollBack();
-
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = "Category Update Failed",
-                        MessageType = GenericMessages.danger
-                    };
+                    // Set the view model
+                    categoryViewModel = categoryResult.EntityToProcess.ToEditViewModel(
+                        _categoryService.GetBaseSelectListCategories(_categoryService.GetAll()
+                            .Where(x => x.Id != categoryViewModel.Id)
+                            .ToList()), _categoryService.GetAllSections().ToSelectList());
                 }
             }
 
             return View(categoryViewModel);
-        }
-
-
-        private void SortPath(Category category, Category parentCategory)
-        {
-            // Append the path from the parent category
-            var path = string.Empty;
-            if (!string.IsNullOrWhiteSpace(parentCategory.Path))
-            {
-                path = string.Concat(parentCategory.Path, ",", parentCategory.Id.ToString());
-            }
-            else
-            {
-                path = parentCategory.Id.ToString();
-            }
-
-            category.Path = path;
         }
 
         public ActionResult DeleteCategoryConfirmation(Guid id)
@@ -337,22 +172,26 @@
             return View(viewModel);
         }
 
-        public ActionResult DeleteCategory(Guid id)
+        public async Task<ActionResult> DeleteCategory(Guid id)
         {
-            try
+            var cat = _categoryService.Get(id);
+            var categoryResult = await _categoryService.Delete(cat);
+
+            if (!categoryResult.Successful)
             {
-                var cat = _categoryService.Get(id);
-                _categoryService.Delete(cat);
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = categoryResult.ProcessLog.FirstOrDefault(),
+                    MessageType = GenericMessages.danger
+                };
+            }
+            else
+            {
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = "Category Deleted",
                     MessageType = GenericMessages.success
                 };
-                Context.SaveChanges();
-            }
-            catch (Exception)
-            {
-                Context.RollBack();
             }
 
             return RedirectToAction("Index");
@@ -411,7 +250,7 @@
                 }
 
 
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = "Category Paths Synced",
                     MessageType = GenericMessages.success
@@ -421,7 +260,7 @@
             catch (Exception)
             {
                 Context.RollBack();
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = "Error syncing paths",
                     MessageType = GenericMessages.danger
@@ -444,5 +283,108 @@
             }
             return subCats;
         }
+
+        #region Sections
+
+        /// <summary>
+        /// Sections page
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult Sections()
+        {
+            return View();
+        }
+
+        /// <summary>
+        /// List sections
+        /// </summary>
+        /// <returns></returns>
+        [ChildActionOnly]
+        public PartialViewResult GetSections()
+        {
+            var viewModel = new SectionListViewModel
+            {
+                Sections = _categoryService.GetAllSections()
+            };
+            return PartialView(viewModel);
+        }
+
+        /// <summary>
+        /// Create edit section view
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult AddEditSection(Guid? id)
+        {
+            var categoryViewModel = new SectionAddEditViewModel();
+
+            if (id != null)
+            {
+                var section = _categoryService.GetSection(id.Value);
+
+                categoryViewModel.IsEdit = true;
+                categoryViewModel.Id = section.Id;
+                categoryViewModel.Name = section.Name;
+                categoryViewModel.Description = section.Description;
+                categoryViewModel.SortOrder = section.SortOrder;
+            }
+
+            return View(categoryViewModel);
+        }
+
+        /// <summary>
+        ///     Create / Edit a section logic
+        /// </summary>
+        /// <param name="sectionAddEditViewModel"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddEditSection(SectionAddEditViewModel sectionAddEditViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var section = sectionAddEditViewModel.IsEdit ? _categoryService.GetSection(sectionAddEditViewModel.Id) 
+                                                                : new Section{DateCreated = DateTime.UtcNow};
+
+                section.Name = sectionAddEditViewModel.Name;
+                section.Description = sectionAddEditViewModel.Description;
+                section.SortOrder = sectionAddEditViewModel.SortOrder;
+
+                // TODO - This should all be in the service!!!
+                if (!sectionAddEditViewModel.IsEdit)
+                {
+                    Context.Section.Add(section);
+                }
+
+                Context.SaveChanges();
+
+
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = "Successful",
+                    MessageType = GenericMessages.success
+                };
+
+                return RedirectToAction("Sections");
+            }
+
+            return View(sectionAddEditViewModel);
+        }
+
+        public ActionResult DeleteSection(Guid id)
+        {
+            _categoryService.DeleteSection(id);
+
+            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+            {
+                Message = "Successful",
+                MessageType = GenericMessages.success
+            };
+
+            return RedirectToAction("Sections");
+        }
+
+        #endregion
+
     }
 }

@@ -3,7 +3,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Web.Mvc;
-    using Core.Constants;
+    using Core;
     using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Services;
@@ -31,7 +31,7 @@
         }
 
         [HttpGet]
-        public async Task<ActionResult> Index(int? p, string term)
+        public virtual async Task<ActionResult> Index(int? p, string term)
         {
             if (!string.IsNullOrWhiteSpace(term))
             {
@@ -55,7 +55,7 @@
 
                 // Get all the topics based on the search value
                 var posts = await _postService.SearchPosts(pageIndex,
-                    SiteConstants.Instance.SearchListSize,
+                    ForumConfiguration.Instance.SearchListSize,
                     int.MaxValue,
                     term,
                     allowedCategories);
@@ -96,7 +96,7 @@
 
 
         [ChildActionOnly]
-        public PartialViewResult SideSearch()
+        public virtual PartialViewResult SideSearch()
         {
             return PartialView();
         }

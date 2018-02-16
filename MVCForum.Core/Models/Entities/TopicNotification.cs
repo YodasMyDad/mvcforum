@@ -1,9 +1,10 @@
 ﻿namespace MvcForum.Core.Models.Entities
 {
     using System;
+    using Interfaces;
     using Utilities;
 
-    public partial class TopicNotification : Entity
+    public partial class TopicNotification : IBaseEntity
     {
         public TopicNotification()
         {

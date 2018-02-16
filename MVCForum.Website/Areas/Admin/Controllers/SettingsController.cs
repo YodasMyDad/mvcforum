@@ -10,10 +10,11 @@
     using Core.Interfaces.Services;
     using Core.Models;
     using Core.Models.Entities;
-    using ViewModels;
+    using Web.ViewModels;
+    using Web.ViewModels.Admin;
     using Web.ViewModels.Mapping;
 
-    [Authorize(Roles = AppConstants.AdminRoleName)]
+    [Authorize(Roles = Constants.AdminRoleName)]
     public class SettingsController : BaseAdminController
     {
         private readonly ICacheService _cacheService;
@@ -79,7 +80,7 @@
 
                 // All good clear cache and get reliant lists
 
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = "Settings Updated",
                     MessageType = GenericMessages.success
@@ -128,7 +129,7 @@
                 message.Message = "Error sending email";
                 message.MessageType = GenericMessages.danger;
             }
-            TempData[AppConstants.MessageViewBagName] = message;
+            TempData[Constants.MessageViewBagName] = message;
 
             return RedirectToAction("Index");
         }

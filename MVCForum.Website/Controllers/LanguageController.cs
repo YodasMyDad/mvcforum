@@ -35,7 +35,7 @@
         /// </summary>
         /// <returns></returns>
         [ChildActionOnly]
-        public ActionResult Index()
+        public virtual ActionResult Index()
         {
             var viewModel = new LanguageListAllViewModel
             {
@@ -55,13 +55,13 @@
         /// <param name="lang"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult ChangeLanguage(Guid lang)
+        public virtual ActionResult ChangeLanguage(Guid lang)
         {
             var language = LocalizationService.Get(lang);
             LocalizationService.CurrentLanguage = language;
 
             // The current language is stored in a cookie
-            var cookie = new HttpCookie(AppConstants.LanguageIdCookieName)
+            var cookie = new HttpCookie(Constants.LanguageIdCookieName)
             {
                 HttpOnly = false,
                 Value = language.Id.ToString(),
@@ -70,7 +70,7 @@
 
             Response.Cookies.Add(cookie);
 
-            //TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            //TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
             //{
             //    Message = LocalizationService.GetResourceString("Language.Changed"),
             //    MessageType = GenericMessages.success

@@ -5,16 +5,16 @@
     using System.Web.Mvc;
     using System.Web.Routing;
     using System.Web.Security;
-    using Areas.Admin.ViewModels;
     using Core.Constants;
     using Core.Interfaces;
     using Core.Interfaces.Services;
     using Core.Utilities;
+    using ViewModels;
 
     /// <summary>
     ///     A base class for the white site controllers
     /// </summary>
-    public class BaseController : Controller
+    public partial class BaseController : Controller
     {
         protected readonly ICacheService CacheService;
         protected readonly ILocalizationService LocalizationService;
@@ -60,7 +60,7 @@
             }
         }
 
-        protected string Domain => CacheService.CachePerRequest(CacheKeys.Domain, StringUtils.ReturnCurrentDomain);
+        protected string Domain => StringUtils.ReturnCurrentDomain();
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
@@ -112,7 +112,7 @@
                 settings.NewMemberEmailConfirmation == true)
             {
                 FormsAuthentication.SignOut();
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = LocalizationService.GetResourceString("Members.MemberEmailAuthorisationNeeded"),
                     MessageType = GenericMessages.success
@@ -125,7 +125,7 @@
             if (loggedOnReadOnlyUser != null && loggedOnReadOnlyUser.IsBanned)
             {
                 FormsAuthentication.SignOut();
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = LocalizationService.GetResourceString("Members.NowBanned"),
                     MessageType = GenericMessages.danger
@@ -137,14 +137,14 @@
 
         protected void ShowMessage(GenericMessageViewModel messageViewModel)
         {
-            //ViewData[AppConstants.MessageViewBagName] = messageViewModel;
-            TempData[AppConstants.MessageViewBagName] = messageViewModel;
+            //ViewData[Constants.MessageViewBagName] = messageViewModel;
+            TempData[Constants.MessageViewBagName] = messageViewModel;
         }
 
         internal ActionResult ErrorToHomePage(string errorMessage)
         {
             // Use temp data as its a redirect
-            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
             {
                 Message = errorMessage,
                 MessageType = GenericMessages.danger

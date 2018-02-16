@@ -7,11 +7,11 @@
     var theme = new Theme
     {
         ThemeName = themeName,
-        ThemePath = string.Concat(SiteConstants.Instance.ThemeRootFolder, themeName)
+        ThemePath = string.Concat(ForumConfiguration.Instance.ThemeRootFolder, themeName)
     };
-    TempData[AppConstants.GlobalClass] = Convert.ToBoolean(PageData[AppConstants.IsMobileDevice]) ? "mobile" : "desktop";
-    TempData[AppConstants.CurrentAction] = ViewContext.RouteData.GetRequiredString("action").ToLower();
-    TempData[AppConstants.CurrentController] = ViewContext.RouteData.GetRequiredString("controller").ToLower();
+    TempData[Constants.GlobalClass] = Convert.ToBoolean(PageData[Constants.IsMobileDevice]) ? "mobile" : "desktop";
+    TempData[Constants.CurrentAction] = ViewContext.RouteData.GetRequiredString("action").ToLower();
+    TempData[Constants.CurrentController] = ViewContext.RouteData.GetRequiredString("controller").ToLower();
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -38,7 +38,7 @@
     }
 </head>
 
-<body class="@TempData[AppConstants.GlobalClass].ToString() loggedin-@(User.Identity.IsAuthenticated.ToString().ToLower())">
+<body class="@TempData[Constants.GlobalClass].ToString() loggedin-@(User.Identity.IsAuthenticated.ToString().ToLower())">
     
     <nav class="pushy pushy-left">
         <ul>

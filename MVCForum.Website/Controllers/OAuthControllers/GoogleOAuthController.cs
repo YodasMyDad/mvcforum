@@ -4,7 +4,7 @@
     using System.Collections.Specialized;
     using System.Web.Mvc;
     using System.Web.Security;
-    using Areas.Admin.ViewModels;
+    using Core;
     using Core.Constants;
     using Core.Interfaces;
     using Core.Interfaces.Services;
@@ -12,6 +12,8 @@
     using Core.Utilities;
     using Skybrud.Social.Google;
     using Skybrud.Social.Google.OAuth;
+    using ViewModels;
+    using ViewModels.Admin;
     using ViewModels.Member;
 
     // Google uses OAuth 2.0 for authentication and communication. In order for users to authenticate with the Google API, 
@@ -56,7 +58,7 @@
 
         public string AuthErrorDescription => Request.QueryString["error_description"];
 
-        public ActionResult GoogleLogin()
+        public virtual ActionResult GoogleLogin()
         {
             var resultMessage = new GenericMessageViewModel();
 
@@ -77,8 +79,8 @@
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(SiteConstants.Instance.GooglePlusAppId) ||
-                string.IsNullOrWhiteSpace(SiteConstants.Instance.GooglePlusAppSecret))
+            if (string.IsNullOrWhiteSpace(ForumConfiguration.Instance.GooglePlusAppId) ||
+                string.IsNullOrWhiteSpace(ForumConfiguration.Instance.GooglePlusAppSecret))
             {
                 resultMessage.Message = "You need to add the Google app credentials";
                 resultMessage.MessageType = GenericMessages.danger;
@@ -88,8 +90,8 @@
                 // Configure the OAuth client based on the options of the prevalue options
                 var client = new GoogleOAuthClient
                 {
-                    ClientId = SiteConstants.Instance.GooglePlusAppId,
-                    ClientSecret = SiteConstants.Instance.GooglePlusAppSecret,
+                    ClientId = ForumConfiguration.Instance.GooglePlusAppId,
+                    ClientSecret = ForumConfiguration.Instance.GooglePlusAppSecret,
                     RedirectUri = ReturnUrl
                 };
 
@@ -185,7 +187,7 @@
                     };
 
                     // Store the viewModel in TempData - Which we'll use in the register logic
-                    TempData[AppConstants.MemberRegisterViewModel] = viewModel;
+                    TempData[Constants.MemberRegisterViewModel] = viewModel;
 
                     return RedirectToAction("SocialLoginValidator", "Members");
                 }

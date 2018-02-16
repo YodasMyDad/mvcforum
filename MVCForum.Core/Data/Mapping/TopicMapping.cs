@@ -15,7 +15,7 @@
             Property(x => x.CreateDate).IsRequired();
             Property(x => x.Solved).IsRequired();
             Property(x => x.SolvedReminderSent).IsOptional();
-            Property(x => x.Slug).IsRequired().HasMaxLength(450).HasColumnAnnotation("Index",
+            Property(x => x.Slug).IsRequired().HasMaxLength(450).HasColumnAnnotation(IndexAnnotation.AnnotationName,
                                     new IndexAnnotation(new IndexAttribute("IX_Topic_Slug", 1) { IsUnique = true }));
             Property(x => x.Views).IsOptional();
             Property(x => x.IsSticky).IsRequired();
@@ -24,7 +24,7 @@
 
             // LastPost is not really optional but causes a circular dependency so needs to be added in after the main post is saved
             HasOptional(t => t.LastPost).WithOptionalDependent().Map(m => m.MapKey("Post_Id")).WillCascadeOnDelete(false);
-            HasOptional(t => t.Poll).WithOptionalDependent().Map(m => m.MapKey("Poll_Id"));            
+            HasOptional(t => t.Poll).WithOptionalDependent().Map(m => m.MapKey("Poll_Id")).WillCascadeOnDelete(false);            
             HasRequired(t => t.Category).WithMany(t => t.Topics).Map(m => m.MapKey("Category_Id")).WillCascadeOnDelete(false);
             HasRequired(t => t.User).WithMany(t => t.Topics).Map(m => m.MapKey("MembershipUser_Id")).WillCascadeOnDelete(false);
             HasMany(x => x.Posts).WithRequired(x => x.Topic).Map(x => x.MapKey("Topic_Id")).WillCascadeOnDelete(false);

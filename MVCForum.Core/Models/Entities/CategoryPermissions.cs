@@ -1,9 +1,10 @@
 ﻿namespace MvcForum.Core.Models.Entities
 {
     using System;
+    using Interfaces;
     using Utilities;
 
-    public partial class CategoryPermissionForRole : Entity
+    public partial class CategoryPermissionForRole : IBaseEntity
     {
         public CategoryPermissionForRole()
         {

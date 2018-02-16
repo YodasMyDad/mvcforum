@@ -8,7 +8,7 @@
 
     public class CreatePrivateMessageViewModel
     {
-        [UIHint(AppConstants.EditorType)]
+        [UIHint(Constants.EditorType)]
         [AllowHtml]
         public string Message { get; set; }
 

@@ -8,6 +8,7 @@
     {
         void Error(string message);
         void Error(Exception ex);
+        void Error(Exception ex, string message);
         void Initialise(int maxLogSize);
         IList<LogEntry> ListLogFile();
         void Recycle();

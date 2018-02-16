@@ -58,7 +58,7 @@
                 var memberJoinedActivity = activity as MemberJoinedActivity;
                 <div class="row memberjoinedactivity">
                     <div class="activitybadge col-md-1">
-                        <img src="@memberJoinedActivity.User.MemberImage(SiteConstants.Instance.GravatarPostSize)" alt="@memberJoinedActivity.User.UserName" />
+                        <img src="@memberJoinedActivity.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize)" alt="@memberJoinedActivity.User.UserName" />
                     </div>
 
                     <div class="activityinfo col-md-11">
@@ -74,7 +74,7 @@
                 var profileUpdatedActivity = activity as ProfileUpdatedActivity;
                 <div class="row profileupdatedactivity">
                     <div class="activitybadge col-md-1">
-                        <img src="@profileUpdatedActivity.User.MemberImage(SiteConstants.Instance.GravatarPostSize)" alt="@profileUpdatedActivity.User.UserName" />
+                        <img src="@profileUpdatedActivity.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize)" alt="@profileUpdatedActivity.User.UserName" />
                     </div>
 
                     <div class="activityinfo col-md-11">
@@ -90,7 +90,7 @@
                 var postCreatedActivity = activity as PostCreatedActivity;
                 <div class="row postcreatedactivity">
                     <div class="activitybadge col-md-1">
-                        <img src="@postCreatedActivity.Post.User.MemberImage(SiteConstants.Instance.GravatarPostSize)" alt="@postCreatedActivity.Post.User.UserName" />
+                        <img src="@postCreatedActivity.Post.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize)" alt="@postCreatedActivity.Post.User.UserName" />
                     </div>
 
                     <div class="activityinfo col-md-11">
@@ -112,7 +112,7 @@
                 var topicCreatedActivity = activity as TopicCreatedActivity;
                 <div class="row topiccreatedactivity">
                     <div class="activitybadge col-md-1">
-                        <img src="@topicCreatedActivity.Topic.User.MemberImage(SiteConstants.Instance.GravatarPostSize)" alt="@topicCreatedActivity.Topic.User.UserName" />
+                        <img src="@topicCreatedActivity.Topic.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize)" alt="@topicCreatedActivity.Topic.User.UserName" />
                     </div>
 
                     <div class="activityinfo col-md-11">

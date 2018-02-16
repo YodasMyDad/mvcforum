@@ -7,10 +7,11 @@ namespace MvcForum.Web
 {
     using System;
     using System.Data.Entity;
+    using System.Linq;
     using System.Web.Mvc;
     using System.Web.Routing;
     using Application.ViewEngine;
-    using Core.Constants;
+    using Core;
     using Core.Data.Context;
     using Core.Events;
     using Core.Interfaces;
@@ -18,7 +19,9 @@ namespace MvcForum.Web
     using Core.Services.Migrations;
     using Core.Utilities;
     using Core.Interfaces.Services;
+    using Core.Reflection;
     using Core.Services;
+    using Unity;
 
     public class Startup
     {
@@ -29,10 +32,19 @@ namespace MvcForum.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
 
             // Start unity
-            var unityContainer = UnityHelper.Start();
+            UnityHelper.InitialiseUnityContainer();
+
+            // Make DB update to latest migration
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<MvcForumContext, Configuration>());
+
+            // Set the rest of the Ioc
+            UnityHelper.BuildUnityContainer();
+
+            // Grab the container as we will need to use it
+            var unityContainer = UnityHelper.Container;
 
             // Set Hangfire to use SQL Server and the connection string
-            GlobalConfiguration.Configuration.UseSqlServerStorage(SiteConstants.Instance.MvcForumContext);
+            GlobalConfiguration.Configuration.UseSqlServerStorage(ForumConfiguration.Instance.MvcForumContext);
 
             // Make hangfire use unity container
             GlobalConfiguration.Configuration.UseUnityActivator(unityContainer);
@@ -42,30 +54,28 @@ namespace MvcForum.Web
             //app.UseHangfireDashboard();
             app.UseHangfireServer();
 
-            // Make DB update to latest migration
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<MvcForumContext, Configuration>());
-
             // Get services needed
-            var mvcForumContext = DependencyResolver.Current.GetService<IMvcForumContext>();
-            var badgeService = DependencyResolver.Current.GetService<IBadgeService>();
-            var settingsService = DependencyResolver.Current.GetService<ISettingsService>();
-            var loggingService = DependencyResolver.Current.GetService<ILoggingService>();
-            var reflectionService = DependencyResolver.Current.GetService<IReflectionService>();
+            var mvcForumContext = unityContainer.Resolve<IMvcForumContext>();
+            var badgeService = unityContainer.Resolve<IBadgeService>();
+            var loggingService = unityContainer.Resolve<ILoggingService>();
+            var assemblyProvider = unityContainer.Resolve<IAssemblyProvider>();
 
             // Routes
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
-            // If the same carry on as normal
-            loggingService.Initialise(ConfigUtils.GetAppSettingInt32("LogFileMaxSizeBytes", 10000));
+            // If the same carry on as normal            
+            var logFileSize = ForumConfiguration.Instance.LogFileMaxSizeBytes;
+            loggingService.Initialise(logFileSize > 100000 ? logFileSize : 100000);
             loggingService.Error("START APP");
 
-            // Get assemblies for badges, events etc...
-            var loadedAssemblies = reflectionService.GetAssemblies();
+            // Find the plugin, pipeline and badge assemblies
+            var assemblies = assemblyProvider.GetAssemblies(ForumConfiguration.Instance.PluginSearchLocations).ToList();
+            ImplementationManager.SetAssemblies(assemblies);
 
             // Do the badge processing
             try
             {
-                badgeService.SyncBadges(loadedAssemblies);
+                badgeService.SyncBadges(assemblies);
                 mvcForumContext.SaveChanges();
             }
             catch (Exception ex)
@@ -73,15 +83,22 @@ namespace MvcForum.Web
                 loggingService.Error($"Error processing badge classes: {ex.Message}");
             }
 
+            var theme = "Metro";
+            var settings = mvcForumContext.Setting.FirstOrDefault();
+            if (settings != null)
+            {
+                theme = settings.Theme;
+            }
+
             // Set the view engine
             ViewEngines.Engines.Clear();
-            ViewEngines.Engines.Add(new ForumViewEngine(settingsService.GetSettings().Theme));
+            ViewEngines.Engines.Add(new ForumViewEngine(theme));
 
             // Initialise the events
-            EventManager.Instance.Initialize(loggingService, loadedAssemblies);
+            EventManager.Instance.Initialize(loggingService, assemblies);
 
             // Finally trigger any Cron jobs
-            RecurringJob.AddOrUpdate<RecurringJobService>(x => x.SendMarkAsSolutionReminders(), Cron.HourInterval(6), queue: "solutionreminders");
+            RecurringJob.AddOrUpdate<RecurringJobService>(x => x.SendMarkAsSolutionReminders(), Cron.HourInterval(6), queue: "solutionreminders");            
         }
     }
 }

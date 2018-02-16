@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
+    using System.Threading.Tasks;
     using Constants;
     using Interfaces;
     using Interfaces.Services;
@@ -16,7 +17,7 @@
         private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
         private readonly IGlobalPermissionForRoleService _globalPermissionForRoleService;
         private readonly IPermissionService _permissionService;
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         public RoleService(IMvcForumContext context, ICategoryPermissionForRoleService categoryPermissionForRoleService, IPermissionService permissionService, IGlobalPermissionForRoleService globalPermissionForRoleService, ICacheService cacheService)
@@ -28,16 +29,30 @@
             _context = context;
         }
 
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+            _categoryPermissionForRoleService.RefreshContext(context);
+            _permissionService.RefreshContext(context);
+            _globalPermissionForRoleService.RefreshContext(context);
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
         /// <summary>
         /// Get all roles in the system
         /// </summary>
         /// <returns></returns>
         public IList<MembershipRole> AllRoles()
         {
-            var cacheKey = string.Concat(CacheKeys.Role.StartsWith, "AllRoles");
-            return _cacheService.CachePerRequest(cacheKey, () => _context.MembershipRole
+            return _context.MembershipRole
                                                                     .OrderByDescending(x => x.RoleName)
-                                                                    .ToList());
+                                                                    .ToList();
         }
 
         /// <summary>
@@ -48,9 +63,7 @@
         /// <returns></returns>
         public MembershipRole GetRole(string rolename, bool removeTracking = false)
         {
-            var cacheKey = string.Concat(CacheKeys.Role.StartsWith, "GetRole-", rolename, "-", removeTracking);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+ 
                 if (removeTracking)
                 {
                     return _context.MembershipRole
@@ -61,7 +74,7 @@
                         .FirstOrDefault(y => y.RoleName.Contains(rolename));
                 }
                 return _context.MembershipRole.FirstOrDefault(y => y.RoleName.Contains(rolename));
-            });
+         
         }
 
         /// <summary>
@@ -71,8 +84,7 @@
         /// <returns></returns>
         public MembershipRole GetRole(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.Role.StartsWith, "GetRole-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.MembershipRole.FirstOrDefault(x => x.Id == id));
+            return _context.MembershipRole.FirstOrDefault(x => x.Id == id);
         }
 
         /// <summary>
@@ -118,7 +130,7 @@
             }
             else
             {
-                var inUseBy = new List<Entity>();
+                var inUseBy = new List<IBaseEntity>();
                 inUseBy.AddRange(role.Users);
                 throw new Exception($"In use by {inUseBy.Count} entities");
             }
@@ -148,7 +160,7 @@
                     categoryPermissions.Add(new CategoryPermissionForRole
                     {
                         Category = category,
-                        IsTicked = (permission.Name != SiteConstants.Instance.PermissionDenyAccess && permission.Name != SiteConstants.Instance.PermissionReadOnly),
+                        IsTicked = (permission.Name != ForumConfiguration.Instance.PermissionDenyAccess && permission.Name != ForumConfiguration.Instance.PermissionReadOnly),
                         MembershipRole = role,
                         Permission = permission
                     });
@@ -193,7 +205,7 @@
                     categoryPermissions.Add(new CategoryPermissionForRole
                     {
                         Category = category,
-                        IsTicked = permission.Name == SiteConstants.Instance.PermissionReadOnly,
+                        IsTicked = permission.Name == ForumConfiguration.Instance.PermissionReadOnly,
                         MembershipRole = role,
                         Permission = permission
                     });
@@ -202,11 +214,11 @@
                 // Deny Access may have been set (or left null) for guest for the category, so need to read for it
                 var denyAccessPermission = role.CategoryPermissionForRoles
                                    .FirstOrDefault(x => x.Category.Id == category.Id &&
-                                                        x.Permission.Name == SiteConstants.Instance.PermissionDenyAccess &&
+                                                        x.Permission.Name == ForumConfiguration.Instance.PermissionDenyAccess &&
                                                         x.MembershipRole.Id == role.Id);
 
                 // Set the Deny Access value in the results. If it's null for this role/category, record it as false in the results
-                var categoryPermissionForRole = categoryPermissions.FirstOrDefault(x => x.Permission.Name == SiteConstants.Instance.PermissionDenyAccess);
+                var categoryPermissionForRole = categoryPermissions.FirstOrDefault(x => x.Permission.Name == ForumConfiguration.Instance.PermissionDenyAccess);
                 if (categoryPermissionForRole != null)
                 {
                     categoryPermissionForRole.IsTicked = denyAccessPermission != null && denyAccessPermission.IsTicked;
@@ -286,24 +298,14 @@
             // Pass the role in to see select which permissions to apply
             // Going to cache this per request, just to help with performance
 
-            // We pass in an empty guid if the category is null
-            var categoryId = Guid.Empty;
-            if (category != null)
-            {
-                categoryId = category.Id;
-            }
-
-            var cacheKey = string.Concat(CacheKeys.Role.StartsWith, "GetPermissions-", categoryId, "-", role.Id);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
                 PermissionSet permissions;
 
                 switch (role.RoleName)
                 {
-                    case AppConstants.AdminRoleName:
+                    case Constants.AdminRoleName:
                         permissions = GetAdminPermissions(category, role);
                         break;
-                    case AppConstants.GuestRoleName:
+                    case Constants.GuestRoleName:
                         permissions = GetGuestPermissions(category, role);
                         break;
                     default:
@@ -312,8 +314,6 @@
                 }
 
                 return permissions;
-
-            });
         }
 
         #endregion

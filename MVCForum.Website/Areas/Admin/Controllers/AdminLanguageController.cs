@@ -6,12 +6,14 @@
     using System.Text;
     using System.Threading.Tasks;
     using System.Web.Mvc;
+    using Core;
     using Core.Constants;
     using Core.Interfaces;
     using Core.Interfaces.Services;
     using Core.Models.Entities;
     using Core.Utilities;
-    using ViewModels;
+    using Web.ViewModels;
+    using Web.ViewModels.Admin;
 
     public class AdminLanguageController : BaseAdminController
     {
@@ -86,7 +88,7 @@
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult DeleteLanguageConfirmation(Guid id)
         {
             try
@@ -119,7 +121,7 @@
         /// <param name="id"></param>
         /// <returns></returns>
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult DeleteLanguage(string buttonYes, string buttonNo, Guid id)
         {
             if (buttonYes != null)
@@ -146,7 +148,7 @@
         /// </summary>
         /// <param name="resourceKeyId"></param>
         /// <returns></returns>
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult DeleteResourceConfirmation(Guid resourceKeyId)
         {
             try
@@ -178,7 +180,7 @@
         /// <param name="id"></param>
         /// <returns></returns>
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult DeleteResource(string buttonYes, string buttonNo, Guid id)
         {
             if (buttonYes != null)
@@ -206,7 +208,7 @@
         /// </summary>
         /// <returns></returns>
         [ChildActionOnly]
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public PartialViewResult CreateLanguage()
         {
             return PartialView();
@@ -219,7 +221,7 @@
         /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult CreateLanguage(CreateLanguageViewModel languageViewModel)
         {
             try
@@ -266,7 +268,7 @@
         ///     Manage resource values for a language
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public async Task<ActionResult> ManageLanguageResourceValues(Guid languageId, int? p, string search)
         {
             return await GetLanguageResources(false, languageId, p, search);
@@ -276,7 +278,7 @@
         ///     Manage resource values for a language
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public async Task<ActionResult> ManageLanguageResourceKeys(Guid languageId, int? p, string search)
         {
             return await GetLanguageResources(true, languageId, p, search);
@@ -286,7 +288,7 @@
         ///     Manage resource keys (for all languages)
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public async Task<ActionResult> ManageResourceKeys(int? p, string search)
         {
             try
@@ -359,7 +361,7 @@
         ///     Edit a resource in all languages
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult EditAll(Guid resourceKeyId)
         {
             try
@@ -424,7 +426,7 @@
         ///     Add a new resource
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult AddResourceKey()
         {
             var resourceKey = LocalizationService.CreateEmptyLocaleResourceKey();
@@ -443,7 +445,7 @@
         // POST /Account/Add
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult AddResourceKey(LocaleResourceKeyViewModel newResourceKeyViewModel)
         {
             try
@@ -478,7 +480,7 @@
         /// <param name="message"></param>
         private void ShowSuccess(string message)
         {
-            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
             {
                 Message = message,
                 MessageType = GenericMessages.success
@@ -491,7 +493,7 @@
         /// <param name="message"></param>
         private void ShowError(string message)
         {
-            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
             {
                 Message = message,
                 MessageType = GenericMessages.danger
@@ -523,9 +525,9 @@
         {
             var pageIndex = page ?? 1;
             var allResources = string.IsNullOrWhiteSpace(search)
-                ? await LocalizationService.GetAllResourceKeys(pageIndex, SiteConstants.Instance.AdminListPageSize)
+                ? await LocalizationService.GetAllResourceKeys(pageIndex, ForumConfiguration.Instance.AdminListPageSize)
                 : await LocalizationService.SearchResourceKeys(search, pageIndex,
-                    SiteConstants.Instance.AdminListPageSize);
+                    ForumConfiguration.Instance.AdminListPageSize);
 
             // Redisplay list of resources
             var allViewModelResourceKeys = allResources.Select(resource => new LocaleResourceKeyViewModel
@@ -578,14 +580,14 @@
                     // Get all the resources or just the ones that match the search
                     var allResources = string.IsNullOrWhiteSpace(search)
                         ? await LocalizationService.GetAllValues(language.Id, pageIndex,
-                            SiteConstants.Instance.AdminListPageSize)
+                            ForumConfiguration.Instance.AdminListPageSize)
                         : searchByKey
                             ? await LocalizationService.SearchResourceKeys(language.Id, search,
                                 pageIndex,
-                                SiteConstants.Instance.AdminListPageSize)
+                                ForumConfiguration.Instance.AdminListPageSize)
                             : await LocalizationService.SearchResourceValues(language.Id, search,
                                 pageIndex,
-                                SiteConstants.Instance.AdminListPageSize);
+                                ForumConfiguration.Instance.AdminListPageSize);
 
                     var models = allResources.Select(resource => new LocaleResourceViewModel
                     {

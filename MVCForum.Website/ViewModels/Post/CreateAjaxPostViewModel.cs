@@ -7,7 +7,7 @@
 
     public class CreateAjaxPostViewModel
     {
-        [UIHint(AppConstants.EditorType)]
+        [UIHint(Constants.EditorType)]
         [AllowHtml]
         [StringLength(6000)]
         public string PostContent { get; set; }

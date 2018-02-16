@@ -172,7 +172,7 @@ a, a:visited { color: $link-color;
 
 .validation-summary-errors {
     ul { padding: 0; margin: 0 0 5px 0;
-        li { padding: 4px; background-color: $color-global-red; color: darken($color-global-red, 9%); list-style: none; }
+        li { padding: 4px; background-color: $color-global-red; color: lighten($color-global-red, 20%); list-style: none; }
     }
 }
 .field-validation-error { color: $color-global-red; font-size: 12px; }

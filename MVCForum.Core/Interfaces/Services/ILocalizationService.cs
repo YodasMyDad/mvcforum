@@ -7,7 +7,7 @@
     using Models.Entities;
     using Models.General;
 
-    public interface ILocalizationService
+    public interface ILocalizationService : IContextService
     {
         Language SanitizeLanguage(Language language);
         LocaleResourceKey SanitizeLocaleResourceKey(LocaleResourceKey localeResourceKey);

@@ -2,12 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Security.Principal;
     using System.Threading.Tasks;
+    using System.Web;
     using Models.Entities;
     using Models.Enums;
     using Models.General;
+    using Pipeline;
 
-    public interface IMembershipService
+    public partial interface IMembershipService : IContextService
     {
         LoginAttemptStatus LastLoginStatus { get; }
         MembershipUser Add(MembershipUser newUser);
@@ -19,26 +22,23 @@
         MembershipUser GetUserByEmail(string email, bool removeTracking = false);
         MembershipUser GetUserBySlug(string slug);
         IList<MembershipUser> GetUserBySlugLike(string slug);
-        MembershipUser GetUserByFacebookId(long facebookId);
-        MembershipUser GetUserByTwitterId(string twitterId);
-        MembershipUser GetUserByGoogleId(string googleId);
-        MembershipUser GetUserByOpenIdToken(string openId);
         IList<MembershipUser> GetUsersById(List<Guid> guids);
         IList<MembershipUser> GetUsersByDaysPostsPoints(int amoutOfDaysSinceRegistered, int amoutOfPosts);
         MembershipUser GetUser(Guid id);
         bool ChangePassword(MembershipUser user, string oldPassword, string newPassword);
         bool ResetPassword(MembershipUser user, string newPassword);
         void UnlockUser(string username, bool resetPasswordAttempts);
-        MembershipCreateStatus CreateUser(MembershipUser newUser);
-        string ErrorCodeToString(MembershipCreateStatus createStatus);
         MembershipUser CreateEmptyUser();
+        Task<IPipelineProcess<MembershipUser>> CreateUser(MembershipUser newUser, LoginType loginType);
+        Task<IPipelineProcess<MembershipUser>> EditUser(MembershipUser userToEdit, IPrincipal loggedInUser, HttpPostedFileBase image);
+        string ErrorCodeToString(MembershipCreateStatus createStatus);
         IList<MembershipUser> GetAll();
         Task<PaginatedList<MembershipUser>> GetAll(int pageIndex, int pageSize);
         Task<PaginatedList<MembershipUser>> SearchMembers(string search, int pageIndex, int pageSize);
         IList<MembershipUser> SearchMembers(string username, int amount);
         IList<MembershipUser> GetActiveMembers();
         void ProfileUpdated(MembershipUser user);
-        bool Delete(MembershipUser user);
+        Task<IPipelineProcess<MembershipUser>> Delete(MembershipUser user);
         IList<MembershipUser> GetLatestUsers(int amountToTake);
         IList<MembershipUser> GetLowestPointUsers(int amountToTake);
         int MemberCount();
@@ -49,7 +49,7 @@
         ///     Clears everything - Posts, polls, votes, favourites, profile etc...
         /// </summary>
         /// <param name="user"></param>
-        void ScrubUsers(MembershipUser user);
+        Task<IPipelineProcess<MembershipUser>> ScrubUsers(MembershipUser user);
         bool UpdatePasswordResetToken(MembershipUser user);
         bool ClearPasswordResetToken(MembershipUser user);
         bool IsPasswordResetTokenValid(MembershipUser user, string token);

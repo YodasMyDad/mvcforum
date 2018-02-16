@@ -8,13 +8,13 @@
     using Models.Enums;
     using Models.General;
 
-    public partial interface IBadgeService
+    public partial interface IBadgeService : IContextService
     {
         /// <summary>
         ///     Bring the database into line with the badge classes found at runtime
         /// </summary>
         /// <returns>Set of valid badge classes to use when assigning badges</returns>
-        void SyncBadges(List<Assembly> assemblies);
+        void SyncBadges(IEnumerable<Assembly> assemblies);
 
         /// <summary>
         ///     Processes the user for the specified badge type
@@ -22,7 +22,7 @@
         /// <param name="badgeType"></param>
         /// <param name="user"></param>
         /// <returns>True if badge was awarded</returns>
-        bool ProcessBadge(BadgeType badgeType, MembershipUser user);
+        Task<bool> ProcessBadge(BadgeType badgeType, MembershipUser user);
 
         /// <summary>
         ///     Gets a paged list of badges
@@ -40,12 +40,6 @@
         /// <param name="pageSize"></param>
         /// <returns></returns>
         Task<PaginatedList<Badge>> SearchPagedGroupedTags(string search, int pageIndex, int pageSize);
-
-        /// <summary>
-        ///     Get all Badges enabled in the applications
-        /// </summary>
-        /// <returns></returns>
-        IList<Badge> GetallBadges();
 
         /// <summary>
         ///     Delete a badge

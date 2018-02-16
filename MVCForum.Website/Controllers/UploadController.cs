@@ -5,8 +5,7 @@
     using System.Linq;
     using System.Web.Hosting;
     using System.Web.Mvc;
-    using Application;
-    using Areas.Admin.ViewModels;
+    using Core;
     using Core.Constants;
     using Core.ExtensionMethods;
     using Core.Interfaces;
@@ -33,7 +32,7 @@
         }
 
         [HttpPost]
-        public ActionResult UploadPostFiles(AttachFileToPostViewModel attachFileToPostViewModel)
+        public virtual ActionResult UploadPostFiles(AttachFileToPostViewModel attachFileToPostViewModel)
         {
             var topic = new Topic();
 
@@ -58,10 +57,10 @@
                         // Get the permissions for this category, and check they are allowed to update and 
                         // not trying to be a sneaky mofo
                         var permissions = RoleService.GetPermissions(category, loggedOnUsersRole);
-                        if (permissions[SiteConstants.Instance.PermissionAttachFiles].IsTicked == false ||
+                        if (permissions[ForumConfiguration.Instance.PermissionAttachFiles].IsTicked == false ||
                             loggedOnReadOnlyUser.DisableFileUploads == true)
                         {
-                            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                             {
                                 Message = LocalizationService.GetResourceString("Errors.NoPermission"),
                                 MessageType = GenericMessages.danger
@@ -73,7 +72,7 @@
                         // woot! User has permission and all seems ok
                         // Before we save anything, check the user already has an upload folder and if not create one
                         var uploadFolderPath = HostingEnvironment.MapPath(
-                            string.Concat(SiteConstants.Instance.UploadFolderPath, loggedOnReadOnlyUser.Id));
+                            string.Concat(ForumConfiguration.Instance.UploadFolderPath, loggedOnReadOnlyUser.Id));
                         if (!Directory.Exists(uploadFolderPath))
                         {
                             Directory.CreateDirectory(uploadFolderPath);
@@ -85,11 +84,10 @@
                             if (file != null)
                             {
                                 // If successful then upload the file
-                                var uploadResult =
-                                    AppHelpers.UploadFile(file, uploadFolderPath, LocalizationService);
+                                var uploadResult = file.UploadFile(uploadFolderPath, LocalizationService);
                                 if (!uploadResult.UploadSuccessful)
                                 {
-                                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                                     {
                                         Message = uploadResult.ErrorMessage,
                                         MessageType = GenericMessages.danger
@@ -113,7 +111,7 @@
                         Context.SaveChanges();
 
                         // Redirect to the topic with a success message
-                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                         {
                             Message = LocalizationService.GetResourceString("Post.FilesUploaded"),
                             MessageType = GenericMessages.success
@@ -133,7 +131,7 @@
             {
                 Context.RollBack();
                 LoggingService.Error(ex);
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
                     MessageType = GenericMessages.danger
@@ -144,7 +142,7 @@
             }
         }
 
-        public ActionResult DeleteUploadedFile(Guid id)
+        public virtual ActionResult DeleteUploadedFile(Guid id)
         {
             if (id != Guid.Empty)
             {
@@ -159,7 +157,7 @@
                     var post = uploadedFile.Post;
                     topic = post.Topic;
 
-                    if (loggedOnUsersRole.RoleName == AppConstants.AdminRoleName ||
+                    if (loggedOnUsersRole.RoleName == Constants.AdminRoleName ||
                         uploadedFile.MembershipUser.Id == loggedOnReadOnlyUser.Id)
                     {
                         // Ok to delete file
@@ -178,7 +176,7 @@
                     }
                     else
                     {
-                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                        TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                         {
                             Message = LocalizationService.GetResourceString("Errors.NoPermission"),
                             MessageType = GenericMessages.danger
@@ -189,7 +187,7 @@
                     //Commit
                     Context.SaveChanges();
 
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = LocalizationService.GetResourceString("File.SuccessfullyDeleted"),
                         MessageType = GenericMessages.success
@@ -200,7 +198,7 @@
                 {
                     Context.RollBack();
                     LoggingService.Error(ex);
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
                         Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
                         MessageType = GenericMessages.danger

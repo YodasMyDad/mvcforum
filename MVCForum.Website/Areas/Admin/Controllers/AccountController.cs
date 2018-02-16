@@ -5,20 +5,20 @@
     using System.Linq;
     using System.Threading.Tasks;
     using System.Web.Mvc;
+    using Core;
     using Core.Constants;
     using Core.Interfaces;
     using Core.Interfaces.Services;
     using Core.Models.Entities;
     using Core.Models.Enums;
-    using ViewModels;
+    using Web.ViewModels;
+    using Web.ViewModels.Admin;
     using Web.ViewModels.Mapping;
 
     public class AccountController : BaseAdminController
     {
         private readonly IMembershipUserPointsService _membershipUserPointsService;
-        private readonly IPollAnswerService _pollAnswerService;
         private readonly IPollService _pollService;
-        private readonly IPollVoteService _pollVoteService;
         private readonly IPostService _postService;
         private readonly IRoleService _roleService;
         private readonly ITopicService _topicService;
@@ -39,8 +39,6 @@
         /// <param name="membershipUserPointsService"> </param>
         /// <param name="activityService"> </param>
         /// <param name="pollService"> </param>
-        /// <param name="pollVoteService"> </param>
-        /// <param name="pollAnswerService"> </param>
         /// <param name="uploadedFileService"></param>
         public AccountController(ILoggingService loggingService, IMvcForumContext context,
             IMembershipService membershipService,
@@ -48,8 +46,8 @@
             IRoleService roleService,
             ISettingsService settingsService, IPostService postService, ITopicService topicService,
             IMembershipUserPointsService membershipUserPointsService,
-            IActivityService activityService, IPollService pollService, IPollVoteService pollVoteService,
-            IPollAnswerService pollAnswerService, IUploadedFileService uploadedFileService)
+            IActivityService activityService, IPollService pollService, 
+            IUploadedFileService uploadedFileService)
             : base(loggingService, membershipService, localizationService, settingsService, context)
         {
             ActivityService = activityService;
@@ -58,8 +56,6 @@
             _topicService = topicService;
             _membershipUserPointsService = membershipUserPointsService;
             _pollService = pollService;
-            _pollVoteService = pollVoteService;
-            _pollAnswerService = pollAnswerService;
             _uploadedFileService = uploadedFileService;
         }
 
@@ -111,13 +107,13 @@
         ///     List out users and allow editing
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         private async Task<ActionResult> ListUsers(int? p, string search)
         {
             var pageIndex = p ?? 1;
             var allUsers = string.IsNullOrWhiteSpace(search)
-                ? await MembershipService.GetAll(pageIndex, SiteConstants.Instance.AdminListPageSize)
-                : await MembershipService.SearchMembers(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
+                ? await MembershipService.GetAll(pageIndex, ForumConfiguration.Instance.AdminListPageSize)
+                : await MembershipService.SearchMembers(search, pageIndex, ForumConfiguration.Instance.AdminListPageSize);
 
             // Redisplay list of users
             var allViewModelUsers = allUsers.Select(ViewModelMapping.UserToSingleMemberListViewModel).ToList();
@@ -135,7 +131,7 @@
             return View("List", memberListModel);
         }
 
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult ManageUserPoints(Guid id)
         {
             var user = MembershipService.GetUser(id);
@@ -148,10 +144,10 @@
             return View(viewModel);
         }
 
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult ManageUserPoints(ManageUsersPointsViewModel viewModel)
+        public async Task<ActionResult> ManageUserPoints(ManageUsersPointsViewModel viewModel)
         {
             // Repopulate viewmodel
             var user = MembershipService.GetUser(viewModel.Id);
@@ -166,12 +162,12 @@
                 {
                     DateAdded = DateTime.UtcNow,
                     Notes = viewModel.Note,
-                    Points = (int) viewModel.Amount,
+                    Points = (int)viewModel.Amount,
                     PointsFor = PointsFor.Manual,
                     User = user
                 };
 
-                _membershipUserPointsService.Add(newPoints);
+                await _membershipUserPointsService.Add(newPoints);
 
                 try
                 {
@@ -195,10 +191,10 @@
                 }
             }
 
-            return RedirectToAction("ManageUserPoints", new {id = user.Id});
+            return RedirectToAction("ManageUserPoints", new { id = user.Id });
         }
 
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult RemovePoints(Guid pointToRemove)
@@ -228,21 +224,21 @@
                 });
             }
 
-            return RedirectToAction("ManageUserPoints", new {id = user.Id});
+            return RedirectToAction("ManageUserPoints", new { id = user.Id });
         }
 
         /// <summary>
         ///     Manage users
         /// </summary>
         /// <returns></returns>
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public async Task<ActionResult> Manage(int? p, string search)
         {
             return await ListUsers(p, search);
         }
 
 
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult Edit(Guid id)
         {
             var user = MembershipService.GetUser(id);
@@ -255,7 +251,7 @@
 
 
         [HttpPost]
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public async Task<ActionResult> Edit(MemberEditViewModel userModel)
         {
             var user = MembershipService.GetUser(userModel.Id);
@@ -284,7 +280,7 @@
             {
                 Context.SaveChanges();
 
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = "User saved",
                     MessageType = GenericMessages.success
@@ -302,41 +298,39 @@
         }
 
 
-        [Authorize(Roles = AppConstants.AdminRoleName)]
-        public ActionResult Delete(Guid id, int? p, string search)
+        [Authorize(Roles = Constants.AdminRoleName)]
+        public async Task<ActionResult> Delete(Guid id, int? p, string search)
         {
-            try
+
+            var user = MembershipService.GetUser(id);
+            if (user == null)
             {
-                var user = MembershipService.GetUser(id);
-                if (user == null)
-                {
-                    throw new ApplicationException("Cannot delete user - user does not exist");
-                }
+                throw new ApplicationException("Cannot delete user - user does not exist");
+            }
 
-                MembershipService.Delete(user);
-
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            var piplineReslt = await MembershipService.Delete(user);
+            if (piplineReslt.Successful)
+            {
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = "User delete successfully",
                     MessageType = GenericMessages.success
                 };
-                Context.SaveChanges();
             }
-            catch (Exception ex)
+            else
             {
-                Context.RollBack();
-                LoggingService.Error(ex);
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
-                    Message = $"Delete failed: {ex.Message}",
+                    Message = piplineReslt.ProcessLog.FirstOrDefault(),
                     MessageType = GenericMessages.danger
                 };
             }
-            return RedirectToAction("Manage", new {p, search});
+
+            return RedirectToAction("Manage", new { p, search });
         }
 
         [HttpPost]
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public void UpdateUserRoles(AjaxRoleUpdateViewModel ajaxRoleUpdateViewModel)
         {
             if (Request.IsAjaxRequest())
@@ -362,7 +356,7 @@
 
         #region Roles
 
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult ListAllRoles()
         {
             var roles = new RoleListViewModel
@@ -372,7 +366,7 @@
             return View(roles);
         }
 
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult EditRole(Guid Id)
         {
             var role = _roleService.GetRole(Id);
@@ -383,7 +377,7 @@
         }
 
         [HttpPost]
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult EditRole(RoleViewModel role)
         {
             var existingRole = _roleService.GetRole(role.Id);
@@ -402,7 +396,7 @@
 
 
             // Use temp data as its a redirect
-            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
             {
                 Message = "Role saved",
                 MessageType = GenericMessages.success
@@ -411,7 +405,7 @@
             return RedirectToAction("ListAllRoles");
         }
 
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult DeleteRole(Guid Id)
         {
             var roleToDelete = _roleService.GetRole(Id);
@@ -430,7 +424,7 @@
 
 
             // Use temp data as its a redirect
-            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
             {
                 Message = "Role Deleted",
                 MessageType = GenericMessages.success
@@ -438,7 +432,7 @@
             return RedirectToAction("ListAllRoles");
         }
 
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult AddRole()
         {
             var role = new RoleViewModel();
@@ -446,48 +440,8 @@
             return View(role);
         }
 
-        [Authorize(Roles = AppConstants.AdminRoleName)]
-        public ActionResult DeleteUsersPosts(Guid id, bool profileClick = false)
-        {
-            var user = MembershipService.GetUser(id);
-
-
-            if (!user.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
-            {
-                MembershipService.ScrubUsers(user);
-
-                try
-                {
-                    Context.SaveChanges();
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = "All posts and topics deleted",
-                        MessageType = GenericMessages.success
-                    };
-                }
-                catch (Exception ex)
-                {
-                    Context.RollBack();
-                    LoggingService.Error(ex);
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = "Error trying to delete posts and topics",
-                        MessageType = GenericMessages.danger
-                    };
-                }
-            }
-
-            if (profileClick)
-            {
-                return Redirect(user.NiceUrl);
-            }
-            var viewModel = ViewModelMapping.UserToMemberEditViewModel(user);
-            viewModel.AllRoles = _roleService.AllRoles();
-            return View("Edit", viewModel);
-        }
-
         [HttpPost]
-        [Authorize(Roles = AppConstants.AdminRoleName)]
+        [Authorize(Roles = Constants.AdminRoleName)]
         public ActionResult AddRole(RoleViewModel role)
         {
             var newRole = ViewModelMapping.RoleViewModelToRole(role);
@@ -506,7 +460,7 @@
 
 
             // Use temp data as its a redirect
-            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
             {
                 Message = "Role Added",
                 MessageType = GenericMessages.success

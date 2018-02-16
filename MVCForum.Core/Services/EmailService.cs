@@ -6,9 +6,15 @@
     using System.Linq;
     using System.Net;
     using System.Net.Mail;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Web;
     using System.Web.Hosting;
+    using System.Web.Mvc;
+    using Constants;
     using ExtensionMethods;
     using Hangfire;
+    using Interfaces;
     using Interfaces.Services;
     using Models;
     using Models.Entities;
@@ -18,11 +24,26 @@
     {
         private readonly ILoggingService _loggingService;
         private readonly ISettingsService _settingsService;
+        private readonly ILocalizationService _localizationService;
 
-        public EmailService(ILoggingService loggingService, ISettingsService settingsService)
+        public EmailService(ILoggingService loggingService, ISettingsService settingsService, ILocalizationService localizationService)
         {
             _loggingService = loggingService;
             _settingsService = settingsService;
+            _localizationService = localizationService;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _settingsService.RefreshContext(context);
+            _localizationService.RefreshContext(context);
+        }
+
+        /// <inheritdoc />
+        public Task<int> SaveChanges()
+        {
+            throw new NotImplementedException();
         }
 
         public void ProcessMail(List<Email> emails)
@@ -122,6 +143,62 @@
                 }
 
                 return sb;
+            }
+        }
+
+        /// <summary>
+        ///     Sends registration confirmation email
+        /// </summary>
+        /// <param name="userToSave">The user being created</param>
+        /// <param name="manuallyAuthoriseMembers"></param>
+        /// <param name="memberEmailAuthorisationNeeded"></param>
+        public void SendEmailConfirmationEmail(MembershipUser userToSave,  bool manuallyAuthoriseMembers, bool memberEmailAuthorisationNeeded)
+        {
+            var settings = _settingsService.GetSettings();
+            if (manuallyAuthoriseMembers == false && memberEmailAuthorisationNeeded == true)
+            {
+                if (!string.IsNullOrWhiteSpace(userToSave.Email))
+                {
+                    // Registration guid
+                    var registrationGuid = Guid.NewGuid().ToString();
+
+                    // Set a Guid in the extended data
+                    userToSave.SetExtendedDataValue(Constants.ExtendedDataKeys.RegistrationEmailConfirmationKey,
+                        registrationGuid);
+
+                    // SEND AUTHORISATION EMAIL
+                    var sb = new StringBuilder();
+                    var requestContext = HttpContext.Current.Request.RequestContext;
+                    var actionUrl = new UrlHelper(requestContext).Action("EmailConfirmation", "Members", new {id = userToSave.Id, key = registrationGuid});
+                    var confirmationLink = string.Concat(StringUtils.ReturnCurrentDomain(), actionUrl);
+
+                    sb.AppendFormat("<p>{0}</p>", string.Format(
+                        _localizationService.GetResourceString("Members.MemberEmailAuthorisation.EmailBody"),
+                        settings.ForumName,
+                        string.Format("<p><a href=\"{0}\">{0}</a></p>", confirmationLink)));
+
+                    var email = new Email
+                    {
+                        EmailTo = userToSave.Email,
+                        NameTo = userToSave.UserName,
+                        Subject = _localizationService.GetResourceString("Members.MemberEmailAuthorisation.Subject")
+                    };
+
+                    email.Body = EmailTemplate(email.NameTo, sb.ToString());
+
+                    SendMail(email);
+
+                    // We add a cookie for 7 days, which will display the resend email confirmation button
+                    // This cookie is removed when they click the confirmation link
+                    var myCookie = new HttpCookie(Constants.MemberEmailConfirmationCookieName)
+                    {
+                        Value = userToSave.UserName,
+                        Expires = DateTime.UtcNow.AddDays(7)
+                    };
+
+                    // Add the cookie.
+                    HttpContext.Current.Response.Cookies.Add(myCookie);
+                }
             }
         }
 

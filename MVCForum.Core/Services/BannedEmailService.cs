@@ -14,13 +14,25 @@
 
     public partial class BannedEmailService : IBannedEmailService
     {
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         public BannedEmailService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
             _context = context;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         public BannedEmail Add(BannedEmail bannedEmail)
@@ -40,8 +52,7 @@
 
         public BannedEmail Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.BannedEmail.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.BannedEmail.FirstOrDefault(x => x.Id == id));
+            return _context.BannedEmail.Find(id);
         }
 
         public async Task<PaginatedList<BannedEmail>> GetAllPaged(int pageIndex, int pageSize)

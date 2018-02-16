@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Models.Entities;
 
-    public partial interface IGlobalPermissionForRoleService
+    public partial interface IGlobalPermissionForRoleService : IContextService
     {
         GlobalPermissionForRole Add(GlobalPermissionForRole permissionForRole);
         void Delete(GlobalPermissionForRole permissionForRole);

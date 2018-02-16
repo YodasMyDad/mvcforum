@@ -3,13 +3,14 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using System.Web;
     using System.Web.Mvc;
     using Models.Entities;
     using Models.General;
+    using Pipeline;
 
-    public partial interface ITopicService
+    public partial interface ITopicService : IContextService
     {
-        Topic SanitizeTopic(Topic topic);
         IList<Topic> GetAll(List<Category> allowedCategories);
         IList<SelectListItem> GetAllSelectList(List<Category> allowedCategories, int amount);
         IList<Topic> GetHighestViewedTopics(int amountToTake, List<Category> allowedCategories);
@@ -17,7 +18,10 @@
         IList<Topic> GetPopularTopics(DateTime? from, DateTime? to, List<Category> allowedCategories,
             int amountToShow = 20);
 
-        Topic Add(Topic topic);
+        Task<IPipelineProcess<Topic>> Create(Topic topic, HttpPostedFileBase[] files, string tags, bool subscribe, string postContent, Post post);
+
+        Task<IPipelineProcess<Topic>> Edit(Topic topic, HttpPostedFileBase[] files, string tags, bool subscribe, string postContent, string originalTopicName, List<PollAnswer> pollAnswers, int closePollAfterDays);
+
         IList<Topic> GetTodaysTopics(int amountToTake, List<Category> allowedCategories);
 
         Task<PaginatedList<Topic>> GetRecentTopics(int pageIndex, int pageSize, int amountToTake,
@@ -48,9 +52,9 @@
         Topic GetTopicBySlug(string slug);
         Topic Get(Guid topicId);
         List<Topic> Get(List<Guid> topicIds, List<Category> allowedCategories);
-        void Delete(Topic topic);
+        Task<IPipelineProcess<Topic>> Delete(Topic topic);
         int TopicCount(List<Category> allowedCategories);
-        Post AddLastPost(Topic topic, string postContent);
+
         List<MarkAsSolutionReminder> GetMarkAsSolutionReminderList(int days);
 
         /// <summary>
@@ -61,7 +65,7 @@
         /// <param name="marker"></param>
         /// <param name="solutionWriter"></param>
         /// <returns>True if topic has been marked as solved</returns>
-        bool SolveTopic(Topic topic, Post post, MembershipUser marker, MembershipUser solutionWriter);
+        Task<bool> SolveTopic(Topic topic, Post post, MembershipUser marker, MembershipUser solutionWriter);
 
         IList<Topic> GetAllTopicsByCategory(Guid categoryId);
 

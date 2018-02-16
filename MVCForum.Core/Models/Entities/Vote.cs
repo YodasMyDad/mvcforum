@@ -1,9 +1,10 @@
 ﻿namespace MvcForum.Core.Models.Entities
 {
     using System;
+    using Interfaces;
     using Utilities;
 
-    public partial class Vote : Entity
+    public partial class Vote : IBaseEntity
     {
         public Vote()
         {

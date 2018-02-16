@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
-    using Constants;
+    using System.Threading.Tasks;
     using Events;
     using Interfaces;
     using Interfaces.Services;
@@ -14,14 +14,25 @@
     public partial class VoteService : IVoteService
     {
         private readonly IMembershipUserPointsService _membershipUserPointsService;
-        private readonly IMvcForumContext _context;
-        private readonly ICacheService _cacheService;
+        private IMvcForumContext _context;
 
-        public VoteService(IMvcForumContext context, IMembershipUserPointsService membershipUserPointsService, ICacheService cacheService)
+        public VoteService(IMvcForumContext context, IMembershipUserPointsService membershipUserPointsService)
         {
             _membershipUserPointsService = membershipUserPointsService;
-            _cacheService = cacheService;
             _context = context;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+            _membershipUserPointsService.RefreshContext(context);
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         public Vote Get(Guid id)
@@ -43,18 +54,40 @@
             return _context.Vote.Where(x => x.VotedByMembershipUser.Id == membershipId).ToList();
         }
 
-        public List<Vote> GetVotesByPosts(List<Guid> postIds)
+        public Dictionary<Guid, List<Vote>> GetVotesByPosts(List<Guid> postIds)
         {
-            var cacheKey = string.Concat(CacheKeys.BannedEmail.StartsWith, "GetVotesByPosts-", postIds.GetHashCode());
-            return _cacheService.CachePerRequest(cacheKey, () =>
+            return _context.Vote.AsNoTracking()
+                         .Include(x => x.VotedByMembershipUser)
+                         .Include(x => x.User)
+                         .Include(x => x.Post)
+                         .Where(x => postIds.Contains(x.Post.Id))
+                         .ToList()
+                         .GroupBy(x => x.Post.Id)
+                         .ToDictionary(x => x.Key, x => x.ToList());
+        }
+
+        public Dictionary<Guid, Dictionary<Guid, List<Vote>>> GetVotesByTopicsGroupedIntoPosts(List<Guid> topicIds)
+        {
+            var dict = new Dictionary<Guid, Dictionary<Guid, List<Vote>>>();
+
+            var votesGroupedByTopicId = _context.Vote.AsNoTracking()
+                .Include(x => x.VotedByMembershipUser)
+                .Include(x => x.User)
+                .Include(x => x.Post.Topic)
+                .Where(x => topicIds.Contains(x.Post.Topic.Id))
+                .ToList()
+                .ToLookup(x => x.Post.Id);
+
+            foreach (var vgbtid in votesGroupedByTopicId)
             {
-                return _context.Vote
-                            .Include(x => x.VotedByMembershipUser)
-                            .Include(x => x.User)
-                            .Include(x => x.Post)
-                            .AsNoTracking()
-                            .Where(x => postIds.Contains(x.Post.Id)).ToList();
-            });
+                var votesGroupedByPostId = vgbtid
+                .GroupBy(x => x.Post.Id)
+                .ToDictionary(x => x.Key, x => x.ToList());
+
+                dict.Add(vgbtid.Key, votesGroupedByPostId);
+            }
+
+            return dict;
         }
 
         public List<Vote> GetVotesByPost(Guid postId)
@@ -74,14 +107,14 @@
         public Vote Add(Vote vote)
         {
 
-            var e = new VoteEventArgs {Vote = vote};
+            var e = new VoteEventArgs { Vote = vote };
             EventManager.Instance.FireBeforeVoteMade(this, e);
 
             if (!e.Cancel)
             {
                 _context.Vote.Add(vote);
 
-                EventManager.Instance.FireAfterVoteMade(this, new VoteEventArgs {Vote = vote});
+                EventManager.Instance.FireAfterVoteMade(this, new VoteEventArgs { Vote = vote });
             }
 
             return vote;

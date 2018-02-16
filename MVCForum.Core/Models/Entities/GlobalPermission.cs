@@ -1,9 +1,10 @@
 ﻿namespace MvcForum.Core.Models.Entities
 {
     using System;
+    using Interfaces;
     using Utilities;
 
-    public partial class GlobalPermissionForRole : Entity
+    public partial class GlobalPermissionForRole : IBaseEntity
     {
         public GlobalPermissionForRole()
         {

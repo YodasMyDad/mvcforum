@@ -6,16 +6,17 @@
     using System.Web;
     using System.Web.Hosting;
     using System.Web.Http;
-    using System.Web.Mvc;
-    using Application;
-    using Core.Constants;
+    using Core;
+    using Core.ExtensionMethods;
     using Core.Interfaces;
     using Core.Interfaces.Services;
+    using Core.Ioc;
     using Core.Models.General;
+    using Unity;
 
-    [System.Web.Http.Authorize]
-    [System.Web.Http.RoutePrefix("api/TinyMce")]
-    public class TinyMcePluginsController : ApiController
+    [Authorize]
+    [RoutePrefix("api/TinyMce")]
+    public partial class TinyMcePluginsController : ApiController
     {
         //private void SetPrincipal(IPrincipal principal)
         //{
@@ -27,16 +28,16 @@
         //}
 
         //GET api/TinyMce/UploadImage
-        [System.Web.Http.Route("UploadImage")]
-        [System.Web.Http.HttpPost]
-        public string UploadImage()
+        [Route("UploadImage")]
+        [HttpPost]
+        public virtual string UploadImage()
         {
-            var memberService = DependencyResolver.Current.GetService<IMembershipService>();
-            var roleService = DependencyResolver.Current.GetService<IRoleService>();
-            var localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
-            var uploadService = DependencyResolver.Current.GetService<IUploadedFileService>();
-            var context = DependencyResolver.Current.GetService<IMvcForumContext>();
-            var loggingService = DependencyResolver.Current.GetService<ILoggingService>();
+            var memberService = UnityHelper.Container.Resolve<IMembershipService>();
+            var roleService = UnityHelper.Container.Resolve<IRoleService>();
+            var localizationService = UnityHelper.Container.Resolve<ILocalizationService>();
+            var uploadService = UnityHelper.Container.Resolve<IUploadedFileService>();
+            var context = UnityHelper.Container.Resolve<IMvcForumContext>();
+            var loggingService = UnityHelper.Container.Resolve<ILoggingService>();
 
 
             try
@@ -52,21 +53,20 @@
                         var permissions =
                             roleService.GetPermissions(null, loggedOnReadOnlyUser.Roles.FirstOrDefault());
                         // Get the permissions for this category, and check they are allowed to update
-                        if (permissions[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked &&
+                        if (permissions[ForumConfiguration.Instance.PermissionInsertEditorImages].IsTicked &&
                             loggedOnReadOnlyUser.DisableFileUploads != true)
                         {
                             // woot! User has permission and all seems ok
                             // Before we save anything, check the user already has an upload folder and if not create one
                             var uploadFolderPath = HostingEnvironment.MapPath(
-                                string.Concat(SiteConstants.Instance.UploadFolderPath, loggedOnReadOnlyUser.Id));
+                                string.Concat(ForumConfiguration.Instance.UploadFolderPath, loggedOnReadOnlyUser.Id));
                             if (!Directory.Exists(uploadFolderPath))
                             {
                                 Directory.CreateDirectory(uploadFolderPath);
                             }
 
                             // If successful then upload the file
-                            var uploadResult =
-                                AppHelpers.UploadFile(photo, uploadFolderPath, localizationService, true);
+                            var uploadResult = photo.UploadFile(uploadFolderPath, localizationService, true);
                             if (!uploadResult.UploadSuccessful)
                             {
                                 return string.Empty;

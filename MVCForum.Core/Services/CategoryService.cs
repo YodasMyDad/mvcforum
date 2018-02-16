@@ -5,21 +5,26 @@
     using System.Data.Entity;
     using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
     using System.Web;
     using System.Web.Mvc;
     using Constants;
     using Interfaces;
+    using Interfaces.Pipeline;
     using Interfaces.Services;
+    using Models;
     using Models.Entities;
     using Models.General;
+    using Pipeline;
+    using Reflection;
     using Utilities;
 
     public partial class CategoryService : ICategoryService
     {
         private readonly ICacheService _cacheService;
-        private readonly ICategoryNotificationService _categoryNotificationService;
+        private readonly INotificationService _notificationService;
         private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly IRoleService _roleService;
 
         /// <summary>
@@ -27,18 +32,33 @@
         /// </summary>
         /// <param name="context"></param>
         /// <param name="roleService"> </param>
-        /// <param name="categoryNotificationService"> </param>
+        /// <param name="notificationService"> </param>
         /// <param name="categoryPermissionForRoleService"></param>
         /// <param name="cacheService"></param>
         public CategoryService(IMvcForumContext context, IRoleService roleService,
-            ICategoryNotificationService categoryNotificationService,
+            INotificationService notificationService,
             ICategoryPermissionForRoleService categoryPermissionForRoleService, ICacheService cacheService)
         {
             _roleService = roleService;
-            _categoryNotificationService = categoryNotificationService;
+            _notificationService = notificationService;
             _categoryPermissionForRoleService = categoryPermissionForRoleService;
             _cacheService = cacheService;
             _context = context;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+            _roleService.RefreshContext(context);
+            _notificationService.RefreshContext(context);
+            _categoryPermissionForRoleService.RefreshContext(context);
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         /// <summary>
@@ -47,8 +67,8 @@
         /// <returns></returns>
         public List<Category> GetAll()
         {
-            var cacheKey = string.Concat(CacheKeys.Category.StartsWith, "GetAll");
-            return _cacheService.CachePerRequest(cacheKey, () =>
+            var cachedCategories = _cacheService.Get<List<Category>>("CategoryList.GetAll");
+            if (cachedCategories == null)
             {
                 var orderedCategories = new List<Category>();
                 var allCats = _context.Category
@@ -66,16 +86,14 @@
                     // Add subcategories under this
                     orderedCategories.AddRange(GetSubCategories(parentCategory, allCats));
                 }
-                return orderedCategories;
-            });
+                cachedCategories = orderedCategories;
+            }
+            return cachedCategories;
         }
 
         public List<Category> GetSubCategories(Category category, List<Category> allCategories, int level = 2)
         {
-            var cacheKey = string.Concat(CacheKeys.Category.StartsWith, "GetSubCategories", "-", category.GetHashCode(),
-                "-", level);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
+
                 var catsToReturn = new List<Category>();
                 var cats = allCategories.Where(x => x.ParentCategory != null && x.ParentCategory.Id == category.Id)
                     .OrderBy(x => x.SortOrder);
@@ -87,15 +105,11 @@
                 }
 
                 return catsToReturn;
-            });
+    
         }
 
         public List<SelectListItem> GetBaseSelectListCategories(List<Category> allowedCategories)
         {
-            var cacheKey = string.Concat(CacheKeys.Category.StartsWith, "GetBaseSelectListCategories", "-",
-                allowedCategories.GetHashCode());
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
                 var cats = new List<SelectListItem> {new SelectListItem {Text = "", Value = ""}};
                 foreach (var cat in allowedCategories)
                 {
@@ -103,7 +117,7 @@
                     cats.Add(new SelectListItem {Text = catName, Value = cat.Id.ToString()});
                 }
                 return cats;
-            });
+        
         }
 
         /// <summary>
@@ -126,11 +140,46 @@
         {
             return _context.Category.AsNoTracking()
                 .Include(x => x.ParentCategory)
-                .Include(x => x.Topics.Select(l => l.LastPost))
-                .Include(x => x.Topics.Select(l => l.Posts))
                 .Where(cat => cat.ParentCategory == null)
                 .OrderBy(x => x.SortOrder)
                 .ToList();
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<CategorySummary> GetAllMainCategoriesInSummary()
+        {
+            return _context.Category.AsNoTracking()
+                .Include(x => x.ParentCategory)
+                .Include(x => x.Section)
+                .Where(cat => cat.ParentCategory == null)
+                .OrderBy(x => x.SortOrder)
+                .Select(x => new CategorySummary
+                {
+                    Category = x,
+                    TopicCount = x.Topics.Count,
+                    PostCount = x.Topics.SelectMany(p => p.Posts).Count(), // TODO - Should this be a seperate call?
+                    MostRecentTopic = x.Topics.OrderByDescending(t => t.LastPost.DateCreated).FirstOrDefault() // TODO - Should this be a seperate call?
+                })
+                .ToList();
+        }
+
+        /// <inheritdoc />
+        public ILookup<Guid, CategorySummary> GetAllMainCategoriesInSummaryGroupedBySection()
+        {
+            return _context.Category.AsNoTracking()
+                .Include(x => x.ParentCategory)
+                .Include(x => x.Section)
+                .Where(x => x.ParentCategory == null && x.Section != null)
+                .OrderBy(x => x.SortOrder)
+                .Select(x => new CategorySummary
+                {
+                    Category = x,
+                    TopicCount = x.Topics.Count,
+                    PostCount = x.Topics.SelectMany(p => p.Posts).Count(), // TODO - Should this be a seperate call?
+                    MostRecentTopic = x.Topics.OrderByDescending(t => t.LastPost.DateCreated).FirstOrDefault() // TODO - Should this be a seperate call?
+                })
+                .ToList()
+                .ToLookup(x => x.Category.Section.Id);
         }
 
         /// <summary>
@@ -140,7 +189,7 @@
         /// <returns></returns>
         public List<Category> GetAllowedCategories(MembershipRole role)
         {
-            return GetAllowedCategories(role, SiteConstants.Instance.PermissionDenyAccess);
+            return GetAllowedCategories(role, ForumConfiguration.Instance.PermissionDenyAccess);
         }
 
         public List<Category> GetAllowedCategories(MembershipRole role, string actionType)
@@ -152,20 +201,101 @@
         ///     Add a new category
         /// </summary>
         /// <param name="category"></param>
-        public Category Add(Category category)
+        /// <param name="postedFiles"></param>
+        /// <param name="parentCategory"></param>
+        /// <param name="section"></param>
+        public async Task<IPipelineProcess<Category>> Create(Category category, HttpPostedFileBase[] postedFiles, Guid? parentCategory, Guid? section)
         {
-            // Sanitize
-            category = SanitizeCategory(category);
+            // Get the pipelines
+            var categoryPipes = ForumConfiguration.Instance.PipelinesCategoryCreate;
 
-            // Set the create date
-            category.DateCreated = DateTime.UtcNow;
+            // The model to process
+            var piplineModel = new PipelineProcess<Category>(category);
 
-            // url slug generator
-            category.Slug = ServiceHelpers.GenerateSlug(category.Name,
-                GetBySlugLike(ServiceHelpers.CreateUrl(category.Name)), null);
+            // Add parent category
+            if (parentCategory != null)
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.ParentCategory, parentCategory);
+            }
 
-            // Add the category
-            return _context.Category.Add(category);
+            // Add section
+            if (section != null)
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Section, section);
+            }
+
+            // Add posted files
+            if (postedFiles != null && postedFiles.Any(x => x != null))
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, postedFiles);
+            }
+
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<Category>, Category>(_context);
+
+            // Register the pipes 
+            var allCategoryPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Category>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in categoryPipes)
+            {
+                if (allCategoryPipes.ContainsKey(pipe))
+                {
+                    pipeline.Register(allCategoryPipes[pipe]);
+                }
+            }
+
+            return await pipeline.Process(piplineModel);
+        }
+
+        /// <inheritdoc />
+        public async Task<IPipelineProcess<Category>> Edit(Category category, HttpPostedFileBase[] postedFiles, Guid? parentCategory, Guid? section)
+        {
+            // Get the pipelines
+            var categoryPipes = ForumConfiguration.Instance.PipelinesCategoryUpdate;
+
+            // The model to process
+            var piplineModel = new PipelineProcess<Category>(category);
+
+            // Add parent category
+            if (parentCategory != null)
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.ParentCategory, parentCategory);
+            }
+
+            // Add section
+            if (section != null)
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Section, section);
+            }
+
+            // Add posted files
+            if (postedFiles != null && postedFiles.Any(x => x != null))
+            {
+                piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.PostedFiles, postedFiles);
+            }
+
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.IsEdit, true);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<Category>, Category>(_context);
+
+            // Register the pipes 
+            var allCategoryPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Category>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in categoryPipes)
+            {
+                if (allCategoryPipes.ContainsKey(pipe))
+                {
+                    pipeline.Register(allCategoryPipes[pipe]);
+                }
+            }
+
+            return await pipeline.Process(piplineModel);
         }
 
         /// <summary>
@@ -191,7 +321,7 @@
 
             if (updateSlug)
             {
-                category.Slug = ServiceHelpers.GenerateSlug(category.Name, GetBySlugLike(category.Slug), category.Slug);
+                category.Slug = ServiceHelpers.GenerateSlug(category.Name, GetBySlugLike(category.Slug).Select(x => x.Slug).ToList(), category.Slug);
             }
         }
 
@@ -215,8 +345,7 @@
         /// <returns></returns>
         public Category Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.Category.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.Category.FirstOrDefault(x => x.Id == id));
+            return _context.Category.FirstOrDefault(x => x.Id == id);
         }
 
         public IList<Category> Get(IList<Guid> ids, bool fullGraph = false)
@@ -305,36 +434,30 @@
         ///     Delete a category
         /// </summary>
         /// <param name="category"></param>
-        public void Delete(Category category)
+        public async Task<IPipelineProcess<Category>> Delete(Category category)
         {
-            // Check if anyone else if using this role
-            var okToDelete = !category.Topics.Any();
+            // Get the pipelines
+            var categoryPipes = ForumConfiguration.Instance.PipelinesCategoryDelete;
 
-            if (okToDelete)
+            // The model to process
+            var piplineModel = new PipelineProcess<Category>(category);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<Category>, Category>(_context);
+
+            // Register the pipes 
+            var allCategoryPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<Category>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in categoryPipes)
             {
-                // Get any categorypermissionforoles and delete these first
-                var rolesToDelete = _categoryPermissionForRoleService.GetByCategory(category.Id);
-
-                foreach (var categoryPermissionForRole in rolesToDelete)
+                if (allCategoryPipes.ContainsKey(pipe))
                 {
-                    _categoryPermissionForRoleService.Delete(categoryPermissionForRole);
+                    pipeline.Register(allCategoryPipes[pipe]);
                 }
-
-                var categoryNotificationsToDelete = new List<CategoryNotification>();
-                categoryNotificationsToDelete.AddRange(category.CategoryNotifications);
-                foreach (var categoryNotification in categoryNotificationsToDelete)
-                {
-                    _categoryNotificationService.Delete(categoryNotification);
-                }
-
-                _context.Category.Remove(category);
             }
-            else
-            {
-                var inUseBy = new List<Entity>();
-                inUseBy.AddRange(category.Topics);
-                throw new Exception($"In use by {inUseBy.Count} entities");
-            }
+
+            return await pipeline.Process(piplineModel);
         }
 
         public Category GetBySlug(string slug)
@@ -364,6 +487,40 @@
                 .Where(x => x.Path != null && x.Path.ToLower().Contains(catGuid))
                 .OrderBy(x => x.SortOrder)
                 .ToList();
+        }
+
+        /// <inheritdoc />
+        public void SortPath(Category category, Category parentCategory)
+        {
+            // Append the path from the parent category
+            var path = !string.IsNullOrWhiteSpace(parentCategory.Path) ? 
+                string.Concat(parentCategory.Path, ",", parentCategory.Id.ToString()) : 
+                parentCategory.Id.ToString();
+
+            category.Path = path;
+        }
+
+        /// <inheritdoc />
+        public List<Section> GetAllSections()
+        {
+            return _context.Section.AsNoTracking().Include(x => x.Categories).OrderBy(x => x.SortOrder).ToList();
+        }
+
+        /// <inheritdoc />
+        public Section GetSection(Guid id)
+        {
+            return _context.Section.Find(id);
+        }
+
+        /// <inheritdoc />
+        public void DeleteSection(Guid id)
+        {
+            var section = _context.Section.Find(id);
+            if (section != null)
+            {
+                _context.Section.Remove(section);
+                _context.SaveChanges();
+            }
         }
 
         private static string LevelDashes(int level)

@@ -11,13 +11,13 @@
             switch (e)
             {
                 case UrlType.Topic:
-                    return SiteConstants.Instance.TopicUrlIdentifier;
+                    return ForumConfiguration.Instance.TopicUrlIdentifier;
                 case UrlType.Member:
-                    return SiteConstants.Instance.MemberUrlIdentifier;
+                    return ForumConfiguration.Instance.MemberUrlIdentifier;
                 case UrlType.Tag:
-                    return SiteConstants.Instance.TagsUrlIdentifier;
+                    return ForumConfiguration.Instance.TagsUrlIdentifier;
                 default:
-                    return SiteConstants.Instance.CategoryUrlIdentifier;
+                    return ForumConfiguration.Instance.CategoryUrlIdentifier;
             }
         }
 

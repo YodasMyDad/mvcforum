@@ -3,9 +3,10 @@
     using System;
     using System.Collections.Generic;
     using General;
+    using Interfaces;
     using Utilities;
 
-    public partial class Post : ExtendedDataEntity
+    public partial class Post : ExtendedDataEntity, IBaseEntity
     {
         public Post()
         {
@@ -22,7 +23,6 @@
         public bool? FlaggedAsSpam { get; set; }
         public string IpAddress { get; set; }
         public bool? Pending { get; set; }
-        public string SearchField { get; set; }
         public Guid? InReplyTo { get; set; }
         public virtual Topic Topic { get; set; }
         public virtual MembershipUser User { get; set; }

@@ -22,7 +22,7 @@
         private const string DateTimeFormat = @"dd/MM/yyyy HH:mm:ss";
         private static readonly Object LogLock = new Object();
         private static string _logFileFolder;
-        private static int _maxLogSize = 10000;
+        private static int _maxLogSize = 10000000; // 10mb
         private static string _logFileName;
 
         /// <summary>
@@ -182,6 +182,7 @@
 
         #endregion
 
+       
         /// <summary>
         /// Initialise the logging. Checks to see if file exists, so best 
         /// called ONCE from an application entry point to avoid threading issues
@@ -219,25 +220,47 @@
         /// <param name="ex"></param>
         public void Error(Exception ex)
         {
-            const int maxExceptionDepth = 5;
+            Write(GetExceptionToString(ex));
+        }
 
+        /// <summary>
+        /// Logs and exception with a custom message
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <param name="message"></param>
+        public void Error(Exception ex, string message)
+        {
+            var sb = new StringBuilder(message);
+
+            sb.Append(GetExceptionToString(ex));
+
+            Write(sb.ToString());
+        }
+
+
+        /// <summary>
+        /// Gets the exception message to a string
+        /// </summary>
+        /// <returns></returns>
+        private string GetExceptionToString(Exception ex)
+        {
             if (ex == null)
             {
-                return;
+                return string.Empty;
             }
 
-            var message = new StringBuilder(ex.Message);
-
-            var inner = ex.InnerException;
-            var depthCounter = 0;
-            while (inner != null && depthCounter++ < maxExceptionDepth)
+            var message = new StringBuilder();
+            message.Append(ex.Message);            
+            if (ex.InnerException != null)
             {
+                message.AppendLine();
                 message.Append(" INNER EXCEPTION: ");
-                message.Append(inner.Message);
-                inner = inner.InnerException;
+                message.AppendLine();
+                message.Append(ex.InnerException.Message);
             }
-
-            Write(message.ToString());
+            message.AppendLine();
+            message.Append(ex.StackTrace);
+            return message.ToString();
         }
 
         /// <summary>

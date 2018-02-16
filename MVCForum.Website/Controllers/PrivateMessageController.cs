@@ -5,8 +5,7 @@
     using System.Text;
     using System.Threading.Tasks;
     using System.Web.Mvc;
-    using Application;
-    using Areas.Admin.ViewModels;
+    using Core;
     using Core.Constants;
     using Core.ExtensionMethods;
     using Core.Interfaces;
@@ -14,6 +13,7 @@
     using Core.Models;
     using Core.Models.Entities;
     using Core.Utilities;
+    using ViewModels;
     using ViewModels.PrivateMessage;
 
     [Authorize]
@@ -35,14 +35,14 @@
             _configService = configService;
         }
 
-        public async Task<ActionResult> Index(int? p)
+        public virtual async Task<ActionResult> Index(int? p)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
 
             if (loggedOnReadOnlyUser.DisablePrivateMessages == true)
             {
-                TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
                     Message = LocalizationService.GetResourceString("Errors.NoPermission"),
                     MessageType = GenericMessages.danger
@@ -52,7 +52,7 @@
 
             var pageIndex = p ?? 1;
             var pagedMessages = await _privateMessageService.GetUsersPrivateMessages(pageIndex,
-                SiteConstants.Instance.PrivateMessageListSize, loggedOnReadOnlyUser);
+                ForumConfiguration.Instance.PrivateMessageListSize, loggedOnReadOnlyUser);
             var viewModel = new ListPrivateMessageViewModel
             {
                 Messages = pagedMessages,
@@ -64,7 +64,7 @@
         }
 
         [ChildActionOnly]
-        public ActionResult Create(Guid to)
+        public virtual ActionResult Create(Guid to)
         {
             var viewModel = new CreatePrivateMessageViewModel
             {
@@ -91,7 +91,7 @@
                     return Content(LocalizationService.GetResourceString("PM.SentItemsOverCapcity"));
                 }
                 if (senderCount > settings.MaxPrivateMessagesPerMember -
-                    SiteConstants.Instance.PrivateMessageWarningAmountLessThanAllowedSize)
+                    ForumConfiguration.Instance.PrivateMessageWarningAmountLessThanAllowedSize)
                 {
                     // Send user a warning they are about to exceed 
                     var sb = new StringBuilder();
@@ -107,7 +107,7 @@
                 }
 
                 // Set editor permissions
-                ViewBag.ImageUploadType = permissions[SiteConstants.Instance.PermissionInsertEditorImages].IsTicked
+                ViewBag.ImageUploadType = permissions[ForumConfiguration.Instance.PermissionInsertEditorImages].IsTicked
                     ? "forumimageinsert"
                     : "image";
 
@@ -123,7 +123,7 @@
         }
 
         [HttpPost]
-        public ActionResult Create(CreatePrivateMessageViewModel createPrivateMessageViewModel)
+        public virtual ActionResult Create(CreatePrivateMessageViewModel createPrivateMessageViewModel)
         {
             if (ModelState.IsValid)
             {
@@ -188,7 +188,7 @@
 
                         // If the receiver is about to go over the allowance them let then know too
                         if (receiverCount > settings.MaxPrivateMessagesPerMember -
-                            SiteConstants.Instance.PrivateMessageWarningAmountLessThanAllowedSize)
+                            ForumConfiguration.Instance.PrivateMessageWarningAmountLessThanAllowedSize)
                         {
                             // Send user a warning they are about to exceed 
                             var sb = new StringBuilder();
@@ -224,7 +224,7 @@
                                 var sb = new StringBuilder();
                                 sb.Append(
                                     $"<p>{string.Format(LocalizationService.GetResourceString("PM.NewPrivateMessageBody"), loggedOnReadOnlyUser.UserName)}</p>");
-                                sb.Append(AppHelpers.ConvertPostContent(createPrivateMessageViewModel.Message));
+                                sb.Append(createPrivateMessageViewModel.Message.ConvertPostContent());
                                 email.Body = _emailService.EmailTemplate(email.NameTo, sb.ToString());
                                 _emailService.SendMail(email);
                             }
@@ -249,7 +249,7 @@
             return Content(PmAjaxError(LocalizationService.GetResourceString("Errors.GenericMessage")));
         }
 
-        public async Task<ActionResult> View(Guid from)
+        public virtual async Task<ActionResult> View(Guid from)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
 
@@ -293,10 +293,10 @@
                 //allMessages.AddRange(loggedOnUser.PrivateMessagesSent.Where(x => x.UserTo.Id == from && x.IsSentMessage == true).ToList());
 
                 var allMessages = await _privateMessageService.GetUsersPrivateMessages(1,
-                    SiteConstants.Instance.PagingGroupSize, loggedOnUser, userFrom);
+                    ForumConfiguration.Instance.PagingGroupSize, loggedOnUser, userFrom);
 
                 // Now order them into an order of messages
-                var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
+                var date = DateTime.UtcNow.AddMinutes(-Constants.TimeSpanInMinutesToShowMembers);
 
                 var viewModel = new ViewPrivateMessageViewModel
                 {
@@ -318,7 +318,7 @@
         }
 
         [HttpPost]
-        public ActionResult Delete(DeletePrivateMessageViewModel deletePrivateMessageViewModel)
+        public virtual ActionResult Delete(DeletePrivateMessageViewModel deletePrivateMessageViewModel)
         {
             if (Request.IsAjaxRequest())
             {
@@ -351,7 +351,7 @@
         }
 
         [HttpPost]
-        public async Task<ActionResult> AjaxMore(GetMoreViewModel viewModel)
+        public virtual async Task<ActionResult> AjaxMore(GetMoreViewModel viewModel)
         {
             if (Request.IsAjaxRequest())
             {
@@ -366,7 +366,7 @@
                 }
 
                 var allMessages = await _privateMessageService.GetUsersPrivateMessages(viewModel.PageIndex,
-                    SiteConstants.Instance.PagingGroupSize, loggedOnUser, userFrom);
+                    ForumConfiguration.Instance.PagingGroupSize, loggedOnUser, userFrom);
 
                 var partialViewModel = new ViewPrivateMessageViewModel
                 {
@@ -385,10 +385,10 @@
             return $"<p class=\"pmerrormessage\">{message}</p>";
         }
 
-        internal ActionResult ErrorToInbox(string errorMessage)
+        internal virtual ActionResult ErrorToInbox(string errorMessage)
         {
             // Use temp data as its a redirect
-            TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
             {
                 Message = errorMessage,
                 MessageType = GenericMessages.danger

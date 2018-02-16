@@ -3,9 +3,10 @@
     using System;
     using System.Collections.Generic;
     using Enums;
+    using Interfaces;
     using Utilities;
 
-    public partial class Category : ExtendedDataEntity
+    public partial class Category : ExtendedDataEntity, IBaseEntity
     {
         public Category()
         {
@@ -26,6 +27,7 @@
         public string Colour { get; set; }
         public string Image { get; set; }
         public virtual Category ParentCategory { get; set; }
+        public virtual Section Section { get; set; }
         public virtual IList<Topic> Topics { get; set; }
         public virtual IList<CategoryNotification> CategoryNotifications { get; set; }
         public virtual IList<CategoryPermissionForRole> CategoryPermissionForRoles { get; set; }

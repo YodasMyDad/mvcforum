@@ -1,7 +1,8 @@
-﻿@using MvcForum.Web.Application.ExtensionMethods
+﻿@using MvcForum.Core.ExtensionMethods
+@using MvcForum.Web.Application.ExtensionMethods
 @model MvcForum.Web.ViewModels.Category.CategoryViewModel
 
-@if (!Model.Permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
+@if (!Model.Permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
 {
     <div class="categoryrow">
 
@@ -19,7 +20,7 @@
         }
         else
         {
-            <p>@Html.Raw(AppHelpers.ConvertPostContent(Model.Category.Description))</p>
+            <p>@Html.Raw(Model.Category.Description.ConvertPostContent())</p>
         }
 
         <div class="row categoryrowfooter">

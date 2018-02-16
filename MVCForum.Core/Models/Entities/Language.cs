@@ -2,9 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using Interfaces;
     using Utilities;
 
-    public partial class Language : Entity
+    public partial class Language : IBaseEntity
     {
         public Language()
         {

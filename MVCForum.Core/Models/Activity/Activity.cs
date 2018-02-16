@@ -2,9 +2,10 @@
 {
     using System;
     using Entities;
+    using Interfaces;
     using Utilities;
 
-    public class Activity : Entity
+    public class Activity : IBaseEntity
     {
         public Activity()
         {

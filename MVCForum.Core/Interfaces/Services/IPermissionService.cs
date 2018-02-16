@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Models.Entities;
 
-    public partial interface IPermissionService
+    public partial interface IPermissionService : IContextService
     {
         IEnumerable<Permission> GetAll();
         Permission Add(Permission permission);

@@ -1,5 +1,5 @@
 ﻿@using MvcForum.Core.Models.Entities
-@model MvcForum.Web.Areas.Admin.ViewModels.ListCategoriesViewModel
+@model MvcForum.Web.ViewModels.Admin.ListCategoriesViewModel
 @{
     var mainCategories = Model.Categories.Where(x => x.ParentCategory == null).ToList();
 }

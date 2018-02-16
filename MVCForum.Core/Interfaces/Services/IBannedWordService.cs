@@ -6,7 +6,7 @@
     using Models.Entities;
     using Models.General;
 
-    public partial interface IBannedWordService
+    public partial interface IBannedWordService : IContextService
     {
         BannedWord Add(BannedWord bannedWord);
         void Delete(BannedWord bannedWord);
@@ -16,5 +16,6 @@
         Task<PaginatedList<BannedWord>> GetAllPaged(string search, int pageIndex, int pageSize);
         string SanitiseBannedWords(string content);
         string SanitiseBannedWords(string content, IList<string> words);
+        bool ContainsStopWords(string content, IList<string> words);
     }
 }

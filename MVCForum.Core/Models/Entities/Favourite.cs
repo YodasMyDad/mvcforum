@@ -1,9 +1,10 @@
 ﻿namespace MvcForum.Core.Models.Entities
 {
     using System;
+    using Interfaces;
     using Utilities;
 
-    public partial class Favourite : Entity
+    public partial class Favourite : IBaseEntity
     {
         public Favourite()
         {

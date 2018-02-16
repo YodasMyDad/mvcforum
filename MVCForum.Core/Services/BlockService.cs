@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using System.Threading.Tasks;
     using Constants;
     using Interfaces;
     using Interfaces.Services;
@@ -9,13 +10,25 @@
 
     public partial class BlockService : IBlockService
     {
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         public BlockService(IMvcForumContext context, ICacheService cacheService)
         {
             _cacheService = cacheService;
             _context = context;
+        }
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         public Block Add(Block block)
@@ -31,8 +44,7 @@
 
         public Block Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.Block.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.Block.FirstOrDefault(x => x.Id == id));
+            return _context.Block.Find(id);
         }
     }
 }

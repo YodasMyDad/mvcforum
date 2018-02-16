@@ -9,7 +9,7 @@
     using Core.Interfaces;
     using Core.Interfaces.Services;
 
-    public class FileController : BaseController
+    public partial class FileController : BaseController
     {
         private readonly ICategoryService _categoryService;
         private readonly IUploadedFileService _uploadedFileService;
@@ -25,7 +25,7 @@
             _categoryService = categoryService;
         }
 
-        public FileResult Download(Guid id)
+        public virtual FileResult Download(Guid id)
         {
             var uploadedFileById = _uploadedFileService.Get(id);
             if (uploadedFileById != null)
@@ -50,7 +50,7 @@
             return null;
         }
 
-        public PartialViewResult ImageUploadTinyMce()
+        public virtual PartialViewResult ImageUploadTinyMce()
         {
             // Testing
             return PartialView();

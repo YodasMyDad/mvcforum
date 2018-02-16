@@ -377,3 +377,4 @@ Members.LogonMicrosoftButton,Microsoft ile giriş
 Search.Results,Kayıt Bulunamadı
 Post.Trusted,Güvenilen
 Post.TrustedUser,Güvenilen Kullanıcı
+Spam.FloodTestFailed,You are posting too quickly

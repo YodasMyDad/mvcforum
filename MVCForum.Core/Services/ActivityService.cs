@@ -18,7 +18,7 @@
         private readonly IBadgeService _badgeService;
         private readonly ICacheService _cacheService;
         private readonly ICategoryService _categoryService;
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly ILoggingService _loggingService;
         private readonly IPostService _postService;
         private readonly ITopicService _topicService;
@@ -37,6 +37,23 @@
             _postService = postService;
             _categoryService = categoryService;
             _context = context;
+        }
+
+
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+            _badgeService.RefreshContext(context);
+            _topicService.RefreshContext(context);
+            _postService.RefreshContext(context);
+            _categoryService.RefreshContext(context);
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         // TODO - This query could be a performance problem
@@ -82,9 +99,7 @@
         /// <returns></returns>
         public IEnumerable<Activity> GetDataFieldByGuid(Guid guid)
         {
-            var cacheKey = string.Concat(CacheKeys.Activity.StartsWith, "GetDataFieldByGuid-", guid);
-            return _cacheService.CachePerRequest(cacheKey,
-                () => _context.Activity.Where(x => x.Data.Contains(guid.ToString())));
+            return _context.Activity.Where(x => x.Data.Contains(guid.ToString()));
         }
 
         public async Task<PaginatedList<ActivityBase>> SearchPagedGroupedActivities(string search, int pageIndex,
@@ -105,7 +120,7 @@
 
         public IEnumerable<ActivityBase> GetAll(int howMany)
         {
-            var activities = _context.Activity.Take(howMany);
+            var activities = _context.Activity.Take(howMany).ToList();
             var specificActivities = ConvertToSpecificActivities(activities);
             return specificActivities;
         }
@@ -181,8 +196,7 @@
 
         public Activity Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.Activity.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.Activity.FirstOrDefault(x => x.Id == id));
+            return _context.Activity.Find(id);
         }
 
         public void Delete(Activity item)

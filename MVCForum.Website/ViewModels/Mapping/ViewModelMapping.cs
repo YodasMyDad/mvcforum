@@ -3,10 +3,12 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Admin;
     using Application;
-    using Areas.Admin.ViewModels;
+    using Core;
     using Core.Constants;
     using Core.Interfaces.Services;
+    using Core.Models;
     using Core.Models.Entities;
     using Core.Models.General;
     using Poll;
@@ -16,6 +18,32 @@
     public static class ViewModelMapping
     {
         #region Category
+
+
+        public static Dictionary<CategorySummary, PermissionSet> GetPermissionsForCategories(IEnumerable<CategorySummary> categories,
+            IRoleService roleService, MembershipRole usersRole, bool removeIfDenyAccess = false)
+        {
+            // Permissions
+            // loop through the categories and get the permissions
+            var permissions = new Dictionary<CategorySummary, PermissionSet>();
+            foreach (var summary in categories)
+            {
+                var permissionSet = roleService.GetPermissions(summary.Category, usersRole);
+
+                // Should we add if deny access is ticked
+                if (removeIfDenyAccess)
+                {
+                    // See if deny access is ticked
+                    if (permissionSet[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
+                    {
+                        continue;
+                    }
+                }
+
+                permissions.Add(summary, permissionSet);
+            }
+            return permissions;
+        }
 
         public static Dictionary<Category, PermissionSet> GetPermissionsForCategories(IEnumerable<Category> categories,
             IRoleService roleService, MembershipRole usersRole)
@@ -243,8 +271,8 @@
             List<Category> allowedCategories,
             Settings settings,
             IPostService postService,
-            ITopicNotificationService topicNotificationService,
-            IPollAnswerService pollAnswerService,
+            INotificationService topicNotificationService,
+            IPollService pollService,
             IVoteService voteService,
             IFavouriteService favouriteService)
         {
@@ -258,6 +286,12 @@
             // Get all permissions
             var permissions = GetPermissionsForTopics(topics, roleService, usersRole);
 
+            // Get all votes
+            var votesGrouped = voteService.GetVotesByTopicsGroupedIntoPosts(topicIds);
+
+            // Favourites grouped
+            var favouritesGrouped = favouriteService.GetByTopicsGroupedIntoPosts(topicIds);
+
             // Create the view models
             var viewModels = new List<TopicViewModel>();
             foreach (var topic in topics)
@@ -265,8 +299,23 @@
                 var id = topic.Id;
                 var permission = permissions[topic.Category];
                 var topicPosts = groupedPosts.Contains(id) ? groupedPosts[id].ToList() : new List<Post>();
-                viewModels.Add(CreateTopicViewModel(topic, permission, topicPosts, null, null, null, null, loggedOnUser,
-                    settings, topicNotificationService, pollAnswerService, voteService, favouriteService));
+
+                var votes = new Dictionary<Guid, List<Vote>>();
+                if (votesGrouped.ContainsKey(id))
+                {
+                    votes = votesGrouped[id];
+                }
+
+                var favourites = new Dictionary<Guid, List<Favourite>>();
+                if (favouritesGrouped.ContainsKey(id))
+                {
+                    favourites = favouritesGrouped[id];
+                }
+
+                var postIds = topicPosts.Select(x => x.Id).ToList();
+
+                viewModels.Add(CreateTopicViewModel(topic, permission, topicPosts, postIds, null, null, null, null, loggedOnUser,
+                    settings, topicNotificationService, pollService, votes, favourites));
             }
             return viewModels;
         }
@@ -274,22 +323,23 @@
         public static TopicViewModel CreateTopicViewModel(Topic topic,
             PermissionSet permission,
             List<Post> posts,
+            List<Guid> postIds,
             Post starterPost,
             int? pageIndex,
             int? totalCount,
             int? totalPages,
             MembershipUser loggedOnUser,
             Settings settings, 
-            ITopicNotificationService topicNotificationService,
-            IPollAnswerService pollAnswerService,
-            IVoteService voteService,
-            IFavouriteService favouriteService,
+            INotificationService topicNotificationService,
+            IPollService pollService,
+            Dictionary<Guid, List<Vote>> votes,
+            Dictionary<Guid, List<Favourite>> favourites,
             bool getExtendedData = false)
         {
             var userIsAuthenticated = loggedOnUser != null;
 
             // Check for online status
-            var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
+            var date = DateTime.UtcNow.AddMinutes(-Constants.TimeSpanInMinutesToShowMembers);
 
             var viewModel = new TopicViewModel
             {
@@ -300,8 +350,8 @@
                 PageIndex = pageIndex,
                 TotalCount = totalCount,
                 TotalPages = totalPages,
-                LastPostPermaLink = string.Concat(topic.NiceUrl, "?", AppConstants.PostOrderBy, "=",
-                    AppConstants.AllPosts, "#comment-", topic.LastPost.Id),
+                LastPostPermaLink = string.Concat(topic.NiceUrl, "?", Constants.PostOrderBy, "=",
+                    Constants.AllPosts, "#comment-", topic.LastPost.Id),
                 MemberIsOnline = topic.User.LastActivityDate > date
             };
 
@@ -311,18 +361,21 @@
             }
 
             // Get votes for all posts
-            var postIds = posts.Select(x => x.Id).ToList();
             postIds.Add(starterPost.Id);
 
-            // Get all votes by post
-            var votes = voteService.GetVotesByPosts(postIds);
-
-            // Get all favourites for this user
-            var allFavourites = favouriteService.GetByTopic(topic.Id);
-
             // Map the votes
-            var startPostVotes = votes.Where(x => x.Post.Id == starterPost.Id).ToList();
-            var startPostFavs = allFavourites.Where(x => x.Post.Id == starterPost.Id).ToList();
+            var startPostVotes = new List<Vote>();
+            if (votes.ContainsKey(starterPost.Id))
+            {
+                startPostVotes= votes[starterPost.Id];
+            }
+
+            // Map the favourites
+            var startPostFavs = new List<Favourite>();
+            if (favourites.ContainsKey(starterPost.Id))
+            {
+                startPostFavs = favourites[starterPost.Id];
+            }
 
             // Create the starter post viewmodel
             viewModel.StarterPost = CreatePostViewModel(starterPost, startPostVotes, permission, topic, loggedOnUser,
@@ -331,11 +384,11 @@
             // Map data from the starter post viewmodel
             viewModel.VotesUp = startPostVotes.Count(x => x.Amount > 0);
             viewModel.VotesDown = startPostVotes.Count(x => x.Amount < 0);
-            viewModel.Answers = totalCount != null ? (int) totalCount : posts.Count() - 1;
+            viewModel.Answers = totalCount ?? posts.Count - 1;
 
             // Create the ALL POSTS view models
             viewModel.Posts =
-                CreatePostViewModels(posts, votes, permission, topic, loggedOnUser, settings, allFavourites);
+                CreatePostViewModels(posts, votes, permission, topic, loggedOnUser, settings, favourites);
 
             // ########### Full topic need everything   
 
@@ -343,7 +396,7 @@
             {
                 // See if the user has subscribed to this topic or not
                 var isSubscribed = userIsAuthenticated &&
-                                   topicNotificationService.GetByUserAndTopic(loggedOnUser, topic).Any();
+                                   topicNotificationService.GetTopicNotificationsByUserAndTopic(loggedOnUser, topic).Any();
                 viewModel.IsSubscribed = isSubscribed;
 
                 // See if the topic has a poll, and if so see if this user viewing has already voted
@@ -355,10 +408,10 @@
                     viewModel.Poll = new PollViewModel
                     {
                         Poll = topic.Poll,
-                        UserAllowedToVote = permission[SiteConstants.Instance.PermissionVoteInPolls].IsTicked
+                        UserAllowedToVote = permission[ForumConfiguration.Instance.PermissionVoteInPolls].IsTicked
                     };
 
-                    var answers = pollAnswerService.GetAllPollAnswersByPoll(topic.Poll);
+                    var answers = pollService.GetAllPollAnswersByPoll(topic.Poll);
                     if (answers.Any())
                     {
                         var pollvotes = answers.SelectMany(x => x.PollVotes).ToList();
@@ -402,7 +455,7 @@
             }
 
             // Check for online status
-            var date = DateTime.UtcNow.AddMinutes(-AppConstants.TimeSpanInMinutesToShowMembers);
+            var date = DateTime.UtcNow.AddMinutes(-Constants.TimeSpanInMinutesToShowMembers);
 
             return new PostViewModel
             {
@@ -413,7 +466,7 @@
                 AllowedToVote = allowedToVote,
                 MemberHasFavourited = hasFavourited,
                 Favourites = favourites,
-                PermaLink = string.Concat(topic.NiceUrl, "?", AppConstants.PostOrderBy, "=", AppConstants.AllPosts,
+                PermaLink = string.Concat(topic.NiceUrl, "?", Constants.PostOrderBy, "=", Constants.AllPosts,
                     "#comment-", post.Id),
                 MemberIsOnline = post.User.LastActivityDate > date,
                 HasVotedDown = hasVotedDown,
@@ -433,18 +486,16 @@
         /// <param name="settings"></param>
         /// <param name="favourites"></param>
         /// <returns></returns>
-        public static List<PostViewModel> CreatePostViewModels(IEnumerable<Post> posts, List<Vote> votes,
+        public static List<PostViewModel> CreatePostViewModels(IEnumerable<Post> posts, Dictionary<Guid, List<Vote>> votes,
             PermissionSet permission, Topic topic, MembershipUser loggedOnUser, Settings settings,
-            List<Favourite> favourites)
+            Dictionary<Guid, List<Favourite>> favourites)
         {
             var viewModels = new List<PostViewModel>();
-            var groupedVotes = votes.ToLookup(x => x.Post.Id);
-            var groupedFavourites = favourites.ToLookup(x => x.Post.Id);
             foreach (var post in posts)
             {
                 var id = post.Id;
-                var postVotes = groupedVotes.Contains(id) ? groupedVotes[id].ToList() : new List<Vote>();
-                var postFavs = groupedFavourites.Contains(id) ? groupedFavourites[id].ToList() : new List<Favourite>();
+                var postVotes = votes.ContainsKey(id) ? votes[id] : new List<Vote>();
+                var postFavs = favourites.ContainsKey(id) ? favourites[id] : new List<Favourite>();
                 viewModels.Add(
                     CreatePostViewModel(post, postVotes, permission, topic, loggedOnUser, settings, postFavs));
             }
@@ -461,20 +512,18 @@
         /// <param name="settings"></param>
         /// <param name="favourites"></param>
         /// <returns></returns>
-        public static List<PostViewModel> CreatePostViewModels(IEnumerable<Post> posts, List<Vote> votes,
+        public static List<PostViewModel> CreatePostViewModels(IEnumerable<Post> posts, Dictionary<Guid, List<Vote>> votes,
             Dictionary<Category, PermissionSet> permissions, MembershipUser loggedOnUser, Settings settings,
-            List<Favourite> favourites)
+            Dictionary<Guid, List<Favourite>> favourites)
         {
             var viewModels = new List<PostViewModel>();
-            var groupedVotes = votes.ToLookup(x => x.Post.Id);
-            var groupedFavourites = favourites.ToLookup(x => x.Post.Id);
             foreach (var post in posts)
             {
                 var id = post.Id;
                 var topic = post.Topic;
                 var permission = permissions[topic.Category];
-                var postVotes = groupedVotes.Contains(id) ? groupedVotes[id].ToList() : new List<Vote>();
-                var postFavs = groupedFavourites.Contains(id) ? groupedFavourites[id].ToList() : new List<Favourite>();
+                var postVotes = votes.ContainsKey(id) ? votes[id] : new List<Vote>();
+                var postFavs = favourites.ContainsKey(id) ? favourites[id] : new List<Favourite>();
                 viewModels.Add(
                     CreatePostViewModel(post, postVotes, permission, topic, loggedOnUser, settings, postFavs));
             }

@@ -134,15 +134,15 @@
 
         #region Types
 
-        public Dictionary<string, string> GetTypes()
+        public Dictionary<string, string> GetPlugins()
         {
-            const string key = "SiteTypes";
+            const string key = "Plugins";
             var siteConfig = _cacheService.Get<Dictionary<string, string>>(key);
             if (siteConfig == null)
             {
                 siteConfig = new Dictionary<string, string>();
                 var root = SiteConfig.SiteConfig.Instance.GetSiteConfig();
-                var nodes = root?.SelectNodes("/forum/types/type");
+                var nodes = root?.SelectNodes("/forum/plugins/plugin");
                 if (nodes != null)
                 {
                     foreach (XmlNode node in nodes)

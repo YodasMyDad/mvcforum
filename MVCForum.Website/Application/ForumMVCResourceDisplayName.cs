@@ -1,9 +1,10 @@
 ﻿namespace MvcForum.Web.Application
 {
     using System.ComponentModel;
-    using System.Web.Mvc;
     using Core.Interfaces;
     using Core.Interfaces.Services;
+    using Core.Ioc;
+    using Unity;
 
     public class ForumMvcResourceDisplayName : DisplayNameAttribute, IModelAttribute
     {
@@ -14,7 +15,7 @@
             : base(resourceKey)
         {
             ResourceKey = resourceKey;
-            _localizationService = DependencyResolver.Current.GetService<ILocalizationService>();
+            _localizationService = UnityHelper.Container.Resolve<ILocalizationService>();
         }
 
         public string ResourceKey { get; set; }

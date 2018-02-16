@@ -21,7 +21,7 @@
         [ForumMvcResourceDisplayName("Topic.Label.TopicTitle")]
         public string Name { get; set; }
 
-        [UIHint(AppConstants.EditorType)]
+        [UIHint(Constants.EditorType)]
         [AllowHtml]
         [StringLength(6000)]
         public string Content { get; set; }
@@ -60,7 +60,7 @@
 
         public List<SelectListItem> Categories { get; set; }
 
-        public IList<PollAnswer> PollAnswers { get; set; }
+        public List<PollAnswer> PollAnswers { get; set; }
 
         [ForumMvcResourceDisplayName("Topic.Label.UploadFiles")]
         public HttpPostedFileBase[] Files { get; set; }

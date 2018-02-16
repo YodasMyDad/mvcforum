@@ -4,16 +4,21 @@
     using System.Collections.Generic;
     using System.Data.Entity;
     using System.Linq;
+    using System.Threading.Tasks;
+    using System.Web;
     using Constants;
-    using Data.Context;
+    using EqualityComparers;
     using Interfaces;
+    using Interfaces.Pipeline;
     using Interfaces.Services;
     using Models.Entities;
     using Models.Enums;
+    using Pipeline;
+    using Reflection;
 
     public partial class MembershipUserPointsService : IMembershipUserPointsService
     {
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly ICacheService _cacheService;
 
         public MembershipUserPointsService(IMvcForumContext context, ICacheService cacheService)
@@ -22,41 +27,77 @@
             _context = context;
         }
 
-        public void Delete(MembershipUserPoints points)
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
         {
-            _context.MembershipUserPoints.Remove(points);
+            _context = context;
         }
 
-        public void Delete(int amount, MembershipUser user)
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
+        public async Task<IPipelineProcess<MembershipUserPoints>> Delete(MembershipUserPoints points)
+        {
+            // Get the pipelines
+            var pointsPipes = ForumConfiguration.Instance.PipelinesPointsDelete;
+
+            // The model to process
+            var piplineModel = new PipelineProcess<MembershipUserPoints>(points);
+
+            // Add extended data
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<MembershipUserPoints>, MembershipUserPoints>(_context);
+
+            // Register the pipes 
+            var allPointsPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<MembershipUserPoints>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in pointsPipes)
+            {
+                if (allPointsPipes.ContainsKey(pipe))
+                {
+                    pipeline.Register(allPointsPipes[pipe]);
+                }
+            }
+
+            return await pipeline.Process(piplineModel);
+        }
+
+        public async Task<IPipelineProcess<MembershipUserPoints>> Delete(int amount, MembershipUser user)
         {
             var points = _context.MembershipUserPoints.Include(x => x.User).FirstOrDefault(x => x.Points == amount && x.User.Id == user.Id);
-            Delete(points);
+            return await Delete(points);
         }
 
-        public void Delete(MembershipUser user, PointsFor type, Guid referenceId)
+        public async Task<IPipelineProcess<MembershipUserPoints>> Delete(MembershipUser user, PointsFor type, Guid referenceId)
         {
             var mp = _context.MembershipUserPoints.Include(x => x.User).Where(x => x.User.Id == user.Id && x.PointsFor == type && x.PointsForId == referenceId);
             var mpoints = new List<MembershipUserPoints>();
             mpoints.AddRange(mp);
-            Delete(mpoints);
+            return await Delete(mpoints);
         }
 
-        public void Delete(PointsFor type, Guid referenceId)
+        public async Task<IPipelineProcess<MembershipUserPoints>> Delete(PointsFor type, Guid referenceId)
         {
             var mp = _context.MembershipUserPoints.Where(x => x.PointsFor == type && x.PointsForId == referenceId);
             var mpoints = new List<MembershipUserPoints>();
             mpoints.AddRange(mp);
-            Delete(mpoints);
+            return await Delete(mpoints);
         }
 
-        public void Delete(MembershipUser user, PointsFor type)
+        public async Task<IPipelineProcess<MembershipUserPoints>> Delete(MembershipUser user, PointsFor type)
         {
             var mp = _context.MembershipUserPoints
                             .Include(x => x.User)
                             .Where(x => x.User.Id == user.Id && x.PointsFor == type);
             var mpoints = new List<MembershipUserPoints>();
             mpoints.AddRange(mp);
-            Delete(mpoints);
+            return await Delete(mpoints);
         }
 
         /// <summary>
@@ -67,16 +108,9 @@
         /// <returns></returns>
         public IEnumerable<MembershipUserPoints> GetByUser(MembershipUser user, bool removeTracking = true)
         {
-            var cacheKey = string.Concat(CacheKeys.MembershipUserPoints.StartsWith, "GetByUser-", user.Id, "-", removeTracking);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
-                var users = _context.MembershipUserPoints.Include(x => x.User).Where(x => x.User.Id == user.Id);
-                if (removeTracking)
-                {
-                    return users.AsNoTracking();
-                }
-                return users;
-            });
+
+            var users = _context.MembershipUserPoints.Include(x => x.User).Where(x => x.User.Id == user.Id);
+            return removeTracking ? users.AsNoTracking() : users;
         }
 
         /// <summary>
@@ -84,32 +118,33 @@
         /// </summary>
         /// <param name="points"></param>
         /// <returns></returns>
-        public MembershipUserPoints Add(MembershipUserPoints points)
+        public async Task<IPipelineProcess<MembershipUserPoints>> Add(MembershipUserPoints points)
         {
-            if (points.Points != 0)
+            // Get the pipelines
+            var pointsPipes = ForumConfiguration.Instance.PipelinesPointsCreate;
+
+            // The model to process
+            var piplineModel = new PipelineProcess<MembershipUserPoints>(points);
+
+            // Add extended data
+            piplineModel.ExtendedData.Add(Constants.ExtendedDataKeys.Username, HttpContext.Current.User.Identity.Name);
+
+            // Get instance of the pipeline to use
+            var pipeline = new Pipeline<IPipelineProcess<MembershipUserPoints>, MembershipUserPoints>(_context);
+
+            // Register the pipes 
+            var allPointsPipes = ImplementationManager.GetInstances<IPipe<IPipelineProcess<MembershipUserPoints>>>();
+
+            // Loop through the pipes and add the ones we want
+            foreach (var pipe in pointsPipes)
             {
-                // Add Date
-                points.DateAdded = DateTime.UtcNow;
-
-                // Check this point has not already been awarded
-                var canAddPoints = true;
-
-                // Check to see if this has an id
-                if (points.PointsForId != null)
+                if (allPointsPipes.ContainsKey(pipe))
                 {
-                    var alreadyHasThisPoint = GetByUser(points.User).Any(x => x.PointsFor == points.PointsFor && x.PointsForId == points.PointsForId);
-                    canAddPoints = (alreadyHasThisPoint == false);
-                }
-
-                // If they can ad points let them
-                if (canAddPoints)
-                {
-                    return _context.MembershipUserPoints.Add(points);
+                    pipeline.Register(allPointsPipes[pipe]);
                 }
             }
 
-            // If not just return the same one back
-            return points;
+            return await pipeline.Process(piplineModel);
         }
 
         /// <summary>
@@ -119,26 +154,28 @@
         /// <returns></returns>
         public Dictionary<MembershipUser, int> GetCurrentWeeksPoints(int? amountToTake)
         {
-            var cacheKey = string.Concat(CacheKeys.MembershipUserPoints.StartsWith, "GetCurrentWeeksPoints-", amountToTake);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
 
-                amountToTake = amountToTake ?? int.MaxValue;
-                var date = DateTime.UtcNow;
-                var start = date.Date.AddDays(-(int)date.DayOfWeek);
-                var end = start.AddDays(7);
+            var comparer = new EntityEqualityComparer<MembershipUser>();
 
-                var results = _context.MembershipUserPoints
-                    .Include(x => x.User)
-                    .Where(x => x.DateAdded >= start && x.DateAdded < end)
-                    .ToList();
+            amountToTake = amountToTake ?? int.MaxValue;
+            var date = DateTime.UtcNow;
+            var start = date.Date.AddDays(-(int)date.DayOfWeek);
+            var end = start.AddDays(7);
 
-                return results.GroupBy(x => x.User)
-                            .ToDictionary(x => x.Key, x => x.Select(p => p.Points).Sum())
-                            .OrderByDescending(x => x.Value)
-                            .Take((int)amountToTake)
-                            .ToDictionary(x => x.Key, x => x.Value);
-            });
+            // We tolist here as GroupBy is expensive operation on the DB with EF
+            var points = _context.MembershipUserPoints.AsNoTracking()
+                .Include(x => x.User)
+                .Where(x => x.DateAdded >= start && x.DateAdded < end).ToList();
+
+            return points.GroupBy(x => x.User, comparer)
+                    .Select(x => new
+                    {
+                        User = x.Key,
+                        Points = x.Select(p => p.Points).Sum()
+                    })
+                    .OrderByDescending(x => x.Points)
+                    .Take((int)amountToTake)
+                    .ToDictionary(x => x.User, x => x.Points);
         }
 
         /// <summary>
@@ -148,23 +185,26 @@
         /// <returns></returns>
         public Dictionary<MembershipUser, int> GetThisYearsPoints(int? amountToTake)
         {
-            var cacheKey = string.Concat(CacheKeys.MembershipUserPoints.StartsWith, "GetThisYearsPoints-", amountToTake);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
-                amountToTake = amountToTake ?? int.MaxValue;
-                var thisYear = DateTime.UtcNow.Year;
+            var comparer = new EntityEqualityComparer<MembershipUser>();
 
-                var results = _context.MembershipUserPoints
-                    .Include(x => x.User)
-                    .Where(x => x.DateAdded.Year == thisYear)
-                    .ToList();
+            amountToTake = amountToTake ?? int.MaxValue;
+            var thisYear = DateTime.UtcNow.Year;
 
-                return results.GroupBy(x => x.User)
-                            .ToDictionary(x => x.Key, x => x.Select(p => p.Points).Sum())
-                            .OrderByDescending(x => x.Value)
-                            .Take((int)amountToTake)
-                            .ToDictionary(x => x.Key, x => x.Value);
-            });
+            // We tolist here as GroupBy is expensive operation on the DB with EF
+            var points = _context.MembershipUserPoints.AsNoTracking()
+                .Include(x => x.User)
+                .Where(x => x.DateAdded.Year == thisYear)
+                .ToList();
+
+            return points.GroupBy(x => x.User, comparer)
+                .Select(x => new
+                {
+                    User = x.Key,
+                    Points = x.Select(p => p.Points).Sum()
+                })
+                .OrderByDescending(x => x.Points)
+                .Take((int)amountToTake)
+                .ToDictionary(x => x.User, x => x.Points);
         }
 
         /// <summary>
@@ -174,40 +214,42 @@
         /// <returns></returns>
         public Dictionary<MembershipUser, int> GetAllTimePoints(int? amountToTake)
         {
-            var cacheKey = string.Concat(CacheKeys.MembershipUserPoints.StartsWith, "GetAllTimePoints-", amountToTake);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
-                amountToTake = amountToTake ?? int.MaxValue;
+            var comparer = new EntityEqualityComparer<MembershipUser>();
 
-                var results = _context.MembershipUserPoints
-                    .Include(x => x.User)
-                    .ToList();
+            amountToTake = amountToTake ?? int.MaxValue;
 
-                return results.GroupBy(x => x.User)
-                            .ToDictionary(x => x.Key, x => x.Select(p => p.Points).Sum())
-                            .OrderByDescending(x => x.Value)
-                            .Take((int)amountToTake)
-                            .ToDictionary(x => x.Key, x => x.Value);
-            });
+            var points = _context.MembershipUserPoints.AsNoTracking()
+                .Include(x => x.User).ToList();
+
+            return points.GroupBy(x => x.User, comparer)
+                .Select(x => new
+                {
+                    User = x.Key,
+                    Points = x.Select(p => p.Points).Sum()
+                })
+                .OrderByDescending(x => x.Points)
+                .Take((int)amountToTake)
+                .ToDictionary(x => x.User, x => x.Points);
         }
 
         public Dictionary<MembershipUser, int> GetAllTimePointsNegative(int? amountToTake)
         {
-            var cacheKey = string.Concat(CacheKeys.MembershipUserPoints.StartsWith, "GetAllTimePointsNegative-", amountToTake);
-            return _cacheService.CachePerRequest(cacheKey, () =>
-            {
-                amountToTake = amountToTake ?? int.MaxValue;
+            var comparer = new EntityEqualityComparer<MembershipUser>();
 
-                var results = _context.MembershipUserPoints
-                            .Include(x => x.User)
-                            .ToList();
+            amountToTake = amountToTake ?? int.MaxValue;
 
-                return results.GroupBy(x => x.User)
-                            .ToDictionary(x => x.Key, x => x.Select(p => p.Points).Sum())
-                            .OrderBy(x => x.Value)
-                            .Take((int)amountToTake)
-                            .ToDictionary(x => x.Key, x => x.Value);
-            });
+            var points = _context.MembershipUserPoints.AsNoTracking()
+                .Include(x => x.User).ToList();
+
+            return points.GroupBy(x => x.User, comparer)
+                .Select(x => new
+                {
+                    User = x.Key,
+                    Points = x.Select(p => p.Points).Sum()
+                })
+                .OrderBy(x => x.Points)
+                .Take((int)amountToTake)
+                .ToDictionary(x => x.User, x => x.Points);
         }
 
         public bool SyncUserPoints(MembershipUser user)
@@ -231,22 +273,30 @@
 
         public MembershipUserPoints Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.MembershipUserPoints.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.MembershipUserPoints.FirstOrDefault(x => x.Id == id));
+            return _context.MembershipUserPoints.FirstOrDefault(x => x.Id == id);
         }
 
         public int UserPoints(MembershipUser user)
         {
-            var cacheKey = string.Concat(CacheKeys.MembershipUserPoints.StartsWith, "UserPoints-", user.Id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.MembershipUserPoints.Include(x => x.User).AsNoTracking().Where(x => x.User.Id == user.Id).Sum(x => x.Points));
+            return _context.MembershipUserPoints.AsNoTracking().Include(x => x.User).AsNoTracking().Where(x => x.User.Id == user.Id).Sum(x => x.Points);
         }
 
-        public void Delete(IEnumerable<MembershipUserPoints> points)
+        public async Task<IPipelineProcess<MembershipUserPoints>> Delete(IEnumerable<MembershipUserPoints> points)
         {
-            foreach (var membershipUserPoint in points)
+            if (points != null)
             {
-                _context.MembershipUserPoints.Remove(membershipUserPoint);
+                IPipelineProcess<MembershipUserPoints> result = null;
+                foreach (var membershipUserPoint in points)
+                {
+                    result = await Delete(membershipUserPoint);
+                    if (!result.Successful)
+                    {
+                        return result;
+                    }
+                }
+                return result;
             }
+            return null;
         }
     }
 }

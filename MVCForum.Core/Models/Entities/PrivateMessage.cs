@@ -1,9 +1,10 @@
 ﻿namespace MvcForum.Core.Models.Entities
 {
     using System;
+    using Interfaces;
     using Utilities;
 
-    public partial class PrivateMessage : Entity
+    public partial class PrivateMessage : IBaseEntity
     {
         public PrivateMessage()
         {

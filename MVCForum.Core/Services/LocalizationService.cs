@@ -24,7 +24,7 @@
         private readonly ILoggingService _loggingService;
         private readonly ICacheService _cacheService;
         private Language _currentLanguage;
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly Dictionary<string, string> _perRequestLanguageStrings;
 
         /// <summary>
@@ -43,6 +43,18 @@
             _perRequestLanguageStrings = ResourceKeysByLanguage(CurrentLanguage);
         }
 
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+            _settingsService.RefreshContext(context);
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
+        }
 
         #region Sanitizing
 
@@ -87,7 +99,7 @@
                     $"Unable to update resource with key {resourceKey} for language {languageId}. No resource found.");
             }
             localeStringResource.ResourceValue = StringUtils.SafePlainText(newValue);
-            _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
+            _cacheService.ClearStartsWith(Constants.LocalisationCacheName);
         }
 
         /// <summary>
@@ -132,7 +144,7 @@
             var result = _context.LocaleResourceKey.Add(newLocaleResourceKey);
 
             // Clear hard cache for Languages
-            _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
+            _cacheService.ClearStartsWith(Constants.LocalisationCacheName);
 
             return result;
         }
@@ -166,7 +178,7 @@
             }
 
             language = SanitizeLanguage(language);
-            _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
+            _cacheService.ClearStartsWith(Constants.LocalisationCacheName);
             _context.Language.Add(language);
         }
 
@@ -184,7 +196,7 @@
             };
 
             Add(language);
-            _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
+            _cacheService.ClearStartsWith(Constants.LocalisationCacheName);
             return language;
         }
 
@@ -293,7 +305,7 @@
             }
 
             localeStringResourceKey.Name = StringUtils.SafePlainText(newName);
-            _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
+            _cacheService.ClearStartsWith(Constants.LocalisationCacheName);
         }
 
         public async Task<PaginatedList<LocaleStringResource>> SearchResourceValuesForKey(Guid languageId, string search, int pageIndex, int pageSize)
@@ -369,7 +381,7 @@
                     if (HttpContext.Current != null)
                     {
                         // Check for cookie, as the user may have switched the language from the deafult one
-                        var languageCooke = HttpContext.Current.Request.Cookies[AppConstants.LanguageIdCookieName];
+                        var languageCooke = HttpContext.Current.Request.Cookies[Constants.LanguageIdCookieName];
                         if (languageCooke != null)
                         {
                             // See if it's the same language as already set
@@ -511,7 +523,7 @@
         /// <returns></returns>
         public Dictionary<string, string> ResourceKeysByLanguage(Language language)
         {
-            var cacheKey = string.Concat(AppConstants.LanguageStrings, language.Id);
+            var cacheKey = string.Concat(Constants.LanguageStrings, language.Id);
             var cachedResourceKeys = _cacheService.Get<Dictionary<string, string>>(cacheKey);
             if (cachedResourceKeys == null)
             {
@@ -652,7 +664,7 @@
 
                 language.LocaleStringResources.Clear();
                 _context.Language.Remove(language);
-                _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
+                _cacheService.ClearStartsWith(Constants.LocalisationCacheName);
             }
             catch (Exception ex)
             {
@@ -671,7 +683,7 @@
             {
                 // Delete the key and its values
                 DeleteResourceKey(resourceKey);
-                _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
+                _cacheService.ClearStartsWith(Constants.LocalisationCacheName);
 
             }
             catch (Exception ex)
@@ -826,7 +838,7 @@
                 report.Errors.Add(new CsvErrorWarning { ErrorWarningType = CsvErrorWarningType.GeneralError, Message = ex.Message });
             }
 
-            _cacheService.ClearStartsWith(AppConstants.LocalisationCacheName);
+            _cacheService.ClearStartsWith(Constants.LocalisationCacheName);
             return report;
         }
 

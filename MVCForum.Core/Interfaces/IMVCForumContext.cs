@@ -2,7 +2,7 @@
 {
     using System;
     using System.Data.Entity;
-    using Models;
+    using System.Threading.Tasks;
     using Models.Activity;
     using Models.Entities;
     using Models.General;
@@ -14,6 +14,7 @@
         DbSet<Block> Block { get; set; }
         DbSet<BadgeTypeTimeLastChecked> BadgeTypeTimeLastChecked { get; set; }
         DbSet<Category> Category { get; set; }
+        DbSet<Section> Section { get; set; }
         DbSet<CategoryNotification> CategoryNotification { get; set; }
         DbSet<CategoryPermissionForRole> CategoryPermissionForRole { get; set; }
         DbSet<Language> Language { get; set; }
@@ -42,6 +43,7 @@
         DbSet<PostEdit> PostEdit { get; set; }
 
         int SaveChanges();
+        Task<int> SaveChangesAsync();
 
         void RollBack();
     }

@@ -4,10 +4,12 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using System.Web;
     using System.Web.Mvc;
     using Application;
     using Application.CustomActionResults;
     using Application.ExtensionMethods;
+    using Core;
     using Core.Constants;
     using Core.ExtensionMethods;
     using Core.Interfaces;
@@ -36,27 +38,27 @@
             _activityService = activityService;
         }
 
-        public ActionResult Index()
+        public virtual ActionResult Index()
         {
             return View();
         }
 
-        public ActionResult Leaderboard()
+        public virtual ActionResult Leaderboard()
         {
             return View();
         }
 
-        public ActionResult Following()
+        public virtual ActionResult Following()
         {
             return View();
         }
 
-        public ActionResult PostedIn()
+        public virtual ActionResult PostedIn()
         {
             return View();
         }
 
-        public ActionResult TermsAndConditions()
+        public virtual ActionResult TermsAndConditions()
         {
             var settings = SettingsService.GetSettings();
             var viewModel = new TermsAndConditionsViewModel
@@ -68,7 +70,7 @@
         }
 
         [HttpPost]
-        public ActionResult TermsAndConditions(TermsAndConditionsViewModel viewmodel)
+        public virtual ActionResult TermsAndConditions(TermsAndConditionsViewModel viewmodel)
         {
             if (ModelState.IsValid)
             {
@@ -92,7 +94,7 @@
             return View(viewmodel);
         }
 
-        public async Task<ActionResult> Activity(int? p)
+        public virtual async Task<ActionResult> Activity(int? p)
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
@@ -117,13 +119,13 @@
         }
 
         [OutputCache(Duration = (int) CacheTimes.TwoHours)]
-        public ActionResult LatestRss()
+        public virtual ActionResult LatestRss()
         {
             var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
             var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
 
             // Allowed Categories for a guest - As that's all we want latest RSS to show
-            var guestRole = RoleService.GetRole(AppConstants.GuestRoleName);
+            var guestRole = RoleService.GetRole(Constants.GuestRoleName);
             var allowedCategories = _categoryService.GetAllowedCategories(guestRole);
 
             // get an rss lit ready
@@ -152,7 +154,7 @@
                 var permission = permissions[topic.Category];
 
                 // Add only topics user has permission to
-                if (!permission[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
+                if (!permission[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
                 {
                     if (topic.Posts.Any())
                     {
@@ -176,7 +178,7 @@
         }
 
         [OutputCache(Duration = (int) CacheTimes.TwoHours)]
-        public ActionResult ActivityRss()
+        public virtual ActionResult ActivityRss()
         {
             // get an rss lit ready
             var rssActivities = new List<RssItem>();
@@ -211,7 +213,7 @@
                         Description = string.Empty,
                         Title = LocalizationService.GetResourceString("Activity.UserJoined"),
                         PublishedDate = memberJoinedActivity.ActivityMapped.Timestamp,
-                        RssImage = memberJoinedActivity.User.MemberImage(SiteConstants.Instance.GravatarPostSize),
+                        RssImage = memberJoinedActivity.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize),
                         Link = activityLink
                     });
                 }
@@ -223,7 +225,7 @@
                         Description = string.Empty,
                         Title = LocalizationService.GetResourceString("Activity.ProfileUpdated"),
                         PublishedDate = profileUpdatedActivity.ActivityMapped.Timestamp,
-                        RssImage = profileUpdatedActivity.User.MemberImage(SiteConstants.Instance.GravatarPostSize),
+                        RssImage = profileUpdatedActivity.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize),
                         Link = activityLink
                     });
                 }
@@ -234,10 +236,10 @@
         }
 
         [OutputCache(Duration = (int) CacheTimes.TwoHours)]
-        public ActionResult GoogleSitemap()
+        public virtual ActionResult GoogleSitemap()
         {
             // Allowed Categories for a guest
-            var guestRole = RoleService.GetRole(AppConstants.GuestRoleName);
+            var guestRole = RoleService.GetRole(Constants.GuestRoleName);
             var allowedCategories = _categoryService.GetAllowedCategories(guestRole);
 
             // Get all topics that a guest has access to
@@ -264,7 +266,7 @@
         }
 
         [OutputCache(Duration = (int) CacheTimes.TwoHours)]
-        public ActionResult GoogleMemberSitemap()
+        public virtual ActionResult GoogleMemberSitemap()
         {
             // get all members profiles
             var members = MembershipService.GetAll();
@@ -290,10 +292,10 @@
         }
 
         [OutputCache(Duration = (int) CacheTimes.TwoHours)]
-        public ActionResult GoogleCategorySitemap()
+        public virtual ActionResult GoogleCategorySitemap()
         {
             // Allowed Categories for a guest
-            var guestRole = RoleService.GetRole(AppConstants.GuestRoleName);
+            var guestRole = RoleService.GetRole(Constants.GuestRoleName);
             var allowedCategories = _categoryService.GetAllowedCategories(guestRole);
 
             // Sitemap holder
@@ -314,7 +316,11 @@
                 sitemap.Add(sitemapEntry);
             }
 
+            //HttpResponse.RemoveOutputCacheItem(Url.Action("details", "product", new { id = 1234 }));
+
             return new GoogleSitemapResult(sitemap);
         }
+
+        
     }
 }

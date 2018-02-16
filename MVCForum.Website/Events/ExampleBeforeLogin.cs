@@ -2,11 +2,12 @@
 {
     using System;
     using System.Web;
-    using System.Web.Mvc;
     using System.Web.Security;
     using Core.Events;
     using Core.Interfaces.Events;
     using Core.Interfaces.Services;
+    using Core.Ioc;
+    using Unity;
 
     // In this example I am adding an event to intercept when someone tries to login
     // The example below would be for a single sign on solution - Where you verify the user against a seperate 
@@ -39,7 +40,7 @@
             // Get membership service - you must create the member in MvcForum if they don't exist
             // Or you'll get an error when they have been redirected to the home page and logged in
             // this is pretty simple to do once we have the member service
-            var memberService = DependencyResolver.Current.GetService<IMembershipService>();
+            var memberService = UnityHelper.Container.Resolve<IMembershipService>();
             var user = memberService.GetUser(e.UserName);
             if (user == null)
             {

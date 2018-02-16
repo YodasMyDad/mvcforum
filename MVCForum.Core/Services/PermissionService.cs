@@ -3,8 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
+    using System.Web;
     using Constants;
-    using Data.Context;
     using Interfaces;
     using Interfaces.Services;
     using Models.Entities;
@@ -12,7 +13,7 @@
 
     public partial class PermissionService : IPermissionService
     {
-        private readonly IMvcForumContext _context;
+        private IMvcForumContext _context;
         private readonly ICategoryPermissionForRoleService _categoryPermissionForRoleService;
         private readonly ICacheService _cacheService;
 
@@ -23,17 +24,35 @@
             _context = context;
         }
 
+        /// <inheritdoc />
+        public void RefreshContext(IMvcForumContext context)
+        {
+            _context = context;
+            _categoryPermissionForRoleService.RefreshContext(context);
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
         /// <summary>
         /// Get all permissions
         /// </summary>
         /// <returns></returns>
         public IEnumerable<Permission> GetAll()
         {
-            var cacheKey = string.Concat(CacheKeys.Permission.StartsWith, "GetAll");
-            return _cacheService.CachePerRequest(cacheKey, () => _context.Permission
-                                                                            .AsNoTracking()
-                                                                            .OrderBy(x => x.Name)
-                                                                            .ToList());
+            // Request Cache these as it gets called quite a lot
+            var allPermissions = HttpContext.Current.Items["AllPermissions"];
+            if (allPermissions == null)
+            {
+                HttpContext.Current.Items["AllPermissions"] = _context.Permission
+                    .AsNoTracking()
+                    .OrderBy(x => x.Name)
+                    .ToList();
+            }
+            return (IEnumerable<Permission>)HttpContext.Current.Items["AllPermissions"];
         }
 
         /// <summary>
@@ -68,8 +87,8 @@
         /// <returns></returns>
         public Permission Get(Guid id)
         {
-            var cacheKey = string.Concat(CacheKeys.Permission.StartsWith, "Get-", id);
-            return _cacheService.CachePerRequest(cacheKey, () => _context.Permission.FirstOrDefault(x => x.Id == id));
+
+            return _context.Permission.FirstOrDefault(x => x.Id == id);
         }
     }
 }

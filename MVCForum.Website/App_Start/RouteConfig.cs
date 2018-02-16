@@ -2,6 +2,7 @@
 {
     using System.Web.Mvc;
     using System.Web.Routing;
+    using Core;
     using Core.Constants;
 
     public class RouteConfig
@@ -19,13 +20,13 @@
 
             routes.MapRoute(
                 "categoryUrls", // Route name
-                string.Concat(SiteConstants.Instance.CategoryUrlIdentifier, "/{slug}"), // URL with parameters
+                string.Concat(ForumConfiguration.Instance.CategoryUrlIdentifier, "/{slug}"), // URL with parameters
                 new {controller = "Category", action = "Show", slug = UrlParameter.Optional} // Parameter defaults
             );
 
             routes.MapRoute(
                 "categoryRssUrls", // Route name
-                string.Concat(SiteConstants.Instance.CategoryUrlIdentifier, "/rss/{slug}"), // URL with parameters
+                string.Concat(ForumConfiguration.Instance.CategoryUrlIdentifier, "/rss/{slug}"), // URL with parameters
                 new
                 {
                     controller = "Category",
@@ -36,19 +37,19 @@
 
             routes.MapRoute(
                 "topicUrls", // Route name
-                string.Concat(SiteConstants.Instance.TopicUrlIdentifier, "/{slug}"), // URL with parameters
+                string.Concat(ForumConfiguration.Instance.TopicUrlIdentifier, "/{slug}"), // URL with parameters
                 new {controller = "Topic", action = "Show", slug = UrlParameter.Optional} // Parameter defaults
             );
 
             routes.MapRoute(
                 "memberUrls", // Route name
-                string.Concat(SiteConstants.Instance.MemberUrlIdentifier, "/{slug}"), // URL with parameters
+                string.Concat(ForumConfiguration.Instance.MemberUrlIdentifier, "/{slug}"), // URL with parameters
                 new {controller = "Members", action = "GetByName", slug = UrlParameter.Optional} // Parameter defaults
             );
 
             routes.MapRoute(
                 "tagUrls", // Route name
-                string.Concat(SiteConstants.Instance.TagsUrlIdentifier, "/{tag}"), // URL with parameters
+                string.Concat(ForumConfiguration.Instance.TagsUrlIdentifier, "/{tag}"), // URL with parameters
                 new {controller = "Topic", action = "TopicsByTag", tag = UrlParameter.Optional} // Parameter defaults
             );
 

@@ -7,30 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcForum.Web", "MVCForum.We
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcForum.Core", "MVCForum.Core\MvcForum.Core.csproj", "{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MVCForum.Badges", "MVCForum.Badges", "{3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.AuthorMarkAsSolution", "MVCForum.Badges\Badge.AuthorMarkAsSolution\Badge.AuthorMarkAsSolution.csproj", "{C90E299C-58D3-4AFA-90B8-CB39AA4A1E99}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.Grouch", "MVCForum.Badges\Badge.Grouch\Badge.Grouch.csproj", "{83F9F278-D2BE-479A-A398-B36779BE3348}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.JediMaster", "MVCForum.Badges\Badge.JediMaster\Badge.JediMaster.csproj", "{7DFF8353-E247-4840-A9A5-9E81114276B5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.MemberForAYear", "MVCForum.Badges\Badge.MemberForAYear\Badge.MemberForAYear.csproj", "{168911C2-86D0-4E12-A675-7A035BAB9DD0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.Padawan", "MVCForum.Badges\Badge.Padawan\Badge.Padawan.csproj", "{A891FF9C-83AE-40DB-9FEC-552C209F953B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.ThousandPoints", "MVCForum.Badges\Badge.ThousandPoints\Badge.ThousandPoints.csproj", "{BA3AC605-745E-4DE4-A1BD-08F6D63757DB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.Photogenic", "MVCForum.Badges\Badge.Photogenic\Badge.Photogenic.csproj", "{23F1A8BC-856A-4F67-AE6B-1A79230C5C3C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.PosterMarkAsSolution", "MVCForum.Badges\Badge.PosterMarkAsSolution\Badge.PosterMarkAsSolution.csproj", "{9CA6FD3E-67B3-456B-B6F5-38C04E18259F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.PosterVoteUp", "MVCForum.Badges\Badge.PosterVoteUp\Badge.PosterVoteUp.csproj", "{327A7FEB-AEFE-47D9-AA0F-C08835E26A3A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.PostMentionsUmbraco", "MVCForum.Badges\Badge.PostMentionsUmbraco\Badge.PostMentionsUmbraco.csproj", "{330A777B-FE88-4CF5-9583-6693547A8F1C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.UserVoteUp", "MVCForum.Badges\Badge.UserVoteUp\Badge.UserVoteUp.csproj", "{ABE6051B-56D8-4867-84DF-43B6AD04A562}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{162E9BD7-CEAF-4FB7-B72F-CC254626D1FC}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
@@ -38,18 +14,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{162E9B
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.FavouriteFirstPost", "MVCForum.Badges\Badge.FavouriteFirstPost\Badge.FavouriteFirstPost.csproj", "{9C923D92-4963-44FE-B75B-0A8AAAB9B689}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.YourPostFavourited", "MVCForum.Badges\Badge.YourPostFavourited\Badge.YourPostFavourited.csproj", "{47D979DB-08A8-4C44-B21F-4B738E8334A2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Badge.YourPostFavouritedTenTimes", "MVCForum.Badges\Badge.YourPostFavouritedTenTimes\Badge.YourPostFavouritedTenTimes.csproj", "{097883D7-6C3E-4944-B2D8-A9CC8A9356F4}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{A1510FC4-74FA-4673-B04F-4BBABE8D7151}"
 	ProjectSection(SolutionItems) = preProject
 		readme.md = readme.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCForumAutomation", "MVCForumAutomation\MVCForumAutomation.csproj", "{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcForum.Plugins", "MvcForum.Plugins\MvcForum.Plugins.csproj", "{
+
+-187F-45E1-BD15-036D7800A7BA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{20AD3D3C-153E-47AC-BA9C-3E4DB876990E} = {20AD3D3C-153E-47AC-BA9C-3E4DB876990E}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -233,25 +210,21 @@ Global
 		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Release|x86.ActiveCfg = Release|Any CPU
 		{ED4F1D0A-A148-4FB4-891A-EB7B6FC54575}.Release|x86.Build.0 = Release|Any CPU
+		{BB39EE58-187F-45E1-BD15-036D7800A7BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB39EE58-187F-45E1-BD15-036D7800A7BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB39EE58-187F-45E1-BD15-036D7800A7BA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BB39EE58-187F-45E1-BD15-036D7800A7BA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BB39EE58-187F-45E1-BD15-036D7800A7BA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BB39EE58-187F-45E1-BD15-036D7800A7BA}.Debug|x86.Build.0 = Debug|Any CPU
+		{BB39EE58-187F-45E1-BD15-036D7800A7BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB39EE58-187F-45E1-BD15-036D7800A7BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB39EE58-187F-45E1-BD15-036D7800A7BA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{BB39EE58-187F-45E1-BD15-036D7800A7BA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{BB39EE58-187F-45E1-BD15-036D7800A7BA}.Release|x86.ActiveCfg = Release|Any CPU
+		{BB39EE58-187F-45E1-BD15-036D7800A7BA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{C90E299C-58D3-4AFA-90B8-CB39AA4A1E99} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
-		{83F9F278-D2BE-479A-A398-B36779BE3348} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
-		{7DFF8353-E247-4840-A9A5-9E81114276B5} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
-		{168911C2-86D0-4E12-A675-7A035BAB9DD0} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
-		{A891FF9C-83AE-40DB-9FEC-552C209F953B} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
-		{BA3AC605-745E-4DE4-A1BD-08F6D63757DB} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
-		{23F1A8BC-856A-4F67-AE6B-1A79230C5C3C} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
-		{9CA6FD3E-67B3-456B-B6F5-38C04E18259F} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
-		{327A7FEB-AEFE-47D9-AA0F-C08835E26A3A} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
-		{330A777B-FE88-4CF5-9583-6693547A8F1C} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
-		{ABE6051B-56D8-4867-84DF-43B6AD04A562} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
-		{9C923D92-4963-44FE-B75B-0A8AAAB9B689} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
-		{47D979DB-08A8-4C44-B21F-4B738E8334A2} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
-		{097883D7-6C3E-4944-B2D8-A9CC8A9356F4} = {3E6DC3D5-3152-415C-B25B-FDF79EF45A7C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {386E92E1-7469-431E-8719-37DD8501EF25}

@@ -2,9 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using Interfaces;
     using Utilities;
 
-    public partial class Poll : ExtendedDataEntity
+    public partial class Poll : ExtendedDataEntity, IBaseEntity
     {
         public Poll()
         {
@@ -16,6 +17,6 @@
         public int? ClosePollAfterDays { get; set; }
 
         public virtual MembershipUser User { get; set; }
-        public virtual IList<PollAnswer> PollAnswers { get; set; } 
+        public virtual List<PollAnswer> PollAnswers { get; set; } 
     }
 }

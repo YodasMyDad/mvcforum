@@ -1,5 +1,5 @@
 ﻿@using MvcForum.Web.Application.ExtensionMethods
-@model MvcForum.Web.Areas.Admin.ViewModels.CategoryViewModel
+@model MvcForum.Web.ViewModels.Admin.CategoryEditViewModel
 
 <div class="form-group">
     @Html.LabelFor(model => model.CategoryColour)
@@ -77,6 +77,13 @@
     @Html.LabelFor(model => model.ParentCategory)
     @Html.DropDownListFor(model => model.ParentCategory, Model.AllCategories, new { @class = "form-control" })
     @Html.ValidationMessageFor(model => model.ParentCategory)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Section)
+    <p class="help-block">Sections only apply to main categories.</p>
+    @Html.DropDownListFor(model => model.Section, Model.AllSections, new { @class = "form-control" })
+    @Html.ValidationMessageFor(model => model.Section)
 </div>
 
 <hr />

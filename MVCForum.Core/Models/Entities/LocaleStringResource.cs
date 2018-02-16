@@ -1,9 +1,10 @@
 ﻿namespace MvcForum.Core.Models.Entities
 {
     using System;
+    using Interfaces;
     using Utilities;
 
-    public partial class LocaleStringResource : Entity
+    public partial class LocaleStringResource : IBaseEntity
     {
         public LocaleStringResource()
         {

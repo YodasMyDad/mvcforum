@@ -8,7 +8,7 @@
     using Core.Models.Entities;
     using ViewModels;
 
-    public class BlockController : BaseController
+    public partial class BlockController : BaseController
     {
         private readonly IBlockService _blockService;
 

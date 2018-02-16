@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Models.Entities;
     using Utilities;
 
     public static class ServiceHelpers
@@ -34,16 +33,13 @@
             return StringUtils.CreateUrl(name, "-");
         }
 
-        public static string GenerateSlug(string stringToSlug, IEnumerable<Entity> similarList, string previousSlug)
+        public static string GenerateSlug(string stringToSlug, List<string> similarSlugs, string previousSlug)
         {
             // url generator
             var slug = CreateUrl(stringToSlug);
-
-            // To list the entities
-            var matchingEntities = similarList.ToList();
                 
             // if the similarList is empty, just return this slug
-            if (!matchingEntities.Any())
+            if (!similarSlugs.Any())
             {
                 return slug;
             }
@@ -51,13 +47,8 @@
             // If the previous slug is null, then it's a newly created Entity
             if (string.IsNullOrWhiteSpace(previousSlug))
             {
-                // Now check another entity doesn't have the same one
-                if (matchingEntities.Any())
-                {
-                    // See if there is only one. And if it matches exactly
-                    // someone else has this, grab all like it and do a count, stick a suffix on
-                    slug = string.Concat(slug, "-", matchingEntities.Count);
-                }
+                // Create the slug
+                slug = MakeSafeSlug(similarSlugs, slug);
             }
             else
             {
@@ -65,14 +56,34 @@
                 if (slug != previousSlug)
                 {
                     // Name/Title has changed
-                    if (matchingEntities.Any())
-                    {
-                        slug = string.Concat(slug, "-", matchingEntities.Count);
-                    }
+                    slug = MakeSafeSlug(similarSlugs, slug);
                 }
             }
 
             return slug;
+        }
+
+        private static string MakeSafeSlug(IReadOnlyCollection<string> similarSlugs, string currentSlug)
+        {
+            // Firstly check to see if the slug matches any of the existing
+            var slugIsUnique = true;
+            foreach (var slug in similarSlugs)
+            {
+                if (currentSlug.ToLower() == slug)
+                {
+                    slugIsUnique = false;
+                    break;
+                }
+            }
+
+            // If this is false then one of the slugs is the same, so append the count
+            if (slugIsUnique == false)
+            {
+                var updatedSlug = $"{currentSlug}-{similarSlugs.Count}";
+                currentSlug = MakeSafeSlug(similarSlugs, updatedSlug);
+            }
+
+            return currentSlug;
         }
 
         #endregion

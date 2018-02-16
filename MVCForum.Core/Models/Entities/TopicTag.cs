@@ -3,9 +3,10 @@
     using System;
     using System.Collections.Generic;
     using Enums;
+    using Interfaces;
     using Utilities;
 
-    public partial class TopicTag : ExtendedDataEntity
+    public partial class TopicTag : ExtendedDataEntity, IBaseEntity
     {
         public TopicTag()
         {

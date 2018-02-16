@@ -1,9 +1,10 @@
 ﻿namespace MvcForum.Core.Models.Entities
 {
     using System;
+    using Interfaces;
     using Utilities;
 
-    public partial class Block : Entity
+    public partial class Block : IBaseEntity
     {
         public Block()
         {

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using System.Threading.Tasks;
     using Hangfire;
     using Interfaces;
     using Interfaces.Services;
@@ -12,7 +13,7 @@
     /// <summary>
     /// A class that deals with recurring jobs and are all called by hangfire
     /// </summary>
-    public class RecurringJobService
+    public partial class RecurringJobService
     {
         private readonly ILoggingService _loggingService;
         private readonly ISettingsService _settingsService;
@@ -29,6 +30,12 @@
             _localizationService = localizationService;
             _context = context;
             _emailService = emailService;
+        }
+
+        /// <inheritdoc />
+        public async Task<int> SaveChanges()
+        {
+            return await _context.SaveChangesAsync();
         }
 
         /// <summary>

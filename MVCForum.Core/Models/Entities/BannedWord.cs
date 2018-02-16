@@ -1,9 +1,10 @@
 ﻿namespace MvcForum.Core.Models.Entities
 {
     using System;
+    using Interfaces;
     using Utilities;
 
-    public partial class BannedWord : Entity
+    public partial class BannedWord : IBaseEntity
     {
         public BannedWord()
         {

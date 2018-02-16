@@ -19,7 +19,7 @@
             _membershipUserPointsService = membershipUserPointsService;
         }
 
-        public PartialViewResult GetThisWeeksTopEarners()
+        public virtual PartialViewResult GetThisWeeksTopEarners()
         {
             if (Request.IsAjaxRequest())
             {
@@ -30,7 +30,7 @@
             return null;
         }
 
-        public PartialViewResult GetThisYearsTopEarners()
+        public virtual PartialViewResult GetThisYearsTopEarners()
         {
             if (Request.IsAjaxRequest())
             {

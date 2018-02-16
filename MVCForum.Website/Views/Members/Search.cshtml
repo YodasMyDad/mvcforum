@@ -59,9 +59,9 @@
         </tbody>
     </table>
 
-    @if (Convert.ToInt32(Model.TotalCount) > SiteConstants.Instance.AdminListPageSize)
+    @if (Convert.ToInt32(Model.TotalCount) > ForumConfiguration.Instance.AdminListPageSize)
     {
-        @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
+        @Html.Pager(Convert.ToInt32(Model.PageIndex), ForumConfiguration.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
     }
 
 

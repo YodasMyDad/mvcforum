@@ -2,9 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using Interfaces;
     using Utilities;
 
-    public partial class LocaleResourceKey : Entity
+    public partial class LocaleResourceKey : IBaseEntity
     {
         public LocaleResourceKey()
         {
