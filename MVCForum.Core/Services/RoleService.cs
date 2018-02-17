@@ -63,18 +63,17 @@
         /// <returns></returns>
         public MembershipRole GetRole(string roleName, bool removeTracking = false)
         {
- 
-                if (removeTracking)
-                {
-                    return _context.MembershipRole
-                        .Include(x => x.CategoryPermissionForRoles.Select(p => p.Permission))
-                        .Include(x => x.CategoryPermissionForRoles.Select(p => p.Category))
-                        .Include(x => x.GlobalPermissionForRole.Select(p => p.Permission))
-                        .AsNoTracking()
-                        .FirstOrDefault(y => y.RoleName.Contains(roleName));
-                }
-                return _context.MembershipRole.FirstOrDefault(x => x.RoleName.Contains(roleName));
-         
+            if (removeTracking)
+            {
+                return _context.MembershipRole
+                    .Include(x => x.CategoryPermissionForRoles.Select(p => p.Permission))
+                    .Include(x => x.CategoryPermissionForRoles.Select(p => p.Category))
+                    .Include(x => x.GlobalPermissionForRole.Select(p => p.Permission))
+                    .AsNoTracking()
+                    .FirstOrDefault(y => y.RoleName.Contains(roleName));
+            }
+
+            return _context.MembershipRole.FirstOrDefault(x => x.RoleName.Contains(roleName));
         }
 
         /// <summary>
