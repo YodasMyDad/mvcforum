@@ -42,7 +42,7 @@
             {
                 return new string(Convert.ToChar(bannedCharactor), word.Length);
             }
-            return string.Empty;
+            return new string(Convert.ToChar("*"), word.Length);
         }
 
         private static string ToRegexPattern(string wildcardSearch)
