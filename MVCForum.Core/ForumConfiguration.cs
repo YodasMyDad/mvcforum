@@ -67,6 +67,8 @@
         public bool IncludeFullPostInEmailNotifications =>
             Convert.ToBoolean(GetConfig("IncludeFullPostInEmailNotifications"));
 
+        public string BannedWordReplaceCharactor => GetConfig("BannedWordReplaceCharactor");
+
         public int PostSecondsWaitBeforeNewPost => Convert.ToInt32(GetConfig("PostSecondsWaitBeforeNewPost"));
 
         /// <summary>
