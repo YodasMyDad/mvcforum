@@ -10,6 +10,7 @@
         IList<MembershipRole> AllRoles();
         void Delete(MembershipRole role);
         MembershipRole GetRole(string rolename, bool removeTracking = false);
+        MembershipRole GetRoleEquals(string roleName, bool removeTracking = false);
         MembershipRole GetRole(Guid id);
         IList<MembershipUser> GetUsersForRole(string roleName);
         MembershipRole CreateRole(MembershipRole role);

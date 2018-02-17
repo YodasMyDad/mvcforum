@@ -56,12 +56,12 @@
         }
 
         /// <summary>
-        /// Get role by name
+        /// Get role by name, returning first role with name containing supplied role name
         /// </summary>
-        /// <param name="rolename"></param>
+        /// <param name="roleName"></param>
         /// <param name="removeTracking">If true, adds AsNoTracking()</param>
         /// <returns></returns>
-        public MembershipRole GetRole(string rolename, bool removeTracking = false)
+        public MembershipRole GetRole(string roleName, bool removeTracking = false)
         {
  
                 if (removeTracking)
@@ -71,10 +71,31 @@
                         .Include(x => x.CategoryPermissionForRoles.Select(p => p.Category))
                         .Include(x => x.GlobalPermissionForRole.Select(p => p.Permission))
                         .AsNoTracking()
-                        .FirstOrDefault(y => y.RoleName.Contains(rolename));
+                        .FirstOrDefault(y => y.RoleName.Contains(roleName));
                 }
-                return _context.MembershipRole.FirstOrDefault(y => y.RoleName.Contains(rolename));
+                return _context.MembershipRole.FirstOrDefault(x => x.RoleName.Contains(roleName));
          
+        }
+
+        /// <summary>
+        /// Get role by name, returning first role with name which equals supplied role name
+        /// </summary>
+        /// <param name="roleName"></param>
+        /// <param name="removeTracking">If true, adds AsNoTracking()</param>
+        /// <returns></returns>
+        public MembershipRole GetRoleEquals(string roleName, bool removeTracking = false)
+        {
+            if (removeTracking)
+            {
+                return _context.MembershipRole
+                    .Include(x => x.CategoryPermissionForRoles.Select(p => p.Permission))
+                    .Include(x => x.CategoryPermissionForRoles.Select(p => p.Category))
+                    .Include(x => x.GlobalPermissionForRole.Select(p => p.Permission))
+                    .AsNoTracking()
+                    .FirstOrDefault(y => y.RoleName == roleName);
+            }
+
+            return _context.MembershipRole.FirstOrDefault(x => x.RoleName == roleName);
         }
 
         /// <summary>
