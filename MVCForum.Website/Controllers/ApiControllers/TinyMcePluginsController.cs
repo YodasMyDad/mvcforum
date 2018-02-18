@@ -39,6 +39,10 @@
             var context = UnityHelper.Container.Resolve<IMvcForumContext>();
             var loggingService = UnityHelper.Container.Resolve<ILoggingService>();
 
+            roleService.RefreshContext(context);
+            uploadService.RefreshContext(context);
+            localizationService.RefreshContext(context);
+            memberService.RefreshContext(context);
 
             try
             {
