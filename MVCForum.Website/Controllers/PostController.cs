@@ -225,7 +225,7 @@
                     Message = LocalizationService.GetResourceString("Report.ReportSent"),
                     MessageType = GenericMessages.success
                 };
-                return View(new ReportPostViewModel { PostId = post.Id, PostCreatorUsername = post.User.UserName });
+                return this.Redirect(post.Topic.NiceUrl);
             }
             return ErrorToHomePage(LocalizationService.GetResourceString("Errors.GenericMessage"));
         }
