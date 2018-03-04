@@ -77,7 +77,7 @@ Favourites.PageTitle,My Favourites
 File.SuccessfullyDeleted,File deleted
 Following.Categories,Categories you are following
 Following.PageTitle,Topics & Categories
-Following.Topics,Topics your are following
+Following.Topics,Topics you are following
 Google.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Google id and secret key in the forum.config
 Home.LatestDiscussions,Latest Discussions
 Home.Rss,Rss
