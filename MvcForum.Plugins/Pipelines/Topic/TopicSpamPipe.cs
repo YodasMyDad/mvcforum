@@ -21,13 +21,16 @@
         private readonly ILocalizationService _localizationService;
         private readonly ISpamService _spamService;
         private readonly ILoggingService _loggingService;
+        private readonly ITopicService _topicService;
 
-        public TopicSpamPipe(IBannedWordService bannedWordService, ILocalizationService localizationService, ISpamService spamService, ILoggingService loggingService)
+        public TopicSpamPipe(IBannedWordService bannedWordService, ILocalizationService localizationService, ISpamService spamService, 
+            ILoggingService loggingService, ITopicService topicService)
         {
             _bannedWordService = bannedWordService;
             _localizationService = localizationService;
             _spamService = spamService;
             _loggingService = loggingService;
+            _topicService = topicService;
         }
 
         /// <inheritdoc />
@@ -113,6 +116,29 @@
 
                 // Topic name
                 input.EntityToProcess.Name = _bannedWordService.SanitiseBannedWords(input.EntityToProcess.Name, bannedWords);
+
+                // Flood Check - Only if we are not editing
+                // Are we in an edit mode
+                var isEdit = input.ExtendedData[Constants.ExtendedDataKeys.IsEdit] as bool? == true;
+                if (!isEdit)
+                {
+                    // Get the Current user from ExtendedData
+                    var username = input.ExtendedData[Constants.ExtendedDataKeys.Username] as string;
+                    var loggedOnUser = await context.MembershipUser.FirstOrDefaultAsync(x => x.UserName == username);
+                    if (loggedOnUser != null)
+                    {
+                        if (!_topicService.PassedTopicFloodTest(input.EntityToProcess.Name, loggedOnUser))
+                        {
+                            input.AddError(_localizationService.GetResourceString("Spam.FloodTestFailed"));
+                            return input;
+                        }
+                    }
+                    else
+                    {
+                        input.AddError("Unable to get user from username");
+                        return input;
+                    }
+                }
 
                 // Sanitise Poll
                 if (input.EntityToProcess.Poll != null && input.EntityToProcess.Poll.PollAnswers.Any())

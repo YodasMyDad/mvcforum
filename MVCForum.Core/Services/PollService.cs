@@ -175,11 +175,11 @@
             }
             else if(originalTopic.Poll != null)
             {
-                // Remove from topic.
-                originalTopic.Poll = null;
-
                 // Now delete the poll
                 Delete(originalTopic.Poll);
+
+                // Remove from topic.
+                originalTopic.Poll = null;
             }
         }
 

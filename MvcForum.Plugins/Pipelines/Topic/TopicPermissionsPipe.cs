@@ -67,13 +67,6 @@
                         var permissions = _roleService.GetPermissions(input.EntityToProcess.Category, loggedOnUsersRole);
                         input.ExtendedData.Add(Constants.ExtendedDataKeys.PermissionSet, permissions);
 
-                        // Flood Check
-                        if (!_topicService.PassedTopicFloodTest(input.EntityToProcess.Name, loggedOnUser))
-                        {
-                            input.AddError(_localizationService.GetResourceString("Spam.FloodTestFailed"));
-                            return input;
-                        }
-
                         // Quick check to see if user is locked out, when logged in
                         if (loggedOnUser.IsLockedOut || loggedOnUser.DisablePosting == true ||
                             !loggedOnUser.IsApproved)

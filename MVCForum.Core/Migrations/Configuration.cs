@@ -8,7 +8,6 @@ namespace MvcForum.Core.Services.Migrations
     using System.Linq;
     using System.Text;
     using System.Web.Hosting;
-    using System.Web.Security;
     using Constants;
     using Data.Context;
     using ExtensionMethods;
