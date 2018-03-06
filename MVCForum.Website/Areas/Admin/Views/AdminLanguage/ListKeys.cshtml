@@ -1,6 +1,8 @@
-﻿@using MVCForum.Domain.Constants
-@using MVCForum.Website.Application
-@model MVCForum.Website.Areas.Admin.ViewModels.ResourceKeyListViewModel
+﻿
+@using MvcForum.Core
+@using MvcForum.Core.Constants
+@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.Admin.ResourceKeyListViewModel
 @{
     ViewBag.Title = "All Resource Keys";
 }
@@ -78,7 +80,7 @@
 
         @if (Model.TotalPages > 1)
         {
-            @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
+            @Html.Pager(Convert.ToInt32(Model.PageIndex), ForumConfiguration.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
         }
 
     </div>

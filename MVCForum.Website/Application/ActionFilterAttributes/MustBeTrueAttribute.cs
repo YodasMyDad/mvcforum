@@ -1,32 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
-using MVCForum.Domain.Interfaces.Services;
-
-namespace MVCForum.Website.Application.ActionFilterAttributes
+﻿namespace MvcForum.Web.Application.ActionFilterAttributes
 {
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.Web.Mvc;
+    using Core.Interfaces.Services;
+    using Core.Ioc;
+    using Unity;
+
+    [AttributeUsage(AttributeTargets.Property)]
     public class MustBeTrueAttribute : ValidationAttribute, IClientValidatable
     {
         private readonly ILocalizationService _localizationService;
 
         public MustBeTrueAttribute()
         {
-            _localizationService = ServiceFactory.Get<ILocalizationService>();
-        }
-        public override bool IsValid(object value)
-        {
-            return value != null && value is bool && (bool)value;
+            _localizationService = UnityHelper.Container.Resolve<ILocalizationService>();
         }
 
-        public IEnumerable<ModelClientValidationRule> GetClientValidationRules(ModelMetadata metadata, ControllerContext context)
+        public IEnumerable<ModelClientValidationRule> GetClientValidationRules(ModelMetadata metadata,
+            ControllerContext context)
         {
             yield return new ModelClientValidationRule
             {
-                ErrorMessage = _localizationService.GetResourceString(this.ErrorMessage.Trim()),
+                ErrorMessage = _localizationService.GetResourceString(ErrorMessage.Trim()),
                 ValidationType = "mustbetrue"
             };
+        }
+
+        public override bool IsValid(object value)
+        {
+            return value != null && value is bool && (bool) value;
         }
     }
 }

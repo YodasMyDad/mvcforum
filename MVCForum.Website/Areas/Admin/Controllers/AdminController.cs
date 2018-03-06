@@ -1,26 +1,24 @@
-﻿using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
-
-namespace MVCForum.Website.Areas.Admin.Controllers
+﻿namespace MvcForum.Web.Areas.Admin.Controllers
 {
-    [Authorize(Roles = AppConstants.AdminRoleName)]
-    public partial class AdminController : BaseAdminController
-    {
+    using System.Web.Mvc;
+    using Core.Constants;
+    using Core.Interfaces;
+    using Core.Interfaces.Services;
+    using Core.Utilities;
 
+    [Authorize(Roles = Constants.AdminRoleName)]
+    public class AdminController : BaseAdminController
+    {
         public AdminController(ILoggingService loggingService,
-            IUnitOfWorkManager unitOfWorkManager,
             IMembershipService membershipService,
             ILocalizationService localizationService,
-            ISettingsService settingsService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
+            ISettingsService settingsService, IMvcForumContext context)
+            : base(loggingService, membershipService, localizationService, settingsService, context)
         {
         }
 
         /// <summary>
-        /// Default page for the admin area
+        ///     Default page for the admin area
         /// </summary>
         /// <returns></returns>
         public ActionResult Index()
@@ -29,6 +27,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         }
 
         #region Utils
+
         [HttpPost]
         public void Aptitude()
         {
@@ -42,8 +41,8 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             {
                 // No need to do anything
             }
-        } 
-        #endregion
+        }
 
+        #endregion
     }
 }

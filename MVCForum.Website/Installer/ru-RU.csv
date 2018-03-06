@@ -1,0 +1,405 @@
+﻿Layout.Nav.Register,Регистрация
+Layout.Nav.Logon,Вход
+Layout.Nav.Activity,Активность
+Layout.Nav.Leaderboard,Лидеры
+Layout.Nav.Home,Главная
+Layout.Nav.Admin,Панель управления
+Layout.CreateButton,Добавить тему
+Layout.PoweredBy,Работает на
+Topic.Votes,Голоса
+Topic.Comments,Ответы
+Topic.StartedBy,Создано {0} пользователем {1}
+Topic.InCategory,в
+Topic.LatestBy,Новое
+Topic.Views,Просмотров
+Post.VoteUp,Нравится
+Post.VotedUp,Понравилось
+Post.VoteDown,Не нравится
+Post.VotedDown,Не понравилось
+Post.IsSolution,Отметить решением
+Post.PostedThis,написал
+Post.Posts,Сообщения
+Post.Points,Очки
+Post.LastEdited,Отредактировано
+Post.Report,Жалоба
+Post.Edit,Правка
+Post.Delete,Удалить
+Post.Move,Перенос
+Post.Reply,Ответить
+Post.ReplyingTo,Кому:
+LogOn.LogOn,Вход
+LogOn.LogOff,Выход
+Post.PleaseWait,Подождите, пожалуйста
+Topic.DiscussionTaggedWith,Тема отмечена:
+Topic.TitleFallBack,Тема
+Topic.Subscribe,Подписаться
+Topic.UnSubscribe,Отписаться
+Topic.IsLocked,Тема закрыта
+Topic.CreateDiscussion,Начать тему
+Topic.TagThisTopic,Пометить тему
+Topic.Choose,Выберите существующую тему
+Tags.PopularTags,Популярные метки
+Tags.NoCreatePermission,У вас нет разрешения на создание новых тегов, вы можете использовать только существующие
+Stats.FooterMainStatText,{0} пользователей добавили {1} сообщений в {2} темах
+Stats.LatestMembers,Новые пользователи:
+PM.Title,Сообщение:
+PM.From,От:
+PM.Sent,Отправленные:
+PM.BackToInbox,Назад во Входящие
+PM.Reply,Ответ
+PM.SentPrivateMessages,Отправлено личное сообщение
+PM.To,Кому
+PM.Subject,Тема
+PM.Date,Дата
+PM.Read,Прочитать
+PM.Delete,Удалить
+PM.NoMessages,У Вас нет личных сообщений
+PM.Create,Новое
+PM.ReceivedPrivateMessages,Полученные личные сообщения
+PM.CreatePrivateMessage,Написать личное сообщение
+PM.Send,Отправить
+PM.OriginalMessage,Исходное сообщение
+Buttons.Send,Отправить
+Report.ReportPostBy,Пожаловаться на сообщение:
+Buttons.Edit,Правка
+Points.ThisWeeksHighEarners,Лидеры недели
+SideBox.MyTools,Инструменты
+PM.PrivateMessages,Личные сообщения
+Members.SearchMembers,Поиск пользователей
+Buttons.Search,Поиск
+Members.Users,Пользователи
+Members.Points,Очки
+Members.DateJoined,Дата регистрации
+Report.Report,Жалоба
+Members.Register,Регистрация
+Members.AlreadyRegistered,Вы уже зарегистрированы? Зачем Вам делать это еще раз?
+Members.LogOnMessage,Введите, пожалуйста, логин и пароль. Или {0} если у Вас нет аккаунта
+Buttons.LogOn,Вход
+Members.ProfileTitle,Профиль
+Members.Profile.Joined,Дата регистрации:
+Members.Profile.Posts,Сообщений:
+Members.Profile.Points,Очки:
+Buttons.Report,Жалоба
+Members.Profile.Age,Возраст:
+Members.Profile.Location,Откуда:
+Members.Profile.Website,Сайт:
+Members.Profile.Twitter,Twitter:
+Members.Profile.Facebook,Facebook:
+Members.Profile.DiscussionActivity,Сообщения
+Ajax.PleaseWait,Пожалуйста, подождите...
+Members.Profile.Badges,Значки
+Members.EditProfile,Редактировать профиль
+Buttons.Save,Сохранить
+Buttons.Continue,Continue
+Members.EditMember,Редактировать
+Leaderboard.ThisWeeksStars,Лучшие за неделю
+Leaderboard.ThisYearsStars,Лучшие за год
+Leaderboard.LeaderboardTitle,Глобальные лидеры
+Home.LatestDiscussions,Новые темы
+Home.Rss,Rss
+Activity.ActivityTitle,Активность
+Notification.Subscribe,Подписаться
+Notification.UnSubscribe,Отписаться
+Category.NoDiscussions,В этой категории пока нет тем
+Category.CategoriesSideHeading,Категории
+PM.RecipientUsername,Получатель
+PM.MessageSubject,Тема
+Post.Label.TopicName,Название темы
+Post.Label.IsStickyTopic,Важная тема
+Post.Label.LockTopic,Закрыть тему
+Post.label.TopicCategory,Категория темы
+Members.Label.Username,Имя пользователя
+Members.Label.EmailAddress,E-mail (используется Gravatar для отображения аватара)
+Members.Label.Password,Пароль
+Members.Label.ConfirmPassword,Подтвердить пароль
+Members.Label.UserIsApproved,Пользователь одобрен
+Members.Label.Comment,Комментарий
+Members.Label.Roles,Роли
+Members.Label.Signature,Подпись
+Members.Label.Age,Возраст
+Members.Label.Location,Откуда
+Members.Label.Website,Сайт
+Members.Label.Twitter,Twitter
+Members.Label.Facebook,Facebook
+Members.Label.RememberMe,Запомнить меня?
+Members.Label.Users,Пользователи
+Members.Label.DateJoined,Дата регистрации
+Errors.NoAccess,Доступ запрещен
+Errors.GenericMessage,Извините, произошла ошибка
+Errors.NoPermission,Вы не можете это сделать
+Topic.Notification.NewTopics,Новая тема или метка создана в категории {0}
+Topic.Notification.Subject,Новая тема в
+PM.SendingToQuickly,Вы пытаетесь отправить сообщение слишком быстро
+PM.SentItemsOverCapcity,Папка Исходящие переполнена - удалите сообщения, чтобы иметь возможность создать новое
+PM.ReceivedItemsOverCapcity,{0} папка Входящие у получателя(-ей) переполнена. Невозможно отправить сообщение
+PM.MessageSent,Сообщение отправлено
+PM.UnableFindMember,Пользователь не найден
+PM.TalkToSelf,Общаться с самим собой немного странно, разве нет?
+Post.Updated,Сообщение обновлено
+Topic.Deleted,Тема удалена
+Post.Deleted,Сообщение удалено
+Post.Notification.NewPosts,Новое сообщение в теме {0}
+Post.Notification.Subject,Новое сообщение в
+Report.ReportSent,Жалоба отправлена
+Members.NowRegistered,Вы зарегистрированы
+Members.NowRegisteredNeedApproval,Вы зарегистрированы, но ваш профиль должен быть одобрен администратором
+Members.NowLoggedIn,Вы вошли в систему
+Members.Errors.PasswordIncorrect,Неверные логин и/или пароль.
+Members.Errors.PasswordAttemptsExceeded,Превышено допустимое количество попыток входа.
+Members.Errors.UserLockedOut,Пользователь заблокирован.
+Members.Errors.UserNotApproved,Пользователь не одобрен.
+Members.Errors.LogonGeneric,Вход невозможен.
+Members.NowLoggedOut,Вы успешно вышли из системы
+Member.ProfileUpdated,Профиль обновлен
+Language.Changed,Язык изменен
+Rss.LatestActivity.Title,Новые темы форума
+Rss.LatestActivity.Description,Новые темы
+Errors.NothingToDisplay,Пусто
+Rss.Category.Title,{0} темы
+Rss.Category.Description,Новые темы в категории {0}
+Report.Reporter,Пожаловался
+Report.MemberReported,На кого пожаловались
+Report.Reason,Причина
+Report.MemberReport,Жалоба на пользователя
+Report.Admin,Админ
+Report.PostReported,Жалоба на сообщение в
+Report.PostReport,Жалоба на сообщение
+Badges.UnableToAward,Не удалось добавить значок, потому что коллекция значков не существует для пользователя {0}
+Badge.UnknownBadge,Неизвестный значок {0}
+Badge.BadegEnumNoClass,Для типа перечисления значка {0} не указан соответствующий класс.
+Members.Errors.DuplicateUserName,Имя пользователя занято. Выберите другое имя пользователя.
+Members.Errors.DuplicateEmail,Адрес электронной почты уже указан для другого пользователя. Выберите другой адрес электронной почты.
+Members.Errors.InvalidPassword,Недопустимый пароль. Укажите допустимый пароль.
+Members.Errors.InvalidEmail,Недопустимый адрес электронной почты. Попробуйте еще раз.
+Members.Errors.InvalidAnswer,Недопустимый ответ на секретный вопрос. Попробуйте еще раз.
+Members.Errors.InvalidQuestion,Недопустимый секретный вопрос. Попробуйте еще раз.
+Members.Errors.InvalidUserName,Недопустимое имя пользователя. Попробуйте еще раз.
+Members.Errors.ProviderError,Ошибка провайдера аутентификации. Проверьте введенные данные. Если ошибка повторяется
+Members.Errors.UserRejected,Не удалось создать пользователя. Проверьте введенные данные. Если ошибка повторяется, то обратитесь к системному администратору.
+Members.Errors.Unknown,Неизвестная ошибка. Проверьте введенные данные. Если ошибка повторяется
+Members.NewMemberRegistered,Зарегистрирован новый пользователь {0} ({1})
+Members.Admin,Админ
+Members.NewMemberSubject,Зарегистрирован новый пользователь
+Members.CantUnlock,Пользователь не существует - не удалось разблокировать.
+Members.ForgotPassword.Email,Вы запросили сброс пароль {0}. Ваш новый пароль указан ниже
+Members.ForgotPassword.Subject,Сброс пароля
+Members.ForgotPassword.SuccessMessage,Новый пароль отправлен Вам на электронную почту
+Members.ForgotPassword.ErrorMessage,Ошибка при сбросе пароля
+Members.ChangePassword.Success,Пароль изменен
+Members.ChangePassword.Error,Неверный текущий пароль или недопустимый новый пароль.
+Buttons.ChangePassword,Сменить пароль
+Members.ChangePassword.Title,Сменить пароль
+Members.ChangePassword.Text,Новый пароль должен содержать не менее {0} символов.
+Members.ChangePassword.Link,Нажмите сюда, если хотите {0}
+Members.ForgotPassword.Title,Забыли пароль
+Buttons.ResetPassword,Сбросить пароль
+Members.ForgotPassword.Link,Забыли пароль?
+Members.Label.CurrentPassword,Текущий пароль
+Members.Label.NewPassword,Новый пароль
+Members.Label.ConfirmNewPassword,Подтвердите новый пароль
+Members.Label.EmailAddressBlank,Введите адрес электронной почты
+Activity.Badge, 
+Activity.UserAwardedBadge,был вручен значок
+Activity.UserJoined,новый пользователь форума
+Activity.ProfileUpdated,обновил профиль
+Topic.Label.SubscribeToTopic,Подписаться на тему?
+Badges.PageTitle,Значки
+Layout.Nav.Badges,Значки
+Topic.Label.TopicTitle,Заголовок
+Poll.Button.Create,Добавить опрос в эту тему
+Poll.Placeholder.TypeAnswerHere,Введите ответ
+Topic.OptionsHeading,Опции темы
+Poll.Button.Remove,Удалить опрос из темы
+Poll.Button.Vote,Голосовать
+Error.WrongAnswerRegistration,Ошибочный ответ. Попробуйте еще раз.
+Members.LoginOrText,или
+Facebook.Error.EnabledButNotAddedKeys,Вы включили авторизацию через Facebook но не указали AppId или Secret key в файле forum.config
+Microsoft.Error.EnabledButNotAddedKeys,Вы включили авторизацию через Microsoft но не указали AppId или Secret key в файл forum.config
+Members.Profile.IsSocialAccount,Социальный аккаунт
+Date.JustNow,Только что
+Date.OneMinuteAgo,минуту назад
+Date.MinutesAgo,{0} минут назад
+Date.OneHourAgo,час назад
+Date.HoursAgo,{0} часов назад
+Date.Yesterday,вчера
+Date.DaysAgo,{0} дней назад
+Date.WeeksAgo,{0} недель назад
+Side.Search,Поиск
+Search.NoResults,Ничего не найдено
+Topic.CommentsDetails,Комментарии
+Members.DeleteAllPosts,Удалить все сообщения
+Buttons.CreatePost,Добавить сообщение
+Topic.Label.Category,Выберите категорию
+Editor.NeedHelp,Нужна помощь с форматированием?
+Members.BanUser,Забанить
+Members.UnBanUser,Разбанить
+Errors.NoPermissionPolls,Тема создана, но у вас нет разрешения на создание опросов
+Topic.ShowMorePosts,Показать больше сообщений
+Topic.ShowMorePostsLoading,Загрузка сообщений...
+Topic.AlreadyAnswered,Похожие вопросы
+Topic.Comment,Ответить
+Stats.FooterActiveUsersText,Пользователи онлайн:
+PostFilter.OrderBy,Сортировка:
+PostFilter.Standard,Стандарт
+PostFilter.Newest,Новые
+PostFilter.Votes,Голоса
+PM.NewPrivateMessageSubject,Новое личное сообщение
+PM.NewPrivateMessageBody,{0} только что отправил Вам личное сообщение.
+Post.DeleteConfirmation,Вы уверены, что хотите удалить?
+Category.SubCategoriesHeading,Подкатегории в
+Category.AllCategories,Все категории
+Category.MostRecent,Новое:
+Members.LogonFacebookButton,Войти через Facebook
+Members.LogonGoogleButton,Войти через Google
+Twitter.Error.EnabledButNotAddedKeys,Вы включили авторизацию с помощью учетной записи Twitter но не указали id и secret key в forum.config
+Google.Error.EnabledButNotAddedKeys,Вы включили авторизацию с помощью учетной записи Google но не указали id и secret key в forum.config
+Error.EmailIsBanned,Электронная почта или домен, указанные Вами, находятся в черном списке
+Post.FilesUploaded,Файл успешно загружен
+Post.Attach,Файл
+Post.Upload,Загрузить файлы
+Post.UploadBannedFileExtension,Недопустимое расширение файла
+Post.UploadFileTooBig,Слишком большой файл
+File.SuccessfullyDeleted,Файл удален
+Members.MemberEmailAuthorisationNeeded,На Ваш адрес электронной почты отправлена ссылка для подтверждения. Перейдите по ссылке в письме чтобы активировать учетную запись.
+Members.MemberEmailAuthorisation.EmailBody,Вы зарегистрированы на {0} - Для продолжения Вам нужно перейти по ссылке, указанной ниже. {1}
+Members.MemberEmailAuthorisation.Subject,Подтверждение адреса электронной почты
+Members.NowApproved,Ваша учетная запись подтверждена.
+Members.MemberEmailAuthorisationNeededMessage,Перейдите по ссылке в письме, чтобы активировать учетную запись
+Members.MemberEmailAuthorisationResend,Прислать письмо с подтверждением еще раз
+Members.MessageMe,Написать
+Confirmation.DeleteMembersPosts,Вы уверены? Это удалит все сообщения и темы пользователя!
+Moderate.AwaitingModeration,Ваше сообщение на модерации. После проверки оно появится на сайте
+Badges.AwardsPoints,Приносит {0} очков
+Language.Change,Сменить язык
+Post.Quote,Цитата
+Members.Label.UploadNewAvatar,Загрузить новую фотографию профиля
+Member.HasNewPrivateMessages,У Вас есть новые личные сообщения
+Badge.AuthorMarkAsSolution.Name,Вопрос решен!
+Badge.AuthorMarkAsSolution.Desc,Отметил(а) как решение чей-то ответ на свой вопрос
+Badge.UserVoteUp.Name,Первый класс!
+Badge.UserVoteUp.Desc,Впервые поставил(а) оценку 'Нравится'
+Badge.PostMentionsUmbraco.Name,Фанат Umbraco!
+Badge.PostMentionsUmbraco.Desc,Упомянул(а) Umbraco в своем сообщении
+Badge.PosterVoteUp.Name,Классное сообщение!
+Badge.PosterVoteUp.Desc,Сообщение получило оценку 'Нравится'
+Badge.PosterMarkAsSolution.Name,Пробуждение Силы!
+Badge.PosterMarkAsSolution.Desc,Написал(а) сообщение, которое было отмечено как ответ
+Badge.Padawan.Name,Падаван!
+Badge.Padawan.Desc,Ответы на 10 и более вопросов отмечены как решение
+Badge.OneThousandPoints.Name,1000 очков!
+Badge.OneThousandPoints.Desc,Набрал(а) 1000 очков
+Badge.MemberForAYear.Name,С Годовщиной!
+Badge.MemberForAYear.Desc,Прошел год с момента регистрации на сайте
+Badge.TheGrouch.Name,Брюзга!
+Badge.TheGrouch.Desc,Поставил(а) 10 и более оценок 'Не нравится'
+Badge.JediMaster.Name,Мастер джедай!
+Badge.JediMaster.Desc,Ответы на 50 и более вопросов отмечены решением
+Badge.Photogenic.Name,Фотогеничность!
+Badge.Photogenic.Desc,Такие мелочи, как загрузка фотографии в профиль, делают сообщество лучше. Спасибо!
+Badge.FavouriteFirstPost.Name,Избранник!
+Badge.FavouriteFirstPost.Desc,Добавил(а) первое сообщение в 'Избранное'
+Badge.YourPostFavouritedTenTimes.Name,Известность!
+Badge.YourPostFavouritedTenTimes.Desc,Одно или более сообщений добавлены в 'Избранное' 10 или более пользователями
+Badge.YourPostFavourited.Name,Избранное сообщение
+Badge.YourPostFavourited.Desc,Одно или более сообщений добавлены в 'Избранное' другим пользователем
+Site.MvcForum,MvcForum.RU
+Layout.Nav.Utilities,Утилиты
+Side.Search.SearchFor,Поиск...
+Side.Search.Go,Искать
+Topic.IsSticky,Важная тема
+Topic.IsSolved,Есть решение
+Topic.Category,Категория
+Topic.IsPoll,Опрос
+Topic.LastPost,Последнее сообщение
+Topic.HotTopics,Популярные темы
+Notifications.NoActiveMembers,Никого он-лайн
+Post.LikedBy,Понравилось
+Post.Browse,Обзор...
+Post.AttachedFiles,Прикрепленные файлы
+SubNav.Latest,Свежее
+SubNav.Following,Подписки
+SubNav.PostedIn,Учавствовал
+SubNav.Favourites,Избранное
+Favourites.PageTitle,Избранное
+Favourites.NoMemberFavourites,Вы не добавили ничего в избранное
+Following.PageTitle,Темы и категории
+Following.Categories,Категории, на которые Вы подписаны
+SubscribedCats.NothingToShow,Вы не подписаны ни на одну категорию
+Following.Topics,Вы подписаны на темы
+SubscribedTopics.NothingToShow,Вы не подписаны ни на одну тему
+PostedIn.PageTitle,Темы и сообщения, в которых Вы учавстсовали
+Topic.Label.Tags,Добавить метку
+Topic.Label.UploadFiles,Загрузить файлы
+Search.Searching,Поиск
+Search.InTopic,В теме
+Members.SrubAndBan,Удалить
+Confirmation.SrubAndBan,Вы уверены, что хотите это сделать? Это уничтожит все сообщения и забанит пользователя(-ей)
+Admin,Админ
+Members.SuccessfulSrub,Сделано
+Post.Favourite,Избранное
+Post.Favourited,В избранном
+Members.NowBanned,Пользователь забанен
+Members.NowUnBanned,Пользователь НЕ забанен
+PM.AboutToExceedInboxSizeBody,Папка Входящие личных сообщений почти переполнена
+PM.AboutToExceedInboxSizeSubject,Превышение размера папки Входящие
+PM.NewPrivateMessage,Новое личное сообщение
+PM.LastActivity,Новая активность
+StopWord.Error,Вы попробовали ввести фразу или ссылку, которые не разрешены на этом сайте
+Post.Permalink,Постоянная ссылка
+Members.Profile.LastOnline,Последний он-лайн
+Members.UnableToGetEmailAddress,Нет доступа к Вашей электронное почте - проверьте разрешения
+Members.ResetPassword.Title,Отправлен запрос на сброс пароля
+Members.ResetPassword.Text,Отправлено электронное письмо с инструкцией по сбросу пароля.
+Members.ResetPassword.EmailText,Получен запрос на сброс Вашего пароля на {0}. Для сброса пароля перейдите по ссылке ниже. Если Вы не делали запрос на сброс пароля, то просто проигнорируйте это сообщение.
+Members.ResetPassword.SuccessText,Ваш пароль изменен.
+Members.ResetPassword.InvalidToken,Похоже Вы перешли по недопустимой или устаревшей ссылке. Попробуйте сделать новый запрос на восстановление пароля.
+Members.ResetPassword.Error,Ошибка при сбросе пароля. Попробуйте еще раз.
+Tasks.MarkAsSolutionReminderJob.EmailBody,Ваша тема {0} на {1} получила {2} ответов, но ни один не отмечен как решение. Пожалуйста, проверье ответы и отметьте один из них как решение, если он Вам подходит.
+Tasks.MarkAsSolutionReminderJob.Subject,Ваше сообщение на {0}
+Post.MemberIsOnline,online
+PM.MemberIsOnline,online
+Topic.Label.PollCloseAfterDays,Закрыть опрос после указанного количества дней? Поставьте 0, чтобы отключить автоматическое закрытие
+Topic.PollClosed,Закрыто
+Post.OthersLiked,и {0} других
+Members.Label.DisableEmailNotifications,Отключить оповещения по электронной почте
+TinyMCE.InsertImage.ButtonTitle,Вставить изображение
+TinyMCE.InsertImage.ButtonOk,ОК
+TinyMCE.InsertImage.ButtonClose,Закрыть
+TinyMCE.InsertImage.EnterValidUrl,Введите действительный адрес
+TinyMCE.InsertImage.SelectFile,Выберите файл
+TinyMCE.InsertImage.MaxFileSize,Максимальный размер изображения 2 МБ
+TinyMCE.InsertImage.OnlyImages,Допустимы форматы JPEG, PNG и GIF
+TinyMCE.InsertImage.LabelUploadImage,Загрузить изображение
+TinyMCE.InsertImage.Browse,Обзор
+TinyMCE.InsertImage.ExternalImage,Изображение из внешнего источника
+TinyMCE.InsertImage.ImageDescription,Описание изображения
+Post.Options,Посмотреть опции сообщения
+SlidePanel.CloseConfirmation,Вы уверены, что хотите закрыть?
+PM.Block,Заблокировать
+PM.Blocked,Заблокирован
+PM.BlockedMessage,Невозможно отправить сообщение
+PM.ShowMore,Показать больше сообщений
+PM.ShowMoreLoading,Загрузка...
+Members.LogonMicrosoftButton,Войсти с учетной записью Microsoft
+Search.Results,Результатов найдено
+Post.Move.Label.Topic,Тема
+Post.Move.Label.NewTopicTitle,Новая тема
+Post.Move.Label.ReplyToPosts,Переместить также ответы и цитаты
+Post.Move.PostTitle,Перенести сообщение
+Post.Move.Description,Перенести сообщение в существующую тему
+TermsAndConditions.Label.Agree,Я ознакомлен и согласен с правилами сайта
+TermsAndConditions.PageTitle,Согласие с правилами сайта
+TermsAndConditions.Label.AgreeError,Вы должны согласиться с правилами сайта
+PostEdit.Panel.Name,История изменений сообщения
+PostEdit.None,У этого сообщения нет изменений
+PostEdit.EditedBy,Отредактировано
+PostEdit.OriginalVersion,Оригинальная версия
+PostEdit.EditedVersion,Отредактированная версия
+Moderate.Title,Модерация
+Moderate.NothingHere,На данный момент пусто
+Moderate.Topics,Темы
+Moderate.Posts,Сообщение
+Moderate.NavText,Темы/сообщения, ожидающие проверку
+Post.Trusted,Надежный
+Post.TrustedUser,Надежный пользователь
+Spam.FloodTestFailed,You are posting too quickly

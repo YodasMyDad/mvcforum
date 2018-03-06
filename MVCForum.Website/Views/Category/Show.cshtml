@@ -1,5 +1,7 @@
-﻿@using MVCForum.Utilities
-@using MVCForum.Website.ViewModels
+﻿@using MvcForum.Core.ExtensionMethods
+@using MvcForum.Core.Utilities
+@using MvcForum.Web.ViewModels.Category
+
 @model CategoryViewModel
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
@@ -19,7 +21,7 @@
     {
         unSubscribe = displayNone;
     }
-    //TempData[AppConstants.DefaultCategoryViewBagName] = Model.Category.Id;
+    //TempData[Constants.DefaultCategoryViewBagName] = Model.Category.Id;
 }
 @section SocialMeta {
     <meta property="og:title" content="@ViewBag.Title" />
@@ -64,7 +66,7 @@
             <img src="@AppHelpers.CategoryImage(Model.Category.Image, Model.Category.Id,110)" alt="@Model.Category" class="categoryimage" />
         }
         <h1>@Html.Raw(Model.Category.Name)</h1>
-        <p>@Html.Raw(AppHelpers.ConvertPostContent(Model.Category.Description))</p>
+        <p>@Html.Raw(Model.Category.Description.ConvertPostContent())</p>
     </div>
 
     @if (Model.SubCategories != null)

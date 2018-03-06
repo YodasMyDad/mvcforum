@@ -1,54 +1,54 @@
-﻿using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Areas.Admin.ViewModels;
-
-namespace MVCForum.Website.Areas.Admin.Controllers
+﻿namespace MvcForum.Web.Areas.Admin.Controllers
 {
-    /// <summary>
-    /// A base class for the white site controllers
-    /// </summary>
-    public partial class BaseAdminController : Controller
-    {
-        protected readonly IMembershipService MembershipService;
-        protected readonly ILocalizationService LocalizationService;
-        protected readonly ISettingsService SettingsService;
-        protected readonly IUnitOfWorkManager UnitOfWorkManager;
-        protected readonly ILoggingService LoggingService;
+    using System;
+    using System.Web.Mvc;
+    using Core.Constants;
+    using Core.Interfaces;
+    using Core.Interfaces.Services;
+    using Core.Models.Entities;
+    using Web.ViewModels;
+    using Web.ViewModels.Admin;
 
+    /// <summary>
+    ///     A base class for the white site controllers
+    /// </summary>
+    public class BaseAdminController : Controller
+    {
+        protected readonly ILocalizationService LocalizationService;
+        protected readonly ILoggingService LoggingService;
+        protected readonly IMembershipService MembershipService;
+        protected readonly ISettingsService SettingsService;
         protected MembershipUser LoggedOnReadOnlyUser;
+        protected IMvcForumContext Context;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
         /// <param name="loggingService"> </param>
-        /// <param name="unitOfWorkManager"> </param>
         /// <param name="membershipService"></param>
         /// <param name="localizationService"> </param>
         /// <param name="settingsService"> </param>
-        public BaseAdminController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService, ISettingsService settingsService)
+        /// <param name="context"></param>
+        public BaseAdminController(ILoggingService loggingService,
+            IMembershipService membershipService, ILocalizationService localizationService,
+            ISettingsService settingsService, IMvcForumContext context)
         {
-            UnitOfWorkManager = unitOfWorkManager;
             MembershipService = membershipService;
             LocalizationService = localizationService;
             LocalizationService.CurrentLanguage = LocalizationService.DefaultLanguage;
             SettingsService = settingsService;
             LoggingService = loggingService;
-
-            LoggedOnReadOnlyUser = MembershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
+            Context = context;
+            LoggedOnReadOnlyUser = membershipService.GetUser(System.Web.HttpContext.Current.User.Identity.Name, true);
         }
 
         protected void ShowMessage(GenericMessageViewModel messageViewModel)
         {
-            //ViewData[AppConstants.MessageViewBagName] = messageViewModel;
-            TempData[AppConstants.MessageViewBagName] = messageViewModel;
+            TempData[Constants.MessageViewBagName] = messageViewModel;
         }
-
     }
 
-    public class UserNotLoggedOnException : System.Exception
+    public class UserNotLoggedOnException : Exception
     {
     }
 }

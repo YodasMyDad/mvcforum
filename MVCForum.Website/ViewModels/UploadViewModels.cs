@@ -1,8 +1,8 @@
-﻿using System;
-using System.Web;
-
-namespace MVCForum.Website.ViewModels
+﻿namespace MvcForum.Web.ViewModels
 {
+    using System;
+    using System.Web;
+
     public class AttachFileToPostViewModel
     {
         public HttpPostedFileBase[] Files { get; set; }

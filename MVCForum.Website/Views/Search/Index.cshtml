@@ -1,5 +1,5 @@
-﻿@using MVCForum.Website.ViewModels
-@model SearchViewModel
+﻿@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.Search.SearchViewModel
 
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
@@ -23,7 +23,7 @@
 
     if (Model.TotalPages > 1)
     {
-        @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.Instance.SearchListSize, totalCount, new { term = Model.Term })
+        @Html.Pager(Convert.ToInt32(Model.PageIndex), ForumConfiguration.Instance.SearchListSize, totalCount, new { term = Model.Term })
     }
 }
 else

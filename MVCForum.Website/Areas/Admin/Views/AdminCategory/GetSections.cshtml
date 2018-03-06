@@ -1,0 +1,22 @@
+﻿@model MvcForum.Web.ViewModels.Admin.SectionListViewModel
+
+
+<div class="panel">
+    <div class="panel-heading">
+        <h5>All Sections</h5>
+    </div>
+    <div class="panel-content">
+        <div id="container">
+            <ul>
+                @foreach (var section in Model.Sections)
+                {
+                    <li class="maincategory">
+                        <a href="@Url.Action("AddEditSection", new {id = section.Id})">
+                            @Html.Raw(section.Name)
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

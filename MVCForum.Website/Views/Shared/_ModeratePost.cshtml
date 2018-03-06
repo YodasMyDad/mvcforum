@@ -1,10 +1,11 @@
-﻿@model MVCForum.Domain.DomainModel.Post
+﻿@using MvcForum.Core.ExtensionMethods
+@model MvcForum.Core.Models.Entities.Post
            
 <div class="postsnippet" id="post-@Model.Id">
     <div class="row">
         <div class="col-md-9">
             <h2>Replying in: @Model.Topic.Name</h2>
-            <p>@Html.Raw(AppHelpers.ConvertPostContent(Model.PostContent))</p>
+            <p>@Html.Raw(Model.PostContent.ConvertPostContent())</p>
             <p class="postuser">@Model.User.UserName</p>
         </div>
         <div class="col-md-3">

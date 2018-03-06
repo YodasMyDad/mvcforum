@@ -1,0 +1,100 @@
+﻿
+@using MvcForum.Core
+@model MvcForum.Web.ViewModels.Category.EditCategoryPermissionsViewModel
+@{
+    ViewBag.Title = "Edit Permissions";
+    var allPermission = Model.Category.CategoryPermissionForRoles;
+}
+@section AdminPageHeader
+{
+    Edit Role Permissions for Category @Model.Category.Name <img src="@Url.Content("~/Content/admin/Images/ajax-loader.gif")" alt="Please Wait" style="display: none;" class="editpermissionsspinner" /> <span class="label label-success ajaxsuccessshow" style="display: none;">Success</span>
+}
+<div class="backbutton">
+    <a href="@Url.Action("EditCategory", "AdminCategory", new {Id = Model.Category.Id})" class="btn-mvc-green">&lt;&lt; Go Back</a>
+</div>
+<div class="panel">
+    <div class="panel-heading">
+        <h5>Role Permissions</h5>
+    </div>
+    <div class="panel-content">
+
+        <p>Role permissions are all actions a role is allowed to do (Or not do) within a specific category.</p>
+        <div class="tablescroll">
+            <table class="table table-bordered table-striped permissiontable">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        @foreach (var permissionType in Model.Permissions.Where(x => !x.IsGlobal))
+                        {
+                            <th>@permissionType.Name</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var role in Model.Roles)
+                    {
+                        <tr>
+                            <td style="width:160px;">
+                                @role.RoleName
+                            </td>
+                            @foreach (var permission in Model.Permissions.Where(x => !x.IsGlobal))
+                            {
+                                var isChecked = "";
+                                var isDisabled = DisableCheckBox(permission.Name, role.RoleName);
+                                var catPermission = allPermission.FirstOrDefault(x => x.Permission.Id == permission.Id && x.MembershipRole.Id == role.Id && x.Category.Id == Model.Category.Id);
+                                <td>
+                                    @if (catPermission != null)
+                                    {
+                                        // bingo we have this permission
+                                        isChecked = catPermission.IsTicked ? " checked" : "";
+                                    }
+                                    <span class="permissioncheckbox">
+                                        <input data-permisssion="@permission.Id" data-category="@Model.Category.Id" data-role="@role.Id" type="checkbox" id="@permission.Id-@Model.Category.Id" @isChecked @isDisabled />
+                                    </span>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="panel">
+    <div class="panel-heading">
+        <h5>Descriptions</h5>
+    </div>
+    <div class="panel-content">
+        <h6>@ForumConfiguration.Instance.PermissionAttachFiles</h6>
+        <p>If you tick this permission, users in this role will be able to attach files to topics and posts for download (file types and size can be restricted in web.config app settings - FileUploadAllowedExtensions and FileUploadMaximumFileSizeInBytes)</p>
+        <h6>@ForumConfiguration.Instance.PermissionCreatePolls</h6>
+        <p>If you tick this, then users in this role will be able to create polls in a topic.</p>
+        <h6>@ForumConfiguration.Instance.PermissionVoteInPolls</h6>
+        <p>If you tick this, users in this role will be able to vote in polls (As long as Create Polls is enabled)</p>
+        <h6>@ForumConfiguration.Instance.PermissionCreateTopics</h6>
+        <p>If you tick this, users in this role will be able to create topics</p>
+        <h6>@ForumConfiguration.Instance.PermissionDeletePosts</h6>
+        <p>If you tick this, users in this role will be able to delete other users posts and topics (Good Moderator permission)</p>
+        <h6>@ForumConfiguration.Instance.PermissionEditPosts</h6>
+        <p>If you tick this, users in this role will be able to edit other users posts and topics (Good Moderator permission)</p>
+        <h6>@ForumConfiguration.Instance.PermissionLockTopics</h6>
+        <p>If you tick this, users in this role will be able to lock topics, stopping any further posting in it.</p>
+        <h6>@ForumConfiguration.Instance.PermissionCreateStickyTopics</h6>
+        <p>If you tick this, users in this role will be able to make a sticky topic (Pin the topic) which will always be shown at the top of a category.</p>
+        <h6>@ForumConfiguration.Instance.PermissionReadOnly</h6>
+        <p>If you tick this, users in this role will not be able to post in the Category.</p>
+        <h6>@ForumConfiguration.Instance.PermissionDenyAccess</h6>
+        <p>If you tick this, users will not be able to access or see the Category - Also they won't be able to see any posts, topics or tags that were created in it either (Private Categories).</p>
+    </div>
+</div>
+@helper DisableCheckBox(string permissionName, string roleName)
+    {
+        if (roleName == Constants.GuestRoleName && permissionName != ForumConfiguration.Instance.PermissionDenyAccess)
+        {
+            <text>disabled</text>
+        }
+        else
+        {
+            <text></text>
+        }
+}

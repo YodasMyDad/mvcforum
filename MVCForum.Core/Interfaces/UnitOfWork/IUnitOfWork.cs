@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using MVCForum.Domain.Interfaces.Services;
-
-namespace MVCForum.Domain.Interfaces.UnitOfWork
+﻿namespace MvcForum.Core.Interfaces.UnitOfWork
 {
+    using System;
+    using System.Collections.Generic;
+    using Services;
+
     public partial interface IUnitOfWork : IDisposable
     {
         void Commit();

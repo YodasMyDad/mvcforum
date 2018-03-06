@@ -1,5 +1,5 @@
-﻿@using MVCForum.Website.Application.ExtensionMethods
-@model MVCForum.Website.Areas.Admin.ViewModels.CategoryViewModel
+﻿@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.Admin.CategoryEditViewModel
 
 <div class="form-group">
     @Html.LabelFor(model => model.CategoryColour)
@@ -24,7 +24,8 @@
     @if (!string.IsNullOrEmpty(Model.Image))
     {
         <div class="col-md-2">
-            <img src="@AppHelpers.CategoryImage(Model.Image, Model.Id,110)" alt="@Model.Name" />
+            <p><img src="@AppHelpers.CategoryImage(Model.Image, Model.Id,110)" alt="@Model.Name" class="img-responsive" /></p>
+            <p><a class="btn-mvc" href="@Url.Action("RemoveCategoryImage", "AdminCategory", new { id =  Model.Id, area = "Admin" })">Remove Image</a></p> 
         </div>
     }
 
@@ -76,6 +77,13 @@
     @Html.LabelFor(model => model.ParentCategory)
     @Html.DropDownListFor(model => model.ParentCategory, Model.AllCategories, new { @class = "form-control" })
     @Html.ValidationMessageFor(model => model.ParentCategory)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Section)
+    <p class="help-block">Sections only apply to main categories.</p>
+    @Html.DropDownListFor(model => model.Section, Model.AllSections, new { @class = "form-control" })
+    @Html.ValidationMessageFor(model => model.Section)
 </div>
 
 <hr />

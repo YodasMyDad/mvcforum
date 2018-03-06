@@ -1,11 +1,11 @@
-﻿using System;
-using MVCForum.Domain.DomainModel.Entities;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
-    public partial interface IBlockService
+    using System;
+    using Models.Entities;
+
+    public partial interface IBlockService : IContextService
     {
-        Block Add(Block block);        
+        Block Add(Block block);
         void Delete(Block block);
         Block Get(Guid id);
     }

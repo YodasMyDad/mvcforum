@@ -1,10 +1,10 @@
-﻿@model MVCForum.Domain.DomainModel.General.Theme
+﻿@model MvcForum.Core.Models.General.Theme
 <script type="text/javascript">
     var app_base = '@Url.Content("~/")';
     var largeSpinnerBlockImage = '@Url.Content("~/content/Images/ajaxloader-large.gif")';
 </script>
 @(Bundle.JavaScript()
-    .Add("~/Scripts/jquery-1.11.3.min.js")
+    .Add("~/Scripts/jquery-3.1.0.min.js")
     .Add("~/Scripts/jquery-ui.min.js")
     .Add("~/Scripts/jquery.unobtrusive-ajax.js")
     .Add("~/Content/bootstrap/js/bootstrap.min.js")
@@ -20,6 +20,6 @@
     .Add("~/Scripts/topic-post.js")
     .Add("~/Scripts/privatemessage.js")
     .Add("~/Scripts/general.js")
-    .Add(Model.ThemePath + "/Content/Scripts/general.js")
-    .MvcRender("~/scripts/cache/combined_" + Model.ThemeName + "_#.js")
+    .Add($"{Model.ThemePath}/Content/Scripts/general.js")
+    .MvcRender($"~/scripts/cache/combined_{Model.ThemeName}_#.js")
 )

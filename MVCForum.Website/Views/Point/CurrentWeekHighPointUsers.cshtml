@@ -1,5 +1,5 @@
 ﻿@using System.Linq;
-@model MVCForum.Website.ViewModels.HighEarnersPointViewModel
+@model MvcForum.Web.ViewModels.HighEarnersPointViewModel
 
 @if (Html.Settings().EnablePoints && Model.HighEarners.Any(x => x.Value > 0))
 {
@@ -11,7 +11,7 @@
             {
                 <li class="clearfix">
                     <span class="earnername">
-                        <img src="@dict.Key.MemberImage(SiteConstants.Instance.GravatarLeaderboardSize)" alt="@dict.Key.UserName">
+                        <img src="@dict.Key.MemberImage(ForumConfiguration.Instance.GravatarLeaderboardSize)" alt="@dict.Key.UserName">
                         <a href="@dict.Key.NiceUrl">@dict.Key.UserName</a>
                     </span>
                     <span class="earneramount">

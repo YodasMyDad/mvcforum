@@ -1,4 +1,5 @@
-﻿@model MVCForum.Website.Areas.Admin.ViewModels.ManageUsersPointsViewModel
+﻿@using MvcForum.Web.Application
+@model MvcForum.Web.ViewModels.Admin.ManageUsersPointsViewModel
 
 @{
     ViewBag.Title = "Manage User Points";
@@ -71,7 +72,7 @@
                                                     @point.Notes
                                                 </td>
                                                 <td class="pointsawardedon">
-                                                    @DatesUI.GetPrettyDate(point.DateAdded.ToString())
+                                                    @DatesUi.GetPrettyDate(point.DateAdded.ToString())
                                                 </td>
                                                 <td class="pointsremove">
                                                     @using (Html.BeginForm("RemovePoints", "Account", FormMethod.Post))

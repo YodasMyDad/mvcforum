@@ -1,15 +1,17 @@
-﻿@using MVCForum.Domain.DomainModel.General
+﻿@using MvcForum.Core.Models.General
+@using MvcForum.Web.Application.ExtensionMethods
+
 @{
     // Global Stuff
     var themeName = Html.Settings().Theme;
     var theme = new Theme
     {
         ThemeName = themeName,
-        ThemePath = string.Concat(SiteConstants.Instance.ThemeRootFolder, themeName)
+        ThemePath = string.Concat(ForumConfiguration.Instance.ThemeRootFolder, themeName)
     };
-    TempData[AppConstants.GlobalClass] = Convert.ToBoolean(PageData[AppConstants.IsMobileDevice]) ? "mobile" : "desktop";
-    TempData[AppConstants.CurrentAction] = ViewContext.RouteData.GetRequiredString("action").ToLower();
-    TempData[AppConstants.CurrentController] = ViewContext.RouteData.GetRequiredString("controller").ToLower();
+    TempData[Constants.GlobalClass] = Convert.ToBoolean(PageData[Constants.IsMobileDevice]) ? "mobile" : "desktop";
+    TempData[Constants.CurrentAction] = ViewContext.RouteData.GetRequiredString("action").ToLower();
+    TempData[Constants.CurrentController] = ViewContext.RouteData.GetRequiredString("controller").ToLower();
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -26,11 +28,8 @@
     @RenderSection("SocialMeta", false)
     @ViewBag.Canonical
     @Html.Partial("_StyleSheets", theme)
-    <!--[if lt IE 9]>
-            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <link rel="shortcut icon" href="@Url.Content(theme.ThemePath + "/content/images/favicon.ico")">
-    <link rel="apple-touch-icon-precomposed" href="@Url.Content(theme.ThemePath + "/content/images/apple-touch-icon-57-precomposed.png")">
+    <link rel="shortcut icon" href="@Url.Content($"{theme.ThemePath}/content/images/favicon.ico")">
+    <link rel="apple-touch-icon-precomposed" href="@Url.Content($"{theme.ThemePath}/content/images/apple-touch-icon-57-precomposed.png")">
     @Html.Partial("_JavaScript", theme)
     @RenderSection("Header", false)
     @if (!string.IsNullOrEmpty(Html.Settings().CustomHeaderCode))
@@ -39,7 +38,7 @@
     }
 </head>
 
-<body class="@TempData[AppConstants.GlobalClass].ToString() loggedin-@(User.Identity.IsAuthenticated.ToString().ToLower())">
+<body class="@TempData[Constants.GlobalClass].ToString() loggedin-@(User.Identity.IsAuthenticated.ToString().ToLower())">
     
     <nav class="pushy pushy-left">
         <ul>
@@ -73,7 +72,7 @@
                         <span class="icon-bar"></span>
                     </button>
                     <a class="navbar-brand" href="@Url.Action("Index", "Home")">
-                        <img src="@Url.Content(theme.ThemePath + "/content/images/logo.png")" alt="@Html.Lang("Site.MvcForum")" class="logoimg"/>                        
+                        <img src="@Url.Content($"{theme.ThemePath}/content/images/logo.png")" alt="@Html.Lang("Site.MvcForum")" class="logoimg"/>                        
                     </a>
                 </div>
 
@@ -84,9 +83,9 @@
                         {
                             if (Html.Settings().SuspendRegistration != true)
                             {
-                                <li><a href="@Url.Action("Register", "Members")">@Html.LanguageString("Layout.Nav.Register")</a></li>
+                                <li><a class="auto-register" href="@Url.Action("Register", "Members")">@Html.LanguageString("Layout.Nav.Register")</a></li>
                             }
-                            <li><a href="@Url.Action("LogOn", "Members")">@Html.LanguageString("Layout.Nav.Logon")</a></li>
+                            <li><a class="auto-logon" href="@Url.Action("LogOn", "Members")">@Html.LanguageString("Layout.Nav.Logon")</a></li>
                         }                        
                         @if (User.Identity.IsAuthenticated)
                         {
@@ -145,7 +144,7 @@
 
                             If you would like to remove the powered by notice, then please vist http://www.mvcforum.com/license -->
 
-                        <p>&copy; @DateTime.UtcNow.Year - @Html.LanguageString("Layout.PoweredBy") <a rel="nofollow" href="http://www.mvcforum.com">MVCForum.com</a></p>
+                        <p>&copy; @DateTime.UtcNow.Year - @Html.LanguageString("Layout.PoweredBy") <a rel="nofollow" href="http://www.mvcforum.com">MvcForum.com</a></p>
 
                         <!--########################## IMPORTANT - PLEASE DO NOT REMOVE WITHOUT LICENSE ########################### -->
                     </div>

@@ -1,4 +1,5 @@
-﻿@model MVCForum.Website.ViewModels.PostLikedByViewModel
+﻿@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.Post.PostLikedByViewModel
 @if (Model.Votes.Any())
 {
     <div class="postlikedby">
@@ -9,7 +10,7 @@
             {
                 <li>
                     <a href="@vote.VotedByMembershipUser.NiceUrl">
-                        <img src="@vote.VotedByMembershipUser.MemberImage(SiteConstants.Instance.GravatarLikedBySize)" alt="@vote.VotedByMembershipUser.UserName" title="@vote.VotedByMembershipUser.UserName">
+                        <img src="@vote.VotedByMembershipUser.MemberImage(ForumConfiguration.Instance.GravatarLikedBySize)" alt="@vote.VotedByMembershipUser.UserName" title="@vote.VotedByMembershipUser.UserName">
                     </a>
                 </li>
             }

@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
-    public partial interface IRoleService
+    using System;
+    using System.Collections.Generic;
+    using Models.Entities;
+    using Models.General;
+
+    public partial interface IRoleService : IContextService
     {
         IList<MembershipRole> AllRoles();
         void Delete(MembershipRole role);
-        MembershipRole GetRole(string rolename, bool removeTracking = false);
+        MembershipRole GetRole(string roleName, bool removeTracking = false);
         MembershipRole GetRole(Guid id);
         IList<MembershipUser> GetUsersForRole(string roleName);
         MembershipRole CreateRole(MembershipRole role);

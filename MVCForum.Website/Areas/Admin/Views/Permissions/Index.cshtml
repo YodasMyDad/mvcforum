@@ -1,5 +1,5 @@
-﻿@using MVCForum.Domain.Constants
-@model MVCForum.Website.Areas.Admin.ViewModels.ChoosePermissionsViewModel
+﻿@using MvcForum.Core.Constants
+@model MvcForum.Web.ViewModels.Admin.ChoosePermissionsViewModel
 @{
     ViewBag.Title = "Update Permissions";
 }
@@ -15,7 +15,7 @@
                 @foreach (var role in Model.MembershipRoles)
                 {
                     <ul class="rolepermissionlist">
-                        @if (role.RoleName != AppConstants.AdminRoleName)
+                        @if (role.RoleName != Constants.AdminRoleName)
                         {
                             <li><a href="@Url.Action("EditPermissions", new { role.Id })" class="btn-mvc-green btn-mvc-large btn-mvc-fullwidth">@role.RoleName</a></li>
                         }

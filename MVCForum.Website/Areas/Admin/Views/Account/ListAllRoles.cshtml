@@ -1,5 +1,5 @@
-﻿@using MVCForum.Domain.Constants
-@model MVCForum.Website.Areas.Admin.ViewModels.RoleListViewModel
+﻿@using MvcForum.Core.Constants
+@model MvcForum.Web.ViewModels.Admin.RoleListViewModel
 
 @{
     ViewBag.Title = "All Roles";
@@ -25,7 +25,7 @@
                 @foreach (var role in Model.MembershipRoles)
                 {
                     var usersCount = role.Users.Count;
-                    var hideRole = (role.RoleName == AppConstants.AdminRoleName || role.RoleName == AppConstants.GuestRoleName);
+                    var hideRole = (role.RoleName == Constants.AdminRoleName || role.RoleName == Constants.GuestRoleName);
 
                     if (!hideRole)
                     {

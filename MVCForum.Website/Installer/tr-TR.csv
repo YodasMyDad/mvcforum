@@ -1,0 +1,380 @@
+﻿Layout.Nav.Register,Kayıt Ol
+Layout.PoweredBy,Powered by
+Layout.Nav.Logon,Giriş
+Layout.Nav.Activity,Etkinlik
+Layout.Nav.Home,Anasayfa
+Layout.CreateButton,Yeni Tartışma
+Layout.Nav.Leaderboard,Afiş
+Layout.Nav.Admin,Yönetici
+Topic.StartedBy,Tarafından {0} Başladı {1}
+Topic.Comments,Cevaplar
+Topic.InCategory,içinde
+Topic.Votes,Oy
+Topic.Views,Görünümler
+Post.IsSolution,Çözüm
+Post.VoteUp,Beğen
+Post.VotedDown,Beğenmedim
+Post.VotedUp,Beğendim
+Post.VoteDown,Beğenmedim
+Topic.LatestBy,son
+Post.PostedThis,haberi
+Post.Report,Rapor
+Post.LastEdited,Son düzenleme
+Post.Posts,Günlük
+Post.Points,Puan
+Post.Edit,Düzenleme
+LogOn.LogOn,Oturum
+Post.PleaseWait,Lütfen bekle...
+Post.Delete,silmek
+LogOn.LogOff,Oturumu Kapat
+Topic.TitleFallBack,Tartışma Konusu
+Topic.DiscussionTaggedWith,Tartışmalar :
+Topic.Subscribe,takip
+Topic.UnSubscribe,Takip bırak
+Topic.IsLocked,Konu Kilitli mi?
+Topic.CreateDiscussion,Tartışma oluştur
+Topic.TagThisTopic,Bu konuyu Etiketi
+Tags.PopularTags,Popüler Etiketler
+Tags.NoCreatePermission,
+Yeni etiketler oluşturmaya izin yok, sadece mevcut olanları kullanabilirsiniz
+Stats.FooterMainStatText,Bizim {0} tartışmalarda {1} üyesi attılar {2} kere
+PM.From,Gönderen:
+PM.Title,Mesaj:
+Stats.LatestMembers,Son Üyeler:
+PM.Sent,Gönderilen:
+PM.SentPrivateMessages,Gönderilen Özel Mesajlar
+PM.Reply,Cevap
+PM.BackToInbox,Geri Gelen Kutusu
+PM.Date,Tarih
+PM.Subject,Konu
+PM.To,To
+PM.Delete,Sil
+PM.Read,Oku
+PM.ReceivedPrivateMessages,Özel mesajlarınızı alın
+PM.CreatePrivateMessage,Özel Mesaj oluştur
+PM.NoMessages,Şu anda herhangi bir özel mesaj yok
+PM.Create,Oluşturmak
+PM.Send,Gönder
+PM.OriginalMessage,Orijinal mesaj
+Buttons.Send,Gönder
+Report.ReportPostBy,Rapor Yazan:
+Buttons.Edit,Düzenle
+SideBox.MyTools,Benim Araçlarım
+Points.ThisWeeksHighEarners,Bu Haftanın Yüksek gelirliler
+PM.PrivateMessages,Özel Mesajlar
+Members.SearchMembers,Üye ara
+Members.Users,Kullanıcılar
+Buttons.Search,Arama
+Members.Points,Puan
+Members.DateJoined,Tarih Üyelik
+Report.Report,Rapor
+Members.Register,Kayıt
+Members.AlreadyRegistered,Zaten kayıtlısınız? Neden tekrar yapmak istersiniz?
+Buttons.LogOn,Oturum
+Members.LogOnMessage,Lütfen kullanıcı adınızı ve şifrenizi girin. Ya {0} Eğer bir hesabınız yoksa
+Members.ProfileTitle,Profil
+Members.Profile.Joined,Kayıt:
+Members.Profile.Posts,Günlük:
+Members.Profile.Points,Puan:
+Members.Profile.Age,Yaş:
+Buttons.Report,Rapor
+Members.Profile.Website,Web Site
+Members.Profile.Location,Locasyon:
+Members.Profile.Twitter,Twitter
+Members.Profile.Facebook,Facebook:
+Members.Profile.DiscussionActivity,Tartışma Etkinlik
+Ajax.PleaseWait,Lütfen Bekleyin...
+Members.Profile.Badges,Rozetler
+Buttons.Save,Kaydet
+Members.EditProfile,Profil Düzenle
+Members.EditMember,Üyeliğimi Düzenle
+Leaderboard.ThisYearsStars,Bu Ayın Yıldızı
+Leaderboard.ThisWeeksStars,Bu Haftanın Yıldızı
+Leaderboard.LeaderboardTitle,Liderler
+Home.Rss,Rss
+Home.LatestDiscussions,Son Tartışmalar
+Notification.Subscribe,Takip Et
+Activity.ActivityTitle,etkinlik
+Notification.UnSubscribe,Takibi Bırak
+Category.CategoriesSideHeading,Kategoriler
+Category.NoDiscussions,Bu kategoride şu anda hiçbir tartışma
+PM.RecipientUsername,Alıcı Adı
+PM.MessageSubject,Konu
+Post.Label.TopicName,Konu Adı
+Post.Label.IsStickyTopic,Sabit Konu mu
+Post.label.TopicCategory,Konu Kategorisi
+Post.Label.LockTopic,Kilit Konu
+Members.Label.EmailAddress,E-posta adresi (Gravatar tarafından Ikinci el Avatar görüntü göstermek için)
+Members.Label.Username,Kullanıcı Adı
+Members.Label.Password,Şifre
+Members.Label.UserIsApproved,Kullanıcı Onaylı edilir
+Members.Label.ConfirmPassword,Şifreyi Onayla
+Members.Label.Comment,Yorum
+Members.Label.Roles,Roller
+Members.Label.Age,Yaş
+Members.Label.Signature,İmza
+Members.Label.Location,Lokasyon
+Members.Label.Website,Web site
+Members.Label.Twitter,Twitter Url
+Members.Label.Facebook,Facebook Url
+Members.Label.RememberMe,Beni hatırla?
+Members.Label.DateJoined,Üyelik Tarihi
+Members.Label.Users,Kullanıcılar
+Errors.NoAccess,Erişim Yok
+Errors.GenericMessage,Maalesef bir hata oluştu
+Errors.NoPermission,Bu eylemi gerçekleştirmek için izniniz yok
+Topic.Notification.NewTopics,Yeni konu veya etiket {0} kategorisinde oluşturuldu
+Topic.Notification.Subject,Yeni Tartışma 
+PM.SendingToQuickly,Çok hızlı mesaj göndermek için çalışıyoruz
+PM.SentItemsOverCapcity,Sizin gönderilen öğeler kapasiteniz bitti. Mesajları Silin.
+PM.ReceivedItemsOverCapcity,{0} boyutlarını aştı.
+PM.MessageSent,Mesaj gönderildi
+PM.UnableFindMember,Bu üye bulunamıyor
+PM.TalkToSelf,Kendinize konuşmak biraz garip. öyle değil mi
+Post.Updated,Mesaj Güncellendi
+Topic.Deleted,Konuyu Sil
+Post.Deleted,Mesaj Silindi
+Post.Notification.Subject,Yeni Mesaj
+Post.Notification.NewPosts,Yeni mesaj {0} konuya oluşturuldu
+Report.ReportSent,Rapor Gönderildi
+Members.NowRegistered,Artık kayıtlı
+Members.NowRegisteredNeedApproval,Artık kayıtlıdır. Ama forum yönetici hesabınızı yetki gerekir
+Members.NowLoggedIn,Şimdi kaydediliyor
+Members.Errors.PasswordIncorrect,Verilen kullanıcı veya şifre yanlış.
+Members.Errors.PasswordAttemptsExceeded,Parola maksimum deneme sayısı aşıldı.
+Members.Errors.UserLockedOut,Kullanıcı kilitlendi.
+Members.Errors.UserNotApproved,Kullanıcı onaylanmadı.
+Members.Errors.LogonGeneric,Giriş yapılamıyor.
+Members.NowLoggedOut,Artık dışarı kaydediliyor
+Member.ProfileUpdated,Profil güncellendi
+Language.Changed,Dil Değişti
+Rss.LatestActivity.Title,Son Forum Tartışmalar
+Rss.LatestActivity.Description,Son tartışmalar
+Errors.NothingToDisplay,Hiçbir şey Görüntülemek İçin
+Rss.Category.Title,{0} Tartışmalar
+Rss.Category.Description,Latest discussions happening in the {0} category
+Report.Reporter,muhabir
+Report.MemberReported,Üye Dolaylı
+Report.Reason,nedeni
+Report.MemberReport,Üye Raporu
+Report.Admin,Yönetici
+Report.PostReported,Mesaj olarak bildirilen
+Report.PostReport,Mesaj Raporu
+Badges.UnableToAward,Unable to award badges as badge collection is null for user {0}
+Badge.UnknownBadge,Bilinmeyen rozet türü {0}
+Badge.BadegEnumNoClass,Rozet enum türü {0} belirtilen karşılık gelen sınıfı vardır.
+Members.Errors.DuplicateEmail,A user name for that e-mail address already exists. Please enter a different e-mail address.
+Members.Errors.DuplicateUserName,User name already exists. Please enter a different user name.
+Members.Errors.InvalidPassword,The password provided is invalid. Please enter a valid password value.
+Members.Errors.InvalidEmail,The e-mail address provided is invalid. Please check the value and try again.
+Members.Errors.InvalidAnswer,The password retrieval answer provided is invalid. Please check the value and try again.
+Members.Errors.InvalidQuestion,The password retrieval question provided is invalid. Please check the value and try again.
+Members.Errors.InvalidUserName,The user name provided is invalid. Please check the value and try again.
+Members.Errors.ProviderError,The authentication provider returned an error. Please verify your entry and try again. If the problem persists please contact your system administrator.
+Members.Errors.UserRejected,The user creation request has been canceled. Please verify your entry and try again. If the problem persists please contact your system administrator.
+Members.Errors.Unknown,An unknown error occurred. Please verify your entry and try again. If the problem persists please contact your system administrator.
+Members.NewMemberRegistered,New member registered on {0} ({1})
+Members.Admin,Yönetici
+Members.NewMemberSubject,Yeni Üye Kayıt
+Members.CantUnlock,Kullanıcı yok - kilidini olamaz.
+Members.ForgotPassword.Email,Sen şifrenizi {0} sıfırlanır talep var. Yeni şifreniz aşağıda
+Members.ForgotPassword.Subject,Parola Sıfırlama
+Members.ForgotPassword.SuccessMessage,Yeni şifre size e-posta olmuştur
+Members.ForgotPassword.ErrorMessage,sıfırlama şifresi
+Members.ChangePassword.Success,Şifre değişti
+Members.ChangePassword.Error,Geçerli parola yanlış ya da yeni parola geçersiz.
+Buttons.ChangePassword,Şifre değiştir
+Members.ChangePassword.Title,Parola Değiştir
+Members.ChangePassword.Text,Yeni parolalar uzunluğu {0} karakterden az olması gerekmektedir.
+Members.ChangePassword.Link,İsterseniz buraya tıklayın {0}
+Members.ForgotPassword.Title,Parolanızı mı unuttunuz
+Buttons.ResetPassword,Şifre sıfırlamak
+Members.ForgotPassword.Link,Şifrenizi mi unuttunuz?
+Members.Label.CurrentPassword,Şu andaki şifre
+Members.Label.NewPassword,Yeni Şifre 
+Members.Label.ConfirmNewPassword,Yeni Şifreyi Onayla
+Members.Label.EmailAddressBlank,E-Posta adresinizi giriniz.
+Activity.Badge,Rozet
+Activity.UserAwardedBadge,Almıştır.
+Activity.UserJoined,Foruma yeni üye.
+Activity.ProfileUpdated,Güncel bir profile sahip.
+Topic.Label.SubscribeToTopic,Cevaplardan haberdar olun.
+Badges.PageTitle,Rozetler
+Layout.Nav.Badges,Rozetler
+Topic.Label.TopicTitle,Başlık
+Poll.Button.Create,Bu konuya anket ekle
+Poll.Placeholder.TypeAnswerHere,Type A Poll Answer Here
+Topic.OptionsHeading,Konu ayarları
+Poll.Button.Remove,Konu gönderen, anket kaldır.
+Poll.Button.Vote,Oy gönder !
+Error.WrongAnswerRegistration,Cevap verirken bir hata oluştu, tekrar deneyiniz.
+Members.LoginOrText,Veya
+Facebook.Error.EnabledButNotAddedKeys,You have enabled Facebook login but not added your AppId or Secret key to the web.config
+Members.Profile.IsSocialAccount,Sosyal hesabınız.
+Date.JustNow,Şu anda
+Date.OneMinuteAgo,1 dakika önce
+Date.MinutesAgo,{0} dakikalar önce
+Date.OneHourAgo,1 Saat önce
+Date.HoursAgo,{0} Saatler önce
+Date.Yesterday,Dün
+Date.DaysAgo,{0} Günler önce 
+Date.WeeksAgo,{0} Haftalar önce
+Side.Search,Ara
+Search.NoResults,Üzgünüz, Sonuç bulunamadı
+Topic.CommentsDetails,Yorumlar
+Members.DeleteAllPosts,Bütün mesajları sil
+Buttons.CreatePost,Mesaj Ekle
+Topic.Label.Category,Kategori Seçin
+Editor.NeedHelp,Yardımamı ihtiyacınız var?
+Members.BanUser,Yasaklı kullanıcı
+Members.UnBanUser,Yasak kaldırılan kullanıcı
+Errors.NoPermissionPolls,Konu düzenlendi. Fakat anket oluşturmak için izniniz yok.
+Topic.ShowMorePosts,Daha fazla mesaj göster.
+Topic.ShowMorePostsLoading,Mesajlar yükleniyor.
+Topic.AlreadyAnswered,Soru zaten cevaplanmış
+Topic.Comment,Cevap
+Stats.FooterActiveUsersText,Üyeler şu anda çevrimiçi:
+PostFilter.OrderBy,Tarafından Sipariş:
+PostFilter.Standard,Standart
+PostFilter.Newest,Yeni
+PostFilter.Votes,Oyla
+PM.NewPrivateMessageSubject,Yeni özel mesaj
+PM.NewPrivateMessageBody,{0} Sana özel mesaj gönderildi.
+Post.DeleteConfirmation,Silmek istediğine emin misin ?
+Category.SubCategoriesHeading,Alt kategoriler
+Category.AllCategories,Bütün kategoriler
+Category.MostRecent,En yeni:
+Members.LogonFacebookButton,Facebook ile giriş yap
+Members.LogonGoogleButton,Google ile giriş yap
+Twitter.Error.EnabledButNotAddedKeys,You have enabled social logins but not added the Twitter id and secret key in the web.config
+Error.EmailIsBanned,Erişmeye çalıştığınız hesap yasaklandı.
+Post.FilesUploaded,Dosyalar başarıyla yüklendi.
+Post.Attach,İlişkilendir
+Post.Upload,Dosya yükle
+Post.UploadBannedFileExtension,Dosya uzantısı izin verilmiyor.
+Post.UploadFileTooBig,Dosya boyutu büyük !
+File.SuccessfullyDeleted,Dosya silindi.
+Members.MemberEmailAuthorisationNeeded,Size bir doğrulama e-postası gönderdik. Hesabınızı onaylamak için e-posta onay linkine tıklayınız
+Members.MemberEmailAuthorisation.EmailBody,Devam edebilmek için {0} - Aşağıdaki bağlantıya tıklayarak hesabınızı onaylamanız gerekmektedir. {1}
+Members.MemberEmailAuthorisation.Konu,E-Posta onayı
+Members.NowApproved,Hesabınız onaylanmıştır, Tebrikler !
+Members.MemberEmailAuthorisationNeededMessage,Hesabınızı onaylamak için onay linkine tıklayınız.
+Members.MemberEmailAuthorisationResend,Doğrulama mesajını tekrardan gönder
+Members.MessageMe,Mesaj At
+Confirmation.DeleteMembersPosts,Konuları mesajları ve üyeleri sileceksiniz emin misiniz ?
+Moderate.AwaitingModeration,Mesajınız şu anda moderatör tarafından onaylanmayı bekliyor. Onaylandıktan sonra sitede gözükecektir.
+Badges.AwardsPoints,Awards {0} points
+Language.Change,Dil değiştir.
+Post.Quote,Alıntı
+Members.Label.UploadNewAvatar,Yeni profil resimi yükle
+Member.HasNewPrivateMessages,Yeni okunmamış özel mesaj
+Badge.AuthorMarkAsSolutionBadge.Name,Sorun çözüldü
+Badge.AuthorMarkAsSolutionBadge.Desc,This badge is awarded to a user when they mark another users post as the solution to their topic
+Badge.UserVoteUpBadge.Name,İlk Oyu Sen Ver !
+Badge.UserVoteUpBadge.Desc,This badge is awarded to users after they make their first vote up
+Badge.PostMentionsUmbraco.Name,Umbraco Fan
+Badge.PostMentionsUmbraco.Desc,This badge is awarded to a user who mentions Umbraco in their latest post
+Badge.PosterVoteUpBadge.Name,İlk Oylama !
+Badge.PosterVoteUpBadge.Desc,This badge is awarded to users after they receive their first vote up from another user
+Badge.PosterMarkAsSolutionBadge.Name,Seçilmiş mesaja yanıt
+Badge.PosterMarkAsSolutionBadge.Desc,This badge is awarded to a user when their post is marked as the solution to a topic
+Badge.PadawanBadge.Name,Padawan
+Badge.PadawanBadge.Desc,Had 10 or more posts successfully marked as an answer
+Badge.OneThousandPoints.Name,Thousand Pointer
+Badge.OneThousandPoints.Desc,Bu rozet 1000 Puan Alan kullanıcıya verilir
+Badge.MemberForAYearBadge.Name,İlk Yılı
+Badge.MemberForAYearBadge.Desc,1 Yıllık Kullanıcı
+Badge.GrouchBadge.Name,The Grouch
+Badge.GrouchBadge.Desc,This badge is awarded to users who have voted down other users posts 10 or more times
+Badge.JediMasterBadge.Name,Jedi Ustası
+Badge.JediMasterBadge.Desc,Had 50 or more posts successfully marked as an answer
+Badge.Photogenic.Name,Fotojenik
+Badge.Photogenic.Desc,Little things like uploading a profile picture make the community a better place. Thanks!
+Site.MvcForum,MvcForum
+Layout.Nav.Utilities,Kamu
+Side.Search.SearchFor,Aranacak kelimeyi girin...
+Side.Search.Go,Git
+Topic.IsSticky,Yapışkan konular
+Topic.IsSolved,Çözülmüş konular
+Topic.Category,Kategori
+Topic.IsPoll,Anket
+Topic.LastPost,Son Konular
+Topic.HotTopics,En yeni konular
+Notifications.NoActiveMembers,Şu anda çevrimiçi
+Post.LikedBy,Tarafından beğendi
+Post.Browse,Araştır.
+Post.AttachedFiles,Ekli Yazılar
+SubNav.Latest,En yeni
+SubNav.Following,Takip Edilen
+SubNav.PostedIn,Yayımlanan
+SubNav.Favourites,Favoriler
+Favourites.PageTitle,Favoriler
+Favourites.NoMemberFavourites,Yıldızlı Mesajlar
+Following.PageTitle,Konular & Kategoriler
+Following.Categories,Takip ettiğin kategoriler
+SubscribedCats.NothingToShow,You are not following to any Categories
+Following.Topics,Takip Ettiğin Konular
+SubscribedTopics.NothingToShow,You are not following to any Topics
+PostedIn.PageTitle,Konular & sana atılan mesajlar
+Topic.Label.Tags,Etiket ekle
+Topic.Label.UploadFiles,Dosya yükle
+Search.Searching,Arama
+Search.InTopic,Konuda
+Members.SrubAndBan,Scrub Üyesi
+Confirmation.SrubAndBan,Are you sure you want to do this? It will delete all their posts and then ban them
+Admin,Admin
+Members.SuccessfulSrub,Hepsi tamam
+Post.Favourite,Favori
+Post.Favourited,Favori
+Members.NowBanned,Yasaklı Kullanıcı
+PM.AboutToExceedInboxSizeBody,You are about to exceed your private message inbox allowance
+PM.AboutToExceedInboxSizeSubject,Özel Mesaj Gelen Kutusu
+PM.NewPrivateMessage,Yeni Özel Mesaj
+PM.LastActivity,Son online
+StopWord.Error,Yasaklı kelime ya da url girdiniz.
+Post.Permalink,Permalink
+Members.Profile.LastOnline,En son online olan
+Members.UnableToGetEmailAddress,Unable to gain access to your email address - please check your permissions
+Members.ResetPassword.Title,Parola sıfırlama isteği gönderildi
+Members.ResetPassword.Text,Şifre sıfırlama isteğiniz e-posta adresinize gönderildi.
+Members.ResetPassword.EmailText,A request has been made to reset your password on {0}. To reset your password follow the link below. If you did not make this request then please ignore this email. No further action is required and your password will not be changed.
+Members.ResetPassword.SuccessText,Şifreniz başarı ile değiştirildi.
+Members.ResetPassword.InvalidToken,Bu istek geçersiz yada zaman aşımına uğradı. Tekrar deneyiniz.
+Members.ResetPassword.Error,Şifreyi sıfırlarken bir hata oluştu, lütfen tekrar deneyiniz.
+Tasks.MarkAsSolutionReminderJob.EmailBody,Your topic {0} on {1} has {2} replies but has still not been marked as solved. Please check again to see if any answers are appropriate and mark them as the solution if they are.
+Tasks.MarkAsSolutionReminderJob.Subject,Your post on {0}
+Badge.FavouriteFirstPost.Name,İlk Favori
+Badge.FavouriteFirstPost.Desc,İlk Yazı Favori Var
+Badge.YourPostFavouritedTenTimes.Name,Tanınmış Mesaj
+Badge.YourPostFavouritedTenTimes.Desc,Mesajlarınız Bir Çok Kullanıcı Tarafından Favorilerine Eklenmiştir
+Badge.YourPostFavourited.Name,Favori Mesajlar
+Badge.YourPostFavourited.Desc,Bir Başka Kullanıcı Tarafından Favorilere Eklenen Mesaj
+Post.MemberIsOnline,Açık
+PM.MemberIsOnline,Açık
+Topic.Label.PollCloseAfterDays,Close Poll After Specified Amount Of Days? Leave as 0 to disable
+Topic.PollClosed,Kapalı
+Post.OthersLiked,Ve {0} Diğer
+Members.Label.DisableEmailNotifications,E-Posta Bildirimlerini Devre Dışı Bırak
+TinyMCE.InsertImage.ButtonTitle,Resim Ekle
+TinyMCE.InsertImage.ButtonOk,Tamam
+TinyMCE.InsertImage.ButtonClose,Kapat
+TinyMCE.InsertImage.EnterValidUrl,Lütfen Geçerli Bir Adres Giriniz
+TinyMCE.InsertImage.SelectFile,Lütfen Dosya Seçiniz
+TinyMCE.InsertImage.MaxFileSize,Max Resim Boyutu 2 MB Olmalı
+TinyMCE.InsertImage.OnlyImages,Sadece JPEG, PNG ve GIF görüntü yüklenebilir
+TinyMCE.InsertImage.LabelUploadImage,Resim Yükle
+TinyMCE.InsertImage.Browse,Gözat
+TinyMCE.InsertImage.ExternalImage,Harici Resim
+TinyMCE.InsertImage.ImageDescription,Görüntü Açıklaması
+Post.Options,Mesaj Seçeneklerini Göster
+SlidePanel.CloseConfirmation,Kapatmak İstediğinize Emin Misiniz ?
+PM.Block,Engel
+PM.Blocked,Engellendi
+PM.BlockedMessage,Mesaj Açılamıyor
+PM.ShowMore,Daha Fazla Mesaj Göster
+PM.ShowMoreLoading,Yükleniyor...
+Members.LogonMicrosoftButton,Microsoft ile giriş
+Search.Results,Kayıt Bulunamadı
+Post.Trusted,Güvenilen
+Post.TrustedUser,Güvenilen Kullanıcı
+Spam.FloodTestFailed,You are posting too quickly

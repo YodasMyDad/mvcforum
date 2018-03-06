@@ -1,9 +1,10 @@
-﻿@using MVCForum.Utilities
-@model MVCForum.Website.ViewModels.TopicViewModel
+﻿@using MvcForum.Core.Utilities
+@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.Topic.TopicViewModel
 @{
     var postToolTip = string.Concat(StringUtils.ReturnAmountWordsFromString(StringUtils.StripHtmlFromString(Model.StarterPost.Post.PostContent), 50), "....");
 }
-@if (!Model.Permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
+@if (!Model.Permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
 {
     <div class="topicrow topicrow-slim topicsticky-@(Model.Topic.IsSticky.ToString().ToLower()) topiclocked-@(Model.Topic.IsLocked.ToString().ToLower()) topicsolved-@(Model.Topic.Solved.ToString().ToLower())">
 
@@ -28,7 +29,7 @@
             <p class="topicrowfooterinfo">
                 <a href="@Html.Raw(Model.Topic.NiceUrl)">@Html.LanguageString("Topic.LatestBy")</a>
                 <a href="@Model.Topic.LastPost.User.NiceUrl">@Model.Topic.LastPost.User.UserName</a>
-                @DatesUI.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString()).
+                @DatesUi.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString()).
                 <span class="stats topicanswers"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Model.Answers.KiloFormat()</span>
                 <span class="stats topicviews"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Model.Views.KiloFormat()</span>
                 <span class="stats topicupvotes"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span> @Model.VotesUp.KiloFormat()</span>

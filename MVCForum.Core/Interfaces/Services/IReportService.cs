@@ -1,8 +1,8 @@
-﻿using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
-    public partial interface IReportService
+    using Models.General;
+
+    public partial interface IReportService : IContextService
     {
         void MemberReport(Report report);
         void PostReport(Report report);

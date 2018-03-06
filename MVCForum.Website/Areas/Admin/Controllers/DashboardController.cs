@@ -1,35 +1,36 @@
-﻿using System.Linq;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Utilities;
-using MVCForum.Website.Areas.Admin.ViewModels;
-
-namespace MVCForum.Website.Areas.Admin.Controllers
+﻿namespace MvcForum.Web.Areas.Admin.Controllers
 {
-    [Authorize(Roles = AppConstants.AdminRoleName)]
-    public partial class DashboardController : BaseAdminController
+    using System.Linq;
+    using System.Web.Mvc;
+    using Core.Constants;
+    using Core.Interfaces;
+    using Core.Interfaces.Services;
+    using Core.Utilities;
+    using Web.ViewModels.Admin;
+
+    [Authorize(Roles = Constants.AdminRoleName)]
+    public class DashboardController : BaseAdminController
     {
-        private readonly IPostService _postService;
-        private readonly ITopicService _topicService;
-        private readonly ITopicTagService _topicTagService;
-        private readonly IPrivateMessageService _privateMessageService;
+        private const int AmountToShow = 7;
         private readonly ICategoryService _categoryService;
         private readonly IMembershipUserPointsService _membershipUserPointsService;
-        const int AmountToShow = 7;
+        private readonly IPostService _postService;
+        private readonly IPrivateMessageService _privateMessageService;
+        private readonly ITopicService _topicService;
 
-        public DashboardController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService,
-            ILocalizationService localizationService, ISettingsService settingsService, IPostService postService, 
-            ITopicService topicService, ITopicTagService topicTagService, IMembershipUserPointsService membershipUserPointsService, ICategoryService categoryService, IPrivateMessageService privateMessageService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
+        public DashboardController(ILoggingService loggingService, IMembershipService membershipService,
+            ILocalizationService localizationService, ISettingsService settingsService, IPostService postService,
+            ITopicService topicService, ITopicTagService topicTagService,
+            IMembershipUserPointsService membershipUserPointsService, ICategoryService categoryService,
+            IPrivateMessageService privateMessageService,
+            IMvcForumContext context)
+            : base(loggingService, membershipService, localizationService, settingsService, context)
         {
             _membershipUserPointsService = membershipUserPointsService;
             _categoryService = categoryService;
             _privateMessageService = privateMessageService;
             _postService = postService;
             _topicService = topicService;
-            _topicTagService = topicTagService;
         }
 
         public PartialViewResult MainAdminNav()
@@ -45,7 +46,7 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             var postsToModerate = _postService.GetPendingPostsCount(_categoryService.GetAll());
             if (topicsToModerate > 0 || postsToModerate > 0)
             {
-                moderateCount = (topicsToModerate + postsToModerate);
+                moderateCount = topicsToModerate + postsToModerate;
             }
 
             var viewModel = new MainDashboardNavViewModel
@@ -64,10 +65,10 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
             if (Request.IsAjaxRequest())
             {
-                using (UnitOfWorkManager.NewUnitOfWork())
+                return PartialView(new TodaysTopics
                 {
-                    return PartialView(new TodaysTopics { Topics = _topicService.GetTodaysTopics(AmountToShow, allCats) });
-                }
+                    Topics = _topicService.GetTodaysTopics(AmountToShow, allCats)
+                });
             }
             return null;
         }
@@ -77,10 +78,10 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             if (Request.IsAjaxRequest())
             {
-                using (UnitOfWorkManager.NewUnitOfWork())
+                return PartialView(new LatestUsersViewModels
                 {
-                    return PartialView(new LatestUsersViewModels { Users = MembershipService.GetLatestUsers(AmountToShow) });
-                }
+                    Users = MembershipService.GetLatestUsers(AmountToShow)
+                });
             }
             return null;
         }
@@ -90,10 +91,10 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             if (Request.IsAjaxRequest())
             {
-                using (UnitOfWorkManager.NewUnitOfWork())
+                return PartialView(new LowestPointUsersViewModels
                 {
-                    return PartialView(new LowestPointUsersViewModels { Users = _membershipUserPointsService.GetAllTimePointsNegative(AmountToShow) });
-                }
+                    Users = _membershipUserPointsService.GetAllTimePointsNegative(AmountToShow)
+                });
             }
             return null;
         }
@@ -103,10 +104,10 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             if (Request.IsAjaxRequest())
             {
-                using (UnitOfWorkManager.NewUnitOfWork())
+                return PartialView(new LowestPointPostsViewModels
                 {
-                    return PartialView(new LowestPointPostsViewModels { Posts = _postService.GetLowestVotedPost(AmountToShow) });
-                }
+                    Posts = _postService.GetLowestVotedPost(AmountToShow)
+                });
             }
             return null;
         }
@@ -118,10 +119,11 @@ namespace MVCForum.Website.Areas.Admin.Controllers
             {
                 // Get all cats as only admins can view this page
                 var allCats = _categoryService.GetAll();
-                using (UnitOfWorkManager.NewUnitOfWork())
+
+                return PartialView(new HighestViewedTopics
                 {
-                    return PartialView(new HighestViewedTopics { Topics = _topicService.GetHighestViewedTopics(AmountToShow, allCats) });
-                }
+                    Topics = _topicService.GetHighestViewedTopics(AmountToShow, allCats)
+                });
             }
             return null;
         }
@@ -131,9 +133,12 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             if (Request.IsAjaxRequest())
             {
-                    var reader = new RssReader();
-                    var viewModel = new LatestNewsViewModel { RssFeed = reader.GetRssFeed("http://www.mvcforum.com/rss").Take(AmountToShow).ToList() };
-                    return PartialView(viewModel);
+                var reader = new RssReader();
+                var viewModel = new LatestNewsViewModel
+                {
+                    RssFeed = reader.GetRssFeed("http://www.mvcforum.com/rss").Take(AmountToShow).ToList()
+                };
+                return PartialView(viewModel);
             }
             return null;
         }

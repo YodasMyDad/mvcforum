@@ -1,8 +1,11 @@
-﻿@model MVCForum.Website.ViewModels.PostViewModel
+﻿@using MvcForum.Core.ExtensionMethods
+@using MvcForum.Web.Application.ExtensionMethods
+@using MvcForum.Web.ViewModels.Post
+@model PostViewModel
 @{
     var postId = Model.Post.Id;
     var loggedOnUserId = Html.CurrentMember() != null ? Html.CurrentMember().Id : Guid.Empty;
-    var isAdmin = User.IsInRole(AppConstants.AdminRoleName);
+    var isAdmin = User.IsInRole(Constants.AdminRoleName);
     var downVotes = Model.Votes.Where(x => x.Amount < 0).ToList();
     var upVotes = Model.Votes.Where(x => x.Amount > 0).ToList();
 }
@@ -11,7 +14,7 @@
     <div class="rowcreater hidden-xs">
         <a id="comment-@postId"></a>
         <a href="@Model.Post.User.NiceUrl">
-            <img src="@Model.Post.User.MemberImage(SiteConstants.Instance.GravatarPostSize)" alt="@Model.Post.User.UserName">
+            <img src="@Model.Post.User.MemberImage(ForumConfiguration.Instance.GravatarPostSize)" alt="@Model.Post.User.UserName">
         </a>
     </div>
 
@@ -24,7 +27,7 @@
             <div class="postbodytop">
                 <a class="postmember-@postId" href="@Html.Raw(Model.Post.User.NiceUrl)">@Html.Raw(Model.Post.User.UserName)</a>
                 @Html.LanguageString("Post.PostedThis")
-                @DatesUI.GetPrettyDate(Model.Post.DateCreated.ToString())
+                @DatesUi.GetPrettyDate(Model.Post.DateCreated.ToString())
                 @if (isAdmin && !string.IsNullOrEmpty(Model.Post.IpAddress))
                 {
                     <text> - @Model.Post.IpAddress</text>
@@ -32,16 +35,16 @@
                 @if (Html.Settings().DisplayEditedBy && Model.Post.DateEdited > Model.Post.DateCreated)
                 {
 
-                    <text> - @Html.LanguageString("Post.LastEdited")  @DatesUI.GetPrettyDate(Model.Post.DateEdited.ToString())</text>
+                    <text> - @Html.LanguageString("Post.LastEdited")  @DatesUi.GetPrettyDate(Model.Post.DateEdited.ToString())</text>
                 }
             </div>
 
             <div id="postcontent-@postId" class="postcontent">
-                <p>@Html.Raw(AppHelpers.ConvertPostContent(Model.Post.PostContent))</p>
+                <p>@Html.Raw(Model.Post.PostContent.ConvertPostContent())</p>
 
                 @if (Html.Settings().EnableSignatures && !string.IsNullOrEmpty(Model.Post.User.Signature))
                 {
-                    <div class="userpostsignature">@Html.Raw(AppHelpers.ConvertPostContent(Model.Post.User.Signature))</div>
+                    <div class="userpostsignature">@Html.Raw(Model.Post.User.Signature.ConvertPostContent())</div>
                 }
             </div>
 
@@ -138,7 +141,7 @@
                                         <span class="glyphicon glyphicon-file" aria-hidden="true"></span>
                                     }
                                 </a>
-                                @if (Model.Post.User.Id == loggedOnUserId || User.IsInRole(AppConstants.AdminRoleName))
+                                @if (Model.Post.User.Id == loggedOnUserId || User.IsInRole(Constants.AdminRoleName))
                                 {
                                     <a href="@Url.Action("DeleteUploadedFile", "Upload", new { file.Id })" class="deleteupload" title="@Html.LanguageString("Post.Delete")">
                                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
@@ -150,7 +153,7 @@
                 </div>
             }
 
-            @Html.Partial("_PostLikedBy", new MVCForum.Website.ViewModels.PostLikedByViewModel { Post = Model.Post, Votes = upVotes })
+            @Html.Partial("_PostLikedBy", new PostLikedByViewModel { Post = Model.Post, Votes = upVotes })
 
         </div>
 

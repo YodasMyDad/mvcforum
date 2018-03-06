@@ -1,8 +1,8 @@
-﻿using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Domain.Events
+﻿namespace MvcForum.Core.Events
 {
-    public class PostMadeEventArgs : MVCForumEventArgs
+    using Models.Entities;
+
+    public class PostMadeEventArgs : MvcForumEventArgs
     {
         public Post Post { get; set; }
     }

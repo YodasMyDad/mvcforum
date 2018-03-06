@@ -1,8 +1,8 @@
-﻿using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Domain.Events
+﻿namespace MvcForum.Core.Events
 {
-    public class VoteEventArgs  : MVCForumEventArgs
+    using Models.Entities;
+
+    public class VoteEventArgs : MvcForumEventArgs
     {
         public Vote Vote { get; set; }
     }

@@ -92,7 +92,7 @@ var blockMember = function () {
             }
 
             var viewModel = new Object();
-            viewModel.MemberToBlockOrUnBlock = userid;
+            viewModel.Id = userid;
 
             // Ajax call to post the view model to the controller
             var strung = JSON.stringify(viewModel);

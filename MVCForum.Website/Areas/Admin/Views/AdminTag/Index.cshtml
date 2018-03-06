@@ -1,5 +1,6 @@
-﻿@using MVCForum.Domain.Constants
-@model MVCForum.Website.Areas.Admin.ViewModels.ListTagsViewModel
+﻿@using MvcForum.Core.Constants
+@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.Admin.ListTagsViewModel
 
 @{
     ViewBag.Title = "Manage Tags";
@@ -60,7 +61,7 @@
                                 </strong>
                             </td>
                             <td>
-                                <a href="@Url.Action("Delete", new { tag = tag.Tag })" class="btn-mvc">
+                                <a href="@Url.Action("Delete", new { tag = tag.Tag, p = Model.PageIndex })" class="btn-mvc">
                                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                                 </a>
                             </td>
@@ -71,7 +72,7 @@
 
             if (Model.Tags.TotalPages > 1)
             {
-                @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
+                @Html.Pager(Convert.ToInt32(Model.PageIndex), ForumConfiguration.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { search = Model.Search })
             }
         }
     </div>

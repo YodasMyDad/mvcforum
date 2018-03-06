@@ -49,6 +49,7 @@ $(function () {
         var lockedholder = $('.createtopicholder .createlocked');
         var uploadholder = $('.createtopicholder .createuploadfiles');
         var pollButtonholder = $('.createtopicholder .pollcreatebuttonholder');
+        var createTagsMessage = $('.createtopicholder .createtagmessage');
 
         // Fire when the dropdown changes
         createTopicCategoryDropdown.change(function (e) {
@@ -85,6 +86,12 @@ $(function () {
                             pollButtonholder.show();
                         } else {
                             pollButtonholder.hide();
+                        }
+
+                        if (data.CanCreateTags) {
+                            createTagsMessage.hide();
+                        } else {
+                            createTagsMessage.show();
                         }
                     },
                     error: function (xhr, ajaxOptions, thrownError) {

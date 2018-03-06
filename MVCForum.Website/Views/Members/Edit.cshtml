@@ -1,5 +1,5 @@
-﻿@using MVCForum.Website.Application.ExtensionMethods
-@model MVCForum.Website.ViewModels.MemberFrontEndEditViewModel
+﻿
+@model MvcForum.Web.ViewModels.Member.MemberFrontEndEditViewModel
 
 @{
     Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
@@ -51,7 +51,7 @@
                 {
                     <div class="row membereditavatar">
                         <div class="col-md-2">
-                            <img src="@AppHelpers.MemberImage(Model.Avatar, Model.Email, Model.Id, SiteConstants.Instance.GravatarProfileSize)" alt="@Model.UserName">
+                            <img src="@AppHelpers.MemberImage(Model.Avatar, Model.Email, Model.Id, ForumConfiguration.Instance.GravatarProfileSize)" alt="@Model.UserName">
                         </div>
                         <div class="col-md-10">
                             @Html.LabelFor(x => x.Files)

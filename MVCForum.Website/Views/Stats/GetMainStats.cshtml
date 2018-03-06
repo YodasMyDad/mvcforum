@@ -1,5 +1,5 @@
-﻿@using MVCForum.Website
-@model MVCForum.Website.ViewModels.MainStatsViewModel
+﻿@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.Stats.MainStatsViewModel
 
 <div class="board-stats">
     <p>@Html.Raw(string.Format(Html.LanguageString("Stats.FooterMainStatText"), Model.MemberCount, Model.PostCount, Model.TopicCount))</p>    
@@ -11,7 +11,7 @@
         {
             <li>
                 <a title="@Html.Raw(member.UserName)" href="@member.NiceUrl">
-                    <img src="@member.MemberImage(SiteConstants.Instance.GravatarLeaderboardSize)" alt="@Html.Raw(member.UserName)" />
+                    <img src="@member.MemberImage(ForumConfiguration.Instance.GravatarLeaderboardSize)" alt="@Html.Raw(member.UserName)" />
                 </a>
             </li>
         }

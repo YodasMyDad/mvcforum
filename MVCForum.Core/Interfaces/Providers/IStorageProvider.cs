@@ -1,7 +1,7 @@
-﻿using System.Web;
-
-namespace MVCForum.Domain.Interfaces.Providers
+﻿namespace MvcForum.Core.Interfaces.Providers
 {
+    using System.Web;
+
     public interface IStorageProvider
     {
         string GetUploadFolderPath(bool createIfNotExist, params object[] subFolders);

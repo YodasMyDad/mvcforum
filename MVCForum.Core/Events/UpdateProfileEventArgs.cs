@@ -1,8 +1,8 @@
-﻿using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Domain.Events
+﻿namespace MvcForum.Core.Events
 {
-    public class UpdateProfileEventArgs : MVCForumEventArgs
+    using Models.Entities;
+
+    public class UpdateProfileEventArgs : MvcForumEventArgs
     {
         public MembershipUser User { get; set; }
     }

@@ -1,5 +1,5 @@
-﻿@using MVCForum.Domain.Constants
-@model MVCForum.Website.ViewModels.ViewMemberViewModel
+﻿
+@model MvcForum.Web.ViewModels.Member.ViewMemberViewModel
 <div class="adminprofiletools">
     
     @if(!Model.User.IsBanned)
@@ -13,7 +13,7 @@
 
     <p><a href="@Url.Action("Edit", "Members", new { Model.User.Id }, null)" class="btn-mvc">@Html.LanguageString("Members.EditMember")</a></p>      
 
-    @if (User.IsInRole(AppConstants.AdminRoleName))
+    @if (User.IsInRole(Constants.AdminRoleName))
     {
         <p><a href="@Url.Action("SrubAndBanUser", "Members", new { id = Model.User.Id }, null)" class="btn-mvc" onclick="return confirm('@Html.LanguageString("Confirmation.SrubAndBan")')">@Html.LanguageString("Members.SrubAndBan")</a></p> 
     }

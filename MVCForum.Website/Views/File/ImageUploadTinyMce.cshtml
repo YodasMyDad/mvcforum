@@ -1,10 +1,10 @@
-﻿@using MVCForum.Domain.DomainModel.General
+﻿@using MvcForum.Core.Models.General
 @{
     var themeName = Html.Settings().Theme;
     var theme = new Theme
     {
         ThemeName = themeName,
-        ThemePath = string.Concat(SiteConstants.Instance.ThemeRootFolder, themeName)
+        ThemePath = string.Concat(ForumConfiguration.Instance.ThemeRootFolder, themeName)
     };
 }
 @Html.Partial("_StyleSheets", theme)

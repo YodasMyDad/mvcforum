@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
 
-namespace MVCForum.Website.Areas.Admin
+namespace MvcForum.Web.Areas.Admin
 {
     public class AdminAreaRegistration : AreaRegistration
     {

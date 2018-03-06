@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Collections.Specialized;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
+    using System.Collections.Generic;
+    using System.Collections.Specialized;
+
     /// <summary>
-    /// This class deals with and supplies all config based data
+    ///     This class deals with and supplies all config based data
     /// </summary>
     public partial interface IConfigService
     {
@@ -13,7 +13,7 @@ namespace MVCForum.Domain.Interfaces.Services
         string Emotify(string inputText);
         OrderedDictionary GetEmoticonHashTable();
         Dictionary<string, string> GetForumConfig();
-        Dictionary<string, string> GetTypes();
+        Dictionary<string, string> GetPlugins();
 
         #endregion
     }

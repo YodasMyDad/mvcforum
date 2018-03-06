@@ -19,7 +19,7 @@
                             var externalUrl = b.getContentWindow().document.getElementById('external');
                             var externalRow = b.getContentWindow().document.getElementById('externalrow');
                             var uploadrow = b.getContentWindow().document.getElementById('uploadrow');
-                            var waitNotice = b.getContentWindow().document.getElementById('waiting');;
+                            var waitNotice = b.getContentWindow().document.getElementById('waiting');
                             if (externalUrl.value != '') {
                                 // We have an external url so use that
                                 // Check for http
@@ -70,7 +70,7 @@
                                     if (msg != '') {
                                         var imageAlt = imageDesc.value;
                                         var imageSrc = msg;
-                                        var imageTag = '<img src="' + imageSrc + '?width=690&upscale=false" alt="' + imageAlt + '" />';
+                                        var imageTag = '<img src="' + app_base + imageSrc.replace(/^\//, '') + '?width=690&upscale=false" alt="' + imageAlt + '" />';
                                         editor.insertContent(imageTag), b.close();
                                     } else {
                                         alert(generalError);

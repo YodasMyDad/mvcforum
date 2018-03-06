@@ -1,4 +1,5 @@
-﻿@model MVCForum.Website.ViewModels.ListPrivateMessageViewModel
+﻿@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.PrivateMessage.ListPrivateMessageViewModel
 
 @{
     Layout = "~/Views/Shared/_LayoutFullWidth.cshtml";
@@ -33,7 +34,7 @@
                                     @if (message.HasUnreadMessages){<text><i class="fa fa-commenting-o newmessageicon"></i></text>}
                                 </td>
                                 <td>
-                                    @DatesUI.GetPrettyDate(message.Date.ToString())
+                                    @DatesUi.GetPrettyDate(message.Date.ToString())
                                 </td>
                             </tr>
                         }
@@ -42,7 +43,7 @@
 
                 if (Model.TotalPages > 1)
                 {
-                    @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.Instance.PrivateMessageListSize, Convert.ToInt32(Model.TotalCount), new { })
+                    @Html.Pager(Convert.ToInt32(Model.PageIndex), ForumConfiguration.Instance.PrivateMessageListSize, Convert.ToInt32(Model.TotalCount), new { })
                 }
             }
             else

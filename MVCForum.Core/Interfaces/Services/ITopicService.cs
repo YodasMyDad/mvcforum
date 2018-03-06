@@ -1,54 +1,78 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Web.Mvc;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.DomainModel.General;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
-    public partial interface ITopicService
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using System.Web;
+    using System.Web.Mvc;
+    using Models.Entities;
+    using Models.General;
+    using Pipeline;
+
+    public partial interface ITopicService : IContextService
     {
-        Topic SanitizeTopic(Topic topic);
         IList<Topic> GetAll(List<Category> allowedCategories);
         IList<SelectListItem> GetAllSelectList(List<Category> allowedCategories, int amount);
         IList<Topic> GetHighestViewedTopics(int amountToTake, List<Category> allowedCategories);
-        IList<Topic> GetPopularTopics(DateTime? from, DateTime? to, List<Category> allowedCategories, int amountToShow = 20);
-        Topic Add(Topic topic);
+
+        IList<Topic> GetPopularTopics(DateTime? from, DateTime? to, List<Category> allowedCategories,
+            int amountToShow = 20);
+
+        Task<IPipelineProcess<Topic>> Create(Topic topic, HttpPostedFileBase[] files, string tags, bool subscribe, string postContent, Post post);
+
+        Task<IPipelineProcess<Topic>> Edit(Topic topic, HttpPostedFileBase[] files, string tags, bool subscribe, string postContent, string originalTopicName, List<PollAnswer> pollAnswers, int closePollAfterDays);
+
         IList<Topic> GetTodaysTopics(int amountToTake, List<Category> allowedCategories);
-        PagedList<Topic> GetRecentTopics(int pageIndex, int pageSize, int amountToTake, List<Category> allowedCategories);
+
+        Task<PaginatedList<Topic>> GetRecentTopics(int pageIndex, int pageSize, int amountToTake,
+            List<Category> allowedCategories);
+
         IList<Topic> GetRecentRssTopics(int amountToTake, List<Category> allowedCategories);
         IList<Topic> GetTopicsByUser(Guid memberId, List<Category> allowedCategories);
         IList<Topic> GetTopicsByLastPost(List<Guid> postIds, List<Category> allowedCategories);
-        PagedList<Topic> GetPagedTopicsByCategory(int pageIndex, int pageSize, int amountToTake, Guid categoryId);
-        PagedList<Topic> GetPagedPendingTopics(int pageIndex, int pageSize, List<Category> allowedCategories);
+        Task<PaginatedList<Topic>> GetPagedTopicsByCategory(int pageIndex, int pageSize, int amountToTake, Guid categoryId);
+        Task<PaginatedList<Topic>> GetPagedPendingTopics(int pageIndex, int pageSize, List<Category> allowedCategories);
         IList<Topic> GetPendingTopics(List<Category> allowedCategories, MembershipRole usersRole);
         int GetPendingTopicsCount(List<Category> allowedCategories);
         IList<Topic> GetRssTopicsByCategory(int amountToTake, Guid categoryId);
-        PagedList<Topic> GetPagedTopicsByTag(int pageIndex, int pageSize, int amountToTake, string tag, List<Category> allowedCategories);
+
+        Task<PaginatedList<Topic>> GetPagedTopicsByTag(int pageIndex, int pageSize, int amountToTake, string tag,
+            List<Category> allowedCategories);
+
         IList<Topic> SearchTopics(int amountToTake, string searchTerm, List<Category> allowedCategories);
-        PagedList<Topic> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> topicIds, List<Category> allowedCategories);
-        PagedList<Topic> GetMembersActivity(int pageIndex, int pageSize, int amountToTake, Guid memberGuid, List<Category> allowedCategories);
+
+        Task<PaginatedList<Topic>> GetTopicsByCsv(int pageIndex, int pageSize, int amountToTake, List<Guid> topicIds,
+            List<Category> allowedCategories);
+
+        Task<PaginatedList<Topic>> GetMembersActivity(int pageIndex, int pageSize, int amountToTake, Guid memberGuid,
+            List<Category> allowedCategories);
+
         IList<Topic> GetTopicsByCsv(int amountToTake, List<Guid> topicIds, List<Category> allowedCategories);
         IList<Topic> GetSolvedTopicsByMember(Guid memberId, List<Category> allowedCategories);
         Topic GetTopicBySlug(string slug);
         Topic Get(Guid topicId);
         List<Topic> Get(List<Guid> topicIds, List<Category> allowedCategories);
-        void Delete(Topic topic, IUnitOfWork unitOfWork);
+        Task<IPipelineProcess<Topic>> Delete(Topic topic);
         int TopicCount(List<Category> allowedCategories);
-        Post AddLastPost(Topic topic, string postContent);
+
         List<MarkAsSolutionReminder> GetMarkAsSolutionReminderList(int days);
+
         /// <summary>
-        /// Mark a topic as solved
+        ///     Mark a topic as solved
         /// </summary>
         /// <param name="topic"></param>
         /// <param name="post"></param>
         /// <param name="marker"></param>
         /// <param name="solutionWriter"></param>
         /// <returns>True if topic has been marked as solved</returns>
-        bool SolveTopic(Topic topic, Post post, MembershipUser marker, MembershipUser solutionWriter);
+        Task<bool> SolveTopic(Topic topic, Post post, MembershipUser marker, MembershipUser solutionWriter);
+
         IList<Topic> GetAllTopicsByCategory(Guid categoryId);
-        PagedList<Topic> GetPagedTopicsAll(int pageIndex, int pageSize, int amountToTake, List<Category> allowedCategories);
+
+        Task<PaginatedList<Topic>> GetPagedTopicsAll(int pageIndex, int pageSize, int amountToTake,
+            List<Category> allowedCategories);
+
         IList<Topic> GetTopicBySlugLike(string slug);
+        bool PassedTopicFloodTest(string topicTitle, MembershipUser user);
     }
 }

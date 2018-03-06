@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Web.Mvc;
-using System.Xml;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Website.Application
+﻿namespace MvcForum.Web.Application.CustomActionResults
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Web.Mvc;
+    using System.Xml;
+    using Core.Models.General;
+
     public class GoogleSitemapResult : ActionResult
     {
         private readonly List<SitemapEntry> _items;
@@ -17,7 +17,7 @@ namespace MVCForum.Website.Application
 
         public override void ExecuteResult(ControllerContext context)
         {
-            var settings = new XmlWriterSettings { Indent = true, NewLineHandling = NewLineHandling.Entitize };
+            var settings = new XmlWriterSettings {Indent = true, NewLineHandling = NewLineHandling.Entitize};
 
             context.HttpContext.Response.ContentType = "text/xml";
             using (var _writer = XmlWriter.Create(context.HttpContext.Response.OutputStream, settings))
@@ -34,7 +34,7 @@ namespace MVCForum.Website.Application
                     _writer.WriteElementString("loc", string.Concat(currentUrl, x.Url));
                     _writer.WriteElementString("lastmod", string.Concat(x.LastUpdated.ToString("s"), "+00:00"));
                     _writer.WriteElementString("changefreq", x.ChangeFrequency.ToString());
-                    _writer.WriteElementString("priority",  string.IsNullOrEmpty(x.Priority) ? "0.5" : x.Priority);
+                    _writer.WriteElementString("priority", string.IsNullOrWhiteSpace(x.Priority) ? "0.5" : x.Priority);
                     _writer.WriteEndElement();
                 });
 

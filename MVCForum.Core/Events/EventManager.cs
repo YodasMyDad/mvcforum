@@ -1,64 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Web.Mvc;
-using MVCForum.Domain.Interfaces.Events;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Utilities;
-
-namespace MVCForum.Domain.Events
+﻿namespace MvcForum.Core.Events
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using Interfaces.Events;
+    using Interfaces.Services;
+    using Reflection;
+    using Utilities;
+
     public sealed class EventManager : IEventManager
     {
-        private readonly IReflectionService _reflectionService;
-        private const string InterfaceTargetName =@"MVCForum.Domain.Interfaces.Events.IEventHandler";
-
-        public EventHandler<BadgeEventArgs> BeforeBadgeAwarded;
-        public EventHandler<BadgeEventArgs> AfterBadgeAwarded;
-
-        public EventHandler<VoteEventArgs> BeforeVoteMade;
-        public EventHandler<VoteEventArgs> AfterVoteMade;
-
-        public EventHandler<MarkedAsSolutionEventArgs> BeforeMarkedAsSolution;
-        public EventHandler<MarkedAsSolutionEventArgs> AfterMarkedAsSolution;
-
-        public EventHandler<PostMadeEventArgs> BeforePostMade;
-        public EventHandler<PostMadeEventArgs> AfterPostMade;
-
-        public EventHandler<TopicMadeEventArgs> BeforeTopicMade;
-        public EventHandler<TopicMadeEventArgs> AfterTopicMade;
-
-        public EventHandler<RegisterUserEventArgs> BeforeRegisterUser;
-        public EventHandler<RegisterUserEventArgs> AfterRegisterUser;
-
-        public EventHandler<UpdateProfileEventArgs> BeforeUpdateProfile;
-        public EventHandler<UpdateProfileEventArgs> AfterUpdateProfile;
-
-        public EventHandler<LoginEventArgs> BeforeLogin;
-        public EventHandler<LoginEventArgs> AfterLogin;
-
-        public EventHandler<FavouriteEventArgs> BeforeFavourite;
-        public EventHandler<FavouriteEventArgs> AfterFavourite;
-
-        public EventHandler<PrivateMessageEventArgs> BeforePrivateMessage;
-        public EventHandler<PrivateMessageEventArgs> AfterPrivateMessage;
+        private const string InterfaceTargetName = @"MvcForum.Core.Interfaces.Events.IEventHandler";
 
         private static volatile EventManager _instance;
-        private static readonly object SyncRoot = new Object();
+
+        private static readonly object SyncRoot = new object();
+
+        public EventHandler<BadgeEventArgs> AfterBadgeAwarded;
+        public EventHandler<FavouriteEventArgs> AfterFavourite;
+        public EventHandler<LoginEventArgs> AfterLogin;
+        public EventHandler<MarkedAsSolutionEventArgs> AfterMarkedAsSolution;
+        public EventHandler<PostMadeEventArgs> AfterPostMade;
+        public EventHandler<PrivateMessageEventArgs> AfterPrivateMessage;
+        public EventHandler<TopicMadeEventArgs> AfterTopicMade;
+        public EventHandler<UpdateProfileEventArgs> AfterUpdateProfile;
+        public EventHandler<VoteEventArgs> AfterVoteMade;
+        public EventHandler<BadgeEventArgs> BeforeBadgeAwarded;
+        public EventHandler<FavouriteEventArgs> BeforeFavourite;
+        public EventHandler<LoginEventArgs> BeforeLogin;
+        public EventHandler<MarkedAsSolutionEventArgs> BeforeMarkedAsSolution;
+        public EventHandler<PostMadeEventArgs> BeforePostMade;
+        public EventHandler<PrivateMessageEventArgs> BeforePrivateMessage;
+        public EventHandler<TopicMadeEventArgs> BeforeTopicMade;
+        public EventHandler<UpdateProfileEventArgs> BeforeUpdateProfile;
+        public EventHandler<VoteEventArgs> BeforeVoteMade;
 
         public ILoggingService Logger { get; set; }
 
         /// <summary>
-        /// Constructor - hidden
-        /// </summary>
-        private EventManager()
-        {
-            _reflectionService = DependencyResolver.Current.GetService<IReflectionService>();
-        }
-
-        /// <summary>
-        /// Singleton instance
+        ///     Singleton instance
         /// </summary>
         public static EventManager Instance
         {
@@ -79,27 +60,16 @@ namespace MVCForum.Domain.Events
             }
         }
 
-        /// <summary>
-        /// Log errors
-        /// </summary>
-        /// <param name="msg"></param>
-        public void LogError(string msg)
-        {
-            if (Logger != null)
-            {
-                Logger.Error(msg);
-            }
-        }
-
         #region Initialise Code
+
         /// <summary>
-        /// Use reflection to get all event handling classes. Call this ONCE.
+        ///     Use reflection to get all event handling classes. Call this ONCE.
         /// </summary>
         public void Initialize(ILoggingService loggingService, List<Assembly> assemblies)
         {
             Logger = loggingService;
 
-            var interfaceFilter = new TypeFilter(_reflectionService.InterfaceFilter);
+            var interfaceFilter = new TypeFilter(ImplementationManager.InterfaceFilter);
 
             foreach (var nextAssembly in assemblies)
             {
@@ -131,64 +101,57 @@ namespace MVCForum.Domain.Events
                 catch (ReflectionTypeLoadException rtle)
                 {
                     var msg =
-                        string.Format(
-                            "Unable to load assembly. Probably not an event assembly, loader exception was: '{0}':'{1}'.",
-                             rtle.LoaderExceptions[0].GetType(), rtle.LoaderExceptions[0].Message);
+                        $"Unable to load assembly. Probably not an event assembly, loader exception was: '{rtle.LoaderExceptions[0].GetType()}':'{rtle.LoaderExceptions[0].Message}'.";
                     LogError(msg);
                 }
                 catch (Exception ex)
                 {
-                    LogError(string.Format("Error reflecting over event handlers: {0}", ex.Message));
+                    LogError($"Error reflecting over event handlers: {ex.Message}");
                 }
             }
-        } 
+        }
+
         #endregion
 
+        /// <summary>
+        ///     Log errors
+        /// </summary>
+        /// <param name="msg"></param>
+        public void LogError(string msg)
+        {
+            Logger?.Error(msg);
+        }
+
         #region Badges
+
         public void FireAfterBadgeAwarded(object sender, BadgeEventArgs eventArgs)
         {
-            var handler = AfterBadgeAwarded;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
+            AfterBadgeAwarded?.Invoke(this, eventArgs);
         }
 
         public void FireBeforeBadgeAwarded(object sender, BadgeEventArgs eventArgs)
         {
-            var handler = BeforeBadgeAwarded;
+            BeforeBadgeAwarded?.Invoke(this, eventArgs);
+        }
 
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        } 
         #endregion
 
         #region Votes
+
         public void FireBeforeVoteMade(object sender, VoteEventArgs eventArgs)
         {
-            var handler = BeforeVoteMade;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
+            BeforeVoteMade?.Invoke(this, eventArgs);
         }
 
         public void FireAfterVoteMade(object sender, VoteEventArgs eventArgs)
         {
-            var handler = AfterVoteMade;
+            AfterVoteMade?.Invoke(this, eventArgs);
+        }
 
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        } 
         #endregion
 
         #region Solutions
+
         public void FireBeforeMarkedAsSolution(object sender, MarkedAsSolutionEventArgs eventArgs)
         {
             var handler = BeforeMarkedAsSolution;
@@ -207,52 +170,12 @@ namespace MVCForum.Domain.Events
             {
                 handler(this, eventArgs);
             }
-        } 
-        #endregion
-
-        #region Posts
-        public void FireBeforePostMade(object sender, PostMadeEventArgs eventArgs)
-        {
-            var handler = BeforePostMade;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
         }
-        public void FireAfterPostMade(object sender, PostMadeEventArgs eventArgs)
-        {
-            var handler = AfterPostMade;
 
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        } 
-        #endregion
-
-        #region Topics
-        public void FireBeforeTopicMade(object sender, TopicMadeEventArgs eventArgs)
-        {
-            var handler = BeforeTopicMade;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        }
-        public void FireAfterTopicMade(object sender, TopicMadeEventArgs eventArgs)
-        {
-            var handler = AfterTopicMade;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        }
         #endregion
 
         #region Profile
+
         public void FireBeforeProfileUpdated(object sender, UpdateProfileEventArgs eventArgs)
         {
             var handler = BeforeUpdateProfile;
@@ -262,6 +185,7 @@ namespace MVCForum.Domain.Events
                 handler(this, eventArgs);
             }
         }
+
         public void FireAfterProfileUpdated(object sender, UpdateProfileEventArgs eventArgs)
         {
             var handler = AfterUpdateProfile;
@@ -270,29 +194,8 @@ namespace MVCForum.Domain.Events
             {
                 handler(this, eventArgs);
             }
-        } 
-        #endregion
-
-        #region Register
-        public void FireBeforeRegisterUser(object sender, RegisterUserEventArgs eventArgs)
-        {
-            var handler = BeforeRegisterUser;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
         }
 
-        public void FireAfterRegisterUser(object sender, RegisterUserEventArgs eventArgs)
-        {
-            var handler = AfterRegisterUser;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        } 
         #endregion
 
         #region Favourites
@@ -343,26 +246,5 @@ namespace MVCForum.Domain.Events
 
         #endregion
 
-        #region Login
-        public void FireBeforeLogin(object sender, LoginEventArgs eventArgs)
-        {
-            var handler = BeforeLogin;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        }
-
-        public void FireAfterLogin(object sender, LoginEventArgs eventArgs)
-        {
-            var handler = AfterLogin;
-
-            if (handler != null)
-            {
-                handler(this, eventArgs);
-            }
-        }
-        #endregion
     }
 }

@@ -372,7 +372,7 @@ var AddPostClickEvents = function () {
         var postId = solutionHolder.data('id');
 
         var markAsSolutionViewModel = new Object();
-        markAsSolutionViewModel.Post = postId;
+        markAsSolutionViewModel.Id = postId;
 
         // Ajax call to post the view model to the controller
         var strung = JSON.stringify(markAsSolutionViewModel);
@@ -411,7 +411,7 @@ var AddPostClickEvents = function () {
         //holdingUl.find(".votelink").fadeOut("fast");
 
         var voteUpViewModel = new Object();
-        voteUpViewModel.Post = postId;
+        voteUpViewModel.Id = postId;
 
         var voteUrl = "Vote/VoteDownPost";
         var otherVoteLink = holdingUl.find(".votelink[data-votetype='up']");
@@ -488,7 +488,7 @@ var AddPostClickEvents = function () {
         var myFavsHolder = $("div.myfavourites");
 
         var voteViewModel = new Object();
-        voteViewModel.PostId = postId;
+        voteViewModel.Id = postId;
 
         // Ajax call to post the view model to the controller
         var strung = JSON.stringify(voteViewModel);
@@ -616,7 +616,7 @@ var ShowExpandedVotes = function () {
             var votesSpan = $(this).find("span.votenumber");
 
             var expandVotesViewModel = new Object();
-            expandVotesViewModel.Post = votesSpan.attr("id");
+            expandVotesViewModel.Id = votesSpan.attr("id");
 
             // Ajax call to post the view model to the controller
             var strung = JSON.stringify(expandVotesViewModel);

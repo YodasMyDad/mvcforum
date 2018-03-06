@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Specialized;
-using System.Web.Security;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Website.Application;
-
-namespace MVCForum.Website.Membership
+﻿namespace MvcForum.Web.Application.Providers
 {
+    using System;
+    using System.Collections.Specialized;
+    using System.Web.Hosting;
+    using System.Web.Security;
+    using Core.Interfaces.Services;
+    using Core.Ioc;
+    using Unity;
+
     public class MvcForumMembershipProvider : MembershipProvider
     {
         // MSDN how to implement a custom provider: http://msdn.microsoft.com/en-us/library/6tc47t75.aspx
@@ -16,37 +18,72 @@ namespace MVCForum.Website.Membership
 
         private string _applicationName;
         private bool _enablePasswordReset;
-        private bool _enablePasswordRetrieval = false;
-        private bool _requiresQuestionAndAnswer;
-        private bool _requiresUniqueEmail;
         private int _maxInvalidPasswordAttempts;
-        private int _passwordAttemptWindow;
         private int _minRequiredNonAlphanumericCharacters;
         private int _minRequiredPasswordLength;
+        private int _passwordAttemptWindow;
+        private bool _requiresQuestionAndAnswer;
+        private bool _requiresUniqueEmail;
 
         // Use Dependency Resolver
         //public IUnitOfWorkManager UnitOfWorkManager
         //{
-        //    get { return DependencyResolver.Current.GetService<IUnitOfWorkManager>(); }
+        //    get { return UnityHelper.Container.Resolve<IUnitOfWorkManager>(); }
         //}
-        public IMembershipService MembershipService
+        public IMembershipService MembershipService => UnityHelper.Container.Resolve<IMembershipService>();
+
+        public override int MinRequiredPasswordLength => _minRequiredPasswordLength;
+
+        public override int MaxInvalidPasswordAttempts => _maxInvalidPasswordAttempts;
+
+
+        public override string ApplicationName
         {
-            get { return ServiceFactory.Get<IMembershipService>(); }
+            get { return _applicationName; }
+            set { _applicationName = value; }
+        }
+
+        public override bool EnablePasswordReset => _enablePasswordReset;
+
+        public override bool EnablePasswordRetrieval { get; } = false;
+
+        public override int MinRequiredNonAlphanumericCharacters => _minRequiredNonAlphanumericCharacters;
+
+        public override int PasswordAttemptWindow => _passwordAttemptWindow;
+
+        public override MembershipPasswordFormat PasswordFormat
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public override string PasswordStrengthRegularExpression
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public override bool RequiresQuestionAndAnswer
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public override bool RequiresUniqueEmail
+        {
+            get { throw new NotImplementedException(); }
         }
 
         /// <summary>
-        /// Read a config file value
+        ///     Read a config file value
         /// </summary>
         /// <param name="configValue"></param>
         /// <param name="defaultValue"></param>
         /// <returns></returns>
         private static string GetConfigValue(string configValue, string defaultValue)
         {
-            return String.IsNullOrEmpty(configValue) ? defaultValue : configValue;
+            return string.IsNullOrWhiteSpace(configValue) ? defaultValue : configValue;
         }
 
         /// <summary>
-        /// Initialise membership properties from config file
+        ///     Initialise membership properties from config file
         /// </summary>
         /// <param name="name"></param>
         /// <param name="config"></param>
@@ -57,26 +94,28 @@ namespace MVCForum.Website.Membership
                 throw new ArgumentNullException("config");
             }
 
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrWhiteSpace(name))
             {
                 name = "n3oSqlMembershipProvider";
             }
 
-            if (String.IsNullOrEmpty(config["description"]))
+            if (string.IsNullOrWhiteSpace(config["description"]))
             {
                 config.Remove("description");
-                config.Add("description", "MVCForum Standard Membership Provider");
+                config.Add("description", "MvcForum Standard Membership Provider");
             }
 
             // Initialize the abstract base class.
             base.Initialize(name, config);
 
-            _applicationName = GetConfigValue(config["applicationName"], System.Web.Hosting.HostingEnvironment.ApplicationVirtualPath);
+            _applicationName = GetConfigValue(config["applicationName"], HostingEnvironment.ApplicationVirtualPath);
             _maxInvalidPasswordAttempts = Convert.ToInt32(GetConfigValue(config["maxInvalidPasswordAttempts"], "5"));
             _passwordAttemptWindow = Convert.ToInt32(GetConfigValue(config["passwordAttemptWindow"], "10"));
-            _minRequiredNonAlphanumericCharacters = Convert.ToInt32(GetConfigValue(config["minRequiredNonAlphanumericCharacters"], "1"));
+            _minRequiredNonAlphanumericCharacters =
+                Convert.ToInt32(GetConfigValue(config["minRequiredNonAlphanumericCharacters"], "1"));
             _minRequiredPasswordLength = Convert.ToInt32(GetConfigValue(config["minRequiredPasswordLength"], "7"));
-            _requiresQuestionAndAnswer = Convert.ToBoolean(GetConfigValue(config["requiresQuestionAndAnswer"], "false"));
+            _requiresQuestionAndAnswer =
+                Convert.ToBoolean(GetConfigValue(config["requiresQuestionAndAnswer"], "false"));
             _requiresUniqueEmail = Convert.ToBoolean(GetConfigValue(config["requiresUniqueEmail"], "true"));
             _enablePasswordReset = Convert.ToBoolean(GetConfigValue(config["enablePasswordReset"], "true"));
         }
@@ -89,7 +128,7 @@ namespace MVCForum.Website.Membership
         //return false;
 
         /// <summary>
-        /// Validate the user (required for membership in MVC)
+        ///     Validate the user (required for membership in MVC)
         /// </summary>
         /// <param name="username"></param>
         /// <param name="password"></param>
@@ -98,29 +137,6 @@ namespace MVCForum.Website.Membership
         {
             // use the data in the graph object to authorise the user
             return MembershipService.ValidateUser(username, password, MaxInvalidPasswordAttempts);
-        }
-
-        public override int MinRequiredPasswordLength
-        {
-            get { return _minRequiredPasswordLength; }
-        }
-
-        public override int MaxInvalidPasswordAttempts
-        {
-            get { return _maxInvalidPasswordAttempts; }
-        }
-
-
-        public override string ApplicationName
-        {
-            get
-            {
-                return _applicationName;
-            }
-            set
-            {
-                _applicationName = value;
-            }
         }
 
         public override bool ChangePassword(string username, string oldPassword, string newPassword)
@@ -133,7 +149,8 @@ namespace MVCForum.Website.Membership
             return false;
         }
 
-        public override bool ChangePasswordQuestionAndAnswer(string username, string password, string newPasswordQuestion, string newPasswordAnswer)
+        public override bool ChangePasswordQuestionAndAnswer(string username, string password,
+            string newPasswordQuestion, string newPasswordAnswer)
         {
             if (ValidateUser(username, password))
             {
@@ -145,102 +162,66 @@ namespace MVCForum.Website.Membership
             return false;
         }
 
-        public override bool EnablePasswordReset
-        {
-            get { return _enablePasswordReset; }
-        }
-
-        public override bool EnablePasswordRetrieval
-        {
-            get { return _enablePasswordRetrieval; }
-        }
-
-        public override int MinRequiredNonAlphanumericCharacters
-        {
-            get { return _minRequiredNonAlphanumericCharacters; }
-        }
-
-        public override int PasswordAttemptWindow
-        {
-            get { return _passwordAttemptWindow; }
-        }
-
         public override bool DeleteUser(string username, bool deleteAllRelatedData)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public override MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize, out int totalRecords)
+        public override MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize,
+            out int totalRecords)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public override MembershipUserCollection FindUsersByName(string usernameToMatch, int pageIndex, int pageSize, out int totalRecords)
+        public override MembershipUserCollection FindUsersByName(string usernameToMatch, int pageIndex, int pageSize,
+            out int totalRecords)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override MembershipUserCollection GetAllUsers(int pageIndex, int pageSize, out int totalRecords)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override int GetNumberOfUsersOnline()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override string GetPassword(string username, string answer)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override MembershipUser GetUser(string username, bool userIsOnline)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override MembershipUser GetUser(object providerUserKey, bool userIsOnline)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override string GetUserNameByEmail(string email)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public override MembershipPasswordFormat PasswordFormat
-        {
-            get { throw new System.NotImplementedException(); }
-        }
-
-        public override string PasswordStrengthRegularExpression
-        {
-            get { throw new System.NotImplementedException(); }
-        }
-
-        public override bool RequiresQuestionAndAnswer
-        {
-            get { throw new System.NotImplementedException(); }
-        }
-
-        public override bool RequiresUniqueEmail
-        {
-            get { throw new System.NotImplementedException(); }
+            throw new NotImplementedException();
         }
 
         public override string ResetPassword(string username, string answer)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override bool UnlockUser(string userName)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
-        public override MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out MembershipCreateStatus status)
+        public override MembershipUser CreateUser(string username, string password, string email,
+            string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey,
+            out MembershipCreateStatus status)
         {
             throw new NotImplementedException();
         }
@@ -249,6 +230,5 @@ namespace MVCForum.Website.Membership
         {
             throw new NotImplementedException();
         }
-        
     }
 }

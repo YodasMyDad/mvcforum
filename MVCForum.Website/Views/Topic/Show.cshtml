@@ -1,8 +1,9 @@
-﻿@using MVCForum.Domain.DomainModel
-@using MVCForum.Utilities
-@using MVCForum.Website.Application
-@using MVCForum.Website.ViewModels
-@model TopicViewModel
+﻿@using MvcForum.Core.Models.Enums
+@using MvcForum.Core.Utilities
+@using MvcForum.Web.Application.ExtensionMethods
+@using MvcForum.Web.ViewModels
+@using MvcForum.Web.ViewModels.Post
+@model MvcForum.Web.ViewModels.Topic.TopicViewModel
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = Html.Raw(AppHelpers.CreatePageTitle(Model.Topic, Html.LanguageString("Topic.TitleFallBack")));
@@ -27,8 +28,8 @@
     }
 
     // Set a ViewBag for the category
-    //TempData[AppConstants.DefaultCategoryViewBagName] = Model.Topic.Category.Id;
-    var qs = Request.QueryString[AppConstants.PostOrderBy] ?? string.Empty;
+    //TempData[Constants.DefaultCategoryViewBagName] = Model.Topic.Category.Id;
+    var qs = Request.QueryString[Constants.PostOrderBy] ?? string.Empty;
 }
 @section SocialMeta {
     <meta property="og:title" content="@ViewBag.Title" />
@@ -98,7 +99,7 @@
                 <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> @Model.Views.KiloFormat() @Html.Lang("Topic.Views")
             </li>
 
-            <li><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Html.Lang("Topic.LastPost") @DatesUI.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())</li>
+            <li><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> @Html.Lang("Topic.LastPost") @DatesUi.GetPrettyDate(Model.Topic.LastPost.DateCreated.ToString())</li>
 
             @if (Model.Topic.Solved)
             {
@@ -130,8 +131,8 @@
                     {
                         <text> @Html.LanguageString("PostFilter.OrderBy")
                         <a class="orderfilerlink @(string.IsNullOrEmpty(qs) ? "orderfilerlinkactive" : "")" href="@Model.Topic.NiceUrl">@Html.LanguageString("PostFilter.Standard")</a> |
-                        <a class="orderfilerlink @(qs.Contains(PostOrderBy.Newest.ToString()) ? "orderfilerlinkactive" : "")" href="?@AppConstants.PostOrderBy=@PostOrderBy.Newest.ToString()">@Html.LanguageString("PostFilter.Newest")</a> |
-                        <a class="orderfilerlink @(qs.Contains(PostOrderBy.Votes.ToString()) ? "orderfilerlinkactive" : "")" href="?@AppConstants.PostOrderBy=@PostOrderBy.Votes.ToString()">@Html.LanguageString("PostFilter.Votes")</a>
+                        <a class="orderfilerlink @(qs.Contains(PostOrderBy.Newest.ToString()) ? "orderfilerlinkactive" : "")" href="?@Constants.PostOrderBy=@PostOrderBy.Newest.ToString()">@Html.LanguageString("PostFilter.Newest")</a> |
+                        <a class="orderfilerlink @(qs.Contains(PostOrderBy.Votes.ToString()) ? "orderfilerlinkactive" : "")" href="?@Constants.PostOrderBy=@PostOrderBy.Votes.ToString()">@Html.LanguageString("PostFilter.Votes")</a>
                         </text>
                     }
                 </div>
@@ -156,7 +157,7 @@
     {
         <span id="newpostmarker"></span>
 
-        if (!Model.Permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked && !Model.Permissions[SiteConstants.Instance.PermissionReadOnly].IsTicked && !Model.Topic.Category.IsLocked)
+        if (!Model.Permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked && !Model.Permissions[ForumConfiguration.Instance.PermissionReadOnly].IsTicked && !Model.Topic.Category.IsLocked)
         {
             @Html.Partial("_CreateNewPost", new CreateAjaxPostViewModel { Topic = Model.Topic.Id, DisablePosting = Model.DisablePosting, PostContent = Model.QuotedPost, InReplyTo = Model.ReplyTo, ReplyToUsername = Model.ReplyToUsername})
         }

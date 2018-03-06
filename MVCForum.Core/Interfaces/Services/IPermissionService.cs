@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
-    public partial interface IPermissionService
+    using System;
+    using System.Collections.Generic;
+    using Models.Entities;
+
+    public partial interface IPermissionService : IContextService
     {
         IEnumerable<Permission> GetAll();
         Permission Add(Permission permission);

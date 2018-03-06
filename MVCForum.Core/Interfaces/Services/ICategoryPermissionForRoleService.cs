@@ -1,32 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Domain.Interfaces.Services
+﻿namespace MvcForum.Core.Interfaces.Services
 {
-    public partial interface ICategoryPermissionForRoleService
+    using System;
+    using System.Collections.Generic;
+    using Models.Entities;
+
+    public partial interface ICategoryPermissionForRoleService : IContextService
     {
         /// <summary>
-        /// Add new category permission for role
+        ///     Add new category permission for role
         /// </summary>
         /// <param name="categoryPermissionForRole"></param>
         CategoryPermissionForRole Add(CategoryPermissionForRole categoryPermissionForRole);
 
         /// <summary>
-        /// Check the category permission for role actually exists
+        ///     Check the category permission for role actually exists
         /// </summary>
         /// <param name="categoryPermissionForRole"></param>
         /// <returns></returns>
         CategoryPermissionForRole CheckExists(CategoryPermissionForRole categoryPermissionForRole);
 
         /// <summary>
-        /// Either updates a CPFR if exists or creates a new one
+        ///     Either updates a CPFR if exists or creates a new one
         /// </summary>
         /// <param name="categoryPermissionForRole"></param>
         void UpdateOrCreateNew(CategoryPermissionForRole categoryPermissionForRole);
 
         /// <summary>
-        /// Returns a row with the permission and CPFR
+        ///     Returns a row with the permission and CPFR
         /// </summary>
         /// <param name="role"></param>
         /// <param name="cat"></param>
@@ -34,7 +34,7 @@ namespace MVCForum.Domain.Interfaces.Services
         Dictionary<Permission, CategoryPermissionForRole> GetCategoryRow(MembershipRole role, Category cat);
 
         /// <summary>
-        /// Get all category permissions by category
+        ///     Get all category permissions by category
         /// </summary>
         /// <param name="categoryId"></param>
         /// <returns></returns>

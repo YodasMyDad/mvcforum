@@ -1,23 +1,40 @@
 ﻿// Credit where credit is due, most of this is lifted from Funnel Web MVC
 // http://www.funnelweblog.com/
 
-using System;
-using System.Linq;
-using System.Web.Mvc;
-
-namespace MVCForum.Website.Application.ViewEngine
+namespace MvcForum.Web.Application.ViewEngine
 {
+    using System;
+    using System.Linq;
+    using System.Web.Mvc;
+
     public class ForumViewEngine : IViewEngine
     {
-        private readonly RazorViewEngine _defaultViewEngine = new RazorViewEngine();
-        private string _lastTheme;
-        private RazorViewEngine _lastEngine;
-        private readonly object _lock = new object();
         private readonly string _defaultTheme;
+        private readonly RazorViewEngine _defaultViewEngine = new RazorViewEngine();
+        private readonly object _lock = new object();
+        private RazorViewEngine _lastEngine;
+        private string _lastTheme;
 
         public ForumViewEngine(string defaultTheme)
         {
             _defaultTheme = defaultTheme;
+        }
+
+        public ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName,
+            bool useCache)
+        {
+            return CreateRealViewEngine().FindPartialView(controllerContext, partialViewName, useCache);
+        }
+
+        public ViewEngineResult FindView(ControllerContext controllerContext, string viewName, string masterName,
+            bool useCache)
+        {
+            return CreateRealViewEngine().FindView(controllerContext, viewName, masterName, useCache);
+        }
+
+        public void ReleaseView(ControllerContext controllerContext, IView view)
+        {
+            CreateRealViewEngine().ReleaseView(controllerContext, view);
         }
 
         private RazorViewEngine CreateRealViewEngine()
@@ -43,27 +60,27 @@ namespace MVCForum.Website.Application.ViewEngine
                 _lastEngine.PartialViewLocationFormats =
                     new[]
                     {
-                        "~/Themes/" + settingsTheme + "/Views/{1}/{0}.cshtml",
-                        "~/Themes/" + settingsTheme + "/Views/Shared/{0}.cshtml",
-                        "~/Themes/" + settingsTheme + "/Views/Shared/{1}/{0}.cshtml",
-                        "~/Themes/" + settingsTheme + "/Views/Extensions/{1}/{0}.cshtml",
+                        $"~/Themes/{settingsTheme}/Views/{{1}}/{{0}}.cshtml",
+                        $"~/Themes/{settingsTheme}/Views/Shared/{{0}}.cshtml",
+                        $"~/Themes/{settingsTheme}/Views/Shared/{{1}}/{{0}}.cshtml",
+                        $"~/Themes/{settingsTheme}/Views/Extensions/{{1}}/{{0}}.cshtml",
                         "~/Views/Extensions/{1}/{0}.cshtml"
                     }.Union(_lastEngine.PartialViewLocationFormats).ToArray();
 
                 _lastEngine.ViewLocationFormats =
                     new[]
                     {
-                        "~/Themes/" + settingsTheme + "/Views/{1}/{0}.cshtml",
-                        "~/Themes/" + settingsTheme + "/Views/Extensions/{1}/{0}.cshtml",
+                        $"~/Themes/{settingsTheme}/Views/{{1}}/{{0}}.cshtml",
+                        $"~/Themes/{settingsTheme}/Views/Extensions/{{1}}/{{0}}.cshtml",
                         "~/Views/Extensions/{1}/{0}.cshtml"
                     }.Union(_lastEngine.ViewLocationFormats).ToArray();
 
                 _lastEngine.MasterLocationFormats =
                     new[]
                     {
-                        "~/Themes/" + settingsTheme + "/Views/{1}/{0}.cshtml",
-                        "~/Themes/" + settingsTheme + "/Views/Extensions/{1}/{0}.cshtml",
-                        "~/Themes/" + settingsTheme + "/Views/Shared/{1}/{0}.cshtml",
+                        $"~/Themes/{settingsTheme}/Views/{{1}}/{{0}}.cshtml",
+                        $"~/Themes/{settingsTheme}/Views/Extensions/{{1}}/{{0}}.cshtml",
+                        $"~/Themes/{settingsTheme}/Views/Shared/{{1}}/{{0}}.cshtml",
                         "~/Themes/" + settingsTheme + "/Views/Shared/{0}.cshtml",
                         "~/Views/Extensions/{1}/{0}.cshtml"
                     }.Union(_lastEngine.MasterLocationFormats).ToArray();
@@ -71,22 +88,7 @@ namespace MVCForum.Website.Application.ViewEngine
                 _lastTheme = settingsTheme;
 
                 return _lastEngine;
-            } 
-        }
-
-        public ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache)
-        {
-            return CreateRealViewEngine().FindPartialView(controllerContext, partialViewName, useCache);
-        }
-
-        public ViewEngineResult FindView(ControllerContext controllerContext, string viewName, string masterName, bool useCache)
-        {
-            return CreateRealViewEngine().FindView(controllerContext, viewName, masterName, useCache);
-        }
-
-        public void ReleaseView(ControllerContext controllerContext, IView view)
-        {
-            CreateRealViewEngine().ReleaseView(controllerContext, view);
+            }
         }
     }
 }

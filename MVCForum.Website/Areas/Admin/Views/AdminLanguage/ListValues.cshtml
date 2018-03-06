@@ -1,6 +1,8 @@
-﻿@using MVCForum.Domain.Constants
-@using MVCForum.Website.Application
-@model MVCForum.Website.Areas.Admin.ViewModels.LanguageListResourcesViewModel
+﻿
+@using MvcForum.Core
+@using MvcForum.Core.Constants
+@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.Admin.LanguageListResourcesViewModel
 @{
     ViewBag.Title = string.Concat("Resources for ", Model.LanguageName);
 }
@@ -87,7 +89,7 @@
 
         @if (Model.TotalPages > 1)
         {
-            @Html.Pager(Convert.ToInt32(Model.PageIndex), SiteConstants.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { languageId = Model.LanguageId, search = Model.Search })
+            @Html.Pager(Convert.ToInt32(Model.PageIndex), ForumConfiguration.Instance.AdminListPageSize, Convert.ToInt32(Model.TotalCount), new { languageId = Model.LanguageId, search = Model.Search })
         }
 
 

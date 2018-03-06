@@ -1,10 +1,12 @@
-﻿@model MVCForum.Domain.DomainModel.PrivateMessage
+﻿@using MvcForum.Core.ExtensionMethods
+@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Core.Models.Entities.PrivateMessage
 @{
     var userId = Html.CurrentMember().Id;
 }
 <div class="pmblock @(Model.UserFrom.Id == userId ? "pmblockto" : "pmblockfrom")">
     <div class="pmmessage">
-        @Html.Raw(AppHelpers.ConvertPostContent(Model.Message))
+        @Html.Raw(Model.Message.ConvertPostContent())
     </div>
     <ul class="pmmessagetools">
         <li>
@@ -17,7 +19,7 @@
             <li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> 
             <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></li>
         }
-        <li>@DatesUI.GetPrettyDate(Model.DateSent.ToString())</li>
+        <li>@DatesUi.GetPrettyDate(Model.DateSent.ToString())</li>
         <li>
             <img src="@Model.UserFrom.MemberImage(14)" alt="@Model.UserFrom.UserName" class="pmsmallavatar" />
         </li>

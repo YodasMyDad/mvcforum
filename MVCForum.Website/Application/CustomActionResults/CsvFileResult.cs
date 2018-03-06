@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using System.Text;
-using System.Web;
-using System.Web.Mvc;
-
-namespace MVCForum.Website.Application
+﻿namespace MvcForum.Web.Application.CustomActionResults
 {
+    using System.Linq;
+    using System.Text;
+    using System.Web;
+    using System.Web.Mvc;
+
     public class CsvFileResult : FileResult
     {
         public CsvFileResult()
@@ -14,7 +14,7 @@ namespace MVCForum.Website.Application
 
         protected override void WriteFile(HttpResponseBase response)
         {
-            if (!string.IsNullOrEmpty(Body))
+            if (!string.IsNullOrWhiteSpace(Body))
             {
                 var data = Encoding.UTF8.GetBytes(Body);
                 var result = Encoding.UTF8.GetPreamble().Concat(data).ToArray();

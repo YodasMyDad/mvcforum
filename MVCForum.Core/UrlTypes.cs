@@ -1,15 +1,8 @@
-﻿using System.Web;
-using MVCForum.Domain.Constants;
-
-namespace MVCForum.Domain
+﻿namespace MvcForum.Core
 {
-    public enum UrlType
-    {
-        Category,
-        Topic,
-        Member,
-        Tag
-    }
+    using System.Web;
+    using Constants;
+    using Models.Enums;
 
     public static class UrlTypes
     {
@@ -18,19 +11,20 @@ namespace MVCForum.Domain
             switch (e)
             {
                 case UrlType.Topic:
-                    return SiteConstants.Instance.TopicUrlIdentifier;
+                    return ForumConfiguration.Instance.TopicUrlIdentifier;
                 case UrlType.Member:
-                    return SiteConstants.Instance.MemberUrlIdentifier;
+                    return ForumConfiguration.Instance.MemberUrlIdentifier;
                 case UrlType.Tag:
-                    return SiteConstants.Instance.TagsUrlIdentifier;
+                    return ForumConfiguration.Instance.TagsUrlIdentifier;
                 default:
-                    return SiteConstants.Instance.CategoryUrlIdentifier;
+                    return ForumConfiguration.Instance.CategoryUrlIdentifier;
             }
         }
 
         public static string GenerateUrl(UrlType e, string slug)
         {
-            return VirtualPathUtility.ToAbsolute($"~/{UrlTypeName(e)}/{HttpUtility.UrlEncode(HttpUtility.HtmlDecode(slug))}/");            
+            return VirtualPathUtility.ToAbsolute(
+                $"~/{UrlTypeName(e)}/{HttpUtility.UrlEncode(HttpUtility.HtmlDecode(slug))}/");
         }
 
         public static string GenerateFileUrl(string filePath)

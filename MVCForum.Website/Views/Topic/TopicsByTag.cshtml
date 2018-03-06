@@ -1,7 +1,5 @@
-﻿@using MVCForum.Website.Application
-@using MVCForum.Website.ViewModels
-
-@model TagTopicsViewModel
+﻿@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.Topic.TagTopicsViewModel
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = string.Concat(Html.LanguageString("Topic.DiscussionTaggedWith"), Model.Tag);

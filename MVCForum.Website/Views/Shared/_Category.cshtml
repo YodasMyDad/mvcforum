@@ -1,6 +1,8 @@
-﻿@model MVCForum.Website.ViewModels.CategoryViewModel
+﻿@using MvcForum.Core.ExtensionMethods
+@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.Category.CategoryViewModel
 
-@if (!Model.Permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)
+@if (!Model.Permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)
 {
     <div class="categoryrow">
 
@@ -18,7 +20,7 @@
         }
         else
         {
-            <p>@Html.Raw(AppHelpers.ConvertPostContent(Model.Category.Description))</p>
+            <p>@Html.Raw(Model.Category.Description.ConvertPostContent())</p>
         }
 
         <div class="row categoryrowfooter">
@@ -42,7 +44,7 @@
                     <text>
                         @Html.LanguageString("Category.MostRecent") <a href="@Model.LatestTopic.NiceUrl">@Html.Raw(Model.LatestTopic.Name)</a>
                         @Html.Raw(string.Format(Html.LanguageString("Topic.StartedBy"),
-                            DatesUI.GetPrettyDate(Model.LatestTopic.CreateDate.ToString()),
+                            DatesUi.GetPrettyDate(Model.LatestTopic.CreateDate.ToString()),
                             string.Format("<a href='{0}'>{1}</a>", Model.LatestTopic.User.NiceUrl, Model.LatestTopic.User.UserName)))
                     </text>
                 }

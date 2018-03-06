@@ -1,25 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Areas.Admin.ViewModels;
-
-namespace MVCForum.Website.Areas.Admin.Controllers
+﻿namespace MvcForum.Web.Areas.Admin.Controllers
 {
-    [Authorize(Roles = AppConstants.AdminRoleName)]
-    public partial class BatchController : BaseAdminController
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using System.Web.Mvc;
+    using Core.Constants;
+    using Core.Interfaces;
+    using Core.Interfaces.Services;
+    using Core.Models.Entities;
+    using Web.ViewModels;
+    using Web.ViewModels.Admin;
+
+    [Authorize(Roles = Constants.AdminRoleName)]
+    public class BatchController : BaseAdminController
     {
         private readonly ICategoryService _categoryService;
-        private readonly ITopicService _topicService;
         private readonly IPrivateMessageService _privateMessageService;
+        private readonly ITopicService _topicService;
 
-        public BatchController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, 
-            ILocalizationService localizationService, ISettingsService settingsService, ICategoryService categoryService, ITopicService topicService, IPrivateMessageService privateMessageService) 
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
+        public BatchController(ILoggingService loggingService, IMembershipService membershipService,
+            ILocalizationService localizationService, ISettingsService settingsService,
+            ICategoryService categoryService, ITopicService topicService, IPrivateMessageService privateMessageService,
+            IMvcForumContext context)
+            : base(loggingService, membershipService, localizationService, settingsService, context)
         {
             _categoryService = categoryService;
             _topicService = topicService;
@@ -27,56 +31,60 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         }
 
         #region Members
+
         public ActionResult BatchDeleteMembers()
         {
             return View(new BatchDeleteMembersViewModel { AmoutOfDaysSinceRegistered = 0, AmoutOfPosts = 0 });
         }
 
+        /// <summary>
+        /// Batch delete members
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult BatchDeleteMembers(BatchDeleteMembersViewModel viewModel)
+        public async Task<ActionResult> BatchDeleteMembers(BatchDeleteMembersViewModel viewModel)
         {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+
+            var membersToDelete = MembershipService.GetUsersByDaysPostsPoints(
+                viewModel.AmoutOfDaysSinceRegistered,
+                viewModel.AmoutOfPosts);
+
+            var count = membersToDelete.Count;
+            foreach (var membershipUser in membersToDelete)
             {
-                try
+                var pipelineResult = await MembershipService.Delete(membershipUser);
+                if (!pipelineResult.Successful)
                 {
-                    var membersToDelete = MembershipService.GetUsersByDaysPostsPoints(viewModel.AmoutOfDaysSinceRegistered,
-                                                                                        viewModel.AmoutOfPosts);
-                    var count = membersToDelete.Count;
-                    foreach (var membershipUser in membersToDelete)
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
-                        MembershipService.Delete(membershipUser, unitOfWork);
-                    }
-                    unitOfWork.Commit();
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = string.Format("{0} members deleted", count),
-                        MessageType = GenericMessages.success
-                    };
-                }
-                catch (Exception ex)
-                {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = ex.Message,
+                        Message = pipelineResult.ProcessLog.FirstOrDefault(),
                         MessageType = GenericMessages.danger
                     };
+                    return View();
                 }
             }
 
+            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+            {
+                Message = $"{count} members deleted",
+                MessageType = GenericMessages.success
+            };
+
             return View();
-        } 
+        }
+
         #endregion
 
         #region Topics
+
         public ActionResult BatchMoveTopics()
         {
             var viewModel = new BatchMoveTopicsViewModel
-                {
-                    Categories = _categoryService.GetAll()
-                };
+            {
+                Categories = _categoryService.GetAll()
+            };
             return View(viewModel);
         }
 
@@ -84,49 +92,48 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult BatchMoveTopics(BatchMoveTopicsViewModel viewModel)
         {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            try
             {
-                try
+                var categoryFrom = _categoryService.Get((Guid)viewModel.FromCategory);
+                var categoryTo = _categoryService.Get((Guid)viewModel.ToCategory);
+
+                var topicsToMove = _topicService.GetRssTopicsByCategory(int.MaxValue, categoryFrom.Id);
+                var count = topicsToMove.Count;
+
+                foreach (var topic in topicsToMove)
                 {
-                    var categoryFrom = _categoryService.Get((Guid)viewModel.FromCategory);
-                    var categoryTo = _categoryService.Get((Guid)viewModel.ToCategory);
-
-                    var topicsToMove = _topicService.GetRssTopicsByCategory(int.MaxValue, categoryFrom.Id);
-                    var count = topicsToMove.Count;
-
-                    foreach (var topic in topicsToMove)
-                    {
-                        topic.Category = categoryTo;
-                    }
-
-                    unitOfWork.SaveChanges();
-
-                    categoryFrom.Topics.Clear();
-
-                    viewModel.Categories = _categoryService.GetAll();
-
-                    unitOfWork.Commit();
-
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = string.Format("{0} topics moved", count),
-                        MessageType = GenericMessages.success
-                    };
+                    topic.Category = categoryTo;
                 }
-                catch (Exception ex)
+
+                Context.SaveChanges();
+
+                categoryFrom.Topics.Clear();
+
+                viewModel.Categories = _categoryService.GetAll();
+
+                Context.SaveChanges();
+
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = ex.Message,
-                        MessageType = GenericMessages.danger
-                    };
-                }
+                    Message = $"{count} topics moved",
+                    MessageType = GenericMessages.success
+                };
+            }
+            catch (Exception ex)
+            {
+                Context.RollBack();
+                LoggingService.Error(ex);
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = ex.Message,
+                    MessageType = GenericMessages.danger
+                };
             }
 
+
             return View(viewModel);
-        } 
+        }
+
         #endregion
 
         #region Private Messages
@@ -141,42 +148,39 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult BatchDeletePrivateMessages(BatchDeletePrivateMessagesViewModel viewModel)
         {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            try
             {
-                try
+                var pms = _privateMessageService.GetPrivateMessagesOlderThan(viewModel.Days);
+                var pmToDelete = new List<PrivateMessage>();
+                pmToDelete.AddRange(pms);
+                var count = pmToDelete.Count;
+                foreach (var pm in pmToDelete)
                 {
-                    var pms = _privateMessageService.GetPrivateMessagesOlderThan(viewModel.Days);
-                    var pmToDelete = new List<PrivateMessage>();
-                    pmToDelete.AddRange(pms);
-                    var count = pmToDelete.Count;
-                    foreach (var pm in pmToDelete)
-                    {
-                        _privateMessageService.DeleteMessage(pm);
-                    }
-                    unitOfWork.Commit();
+                    _privateMessageService.DeleteMessage(pm);
+                }
+                Context.SaveChanges();
 
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = string.Format("{0} Private Messages deleted", count),
-                        MessageType = GenericMessages.success
-                    };
-                }
-                catch (Exception ex)
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                 {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                    {
-                        Message = ex.Message,
-                        MessageType = GenericMessages.danger
-                    };
-                }
+                    Message = $"{count} Private Messages deleted",
+                    MessageType = GenericMessages.success
+                };
+            }
+            catch (Exception ex)
+            {
+                Context.RollBack();
+                LoggingService.Error(ex);
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = ex.Message,
+                    MessageType = GenericMessages.danger
+                };
             }
 
+
             return View(viewModel);
-        } 
+        }
 
         #endregion
-
     }
 }

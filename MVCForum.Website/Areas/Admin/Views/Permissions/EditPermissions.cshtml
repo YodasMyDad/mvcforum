@@ -1,5 +1,5 @@
-﻿@using MVCForum.Domain.Constants
-@model MVCForum.Website.Areas.Admin.ViewModels.EditPermissionsViewModel
+﻿@using MvcForum.Core.Constants
+@model MvcForum.Web.ViewModels.Admin.EditPermissionsViewModel
 
 @{
     ViewBag.Title = "Edit Permissions";
@@ -115,30 +115,30 @@
         <h5>Descriptions</h5>
     </div>
     <div class="panel-content">
-        <h6>@SiteConstants.Instance.PermissionAttachFiles</h6>
+        <h6>@ForumConfiguration.Instance.PermissionAttachFiles</h6>
         <p>If you tick this permission, users in this role will be able to attach files to topics and posts for download (file types and size can be restricted in web.config app settings - FileUploadAllowedExtensions and FileUploadMaximumFileSizeInBytes)</p>
-        <h6>@SiteConstants.Instance.PermissionCreatePolls</h6>
+        <h6>@ForumConfiguration.Instance.PermissionCreatePolls</h6>
         <p>If you tick this, then users in this role will be able to create polls in a topic.</p>
-        <h6>@SiteConstants.Instance.PermissionVoteInPolls</h6>
+        <h6>@ForumConfiguration.Instance.PermissionVoteInPolls</h6>
         <p>If you tick this, users in this role will be able to vote in polls (As long as Create Polls is enabled)</p>
-        <h6>@SiteConstants.Instance.PermissionCreateTopics</h6>
+        <h6>@ForumConfiguration.Instance.PermissionCreateTopics</h6>
         <p>If you tick this, users in this role will be able to create topics</p>
-        <h6>@SiteConstants.Instance.PermissionDeletePosts</h6>
+        <h6>@ForumConfiguration.Instance.PermissionDeletePosts</h6>
         <p>If you tick this, users in this role will be able to delete other users posts and topics (Good Moderator permission)</p>
-        <h6>@SiteConstants.Instance.PermissionEditPosts</h6>
+        <h6>@ForumConfiguration.Instance.PermissionEditPosts</h6>
         <p>If you tick this, users in this role will be able to edit other users posts and topics (Good Moderator permission)</p>
-        <h6>@SiteConstants.Instance.PermissionLockTopics</h6>
+        <h6>@ForumConfiguration.Instance.PermissionLockTopics</h6>
         <p>If you tick this, users in this role will be able to lock topics, stopping any further posting in it.</p>
-        <h6>@SiteConstants.Instance.PermissionCreateStickyTopics</h6>
+        <h6>@ForumConfiguration.Instance.PermissionCreateStickyTopics</h6>
         <p>If you tick this, users in this role will be able to make a sticky topic (Pin the topic) which will always be shown at the top of a category.</p>
-        <h6>@SiteConstants.Instance.PermissionReadOnly</h6>
+        <h6>@ForumConfiguration.Instance.PermissionReadOnly</h6>
         <p>If you tick this, users in this role will not be able to post in the Category.</p>
-        <h6>@SiteConstants.Instance.PermissionDenyAccess</h6>
+        <h6>@ForumConfiguration.Instance.PermissionDenyAccess</h6>
         <p>If you tick this, users will not be able to access or see the Category - Also they won't be able to see any posts, topics or tags that were created in it either (Private Categories).</p>
         <hr/>
-        <h6>@SiteConstants.Instance.PermissionEditMembers</h6>
+        <h6>@ForumConfiguration.Instance.PermissionEditMembers</h6>
         <p>If you tick this, users will be able to edit other users profiles and also ban them from the forum.</p>
-        <h6>@SiteConstants.Instance.PermissionInsertEditorImages</h6>
+        <h6>@ForumConfiguration.Instance.PermissionInsertEditorImages</h6>
         <p>If you tick this, users will be able to upload and insert images into the TinyMCE editor.</p>
     </div>
 </div>
@@ -150,7 +150,7 @@
 
 @helper DisableCheckBox(string permissionName)
 {
-    if (Model.MembershipRole.RoleName == AppConstants.GuestRoleName && permissionName != SiteConstants.Instance.PermissionDenyAccess)
+    if (Model.MembershipRole.RoleName == Constants.GuestRoleName && permissionName != ForumConfiguration.Instance.PermissionDenyAccess)
     {
         <text>disabled</text>
     }

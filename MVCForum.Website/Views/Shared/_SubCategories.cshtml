@@ -1,4 +1,4 @@
-﻿@model MVCForum.Website.ViewModels.SubCategoryViewModel
+﻿@model MvcForum.Web.ViewModels.Category.SubCategoryViewModel
 @{
 
 }
@@ -8,7 +8,7 @@
             @foreach (var category in Model.AllPermissionSets.Keys)
             {
                 var permissions = Model.AllPermissionSets[category];    
-                if (!permissions[SiteConstants.Instance.PermissionDenyAccess].IsTicked)            
+                if (!permissions[ForumConfiguration.Instance.PermissionDenyAccess].IsTicked)            
                 {        
                     <li><a style="border-color: @(string.IsNullOrEmpty(category.Colour) ? "#ced1d1" : category.Colour)" href="@Html.Raw(category.NiceUrl)">@Html.Raw(@category.Name)</a></li>
                 }

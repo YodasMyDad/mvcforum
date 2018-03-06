@@ -1,6 +1,5 @@
 ﻿@using System.Globalization
-@using MVCForum.Utilities
-@model MVCForum.Website.ViewModels.ViewMemberViewModel
+@model MvcForum.Web.ViewModels.Member.ViewMemberViewModel
 @{
     Layout = "~/Views/Shared/_LayoutRightSideBar.cshtml";
     ViewBag.Title = string.Concat(Model.User.UserName, " ",Html.LanguageString("Members.ProfileTitle"));
@@ -49,7 +48,7 @@
     <div class="row">
 
         <div class="col-md-3 memberavatardetails">
-            <p class="memberavatar"><img src="@Model.User.MemberImage(SiteConstants.Instance.GravatarProfileSize)" alt="@Model.User.UserName"></p>
+            <p class="memberavatar"><img src="@Model.User.MemberImage(ForumConfiguration.Instance.GravatarProfileSize)" alt="@Model.User.UserName"></p>
 
             @if (User.Identity.IsAuthenticated && Model.User.UserName != User.Identity.Name && Html.CurrentMember().DisablePrivateMessages != true && Html.Settings().EnablePrivateMessages)
             {
@@ -61,11 +60,11 @@
                 <p><a href="@Url.Action("Report", "Members", new { id = Model.User.Id }, null)" class="btn-mvc">@Html.LanguageString("Buttons.Report")</a></p>
             }
 
-            @if (Model.Permissions[SiteConstants.Instance.PermissionEditMembers].IsTicked)
+            @if (Model.Permissions[ForumConfiguration.Instance.PermissionEditMembers].IsTicked)
             {
 
                 // If this is an admins profile then do not show
-                if (!Model.User.Roles.Any(x => x.RoleName.Contains(AppConstants.AdminRoleName)))
+                if (!Model.User.Roles.Any(x => x.RoleName.Contains(Constants.AdminRoleName)))
                 {
                     <div class="memberprofileadminsection">
                         @Html.Partial("AdminMemberProfileTools")
@@ -82,10 +81,10 @@
                         <h3>@Model.User.UserName</h3>
                     </div>
                     <div class="col-md-6">
-                        <p>@Html.LanguageString("Members.Profile.Joined") @DatesUI.GetPrettyDate(Model.User.CreateDate.ToString())</p>
+                        <p>@Html.LanguageString("Members.Profile.Joined") @DatesUi.GetPrettyDate(Model.User.CreateDate.ToString())</p>
                         @if (Model.User.LastActivityDate != null)
                         {
-                            <p>@(Html.LanguageString("Members.Profile.LastOnline")): @DatesUI.GetPrettyDate(Model.User.LastActivityDate.ToString())</p>
+                            <p>@(Html.LanguageString("Members.Profile.LastOnline")): @DatesUi.GetPrettyDate(Model.User.LastActivityDate.ToString())</p>
                         }                        
                         <p>@Html.LanguageString("Members.Profile.Posts") @Model.User.Posts.Count</p>
                         <p>@Html.LanguageString("Members.Profile.Points") @Model.User.TotalPoints</p>
@@ -121,8 +120,26 @@
                 </div>
             }
 
-            @if (User.IsInRole(AppConstants.AdminRoleName))
+            @if (User.IsInRole(Constants.AdminRoleName))
             {
+                if (Model.User.IsApproved == false)
+                {
+                    <p>
+                        @Html.LanguageString("Members.Errors.UserNotApproved")
+                    </p>
+                }
+                if (Model.User.IsBanned == true)
+                {
+                    <p>
+                        @Html.LanguageString("Members.NowBanned")
+                    </p>
+                }
+                if (Model.User.IsLockedOut == true)
+                {
+                    <p>
+                        @Html.LanguageString("Members.Errors.UserLockedOut")
+                    </p>
+                }
                 <div class="membersection adminpublicomments">
                     @Html.Raw(Model.User.Comment)
                 </div>

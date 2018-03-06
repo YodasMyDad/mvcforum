@@ -1,4 +1,5 @@
-﻿@model MVCForum.Website.ViewModels.ViewPrivateMessageViewModel
+﻿@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.PrivateMessage.ViewPrivateMessageViewModel
 @{
     Layout = Model.IsAjaxRequest ? "" : "~/Views/Shared/_LayoutFullWidth.cshtml";
     ViewBag.Title = string.Concat(Html.LanguageString("PM.Title"), Model.From.UserName);
@@ -15,7 +16,7 @@
                 </div>
                 <h1>
                     <a href="@Model.From.NiceUrl">
-                        <img src="@Model.From.MemberImage(SiteConstants.Instance.GravatarPostSize)" alt="@Model.From.UserName" class="pmavatar" /> @Model.From.UserName
+                        <img src="@Model.From.MemberImage(ForumConfiguration.Instance.GravatarPostSize)" alt="@Model.From.UserName" class="pmavatar" /> @Model.From.UserName
                         @if (Model.FromUserIsOnline)
                         {
                             <span class="label label-success">@Html.Lang("PM.MemberIsOnline")</span>

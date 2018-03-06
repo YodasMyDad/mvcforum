@@ -1,6 +1,8 @@
-﻿@using MVCForum.Domain.Constants
-@using MVCForum.Website.Application.ExtensionMethods
-@model MVCForum.Website.Areas.Admin.ViewModels.MemberEditViewModel
+﻿@using MvcForum.Core
+@using MvcForum.Core.Constants
+@using MvcForum.Web.Application
+@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.Admin.MemberEditViewModel
 @{
     ViewBag.Title = (Model.Id == Guid.Empty) ? "Add User" : "Edit User";
     var buttonText = (Model.Id == Guid.Empty) ? "Create" : "Save";
@@ -55,7 +57,7 @@
 
             <div class="row membereditavatar">
                 <div class="col-sm-2">
-                    <img src="@AppHelpers.MemberImage(Model.Avatar, Model.Email, Model.Id, SiteConstants.Instance.GravatarProfileSize)" class="img-responsive" alt="@Model.UserName">
+                    <img src="@AppHelpers.MemberImage(Model.Avatar, Model.Email, Model.Id, ForumConfiguration.Instance.GravatarProfileSize)" class="img-responsive" alt="@Model.UserName">
                 </div>
                 <div class="col-sm-10">
                     <div class="form-group">
@@ -95,8 +97,16 @@
                 @Html.EditorFor(x => x.Signature)
                 @Html.ValidationMessageFor(x => x.Signature)
             </div>
-
+            
             <h2>Admin Specific</h2>
+
+            <div class="checkbox">
+                @using (Html.BeginLabelFor(m => m.IsTrustedUser, new { @class = "checkbox" }))
+                {
+                    @Html.CheckBoxFor(m => m.IsTrustedUser)
+                }
+                @Html.ValidationMessageFor(m => m.IsTrustedUser)
+            </div>
 
             <div class="checkbox">
                 @using (Html.BeginLabelFor(m => m.DisableEmailNotifications, new { @class = "checkbox" }))

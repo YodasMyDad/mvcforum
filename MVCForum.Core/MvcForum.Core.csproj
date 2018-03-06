@@ -1,0 +1,448 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{20AD3D3C-153E-47AC-BA9C-3E4DB876990E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MvcForum.Core</RootNamespace>
+    <AssemblyName>MvcForum.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Constants\Constants.cs" />
+    <Compile Include="Constants\CacheKeys.cs" />
+    <Compile Include="Data\Mapping\SectionMapping.cs" />
+    <Compile Include="ExtensionMethods\ImageExtensions.cs" />
+    <Compile Include="ExtensionMethods\MembershipUserExtensions.cs" />
+    <Compile Include="ExtensionMethods\PipelineExtensions.cs" />
+    <Compile Include="ExtensionMethods\SectionExtentions.cs" />
+    <Compile Include="ExternalServices\AkismetValidator.cs" />
+    <Compile Include="ForumConfiguration.cs" />
+    <Compile Include="ExtensionMethods\ExtendedDataExtensions.cs" />
+    <Compile Include="ExtensionMethods\HttpExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\IdentityExtensions.cs" />
+    <Compile Include="ExtensionMethods\StringExtensionMethods.cs" />
+    <Compile Include="ExtensionMethods\VersionExtensionMethods.cs" />
+    <Compile Include="Interfaces\IAssemblyProvider.cs" />
+    <Compile Include="Interfaces\Pipeline\IPipe.cs" />
+    <Compile Include="Interfaces\Pipeline\IPipelineProcess.cs" />
+    <Compile Include="Interfaces\Services\IBaseService.cs" />
+    <Compile Include="Interfaces\Services\INotificationService.cs" />
+    <Compile Include="Interfaces\Services\ISpamService.cs" />
+    <Compile Include="MemoryFile.cs" />
+    <Compile Include="Migrations\201801011815079_IncreaseAccessTokenLength.cs" />
+    <Compile Include="Migrations\201801011815079_IncreaseAccessTokenLength.Designer.cs">
+      <DependentUpon>201801011815079_IncreaseAccessTokenLength.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801021733452_ExtendedDataToMembershipUser.cs" />
+    <Compile Include="Migrations\201801021733452_ExtendedDataToMembershipUser.Designer.cs">
+      <DependentUpon>201801021733452_ExtendedDataToMembershipUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801021904303_ExtendedDataOnAll.cs" />
+    <Compile Include="Migrations\201801021904303_ExtendedDataOnAll.Designer.cs">
+      <DependentUpon>201801021904303_ExtendedDataOnAll.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201801050701512_AddedTrustedUserOption.cs" />
+    <Compile Include="Migrations\201801050701512_AddedTrustedUserOption.Designer.cs">
+      <DependentUpon>201801050701512_AddedTrustedUserOption.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802090649239_Sections.cs" />
+    <Compile Include="Migrations\201802090649239_Sections.Designer.cs">
+      <DependentUpon>201802090649239_Sections.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Activity\ActivityBase.cs" />
+    <Compile Include="Models\Activity\BadgeActivity.cs" />
+    <Compile Include="Models\Activity\PostCreatedActivity.cs" />
+    <Compile Include="Models\Activity\ProfileUpdatedActivity.cs" />
+    <Compile Include="Models\Activity\MemberJoinedActivity.cs" />
+    <Compile Include="Models\Activity\TopicCreatedActivity.cs" />
+    <Compile Include="Models\Attributes\AwardsPointsAttribute.cs" />
+    <Compile Include="Models\Attributes\DisplayNameAttribute.cs" />
+    <Compile Include="Models\Attributes\ImageAttribute.cs" />
+    <Compile Include="Models\Attributes\FilePathAttribute.cs" />
+    <Compile Include="Models\Attributes\DescriptionAttribute.cs" />
+    <Compile Include="Models\Attributes\NameAttribute.cs" />
+    <Compile Include="Models\Attributes\IdAttribute.cs" />
+    <Compile Include="Models\CategoriesSummary.cs" />
+    <Compile Include="Models\Entities\Badge.cs" />
+    <Compile Include="Models\Entities\BannedEmail.cs" />
+    <Compile Include="Models\Entities\Category.cs" />
+    <Compile Include="Models\Entities\CategoryPermissions.cs" />
+    <Compile Include="Models\Entities\CategoryNotification.cs" />
+    <Compile Include="Models\Entities\BadgeTypeTimeLastChecked.cs" />
+    <Compile Include="Models\Activity\Activity.cs" />
+    <Compile Include="Models\Entities\Block.cs" />
+    <Compile Include="Models\Entities\ExtendedDataEntity.cs" />
+    <Compile Include="Models\Entities\PostEdit.cs" />
+    <Compile Include="Models\Entities\Section.cs" />
+    <Compile Include="Models\Enums\ActivityType.cs" />
+    <Compile Include="Models\Enums\BadgeType.cs" />
+    <Compile Include="Models\Enums\CacheTimes.cs" />
+    <Compile Include="Models\Enums\LoginAttemptStatus.cs" />
+    <Compile Include="Models\Enums\MembershipCreateStatus.cs" />
+    <Compile Include="Models\Enums\NotificationType.cs" />
+    <Compile Include="Models\Enums\PointsFor.cs" />
+    <Compile Include="Models\Enums\PostOrderBy.cs" />
+    <Compile Include="Models\Enums\SiteMapChangeFreqency.cs" />
+    <Compile Include="Models\Enums\UrlType.cs" />
+    <Compile Include="Models\ExtendedDataItem.cs" />
+    <Compile Include="Models\General\CategoryWithSubCategories.cs" />
+    <Compile Include="Models\Entities\BannedWord.cs" />
+    <Compile Include="Models\Enums\LoginType.cs" />
+    <Compile Include="Models\Entities\Favourite.cs" />
+    <Compile Include="Models\Entities\GlobalPermission.cs" />
+    <Compile Include="Models\Entities\PermissionForRole.cs" />
+    <Compile Include="Models\Entities\Poll.cs" />
+    <Compile Include="Models\Entities\PrivateMessage.cs" />
+    <Compile Include="Models\General\FileCheckResult.cs" />
+    <Compile Include="Models\General\MarkAsSolutionReminder.cs" />
+    <Compile Include="Models\General\PaginatedList.cs" />
+    <Compile Include="Models\General\Report.cs" />
+    <Compile Include="Models\General\SitemapEntry.cs" />
+    <Compile Include="Models\Entities\TagNotification.cs" />
+    <Compile Include="Models\Entities\TopicNotification.cs" />
+    <Compile Include="Models\Email.cs" />
+    <Compile Include="Models\General\LogEntry.cs" />
+    <Compile Include="Models\General\RssItem.cs" />
+    <Compile Include="Models\Entities\TopicTag.cs" />
+    <Compile Include="Models\Entities\Language.cs" />
+    <Compile Include="Models\General\LanguageCsvReport.cs" />
+    <Compile Include="Models\Entities\LocaleStringResource.cs" />
+    <Compile Include="Models\Entities\LocaleResourceKey.cs" />
+    <Compile Include="Models\Entities\MembershipRole.cs" />
+    <Compile Include="Interfaces\IBaseEntity.cs" />
+    <Compile Include="Models\Entities\MembershipUser.cs" />
+    <Compile Include="Models\Entities\MembershipUserPoints.cs" />
+    <Compile Include="Models\Entities\Permission.cs" />
+    <Compile Include="Models\General\PermissionSet.cs" />
+    <Compile Include="Models\Entities\Post.cs" />
+    <Compile Include="Models\Entities\Settings.cs" />
+    <Compile Include="Models\Entities\Topic.cs" />
+    <Compile Include="Models\General\Theme.cs" />
+    <Compile Include="Models\General\UploadedFile.cs" />
+    <Compile Include="Models\General\UploadFileResult.cs" />
+    <Compile Include="Models\Entities\Vote.cs" />
+    <Compile Include="EqualityComparers\IEntityEqualityComparers.cs" />
+    <Compile Include="Events\BadgeEventArgs.cs" />
+    <Compile Include="Events\EventManager.cs" />
+    <Compile Include="Events\FavouriteEventArgs.cs" />
+    <Compile Include="Events\LoginEventArgs.cs" />
+    <Compile Include="Events\MarkedAsSolutionEventArgs.cs" />
+    <Compile Include="Events\MVCForumEventArgs.cs" />
+    <Compile Include="Events\PostMadeEventArgs.cs" />
+    <Compile Include="Events\PrivateMessageEventArgs.cs" />
+    <Compile Include="Events\TopicMadeEventArgs.cs" />
+    <Compile Include="Events\UpdateProfileEventArgs.cs" />
+    <Compile Include="Events\VoteEventArgs.cs" />
+    <Compile Include="Interfaces\Badges\ITagBadge.cs" />
+    <Compile Include="Interfaces\Badges\IFavouriteBadge.cs" />
+    <Compile Include="Interfaces\Badges\IPostBadge.cs" />
+    <Compile Include="Interfaces\Badges\IMarkAsSolutionBadge.cs" />
+    <Compile Include="Interfaces\Badges\IProfileBadge.cs" />
+    <Compile Include="Interfaces\Badges\ITimeBadge.cs" />
+    <Compile Include="Interfaces\Badges\IBadge.cs" />
+    <Compile Include="Interfaces\Badges\IVoteDownBadge.cs" />
+    <Compile Include="Interfaces\Badges\IVoteUpBadge.cs" />
+    <Compile Include="Interfaces\Events\IEventHandler.cs" />
+    <Compile Include="Interfaces\Events\IEventManager.cs" />
+    <Compile Include="Interfaces\Providers\IStorageProvider.cs" />
+    <Compile Include="Interfaces\Services\IBlockService.cs" />
+    <Compile Include="Interfaces\Services\ICacheService.cs" />
+    <Compile Include="Interfaces\IModelAttribute.cs" />
+    <Compile Include="Interfaces\IMVCForumContext.cs" />
+    <Compile Include="Interfaces\Services\IBannedEmailService.cs" />
+    <Compile Include="Interfaces\Services\IBannedWordService.cs" />
+    <Compile Include="Interfaces\Services\IConfigService.cs" />
+    <Compile Include="Interfaces\Services\IGlobalPermissionForRoleService.cs" />
+    <Compile Include="Interfaces\Services\IFavouriteService.cs" />
+    <Compile Include="Interfaces\Services\IPollService.cs" />
+    <Compile Include="Interfaces\Services\IActivityService.cs" />
+    <Compile Include="Interfaces\Services\IPostEditService.cs" />
+    <Compile Include="Interfaces\Services\IPrivateMessageService.cs" />
+    <Compile Include="Interfaces\Services\IReportService.cs" />
+    <Compile Include="Interfaces\Services\IEmailService.cs" />
+    <Compile Include="Interfaces\Services\ILoggingService.cs" />
+    <Compile Include="Interfaces\Services\IMembershipUserPointsService.cs" />
+    <Compile Include="Interfaces\Services\IBadgeService.cs" />
+    <Compile Include="Interfaces\Services\ITopicTagService.cs" />
+    <Compile Include="Interfaces\Services\ICategoryPermissionForRoleService.cs" />
+    <Compile Include="Interfaces\Services\ICategoryService.cs" />
+    <Compile Include="Interfaces\Services\ILocalizationService.cs" />
+    <Compile Include="Interfaces\Services\IMembershipService.cs" />
+    <Compile Include="Interfaces\Services\IPermissionService.cs" />
+    <Compile Include="Interfaces\Services\IPostService.cs" />
+    <Compile Include="Interfaces\Services\IRoleService.cs" />
+    <Compile Include="Interfaces\Services\ISettingsService.cs" />
+    <Compile Include="Interfaces\Services\ITopicService.cs" />
+    <Compile Include="Interfaces\Services\IUploadedFileService.cs" />
+    <Compile Include="Interfaces\Services\IVoteService.cs" />
+    <Compile Include="Ioc\UnityDependencyResolver.cs" />
+    <Compile Include="Ioc\UnityHelper.cs" />
+    <Compile Include="LocalizedString.cs" />
+    <Compile Include="Models\Entities\PollAnswer.cs" />
+    <Compile Include="Models\Entities\PollVote.cs" />
+    <Compile Include="Migrations\201712271549027_InitialCommit.cs" />
+    <Compile Include="Migrations\201712271549027_InitialCommit.Designer.cs">
+      <DependentUpon>201712271549027_InitialCommit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\OAuth\FacebookOAuthData.cs" />
+    <Compile Include="Models\OAuth\GoogleOAuthData.cs" />
+    <Compile Include="Models\PostType.cs" />
+    <Compile Include="Models\SectionsSummary.cs" />
+    <Compile Include="Models\Spam\Comment.cs" />
+    <Compile Include="Pipeline\Pipeline.cs" />
+    <Compile Include="Pipeline\PipelineProcess.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\Storage\StorageProvider.cs" />
+    <Compile Include="Reflection\AssemblyProvider.cs" />
+    <Compile Include="Reflection\ImplementationManager.cs" />
+    <Compile Include="Services\ActivityService.cs" />
+    <Compile Include="Services\BadgeService.cs" />
+    <Compile Include="Services\BannedEmailService.cs" />
+    <Compile Include="Services\BannedWordService.cs" />
+    <Compile Include="Services\BlockService.cs" />
+    <Compile Include="Services\CacheService.cs" />
+    <Compile Include="Services\CategoryPermissionForRoleService.cs" />
+    <Compile Include="Services\CategoryService.cs" />
+    <Compile Include="Services\ConfigService.cs" />
+    <Compile Include="Data\Context\MVCForumContext.cs" />
+    <Compile Include="Data\Mapping\ActivityMapping.cs" />
+    <Compile Include="Data\Mapping\BadgeMapping.cs" />
+    <Compile Include="Data\Mapping\BadgeTypeTimeLastCheckedMapping.cs" />
+    <Compile Include="Data\Mapping\BannedEmailMapping.cs" />
+    <Compile Include="Data\Mapping\BannedWordMapping.cs" />
+    <Compile Include="Data\Mapping\BlockMapping.cs" />
+    <Compile Include="Data\Mapping\CategoryMapping.cs" />
+    <Compile Include="Data\Mapping\CategoryNotificationMapping.cs" />
+    <Compile Include="Data\Mapping\CategoryPermissionForRoleMapping.cs" />
+    <Compile Include="Data\Mapping\FavouriteMapping.cs" />
+    <Compile Include="Data\Mapping\GlobalPermissionForRoleMapping.cs" />
+    <Compile Include="Data\Mapping\LanguageMapping.cs" />
+    <Compile Include="Data\Mapping\LocaleResourceKeyMapping.cs" />
+    <Compile Include="Data\Mapping\LocaleStringResourceMapping.cs" />
+    <Compile Include="Data\Mapping\MembershipRoleMapping.cs" />
+    <Compile Include="Data\Mapping\MembershipUserMapping.cs" />
+    <Compile Include="Data\Mapping\MembershipUserPointsMapping.cs" />
+    <Compile Include="Data\Mapping\PermissionMapping.cs" />
+    <Compile Include="Data\Mapping\PollAnswerMapping.cs" />
+    <Compile Include="Data\Mapping\PollMapping.cs" />
+    <Compile Include="Data\Mapping\PollVoteMapping.cs" />
+    <Compile Include="Data\Mapping\PostEditMapping.cs" />
+    <Compile Include="Data\Mapping\PostMapping.cs" />
+    <Compile Include="Data\Mapping\PrivateMessageMapping.cs" />
+    <Compile Include="Data\Mapping\SettingsMapping.cs" />
+    <Compile Include="Data\Mapping\TagNotificationMapping.cs" />
+    <Compile Include="Data\Mapping\TopicMapping.cs" />
+    <Compile Include="Data\Mapping\TopicNotificationMapping.cs" />
+    <Compile Include="Data\Mapping\TopicTagMapping.cs" />
+    <Compile Include="Data\Mapping\UploadedFileMapping.cs" />
+    <Compile Include="Data\Mapping\VoteMapping.cs" />
+    <Compile Include="Services\EmailService.cs" />
+    <Compile Include="Services\FavouriteService.cs" />
+    <Compile Include="Services\GlobalPermissionForRoleService.cs" />
+    <Compile Include="Services\LocalizationService.cs" />
+    <Compile Include="Services\LoggingService.cs" />
+    <Compile Include="Services\MembershipService.cs" />
+    <Compile Include="Services\MembershipUserPointsService.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Services\NotificationService.cs" />
+    <Compile Include="Services\PermissionService.cs" />
+    <Compile Include="Services\PollService.cs" />
+    <Compile Include="Services\PostEditService.cs" />
+    <Compile Include="Services\PostService.cs" />
+    <Compile Include="Services\PrivateMessageService.cs" />
+    <Compile Include="Services\RecurringJobService.cs" />
+    <Compile Include="Services\ReportService.cs" />
+    <Compile Include="Services\RoleService.cs" />
+    <Compile Include="Services\ServiceHelpers.cs" />
+    <Compile Include="Services\SettingsService.cs" />
+    <Compile Include="Services\SpamService.cs" />
+    <Compile Include="SiteConfig\SiteConfig.cs" />
+    <Compile Include="Services\TopicService.cs" />
+    <Compile Include="Services\TopicTagService.cs" />
+    <Compile Include="Services\UploadedFileService.cs" />
+    <Compile Include="Services\VoteService.cs" />
+    <Compile Include="UrlTypes.cs" />
+    <Compile Include="Utilities\BotUtils.cs" />
+    <Compile Include="Utilities\CensorUtils.cs" />
+    <Compile Include="Utilities\ConfigUtils.cs" />
+    <Compile Include="Utilities\CsvReader.cs" />
+    <Compile Include="Utilities\DateUtils.cs" />
+    <Compile Include="Utilities\EnumUtils.cs" />
+    <Compile Include="ExtensionMethods\IEnumerableExtensions.cs" />
+    <Compile Include="Utilities\GuidComb.cs" />
+    <Compile Include="Utilities\InstallerHelper.cs" />
+    <Compile Include="Utilities\LanguageUtils.cs" />
+    <Compile Include="Utilities\Markdown.cs" />
+    <Compile Include="Utilities\NodePositions.cs" />
+    <Compile Include="Utilities\PorterStemmingAlgorithm.cs" />
+    <Compile Include="Utilities\ReflectionUtilities.cs" />
+    <Compile Include="Utilities\RssReader.cs" />
+    <Compile Include="Utilities\StringUtils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AntiXSS">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="Common.Logging">
+      <Version>3.4.1</Version>
+    </PackageReference>
+    <PackageReference Include="Common.Logging.Core">
+      <Version>3.4.1</Version>
+    </PackageReference>
+    <PackageReference Include="CommonServiceLocator">
+      <Version>2.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="EntityFramework">
+      <Version>6.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="Hangfire">
+      <Version>1.6.17</Version>
+    </PackageReference>
+    <PackageReference Include="HtmlAgilityPack">
+      <Version>1.6.16</Version>
+    </PackageReference>
+    <PackageReference Include="LinqKit.EntityFramework">
+      <Version>1.1.13</Version>
+    </PackageReference>
+    <PackageReference Include="MarkdownSharp">
+      <Version>1.13.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.Mvc">
+      <Version>5.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.Razor">
+      <Version>3.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client">
+      <Version>5.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core">
+      <Version>5.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.AspNet.WebPages">
+      <Version>3.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CSharp">
+      <Version>4.4.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream">
+      <Version>1.2.2</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Web.Infrastructure">
+      <Version>1.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>10.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="Skybrud.Social">
+      <Version>0.9.6</Version>
+    </PackageReference>
+    <PackageReference Include="Skybrud.Social.Microsoft">
+      <Version>1.0.0-beta1</Version>
+    </PackageReference>
+    <PackageReference Include="System.ComponentModel.Annotations">
+      <Version>4.4.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Configuration.ConfigurationManager">
+      <Version>4.5.0-preview1-25914-04</Version>
+    </PackageReference>
+    <PackageReference Include="System.Data.Common">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Net.Http">
+      <Version>4.3.3</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.Caching">
+      <Version>4.5.0-preview1-25914-04</Version>
+    </PackageReference>
+    <PackageReference Include="System.Xml.XDocument">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="SystemWebPackage">
+      <Version>1.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Unity">
+      <Version>5.5.8</Version>
+    </PackageReference>
+    <PackageReference Include="Unity.Abstractions">
+      <Version>3.1.3</Version>
+    </PackageReference>
+    <PackageReference Include="Unity.AspNet.WebApi">
+      <Version>5.0.11</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201712271549027_InitialCommit.resx">
+      <DependentUpon>201712271549027_InitialCommit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801011815079_IncreaseAccessTokenLength.resx">
+      <DependentUpon>201801011815079_IncreaseAccessTokenLength.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801021733452_ExtendedDataToMembershipUser.resx">
+      <DependentUpon>201801021733452_ExtendedDataToMembershipUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801021904303_ExtendedDataOnAll.resx">
+      <DependentUpon>201801021904303_ExtendedDataOnAll.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801050701512_AddedTrustedUserOption.resx">
+      <DependentUpon>201801050701512_AddedTrustedUserOption.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802090649239_Sections.resx">
+      <DependentUpon>201802090649239_Sections.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <PropertyGroup>
+    <PreBuildEvent>tasklist /FI "IMAGENAME eq VBCSCompiler.exe" 2&gt;NUL | find /I /N "VBCSCompiler.exe"&gt;NUL
+if "%25ERRORLEVEL%25"=="0" (taskkill /IM VBCSCompiler.exe /F) else (verify &gt;NUL)</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

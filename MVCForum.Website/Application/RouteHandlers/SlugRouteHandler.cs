@@ -1,24 +1,17 @@
-﻿using System;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Routing;
-using MVCForum.Domain.Interfaces.Services;
-
-namespace MVCForum.Website.Application.RouteHandlers
+﻿namespace MvcForum.Web.Application.RouteHandlers
 {
+    using System;
+    using System.Web;
+    using System.Web.Mvc;
+    using System.Web.Routing;
+
     public class SlugRouteHandler : MvcRouteHandler
     {
-        private readonly ITopicService _topicService;
-        public SlugRouteHandler()
-        {
-            _topicService = ServiceFactory.Get<ITopicService>();
-        }
-
         protected override IHttpHandler GetHttpHandler(RequestContext requestContext)
         {
             var url = requestContext.HttpContext.Request.Path.TrimStart('/');
 
-            if (!string.IsNullOrEmpty(url))
+            if (!string.IsNullOrWhiteSpace(url))
             {
                 // See if there is a topic by slug
                 FillRequest("Topic", "Show", url, requestContext);
@@ -31,8 +24,6 @@ namespace MVCForum.Website.Application.RouteHandlers
                 //        page.ID.ToString(),
                 //        requestContext);
                 //}
-
-                
             }
 
             return base.GetHttpHandler(requestContext);

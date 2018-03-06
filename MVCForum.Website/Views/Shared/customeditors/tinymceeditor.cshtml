@@ -1,10 +1,12 @@
-﻿@if (!Context.IsMobileDevice())
+﻿@using MvcForum.Web.Application.ExtensionMethods
+@if (!Context.IsMobileDevice())
 {
 <script src="@Url.Content("~/scripts/tinymce/tinymce.min.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/Scripts/tinymceplugins/ImageUpload/imageupload.js")" type="text/javascript"></script>
     <script type="text/javascript">        
         tinymce.init({
             selector: "textarea.rte",
+            browser_spellcheck: true,
             plugins: [
                 "autosave link image lists hr anchor forumimageinsert",
                 "wordcount visualblocks visualchars code fullscreen media nonbreaking"

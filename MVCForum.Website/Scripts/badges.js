@@ -18,7 +18,7 @@ function BadgeMarkAsSolution(postId) {
 
     // Ajax call to post the view model to the controller
     var markAsSolutionBadgeViewModel = new Object();
-    markAsSolutionBadgeViewModel.PostId = postId;
+    markAsSolutionBadgeViewModel.Id = postId;
 
     // Ajax call to post the view model to the controller
     var strung = JSON.stringify(markAsSolutionBadgeViewModel);
@@ -42,7 +42,7 @@ function BadgeFavourite(favouriteId) {
 
     // Ajax call to post the view model to the controller
     var favouriteViewModel = new Object();
-    favouriteViewModel.FavouriteId = favouriteId;
+    favouriteViewModel.Id = favouriteId;
 
     // Ajax call to post the view model to the controller
     var strung = JSON.stringify(favouriteViewModel);
@@ -67,7 +67,7 @@ function BadgeVoteUp(postId) {
 
     // Ajax call to post the view model to the controller
     var voteUpBadgeViewModel = new Object();
-    voteUpBadgeViewModel.PostId = postId;
+    voteUpBadgeViewModel.Id = postId;
 
     // Ajax call to post the view model to the controller
     var strung = JSON.stringify(voteUpBadgeViewModel);
@@ -91,7 +91,7 @@ function BadgeVoteDown(postId) {
 
     // Ajax call to post the view model to the controller
     var voteUpBadgeViewModel = new Object();
-    voteUpBadgeViewModel.PostId = postId;
+    voteUpBadgeViewModel.Id = postId;
 
     // Ajax call to post the view model to the controller
     var strung = JSON.stringify(voteUpBadgeViewModel);

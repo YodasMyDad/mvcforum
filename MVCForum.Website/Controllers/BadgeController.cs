@@ -1,38 +1,41 @@
-﻿using System;
-using System.Web.Mvc;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.ViewModels;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using System.Web.Mvc;
+    using Core.ExtensionMethods;
+    using Core.Interfaces;
+    using Core.Interfaces.Services;
+    using Core.Models.Enums;
+    using ViewModels;
+    using ViewModels.Badge;
+
     public partial class BadgeController : BaseController
     {
         private readonly IBadgeService _badgeService;
-        private readonly IPostService _postService;
         private readonly IFavouriteService _favouriteService;
+        private readonly IPostService _postService;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
-        /// <param name="badgeService"> </param>
         /// <param name="loggingService"> </param>
-        /// <param name="unitOfWorkManager"> </param>
+        /// <param name="badgeService"> </param>
         /// <param name="postService"> </param>
         /// <param name="membershipService"> </param>
         /// <param name="localizationService"></param>
         /// <param name="roleService"> </param>
         /// <param name="settingsService"> </param>
         /// <param name="favouriteService"></param>
-        public BadgeController(ILoggingService loggingService,
-            IUnitOfWorkManager unitOfWorkManager,
-            IBadgeService badgeService,
-            IPostService postService,
-            IMembershipService membershipService,
-            ILocalizationService localizationService, IRoleService roleService,
-            ISettingsService settingsService, IFavouriteService favouriteService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+        /// <param name="cacheService"></param>
+        /// <param name="context"></param>
+        public BadgeController(ILoggingService loggingService, IBadgeService badgeService, IPostService postService,
+            IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService,
+            ISettingsService settingsService, IFavouriteService favouriteService, ICacheService cacheService,
+            IMvcForumContext context)
+            : base(loggingService, membershipService, localizationService, roleService,
+                settingsService, cacheService, context)
         {
             _badgeService = badgeService;
             _postService = postService;
@@ -42,223 +45,219 @@ namespace MVCForum.Website.Controllers
 
         [HttpPost]
         [Authorize]
-        public void VoteUpPost(VoteBadgeViewModel voteUpBadgeViewModel)
+        public virtual async Task<ActionResult> VoteUpPost(EntityIdViewModel voteUpBadgeViewModel)
         {
-            using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
+            try
             {
-                try
+                var loggedOnUser = User.GetMembershipUser(MembershipService, false);
+                var databaseUpdateNeededOne = await _badgeService.ProcessBadge(BadgeType.VoteUp, loggedOnUser);
+                if (databaseUpdateNeededOne)
                 {
-                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.UserName);
-                    var databaseUpdateNeededOne = _badgeService.ProcessBadge(BadgeType.VoteUp, loggedOnUser);
-                    if (databaseUpdateNeededOne)
-                    {
-                        unitOfwork.SaveChanges();
-                    }
-
-                    var post = _postService.Get(voteUpBadgeViewModel.PostId);
-                    var databaseUpdateNeededTwo = _badgeService.ProcessBadge(BadgeType.VoteUp, post.User);
-                    if (databaseUpdateNeededTwo)
-                    {
-                        unitOfwork.SaveChanges();
-                    }
-
-                    if (databaseUpdateNeededOne || databaseUpdateNeededTwo)
-                    {
-                        unitOfwork.Commit();
-                    }
+                    await Context.SaveChangesAsync();
                 }
-                catch (Exception ex)
+
+                var post = _postService.Get(voteUpBadgeViewModel.Id);
+                var databaseUpdateNeededTwo = await _badgeService.ProcessBadge(BadgeType.VoteUp, post.User);
+                if (databaseUpdateNeededTwo)
                 {
-                    unitOfwork.Rollback();
-                    LoggingService.Error(ex);
+                    await Context.SaveChangesAsync();
                 }
             }
+            catch (Exception ex)
+            {
+                Context.RollBack();
+                LoggingService.Error(ex);
+            }
+
+            // TODO - Should be returning something meaningful!
+            return Content(string.Empty);
         }
 
         [HttpPost]
         [Authorize]
-        public void VoteDownPost(VoteBadgeViewModel voteUpBadgeViewModel)
+        public virtual async Task<ActionResult> VoteDownPost(EntityIdViewModel voteUpBadgeViewModel)
         {
-            using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
+            try
             {
-                try
+                var loggedOnUser = User.GetMembershipUser(MembershipService, false);
+                var databaseUpdateNeededOne = await _badgeService.ProcessBadge(BadgeType.VoteDown, loggedOnUser);
+                if (databaseUpdateNeededOne)
                 {
-                    var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.UserName);
-                    var databaseUpdateNeededOne = _badgeService.ProcessBadge(BadgeType.VoteDown, loggedOnUser);
-                    if (databaseUpdateNeededOne)
-                    {
-                        unitOfwork.SaveChanges();
-                    }
-
-                    var post = _postService.Get(voteUpBadgeViewModel.PostId);
-                    var databaseUpdateNeededTwo = _badgeService.ProcessBadge(BadgeType.VoteDown, post.User);
-
-                    if (databaseUpdateNeededTwo)
-                    {
-                        unitOfwork.SaveChanges();
-                    }
-
-                    if (databaseUpdateNeededOne || databaseUpdateNeededTwo)
-                    {
-                        unitOfwork.Commit();
-                    }
+                    await Context.SaveChangesAsync();
                 }
-                catch (Exception ex)
+
+                var post = _postService.Get(voteUpBadgeViewModel.Id);
+                var databaseUpdateNeededTwo = await _badgeService.ProcessBadge(BadgeType.VoteDown, post.User);
+                if (databaseUpdateNeededTwo)
                 {
-                    unitOfwork.Rollback();
-                    LoggingService.Error(ex);
+                    await Context.SaveChangesAsync();
                 }
             }
+            catch (Exception ex)
+            {
+                Context.RollBack();
+                LoggingService.Error(ex);
+            }
+
+            // TODO - Should be returning something meaningful!
+            return Content(string.Empty);
         }
 
         [HttpPost]
         [Authorize]
-        public void Post()
+        public virtual async Task<ActionResult> Post()
         {
             if (Request.IsAjaxRequest())
             {
-                using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
+                try
                 {
-                    try
-                    {
-                        var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.UserName);
-                        var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Post, loggedOnUser);
+                    var loggedOnUser = User.GetMembershipUser(MembershipService, false);
+                    var databaseUpdateNeeded = await _badgeService.ProcessBadge(BadgeType.Post, loggedOnUser);
 
-                        if (databaseUpdateNeeded)
-                        {
-                            unitOfwork.Commit();
-                        }
-                    }
-                    catch (Exception ex)
+                    if (databaseUpdateNeeded)
                     {
-                        unitOfwork.Rollback();
-                        LoggingService.Error(ex);
+                        await Context.SaveChangesAsync();
                     }
                 }
+                catch (Exception ex)
+                {
+                    Context.RollBack();
+                    LoggingService.Error(ex);
+                }
             }
+
+
+            // TODO - Should be returning something meaningful!
+            return Content(string.Empty);
         }
 
         [HttpPost]
         [Authorize]
-        public void MarkAsSolution(MarkAsSolutionBadgeViewModel markAsSolutionBadgeViewModel)
+        public virtual async Task<ActionResult> MarkAsSolution(EntityIdViewModel markAsSolutionBadgeViewModel)
         {
-            using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
+            try
             {
-                try
-                {
-                    var post = _postService.Get(markAsSolutionBadgeViewModel.PostId);
-                    var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.User) | _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.Topic.User);
+                var post = _postService.Get(markAsSolutionBadgeViewModel.Id);
 
-                    if (databaseUpdateNeeded)
-                    {
-                        unitOfwork.Commit();
-                    }
-                }
-                catch (Exception ex)
+                bool databaseUpdateNeeded;
+
+                if (post.User != post.Topic.User)
                 {
-                    unitOfwork.Rollback();
-                    LoggingService.Error(ex);
+                    databaseUpdateNeeded = await _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.User) | await _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.Topic.User);
+                }
+                else
+                {
+                    databaseUpdateNeeded = await _badgeService.ProcessBadge(BadgeType.MarkAsSolution, post.User);
+                }
+
+                if (databaseUpdateNeeded)
+                {
+                    await Context.SaveChangesAsync();
                 }
             }
+            catch (Exception ex)
+            {
+                Context.RollBack();
+                LoggingService.Error(ex);
+            }
+
+            // TODO - Should be returning something meaningful!
+            return Content(string.Empty);
         }
 
         [HttpPost]
         [Authorize]
-        public void Favourite(FavouriteViewModel favouriteViewModel)
+        public virtual async Task<ActionResult> Favourite(EntityIdViewModel favouriteViewModel)
         {
-            using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
+            try
             {
-                try
-                {
-                    var favourite = _favouriteService.Get(favouriteViewModel.FavouriteId);
-                    var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Favourite, favourite.Member) | _badgeService.ProcessBadge(BadgeType.Favourite, favourite.Post.User);
+                var favourite = _favouriteService.Get(favouriteViewModel.Id);
+                var databaseUpdateNeeded = await _badgeService.ProcessBadge(BadgeType.Favourite, favourite.Member) |
+                                           await _badgeService.ProcessBadge(BadgeType.Favourite, favourite.Post.User);
 
-                    if (databaseUpdateNeeded)
-                    {
-                        unitOfwork.Commit();
-                    }
-                }
-                catch (Exception ex)
+                if (databaseUpdateNeeded)
                 {
-                    unitOfwork.Rollback();
-                    LoggingService.Error(ex);
+                    await Context.SaveChangesAsync();
                 }
             }
+            catch (Exception ex)
+            {
+                Context.RollBack();
+                LoggingService.Error(ex);
+            }
+
+            // TODO - Should be returning something meaningful!
+            return Content(string.Empty);
         }
 
         [HttpPost]
         [Authorize]
-        public void ProfileBadgeCheck()
+        public virtual async Task<ActionResult> ProfileBadgeCheck()
         {
-            using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
+            try
             {
-                try
+                var loggedOnUser = User.GetMembershipUser(MembershipService, false);
+                if (loggedOnUser != null)
                 {
-                    if (LoggedOnReadOnlyUser != null)
-                    {
-                        var loggedOnUser = MembershipService.GetUser(LoggedOnReadOnlyUser.UserName);
-                        var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Profile, loggedOnUser);
-
-                        if (databaseUpdateNeeded)
-                        {
-                            unitOfwork.Commit();
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    unitOfwork.Rollback();
-                    LoggingService.Error(ex);
-                }
-            }
-        }
-
-        [HttpPost]
-        public void Time(TimeBadgeViewModel timeBadgeViewModel)
-        {
-            using (var unitOfwork = UnitOfWorkManager.NewUnitOfWork())
-            {
-                try
-                {
-                    var user = MembershipService.GetUser(timeBadgeViewModel.Id);
-                    var databaseUpdateNeeded = _badgeService.ProcessBadge(BadgeType.Time, user);
+                    var databaseUpdateNeeded = await _badgeService.ProcessBadge(BadgeType.Profile, loggedOnUser);
 
                     if (databaseUpdateNeeded)
                     {
-                        unitOfwork.Commit();
+                        await Context.SaveChangesAsync();
                     }
-
-                }
-                catch (Exception ex)
-                {
-                    unitOfwork.Rollback();
-                    LoggingService.Error(ex);
                 }
             }
+            catch (Exception ex)
+            {
+                Context.RollBack();
+                LoggingService.Error(ex);
+            }
+
+            // TODO - Should be returning something meaningful!
+            return Content(string.Empty);
+        }
+
+        [HttpPost]
+        public virtual async Task<ActionResult> Time(EntityIdViewModel timeBadgeViewModel)
+        {
+            try
+            {
+                var user = MembershipService.GetUser(timeBadgeViewModel.Id);
+                var databaseUpdateNeeded = await _badgeService.ProcessBadge(BadgeType.Time, user);
+
+                if (databaseUpdateNeeded)
+                {
+                    await Context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Context.RollBack();
+                LoggingService.Error(ex);
+            }
+
+            // TODO - Should be returning something meaningful!
+            return Content(string.Empty);
         }
 
         public ActionResult AllBadges()
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
+            var allBadges = _badgeService.GetAll().ToList();
+
+            // Localise the badge names
+            foreach (var item in allBadges)
             {
-                var allBadges = _badgeService.GetallBadges();
-
-                // Localise the badge names
-                foreach (var item in allBadges)
-                {
-                    var partialKey = string.Concat("Badge.", item.Name);
-                    item.DisplayName = LocalizationService.GetResourceString(string.Concat(partialKey, ".Name"));
-                    item.Description = LocalizationService.GetResourceString(string.Concat(partialKey, ".Desc"));
-                }
-
-                var badgesListModel = new AllBadgesViewModel
-                {
-                    AllBadges = allBadges
-                };
-
-                return View(badgesListModel);
+                var partialKey = string.Concat("Badge.", item.Name);
+                item.DisplayName = LocalizationService.GetResourceString(string.Concat(partialKey, ".Name"));
+                item.Description = LocalizationService.GetResourceString(string.Concat(partialKey, ".Desc"));
             }
-        }
 
+            var badgesListModel = new AllBadgesViewModel
+            {
+                AllBadges = allBadges
+            };
+
+            return View(badgesListModel);
+        }
     }
 }

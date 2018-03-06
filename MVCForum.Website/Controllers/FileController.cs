@@ -1,32 +1,41 @@
-﻿using System;
-using System.Linq;
-using System.Web.Hosting;
-using System.Web.Mvc;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
-    public class FileController : BaseController
-    {
-        private readonly IUploadedFileService _uploadedFileService;
-        private readonly ICategoryService _categoryService;
+    using System;
+    using System.Linq;
+    using System.Net.Mime;
+    using System.Web.Hosting;
+    using System.Web.Mvc;
+    using Core.ExtensionMethods;
+    using Core.Interfaces;
+    using Core.Interfaces.Services;
 
-        public FileController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService, IUploadedFileService uploadedFileService, ICategoryService categoryService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+    public partial class FileController : BaseController
+    {
+        private readonly ICategoryService _categoryService;
+        private readonly IUploadedFileService _uploadedFileService;
+
+        public FileController(ILoggingService loggingService, IMembershipService membershipService,
+            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
+            IUploadedFileService uploadedFileService, ICategoryService categoryService, ICacheService cacheService,
+            IMvcForumContext context)
+            : base(loggingService, membershipService, localizationService, roleService,
+                settingsService, cacheService, context)
         {
             _uploadedFileService = uploadedFileService;
             _categoryService = categoryService;
         }
 
-        public FileResult Download(Guid id)
+        public virtual FileResult Download(Guid id)
         {
             var uploadedFileById = _uploadedFileService.Get(id);
             if (uploadedFileById != null)
             {
+                var loggedOnReadOnlyUser = User.GetMembershipUser(MembershipService);
+                var loggedOnUsersRole = loggedOnReadOnlyUser.GetRole(RoleService);
+
                 // Check the user has permission to download this file
                 var fileCategory = uploadedFileById.Post.Topic.Category;
-                var allowedCategoryIds = _categoryService.GetAllowedCategories(UsersRole).Select(x => x.Id);
+                var allowedCategoryIds = _categoryService.GetAllowedCategories(loggedOnUsersRole).Select(x => x.Id);
                 if (allowedCategoryIds.Contains(fileCategory.Id))
                 {
                     //if(AppHelpers.FileIsImage(uploadedFileById.FilePath))
@@ -35,14 +44,13 @@ namespace MVCForum.Website.Controllers
                     //}
 
                     var fileBytes = System.IO.File.ReadAllBytes(HostingEnvironment.MapPath(uploadedFileById.FilePath));
-                    return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, uploadedFileById.Filename);
-
+                    return File(fileBytes, MediaTypeNames.Application.Octet, uploadedFileById.Filename);
                 }
             }
             return null;
         }
 
-        public PartialViewResult ImageUploadTinyMce()
+        public virtual PartialViewResult ImageUploadTinyMce()
         {
             // Testing
             return PartialView();

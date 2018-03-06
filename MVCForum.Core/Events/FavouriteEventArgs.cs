@@ -1,8 +1,8 @@
-﻿using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Domain.Events
+﻿namespace MvcForum.Core.Events
 {
-    public class FavouriteEventArgs : MVCForumEventArgs
+    using Models.Entities;
+
+    public class FavouriteEventArgs : MvcForumEventArgs
     {
         public Favourite Favourite { get; set; }
     }

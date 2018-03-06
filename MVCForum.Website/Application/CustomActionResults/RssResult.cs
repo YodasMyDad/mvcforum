@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Web.Mvc;
-using System.Xml;
-using MVCForum.Domain.DomainModel;
-
-namespace MVCForum.Website.Application
+﻿namespace MvcForum.Web.Application.CustomActionResults
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Web.Mvc;
+    using System.Xml;
+    using Core.Models.General;
+
     public class RssResult : ActionResult
     {
+        private readonly string _description;
 
         private readonly List<RssItem> _items;
         private readonly string _title;
-        private readonly string _description;
 
         /// <summary>
-        /// Initialises the RssResult
+        ///     Initialises the RssResult
         /// </summary>
         /// <param name="items">The items to be added to the rss feed.</param>
         /// <param name="title">The title of the rss feed.</param>
@@ -52,7 +52,7 @@ namespace MVCForum.Website.Application
                     _writer.WriteElementString("description", x.Description);
                     _writer.WriteElementString("pubDate", x.PublishedDate.ToString("o"));
                     _writer.WriteElementString("link", string.Concat(currentUrl, x.Link));
-                    if(!string.IsNullOrEmpty(x.RssImage))
+                    if (!string.IsNullOrWhiteSpace(x.RssImage))
                     {
                         _writer.WriteStartElement("image");
                         _writer.WriteElementString("url", string.Concat(currentUrl, x.RssImage));
@@ -68,6 +68,5 @@ namespace MVCForum.Website.Application
                 _writer.WriteEndElement();
             }
         }
-
     }
 }

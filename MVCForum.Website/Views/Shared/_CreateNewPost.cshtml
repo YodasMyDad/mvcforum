@@ -1,17 +1,18 @@
-﻿@model MVCForum.Website.ViewModels.CreateAjaxPostViewModel
+﻿@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.Post.CreateAjaxPostViewModel
 @{
     if (!string.IsNullOrEmpty(Model.PostContent))
     {
         // Need to turn into a blockquote
-        if (SiteConstants.Instance.ChosenEditor.ToLower().Contains("markdown"))
+        if (ForumConfiguration.Instance.ChosenEditor.ToLower().Contains("markdown"))
         {
             Model.PostContent = string.Concat("> ", Model.PostContent);
         }
-        if (SiteConstants.Instance.ChosenEditor.ToLower().Contains("bbcode"))
+        if (ForumConfiguration.Instance.ChosenEditor.ToLower().Contains("bbcode"))
         {
             Model.PostContent = string.Concat("[quote]", Model.PostContent, "[/quote]");
         }
-        if (SiteConstants.Instance.ChosenEditor.ToLower().Contains("tiny"))
+        if (ForumConfiguration.Instance.ChosenEditor.ToLower().Contains("tiny"))
         {
             Model.PostContent = string.Concat("<blockquote>", Model.PostContent, "</blockquote>");
         }

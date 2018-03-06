@@ -1,5 +1,5 @@
-﻿@using MVCForum.Website
-@model MVCForum.Website.ViewModels.HighEarnersPointViewModel
+﻿@using MvcForum.Web.Application.ExtensionMethods
+@model MvcForum.Web.ViewModels.HighEarnersPointViewModel
 
 <div class="highearners-box">
     <ul>
@@ -7,7 +7,7 @@
         {
             <li class="clearfix">
                 <span class="earnername">
-                    <img src="@dict.Key.MemberImage(SiteConstants.Instance.GravatarLeaderboardSize)" alt="@dict.Key.UserName">
+                    <img src="@dict.Key.MemberImage(ForumConfiguration.Instance.GravatarLeaderboardSize)" alt="@dict.Key.UserName">
                     <a href="@dict.Key.NiceUrl">@dict.Key.UserName</a>
                 </span>
                 <span class="earneramount">

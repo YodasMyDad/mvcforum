@@ -1,107 +1,98 @@
-﻿using System;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.Application;
-using MVCForum.Website.Areas.Admin.ViewModels;
-
-namespace MVCForum.Website.Areas.Admin.Controllers
+﻿namespace MvcForum.Web.Areas.Admin.Controllers
 {
-    [Authorize(Roles = AppConstants.AdminRoleName)]
-    public partial class BannedEmailController : BaseAdminController
-    {
+    using System;
+    using System.Threading.Tasks;
+    using System.Web.Mvc;
+    using Core;
+    using Core.Constants;
+    using Core.Interfaces;
+    using Core.Interfaces.Services;
+    using Core.Models.Entities;
+    using Web.ViewModels;
+    using Web.ViewModels.Admin;
 
+    [Authorize(Roles = Constants.AdminRoleName)]
+    public class BannedEmailController : BaseAdminController
+    {
         private readonly IBannedEmailService _bannedEmailService;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
-        /// <param name="unitOfWorkManager"> </param>
+        /// <param name="loggingService"> </param>
         /// <param name="membershipService"></param>
         /// <param name="localizationService"> </param>
         /// <param name="settingsService"> </param>
-        /// <param name="loggingService"> </param>
         /// <param name="bannedEmailService"></param>
-        public BannedEmailController(ILoggingService loggingService,
-            IUnitOfWorkManager unitOfWorkManager,
-            IMembershipService membershipService,
-            ILocalizationService localizationService,
-            ISettingsService settingsService, 
-            IBannedEmailService bannedEmailService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, settingsService)
+        /// <param name="context"></param>
+        public BannedEmailController(ILoggingService loggingService, IMembershipService membershipService,
+            ILocalizationService localizationService, ISettingsService settingsService,
+            IBannedEmailService bannedEmailService, IMvcForumContext context)
+            : base(loggingService, membershipService, localizationService, settingsService, context)
         {
             _bannedEmailService = bannedEmailService;
         }
 
 
-        public ActionResult Index(int? p, string search)
+        public async Task<ActionResult> Index(int? p, string search)
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
-            {
-                var pageIndex = p ?? 1;
-                var allEmails = string.IsNullOrEmpty(search) ? _bannedEmailService.GetAllPaged(pageIndex, SiteConstants.Instance.AdminListPageSize) :
-                                    _bannedEmailService.GetAllPaged(search, pageIndex, SiteConstants.Instance.AdminListPageSize);
+            var pageIndex = p ?? 1;
+            var allEmails = string.IsNullOrWhiteSpace(search)
+                ? await _bannedEmailService.GetAllPaged(pageIndex, ForumConfiguration.Instance.AdminListPageSize)
+                : await _bannedEmailService.GetAllPaged(search, pageIndex, ForumConfiguration.Instance.AdminListPageSize);
 
-                var vieWModel = new BannedEmailListViewModel
-                    {
-                        Emails = allEmails,
-                        PageIndex = pageIndex,
-                        TotalCount = allEmails.TotalCount,
-                        Search = search
-                    };
-                
-                return View(vieWModel);
-            }
-            
+            var vieWModel = new BannedEmailListViewModel
+            {
+                Emails = allEmails,
+                PageIndex = pageIndex,
+                TotalCount = allEmails.TotalCount,
+                Search = search
+            };
+
+            return View(vieWModel);
         }
 
         [HttpPost]
         public ActionResult Add(AddBannedEmailViewModel addBannedEmailViewModel)
         {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            try
             {
-                try
+                if (!string.IsNullOrWhiteSpace(addBannedEmailViewModel.Email))
                 {
-                    if (!string.IsNullOrEmpty(addBannedEmailViewModel.Email))
+                    var bannedEmail = new BannedEmail
                     {
-                        var bannedEmail = new BannedEmail
-                        {
-                            Email = addBannedEmailViewModel.Email,
-                            DateAdded = DateTime.UtcNow
-                        };
+                        Email = addBannedEmailViewModel.Email,
+                        DateAdded = DateTime.UtcNow
+                    };
 
-                        _bannedEmailService.Add(bannedEmail);
+                    _bannedEmailService.Add(bannedEmail);
 
-                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                        {
-                            Message = "Email added",
-                            MessageType = GenericMessages.success
-                        };
-
-                        unitOfWork.Commit();
-                    }
-                    else
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
-                        TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                        {
-                            Message = "Please add an email address",
-                            MessageType = GenericMessages.danger
-                        };
-                    }
+                        Message = "Email added",
+                        MessageType = GenericMessages.success
+                    };
 
+                    Context.SaveChanges();
                 }
-                catch (Exception ex)
+                else
                 {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                    TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
+                    TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
-                        Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+                        Message = "Please add an email address",
                         MessageType = GenericMessages.danger
-                    }; 
+                    };
                 }
+            }
+            catch (Exception ex)
+            {
+                Context.RollBack();
+                LoggingService.Error(ex);
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = LocalizationService.GetResourceString("Errors.GenericMessage"),
+                    MessageType = GenericMessages.danger
+                };
             }
 
             return RedirectToAction("Index");
@@ -109,42 +100,39 @@ namespace MVCForum.Website.Areas.Admin.Controllers
 
         public ActionResult Delete(Guid id, int? p, string search)
         {
-            using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+            try
             {
-                try
+                var email = _bannedEmailService.Get(id);
+                if (email == null)
                 {
-                    var email = _bannedEmailService.Get(id);
-                    if (email == null)
-                    {
-                        throw new ApplicationException("Cannot delete email - email does not exist");
-                    }
-
-                    _bannedEmailService.Delete(email);
-
-                    ViewBag.Message = new GenericMessageViewModel
-                    {
-                        Message = "Email delete successfully",
-                        MessageType = GenericMessages.success
-                    };
-                    unitOfWork.Commit();
-                }
-                catch (Exception ex)
-                {
-                    unitOfWork.Rollback();
-                    LoggingService.Error(ex);
-                    ViewBag.Message = new GenericMessageViewModel
-                    {
-                        Message = string.Format("Delete failed: {0}", ex.Message),
-                        MessageType = GenericMessages.danger
-                    };
+                    throw new ApplicationException("Cannot delete email - email does not exist");
                 }
 
-                return RedirectToAction("Index", new { p, search });
+                _bannedEmailService.Delete(email);
+
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = "Email delete successfully",
+                    MessageType = GenericMessages.success
+                };
+                Context.SaveChanges();
             }
+            catch (Exception ex)
+            {
+                Context.RollBack();
+                LoggingService.Error(ex);
+                TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                {
+                    Message = $"Delete failed: {ex.Message}",
+                    MessageType = GenericMessages.danger
+                };
+            }
+
+            return RedirectToAction("Index", new {p, search});
         }
 
         /// <summary>
-        /// Edit a resource key
+        ///     Edit a resource key
         /// </summary>
         /// <returns></returns>
         [HttpPost]
@@ -152,19 +140,16 @@ namespace MVCForum.Website.Areas.Admin.Controllers
         {
             if (Request.IsAjaxRequest())
             {
-                using (var unitOfWork = UnitOfWorkManager.NewUnitOfWork())
+                try
                 {
-                    try
-                    {
-                        var emailToUpdate = _bannedEmailService.Get(viewModel.EmailId);
-                        emailToUpdate.Email = viewModel.NewName;
-                        unitOfWork.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        unitOfWork.Rollback();
-                        LoggingService.Error(ex);
-                    }
+                    var emailToUpdate = _bannedEmailService.Get(viewModel.EmailId);
+                    emailToUpdate.Email = viewModel.NewName;
+                    Context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    Context.RollBack();
+                    LoggingService.Error(ex);
                 }
             }
         }

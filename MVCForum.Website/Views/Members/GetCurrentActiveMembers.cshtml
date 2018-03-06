@@ -1,5 +1,5 @@
-﻿@using MVCForum.Website
-@model MVCForum.Website.ViewModels.ActiveMembersViewModel
+﻿
+@model MvcForum.Web.ViewModels.Member.ActiveMembersViewModel
 
 <div class="active-members">
     <h6>@Html.LanguageString("Stats.FooterActiveUsersText")</h6>
@@ -10,7 +10,7 @@
             {
                 <li>
                     <a title="@Html.Raw(member.UserName)" href="@member.NiceUrl">
-                        <img src="@member.MemberImage(SiteConstants.Instance.GravatarLeaderboardSize)" alt="@Html.Raw(member.UserName)" />
+                        <img src="@member.MemberImage(ForumConfiguration.Instance.GravatarLeaderboardSize)" alt="@Html.Raw(member.UserName)" />
                     </a>
                 </li>
             }

@@ -1,47 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Web.Mvc;
-using System.Web.Mvc.Html;
-using System.Web.Routing;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.DomainModel;
-using MVCForum.Domain.Interfaces.Services;
-
-namespace MVCForum.Website.Application
+﻿namespace MvcForum.Web.Application.ExtensionMethods
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+    using System.Web;
+    using System.Web.Mvc;
+    using System.Web.Mvc.Html;
+    using System.Web.Routing;
+    using Core;
+    using Core.Interfaces.Services;
+    using Core.Ioc;
+    using Core.Models.Entities;
+    using Unity;
+
     public static class Extensions
     {
         /// <summary>
-        /// Create an action link to an action in the Admin area.
+        ///     Create an action link to an action in the Admin area.
         /// </summary>
-        public static MvcHtmlString AdminActionLink(this HtmlHelper htmlHelper, string linkText, string actionName, string adminControllerName)
+        public static MvcHtmlString AdminActionLink(this HtmlHelper htmlHelper, string linkText, string actionName,
+            string adminControllerName)
         {
             // http://stackoverflow.com/questions/2036305/how-to-specify-an-area-name-in-an-action-link
-            return htmlHelper.ActionLink(linkText, actionName, adminControllerName, new { Area = "Admin" }, new { });
+            return htmlHelper.ActionLink(linkText, actionName, adminControllerName, new {Area = "Admin"}, new { });
         }
 
-        public static string MemberImage(this MembershipUser user,  int size)
+        public static string MemberImage(this MembershipUser user, int size)
         {
             return AppHelpers.MemberImage(user.Avatar, user.Email, user.Id, size);
         }
 
         /// <summary>
-        /// Gets the site settings
+        ///     Gets the site settings
         /// </summary>
         /// <param name="helper"></param>
         /// <returns></returns>
         public static Settings Settings(this HtmlHelper helper)
         {
-            return ServiceFactory.Get<ISettingsService>().GetSettings();
+            return UnityHelper.Container.Resolve<ISettingsService>().GetSettings();
         }
 
         public static MembershipUser CurrentMember(this HtmlHelper helper)
         {
-            if (System.Web.HttpContext.Current.User.Identity.IsAuthenticated)
+            if (HttpContext.Current.User.Identity.IsAuthenticated)
             {
-                return ServiceFactory.Get<IMembershipService>().GetUser(System.Web.HttpContext.Current.User.Identity.Name);
+                return UnityHelper.Container.Resolve<IMembershipService>().GetUser(HttpContext.Current.User.Identity.Name, true);
             }
             return null;
         }
@@ -49,19 +53,25 @@ namespace MVCForum.Website.Application
         public static string KiloFormat(this int num)
         {
             if (num >= 1000000)
+            {
                 return (num / 1000000D).ToString("0.#") + "M";
+            }
 
             if (num >= 10000)
+            {
                 return (num / 1000D).ToString("#,0K");
+            }
 
             if (num >= 1000)
+            {
                 return (num / 1000D).ToString("0.#") + "K";
+            }
 
             return num.ToString(CultureInfo.InvariantCulture);
-        } 
+        }
 
         /// <summary>
-        /// Gets the specific language text from the language key
+        ///     Gets the specific language text from the language key
         /// </summary>
         /// <param name="helper"></param>
         /// <param name="key"></param>
@@ -74,35 +84,37 @@ namespace MVCForum.Website.Application
 
         public static string Lang(this HtmlHelper helper, string key)
         {
-            var locService = ServiceFactory.Get<ILocalizationService>();
+            var locService = UnityHelper.Container.Resolve<ILocalizationService>();
             return locService.GetResourceString(key);
         }
 
-        public static IEnumerable<T> Distinct<T, TKey>(this IEnumerable<T> list, Func<T, TKey> lookup) where TKey : struct
+        public static IEnumerable<T> Distinct<T, TKey>(this IEnumerable<T> list, Func<T, TKey> lookup)
+            where TKey : struct
         {
             return list.Distinct(new StructEqualityComparer<T, TKey>(lookup));
         }
 
 
-   //     <nav>
-   //   <ul class="pagination">
-   //     <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
-   //     <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
-   //     <li><a href="#">2</a></li>
-   //     <li><a href="#">3</a></li>
-   //     <li><a href="#">4</a></li>
-   //     <li><a href="#">5</a></li>
-   //     <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
-   //  </ul>
-   //</nav>
+        //     <nav>
+        //   <ul class="pagination">
+        //     <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+        //     <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+        //     <li><a href="#">2</a></li>
+        //     <li><a href="#">3</a></li>
+        //     <li><a href="#">4</a></li>
+        //     <li><a href="#">5</a></li>
+        //     <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+        //  </ul>
+        //</nav>
 
-        public static MvcHtmlString Pager(this HtmlHelper helper, int currentPage, int pageSize, int totalItemCount, object routeValues, string actionOveride = null, string controllerOveride = null)
+        public static MvcHtmlString Pager(this HtmlHelper helper, int currentPage, int pageSize, int totalItemCount,
+            object routeValues, string actionOveride = null, string controllerOveride = null)
         {
             // how many pages to display in each page group const  	
-            var cGroupSize = SiteConstants.Instance.PagingGroupSize;
-            var pageCount = (int)Math.Ceiling(totalItemCount / (double)pageSize);
+            var cGroupSize = ForumConfiguration.Instance.PagingGroupSize;
+            var pageCount = (int) Math.Ceiling(totalItemCount / (double) pageSize);
 
-            if(pageCount <= 0)
+            if (pageCount <= 0)
             {
                 return null;
             }
@@ -115,13 +127,20 @@ namespace MVCForum.Website.Application
             var containerdiv = new TagBuilder("nav");
             var container = new TagBuilder("ul");
             container.AddCssClass("pagination");
-            var actionName = !string.IsNullOrEmpty(actionOveride) ? actionOveride : helper.ViewContext.RouteData.GetRequiredString("action");
-            var controllerName = !string.IsNullOrEmpty(controllerOveride) ? controllerOveride : helper.ViewContext.RouteData.GetRequiredString("controller");
+            var actionName = !string.IsNullOrWhiteSpace(actionOveride)
+                ? actionOveride
+                : helper.ViewContext.RouteData.GetRequiredString("action");
+            var controllerName = !string.IsNullOrWhiteSpace(controllerOveride)
+                ? controllerOveride
+                : helper.ViewContext.RouteData.GetRequiredString("controller");
 
             // calculate the last page group number starting from the current page  	
             // until we hit the next whole divisible number  	
             var lastGroupNumber = currentPage;
-            while ((lastGroupNumber % cGroupSize != 0)) lastGroupNumber++;
+            while (lastGroupNumber % cGroupSize != 0)
+            {
+                lastGroupNumber++;
+            }
 
             // correct if we went over the number of pages  	
             var groupEnd = Math.Min(lastGroupNumber, pageCount);
@@ -160,9 +179,9 @@ namespace MVCForum.Website.Application
             for (var i = groupStart; i <= groupEnd; i++)
             {
                 var pageNumberli = new TagBuilder("li");
-                pageNumberli.AddCssClass(((i == currentPage)) ? "active" : "p");
-                var pageNumber = new TagBuilder("a");                
-                pageNumber.SetInnerText((i).ToString());
+                pageNumberli.AddCssClass(i == currentPage ? "active" : "p");
+                var pageNumber = new TagBuilder("a");
+                pageNumber.SetInnerText(i.ToString());
                 var routingValues = new RouteValueDictionary(routeValues) {{"p", i}};
                 pageNumber.MergeAttribute("href", urlHelper.Action(actionName, controllerName, routingValues));
                 pageNumberli.InnerHtml = pageNumber.ToString();
@@ -199,10 +218,9 @@ namespace MVCForum.Website.Application
         }
     }
 
-    class StructEqualityComparer<T, TKey> : IEqualityComparer<T> where TKey : struct
+    internal class StructEqualityComparer<T, TKey> : IEqualityComparer<T> where TKey : struct
     {
-
-        Func<T, TKey> lookup;
+        private readonly Func<T, TKey> lookup;
 
         public StructEqualityComparer(Func<T, TKey> lookup)
         {

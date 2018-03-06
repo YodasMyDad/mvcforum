@@ -1,9 +1,9 @@
-﻿@using MVCForum.Website
+﻿@using MvcForum.Web.Application.ExtensionMethods
 @if (Html.Settings().EnableSocialLogins == true)
 {
     <div class="oauthbuttons">
 
-        @if (!string.IsNullOrEmpty(SiteConstants.Instance.FacebookAppId) && !string.IsNullOrEmpty(SiteConstants.Instance.FacebookAppSecret))
+        @if (!string.IsNullOrEmpty(ForumConfiguration.Instance.FacebookAppId) && !string.IsNullOrEmpty(ForumConfiguration.Instance.FacebookAppSecret))
         {
             <p>
                 <a class="btn-mvc btn-mvc-large btn-mvc-fullwidth facebookloginbutton" href="@Url.Action("FacebookLogin", "FacebookOAuth")">
@@ -16,7 +16,7 @@
             @Html.LanguageString("Facebook.Error.EnabledButNotAddedKeys")
         }
         
-        @if (!string.IsNullOrEmpty(SiteConstants.Instance.GooglePlusAppId) && !string.IsNullOrEmpty(SiteConstants.Instance.GooglePlusAppSecret))
+        @if (!string.IsNullOrEmpty(ForumConfiguration.Instance.GooglePlusAppId) && !string.IsNullOrEmpty(ForumConfiguration.Instance.GooglePlusAppSecret))
         {
             <p>
                 <a class="btn-mvc btn-mvc-large btn-mvc-fullwidth googleloginbutton" href="@Url.Action("GoogleLogin", "GoogleOAuth")">
@@ -29,7 +29,7 @@
             @Html.LanguageString("Google.Error.EnabledButNotAddedKeys")
         }
         
-        @if (!string.IsNullOrEmpty(SiteConstants.Instance.MicrosoftAppId) && !string.IsNullOrEmpty(SiteConstants.Instance.MicrosoftAppSecret))
+        @if (!string.IsNullOrEmpty(ForumConfiguration.Instance.MicrosoftAppId) && !string.IsNullOrEmpty(ForumConfiguration.Instance.MicrosoftAppSecret))
         {
             <p>
                 <a class="btn-mvc btn-mvc-large btn-mvc-fullwidth microsoftloginbutton" href="@Url.Action("MicrosoftLogin", "MicrosoftOAuth")">

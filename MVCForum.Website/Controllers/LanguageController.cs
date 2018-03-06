@@ -1,39 +1,41 @@
-﻿using System;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using MVCForum.Domain.Constants;
-using MVCForum.Domain.Interfaces.Services;
-using MVCForum.Domain.Interfaces.UnitOfWork;
-using MVCForum.Website.ViewModels;
-
-namespace MVCForum.Website.Controllers
+﻿namespace MvcForum.Web.Controllers
 {
+    using System;
+    using System.Linq;
+    using System.Web;
+    using System.Web.Mvc;
+    using Core.Constants;
+    using Core.Interfaces;
+    using Core.Interfaces.Services;
+    using ViewModels.Language;
+
     public partial class LanguageController : BaseController
     {
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
-        /// <param name="unitOfWorkManager"> </param>
+        /// <param name="loggingService"> </param>
         /// <param name="membershipService"></param>
         /// <param name="localizationService"></param>
         /// <param name="roleService"></param>
         /// <param name="settingsService"> </param>
-        /// <param name="loggingService"> </param>
-        public LanguageController(ILoggingService loggingService, IUnitOfWorkManager unitOfWorkManager, IMembershipService membershipService, ILocalizationService localizationService, 
-            IRoleService roleService, ISettingsService settingsService)
-            : base(loggingService, unitOfWorkManager, membershipService, localizationService, roleService, settingsService)
+        /// <param name="cacheService"></param>
+        /// <param name="context"></param>
+        public LanguageController(ILoggingService loggingService, IMembershipService membershipService,
+            ILocalizationService localizationService, IRoleService roleService, ISettingsService settingsService,
+            ICacheService cacheService, IMvcForumContext context)
+            : base(loggingService, membershipService, localizationService, roleService,
+                settingsService, cacheService, context)
         {
-            
         }
 
         /// <summary>
-        /// Lists out all languages in a partial view. For example, used to display list of 
-        /// available languages along the top of every page
+        ///     Lists out all languages in a partial view. For example, used to display list of
+        ///     available languages along the top of every page
         /// </summary>
         /// <returns></returns>
         [ChildActionOnly]
-        public ActionResult Index()
+        public virtual ActionResult Index()
         {
             var viewModel = new LanguageListAllViewModel
             {
@@ -48,36 +50,33 @@ namespace MVCForum.Website.Controllers
         }
 
         /// <summary>
-        /// Change the current language (typically called from each language link generated in this controller's index method)
+        ///     Change the current language (typically called from each language link generated in this controller's index method)
         /// </summary>
         /// <param name="lang"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult ChangeLanguage(Guid lang)
+        public virtual ActionResult ChangeLanguage(Guid lang)
         {
-            using (UnitOfWorkManager.NewUnitOfWork())
+            var language = LocalizationService.Get(lang);
+            LocalizationService.CurrentLanguage = language;
+
+            // The current language is stored in a cookie
+            var cookie = new HttpCookie(Constants.LanguageIdCookieName)
             {
-                var language = LocalizationService.Get(lang);
-                LocalizationService.CurrentLanguage = language;
+                HttpOnly = false,
+                Value = language.Id.ToString(),
+                Expires = DateTime.UtcNow.AddYears(1)
+            };
 
-                // The current language is stored in a cookie
-                var cookie = new HttpCookie(AppConstants.LanguageIdCookieName)
-                {
-                    HttpOnly = false,
-                    Value = language.Id.ToString(),
-                    Expires = DateTime.UtcNow.AddYears(1)
-                };
+            Response.Cookies.Add(cookie);
 
-                Response.Cookies.Add(cookie);
+            //TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+            //{
+            //    Message = LocalizationService.GetResourceString("Language.Changed"),
+            //    MessageType = GenericMessages.success
+            //};
 
-                //TempData[AppConstants.MessageViewBagName] = new GenericMessageViewModel
-                //{
-                //    Message = LocalizationService.GetResourceString("Language.Changed"),
-                //    MessageType = GenericMessages.success
-                //};
-
-                return Content("success"); 
-            }
+            return Content("success");
         }
     }
 }

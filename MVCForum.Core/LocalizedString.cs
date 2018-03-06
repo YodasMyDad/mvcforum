@@ -1,69 +1,52 @@
-﻿using System;
-using System.Web;
-
-namespace MVCForum.Domain
+﻿namespace MvcForum.Core
 {
+    using System;
+    using System.Web;
+
     public class LocalizedString : MarshalByRefObject, IHtmlString
     {
-        private readonly string _localized;
-        private readonly string _scope;
-        private readonly string _textHint;
-        private readonly object[] _args;
-
         public LocalizedString(string localized)
         {
-            _localized = localized;
+            Text = localized;
         }
 
         public LocalizedString(string localized, string scope, string textHint, object[] args)
         {
-            _localized = localized;
-            _scope = scope;
-            _textHint = textHint;
-            _args = args;
+            Text = localized;
+            Scope = scope;
+            TextHint = textHint;
+            Args = args;
+        }
+
+        public string Scope { get; }
+
+        public string TextHint { get; }
+
+        public object[] Args { get; }
+
+        public string Text { get; }
+
+        public string ToHtmlString()
+        {
+            return Text;
         }
 
         public static LocalizedString TextOrDefault(string text, LocalizedString defaultValue)
         {
-            return string.IsNullOrEmpty(text) ? defaultValue : new LocalizedString(text);
-        }
-
-        public string Scope
-        {
-            get { return _scope; }
-        }
-
-        public string TextHint
-        {
-            get { return _textHint; }
-        }
-
-        public object[] Args
-        {
-            get { return _args; }
-        }
-
-        public string Text
-        {
-            get { return _localized; }
+            return string.IsNullOrWhiteSpace(text) ? defaultValue : new LocalizedString(text);
         }
 
         public override string ToString()
         {
-            return _localized;
-        }
-
-        public string ToHtmlString()
-        {
-            return _localized;
+            return Text;
         }
 
         public override int GetHashCode()
         {
             var hashCode = 0;
-            if (_localized != null)
+            if (Text != null)
             {
-                hashCode ^= _localized.GetHashCode();
+                hashCode ^= Text.GetHashCode();
             }
             return hashCode;
         }
@@ -75,10 +58,9 @@ namespace MVCForum.Domain
                 return false;
             }
 
-            var that = (LocalizedString)obj;
+            var that = (LocalizedString) obj;
 
-            return string.Equals(_localized, that._localized);
+            return string.Equals(Text, that.Text);
         }
-
     }
 }
