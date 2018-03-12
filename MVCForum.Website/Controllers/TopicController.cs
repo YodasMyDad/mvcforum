@@ -413,7 +413,8 @@
                         Category = topic.Category.Id,
                         Name = topic.Name,
                         TopicId = topic.Id,
-                        OptionalPermissions = GetCheckCreateTopicPermissions(permissions)
+                        OptionalPermissions = GetCheckCreateTopicPermissions(permissions),
+                        IsPostEdit = true
                     };
 
                     // Now check if this is a topic starter, if so add the rest of the field
@@ -447,6 +448,9 @@
                             viewModel.PollAnswers = topic.Poll.PollAnswers;
                             viewModel.PollCloseAfterDays = topic.Poll.ClosePollAfterDays ?? 0;
                         }
+
+                        // It's a topic
+                        viewModel.IsPostEdit = false;
                     }
 
                     // Return the edit view
@@ -511,40 +515,66 @@
                 }
                 else
                 {
-                    // Map the new topic (Pass null for new topic)
-                    var topic = editPostViewModel.ToTopic(category, loggedOnUser, originalTopic);
 
-                    // Run the create pipeline
-                    var editPipeLine = await _topicService.Edit(originalTopic, editPostViewModel.Files,
-                        editPostViewModel.Tags, editPostViewModel.SubscribeToTopic, editPostViewModel.Content, 
-                        editPostViewModel.Name, editPostViewModel.PollAnswers, editPostViewModel.PollCloseAfterDays);
+                    bool successful;
+                    bool? moderate = false;
+                    string message;
 
-                    // Check if successful
-                    if (editPipeLine.Successful == false)
+                    if (editPostViewModel.IsPostEdit)
                     {
-                        // Tell the user the topic is awaiting moderation
-                        ModelState.AddModelError(string.Empty, editPipeLine.ProcessLog.FirstOrDefault());
-                        return View(editPostViewModel);
-                    }
+                        var editPostPipe = await _postService.Edit(originalPost, editPostViewModel.Files,
+                            originalPost.IsTopicStarter, string.Empty, editPostViewModel.Content);
 
-                    if (editPipeLine.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.Moderate))
-                    {
-                        var moderate = editPipeLine.ExtendedData[Constants.ExtendedDataKeys.Moderate] as bool?;
-                        if (moderate == true)
+                        successful = editPostPipe.Successful;
+                        message = editPostPipe.ProcessLog.FirstOrDefault();
+                        if (editPostPipe.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.Moderate))
                         {
-                            // Tell the user the topic is awaiting moderation
-                            TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
-                            {
-                                Message = LocalizationService.GetResourceString("Moderate.AwaitingModeration"),
-                                MessageType = GenericMessages.info
-                            };
+                            moderate = editPostPipe.ExtendedData[Constants.ExtendedDataKeys.Moderate] as bool?;
+                        }
+                    }
+                    else
+                    {
+                        // Map the new topic (Pass null for new topic)
+                        var topic = editPostViewModel.ToTopic(category, loggedOnUser, originalTopic);
 
-                            return RedirectToAction("Index", "Home");
+                        // Run the create pipeline
+                        var editPipeLine = await _topicService.Edit(topic, editPostViewModel.Files,
+                            editPostViewModel.Tags, editPostViewModel.SubscribeToTopic, editPostViewModel.Content,
+                            editPostViewModel.Name, editPostViewModel.PollAnswers, editPostViewModel.PollCloseAfterDays);
+
+                        successful = editPipeLine.Successful;
+                        message = editPipeLine.ProcessLog.FirstOrDefault();
+                        if (editPipeLine.ExtendedData.ContainsKey(Constants.ExtendedDataKeys.Moderate))
+                        {
+                            moderate = editPipeLine.ExtendedData[Constants.ExtendedDataKeys.Moderate] as bool?;
                         }
                     }
 
+
+                    // Check if successful
+                    if (successful == false)
+                    {
+                        // Tell the user the topic is awaiting moderation
+                        ModelState.AddModelError(string.Empty, message);
+                        return View(editPostViewModel);
+                    }
+
+
+                    if (moderate == true)
+                    {
+                        // Tell the user the topic is awaiting moderation
+                        TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
+                        {
+                            Message = LocalizationService.GetResourceString("Moderate.AwaitingModeration"),
+                            MessageType = GenericMessages.info
+                        };
+
+                        return RedirectToAction("Index", "Home");
+                    }
+
+
                     // Redirect to the newly created topic
-                    return Redirect($"{topic.NiceUrl}?postbadges=true");
+                    return Redirect($"{originalTopic.NiceUrl}?postbadges=true");
                 }
             }
 
@@ -670,7 +700,7 @@
                 {
                     // Check the date the topic was created
                     var endDate =
-                        viewModel.Poll.Poll.DateCreated.AddDays((int) viewModel.Poll.Poll.ClosePollAfterDays);
+                        viewModel.Poll.Poll.DateCreated.AddDays((int)viewModel.Poll.Poll.ClosePollAfterDays);
                     if (DateTime.UtcNow > endDate)
                     {
                         topic.Poll.IsClosed = true;
@@ -780,7 +810,7 @@
                 viewModel.Tag = tag;
                 viewModel.IsSubscribed = isSubscribed;
                 viewModel.TagId = tagModel.Id;
-             
+
 
                 return View(viewModel);
             }
@@ -873,7 +903,7 @@
                 var allowedCategories = _categoryService.GetAllowedCategories(loggedOnUsersRole);
 
                 // Get the topics
-                var topics = _topicService.GetPopularTopics(from, to, allowedCategories, (int) amountToShow);
+                var topics = _topicService.GetPopularTopics(from, to, allowedCategories, (int)amountToShow);
 
                 // Get the Topic View Models
                 var topicViewModels = ViewModelMapping.CreateTopicViewModels(topics.ToList(), RoleService,

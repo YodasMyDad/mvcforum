@@ -64,5 +64,7 @@
 
         [ForumMvcResourceDisplayName("Topic.Label.UploadFiles")]
         public HttpPostedFileBase[] Files { get; set; }
+
+        public bool IsPostEdit { get; set; }
     }
 }
