@@ -496,11 +496,8 @@
         ///     Resends the email confirmation
         /// </summary>
         /// <param name="username"></param>
-        /// <param name="manuallyAuthoriseMembers"></param>
-        /// <param name="memberEmailAuthorisationNeeded"></param>
         /// <returns></returns>
-        public virtual ActionResult ResendEmailConfirmation(string username, bool manuallyAuthoriseMembers,
-            bool memberEmailAuthorisationNeeded)
+        public virtual ActionResult ResendEmailConfirmation(string username)
         {
             try
             {
@@ -513,8 +510,10 @@
 
                 if (user != null && !string.IsNullOrWhiteSpace(registrationGuid))
                 {
-                    _emailService.SendEmailConfirmationEmail(user, manuallyAuthoriseMembers,
-                        memberEmailAuthorisationNeeded);
+                    // get the site settings
+                    var siteSettings = SettingsService.GetSettings();
+
+                    _emailService.SendEmailConfirmationEmail(user, siteSettings.ManuallyAuthoriseNewMembers, true);
 
                     TempData[Constants.MessageViewBagName] = new GenericMessageViewModel
                     {
