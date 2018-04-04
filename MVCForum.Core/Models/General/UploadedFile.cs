@@ -15,6 +15,6 @@
         public virtual MembershipUser MembershipUser { get; set; }
         public virtual Post Post { get; set; }
         public DateTime DateCreated { get; set; }
-        public string FilePath => $"~/content/uploads/{MembershipUser.Id}/{Filename}";
+        public string FilePath => $"{ForumConfiguration.Instance.UploadFolderPath}{MembershipUser.Id}/{Filename}";
     }
 }
