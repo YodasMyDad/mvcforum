@@ -660,7 +660,6 @@
     <Content Include="Installer\ru-RU.csv" />
     <None Include="Installer\en-US.csv" />
     <Content Include="Installer\ManualSql\manualVersionOneSevenToOneEight.sql" />
-    <Content Include="Notes.txt" />
     <Content Include="Scripts\badges.js" />
     <Content Include="Scripts\bbeditor\emoticons\alien.png" />
     <Content Include="Scripts\bbeditor\emoticons\angel.png" />
