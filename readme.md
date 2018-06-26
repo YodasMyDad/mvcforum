@@ -1,9 +1,9 @@
-![MVCForum](http://support.mvcforum.com/installer/content/images/logo.png)
-
-MVCForum - Fully Featured ASP.NET MVC 5 Forum
+MVCForum - Fully Featured ASP.NET MVC Forum
 ========
 
-MVCForum is a fully featured and themeable enterprise level ASP.NET MVC 5 discussion board/forum. The software has features similar to that seen on StackOverFlow plus LOTS more (See list below). Along with MVC it’s built using Unity & Entity Framework 6 code first and is super easy to extend and add your own features.
+MVCForum is a fully featured and themeable enterprise level ASP.NET MVC discussion board/forum. The software has features similar to that seen on StackOverFlow plus LOTS more (See list below). Along with MVC it’s built using Unity & Entity Framework 6 code first and is super easy to extend and add your own features.
+
+**There are no plans to convert to .NET Core**
 
 Current Features Include
 
@@ -34,17 +34,18 @@ Current Features Include
 - Batch tools
 - Plus loads more
 
-We are looking for feedback on improvements, bugs and new features so please give it a spin and let us know what you think. MVCForum is designed and developed by the [team at Aptitude](https://www.aptitude.co.uk)
+## Status ##
+
+This project is no longer actively developed as I don't have the time. As and when I get time, I do occasionally go through the PR's or issues. If you find a bug or want a new feature, then submit a PR and help out everyone else using the software.
+
+If you are interested in managing the project then let me know, happy to add a team of developers to this project.
+
 
 ## Documentation ##
 
 Most documentation can be found in the Wiki
 
-[Wiki](https://github.com/leen3o/mvcforum/wiki)
-
-Our current support forum for bugs and questions (Which is also running on the latest MVCForum)
-
-[http://support.mvcforum.com](http://support.mvcforum.com)
+[Wiki](https://github.com/YodasMyDad/mvcforum/wiki)
 
 ## Installing ##
 
@@ -52,20 +53,16 @@ Our current support forum for bugs and questions (Which is also running on the l
 
 ## Screenshots ##
 
-![Home Page Screenshot](http://www.mvcforum.com/img/screens/homepage.png)
+![Home Page Screenshot](https://cdn.pbrd.co/images/HrEWn8H.png)
 
 ----------
 
-![Thread Screenshot](http://www.mvcforum.com/img/screens/thread.png)
+![Thread Screenshot](https://cdn.pbrd.co/images/HrEWIDA.png)
 
 ----------
 
-![Badges Screenshot](http://www.mvcforum.com/img/screens/badges.png)
+![Badges Screenshot](https://cdn.pbrd.co/images/HrEWUbZ.png)
 
 ----------
 
-![TinyMCE Screenshot](http://www.mvcforum.com/img/screens/tinymce.png)
-
-----------
-
-![Activity Screenshot](http://www.mvcforum.com/img/screens/activity.png)
+![Activity Screenshot](https://cdn.pbrd.co/images/HrEX66J.png)
