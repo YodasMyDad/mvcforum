@@ -1,3 +1,9 @@
+## Status ##
+
+This project is no longer actively developed as I don't have the time. As and when I get time, I do occasionally go through the PR's. If you find a bug or want a new feature, then submit a PR and help out everyone else using the software.
+
+If you are interested in managing the project then let me know, happy to add a team of developers to this project.
+
 MVCForum - Fully Featured ASP.NET MVC Forum
 ========
 
@@ -33,13 +39,6 @@ Current Features Include
 - Member & Post Reporting 
 - Batch tools
 - Plus loads more
-
-## Status ##
-
-This project is no longer actively developed as I don't have the time. As and when I get time, I do occasionally go through the PR's or issues. If you find a bug or want a new feature, then submit a PR and help out everyone else using the software.
-
-If you are interested in managing the project then let me know, happy to add a team of developers to this project.
-
 
 ## Documentation ##
 
