@@ -56,7 +56,7 @@
                 if (isEdit)
                 {
                     // Get the original post
-                    var originalPost = await context.Post.Include(x => x.Topic).FirstOrDefaultAsync(x => x.Id == input.EntityToProcess.Id);
+                    var originalPost = await context.Post.Include(x => x.Topic).AsNoTracking().FirstOrDefaultAsync(x => x.Id == input.EntityToProcess.Id);
 
                     // Get content from Extended data
                     var postedContent = input.ExtendedData[Constants.ExtendedDataKeys.Content] as string;
@@ -76,7 +76,9 @@
                             DateEdited = input.EntityToProcess.DateEdited,
                             EditedBy = loggedOnUser,
                             OriginalPostContent = originalPost.PostContent,
-                            OriginalPostTitle = originalPost.IsTopicStarter ? originalPost.Topic.Name : string.Empty
+                            EditedPostContent = postedContent,
+                            OriginalPostTitle = originalPost.IsTopicStarter ? originalPost.Topic.Name : null,
+                            EditedPostTitle = originalPost.IsTopicStarter ? topicName : null
                         };
 
                         // Add the post edit too
