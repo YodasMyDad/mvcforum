@@ -260,9 +260,10 @@
                 var trimmedKey = key.Trim();
                 try
                 {
-                    if (_perRequestLanguageStrings.ContainsKey(trimmedKey))
+                    var languageStrings = ResourceKeysByLanguage(CurrentLanguage);
+                    if (languageStrings.ContainsKey(trimmedKey))
                     {
-                        var langValue = _perRequestLanguageStrings[trimmedKey];
+                        var langValue = languageStrings[trimmedKey];
                         if (!string.IsNullOrWhiteSpace(langValue))
                         {
                             return langValue;
