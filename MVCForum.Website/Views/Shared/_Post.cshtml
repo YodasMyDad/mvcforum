@@ -45,7 +45,7 @@
                 <button class="postoptions btn-mvc btn-mvc-fullwidth">@Html.LanguageString("Post.Options")</button>
                 <ul class="clearfix postadminlist">
                     <li>
-                        <a class="btn-mvc btn-mvc-small btn-mvc-fullwidth" href="?quote=@Model.Post.Id#createpost">
+                        <a class="btn-mvc btn-mvc-small btn-mvc-fullwidth" href="?quote=@Model.Post.Id#createpostholder">
                             @Html.LanguageString("Post.Quote")
                         </a>
                     </li>
@@ -214,7 +214,7 @@
                         {
                             <li>
                                 <i class="fa fa-reply"></i>
-                                <a class="replytolink" href="?reply=@Model.Post.Id#createpost">
+                                <a class="replytolink" href="?reply=@Model.Post.Id#createpostholder">
                                     @Html.LanguageString("Post.Reply")
                                 </a>
                             </li>
